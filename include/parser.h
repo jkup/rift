@@ -61,6 +61,11 @@ struct Token {
     
     Token(TokenType t, const std::string& v, size_t l = 0, size_t c = 0)
         : type(t), value(v), line(l), column(c) {}
+    
+    std::string toString() const {
+        return "Token(" + std::to_string(static_cast<int>(type)) + ", \"" + value + "\", " + 
+               std::to_string(line) + ":" + std::to_string(column) + ")";
+    }
 };
 
 // Simple AST node types

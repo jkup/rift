@@ -1,11 +1,6 @@
 #!/bin/bash
 
-# Run test262 subset
-echo "🧪 Running Test262 subset (first 20 tests)..."
-echo "This will show how our runtime performs against the official ECMAScript test suite."
-echo
-
-node /tmp/test262-runner-demo.js
+./build/jsruntime ./test/test-file.js
 
 echo
 echo "✅ Demo complete!"
