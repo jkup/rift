@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { execSync, spawn } = require("child_process");
+const { execSync } = require("child_process");
 const chalk = require("chalk");
 
 // Configuration
@@ -18,71 +18,65 @@ class Test262Runner {
     this.startTime = Date.now();
   }
 
-  // Clear the console and move cursor to top
-  clearScreen() {
-    process.stdout.write("\x1b[2J\x1b[0f");
-  }
-
-  // Create a colored box with count
-  createStatusBox(label, count, color) {
-    const countStr = count.toString().padStart(4, " ");
-    const labelStr = label.padEnd(8, " ");
-    return color(
-      `┌─────────────┐\n│ ${labelStr} │\n│    ${countStr}    │\n└─────────────┘`
-    );
-  }
-
-  // Display the current status with boxes
+  // Display a simple status line that updates in place
   displayStatus(currentTest = "", totalTests = 0, currentIndex = 0) {
-    this.clearScreen();
+    const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(1);
+    const progress =
+      totalTests > 0 ? ((currentIndex / totalTests) * 100).toFixed(1) : 0;
 
-    // Header
+    // Create status boxes in a single line
+    const passedBox = chalk.green(`[✅ ${this.passed.toString().padStart(3)}]`);
+    const failedBox = chalk.red(`[❌ ${this.failed.toString().padStart(3)}]`);
+    const skippedBox = chalk.yellow(
+      `[⏭️  ${this.skipped.toString().padStart(3)}]`
+    );
+
+    // Progress bar
+    const progressBar = this.createProgressBar(currentIndex, totalTests, 20);
+
+    // Current test (truncated if too long)
+    let currentTestDisplay = "";
+    if (currentTest) {
+      const relativePath = path.relative(TEST262_DIR, currentTest);
+      const maxLength = 40;
+      currentTestDisplay =
+        relativePath.length > maxLength
+          ? "..." + relativePath.slice(-maxLength + 3)
+          : relativePath;
+    }
+
+    // Build the status line
+    const statusLine = [
+      passedBox,
+      failedBox,
+      skippedBox,
+      progressBar,
+      chalk.dim(`${progress}%`),
+      chalk.dim(`${elapsed}s`),
+      currentTestDisplay ? chalk.dim(currentTestDisplay) : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    // Clear the line and write new status
+    process.stdout.write("\r" + statusLine + "\x1b[K");
+  }
+
+  // Show the initial header
+  showHeader(totalTests) {
     console.log(chalk.bold.cyan("🚀 Test262 Runner for JSRuntime"));
     console.log(chalk.cyan("═".repeat(50)));
     console.log();
-
-    // Status boxes
-    const passedBox = this.createStatusBox("PASSED", this.passed, chalk.green);
-    const failedBox = this.createStatusBox("FAILED", this.failed, chalk.red);
-    const skippedBox = this.createStatusBox(
-      "SKIPPED",
-      this.skipped,
-      chalk.yellow
-    );
-
-    // Display boxes side by side
-    const passedLines = passedBox.split("\n");
-    const failedLines = failedBox.split("\n");
-    const skippedLines = skippedBox.split("\n");
-
-    for (let i = 0; i < passedLines.length; i++) {
-      console.log(`${passedLines[i]}  ${failedLines[i]}  ${skippedLines[i]}`);
-    }
-
+    console.log(chalk.bold.green(`🎯 Found ${totalTests} test files to run`));
+    console.log(chalk.dim("Press Ctrl+C to stop at any time"));
     console.log();
-
-    // Progress info
-    if (totalTests > 0) {
-      const progress = ((currentIndex / totalTests) * 100).toFixed(1);
-      const progressBar = this.createProgressBar(currentIndex, totalTests);
-      console.log(
-        chalk.bold(`Progress: ${currentIndex}/${totalTests} (${progress}%)`)
-      );
-      console.log(progressBar);
-      console.log();
-    }
-
-    // Current test
-    if (currentTest) {
-      const relativePath = path.relative(TEST262_DIR, currentTest);
-      console.log(chalk.bold("Currently running:"));
-      console.log(chalk.dim(`  ${relativePath}`));
-      console.log();
-    }
-
-    // Runtime info
-    const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(1);
-    console.log(chalk.dim(`Runtime: ${elapsed}s`));
+    console.log(chalk.bold("Legend:"));
+    console.log(
+      `${chalk.green("[✅ ###]")} Passed  ${chalk.red(
+        "[❌ ###]"
+      )} Failed  ${chalk.yellow("[⏭️  ###]")} Skipped`
+    );
+    console.log();
   }
 
   // Create a progress bar
@@ -230,10 +224,11 @@ class Test262Runner {
       const tempFile = "/tmp/test262_temp.js";
       fs.writeFileSync(tempFile, test.code);
 
-      // Run our runtime
+      // Run our runtime with suppressed output
       const result = execSync(`${RUNTIME_EXECUTABLE} ${tempFile}`, {
         timeout: 5000,
         encoding: "utf8",
+        stdio: ["pipe", "pipe", "pipe"], // Capture all output
       });
 
       if (test.negative) {
@@ -251,9 +246,21 @@ class Test262Runner {
         return { status: "passed", reason: "Expected error occurred" };
       } else {
         this.failed++;
+        // Clean up the error message to remove newlines and extra text
+        let cleanReason = error.message;
+        if (error.stderr) {
+          const stderr = error.stderr.toString().trim();
+          if (stderr) {
+            // Extract just the main error message
+            const lines = stderr.split("\n");
+            const errorLine =
+              lines.find((line) => line.includes("Error:")) || lines[0];
+            cleanReason = errorLine.replace(/^.*Error:\s*/, "").trim();
+          }
+        }
         return {
           status: "failed",
-          reason: error.message,
+          reason: cleanReason,
           stderr: error.stderr ? error.stderr.toString() : "",
         };
       }
@@ -303,12 +310,7 @@ class Test262Runner {
 
     const testFiles = await this.findTestFiles();
 
-    console.log();
-    console.log(
-      chalk.bold.green(`🎯 Found ${testFiles.length} test files to run`)
-    );
-    console.log(chalk.dim("Press Ctrl+C to stop at any time"));
-    console.log();
+    this.showHeader(testFiles.length);
 
     // Wait a moment before starting
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -327,12 +329,15 @@ class Test262Runner {
         ...result,
       });
 
-      // Small delay to make the updates visible
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      // Small delay to make the updates visible and prevent flicker
+      await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
     // Final display
     this.displayStatus("", testFiles.length, testFiles.length);
+
+    // Add a newline to finish the status line
+    console.log();
 
     // Wait a moment before showing summary
     await new Promise((resolve) => setTimeout(resolve, 500));
