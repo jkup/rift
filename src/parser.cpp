@@ -98,7 +98,11 @@ Token Lexer::read_identifier() {
         {"true", TokenType::Boolean},
         {"false", TokenType::Boolean},
         {"null", TokenType::Null},
-        {"undefined", TokenType::Undefined}
+        {"undefined", TokenType::Undefined},
+        {"==", TokenType::Equal},
+        {"!=", TokenType::NotEqual},
+        {"<", TokenType::Less},
+        {">", TokenType::Greater}
     };
     
     auto it = keywords.find(value);

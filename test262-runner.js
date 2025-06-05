@@ -192,33 +192,6 @@ class Test262Runner {
   async runSingleTest(testFile) {
     const test = this.parseTestFile(testFile);
 
-    // Skip tests that require features we don't support yet
-    const unsupportedFeatures = [
-      "async",
-      "await",
-      "class",
-      "import",
-      "export",
-      "Symbol",
-      "Proxy",
-      "WeakMap",
-      "WeakSet",
-      "Map",
-      "Set",
-      "Promise",
-      "generator",
-      "destructuring",
-      "template-literal",
-    ];
-
-    const codeContent = test.code.toLowerCase();
-    for (const feature of unsupportedFeatures) {
-      if (codeContent.includes(feature)) {
-        this.skipped++;
-        return { status: "skipped", reason: `Unsupported feature: ${feature}` };
-      }
-    }
-
     try {
       // Write test code to temporary file
       const tempFile = "/tmp/test262_temp.js";
@@ -286,20 +259,7 @@ class Test262Runner {
       }
     }
 
-    // Start with basic language tests
-    const basicDirs = [
-      path.join(testDir, "language", "literals"),
-      path.join(testDir, "language", "expressions", "addition"),
-      path.join(testDir, "language", "expressions", "subtraction"),
-      path.join(testDir, "language", "expressions", "multiplication"),
-      path.join(testDir, "language", "expressions", "division"),
-    ];
-
-    for (const dir of basicDirs) {
-      if (fs.existsSync(dir)) {
-        walkDir(dir);
-      }
-    }
+    walkDir(testDir);
 
     return testFiles;
   }
@@ -328,9 +288,6 @@ class Test262Runner {
         file: relativePath,
         ...result,
       });
-
-      // Small delay to make the updates visible and prevent flicker
-      await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
     // Final display
