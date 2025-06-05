@@ -1,0 +1,24 @@
+{
+  "name": "jsruntime",
+  "version": "1.0.0",
+  "description": "A minimal JavaScript runtime written in C++",
+  "main": "test262-runner.js",
+  "scripts": {
+    "build": "./build.sh",
+    "test": "node test262-runner.js",
+    "test:quick": "node -e \"const runner = require('./test262-runner.js'); runner.MAX_TESTS = 10; runner.run().catch(console.error)\"",
+    "clean": "rm -rf build test262"
+  },
+  "keywords": [
+    "javascript",
+    "runtime",
+    "interpreter",
+    "c++",
+    "test262"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
