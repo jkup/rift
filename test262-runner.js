@@ -7,7 +7,6 @@ const { execSync, spawn } = require("child_process");
 // Configuration
 const TEST262_DIR = "./test262";
 const RUNTIME_EXECUTABLE = "./build/jsruntime";
-const MAX_TESTS = 100; // Limit for initial testing
 
 class Test262Runner {
   constructor() {
@@ -209,7 +208,7 @@ class Test262Runner {
       }
     }
 
-    return testFiles.slice(0, MAX_TESTS);
+    return testFiles;
   }
 
   async run() {
