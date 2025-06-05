@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { execSync, spawn } = require("child_process");
+const chalk = require("chalk");
 
 // Configuration
 const TEST262_DIR = "./test262";
@@ -14,44 +15,129 @@ class Test262Runner {
     this.failed = 0;
     this.skipped = 0;
     this.results = [];
+    this.startTime = Date.now();
+  }
+
+  // Clear the console and move cursor to top
+  clearScreen() {
+    process.stdout.write("\x1b[2J\x1b[0f");
+  }
+
+  // Create a colored box with count
+  createStatusBox(label, count, color) {
+    const countStr = count.toString().padStart(4, " ");
+    const labelStr = label.padEnd(8, " ");
+    return color(
+      `┌─────────────┐\n│ ${labelStr} │\n│    ${countStr}    │\n└─────────────┘`
+    );
+  }
+
+  // Display the current status with boxes
+  displayStatus(currentTest = "", totalTests = 0, currentIndex = 0) {
+    this.clearScreen();
+
+    // Header
+    console.log(chalk.bold.cyan("🚀 Test262 Runner for JSRuntime"));
+    console.log(chalk.cyan("═".repeat(50)));
+    console.log();
+
+    // Status boxes
+    const passedBox = this.createStatusBox("PASSED", this.passed, chalk.green);
+    const failedBox = this.createStatusBox("FAILED", this.failed, chalk.red);
+    const skippedBox = this.createStatusBox(
+      "SKIPPED",
+      this.skipped,
+      chalk.yellow
+    );
+
+    // Display boxes side by side
+    const passedLines = passedBox.split("\n");
+    const failedLines = failedBox.split("\n");
+    const skippedLines = skippedBox.split("\n");
+
+    for (let i = 0; i < passedLines.length; i++) {
+      console.log(`${passedLines[i]}  ${failedLines[i]}  ${skippedLines[i]}`);
+    }
+
+    console.log();
+
+    // Progress info
+    if (totalTests > 0) {
+      const progress = ((currentIndex / totalTests) * 100).toFixed(1);
+      const progressBar = this.createProgressBar(currentIndex, totalTests);
+      console.log(
+        chalk.bold(`Progress: ${currentIndex}/${totalTests} (${progress}%)`)
+      );
+      console.log(progressBar);
+      console.log();
+    }
+
+    // Current test
+    if (currentTest) {
+      const relativePath = path.relative(TEST262_DIR, currentTest);
+      console.log(chalk.bold("Currently running:"));
+      console.log(chalk.dim(`  ${relativePath}`));
+      console.log();
+    }
+
+    // Runtime info
+    const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(1);
+    console.log(chalk.dim(`Runtime: ${elapsed}s`));
+  }
+
+  // Create a progress bar
+  createProgressBar(current, total, width = 40) {
+    const percentage = current / total;
+    const filled = Math.round(width * percentage);
+    const empty = width - filled;
+
+    const filledBar = chalk.green("█".repeat(filled));
+    const emptyBar = chalk.gray("░".repeat(empty));
+
+    return `[${filledBar}${emptyBar}]`;
   }
 
   async setupTest262() {
-    console.log("Setting up test262...");
+    console.log(chalk.bold.cyan("🚀 Test262 Runner for JSRuntime"));
+    console.log(chalk.cyan("═".repeat(50)));
+    console.log();
+    console.log(chalk.yellow("⚙️  Setting up test262..."));
 
     if (!fs.existsSync(TEST262_DIR)) {
-      console.log("Cloning test262 repository...");
+      console.log(chalk.blue("📥 Cloning test262 repository..."));
       try {
         execSync(
           `git clone --depth 1 https://github.com/tc39/test262.git ${TEST262_DIR}`,
           { stdio: "inherit" }
         );
+        console.log(chalk.green("✅ Successfully cloned test262"));
       } catch (error) {
-        console.error("Failed to clone test262:", error.message);
+        console.error(chalk.red("❌ Failed to clone test262:"), error.message);
         process.exit(1);
       }
     } else {
-      console.log("test262 directory already exists");
+      console.log(chalk.green("✅ test262 directory already exists"));
     }
   }
 
   async buildRuntime() {
-    console.log("Building runtime...");
+    console.log(chalk.yellow("🔨 Building runtime..."));
 
     if (!fs.existsSync("./build.sh")) {
-      console.error("build.sh not found");
+      console.error(chalk.red("❌ build.sh not found"));
       process.exit(1);
     }
 
     try {
       execSync("./build.sh", { stdio: "inherit" });
+      console.log(chalk.green("✅ Runtime built successfully"));
     } catch (error) {
-      console.error("Failed to build runtime:", error.message);
+      console.error(chalk.red("❌ Failed to build runtime:"), error.message);
       process.exit(1);
     }
 
     if (!fs.existsSync(RUNTIME_EXECUTABLE)) {
-      console.error("Runtime executable not found after build");
+      console.error(chalk.red("❌ Runtime executable not found after build"));
       process.exit(1);
     }
   }
@@ -212,71 +298,121 @@ class Test262Runner {
   }
 
   async run() {
-    console.log("🚀 Starting Test262 Runner for JSRuntime");
-    console.log("=====================================\n");
-
     await this.setupTest262();
     await this.buildRuntime();
 
     const testFiles = await this.findTestFiles();
-    console.log(`Found ${testFiles.length} test files to run\n`);
 
-    let count = 0;
-    for (const testFile of testFiles) {
-      count++;
-      const relativePath = path.relative(TEST262_DIR, testFile);
-      process.stdout.write(
-        `[${count}/${testFiles.length}] ${relativePath}... `
-      );
+    console.log();
+    console.log(
+      chalk.bold.green(`🎯 Found ${testFiles.length} test files to run`)
+    );
+    console.log(chalk.dim("Press Ctrl+C to stop at any time"));
+    console.log();
+
+    // Wait a moment before starting
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    for (let i = 0; i < testFiles.length; i++) {
+      const testFile = testFiles[i];
+
+      // Update display before running test
+      this.displayStatus(testFile, testFiles.length, i);
 
       const result = await this.runSingleTest(testFile);
-
-      if (result.status === "passed") {
-        console.log("✅ PASS");
-      } else if (result.status === "skipped") {
-        console.log(`⏭️  SKIP (${result.reason})`);
-      } else {
-        console.log(`❌ FAIL (${result.reason})`);
-        if (result.stderr) {
-          console.log(`   stderr: ${result.stderr.substring(0, 100)}...`);
-        }
-      }
+      const relativePath = path.relative(TEST262_DIR, testFile);
 
       this.results.push({
         file: relativePath,
         ...result,
       });
+
+      // Small delay to make the updates visible
+      await new Promise((resolve) => setTimeout(resolve, 10));
     }
+
+    // Final display
+    this.displayStatus("", testFiles.length, testFiles.length);
+
+    // Wait a moment before showing summary
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     this.printSummary();
   }
 
   printSummary() {
-    console.log("\n📊 Test Results Summary");
-    console.log("=======================");
-    console.log(`✅ Passed: ${this.passed}`);
-    console.log(`❌ Failed: ${this.failed}`);
-    console.log(`⏭️  Skipped: ${this.skipped}`);
+    console.log();
+    console.log(chalk.bold.cyan("📊 Final Results"));
+    console.log(chalk.cyan("═".repeat(50)));
+    console.log();
+
+    // Summary stats with colors
+    const total = this.passed + this.failed + this.skipped;
+    const passRate =
+      total > 0
+        ? ((this.passed / (this.passed + this.failed)) * 100).toFixed(1)
+        : 0;
+    const runtime = ((Date.now() - this.startTime) / 1000).toFixed(1);
+
     console.log(
-      `📈 Pass Rate: ${(
-        (this.passed / (this.passed + this.failed)) *
-        100
-      ).toFixed(1)}%`
+      chalk.green(`✅ Passed:   ${this.passed.toString().padStart(6)}`)
     );
+    console.log(
+      chalk.red(`❌ Failed:   ${this.failed.toString().padStart(6)}`)
+    );
+    console.log(
+      chalk.yellow(`⏭️  Skipped:  ${this.skipped.toString().padStart(6)}`)
+    );
+    console.log(chalk.dim("─".repeat(20)));
+    console.log(chalk.bold(`📊 Total:    ${total.toString().padStart(6)}`));
+    console.log(chalk.bold(`📈 Pass Rate: ${passRate}%`));
+    console.log(chalk.dim(`⏱️  Runtime:  ${runtime}s`));
 
     if (this.failed > 0) {
-      console.log("\n❌ Failed Tests:");
+      console.log();
+      console.log(chalk.bold.red("❌ Failed Tests:"));
+      console.log(chalk.red("─".repeat(50)));
+
       this.results
         .filter((r) => r.status === "failed")
-        .slice(0, 10) // Show first 10 failures
-        .forEach((r) => {
-          console.log(`   ${r.file}: ${r.reason}`);
+        .slice(0, 15) // Show first 15 failures
+        .forEach((r, index) => {
+          console.log(
+            chalk.red(`${(index + 1).toString().padStart(2)}. ${r.file}`)
+          );
+          if (r.reason) {
+            console.log(
+              chalk.dim(
+                `    ${r.reason.substring(0, 80)}${
+                  r.reason.length > 80 ? "..." : ""
+                }`
+              )
+            );
+          }
+          if (r.stderr) {
+            console.log(
+              chalk.dim(
+                `    stderr: ${r.stderr.substring(0, 60)}${
+                  r.stderr.length > 60 ? "..." : ""
+                }`
+              )
+            );
+          }
+          console.log();
         });
 
-      if (this.failed > 10) {
-        console.log(`   ... and ${this.failed - 10} more`);
+      if (this.failed > 15) {
+        console.log(chalk.dim(`... and ${this.failed - 15} more failures`));
       }
+    } else if (this.passed > 0) {
+      console.log();
+      console.log(chalk.bold.green("🎉 All tests passed! Great job!"));
     }
+
+    console.log();
+    console.log(
+      chalk.dim("Run with more test directories to expand coverage.")
+    );
   }
 }
 
