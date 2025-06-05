@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
-const { execSync } = require("child_process");
-const chalk = require("chalk");
+import fs from "fs";
+import path from "path";
+import { execSync } from "child_process";
+import chalk from "chalk";
 
 // Configuration
 const TEST262_DIR = "./test262";
@@ -380,4 +380,20 @@ class Test262Runner {
 
 // Run the test suite
 const runner = new Test262Runner();
-runner.run().catch(console.error);
+
+const testFilePath = process.argv[2];
+
+if (testFilePath) {
+  try {
+    const result = await runner.runSingleTest(`${TEST262_DIR}/${testFilePath}`);
+    console.log(result);
+  } catch (error) {
+    console.error(error);
+  }
+} else {
+  try {
+    await runner.run();
+  } catch (error) {
+    console.error(error);
+  }
+}
