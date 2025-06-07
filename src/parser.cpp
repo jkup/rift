@@ -1,6 +1,7 @@
 #include "parser.h"
-#include <stdexcept>
+
 #include <cctype>
+#include <stdexcept>
 #include <unordered_map>
 
 namespace jsruntime {
@@ -49,31 +50,45 @@ Token Lexer::read_number() {
 
 Token Lexer::read_string() {
     char quote = current_char();
-    advance(); // Skip opening quote
-    
+    advance();  // Skip opening quote
+
     std::string value;
     while (current_char() != quote && current_char() != '\0') {
         if (current_char() == '\\') {
             advance();
             switch (current_char()) {
-                case 'n': value += '\n'; break;
-                case 't': value += '\t'; break;
-                case 'r': value += '\r'; break;
-                case '\\': value += '\\'; break;
-                case '"': value += '"'; break;
-                case '\'': value += '\''; break;
-                default: value += current_char(); break;
+                case 'n':
+                    value += '\n';
+                    break;
+                case 't':
+                    value += '\t';
+                    break;
+                case 'r':
+                    value += '\r';
+                    break;
+                case '\\':
+                    value += '\\';
+                    break;
+                case '"':
+                    value += '"';
+                    break;
+                case '\'':
+                    value += '\'';
+                    break;
+                default:
+                    value += current_char();
+                    break;
             }
         } else {
             value += current_char();
         }
         advance();
     }
-    
+
     if (current_char() == quote) {
-        advance(); // Skip closing quote
+        advance();  // Skip closing quote
     }
-    
+
     return Token(TokenType::String, value, line, column);
 }
 
@@ -83,7 +98,7 @@ Token Lexer::read_identifier() {
         value += current_char();
         advance();
     }
-    
+
     // Check for keywords
     static std::unordered_map<std::string, TokenType> keywords = {
         {"var", TokenType::Var},
@@ -100,48 +115,68 @@ Token Lexer::read_identifier() {
         {"null", TokenType::Null},
         {"undefined", TokenType::Undefined},
     };
-    
+
     auto it = keywords.find(value);
     if (it != keywords.end()) {
         return Token(it->second, value, line, column);
     }
-    
+
     return Token(TokenType::Identifier, value, line, column);
 }
 
 Token Lexer::next_token() {
     skip_whitespace();
-    
+
     char ch = current_char();
-    
+
     if (ch == '\0') {
         return Token(TokenType::EndOfFile, "", line, column);
     }
-    
+
     if (std::isdigit(ch)) {
         return read_number();
     }
-    
+
     if (ch == '"' || ch == '\'') {
         return read_string();
     }
-    
+
     if (std::isalpha(ch) || ch == '_' || ch == '$') {
         return read_identifier();
     }
-    
+
     // Single character tokens
     switch (ch) {
-        case '+': advance(); return Token(TokenType::Plus, "+", line, column);
-        case '-': advance(); return Token(TokenType::Minus, "-", line, column);
-        case '*': advance(); return Token(TokenType::Multiply, "*", line, column);
-        case '/': advance(); return Token(TokenType::Divide, "/", line, column);
-        case '(': advance(); return Token(TokenType::LeftParen, "(", line, column);
-        case ')': advance(); return Token(TokenType::RightParen, ")", line, column);
-        case '{': advance(); return Token(TokenType::LeftBrace, "{", line, column);
-        case '}': advance(); return Token(TokenType::RightBrace, "}", line, column);
-        case ';': advance(); return Token(TokenType::Semicolon, ";", line, column);
-        case ',': advance(); return Token(TokenType::Comma, ",", line, column);
+        case '+':
+            advance();
+            return Token(TokenType::Plus, "+", line, column);
+        case '-':
+            advance();
+            return Token(TokenType::Minus, "-", line, column);
+        case '*':
+            advance();
+            return Token(TokenType::Multiply, "*", line, column);
+        case '/':
+            advance();
+            return Token(TokenType::Divide, "/", line, column);
+        case '(':
+            advance();
+            return Token(TokenType::LeftParen, "(", line, column);
+        case ')':
+            advance();
+            return Token(TokenType::RightParen, ")", line, column);
+        case '{':
+            advance();
+            return Token(TokenType::LeftBrace, "{", line, column);
+        case '}':
+            advance();
+            return Token(TokenType::RightBrace, "}", line, column);
+        case ';':
+            advance();
+            return Token(TokenType::Semicolon, ";", line, column);
+        case ',':
+            advance();
+            return Token(TokenType::Comma, ",", line, column);
         case '=':
             advance();
             if (current_char() == '=') {
@@ -156,8 +191,12 @@ Token Lexer::next_token() {
                 return Token(TokenType::NotEqual, "!=", line, column);
             }
             return Token(TokenType::Invalid, "!", line, column);
-        case '<': advance(); return Token(TokenType::Less, "<", line, column);
-        case '>': advance(); return Token(TokenType::Greater, ">", line, column);
+        case '<':
+            advance();
+            return Token(TokenType::Less, "<", line, column);
+        case '>':
+            advance();
+            return Token(TokenType::Greater, ">", line, column);
         default:
             advance();
             return Token(TokenType::Invalid, std::string(1, ch), line, column);
@@ -167,13 +206,13 @@ Token Lexer::next_token() {
 std::vector<Token> Lexer::tokenize() {
     std::vector<Token> tokens;
     Token token = next_token();
-    
+
     while (token.type != TokenType::EndOfFile) {
         tokens.push_back(token);
         token = next_token();
     }
-    
-    tokens.push_back(token); // Add EOF token
+
+    tokens.push_back(token);  // Add EOF token
     return tokens;
 }
 
@@ -213,7 +252,7 @@ void Parser::consume(TokenType type) {
 
 std::shared_ptr<ASTNode> Parser::parse_primary() {
     Token& token = current_token();
-    
+
     switch (token.type) {
         case TokenType::Number:
         case TokenType::String:
@@ -230,7 +269,7 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             return node;
         }
         case TokenType::LeftParen: {
-            current++; // consume '('
+            current++;  // consume '('
             auto expr = parse_expression();
             consume(TokenType::RightParen);
             return expr;
@@ -242,11 +281,11 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
 
 std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
     auto left = parse_primary();
-    
+
     while (true) {
         Token& op = current_token();
         int op_precedence = 0;
-        
+
         switch (op.type) {
             case TokenType::Plus:
             case TokenType::Minus:
@@ -265,14 +304,14 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             default:
                 return left;
         }
-        
+
         if (op_precedence < precedence) {
             return left;
         }
-        
-        current++; // consume operator
+
+        current++;  // consume operator
         auto right = parse_binary_expression(op_precedence + 1);
-        
+
         auto binary_node = std::make_shared<ASTNode>(ASTNodeType::BinaryExpression, op.value);
         binary_node->children.push_back(left);
         binary_node->children.push_back(right);
@@ -280,55 +319,53 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
     }
 }
 
-std::shared_ptr<ASTNode> Parser::parse_expression() {
-    return parse_binary_expression(0);
-}
+std::shared_ptr<ASTNode> Parser::parse_expression() { return parse_binary_expression(0); }
 
 std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
-    consume(TokenType::Var); // consume 'var'
-    
+    consume(TokenType::Var);  // consume 'var'
+
     if (current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected identifier after 'var'");
     }
-    
+
     std::string name = current_token().value;
     current++;
-    
+
     auto decl_node = std::make_shared<ASTNode>(ASTNodeType::VariableDeclaration, name);
-    
+
     if (match(TokenType::Assign)) {
         auto init_expr = parse_expression();
         decl_node->children.push_back(init_expr);
     }
-    
+
     return decl_node;
 }
 
 std::shared_ptr<ASTNode> Parser::parse_statement() {
     if (current_token().type == TokenType::Var) {
         auto stmt = parse_variable_declaration();
-        match(TokenType::Semicolon); // optional semicolon
+        match(TokenType::Semicolon);  // optional semicolon
         return stmt;
     }
-    
+
     // Expression statement
     auto expr = parse_expression();
     auto stmt = std::make_shared<ASTNode>(ASTNodeType::ExpressionStatement);
     stmt->children.push_back(expr);
-    match(TokenType::Semicolon); // optional semicolon
+    match(TokenType::Semicolon);  // optional semicolon
     return stmt;
 }
 
 std::shared_ptr<ASTNode> Parser::parse() {
     auto program = std::make_shared<ASTNode>(ASTNodeType::Program);
-    
+
     while (current_token().type != TokenType::EndOfFile) {
         try {
             auto stmt = parse_statement();
             program->children.push_back(stmt);
         } catch (const std::exception& e) {
             // Skip to next statement on error
-            while (current_token().type != TokenType::Semicolon && 
+            while (current_token().type != TokenType::Semicolon &&
                    current_token().type != TokenType::EndOfFile) {
                 current++;
             }
@@ -337,8 +374,8 @@ std::shared_ptr<ASTNode> Parser::parse() {
             }
         }
     }
-    
+
     return program;
 }
 
-} // namespace jsruntime 
+}  // namespace jsruntime

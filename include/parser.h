@@ -1,8 +1,8 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace jsruntime {
 
@@ -14,10 +14,10 @@ enum class TokenType {
     Boolean,
     Null,
     Undefined,
-    
+
     // Identifiers
     Identifier,
-    
+
     // Keywords
     Var,
     Let,
@@ -28,7 +28,7 @@ enum class TokenType {
     Else,
     For,
     While,
-    
+
     // Operators
     Plus,
     Minus,
@@ -39,7 +39,7 @@ enum class TokenType {
     NotEqual,
     Less,
     Greater,
-    
+
     // Punctuation
     LeftParen,
     RightParen,
@@ -47,7 +47,7 @@ enum class TokenType {
     RightBrace,
     Semicolon,
     Comma,
-    
+
     // Special
     EndOfFile,
     Invalid
@@ -58,12 +58,12 @@ struct Token {
     std::string value;
     size_t line;
     size_t column;
-    
+
     Token(TokenType t, const std::string& v, size_t l = 0, size_t c = 0)
         : type(t), value(v), line(l), column(c) {}
-    
+
     std::string toString() const {
-        return "Token(" + std::to_string(static_cast<int>(type)) + ", \"" + value + "\", " + 
+        return "Token(" + std::to_string(static_cast<int>(type)) + ", \"" + value + "\", " +
                std::to_string(line) + ":" + std::to_string(column) + ")";
     }
 };
@@ -85,19 +85,19 @@ struct ASTNode {
     ASTNodeType type;
     std::vector<std::shared_ptr<ASTNode>> children;
     std::string value;
-    
+
     ASTNode(ASTNodeType t) : type(t) {}
     ASTNode(ASTNodeType t, const std::string& v) : type(t), value(v) {}
 };
 
 // Lexer class
 class Lexer {
-private:
+   private:
     std::string source;
     size_t position;
     size_t line;
     size_t column;
-    
+
     char current_char();
     char peek_char();
     void advance();
@@ -106,7 +106,7 @@ private:
     Token read_string();
     Token read_identifier();
 
-public:
+   public:
     Lexer(const std::string& source);
     Token next_token();
     std::vector<Token> tokenize();
@@ -114,24 +114,24 @@ public:
 
 // Parser class
 class Parser {
-private:
+   private:
     std::vector<Token> tokens;
     size_t current;
-    
+
     Token& current_token();
     Token& peek_token();
     bool match(TokenType type);
     void consume(TokenType type);
-    
+
     std::shared_ptr<ASTNode> parse_expression();
     std::shared_ptr<ASTNode> parse_primary();
     std::shared_ptr<ASTNode> parse_binary_expression(int precedence);
     std::shared_ptr<ASTNode> parse_statement();
     std::shared_ptr<ASTNode> parse_variable_declaration();
 
-public:
+   public:
     Parser(const std::vector<Token>& tokens);
     std::shared_ptr<ASTNode> parse();
 };
 
-} // namespace jsruntime 
+}  // namespace jsruntime

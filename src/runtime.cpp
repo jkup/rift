@@ -1,10 +1,12 @@
 #include "runtime.h"
-#include "parser.h"
-#include "evaluator.h"
-#include <stdexcept>
-#include <sstream>
-#include <limits>
+
 #include <cmath>
+#include <limits>
+#include <sstream>
+#include <stdexcept>
+
+#include "evaluator.h"
+#include "parser.h"
 
 namespace jsruntime {
 
@@ -79,20 +81,18 @@ double Value::toNumber() const {
 }
 
 // Environment implementation
-void Environment::define(const std::string& name, const Value& value) {
-    variables[name] = value;
-}
+void Environment::define(const std::string& name, const Value& value) { variables[name] = value; }
 
 Value Environment::get(const std::string& name) {
     auto it = variables.find(name);
     if (it != variables.end()) {
         return it->second;
     }
-    
+
     if (parent) {
         return parent->get(name);
     }
-    
+
     throw std::runtime_error("Undefined variable: " + name);
 }
 
@@ -102,7 +102,7 @@ void Environment::set(const std::string& name, const Value& value) {
         it->second = value;
         return;
     }
-    
+
     if (parent) {
         try {
             parent->set(name, value);
@@ -111,7 +111,7 @@ void Environment::set(const std::string& name, const Value& value) {
             // Fall through to define in current scope
         }
     }
-    
+
     // Define in current scope if not found
     variables[name] = value;
 }
@@ -119,7 +119,7 @@ void Environment::set(const std::string& name, const Value& value) {
 // Runtime implementation
 Runtime::Runtime() {
     global_env = std::make_shared<Environment>();
-    
+
     // Add some basic global functions/values
     global_env->define("undefined", Value::undefined());
     global_env->define("null", Value::null());
@@ -134,15 +134,15 @@ Value Runtime::execute(const std::string& code) {
         for (const auto& token : tokens) {
             printf("%s\n", token.toString().c_str());
         }
-        
+
         // Parse
         Parser parser(tokens);
         auto ast = parser.parse();
-        
+
         // Evaluate
         Evaluator evaluator(global_env);
         return evaluator.evaluate(ast);
-        
+
     } catch (const std::exception& e) {
         // For now, return undefined on any error
         // In a real implementation, you'd want proper error handling
@@ -150,4 +150,4 @@ Value Runtime::execute(const std::string& code) {
     }
 }
 
-} // namespace jsruntime 
+}  // namespace jsruntime

@@ -1,6 +1,7 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
+
 #include "runtime.h"
 
 void print_usage(const char* program_name) {
@@ -16,7 +17,7 @@ std::string read_file(const std::string& filename) {
     if (!file.is_open()) {
         throw std::runtime_error("Cannot open file: " + filename);
     }
-    
+
     std::stringstream buffer;
     buffer << file.rdbuf();
     return buffer.str();
@@ -25,16 +26,16 @@ std::string read_file(const std::string& filename) {
 int main(int argc, char* argv[]) {
     try {
         jsruntime::Runtime runtime;
-        
+
         if (argc == 1) {
             // Interactive mode (REPL) - for now just show help
             std::cout << "JSRuntime - Minimal JavaScript Runtime\n";
             print_usage(argv[0]);
             return 0;
         }
-        
+
         std::string code;
-        
+
         if (argc >= 3 && std::string(argv[1]) == "-e") {
             // Execute code directly
             code = argv[2];
@@ -49,14 +50,14 @@ int main(int argc, char* argv[]) {
             print_usage(argv[0]);
             return 1;
         }
-        
+
         auto result = runtime.execute(code);
         std::cout << result.toString() << std::endl;
-        
+
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
-} 
+}
