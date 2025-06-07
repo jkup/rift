@@ -47,6 +47,7 @@ enum class TokenType {
     RightBrace,
     Semicolon,
     Comma,
+    Dot,
 
     // Special
     EndOfFile,
@@ -78,7 +79,9 @@ enum class ASTNodeType {
     AssignmentExpression,
     VariableDeclaration,
     ExpressionStatement,
-    BlockStatement
+    BlockStatement,
+    CallExpression,
+    MemberExpression,
 };
 
 struct ASTNode {
@@ -127,6 +130,9 @@ class Parser {
     std::shared_ptr<ASTNode> parse_primary();
     std::shared_ptr<ASTNode> parse_binary_expression(int precedence);
     std::shared_ptr<ASTNode> parse_statement();
+    std::shared_ptr<ASTNode> parse_postfix_expression();
+    std::shared_ptr<ASTNode> parse_call_expression(std::shared_ptr<ASTNode> callee);
+    std::shared_ptr<ASTNode> parse_member_expression(std::shared_ptr<ASTNode> object);
     std::shared_ptr<ASTNode> parse_variable_declaration();
 
    public:

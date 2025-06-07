@@ -155,6 +155,14 @@ Value Evaluator::evaluate(const std::shared_ptr<ASTNode>& node) {
             return result;
         }
 
+        case ASTNodeType::MemberExpression: {
+            return Value::undefined();
+        }
+
+        case ASTNodeType::CallExpression: {
+            return Value::undefined();
+        }
+
         default:
             throw std::runtime_error("Unknown AST node type");
     }

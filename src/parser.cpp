@@ -177,6 +177,9 @@ Token Lexer::next_token() {
         case ',':
             advance();
             return Token(TokenType::Comma, ",", line, column);
+        case '.':
+            advance();
+            return Token(TokenType::Dot, ".", line, column);
         case '=':
             advance();
             if (current_char() == '=') {
@@ -280,7 +283,7 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
 }
 
 std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
-    auto left = parse_primary();
+    auto left = parse_postfix_expression();
 
     while (true) {
         Token& op = current_token();
@@ -354,6 +357,58 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
     stmt->children.push_back(expr);
     match(TokenType::Semicolon);  // optional semicolon
     return stmt;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
+    auto expr = parse_primary();
+
+    while (true) {
+        if (current_token().type == TokenType::Dot) {
+            expr = parse_member_expression(expr);
+        } else if (current_token().type == TokenType::LeftParen) {
+            expr = parse_call_expression(expr);
+        } else {
+            break;
+        }
+    }
+
+    return expr;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> callee) {
+    consume(TokenType::LeftParen);  // consume '('
+
+    auto call = std::make_shared<ASTNode>(ASTNodeType::CallExpression);
+    call->children.push_back(callee);  // First child is the function being called
+
+    // Parse arguments
+    if (current_token().type != TokenType::RightParen) {
+        do {
+            auto arg = parse_expression();
+            call->children.push_back(arg);
+        } while (match(TokenType::Comma));
+    }
+
+    consume(TokenType::RightParen);  // consume ')'
+
+    return call;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_member_expression(std::shared_ptr<ASTNode> object) {
+    consume(TokenType::Dot);  // consume '.'
+
+    if (current_token().type != TokenType::Identifier) {
+        throw std::runtime_error("Expected property name after '.'");
+    }
+
+    auto property = std::make_shared<ASTNode>(ASTNodeType::Identifier, current_token().value);
+    current++;
+
+    auto member = std::make_shared<ASTNode>(ASTNodeType::MemberExpression);
+    member->children.push_back(object);
+    member->children.push_back(property);
+
+    return member;
 }
 
 std::shared_ptr<ASTNode> Parser::parse() {
