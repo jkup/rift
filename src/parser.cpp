@@ -256,6 +256,12 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::Divide:
                 op_precedence = 2;
                 break;
+            case TokenType::Equal:
+            case TokenType::NotEqual:
+            case TokenType::Less:
+            case TokenType::Greater:
+                op_precedence = 0;
+                break;
             default:
                 return left;
         }

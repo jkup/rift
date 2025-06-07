@@ -7,7 +7,7 @@
   "scripts": {
     "build": "./build.sh",
     "test": "node test262-runner.js",
-    "test:quick": "node -e \"const runner = require('./test262-runner.js'); runner.MAX_TESTS = 10; runner.run().catch(console.error)\"",
+    "playground": "./build/jsruntime test/test-file.js",
     "clean": "rm -rf build test262"
   },
   "keywords": [

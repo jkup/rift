@@ -130,6 +130,7 @@ Value Runtime::execute(const std::string& code) {
         // Tokenize
         Lexer lexer(code);
         auto tokens = lexer.tokenize();
+        // debugging only
         for (const auto& token : tokens) {
             printf("%s\n", token.toString().c_str());
         }

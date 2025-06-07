@@ -68,6 +68,8 @@ Value Evaluator::evaluate_binary_expression(const std::shared_ptr<ASTNode>& node
             return Value(std::numeric_limits<double>::infinity());
         }
         return Value(left.toNumber() / right_num);
+    } else if (op == "==") {
+        return Value(left.toString() == right.toString());
     } else {
         throw std::runtime_error("Unknown binary operator: " + op);
     }
