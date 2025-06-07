@@ -36,9 +36,13 @@ enum class TokenType {
     Divide,
     Assign,
     Equal,
+    EqualStrict,
     NotEqual,
+    NotEqualStrict,
     Less,
+    LessEqual,
     Greater,
+    GreaterEqual,
 
     // Punctuation
     LeftParen,

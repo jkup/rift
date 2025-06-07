@@ -83,8 +83,12 @@ Value Evaluator::evaluate_binary_expression(const std::shared_ptr<ASTNode>& node
         }
         // Otherwise, convert both to strings and compare
         return Value(left.toString() == right.toString());
+    } else if (op == "===") {
+        return Value(left.type == right.type && left.toString() == right.toString());
     } else if (op == "!=") {
         return Value(left.toString() != right.toString());
+    } else if (op == "!==") {
+        return Value(left.type != right.type || left.toString() != right.toString());
     } else if (op == "<") {
         return Value(left.toNumber() < right.toNumber());
     } else if (op == ">") {

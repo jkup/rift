@@ -182,8 +182,14 @@ Token Lexer::next_token() {
             return Token(TokenType::Dot, ".", line, column);
         case '=':
             advance();
+            // Double equals
             if (current_char() == '=') {
                 advance();
+                // Strict equals
+                if (current_char() == '=') {
+                    advance();
+                    return Token(TokenType::EqualStrict, "===", line, column);
+                }
                 return Token(TokenType::Equal, "==", line, column);
             }
             return Token(TokenType::Assign, "=", line, column);
@@ -191,6 +197,11 @@ Token Lexer::next_token() {
             advance();
             if (current_char() == '=') {
                 advance();
+                // Strict not equals
+                if (current_char() == '=') {
+                    advance();
+                    return Token(TokenType::NotEqualStrict, "!==", line, column);
+                }
                 return Token(TokenType::NotEqual, "!=", line, column);
             }
             return Token(TokenType::Invalid, "!", line, column);
@@ -299,9 +310,13 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
                 op_precedence = 2;
                 break;
             case TokenType::Equal:
+            case TokenType::EqualStrict:
             case TokenType::NotEqual:
+            case TokenType::NotEqualStrict:
             case TokenType::Less:
+            case TokenType::LessEqual:
             case TokenType::Greater:
+            case TokenType::GreaterEqual:
                 op_precedence = 0;
                 break;
             default:
