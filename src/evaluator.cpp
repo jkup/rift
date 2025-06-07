@@ -1,6 +1,7 @@
 #include "evaluator.h"
 
 #include <cctype>
+#include <iostream>
 #include <limits>
 #include <stdexcept>
 
@@ -156,11 +157,47 @@ Value Evaluator::evaluate(const std::shared_ptr<ASTNode>& node) {
         }
 
         case ASTNodeType::MemberExpression: {
+            if (node->children.size() != 2) {
+                throw std::runtime_error("MemberExpression must have exactly 2 children");
+            }
+
+            Value object = evaluate(node->children[0]);       // e.g., evaluate "console"
+            std::string property = node->children[1]->value;  // e.g., "log"
+
+            // For now, just handle console.log specifically
+            if (object.toString() == "[object Console]" && property == "log") {
+                // Return a special value representing the console.log function
+                Value logFunction;
+                logFunction.type = ValueType::Function;
+                logFunction.string_value = "console.log";
+                return logFunction;
+            }
+
             return Value::undefined();
         }
 
         case ASTNodeType::CallExpression: {
-            return Value::undefined();
+            if (node->children.empty()) {
+                throw std::runtime_error(
+                    "CallExpression must have at least one child (the function)");
+            }
+
+            Value function = evaluate(node->children[0]);  // Get the function to call
+
+            if (function.type == ValueType::Function && function.string_value == "console.log") {
+                // Evaluate all arguments and print them
+                for (size_t i = 1; i < node->children.size(); i++) {
+                    Value arg = evaluate(node->children[i]);
+                    std::cout << arg.toString();
+                    if (i < node->children.size() - 1) {
+                        std::cout << " ";  // Space between arguments
+                    }
+                }
+                std::cout << std::endl;
+                return Value::undefined();
+            }
+
+            throw std::runtime_error("Cannot call non-function value");
         }
 
         default:

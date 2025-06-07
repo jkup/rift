@@ -1,6 +1,7 @@
 #include "runtime.h"
 
 #include <cmath>
+#include <iostream>
 #include <limits>
 #include <sstream>
 #include <stdexcept>
@@ -123,9 +124,7 @@ Runtime::Runtime() {
     // Add some basic global functions/values
     global_env->define("undefined", Value::undefined());
     global_env->define("null", Value::null());
-
-    // TODO improve later
-    global_env->define("console", Value("[object Console]"));
+    global_env->define("console", Value(std::string("[object Console]")));
 }
 
 Value Runtime::execute(const std::string& code) {
