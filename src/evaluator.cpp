@@ -69,7 +69,24 @@ Value Evaluator::evaluate_binary_expression(const std::shared_ptr<ASTNode>& node
         }
         return Value(left.toNumber() / right_num);
     } else if (op == "==") {
+        // If both are same type, compare directly
+        if (left.type == right.type) {
+            if (left.type == ValueType::Number) {
+                return Value(left.toNumber() == right.toNumber());
+            } else if (left.type == ValueType::String) {
+                return Value(left.toString() == right.toString());
+            } else if (left.type == ValueType::Boolean) {
+                return Value(left.toBool() == right.toBool());
+            }
+        }
+        // Otherwise, convert both to strings and compare
         return Value(left.toString() == right.toString());
+    } else if (op == "!=") {
+        return Value(left.toString() != right.toString());
+    } else if (op == "<") {
+        return Value(left.toNumber() < right.toNumber());
+    } else if (op == ">") {
+        return Value(left.toNumber() > right.toNumber());
     } else {
         throw std::runtime_error("Unknown binary operator: " + op);
     }
