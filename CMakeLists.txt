@@ -8,8 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(jsruntime
     src/main.cpp
     src/runtime.cpp
-    src/parser.cpp
     src/evaluator.cpp
+    src/frontend/lexer/lexer.cpp
+    src/frontend/parser/parser.cpp
 )
 
 target_include_directories(jsruntime PRIVATE include)

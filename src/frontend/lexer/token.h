@@ -1,0 +1,74 @@
+#pragma once
+
+#include <string>
+
+namespace jsruntime::frontend {
+
+// Token types for lexical analysis
+enum class TokenType {
+    // Literals
+    Number,
+    String,
+    Boolean,
+    Null,
+    Undefined,
+
+    // Identifiers
+    Identifier,
+
+    // Keywords
+    Var,
+    Let,
+    Const,
+    Function,
+    Return,
+    If,
+    Else,
+    For,
+    While,
+
+    // Operators
+    Plus,
+    Minus,
+    Multiply,
+    Divide,
+    Assign,
+    Equal,
+    EqualStrict,
+    NotEqual,
+    NotEqualStrict,
+    Less,
+    LessEqual,
+    Greater,
+    GreaterEqual,
+
+    // Punctuation
+    LeftParen,
+    RightParen,
+    LeftBrace,
+    RightBrace,
+    Semicolon,
+    Comma,
+    Dot,
+
+    // Special
+    EndOfFile,
+    Invalid
+};
+
+struct Token {
+    TokenType type;
+    std::string value;
+    size_t line;
+    size_t column;
+
+    Token(TokenType t, const std::string& v, size_t l = 0, size_t c = 0)
+        : type(t), value(v), line(l), column(c) {}
+
+    std::string toString() const {
+        return "Token(" + std::to_string(static_cast<int>(type)) + ", \"" + value + "\", " +
+               std::to_string(line) + ":" + std::to_string(column) + ")";
+    }
+};
+
+}  // namespace jsruntime::frontend
