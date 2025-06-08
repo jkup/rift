@@ -7,6 +7,8 @@
 
 namespace jsruntime {
 
+using namespace ast;  // For ASTNodeType and ASTNode
+
 Evaluator::Evaluator(std::shared_ptr<Environment> env) : environment(env) {}
 
 Value Evaluator::evaluate_literal(const std::shared_ptr<ASTNode>& node) {

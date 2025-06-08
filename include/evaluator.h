@@ -2,10 +2,13 @@
 
 #include <memory>
 
-#include "parser.h"
+#include "../src/frontend/ast/ast_node.h"
 #include "runtime.h"
 
 namespace jsruntime {
+
+// Import AST types for convenience
+using ASTNode = ast::ASTNode;
 
 class Evaluator {
    private:

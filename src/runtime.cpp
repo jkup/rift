@@ -6,8 +6,12 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "../src/frontend/lexer/lexer.h"
+#include "../src/frontend/parser/parser.h"
 #include "evaluator.h"
-#include "parser.h"
+
+using namespace jsruntime::frontend;
+using namespace jsruntime::ast;
 
 namespace jsruntime {
 
