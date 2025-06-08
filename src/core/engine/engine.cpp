@@ -1,6 +1,8 @@
 #include "engine.h"
 
 #include "../../builtins/console/console.h"
+#include "../../builtins/global/global.h"
+#include "../../builtins/math/math.h"
 
 namespace jsruntime::core {
 
@@ -47,9 +49,16 @@ Value JSEngine::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environm
 }
 
 void JSEngine::setupBuiltins() {
+    // Setup global functions (parseInt, parseFloat, isNaN, isFinite, etc.)
+    builtins::Global::setupGlobalFunctions(global_env_);
+
     // Setup console object
     auto console = builtins::Console::create();
     global_env_->define("console", Value(console));
+
+    // Setup Math object
+    auto math = builtins::Math::create();
+    global_env_->define("Math", Value(math));
 }
 
 // Basic implementations - will be enhanced

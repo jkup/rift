@@ -18,6 +18,8 @@ set(RUNTIME_SOURCES
 
 set(BUILTINS_SOURCES
     src/builtins/console/console.cpp
+    src/builtins/math/math.cpp
+    src/builtins/global/global.cpp
 )
 
 set(CORE_SOURCES

@@ -1,0 +1,175 @@
+#include "math.h"
+
+#include <algorithm>
+#include <limits>
+
+namespace jsruntime::builtins {
+
+// Math constants
+const double Math::E = M_E;
+const double Math::PI = M_PI;
+const double Math::SQRT2 = M_SQRT2;
+
+// Random number generator static members
+std::random_device Math::rd;
+std::mt19937 Math::gen(Math::rd());
+std::uniform_real_distribution<> Math::dis(0.0, 1.0);
+
+std::shared_ptr<JSObject> Math::create() {
+    auto math = std::make_shared<JSObject>();
+
+    // Add constants
+    math->setProperty("E", Value(E));
+    math->setProperty("PI", Value(PI));
+    math->setProperty("SQRT2", Value(SQRT2));
+    math->setProperty("LN2", Value(M_LN2));
+    math->setProperty("LN10", Value(M_LN10));
+    math->setProperty("LOG2E", Value(M_LOG2E));
+    math->setProperty("LOG10E", Value(M_LOG10E));
+    math->setProperty("SQRT1_2", Value(M_SQRT1_2));
+
+    // Add methods
+    math->setProperty("abs", Value(std::make_shared<JSFunction>(abs)));
+    math->setProperty("ceil", Value(std::make_shared<JSFunction>(ceil)));
+    math->setProperty("floor", Value(std::make_shared<JSFunction>(floor)));
+    math->setProperty("round", Value(std::make_shared<JSFunction>(round)));
+    math->setProperty("max", Value(std::make_shared<JSFunction>(max)));
+    math->setProperty("min", Value(std::make_shared<JSFunction>(min)));
+    math->setProperty("pow", Value(std::make_shared<JSFunction>(pow)));
+    math->setProperty("sqrt", Value(std::make_shared<JSFunction>(sqrt)));
+    math->setProperty("random", Value(std::make_shared<JSFunction>(random)));
+
+    return math;
+}
+
+Value Math::abs(const std::vector<Value>& args) {
+    if (args.empty()) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    double num = args[0].toNumber();
+
+    if (std::isnan(num)) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    return Value(std::abs(num));
+}
+
+Value Math::ceil(const std::vector<Value>& args) {
+    if (args.empty()) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    double num = args[0].toNumber();
+
+    if (std::isnan(num) || std::isinf(num)) {
+        return Value(num);
+    }
+
+    return Value(std::ceil(num));
+}
+
+Value Math::floor(const std::vector<Value>& args) {
+    if (args.empty()) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    double num = args[0].toNumber();
+
+    if (std::isnan(num) || std::isinf(num)) {
+        return Value(num);
+    }
+
+    return Value(std::floor(num));
+}
+
+Value Math::round(const std::vector<Value>& args) {
+    if (args.empty()) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    double num = args[0].toNumber();
+
+    if (std::isnan(num) || std::isinf(num)) {
+        return Value(num);
+    }
+
+    // ECMAScript rounding: round half away from zero
+    if (num >= 0) {
+        return Value(std::floor(num + 0.5));
+    } else {
+        return Value(std::ceil(num - 0.5));
+    }
+}
+
+Value Math::max(const std::vector<Value>& args) {
+    if (args.empty()) {
+        return Value(-std::numeric_limits<double>::infinity());
+    }
+
+    double result = -std::numeric_limits<double>::infinity();
+
+    for (const auto& arg : args) {
+        double num = arg.toNumber();
+
+        // If any argument is NaN, return NaN
+        if (std::isnan(num)) {
+            return Value(std::numeric_limits<double>::quiet_NaN());
+        }
+
+        result = std::max(result, num);
+    }
+
+    return Value(result);
+}
+
+Value Math::min(const std::vector<Value>& args) {
+    if (args.empty()) {
+        return Value(std::numeric_limits<double>::infinity());
+    }
+
+    double result = std::numeric_limits<double>::infinity();
+
+    for (const auto& arg : args) {
+        double num = arg.toNumber();
+
+        // If any argument is NaN, return NaN
+        if (std::isnan(num)) {
+            return Value(std::numeric_limits<double>::quiet_NaN());
+        }
+
+        result = std::min(result, num);
+    }
+
+    return Value(result);
+}
+
+Value Math::pow(const std::vector<Value>& args) {
+    if (args.size() < 2) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    double base = args[0].toNumber();
+    double exponent = args[1].toNumber();
+
+    return Value(std::pow(base, exponent));
+}
+
+Value Math::sqrt(const std::vector<Value>& args) {
+    if (args.empty()) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    double num = args[0].toNumber();
+
+    if (num < 0) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    return Value(std::sqrt(num));
+}
+
+Value Math::random(const std::vector<Value>& args) { return Value(dis(gen)); }
+
+}  // namespace jsruntime::builtins
