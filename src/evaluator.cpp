@@ -99,9 +99,24 @@ Value Evaluator::evaluate_binary_expression(const std::shared_ptr<ASTNode>& node
 }
 
 Value Evaluator::evaluate_assignment_expression(const std::shared_ptr<ASTNode>& node) {
-    // This would be implemented for assignment expressions
-    // For now, just return undefined
-    return Value::undefined();
+    if (node->children.size() != 2) {
+        throw std::runtime_error("Assignment expression must have exactly 2 operands");
+    }
+
+    // Left side should be an identifier (variable name)
+    auto left = node->children[0];
+    if (left->type != ASTNodeType::Identifier) {
+        throw std::runtime_error("Left-hand side of assignment must be an identifier");
+    }
+
+    // Evaluate the right-hand side expression
+    Value right_value = evaluate(node->children[1]);
+
+    // Set the variable in the environment
+    environment->set(left->value, right_value);
+
+    // Return the assigned value
+    return right_value;
 }
 
 Value Evaluator::evaluate_variable_declaration(const std::shared_ptr<ASTNode>& node) {

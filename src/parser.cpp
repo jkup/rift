@@ -1,6 +1,7 @@
 #include "parser.h"
 
 #include <cctype>
+#include <iostream>
 #include <stdexcept>
 #include <unordered_map>
 
@@ -299,6 +300,7 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
     while (true) {
         Token& op = current_token();
         int op_precedence = 0;
+        bool is_assignment = false;
 
         switch (op.type) {
             case TokenType::Plus:
@@ -319,7 +321,12 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::GreaterEqual:
                 op_precedence = 0;
                 break;
+            case TokenType::Assign:
+                op_precedence = 0;  // Try same precedence as comparison
+                is_assignment = true;
+                break;
             default:
+                // Not a binary operator, return what we have so far
                 return left;
         }
 
@@ -330,10 +337,17 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
         current++;  // consume operator
         auto right = parse_binary_expression(op_precedence + 1);
 
-        auto binary_node = std::make_shared<ASTNode>(ASTNodeType::BinaryExpression, op.value);
-        binary_node->children.push_back(left);
-        binary_node->children.push_back(right);
-        left = binary_node;
+        if (is_assignment) {
+            auto assign_node = std::make_shared<ASTNode>(ASTNodeType::AssignmentExpression);
+            assign_node->children.push_back(left);
+            assign_node->children.push_back(right);
+            left = assign_node;
+        } else {
+            auto binary_node = std::make_shared<ASTNode>(ASTNodeType::BinaryExpression, op.value);
+            binary_node->children.push_back(left);
+            binary_node->children.push_back(right);
+            left = binary_node;
+        }
     }
 }
 

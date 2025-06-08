@@ -135,6 +135,7 @@ class Parser {
     std::shared_ptr<ASTNode> parse_expression();
     std::shared_ptr<ASTNode> parse_primary();
     std::shared_ptr<ASTNode> parse_binary_expression(int precedence);
+    std::shared_ptr<ASTNode> parse_assignment_expression();
     std::shared_ptr<ASTNode> parse_statement();
     std::shared_ptr<ASTNode> parse_postfix_expression();
     std::shared_ptr<ASTNode> parse_call_expression(std::shared_ptr<ASTNode> callee);
