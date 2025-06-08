@@ -5,6 +5,7 @@
 namespace jsruntime::frontend {
 
 using namespace jsruntime::ast;
+using ASTFactory = ast::ASTFactory;
 
 // Parser implementation
 Parser::Parser(const std::vector<Token>& tokens) : tokens(tokens), current(0) {}
@@ -49,12 +50,12 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
         case TokenType::Boolean:
         case TokenType::Null:
         case TokenType::Undefined: {
-            auto node = std::make_shared<ASTNode>(ASTNodeType::Literal, token.value);
+            auto node = ASTFactory::makeLiteral(token.value);
             current++;
             return node;
         }
         case TokenType::Identifier: {
-            auto node = std::make_shared<ASTNode>(ASTNodeType::Identifier, token.value);
+            auto node = ASTFactory::makeIdentifier(token.value);
             current++;
             return node;
         }
@@ -113,15 +114,9 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
         auto right = parse_binary_expression(op_precedence + 1);
 
         if (is_assignment) {
-            auto assign_node = std::make_shared<ASTNode>(ASTNodeType::AssignmentExpression);
-            assign_node->children.push_back(left);
-            assign_node->children.push_back(right);
-            left = assign_node;
+            left = ASTFactory::makeAssignmentExpression(left, right);
         } else {
-            auto binary_node = std::make_shared<ASTNode>(ASTNodeType::BinaryExpression, op.value);
-            binary_node->children.push_back(left);
-            binary_node->children.push_back(right);
-            left = binary_node;
+            left = ASTFactory::makeBinaryExpression(op.value, left, right);
         }
     }
 }
@@ -138,14 +133,12 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
     std::string name = current_token().value;
     current++;
 
-    auto decl_node = std::make_shared<ASTNode>(ASTNodeType::VariableDeclaration, name);
-
+    std::shared_ptr<ASTNode> initializer = nullptr;
     if (match(TokenType::Assign)) {
-        auto init_expr = parse_expression();
-        decl_node->children.push_back(init_expr);
+        initializer = parse_expression();
     }
 
-    return decl_node;
+    return ASTFactory::makeVariableDeclaration(name, initializer);
 }
 
 std::shared_ptr<ASTNode> Parser::parse_statement() {
@@ -161,10 +154,8 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
 
     // Expression statement
     auto expr = parse_expression();
-    auto stmt = std::make_shared<ASTNode>(ASTNodeType::ExpressionStatement);
-    stmt->children.push_back(expr);
     match(TokenType::Semicolon);  // optional semicolon
-    return stmt;
+    return ASTFactory::makeExpressionStatement(expr);
 }
 
 std::shared_ptr<ASTNode> Parser::parse_if_statement() {
@@ -181,19 +172,14 @@ std::shared_ptr<ASTNode> Parser::parse_if_statement() {
     // Parse the 'then' statement (what happens if condition is true)
     auto then_statement = parse_statement();
 
-    // Create the if statement node
-    auto if_node = std::make_shared<ASTNode>(ASTNodeType::IfStatement);
-    if_node->children.push_back(condition);       // Child 0: condition
-    if_node->children.push_back(then_statement);  // Child 1: then branch
-
     // Check for optional 'else' clause
+    std::shared_ptr<ASTNode> else_statement = nullptr;
     if (current_token().type == TokenType::Else) {
         current++;  // consume 'else' token
-        auto else_statement = parse_statement();
-        if_node->children.push_back(else_statement);  // Child 2: else branch
+        else_statement = parse_statement();
     }
 
-    return if_node;
+    return ASTFactory::makeIfStatement(condition, then_statement, else_statement);
 }
 
 std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
@@ -215,14 +201,13 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
 std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> callee) {
     consume(TokenType::LeftParen);  // consume '('
 
-    auto call = std::make_shared<ASTNode>(ASTNodeType::CallExpression);
-    call->children.push_back(callee);  // First child is the function being called
+    auto call = ASTFactory::makeCallExpression(callee);
 
     // Parse arguments
     if (current_token().type != TokenType::RightParen) {
         do {
             auto arg = parse_expression();
-            call->children.push_back(arg);
+            ASTFactory::addArgument(call, arg);
         } while (match(TokenType::Comma));
     }
 
@@ -238,23 +223,19 @@ std::shared_ptr<ASTNode> Parser::parse_member_expression(std::shared_ptr<ASTNode
         throw std::runtime_error("Expected property name after '.'");
     }
 
-    auto property = std::make_shared<ASTNode>(ASTNodeType::Identifier, current_token().value);
+    auto property = ASTFactory::makeIdentifier(current_token().value);
     current++;
 
-    auto member = std::make_shared<ASTNode>(ASTNodeType::MemberExpression);
-    member->children.push_back(object);
-    member->children.push_back(property);
-
-    return member;
+    return ASTFactory::makeMemberExpression(object, property);
 }
 
 std::shared_ptr<ASTNode> Parser::parse() {
-    auto program = std::make_shared<ASTNode>(ASTNodeType::Program);
+    auto program = ASTFactory::makeProgram();
 
     while (current_token().type != TokenType::EndOfFile) {
         try {
             auto stmt = parse_statement();
-            program->children.push_back(stmt);
+            ASTFactory::addStatement(program, stmt);
         } catch (const std::exception& e) {
             // Skip to next statement on error
             while (current_token().type != TokenType::Semicolon &&

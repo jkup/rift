@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 
+#include "../ast/ast_factory.h"
 #include "../ast/ast_node.h"
 #include "../lexer/token.h"
 
