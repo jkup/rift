@@ -6,7 +6,7 @@
 
 namespace jsruntime::ast {
 
-// Simple AST node types
+// Simple AST node types (maintaining compatibility)
 enum class ASTNodeType {
     Program,
     Literal,
