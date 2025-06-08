@@ -204,40 +204,105 @@ class Test262Runner {
         stdio: ["pipe", "pipe", "pipe"], // Capture all output
       });
 
+      const stdout = result.toString().trim();
+      const hasOutput = stdout.length > 0;
+
       if (test.negative) {
-        // Test expected to fail but didn't
+        // Test expected to fail but didn't - this is wrong
         this.failed++;
         return { status: "failed", reason: "Expected error but test passed" };
       } else {
+        // For positive tests, check if the output contains error indicators
+        // Test262 tests throw Test262Error when they fail
+        if (stdout.includes("Test262Error") || stdout.includes("Error:")) {
+          this.failed++;
+          return {
+            status: "failed",
+            reason: "Test threw an error: " + stdout.substring(0, 100),
+          };
+        }
+
+        // Check if this test uses unsupported features
+        // Many of your "passes" are likely just returning "undefined" for unsupported syntax
+        if (this.testUsesUnsupportedFeatures(test)) {
+          this.skipped++;
+          return {
+            status: "skipped",
+            reason: "Uses unsupported language features",
+          };
+        }
+
         this.passed++;
         return { status: "passed" };
       }
     } catch (error) {
+      const stderr = error.stderr ? error.stderr.toString() : "";
+      const stdout = error.stdout ? error.stdout.toString() : "";
+
       if (test.negative) {
-        // Test expected to fail and did fail
+        // Test expected to fail and did fail - this is correct
         this.passed++;
         return { status: "passed", reason: "Expected error occurred" };
       } else {
         this.failed++;
-        // Clean up the error message to remove newlines and extra text
+        // Clean up the error message
         let cleanReason = error.message;
-        if (error.stderr) {
-          const stderr = error.stderr.toString().trim();
-          if (stderr) {
-            // Extract just the main error message
-            const lines = stderr.split("\n");
-            const errorLine =
-              lines.find((line) => line.includes("Error:")) || lines[0];
-            cleanReason = errorLine.replace(/^.*Error:\s*/, "").trim();
-          }
+        if (stderr.trim()) {
+          const lines = stderr.split("\n");
+          const errorLine =
+            lines.find((line) => line.includes("Error:")) || lines[0];
+          cleanReason = errorLine.replace(/^.*Error:\s*/, "").trim();
         }
         return {
           status: "failed",
           reason: cleanReason,
-          stderr: error.stderr ? error.stderr.toString() : "",
+          stderr: stderr.substring(0, 200),
         };
       }
     }
+  }
+
+  // Helper method to detect if test uses features not implemented in our minimal runtime
+  testUsesUnsupportedFeatures(test) {
+    const code = test.code;
+
+    // List of features that are definitely not implemented
+    const unsupportedPatterns = [
+      /\bfor\s*\(/, // for loops
+      /\bwhile\s*\(/, // while loops
+      /\bif\s*\(/, // if statements
+      /\bfunction\s+\w+/, // function declarations
+      /\bclass\s+\w+/, // class declarations
+      /\btry\s*\{/, // try-catch
+      /\bthrow\s+/, // throw statements
+      /\bnew\s+\w+/, // constructor calls
+      /(?!console\.log)\w+\.\w+\s*\(/, // method calls (except console.log)
+      /\[.*\]/, // array literals or member access
+      /\{[^}]*\w+[^}]*\}/, // object literals with properties
+      /=>/, // arrow functions
+      /\bvar\s+\w+\s*=\s*function/, // function expressions
+      /\breturn\s+/, // return statements
+      /\bthis\./, // this keyword
+      /\bprototype\./, // prototype access
+      /\/.*\//, // regex literals
+      /\bRegExp\b/, // RegExp constructor
+      /\bassert\./, // assertion calls
+      /\bTest262Error\b/, // Test262Error usage
+    ];
+
+    // Skip tests that use features we haven't implemented
+    for (const pattern of unsupportedPatterns) {
+      if (pattern.test(code)) {
+        return true;
+      }
+    }
+
+    // Also skip tests that require specific includes
+    if (test.includes && test.includes.length > 0) {
+      return true;
+    }
+
+    return false;
   }
 
   async findTestFiles() {

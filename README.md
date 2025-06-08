@@ -68,19 +68,6 @@ The test runner:
 - Runs tests against the compiled runtime
 - Provides detailed pass/fail statistics
 
-## Last Test Run (this cannot be right)
-
-📊 Final Results
-══════════════════════════════════════════════════
-
-✅ Passed: 23566
-❌ Failed: 27028
-⏭️ Skipped: 0
-────────────────────
-📊 Total: 50594
-📈 Pass Rate: 46.6%
-⏱️ Runtime: 369.3s
-
 ## License
 
 MIT License - see LICENSE file for details.
