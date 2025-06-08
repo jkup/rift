@@ -270,7 +270,6 @@ class Test262Runner {
     const unsupportedPatterns = [
       /\bfor\s*\(/, // for loops
       /\bwhile\s*\(/, // while loops
-      /\bif\s*\(/, // if statements
       /\bfunction\s+\w+/, // function declarations
       /\bclass\s+\w+/, // class declarations
       /\btry\s*\{/, // try-catch
