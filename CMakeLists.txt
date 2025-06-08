@@ -4,16 +4,47 @@ project(JSRuntime VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add the main executable
-add_executable(jsruntime
-    src/main.cpp
-    src/runtime.cpp
-    src/evaluator.cpp
+# Define source files organized by module
+set(FRONTEND_SOURCES
     src/frontend/lexer/lexer.cpp
     src/frontend/parser/parser.cpp
 )
 
-target_include_directories(jsruntime PRIVATE include)
+set(RUNTIME_SOURCES
+    src/runtime/values/value.cpp
+    src/runtime/values/object.cpp
+    src/runtime/environment/environment.cpp
+)
+
+set(BUILTINS_SOURCES
+    src/builtins/console/console.cpp
+)
+
+set(CORE_SOURCES
+    src/core/engine/engine.cpp
+)
+
+set(API_SOURCES
+    src/api/api.cpp
+)
+
+set(LEGACY_SOURCES
+    src/runtime.cpp
+    src/evaluator.cpp
+)
+
+# Add the main executable
+add_executable(jsruntime
+    src/main.cpp
+    ${FRONTEND_SOURCES}
+    ${RUNTIME_SOURCES}
+    ${BUILTINS_SOURCES}
+    ${CORE_SOURCES}
+    ${API_SOURCES}
+    ${LEGACY_SOURCES}
+)
+
+target_include_directories(jsruntime PRIVATE include src)
 
 # Enable debug symbols and warnings
 target_compile_options(jsruntime PRIVATE

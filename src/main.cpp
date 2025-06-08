@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "runtime.h"
+#include "api/api.h"
 
 void print_usage(const char* program_name) {
     std::cout << "Usage: " << program_name << " [options] [file]\n";
@@ -25,7 +25,7 @@ std::string read_file(const std::string& filename) {
 
 int main(int argc, char* argv[]) {
     try {
-        jsruntime::Runtime runtime;
+        jsruntime::JavaScript js;
 
         if (argc == 1) {
             // Interactive mode (REPL) - for now just show help
@@ -51,8 +51,8 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-        auto result = runtime.execute(code);
-        std::cout << result.toString() << std::endl;
+        auto result = js.execute(code);
+        std::cout << result << std::endl;
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
