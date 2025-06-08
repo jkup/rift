@@ -204,6 +204,16 @@ Value Evaluator::evaluate(const std::shared_ptr<ASTNode>& node) {
             throw std::runtime_error("Cannot call non-function value");
         }
 
+        case ASTNodeType::IfStatement: {
+            Value condition = evaluate(node->children[0]);
+            if (condition.toBool()) {
+                return evaluate(node->children[1]);
+            } else if (node->children.size() > 2) {
+                return evaluate(node->children[2]);
+            }
+            return Value::undefined();
+        }
+
         default:
             throw std::runtime_error("Unknown AST node type");
     }

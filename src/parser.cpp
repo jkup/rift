@@ -366,12 +366,45 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
         return stmt;
     }
 
+    if (current_token().type == TokenType::If) {
+        return parse_if_statement();
+    }
+
     // Expression statement
     auto expr = parse_expression();
     auto stmt = std::make_shared<ASTNode>(ASTNodeType::ExpressionStatement);
     stmt->children.push_back(expr);
     match(TokenType::Semicolon);  // optional semicolon
     return stmt;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_if_statement() {
+    consume(TokenType::If);
+
+    consume(TokenType::LeftParen);
+
+    // Parse the condition expression
+    auto condition = parse_expression();
+
+    // Expect and consume ')'
+    consume(TokenType::RightParen);
+
+    // Parse the 'then' statement (what happens if condition is true)
+    auto then_statement = parse_statement();
+
+    // Create the if statement node
+    auto if_node = std::make_shared<ASTNode>(ASTNodeType::IfStatement);
+    if_node->children.push_back(condition);       // Child 0: condition
+    if_node->children.push_back(then_statement);  // Child 1: then branch
+
+    // Check for optional 'else' clause
+    if (current_token().type == TokenType::Else) {
+        current++;  // consume 'else' token
+        auto else_statement = parse_statement();
+        if_node->children.push_back(else_statement);  // Child 2: else branch
+    }
+
+    return if_node;
 }
 
 std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
