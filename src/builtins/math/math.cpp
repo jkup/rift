@@ -42,26 +42,32 @@ std::shared_ptr<JSObject> Math::create() {
     return math;
 }
 
-Value Math::abs(const std::vector<Value>& args) {
-    if (args.empty()) {
-        return Value(std::numeric_limits<double>::quiet_NaN());
+double Math::validateAndGetNumber(const std::vector<Value>& args, size_t index) {
+    if (args.size() <= index) {
+        return std::numeric_limits<double>::quiet_NaN();
     }
 
-    double num = args[0].toNumber();
+    double num = args[index].toNumber();
 
     if (std::isnan(num)) {
-        return Value(std::numeric_limits<double>::quiet_NaN());
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    return num;
+}
+
+Value Math::abs(const std::vector<Value>& args) {
+    double num = validateAndGetNumber(args);
+
+    if (std::isnan(num)) {
+        return Value(num);
     }
 
     return Value(std::abs(num));
 }
 
 Value Math::ceil(const std::vector<Value>& args) {
-    if (args.empty()) {
-        return Value(std::numeric_limits<double>::quiet_NaN());
-    }
-
-    double num = args[0].toNumber();
+    double num = validateAndGetNumber(args);
 
     if (std::isnan(num) || std::isinf(num)) {
         return Value(num);
@@ -71,11 +77,7 @@ Value Math::ceil(const std::vector<Value>& args) {
 }
 
 Value Math::floor(const std::vector<Value>& args) {
-    if (args.empty()) {
-        return Value(std::numeric_limits<double>::quiet_NaN());
-    }
-
-    double num = args[0].toNumber();
+    double num = validateAndGetNumber(args);
 
     if (std::isnan(num) || std::isinf(num)) {
         return Value(num);
@@ -85,11 +87,7 @@ Value Math::floor(const std::vector<Value>& args) {
 }
 
 Value Math::round(const std::vector<Value>& args) {
-    if (args.empty()) {
-        return Value(std::numeric_limits<double>::quiet_NaN());
-    }
-
-    double num = args[0].toNumber();
+    double num = validateAndGetNumber(args);
 
     if (std::isnan(num) || std::isinf(num)) {
         return Value(num);
@@ -157,13 +155,9 @@ Value Math::pow(const std::vector<Value>& args) {
 }
 
 Value Math::sqrt(const std::vector<Value>& args) {
-    if (args.empty()) {
-        return Value(std::numeric_limits<double>::quiet_NaN());
-    }
+    double num = validateAndGetNumber(args);
 
-    double num = args[0].toNumber();
-
-    if (num < 0) {
+    if (std::isnan(num) || num < 0) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 

@@ -165,6 +165,10 @@ class Math {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
     static Value random(const std::vector<Value>& args);
 
+    // Helper methods
+    /// Helper to validate arguments and extract a number, returning NaN for invalid cases
+    static double validateAndGetNumber(const std::vector<Value>& args, size_t index = 0);
+
     // Random number generator
     static std::random_device rd;
     static std::mt19937 gen;
