@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Benchmark Script for Rift JavaScript Runtime
-# Compares Rift against Node.js, Deno, and Bun using hyperfine
+# Requires the following to be installed: hyperfine, node, deno, bun
 
 set -e
 
@@ -9,11 +8,10 @@ set -e
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}🚀 JavaScript Runtime Benchmark${NC}"
-echo -e "${BLUE}================================${NC}"
+echo -e "${GREEN}🚀 JavaScript Runtime Benchmark${NC}"
+echo -e "${GREEN}================================${NC}"
 
 # Get the directory of this script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -88,14 +86,12 @@ fi
 
 echo -e "${GREEN}✅ hyperfine found: $(hyperfine --version)${NC}"
 
-# Create results directory
-RESULTS_DIR="$SCRIPT_DIR/results"
-mkdir -p "$RESULTS_DIR"
+# No need to create results directory since we're just displaying results
 
 echo ""
-echo -e "${BLUE}🏁 Starting benchmark...${NC}"
-echo -e "${BLUE}Benchmark file: $BENCHMARK_FILE${NC}"
-echo -e "${BLUE}Runtimes: ${#RUNTIMES[@]}${NC}"
+echo -e "${GREEN}🏁 Starting benchmark...${NC}"
+echo -e "${GREEN}Benchmark file: $BENCHMARK_FILE${NC}"
+echo -e "${GREEN}Runtimes: ${#RUNTIMES[@]}${NC}"
 echo ""
 
 # Run hyperfine benchmark
@@ -105,8 +101,6 @@ cd "$SCRIPT_DIR"
 HYPERFINE_CMD="hyperfine"
 HYPERFINE_CMD="$HYPERFINE_CMD --warmup 3"
 HYPERFINE_CMD="$HYPERFINE_CMD --runs 10"
-HYPERFINE_CMD="$HYPERFINE_CMD --export-markdown $RESULTS_DIR/benchmark.md"
-HYPERFINE_CMD="$HYPERFINE_CMD --export-json $RESULTS_DIR/benchmark.json"
 
 # Add command names and commands
 for i in "${!RUNTIMES[@]}"; do
@@ -119,15 +113,4 @@ echo -e "${YELLOW}Running hyperfine with ${#RUNTIMES[@]} runtimes...${NC}"
 eval $HYPERFINE_CMD
 
 echo ""
-echo -e "${GREEN}🎉 Benchmark completed!${NC}"
-echo -e "${BLUE}Results saved to:${NC}"
-echo -e "${BLUE}  • Markdown: $RESULTS_DIR/benchmark.md${NC}"
-echo -e "${BLUE}  • JSON: $RESULTS_DIR/benchmark.json${NC}"
-
-# Display the markdown results
-if [ -f "$RESULTS_DIR/benchmark.md" ]; then
-    echo ""
-    echo -e "${BLUE}📊 Results Summary:${NC}"
-    echo ""
-    cat "$RESULTS_DIR/benchmark.md"
-fi 
+echo -e "${GREEN}🎉 Benchmark completed! Results displayed above.${NC}" 
