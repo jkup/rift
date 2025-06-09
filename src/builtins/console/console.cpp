@@ -20,7 +20,7 @@ Value Console::log(const std::vector<Value>& args) {
 }
 
 Value Console::error(const std::vector<Value>& args) {
-    printValues(args, std::cerr);
+    printValues(args, std::cout);
     return Value::undefined();
 }
 
