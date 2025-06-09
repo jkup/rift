@@ -29,15 +29,15 @@ std::shared_ptr<JSObject> Math::create() {
     math->setProperty("SQRT1_2", Value(M_SQRT1_2));
 
     // Add methods
-    math->setProperty("abs", Value(std::make_shared<JSFunction>(abs)));
-    math->setProperty("ceil", Value(std::make_shared<JSFunction>(ceil)));
-    math->setProperty("floor", Value(std::make_shared<JSFunction>(floor)));
-    math->setProperty("round", Value(std::make_shared<JSFunction>(round)));
-    math->setProperty("max", Value(std::make_shared<JSFunction>(max)));
-    math->setProperty("min", Value(std::make_shared<JSFunction>(min)));
-    math->setProperty("pow", Value(std::make_shared<JSFunction>(pow)));
-    math->setProperty("sqrt", Value(std::make_shared<JSFunction>(sqrt)));
-    math->setProperty("random", Value(std::make_shared<JSFunction>(random)));
+    math->setProperty("abs", Value(std::make_shared<JSFunction>(Math::abs)));
+    math->setProperty("ceil", Value(std::make_shared<JSFunction>(Math::ceil)));
+    math->setProperty("floor", Value(std::make_shared<JSFunction>(Math::floor)));
+    math->setProperty("round", Value(std::make_shared<JSFunction>(Math::round)));
+    math->setProperty("max", Value(std::make_shared<JSFunction>(Math::max)));
+    math->setProperty("min", Value(std::make_shared<JSFunction>(Math::min)));
+    math->setProperty("pow", Value(std::make_shared<JSFunction>(Math::pow)));
+    math->setProperty("sqrt", Value(std::make_shared<JSFunction>(Math::sqrt)));
+    math->setProperty("random", Value(std::make_shared<JSFunction>(Math::random)));
 
     return math;
 }
@@ -63,7 +63,7 @@ Value Math::abs(const std::vector<Value>& args) {
         return Value(num);
     }
 
-    return Value(std::abs(num));
+    return Value(::fabs(num));
 }
 
 Value Math::ceil(const std::vector<Value>& args) {
