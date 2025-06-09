@@ -8,6 +8,7 @@
     "build": "./build.sh",
     "test": "node test262-runner.js",
     "playground": "./build/jsruntime test/test-file.js",
+    "benchmark": "./bench/benchmark.sh",
     "clean": "rm -rf build test262"
   },
   "keywords": [
