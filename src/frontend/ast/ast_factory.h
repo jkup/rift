@@ -28,6 +28,13 @@ class ASTFactory {
         return node;
     }
 
+    static std::shared_ptr<ASTNode> makeUnaryExpression(const std::string& operator_,
+                                                        std::shared_ptr<ASTNode> operand) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::UnaryExpression, operator_);
+        node->children.push_back(operand);
+        return node;
+    }
+
     static std::shared_ptr<ASTNode> makeAssignmentExpression(std::shared_ptr<ASTNode> left,
                                                              std::shared_ptr<ASTNode> right) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::AssignmentExpression);

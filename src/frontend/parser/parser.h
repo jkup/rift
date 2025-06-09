@@ -24,6 +24,7 @@ class Parser {
 
     std::shared_ptr<ASTNode> parse_expression();
     std::shared_ptr<ASTNode> parse_primary();
+    std::shared_ptr<ASTNode> parse_unary_expression();
     std::shared_ptr<ASTNode> parse_binary_expression(int precedence);
     std::shared_ptr<ASTNode> parse_assignment_expression();
     std::shared_ptr<ASTNode> parse_statement();

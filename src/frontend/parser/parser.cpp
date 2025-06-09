@@ -70,8 +70,23 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
     }
 }
 
+std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
+    Token& token = current_token();
+
+    // Check for unary operators
+    if (token.type == TokenType::Plus || token.type == TokenType::Minus) {
+        std::string operator_ = token.value;
+        current++;  // consume the operator
+        auto operand = parse_postfix_expression();
+        return ASTFactory::makeUnaryExpression(operator_, operand);
+    }
+
+    // Not a unary expression, continue with postfix parsing
+    return parse_postfix_expression();
+}
+
 std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
-    auto left = parse_postfix_expression();
+    auto left = parse_unary_expression();
 
     while (true) {
         Token& op = current_token();

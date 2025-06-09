@@ -141,7 +141,12 @@ Value JSEngine::performBinaryOperation(const std::string& op, const Value& left,
 // Stub implementations for other methods
 Value JSEngine::evaluateUnaryExpression(std::shared_ptr<ASTNode> node,
                                         std::shared_ptr<Environment> env) {
-    return Value::undefined();
+    if (node->children.size() != 1) {
+        return Value::undefined();
+    }
+
+    Value operand = evaluate(node->children[0], env);
+    return performUnaryOperation(node->value, operand);
 }
 
 Value JSEngine::evaluateAssignmentExpression(std::shared_ptr<ASTNode> node,
@@ -248,6 +253,13 @@ Value JSEngine::evaluateReturnStatement(std::shared_ptr<ASTNode> node,
 }
 
 Value JSEngine::performUnaryOperation(const std::string& op, const Value& operand) {
+    if (op == "-") {
+        return Value(-operand.toNumber());
+    }
+    if (op == "+") {
+        return Value(operand.toNumber());
+    }
+
     return Value::undefined();
 }
 
