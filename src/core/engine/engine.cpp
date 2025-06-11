@@ -218,6 +218,37 @@ Value JSEngine::evaluateMemberExpression(std::shared_ptr<ASTNode> node,
         }
     }
 
+    // Handle string primitive boxing - look up methods in String.prototype
+    if (object.isString()) {
+        // Get the String constructor from global environment
+        Value stringConstructor = global_env_->get("String");
+        if (stringConstructor.isObject()) {
+            auto stringObj = stringConstructor.getObject();
+            // Get the prototype
+            Value prototype = stringObj->getProperty("prototype");
+            if (prototype.isObject()) {
+                auto prototypeObj = prototype.getObject();
+                // Look up the method in the prototype
+                Value method = prototypeObj->getProperty(property);
+                if (method.isFunction()) {
+                    // Create a bound method that includes the string value as the first argument
+                    auto func = std::dynamic_pointer_cast<JSFunction>(method.getObject());
+                    if (func) {
+                        // Create a wrapper function that prepends the string value to the arguments
+                        auto boundFunc = std::make_shared<JSFunction>(
+                            [object, func](const std::vector<Value>& args) -> Value {
+                                std::vector<Value> newArgs;
+                                newArgs.push_back(object);  // Add the string as 'this' value
+                                newArgs.insert(newArgs.end(), args.begin(), args.end());
+                                return func->call(newArgs);
+                            });
+                        return Value(boundFunc);
+                    }
+                }
+            }
+        }
+    }
+
     return Value::undefined();
 }
 

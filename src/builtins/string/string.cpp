@@ -71,8 +71,8 @@ Value String::charAt(const std::vector<Value>& args) {
     std::string str = getThisStringValue(args);
 
     double index = 0;
-    if (!args.empty()) {
-        index = args[0].toNumber();
+    if (args.size() >= 2) {          // Fixed: should check for second argument (index 1)
+        index = args[1].toNumber();  // Fixed: use args[1] since args[0] is the string
     }
 
     if (std::isnan(index) || index < 0 || index >= static_cast<double>(str.length())) {
@@ -87,8 +87,8 @@ Value String::charCodeAt(const std::vector<Value>& args) {
     std::string str = getThisStringValue(args);
 
     double index = 0;
-    if (!args.empty()) {
-        index = args[0].toNumber();
+    if (args.size() >= 2) {
+        index = args[1].toNumber();
     }
 
     if (std::isnan(index) || index < 0 || index >= static_cast<double>(str.length())) {
@@ -102,8 +102,9 @@ Value String::charCodeAt(const std::vector<Value>& args) {
 Value String::concat(const std::vector<Value>& args) {
     std::string str = getThisStringValue(args);
 
-    for (const auto& arg : args) {
-        str += arg.toString();
+    // Skip the first argument (the string itself) and concat the rest
+    for (size_t i = 1; i < args.size(); ++i) {
+        str += args[i].toString();
     }
 
     return Value(str);
@@ -112,15 +113,15 @@ Value String::concat(const std::vector<Value>& args) {
 Value String::indexOf(const std::vector<Value>& args) {
     std::string str = getThisStringValue(args);
 
-    if (args.empty()) {
+    if (args.size() < 2) {
         return Value(-1.0);
     }
 
-    std::string searchString = args[0].toString();
+    std::string searchString = args[1].toString();
     size_t fromIndex = 0;
 
-    if (args.size() >= 2) {
-        double fromIndexNum = args[1].toNumber();
+    if (args.size() >= 3) {
+        double fromIndexNum = args[2].toNumber();
         if (!std::isnan(fromIndexNum) && fromIndexNum >= 0) {
             fromIndex = static_cast<size_t>(fromIndexNum);
         }
@@ -141,15 +142,15 @@ Value String::indexOf(const std::vector<Value>& args) {
 Value String::lastIndexOf(const std::vector<Value>& args) {
     std::string str = getThisStringValue(args);
 
-    if (args.empty()) {
+    if (args.size() < 2) {
         return Value(-1.0);
     }
 
-    std::string searchString = args[0].toString();
+    std::string searchString = args[1].toString();
     size_t fromIndex = str.length();
 
-    if (args.size() >= 2) {
-        double fromIndexNum = args[1].toNumber();
+    if (args.size() >= 3) {
+        double fromIndexNum = args[2].toNumber();
         if (!std::isnan(fromIndexNum) && fromIndexNum >= 0) {
             fromIndex = std::min(static_cast<size_t>(fromIndexNum), str.length());
         }
@@ -173,12 +174,12 @@ Value String::slice(const std::vector<Value>& args) {
     double startNum = 0;
     double endNum = static_cast<double>(length);
 
-    if (!args.empty()) {
-        startNum = args[0].toNumber();
+    if (args.size() >= 2) {
+        startNum = args[1].toNumber();
     }
 
-    if (args.size() >= 2 && !args[1].isUndefined()) {
-        endNum = args[1].toNumber();
+    if (args.size() >= 3 && !args[2].isUndefined()) {
+        endNum = args[2].toNumber();
     }
 
     // Handle negative indices
@@ -207,12 +208,12 @@ Value String::substring(const std::vector<Value>& args) {
     double startNum = 0;
     double endNum = static_cast<double>(length);
 
-    if (!args.empty()) {
-        startNum = args[0].toNumber();
+    if (args.size() >= 2) {
+        startNum = args[1].toNumber();
     }
 
-    if (args.size() >= 2 && !args[1].isUndefined()) {
-        endNum = args[1].toNumber();
+    if (args.size() >= 3 && !args[2].isUndefined()) {
+        endNum = args[2].toNumber();
     }
 
     // Convert negative values to 0
@@ -273,11 +274,11 @@ Value String::split(const std::vector<Value>& args) {
     auto result = std::make_shared<JSObject>();
     std::vector<Value> elements;
 
-    if (args.empty() || args[0].isUndefined()) {
+    if (args.size() < 2 || args[1].isUndefined()) {
         // No separator - return array with original string
         elements.push_back(Value(str));
     } else {
-        std::string separator = args[0].toString();
+        std::string separator = args[1].toString();
 
         if (separator.empty()) {
             // Empty separator - split into individual characters
