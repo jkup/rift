@@ -40,6 +40,9 @@ std::shared_ptr<JSObject> Math::create() {
     math->setProperty("random", Value(std::make_shared<JSFunction>(Math::random)));
     math->setProperty("sign", Value(std::make_shared<JSFunction>(Math::sign)));
     math->setProperty("trunc", Value(std::make_shared<JSFunction>(Math::trunc)));
+    math->setProperty("sin", Value(std::make_shared<JSFunction>(Math::sin)));
+    math->setProperty("cos", Value(std::make_shared<JSFunction>(Math::cos)));
+    math->setProperty("tan", Value(std::make_shared<JSFunction>(Math::tan)));
 
     return math;
 }
@@ -194,6 +197,48 @@ Value Math::trunc(const std::vector<Value>& args) {
 
     // Remove fractional part by truncating towards zero
     return Value(std::trunc(num));
+}
+
+Value Math::sin(const std::vector<Value>& args) {
+    double num = validateAndGetNumber(args);
+
+    if (std::isnan(num)) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    if (std::isinf(num)) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    return Value(std::sin(num));
+}
+
+Value Math::cos(const std::vector<Value>& args) {
+    double num = validateAndGetNumber(args);
+
+    if (std::isnan(num)) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    if (std::isinf(num)) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    return Value(std::cos(num));
+}
+
+Value Math::tan(const std::vector<Value>& args) {
+    double num = validateAndGetNumber(args);
+
+    if (std::isnan(num)) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    if (std::isinf(num)) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    return Value(std::tan(num));
 }
 
 }  // namespace jsruntime::builtins

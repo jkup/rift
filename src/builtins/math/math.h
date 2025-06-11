@@ -189,6 +189,41 @@ class Math {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
     static Value trunc(const std::vector<Value>& args);
 
+    // Trigonometric methods
+
+    /// The `Math.sin()` function returns the sine of a number in radians.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-math.sin
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sin
+    static Value sin(const std::vector<Value>& args);
+
+    /// The `Math.cos()` function returns the cosine of a number in radians.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-math.cos
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cos
+    static Value cos(const std::vector<Value>& args);
+
+    /// The `Math.tan()` function returns the tangent of a number in radians.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-math.tan
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tan
+    static Value tan(const std::vector<Value>& args);
+
     // Helper methods
     /// Helper to validate arguments and extract a number, returning NaN for invalid cases
     static double validateAndGetNumber(const std::vector<Value>& args, size_t index = 0);
