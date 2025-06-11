@@ -3,6 +3,7 @@
 #include "../../builtins/console/console.h"
 #include "../../builtins/global/global.h"
 #include "../../builtins/math/math.h"
+#include "../../builtins/string/string.h"
 
 namespace jsruntime::core {
 
@@ -59,6 +60,10 @@ void JSEngine::setupBuiltins() {
     // Setup Math object
     auto math = builtins::Math::create();
     global_env_->define("Math", Value(math));
+
+    // Setup String object
+    auto string = builtins::String::create();
+    global_env_->define("String", Value(string));
 }
 
 // Basic implementations - will be enhanced
