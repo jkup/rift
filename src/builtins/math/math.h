@@ -165,6 +165,30 @@ class Math {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
     static Value random(const std::vector<Value>& args);
 
+    /// The `Math.sign()` function returns the sign of a number, indicating whether the number is
+    /// positive, negative or zero.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-math.sign
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign
+    static Value sign(const std::vector<Value>& args);
+
+    /// The `Math.trunc()` function returns the integer part of a number by removing any fractional
+    /// digits.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-math.trunc
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
+    static Value trunc(const std::vector<Value>& args);
+
     // Helper methods
     /// Helper to validate arguments and extract a number, returning NaN for invalid cases
     static double validateAndGetNumber(const std::vector<Value>& args, size_t index = 0);

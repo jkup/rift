@@ -38,6 +38,8 @@ std::shared_ptr<JSObject> Math::create() {
     math->setProperty("pow", Value(std::make_shared<JSFunction>(Math::pow)));
     math->setProperty("sqrt", Value(std::make_shared<JSFunction>(Math::sqrt)));
     math->setProperty("random", Value(std::make_shared<JSFunction>(Math::random)));
+    math->setProperty("sign", Value(std::make_shared<JSFunction>(Math::sign)));
+    math->setProperty("trunc", Value(std::make_shared<JSFunction>(Math::trunc)));
 
     return math;
 }
@@ -165,5 +167,33 @@ Value Math::sqrt(const std::vector<Value>& args) {
 }
 
 Value Math::random(const std::vector<Value>& args) { return Value(dis(gen)); }
+
+Value Math::sign(const std::vector<Value>& args) {
+    double num = validateAndGetNumber(args);
+
+    if (std::isnan(num)) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    if (num > 0) {
+        return Value(1.0);
+    } else if (num < 0) {
+        return Value(-1.0);
+    } else {
+        // Handle both +0 and -0
+        return Value(num);  // This preserves the sign of zero
+    }
+}
+
+Value Math::trunc(const std::vector<Value>& args) {
+    double num = validateAndGetNumber(args);
+
+    if (std::isnan(num) || std::isinf(num)) {
+        return Value(num);
+    }
+
+    // Remove fractional part by truncating towards zero
+    return Value(std::trunc(num));
+}
 
 }  // namespace jsruntime::builtins
