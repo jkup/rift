@@ -272,7 +272,7 @@ class Test262Runner {
   testUsesUnsupportedFeatures(test) {
     const code = test.code;
 
-    // Much more conservative - only skip truly unsupported features
+    // Very conservative - only skip genuinely complex features
     const unsupportedPatterns = [
       /\bfor\s*\(/, // for loops
       /\bwhile\s*\(/, // while loops
@@ -285,38 +285,12 @@ class Test262Runner {
       /=>/, // arrow functions
       /\bvar\s+\w+\s*=\s*function/, // function expressions
       /\breturn\s+/, // return statements (functions not implemented)
-      /\bthis\./, // this keyword
-      /\bprototype\./, // prototype access
-      /\/.*\/[gimuy]*/, // regex literals with flags
-      /\bRegExp\s*\(/, // RegExp constructor calls
-      /\bimport\b/, // ES6 modules
-      /\bexport\b/, // ES6 modules
       /\bconst\b/, // const declarations
       /\blet\b/, // let declarations
       /\basync\b/, // async functions
       /\bawait\b/, // await keyword
       /\byield\b/, // generators
-      /\bSymbol\b/, // Symbols
-      /\bProxy\s*\(/, // Proxy constructor
-      /\bReflect\./, // Reflect API
-      /\bWeakMap\s*\(/, // WeakMap constructor
-      /\bWeakSet\s*\(/, // WeakSet constructor
-      /\bMap\s*\(/, // Map constructor
-      /\bSet\s*\(/, // Set constructor
-      /\bPromise\b/, // Promises
-      /\bArrayBuffer\s*\(/, // Typed arrays
-      /`[^`]*`/, // template literals
       /\bwith\s*\(/, // with statements
-      /\bdebugg?er\b/, // debugger statements
-      /\beval\s*\(/, // eval calls
-      /\bJSON\./, // JSON object methods
-      /\bDate\s*\(/, // Date constructor
-      /\bArray\s*\(/, // Array constructor
-      /\bObject\.create/, // Object.create etc
-      /\bObject\.defineProperty/, // Object.defineProperty etc
-      /\[\s*\]/, // empty array literals
-      /\[[^\]]+\]/, // non-empty array literals
-      /\{[^}]*:/, // object literals with properties
     ];
 
     // Skip tests that use features we haven't implemented
