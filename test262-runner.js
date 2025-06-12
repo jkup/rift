@@ -225,7 +225,10 @@ class Test262Runner {
         if (
           stdout.includes("Test262Error") ||
           stdout.includes("Error:") ||
-          stdout.includes("Exception")
+          stdout.includes("Exception") ||
+          stdout.includes("ReferenceError") ||
+          stdout.includes("TypeError") ||
+          stdout.includes("SyntaxError")
         ) {
           this.failed++;
           return {
@@ -269,29 +272,23 @@ class Test262Runner {
   testUsesUnsupportedFeatures(test) {
     const code = test.code;
 
-    // Fix 2: Expanded list of features that are definitely not implemented
+    // Much more conservative - only skip truly unsupported features
     const unsupportedPatterns = [
       /\bfor\s*\(/, // for loops
       /\bwhile\s*\(/, // while loops
       /\bdo\s*\{/, // do-while loops
       /\bfunction\s+\w+/, // function declarations
       /\bclass\s+\w+/, // class declarations
-      /\btry\s*\{/, // try-catch
-      /\bthrow\s+/, // throw statements
-      /\bnew\s+\w+/, // constructor calls
-      /(?!console\.log)\w+\.\w+\s*\(/, // method calls (except console.log)
-      /\[.*\]/, // array literals or member access
-      /\{[^}]*\w+[^}]*\}/, // object literals with properties
+      /\btry\s*\{/, // try-catch blocks
+      /\bcatch\s*\(/, // catch clauses
+      /\bfinally\s*\{/, // finally blocks
       /=>/, // arrow functions
       /\bvar\s+\w+\s*=\s*function/, // function expressions
-      /\breturn\s+/, // return statements
+      /\breturn\s+/, // return statements (functions not implemented)
       /\bthis\./, // this keyword
       /\bprototype\./, // prototype access
-      /\/.*\//, // regex literals
-      /\bRegExp\b/, // RegExp constructor
-      /\bassert\./, // assertion calls
-      /\bTest262Error\b/, // Test262Error usage
-      /\$ERROR/, // Test262 error reporting
+      /\/.*\/[gimuy]*/, // regex literals with flags
+      /\bRegExp\s*\(/, // RegExp constructor calls
       /\bimport\b/, // ES6 modules
       /\bexport\b/, // ES6 modules
       /\bconst\b/, // const declarations
@@ -300,28 +297,26 @@ class Test262Runner {
       /\bawait\b/, // await keyword
       /\byield\b/, // generators
       /\bSymbol\b/, // Symbols
-      /\bProxy\b/, // Proxies
-      /\bReflect\b/, // Reflect API
-      /\bWeakMap\b/, // WeakMap
-      /\bWeakSet\b/, // WeakSet
-      /\bMap\b/, // Map
-      /\bSet\b/, // Set
+      /\bProxy\s*\(/, // Proxy constructor
+      /\bReflect\./, // Reflect API
+      /\bWeakMap\s*\(/, // WeakMap constructor
+      /\bWeakSet\s*\(/, // WeakSet constructor
+      /\bMap\s*\(/, // Map constructor
+      /\bSet\s*\(/, // Set constructor
       /\bPromise\b/, // Promises
-      /\bArrayBuffer\b/, // Typed arrays
-      /\bTypedArray\b/, // Typed arrays
-      /\bDataView\b/, // DataView
+      /\bArrayBuffer\s*\(/, // Typed arrays
       /`[^`]*`/, // template literals
       /\bwith\s*\(/, // with statements
       /\bdebugg?er\b/, // debugger statements
       /\beval\s*\(/, // eval calls
-      /\bArguments\b/, // Arguments object
       /\bJSON\./, // JSON object methods
-      /\bDate\./, // Date constructor/methods
-      /\bArray\./, // Array constructor/methods
-      /\bObject\./, // Object constructor/methods
-      /\bString\./, // String constructor/methods (static methods)
-      /\bNumber\./, // Number constructor/methods
-      /\bBoolean\./, // Boolean constructor/methods
+      /\bDate\s*\(/, // Date constructor
+      /\bArray\s*\(/, // Array constructor
+      /\bObject\.create/, // Object.create etc
+      /\bObject\.defineProperty/, // Object.defineProperty etc
+      /\[\s*\]/, // empty array literals
+      /\[[^\]]+\]/, // non-empty array literals
+      /\{[^}]*:/, // object literals with properties
     ];
 
     // Skip tests that use features we haven't implemented
@@ -333,15 +328,6 @@ class Test262Runner {
 
     // Also skip tests that require specific includes
     if (test.includes && test.includes.length > 0) {
-      return true;
-    }
-
-    // Skip tests that use specific Test262 infrastructure
-    if (
-      code.includes("assert") ||
-      code.includes("$ERROR") ||
-      code.includes("Test262Error")
-    ) {
       return true;
     }
 
