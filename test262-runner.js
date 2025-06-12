@@ -192,6 +192,15 @@ class Test262Runner {
   async runSingleTest(testFile) {
     const test = this.parseTestFile(testFile);
 
+    // Fix 1: Check if this test uses unsupported features FIRST
+    if (this.testUsesUnsupportedFeatures(test)) {
+      this.skipped++;
+      return {
+        status: "skipped",
+        reason: "Uses unsupported language features",
+      };
+    }
+
     try {
       // Write test code to temporary file
       const tempFile = "/tmp/test262_temp.js";
@@ -205,16 +214,19 @@ class Test262Runner {
       });
 
       const stdout = result.toString().trim();
-      const hasOutput = stdout.length > 0;
 
       if (test.negative) {
         // Test expected to fail but didn't - this is wrong
         this.failed++;
         return { status: "failed", reason: "Expected error but test passed" };
       } else {
+        // Fix 3: Better test success detection
         // For positive tests, check if the output contains error indicators
-        // Test262 tests throw Test262Error when they fail
-        if (stdout.includes("Test262Error") || stdout.includes("Error:")) {
+        if (
+          stdout.includes("Test262Error") ||
+          stdout.includes("Error:") ||
+          stdout.includes("Exception")
+        ) {
           this.failed++;
           return {
             status: "failed",
@@ -222,16 +234,7 @@ class Test262Runner {
           };
         }
 
-        // Check if this test uses unsupported features
-        // Many of your "passes" are likely just returning "undefined" for unsupported syntax
-        if (this.testUsesUnsupportedFeatures(test)) {
-          this.skipped++;
-          return {
-            status: "skipped",
-            reason: "Uses unsupported language features",
-          };
-        }
-
+        // If no error output, consider it passed
         this.passed++;
         return { status: "passed" };
       }
