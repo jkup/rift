@@ -41,6 +41,9 @@ enum class TokenType {
     LessEqual,
     Greater,
     GreaterEqual,
+    LogicalNot,
+    BitwiseNot,
+    Typeof,
 
     // Punctuation
     LeftParen,

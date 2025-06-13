@@ -74,7 +74,9 @@ std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
     Token& token = current_token();
 
     // Check for unary operators
-    if (token.type == TokenType::Plus || token.type == TokenType::Minus) {
+    if (token.type == TokenType::Plus || token.type == TokenType::Minus ||
+        token.type == TokenType::LogicalNot || token.type == TokenType::Typeof ||
+        token.type == TokenType::BitwiseNot) {
         std::string operator_ = token.value;
         current++;  // consume the operator
         auto operand = parse_postfix_expression();

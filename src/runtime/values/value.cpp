@@ -1,6 +1,7 @@
 #include "value.h"
 
 #include <cmath>
+#include <iostream>
 #include <limits>
 #include <sstream>
 #include <stdexcept>
@@ -36,8 +37,9 @@ std::string Value::toString() const {
             oss << num;
             return oss.str();
         }
-        case ValueType::String:
+        case ValueType::String: {
             return std::get<std::string>(data_);
+        }
         case ValueType::Object:
             return "[object Object]";
         case ValueType::Function:

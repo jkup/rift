@@ -113,6 +113,7 @@ Token Lexer::read_identifier() {
         {"false", TokenType::Boolean},
         {"null", TokenType::Null},
         {"undefined", TokenType::Undefined},
+        {"typeof", TokenType::Typeof},
     };
 
     auto it = keywords.find(value);
@@ -203,13 +204,16 @@ Token Lexer::next_token() {
                 }
                 return Token(TokenType::NotEqual, "!=", line, column);
             }
-            return Token(TokenType::Invalid, "!", line, column);
+            return Token(TokenType::LogicalNot, "!", line, column);
         case '<':
             advance();
             return Token(TokenType::Less, "<", line, column);
         case '>':
             advance();
             return Token(TokenType::Greater, ">", line, column);
+        case '~':
+            advance();
+            return Token(TokenType::BitwiseNot, "~", line, column);
         default:
             advance();
             return Token(TokenType::Invalid, std::string(1, ch), line, column);

@@ -150,6 +150,27 @@ Value JSEngine::evaluateUnaryExpression(std::shared_ptr<ASTNode> node,
         return Value::undefined();
     }
 
+    // Special handling for typeof operator
+    if (node->value == "typeof") {
+        auto operandNode = node->children[0];
+
+        // If the operand is an identifier, we need to handle the case where it might not exist
+        if (operandNode->type == ASTNodeType::Identifier) {
+            try {
+                Value operand = evaluate(operandNode, env);
+                return performUnaryOperation(node->value, operand);
+            } catch (...) {
+                // If the identifier doesn't exist, typeof should return "undefined"
+                return Value("undefined");
+            }
+        } else {
+            // For non-identifier operands, evaluate normally
+            Value operand = evaluate(operandNode, env);
+            return performUnaryOperation(node->value, operand);
+        }
+    }
+
+    // For other unary operators, evaluate the operand normally
     Value operand = evaluate(node->children[0], env);
     return performUnaryOperation(node->value, operand);
 }
@@ -294,6 +315,35 @@ Value JSEngine::performUnaryOperation(const std::string& op, const Value& operan
     }
     if (op == "+") {
         return Value(operand.toNumber());
+    }
+    if (op == "!") {
+        // Logical NOT operator - convert to boolean and negate
+        return Value(!operand.toBool());
+    }
+    if (op == "typeof") {
+        // Return the type of the operand as a string
+        if (operand.isUndefined()) {
+            return Value("undefined");
+        } else if (operand.isNull()) {
+            return Value("object");  // In JavaScript, typeof null === "object"
+        } else if (operand.isBoolean()) {
+            return Value("boolean");
+        } else if (operand.isNumber()) {
+            return Value("number");
+        } else if (operand.isString()) {
+            return Value("string");
+        } else if (operand.isFunction()) {
+            return Value("function");
+        } else if (operand.isObject()) {
+            return Value("object");
+        } else {
+            return Value("undefined");
+        }
+    }
+    if (op == "~") {
+        // Bitwise NOT operator - convert to 32-bit integer and invert
+        int32_t intValue = static_cast<int32_t>(operand.toNumber());
+        return Value(static_cast<double>(~intValue));
     }
 
     return Value::undefined();
