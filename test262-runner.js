@@ -7,7 +7,7 @@ import chalk from "chalk";
 
 // Configuration
 const TEST262_DIR = "./test262";
-const RUNTIME_EXECUTABLE = "./build/jsruntime";
+const RUNTIME_EXECUTABLE = "./build/rift";
 
 class Test262Runner {
   constructor() {
@@ -64,7 +64,7 @@ class Test262Runner {
 
   // Show the initial header
   showHeader(totalTests) {
-    console.log(chalk.bold.cyan("🚀 Test262 Runner for JSRuntime"));
+    console.log(chalk.bold.cyan("🚀 Test262 Runner for rift"));
     console.log(chalk.cyan("═".repeat(50)));
     console.log();
     console.log(chalk.bold.green(`🎯 Found ${totalTests} test files to run`));
@@ -92,7 +92,7 @@ class Test262Runner {
   }
 
   async setupTest262() {
-    console.log(chalk.bold.cyan("🚀 Test262 Runner for JSRuntime"));
+    console.log(chalk.bold.cyan("🚀 Test262 Runner for rift"));
     console.log(chalk.cyan("═".repeat(50)));
     console.log();
     console.log(chalk.yellow("⚙️  Setting up test262..."));

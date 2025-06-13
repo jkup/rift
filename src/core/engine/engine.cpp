@@ -5,7 +5,7 @@
 #include "../../builtins/math/math.h"
 #include "../../builtins/string/string.h"
 
-namespace jsruntime::core {
+namespace rift::core {
 
 JSEngine::JSEngine() {
     global_env_ = std::make_shared<Environment>();
@@ -349,4 +349,4 @@ Value JSEngine::performUnaryOperation(const std::string& op, const Value& operan
     return Value::undefined();
 }
 
-}  // namespace jsruntime::core
+}  // namespace rift::core

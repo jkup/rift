@@ -7,7 +7,7 @@
 #include "../ast/ast_node.h"
 #include "../lexer/token.h"
 
-namespace jsruntime::frontend {
+namespace rift::frontend {
 
 using namespace ast;
 
@@ -39,4 +39,4 @@ class Parser {
     std::shared_ptr<ASTNode> parse();
 };
 
-}  // namespace jsruntime::frontend
+}  // namespace rift::frontend

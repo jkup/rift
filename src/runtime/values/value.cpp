@@ -8,7 +8,7 @@
 
 #include "object.h"
 
-namespace jsruntime::runtime {
+namespace rift::runtime {
 
 // Constructors
 Value::Value() : type_(ValueType::Undefined), data_(std::monostate{}) {}
@@ -144,4 +144,4 @@ std::shared_ptr<JSObject> Value::getObject() const {
     return std::get<std::shared_ptr<JSObject>>(data_);
 }
 
-}  // namespace jsruntime::runtime
+}  // namespace rift::runtime

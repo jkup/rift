@@ -16,4 +16,4 @@ else
     make -j4
 fi
 
-echo "Build complete! Executable is at: build/jsruntime" 
+echo "Build complete! Executable is at: build/rift" 

@@ -7,7 +7,7 @@
 #include "../../runtime/environment/environment.h"
 #include "../../runtime/values/object.h"
 
-namespace jsruntime::builtins {
+namespace rift::builtins {
 
 void Global::setupGlobalFunctions(std::shared_ptr<Environment> global_env) {
     // Add global functions
@@ -165,4 +165,4 @@ int Global::getDigitValue(char c) {
     return 0;
 }
 
-}  // namespace jsruntime::builtins
+}  // namespace rift::builtins

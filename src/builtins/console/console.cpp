@@ -1,6 +1,6 @@
 #include "console.h"
 
-namespace jsruntime::builtins {
+namespace rift::builtins {
 
 std::shared_ptr<JSObject> Console::create() {
     auto console = std::make_shared<JSObject>();
@@ -44,4 +44,4 @@ void Console::printValues(const std::vector<Value>& args, std::ostream& stream) 
     stream << std::endl;
 }
 
-}  // namespace jsruntime::builtins
+}  // namespace rift::builtins

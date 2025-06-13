@@ -33,7 +33,7 @@ if ! ./build.sh > /dev/null 2>&1; then
 fi
 
 # Check if runtime executable exists
-RIFT_RUNTIME="$PROJECT_ROOT/build/jsruntime"
+RIFT_RUNTIME="$PROJECT_ROOT/build/rift"
 if [ ! -f "$RIFT_RUNTIME" ]; then
     echo -e "${RED}❌ Runtime executable not found: $RIFT_RUNTIME${NC}"
     exit 1

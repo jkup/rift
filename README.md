@@ -21,16 +21,16 @@ chmod +x build.sh
 ./build.sh
 ```
 
-This will create the `jsruntime` executable in the `build/` directory.
+This will create the `rift` executable in the `build/` directory.
 
 ### Run JavaScript Code
 
 ```bash
 # Execute a JavaScript file
-./build/jsruntime test/test-file.js
+./build/rift test/test-file.js
 
 # Execute JavaScript code directly
-./build/jsruntime -e "2 + 3 * 4"
+./build/rift -e "2 + 3 * 4"
 ```
 
 ### Run Test262 Tests

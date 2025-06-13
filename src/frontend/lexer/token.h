@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace jsruntime::frontend {
+namespace rift::frontend {
 
 // Token types for lexical analysis
 enum class TokenType {
@@ -74,4 +74,4 @@ struct Token {
     }
 };
 
-}  // namespace jsruntime::frontend
+}  // namespace rift::frontend

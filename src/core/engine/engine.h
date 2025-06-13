@@ -6,10 +6,10 @@
 #include "../../runtime/environment/environment.h"
 #include "../../runtime/values/value.h"
 
-namespace jsruntime::core {
+namespace rift::core {
 
-using namespace jsruntime::runtime;
-using namespace jsruntime::ast;
+using namespace rift::runtime;
+using namespace rift::ast;
 
 // Main JavaScript engine
 class JSEngine {
@@ -56,4 +56,4 @@ class JSEngine {
     Value performUnaryOperation(const std::string& op, const Value& operand);
 };
 
-}  // namespace jsruntime::core
+}  // namespace rift::core

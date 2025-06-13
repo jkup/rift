@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./build/jsruntime ./test/test-file.js
+./build/rift ./test/test-file.js
 
 echo
 echo "✅ Demo complete!"

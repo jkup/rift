@@ -10,11 +10,11 @@
 #include "runtime/environment/environment.h"
 #include "runtime/values/value.h"
 
-using namespace jsruntime::frontend;
-using namespace jsruntime::ast;
-using namespace jsruntime::runtime;
+using namespace rift::frontend;
+using namespace rift::ast;
+using namespace rift::runtime;
 
-namespace jsruntime {
+namespace rift {
 
 // Runtime implementation - now using modern Value system
 class Runtime {
@@ -53,4 +53,4 @@ class Runtime {
     std::shared_ptr<Environment> getGlobalEnvironment() { return global_env; }
 };
 
-}  // namespace jsruntime
+}  // namespace rift

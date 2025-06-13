@@ -7,7 +7,7 @@
 
 #include "../values/value.h"
 
-namespace jsruntime::runtime {
+namespace rift::runtime {
 
 // Environment for variable storage and scope management
 class Environment : public std::enable_shared_from_this<Environment> {
@@ -35,4 +35,4 @@ class Environment : public std::enable_shared_from_this<Environment> {
     std::vector<std::string> getVariableNames() const;
 };
 
-}  // namespace jsruntime::runtime
+}  // namespace rift::runtime

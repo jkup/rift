@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-namespace jsruntime::runtime {
+namespace rift::runtime {
 
 bool JSObject::hasProperty(const std::string& key) const {
     // Check own properties first
@@ -65,4 +65,4 @@ std::vector<std::string> JSObject::getPropertyNames() const {
     return names;
 }
 
-}  // namespace jsruntime::runtime
+}  // namespace rift::runtime

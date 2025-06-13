@@ -5,9 +5,9 @@
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
 
-namespace jsruntime::builtins {
+namespace rift::builtins {
 
-using namespace jsruntime::runtime;
+using namespace rift::runtime;
 
 // Console built-in
 class Console {
@@ -26,4 +26,4 @@ class Console {
     static void printValues(const std::vector<Value>& args, std::ostream& stream);
 };
 
-}  // namespace jsruntime::builtins
+}  // namespace rift::builtins

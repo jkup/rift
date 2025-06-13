@@ -5,7 +5,7 @@
 
 #include "ast_node.h"
 
-namespace jsruntime::ast {
+namespace rift::ast {
 
 // AST Node Factory - Helper functions for creating AST nodes
 class ASTFactory {
@@ -106,4 +106,4 @@ class ASTFactory {
     }
 };
 
-}  // namespace jsruntime::ast
+}  // namespace rift::ast

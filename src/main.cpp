@@ -25,11 +25,11 @@ std::string read_file(const std::string& filename) {
 
 int main(int argc, char* argv[]) {
     try {
-        jsruntime::JavaScript js;
+        rift::JavaScript js;
 
         if (argc == 1) {
             // Interactive mode (REPL) - for now just show help
-            std::cout << "JSRuntime - Minimal JavaScript Runtime\n";
+            std::cout << "Rift - Minimal JavaScript Runtime\n";
             print_usage(argv[0]);
             return 0;
         }

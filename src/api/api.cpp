@@ -1,6 +1,6 @@
 #include "api.h"
 
-namespace jsruntime {
+namespace rift {
 
 JavaScript::JavaScript() { engine_ = std::make_unique<core::JSEngine>(); }
 
@@ -16,12 +16,12 @@ std::string JavaScript::execute(const std::string& source) {
 
 std::string JavaScript::evaluate(const std::string& expression) { return execute(expression); }
 
-std::shared_ptr<jsruntime::ast::ASTNode> JavaScript::parse(const std::string& source) {
-    jsruntime::frontend::Lexer lexer(source);
+std::shared_ptr<rift::ast::ASTNode> JavaScript::parse(const std::string& source) {
+    rift::frontend::Lexer lexer(source);
     auto tokens = lexer.tokenize();
 
-    jsruntime::frontend::Parser parser(tokens);
+    rift::frontend::Parser parser(tokens);
     return parser.parse();
 }
 
-}  // namespace jsruntime
+}  // namespace rift

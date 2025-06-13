@@ -7,7 +7,7 @@
 
 #include "value.h"
 
-namespace jsruntime::runtime {
+namespace rift::runtime {
 
 // Forward declaration to avoid circular dependency
 class Value;
@@ -53,4 +53,4 @@ class JSFunction : public JSObject {
     std::string getTypeName() const override { return "Function"; }
 };
 
-}  // namespace jsruntime::runtime
+}  // namespace rift::runtime

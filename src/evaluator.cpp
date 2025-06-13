@@ -5,7 +5,7 @@
 #include <limits>
 #include <stdexcept>
 
-namespace jsruntime {
+namespace rift {
 
 using namespace ast;  // For ASTNodeType and ASTNode
 
@@ -235,4 +235,4 @@ Value Evaluator::evaluate(const std::shared_ptr<ASTNode>& node) {
     }
 }
 
-}  // namespace jsruntime
+}  // namespace rift

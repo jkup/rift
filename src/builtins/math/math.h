@@ -7,9 +7,9 @@
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
 
-namespace jsruntime::builtins {
+namespace rift::builtins {
 
-using namespace jsruntime::runtime;
+using namespace rift::runtime;
 
 /// The `Math` builtin object.
 ///
@@ -234,4 +234,4 @@ class Math {
     static std::uniform_real_distribution<> dis;
 };
 
-}  // namespace jsruntime::builtins
+}  // namespace rift::builtins

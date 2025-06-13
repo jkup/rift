@@ -5,7 +5,7 @@
 
 #include "token.h"
 
-namespace jsruntime::frontend {
+namespace rift::frontend {
 
 // Lexer class
 class Lexer {
@@ -29,4 +29,4 @@ class Lexer {
     std::vector<Token> tokenize();
 };
 
-}  // namespace jsruntime::frontend
+}  // namespace rift::frontend

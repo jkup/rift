@@ -6,7 +6,7 @@
 #include "../src/runtime/environment/environment.h"
 #include "../src/runtime/values/value.h"
 
-namespace jsruntime {
+namespace rift {
 
 // Import AST types for convenience
 using ASTNode = ast::ASTNode;
@@ -28,4 +28,4 @@ class Evaluator {
     Value evaluate(const std::shared_ptr<ASTNode>& node);
 };
 
-}  // namespace jsruntime
+}  // namespace rift

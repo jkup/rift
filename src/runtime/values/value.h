@@ -4,7 +4,7 @@
 #include <string>
 #include <variant>
 
-namespace jsruntime::runtime {
+namespace rift::runtime {
 
 // Forward declarations
 class JSObject;
@@ -75,4 +75,4 @@ class Value {
     std::shared_ptr<JSObject> getObject() const;
 };
 
-}  // namespace jsruntime::runtime
+}  // namespace rift::runtime

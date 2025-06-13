@@ -25,19 +25,16 @@ set(BUILTINS_SOURCES
 
 set(CORE_SOURCES
     src/core/engine/engine.cpp
+    src/runtime.cpp
+    src/evaluator.cpp
 )
 
 set(API_SOURCES
     src/api/api.cpp
 )
 
-set(LEGACY_SOURCES
-    src/runtime.cpp
-    src/evaluator.cpp
-)
-
 # Add the main executable
-add_executable(jsruntime
+add_executable(rift
     src/main.cpp
     ${FRONTEND_SOURCES}
     ${RUNTIME_SOURCES}
@@ -47,13 +44,13 @@ add_executable(jsruntime
     ${LEGACY_SOURCES}
 )
 
-target_include_directories(jsruntime PRIVATE include src)
+target_include_directories(rift PRIVATE include src)
 
 # Enable debug symbols and warnings
-target_compile_options(jsruntime PRIVATE
+target_compile_options(rift PRIVATE
     $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -g>
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
 )
 
 # Install target
-install(TARGETS jsruntime DESTINATION bin) 
+install(TARGETS rift DESTINATION bin) 

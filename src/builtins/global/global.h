@@ -5,9 +5,9 @@
 #include "../../runtime/environment/environment.h"
 #include "../../runtime/values/value.h"
 
-namespace jsruntime::builtins {
+namespace rift::builtins {
 
-using namespace jsruntime::runtime;
+using namespace rift::runtime;
 
 /// Global builtin functions and utilities.
 ///
@@ -74,4 +74,4 @@ class Global {
     static int getDigitValue(char c);
 };
 
-}  // namespace jsruntime::builtins
+}  // namespace rift::builtins

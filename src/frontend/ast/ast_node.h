@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace jsruntime::ast {
+namespace rift::ast {
 
 // Simple AST node types (maintaining compatibility)
 enum class ASTNodeType {
@@ -32,4 +32,4 @@ struct ASTNode {
     ASTNode(ASTNodeType t, const std::string& v) : type(t), value(v) {}
 };
 
-}  // namespace jsruntime::ast
+}  // namespace rift::ast

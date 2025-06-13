@@ -3,7 +3,7 @@
 #include <cctype>
 #include <unordered_map>
 
-namespace jsruntime::frontend {
+namespace rift::frontend {
 
 // Lexer implementation
 Lexer::Lexer(const std::string& source) : source(source), position(0), line(1), column(1) {}
@@ -233,4 +233,4 @@ std::vector<Token> Lexer::tokenize() {
     return tokens;
 }
 
-}  // namespace jsruntime::frontend
+}  // namespace rift::frontend

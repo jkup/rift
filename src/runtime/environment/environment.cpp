@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace jsruntime::runtime {
+namespace rift::runtime {
 
 void Environment::define(const std::string& name, const Value& value) { variables_[name] = value; }
 
@@ -63,4 +63,4 @@ std::vector<std::string> Environment::getVariableNames() const {
     return names;
 }
 
-}  // namespace jsruntime::runtime
+}  // namespace rift::runtime

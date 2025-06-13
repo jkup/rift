@@ -8,9 +8,9 @@
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
 
-namespace jsruntime::builtins {
+namespace rift::builtins {
 
-using namespace jsruntime::runtime;
+using namespace rift::runtime;
 
 /// The `String` builtin object and constructor.
 ///
@@ -198,4 +198,4 @@ class String {
     static size_t validateStringIndex(const std::string& str, double index);
 };
 
-}  // namespace jsruntime::builtins
+}  // namespace rift::builtins

@@ -4,7 +4,7 @@
 #include <limits>
 #include <sstream>
 
-namespace jsruntime::builtins {
+namespace rift::builtins {
 
 std::shared_ptr<JSObject> String::create() {
     auto string = std::make_shared<JSObject>();
@@ -331,4 +331,4 @@ size_t String::validateStringIndex(const std::string& str, double index) {
     return static_cast<size_t>(index);
 }
 
-}  // namespace jsruntime::builtins
+}  // namespace rift::builtins

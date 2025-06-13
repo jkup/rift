@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <limits>
 
-namespace jsruntime::builtins {
+namespace rift::builtins {
 
 // Math constants
 const double Math::E = M_E;
@@ -241,4 +241,4 @@ Value Math::tan(const std::vector<Value>& args) {
     return Value(std::tan(num));
 }
 
-}  // namespace jsruntime::builtins
+}  // namespace rift::builtins

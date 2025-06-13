@@ -2,9 +2,9 @@
 
 #include <stdexcept>
 
-namespace jsruntime::frontend {
+namespace rift::frontend {
 
-using namespace jsruntime::ast;
+using namespace rift::ast;
 using ASTFactory = ast::ASTFactory;
 
 // Parser implementation
@@ -268,4 +268,4 @@ std::shared_ptr<ASTNode> Parser::parse() {
     return program;
 }
 
-}  // namespace jsruntime::frontend
+}  // namespace rift::frontend

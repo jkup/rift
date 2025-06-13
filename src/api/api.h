@@ -6,7 +6,7 @@
 #include "../frontend/lexer/lexer.h"
 #include "../frontend/parser/parser.h"
 
-namespace jsruntime {
+namespace rift {
 
 // Public API for the JavaScript engine
 class JavaScript {
@@ -25,7 +25,7 @@ class JavaScript {
     core::JSEngine* getEngine() const { return engine_.get(); }
 
    private:
-    std::shared_ptr<jsruntime::ast::ASTNode> parse(const std::string& source);
+    std::shared_ptr<rift::ast::ASTNode> parse(const std::string& source);
 };
 
-}  // namespace jsruntime
+}  // namespace rift
