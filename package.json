@@ -1,5 +1,5 @@
 {
-  "name": "jsruntime",
+  "name": "rift",
   "version": "1.0.0",
   "description": "A minimal JavaScript runtime written in C++",
   "type": "module",
