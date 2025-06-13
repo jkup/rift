@@ -57,7 +57,7 @@ Value Evaluator::evaluate_binary_expression(const std::shared_ptr<ASTNode>& node
 
     if (op == "+") {
         // JavaScript addition is complex - can be numeric or string concatenation
-        if (left.type == ValueType::String || right.type == ValueType::String) {
+        if (left.isString() || right.isString()) {
             return Value(left.toString() + right.toString());
         } else {
             return Value(left.toNumber() + right.toNumber());
@@ -74,23 +74,23 @@ Value Evaluator::evaluate_binary_expression(const std::shared_ptr<ASTNode>& node
         return Value(left.toNumber() / right_num);
     } else if (op == "==") {
         // If both are same type, compare directly
-        if (left.type == right.type) {
-            if (left.type == ValueType::Number) {
+        if (left.getType() == right.getType()) {
+            if (left.isNumber()) {
                 return Value(left.toNumber() == right.toNumber());
-            } else if (left.type == ValueType::String) {
+            } else if (left.isString()) {
                 return Value(left.toString() == right.toString());
-            } else if (left.type == ValueType::Boolean) {
+            } else if (left.isBoolean()) {
                 return Value(left.toBool() == right.toBool());
             }
         }
         // Otherwise, convert both to strings and compare
         return Value(left.toString() == right.toString());
     } else if (op == "===") {
-        return Value(left.type == right.type && left.toString() == right.toString());
+        return Value(left.getType() == right.getType() && left.toString() == right.toString());
     } else if (op == "!=") {
         return Value(left.toString() != right.toString());
     } else if (op == "!==") {
-        return Value(left.type != right.type || left.toString() != right.toString());
+        return Value(left.getType() != right.getType() || left.toString() != right.toString());
     } else if (op == "<") {
         return Value(left.toNumber() < right.toNumber());
     } else if (op == ">") {
@@ -188,10 +188,9 @@ Value Evaluator::evaluate(const std::shared_ptr<ASTNode>& node) {
             // For now, just handle console.log specifically
             if (object.toString() == "[object Console]" && property == "log") {
                 // Return a special value representing the console.log function
-                Value logFunction;
-                logFunction.type = ValueType::Function;
-                logFunction.string_value = "console.log";
-                return logFunction;
+                // Note: Using string representation for now since we don't have proper function
+                // objects in legacy evaluator
+                return Value(std::string("console.log"));
             }
 
             return Value::undefined();
@@ -205,7 +204,7 @@ Value Evaluator::evaluate(const std::shared_ptr<ASTNode>& node) {
 
             Value function = evaluate(node->children[0]);  // Get the function to call
 
-            if (function.type == ValueType::Function && function.string_value == "console.log") {
+            if (function.isString() && function.toString() == "console.log") {
                 // Evaluate all arguments and print them
                 for (size_t i = 1; i < node->children.size(); i++) {
                     Value arg = evaluate(node->children[i]);

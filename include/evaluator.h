@@ -3,12 +3,15 @@
 #include <memory>
 
 #include "../src/frontend/ast/ast_node.h"
-#include "runtime.h"
+#include "../src/runtime/environment/environment.h"
+#include "../src/runtime/values/value.h"
 
 namespace jsruntime {
 
 // Import AST types for convenience
 using ASTNode = ast::ASTNode;
+using Value = runtime::Value;
+using Environment = runtime::Environment;
 
 class Evaluator {
    private:
