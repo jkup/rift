@@ -10,6 +10,17 @@
 
 namespace jsruntime::runtime {
 
+// Constructors
+Value::Value() : type_(ValueType::Undefined), data_(std::monostate{}) {}
+
+Value::Value(bool b) : type_(ValueType::Boolean), data_(b) {}
+
+Value::Value(double n) : type_(ValueType::Number), data_(n) {}
+
+Value::Value(const std::string& s) : type_(ValueType::String), data_(s) {}
+
+Value::Value(const char* s) : type_(ValueType::String), data_(std::string(s)) {}
+
 // Constructor for objects
 Value::Value(std::shared_ptr<JSObject> obj) : data_(obj) {
     if (obj && obj->getTypeName() == "Function") {

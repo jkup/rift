@@ -35,10 +35,11 @@ class Value {
 
    public:
     // Constructors
-    Value() : type_(ValueType::Undefined), data_(std::monostate{}) {}
-    explicit Value(bool b) : type_(ValueType::Boolean), data_(b) {}
-    explicit Value(double n) : type_(ValueType::Number), data_(n) {}
-    explicit Value(const std::string& s) : type_(ValueType::String), data_(s) {}
+    Value();
+    explicit Value(bool b);
+    explicit Value(double n);
+    explicit Value(const std::string& s);
+    explicit Value(const char* s);
     explicit Value(std::shared_ptr<JSObject> obj);
 
     // Static factory methods
