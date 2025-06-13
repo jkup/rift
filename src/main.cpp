@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "api/api.h"
+#include "rift/api/api.h"
 
 void print_usage(const char* program_name) {
     std::cout << "Usage: " << program_name << " [options] [file]\n";

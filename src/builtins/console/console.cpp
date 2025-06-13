@@ -1,4 +1,4 @@
-#include "console.h"
+#include "rift/builtins/console/console.h"
 
 namespace rift::builtins {
 

@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#include "../src/frontend/ast/ast_node.h"
-#include "../src/runtime/environment/environment.h"
-#include "../src/runtime/values/value.h"
+#include "rift/frontend/ast/ast_node.h"
+#include "rift/runtime/environment/environment.h"
+#include "rift/runtime/values/value.h"
 
 namespace rift {
 

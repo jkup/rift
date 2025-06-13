@@ -4,11 +4,11 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "evaluator.h"
-#include "frontend/lexer/lexer.h"
-#include "frontend/parser/parser.h"
-#include "runtime/environment/environment.h"
-#include "runtime/values/value.h"
+#include "rift/evaluator.h"
+#include "rift/frontend/lexer/lexer.h"
+#include "rift/frontend/parser/parser.h"
+#include "rift/runtime/environment/environment.h"
+#include "rift/runtime/values/value.h"
 
 using namespace rift::frontend;
 using namespace rift::ast;

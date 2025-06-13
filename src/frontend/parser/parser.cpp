@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "rift/frontend/parser/parser.h"
 
 #include <stdexcept>
 

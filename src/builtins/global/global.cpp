@@ -1,11 +1,11 @@
-#include "global.h"
+#include "rift/builtins/global/global.h"
 
 #include <cctype>
 #include <cmath>
 #include <limits>
 
-#include "../../runtime/environment/environment.h"
-#include "../../runtime/values/object.h"
+#include "rift/runtime/environment/environment.h"
+#include "rift/runtime/values/object.h"
 
 namespace rift::builtins {
 

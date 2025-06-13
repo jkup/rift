@@ -1,9 +1,9 @@
-#include "engine.h"
+#include "rift/core/engine/engine.h"
 
-#include "../../builtins/console/console.h"
-#include "../../builtins/global/global.h"
-#include "../../builtins/math/math.h"
-#include "../../builtins/string/string.h"
+#include "rift/builtins/console/console.h"
+#include "rift/builtins/global/global.h"
+#include "rift/builtins/math/math.h"
+#include "rift/builtins/string/string.h"
 
 namespace rift::core {
 

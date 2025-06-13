@@ -1,4 +1,4 @@
-#include "math.h"
+#include "rift/builtins/math/math.h"
 
 #include <algorithm>
 #include <limits>

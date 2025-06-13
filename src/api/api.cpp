@@ -1,4 +1,4 @@
-#include "api.h"
+#include "rift/api/api.h"
 
 namespace rift {
 

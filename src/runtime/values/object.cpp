@@ -1,4 +1,4 @@
-#include "object.h"
+#include "rift/runtime/values/object.h"
 
 #include <algorithm>
 

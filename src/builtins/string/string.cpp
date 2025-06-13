@@ -1,4 +1,4 @@
-#include "string.h"
+#include "rift/builtins/string/string.h"
 
 #include <cmath>
 #include <limits>

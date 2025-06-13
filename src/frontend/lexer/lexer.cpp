@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "rift/frontend/lexer/lexer.h"
 
 #include <cctype>
 #include <unordered_map>

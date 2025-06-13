@@ -1,4 +1,4 @@
-#include "value.h"
+#include "rift/runtime/values/value.h"
 
 #include <cmath>
 #include <iostream>
@@ -6,7 +6,7 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "object.h"
+#include "rift/runtime/values/object.h"
 
 namespace rift::runtime {
 

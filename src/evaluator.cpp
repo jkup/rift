@@ -1,4 +1,4 @@
-#include "evaluator.h"
+#include "rift/evaluator.h"
 
 #include <cctype>
 #include <iostream>
