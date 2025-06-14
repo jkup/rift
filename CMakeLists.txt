@@ -26,6 +26,10 @@ set(BUILTINS_SOURCES
 
 set(CORE_SOURCES
     src/core/engine/engine.cpp
+    src/core/engine/builtin_manager.cpp
+    src/core/engine/statement_evaluator.cpp
+    src/core/engine/expression_evaluator.cpp
+    src/core/engine/operation_handler.cpp
 )
 
 set(API_SOURCES

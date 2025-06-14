@@ -30,8 +30,8 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateVariableDeclaration(node, env, engine);
         case ASTNodeType::IfStatement:
             return evaluateIfStatement(node, env, engine);
-        case ASTNodeType::WhileStatement:
-            return evaluateWhileStatement(node, env, engine);
+        // case ASTNodeType::WhileStatement:
+        //     return evaluateWhileStatement(node, env, engine);
         case ASTNodeType::ReturnStatement:
             return evaluateReturnStatement(node, env, engine);
         case ASTNodeType::FunctionDeclaration:
@@ -97,10 +97,10 @@ Value StatementEvaluator::evaluateIfStatement(std::shared_ptr<ASTNode> node, std
     return Value::undefined();
 }
 
-Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    // Not implemented yet
-    return Value::undefined();
-}
+// Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+//     // Not implemented yet
+//     return Value::undefined();
+// }
 
 Value StatementEvaluator::evaluateReturnStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
     Value returnValue = Value::undefined();
