@@ -8,14 +8,14 @@
 
 namespace rift::core {
 
-JSEngine::JSEngine() {
+Rift::Rift() {
     global_env_ = std::make_shared<Environment>();
     setupBuiltins();
 }
 
-Value JSEngine::execute(std::shared_ptr<ASTNode> ast) { return evaluate(ast, global_env_); }
+Value Rift::execute(std::shared_ptr<ASTNode> ast) { return evaluate(ast, global_env_); }
 
-Value JSEngine::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env) {
+Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env) {
     if (!node) {
         return Value::undefined();
     }
@@ -52,7 +52,7 @@ Value JSEngine::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environm
     }
 }
 
-void JSEngine::setupBuiltins() {
+void Rift::setupBuiltins() {
     // Setup global functions (parseInt, parseFloat, isNaN, isFinite, etc.)
     builtins::Global::setupGlobalFunctions(global_env_);
 
@@ -74,12 +74,11 @@ void JSEngine::setupBuiltins() {
 }
 
 // Basic implementations - will be enhanced
-Value JSEngine::evaluateIdentifier(std::shared_ptr<ASTNode> node,
-                                   std::shared_ptr<Environment> env) {
+Value Rift::evaluateIdentifier(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env) {
     return env->get(node->value);
 }
 
-Value JSEngine::evaluateLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env) {
+Value Rift::evaluateLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env) {
     // Parse literal values
     if (node->value == "true") return Value(true);
     if (node->value == "false") return Value(false);
@@ -100,8 +99,8 @@ Value JSEngine::evaluateLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<E
     }
 }
 
-Value JSEngine::evaluateBinaryExpression(std::shared_ptr<ASTNode> node,
-                                         std::shared_ptr<Environment> env) {
+Value Rift::evaluateBinaryExpression(std::shared_ptr<ASTNode> node,
+                                     std::shared_ptr<Environment> env) {
     if (node->children.size() != 2) {
         return Value::undefined();
     }
@@ -112,16 +111,16 @@ Value JSEngine::evaluateBinaryExpression(std::shared_ptr<ASTNode> node,
     return performBinaryOperation(node->value, left, right);
 }
 
-Value JSEngine::evaluateExpressionStatement(std::shared_ptr<ASTNode> node,
-                                            std::shared_ptr<Environment> env) {
+Value Rift::evaluateExpressionStatement(std::shared_ptr<ASTNode> node,
+                                        std::shared_ptr<Environment> env) {
     if (!node->children.empty()) {
         return evaluate(node->children[0], env);
     }
     return Value::undefined();
 }
 
-Value JSEngine::evaluateBlockStatement(std::shared_ptr<ASTNode> node,
-                                       std::shared_ptr<Environment> env) {
+Value Rift::evaluateBlockStatement(std::shared_ptr<ASTNode> node,
+                                   std::shared_ptr<Environment> env) {
     Value result = Value::undefined();
     for (auto& child : node->children) {
         result = evaluate(child, env);
@@ -129,8 +128,7 @@ Value JSEngine::evaluateBlockStatement(std::shared_ptr<ASTNode> node,
     return result;
 }
 
-Value JSEngine::performBinaryOperation(const std::string& op, const Value& left,
-                                       const Value& right) {
+Value Rift::performBinaryOperation(const std::string& op, const Value& left, const Value& right) {
     if (op == "+") {
         if (left.isString() || right.isString()) {
             return Value(left.toString() + right.toString());
@@ -151,8 +149,8 @@ Value JSEngine::performBinaryOperation(const std::string& op, const Value& left,
 }
 
 // Stub implementations for other methods
-Value JSEngine::evaluateUnaryExpression(std::shared_ptr<ASTNode> node,
-                                        std::shared_ptr<Environment> env) {
+Value Rift::evaluateUnaryExpression(std::shared_ptr<ASTNode> node,
+                                    std::shared_ptr<Environment> env) {
     if (node->children.size() != 1) {
         return Value::undefined();
     }
@@ -182,8 +180,8 @@ Value JSEngine::evaluateUnaryExpression(std::shared_ptr<ASTNode> node,
     return performUnaryOperation(node->value, operand);
 }
 
-Value JSEngine::evaluateAssignmentExpression(std::shared_ptr<ASTNode> node,
-                                             std::shared_ptr<Environment> env) {
+Value Rift::evaluateAssignmentExpression(std::shared_ptr<ASTNode> node,
+                                         std::shared_ptr<Environment> env) {
     if (node->children.size() != 2) {
         return Value::undefined();
     }
@@ -200,8 +198,8 @@ Value JSEngine::evaluateAssignmentExpression(std::shared_ptr<ASTNode> node,
     return value;
 }
 
-Value JSEngine::evaluateCallExpression(std::shared_ptr<ASTNode> node,
-                                       std::shared_ptr<Environment> env) {
+Value Rift::evaluateCallExpression(std::shared_ptr<ASTNode> node,
+                                   std::shared_ptr<Environment> env) {
     if (node->children.size() < 1) {
         return Value::undefined();
     }
@@ -226,8 +224,8 @@ Value JSEngine::evaluateCallExpression(std::shared_ptr<ASTNode> node,
     return Value::undefined();
 }
 
-Value JSEngine::evaluateMemberExpression(std::shared_ptr<ASTNode> node,
-                                         std::shared_ptr<Environment> env) {
+Value Rift::evaluateMemberExpression(std::shared_ptr<ASTNode> node,
+                                     std::shared_ptr<Environment> env) {
     if (node->children.size() != 2) {
         return Value::undefined();
     }
@@ -280,8 +278,8 @@ Value JSEngine::evaluateMemberExpression(std::shared_ptr<ASTNode> node,
     return Value::undefined();
 }
 
-Value JSEngine::evaluateVariableDeclaration(std::shared_ptr<ASTNode> node,
-                                            std::shared_ptr<Environment> env) {
+Value Rift::evaluateVariableDeclaration(std::shared_ptr<ASTNode> node,
+                                        std::shared_ptr<Environment> env) {
     if (node->children.size() < 1) {
         return Value::undefined();
     }
@@ -301,8 +299,7 @@ Value JSEngine::evaluateVariableDeclaration(std::shared_ptr<ASTNode> node,
     return value;
 }
 
-Value JSEngine::evaluateIfStatement(std::shared_ptr<ASTNode> node,
-                                    std::shared_ptr<Environment> env) {
+Value Rift::evaluateIfStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env) {
     if (node->children.size() < 2) {
         return Value::undefined();
     }
@@ -323,17 +320,17 @@ Value JSEngine::evaluateIfStatement(std::shared_ptr<ASTNode> node,
     return Value::undefined();
 }
 
-Value JSEngine::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
-                                       std::shared_ptr<Environment> env) {
+Value Rift::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
+                                   std::shared_ptr<Environment> env) {
     return Value::undefined();
 }
 
-Value JSEngine::evaluateReturnStatement(std::shared_ptr<ASTNode> node,
-                                        std::shared_ptr<Environment> env) {
+Value Rift::evaluateReturnStatement(std::shared_ptr<ASTNode> node,
+                                    std::shared_ptr<Environment> env) {
     return Value::undefined();
 }
 
-Value JSEngine::performUnaryOperation(const std::string& op, const Value& operand) {
+Value Rift::performUnaryOperation(const std::string& op, const Value& operand) {
     if (op == "-") {
         return Value(-operand.toNumber());
     }
@@ -373,8 +370,7 @@ Value JSEngine::performUnaryOperation(const std::string& op, const Value& operan
     return Value::undefined();
 }
 
-Value JSEngine::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
-                                     std::shared_ptr<Environment> env) {
+Value Rift::evaluateArrayLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env) {
     // Evaluate each element in the array literal
     std::vector<Value> elements;
     elements.reserve(node->children.size());

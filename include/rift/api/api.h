@@ -11,7 +11,7 @@ namespace rift {
 // Public API for the JavaScript engine
 class JavaScript {
    private:
-    std::unique_ptr<core::JSEngine> engine_;
+    std::unique_ptr<core::Rift> engine_;
 
    public:
     JavaScript();
@@ -22,7 +22,7 @@ class JavaScript {
     std::string evaluate(const std::string& expression);
 
     // Access to internal components (for advanced usage)
-    core::JSEngine* getEngine() const { return engine_.get(); }
+    core::Rift* getEngine() const { return engine_.get(); }
 
    private:
     std::shared_ptr<rift::ast::ASTNode> parse(const std::string& source);

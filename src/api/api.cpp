@@ -2,7 +2,7 @@
 
 namespace rift {
 
-JavaScript::JavaScript() { engine_ = std::make_unique<core::JSEngine>(); }
+JavaScript::JavaScript() { engine_ = std::make_unique<core::Rift>(); }
 
 std::string JavaScript::execute(const std::string& source) {
     try {

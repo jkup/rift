@@ -12,13 +12,13 @@ using namespace rift::runtime;
 using namespace rift::ast;
 
 // Main JavaScript engine
-class JSEngine {
+class Rift {
    private:
     std::shared_ptr<Environment> global_env_;
 
    public:
-    JSEngine();
-    ~JSEngine() = default;
+    Rift();
+    ~Rift() = default;
 
     // Execution methods
     Value execute(std::shared_ptr<ASTNode> ast);
