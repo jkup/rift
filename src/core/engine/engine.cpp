@@ -140,6 +140,48 @@ Value Rift::performBinaryOperation(const std::string& op, const Value& left, con
     if (op == "/") return Value(left.toNumber() / right.toNumber());
     if (op == "==") return Value(left.toString() == right.toString());
     if (op == "!=") return Value(left.toString() != right.toString());
+    if (op == "===") {
+        // Strict equality - check both type and value
+        if (left.getType() != right.getType()) {
+            return Value(false);
+        }
+        // Same type, compare values
+        if (left.isNumber()) {
+            return Value(left.toNumber() == right.toNumber());
+        } else if (left.isString()) {
+            return Value(left.toString() == right.toString());
+        } else if (left.isBoolean()) {
+            return Value(left.toBool() == right.toBool());
+        } else if (left.isNull() && right.isNull()) {
+            return Value(true);
+        } else if (left.isUndefined() && right.isUndefined()) {
+            return Value(true);
+        } else {
+            // For objects, compare reference (simplified)
+            return Value(left.toString() == right.toString());
+        }
+    }
+    if (op == "!==") {
+        // Strict inequality - opposite of strict equality
+        if (left.getType() != right.getType()) {
+            return Value(true);
+        }
+        // Same type, compare values and negate
+        if (left.isNumber()) {
+            return Value(left.toNumber() != right.toNumber());
+        } else if (left.isString()) {
+            return Value(left.toString() != right.toString());
+        } else if (left.isBoolean()) {
+            return Value(left.toBool() != right.toBool());
+        } else if (left.isNull() && right.isNull()) {
+            return Value(false);
+        } else if (left.isUndefined() && right.isUndefined()) {
+            return Value(false);
+        } else {
+            // For objects, compare reference (simplified)
+            return Value(left.toString() != right.toString());
+        }
+    }
     if (op == "<") return Value(left.toNumber() < right.toNumber());
     if (op == ">") return Value(left.toNumber() > right.toNumber());
     if (op == "<=") return Value(left.toNumber() <= right.toNumber());
@@ -186,16 +228,63 @@ Value Rift::evaluateAssignmentExpression(std::shared_ptr<ASTNode> node,
         return Value::undefined();
     }
 
-    // Get the variable name (left side)
-    std::string varName = node->children[0]->value;
+    auto leftSide = node->children[0];
+    Value rightValue = evaluate(node->children[1], env);
 
-    // Evaluate the right side
-    Value value = evaluate(node->children[1], env);
+    // Check if left side is a member expression (property assignment)
+    if (leftSide->type == ASTNodeType::MemberExpression) {
+        if (leftSide->children.size() != 2) {
+            return Value::undefined();
+        }
 
-    // Set the variable in the environment
-    env->set(varName, value);
+        // Evaluate the object
+        Value object = evaluate(leftSide->children[0], env);
 
-    return value;
+        // Get the property name - handle both dot and bracket notation
+        std::string property;
+        if (leftSide->children[1]->type == ASTNodeType::Literal ||
+            leftSide->children[1]->type == ASTNodeType::BinaryExpression ||
+            leftSide->children[1]->type == ASTNodeType::CallExpression) {
+            // Bracket notation - evaluate the property expression
+            Value propertyValue = evaluate(leftSide->children[1], env);
+            property = propertyValue.toString();
+        } else {
+            // Dot notation - use the identifier value directly
+            property = leftSide->children[1]->value;
+        }
+
+        // Set the property on the object
+        if (object.isObject() || object.isFunction()) {
+            auto obj = object.getObject();
+            if (obj) {
+                obj->setProperty(property, rightValue);
+
+                // Special handling for arrays: update length if necessary
+                if (property != "length") {
+                    // Check if this is a numeric index
+                    try {
+                        size_t index = std::stoull(property);
+                        Value lengthVal = obj->getProperty("length");
+                        if (lengthVal.isNumber()) {
+                            size_t currentLength = static_cast<size_t>(lengthVal.toNumber());
+                            if (index >= currentLength) {
+                                obj->setProperty("length", Value(static_cast<double>(index + 1)));
+                            }
+                        }
+                    } catch (...) {
+                        // Not a numeric index, ignore
+                    }
+                }
+            }
+        }
+
+        return rightValue;
+    } else {
+        // Simple variable assignment
+        std::string varName = leftSide->value;
+        env->set(varName, rightValue);
+        return rightValue;
+    }
 }
 
 Value Rift::evaluateCallExpression(std::shared_ptr<ASTNode> node,
