@@ -40,6 +40,7 @@ class JSEngine {
                                        std::shared_ptr<Environment> env);
     Value evaluateCallExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
     Value evaluateMemberExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
+    Value evaluateArrayLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
 
     // Statement evaluation
     Value evaluateBlockStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);

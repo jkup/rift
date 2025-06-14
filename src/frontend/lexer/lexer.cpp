@@ -157,6 +157,13 @@ Token Lexer::next_token() {
             advance();
             return Token(TokenType::Multiply, "*", line, column);
         case '/':
+            if (peek_char() == '/') {
+                // Skip single-line comment
+                while (current_char() != '\n' && current_char() != '\0') {
+                    advance();
+                }
+                return next_token();  // Recursively get the next token after the comment
+            }
             advance();
             return Token(TokenType::Divide, "/", line, column);
         case '(':
@@ -171,6 +178,12 @@ Token Lexer::next_token() {
         case '}':
             advance();
             return Token(TokenType::RightBrace, "}", line, column);
+        case '[':
+            advance();
+            return Token(TokenType::LeftBracket, "[", line, column);
+        case ']':
+            advance();
+            return Token(TokenType::RightBracket, "]", line, column);
         case ';':
             advance();
             return Token(TokenType::Semicolon, ";", line, column);

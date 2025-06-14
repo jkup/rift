@@ -45,6 +45,8 @@ Value JSEngine::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environm
             return evaluateVariableDeclaration(node, env);
         case ASTNodeType::IfStatement:
             return evaluateIfStatement(node, env);
+        case ASTNodeType::ArrayLiteral:
+            return evaluateArrayLiteral(node, env);
         default:
             return Value::undefined();
     }
@@ -352,6 +354,21 @@ Value JSEngine::performUnaryOperation(const std::string& op, const Value& operan
     }
 
     return Value::undefined();
+}
+
+Value JSEngine::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
+                                     std::shared_ptr<Environment> env) {
+    // Evaluate each element in the array literal
+    std::vector<Value> elements;
+    elements.reserve(node->children.size());
+
+    for (const auto& child : node->children) {
+        elements.push_back(evaluate(child, env));
+    }
+
+    // Use the Array::createArrayObject helper to create the array
+    auto arrayObj = builtins::Array::createArrayObject(elements);
+    return Value(arrayObj);
 }
 
 }  // namespace rift::core

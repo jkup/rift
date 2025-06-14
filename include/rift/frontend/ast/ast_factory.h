@@ -57,6 +57,10 @@ class ASTFactory {
         return node;
     }
 
+    static std::shared_ptr<ASTNode> makeArrayLiteral() {
+        return std::make_shared<ASTNode>(ASTNodeType::ArrayLiteral);
+    }
+
     // Statement factories
     static std::shared_ptr<ASTNode> makeProgram() {
         return std::make_shared<ASTNode>(ASTNodeType::Program);
@@ -95,6 +99,14 @@ class ASTFactory {
                             std::shared_ptr<ASTNode> argument) {
         if (callExpression->type == ASTNodeType::CallExpression) {
             callExpression->children.push_back(argument);
+        }
+    }
+
+    // Helper to add element to array literal
+    static void addArrayElement(std::shared_ptr<ASTNode> arrayLiteral,
+                                std::shared_ptr<ASTNode> element) {
+        if (arrayLiteral->type == ASTNodeType::ArrayLiteral) {
+            arrayLiteral->children.push_back(element);
         }
     }
 

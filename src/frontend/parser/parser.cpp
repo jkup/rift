@@ -65,6 +65,9 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             consume(TokenType::RightParen);
             return expr;
         }
+        case TokenType::LeftBracket: {
+            return parse_array_literal();
+        }
         default:
             throw std::runtime_error("Unexpected token in primary expression");
     }
@@ -266,6 +269,27 @@ std::shared_ptr<ASTNode> Parser::parse() {
     }
 
     return program;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_array_literal() {
+    consume(TokenType::LeftBracket);  // consume '['
+
+    auto array = ASTFactory::makeArrayLiteral();
+
+    // Handle empty array []
+    if (current_token().type == TokenType::RightBracket) {
+        current++;  // consume ']'
+        return array;
+    }
+
+    // Parse array elements
+    do {
+        auto element = parse_expression();
+        ASTFactory::addArrayElement(array, element);
+    } while (match(TokenType::Comma));
+
+    consume(TokenType::RightBracket);  // consume ']'
+    return array;
 }
 
 }  // namespace rift::frontend

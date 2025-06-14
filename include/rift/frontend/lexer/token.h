@@ -50,6 +50,8 @@ enum class TokenType {
     RightParen,
     LeftBrace,
     RightBrace,
+    LeftBracket,
+    RightBracket,
     Semicolon,
     Comma,
     Dot,

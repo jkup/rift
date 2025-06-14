@@ -29,6 +29,9 @@ class Array {
     /// Create the Array.prototype object with all instance methods.
     static std::shared_ptr<JSObject> createPrototype();
 
+    /// Helper to create a new array object with the given elements
+    static std::shared_ptr<JSObject> createArrayObject(const std::vector<Value>& elements);
+
    private:
     // Array constructor function
     /// The `Array()` constructor creates Array objects.
@@ -184,9 +187,6 @@ class Array {
 
     /// Helper to set the length of an array-like object
     static void setArrayLength(std::shared_ptr<JSObject> obj, size_t length);
-
-    /// Helper to create a new array object with the given elements
-    static std::shared_ptr<JSObject> createArrayObject(const std::vector<Value>& elements);
 };
 
 }  // namespace rift::builtins
