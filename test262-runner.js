@@ -277,7 +277,6 @@ class Test262Runner {
       /\bfor\s*\(/, // for loops
       /\bwhile\s*\(/, // while loops
       /\bdo\s*\{/, // do-while loops
-      /\bfunction\s+\w+/, // function declarations
       /\bclass\s+\w+/, // class declarations
       /\btry\s*\{/, // try-catch blocks
       /\bcatch\s*\(/, // catch clauses

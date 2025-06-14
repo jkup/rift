@@ -11,7 +11,11 @@ namespace rift::core {
 using namespace rift::runtime;
 using namespace rift::ast;
 
-// Main JavaScript engine
+// Forward declaration for evaluator function type
+class Rift;
+using EvaluatorFunction = std::function<Value(std::shared_ptr<ASTNode>, std::shared_ptr<Environment>, Rift*)>;
+
+// Main JavaScript engine - now simplified as a coordinator
 class Rift {
    private:
     std::shared_ptr<Environment> global_env_;
@@ -20,7 +24,7 @@ class Rift {
     Rift();
     ~Rift() = default;
 
-    // Execution methods
+    // Main execution methods
     Value execute(std::shared_ptr<ASTNode> ast);
     Value evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
 
@@ -29,36 +33,6 @@ class Rift {
 
     // Built-in setup
     void setupBuiltins();
-
-   private:
-    // Expression evaluation
-    Value evaluateIdentifier(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-    Value evaluateLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-    Value evaluateBinaryExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-    Value evaluateUnaryExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-    Value evaluateAssignmentExpression(std::shared_ptr<ASTNode> node,
-                                       std::shared_ptr<Environment> env);
-    Value evaluateCallExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-    Value evaluateMemberExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-    Value evaluateArrayLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-
-    // Statement evaluation
-    Value evaluateBlockStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-    Value evaluateExpressionStatement(std::shared_ptr<ASTNode> node,
-                                      std::shared_ptr<Environment> env);
-    Value evaluateVariableDeclaration(std::shared_ptr<ASTNode> node,
-                                      std::shared_ptr<Environment> env);
-    Value evaluateIfStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-    Value evaluateWhileStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-    Value evaluateReturnStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-
-    // Function evaluation
-    Value evaluateFunctionDeclaration(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-    Value evaluateFunctionExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
-
-    // Helper methods
-    Value performBinaryOperation(const std::string& op, const Value& left, const Value& right);
-    Value performUnaryOperation(const std::string& op, const Value& operand);
 };
 
 }  // namespace rift::core

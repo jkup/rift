@@ -1,0 +1,299 @@
+#include "rift/core/engine/expression_evaluator.h"
+#include "rift/core/engine/operation_handler.h"
+#include "rift/core/engine/engine.h"
+#include "rift/builtins/array/array.h"
+#include "rift/runtime/values/object.h"
+
+namespace rift::core {
+
+// Custom exception for handling return statements
+class ReturnException : public std::exception {
+private:
+    Value returnValue_;
+public:
+    ReturnException(const Value& value) : returnValue_(value) {}
+    const Value& getValue() const { return returnValue_; }
+    const char* what() const noexcept override { return "Return statement"; }
+};
+
+Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    if (!node) {
+        return Value::undefined();
+    }
+
+    switch (node->type) {
+        case ASTNodeType::Identifier:
+            return evaluateIdentifier(node, env, engine);
+        case ASTNodeType::Literal:
+            return evaluateLiteral(node, env, engine);
+        case ASTNodeType::BinaryExpression:
+            return evaluateBinaryExpression(node, env, engine);
+        case ASTNodeType::UnaryExpression:
+            return evaluateUnaryExpression(node, env, engine);
+        case ASTNodeType::AssignmentExpression:
+            return evaluateAssignmentExpression(node, env, engine);
+        case ASTNodeType::CallExpression:
+            return evaluateCallExpression(node, env, engine);
+        case ASTNodeType::MemberExpression:
+            return evaluateMemberExpression(node, env, engine);
+        case ASTNodeType::ArrayLiteral:
+            return evaluateArrayLiteral(node, env, engine);
+        case ASTNodeType::FunctionExpression:
+            return evaluateFunctionExpression(node, env, engine);
+        default:
+            return Value::undefined();
+    }
+}
+
+Value ExpressionEvaluator::evaluateIdentifier(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    return env->get(node->value);
+}
+
+Value ExpressionEvaluator::evaluateLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    // Parse literal values
+    if (node->value == "true") return Value(true);
+    if (node->value == "false") return Value(false);
+    if (node->value == "null") return Value::null();
+    if (node->value == "undefined") return Value::undefined();
+
+    // Try to parse as number
+    try {
+        double num = std::stod(node->value);
+        return Value(num);
+    } catch (...) {
+        // Must be a string - remove quotes if present
+        std::string str = node->value;
+        if (str.length() >= 2 && str[0] == '"' && str.back() == '"') {
+            str = str.substr(1, str.length() - 2);
+        }
+        return Value(str);
+    }
+}
+
+Value ExpressionEvaluator::evaluateBinaryExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    if (node->children.size() != 2) {
+        return Value::undefined();
+    }
+
+    Value left = engine->evaluate(node->children[0], env);
+    Value right = engine->evaluate(node->children[1], env);
+
+    return OperationHandler::performBinaryOperation(node->value, left, right);
+}
+
+Value ExpressionEvaluator::evaluateUnaryExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    if (node->children.size() != 1) {
+        return Value::undefined();
+    }
+
+    // Special handling for typeof operator
+    if (node->value == "typeof") {
+        auto operandNode = node->children[0];
+
+        // If the operand is an identifier, we need to handle the case where it might not exist
+        if (operandNode->type == ASTNodeType::Identifier) {
+            try {
+                Value operand = engine->evaluate(operandNode, env);
+                return OperationHandler::performUnaryOperation(node->value, operand);
+            } catch (...) {
+                // If the identifier doesn't exist, typeof should return "undefined"
+                return Value("undefined");
+            }
+        } else {
+            // For non-identifier operands, evaluate normally
+            Value operand = engine->evaluate(operandNode, env);
+            return OperationHandler::performUnaryOperation(node->value, operand);
+        }
+    }
+
+    // For other unary operators, evaluate the operand normally
+    Value operand = engine->evaluate(node->children[0], env);
+    return OperationHandler::performUnaryOperation(node->value, operand);
+}
+
+Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    if (node->children.size() != 2) {
+        return Value::undefined();
+    }
+
+    auto leftSide = node->children[0];
+    Value rightValue = engine->evaluate(node->children[1], env);
+
+    // Check if left side is a member expression (property assignment)
+    if (leftSide->type == ASTNodeType::MemberExpression) {
+        if (leftSide->children.size() != 2) {
+            return Value::undefined();
+        }
+
+        // Evaluate the object
+        Value object = engine->evaluate(leftSide->children[0], env);
+
+        // Get the property name - handle both dot and bracket notation
+        std::string property;
+        if (leftSide->children[1]->type == ASTNodeType::Literal ||
+            leftSide->children[1]->type == ASTNodeType::BinaryExpression ||
+            leftSide->children[1]->type == ASTNodeType::CallExpression) {
+            // Bracket notation - evaluate the property expression
+            Value propertyValue = engine->evaluate(leftSide->children[1], env);
+            property = propertyValue.toString();
+        } else {
+            // Dot notation - use the identifier value directly
+            property = leftSide->children[1]->value;
+        }
+
+        // Set the property on the object
+        if (object.isObject() || object.isFunction()) {
+            auto obj = object.getObject();
+            if (obj) {
+                obj->setProperty(property, rightValue);
+
+                // Special handling for arrays: update length if necessary
+                if (property != "length") {
+                    // Check if this is a numeric index
+                    try {
+                        size_t index = std::stoull(property);
+                        Value lengthVal = obj->getProperty("length");
+                        if (lengthVal.isNumber()) {
+                            size_t currentLength = static_cast<size_t>(lengthVal.toNumber());
+                            if (index >= currentLength) {
+                                obj->setProperty("length", Value(static_cast<double>(index + 1)));
+                            }
+                        }
+                    } catch (...) {
+                        // Not a numeric index, ignore
+                    }
+                }
+            }
+        }
+
+        return rightValue;
+    } else {
+        // Simple variable assignment
+        std::string varName = leftSide->value;
+        env->set(varName, rightValue);
+        return rightValue;
+    }
+}
+
+Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    if (node->children.size() < 1) {
+        return Value::undefined();
+    }
+
+    // Evaluate the function/callee
+    Value callee = engine->evaluate(node->children[0], env);
+
+    // Evaluate arguments
+    std::vector<Value> args;
+    for (size_t i = 1; i < node->children.size(); ++i) {
+        args.push_back(engine->evaluate(node->children[i], env));
+    }
+
+    // If it's a function object, call it
+    if (callee.isFunction()) {
+        auto func = std::dynamic_pointer_cast<JSFunction>(callee.getObject());
+        if (func) {
+            return func->call(args);
+        }
+    }
+
+    return Value::undefined();
+}
+
+Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    if (node->children.size() != 2) {
+        return Value::undefined();
+    }
+
+    // Evaluate the object
+    Value object = engine->evaluate(node->children[0], env);
+
+    // Get the property name - could be static (dot notation) or computed (bracket notation)
+    std::string property;
+
+    // Check if this is computed member access (bracket notation)
+    // In bracket notation, the property is an expression that needs to be evaluated
+    if (node->children[1]->type == ASTNodeType::Literal ||
+        node->children[1]->type == ASTNodeType::BinaryExpression ||
+        node->children[1]->type == ASTNodeType::CallExpression) {
+        // This is bracket notation - evaluate the property expression
+        Value propertyValue = engine->evaluate(node->children[1], env);
+        property = propertyValue.toString();
+    } else {
+        // This is dot notation - use the identifier value directly
+        property = node->children[1]->value;
+    }
+
+    // If it's an object, get the property
+    if (object.isObject() || object.isFunction()) {
+        auto obj = object.getObject();
+        if (obj) {
+            return obj->getProperty(property);
+        }
+    }
+
+    // Handle string primitive boxing - simplified for now
+    if (object.isString()) {
+        // For now, return undefined - we'll handle string prototype methods later
+        return Value::undefined();
+    }
+
+    return Value::undefined();
+}
+
+Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    // Evaluate each element in the array literal
+    std::vector<Value> elements;
+    elements.reserve(node->children.size());
+
+    for (const auto& child : node->children) {
+        elements.push_back(engine->evaluate(child, env));
+    }
+
+    // Use the Array::createArrayObject helper to create the array
+    auto arrayObj = builtins::Array::createArrayObject(elements);
+    return Value(arrayObj);
+}
+
+Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    if (node->children.size() < 2) {
+        return Value::undefined();
+    }
+    
+    // Get parameters (first child should be parameter list)
+    auto paramList = node->children[0];
+    std::vector<std::string> parameters;
+    for (const auto& param : paramList->children) {
+        parameters.push_back(param->value);
+    }
+    
+    // Get function body (second child)
+    auto body = node->children[1];
+    
+    // Create function object (anonymous)
+    auto func = std::make_shared<JSFunction>([engine, parameters, body, env](const std::vector<Value>& args) -> Value {
+        // Create new environment for function execution
+        auto funcEnv = std::make_shared<Environment>(env);
+        
+        // Bind parameters to arguments
+        for (size_t i = 0; i < parameters.size(); ++i) {
+            Value argValue = (i < args.size()) ? args[i] : Value::undefined();
+            funcEnv->define(parameters[i], argValue);
+        }
+        
+        // Execute function body
+        try {
+            return engine->evaluate(body, funcEnv);
+        } catch (const ReturnException& e) {
+            // Handle return statements - extract the actual return value
+            return e.getValue();
+        } catch (const std::runtime_error& e) {
+            // Handle other runtime errors
+            throw;
+        }
+    });
+    
+    return Value(func);
+}
+
+}  // namespace rift::core 
