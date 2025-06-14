@@ -128,18 +128,25 @@ class TestRunner {
   async findTestFiles() {
     const testFiles = [];
 
+    function walk(dir) {
+      const files = fs.readdirSync(dir);
+      for (const file of files) {
+        const fullPath = path.join(dir, file);
+        const stat = fs.statSync(fullPath);
+        if (stat.isDirectory()) {
+          walk(fullPath);
+        } else if (file.endsWith('.js') && !file.includes('temp')) {
+          testFiles.push(fullPath);
+        }
+      }
+    }
+
     if (!fs.existsSync(TEST_DIR)) {
       console.error(chalk.red(`❌ Test directory ${TEST_DIR} not found`));
       process.exit(1);
     }
 
-    const files = fs.readdirSync(TEST_DIR);
-    for (const file of files) {
-      if (file.endsWith(".js") && !file.includes("temp")) {
-        testFiles.push(path.join(TEST_DIR, file));
-      }
-    }
-
+    walk(TEST_DIR);
     return testFiles.sort();
   }
 
