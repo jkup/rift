@@ -208,6 +208,8 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
     while (true) {
         if (current_token().type == TokenType::Dot) {
             expr = parse_member_expression(expr);
+        } else if (current_token().type == TokenType::LeftBracket) {
+            expr = parse_computed_member_expression(expr);
         } else if (current_token().type == TokenType::LeftParen) {
             expr = parse_call_expression(expr);
         } else {
@@ -247,6 +249,16 @@ std::shared_ptr<ASTNode> Parser::parse_member_expression(std::shared_ptr<ASTNode
     current++;
 
     return ASTFactory::makeMemberExpression(object, property);
+}
+
+std::shared_ptr<ASTNode> Parser::parse_computed_member_expression(std::shared_ptr<ASTNode> object) {
+    consume(TokenType::LeftBracket);  // consume '['
+
+    auto index = parse_expression();
+
+    consume(TokenType::RightBracket);  // consume ']'
+
+    return ASTFactory::makeMemberExpression(object, index);
 }
 
 std::shared_ptr<ASTNode> Parser::parse() {

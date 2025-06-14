@@ -31,6 +31,7 @@ class Parser {
     std::shared_ptr<ASTNode> parse_postfix_expression();
     std::shared_ptr<ASTNode> parse_call_expression(std::shared_ptr<ASTNode> callee);
     std::shared_ptr<ASTNode> parse_member_expression(std::shared_ptr<ASTNode> object);
+    std::shared_ptr<ASTNode> parse_computed_member_expression(std::shared_ptr<ASTNode> object);
     std::shared_ptr<ASTNode> parse_variable_declaration();
     std::shared_ptr<ASTNode> parse_if_statement();
     std::shared_ptr<ASTNode> parse_array_literal();

@@ -233,8 +233,21 @@ Value Rift::evaluateMemberExpression(std::shared_ptr<ASTNode> node,
     // Evaluate the object
     Value object = evaluate(node->children[0], env);
 
-    // Get the property name
-    std::string property = node->children[1]->value;
+    // Get the property name - could be static (dot notation) or computed (bracket notation)
+    std::string property;
+
+    // Check if this is computed member access (bracket notation)
+    // In bracket notation, the property is an expression that needs to be evaluated
+    if (node->children[1]->type == ASTNodeType::Literal ||
+        node->children[1]->type == ASTNodeType::BinaryExpression ||
+        node->children[1]->type == ASTNodeType::CallExpression) {
+        // This is bracket notation - evaluate the property expression
+        Value propertyValue = evaluate(node->children[1], env);
+        property = propertyValue.toString();
+    } else {
+        // This is dot notation - use the identifier value directly
+        property = node->children[1]->value;
+    }
 
     // If it's an object, get the property
     if (object.isObject() || object.isFunction()) {

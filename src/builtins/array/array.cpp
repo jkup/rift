@@ -401,11 +401,71 @@ void Array::setArrayLength(std::shared_ptr<JSObject> obj, size_t length) {
 std::shared_ptr<JSObject> Array::createArrayObject(const std::vector<Value>& elements) {
     auto arrayObj = std::make_shared<JSObject>();
 
+    // Set up array elements
     for (size_t i = 0; i < elements.size(); ++i) {
         arrayObj->setProperty(std::to_string(i), elements[i]);
     }
 
+    // Set array length
     setArrayLength(arrayObj, elements.size());
+
+    // Add array methods directly to the array object for now
+    // (In a full implementation, this would be done via prototype chain)
+    arrayObj->setProperty(
+        "push",
+        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
+            size_t length = Array::getArrayLength(arrayObj);
+
+            // Add all arguments to the end of the array
+            for (size_t i = 0; i < args.size(); ++i) {
+                arrayObj->setProperty(std::to_string(length), args[i]);
+                length++;
+            }
+
+            Array::setArrayLength(arrayObj, length);
+            return Value(static_cast<double>(length));
+        })));
+
+    arrayObj->setProperty(
+        "pop",
+        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
+            size_t length = Array::getArrayLength(arrayObj);
+
+            if (length == 0) {
+                return Value::undefined();
+            }
+
+            // Get the last element
+            Value lastElement = arrayObj->getProperty(std::to_string(length - 1));
+
+            // Remove it by setting to undefined
+            arrayObj->setProperty(std::to_string(length - 1), Value::undefined());
+
+            // Update length
+            Array::setArrayLength(arrayObj, length - 1);
+
+            return lastElement;
+        })));
+
+    arrayObj->setProperty(
+        "toString",
+        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
+            size_t length = Array::getArrayLength(arrayObj);
+            std::string result = "";
+
+            for (size_t i = 0; i < length; ++i) {
+                if (i > 0) {
+                    result += ",";
+                }
+                Value element = arrayObj->getProperty(std::to_string(i));
+                if (!element.isUndefined() && !element.isNull()) {
+                    result += element.toString();
+                }
+            }
+
+            return Value(result);
+        })));
+
     return arrayObj;
 }
 
