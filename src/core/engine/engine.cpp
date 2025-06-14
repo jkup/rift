@@ -8,6 +8,16 @@
 
 namespace rift::core {
 
+// Custom exception for handling return statements
+class ReturnException : public std::exception {
+private:
+    Value returnValue_;
+public:
+    ReturnException(const Value& value) : returnValue_(value) {}
+    const Value& getValue() const { return returnValue_; }
+    const char* what() const noexcept override { return "Return statement"; }
+};
+
 Rift::Rift() {
     global_env_ = std::make_shared<Environment>();
     setupBuiltins();
@@ -47,6 +57,12 @@ Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment>
             return evaluateIfStatement(node, env);
         case ASTNodeType::ArrayLiteral:
             return evaluateArrayLiteral(node, env);
+        case ASTNodeType::FunctionDeclaration:
+            return evaluateFunctionDeclaration(node, env);
+        case ASTNodeType::FunctionExpression:
+            return evaluateFunctionExpression(node, env);
+        case ASTNodeType::ReturnStatement:
+            return evaluateReturnStatement(node, env);
         default:
             return Value::undefined();
     }
@@ -429,7 +445,16 @@ Value Rift::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
 
 Value Rift::evaluateReturnStatement(std::shared_ptr<ASTNode> node,
                                     std::shared_ptr<Environment> env) {
-    return Value::undefined();
+    Value returnValue = Value::undefined();
+    
+    // If there's a return expression, evaluate it
+    if (!node->children.empty()) {
+        returnValue = evaluate(node->children[0], env);
+    }
+    
+    // Throw a special exception to unwind the call stack
+    // This is a simple way to implement return without proper exception handling
+    throw ReturnException(returnValue);
 }
 
 Value Rift::performUnaryOperation(const std::string& op, const Value& operand) {
@@ -484,6 +509,94 @@ Value Rift::evaluateArrayLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<
     // Use the Array::createArrayObject helper to create the array
     auto arrayObj = builtins::Array::createArrayObject(elements);
     return Value(arrayObj);
+}
+
+Value Rift::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env) {
+    if (node->children.size() < 2) {
+        return Value::undefined();
+    }
+
+    // Get function name
+    std::string functionName = node->value;
+    
+    // Get parameters (first child should be parameter list)
+    auto paramList = node->children[0];
+    std::vector<std::string> parameters;
+    for (const auto& param : paramList->children) {
+        parameters.push_back(param->value);
+    }
+    
+    // Get function body (second child)
+    auto body = node->children[1];
+    
+    // Create function object
+    auto func = std::make_shared<JSFunction>([this, parameters, body, env](const std::vector<Value>& args) -> Value {
+        // Create new environment for function execution
+        auto funcEnv = std::make_shared<Environment>(env);
+        
+        // Bind parameters to arguments
+        for (size_t i = 0; i < parameters.size(); ++i) {
+            Value argValue = (i < args.size()) ? args[i] : Value::undefined();
+            funcEnv->define(parameters[i], argValue);
+        }
+        
+        // Execute function body
+        try {
+            return evaluate(body, funcEnv);
+        } catch (const ReturnException& e) {
+            // Handle return statements - extract the actual return value
+            return e.getValue();
+        } catch (const std::runtime_error& e) {
+            // Handle other runtime errors
+            throw;
+        }
+    });
+    
+    // Define function in current environment
+    env->define(functionName, Value(func));
+    
+    return Value(func);
+}
+
+Value Rift::evaluateFunctionExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env) {
+    if (node->children.size() < 2) {
+        return Value::undefined();
+    }
+    
+    // Get parameters (first child should be parameter list)
+    auto paramList = node->children[0];
+    std::vector<std::string> parameters;
+    for (const auto& param : paramList->children) {
+        parameters.push_back(param->value);
+    }
+    
+    // Get function body (second child)
+    auto body = node->children[1];
+    
+    // Create function object (anonymous)
+    auto func = std::make_shared<JSFunction>([this, parameters, body, env](const std::vector<Value>& args) -> Value {
+        // Create new environment for function execution
+        auto funcEnv = std::make_shared<Environment>(env);
+        
+        // Bind parameters to arguments
+        for (size_t i = 0; i < parameters.size(); ++i) {
+            Value argValue = (i < args.size()) ? args[i] : Value::undefined();
+            funcEnv->define(parameters[i], argValue);
+        }
+        
+        // Execute function body
+        try {
+            return evaluate(body, funcEnv);
+        } catch (const ReturnException& e) {
+            // Handle return statements - extract the actual return value
+            return e.getValue();
+        } catch (const std::runtime_error& e) {
+            // Handle other runtime errors
+            throw;
+        }
+    });
+    
+    return Value(func);
 }
 
 }  // namespace rift::core

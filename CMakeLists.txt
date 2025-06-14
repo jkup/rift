@@ -26,8 +26,6 @@ set(BUILTINS_SOURCES
 
 set(CORE_SOURCES
     src/core/engine/engine.cpp
-    src/runtime.cpp
-    src/evaluator.cpp
 )
 
 set(API_SOURCES

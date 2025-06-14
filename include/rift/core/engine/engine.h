@@ -52,6 +52,10 @@ class Rift {
     Value evaluateWhileStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
     Value evaluateReturnStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
 
+    // Function evaluation
+    Value evaluateFunctionDeclaration(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
+    Value evaluateFunctionExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env);
+
     // Helper methods
     Value performBinaryOperation(const std::string& op, const Value& left, const Value& right);
     Value performUnaryOperation(const std::string& op, const Value& operand);

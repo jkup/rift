@@ -1,23 +1,29 @@
-// Basic function declaration and call
+// Basic function tests
+
 function add(a, b) {
     return a + b;
 }
 
-// Test basic function call
-console.log("PASS: Basic function call");
-if (add(1, 2) !== 3) {
-    console.log("FAIL: Basic function call failed");
+console.log("PASS: Basic function test");
+
+// Test function call
+var result = add(2, 3);
+if (result == 5) {
+    console.log("PASS: Function call works");
+} else {
+    console.log("FAIL: Function call failed, got " + result);
 }
 
 // Test function with no return
 function noReturn() {
-    let x = 1;
+    var x = 5;
 }
 
-// Test function with no return value
-console.log("PASS: Function with no return");
-if (noReturn() !== undefined) {
-    console.log("FAIL: Function with no return should return undefined");
+var undefinedResult = noReturn();
+if (undefinedResult == undefined) {
+    console.log("PASS: Function with no return gives undefined");
+} else {
+    console.log("FAIL: Function with no return should give undefined, got " + undefinedResult);
 }
 
 // Test function with multiple parameters
