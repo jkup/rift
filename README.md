@@ -48,6 +48,22 @@ The test runner will:
 3. Run a subset of basic tests
 4. Show a summary of passed/failed/skipped tests
 
+## Implementation Status
+
+### ✅ Implemented
+
+- **Global Functions**: `parseInt`, `parseFloat`, `isNaN`, `isFinite`
+- **Console**: `log`, `error`, `warn`, `info`
+- **String**: `charAt`, `indexOf`, `slice`, `toLowerCase`, `toUpperCase`, `trim`, `split`, etc.
+- **Math**: `abs`, `ceil`, `floor`, `max`, `min`, `pow`, `sqrt`, `random`, `sin`, `cos`, etc.
+
+### ❌ Not Yet Implemented
+
+- **Array**: `push`, `pop`, `map`, `filter`, `reduce`, `forEach`, etc.
+- **Object**: `keys`, `values`, `entries`, `assign`, etc.
+- **Function**: `call`, `apply`, `bind`
+- **Date**, **JSON**, **RegExp**, **Error types**, **Promises**
+
 ## Architecture
 
 The runtime follows a traditional interpreter architecture:
