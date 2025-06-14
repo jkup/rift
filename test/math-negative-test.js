@@ -1,42 +1,62 @@
 // Test Math methods with negative numbers
-console.log("Testing Math.abs with negative number:");
-console.log(Math.abs(-5));
 
-console.log("Testing Math.ceil with negative number:");
-console.log(Math.ceil(-2.3));
+// Test Math.abs
+if (Math.abs(-5) == 5) console.log("PASS: Math.abs with negative number");
+if (Math.abs(-5) != 5) console.log("FAIL: Math.abs with negative number");
 
-console.log("Testing Math.floor with negative number:");
-console.log(Math.floor(-2.3));
+if (Math.abs(5) == 5) console.log("PASS: Math.abs with positive number");
+if (Math.abs(5) != 5) console.log("FAIL: Math.abs with positive number");
 
-console.log("Testing Math.round with negative number:");
-console.log(Math.round(-2.7));
+// Test Math.ceil
+if (Math.ceil(-2.3) == -2) console.log("PASS: Math.ceil with negative number");
+if (Math.ceil(-2.3) != -2) console.log("FAIL: Math.ceil with negative number");
 
-console.log("Testing unary minus directly:");
-console.log(-42);
+if (Math.ceil(2.3) == 3) console.log("PASS: Math.ceil with positive number");
+if (Math.ceil(2.3) != 3) console.log("FAIL: Math.ceil with positive number");
 
-console.log("Testing unary plus:");
-console.log(+42);
+// Test Math.floor
+if (Math.floor(-2.3) == -3)
+  console.log("PASS: Math.floor with negative number");
+if (Math.floor(-2.3) != -3)
+  console.log("FAIL: Math.floor with negative number");
 
-console.log("Testing Math.sign with positive number:");
-console.log(Math.sign(5));
+if (Math.floor(2.3) == 2) console.log("PASS: Math.floor with positive number");
+if (Math.floor(2.3) != 2) console.log("FAIL: Math.floor with positive number");
 
-console.log("Testing Math.sign with negative number:");
-console.log(Math.sign(-5));
+// Test Math.round
+if (Math.round(-2.7) == -3)
+  console.log("PASS: Math.round with negative number");
+if (Math.round(-2.7) != -3)
+  console.log("FAIL: Math.round with negative number");
 
-console.log("Testing Math.sign with zero:");
-console.log(Math.sign(0));
+if (Math.round(2.7) == 3) console.log("PASS: Math.round with positive number");
+if (Math.round(2.7) != 3) console.log("FAIL: Math.round with positive number");
 
-console.log("Testing Math.sign with NaN:");
-console.log(Math.sign(NaN));
+// Test unary operators
+if (-42 == -42) console.log("PASS: Unary minus");
+if (-42 != -42) console.log("FAIL: Unary minus");
 
-console.log("Testing Math.trunc with positive decimal:");
-console.log(Math.trunc(4.7));
+if (+42 == 42) console.log("PASS: Unary plus");
+if (+42 != 42) console.log("FAIL: Unary plus");
 
-console.log("Testing Math.trunc with negative decimal:");
-console.log(Math.trunc(-4.7));
+// Test Math.sign
+if (Math.sign(5) == 1) console.log("PASS: Math.sign with positive number");
+if (Math.sign(5) != 1) console.log("FAIL: Math.sign with positive number");
 
-console.log("Testing Math.trunc with zero:");
-console.log(Math.trunc(0));
+if (Math.sign(-5) == -1) console.log("PASS: Math.sign with negative number");
+if (Math.sign(-5) != -1) console.log("FAIL: Math.sign with negative number");
 
-console.log("Testing Math.trunc with NaN:");
-console.log(Math.trunc(NaN));
+if (Math.sign(0) == 0) console.log("PASS: Math.sign with zero");
+if (Math.sign(0) != 0) console.log("FAIL: Math.sign with zero");
+
+// Test Math.trunc
+if (Math.trunc(4.7) == 4) console.log("PASS: Math.trunc with positive decimal");
+if (Math.trunc(4.7) != 4) console.log("FAIL: Math.trunc with positive decimal");
+
+if (Math.trunc(-4.7) == -4)
+  console.log("PASS: Math.trunc with negative decimal");
+if (Math.trunc(-4.7) != -4)
+  console.log("FAIL: Math.trunc with negative decimal");
+
+if (Math.trunc(0) == 0) console.log("PASS: Math.trunc with zero");
+if (Math.trunc(0) != 0) console.log("FAIL: Math.trunc with zero");

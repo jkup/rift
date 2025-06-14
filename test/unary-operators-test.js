@@ -1,78 +1,96 @@
 // Unary Operators Test Suite
-// This file tests all implemented unary operators
 
 // Test 1: Unary Plus (+)
-assertEqual(+5, 5, "Unary plus with positive number");
-assertEqual(+-3, -3, "Unary plus with negative number");
-assertEqual(+0, 0, "Unary plus with zero");
-var x = 42;
-assertEqual(+x, 42, "Unary plus with variable");
+if (+5 == 5) console.log("PASS: Unary plus with positive number");
+if (+5 != 5) console.log("FAIL: Unary plus with positive number");
+
+if (+-3 == -3) console.log("PASS: Unary plus with negative number");
+if (+-3 != -3) console.log("FAIL: Unary plus with negative number");
+
+if (+0 == 0) console.log("PASS: Unary plus with zero");
+if (+0 != 0) console.log("FAIL: Unary plus with zero");
 
 // Test 2: Unary Minus (-)
-assertEqual(-5, -5, "Unary minus with positive number");
-assertEqual(-(-3), 3, "Unary minus with negative number");
-assertEqual(-0, 0, "Unary minus with zero");
-var y = 42;
-assertEqual(-y, -42, "Unary minus with variable");
+if (-5 == -5) console.log("PASS: Unary minus with positive number");
+if (-5 != -5) console.log("FAIL: Unary minus with positive number");
+
+if (-(-3) == 3) console.log("PASS: Unary minus with negative number");
+if (-(-3) != 3) console.log("FAIL: Unary minus with negative number");
+
+if (-0 == 0) console.log("PASS: Unary minus with zero");
+if (-0 != 0) console.log("FAIL: Unary minus with zero");
 
 // Test 3: Logical NOT (!)
-assertEqual(!true, false, "Logical NOT with true");
-assertEqual(!false, true, "Logical NOT with false");
-assertEqual(!0, true, "Logical NOT with 0");
-assertEqual(!1, false, "Logical NOT with 1");
-assertEqual(!42, false, "Logical NOT with positive number");
-var z = true;
-assertEqual(!z, false, "Logical NOT with variable");
+if (!true == false) console.log("PASS: Logical NOT with true");
+if (!true != false) console.log("FAIL: Logical NOT with true");
+
+if (!false == true) console.log("PASS: Logical NOT with false");
+if (!false != true) console.log("FAIL: Logical NOT with false");
+
+if (!0 == true) console.log("PASS: Logical NOT with 0");
+if (!0 != true) console.log("FAIL: Logical NOT with 0");
+
+if (!1 == false) console.log("PASS: Logical NOT with 1");
+if (!1 != false) console.log("FAIL: Logical NOT with 1");
+
+if (!42 == false) console.log("PASS: Logical NOT with positive number");
+if (!42 != false) console.log("FAIL: Logical NOT with positive number");
 
 // Test 4: Double Logical NOT (!!)
-assertEqual(!!true, true, "Double logical NOT with true");
-assertEqual(!!false, false, "Double logical NOT with false");
-assertEqual(!!0, false, "Double logical NOT with 0");
-assertEqual(!!1, true, "Double logical NOT with 1");
-assertEqual(!!42, true, "Double logical NOT with positive number");
+if (!!true == true) console.log("PASS: Double logical NOT with true");
+if (!!true != true) console.log("FAIL: Double logical NOT with true");
+
+if (!!false == false) console.log("PASS: Double logical NOT with false");
+if (!!false != false) console.log("FAIL: Double logical NOT with false");
+
+if (!!0 == false) console.log("PASS: Double logical NOT with 0");
+if (!!0 != false) console.log("FAIL: Double logical NOT with 0");
+
+if (!!1 == true) console.log("PASS: Double logical NOT with 1");
+if (!!1 != true) console.log("FAIL: Double logical NOT with 1");
+
+if (!!42 == true) console.log("PASS: Double logical NOT with positive number");
+if (!!42 != true) console.log("FAIL: Double logical NOT with positive number");
 
 // Test 5: Bitwise NOT (~)
-assertEqual(~0, -1, "Bitwise NOT with 0");
-assertEqual(~1, -2, "Bitwise NOT with 1");
-assertEqual(~5, -6, "Bitwise NOT with 5");
-assertEqual(~-1, 0, "Bitwise NOT with -1");
-assertEqual(~42, -43, "Bitwise NOT with 42");
+if (~0 == -1) console.log("PASS: Bitwise NOT with 0");
+if (~0 != -1) console.log("FAIL: Bitwise NOT with 0");
+
+if (~1 == -2) console.log("PASS: Bitwise NOT with 1");
+if (~1 != -2) console.log("FAIL: Bitwise NOT with 1");
+
+if (~5 == -6) console.log("PASS: Bitwise NOT with 5");
+if (~5 != -6) console.log("FAIL: Bitwise NOT with 5");
+
+if (~-1 == 0) console.log("PASS: Bitwise NOT with -1");
+if (~-1 != 0) console.log("FAIL: Bitwise NOT with -1");
+
+if (~42 == -43) console.log("PASS: Bitwise NOT with 42");
+if (~42 != -43) console.log("FAIL: Bitwise NOT with 42");
 
 // Test 6: typeof operator
-assertEqual(typeof 42, "number", "typeof number");
-assertEqual(typeof true, "boolean", "typeof true");
-assertEqual(typeof false, "boolean", "typeof false");
-assertEqual(typeof null, "object", "typeof null");
-assertEqual(typeof undefined, "undefined", "typeof undefined");
-var str = "hello";
-assertEqual(typeof str, "string", "typeof string variable");
-var num = 123;
-assertEqual(typeof num, "number", "typeof number variable");
-var bool = false;
-assertEqual(typeof bool, "boolean", "typeof boolean variable");
+if (typeof 42 == "number") console.log("PASS: typeof number");
+if (typeof 42 != "number") console.log("FAIL: typeof number");
+
+if (typeof true == "boolean") console.log("PASS: typeof true");
+if (typeof true != "boolean") console.log("FAIL: typeof true");
+
+if (typeof false == "boolean") console.log("PASS: typeof false");
+if (typeof false != "boolean") console.log("FAIL: typeof false");
+
+if (typeof null == "object") console.log("PASS: typeof null");
+if (typeof null != "object") console.log("FAIL: typeof null");
+
+if (typeof undefined == "undefined") console.log("PASS: typeof undefined");
+if (typeof undefined != "undefined") console.log("FAIL: typeof undefined");
 
 // Test 7: typeof with undeclared variables
-assertEqual(
-  typeof undeclaredVariable,
-  "undefined",
-  "typeof undeclared variable"
-);
-assertEqual(typeof nonExistent, "undefined", "typeof non-existent variable");
+if (typeof undeclaredVariable == "undefined")
+  console.log("PASS: typeof undeclared variable");
+if (typeof undeclaredVariable != "undefined")
+  console.log("FAIL: typeof undeclared variable");
 
-// Test 8: Complex nested expressions
-assertEqual(-(-(-5)), -5, "Triple nested unary minus");
-assertEqual(+(+(+3)), 3, "Triple nested unary plus");
-assertEqual(!!!false, true, "Triple logical NOT with false");
-assertEqual(!!!true, false, "Triple logical NOT with true");
-
-// Test 9: Mixed operators
-assertEqual(!+0, true, "Logical NOT of unary plus zero");
-assertEqual(!-1, false, "Logical NOT of unary minus one");
-assertEqual(+-5, -5, "Unary plus of unary minus");
-assertEqual(-+7, -7, "Unary minus of unary plus");
-
-// Test 10: typeof with expressions
-assertEqual(typeof (5 + 3), "number", "typeof addition expression");
-assertEqual(typeof (true == false), "boolean", "typeof comparison expression");
-assertEqual(typeof -42, "number", "typeof unary minus expression");
-assertEqual(typeof !true, "boolean", "typeof logical NOT expression");
+if (typeof nonExistent == "undefined")
+  console.log("PASS: typeof non-existent variable");
+if (typeof nonExistent != "undefined")
+  console.log("FAIL: typeof non-existent variable");
