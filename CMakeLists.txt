@@ -21,6 +21,7 @@ set(BUILTINS_SOURCES
     src/builtins/math/math.cpp
     src/builtins/global/global.cpp
     src/builtins/string/string.cpp
+    src/builtins/array/array.cpp
 )
 
 set(CORE_SOURCES

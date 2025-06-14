@@ -69,6 +69,9 @@ class Global {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite
     static Value isFinite(const std::vector<Value>& args);
 
+    /// Helper function to create array objects in the current runtime
+    static Value createArray(const std::vector<Value>& args);
+
     // Helper functions
     static bool isValidDigit(char c, int radix);
     static int getDigitValue(char c);

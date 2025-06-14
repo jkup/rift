@@ -52,16 +52,18 @@ The test runner will:
 
 ### ✅ Implemented
 
-- **Global Functions**: `parseInt`, `parseFloat`, `isNaN`, `isFinite`
+- **Global Functions**: `parseInt`, `parseFloat`, `isNaN`, `isFinite`, `createArray`
 - **Console**: `log`, `error`, `warn`, `info`
 - **String**: `charAt`, `indexOf`, `slice`, `toLowerCase`, `toUpperCase`, `trim`, `split`, etc.
 - **Math**: `abs`, `ceil`, `floor`, `max`, `min`, `pow`, `sqrt`, `random`, `sin`, `cos`, etc.
+- **Array**: `push`, `pop`, `length` (via `createArray()` function)
 
 ### ❌ Not Yet Implemented
 
-- **Array**: `push`, `pop`, `map`, `filter`, `reduce`, `forEach`, etc.
+- **Array**: `map`, `filter`, `reduce`, `forEach`, `indexOf`, `includes`, `slice`, `concat`
 - **Object**: `keys`, `values`, `entries`, `assign`, etc.
 - **Function**: `call`, `apply`, `bind`
+- **For loops**, **Array literals** (`[]`), **New operator** (`new`)
 - **Date**, **JSON**, **RegExp**, **Error types**, **Promises**
 
 ## Architecture

@@ -16,6 +16,9 @@ void Global::setupGlobalFunctions(std::shared_ptr<Environment> global_env) {
     global_env->define("isNaN", Value(std::make_shared<JSFunction>(isNaN)));
     global_env->define("isFinite", Value(std::make_shared<JSFunction>(isFinite)));
 
+    // Add array creation helper
+    global_env->define("createArray", Value(std::make_shared<JSFunction>(createArray)));
+
     // Add global constants
     global_env->define("undefined", Value::undefined());
     global_env->define("NaN", Value(std::numeric_limits<double>::quiet_NaN()));
@@ -143,6 +146,48 @@ Value Global::isFinite(const std::vector<Value>& args) {
 
     double num = args[0].toNumber();
     return Value(std::isfinite(num));
+}
+
+Value Global::createArray(const std::vector<Value>& args) {
+    auto arrayObj = std::make_shared<JSObject>();
+
+    // Set array properties and methods
+    arrayObj->setProperty("length", Value(0.0));
+
+    // Create bound push method that captures the array object
+    auto pushMethod =
+        std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& callArgs) -> Value {
+            Value lengthVal = arrayObj->getProperty("length");
+            size_t length = static_cast<size_t>(lengthVal.toNumber());
+
+            // Add all arguments to the array
+            for (size_t i = 0; i < callArgs.size(); ++i) {
+                arrayObj->setProperty(std::to_string(length), callArgs[i]);
+                length++;
+            }
+
+            arrayObj->setProperty("length", Value(static_cast<double>(length)));
+            return Value(static_cast<double>(length));
+        });
+    arrayObj->setProperty("push", Value(pushMethod));
+
+    // Create bound pop method that captures the array object
+    auto popMethod =
+        std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& callArgs) -> Value {
+            Value lengthVal = arrayObj->getProperty("length");
+            size_t length = static_cast<size_t>(lengthVal.toNumber());
+
+            if (length == 0) return Value::undefined();
+
+            Value lastElement = arrayObj->getProperty(std::to_string(length - 1));
+            arrayObj->setProperty(std::to_string(length - 1), Value::undefined());
+            arrayObj->setProperty("length", Value(static_cast<double>(length - 1)));
+
+            return lastElement;
+        });
+    arrayObj->setProperty("pop", Value(popMethod));
+
+    return Value(arrayObj);
 }
 
 bool Global::isValidDigit(char c, int radix) {

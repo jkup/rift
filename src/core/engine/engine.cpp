@@ -1,5 +1,6 @@
 #include "rift/core/engine/engine.h"
 
+#include "rift/builtins/array/array.h"
 #include "rift/builtins/console/console.h"
 #include "rift/builtins/global/global.h"
 #include "rift/builtins/math/math.h"
@@ -64,6 +65,10 @@ void JSEngine::setupBuiltins() {
     // Setup String object
     auto string = builtins::String::create();
     global_env_->define("String", Value(string));
+
+    // Setup Array object
+    auto array = builtins::Array::create();
+    global_env_->define("Array", Value(array));
 }
 
 // Basic implementations - will be enhanced
