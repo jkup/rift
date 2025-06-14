@@ -36,6 +36,13 @@ class Parser {
     std::shared_ptr<ASTNode> parse_if_statement();
     std::shared_ptr<ASTNode> parse_array_literal();
 
+    // New function-related parsing methods
+    std::shared_ptr<ASTNode> parse_function_declaration();
+    std::shared_ptr<ASTNode> parse_function_expression();
+    std::shared_ptr<ASTNode> parse_parameter_list();
+    std::shared_ptr<ASTNode> parse_return_statement();
+    std::shared_ptr<ASTNode> parse_block_statement();
+
    public:
     Parser(const std::vector<Token>& tokens);
     std::shared_ptr<ASTNode> parse();

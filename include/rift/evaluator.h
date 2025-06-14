@@ -22,6 +22,12 @@ class Evaluator {
     Value evaluate_binary_expression(const std::shared_ptr<ASTNode>& node);
     Value evaluate_assignment_expression(const std::shared_ptr<ASTNode>& node);
     Value evaluate_variable_declaration(const std::shared_ptr<ASTNode>& node);
+    
+    // New function evaluation methods
+    Value evaluate_function_declaration(const std::shared_ptr<ASTNode>& node);
+    Value evaluate_function_expression(const std::shared_ptr<ASTNode>& node);
+    Value evaluate_return_statement(const std::shared_ptr<ASTNode>& node);
+    Value evaluate_call_expression(const std::shared_ptr<ASTNode>& node);
 
    public:
     Evaluator(std::shared_ptr<Environment> env);

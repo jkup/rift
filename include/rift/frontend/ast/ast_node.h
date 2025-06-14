@@ -22,6 +22,10 @@ enum class ASTNodeType {
     IfStatement,
     ElseStatement,
     ArrayLiteral,
+    FunctionDeclaration,
+    FunctionExpression,
+    ReturnStatement,
+    ParameterList,
 };
 
 struct ASTNode {

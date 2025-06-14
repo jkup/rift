@@ -72,6 +72,10 @@ class ASTFactory {
         return node;
     }
 
+    static std::shared_ptr<ASTNode> makeBlockStatement() {
+        return std::make_shared<ASTNode>(ASTNodeType::BlockStatement);
+    }
+
     static std::shared_ptr<ASTNode> makeIfStatement(
         std::shared_ptr<ASTNode> condition, std::shared_ptr<ASTNode> thenStatement,
         std::shared_ptr<ASTNode> elseStatement = nullptr) {
@@ -94,6 +98,38 @@ class ASTFactory {
         return node;
     }
 
+    // Function-related factories
+    static std::shared_ptr<ASTNode> makeFunctionDeclaration(
+        const std::string& name,
+        std::shared_ptr<ASTNode> parameters,
+        std::shared_ptr<ASTNode> body) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::FunctionDeclaration, name);
+        node->children.push_back(parameters);  // Parameter list
+        node->children.push_back(body);        // Function body
+        return node;
+    }
+
+    static std::shared_ptr<ASTNode> makeFunctionExpression(
+        std::shared_ptr<ASTNode> parameters,
+        std::shared_ptr<ASTNode> body) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::FunctionExpression);
+        node->children.push_back(parameters);  // Parameter list
+        node->children.push_back(body);        // Function body
+        return node;
+    }
+
+    static std::shared_ptr<ASTNode> makeReturnStatement(std::shared_ptr<ASTNode> argument) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::ReturnStatement);
+        if (argument) {
+            node->children.push_back(argument);
+        }
+        return node;
+    }
+
+    static std::shared_ptr<ASTNode> makeParameterList() {
+        return std::make_shared<ASTNode>(ASTNodeType::ParameterList);
+    }
+
     // Helper to add argument to call expression
     static void addArgument(std::shared_ptr<ASTNode> callExpression,
                             std::shared_ptr<ASTNode> argument) {
@@ -114,6 +150,14 @@ class ASTFactory {
     static void addStatement(std::shared_ptr<ASTNode> program, std::shared_ptr<ASTNode> statement) {
         if (program->type == ASTNodeType::Program) {
             program->children.push_back(statement);
+        }
+    }
+
+    // Helper to add parameter to parameter list
+    static void addParameter(std::shared_ptr<ASTNode> parameterList,
+                           std::shared_ptr<ASTNode> parameter) {
+        if (parameterList->type == ASTNodeType::ParameterList) {
+            parameterList->children.push_back(parameter);
         }
     }
 };

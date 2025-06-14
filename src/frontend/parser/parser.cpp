@@ -172,6 +172,14 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
         return parse_if_statement();
     }
 
+    if (current_token().type == TokenType::Function) {
+        return parse_function_declaration();
+    }
+
+    if (current_token().type == TokenType::Return) {
+        return parse_return_statement();
+    }
+
     // Expression statement
     auto expr = parse_expression();
     match(TokenType::Semicolon);  // optional semicolon
@@ -200,6 +208,94 @@ std::shared_ptr<ASTNode> Parser::parse_if_statement() {
     }
 
     return ASTFactory::makeIfStatement(condition, then_statement, else_statement);
+}
+
+std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
+    consume(TokenType::Function);  // consume 'function'
+
+    // Get function name
+    if (current_token().type != TokenType::Identifier) {
+        throw std::runtime_error("Expected function name");
+    }
+    std::string name = current_token().value;
+    current++;  // consume function name
+
+    // Parse parameters
+    consume(TokenType::LeftParen);
+    auto parameters = parse_parameter_list();
+    consume(TokenType::RightParen);
+
+    // Parse function body
+    auto body = parse_block_statement();
+
+    return ASTFactory::makeFunctionDeclaration(name, parameters, body);
+}
+
+std::shared_ptr<ASTNode> Parser::parse_function_expression() {
+    consume(TokenType::Function);  // consume 'function'
+
+    // Parse parameters (anonymous function)
+    consume(TokenType::LeftParen);
+    auto parameters = parse_parameter_list();
+    consume(TokenType::RightParen);
+
+    // Parse function body
+    auto body = parse_block_statement();
+
+    return ASTFactory::makeFunctionExpression(parameters, body);
+}
+
+std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
+    auto parameters = ASTFactory::makeParameterList();
+
+    // Handle empty parameter list
+    if (current_token().type == TokenType::RightParen) {
+        return parameters;
+    }
+
+    // Parse first parameter
+    if (current_token().type != TokenType::Identifier) {
+        throw std::runtime_error("Expected parameter name");
+    }
+    ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(current_token().value));
+    current++;  // consume parameter name
+
+    // Parse remaining parameters
+    while (match(TokenType::Comma)) {
+        if (current_token().type != TokenType::Identifier) {
+            throw std::runtime_error("Expected parameter name");
+        }
+        ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(current_token().value));
+        current++;  // consume parameter name
+    }
+
+    return parameters;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_return_statement() {
+    consume(TokenType::Return);  // consume 'return'
+
+    std::shared_ptr<ASTNode> argument = nullptr;
+    if (current_token().type != TokenType::Semicolon) {
+        argument = parse_expression();
+    }
+
+    match(TokenType::Semicolon);  // optional semicolon
+    return ASTFactory::makeReturnStatement(argument);
+}
+
+std::shared_ptr<ASTNode> Parser::parse_block_statement() {
+    consume(TokenType::LeftBrace);  // consume '{'
+    auto block = ASTFactory::makeBlockStatement();
+
+    while (current_token().type != TokenType::RightBrace && 
+           current_token().type != TokenType::EndOfFile) {
+        auto stmt = parse_statement();
+        ASTFactory::addStatement(block, stmt);
+    }
+
+    consume(TokenType::RightBrace);  // consume '}'
+    return block;
 }
 
 std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
