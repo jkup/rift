@@ -6,7 +6,8 @@
   "main": "test262-runner.js",
   "scripts": {
     "build": "./build.sh",
-    "test": "node test262-runner.js",
+    "test": "node test-runner.js",
+    "test262": "node test262-runner.js",
     "playground": "./build/rift test/test-file.js",
     "benchmark": "./bench/benchmark.sh",
     "clean": "rm -rf build test262"

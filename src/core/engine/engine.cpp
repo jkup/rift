@@ -303,6 +303,23 @@ Value JSEngine::evaluateVariableDeclaration(std::shared_ptr<ASTNode> node,
 
 Value JSEngine::evaluateIfStatement(std::shared_ptr<ASTNode> node,
                                     std::shared_ptr<Environment> env) {
+    if (node->children.size() < 2) {
+        return Value::undefined();
+    }
+
+    // Evaluate the condition
+    Value condition = evaluate(node->children[0], env);
+
+    // If condition is truthy, evaluate the then branch
+    if (condition.toBool()) {
+        return evaluate(node->children[1], env);
+    }
+
+    // If there's an else clause and condition is falsy, evaluate the else branch
+    if (node->children.size() > 2) {
+        return evaluate(node->children[2], env);
+    }
+
     return Value::undefined();
 }
 

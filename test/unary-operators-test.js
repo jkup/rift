@@ -1,101 +1,78 @@
 // Unary Operators Test Suite
 // This file tests all implemented unary operators
 
-console.log("=== UNARY OPERATORS TEST SUITE ===");
-console.log("");
-
 // Test 1: Unary Plus (+)
-console.log("1. Testing Unary Plus (+):");
-console.log("  +5 =", +5);
-console.log("  +(-3) =", +-3);
-console.log("  +0 =", +0);
+assertEqual(+5, 5, "Unary plus with positive number");
+assertEqual(+-3, -3, "Unary plus with negative number");
+assertEqual(+0, 0, "Unary plus with zero");
 var x = 42;
-console.log("  +x (where x=42) =", +x);
-console.log("");
+assertEqual(+x, 42, "Unary plus with variable");
 
 // Test 2: Unary Minus (-)
-console.log("2. Testing Unary Minus (-):");
-console.log("  -5 =", -5);
-console.log("  -(-3) =", -(-3));
-console.log("  -0 =", -0);
+assertEqual(-5, -5, "Unary minus with positive number");
+assertEqual(-(-3), 3, "Unary minus with negative number");
+assertEqual(-0, 0, "Unary minus with zero");
 var y = 42;
-console.log("  -y (where y=42) =", -y);
-console.log("");
+assertEqual(-y, -42, "Unary minus with variable");
 
 // Test 3: Logical NOT (!)
-console.log("3. Testing Logical NOT (!):");
-console.log("  !true =", !true);
-console.log("  !false =", !false);
-console.log("  !0 =", !0);
-console.log("  !1 =", !1);
-console.log("  !42 =", !42);
+assertEqual(!true, false, "Logical NOT with true");
+assertEqual(!false, true, "Logical NOT with false");
+assertEqual(!0, true, "Logical NOT with 0");
+assertEqual(!1, false, "Logical NOT with 1");
+assertEqual(!42, false, "Logical NOT with positive number");
 var z = true;
-console.log("  !z (where z=true) =", !z);
-console.log("");
+assertEqual(!z, false, "Logical NOT with variable");
 
 // Test 4: Double Logical NOT (!!)
-console.log("4. Testing Double Logical NOT (!!):");
-console.log("  !!true =", !!true);
-console.log("  !!false =", !!false);
-console.log("  !!0 =", !!0);
-console.log("  !!1 =", !!1);
-console.log("  !!42 =", !!42);
-console.log("");
+assertEqual(!!true, true, "Double logical NOT with true");
+assertEqual(!!false, false, "Double logical NOT with false");
+assertEqual(!!0, false, "Double logical NOT with 0");
+assertEqual(!!1, true, "Double logical NOT with 1");
+assertEqual(!!42, true, "Double logical NOT with positive number");
 
 // Test 5: Bitwise NOT (~)
-console.log("5. Testing Bitwise NOT (~):");
-console.log("  ~0 =", ~0);
-console.log("  ~1 =", ~1);
-console.log("  ~5 =", ~5);
-console.log("  ~(-1) =", ~-1);
-console.log("  ~42 =", ~42);
-console.log("");
+assertEqual(~0, -1, "Bitwise NOT with 0");
+assertEqual(~1, -2, "Bitwise NOT with 1");
+assertEqual(~5, -6, "Bitwise NOT with 5");
+assertEqual(~-1, 0, "Bitwise NOT with -1");
+assertEqual(~42, -43, "Bitwise NOT with 42");
 
 // Test 6: typeof operator
-console.log("6. Testing typeof operator:");
-console.log("  typeof 42 =", typeof 42);
-console.log("  typeof true =", typeof true);
-console.log("  typeof false =", typeof false);
-console.log("  typeof null =", typeof null);
-console.log("  typeof undefined =", typeof undefined);
+assertEqual(typeof 42, "number", "typeof number");
+assertEqual(typeof true, "boolean", "typeof true");
+assertEqual(typeof false, "boolean", "typeof false");
+assertEqual(typeof null, "object", "typeof null");
+assertEqual(typeof undefined, "undefined", "typeof undefined");
 var str = "hello";
-console.log('  typeof str (where str="hello") =', typeof str);
+assertEqual(typeof str, "string", "typeof string variable");
 var num = 123;
-console.log("  typeof num (where num=123) =", typeof num);
+assertEqual(typeof num, "number", "typeof number variable");
 var bool = false;
-console.log("  typeof bool (where bool=false) =", typeof bool);
-console.log("");
+assertEqual(typeof bool, "boolean", "typeof boolean variable");
 
 // Test 7: typeof with undeclared variables
-console.log("7. Testing typeof with undeclared variables:");
-console.log("  typeof undeclaredVariable =", typeof undeclaredVariable);
-console.log("  typeof nonExistent =", typeof nonExistent);
-console.log("");
+assertEqual(
+  typeof undeclaredVariable,
+  "undefined",
+  "typeof undeclared variable"
+);
+assertEqual(typeof nonExistent, "undefined", "typeof non-existent variable");
 
 // Test 8: Complex nested expressions
-console.log("8. Testing nested unary expressions:");
-console.log("  -(-(-5)) =", -(-(-5)));
-console.log("  +(+(+3)) =", +(+(+3)));
-console.log("  !!(!false) =", !!!false);
-console.log("  !(!(!true)) =", !!!true);
-console.log("");
+assertEqual(-(-(-5)), -5, "Triple nested unary minus");
+assertEqual(+(+(+3)), 3, "Triple nested unary plus");
+assertEqual(!!!false, true, "Triple logical NOT with false");
+assertEqual(!!!true, false, "Triple logical NOT with true");
 
 // Test 9: Mixed operators
-console.log("9. Testing mixed unary operators:");
-console.log("  !+0 =", !+0);
-console.log("  !-1 =", !-1);
-console.log("  +-5 =", +-5);
-console.log("  -+7 =", -+7);
-console.log("  ~+5 =", ~+5);
-console.log("  ~-3 =", ~-3);
-console.log("");
+assertEqual(!+0, true, "Logical NOT of unary plus zero");
+assertEqual(!-1, false, "Logical NOT of unary minus one");
+assertEqual(+-5, -5, "Unary plus of unary minus");
+assertEqual(-+7, -7, "Unary minus of unary plus");
 
 // Test 10: typeof with expressions
-console.log("10. Testing typeof with expressions:");
-console.log("  typeof (5 + 3) =", typeof (5 + 3));
-console.log("  typeof (true == false) =", typeof (true == false));
-console.log("  typeof (-42) =", typeof -42);
-console.log("  typeof (!true) =", typeof !true);
-console.log("");
-
-console.log("=== END OF UNARY OPERATORS TEST SUITE ===");
+assertEqual(typeof (5 + 3), "number", "typeof addition expression");
+assertEqual(typeof (true == false), "boolean", "typeof comparison expression");
+assertEqual(typeof -42, "number", "typeof unary minus expression");
+assertEqual(typeof !true, "boolean", "typeof logical NOT expression");
