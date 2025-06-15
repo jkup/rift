@@ -63,7 +63,7 @@ The test runner will:
 - **Array**: `map`, `filter`, `reduce`, `forEach`, `indexOf`, `includes`, `slice`, `concat`
 - **Object**: `keys`, `values`, `entries`, `assign`, etc.
 - **Function**: `call`, `apply`, `bind`
-- **For loops**, **Array literals** (`[]`), **New operator** (`new`)
+- **For loops**, **New operator** (`new`)
 - **Date**, **JSON**, **RegExp**, **Error types**, **Promises**
 
 ## Architecture
