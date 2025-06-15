@@ -172,12 +172,20 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
         return parse_if_statement();
     }
 
+    if (current_token().type == TokenType::While) {
+        return parse_while_statement();
+    }
+
     if (current_token().type == TokenType::Function) {
         return parse_function_declaration();
     }
 
     if (current_token().type == TokenType::Return) {
         return parse_return_statement();
+    }
+
+    if (current_token().type == TokenType::LeftBrace) {
+        return parse_block_statement();
     }
 
     // Expression statement
@@ -208,6 +216,23 @@ std::shared_ptr<ASTNode> Parser::parse_if_statement() {
     }
 
     return ASTFactory::makeIfStatement(condition, then_statement, else_statement);
+}
+
+std::shared_ptr<ASTNode> Parser::parse_while_statement() {
+    consume(TokenType::While);
+
+    consume(TokenType::LeftParen);
+
+    // Parse the condition expression
+    auto condition = parse_expression();
+
+    // Expect and consume ')'
+    consume(TokenType::RightParen);
+
+    // Parse the body statement
+    auto body = parse_statement();
+
+    return ASTFactory::makeWhileStatement(condition, body);
 }
 
 std::shared_ptr<ASTNode> Parser::parse_function_declaration() {

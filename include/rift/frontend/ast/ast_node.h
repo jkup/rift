@@ -21,6 +21,7 @@ enum class ASTNodeType {
     MemberExpression,
     IfStatement,
     ElseStatement,
+    WhileStatement,
     ArrayLiteral,
     FunctionDeclaration,
     FunctionExpression,

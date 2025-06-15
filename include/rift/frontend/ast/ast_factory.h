@@ -88,6 +88,14 @@ class ASTFactory {
         return node;
     }
 
+    static std::shared_ptr<ASTNode> makeWhileStatement(
+        std::shared_ptr<ASTNode> condition, std::shared_ptr<ASTNode> body) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::WhileStatement);
+        node->children.push_back(condition);
+        node->children.push_back(body);
+        return node;
+    }
+
     // Declaration factories
     static std::shared_ptr<ASTNode> makeVariableDeclaration(
         const std::string& name, std::shared_ptr<ASTNode> initializer = nullptr) {
@@ -146,10 +154,10 @@ class ASTFactory {
         }
     }
 
-    // Helper to add statement to program
-    static void addStatement(std::shared_ptr<ASTNode> program, std::shared_ptr<ASTNode> statement) {
-        if (program->type == ASTNodeType::Program) {
-            program->children.push_back(statement);
+    // Helper to add statement to program or block
+    static void addStatement(std::shared_ptr<ASTNode> container, std::shared_ptr<ASTNode> statement) {
+        if (container->type == ASTNodeType::Program || container->type == ASTNodeType::BlockStatement) {
+            container->children.push_back(statement);
         }
     }
 

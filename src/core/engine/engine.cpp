@@ -39,6 +39,7 @@ Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment>
         case ASTNodeType::ExpressionStatement:
         case ASTNodeType::VariableDeclaration:
         case ASTNodeType::IfStatement:
+        case ASTNodeType::WhileStatement:
         case ASTNodeType::ReturnStatement:
         case ASTNodeType::FunctionDeclaration:
             return StatementEvaluator::evaluate(node, env, this);
