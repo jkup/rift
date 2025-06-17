@@ -36,6 +36,7 @@ class Parser {
     std::shared_ptr<ASTNode> parse_if_statement();
     std::shared_ptr<ASTNode> parse_while_statement();
     std::shared_ptr<ASTNode> parse_array_literal();
+    std::shared_ptr<ASTNode> parse_object_literal();
 
     // New function-related parsing methods
     std::shared_ptr<ASTNode> parse_function_declaration();

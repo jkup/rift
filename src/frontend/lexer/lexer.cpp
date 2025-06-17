@@ -193,6 +193,9 @@ Token Lexer::next_token() {
         case '.':
             advance();
             return Token(TokenType::Dot, ".", line, column);
+        case ':':
+            advance();
+            return Token(TokenType::Colon, ":", line, column);
         case '=':
             advance();
             // Double equals

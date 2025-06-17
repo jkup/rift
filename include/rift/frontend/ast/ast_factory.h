@@ -61,6 +61,10 @@ class ASTFactory {
         return std::make_shared<ASTNode>(ASTNodeType::ArrayLiteral);
     }
 
+    static std::shared_ptr<ASTNode> makeObjectLiteral() {
+        return std::make_shared<ASTNode>(ASTNodeType::ObjectLiteral);
+    }
+
     // Statement factories
     static std::shared_ptr<ASTNode> makeProgram() {
         return std::make_shared<ASTNode>(ASTNodeType::Program);
@@ -151,6 +155,17 @@ class ASTFactory {
                                 std::shared_ptr<ASTNode> element) {
         if (arrayLiteral->type == ASTNodeType::ArrayLiteral) {
             arrayLiteral->children.push_back(element);
+        }
+    }
+
+    // Helper to add property to object literal
+    // For object literals, we store key-value pairs as pairs of child nodes
+    static void addObjectProperty(std::shared_ptr<ASTNode> objectLiteral,
+                                  std::shared_ptr<ASTNode> key,
+                                  std::shared_ptr<ASTNode> value) {
+        if (objectLiteral->type == ASTNodeType::ObjectLiteral) {
+            objectLiteral->children.push_back(key);
+            objectLiteral->children.push_back(value);
         }
     }
 

@@ -38,6 +38,8 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
             return evaluateMemberExpression(node, env, engine);
         case ASTNodeType::ArrayLiteral:
             return evaluateArrayLiteral(node, env, engine);
+        case ASTNodeType::ObjectLiteral:
+            return evaluateObjectLiteral(node, env, engine);
         case ASTNodeType::FunctionExpression:
             return evaluateFunctionExpression(node, env, engine);
         default:
@@ -253,6 +255,50 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node, s
     // Use the Array::createArrayObject helper to create the array
     auto arrayObj = builtins::Array::createArrayObject(elements);
     return Value(arrayObj);
+}
+
+Value ExpressionEvaluator::evaluateObjectLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    // Create a new empty object
+    auto obj = std::make_shared<JSObject>();
+
+    // Process key-value pairs from the AST
+    // Children are stored in pairs: key, value, key, value, ...
+    for (size_t i = 0; i < node->children.size(); i += 2) {
+        if (i + 1 >= node->children.size()) {
+            // Odd number of children - this should not happen with proper parsing
+            break;
+        }
+
+        auto keyNode = node->children[i];
+        auto valueNode = node->children[i + 1];
+
+        // Get the property key
+        std::string key;
+        if (keyNode->type == ASTNodeType::Identifier) {
+            // Identifier keys are used as-is: { name: value }
+            key = keyNode->value;
+        } else if (keyNode->type == ASTNodeType::Literal) {
+            // String literal keys need to be processed: { "name": value }
+            std::string str = keyNode->value;
+            if (str.length() >= 2 && str[0] == '"' && str.back() == '"') {
+                key = str.substr(1, str.length() - 2);  // Remove quotes
+            } else {
+                key = str;
+            }
+        } else {
+            // Other key types (computed keys) - evaluate as expression
+            Value keyValue = engine->evaluate(keyNode, env);
+            key = keyValue.toString();
+        }
+
+        // Evaluate the property value
+        Value value = engine->evaluate(valueNode, env);
+
+        // Set the property on the object
+        obj->setProperty(key, value);
+    }
+
+    return Value(obj);
 }
 
 Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {

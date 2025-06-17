@@ -68,6 +68,9 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
         case TokenType::LeftBracket: {
             return parse_array_literal();
         }
+        case TokenType::LeftBrace: {
+            return parse_object_literal();
+        }
         default:
             throw std::runtime_error("Unexpected token in primary expression");
     }
@@ -423,6 +426,49 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
 
     consume(TokenType::RightBracket);  // consume ']'
     return array;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_object_literal() {
+    consume(TokenType::LeftBrace);  // consume '{'
+
+    auto object = ASTFactory::makeObjectLiteral();
+
+    // Handle empty object {}
+    if (current_token().type == TokenType::RightBrace) {
+        current++;  // consume '}'
+        return object;
+    }
+
+    // Parse object properties
+    do {
+        // Parse property key (can be identifier or string literal)
+        std::shared_ptr<ASTNode> key;
+        
+        if (current_token().type == TokenType::Identifier) {
+            // Property key as identifier: { name: value }
+            key = ASTFactory::makeIdentifier(current_token().value);
+            current++;  // consume identifier
+        } else if (current_token().type == TokenType::String) {
+            // Property key as string: { "name": value }
+            key = ASTFactory::makeLiteral(current_token().value);
+            current++;  // consume string
+        } else {
+            throw std::runtime_error("Expected property name in object literal");
+        }
+
+        // Expect colon
+        consume(TokenType::Colon);
+
+        // Parse property value
+        auto value = parse_expression();
+
+        // Add property to object
+        ASTFactory::addObjectProperty(object, key, value);
+        
+    } while (match(TokenType::Comma));
+
+    consume(TokenType::RightBrace);  // consume '}'
+    return object;
 }
 
 }  // namespace rift::frontend

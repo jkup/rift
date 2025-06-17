@@ -23,6 +23,7 @@ enum class ASTNodeType {
     ElseStatement,
     WhileStatement,
     ArrayLiteral,
+    ObjectLiteral,
     FunctionDeclaration,
     FunctionExpression,
     ReturnStatement,

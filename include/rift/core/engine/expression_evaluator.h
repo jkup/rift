@@ -28,6 +28,7 @@ private:
     static Value evaluateCallExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateMemberExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateArrayLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateObjectLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateFunctionExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
 };
 

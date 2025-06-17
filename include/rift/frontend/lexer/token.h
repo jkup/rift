@@ -55,6 +55,7 @@ enum class TokenType {
     Semicolon,
     Comma,
     Dot,
+    Colon,
 
     // Special
     EndOfFile,
