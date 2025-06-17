@@ -138,6 +138,14 @@ class ASTFactory {
         return node;
     }
 
+    static std::shared_ptr<ASTNode> makeThrowStatement(std::shared_ptr<ASTNode> argument) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::ThrowStatement);
+        if (argument) {
+            node->children.push_back(argument);
+        }
+        return node;
+    }
+
     static std::shared_ptr<ASTNode> makeParameterList() {
         return std::make_shared<ASTNode>(ASTNodeType::ParameterList);
     }

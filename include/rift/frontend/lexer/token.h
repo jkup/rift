@@ -26,6 +26,7 @@ enum class TokenType {
     Else,
     For,
     While,
+    Throw,
 
     // Operators
     Plus,

@@ -26,6 +26,7 @@ private:
     static Value evaluateIfStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateWhileStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateReturnStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateThrowStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateFunctionDeclaration(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
 };
 

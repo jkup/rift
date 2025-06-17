@@ -1,20 +1,11 @@
 #include "rift/core/engine/expression_evaluator.h"
 #include "rift/core/engine/operation_handler.h"
 #include "rift/core/engine/engine.h"
+#include "rift/core/engine/javascript_exception.h"
 #include "rift/builtins/array/array.h"
 #include "rift/runtime/values/object.h"
 
 namespace rift::core {
-
-// Custom exception for handling return statements
-class ReturnException : public std::exception {
-private:
-    Value returnValue_;
-public:
-    ReturnException(const Value& value) : returnValue_(value) {}
-    const Value& getValue() const { return returnValue_; }
-    const char* what() const noexcept override { return "Return statement"; }
-};
 
 Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
     if (!node) {

@@ -27,6 +27,7 @@ enum class ASTNodeType {
     FunctionDeclaration,
     FunctionExpression,
     ReturnStatement,
+    ThrowStatement,
     ParameterList,
 };
 

@@ -1,18 +1,9 @@
 #include "rift/core/engine/statement_evaluator.h"
 #include "rift/core/engine/engine.h"
+#include "rift/core/engine/javascript_exception.h"
 #include "rift/runtime/values/object.h"
 
 namespace rift::core {
-
-// Custom exception for handling return statements
-class ReturnException : public std::exception {
-private:
-    Value returnValue_;
-public:
-    ReturnException(const Value& value) : returnValue_(value) {}
-    const Value& getValue() const { return returnValue_; }
-    const char* what() const noexcept override { return "Return statement"; }
-};
 
 Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
     if (!node) {
@@ -34,6 +25,8 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateWhileStatement(node, env, engine);
         case ASTNodeType::ReturnStatement:
             return evaluateReturnStatement(node, env, engine);
+        case ASTNodeType::ThrowStatement:
+            return evaluateThrowStatement(node, env, engine);
         case ASTNodeType::FunctionDeclaration:
             return evaluateFunctionDeclaration(node, env, engine);
         default:
@@ -127,6 +120,18 @@ Value StatementEvaluator::evaluateReturnStatement(std::shared_ptr<ASTNode> node,
     // Throw a special exception to unwind the call stack
     // This is a simple way to implement return without proper exception handling
     throw ReturnException(returnValue);
+}
+
+Value StatementEvaluator::evaluateThrowStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    if (node->children.size() < 1) {
+        return Value::undefined();
+    }
+
+    // Evaluate the expression to throw
+    Value thrownValue = engine->evaluate(node->children[0], env);
+
+    // Throw the JavaScript exception with the actual value
+    throw JavaScriptException(thrownValue);
 }
 
 Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {

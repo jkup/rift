@@ -187,6 +187,10 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
         return parse_return_statement();
     }
 
+    if (current_token().type == TokenType::Throw) {
+        return parse_throw_statement();
+    }
+
     if (current_token().type == TokenType::LeftBrace) {
         return parse_block_statement();
     }
@@ -310,6 +314,19 @@ std::shared_ptr<ASTNode> Parser::parse_return_statement() {
 
     match(TokenType::Semicolon);  // optional semicolon
     return ASTFactory::makeReturnStatement(argument);
+}
+
+std::shared_ptr<ASTNode> Parser::parse_throw_statement() {
+    consume(TokenType::Throw);  // consume 'throw'
+
+    // throw requires an expression (unlike return which is optional)
+    if (current_token().type == TokenType::Semicolon || current_token().type == TokenType::EndOfFile) {
+        throw std::runtime_error("Missing throw expression");
+    }
+
+    auto argument = parse_expression();
+    match(TokenType::Semicolon);  // optional semicolon
+    return ASTFactory::makeThrowStatement(argument);
 }
 
 std::shared_ptr<ASTNode> Parser::parse_block_statement() {

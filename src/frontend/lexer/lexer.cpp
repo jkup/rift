@@ -109,6 +109,7 @@ Token Lexer::read_identifier() {
         {"else", TokenType::Else},
         {"for", TokenType::For},
         {"while", TokenType::While},
+        {"throw", TokenType::Throw},
         {"true", TokenType::Boolean},
         {"false", TokenType::Boolean},
         {"null", TokenType::Null},
