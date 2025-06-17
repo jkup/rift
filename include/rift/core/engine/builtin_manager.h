@@ -19,6 +19,7 @@ private:
     static void setupMath(std::shared_ptr<Environment> globalEnv); 
     static void setupString(std::shared_ptr<Environment> globalEnv);
     static void setupArray(std::shared_ptr<Environment> globalEnv);
+    static void setupObject(std::shared_ptr<Environment> globalEnv);
 };
 
 }  // namespace rift::core 

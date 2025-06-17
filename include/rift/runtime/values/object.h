@@ -37,6 +37,9 @@ class JSObject {
 
     // Get all property names
     std::vector<std::string> getPropertyNames() const;
+    
+    // Get only own property names (not inherited from prototype)
+    std::vector<std::string> getOwnPropertyNames() const;
 };
 
 // Function object

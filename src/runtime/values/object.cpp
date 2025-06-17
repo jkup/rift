@@ -65,4 +65,15 @@ std::vector<std::string> JSObject::getPropertyNames() const {
     return names;
 }
 
+std::vector<std::string> JSObject::getOwnPropertyNames() const {
+    std::vector<std::string> names;
+
+    // Get only own property names (not from prototype)
+    for (const auto& pair : properties_) {
+        names.push_back(pair.first);
+    }
+
+    return names;
+}
+
 }  // namespace rift::runtime

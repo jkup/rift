@@ -4,6 +4,7 @@
 #include "rift/builtins/math/math.h"
 #include "rift/builtins/string/string.h"
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/object/object.h"
 #include "rift/runtime/values/value.h"
 
 namespace rift::core {
@@ -14,6 +15,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv) {
     setupMath(globalEnv);
     setupString(globalEnv);
     setupArray(globalEnv);
+    setupObject(globalEnv);
 }
 
 void BuiltinManager::setupGlobalFunctions(std::shared_ptr<Environment> globalEnv) {
@@ -43,6 +45,12 @@ void BuiltinManager::setupArray(std::shared_ptr<Environment> globalEnv) {
     // Setup Array object
     auto array = builtins::Array::create();
     globalEnv->define("Array", Value(array));
+}
+
+void BuiltinManager::setupObject(std::shared_ptr<Environment> globalEnv) {
+    // Setup Object object
+    auto object = builtins::Object::create();
+    globalEnv->define("Object", Value(object));
 }
 
 }  // namespace rift::core 
