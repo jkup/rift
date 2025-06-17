@@ -187,6 +187,19 @@ class Array {
 
     /// Helper to set the length of an array-like object
     static void setArrayLength(std::shared_ptr<JSObject> obj, size_t length);
+
+    // Array static methods
+    
+    /// The `Array.isArray()` static method determines whether the passed value is an Array.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.isarray
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
+    static Value isArray(const std::vector<Value>& args);
 };
 
 }  // namespace rift::builtins

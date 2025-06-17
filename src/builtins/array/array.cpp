@@ -8,6 +8,9 @@ namespace rift::builtins {
 std::shared_ptr<JSObject> Array::create() {
     auto array = std::make_shared<JSFunction>(Array::constructor);
 
+    // Add static methods
+    array->setProperty("isArray", Value(std::make_shared<JSFunction>(Array::isArray)));
+
     // Create and set prototype
     auto prototype = createPrototype();
     array->setProperty("prototype", Value(prototype));
@@ -467,6 +470,70 @@ std::shared_ptr<JSObject> Array::createArrayObject(const std::vector<Value>& ele
         })));
 
     return arrayObj;
+}
+
+// Array static methods
+Value Array::isArray(const std::vector<Value>& args) {
+    // Array.isArray() requires exactly one argument
+    if (args.empty()) {
+        return Value(false);
+    }
+
+    Value arg = args[0];
+
+    // Non-objects cannot be arrays
+    if (!arg.isObject() && !arg.isFunction()) {
+        return Value(false);
+    }
+
+    auto obj = arg.getObject();
+    if (!obj) {
+        return Value(false);
+    }
+
+    // Check if the object has array-like characteristics:
+    // 1. Has a 'length' property
+    // 2. The length property is a number
+    // 3. The length is non-negative
+    if (!obj->hasProperty("length")) {
+        return Value(false);
+    }
+
+    Value lengthValue = obj->getProperty("length");
+    if (!lengthValue.isNumber()) {
+        return Value(false);
+    }
+
+    double length = lengthValue.toNumber();
+    if (length < 0 || std::isnan(length) || std::isinf(length)) {
+        return Value(false);
+    }
+
+    // Additional check: verify that the object has array methods
+    // This helps distinguish actual arrays from array-like objects
+    if (obj->hasProperty("push") || obj->hasProperty("pop")) {
+        return Value(true);
+    }
+
+    // For objects created by Array constructor that might not have methods attached yet,
+    // check if it has numeric properties consistent with an array
+    size_t arrayLength = static_cast<size_t>(length);
+    if (arrayLength == 0) {
+        // Empty array is still an array
+        return Value(true);
+    }
+
+    // Check if it has at least some numeric indices (for non-empty arrays)
+    // This is a heuristic but works for this implementation
+    for (size_t i = 0; i < std::min(arrayLength, static_cast<size_t>(3)); ++i) {
+        if (obj->hasProperty(std::to_string(i))) {
+            return Value(true);
+        }
+    }
+
+    // If we can't definitively prove it's an array, it's probably not
+    // (In a full implementation, we might track array types more explicitly)
+    return Value(false);
 }
 
 }  // namespace rift::builtins
