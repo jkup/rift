@@ -274,12 +274,8 @@ class Test262Runner {
 
     // Very conservative - only skip genuinely complex features
     const unsupportedPatterns = [
-      /\bfor\s*\(/, // for loops
-      /\bwhile\s*\(/, // while loops
       /\bdo\s*\{/, // do-while loops
       /\bclass\s+\w+/, // class declarations
-      /\btry\s*\{/, // try-catch blocks
-      /\bcatch\s*\(/, // catch clauses
       /\bfinally\s*\{/, // finally blocks
       /=>/, // arrow functions
       /\bvar\s+\w+\s*=\s*function/, // function expressions
