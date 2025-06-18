@@ -27,6 +27,11 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateReturnStatement(node, env, engine);
         case ASTNodeType::ThrowStatement:
             return evaluateThrowStatement(node, env, engine);
+        case ASTNodeType::TryStatement:
+            return evaluateTryStatement(node, env, engine);
+        case ASTNodeType::CatchClause:
+            // CatchClause is not evaluated directly, only through try-catch
+            return Value::undefined();
         case ASTNodeType::FunctionDeclaration:
             return evaluateFunctionDeclaration(node, env, engine);
         default:
@@ -179,6 +184,62 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
     env->define(functionName, Value(func));
     
     return Value(func);
+}
+
+Value StatementEvaluator::evaluateTryStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    if (node->children.size() < 1) {
+        return Value::undefined();
+    }
+
+    // Get try block (first child)
+    auto tryBlock = node->children[0];
+    
+    // Get catch clause (second child, if present)
+    std::shared_ptr<ASTNode> catchClause = nullptr;
+    if (node->children.size() > 1) {
+        catchClause = node->children[1];
+    }
+
+    Value result = Value::undefined();
+
+    try {
+        // Execute try block
+        result = engine->evaluate(tryBlock, env);
+    } catch (const JavaScriptException& e) {
+        // Handle JavaScript exceptions (thrown by 'throw' statements)
+        if (catchClause) {
+            result = evaluateCatchClause(catchClause, env, engine, e.getValue());
+        } else {
+            // Re-throw if no catch clause
+            throw;
+        }
+    } catch (const ReturnException& e) {
+        // Return exceptions should not be caught by try-catch
+        throw;
+    }
+
+    return result;
+}
+
+Value StatementEvaluator::evaluateCatchClause(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine, const Value& caughtValue) {
+    if (node->children.size() < 1) {
+        return Value::undefined();
+    }
+
+    // Get catch parameter name from node value
+    std::string parameterName = node->value;
+    
+    // Get catch body (first child)
+    auto catchBody = node->children[0];
+
+    // Create new environment for catch block
+    auto catchEnv = env->createChild();
+    
+    // Bind the caught value to the catch parameter
+    catchEnv->define(parameterName, caughtValue);
+
+    // Execute catch body in the new environment
+    return engine->evaluate(catchBody, catchEnv);
 }
 
 }  // namespace rift::core 

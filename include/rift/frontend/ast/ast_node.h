@@ -28,6 +28,8 @@ enum class ASTNodeType {
     FunctionExpression,
     ReturnStatement,
     ThrowStatement,
+    TryStatement,
+    CatchClause,
     ParameterList,
 };
 

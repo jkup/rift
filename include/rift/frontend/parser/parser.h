@@ -44,6 +44,8 @@ class Parser {
     std::shared_ptr<ASTNode> parse_parameter_list();
     std::shared_ptr<ASTNode> parse_return_statement();
     std::shared_ptr<ASTNode> parse_throw_statement();
+    std::shared_ptr<ASTNode> parse_try_statement();
+    std::shared_ptr<ASTNode> parse_catch_clause();
     std::shared_ptr<ASTNode> parse_block_statement();
 
    public:

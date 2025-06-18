@@ -191,6 +191,10 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
         return parse_throw_statement();
     }
 
+    if (current_token().type == TokenType::Try) {
+        return parse_try_statement();
+    }
+
     if (current_token().type == TokenType::LeftBrace) {
         return parse_block_statement();
     }
@@ -486,6 +490,47 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
 
     consume(TokenType::RightBrace);  // consume '}'
     return object;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_try_statement() {
+    consume(TokenType::Try);  // consume 'try'
+
+    // Parse the try block
+    auto tryBlock = parse_block_statement();
+    
+    // Parse optional catch clause
+    std::shared_ptr<ASTNode> catchClause = nullptr;
+    if (current_token().type == TokenType::Catch) {
+        catchClause = parse_catch_clause();
+    }
+
+    // In a full implementation, we would also handle 'finally' blocks
+    // For now, we require at least a catch clause
+    if (!catchClause) {
+        throw std::runtime_error("Missing catch clause after try block");
+    }
+
+    return ASTFactory::makeTryStatement(tryBlock, catchClause);
+}
+
+std::shared_ptr<ASTNode> Parser::parse_catch_clause() {
+    consume(TokenType::Catch);  // consume 'catch'
+
+    consume(TokenType::LeftParen);  // consume '('
+
+    // Parse catch parameter (the variable that will hold the exception)
+    if (current_token().type != TokenType::Identifier) {
+        throw std::runtime_error("Expected identifier in catch clause");
+    }
+    std::string parameter = current_token().value;
+    current++;  // consume parameter name
+
+    consume(TokenType::RightParen);  // consume ')'
+
+    // Parse catch body
+    auto body = parse_block_statement();
+
+    return ASTFactory::makeCatchClause(parameter, body);
 }
 
 }  // namespace rift::frontend

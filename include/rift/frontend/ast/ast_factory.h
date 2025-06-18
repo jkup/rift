@@ -146,6 +146,25 @@ class ASTFactory {
         return node;
     }
 
+    static std::shared_ptr<ASTNode> makeTryStatement(
+        std::shared_ptr<ASTNode> tryBlock,
+        std::shared_ptr<ASTNode> catchClause = nullptr) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::TryStatement);
+        node->children.push_back(tryBlock);
+        if (catchClause) {
+            node->children.push_back(catchClause);
+        }
+        return node;
+    }
+
+    static std::shared_ptr<ASTNode> makeCatchClause(
+        const std::string& parameter,
+        std::shared_ptr<ASTNode> body) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::CatchClause, parameter);
+        node->children.push_back(body);
+        return node;
+    }
+
     static std::shared_ptr<ASTNode> makeParameterList() {
         return std::make_shared<ASTNode>(ASTNodeType::ParameterList);
     }

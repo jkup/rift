@@ -27,6 +27,8 @@ enum class TokenType {
     For,
     While,
     Throw,
+    Try,
+    Catch,
 
     // Operators
     Plus,

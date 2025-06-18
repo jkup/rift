@@ -110,6 +110,8 @@ Token Lexer::read_identifier() {
         {"for", TokenType::For},
         {"while", TokenType::While},
         {"throw", TokenType::Throw},
+        {"try", TokenType::Try},
+        {"catch", TokenType::Catch},
         {"true", TokenType::Boolean},
         {"false", TokenType::Boolean},
         {"null", TokenType::Null},
