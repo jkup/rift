@@ -50,7 +50,16 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
         case TokenType::Boolean:
         case TokenType::Null:
         case TokenType::Undefined: {
-            auto node = ASTFactory::makeLiteral(token.value);
+            std::string literalType;
+            switch (token.type) {
+                case TokenType::Number: literalType = "number"; break;
+                case TokenType::String: literalType = "string"; break;
+                case TokenType::Boolean: literalType = "boolean"; break;
+                case TokenType::Null: literalType = "null"; break;
+                case TokenType::Undefined: literalType = "undefined"; break;
+                default: break;
+            }
+            auto node = ASTFactory::makeLiteral(token.value, literalType);
             current++;
             return node;
         }
@@ -471,7 +480,8 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
             current++;  // consume identifier
         } else if (current_token().type == TokenType::String) {
             // Property key as string: { "name": value }
-            key = ASTFactory::makeLiteral(current_token().value);
+                            std::string keyLiteralType = (current_token().type == TokenType::String) ? "string" : "number";
+                key = ASTFactory::makeLiteral(current_token().value, keyLiteralType);
             current++;  // consume string
         } else {
             throw std::runtime_error("Expected property name in object literal");

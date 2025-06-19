@@ -12,8 +12,37 @@ Value OperationHandler::performBinaryOperation(const std::string& op, const Valu
     if (op == "-") return Value(left.toNumber() - right.toNumber());
     if (op == "*") return Value(left.toNumber() * right.toNumber());
     if (op == "/") return Value(left.toNumber() / right.toNumber());
-    if (op == "==") return Value(left.toString() == right.toString());
-    if (op == "!=") return Value(left.toString() != right.toString());
+    if (op == "==") {
+        // JavaScript loose equality with type coercion
+        // If both are the same type, compare directly
+        if (left.getType() == right.getType()) {
+            if (left.isNumber()) return Value(left.toNumber() == right.toNumber());
+            if (left.isString()) return Value(left.toString() == right.toString());
+            if (left.isBoolean()) return Value(left.toBool() == right.toBool());
+            if (left.isNull() && right.isNull()) return Value(true);
+            if (left.isUndefined() && right.isUndefined()) return Value(true);
+            return Value(left.toString() == right.toString());
+        }
+        
+        // Type coercion rules for loose equality
+        // null == undefined
+        if ((left.isNull() && right.isUndefined()) || (left.isUndefined() && right.isNull())) {
+            return Value(true);
+        }
+        
+        // Number comparisons with type coercion
+        if (left.isNumber() || right.isNumber()) {
+            return Value(left.toNumber() == right.toNumber());
+        }
+        
+        // String comparisons
+        return Value(left.toString() == right.toString());
+    }
+    if (op == "!=") {
+        // Negate the result of ==
+        Value equalResult = performBinaryOperation("==", left, right);
+        return Value(!equalResult.toBool());
+    }
     if (op == "===") {
         // Strict equality - check both type and value
         if (left.getType() != right.getType()) {

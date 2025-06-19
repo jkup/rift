@@ -43,7 +43,27 @@ Value ExpressionEvaluator::evaluateIdentifier(std::shared_ptr<ASTNode> node, std
 }
 
 Value ExpressionEvaluator::evaluateLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    // Parse literal values
+    // Use metadata to determine literal type if available
+    if (!node->metadata.empty()) {
+        if (node->metadata == "string") {
+            return Value(node->value);
+        } else if (node->metadata == "number") {
+            try {
+                double num = std::stod(node->value);
+                return Value(num);
+            } catch (...) {
+                return Value(0.0);  // fallback
+            }
+        } else if (node->metadata == "boolean") {
+            return Value(node->value == "true");
+        } else if (node->metadata == "null") {
+            return Value::null();
+        } else if (node->metadata == "undefined") {
+            return Value::undefined();
+        }
+    }
+
+    // Fallback to old behavior for backward compatibility
     if (node->value == "true") return Value(true);
     if (node->value == "false") return Value(false);
     if (node->value == "null") return Value::null();

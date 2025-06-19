@@ -11,8 +11,12 @@ namespace rift::ast {
 class ASTFactory {
    public:
     // Expression factories
-    static std::shared_ptr<ASTNode> makeLiteral(const std::string& value) {
-        return std::make_shared<ASTNode>(ASTNodeType::Literal, value);
+    static std::shared_ptr<ASTNode> makeLiteral(const std::string& value, const std::string& literalType = "") {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::Literal, value);
+        if (!literalType.empty()) {
+            node->metadata = literalType;  // Store the literal type
+        }
+        return node;
     }
 
     static std::shared_ptr<ASTNode> makeIdentifier(const std::string& name) {

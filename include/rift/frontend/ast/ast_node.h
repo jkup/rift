@@ -37,6 +37,7 @@ struct ASTNode {
     ASTNodeType type;
     std::vector<std::shared_ptr<ASTNode>> children;
     std::string value;
+    std::string metadata;  // For storing additional type information
 
     ASTNode(ASTNodeType t) : type(t) {}
     ASTNode(ASTNodeType t, const std::string& v) : type(t), value(v) {}
