@@ -202,9 +202,34 @@ class Test262Runner {
     }
 
     try {
-      // Write test code to temporary file
+      // Build combined code with harness files
+      let combinedCode = '';
+      
+      // Always include essential harness files
+      const essentialHarness = ['sta.js', 'assert.js'];
+      for (const harnessFile of essentialHarness) {
+        const harnessPath = path.join(TEST262_DIR, 'harness', harnessFile);
+        if (fs.existsSync(harnessPath)) {
+          combinedCode += fs.readFileSync(harnessPath, 'utf8') + '\n';
+        }
+      }
+      
+      // Include test-specific harness files
+      if (test.includes && test.includes.length > 0) {
+        for (const includeFile of test.includes) {
+          const harnessPath = path.join(TEST262_DIR, 'harness', includeFile);
+          if (fs.existsSync(harnessPath)) {
+            combinedCode += fs.readFileSync(harnessPath, 'utf8') + '\n';
+          }
+        }
+      }
+      
+      // Add the actual test code
+      combinedCode += test.code;
+
+      // Write combined code to temporary file
       const tempFile = "/tmp/test262_temp.js";
-      fs.writeFileSync(tempFile, test.code);
+      fs.writeFileSync(tempFile, combinedCode);
 
       // Run our runtime with suppressed output
       const result = execSync(`${RUNTIME_EXECUTABLE} ${tempFile}`, {
@@ -222,13 +247,15 @@ class Test262Runner {
       } else {
         // Fix 3: Better test success detection
         // For positive tests, check if the output contains error indicators
+        // Note: Test262Error is expected for assertion failures
         if (
           stdout.includes("Test262Error") ||
           stdout.includes("Error:") ||
           stdout.includes("Exception") ||
           stdout.includes("ReferenceError") ||
           stdout.includes("TypeError") ||
-          stdout.includes("SyntaxError")
+          stdout.includes("SyntaxError") ||
+          stdout.includes("RangeError")
         ) {
           this.failed++;
           return {
@@ -295,9 +322,24 @@ class Test262Runner {
       }
     }
 
-    // Also skip tests that require specific includes
+    // Don't skip tests just because they have includes - we now load harness files
+    // Only skip if they have unsupported includes that we can't handle
     if (test.includes && test.includes.length > 0) {
-      return true;
+      // Check if any includes are for features we definitely don't support
+      const unsupportedIncludes = [
+        'temporalHelpers.js',  // Temporal API
+        'testAtomics.js',      // SharedArrayBuffer/Atomics
+        'testIntl.js',         // Internationalization
+        'testBigIntTypedArray.js', // BigInt
+        'asyncHelpers.js',     // async/await
+        'atomicsHelper.js',    // Atomics
+      ];
+      
+      for (const include of test.includes) {
+        if (unsupportedIncludes.includes(include)) {
+          return true;
+        }
+      }
     }
 
     return false;
