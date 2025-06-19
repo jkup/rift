@@ -5,6 +5,7 @@
 #include "rift/builtins/string/string.h"
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/object/object.h"
+#include "rift/builtins/boolean/boolean.h"
 #include "rift/runtime/values/value.h"
 
 namespace rift::core {
@@ -16,6 +17,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv) {
     setupString(globalEnv);
     setupArray(globalEnv);
     setupObject(globalEnv);
+    setupBoolean(globalEnv);
 }
 
 void BuiltinManager::setupGlobalFunctions(std::shared_ptr<Environment> globalEnv) {
@@ -51,6 +53,12 @@ void BuiltinManager::setupObject(std::shared_ptr<Environment> globalEnv) {
     // Setup Object object
     auto object = builtins::Object::create();
     globalEnv->define("Object", Value(object));
+}
+
+void BuiltinManager::setupBoolean(std::shared_ptr<Environment> globalEnv) {
+    // Setup Boolean object
+    auto boolean = builtins::Boolean::create();
+    globalEnv->define("Boolean", Value(boolean));
 }
 
 }  // namespace rift::core 
