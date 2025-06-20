@@ -125,15 +125,18 @@ Value Array::forEach(const std::vector<Value>& args) {
     }
 
     size_t length = getArrayLength(arrayObj);
-    auto callbackFn = callback.getObject();
+    auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+    
+    if (!callbackFn) {
+        return Value::undefined();
+    }
 
     for (size_t i = 0; i < length; ++i) {
         Value element = arrayObj->getProperty(std::to_string(i));
         if (!element.isUndefined()) {
             // Call callback(element, index, array)
             std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-            // In a full implementation, we'd need to actually call the function
-            // For now, this is a simplified placeholder
+            callbackFn->call(callArgs);
         }
     }
 
@@ -154,13 +157,19 @@ Value Array::map(const std::vector<Value>& args) {
     size_t length = getArrayLength(arrayObj);
     std::vector<Value> results;
     results.reserve(length);
+    
+    auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+    if (!callbackFn) {
+        return Value(createArrayObject({}));
+    }
 
     for (size_t i = 0; i < length; ++i) {
         Value element = arrayObj->getProperty(std::to_string(i));
         if (!element.isUndefined()) {
             // Call callback(element, index, array) and collect result
-            // For now, just pass through the element (simplified)
-            results.push_back(element);
+            std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+            Value result = callbackFn->call(callArgs);
+            results.push_back(result);
         } else {
             results.push_back(Value::undefined());
         }
@@ -182,13 +191,21 @@ Value Array::filter(const std::vector<Value>& args) {
 
     size_t length = getArrayLength(arrayObj);
     std::vector<Value> filtered;
+    
+    auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+    if (!callbackFn) {
+        return Value(createArrayObject({}));
+    }
 
     for (size_t i = 0; i < length; ++i) {
         Value element = arrayObj->getProperty(std::to_string(i));
         if (!element.isUndefined()) {
             // Call callback(element, index, array) and check if truthy
-            // For now, just include all elements (simplified)
-            filtered.push_back(element);
+            std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+            Value result = callbackFn->call(callArgs);
+            if (result.toBool()) {
+                filtered.push_back(element);
+            }
         }
     }
 
@@ -212,6 +229,11 @@ Value Array::reduce(const std::vector<Value>& args) {
         return Value::undefined();
     }
 
+    auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+    if (!callbackFn) {
+        return Value::undefined();
+    }
+
     Value accumulator;
     size_t startIndex = 0;
 
@@ -228,7 +250,8 @@ Value Array::reduce(const std::vector<Value>& args) {
         Value element = arrayObj->getProperty(std::to_string(i));
         if (!element.isUndefined()) {
             // Call callback(accumulator, element, index, array)
-            // For now, simplified - just return the accumulator
+            std::vector<Value> callArgs = {accumulator, element, Value(static_cast<double>(i)), Value(arrayObj)};
+            accumulator = callbackFn->call(callArgs);
         }
     }
 
@@ -467,6 +490,134 @@ std::shared_ptr<JSObject> Array::createArrayObject(const std::vector<Value>& ele
             }
 
             return Value(result);
+        })));
+
+    // Add callback methods as bound methods
+    arrayObj->setProperty(
+        "forEach",
+        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
+            if (args.empty() || !args[0].isFunction()) {
+                return Value::undefined();
+            }
+
+            Value callback = args[0];
+            auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+            if (!callbackFn) {
+                return Value::undefined();
+            }
+
+            size_t length = Array::getArrayLength(arrayObj);
+            for (size_t i = 0; i < length; ++i) {
+                Value element = arrayObj->getProperty(std::to_string(i));
+                if (!element.isUndefined()) {
+                    std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+                    callbackFn->call(callArgs);
+                }
+            }
+
+            return Value::undefined();
+        })));
+
+    arrayObj->setProperty(
+        "map",
+        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
+            if (args.empty() || !args[0].isFunction()) {
+                return Value(Array::createArrayObject({}));
+            }
+
+            Value callback = args[0];
+            auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+            if (!callbackFn) {
+                return Value(Array::createArrayObject({}));
+            }
+
+            size_t length = Array::getArrayLength(arrayObj);
+            std::vector<Value> results;
+            results.reserve(length);
+
+            for (size_t i = 0; i < length; ++i) {
+                Value element = arrayObj->getProperty(std::to_string(i));
+                if (!element.isUndefined()) {
+                    std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+                    Value result = callbackFn->call(callArgs);
+                    results.push_back(result);
+                } else {
+                    results.push_back(Value::undefined());
+                }
+            }
+
+            return Value(Array::createArrayObject(results));
+        })));
+
+    arrayObj->setProperty(
+        "filter",
+        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
+            if (args.empty() || !args[0].isFunction()) {
+                return Value(Array::createArrayObject({}));
+            }
+
+            Value callback = args[0];
+            auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+            if (!callbackFn) {
+                return Value(Array::createArrayObject({}));
+            }
+
+            size_t length = Array::getArrayLength(arrayObj);
+            std::vector<Value> filtered;
+
+            for (size_t i = 0; i < length; ++i) {
+                Value element = arrayObj->getProperty(std::to_string(i));
+                if (!element.isUndefined()) {
+                    std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+                    Value result = callbackFn->call(callArgs);
+                    if (result.toBool()) {
+                        filtered.push_back(element);
+                    }
+                }
+            }
+
+            return Value(Array::createArrayObject(filtered));
+        })));
+
+    arrayObj->setProperty(
+        "reduce",
+        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
+            if (args.empty() || !args[0].isFunction()) {
+                return Value::undefined();
+            }
+
+            Value callback = args[0];
+            auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+            if (!callbackFn) {
+                return Value::undefined();
+            }
+
+            size_t length = Array::getArrayLength(arrayObj);
+            if (length == 0 && args.size() < 2) {
+                return Value::undefined();
+            }
+
+            Value accumulator;
+            size_t startIndex = 0;
+
+            if (args.size() >= 2) {
+                // Initial value provided
+                accumulator = args[1];
+            } else {
+                // Use first element as initial value
+                accumulator = arrayObj->getProperty("0");
+                startIndex = 1;
+            }
+
+            for (size_t i = startIndex; i < length; ++i) {
+                Value element = arrayObj->getProperty(std::to_string(i));
+                if (!element.isUndefined()) {
+                    std::vector<Value> callArgs = {accumulator, element, Value(static_cast<double>(i)), Value(arrayObj)};
+                    accumulator = callbackFn->call(callArgs);
+                }
+            }
+
+            return accumulator;
         })));
 
     return arrayObj;
