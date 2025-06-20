@@ -193,11 +193,34 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
         return Value::undefined();
     }
 
-    // Evaluate the function/callee
-    Value callee = engine->evaluate(node->children[0], env);
+    auto calleeNode = node->children[0];
+    
+    // Check if this is a method call (member expression)
+    Value thisValue = Value::undefined();
+    Value callee;
+    
+    if (calleeNode->type == ASTNodeType::MemberExpression) {
+        // This is a method call: obj.method(args)
+        if (calleeNode->children.size() == 2) {
+            // Get the object (this value)
+            thisValue = engine->evaluate(calleeNode->children[0], env);
+            
+            // Get the method from the object
+            callee = engine->evaluate(calleeNode, env);
+        }
+    } else {
+        // Regular function call
+        callee = engine->evaluate(calleeNode, env);
+    }
 
     // Evaluate arguments
     std::vector<Value> args;
+    
+    // For method calls, prepend the 'this' value as first argument
+    if (!thisValue.isUndefined()) {
+        args.push_back(thisValue);
+    }
+    
     for (size_t i = 1; i < node->children.size(); ++i) {
         args.push_back(engine->evaluate(node->children[i], env));
     }
