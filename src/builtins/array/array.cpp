@@ -1,4 +1,5 @@
 #include "rift/builtins/array/array.h"
+#include "rift/core/engine/builtin_manager.h"
 
 #include <cmath>
 #include <limits>
@@ -32,12 +33,15 @@ std::shared_ptr<JSObject> Array::createPrototype() {
     prototype->setProperty("includes", Value(std::make_shared<JSFunction>(Array::includes)));
     prototype->setProperty("slice", Value(std::make_shared<JSFunction>(Array::slice)));
     prototype->setProperty("concat", Value(std::make_shared<JSFunction>(Array::concat)));
+    prototype->setProperty("toString", Value(std::make_shared<JSFunction>(Array::toString)));
 
     return prototype;
 }
 
 Value Array::constructor(const std::vector<Value>& args) {
-    auto arrayObj = std::make_shared<JSObject>();
+    // Create array with proper prototype chain
+    auto arrayPrototype = getGlobalPrototype();
+    auto arrayObj = std::make_shared<JSObject>(arrayPrototype);
 
     if (args.empty()) {
         // new Array() - create empty array
@@ -425,7 +429,9 @@ void Array::setArrayLength(std::shared_ptr<JSObject> obj, size_t length) {
 }
 
 std::shared_ptr<JSObject> Array::createArrayObject(const std::vector<Value>& elements) {
-    auto arrayObj = std::make_shared<JSObject>();
+    // Create array with proper prototype chain
+    auto arrayPrototype = getGlobalPrototype();
+    auto arrayObj = std::make_shared<JSObject>(arrayPrototype);
 
     // Set up array elements
     for (size_t i = 0; i < elements.size(); ++i) {
@@ -435,192 +441,33 @@ std::shared_ptr<JSObject> Array::createArrayObject(const std::vector<Value>& ele
     // Set array length
     setArrayLength(arrayObj, elements.size());
 
-    // Add array methods directly to the array object for now
-    // (In a full implementation, this would be done via prototype chain)
-    arrayObj->setProperty(
-        "push",
-        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
-            size_t length = Array::getArrayLength(arrayObj);
-
-            // Add all arguments to the end of the array
-            for (size_t i = 0; i < args.size(); ++i) {
-                arrayObj->setProperty(std::to_string(length), args[i]);
-                length++;
-            }
-
-            Array::setArrayLength(arrayObj, length);
-            return Value(static_cast<double>(length));
-        })));
-
-    arrayObj->setProperty(
-        "pop",
-        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
-            size_t length = Array::getArrayLength(arrayObj);
-
-            if (length == 0) {
-                return Value::undefined();
-            }
-
-            // Get the last element
-            Value lastElement = arrayObj->getProperty(std::to_string(length - 1));
-
-            // Remove it by setting to undefined
-            arrayObj->setProperty(std::to_string(length - 1), Value::undefined());
-
-            // Update length
-            Array::setArrayLength(arrayObj, length - 1);
-
-            return lastElement;
-        })));
-
-    arrayObj->setProperty(
-        "toString",
-        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
-            size_t length = Array::getArrayLength(arrayObj);
-            std::string result = "";
-
-            for (size_t i = 0; i < length; ++i) {
-                if (i > 0) {
-                    result += ",";
-                }
-                Value element = arrayObj->getProperty(std::to_string(i));
-                if (!element.isUndefined() && !element.isNull()) {
-                    result += element.toString();
-                }
-            }
-
-            return Value(result);
-        })));
-
-    // Add callback methods as bound methods
-    arrayObj->setProperty(
-        "forEach",
-        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
-            if (args.empty() || !args[0].isFunction()) {
-                return Value::undefined();
-            }
-
-            Value callback = args[0];
-            auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
-            if (!callbackFn) {
-                return Value::undefined();
-            }
-
-            size_t length = Array::getArrayLength(arrayObj);
-            for (size_t i = 0; i < length; ++i) {
-                Value element = arrayObj->getProperty(std::to_string(i));
-                if (!element.isUndefined()) {
-                    std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-                    callbackFn->call(callArgs);
-                }
-            }
-
-            return Value::undefined();
-        })));
-
-    arrayObj->setProperty(
-        "map",
-        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
-            if (args.empty() || !args[0].isFunction()) {
-                return Value(Array::createArrayObject({}));
-            }
-
-            Value callback = args[0];
-            auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
-            if (!callbackFn) {
-                return Value(Array::createArrayObject({}));
-            }
-
-            size_t length = Array::getArrayLength(arrayObj);
-            std::vector<Value> results;
-            results.reserve(length);
-
-            for (size_t i = 0; i < length; ++i) {
-                Value element = arrayObj->getProperty(std::to_string(i));
-                if (!element.isUndefined()) {
-                    std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-                    Value result = callbackFn->call(callArgs);
-                    results.push_back(result);
-                } else {
-                    results.push_back(Value::undefined());
-                }
-            }
-
-            return Value(Array::createArrayObject(results));
-        })));
-
-    arrayObj->setProperty(
-        "filter",
-        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
-            if (args.empty() || !args[0].isFunction()) {
-                return Value(Array::createArrayObject({}));
-            }
-
-            Value callback = args[0];
-            auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
-            if (!callbackFn) {
-                return Value(Array::createArrayObject({}));
-            }
-
-            size_t length = Array::getArrayLength(arrayObj);
-            std::vector<Value> filtered;
-
-            for (size_t i = 0; i < length; ++i) {
-                Value element = arrayObj->getProperty(std::to_string(i));
-                if (!element.isUndefined()) {
-                    std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-                    Value result = callbackFn->call(callArgs);
-                    if (result.toBool()) {
-                        filtered.push_back(element);
-                    }
-                }
-            }
-
-            return Value(Array::createArrayObject(filtered));
-        })));
-
-    arrayObj->setProperty(
-        "reduce",
-        Value(std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& args) -> Value {
-            if (args.empty() || !args[0].isFunction()) {
-                return Value::undefined();
-            }
-
-            Value callback = args[0];
-            auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
-            if (!callbackFn) {
-                return Value::undefined();
-            }
-
-            size_t length = Array::getArrayLength(arrayObj);
-            if (length == 0 && args.size() < 2) {
-                return Value::undefined();
-            }
-
-            Value accumulator;
-            size_t startIndex = 0;
-
-            if (args.size() >= 2) {
-                // Initial value provided
-                accumulator = args[1];
-            } else {
-                // Use first element as initial value
-                accumulator = arrayObj->getProperty("0");
-                startIndex = 1;
-            }
-
-            for (size_t i = startIndex; i < length; ++i) {
-                Value element = arrayObj->getProperty(std::to_string(i));
-                if (!element.isUndefined()) {
-                    std::vector<Value> callArgs = {accumulator, element, Value(static_cast<double>(i)), Value(arrayObj)};
-                    accumulator = callbackFn->call(callArgs);
-                }
-            }
-
-            return accumulator;
-        })));
-
     return arrayObj;
+}
+
+Value Array::toString(const std::vector<Value>& args) {
+    auto arrayObj = getThisArrayObject(args);
+    if (!arrayObj) {
+        return Value("");
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    std::string result = "";
+
+    for (size_t i = 0; i < length; ++i) {
+        if (i > 0) {
+            result += ",";
+        }
+        Value element = arrayObj->getProperty(std::to_string(i));
+        if (!element.isUndefined() && !element.isNull()) {
+            result += element.toString();
+        }
+    }
+
+    return Value(result);
+}
+
+std::shared_ptr<JSObject> Array::getGlobalPrototype() {
+    return rift::core::BuiltinManager::getArrayPrototype();
 }
 
 // Array static methods

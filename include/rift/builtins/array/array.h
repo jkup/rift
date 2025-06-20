@@ -32,6 +32,9 @@ class Array {
     /// Helper to create a new array object with the given elements
     static std::shared_ptr<JSObject> createArrayObject(const std::vector<Value>& elements);
 
+    /// Helper to get the global Array prototype (for proper prototype chain)
+    static std::shared_ptr<JSObject> getGlobalPrototype();
+
    private:
     // Array constructor function
     /// The `Array()` constructor creates Array objects.
@@ -177,6 +180,9 @@ class Array {
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat
     static Value concat(const std::vector<Value>& args);
+
+    /// The `toString()` method returns a string representing the array.
+    static Value toString(const std::vector<Value>& args);
 
     // Helper methods
     /// Helper to get the array object from the 'this' binding in prototype methods

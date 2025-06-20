@@ -10,7 +10,25 @@
 
 namespace rift::core {
 
+// Initialize static prototype storage
+std::shared_ptr<JSObject> BuiltinManager::objectPrototype_;
+std::shared_ptr<JSObject> BuiltinManager::arrayPrototype_;
+std::shared_ptr<JSObject> BuiltinManager::stringPrototype_;
+std::shared_ptr<JSObject> BuiltinManager::booleanPrototype_;
+
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv) {
+    // Setup prototypes first (Object.prototype is the root)
+    objectPrototype_ = builtins::Object::createPrototype();
+    arrayPrototype_ = builtins::Array::createPrototype();
+    stringPrototype_ = builtins::String::createPrototype();
+    booleanPrototype_ = builtins::Boolean::createPrototype();
+
+    // Set up prototype chain: Array.prototype -> Object.prototype
+    arrayPrototype_->setPrototype(objectPrototype_);
+    stringPrototype_->setPrototype(objectPrototype_);
+    booleanPrototype_->setPrototype(objectPrototype_);
+
+    // Now setup builtins
     setupGlobalFunctions(globalEnv);
     setupConsole(globalEnv);
     setupMath(globalEnv);
@@ -18,6 +36,23 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv) {
     setupArray(globalEnv);
     setupObject(globalEnv);
     setupBoolean(globalEnv);
+}
+
+// Global prototype accessors
+std::shared_ptr<JSObject> BuiltinManager::getObjectPrototype() {
+    return objectPrototype_;
+}
+
+std::shared_ptr<JSObject> BuiltinManager::getArrayPrototype() {
+    return arrayPrototype_;
+}
+
+std::shared_ptr<JSObject> BuiltinManager::getStringPrototype() {
+    return stringPrototype_;
+}
+
+std::shared_ptr<JSObject> BuiltinManager::getBooleanPrototype() {
+    return booleanPrototype_;
 }
 
 void BuiltinManager::setupGlobalFunctions(std::shared_ptr<Environment> globalEnv) {
