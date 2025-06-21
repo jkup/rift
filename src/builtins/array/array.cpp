@@ -431,6 +431,9 @@ void Array::setArrayLength(std::shared_ptr<JSObject> obj, size_t length) {
 std::shared_ptr<JSObject> Array::createArrayObject(const std::vector<Value>& elements) {
     // Create array with proper prototype chain
     auto arrayPrototype = getGlobalPrototype();
+    
+    // TODO: Use GC-aware object creation when we have access to ObjectManager
+    // For now, keep the existing behavior to maintain compatibility
     auto arrayObj = std::make_shared<JSObject>(arrayPrototype);
 
     // Set up array elements
