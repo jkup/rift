@@ -6,7 +6,13 @@
 namespace rift::core {
 
 Rift::Rift() {
+    object_manager_ = std::make_unique<rift::memory::ObjectManager>();
     global_env_ = std::make_shared<Environment>();
+    global_env_gc_ = std::make_unique<rift::memory::GCEnvironment>(global_env_);
+    
+    // Register global environment as a GC root
+    object_manager_->addRoot(global_env_gc_.get());
+    
     setupBuiltins();
 }
 
@@ -54,7 +60,15 @@ Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment>
 }
 
 void Rift::setupBuiltins() {
-    BuiltinManager::setupBuiltins(global_env_);
+    BuiltinManager::setupBuiltins(global_env_, this);
+}
+
+void Rift::collectGarbage() {
+    object_manager_->collect();
+}
+
+void Rift::printGCStats() const {
+    object_manager_->printStats();
 }
 
 }  // namespace rift::core

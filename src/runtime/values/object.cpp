@@ -76,4 +76,25 @@ std::vector<std::string> JSObject::getOwnPropertyNames() const {
     return names;
 }
 
+std::vector<rift::memory::GCObject*> JSObject::getReferences() const {
+    std::vector<rift::memory::GCObject*> refs;
+    
+    // Add prototype reference
+    if (prototype_) {
+        refs.push_back(prototype_.get());
+    }
+    
+    // Add object references from properties
+    for (const auto& [key, value] : properties_) {
+        if (value.isObject() || value.isFunction()) {
+            auto obj = value.getObject();
+            if (obj) {
+                refs.push_back(obj.get());
+            }
+        }
+    }
+    
+    return refs;
+}
+
 }  // namespace rift::runtime

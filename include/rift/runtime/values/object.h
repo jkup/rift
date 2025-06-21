@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "value.h"
+#include "../../memory/gc.h"
 
 namespace rift::runtime {
 
@@ -13,10 +14,11 @@ namespace rift::runtime {
 class Value;
 
 // Base JavaScript object
-class JSObject {
+class JSObject : public rift::memory::GCObject {
    private:
     std::unordered_map<std::string, Value> properties_;
     std::shared_ptr<JSObject> prototype_;
+    mutable bool gc_marked_ = false;  // GC mark bit
 
    public:
     JSObject(std::shared_ptr<JSObject> prototype = nullptr) : prototype_(prototype) {}
@@ -40,6 +42,13 @@ class JSObject {
     
     // Get only own property names (not inherited from prototype)
     std::vector<std::string> getOwnPropertyNames() const;
+    
+    // GC interface implementation
+    std::vector<rift::memory::GCObject*> getReferences() const override;
+    void markReachable() override { gc_marked_ = true; }
+    bool isMarked() const override { return gc_marked_; }
+    void clearMark() override { gc_marked_ = false; }
+    std::string getGCTypeName() const override { return getTypeName(); }
 };
 
 // Function object

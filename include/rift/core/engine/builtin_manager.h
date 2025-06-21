@@ -8,10 +8,13 @@ namespace rift::core {
 
 using namespace rift::runtime;
 
+// Forward declaration
+class Rift;
+
 class BuiltinManager {
 public:
     // Setup all built-in objects and functions
-    static void setupBuiltins(std::shared_ptr<Environment> globalEnv);
+    static void setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine = nullptr);
 
     // Global prototype access
     static std::shared_ptr<JSObject> getObjectPrototype();
@@ -34,6 +37,7 @@ private:
     static void setupArray(std::shared_ptr<Environment> globalEnv);
     static void setupObject(std::shared_ptr<Environment> globalEnv);
     static void setupBoolean(std::shared_ptr<Environment> globalEnv);
+    static void setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine);
 };
 
 }  // namespace rift::core 

@@ -6,6 +6,8 @@
 #include "../../frontend/ast/ast_node.h"
 #include "../../runtime/environment/environment.h"
 #include "../../runtime/values/value.h"
+#include "../../memory/object_manager.h"
+#include "../../memory/gc_environment.h"
 
 namespace rift::core {
 
@@ -20,6 +22,8 @@ using EvaluatorFunction = std::function<Value(std::shared_ptr<ASTNode>, std::sha
 class Rift {
    private:
     std::shared_ptr<Environment> global_env_;
+    std::unique_ptr<rift::memory::ObjectManager> object_manager_;
+    std::unique_ptr<rift::memory::GCEnvironment> global_env_gc_;
 
    public:
     Rift();
@@ -31,6 +35,13 @@ class Rift {
 
     // Global environment access
     std::shared_ptr<Environment> getGlobalEnvironment() const { return global_env_; }
+
+    // Object management
+    rift::memory::ObjectManager* getObjectManager() const { return object_manager_.get(); }
+    
+    // GC control
+    void collectGarbage();
+    void printGCStats() const;
 
     // Built-in setup
     void setupBuiltins();

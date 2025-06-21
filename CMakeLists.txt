@@ -16,6 +16,12 @@ set(RUNTIME_SOURCES
     src/runtime/environment/environment.cpp
 )
 
+set(MEMORY_SOURCES
+    src/memory/mark_sweep_gc.cpp
+    src/memory/object_manager.cpp
+    src/memory/gc_environment.cpp
+)
+
 set(BUILTINS_SOURCES
     src/builtins/console/console.cpp
     src/builtins/math/math.cpp
@@ -43,6 +49,7 @@ add_executable(rift
     src/main.cpp
     ${FRONTEND_SOURCES}
     ${RUNTIME_SOURCES}
+    ${MEMORY_SOURCES}
     ${BUILTINS_SOURCES}
     ${CORE_SOURCES}
     ${API_SOURCES}
@@ -56,6 +63,9 @@ target_compile_options(rift PRIVATE
     $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -g>
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
 )
+
+# Add GC debugging support (uncomment to enable GC debug output)
+target_compile_definitions(rift PRIVATE DEBUG_GC)
 
 # Install target
 install(TARGETS rift DESTINATION bin) 

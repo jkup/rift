@@ -1,4 +1,5 @@
 #include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/engine.h"
 #include "rift/builtins/global/global.h"
 #include "rift/builtins/console/console.h"
 #include "rift/builtins/math/math.h"
@@ -16,7 +17,7 @@ std::shared_ptr<JSObject> BuiltinManager::arrayPrototype_;
 std::shared_ptr<JSObject> BuiltinManager::stringPrototype_;
 std::shared_ptr<JSObject> BuiltinManager::booleanPrototype_;
 
-void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv) {
+void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Setup prototypes first (Object.prototype is the root)
     objectPrototype_ = builtins::Object::createPrototype();
     arrayPrototype_ = builtins::Array::createPrototype();
@@ -36,6 +37,11 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv) {
     setupArray(globalEnv);
     setupObject(globalEnv);
     setupBoolean(globalEnv);
+    
+    // Setup GC functions if engine is provided
+    if (engine) {
+        setupGCFunctions(globalEnv, engine);
+    }
 }
 
 // Global prototype accessors
@@ -94,6 +100,26 @@ void BuiltinManager::setupBoolean(std::shared_ptr<Environment> globalEnv) {
     // Setup Boolean object
     auto boolean = builtins::Boolean::create();
     globalEnv->define("Boolean", Value(boolean));
+}
+
+void BuiltinManager::setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine) {
+    // Create GC functions that have access to the engine
+    auto gcFunction = std::make_shared<JSFunction>([engine](const std::vector<Value>& args) -> Value {
+        if (engine) {
+            engine->collectGarbage();
+        }
+        return Value::undefined();
+    });
+    
+    auto gcStatsFunction = std::make_shared<JSFunction>([engine](const std::vector<Value>& args) -> Value {
+        if (engine) {
+            engine->printGCStats();
+        }
+        return Value::undefined();
+    });
+    
+    globalEnv->define("gc", Value(gcFunction));
+    globalEnv->define("gcStats", Value(gcStatsFunction));
 }
 
 }  // namespace rift::core 
