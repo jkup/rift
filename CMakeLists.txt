@@ -65,7 +65,7 @@ target_compile_options(rift PRIVATE
 )
 
 # Add GC debugging support (uncomment to enable GC debug output)
-target_compile_definitions(rift PRIVATE DEBUG_GC)
+# target_compile_definitions(rift PRIVATE DEBUG_GC)
 
 # Install target
 install(TARGETS rift DESTINATION bin) 
