@@ -112,6 +112,7 @@ Token Lexer::read_identifier() {
         {"throw", TokenType::Throw},
         {"try", TokenType::Try},
         {"catch", TokenType::Catch},
+        {"new", TokenType::New},
         {"true", TokenType::Boolean},
         {"false", TokenType::Boolean},
         {"null", TokenType::Null},

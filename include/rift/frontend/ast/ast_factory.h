@@ -69,6 +69,12 @@ class ASTFactory {
         return std::make_shared<ASTNode>(ASTNodeType::ObjectLiteral);
     }
 
+    static std::shared_ptr<ASTNode> makeNewExpression(std::shared_ptr<ASTNode> constructor) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::NewExpression);
+        node->children.push_back(constructor);
+        return node;
+    }
+
     // Statement factories
     static std::shared_ptr<ASTNode> makeProgram() {
         return std::make_shared<ASTNode>(ASTNodeType::Program);
@@ -178,6 +184,14 @@ class ASTFactory {
                             std::shared_ptr<ASTNode> argument) {
         if (callExpression->type == ASTNodeType::CallExpression) {
             callExpression->children.push_back(argument);
+        }
+    }
+
+    // Helper to add argument to new expression  
+    static void addNewArgument(std::shared_ptr<ASTNode> newExpression,
+                               std::shared_ptr<ASTNode> argument) {
+        if (newExpression->type == ASTNodeType::NewExpression) {
+            newExpression->children.push_back(argument);
         }
     }
 

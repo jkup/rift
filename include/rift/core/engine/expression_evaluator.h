@@ -30,6 +30,7 @@ private:
     static Value evaluateArrayLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateObjectLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateFunctionExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateNewExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
 };
 
 }  // namespace rift::core 
