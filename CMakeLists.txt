@@ -30,6 +30,7 @@ set(BUILTINS_SOURCES
     src/builtins/array/array.cpp
     src/builtins/object/object.cpp
     src/builtins/boolean/boolean.cpp
+    src/builtins/error/error.cpp
 )
 
 set(CORE_SOURCES

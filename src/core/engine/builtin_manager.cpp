@@ -7,6 +7,7 @@
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/object/object.h"
 #include "rift/builtins/boolean/boolean.h"
+#include "rift/builtins/error/error.h"
 #include "rift/runtime/values/value.h"
 
 namespace rift::core {
@@ -16,6 +17,7 @@ std::shared_ptr<JSObject> BuiltinManager::objectPrototype_;
 std::shared_ptr<JSObject> BuiltinManager::arrayPrototype_;
 std::shared_ptr<JSObject> BuiltinManager::stringPrototype_;
 std::shared_ptr<JSObject> BuiltinManager::booleanPrototype_;
+std::shared_ptr<JSObject> BuiltinManager::errorPrototype_;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Setup prototypes first (Object.prototype is the root)
@@ -23,11 +25,13 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     arrayPrototype_ = builtins::Array::createPrototype();
     stringPrototype_ = builtins::String::createPrototype();
     booleanPrototype_ = builtins::Boolean::createPrototype();
+    errorPrototype_ = builtins::Error::createPrototype();
 
-    // Set up prototype chain: Array.prototype -> Object.prototype
+    // Set up prototype chain: All prototypes -> Object.prototype
     arrayPrototype_->setPrototype(objectPrototype_);
     stringPrototype_->setPrototype(objectPrototype_);
     booleanPrototype_->setPrototype(objectPrototype_);
+    errorPrototype_->setPrototype(objectPrototype_);
 
     // Now setup builtins
     setupGlobalFunctions(globalEnv);
@@ -37,6 +41,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupArray(globalEnv);
     setupObject(globalEnv);
     setupBoolean(globalEnv);
+    setupError(globalEnv);
     
     // Setup GC functions if engine is provided
     if (engine) {
@@ -59,6 +64,10 @@ std::shared_ptr<JSObject> BuiltinManager::getStringPrototype() {
 
 std::shared_ptr<JSObject> BuiltinManager::getBooleanPrototype() {
     return booleanPrototype_;
+}
+
+std::shared_ptr<JSObject> BuiltinManager::getErrorPrototype() {
+    return errorPrototype_;
 }
 
 void BuiltinManager::setupGlobalFunctions(std::shared_ptr<Environment> globalEnv) {
@@ -100,6 +109,12 @@ void BuiltinManager::setupBoolean(std::shared_ptr<Environment> globalEnv) {
     // Setup Boolean object
     auto boolean = builtins::Boolean::create();
     globalEnv->define("Boolean", Value(boolean));
+}
+
+void BuiltinManager::setupError(std::shared_ptr<Environment> globalEnv) {
+    // Setup Error object
+    auto error = builtins::Error::create();
+    globalEnv->define("Error", Value(error));
 }
 
 void BuiltinManager::setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine) {
