@@ -1,4 +1,5 @@
 #include "rift/builtins/boolean/boolean.h"
+#include "rift/core/engine/builtin_manager.h"
 
 namespace rift::builtins {
 
@@ -23,17 +24,26 @@ std::shared_ptr<JSObject> Boolean::createPrototype() {
 }
 
 Value Boolean::constructor(const std::vector<Value>& args) {
-    // The Boolean constructor converts its argument to a boolean value
-    // If called with new, it creates a Boolean object
-    // If called without new, it returns a primitive boolean
+    // The Boolean constructor creates a Boolean object when called with new
+    // (In JavaScript, Boolean() without new returns primitive, but our new expression
+    // evaluator always calls constructors expecting objects)
     
+    // Determine the boolean value to wrap
+    bool boolValue;
     if (args.empty()) {
-        return Value(false);
+        boolValue = false;
+    } else {
+        boolValue = args[0].toBool();
     }
-
-    // Convert the first argument to boolean
-    bool boolValue = args[0].toBool();
-    return Value(boolValue);
+    
+    // Create Boolean object with proper prototype chain
+    auto booleanPrototype = getGlobalPrototype();
+    auto booleanObj = std::make_shared<JSObject>(booleanPrototype);
+    
+    // Store the primitive boolean value
+    booleanObj->setProperty("value", Value(boolValue));
+    
+    return Value(booleanObj);
 }
 
 Value Boolean::toString(const std::vector<Value>& args) {
@@ -75,6 +85,10 @@ bool Boolean::getThisBooleanValue(const std::vector<Value>& args) {
     
     // Default case: convert to boolean
     return thisValue.toBool();
+}
+
+std::shared_ptr<JSObject> Boolean::getGlobalPrototype() {
+    return rift::core::BuiltinManager::getBooleanPrototype();
 }
 
 }  // namespace rift::builtins 
