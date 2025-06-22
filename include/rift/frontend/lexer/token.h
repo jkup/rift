@@ -29,6 +29,7 @@ enum class TokenType {
     Throw,
     Try,
     Catch,
+    New,
 
     // Operators
     Plus,

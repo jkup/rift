@@ -31,6 +31,7 @@ enum class ASTNodeType {
     TryStatement,
     CatchClause,
     ParameterList,
+    NewExpression,
 };
 
 struct ASTNode {

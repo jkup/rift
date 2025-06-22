@@ -4,6 +4,7 @@
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/builtins/array/array.h"
 #include "rift/runtime/values/object.h"
+#include <iostream>
 
 namespace rift::core {
 
@@ -33,6 +34,8 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
             return evaluateObjectLiteral(node, env, engine);
         case ASTNodeType::FunctionExpression:
             return evaluateFunctionExpression(node, env, engine);
+        case ASTNodeType::NewExpression:
+            return evaluateNewExpression(node, env, engine);
         default:
             return Value::undefined();
     }
@@ -374,6 +377,47 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
     });
     
     return Value(func);
+}
+
+Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    if (node->children.empty()) {
+        return Value::undefined();
+    }
+
+    // Get the constructor
+    auto constructorNode = node->children[0];
+    Value constructor = engine->evaluate(constructorNode, env);
+
+    // Check if constructor is a function
+    if (!constructor.isFunction()) {
+        // In a real JS engine, this would throw a TypeError
+        return Value::undefined();
+    }
+
+    auto constructorFunc = std::dynamic_pointer_cast<JSFunction>(constructor.getObject());
+    if (!constructorFunc) {
+        return Value::undefined();
+    }
+
+    // Collect arguments (skip first child which is the constructor)
+    std::vector<Value> args;
+    for (size_t i = 1; i < node->children.size(); ++i) {
+        args.push_back(engine->evaluate(node->children[i], env));
+    }
+
+    // Call constructor function - built-in constructors like Array and Object
+    // handle their own object creation and return the created object
+    Value result = constructorFunc->call(args);
+
+    // If the constructor returned an object, use it (this is the normal case for built-ins)
+    if (result.isObject() || result.isFunction()) {
+        return result;
+    }
+
+    // If constructor returned a primitive (or undefined), create a new object
+    // This handles user-defined constructor functions
+    auto newObj = std::make_shared<JSObject>();
+    return Value(newObj);
 }
 
 }  // namespace rift::core 

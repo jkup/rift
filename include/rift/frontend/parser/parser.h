@@ -47,6 +47,7 @@ class Parser {
     std::shared_ptr<ASTNode> parse_try_statement();
     std::shared_ptr<ASTNode> parse_catch_clause();
     std::shared_ptr<ASTNode> parse_block_statement();
+    std::shared_ptr<ASTNode> parse_new_expression();
 
    public:
     Parser(const std::vector<Token>& tokens);

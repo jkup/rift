@@ -2,6 +2,7 @@
 #include "rift/core/engine/expression_evaluator.h"
 #include "rift/core/engine/statement_evaluator.h"
 #include "rift/core/engine/builtin_manager.h"
+#include <iostream>
 
 namespace rift::core {
 
@@ -38,6 +39,7 @@ Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment>
         case ASTNodeType::ArrayLiteral:
         case ASTNodeType::ObjectLiteral:
         case ASTNodeType::FunctionExpression:
+        case ASTNodeType::NewExpression:
             return ExpressionEvaluator::evaluate(node, env, this);
 
         // Statement types

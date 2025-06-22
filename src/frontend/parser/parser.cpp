@@ -1,6 +1,7 @@
 #include "rift/frontend/parser/parser.h"
 
 #include <stdexcept>
+#include <iostream>
 
 namespace rift::frontend {
 
@@ -96,6 +97,12 @@ std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
         current++;  // consume the operator
         auto operand = parse_postfix_expression();
         return ASTFactory::makeUnaryExpression(operator_, operand);
+    }
+
+    // Check for new operator
+    if (token.type == TokenType::New) {
+        current++;  // consume 'new'
+        return parse_new_expression();
     }
 
     // Not a unary expression, continue with postfix parsing
@@ -541,6 +548,29 @@ std::shared_ptr<ASTNode> Parser::parse_catch_clause() {
     auto body = parse_block_statement();
 
     return ASTFactory::makeCatchClause(parameter, body);
+}
+
+std::shared_ptr<ASTNode> Parser::parse_new_expression() {
+    // Parse the constructor (should be an identifier or member expression, not a call)
+    auto constructor = parse_primary();
+    auto newExpr = ASTFactory::makeNewExpression(constructor);
+    
+    // Check if there are arguments (parentheses)
+    if (current_token().type == TokenType::LeftParen) {
+        consume(TokenType::LeftParen);  // consume '('
+        
+        // Parse arguments
+        if (current_token().type != TokenType::RightParen) {
+            do {
+                auto arg = parse_expression();
+                ASTFactory::addNewArgument(newExpr, arg);
+            } while (match(TokenType::Comma));
+        }
+        
+        consume(TokenType::RightParen);  // consume ')'
+    }
+    
+    return newExpr;
 }
 
 }  // namespace rift::frontend
