@@ -1,5 +1,6 @@
 #include "rift/builtins/error/error.h"
 #include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/javascript_exception.h"
 
 namespace rift::builtins {
 
@@ -47,7 +48,7 @@ Value Error::constructor(const std::vector<Value>& args) {
 Value Error::toString(const std::vector<Value>& args) {
     auto errorObj = getThisErrorObject(args);
     if (!errorObj) {
-        return Value("Error");
+        throw rift::core::JavaScriptException(Value("TypeError: Error.prototype.toString called on non-object"));
     }
     
     // Get name and message properties
