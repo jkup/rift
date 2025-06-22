@@ -15,6 +15,19 @@ private:
     bool gc_enabled_ = true;  // Flag to temporarily disable GC
 
 public:
+    ~MarkSweepGC() {
+        // Safely clean up all tracked objects during destruction
+        // Disable GC during cleanup to prevent recursive collection
+        gc_enabled_ = false;
+        
+        // Clear roots first to avoid dangling pointers
+        roots_.clear();
+        
+        // Clear all objects without deleting them - they may be managed by shared_ptr
+        // and will be cleaned up automatically
+        all_objects_.clear();
+    }
+
     void addObject(GCObject* obj) override {
         if (obj) {
             all_objects_.insert(obj);
@@ -73,7 +86,8 @@ public:
             if (!(*it)->isMarked()) {
                 GCObject* obj = *it;
                 it = all_objects_.erase(it);
-                delete obj;
+                // Don't delete the object - it's managed by shared_ptr
+                // The shared_ptr will handle deletion when ref count reaches 0
                 ++collected;
             } else {
                 ++it;

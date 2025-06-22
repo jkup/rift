@@ -77,21 +77,29 @@ class TestRunner {
       let lastOutput = [];
 
       for (const line of lines) {
-        if (line.startsWith("PASS:")) {
+        // Handle both direct PASS/FAIL and [object Object] prefixed versions
+        if (line.includes("PASS:") || line.includes("✅")) {
           testPassed++;
-        } else if (line.startsWith("FAIL:")) {
+        } else if (line.includes("FAIL:") || line.includes("❌")) {
           testFailed++;
           lastOutput.push(chalk.red("❌ " + line.replace("FAIL:", "")));
+        } else if (line.includes("Error:")) {
+          // Count runtime errors as failures
+          testFailed++;
+          lastOutput.push(chalk.red("❌ " + line));
         } else if (
           line.trim() &&
-          !line.startsWith("PASS:") &&
-          !line.startsWith("FAIL:")
+          !line.includes("PASS:") &&
+          !line.includes("FAIL:") &&
+          !line.includes("✅") &&
+          !line.includes("❌")
         ) {
           lastOutput.push(chalk.dim(line));
         }
       }
 
-      const success = testFailed === 0 && testPassed > 0;
+      // A test passes if it has at least one PASS and no FAIL/Error
+      const success = testPassed > 0 && testFailed === 0;
 
       if (success) {
         this.passed++;

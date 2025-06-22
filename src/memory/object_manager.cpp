@@ -11,10 +11,11 @@ ObjectManager::ObjectManager() {
 }
 
 ObjectManager::~ObjectManager() {
-    // Perform final cleanup only if GC is enabled
-    // Skip if GC was disabled due to exception handling
-    if (gc_ && gc_->isGCEnabled()) {
-        gc_->collect();
+    // Don't perform final cleanup - objects may already be destroyed
+    // during program shutdown, causing segfaults when GC tries to access them
+    // The shared_ptr system will handle cleanup automatically
+    if (gc_) {
+        gc_->setGCEnabled(false);  // Disable GC to prevent any further collections
     }
 }
 
