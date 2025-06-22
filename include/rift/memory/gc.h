@@ -43,6 +43,10 @@ public:
     virtual void setCollectionThreshold(size_t threshold) = 0;
     virtual bool shouldCollect() const = 0;
     
+    // GC state control for exception handling
+    virtual void setGCEnabled(bool enabled) = 0;
+    virtual bool isGCEnabled() const = 0;
+    
     // Debugging support
     virtual void printStats() const = 0;
 };

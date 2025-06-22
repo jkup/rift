@@ -42,6 +42,8 @@ class Rift {
     // GC control
     void collectGarbage();
     void printGCStats() const;
+    void setGCEnabled(bool enabled);
+    bool isGCEnabled() const;
 
     // Built-in setup
     void setupBuiltins();

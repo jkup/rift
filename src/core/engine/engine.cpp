@@ -73,4 +73,12 @@ void Rift::printGCStats() const {
     object_manager_->printStats();
 }
 
+void Rift::setGCEnabled(bool enabled) {
+    object_manager_->setGCEnabled(enabled);
+}
+
+bool Rift::isGCEnabled() const {
+    return object_manager_->isGCEnabled();
+}
+
 }  // namespace rift::core

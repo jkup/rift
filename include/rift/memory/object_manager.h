@@ -37,6 +37,10 @@ public:
     void setCollectionThreshold(size_t threshold);
     bool shouldCollect() const;
     
+    // GC state control for exception handling
+    void setGCEnabled(bool enabled);
+    bool isGCEnabled() const;
+    
     // Statistics
     size_t getObjectCount() const;
     size_t getLastCollectionCount() const;

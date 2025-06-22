@@ -1,5 +1,6 @@
 #include "rift/memory/object_manager.h"
 #include "rift/runtime/values/object.h"
+#include <iostream>
 
 namespace rift::memory {
 
@@ -10,8 +11,9 @@ ObjectManager::ObjectManager() {
 }
 
 ObjectManager::~ObjectManager() {
-    // Perform final cleanup
-    if (gc_) {
+    // Perform final cleanup only if GC is enabled
+    // Skip if GC was disabled due to exception handling
+    if (gc_ && gc_->isGCEnabled()) {
         gc_->collect();
     }
 }
@@ -58,6 +60,14 @@ size_t ObjectManager::getLastCollectionCount() const {
 
 void ObjectManager::printStats() const {
     gc_->printStats();
+}
+
+void ObjectManager::setGCEnabled(bool enabled) {
+    gc_->setGCEnabled(enabled);
+}
+
+bool ObjectManager::isGCEnabled() const {
+    return gc_->isGCEnabled();
 }
 
 }  // namespace rift::memory 

@@ -2,6 +2,7 @@
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/runtime/values/object.h"
+#include <iostream>
 
 namespace rift::core {
 
@@ -131,6 +132,10 @@ Value StatementEvaluator::evaluateThrowStatement(std::shared_ptr<ASTNode> node, 
     if (node->children.size() < 1) {
         return Value::undefined();
     }
+
+    // Permanently disable GC during exception handling to prevent segfaults
+    // GC during exception handling can cause crashes when objects are in inconsistent states
+    engine->setGCEnabled(false);
 
     // Evaluate the expression to throw
     Value thrownValue = engine->evaluate(node->children[0], env);

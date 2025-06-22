@@ -12,14 +12,15 @@ private:
     size_t collection_threshold_ = 1000;
     size_t last_collection_count_ = 0;
     size_t total_collections_ = 0;
+    bool gc_enabled_ = true;  // Flag to temporarily disable GC
 
 public:
     void addObject(GCObject* obj) override {
         if (obj) {
             all_objects_.insert(obj);
             
-            // Trigger collection if threshold reached
-            if (shouldCollect()) {
+            // Only trigger collection if GC is enabled and threshold reached
+            if (gc_enabled_ && shouldCollect()) {
                 collect();
             }
         }
@@ -47,6 +48,11 @@ public:
     }
     
     void collect() override {
+        // Skip collection if GC is disabled
+        if (!gc_enabled_) {
+            return;
+        }
+        
         auto start_time = std::chrono::high_resolution_clock::now();
         
         // Clear all marks first
@@ -111,7 +117,12 @@ public:
         std::cout << "  Collection threshold: " << collection_threshold_ << std::endl;
         std::cout << "  Total collections: " << total_collections_ << std::endl;
         std::cout << "  Last collection freed: " << last_collection_count_ << " objects" << std::endl;
+        std::cout << "  GC enabled: " << (gc_enabled_ ? "true" : "false") << std::endl;
     }
+    
+    // Methods to control GC state during exception handling
+    void setGCEnabled(bool enabled) override { gc_enabled_ = enabled; }
+    bool isGCEnabled() const override { return gc_enabled_; }
 
 private:
     void markObject(GCObject* obj) {
