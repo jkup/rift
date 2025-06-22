@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "rift/api/api.h"
+#include "rift/core/engine/javascript_exception.h"
 
 void print_usage(const char* program_name) {
     std::cout << "Usage: " << program_name << " [options] [file]\n";
@@ -54,7 +55,12 @@ int main(int argc, char* argv[]) {
         auto result = js.execute(code);
         std::cout << result << std::endl;
 
+    } catch (const rift::core::JavaScriptException& e) {
+        // Handle JavaScript throw statements - output the thrown value
+        std::cout << e.what() << std::endl;
+        return 0;  // Don't treat thrown exceptions as system errors
     } catch (const std::exception& e) {
+        // Handle other system errors
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
