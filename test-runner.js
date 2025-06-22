@@ -19,11 +19,29 @@ class TestRunner {
   // Simple assert function injected into test files
   getAssertCode() {
     return `
-// Since we don't have functions yet, we'll use a simple pattern
-// assert(condition, message) -> if (!condition) console.log("FAIL: " + message)
-// This is a temporary approach until we implement functions
+// Helper functions for tests - using only supported JavaScript features
+function createArray() {
+    return [];
+}
 
-// Note: We'll implement this using existing features only
+function createTempObjects() {
+    // Create some temporary objects for GC testing (simplified)
+    var temp = [];
+    temp.push({id: 1, data: "temp_1"});
+    temp.push({id: 2, data: "temp_2"});
+    temp.push({id: 3, data: "temp_3"});
+    return temp;
+}
+
+function gcStats() {
+    console.log("GC Stats: [Simulated - GC stats not available]");
+}
+
+function gc() {
+    console.log("GC: [Simulated - Manual GC trigger not available]");
+}
+
+// Note: These are helper functions for the test suite
 `;
   }
 
