@@ -66,7 +66,14 @@ void Rift::setupBuiltins() {
 }
 
 void Rift::collectGarbage() {
+    // If we're in exception handling, defer collection
+    if (isInExceptionHandling()) {
+        deferred_collection_needed_.store(true);
+        return;
+    }
+    
     object_manager_->collect();
+    deferred_collection_needed_.store(false);
 }
 
 void Rift::printGCStats() const {
@@ -79,6 +86,25 @@ void Rift::setGCEnabled(bool enabled) {
 
 bool Rift::isGCEnabled() const {
     return object_manager_->isGCEnabled();
+}
+
+void Rift::enterExceptionHandling() {
+    exception_depth_.fetch_add(1);
+}
+
+void Rift::exitExceptionHandling() {
+    int depth = exception_depth_.fetch_sub(1);
+    
+    // If we've exited all exception handling and have deferred collection
+    if (depth == 1 && deferred_collection_needed_.load()) {
+        // Trigger the deferred collection now that it's safe
+        object_manager_->collect();
+        deferred_collection_needed_.store(false);
+    }
+}
+
+bool Rift::isInExceptionHandling() const {
+    return exception_depth_.load() > 0;
 }
 
 }  // namespace rift::core

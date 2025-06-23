@@ -6,6 +6,19 @@
 
 namespace rift::core {
 
+// ExceptionGuard implementation
+ExceptionGuard::ExceptionGuard(Rift* engine) : engine_(engine) {
+    if (engine_) {
+        engine_->enterExceptionHandling();
+    }
+}
+
+ExceptionGuard::~ExceptionGuard() {
+    if (engine_) {
+        engine_->exitExceptionHandling();
+    }
+}
+
 Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
     if (!node) {
         return Value::undefined();
@@ -133,9 +146,9 @@ Value StatementEvaluator::evaluateThrowStatement(std::shared_ptr<ASTNode> node, 
         return Value::undefined();
     }
 
-    // Permanently disable GC during exception handling to prevent segfaults
-    // GC during exception handling can cause crashes when objects are in inconsistent states
-    engine->setGCEnabled(false);
+    // Use RAII guard to properly manage exception handling state
+    // This defers GC collection instead of permanently disabling it
+    ExceptionGuard guard(engine);
 
     // Evaluate the expression to throw
     Value thrownValue = engine->evaluate(node->children[0], env);
