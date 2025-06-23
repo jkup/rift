@@ -3,22 +3,24 @@
 
 namespace rift::builtins {
 
-std::shared_ptr<JSObject> Boolean::create() {
-    auto boolean = std::make_shared<JSFunction>(Boolean::constructor);
+std::shared_ptr<JSObject> Boolean::create(rift::memory::ObjectFactory* factory) {
+    // Create Boolean constructor using GC-managed creation
+    auto boolean = factory->createJSFunction(Boolean::constructor);
 
     // Create and set prototype
-    auto prototype = createPrototype();
+    auto prototype = createPrototype(factory);
     boolean->setProperty("prototype", Value(prototype));
 
     return boolean;
 }
 
-std::shared_ptr<JSObject> Boolean::createPrototype() {
-    auto prototype = std::make_shared<JSObject>();
+std::shared_ptr<JSObject> Boolean::createPrototype(rift::memory::ObjectFactory* factory) {
+    // Create Boolean.prototype using GC-managed creation
+    auto prototype = factory->createJSObject();
 
-    // Add prototype methods
-    prototype->setProperty("toString", Value(std::make_shared<JSFunction>(Boolean::toString)));
-    prototype->setProperty("valueOf", Value(std::make_shared<JSFunction>(Boolean::valueOf)));
+    // Add prototype methods using GC-managed function creation
+    prototype->setProperty("toString", Value(factory->createJSFunction(Boolean::toString)));
+    prototype->setProperty("valueOf", Value(factory->createJSFunction(Boolean::valueOf)));
 
     return prototype;
 }
@@ -48,17 +50,17 @@ Value Boolean::constructor(const std::vector<Value>& args) {
 
 Value Boolean::toString(const std::vector<Value>& args) {
     // Get the boolean value from 'this'
-    bool boolValue = getThisBooleanValue(args);
+    bool boolValue = getBooleanValue(args);
     return Value(boolValue ? "true" : "false");
 }
 
 Value Boolean::valueOf(const std::vector<Value>& args) {
     // Get the boolean value from 'this'
-    bool boolValue = getThisBooleanValue(args);
+    bool boolValue = getBooleanValue(args);
     return Value(boolValue);
 }
 
-bool Boolean::getThisBooleanValue(const std::vector<Value>& args) {
+bool Boolean::getBooleanValue(const std::vector<Value>& args) {
     // For prototype methods, the first argument should be the 'this' value
     if (args.empty()) {
         return false;

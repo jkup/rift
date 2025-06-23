@@ -7,42 +7,49 @@
 
 namespace rift::builtins {
 
-std::shared_ptr<JSObject> Array::create() {
-    auto array = std::make_shared<JSFunction>(Array::constructor);
+// Static factory storage
+rift::memory::ObjectFactory* Array::object_factory_ = nullptr;
+
+void Array::setObjectFactory(rift::memory::ObjectFactory* factory) {
+    object_factory_ = factory;
+}
+
+std::shared_ptr<JSObject> Array::create(rift::memory::ObjectFactory* factory) {
+    auto array = factory->createJSFunction(Array::constructor);
 
     // Add static methods
-    array->setProperty("isArray", Value(std::make_shared<JSFunction>(Array::isArray)));
+    array->setProperty("isArray", Value(factory->createJSFunction(Array::isArray)));
 
     // Create and set prototype
-    auto prototype = createPrototype();
+    auto prototype = createPrototype(factory);
     array->setProperty("prototype", Value(prototype));
 
     return array;
 }
 
-std::shared_ptr<JSObject> Array::createPrototype() {
-    auto prototype = std::make_shared<JSObject>();
+std::shared_ptr<JSObject> Array::createPrototype(rift::memory::ObjectFactory* factory) {
+    auto prototype = factory->createJSObject();
 
     // Add prototype methods
-    prototype->setProperty("push", Value(std::make_shared<JSFunction>(Array::push)));
-    prototype->setProperty("pop", Value(std::make_shared<JSFunction>(Array::pop)));
-    prototype->setProperty("forEach", Value(std::make_shared<JSFunction>(Array::forEach)));
-    prototype->setProperty("map", Value(std::make_shared<JSFunction>(Array::map)));
-    prototype->setProperty("filter", Value(std::make_shared<JSFunction>(Array::filter)));
-    prototype->setProperty("reduce", Value(std::make_shared<JSFunction>(Array::reduce)));
-    prototype->setProperty("indexOf", Value(std::make_shared<JSFunction>(Array::indexOf)));
-    prototype->setProperty("includes", Value(std::make_shared<JSFunction>(Array::includes)));
-    prototype->setProperty("slice", Value(std::make_shared<JSFunction>(Array::slice)));
-    prototype->setProperty("concat", Value(std::make_shared<JSFunction>(Array::concat)));
-    prototype->setProperty("toString", Value(std::make_shared<JSFunction>(Array::toString)));
+    prototype->setProperty("push", Value(factory->createJSFunction(Array::push)));
+    prototype->setProperty("pop", Value(factory->createJSFunction(Array::pop)));
+    prototype->setProperty("forEach", Value(factory->createJSFunction(Array::forEach)));
+    prototype->setProperty("map", Value(factory->createJSFunction(Array::map)));
+    prototype->setProperty("filter", Value(factory->createJSFunction(Array::filter)));
+    prototype->setProperty("reduce", Value(factory->createJSFunction(Array::reduce)));
+    prototype->setProperty("indexOf", Value(factory->createJSFunction(Array::indexOf)));
+    prototype->setProperty("includes", Value(factory->createJSFunction(Array::includes)));
+    prototype->setProperty("slice", Value(factory->createJSFunction(Array::slice)));
+    prototype->setProperty("concat", Value(factory->createJSFunction(Array::concat)));
+    prototype->setProperty("toString", Value(factory->createJSFunction(Array::toString)));
 
     return prototype;
 }
 
 Value Array::constructor(const std::vector<Value>& args) {
-    // Create array with proper prototype chain
+    // Create array with proper prototype chain using GC-managed creation
     auto arrayPrototype = getGlobalPrototype();
-    auto arrayObj = std::make_shared<JSObject>(arrayPrototype);
+    auto arrayObj = object_factory_->createJSObject(arrayPrototype);
 
     if (args.empty()) {
         // new Array() - create empty array
@@ -151,12 +158,12 @@ Value Array::forEach(const std::vector<Value>& args) {
 Value Array::map(const std::vector<Value>& args) {
     auto arrayObj = getThisArrayObject(args);
     if (!arrayObj || args.size() < 2) {
-        return Value(createArrayObject({}));
+        return Value(createArrayObject(object_factory_, {}));
     }
 
     Value callback = args[1];
     if (!callback.isFunction()) {
-        return Value(createArrayObject({}));
+        return Value(createArrayObject(object_factory_, {}));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -165,7 +172,7 @@ Value Array::map(const std::vector<Value>& args) {
     
     auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
     if (!callbackFn) {
-        return Value(createArrayObject({}));
+        return Value(createArrayObject(object_factory_, {}));
     }
 
     for (size_t i = 0; i < length; ++i) {
@@ -180,18 +187,18 @@ Value Array::map(const std::vector<Value>& args) {
         }
     }
 
-    return Value(createArrayObject(results));
+    return Value(createArrayObject(object_factory_, results));
 }
 
 Value Array::filter(const std::vector<Value>& args) {
     auto arrayObj = getThisArrayObject(args);
     if (!arrayObj || args.size() < 2) {
-        return Value(createArrayObject({}));
+        return Value(createArrayObject(object_factory_, {}));
     }
 
     Value callback = args[1];
     if (!callback.isFunction()) {
-        return Value(createArrayObject({}));
+        return Value(createArrayObject(object_factory_, {}));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -199,7 +206,7 @@ Value Array::filter(const std::vector<Value>& args) {
     
     auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
     if (!callbackFn) {
-        return Value(createArrayObject({}));
+        return Value(createArrayObject(object_factory_, {}));
     }
 
     for (size_t i = 0; i < length; ++i) {
@@ -214,7 +221,7 @@ Value Array::filter(const std::vector<Value>& args) {
         }
     }
 
-    return Value(createArrayObject(filtered));
+    return Value(createArrayObject(object_factory_, filtered));
 }
 
 Value Array::reduce(const std::vector<Value>& args) {
@@ -322,7 +329,7 @@ Value Array::includes(const std::vector<Value>& args) {
 Value Array::slice(const std::vector<Value>& args) {
     auto arrayObj = getThisArrayObject(args);
     if (!arrayObj) {
-        return Value(createArrayObject({}));
+        return Value(createArrayObject(object_factory_, {}));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -357,13 +364,13 @@ Value Array::slice(const std::vector<Value>& args) {
         sliced.push_back(element);
     }
 
-    return Value(createArrayObject(sliced));
+    return Value(createArrayObject(object_factory_, sliced));
 }
 
 Value Array::concat(const std::vector<Value>& args) {
     auto arrayObj = getThisArrayObject(args);
     if (!arrayObj) {
-        return Value(createArrayObject({}));
+        return Value(createArrayObject(object_factory_, {}));
     }
 
     std::vector<Value> result;
@@ -391,7 +398,7 @@ Value Array::concat(const std::vector<Value>& args) {
         }
     }
 
-    return Value(createArrayObject(result));
+    return Value(createArrayObject(object_factory_, result));
 }
 
 // Helper methods
@@ -429,13 +436,13 @@ void Array::setArrayLength(std::shared_ptr<JSObject> obj, size_t length) {
     }
 }
 
-std::shared_ptr<JSObject> Array::createArrayObject(const std::vector<Value>& elements) {
+std::shared_ptr<JSObject> Array::createArrayObject(rift::memory::ObjectFactory* factory, const std::vector<Value>& elements) {
     // Create array with proper prototype chain
     auto arrayPrototype = getGlobalPrototype();
     
     // TODO: Use GC-aware object creation when we have access to ObjectManager
     // For now, keep the existing behavior to maintain compatibility
-    auto arrayObj = std::make_shared<JSObject>(arrayPrototype);
+    auto arrayObj = factory->createJSObject(arrayPrototype);
 
     // Set up array elements
     for (size_t i = 0; i < elements.size(); ++i) {

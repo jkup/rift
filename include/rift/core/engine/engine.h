@@ -8,6 +8,7 @@
 #include "../../runtime/environment/environment.h"
 #include "../../runtime/values/value.h"
 #include "../../memory/object_manager.h"
+#include "../../memory/object_factory.h"
 #include "../../memory/gc_environment.h"
 
 namespace rift::core {
@@ -24,6 +25,7 @@ class Rift {
    private:
     std::shared_ptr<Environment> global_env_;
     std::unique_ptr<rift::memory::ObjectManager> object_manager_;
+    std::unique_ptr<rift::memory::ObjectFactory> object_factory_;
     std::unique_ptr<rift::memory::GCEnvironment> global_env_gc_;
     
     // Exception handling state tracking
@@ -43,6 +45,7 @@ class Rift {
 
     // Object management
     rift::memory::ObjectManager* getObjectManager() const { return object_manager_.get(); }
+    rift::memory::ObjectFactory* getObjectFactory() const { return object_factory_.get(); }
     
     // GC control
     void collectGarbage();

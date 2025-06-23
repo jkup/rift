@@ -7,6 +7,7 @@
 
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
+#include "../../memory/object_factory.h"
 
 namespace rift::builtins {
 
@@ -26,10 +27,10 @@ using namespace rift::runtime;
 class String {
    public:
     /// Create the String constructor object with all properties and methods.
-    static std::shared_ptr<JSObject> create();
+    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
 
     /// Create the String.prototype object with all instance methods.
-    static std::shared_ptr<JSObject> createPrototype();
+    static std::shared_ptr<JSObject> createPrototype(rift::memory::ObjectFactory* factory);
 
    private:
     // String constructor function
@@ -190,9 +191,31 @@ class String {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
     static Value split(const std::vector<Value>& args);
 
+    /// The `toString()` method returns a string representation of the object.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.tostring
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toString
+    static Value toString(const std::vector<Value>& args);
+
+    /// The `valueOf()` method returns the primitive value of the specified object.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.valueof
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/valueOf
+    static Value valueOf(const std::vector<Value>& args);
+
     // Helper methods
     /// Helper to get the string value from the 'this' binding in prototype methods
-    static std::string getThisStringValue(const std::vector<Value>& args);
+    static std::string getStringValue(const std::vector<Value>& args);
 
     /// Helper to validate and get a string index, handling negative indices
     static size_t validateStringIndex(const std::string& str, double index);

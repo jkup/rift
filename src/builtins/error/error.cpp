@@ -4,25 +4,27 @@
 
 namespace rift::builtins {
 
-std::shared_ptr<JSObject> Error::create() {
-    auto error = std::make_shared<JSFunction>(Error::constructor);
+std::shared_ptr<JSObject> Error::create(rift::memory::ObjectFactory* factory) {
+    // Create Error constructor using GC-managed creation
+    auto error = factory->createJSFunction(Error::constructor);
 
     // Create and set prototype
-    auto prototype = createPrototype();
+    auto prototype = createPrototype(factory);
     error->setProperty("prototype", Value(prototype));
 
     return error;
 }
 
-std::shared_ptr<JSObject> Error::createPrototype() {
-    auto prototype = std::make_shared<JSObject>();
+std::shared_ptr<JSObject> Error::createPrototype(rift::memory::ObjectFactory* factory) {
+    // Create Error.prototype using GC-managed creation
+    auto prototype = factory->createJSObject();
 
     // Set default properties
     prototype->setProperty("name", Value("Error"));
     prototype->setProperty("message", Value(""));
 
-    // Add prototype methods
-    prototype->setProperty("toString", Value(std::make_shared<JSFunction>(Error::toString)));
+    // Add prototype methods using GC-managed function creation
+    prototype->setProperty("toString", Value(factory->createJSFunction(Error::toString)));
 
     return prototype;
 }

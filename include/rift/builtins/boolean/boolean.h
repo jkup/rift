@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
+#include "../../runtime/values/object.h"
+#include "../../memory/object_factory.h"
 
 namespace rift::builtins {
 
@@ -21,10 +22,10 @@ using namespace rift::runtime;
 class Boolean {
    public:
     /// Create the Boolean constructor object with all properties and methods.
-    static std::shared_ptr<JSObject> create();
+    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
 
     /// Create the Boolean.prototype object with all instance methods.
-    static std::shared_ptr<JSObject> createPrototype();
+    static std::shared_ptr<JSObject> createPrototype(rift::memory::ObjectFactory* factory);
 
    private:
     // Boolean constructor function
@@ -65,7 +66,7 @@ class Boolean {
 
     // Helper methods
     /// Helper to get the boolean value from the 'this' binding in prototype methods
-    static bool getThisBooleanValue(const std::vector<Value>& args);
+    static bool getBooleanValue(const std::vector<Value>& args);
     
     /// Get the global Boolean prototype object from BuiltinManager
     static std::shared_ptr<JSObject> getGlobalPrototype();

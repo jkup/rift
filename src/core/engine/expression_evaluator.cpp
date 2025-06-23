@@ -289,14 +289,14 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node, s
         elements.push_back(engine->evaluate(child, env));
     }
 
-    // Use the Array::createArrayObject helper to create the array
-    auto arrayObj = builtins::Array::createArrayObject(elements);
+    // Use the Array::createArrayObject helper to create the array with GC-managed creation
+    auto arrayObj = builtins::Array::createArrayObject(engine->getObjectFactory(), elements);
     return Value(arrayObj);
 }
 
 Value ExpressionEvaluator::evaluateObjectLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    // Create a new empty object
-    auto obj = std::make_shared<JSObject>();
+    // Create a new empty object using GC-managed creation
+    auto obj = engine->getObjectFactory()->createJSObject();
 
     // Process key-value pairs from the AST
     // Children are stored in pairs: key, value, key, value, ...
@@ -353,8 +353,8 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
     // Get function body (second child)
     auto body = node->children[1];
     
-    // Create function object (anonymous)
-    auto func = std::make_shared<JSFunction>([engine, parameters, body, env](const std::vector<Value>& args) -> Value {
+    // Create function object (anonymous) using GC-managed creation
+    auto func = engine->getObjectFactory()->createJSFunction([engine, parameters, body, env](const std::vector<Value>& args) -> Value {
         // Create new environment for function execution
         auto funcEnv = std::make_shared<Environment>(env);
         
@@ -415,8 +415,8 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node, 
     }
 
     // If constructor returned a primitive (or undefined), create a new object
-    // This handles user-defined constructor functions
-    auto newObj = std::make_shared<JSObject>();
+    // This handles user-defined constructor functions using GC-managed creation
+    auto newObj = engine->getObjectFactory()->createJSObject();
     return Value(newObj);
 }
 

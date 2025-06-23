@@ -175,8 +175,8 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
     // Get function body (second child)
     auto body = node->children[1];
     
-    // Create function object
-    auto func = std::make_shared<JSFunction>([engine, parameters, body, env](const std::vector<Value>& args) -> Value {
+    // Create function object using GC-managed creation
+    auto func = engine->getObjectFactory()->createJSFunction([engine, parameters, body, env](const std::vector<Value>& args) -> Value {
         // Create new environment for function execution
         auto funcEnv = std::make_shared<Environment>(env);
         

@@ -4,134 +4,138 @@
 
 namespace rift::builtins {
 
-std::shared_ptr<JSObject> Object::create() {
-    auto object = std::make_shared<JSFunction>(Object::constructor);
+// Static factory storage
+rift::memory::ObjectFactory* Object::object_factory_ = nullptr;
 
-    // Add static methods
-    object->setProperty("keys", Value(std::make_shared<JSFunction>(Object::keys)));
-    object->setProperty("values", Value(std::make_shared<JSFunction>(Object::values)));
+void Object::setObjectFactory(rift::memory::ObjectFactory* factory) {
+    object_factory_ = factory;
+}
+
+std::shared_ptr<JSObject> Object::create(rift::memory::ObjectFactory* factory) {
+    // Create Object constructor using GC-managed creation
+    auto object = factory->createJSFunction(Object::constructor);
+
+    // Add static methods using GC-managed function creation
+    object->setProperty("keys", Value(factory->createJSFunction(Object::keys)));
+    object->setProperty("values", Value(factory->createJSFunction(Object::values)));
+    object->setProperty("entries", Value(factory->createJSFunction(Object::entries)));
 
     // Create and set prototype
-    auto prototype = createPrototype();
+    auto prototype = createPrototype(factory);
     object->setProperty("prototype", Value(prototype));
 
     return object;
 }
 
-std::shared_ptr<JSObject> Object::createPrototype() {
-    auto prototype = std::make_shared<JSObject>();
+std::shared_ptr<JSObject> Object::createPrototype(rift::memory::ObjectFactory* factory) {
+    // Create Object.prototype using GC-managed creation
+    auto prototype = factory->createJSObject();
 
-    // Add prototype methods
-    prototype->setProperty("toString", Value(std::make_shared<JSFunction>(Object::toString)));
-    prototype->setProperty("valueOf", Value(std::make_shared<JSFunction>(Object::valueOf)));
-    prototype->setProperty("hasOwnProperty", Value(std::make_shared<JSFunction>(Object::hasOwnProperty)));
+    // Add prototype methods using GC-managed function creation
+    prototype->setProperty("toString", Value(factory->createJSFunction(Object::toString)));
+    prototype->setProperty("valueOf", Value(factory->createJSFunction(Object::valueOf)));
+    prototype->setProperty("hasOwnProperty", Value(factory->createJSFunction(Object::hasOwnProperty)));
 
     return prototype;
 }
 
 Value Object::constructor(const std::vector<Value>& args) {
+    // Object constructor - create new object
     if (args.empty()) {
-        // new Object() - create empty object
+        // Use factory when available in constructor context
+        if (object_factory_) {
+            return Value(object_factory_->createJSObject());
+        }
         return Value(std::make_shared<JSObject>());
     }
-
+    
+    // Convert argument to object
     Value arg = args[0];
-
-    // If the argument is already an object, return it
-    if (arg.isObject() || arg.isFunction()) {
+    if (arg.isObject()) {
         return arg;
     }
-
-    // For primitive values, create a wrapper object
-    auto obj = std::make_shared<JSObject>();
     
-    if (arg.isString()) {
-        // String wrapper object - simplified implementation
-        obj->setProperty("value", arg);
-    } else if (arg.isNumber()) {
-        // Number wrapper object - simplified implementation
-        obj->setProperty("value", arg);
-    } else if (arg.isBoolean()) {
-        // Boolean wrapper object - simplified implementation
-        obj->setProperty("value", arg);
+    // TODO: Handle primitive to object conversion
+    if (object_factory_) {
+        return Value(object_factory_->createJSObject());
     }
-
-    return Value(obj);
+    return Value(std::make_shared<JSObject>());
 }
 
 Value Object::keys(const std::vector<Value>& args) {
-    // Object.keys() requires exactly one argument (plus the 'this' value)
-    // args[0] is the Object constructor (this), args[1] is the actual argument
-    if (args.size() < 2) {
-        // Object.keys() with no arguments should throw TypeError
-        // For now, return empty array
-        return Value(Array::createArrayObject({}));
+    if (args.size() < 2) {  // args[0] is 'this', args[1] is the object
+        return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    Value arg = args[1];  // Use the actual argument, not the 'this' value
-
-    // Object.keys() only works on objects
-    if (!arg.isObject() && !arg.isFunction()) {
-        // In strict ES5+, this would throw a TypeError
-        // For now, return empty array for non-objects
-        return Value(Array::createArrayObject({}));
+    Value obj = args[1];
+    if (!obj.isObject()) {
+        return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    auto obj = arg.getObject();
-    if (!obj) {
-        return Value(Array::createArrayObject({}));
+    auto jsObj = obj.getObject();
+    if (!jsObj) {
+        return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    // Get own property names (not inherited)
+    // Get all property names
     std::vector<Value> keys;
-    
-    // Get only the object's own properties
-    auto ownPropertyNames = obj->getOwnPropertyNames();
-    
-    // Convert property names to Values
-    for (const auto& propName : ownPropertyNames) {
+    auto propertyNames = jsObj->getPropertyNames();
+    for (const auto& propName : propertyNames) {
         keys.push_back(Value(propName));
     }
 
-    return Value(Array::createArrayObject(keys));
+    return Value(Array::createArrayObject(object_factory_, keys));
 }
 
 Value Object::values(const std::vector<Value>& args) {
-    // Object.values() requires exactly one argument (plus the 'this' value)
-    // args[0] is the Object constructor (this), args[1] is the actual argument
-    if (args.size() < 2) {
-        // Object.values() with no arguments should throw TypeError
-        // For now, return empty array
-        return Value(Array::createArrayObject({}));
+    if (args.size() < 2) {  // args[0] is 'this', args[1] is the object
+        return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    Value arg = args[1];  // Use the actual argument, not the 'this' value
-
-    // Object.values() only works on objects
-    if (!arg.isObject() && !arg.isFunction()) {
-        // In strict ES5+, this would throw a TypeError
-        // For now, return empty array for non-objects
-        return Value(Array::createArrayObject({}));
+    Value obj = args[1];
+    if (!obj.isObject()) {
+        return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    auto obj = arg.getObject();
-    if (!obj) {
-        return Value(Array::createArrayObject({}));
+    auto jsObj = obj.getObject();
+    if (!jsObj) {
+        return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    // Get own property values (not inherited)
+    // Get all property values
     std::vector<Value> values;
-    
-    // Get only the object's own properties
-    auto ownPropertyNames = obj->getOwnPropertyNames();
-    
-    // Get values for each own property
-    for (const auto& propName : ownPropertyNames) {
-        Value propValue = obj->getProperty(propName);
-        values.push_back(propValue);
+    auto propertyNames = jsObj->getPropertyNames();
+    for (const auto& propName : propertyNames) {
+        values.push_back(jsObj->getProperty(propName));
     }
 
-    return Value(Array::createArrayObject(values));
+    return Value(Array::createArrayObject(object_factory_, values));
+}
+
+Value Object::entries(const std::vector<Value>& args) {
+    if (args.size() < 2) {  // args[0] is 'this', args[1] is the object
+        return Value(Array::createArrayObject(object_factory_, {}));
+    }
+
+    Value obj = args[1];
+    if (!obj.isObject()) {
+        return Value(Array::createArrayObject(object_factory_, {}));
+    }
+
+    auto jsObj = obj.getObject();
+    if (!jsObj) {
+        return Value(Array::createArrayObject(object_factory_, {}));
+    }
+
+    // Get all [key, value] pairs
+    std::vector<Value> entries;
+    auto propertyNames = jsObj->getPropertyNames();
+    for (const auto& propName : propertyNames) {
+        std::vector<Value> entry = {Value(propName), jsObj->getProperty(propName)};
+        entries.push_back(Value(Array::createArrayObject(object_factory_, entry)));
+    }
+
+    return Value(Array::createArrayObject(object_factory_, entries));
 }
 
 Value Object::toString(const std::vector<Value>& args) {

@@ -8,6 +8,7 @@ namespace rift::core {
 
 Rift::Rift() {
     object_manager_ = std::make_unique<rift::memory::ObjectManager>();
+    object_factory_ = std::make_unique<rift::memory::ObjectFactory>(object_manager_.get());
     global_env_ = std::make_shared<Environment>();
     global_env_gc_ = std::make_unique<rift::memory::GCEnvironment>(global_env_);
     

@@ -2,14 +2,15 @@
 
 namespace rift::builtins {
 
-std::shared_ptr<JSObject> Console::create() {
-    auto console = std::make_shared<JSObject>();
+std::shared_ptr<JSObject> Console::create(rift::memory::ObjectFactory* factory) {
+    // Create console object using GC-managed creation
+    auto console = factory->createJSObject();
 
-    // Add console methods
-    console->setProperty("log", Value(std::make_shared<JSFunction>(log)));
-    console->setProperty("error", Value(std::make_shared<JSFunction>(error)));
-    console->setProperty("warn", Value(std::make_shared<JSFunction>(warn)));
-    console->setProperty("info", Value(std::make_shared<JSFunction>(info)));
+    // Add console methods using GC-managed function creation
+    console->setProperty("log", Value(factory->createJSFunction(log)));
+    console->setProperty("error", Value(factory->createJSFunction(error)));
+    console->setProperty("warn", Value(factory->createJSFunction(warn)));
+    console->setProperty("info", Value(factory->createJSFunction(info)));
 
     return console;
 }

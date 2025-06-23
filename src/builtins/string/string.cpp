@@ -3,37 +3,35 @@
 #include <cmath>
 #include <limits>
 #include <sstream>
+#include <algorithm>
+#include <cctype>
 
 namespace rift::builtins {
 
-std::shared_ptr<JSObject> String::create() {
-    auto string = std::make_shared<JSObject>();
-
-    // Add static methods
-    string->setProperty("fromCharCode", Value(std::make_shared<JSFunction>(String::fromCharCode)));
+std::shared_ptr<JSObject> String::create(rift::memory::ObjectFactory* factory) {
+    // Create String constructor using GC-managed creation
+    auto string = factory->createJSFunction(String::constructor);
 
     // Create and set prototype
-    auto prototype = createPrototype();
+    auto prototype = createPrototype(factory);
     string->setProperty("prototype", Value(prototype));
 
     return string;
 }
 
-std::shared_ptr<JSObject> String::createPrototype() {
-    auto prototype = std::make_shared<JSObject>();
+std::shared_ptr<JSObject> String::createPrototype(rift::memory::ObjectFactory* factory) {
+    // Create String.prototype using GC-managed creation
+    auto prototype = factory->createJSObject();
 
-    // Add prototype methods
-    prototype->setProperty("charAt", Value(std::make_shared<JSFunction>(String::charAt)));
-    prototype->setProperty("charCodeAt", Value(std::make_shared<JSFunction>(String::charCodeAt)));
-    prototype->setProperty("concat", Value(std::make_shared<JSFunction>(String::concat)));
-    prototype->setProperty("indexOf", Value(std::make_shared<JSFunction>(String::indexOf)));
-    prototype->setProperty("lastIndexOf", Value(std::make_shared<JSFunction>(String::lastIndexOf)));
-    prototype->setProperty("slice", Value(std::make_shared<JSFunction>(String::slice)));
-    prototype->setProperty("substring", Value(std::make_shared<JSFunction>(String::substring)));
-    prototype->setProperty("toLowerCase", Value(std::make_shared<JSFunction>(String::toLowerCase)));
-    prototype->setProperty("toUpperCase", Value(std::make_shared<JSFunction>(String::toUpperCase)));
-    prototype->setProperty("trim", Value(std::make_shared<JSFunction>(String::trim)));
-    prototype->setProperty("split", Value(std::make_shared<JSFunction>(String::split)));
+    // Add prototype methods using GC-managed function creation
+    prototype->setProperty("charAt", Value(factory->createJSFunction(String::charAt)));
+    prototype->setProperty("charCodeAt", Value(factory->createJSFunction(String::charCodeAt)));
+    prototype->setProperty("indexOf", Value(factory->createJSFunction(String::indexOf)));
+    prototype->setProperty("substring", Value(factory->createJSFunction(String::substring)));
+    prototype->setProperty("toLowerCase", Value(factory->createJSFunction(String::toLowerCase)));
+    prototype->setProperty("toUpperCase", Value(factory->createJSFunction(String::toUpperCase)));
+    prototype->setProperty("toString", Value(factory->createJSFunction(String::toString)));
+    prototype->setProperty("valueOf", Value(factory->createJSFunction(String::valueOf)));
 
     return prototype;
 }
@@ -68,7 +66,7 @@ Value String::fromCharCode(const std::vector<Value>& args) {
 }
 
 Value String::charAt(const std::vector<Value>& args) {
-    std::string str = getThisStringValue(args);
+    std::string str = getStringValue(args);
 
     double index = 0;
     if (args.size() >= 2) {          // Fixed: should check for second argument (index 1)
@@ -84,7 +82,7 @@ Value String::charAt(const std::vector<Value>& args) {
 }
 
 Value String::charCodeAt(const std::vector<Value>& args) {
-    std::string str = getThisStringValue(args);
+    std::string str = getStringValue(args);
 
     double index = 0;
     if (args.size() >= 2) {
@@ -100,7 +98,7 @@ Value String::charCodeAt(const std::vector<Value>& args) {
 }
 
 Value String::concat(const std::vector<Value>& args) {
-    std::string str = getThisStringValue(args);
+    std::string str = getStringValue(args);
 
     // Skip the first argument (the string itself) and concat the rest
     for (size_t i = 1; i < args.size(); ++i) {
@@ -111,7 +109,7 @@ Value String::concat(const std::vector<Value>& args) {
 }
 
 Value String::indexOf(const std::vector<Value>& args) {
-    std::string str = getThisStringValue(args);
+    std::string str = getStringValue(args);
 
     if (args.size() < 2) {
         return Value(-1.0);
@@ -140,7 +138,7 @@ Value String::indexOf(const std::vector<Value>& args) {
 }
 
 Value String::lastIndexOf(const std::vector<Value>& args) {
-    std::string str = getThisStringValue(args);
+    std::string str = getStringValue(args);
 
     if (args.size() < 2) {
         return Value(-1.0);
@@ -168,7 +166,7 @@ Value String::lastIndexOf(const std::vector<Value>& args) {
 }
 
 Value String::slice(const std::vector<Value>& args) {
-    std::string str = getThisStringValue(args);
+    std::string str = getStringValue(args);
 
     size_t length = str.length();
     double startNum = 0;
@@ -202,7 +200,7 @@ Value String::slice(const std::vector<Value>& args) {
 }
 
 Value String::substring(const std::vector<Value>& args) {
-    std::string str = getThisStringValue(args);
+    std::string str = getStringValue(args);
 
     size_t length = str.length();
     double startNum = 0;
@@ -232,7 +230,7 @@ Value String::substring(const std::vector<Value>& args) {
 }
 
 Value String::toLowerCase(const std::vector<Value>& args) {
-    std::string str = getThisStringValue(args);
+    std::string str = getStringValue(args);
 
     std::transform(str.begin(), str.end(), str.begin(),
                    [](unsigned char c) { return std::tolower(c); });
@@ -241,7 +239,7 @@ Value String::toLowerCase(const std::vector<Value>& args) {
 }
 
 Value String::toUpperCase(const std::vector<Value>& args) {
-    std::string str = getThisStringValue(args);
+    std::string str = getStringValue(args);
 
     std::transform(str.begin(), str.end(), str.begin(),
                    [](unsigned char c) { return std::toupper(c); });
@@ -250,7 +248,7 @@ Value String::toUpperCase(const std::vector<Value>& args) {
 }
 
 Value String::trim(const std::vector<Value>& args) {
-    std::string str = getThisStringValue(args);
+    std::string str = getStringValue(args);
 
     // Trim leading whitespace
     size_t start = 0;
@@ -268,7 +266,7 @@ Value String::trim(const std::vector<Value>& args) {
 }
 
 Value String::split(const std::vector<Value>& args) {
-    std::string str = getThisStringValue(args);
+    std::string str = getStringValue(args);
 
     // Create an array to hold the results (simplified implementation)
     auto result = std::make_shared<JSObject>();
@@ -309,7 +307,19 @@ Value String::split(const std::vector<Value>& args) {
     return Value(result);
 }
 
-std::string String::getThisStringValue(const std::vector<Value>& args) {
+Value String::toString(const std::vector<Value>& args) {
+    // Get the string value from 'this'
+    std::string str = getStringValue(args);
+    return Value(str);
+}
+
+Value String::valueOf(const std::vector<Value>& args) {
+    // Get the string value from 'this'
+    std::string str = getStringValue(args);
+    return Value(str);
+}
+
+std::string String::getStringValue(const std::vector<Value>& args) {
     // In a full implementation, this would extract the 'this' value
     // For now, we'll use the first argument as a placeholder
     if (!args.empty()) {

@@ -62,4 +62,13 @@ if (obj2.data.length == 3) {
     console.log("FAIL: Nested structures survive GC");
 }
 
-console.log("=== Simple GC Test Complete ==="); 
+console.log("=== Simple GC Test Complete ===");
+
+// Simple GC test
+console.log("Testing GC...");
+
+gc();
+console.log("GC completed");
+
+gcStats();
+console.log("GC stats completed"); 

@@ -3,6 +3,7 @@
 #include <memory>
 #include "../../runtime/environment/environment.h"
 #include "../../runtime/values/object.h"
+#include "../../memory/object_factory.h"
 
 namespace rift::core {
 
@@ -31,15 +32,15 @@ private:
     static std::shared_ptr<JSObject> booleanPrototype_;
     static std::shared_ptr<JSObject> errorPrototype_;
 
-    // Individual builtin setup methods
-    static void setupGlobalFunctions(std::shared_ptr<Environment> globalEnv);
-    static void setupConsole(std::shared_ptr<Environment> globalEnv);
-    static void setupMath(std::shared_ptr<Environment> globalEnv); 
-    static void setupString(std::shared_ptr<Environment> globalEnv);
-    static void setupArray(std::shared_ptr<Environment> globalEnv);
-    static void setupObject(std::shared_ptr<Environment> globalEnv);
-    static void setupBoolean(std::shared_ptr<Environment> globalEnv);
-    static void setupError(std::shared_ptr<Environment> globalEnv);
+    // Individual builtin setup methods - now accept ObjectFactory
+    static void setupGlobalFunctions(std::shared_ptr<Environment> globalEnv, rift::memory::ObjectFactory* factory);
+    static void setupConsole(std::shared_ptr<Environment> globalEnv, rift::memory::ObjectFactory* factory);
+    static void setupMath(std::shared_ptr<Environment> globalEnv, rift::memory::ObjectFactory* factory); 
+    static void setupString(std::shared_ptr<Environment> globalEnv, rift::memory::ObjectFactory* factory);
+    static void setupArray(std::shared_ptr<Environment> globalEnv, rift::memory::ObjectFactory* factory);
+    static void setupObject(std::shared_ptr<Environment> globalEnv, rift::memory::ObjectFactory* factory);
+    static void setupBoolean(std::shared_ptr<Environment> globalEnv, rift::memory::ObjectFactory* factory);
+    static void setupError(std::shared_ptr<Environment> globalEnv, rift::memory::ObjectFactory* factory);
     static void setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine);
 };
 

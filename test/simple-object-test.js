@@ -1,3 +1,11 @@
+// Simple test to debug object creation
+console.log("Testing object creation...");
+
+var obj = { name: "test" };
+console.log("Object created:", obj.name);
+
+console.log("Test complete");
+
 // Simple object test
 var obj = {};
 console.log("Created empty object");

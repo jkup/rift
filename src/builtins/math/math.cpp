@@ -1,7 +1,7 @@
 #include "rift/builtins/math/math.h"
-
+#include <cmath>
 #include <algorithm>
-#include <limits>
+#include <random>
 
 namespace rift::builtins {
 
@@ -15,34 +15,35 @@ std::random_device Math::rd;
 std::mt19937 Math::gen(Math::rd());
 std::uniform_real_distribution<> Math::dis(0.0, 1.0);
 
-std::shared_ptr<JSObject> Math::create() {
-    auto math = std::make_shared<JSObject>();
+std::shared_ptr<JSObject> Math::create(rift::memory::ObjectFactory* factory) {
+    // Create Math object using GC-managed creation
+    auto math = factory->createJSObject();
 
-    // Add constants
-    math->setProperty("E", Value(E));
-    math->setProperty("PI", Value(PI));
-    math->setProperty("SQRT2", Value(SQRT2));
+    // Add Math constants
+    math->setProperty("PI", Value(M_PI));
+    math->setProperty("E", Value(M_E));
+    math->setProperty("SQRT2", Value(M_SQRT2));
     math->setProperty("LN2", Value(M_LN2));
     math->setProperty("LN10", Value(M_LN10));
     math->setProperty("LOG2E", Value(M_LOG2E));
     math->setProperty("LOG10E", Value(M_LOG10E));
     math->setProperty("SQRT1_2", Value(M_SQRT1_2));
 
-    // Add methods
-    math->setProperty("abs", Value(std::make_shared<JSFunction>(Math::abs)));
-    math->setProperty("ceil", Value(std::make_shared<JSFunction>(Math::ceil)));
-    math->setProperty("floor", Value(std::make_shared<JSFunction>(Math::floor)));
-    math->setProperty("round", Value(std::make_shared<JSFunction>(Math::round)));
-    math->setProperty("max", Value(std::make_shared<JSFunction>(Math::max)));
-    math->setProperty("min", Value(std::make_shared<JSFunction>(Math::min)));
-    math->setProperty("pow", Value(std::make_shared<JSFunction>(Math::pow)));
-    math->setProperty("sqrt", Value(std::make_shared<JSFunction>(Math::sqrt)));
-    math->setProperty("random", Value(std::make_shared<JSFunction>(Math::random)));
-    math->setProperty("sign", Value(std::make_shared<JSFunction>(Math::sign)));
-    math->setProperty("trunc", Value(std::make_shared<JSFunction>(Math::trunc)));
-    math->setProperty("sin", Value(std::make_shared<JSFunction>(Math::sin)));
-    math->setProperty("cos", Value(std::make_shared<JSFunction>(Math::cos)));
-    math->setProperty("tan", Value(std::make_shared<JSFunction>(Math::tan)));
+    // Add Math methods using GC-managed function creation
+    math->setProperty("abs", Value(factory->createJSFunction(abs)));
+    math->setProperty("floor", Value(factory->createJSFunction(floor)));
+    math->setProperty("ceil", Value(factory->createJSFunction(ceil)));
+    math->setProperty("round", Value(factory->createJSFunction(round)));
+    math->setProperty("max", Value(factory->createJSFunction(max)));
+    math->setProperty("min", Value(factory->createJSFunction(min)));
+    math->setProperty("pow", Value(factory->createJSFunction(pow)));
+    math->setProperty("sqrt", Value(factory->createJSFunction(sqrt)));
+    math->setProperty("random", Value(factory->createJSFunction(random)));
+    math->setProperty("sign", Value(factory->createJSFunction(sign)));
+    math->setProperty("trunc", Value(factory->createJSFunction(trunc)));
+    math->setProperty("sin", Value(factory->createJSFunction(sin)));
+    math->setProperty("cos", Value(factory->createJSFunction(cos)));
+    math->setProperty("tan", Value(factory->createJSFunction(tan)));
 
     return math;
 }

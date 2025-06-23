@@ -5,6 +5,7 @@
 
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
+#include "../../memory/object_factory.h"
 
 namespace rift::builtins {
 
@@ -24,18 +25,24 @@ using namespace rift::runtime;
 class Array {
    public:
     /// Create the Array constructor object with all properties and methods.
-    static std::shared_ptr<JSObject> create();
+    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
 
     /// Create the Array.prototype object with all instance methods.
-    static std::shared_ptr<JSObject> createPrototype();
+    static std::shared_ptr<JSObject> createPrototype(rift::memory::ObjectFactory* factory);
 
     /// Helper to create a new array object with the given elements
-    static std::shared_ptr<JSObject> createArrayObject(const std::vector<Value>& elements);
+    static std::shared_ptr<JSObject> createArrayObject(rift::memory::ObjectFactory* factory, const std::vector<Value>& elements);
 
     /// Helper to get the global Array prototype (for proper prototype chain)
     static std::shared_ptr<JSObject> getGlobalPrototype();
 
+    /// Store the factory for use in static methods
+    static void setObjectFactory(rift::memory::ObjectFactory* factory);
+
    private:
+    // Store factory for use in static methods
+    static rift::memory::ObjectFactory* object_factory_;
+
     // Array constructor function
     /// The `Array()` constructor creates Array objects.
     ///

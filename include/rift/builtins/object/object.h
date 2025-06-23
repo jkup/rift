@@ -4,6 +4,7 @@
 
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
+#include "../../memory/object_factory.h"
 
 namespace rift::builtins {
 
@@ -23,12 +24,18 @@ using namespace rift::runtime;
 class Object {
    public:
     /// Create the Object constructor object with all properties and methods.
-    static std::shared_ptr<JSObject> create();
+    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
 
     /// Create the Object.prototype object with all instance methods.
-    static std::shared_ptr<JSObject> createPrototype();
+    static std::shared_ptr<JSObject> createPrototype(rift::memory::ObjectFactory* factory);
+
+    /// Store the factory for use in static methods
+    static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
    private:
+    // Store factory for use in static methods
+    static rift::memory::ObjectFactory* object_factory_;
+
     // Object constructor function
     /// The `Object()` constructor creates Object objects.
     ///
@@ -66,6 +73,18 @@ class Object {
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
     static Value values(const std::vector<Value>& args);
+
+    /// The `Object.entries()` static method returns an array of a given object's own enumerable
+    /// string-keyed property names and values.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-object.entries
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries
+    static Value entries(const std::vector<Value>& args);
 
     // Object prototype methods
 

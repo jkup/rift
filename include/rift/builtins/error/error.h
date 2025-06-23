@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
+#include "../../runtime/values/object.h"
+#include "../../memory/object_factory.h"
 
 namespace rift::builtins {
 
@@ -21,10 +22,10 @@ using namespace rift::runtime;
 class Error {
    public:
     /// Create the Error constructor object with all properties and methods.
-    static std::shared_ptr<JSObject> create();
+    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
 
     /// Create the Error.prototype object with all instance methods.
-    static std::shared_ptr<JSObject> createPrototype();
+    static std::shared_ptr<JSObject> createPrototype(rift::memory::ObjectFactory* factory);
 
    private:
     // Error constructor function

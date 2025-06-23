@@ -6,6 +6,7 @@
 
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
+#include "../../memory/object_factory.h"
 
 namespace rift::builtins {
 
@@ -25,7 +26,7 @@ using namespace rift::runtime;
 class Math {
    public:
     /// Create the Math object with all properties and methods.
-    static std::shared_ptr<JSObject> create();
+    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
 
    private:
     // Math constants
