@@ -1,17 +1,42 @@
-// Test object creation methods
-console.log("Testing object creation");
+// Test object creation methods with assertions
 
-// Test 1: Array literal (should work)
+console.log("=== Debug Object Creation Test ===");
+
+// Test 1: Array literal creation
 var arr = [1, 2, 3];
-console.log("Array created successfully");
-console.log("Array length:", arr.length);
+if (arr.length == 3) {
+    console.log("PASS: Array literal creation works");
+} else {
+    console.log("FAIL: Array literal creation works");
+}
 
-// Test 2: Try creating object using createArray function
+// Test 2: createArray function
 var obj2 = createArray();
-console.log("createArray() result:", typeof obj2);
+if (typeof obj2 == "object") {
+    console.log("PASS: createArray() function works");
+} else {
+    console.log("FAIL: createArray() function works");
+}
 
-// Test 3: Check if {} parsing is the issue
-// Let's skip the literal and just try Object.keys directly
-console.log("Calling Object.keys with arr:");
+// Test 3: Object.keys functionality
 var keys = Object.keys(arr);
-console.log("Object.keys result:", keys.length); 
+if (typeof keys == "object") {
+    console.log("PASS: Object.keys returns object");
+} else {
+    console.log("FAIL: Object.keys returns object");
+}
+
+// Test 4: Array element access
+if (arr[0] == 1) {
+    console.log("PASS: Array element access works");
+} else {
+    console.log("FAIL: Array element access works");
+}
+
+if (arr[2] == 3) {
+    console.log("PASS: Array last element access works");
+} else {
+    console.log("FAIL: Array last element access works");
+}
+
+console.log("=== Debug Object Creation Test Complete ==="); 

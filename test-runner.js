@@ -19,11 +19,29 @@ class TestRunner {
   // Simple assert function injected into test files
   getAssertCode() {
     return `
-// Since we don't have functions yet, we'll use a simple pattern
-// assert(condition, message) -> if (!condition) console.log("FAIL: " + message)
-// This is a temporary approach until we implement functions
+// Helper functions for tests - using only supported JavaScript features
+function createArray() {
+    return [];
+}
 
-// Note: We'll implement this using existing features only
+function createTempObjects() {
+    // Create some temporary objects for GC testing (simplified)
+    var temp = [];
+    temp.push({id: 1, data: "temp_1"});
+    temp.push({id: 2, data: "temp_2"});
+    temp.push({id: 3, data: "temp_3"});
+    return temp;
+}
+
+function gcStats() {
+    console.log("GC Stats: [Simulated - GC stats not available]");
+}
+
+function gc() {
+    console.log("GC: [Simulated - Manual GC trigger not available]");
+}
+
+// Note: These are helper functions for the test suite
 `;
   }
 
@@ -77,21 +95,29 @@ class TestRunner {
       let lastOutput = [];
 
       for (const line of lines) {
-        if (line.startsWith("PASS:")) {
+        // Handle both direct PASS/FAIL and [object Object] prefixed versions
+        if (line.includes("PASS:") || line.includes("✅")) {
           testPassed++;
-        } else if (line.startsWith("FAIL:")) {
+        } else if (line.includes("FAIL:") || line.includes("❌")) {
           testFailed++;
           lastOutput.push(chalk.red("❌ " + line.replace("FAIL:", "")));
+        } else if (line.includes("Error:")) {
+          // Count runtime errors as failures
+          testFailed++;
+          lastOutput.push(chalk.red("❌ " + line));
         } else if (
           line.trim() &&
-          !line.startsWith("PASS:") &&
-          !line.startsWith("FAIL:")
+          !line.includes("PASS:") &&
+          !line.includes("FAIL:") &&
+          !line.includes("✅") &&
+          !line.includes("❌")
         ) {
           lastOutput.push(chalk.dim(line));
         }
       }
 
-      const success = testFailed === 0 && testPassed > 0;
+      // A test passes if it has at least one PASS and no FAIL/Error
+      const success = testPassed > 0 && testFailed === 0;
 
       if (success) {
         this.passed++;

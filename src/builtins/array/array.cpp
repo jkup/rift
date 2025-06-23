@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <limits>
+#include <iostream>
 
 namespace rift::builtins {
 
@@ -475,14 +476,15 @@ std::shared_ptr<JSObject> Array::getGlobalPrototype() {
 
 // Array static methods
 Value Array::isArray(const std::vector<Value>& args) {
-    // Array.isArray() requires exactly one argument
-    if (args.empty()) {
+    // Array.isArray() requires exactly one argument (plus the 'this' value)
+    // args[0] is the Array constructor (this), args[1] is the actual argument
+    if (args.size() < 2) {
         return Value(false);
     }
 
-    Value arg = args[0];
-
-    // Non-objects cannot be arrays
+    Value arg = args[1];  // Use the actual argument, not the 'this' value
+    
+    // Non-objects cannot be arrays (check both Object and Function types)
     if (!arg.isObject() && !arg.isFunction()) {
         return Value(false);
     }
@@ -492,14 +494,9 @@ Value Array::isArray(const std::vector<Value>& args) {
         return Value(false);
     }
 
-    // Check if the object has array-like characteristics:
-    // 1. Has a 'length' property
-    // 2. The length property is a number
-    // 3. The length is non-negative
-    if (!obj->hasProperty("length")) {
-        return Value(false);
-    }
-
+    // Simplified array detection:
+    // 1. Must have a numeric 'length' property
+    // 2. Must have array methods (push/pop) OR numeric indices
     Value lengthValue = obj->getProperty("length");
     if (!lengthValue.isNumber()) {
         return Value(false);
@@ -510,30 +507,26 @@ Value Array::isArray(const std::vector<Value>& args) {
         return Value(false);
     }
 
-    // Additional check: verify that the object has array methods
-    // This helps distinguish actual arrays from array-like objects
-    if (obj->hasProperty("push") || obj->hasProperty("pop")) {
+    // Check if it has array methods (most reliable indicator)
+    Value pushMethod = obj->getProperty("push");
+    if (pushMethod.isFunction()) {
         return Value(true);
     }
 
-    // For objects created by Array constructor that might not have methods attached yet,
-    // check if it has numeric properties consistent with an array
+    // For empty arrays, just having a length property is sufficient
+    if (length == 0) {
+        return Value(true);
+    }
+
+    // For non-empty arrays, check if it has numeric indices
     size_t arrayLength = static_cast<size_t>(length);
-    if (arrayLength == 0) {
-        // Empty array is still an array
-        return Value(true);
-    }
-
-    // Check if it has at least some numeric indices (for non-empty arrays)
-    // This is a heuristic but works for this implementation
     for (size_t i = 0; i < std::min(arrayLength, static_cast<size_t>(3)); ++i) {
-        if (obj->hasProperty(std::to_string(i))) {
+        Value element = obj->getProperty(std::to_string(i));
+        if (!element.isUndefined()) {
             return Value(true);
         }
     }
 
-    // If we can't definitively prove it's an array, it's probably not
-    // (In a full implementation, we might track array types more explicitly)
     return Value(false);
 }
 

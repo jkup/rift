@@ -3,80 +3,146 @@
 console.log("=== ARRAY LITERALS IMPLEMENTATION SUCCESS ===");
 
 // 1. Array Creation
-console.log("\n1. Array Creation:");
+console.log("1. Array Creation:");
 var arr1 = [1, 2, 3];
 var arr2 = [];
 var arr3 = [1, "hello", true, null, undefined];
-console.log("✅ Basic arrays, empty arrays, and mixed-type arrays created");
+if (arr1.length == 3) {
+    console.log("PASS: Basic array creation");
+} else {
+    console.log("FAIL: Basic array creation");
+}
+
+if (arr2.length == 0) {
+    console.log("PASS: Empty array creation");
+} else {
+    console.log("FAIL: Empty array creation");
+}
+
+if (arr3.length == 5) {
+    console.log("PASS: Mixed-type array creation");
+} else {
+    console.log("FAIL: Mixed-type array creation");
+}
 
 // 2. Element Access
-console.log("\n2. Element Access (Bracket Notation):");
+console.log("2. Element Access (Bracket Notation):");
 var access = [10, 20, 30];
-console.log("access[0] =", access[0]);
-console.log("access[1] =", access[1]);
-console.log("access[2] =", access[2]);
-console.log("✅ Bracket notation access working");
+if (access[0] == 10) {
+    console.log("PASS: Bracket notation access [0]");
+} else {
+    console.log("FAIL: Bracket notation access [0]");
+}
+
+if (access[1] == 20) {
+    console.log("PASS: Bracket notation access [1]");
+} else {
+    console.log("FAIL: Bracket notation access [1]");
+}
+
+if (access[2] == 30) {
+    console.log("PASS: Bracket notation access [2]");
+} else {
+    console.log("FAIL: Bracket notation access [2]");
+}
 
 // 3. Element Assignment
-console.log("\n3. Element Assignment:");
+console.log("3. Element Assignment:");
 var assign = [1, 2, 3];
 assign[0] = 100;
 assign[1] = 200;
-console.log(
-  "After assignment: assign[0] =",
-  assign[0],
-  "assign[1] =",
-  assign[1]
-);
-console.log("✅ Element assignment working");
+if (assign[0] == 100) {
+    console.log("PASS: Element assignment [0]");
+} else {
+    console.log("FAIL: Element assignment [0]");
+}
+
+if (assign[1] == 200) {
+    console.log("PASS: Element assignment [1]");
+} else {
+    console.log("FAIL: Element assignment [1]");
+}
 
 // 4. Sparse Arrays
-console.log("\n4. Sparse Arrays:");
+console.log("4. Sparse Arrays:");
 var sparse = [];
 sparse[5] = "five";
-console.log("sparse[5] =", sparse[5]);
-console.log("sparse.length =", sparse.length);
-console.log("✅ Sparse arrays with automatic length update working");
+if (sparse[5] == "five") {
+    console.log("PASS: Sparse array element access");
+} else {
+    console.log("FAIL: Sparse array element access");
+}
+
+if (sparse.length == 6) {
+    console.log("PASS: Sparse array automatic length update");
+} else {
+    console.log("FAIL: Sparse array automatic length update");
+}
 
 // 5. Array Methods
-console.log("\n5. Array Methods:");
+console.log("5. Array Methods:");
 var methods = [1, 2];
 var pushResult = methods.push(3);
-console.log("After push(3): length =", pushResult, "methods[2] =", methods[2]);
+if (pushResult == 3) {
+    console.log("PASS: push() return value");
+} else {
+    console.log("FAIL: push() return value");
+}
+
+if (methods[2] == 3) {
+    console.log("PASS: push() adds element");
+} else {
+    console.log("FAIL: push() adds element");
+}
+
 var popResult = methods.pop();
-console.log("After pop(): popped =", popResult, "length =", methods.length);
-console.log("✅ push() and pop() methods working");
+if (popResult == 3) {
+    console.log("PASS: pop() return value");
+} else {
+    console.log("FAIL: pop() return value");
+}
+
+if (methods.length == 2) {
+    console.log("PASS: pop() updates length");
+} else {
+    console.log("FAIL: pop() updates length");
+}
 
 // 6. toString Method
-console.log("\n6. toString Method:");
+console.log("6. toString Method:");
 var str = [1, 2, 3];
-console.log("Array toString():", str.toString());
 var strArray = ["a", "b", "c"];
-console.log("String array toString():", strArray.toString());
-console.log("✅ toString() method working");
+if (str.toString() == "1,2,3") {
+    console.log("PASS: Array toString() method");
+} else {
+    console.log("FAIL: Array toString() method");
+}
+
+if (strArray.toString() == "a,b,c") {
+    console.log("PASS: String array toString() method");
+} else {
+    console.log("FAIL: String array toString() method");
+}
 
 // 7. Nested Arrays
-console.log("\n7. Nested Arrays:");
-var nested = [
-  [1, 2],
-  [3, 4],
-];
-console.log("nested.length =", nested.length);
-console.log("nested[0] =", nested[0].toString());
-console.log("nested[0][0] =", nested[0][0]);
-console.log("nested[0][1] =", nested[0][1]);
-console.log("✅ Nested arrays and chained access working");
+console.log("7. Nested Arrays:");
+var nested = [[1, 2], [3, 4]];
+if (nested.length == 2) {
+    console.log("PASS: Nested array creation");
+} else {
+    console.log("FAIL: Nested array creation");
+}
 
-console.log("\n=== SUMMARY ===");
-console.log("🎉 ARRAY LITERALS ARE NOW FULLY FUNCTIONAL!");
-console.log("✅ Array creation: [1, 2, 3]");
-console.log("✅ Element access: arr[0]");
-console.log("✅ Element assignment: arr[0] = value");
-console.log("✅ Sparse arrays: arr[100] = value");
-console.log("✅ Array methods: push(), pop(), toString()");
-console.log("✅ Nested arrays: [[1, 2], [3, 4]]");
-console.log("✅ Chained access: arr[0][1]");
+if (nested[0][0] == 1) {
+    console.log("PASS: Chained array access [0][0]");
+} else {
+    console.log("FAIL: Chained array access [0][0]");
+}
 
-console.log(
-  "\nArray literals are now 100% spec-compliant and ready for test262!"
-);
+if (nested[0][1] == 2) {
+    console.log("PASS: Chained array access [0][1]");
+} else {
+    console.log("FAIL: Chained array access [0][1]");
+}
+
+console.log("=== ARRAY SUCCESS TEST COMPLETE ===");

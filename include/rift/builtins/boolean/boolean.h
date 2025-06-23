@@ -66,6 +66,9 @@ class Boolean {
     // Helper methods
     /// Helper to get the boolean value from the 'this' binding in prototype methods
     static bool getThisBooleanValue(const std::vector<Value>& args);
+    
+    /// Get the global Boolean prototype object from BuiltinManager
+    static std::shared_ptr<JSObject> getGlobalPrototype();
 };
 
 }  // namespace rift::builtins 

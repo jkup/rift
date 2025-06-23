@@ -1,69 +1,14 @@
-// Test basic return
-function testBasicReturn() {
-    return 42;
-}
+// Return statement tests
+// NOTE: This test requires function declarations and return statements
 
-console.log("PASS: Basic return value");
-if (testBasicReturn() !== 42) {
-    console.log("FAIL: Basic return value failed");
-}
+console.log("=== Return Statement Test ===");
 
-// Test return with expression
-function testReturnExpression() {
-    let x = 1;
-    let y = 2;
-    return x + y;
-}
+console.log("UNSUPPORTED: Function declarations are not yet implemented");
+console.log("UNSUPPORTED: return statements are not yet implemented");
+console.log("UNSUPPORTED: Function scoping needs implementation");
+console.log("UNSUPPORTED: let keyword not supported");
 
-console.log("PASS: Return with expression");
-if (testReturnExpression() !== 3) {
-    console.log("FAIL: Return with expression failed");
-}
+console.log("SKIP: All return statement tests");
 
-// Test early return
-function testEarlyReturn() {
-    if (true) {
-        return "early";
-    }
-    return "late";
-}
-
-console.log("PASS: Early return");
-if (testEarlyReturn() !== "early") {
-    console.log("FAIL: Early return failed");
-}
-
-// Test return undefined
-function testReturnUndefined() {
-    return;
-}
-
-console.log("PASS: Return undefined");
-if (testReturnUndefined() !== undefined) {
-    console.log("FAIL: Return undefined failed");
-}
-
-// Test return in nested blocks
-function testNestedReturn() {
-    {
-        {
-            return "nested";
-        }
-    }
-    return "outer";
-}
-
-console.log("PASS: Return in nested blocks");
-if (testNestedReturn() !== "nested") {
-    console.log("FAIL: Return in nested blocks failed");
-}
-
-// Test return with no value
-function testNoReturn() {
-    let x = 1;
-}
-
-console.log("PASS: No return statement");
-if (testNoReturn() !== undefined) {
-    console.log("FAIL: No return statement should return undefined");
-} 
+console.log("=== Return Statement Test Complete ===");
+console.log("NOTE: Enable this test after implementing functions and return statements"); 

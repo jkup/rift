@@ -3,54 +3,96 @@ console.log("=== Basic Try-Catch Test ===");
 
 // Test 1: Basic string throwing and catching
 console.log("Test 1: Basic string throwing and catching");
+var caught1 = false;
+var error1 = "";
 try {
-    console.log("About to throw a string");
     throw "This is a test error";
-    console.log("ERROR: This should not execute");
 } catch (e) {
-    console.log("Caught error:", e);
+    caught1 = true;
+    error1 = e;
 }
-console.log("Execution continued after try-catch");
+if (caught1 && error1 == "This is a test error") {
+    console.log("PASS: String throwing and catching works");
+} else {
+    console.log("FAIL: String throwing and catching works");
+}
 
 // Test 2: Basic number throwing and catching
 console.log("Test 2: Basic number throwing and catching");
+var caught2 = false;
+var error2 = 0;
 try {
-    console.log("About to throw a number");
     throw 42;
-    console.log("ERROR: This should not execute");
 } catch (e) {
-    console.log("Caught number:", e);
+    caught2 = true;
+    error2 = e;
+}
+if (caught2 && error2 == 42) {
+    console.log("PASS: Number throwing and catching works");
+} else {
+    console.log("FAIL: Number throwing and catching works");
 }
 
 // Test 3: Basic boolean throwing and catching
 console.log("Test 3: Basic boolean throwing and catching");
+var caught3 = false;
+var error3 = false;
 try {
-    console.log("About to throw a boolean");
     throw true;
-    console.log("ERROR: This should not execute");
 } catch (e) {
-    console.log("Caught boolean:", e);
+    caught3 = true;
+    error3 = e;
+}
+if (caught3 && error3 == true) {
+    console.log("PASS: Boolean throwing and catching works");
+} else {
+    console.log("FAIL: Boolean throwing and catching works");
 }
 
 // Test 4: Try block without exception
 console.log("Test 4: Try block without exception");
+var normalExecution = false;
+var catchExecuted = false;
 try {
-    console.log("Normal execution in try block");
     var result = 10 + 20;
-    console.log("Result:", result);
+    normalExecution = true;
 } catch (e) {
-    console.log("ERROR: Catch block should not execute");
+    catchExecuted = true;
 }
-console.log("Execution continued normally");
+if (normalExecution && !catchExecuted && result == 30) {
+    console.log("PASS: Try block without exception works");
+} else {
+    console.log("FAIL: Try block without exception works");
+}
 
 // Test 5: Catch variable scope
 console.log("Test 5: Catch variable scope");
 var outsideVar = "outside";
+var insideValue = "";
 try {
     throw "test exception";
 } catch (outsideVar) {
-    console.log("Inside catch, outsideVar:", outsideVar);
+    insideValue = outsideVar;
 }
-console.log("Outside catch, outsideVar:", outsideVar);
+if (insideValue == "test exception" && outsideVar == "outside") {
+    console.log("PASS: Catch variable scope works correctly");
+} else {
+    console.log("FAIL: Catch variable scope works correctly");
+}
+
+// Test 6: Execution continues after try-catch
+console.log("Test 6: Execution continues after try-catch");
+var continueAfter = false;
+try {
+    throw "error";
+} catch (e) {
+    // Catch the error
+}
+continueAfter = true;
+if (continueAfter) {
+    console.log("PASS: Execution continues after try-catch");
+} else {
+    console.log("FAIL: Execution continues after try-catch");
+}
 
 console.log("=== Basic Try-Catch Test Complete ==="); 

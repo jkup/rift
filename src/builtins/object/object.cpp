@@ -5,7 +5,7 @@
 namespace rift::builtins {
 
 std::shared_ptr<JSObject> Object::create() {
-    auto object = std::make_shared<JSObject>();
+    auto object = std::make_shared<JSFunction>(Object::constructor);
 
     // Add static methods
     object->setProperty("keys", Value(std::make_shared<JSFunction>(Object::keys)));
@@ -60,13 +60,15 @@ Value Object::constructor(const std::vector<Value>& args) {
 }
 
 Value Object::keys(const std::vector<Value>& args) {
-    if (args.empty()) {
+    // Object.keys() requires exactly one argument (plus the 'this' value)
+    // args[0] is the Object constructor (this), args[1] is the actual argument
+    if (args.size() < 2) {
         // Object.keys() with no arguments should throw TypeError
         // For now, return empty array
         return Value(Array::createArrayObject({}));
     }
 
-    Value arg = args[0];
+    Value arg = args[1];  // Use the actual argument, not the 'this' value
 
     // Object.keys() only works on objects
     if (!arg.isObject() && !arg.isFunction()) {
@@ -95,13 +97,15 @@ Value Object::keys(const std::vector<Value>& args) {
 }
 
 Value Object::values(const std::vector<Value>& args) {
-    if (args.empty()) {
+    // Object.values() requires exactly one argument (plus the 'this' value)
+    // args[0] is the Object constructor (this), args[1] is the actual argument
+    if (args.size() < 2) {
         // Object.values() with no arguments should throw TypeError
         // For now, return empty array
         return Value(Array::createArrayObject({}));
     }
 
-    Value arg = args[0];
+    Value arg = args[1];  // Use the actual argument, not the 'this' value
 
     // Object.values() only works on objects
     if (!arg.isObject() && !arg.isFunction()) {

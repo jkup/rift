@@ -1,16 +1,49 @@
-// Debug variable handling
-console.log("Starting debug test");
+// Debug variable handling with assertions
 
+console.log("=== Debug Object Variables Test ===");
+
+// Test array variable creation
 var arr = [1, 2, 3];
-console.log("Array created, length:", arr.length);
+if (arr.length == 3) {
+    console.log("PASS: Array variable creation works");
+} else {
+    console.log("FAIL: Array variable creation works");
+}
 
+// Test empty object creation
 var obj = {};
-console.log("Empty object created");
+if (typeof obj == "object") {
+    console.log("PASS: Empty object variable creation works");
+} else {
+    console.log("FAIL: Empty object variable creation works");
+}
 
-// Set a property
+// Test property assignment
 obj.name = "test";
-console.log("Property set");
+if (obj.name == "test") {
+    console.log("PASS: Property assignment works");
+} else {
+    console.log("FAIL: Property assignment works");
+}
 
-// Try to access the variable directly
-console.log("Variable obj exists:", typeof obj);
-console.log("Variable arr exists:", typeof arr); 
+// Test variable type checking
+if (typeof obj == "object") {
+    console.log("PASS: Object variable type is correct");
+} else {
+    console.log("FAIL: Object variable type is correct");
+}
+
+if (typeof arr == "object") {
+    console.log("PASS: Array variable type is correct");
+} else {
+    console.log("FAIL: Array variable type is correct");
+}
+
+// Test property access after assignment
+if (obj.name == "test") {
+    console.log("PASS: Property access after assignment works");
+} else {
+    console.log("FAIL: Property access after assignment works");
+}
+
+console.log("=== Debug Object Variables Test Complete ==="); 
