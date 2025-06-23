@@ -13,6 +13,22 @@ using namespace rift::ast;
 // Forward declaration
 class Rift;
 
+// RAII guard for exception handling state
+class ExceptionGuard {
+private:
+    Rift* engine_;
+    
+public:
+    explicit ExceptionGuard(Rift* engine);
+    ~ExceptionGuard();
+    
+    // Non-copyable, non-movable
+    ExceptionGuard(const ExceptionGuard&) = delete;
+    ExceptionGuard& operator=(const ExceptionGuard&) = delete;
+    ExceptionGuard(ExceptionGuard&&) = delete;
+    ExceptionGuard& operator=(ExceptionGuard&&) = delete;
+};
+
 class StatementEvaluator {
 public:
     // Main evaluation dispatcher for statements

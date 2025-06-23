@@ -66,7 +66,14 @@ void Rift::setupBuiltins() {
 }
 
 void Rift::collectGarbage() {
+    // If we're in exception handling, defer collection
+    if (isInExceptionHandling()) {
+        deferred_collection_needed_.store(true);
+        return;
+    }
+    
     object_manager_->collect();
+    deferred_collection_needed_.store(false);
 }
 
 void Rift::printGCStats() const {
@@ -79,6 +86,50 @@ void Rift::setGCEnabled(bool enabled) {
 
 bool Rift::isGCEnabled() const {
     return object_manager_->isGCEnabled();
+}
+
+void Rift::enterExceptionHandling() {
+    int new_depth = exception_depth_.fetch_add(1) + 1;
+    
+    #ifdef DEBUG_GC
+    std::cout << "[GC] Entering exception handling, depth: " << new_depth << std::endl;
+    #endif
+}
+
+void Rift::exitExceptionHandling() {
+    int depth = exception_depth_.fetch_sub(1);
+    
+    // Defensive programming: ensure we don't go negative
+    if (depth <= 0) {
+        // This should never happen in correct code - indicates a bug
+        #ifdef DEBUG_GC
+        std::cerr << "[GC] ERROR: exitExceptionHandling() called without matching enterExceptionHandling()!" << std::endl;
+        std::cerr << "[GC] Previous depth was: " << depth << std::endl;
+        #endif
+        
+        // Reset to 0 to prevent further issues
+        exception_depth_.store(0);
+        return;
+    }
+    
+    #ifdef DEBUG_GC
+    std::cout << "[GC] Exiting exception handling, depth: " << (depth - 1) << std::endl;
+    #endif
+    
+    // If we've exited all exception handling and have deferred collection
+    if (depth == 1 && deferred_collection_needed_.load()) {
+        #ifdef DEBUG_GC
+        std::cout << "[GC] Triggering deferred collection" << std::endl;
+        #endif
+        
+        // Trigger the deferred collection now that it's safe
+        object_manager_->collect();
+        deferred_collection_needed_.store(false);
+    }
+}
+
+bool Rift::isInExceptionHandling() const {
+    return exception_depth_.load() > 0;
 }
 
 }  // namespace rift::core

@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <memory>
+#include <atomic>
 
 #include "../../frontend/ast/ast_node.h"
 #include "../../runtime/environment/environment.h"
@@ -24,6 +25,10 @@ class Rift {
     std::shared_ptr<Environment> global_env_;
     std::unique_ptr<rift::memory::ObjectManager> object_manager_;
     std::unique_ptr<rift::memory::GCEnvironment> global_env_gc_;
+    
+    // Exception handling state tracking
+    std::atomic<int> exception_depth_{0};
+    std::atomic<bool> deferred_collection_needed_{false};
 
    public:
     Rift();
@@ -44,6 +49,11 @@ class Rift {
     void printGCStats() const;
     void setGCEnabled(bool enabled);
     bool isGCEnabled() const;
+    
+    // Exception handling state management
+    void enterExceptionHandling();
+    void exitExceptionHandling();
+    bool isInExceptionHandling() const;
 
     // Built-in setup
     void setupBuiltins();
