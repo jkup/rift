@@ -28,6 +28,12 @@ Rift follows a classic interpreter architecture: **Source → Lexer → Parser �
 - **MarkSweepGC** (`mark_sweep_gc.cpp`): Garbage collector using mark-and-sweep algorithm
 - **GCEnvironment** (`gc_environment.h/cpp`): Makes environments GC-aware
 
+**Current Memory Strategy (Hybrid Approach):**
+- **JavaScript Objects**: Managed by `shared_ptr` reference counting for immediate cleanup
+- **Environments**: Tracked by GC as roots for reachability analysis
+- **Trade-off**: Cannot handle circular references, but avoids complex ownership conflicts
+- **Benefits**: No segfaults, predictable memory usage, simpler debugging
+
 ### **Built-ins** (`include/builtins/`, `src/builtins/`)
 Each built-in follows the same pattern:
 - **Console** (`console/`): `console.log()`, `console.error()`
@@ -80,10 +86,11 @@ function outer() {
 - Try-catch blocks catch and handle these exceptions
 
 ### **Garbage Collection**
-- Mark-and-sweep GC runs automatically
-- Objects reachable from roots (global environment) are kept
-- Unreachable objects are deleted
-- GC can be disabled during exception handling to prevent crashes
+- **Hybrid system**: GC tracks environment roots, shared_ptr manages object lifetimes
+- **Mark-and-sweep GC**: Runs automatically when thresholds are reached
+- **Exception safety**: GC defers collection during exception handling to prevent crashes
+- **Manual control**: `gc()` function available for explicit collection
+- **Limitation**: Circular references between objects will cause memory leaks
 
 ## Testing
 
