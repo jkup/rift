@@ -2,6 +2,7 @@
 #include "rift/core/engine/operation_handler.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/builtin_manager.h"
 #include "rift/builtins/array/array.h"
 #include "rift/runtime/values/object.h"
 #include <iostream>
@@ -271,10 +272,13 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
         }
     }
 
-    // Handle string primitive boxing - simplified for now
+    // Handle primitive boxing - look up prototype methods
     if (object.isString()) {
-        // For now, return undefined - we'll handle string prototype methods later
-        return Value::undefined();
+        // Get the String prototype and look up the property
+        auto stringPrototype = BuiltinManager::getStringPrototype();
+        if (stringPrototype) {
+            return stringPrototype->getProperty(property);
+        }
     }
 
     return Value::undefined();

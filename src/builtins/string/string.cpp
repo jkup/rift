@@ -26,11 +26,16 @@ std::shared_ptr<JSObject> String::createPrototype(rift::memory::ObjectFactory* f
     // Add prototype methods using GC-managed function creation
     prototype->setProperty("charAt", Value(factory->createJSFunction(String::charAt)));
     prototype->setProperty("charCodeAt", Value(factory->createJSFunction(String::charCodeAt)));
+    prototype->setProperty("concat", Value(factory->createJSFunction(String::concat)));
     prototype->setProperty("indexOf", Value(factory->createJSFunction(String::indexOf)));
+    prototype->setProperty("lastIndexOf", Value(factory->createJSFunction(String::lastIndexOf)));
+    prototype->setProperty("slice", Value(factory->createJSFunction(String::slice)));
+    prototype->setProperty("split", Value(factory->createJSFunction(String::split)));
     prototype->setProperty("substring", Value(factory->createJSFunction(String::substring)));
     prototype->setProperty("toLowerCase", Value(factory->createJSFunction(String::toLowerCase)));
     prototype->setProperty("toUpperCase", Value(factory->createJSFunction(String::toUpperCase)));
     prototype->setProperty("toString", Value(factory->createJSFunction(String::toString)));
+    prototype->setProperty("trim", Value(factory->createJSFunction(String::trim)));
     prototype->setProperty("valueOf", Value(factory->createJSFunction(String::valueOf)));
 
     return prototype;
