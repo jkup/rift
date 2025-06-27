@@ -440,9 +440,10 @@ std::shared_ptr<JSObject> Array::createArrayObject(rift::memory::ObjectFactory* 
     // Create array with proper prototype chain
     auto arrayPrototype = getGlobalPrototype();
     
-    // TODO: Use GC-aware object creation when we have access to ObjectManager
-    // For now, keep the existing behavior to maintain compatibility
-    auto arrayObj = factory->createJSObject(arrayPrototype);
+    // FIXED: Use GC-aware object creation for arrays specifically
+    // Arrays are simpler than functions and shouldn't have the environment segfault issues
+    // that caused GC tracking to be disabled in createJSObject()
+    auto arrayObj = factory->createObject<rift::runtime::JSObject>(arrayPrototype);
 
     // Set up array elements
     for (size_t i = 0; i < elements.size(); ++i) {
