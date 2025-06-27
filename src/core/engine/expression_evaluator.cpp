@@ -299,8 +299,9 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node, s
 }
 
 Value ExpressionEvaluator::evaluateObjectLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    // Create a new empty object using GC-managed creation
-    auto obj = engine->getObjectFactory()->createJSObject();
+    // Create a new empty object using GC-managed creation with Object.prototype
+    auto objectPrototype = BuiltinManager::getObjectPrototype();
+    auto obj = engine->getObjectFactory()->createJSObject(objectPrototype);
 
     // Process key-value pairs from the AST
     // Children are stored in pairs: key, value, key, value, ...

@@ -3,6 +3,7 @@
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/string/string.h"
 #include "rift/builtins/boolean/boolean.h"
+#include <algorithm>
 
 namespace rift::builtins {
 
@@ -304,11 +305,12 @@ Value Object::hasOwnProperty(const std::vector<Value>& args) {
 
     std::string propName = propertyName.toString();
     
-    // This is a simplified implementation
-    // In a full implementation, we'd need to check only own properties, not inherited ones
-    bool hasProperty = obj->hasProperty(propName);
+    // ECMAScript spec: hasOwnProperty() checks only own properties, not inherited ones
+    // Use getOwnPropertyNames() to check only own properties, excluding prototype chain
+    auto ownPropertyNames = obj->getOwnPropertyNames();
+    bool hasOwnProperty = std::find(ownPropertyNames.begin(), ownPropertyNames.end(), propName) != ownPropertyNames.end();
     
-    return Value(hasProperty);
+    return Value(hasOwnProperty);
 }
 
 }  // namespace rift::builtins 
