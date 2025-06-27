@@ -1,6 +1,8 @@
 #include "rift/builtins/object/object.h"
 
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/string/string.h"
+#include "rift/builtins/boolean/boolean.h"
 
 namespace rift::builtins {
 
@@ -55,7 +57,139 @@ Value Object::constructor(const std::vector<Value>& args) {
         return arg;
     }
     
-    // TODO: Handle primitive to object conversion
+    // Handle primitive to object conversion according to ECMAScript spec
+    if (arg.isString()) {
+        // Convert string primitive to String object
+        // Create String object manually since constructor is private
+        auto stringObj = object_factory_ ? object_factory_->createJSObject() 
+                                         : std::make_shared<JSObject>();
+        // Store the primitive string value (following similar pattern to Boolean)
+        stringObj->setProperty("value", arg);
+        // Add basic String methods
+        auto toStringFn = [](const std::vector<Value>& args) -> Value {
+            if (!args.empty() && args[0].isObject()) {
+                auto obj = args[0].getObject();
+                if (obj) {
+                    Value val = obj->getProperty("value");
+                    if (val.isString()) {
+                        return val;
+                    }
+                }
+            }
+            return Value("");
+        };
+        auto valueOfFn = [](const std::vector<Value>& args) -> Value {
+            if (!args.empty() && args[0].isObject()) {
+                auto obj = args[0].getObject();
+                if (obj) {
+                    Value val = obj->getProperty("value");
+                    if (val.isString()) {
+                        return val;
+                    }
+                }
+            }
+            return Value("");
+        };
+        
+        if (object_factory_) {
+            stringObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
+            stringObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
+        } else {
+            stringObj->setProperty("toString", Value(std::make_shared<JSFunction>(toStringFn)));
+            stringObj->setProperty("valueOf", Value(std::make_shared<JSFunction>(valueOfFn)));
+        }
+        
+        return Value(stringObj);
+    }
+    
+    if (arg.isBoolean()) {
+        // Convert boolean primitive to Boolean object  
+        // Create Boolean object manually since constructor is private
+        auto booleanObj = object_factory_ ? object_factory_->createJSObject() 
+                                          : std::make_shared<JSObject>();
+        // Store the primitive boolean value (following Boolean constructor pattern)
+        booleanObj->setProperty("value", arg);
+        // Add basic Boolean methods
+        auto toStringFn = [](const std::vector<Value>& args) -> Value {
+            if (!args.empty() && args[0].isObject()) {
+                auto obj = args[0].getObject();
+                if (obj) {
+                    Value val = obj->getProperty("value");
+                    if (val.isBoolean()) {
+                        return Value(val.getBool() ? "true" : "false");
+                    }
+                }
+            }
+            return Value("false");
+        };
+        auto valueOfFn = [](const std::vector<Value>& args) -> Value {
+            if (!args.empty() && args[0].isObject()) {
+                auto obj = args[0].getObject();
+                if (obj) {
+                    Value val = obj->getProperty("value");
+                    if (val.isBoolean()) {
+                        return val;
+                    }
+                }
+            }
+            return Value(false);
+        };
+        
+        if (object_factory_) {
+            booleanObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
+            booleanObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
+        } else {
+            booleanObj->setProperty("toString", Value(std::make_shared<JSFunction>(toStringFn)));
+            booleanObj->setProperty("valueOf", Value(std::make_shared<JSFunction>(valueOfFn)));
+        }
+        
+        return Value(booleanObj);
+    }
+    
+    if (arg.isNumber()) {
+        // Convert number primitive to Number-like object
+        // Since we don't have a Number constructor yet, create a simple wrapper
+        auto numberObj = object_factory_ ? object_factory_->createJSObject() 
+                                         : std::make_shared<JSObject>();
+        numberObj->setProperty("value", arg);
+        // Add basic Number methods
+        auto toStringFn = [](const std::vector<Value>& args) -> Value {
+            if (!args.empty() && args[0].isObject()) {
+                auto obj = args[0].getObject();
+                if (obj) {
+                    Value val = obj->getProperty("value");
+                    if (val.isNumber()) {
+                        return Value(val.toString());
+                    }
+                }
+            }
+            return Value("0");
+        };
+        auto valueOfFn = [](const std::vector<Value>& args) -> Value {
+            if (!args.empty() && args[0].isObject()) {
+                auto obj = args[0].getObject();
+                if (obj) {
+                    Value val = obj->getProperty("value");
+                    if (val.isNumber()) {
+                        return val;
+                    }
+                }
+            }
+            return Value(0.0);
+        };
+        
+        if (object_factory_) {
+            numberObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
+            numberObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
+        } else {
+            numberObj->setProperty("toString", Value(std::make_shared<JSFunction>(toStringFn)));
+            numberObj->setProperty("valueOf", Value(std::make_shared<JSFunction>(valueOfFn)));
+        }
+        
+        return Value(numberObj);
+    }
+    
+    // For null, undefined, or other types, create plain object
     if (object_factory_) {
         return Value(object_factory_->createJSObject());
     }
