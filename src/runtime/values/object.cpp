@@ -81,15 +81,15 @@ std::vector<rift::memory::GCObject*> JSObject::getReferences() const {
     
     // Add prototype reference
     if (prototype_) {
-        refs.push_back(prototype_.get());
+        refs.push_back(prototype_);  // prototype_ is now a raw pointer
     }
     
     // Add object references from properties
     for (const auto& [key, value] : properties_) {
         if (value.isObject() || value.isFunction()) {
-            auto obj = value.getObject();
+            JSObject* obj = value.getObject();  // getObject() now returns raw pointer
             if (obj) {
-                refs.push_back(obj.get());
+                refs.push_back(obj);
             }
         }
     }

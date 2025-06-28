@@ -3,18 +3,25 @@
 
 namespace rift::builtins {
 
-std::shared_ptr<JSObject> Boolean::create(rift::memory::ObjectFactory* factory) {
+// Static factory storage
+rift::memory::ObjectFactory* Boolean::object_factory_ = nullptr;
+
+void Boolean::setObjectFactory(rift::memory::ObjectFactory* factory) {
+    object_factory_ = factory;
+}
+
+JSObject* Boolean::create(rift::memory::ObjectFactory* factory) {
     // Create Boolean constructor using GC-managed creation
     auto boolean = factory->createJSFunction(Boolean::constructor);
 
     // Create and set prototype
     auto prototype = createPrototype(factory);
-    boolean->setProperty("prototype", Value(prototype));
+    boolean->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
 
-    return boolean;
+    return boolean;  // Return raw pointer
 }
 
-std::shared_ptr<JSObject> Boolean::createPrototype(rift::memory::ObjectFactory* factory) {
+JSObject* Boolean::createPrototype(rift::memory::ObjectFactory* factory) {
     // Create Boolean.prototype using GC-managed creation
     auto prototype = factory->createJSObject();
 
@@ -22,7 +29,7 @@ std::shared_ptr<JSObject> Boolean::createPrototype(rift::memory::ObjectFactory* 
     prototype->setProperty("toString", Value(factory->createJSFunction(Boolean::toString)));
     prototype->setProperty("valueOf", Value(factory->createJSFunction(Boolean::valueOf)));
 
-    return prototype;
+    return prototype;  // Return raw pointer
 }
 
 Value Boolean::constructor(const std::vector<Value>& args) {
@@ -40,12 +47,12 @@ Value Boolean::constructor(const std::vector<Value>& args) {
     
     // Create Boolean object with proper prototype chain
     auto booleanPrototype = getGlobalPrototype();
-    auto booleanObj = std::make_shared<JSObject>(booleanPrototype);
+    auto booleanObj = object_factory_->createJSObject(booleanPrototype);  // Use factory
     
     // Store the primitive boolean value
     booleanObj->setProperty("value", Value(boolValue));
     
-    return Value(booleanObj);
+    return Value(booleanObj);  // booleanObj is now raw pointer
 }
 
 Value Boolean::toString(const std::vector<Value>& args) {
@@ -75,7 +82,7 @@ bool Boolean::getBooleanValue(const std::vector<Value>& args) {
     
     // If it's a Boolean object, extract the primitive value
     if (thisValue.isObject()) {
-        auto obj = thisValue.getObject();
+        auto obj = thisValue.getObject();  // getObject() now returns raw pointer
         if (obj) {
             // Check if it has a boolean value property (for Boolean objects)
             Value valueProperty = obj->getProperty("value");
@@ -89,8 +96,8 @@ bool Boolean::getBooleanValue(const std::vector<Value>& args) {
     return thisValue.toBool();
 }
 
-std::shared_ptr<JSObject> Boolean::getGlobalPrototype() {
-    return rift::core::BuiltinManager::getBooleanPrototype();
+JSObject* Boolean::getGlobalPrototype() {
+    return rift::core::BuiltinManager::getBooleanPrototype();  // Now returns raw pointer
 }
 
 }  // namespace rift::builtins 

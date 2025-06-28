@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "../../runtime/values/value.h"
 #include "../../runtime/values/object.h"
 #include "../../memory/object_factory.h"
@@ -21,55 +22,29 @@ using namespace rift::runtime;
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 class Boolean {
    public:
-    /// Create the Boolean constructor object with all properties and methods.
-    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
+    /// Static factory method
+    static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
-    /// Create the Boolean.prototype object with all instance methods.
-    static std::shared_ptr<JSObject> createPrototype(rift::memory::ObjectFactory* factory);
+    /// Create Boolean constructor function - now returns raw pointer
+    static JSObject* create(rift::memory::ObjectFactory* factory);
 
-   private:
-    // Boolean constructor function
-    /// The `Boolean()` constructor creates Boolean objects or primitive booleans.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-boolean-constructor
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean/Boolean
+    /// Create Boolean.prototype - now returns raw pointer
+    static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
+
+    /// Boolean constructor
     static Value constructor(const std::vector<Value>& args);
 
-    // Boolean prototype methods
-
-    /// The `toString()` method returns a string representing the specified Boolean object.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-boolean.prototype.tostring
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean/toString
+    /// Boolean prototype methods
     static Value toString(const std::vector<Value>& args);
-
-    /// The `valueOf()` method returns the primitive value of a Boolean object.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-boolean.prototype.valueof
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean/valueOf
     static Value valueOf(const std::vector<Value>& args);
 
-    // Helper methods
-    /// Helper to get the boolean value from the 'this' binding in prototype methods
+   private:
+    /// Static factory storage
+    static rift::memory::ObjectFactory* object_factory_;
+
+    /// Helper methods - now work with raw pointers
+    static JSObject* getGlobalPrototype();
     static bool getBooleanValue(const std::vector<Value>& args);
-    
-    /// Get the global Boolean prototype object from BuiltinManager
-    static std::shared_ptr<JSObject> getGlobalPrototype();
 };
 
 }  // namespace rift::builtins 

@@ -13,8 +13,8 @@ using namespace rift::runtime;
 // Console built-in
 class Console {
    public:
-    // Updated to accept ObjectFactory for GC-managed creation
-    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
+    // Updated to return raw pointer for GC-managed creation
+    static JSObject* create(rift::memory::ObjectFactory* factory);
 
     // Console methods
     static Value log(const std::vector<Value>& args);

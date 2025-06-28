@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <vector>
+#include <memory>
+#include <functional>
 
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
@@ -25,25 +27,20 @@ using namespace rift::runtime;
 class Array {
    public:
     /// Create the Array constructor object with all properties and methods.
-    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
+    static JSObject* create(rift::memory::ObjectFactory* factory);
 
     /// Create the Array.prototype object with all instance methods.
-    static std::shared_ptr<JSObject> createPrototype(rift::memory::ObjectFactory* factory);
+    static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
 
     /// Helper to create a new array object with the given elements
-    static std::shared_ptr<JSObject> createArrayObject(rift::memory::ObjectFactory* factory, const std::vector<Value>& elements);
+    static JSObject* createArrayObject(rift::memory::ObjectFactory* factory, const std::vector<Value>& elements);
 
     /// Helper to get the global Array prototype (for proper prototype chain)
-    static std::shared_ptr<JSObject> getGlobalPrototype();
+    static JSObject* getGlobalPrototype();
 
     /// Store the factory for use in static methods
     static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
-   private:
-    // Store factory for use in static methods
-    static rift::memory::ObjectFactory* object_factory_;
-
-    // Array constructor function
     /// The `Array()` constructor creates Array objects.
     ///
     /// More information:
@@ -54,8 +51,6 @@ class Array {
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Array
     static Value constructor(const std::vector<Value>& args);
-
-    // Array prototype methods
 
     /// The `push()` method adds one or more elements to the end of an array and returns the new
     /// length.
@@ -193,13 +188,13 @@ class Array {
 
     // Helper methods
     /// Helper to get the array object from the 'this' binding in prototype methods
-    static std::shared_ptr<JSObject> getThisArrayObject(const std::vector<Value>& args);
+    static JSObject* getThisArrayObject(const std::vector<Value>& args);
 
     /// Helper to get the length of an array-like object
-    static size_t getArrayLength(std::shared_ptr<JSObject> obj);
+    static size_t getArrayLength(JSObject* obj);
 
     /// Helper to set the length of an array-like object
-    static void setArrayLength(std::shared_ptr<JSObject> obj, size_t length);
+    static void setArrayLength(JSObject* obj, size_t length);
 
     // Array static methods
     
@@ -213,6 +208,10 @@ class Array {
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
     static Value isArray(const std::vector<Value>& args);
+
+   private:
+    // Store factory for use in static methods
+    static rift::memory::ObjectFactory* object_factory_;
 };
 
 }  // namespace rift::builtins

@@ -21,12 +21,12 @@ Value::Value(const std::string& s) : type_(ValueType::String), data_(s) {}
 
 Value::Value(const char* s) : type_(ValueType::String), data_(std::string(s)) {}
 
-// Constructor for objects
-Value::Value(std::shared_ptr<JSObject> obj) : data_(obj) {
-    if (obj && obj->getTypeName() == "Function") {
-        type_ = ValueType::Function;
+// Constructor for objects - now takes raw pointer
+Value::Value(JSObject* obj) : data_(obj) {
+    if (obj) {
+        type_ = (obj->getTypeName() == "Function") ? ValueType::Function : ValueType::Object;
     } else {
-        type_ = ValueType::Object;
+        type_ = ValueType::Null;
     }
 }
 
@@ -108,9 +108,9 @@ double Value::toNumber() const {
     }
 }
 
-std::shared_ptr<JSObject> Value::toObject() const {
+JSObject* Value::toObject() const {
     if (type_ == ValueType::Object || type_ == ValueType::Function) {
-        return std::get<std::shared_ptr<JSObject>>(data_);
+        return std::get<JSObject*>(data_);
     }
     return nullptr;
 }
@@ -137,11 +137,11 @@ const std::string& Value::getString() const {
     return std::get<std::string>(data_);
 }
 
-std::shared_ptr<JSObject> Value::getObject() const {
+JSObject* Value::getObject() const {
     if (type_ != ValueType::Object && type_ != ValueType::Function) {
         throw std::runtime_error("Value is not an object");
     }
-    return std::get<std::shared_ptr<JSObject>>(data_);
+    return std::get<JSObject*>(data_);
 }
 
 }  // namespace rift::runtime

@@ -17,20 +17,20 @@ public:
     // Setup all built-in objects and functions
     static void setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine = nullptr);
 
-    // Global prototype access
-    static std::shared_ptr<JSObject> getObjectPrototype();
-    static std::shared_ptr<JSObject> getArrayPrototype();
-    static std::shared_ptr<JSObject> getStringPrototype();
-    static std::shared_ptr<JSObject> getBooleanPrototype();
-    static std::shared_ptr<JSObject> getErrorPrototype();
+    // Global prototype access - now return raw pointers
+    static JSObject* getObjectPrototype();
+    static JSObject* getArrayPrototype();
+    static JSObject* getStringPrototype();
+    static JSObject* getBooleanPrototype();
+    static JSObject* getErrorPrototype();
 
 private:
-    // Store global prototypes
-    static std::shared_ptr<JSObject> objectPrototype_;
-    static std::shared_ptr<JSObject> arrayPrototype_;
-    static std::shared_ptr<JSObject> stringPrototype_;
-    static std::shared_ptr<JSObject> booleanPrototype_;
-    static std::shared_ptr<JSObject> errorPrototype_;
+    // Store global prototypes - now raw pointers
+    static JSObject* objectPrototype_;
+    static JSObject* arrayPrototype_;
+    static JSObject* stringPrototype_;
+    static JSObject* booleanPrototype_;
+    static JSObject* errorPrototype_;
 
     // Individual builtin setup methods - now accept ObjectFactory
     static void setupGlobalFunctions(std::shared_ptr<Environment> globalEnv, rift::memory::ObjectFactory* factory);

@@ -22,23 +22,23 @@ private:
 public:
     explicit ObjectFactory(ObjectManager* manager) : object_manager_(manager) {}
     
-    // Create a JS object with optional prototype
-    std::shared_ptr<rift::runtime::JSObject> createJSObject(
-        std::shared_ptr<rift::runtime::JSObject> prototype = nullptr
+    // Create a JS object with optional prototype - now returns raw pointer
+    rift::runtime::JSObject* createJSObject(
+        rift::runtime::JSObject* prototype = nullptr
     ) {
         return object_manager_->createJSObject(prototype);
     }
     
-    // Create a JS function
-    std::shared_ptr<rift::runtime::JSFunction> createJSFunction(
+    // Create a JS function - now returns raw pointer
+    rift::runtime::JSFunction* createJSFunction(
         std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func
     ) {
         return object_manager_->createJSFunction(func);
     }
     
-    // Generic object creation (for future extensibility)
+    // Generic object creation (for future extensibility) - now returns raw pointer
     template<typename T, typename... Args>
-    std::shared_ptr<T> createObject(Args&&... args) {
+    T* createObject(Args&&... args) {
         return object_manager_->createObject<T>(std::forward<Args>(args)...);
     }
 };

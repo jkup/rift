@@ -9,15 +9,25 @@
 
 namespace rift::builtins {
 
-void Global::setupGlobalFunctions(std::shared_ptr<Environment> global_env) {
-    // Add global functions
-    global_env->define("parseInt", Value(std::make_shared<JSFunction>(parseInt)));
-    global_env->define("parseFloat", Value(std::make_shared<JSFunction>(parseFloat)));
-    global_env->define("isNaN", Value(std::make_shared<JSFunction>(isNaN)));
-    global_env->define("isFinite", Value(std::make_shared<JSFunction>(isFinite)));
+// Static factory storage
+rift::memory::ObjectFactory* Global::object_factory_ = nullptr;
+
+void Global::setObjectFactory(rift::memory::ObjectFactory* factory) {
+    object_factory_ = factory;
+}
+
+void Global::setupGlobalFunctions(std::shared_ptr<Environment> global_env, rift::memory::ObjectFactory* factory) {
+    // Store factory for use in other methods
+    setObjectFactory(factory);
+    
+    // Add global functions using GC-managed creation
+    global_env->define("parseInt", Value(factory->createJSFunction(parseInt)));
+    global_env->define("parseFloat", Value(factory->createJSFunction(parseFloat)));
+    global_env->define("isNaN", Value(factory->createJSFunction(isNaN)));
+    global_env->define("isFinite", Value(factory->createJSFunction(isFinite)));
 
     // Add array creation helper
-    global_env->define("createArray", Value(std::make_shared<JSFunction>(createArray)));
+    global_env->define("createArray", Value(factory->createJSFunction(createArray)));
 
     // Add global constants
     global_env->define("undefined", Value::undefined());
@@ -149,42 +159,41 @@ Value Global::isFinite(const std::vector<Value>& args) {
 }
 
 Value Global::createArray(const std::vector<Value>& args) {
-    auto arrayObj = std::make_shared<JSObject>();
+    // Use GC-managed creation instead of std::make_shared
+    auto arrayObj = object_factory_->createJSObject();
 
     // Set array properties and methods
     arrayObj->setProperty("length", Value(0.0));
 
-    // Create bound push method that captures the array object
-    auto pushMethod =
-        std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& callArgs) -> Value {
-            Value lengthVal = arrayObj->getProperty("length");
-            size_t length = static_cast<size_t>(lengthVal.toNumber());
+    // Create bound push method that captures the array object using GC-managed creation
+    auto pushMethod = object_factory_->createJSFunction([arrayObj](const std::vector<Value>& callArgs) -> Value {
+        Value lengthVal = arrayObj->getProperty("length");
+        size_t length = static_cast<size_t>(lengthVal.toNumber());
 
-            // Add all arguments to the array
-            for (size_t i = 0; i < callArgs.size(); ++i) {
-                arrayObj->setProperty(std::to_string(length), callArgs[i]);
-                length++;
-            }
+        // Add all arguments to the array
+        for (size_t i = 0; i < callArgs.size(); ++i) {
+            arrayObj->setProperty(std::to_string(length), callArgs[i]);
+            length++;
+        }
 
-            arrayObj->setProperty("length", Value(static_cast<double>(length)));
-            return Value(static_cast<double>(length));
-        });
+        arrayObj->setProperty("length", Value(static_cast<double>(length)));
+        return Value(static_cast<double>(length));
+    });
     arrayObj->setProperty("push", Value(pushMethod));
 
-    // Create bound pop method that captures the array object
-    auto popMethod =
-        std::make_shared<JSFunction>([arrayObj](const std::vector<Value>& callArgs) -> Value {
-            Value lengthVal = arrayObj->getProperty("length");
-            size_t length = static_cast<size_t>(lengthVal.toNumber());
+    // Create bound pop method that captures the array object using GC-managed creation
+    auto popMethod = object_factory_->createJSFunction([arrayObj](const std::vector<Value>& callArgs) -> Value {
+        Value lengthVal = arrayObj->getProperty("length");
+        size_t length = static_cast<size_t>(lengthVal.toNumber());
 
-            if (length == 0) return Value::undefined();
+        if (length == 0) return Value::undefined();
 
-            Value lastElement = arrayObj->getProperty(std::to_string(length - 1));
-            arrayObj->setProperty(std::to_string(length - 1), Value::undefined());
-            arrayObj->setProperty("length", Value(static_cast<double>(length - 1)));
+        Value lastElement = arrayObj->getProperty(std::to_string(length - 1));
+        arrayObj->setProperty(std::to_string(length - 1), Value::undefined());
+        arrayObj->setProperty("length", Value(static_cast<double>(length - 1)));
 
-            return lastElement;
-        });
+        return lastElement;
+    });
     arrayObj->setProperty("pop", Value(popMethod));
 
     return Value(arrayObj);

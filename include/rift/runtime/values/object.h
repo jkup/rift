@@ -17,11 +17,11 @@ class Value;
 class JSObject : public rift::memory::GCObject {
    private:
     std::unordered_map<std::string, Value> properties_;
-    std::shared_ptr<JSObject> prototype_;
+    JSObject* prototype_;  // Now a raw pointer to GC-managed object
     mutable bool gc_marked_ = false;  // GC mark bit
 
    public:
-    JSObject(std::shared_ptr<JSObject> prototype = nullptr) : prototype_(prototype) {}
+    JSObject(JSObject* prototype = nullptr) : prototype_(prototype) {}
 
     // Property operations
     bool hasProperty(const std::string& key) const;
@@ -30,8 +30,8 @@ class JSObject : public rift::memory::GCObject {
     bool deleteProperty(const std::string& key);
 
     // Prototype chain
-    std::shared_ptr<JSObject> getPrototype() const { return prototype_; }
-    void setPrototype(std::shared_ptr<JSObject> prototype) { prototype_ = prototype; }
+    JSObject* getPrototype() const { return prototype_; }
+    void setPrototype(JSObject* prototype) { prototype_ = prototype; }
 
     // Object type identification
     virtual std::string getTypeName() const { return "Object"; }

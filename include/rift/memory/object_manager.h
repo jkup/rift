@@ -14,19 +14,19 @@ public:
     ObjectManager();
     ~ObjectManager();
     
-    // Object creation methods
+    // Object creation methods - now return raw pointers to GC-managed objects
     template<typename T, typename... Args>
-    std::shared_ptr<T> createObject(Args&&... args) {
+    T* createObject(Args&&... args) {
         static_assert(std::is_base_of_v<GCObject, T>, "T must inherit from GCObject");
         
-        auto obj = std::make_shared<T>(std::forward<Args>(args)...);
-        gc_->addObject(obj.get());
+        T* obj = new T(std::forward<Args>(args)...);
+        gc_->addObject(obj);  // GC now owns this object
         return obj;
     }
     
-    // Specialized creation methods for common types
-    std::shared_ptr<rift::runtime::JSObject> createJSObject(std::shared_ptr<rift::runtime::JSObject> prototype = nullptr);
-    std::shared_ptr<rift::runtime::JSFunction> createJSFunction(std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func);
+    // Specialized creation methods for common types - now return raw pointers
+    rift::runtime::JSObject* createJSObject(rift::runtime::JSObject* prototype = nullptr);
+    rift::runtime::JSFunction* createJSFunction(std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func);
     
     // Root management
     void addRoot(GCObject* root);

@@ -4,6 +4,7 @@
 #include <cctype>
 #include <regex>
 #include <string>
+#include <vector>
 
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
@@ -27,13 +28,11 @@ using namespace rift::runtime;
 class String {
    public:
     /// Create the String constructor object with all properties and methods.
-    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
+    static JSObject* create(rift::memory::ObjectFactory* factory);
 
     /// Create the String.prototype object with all instance methods.
-    static std::shared_ptr<JSObject> createPrototype(rift::memory::ObjectFactory* factory);
+    static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
 
-   private:
-    // String constructor function
     /// The `String()` constructor creates String objects or primitive strings.
     ///
     /// More information:
@@ -44,8 +43,6 @@ class String {
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/String
     static Value constructor(const std::vector<Value>& args);
-
-    // String static methods
 
     /// The `String.fromCharCode()` static method returns a string created from the specified
     /// sequence of UTF-16 code units.
@@ -58,8 +55,6 @@ class String {
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
     static Value fromCharCode(const std::vector<Value>& args);
-
-    // String prototype methods
 
     /// The `charAt()` method returns a new string consisting of the single UTF-16 code unit
     /// located at the specified offset into the string.
@@ -213,12 +208,17 @@ class String {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/valueOf
     static Value valueOf(const std::vector<Value>& args);
 
-    // Helper methods
     /// Helper to get the string value from the 'this' binding in prototype methods
     static std::string getStringValue(const std::vector<Value>& args);
 
     /// Helper to validate and get a string index, handling negative indices
     static size_t validateStringIndex(const std::string& str, double index);
+
+    /// Static factory storage
+    static rift::memory::ObjectFactory* object_factory_;
+
+    /// Helper methods - now work with raw pointers
+    static JSObject* getGlobalPrototype();
 };
 
 }  // namespace rift::builtins

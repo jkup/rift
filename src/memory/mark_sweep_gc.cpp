@@ -13,6 +13,7 @@ private:
     size_t last_collection_count_ = 0;
     size_t total_collections_ = 0;
     bool gc_enabled_ = true;  // Flag to temporarily disable GC
+    bool collection_in_progress_ = false;  // Prevent recursive collection
 
 public:
     ~MarkSweepGC() {
@@ -23,13 +24,15 @@ public:
         // Clear roots first to avoid dangling pointers
         roots_.clear();
         
-        // Clear all objects without deleting them - they may be managed by shared_ptr
-        // and will be cleaned up automatically
+        // Delete all remaining objects since GC owns them
+        for (GCObject* obj : all_objects_) {
+            delete obj;
+        }
         all_objects_.clear();
     }
 
     void addObject(GCObject* obj) override {
-        if (obj) {
+        if (obj && !collection_in_progress_) {
             all_objects_.insert(obj);
             
             // Only trigger collection if GC is enabled and threshold reached
@@ -61,11 +64,12 @@ public:
     }
     
     void collect() override {
-        // Skip collection if GC is disabled
-        if (!gc_enabled_) {
+        // Skip collection if GC is disabled or already in progress
+        if (!gc_enabled_ || collection_in_progress_) {
             return;
         }
         
+        collection_in_progress_ = true;
         auto start_time = std::chrono::high_resolution_clock::now();
         
         // Clear all marks first
@@ -83,19 +87,22 @@ public:
         size_t collected = 0;
         
         while (it != all_objects_.end()) {
-            if (!(*it)->isMarked()) {
-                GCObject* obj = *it;
+            GCObject* obj = *it;
+            if (!obj->isMarked()) {
+                // Object is garbage - delete it (GC owns all objects now)
                 it = all_objects_.erase(it);
-                // Don't delete the object - it's managed by shared_ptr
-                // The shared_ptr will handle deletion when ref count reaches 0
+                delete obj;  // Safe because GC owns all objects
                 ++collected;
             } else {
+                // Object is live - clear mark for next collection
+                obj->clearMark();
                 ++it;
             }
         }
         
         last_collection_count_ = collected;
         ++total_collections_;
+        collection_in_progress_ = false;
         
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);

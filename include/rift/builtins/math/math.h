@@ -3,6 +3,7 @@
 #include <cmath>
 #include <numbers>
 #include <random>
+#include <vector>
 
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
@@ -26,10 +27,7 @@ using namespace rift::runtime;
 class Math {
    public:
     /// Create the Math object with all properties and methods.
-    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
-
-   private:
-    // Math constants
+    static JSObject* create(rift::memory::ObjectFactory* factory);
 
     /// The `Math.E` property represents Euler's number, approximately 2.718.
     ///
@@ -40,7 +38,7 @@ class Math {
     /// [spec]: https://tc39.es/ecma262/#sec-math.e
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/E
-    static const double E;
+    static Value getE(const std::vector<Value>& args);
 
     /// The `Math.PI` property represents the ratio of a circle's circumference to its diameter,
     /// approximately 3.14159.
@@ -52,7 +50,7 @@ class Math {
     /// [spec]: https://tc39.es/ecma262/#sec-math.pi
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/PI
-    static const double PI;
+    static Value getPI(const std::vector<Value>& args);
 
     /// The `Math.SQRT2` property represents the square root of 2, approximately 1.414.
     ///
@@ -64,8 +62,6 @@ class Math {
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/SQRT2
     static const double SQRT2;
-
-    // Basic math methods
 
     /// The `Math.abs()` function returns the absolute value of a number.
     ///

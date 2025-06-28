@@ -4,6 +4,13 @@
 
 The current memory management system is architecturally broken due to mixing three incompatible ownership models: `std::shared_ptr`, custom GC tracking, and manual GC disabling. This plan provides a complete roadmap to implement a simple, correct mark-sweep garbage collector suitable for a hobby JavaScript engine.
 
+## 🚧 CURRENT STATUS: Phase 1 In Progress
+
+**Core infrastructure successfully updated!** See `GC_PHASE1_STATUS.md` for detailed progress.
+
+✅ **Completed**: Value system, ObjectManager, Mark-Sweep GC, JSObject system  
+🚧 **Remaining**: Update remaining builtin implementations (following established pattern)
+
 ## Recommended Approach: Simple Mark-Sweep GC
 
 **Why Mark-Sweep for a Hobby Project:**
@@ -14,82 +21,152 @@ The current memory management system is architecturally broken due to mixing thr
 - ✅ Can be implemented incrementally without breaking existing functionality
 
 **Why NOT the current mixed approach:**
-- ❌ Reference counting alone cannot handle cycles (JavaScript objects frequently have cycles)
-- ❌ Mixed ownership models lead to use-after-free bugs and double-deletion
-- ❌ Disabling GC defeats the entire purpose
-- ❌ shared_ptr overhead without GC benefits
+- ❌ `shared_ptr` cannot handle circular references (will leak)
+- ❌ Mixed ownership creates confusion and bugs
+- ❌ GC is currently disabled, making it useless
+- ❌ Manual GC disable/enable is error-prone and unsafe
 
-## Phase 1: Foundation Cleanup
+## 🚧 Phase 1: Foundation Cleanup (IN PROGRESS)
 
-### Step 1.1: Establish Single Source of Truth for Object Ownership
+**Status: Core infrastructure complete, builtin updates remaining**
 
-**Current Problem:**
+**Goal**: Establish single source of truth for object ownership
+
+### ✅ Step 1.1: Establish Single Source of Truth for Object Ownership
+- **DONE**: Remove `std::shared_ptr<JSObject>` from Value class  
+- **DONE**: Replace with raw pointers to GC-managed objects
+- **DONE**: Update Value constructor to use raw pointers
+
+### ✅ Step 1.2: Fix Object Creation Pattern  
+- **DONE**: Update ObjectManager::createJSObject() to return raw pointers
+- **DONE**: Ensure ALL JavaScript objects are created through ObjectManager
+- **DONE**: Re-enable GC tracking with `gc_->addObject(obj)`
+
+### ✅ Step 1.3: Update Value System
+- **DONE**: Fix Value constructor for objects
+- **DONE**: Update getObject() to return raw pointers
+- **DONE**: Update all type conversion methods
+
+### 🚧 Step 1.4: Update All Builtin Objects (REMAINING)
+- **DONE**: Boolean, Global builtins  
+- **TODO**: Array, String, Math, Error, Object, Console builtins
+- **Pattern established** - just systematic updates needed
+
+### ✅ Step 1.5: Update Mark-Sweep Implementation
+- **DONE**: Fix sweep phase to actually delete objects
+- **DONE**: Ensure GC owns all objects it tracks
+- **DONE**: Remove shared_ptr dependencies
+
+**Expected Result**: Single ownership model where GC owns all JavaScript objects
+
+## Phase 2: RAII Root Guards (NEXT)
+
+**Goal**: Ensure objects are protected during native function execution
+
+### Step 2.1: Implement GCGuard RAII Class
 ```cpp
-// ObjectManager creates with shared_ptr
-auto obj = std::make_shared<T>(std::forward<Args>(args)...);
-gc_->addObject(obj.get());  // Also track in GC
-return obj;  // But return shared_ptr
-```
-
-**Solution:**
-- GC owns ALL JavaScript objects
-- No shared_ptr for GC-managed objects
-- Objects are allocated via GC and freed only by GC
-
-**Implementation:**
-1. Remove all `std::shared_ptr<JSObject>` from `Value` class
-2. Replace with raw pointers to GC-managed objects
-3. Update `Value` constructor to use raw pointers:
-
-```cpp
-// In value.h - REPLACE THIS:
-std::shared_ptr<JSObject> // ❌
-
-// WITH THIS:
-JSObject* // ✅
-```
-
-### Step 1.2: Fix Object Creation Pattern
-
-**New Object Creation Flow:**
-```cpp
-// ObjectManager::createJSObject() - NEW IMPLEMENTATION
-JSObject* ObjectManager::createJSObject(JSObject* prototype) {
-    JSObject* obj = new JSObject(prototype);
-    gc_->addObject(obj);  // GC now owns this object
-    return obj;           // Return raw pointer
-}
-```
-
-**Critical Rules:**
-- ALL JavaScript objects must be created through ObjectManager
-- NO direct `new JSObject()` calls anywhere in codebase
-- NO `std::make_shared` for GC-managed objects
-- Raw pointers are safe because GC guarantees object lifetime
-
-### Step 1.3: Update Value System
-
-**Current Broken Implementation:**
-```cpp
-Value::Value(std::shared_ptr<JSObject> obj) : data_(obj) {
-    // Mixed ownership - BAD
-}
-```
-
-**New Correct Implementation:**
-```cpp
-Value::Value(JSObject* obj) : data_(obj) {
-    if (obj) {
-        type_ = (obj->getTypeName() == "Function") ? ValueType::Function : ValueType::Object;
-    } else {
-        type_ = ValueType::Null;
+class GCGuard {
+    ObjectManager* manager_;
+    std::vector<GCObject*> guarded_objects_;
+public:
+    GCGuard(ObjectManager* manager) : manager_(manager) {}
+    ~GCGuard() {
+        for (auto* obj : guarded_objects_) {
+            manager_->removeRoot(obj);
+        }
     }
+    
+    void protect(GCObject* obj) {
+        manager_->addRoot(obj);
+        guarded_objects_.push_back(obj);
+    }
+};
+```
+
+### Step 2.2: Update Expression Evaluator
+```cpp
+Value ExpressionEvaluator::evaluateCall(CallExpression* expr) {
+    GCGuard guard(object_manager_);
+    
+    Value func = evaluate(expr->getCallee());
+    guard.protect(func.getObject());  // Protect during argument evaluation
+    
+    std::vector<Value> args;
+    for (auto* argExpr : expr->getArguments()) {
+        Value arg = evaluate(argExpr);
+        if (arg.isObject()) guard.protect(arg.getObject());
+        args.push_back(arg);
+    }
+    
+    return callFunction(func, args);
 }
 ```
 
-## Phase 2: GC Root Management
+### Step 2.3: Update Statement Evaluator
+- Add GC guards to variable assignments
+- Protect objects during property access
+- Guard function call results
 
-### Step 2.1: Identify All GC Roots
+**Expected Result**: Objects never collected while being actively used by native code
+
+## Phase 3: Smart Collection Triggers
+
+**Goal**: Optimize when garbage collection runs
+
+### Step 3.1: Implement Write Barriers (Optional)
+- Track object mutations
+- Defer collection during object graph construction
+
+### Step 3.2: Allocation Pressure Heuristics
+```cpp
+class AllocationTracker {
+    size_t bytes_allocated_since_last_gc_ = 0;
+    size_t allocation_rate_threshold_ = 1024 * 1024; // 1MB
+    
+public:
+    bool shouldTriggerCollection() {
+        return bytes_allocated_since_last_gc_ > allocation_rate_threshold_;
+    }
+};
+```
+
+### Step 3.3: Collection Timing
+- Never collect during exception handling
+- Prefer collection at statement boundaries
+- Avoid collection during nested calls
+
+**Expected Result**: Efficient collection with minimal impact on execution
+
+## Implementation Notes
+
+### Memory Safety Guidelines
+1. **Never store raw pointers in locals without GCGuard protection**
+2. **Always use ObjectManager for object creation**
+3. **Never manually delete GC-managed objects**
+4. **Disable GC during error handling/cleanup only**
+
+### Testing Strategy
+1. **Unit tests for each phase** - verify no regressions
+2. **Memory leak detection** - ensure circular references are handled
+3. **Performance benchmarks** - track GC overhead
+4. **Stress tests** - create/destroy many objects rapidly
+
+### Error Handling
+- **Exceptions during GC**: Log and continue (don't abort)
+- **Invalid object references**: Null-check before dereferencing  
+- **Collection failures**: Increase threshold and retry later
+
+## Success Criteria
+
+✅ **Phase 1**: All objects created through ObjectManager, single ownership model  
+⏳ **Phase 2**: No crashes during object manipulation, protected roots  
+⏳ **Phase 3**: Reasonable performance, no memory leaks  
+
+**Final Goal**: Reliable garbage collection that handles JavaScript object lifecycles correctly without manual memory management complexity.
+
+## Phase 4: GC Root Management
+
+### Step 4.1: Identify All GC Roots
 
 **GC Roots are objects that should never be collected:**
 1. Global environment variables
@@ -118,7 +195,7 @@ public:
 };
 ```
 
-### Step 2.2: Automatic Root Management
+### Step 4.2: Automatic Root Management
 
 **RAII Pattern for Temporary Roots:**
 ```cpp
@@ -153,9 +230,9 @@ Value Array::push(const std::vector<Value>& args) {
 }
 ```
 
-## Phase 3: Mark-Sweep Implementation
+## Phase 5: Mark-Sweep Implementation
 
-### Step 3.1: Marking Phase Implementation
+### Step 5.1: Marking Phase Implementation
 
 **Current Broken Marking:**
 - Mixed ownership confuses marking
@@ -192,7 +269,7 @@ void MarkSweepGC::markFromRoots() {
 }
 ```
 
-### Step 3.2: Sweep Phase Implementation
+### Step 5.2: Sweep Phase Implementation
 
 **Safe Object Deletion:**
 ```cpp
@@ -219,7 +296,7 @@ void MarkSweepGC::sweep() {
 }
 ```
 
-### Step 3.3: Collection Trigger Strategy
+### Step 5.3: Collection Trigger Strategy
 
 **Smart Collection Timing:**
 ```cpp
@@ -239,9 +316,9 @@ bool MarkSweepGC::shouldCollect() const {
 }
 ```
 
-## Phase 4: Safe Integration Points
+## Phase 6: Safe Integration Points
 
-### Step 4.1: Exception Handling Integration
+### Step 6.1: Exception Handling Integration
 
 **Problem:** Current code disables GC during exceptions, causing memory leaks.
 
@@ -263,7 +340,7 @@ void Rift::exitExceptionHandling() {
 }
 ```
 
-### Step 4.2: Builtin Function Safety
+### Step 6.2: Builtin Function Safety
 
 **Protect Objects During Native Calls:**
 ```cpp
@@ -291,35 +368,35 @@ Value Console::log(const std::vector<Value>& args) {
 }
 ```
 
-## Phase 5: Migration Strategy
+## Phase 7: Migration Strategy
 
-### Step 5.1: Incremental Migration Order
+### Step 7.1: Incremental Migration Order
 
-**Phase 5.1.1: Core Value System**
+**Phase 7.1.1: Core Value System**
 1. Update `Value` class to use raw pointers
 2. Fix all compilation errors
 3. Update object creation in `ObjectManager`
 4. Run existing tests to ensure no regressions
 
-**Phase 5.1.2: Root Management** 
+**Phase 7.1.2: Root Management** 
 1. Implement root management system
 2. Add roots for global environment
 3. Add RAII guards for builtin functions
 4. Test with simple JavaScript programs
 
-**Phase 5.1.3: GC Algorithm**
+**Phase 7.1.3: GC Algorithm**
 1. Re-enable GC object tracking
 2. Fix marking algorithm
 3. Fix sweep algorithm  
 4. Test with circular reference cases
 
-**Phase 5.1.4: Integration**
+**Phase 7.1.4: Integration**
 1. Add exception handling integration
 2. Add native call guards
 3. Performance testing and tuning
 4. Stress testing with complex JavaScript
 
-### Step 5.2: Testing Strategy
+### Step 7.2: Testing Strategy
 
 **Unit Tests for Each Phase:**
 ```javascript
@@ -355,7 +432,7 @@ try {
 gc();
 ```
 
-## Phase 6: Common Pitfalls and Solutions
+## Phase 8: Common Pitfalls and Solutions
 
 ### Pitfall 1: Dangling Pointers
 **Problem:** Raw pointers become invalid after GC collection

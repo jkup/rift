@@ -25,11 +25,11 @@ enum class ValueType {
 class Value {
    private:
     ValueType type_;
-    std::variant<std::monostate,            // Undefined/Null
-                 bool,                      // Boolean
-                 double,                    // Number
-                 std::string,               // String
-                 std::shared_ptr<JSObject>  // Object/Function
+    std::variant<std::monostate,    // Undefined/Null
+                 bool,              // Boolean
+                 double,            // Number
+                 std::string,       // String
+                 JSObject*          // Object/Function (GC-managed raw pointer)
                  >
         data_;
 
@@ -40,7 +40,7 @@ class Value {
     explicit Value(double n);
     explicit Value(const std::string& s);
     explicit Value(const char* s);
-    explicit Value(std::shared_ptr<JSObject> obj);
+    explicit Value(JSObject* obj);  // Now takes raw pointer
 
     // Static factory methods
     static Value undefined() { return Value(); }
@@ -63,7 +63,7 @@ class Value {
     std::string toString() const;
     bool toBool() const;
     double toNumber() const;
-    std::shared_ptr<JSObject> toObject() const;
+    JSObject* toObject() const;  // Now returns raw pointer
 
     // Getters
     ValueType getType() const { return type_; }
@@ -72,7 +72,7 @@ class Value {
     bool getBool() const;
     double getNumber() const;
     const std::string& getString() const;
-    std::shared_ptr<JSObject> getObject() const;
+    JSObject* getObject() const;  // Now returns raw pointer
 };
 
 }  // namespace rift::runtime

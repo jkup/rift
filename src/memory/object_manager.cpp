@@ -11,29 +11,22 @@ ObjectManager::ObjectManager() {
 }
 
 ObjectManager::~ObjectManager() {
-    // Don't perform final cleanup - objects may already be destroyed
-    // during program shutdown, causing segfaults when GC tries to access them
-    // The shared_ptr system will handle cleanup automatically
+    // Clean shutdown - disable GC during destruction to prevent collection
+    // while objects are being destroyed
     if (gc_) {
-        gc_->setGCEnabled(false);  // Disable GC to prevent any further collections
+        gc_->setGCEnabled(false);
     }
 }
 
-std::shared_ptr<rift::runtime::JSObject> ObjectManager::createJSObject(std::shared_ptr<rift::runtime::JSObject> prototype) {
-    auto obj = std::make_shared<rift::runtime::JSObject>(prototype);
-    // Use shared_ptr reference counting for memory management instead of GC tracking
-    // This avoids the mixed ownership model that caused segfaults with function environments
-    // Trade-off: Cannot handle circular references, but most JS code doesn't need this
-    // gc_->addObject(obj.get());
+rift::runtime::JSObject* ObjectManager::createJSObject(rift::runtime::JSObject* prototype) {
+    rift::runtime::JSObject* obj = new rift::runtime::JSObject(prototype);
+    gc_->addObject(obj);  // GC now owns this object
     return obj;
 }
 
-std::shared_ptr<rift::runtime::JSFunction> ObjectManager::createJSFunction(std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func) {
-    auto obj = std::make_shared<rift::runtime::JSFunction>(func);
-    // Use shared_ptr reference counting for memory management instead of GC tracking
-    // This avoids the mixed ownership model that caused segfaults with function environments
-    // Trade-off: Cannot handle circular references, but most JS code doesn't need this
-    // gc_->addObject(obj.get());
+rift::runtime::JSFunction* ObjectManager::createJSFunction(std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func) {
+    rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(func);
+    gc_->addObject(obj);  // GC now owns this object
     return obj;
 }
 

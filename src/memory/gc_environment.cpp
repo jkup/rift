@@ -21,9 +21,9 @@ std::vector<GCObject*> GCEnvironment::getReferences() const {
             
             // If the value is an object or function, add it to references
             if (value.isObject() || value.isFunction()) {
-                auto obj = value.getObject();
+                rift::runtime::JSObject* obj = value.getObject();  // Fully qualified name
                 if (obj) {
-                    refs.push_back(obj.get());
+                    refs.push_back(obj);
                 }
             }
         } catch (...) {
