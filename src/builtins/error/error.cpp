@@ -4,18 +4,28 @@
 
 namespace rift::builtins {
 
-std::shared_ptr<JSObject> Error::create(rift::memory::ObjectFactory* factory) {
+// Static factory storage
+rift::memory::ObjectFactory* Error::object_factory_ = nullptr;
+
+void Error::setObjectFactory(rift::memory::ObjectFactory* factory) {
+    object_factory_ = factory;
+}
+
+JSObject* Error::create(rift::memory::ObjectFactory* factory) {
+    // Store factory for use in other methods
+    setObjectFactory(factory);
+    
     // Create Error constructor using GC-managed creation
     auto error = factory->createJSFunction(Error::constructor);
 
     // Create and set prototype
     auto prototype = createPrototype(factory);
-    error->setProperty("prototype", Value(prototype));
+    error->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
 
-    return error;
+    return error;  // Return raw pointer
 }
 
-std::shared_ptr<JSObject> Error::createPrototype(rift::memory::ObjectFactory* factory) {
+JSObject* Error::createPrototype(rift::memory::ObjectFactory* factory) {
     // Create Error.prototype using GC-managed creation
     auto prototype = factory->createJSObject();
 
@@ -26,13 +36,13 @@ std::shared_ptr<JSObject> Error::createPrototype(rift::memory::ObjectFactory* fa
     // Add prototype methods using GC-managed function creation
     prototype->setProperty("toString", Value(factory->createJSFunction(Error::toString)));
 
-    return prototype;
+    return prototype;  // Return raw pointer
 }
 
 Value Error::constructor(const std::vector<Value>& args) {
     // Create Error object with proper prototype chain
     auto errorPrototype = getGlobalPrototype();
-    auto errorObj = std::make_shared<JSObject>(errorPrototype);
+    auto errorObj = object_factory_->createJSObject(errorPrototype);  // Use factory
     
     // Set the name property
     errorObj->setProperty("name", Value("Error"));
@@ -44,7 +54,7 @@ Value Error::constructor(const std::vector<Value>& args) {
     }
     errorObj->setProperty("message", Value(message));
     
-    return Value(errorObj);
+    return Value(errorObj);  // errorObj is now raw pointer
 }
 
 Value Error::toString(const std::vector<Value>& args) {
@@ -68,7 +78,7 @@ Value Error::toString(const std::vector<Value>& args) {
     }
 }
 
-std::shared_ptr<JSObject> Error::getThisErrorObject(const std::vector<Value>& args) {
+JSObject* Error::getThisErrorObject(const std::vector<Value>& args) {
     // For prototype methods, the first argument should be the 'this' value
     if (args.empty()) {
         return nullptr;
@@ -78,14 +88,14 @@ std::shared_ptr<JSObject> Error::getThisErrorObject(const std::vector<Value>& ar
     
     // If it's an object, return it (assuming it's an Error object)
     if (thisValue.isObject()) {
-        return thisValue.getObject();
+        return thisValue.getObject();  // getObject() now returns raw pointer
     }
     
     return nullptr;
 }
 
-std::shared_ptr<JSObject> Error::getGlobalPrototype() {
-    return rift::core::BuiltinManager::getErrorPrototype();
+JSObject* Error::getGlobalPrototype() {
+    return rift::core::BuiltinManager::getErrorPrototype();  // Now returns raw pointer
 }
 
 }  // namespace rift::builtins 

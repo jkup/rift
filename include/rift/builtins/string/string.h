@@ -27,10 +27,13 @@ using namespace rift::runtime;
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
 class String {
    public:
-    /// Create the String constructor object with all properties and methods.
+    // Static factory method
+    static void setObjectFactory(rift::memory::ObjectFactory* factory);
+
+    // Create String constructor function - now returns raw pointer
     static JSObject* create(rift::memory::ObjectFactory* factory);
 
-    /// Create the String.prototype object with all instance methods.
+    // Create String.prototype - now returns raw pointer  
     static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
 
     /// The `String()` constructor creates String objects or primitive strings.

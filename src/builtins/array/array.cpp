@@ -14,7 +14,10 @@ void Array::setObjectFactory(rift::memory::ObjectFactory* factory) {
     object_factory_ = factory;
 }
 
-std::shared_ptr<JSObject> Array::create(rift::memory::ObjectFactory* factory) {
+JSObject* Array::create(rift::memory::ObjectFactory* factory) {
+    // Store factory for use in other methods
+    setObjectFactory(factory);
+    
     auto array = factory->createJSFunction(Array::constructor);
 
     // Add static methods
@@ -22,12 +25,12 @@ std::shared_ptr<JSObject> Array::create(rift::memory::ObjectFactory* factory) {
 
     // Create and set prototype
     auto prototype = createPrototype(factory);
-    array->setProperty("prototype", Value(prototype));
+    array->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
 
-    return array;
+    return array;  // Return raw pointer
 }
 
-std::shared_ptr<JSObject> Array::createPrototype(rift::memory::ObjectFactory* factory) {
+JSObject* Array::createPrototype(rift::memory::ObjectFactory* factory) {
     auto prototype = factory->createJSObject();
 
     // Add prototype methods
@@ -43,7 +46,7 @@ std::shared_ptr<JSObject> Array::createPrototype(rift::memory::ObjectFactory* fa
     prototype->setProperty("concat", Value(factory->createJSFunction(Array::concat)));
     prototype->setProperty("toString", Value(factory->createJSFunction(Array::toString)));
 
-    return prototype;
+    return prototype;  // Return raw pointer
 }
 
 Value Array::constructor(const std::vector<Value>& args) {
@@ -71,7 +74,7 @@ Value Array::constructor(const std::vector<Value>& args) {
         setArrayLength(arrayObj, args.size());
     }
 
-    return Value(arrayObj);
+    return Value(arrayObj);  // arrayObj is now raw pointer
 }
 
 Value Array::push(const std::vector<Value>& args) {
@@ -137,7 +140,7 @@ Value Array::forEach(const std::vector<Value>& args) {
     }
 
     size_t length = getArrayLength(arrayObj);
-    auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+    auto callbackFn = dynamic_cast<JSFunction*>(callback.getObject());  // Use dynamic_cast for raw pointers
     
     if (!callbackFn) {
         return Value::undefined();
@@ -170,7 +173,7 @@ Value Array::map(const std::vector<Value>& args) {
     std::vector<Value> results;
     results.reserve(length);
     
-    auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+    auto callbackFn = dynamic_cast<JSFunction*>(callback.getObject());  // Use dynamic_cast for raw pointers
     if (!callbackFn) {
         return Value(createArrayObject(object_factory_, {}));
     }
@@ -202,9 +205,9 @@ Value Array::filter(const std::vector<Value>& args) {
     }
 
     size_t length = getArrayLength(arrayObj);
-    std::vector<Value> filtered;
+    std::vector<Value> results;
     
-    auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+    auto callbackFn = dynamic_cast<JSFunction*>(callback.getObject());  // Use dynamic_cast for raw pointers
     if (!callbackFn) {
         return Value(createArrayObject(object_factory_, {}));
     }
@@ -212,16 +215,18 @@ Value Array::filter(const std::vector<Value>& args) {
     for (size_t i = 0; i < length; ++i) {
         Value element = arrayObj->getProperty(std::to_string(i));
         if (!element.isUndefined()) {
-            // Call callback(element, index, array) and check if truthy
+            // Call callback(element, index, array)
             std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
             Value result = callbackFn->call(callArgs);
+            
+            // If callback returns truthy value, include element
             if (result.toBool()) {
-                filtered.push_back(element);
+                results.push_back(element);
             }
         }
     }
 
-    return Value(createArrayObject(object_factory_, filtered));
+    return Value(createArrayObject(object_factory_, results));
 }
 
 Value Array::reduce(const std::vector<Value>& args) {
@@ -237,11 +242,11 @@ Value Array::reduce(const std::vector<Value>& args) {
 
     size_t length = getArrayLength(arrayObj);
     if (length == 0 && args.size() < 3) {
-        // No initial value and empty array - would throw TypeError
+        // Empty array with no initial value
         return Value::undefined();
     }
 
-    auto callbackFn = std::dynamic_pointer_cast<JSFunction>(callback.getObject());
+    auto callbackFn = dynamic_cast<JSFunction*>(callback.getObject());  // Use dynamic_cast for raw pointers
     if (!callbackFn) {
         return Value::undefined();
     }
@@ -277,7 +282,6 @@ Value Array::indexOf(const std::vector<Value>& args) {
     }
 
     Value searchElement = args[1];
-    size_t length = getArrayLength(arrayObj);
     size_t fromIndex = 0;
 
     if (args.size() >= 3) {
@@ -287,10 +291,13 @@ Value Array::indexOf(const std::vector<Value>& args) {
         }
     }
 
+    size_t length = getArrayLength(arrayObj);
+
     for (size_t i = fromIndex; i < length; ++i) {
         Value element = arrayObj->getProperty(std::to_string(i));
-        // Simplified equality check
-        if (element.toString() == searchElement.toString()) {
+        // Use strict equality comparison
+        if (element.toString() == searchElement.toString() && 
+            element.getType() == searchElement.getType()) {
             return Value(static_cast<double>(i));
         }
     }
@@ -299,31 +306,8 @@ Value Array::indexOf(const std::vector<Value>& args) {
 }
 
 Value Array::includes(const std::vector<Value>& args) {
-    auto arrayObj = getThisArrayObject(args);
-    if (!arrayObj || args.size() < 2) {
-        return Value(false);
-    }
-
-    Value searchElement = args[1];
-    size_t length = getArrayLength(arrayObj);
-    size_t fromIndex = 0;
-
-    if (args.size() >= 3) {
-        double fromIndexNum = args[2].toNumber();
-        if (!std::isnan(fromIndexNum) && fromIndexNum >= 0) {
-            fromIndex = static_cast<size_t>(fromIndexNum);
-        }
-    }
-
-    for (size_t i = fromIndex; i < length; ++i) {
-        Value element = arrayObj->getProperty(std::to_string(i));
-        // Simplified equality check
-        if (element.toString() == searchElement.toString()) {
-            return Value(true);
-        }
-    }
-
-    return Value(false);
+    Value indexResult = indexOf(args);
+    return Value(indexResult.toNumber() >= 0);
 }
 
 Value Array::slice(const std::vector<Value>& args) {
@@ -386,7 +370,7 @@ Value Array::concat(const std::vector<Value>& args) {
     for (size_t i = 1; i < args.size(); ++i) {
         if (args[i].isObject()) {
             // If it's an array, add its elements
-            auto otherArray = args[i].getObject();
+            auto otherArray = args[i].getObject();  // getObject() now returns raw pointer
             size_t otherLength = getArrayLength(otherArray);
             for (size_t j = 0; j < otherLength; ++j) {
                 Value element = otherArray->getProperty(std::to_string(j));
@@ -401,20 +385,20 @@ Value Array::concat(const std::vector<Value>& args) {
     return Value(createArrayObject(object_factory_, result));
 }
 
-// Helper methods
-std::shared_ptr<JSObject> Array::getThisArrayObject(const std::vector<Value>& args) {
+// Helper methods - now use raw pointers
+JSObject* Array::getThisArrayObject(const std::vector<Value>& args) {
     if (args.empty()) {
         return nullptr;
     }
 
     if (args[0].isObject()) {
-        return args[0].getObject();
+        return args[0].getObject();  // getObject() now returns raw pointer
     }
 
     return nullptr;
 }
 
-size_t Array::getArrayLength(std::shared_ptr<JSObject> obj) {
+size_t Array::getArrayLength(JSObject* obj) {  // Now takes raw pointer
     if (!obj) {
         return 0;
     }
@@ -430,20 +414,18 @@ size_t Array::getArrayLength(std::shared_ptr<JSObject> obj) {
     return 0;
 }
 
-void Array::setArrayLength(std::shared_ptr<JSObject> obj, size_t length) {
+void Array::setArrayLength(JSObject* obj, size_t length) {  // Now takes raw pointer
     if (obj) {
         obj->setProperty("length", Value(static_cast<double>(length)));
     }
 }
 
-std::shared_ptr<JSObject> Array::createArrayObject(rift::memory::ObjectFactory* factory, const std::vector<Value>& elements) {
+JSObject* Array::createArrayObject(rift::memory::ObjectFactory* factory, const std::vector<Value>& elements) {  // Now returns raw pointer
     // Create array with proper prototype chain
     auto arrayPrototype = getGlobalPrototype();
     
-    // FIXED: Use GC-aware object creation for arrays specifically
-    // Arrays are simpler than functions and shouldn't have the environment segfault issues
-    // that caused GC tracking to be disabled in createJSObject()
-    auto arrayObj = factory->createObject<rift::runtime::JSObject>(arrayPrototype);
+    // Use factory for GC-managed creation
+    auto arrayObj = factory->createJSObject(arrayPrototype);
 
     // Set up array elements
     for (size_t i = 0; i < elements.size(); ++i) {
@@ -453,7 +435,7 @@ std::shared_ptr<JSObject> Array::createArrayObject(rift::memory::ObjectFactory* 
     // Set array length
     setArrayLength(arrayObj, elements.size());
 
-    return arrayObj;
+    return arrayObj;  // Return raw pointer
 }
 
 Value Array::toString(const std::vector<Value>& args) {
@@ -478,7 +460,7 @@ Value Array::toString(const std::vector<Value>& args) {
     return Value(result);
 }
 
-std::shared_ptr<JSObject> Array::getGlobalPrototype() {
+JSObject* Array::getGlobalPrototype() {  // Now returns raw pointer
     return rift::core::BuiltinManager::getArrayPrototype();
 }
 
@@ -497,7 +479,7 @@ Value Array::isArray(const std::vector<Value>& args) {
         return Value(false);
     }
 
-    auto obj = arg.getObject();
+    auto obj = arg.getObject();  // getObject() now returns raw pointer
     if (!obj) {
         return Value(false);
     }

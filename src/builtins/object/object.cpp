@@ -14,7 +14,10 @@ void Object::setObjectFactory(rift::memory::ObjectFactory* factory) {
     object_factory_ = factory;
 }
 
-std::shared_ptr<JSObject> Object::create(rift::memory::ObjectFactory* factory) {
+JSObject* Object::create(rift::memory::ObjectFactory* factory) {
+    // Store factory for use in other methods
+    setObjectFactory(factory);
+    
     // Create Object constructor using GC-managed creation
     auto object = factory->createJSFunction(Object::constructor);
 
@@ -25,12 +28,12 @@ std::shared_ptr<JSObject> Object::create(rift::memory::ObjectFactory* factory) {
 
     // Create and set prototype
     auto prototype = createPrototype(factory);
-    object->setProperty("prototype", Value(prototype));
+    object->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
 
-    return object;
+    return object;  // Return raw pointer
 }
 
-std::shared_ptr<JSObject> Object::createPrototype(rift::memory::ObjectFactory* factory) {
+JSObject* Object::createPrototype(rift::memory::ObjectFactory* factory) {
     // Create Object.prototype using GC-managed creation
     auto prototype = factory->createJSObject();
 
@@ -39,17 +42,14 @@ std::shared_ptr<JSObject> Object::createPrototype(rift::memory::ObjectFactory* f
     prototype->setProperty("valueOf", Value(factory->createJSFunction(Object::valueOf)));
     prototype->setProperty("hasOwnProperty", Value(factory->createJSFunction(Object::hasOwnProperty)));
 
-    return prototype;
+    return prototype;  // Return raw pointer
 }
 
 Value Object::constructor(const std::vector<Value>& args) {
     // Object constructor - create new object
     if (args.empty()) {
-        // Use factory when available in constructor context
-        if (object_factory_) {
-            return Value(object_factory_->createJSObject());
-        }
-        return Value(std::make_shared<JSObject>());
+        // Always use factory for consistent GC management
+        return Value(object_factory_->createJSObject());
     }
     
     // Convert argument to object
@@ -61,9 +61,7 @@ Value Object::constructor(const std::vector<Value>& args) {
     // Handle primitive to object conversion according to ECMAScript spec
     if (arg.isString()) {
         // Convert string primitive to String object
-        // Create String object manually since constructor is private
-        auto stringObj = object_factory_ ? object_factory_->createJSObject() 
-                                         : std::make_shared<JSObject>();
+        auto stringObj = object_factory_->createJSObject();
         // Store the primitive string value (following similar pattern to Boolean)
         stringObj->setProperty("value", arg);
         // Add basic String methods
@@ -92,22 +90,15 @@ Value Object::constructor(const std::vector<Value>& args) {
             return Value("");
         };
         
-        if (object_factory_) {
-            stringObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
-            stringObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
-        } else {
-            stringObj->setProperty("toString", Value(std::make_shared<JSFunction>(toStringFn)));
-            stringObj->setProperty("valueOf", Value(std::make_shared<JSFunction>(valueOfFn)));
-        }
+        stringObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
+        stringObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
         
-        return Value(stringObj);
+        return Value(stringObj);  // stringObj is now raw pointer
     }
     
     if (arg.isBoolean()) {
         // Convert boolean primitive to Boolean object  
-        // Create Boolean object manually since constructor is private
-        auto booleanObj = object_factory_ ? object_factory_->createJSObject() 
-                                          : std::make_shared<JSObject>();
+        auto booleanObj = object_factory_->createJSObject();
         // Store the primitive boolean value (following Boolean constructor pattern)
         booleanObj->setProperty("value", arg);
         // Add basic Boolean methods
@@ -136,22 +127,15 @@ Value Object::constructor(const std::vector<Value>& args) {
             return Value(false);
         };
         
-        if (object_factory_) {
-            booleanObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
-            booleanObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
-        } else {
-            booleanObj->setProperty("toString", Value(std::make_shared<JSFunction>(toStringFn)));
-            booleanObj->setProperty("valueOf", Value(std::make_shared<JSFunction>(valueOfFn)));
-        }
+        booleanObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
+        booleanObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
         
-        return Value(booleanObj);
+        return Value(booleanObj);  // booleanObj is now raw pointer
     }
     
     if (arg.isNumber()) {
         // Convert number primitive to Number-like object
-        // Since we don't have a Number constructor yet, create a simple wrapper
-        auto numberObj = object_factory_ ? object_factory_->createJSObject() 
-                                         : std::make_shared<JSObject>();
+        auto numberObj = object_factory_->createJSObject();
         numberObj->setProperty("value", arg);
         // Add basic Number methods
         auto toStringFn = [](const std::vector<Value>& args) -> Value {
@@ -179,22 +163,14 @@ Value Object::constructor(const std::vector<Value>& args) {
             return Value(0.0);
         };
         
-        if (object_factory_) {
-            numberObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
-            numberObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
-        } else {
-            numberObj->setProperty("toString", Value(std::make_shared<JSFunction>(toStringFn)));
-            numberObj->setProperty("valueOf", Value(std::make_shared<JSFunction>(valueOfFn)));
-        }
+        numberObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
+        numberObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
         
-        return Value(numberObj);
+        return Value(numberObj);  // numberObj is now raw pointer
     }
     
     // For null, undefined, or other types, create plain object
-    if (object_factory_) {
-        return Value(object_factory_->createJSObject());
-    }
-    return Value(std::make_shared<JSObject>());
+    return Value(object_factory_->createJSObject());
 }
 
 Value Object::keys(const std::vector<Value>& args) {
@@ -207,7 +183,7 @@ Value Object::keys(const std::vector<Value>& args) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    auto jsObj = obj.getObject();
+    auto jsObj = obj.getObject();  // getObject() now returns raw pointer
     if (!jsObj) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
@@ -232,7 +208,7 @@ Value Object::values(const std::vector<Value>& args) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    auto jsObj = obj.getObject();
+    auto jsObj = obj.getObject();  // getObject() now returns raw pointer
     if (!jsObj) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
@@ -257,7 +233,7 @@ Value Object::entries(const std::vector<Value>& args) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    auto jsObj = obj.getObject();
+    auto jsObj = obj.getObject();  // getObject() now returns raw pointer
     if (!jsObj) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
@@ -283,7 +259,7 @@ Value Object::valueOf(const std::vector<Value>& args) {
     if (!args.empty() && (args[0].isObject() || args[0].isFunction())) {
         return args[0];
     }
-    return Value(std::make_shared<JSObject>());
+    return Value(object_factory_->createJSObject());  // Use factory instead of std::make_shared
 }
 
 Value Object::hasOwnProperty(const std::vector<Value>& args) {
@@ -298,7 +274,7 @@ Value Object::hasOwnProperty(const std::vector<Value>& args) {
         return Value(false);
     }
 
-    auto obj = thisValue.getObject();
+    auto obj = thisValue.getObject();  // getObject() now returns raw pointer
     if (!obj) {
         return Value(false);
     }

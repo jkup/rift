@@ -23,20 +23,20 @@ using namespace rift::runtime;
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 class Object {
    public:
-    /// Create the Object constructor object with all properties and methods.
-    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
-
-    /// Create the Object.prototype object with all instance methods.
-    static std::shared_ptr<JSObject> createPrototype(rift::memory::ObjectFactory* factory);
-
-    /// Store the factory for use in static methods
+    /// Static factory method
     static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
+    /// Create Object constructor function - now returns raw pointer
+    static JSObject* create(rift::memory::ObjectFactory* factory);
+
+    /// Create Object.prototype - now returns raw pointer
+    static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
+
    private:
-    // Store factory for use in static methods
+    /// Static factory storage
     static rift::memory::ObjectFactory* object_factory_;
 
-    // Object constructor function
+    /// Object constructor
     /// The `Object()` constructor creates Object objects.
     ///
     /// More information:
@@ -48,7 +48,7 @@ class Object {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/Object
     static Value constructor(const std::vector<Value>& args);
 
-    // Object static methods
+    /// Object static methods
 
     /// The `Object.keys()` static method returns an array of a given object's own enumerable
     /// string-keyed property names.
@@ -86,7 +86,7 @@ class Object {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries
     static Value entries(const std::vector<Value>& args);
 
-    // Object prototype methods
+    /// Object prototype methods
 
     /// The `toString()` method returns a string representing the object.
     ///

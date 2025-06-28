@@ -8,18 +8,28 @@
 
 namespace rift::builtins {
 
-std::shared_ptr<JSObject> String::create(rift::memory::ObjectFactory* factory) {
+// Static factory storage
+rift::memory::ObjectFactory* String::object_factory_ = nullptr;
+
+void String::setObjectFactory(rift::memory::ObjectFactory* factory) {
+    object_factory_ = factory;
+}
+
+JSObject* String::create(rift::memory::ObjectFactory* factory) {
+    // Store factory for use in other methods
+    setObjectFactory(factory);
+    
     // Create String constructor using GC-managed creation
     auto string = factory->createJSFunction(String::constructor);
 
     // Create and set prototype
     auto prototype = createPrototype(factory);
-    string->setProperty("prototype", Value(prototype));
+    string->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
 
-    return string;
+    return string;  // Return raw pointer
 }
 
-std::shared_ptr<JSObject> String::createPrototype(rift::memory::ObjectFactory* factory) {
+JSObject* String::createPrototype(rift::memory::ObjectFactory* factory) {
     // Create String.prototype using GC-managed creation
     auto prototype = factory->createJSObject();
 
@@ -38,7 +48,7 @@ std::shared_ptr<JSObject> String::createPrototype(rift::memory::ObjectFactory* f
     prototype->setProperty("trim", Value(factory->createJSFunction(String::trim)));
     prototype->setProperty("valueOf", Value(factory->createJSFunction(String::valueOf)));
 
-    return prototype;
+    return prototype;  // Return raw pointer
 }
 
 Value String::constructor(const std::vector<Value>& args) {
@@ -273,8 +283,8 @@ Value String::trim(const std::vector<Value>& args) {
 Value String::split(const std::vector<Value>& args) {
     std::string str = getStringValue(args);
 
-    // Create an array to hold the results (simplified implementation)
-    auto result = std::make_shared<JSObject>();
+    // Create an array to hold the results using GC-managed creation
+    auto result = object_factory_->createJSObject();  // Use factory instead of std::make_shared
     std::vector<Value> elements;
 
     if (args.size() < 2 || args[1].isUndefined()) {
@@ -309,7 +319,7 @@ Value String::split(const std::vector<Value>& args) {
     }
     result->setProperty("length", Value(static_cast<double>(elements.size())));
 
-    return Value(result);
+    return Value(result);  // result is now raw pointer
 }
 
 Value String::toString(const std::vector<Value>& args) {

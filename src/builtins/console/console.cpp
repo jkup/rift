@@ -2,7 +2,7 @@
 
 namespace rift::builtins {
 
-std::shared_ptr<JSObject> Console::create(rift::memory::ObjectFactory* factory) {
+JSObject* Console::create(rift::memory::ObjectFactory* factory) {
     // Create console object using GC-managed creation
     auto console = factory->createJSObject();
 
@@ -12,7 +12,7 @@ std::shared_ptr<JSObject> Console::create(rift::memory::ObjectFactory* factory) 
     console->setProperty("warn", Value(factory->createJSFunction(warn)));
     console->setProperty("info", Value(factory->createJSFunction(info)));
 
-    return console;
+    return console;  // Return raw pointer
 }
 
 Value Console::log(const std::vector<Value>& args) {

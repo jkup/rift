@@ -231,7 +231,7 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
 
     // If it's a function object, call it
     if (callee.isFunction()) {
-        auto func = std::dynamic_pointer_cast<JSFunction>(callee.getObject());
+        auto func = dynamic_cast<JSFunction*>(callee.getObject());  // Use dynamic_cast for raw pointers
         if (func) {
             return func->call(args);
         }
@@ -399,7 +399,7 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node, 
         return Value::undefined();
     }
 
-    auto constructorFunc = std::dynamic_pointer_cast<JSFunction>(constructor.getObject());
+    auto constructorFunc = dynamic_cast<JSFunction*>(constructor.getObject());  // Use dynamic_cast for raw pointers
     if (!constructorFunc) {
         return Value::undefined();
     }

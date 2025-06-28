@@ -15,7 +15,7 @@ std::random_device Math::rd;
 std::mt19937 Math::gen(Math::rd());
 std::uniform_real_distribution<> Math::dis(0.0, 1.0);
 
-std::shared_ptr<JSObject> Math::create(rift::memory::ObjectFactory* factory) {
+JSObject* Math::create(rift::memory::ObjectFactory* factory) {
     // Create Math object using GC-managed creation
     auto math = factory->createJSObject();
 
@@ -45,7 +45,7 @@ std::shared_ptr<JSObject> Math::create(rift::memory::ObjectFactory* factory) {
     math->setProperty("cos", Value(factory->createJSFunction(cos)));
     math->setProperty("tan", Value(factory->createJSFunction(tan)));
 
-    return math;
+    return math;  // Return raw pointer
 }
 
 double Math::validateAndGetNumber(const std::vector<Value>& args, size_t index) {

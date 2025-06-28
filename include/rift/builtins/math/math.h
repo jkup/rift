@@ -61,6 +61,8 @@ class Math {
     /// [spec]: https://tc39.es/ecma262/#sec-math.sqrt2
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/SQRT2
+    static const double E;
+    static const double PI;
     static const double SQRT2;
 
     /// The `Math.abs()` function returns the absolute value of a number.

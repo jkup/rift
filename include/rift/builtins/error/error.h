@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "../../runtime/values/value.h"
 #include "../../runtime/values/object.h"
 #include "../../memory/object_factory.h"
@@ -21,44 +22,28 @@ using namespace rift::runtime;
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
 class Error {
    public:
-    /// Create the Error constructor object with all properties and methods.
-    static std::shared_ptr<JSObject> create(rift::memory::ObjectFactory* factory);
+    /// Static factory method
+    static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
-    /// Create the Error.prototype object with all instance methods.
-    static std::shared_ptr<JSObject> createPrototype(rift::memory::ObjectFactory* factory);
+    /// Create Error constructor function - now returns raw pointer
+    static JSObject* create(rift::memory::ObjectFactory* factory);
 
-   private:
-    // Error constructor function
-    /// The `Error()` constructor creates Error objects.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-error-constructor
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/Error
+    /// Create Error.prototype - now returns raw pointer
+    static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
+
+    /// Error constructor
     static Value constructor(const std::vector<Value>& args);
 
-    // Error prototype methods
-
-    /// The `toString()` method returns a string representing the specified Error object.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-error.prototype.tostring
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/toString
+    /// Error prototype methods
     static Value toString(const std::vector<Value>& args);
 
-    // Helper methods
-    /// Helper to get the Error object from the 'this' binding in prototype methods
-    static std::shared_ptr<JSObject> getThisErrorObject(const std::vector<Value>& args);
-    
-    /// Helper to get the global Error prototype
-    static std::shared_ptr<JSObject> getGlobalPrototype();
+   private:
+    /// Static factory storage
+    static rift::memory::ObjectFactory* object_factory_;
+
+    /// Helper methods - now work with raw pointers
+    static JSObject* getThisErrorObject(const std::vector<Value>& args);
+    static JSObject* getGlobalPrototype();
 };
 
 }  // namespace rift::builtins 
