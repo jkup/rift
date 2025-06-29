@@ -1,6 +1,5 @@
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/core/engine/builtin_manager.h"
-#include <iostream>
 
 namespace rift::builtins {
 
