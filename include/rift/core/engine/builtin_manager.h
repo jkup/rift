@@ -23,6 +23,9 @@ public:
     static JSObject* getStringPrototype();
     static JSObject* getBooleanPrototype();
     static JSObject* getErrorPrototype();
+    
+    // Cleanup method for shutdown
+    static void clearStaticPrototypes();
 
 private:
     // Store global prototypes - now raw pointers
