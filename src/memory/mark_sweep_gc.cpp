@@ -17,17 +17,13 @@ private:
 
 public:
     ~MarkSweepGC() {
-        // Safely clean up all tracked objects during destruction
-        // Disable GC during cleanup to prevent recursive collection
+        // During program shutdown, we don't need to explicitly delete objects
+        // since the OS will reclaim all memory anyway. Attempting to delete
+        // can cause crashes due to destructors accessing already-freed memory.
         gc_enabled_ = false;
         
-        // Clear roots first to avoid dangling pointers
+        // Just clear the containers without deleting objects
         roots_.clear();
-        
-        // Delete all remaining objects since GC owns them
-        for (GCObject* obj : all_objects_) {
-            delete obj;
-        }
         all_objects_.clear();
     }
 

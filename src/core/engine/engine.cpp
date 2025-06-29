@@ -18,6 +18,22 @@ Rift::Rift() {
     setupBuiltins();
 }
 
+Rift::~Rift() {
+    // Clean shutdown - remove roots and disable GC first
+    if (object_manager_ && global_env_gc_) {
+        object_manager_->removeRoot(global_env_gc_.get());
+        object_manager_->setGCEnabled(false);
+    }
+    
+    // Clear builtin static prototypes to avoid dangling pointers
+    BuiltinManager::clearStaticPrototypes();
+    
+    // Explicit order of destruction to avoid issues
+    global_env_gc_.reset();
+    object_factory_.reset();
+    object_manager_.reset();
+}
+
 Value Rift::execute(std::shared_ptr<ASTNode> ast) { 
     return evaluate(ast, global_env_); 
 }

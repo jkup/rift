@@ -34,7 +34,7 @@ class Rift {
 
    public:
     Rift();
-    ~Rift() = default;
+    ~Rift();
 
     // Main execution methods
     Value execute(std::shared_ptr<ASTNode> ast);

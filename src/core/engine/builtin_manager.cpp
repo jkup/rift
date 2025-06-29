@@ -23,20 +23,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     // Get the object factory from the engine
     rift::memory::ObjectFactory* factory = engine ? engine->getObjectFactory() : nullptr;
     
-    // Setup prototypes first (Object.prototype is the root) - now raw pointers
-    objectPrototype_ = builtins::Object::createPrototype(factory);
-    arrayPrototype_ = builtins::Array::createPrototype(factory);
-    stringPrototype_ = builtins::String::createPrototype(factory);
-    booleanPrototype_ = builtins::Boolean::createPrototype(factory);
-    errorPrototype_ = builtins::Error::createPrototype(factory);
-
-    // Set up prototype chain: All prototypes -> Object.prototype
-    arrayPrototype_->setPrototype(objectPrototype_);
-    stringPrototype_->setPrototype(objectPrototype_);
-    booleanPrototype_->setPrototype(objectPrototype_);
-    errorPrototype_->setPrototype(objectPrototype_);
-
-    // Set up the static factories for use in static methods
+    // Set up the static factories for use in static methods FIRST
     if (factory) {
         builtins::Array::setObjectFactory(factory);
         builtins::Object::setObjectFactory(factory);
@@ -45,7 +32,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::Error::setObjectFactory(factory);
     }
 
-    // Now setup builtins with factory
+    // Now setup builtins with factory - these will create their own prototypes
     setupGlobalFunctions(globalEnv, factory);
     setupConsole(globalEnv, factory);
     setupMath(globalEnv, factory);
@@ -54,6 +41,33 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupObject(globalEnv, factory);
     setupBoolean(globalEnv, factory);
     setupError(globalEnv, factory);
+    
+    // After all builtins are created, get their prototypes from the constructors
+    auto objectConstructor = globalEnv->get("Object").getObject();
+    auto arrayConstructor = globalEnv->get("Array").getObject(); 
+    auto stringConstructor = globalEnv->get("String").getObject();
+    auto booleanConstructor = globalEnv->get("Boolean").getObject();
+    auto errorConstructor = globalEnv->get("Error").getObject();
+    
+    if (objectConstructor) objectPrototype_ = objectConstructor->getProperty("prototype").getObject();
+    if (arrayConstructor) arrayPrototype_ = arrayConstructor->getProperty("prototype").getObject();
+    if (stringConstructor) stringPrototype_ = stringConstructor->getProperty("prototype").getObject();
+    if (booleanConstructor) booleanPrototype_ = booleanConstructor->getProperty("prototype").getObject();
+    if (errorConstructor) errorPrototype_ = errorConstructor->getProperty("prototype").getObject();
+
+    // Set up prototype chain: All prototypes -> Object.prototype (except Object itself)
+    if (objectPrototype_ && arrayPrototype_) {
+        arrayPrototype_->setPrototype(objectPrototype_);
+    }
+    if (objectPrototype_ && stringPrototype_) {
+        stringPrototype_->setPrototype(objectPrototype_);
+    }
+    if (objectPrototype_ && booleanPrototype_) {
+        booleanPrototype_->setPrototype(objectPrototype_);
+    }
+    if (objectPrototype_ && errorPrototype_) {
+        errorPrototype_->setPrototype(objectPrototype_);
+    }
     
     // Setup GC functions if engine is provided
     if (engine) {
@@ -147,6 +161,15 @@ void BuiltinManager::setupGCFunctions(std::shared_ptr<Environment> globalEnv, Ri
     
     globalEnv->define("gc", Value(gcFunction));  // Functions are now raw pointers
     globalEnv->define("gcStats", Value(gcStatsFunction));
+}
+
+void BuiltinManager::clearStaticPrototypes() {
+    // Clear all static prototype pointers to avoid dangling references during shutdown
+    objectPrototype_ = nullptr;
+    arrayPrototype_ = nullptr;
+    stringPrototype_ = nullptr;
+    booleanPrototype_ = nullptr;
+    errorPrototype_ = nullptr;
 }
 
 }  // namespace rift::core 

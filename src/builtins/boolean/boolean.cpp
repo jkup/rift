@@ -1,5 +1,6 @@
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/core/engine/builtin_manager.h"
+#include <iostream>
 
 namespace rift::builtins {
 
@@ -11,6 +12,9 @@ void Boolean::setObjectFactory(rift::memory::ObjectFactory* factory) {
 }
 
 JSObject* Boolean::create(rift::memory::ObjectFactory* factory) {
+    // Store factory for use in other methods
+    setObjectFactory(factory);
+    
     // Create Boolean constructor using GC-managed creation
     auto boolean = factory->createJSFunction(Boolean::constructor);
 
