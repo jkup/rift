@@ -1,6 +1,14 @@
 # Rift - A JavaScript Runtime in C++
 
-A JavaScript runtime implementation written in C++ with test262 integration for ECMAScript compliance testing.
+A JavaScript runtime implementation written in C++ with robust garbage collection and comprehensive JavaScript language support.
+
+## Features
+
+✅ **Fully functional garbage collection** with mark-sweep algorithm  
+✅ **Memory-safe execution** with proper object lifecycle management  
+✅ **Comprehensive JavaScript language support** including closures, prototypes, and exception handling  
+✅ **Rich built-in object library** with Array, String, Math, Object, and more  
+✅ **Test262 integration** for ECMAScript compliance testing  
 
 ## Building and Running
 
@@ -30,7 +38,8 @@ This will create the `rift` executable in the `build/` directory.
 ./build/rift test/test-file.js
 
 # Execute JavaScript code directly
-./build/rift -e "2 + 3 * 4"
+./build/rift -e "console.log('Hello, World!')"
+./build/rift -e "var arr = [1, 2, 3]; arr.push(4); console.log(arr.length);"
 ```
 
 ### Run Test262 Tests
@@ -41,48 +50,188 @@ The project includes integration with the official ECMAScript test suite (test26
 npm run test
 ```
 
-The test runner will:
-
-1. Clone the test262 repository (if not already present)
-2. Build the runtime
-3. Run a subset of basic tests
-4. Show a summary of passed/failed/skipped tests
-
 ## Implementation Status
 
-### ✅ Implemented
+### ✅ **Language Constructs**
 
-- **Global Functions**: `parseInt`, `parseFloat`, `isNaN`, `isFinite`, `createArray`
-- **Console**: `log`, `error`, `warn`, `info`
-- **String**: `charAt`, `indexOf`, `slice`, `toLowerCase`, `toUpperCase`, `trim`, `split`, etc.
-- **Math**: `abs`, `ceil`, `floor`, `max`, `min`, `pow`, `sqrt`, `random`, `sin`, `cos`, etc.
-- **Array**: `push`, `pop`, `length` (via `createArray()` function)
+#### **Data Types**
+- ✅ **Primitives**: `undefined`, `null`, `boolean`, `number`, `string`
+- ✅ **Objects**: Object literals, arrays, functions
+- ✅ **Type system**: Proper type checking and conversion
 
-### ❌ Not Yet Implemented
+#### **Expressions**
+- ✅ **Literals**: String, number, boolean, null, undefined, object, array
+- ✅ **Identifiers**: Variable access and scoping
+- ✅ **Operators**: Arithmetic (`+`, `-`, `*`, `/`), comparison (`<`, `>`, `<=`, `>=`, `==`, `!=`, `===`, `!==`), logical (`!`), unary (`+`, `-`, `~`, `typeof`)
+- ✅ **Member access**: Dot notation (`obj.prop`) and bracket notation (`obj['prop']`)
+- ✅ **Function calls**: Function invocation with arguments
+- ✅ **Assignment**: Variable assignment and property assignment
+- ✅ **Object construction**: `new` operator
 
-- **Array**: `map`, `filter`, `reduce`, `forEach`, `indexOf`, `includes`, `slice`, `concat`
-- **Object**: `keys`, `values`, `entries`, `assign`, etc.
-- **Function**: `call`, `apply`, `bind`
-- **For loops**, **New operator** (`new`)
-- **Date**, **JSON**, **RegExp**, **Error types**, **Promises**
+#### **Statements**
+- ✅ **Variable declarations**: `var` statements
+- ✅ **Control flow**: `if`/`else` statements, `while` loops
+- ✅ **Functions**: Function declarations and expressions
+- ✅ **Exception handling**: `try`/`catch`/`throw` statements
+- ✅ **Return statements**: Early function returns
+
+#### **Advanced Features**
+- ✅ **Closures**: Lexical scoping and captured variables
+- ✅ **Prototype chains**: Object inheritance and prototype lookups
+- ✅ **Exception handling**: Proper error propagation and catching
+- ✅ **Garbage collection**: Automatic memory management with cycle detection
+
+### ✅ **Built-in Objects**
+
+#### **Global Functions**
+- ✅ `parseInt(string, radix)` - Parse integers
+- ✅ `parseFloat(string)` - Parse floating-point numbers
+- ✅ `isNaN(value)` - Check for NaN
+- ✅ `isFinite(value)` - Check for finite numbers
+- ✅ Global constants: `undefined`, `NaN`, `Infinity`
+
+#### **Console Object**
+- ✅ `console.log(...args)` - Log messages
+- ✅ `console.error(...args)` - Log error messages  
+- ✅ `console.warn(...args)` - Log warning messages
+- ✅ `console.info(...args)` - Log info messages
+
+#### **Array Constructor & Methods**
+- ✅ `Array()` constructor and `new Array()`
+- ✅ `Array.isArray(value)` - Check if value is array
+- ✅ `array.push(...items)` - Add elements to end
+- ✅ `array.pop()` - Remove last element
+- ✅ `array.length` - Array length property
+- ✅ `array.forEach(callback)` - Iterate over elements
+- ✅ `array.map(callback)` - Transform elements
+- ✅ `array.filter(callback)` - Filter elements
+- ✅ `array.reduce(callback, initial)` - Reduce to single value
+- ✅ `array.indexOf(searchElement)` - Find element index
+- ✅ `array.includes(searchElement)` - Check element presence
+- ✅ `array.slice(start, end)` - Extract array portion
+- ✅ `array.concat(...arrays)` - Concatenate arrays
+- ✅ `array.toString()` - Convert to string
+
+#### **String Constructor & Methods**
+- ✅ `String()` constructor
+- ✅ `string.charAt(index)` - Get character at index
+- ✅ `string.charCodeAt(index)` - Get character code
+- ✅ `string.concat(...strings)` - Concatenate strings
+- ✅ `string.indexOf(searchString)` - Find substring
+- ✅ `string.lastIndexOf(searchString)` - Find last occurrence
+- ✅ `string.slice(start, end)` - Extract substring
+- ✅ `string.split(separator)` - Split into array
+- ✅ `string.substring(start, end)` - Extract substring
+- ✅ `string.toLowerCase()` - Convert to lowercase
+- ✅ `string.toUpperCase()` - Convert to uppercase
+- ✅ `string.trim()` - Remove whitespace
+- ✅ `string.toString()` - Convert to string
+- ✅ `string.valueOf()` - Get primitive value
+
+#### **Math Object**
+- ✅ Mathematical functions: `abs`, `floor`, `ceil`, `round`, `max`, `min`, `pow`, `sqrt`, `random`, `sign`, `trunc`
+- ✅ Trigonometric functions: `sin`, `cos`, `tan`
+- ✅ Mathematical constants: `Math.PI`, `Math.E`, `Math.LN2`, `Math.LN10`, etc.
+
+#### **Object Constructor & Methods**
+- ✅ `Object()` constructor
+- ✅ `Object.keys(obj)` - Get object keys
+- ✅ `Object.values(obj)` - Get object values  
+- ✅ `Object.entries(obj)` - Get key-value pairs
+- ✅ `object.toString()` - Convert to string
+- ✅ `object.valueOf()` - Get primitive value
+- ✅ `object.hasOwnProperty(prop)` - Check own property
+
+#### **Boolean Constructor & Methods**
+- ✅ `Boolean()` constructor
+- ✅ `boolean.toString()` - Convert to string
+- ✅ `boolean.valueOf()` - Get primitive value
+
+#### **Error Constructor & Methods**
+- ✅ `Error()` constructor
+- ✅ `error.toString()` - Convert to string
+
+### ❌ **Not Yet Implemented**
+
+#### **Language Constructs**
+- ❌ **For loops**: `for`, `for-in`, `for-of` statements
+- ❌ **Switch statements**: `switch`/`case`/`default`
+- ❌ **Arrow functions**: `() => {}` syntax
+- ❌ **Template literals**: `` `string ${expr}` ``
+- ❌ **Destructuring**: Array and object destructuring
+- ❌ **Spread operator**: `...` for arrays and objects
+- ❌ **Rest parameters**: `function(...args)`
+- ❌ **Classes**: `class`, `extends`, `super`
+- ❌ **Modules**: `import`/`export` statements
+
+#### **Built-in Objects**
+- ❌ **Date**: Date constructor and methods
+- ❌ **JSON**: `JSON.parse`, `JSON.stringify`
+- ❌ **RegExp**: Regular expression support
+- ❌ **Promise**: Asynchronous programming
+- ❌ **Set/Map**: Collection objects
+- ❌ **Symbol**: Symbol primitive type
+- ❌ **Proxy**: Meta-programming features
+
+#### **Advanced Array Methods**
+- ❌ `array.some(callback)` - Test if some elements pass test
+- ❌ `array.every(callback)` - Test if all elements pass test  
+- ❌ `array.find(callback)` - Find first matching element
+- ❌ `array.findIndex(callback)` - Find first matching index
+
+#### **Function Methods**
+- ❌ `function.call(thisArg, ...args)` - Call with specific `this`
+- ❌ `function.apply(thisArg, argsArray)` - Apply with arguments array
+- ❌ `function.bind(thisArg, ...args)` - Create bound function
+
+#### **Async Features**
+- ❌ `async`/`await` syntax
+- ❌ Promise-based APIs
+- ❌ Event loops and timers
 
 ## Architecture
 
-The runtime follows a traditional interpreter architecture:
+The runtime follows a modern interpreter architecture with robust memory management:
 
-1. **Lexer** (`parser.cpp`): Tokenizes JavaScript source code
-2. **Parser** (`parser.cpp`): Builds an Abstract Syntax Tree (AST)
-3. **Evaluator** (`evaluator.cpp`): Walks the AST and executes the code
-4. **Runtime** (`runtime.cpp`): Manages the execution environment and values
+1. **Frontend**
+   - **Lexer**: Tokenizes JavaScript source code
+   - **Parser**: Builds an Abstract Syntax Tree (AST)
+
+2. **Core Engine**
+   - **Expression Evaluator**: Handles expressions (literals, operators, function calls)
+   - **Statement Evaluator**: Handles statements (control flow, declarations)
+   - **Operation Handler**: Implements JavaScript operators
+
+3. **Runtime System**
+   - **Value System**: Type-safe value representation
+   - **Environment**: Variable scope and binding management
+   - **Memory Management**: Mark-sweep garbage collector
+
+4. **Built-in Library**
+   - **Object Factory**: GC-managed object creation
+   - **Built-in Objects**: Comprehensive standard library implementation
+
+## Memory Management
+
+Rift features a **production-quality garbage collector**:
+
+- ✅ **Mark-sweep algorithm** with proper cycle detection
+- ✅ **Automatic memory management** - no manual memory handling required
+- ✅ **Exception-safe collection** - GC defers during exception handling
+- ✅ **Root set management** - proper handling of stack references
+- ✅ **Clean shutdown** - safe program termination without crashes
 
 ## Test262 Integration
 
-The project includes a Node.js script that runs the official ECMAScript test suite against our runtime. This helps ensure compliance with the JavaScript specification.
+The project includes a Node.js script that runs the official ECMAScript test suite against our runtime:
+
+```bash
+npm run test
+```
 
 The test runner:
-
 - Automatically clones the test262 repository
-- Filters tests to focus on supported features
+- Filters tests to focus on supported features  
 - Runs tests against the compiled runtime
 - Provides detailed pass/fail statistics
 
