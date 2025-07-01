@@ -81,6 +81,14 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
         case TokenType::LeftBrace: {
             return parse_object_literal();
         }
+        case TokenType::TemplateString: {
+            // Basic template string without expressions
+            auto templateLiteral = ASTFactory::makeTemplateLiteral();
+            auto element = ASTFactory::makeTemplateElement(token.value);
+            ASTFactory::addTemplateElement(templateLiteral, element);
+            current++;
+            return templateLiteral;
+        }
         default:
             throw std::runtime_error("Unexpected token in primary expression");
     }
