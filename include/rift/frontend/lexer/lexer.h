@@ -21,6 +21,7 @@ class Lexer {
     void skip_whitespace();
     Token read_number();
     Token read_string();
+    Token read_template_string();
     Token read_identifier();
 
    public:

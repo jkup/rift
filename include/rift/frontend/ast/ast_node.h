@@ -32,6 +32,11 @@ enum class ASTNodeType {
     CatchClause,
     ParameterList,
     NewExpression,
+    
+    // Template literals
+    TemplateLiteral,        // Complete template literal
+    TemplateElement,        // String part of template
+    TemplateExpression,     // ${expression} part
 };
 
 struct ASTNode {

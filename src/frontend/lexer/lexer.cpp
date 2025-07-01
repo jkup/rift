@@ -91,6 +91,46 @@ Token Lexer::read_string() {
     return Token(TokenType::String, value, line, column);
 }
 
+Token Lexer::read_template_string() {
+    advance();  // Skip opening backtick
+
+    std::string value;
+    while (current_char() != '`' && current_char() != '\0') {
+        if (current_char() == '\\') {
+            advance();
+            switch (current_char()) {
+                case 'n':
+                    value += '\n';
+                    break;
+                case 't':
+                    value += '\t';
+                    break;
+                case 'r':
+                    value += '\r';
+                    break;
+                case '\\':
+                    value += '\\';
+                    break;
+                case '`':
+                    value += '`';
+                    break;
+                default:
+                    value += current_char();
+                    break;
+            }
+        } else {
+            value += current_char();
+        }
+        advance();
+    }
+
+    if (current_char() == '`') {
+        advance();  // Skip closing backtick
+    }
+
+    return Token(TokenType::TemplateString, value, line, column);
+}
+
 Token Lexer::read_identifier() {
     std::string value;
     while (std::isalnum(current_char()) || current_char() == '_' || current_char() == '$') {
@@ -143,6 +183,10 @@ Token Lexer::next_token() {
 
     if (ch == '"' || ch == '\'') {
         return read_string();
+    }
+
+    if (ch == '`') {
+        return read_template_string();
     }
 
     if (std::isalpha(ch) || ch == '_' || ch == '$') {
