@@ -37,6 +37,8 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
             return evaluateFunctionExpression(node, env, engine);
         case ASTNodeType::NewExpression:
             return evaluateNewExpression(node, env, engine);
+        case ASTNodeType::TemplateLiteral:
+            return evaluateTemplateLiteral(node, env, engine);
         default:
             return Value::undefined();
     }
@@ -423,6 +425,27 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node, 
     // This handles user-defined constructor functions using GC-managed creation
     auto newObj = engine->getObjectFactory()->createJSObject();
     return Value(newObj);
+}
+
+Value ExpressionEvaluator::evaluateTemplateLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    std::string result;
+    
+    // Iterate through all child nodes (template elements and expressions)
+    for (const auto& child : node->children) {
+        if (child->type == ASTNodeType::TemplateElement) {
+            // String literal part - add directly to result
+            result += child->value;
+        }
+        else if (child->type == ASTNodeType::TemplateExpression) {
+            // Expression part - evaluate and convert to string
+            if (!child->children.empty()) {
+                Value expressionValue = engine->evaluate(child->children[0], env);
+                result += expressionValue.toString();
+            }
+        }
+    }
+    
+    return Value(result);
 }
 
 }  // namespace rift::core 
