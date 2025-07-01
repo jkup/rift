@@ -32,8 +32,6 @@ enum class ASTNodeType {
     CatchClause,
     ParameterList,
     NewExpression,
-    
-    // Template literals
     TemplateLiteral,
     TemplateElement,
     TemplateExpression,
