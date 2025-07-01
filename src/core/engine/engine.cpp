@@ -57,6 +57,7 @@ Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment>
         case ASTNodeType::ObjectLiteral:
         case ASTNodeType::FunctionExpression:
         case ASTNodeType::NewExpression:
+        case ASTNodeType::TemplateLiteral:
             return ExpressionEvaluator::evaluate(node, env, this);
 
         // Statement types
