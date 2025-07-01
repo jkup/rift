@@ -228,6 +228,30 @@ class ASTFactory {
             parameterList->children.push_back(parameter);
         }
     }
+
+    // Template literal factories
+    static std::shared_ptr<ASTNode> makeTemplateLiteral() {
+        return std::make_shared<ASTNode>(ASTNodeType::TemplateLiteral);
+    }
+    
+    static std::shared_ptr<ASTNode> makeTemplateElement(const std::string& value) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::TemplateElement, value);
+        return node;
+    }
+    
+    static std::shared_ptr<ASTNode> makeTemplateExpression(std::shared_ptr<ASTNode> expression) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::TemplateExpression);
+        node->children.push_back(expression);
+        return node;
+    }
+    
+    // Helper to add element to template literal
+    static void addTemplateElement(std::shared_ptr<ASTNode> templateLiteral, 
+                                  std::shared_ptr<ASTNode> element) {
+        if (templateLiteral->type == ASTNodeType::TemplateLiteral) {
+            templateLiteral->children.push_back(element);
+        }
+    }
 };
 
 }  // namespace rift::ast

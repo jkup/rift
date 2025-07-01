@@ -34,9 +34,9 @@ enum class ASTNodeType {
     NewExpression,
     
     // Template literals
-    TemplateLiteral,        // Complete template literal
-    TemplateElement,        // String part of template
-    TemplateExpression,     // ${expression} part
+    TemplateLiteral,
+    TemplateElement,
+    TemplateExpression,
 };
 
 struct ASTNode {
