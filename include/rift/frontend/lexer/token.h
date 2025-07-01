@@ -13,6 +13,12 @@ enum class TokenType {
     Null,
     Undefined,
 
+    // Template literals
+    TemplateString,
+    TemplateStart,
+    TemplateMiddle,
+    TemplateEnd,
+
     // Identifiers
     Identifier,
 
