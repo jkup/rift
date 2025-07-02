@@ -45,6 +45,13 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
 }
 
 Value ExpressionEvaluator::evaluateIdentifier(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+    // Special handling for 'this' keyword
+    if (node->value == "this") {
+        // For now, return undefined to allow function declarations to work
+        // TODO: Implement proper 'this' binding context
+        return Value::undefined();
+    }
+    
     return env->get(node->value);
 }
 
@@ -94,6 +101,24 @@ Value ExpressionEvaluator::evaluateBinaryExpression(std::shared_ptr<ASTNode> nod
         return Value::undefined();
     }
 
+    // Handle logical operators with short-circuit evaluation
+    if (node->value == "||") {
+        Value left = engine->evaluate(node->children[0], env);
+        if (left.toBool()) {
+            return left;  // Short-circuit: return left if truthy
+        }
+        return engine->evaluate(node->children[1], env);  // Evaluate right only if left is falsy
+    }
+    
+    if (node->value == "&&") {
+        Value left = engine->evaluate(node->children[0], env);
+        if (!left.toBool()) {
+            return left;  // Short-circuit: return left if falsy
+        }
+        return engine->evaluate(node->children[1], env);  // Evaluate right only if left is truthy
+    }
+
+    // For all other operators, evaluate both operands
     Value left = engine->evaluate(node->children[0], env);
     Value right = engine->evaluate(node->children[1], env);
 

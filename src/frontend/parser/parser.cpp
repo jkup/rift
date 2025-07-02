@@ -69,6 +69,11 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             current++;
             return node;
         }
+        case TokenType::This: {
+            auto node = ASTFactory::makeIdentifier("this");
+            current++;
+            return node;
+        }
         case TokenType::LeftParen: {
             current++;  // consume '('
             auto expr = parse_expression();

@@ -36,6 +36,7 @@ enum class TokenType {
     Try,
     Catch,
     New,
+    This,
 
     // Operators
     Plus,
@@ -52,6 +53,8 @@ enum class TokenType {
     Greater,
     GreaterEqual,
     LogicalNot,
+    LogicalOr,
+    LogicalAnd,
     BitwiseNot,
     Typeof,
 

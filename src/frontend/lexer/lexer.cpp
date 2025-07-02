@@ -153,6 +153,7 @@ Token Lexer::read_identifier() {
         {"try", TokenType::Try},
         {"catch", TokenType::Catch},
         {"new", TokenType::New},
+        {"this", TokenType::This},
         {"true", TokenType::Boolean},
         {"false", TokenType::Boolean},
         {"null", TokenType::Null},
@@ -278,6 +279,22 @@ Token Lexer::next_token() {
         case '~':
             advance();
             return Token(TokenType::BitwiseNot, "~", line, column);
+        case '|':
+            advance();
+            if (current_char() == '|') {
+                advance();
+                return Token(TokenType::LogicalOr, "||", line, column);
+            }
+            // Single | would be bitwise OR (not implemented yet)
+            return Token(TokenType::Invalid, "|", line, column);
+        case '&':
+            advance();
+            if (current_char() == '&') {
+                advance();
+                return Token(TokenType::LogicalAnd, "&&", line, column);
+            }
+            // Single & would be bitwise AND (not implemented yet)
+            return Token(TokenType::Invalid, "&", line, column);
         default:
             advance();
             return Token(TokenType::Invalid, std::string(1, ch), line, column);
