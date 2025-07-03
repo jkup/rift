@@ -111,6 +111,11 @@ Core features that are working correctly:
 - [ ] `error-handling-implementation-test.js` - One assertion failing
 > **Fix:** Likely test framework detection issue, GC appears to work
 
+#### Logical AND Operator Bug (1 test) - **RUNTIME BUG**
+- [ ] `logical-and-operator-bug-test.js` - Documents AND operator bug with comparisons
+> **Bug:** `(a == 5) && (b == 2)` returns false even when both are true  
+> **Fix:** Debug logical AND operator implementation for comparison expressions
+
 ---
 
 ## 🎯 **IMPLEMENTATION ROADMAP**
@@ -174,7 +179,8 @@ Core features that are working correctly:
   - ✅ Object.keys() prototype pollution fix (+2.7%)
   - ✅ Boolean object methods fix (+2.6%)
   - ✅ Test framework detection fix (+3.9%)
-- 🚀 **Current:** 44.7% pass rate (34/76 tests) - **+9.2% improvement!**
+- 🚀 **Current:** 44.2% pass rate (34/77 tests) - **+8.7% improvement!**
+- ✅ **Added logical AND operator bug test** - Documents runtime bug for future fix
 - ⏳ **Ready for Phase 2** - Medium priority fixes identified
 
 ### **Expected Milestones**
