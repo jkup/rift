@@ -44,14 +44,8 @@ Value Boolean::constructor(const std::vector<Value>& args) {
         boolValue = args[0].toBool();
     }
     
-    // HACK: For test262 compatibility, return primitive boolean values
-    // when called in simple cases (this helps with typeof Boolean() === "boolean" tests)
-    // In a full implementation, this would properly distinguish new Boolean() vs Boolean()
-    if (args.size() <= 1) {
-        return Value(boolValue);  // Return primitive boolean
-    }
-    
-    // Create Boolean object for more complex cases (fallback)
+    // Always create Boolean object when called as constructor
+    // This handles new Boolean() calls properly
     auto booleanPrototype = getGlobalPrototype();
     auto booleanObj = object_factory_->createJSObject(booleanPrototype);
     booleanObj->setProperty("value", Value(boolValue));

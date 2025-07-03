@@ -123,11 +123,12 @@ Core features that are working correctly:
    - [x] Test with: `object-keys-values-test.js`, `object-literal-test.js`, `simple-object-test.js`
    - **Result:** 2/3 tests now passing! Pass rate: 35.5% → 38.2% (+2.7%)
 
-2. **Add Boolean Object Methods** - 1 test
-   - [ ] Find Boolean constructor in `src/builtins/boolean/`
-   - [ ] Add `.valueOf()` method to Boolean objects
-   - [ ] Add `.toString()` method to Boolean objects
-   - [ ] Test with: `boolean-object-test.js`
+2. **Add Boolean Object Methods** - 1 test ✅ **COMPLETED**
+   - [x] Find Boolean constructor in `src/builtins/boolean/`
+   - [x] Add `.valueOf()` method to Boolean objects
+   - [x] Add `.toString()` method to Boolean objects
+   - [x] Test with: `boolean-object-test.js`
+   - **Result:** Test now passing! Pass rate: 38.2% → 40.8% (+2.6%)
 
 3. **Fix Test Framework Detection** - 3+ tests
    - [ ] Fix `[object Object]` prefix issue in console.log output
@@ -167,8 +168,10 @@ Core features that are working correctly:
 - ✅ **Initial Analysis Complete** - December 2024
 - ✅ **Test Suite Baseline** - 35.5% pass rate (27/76 tests)
 - ✅ **Implementation Assessment** - Core engine solid, specific bugs identified
-- ✅ **Phase 1 In Progress** - Object.keys() fix completed (+2.7% pass rate)
-- ⏳ **Current:** 38.2% pass rate (29/76 tests)
+- ✅ **Phase 1 In Progress** - 2/3 quick wins completed 
+  - ✅ Object.keys() prototype pollution fix (+2.7%)
+  - ✅ Boolean object methods fix (+2.6%)
+- ⏳ **Current:** 40.8% pass rate (31/76 tests) - **+5.3% improvement!**
 
 ### **Expected Milestones**
 - **Phase 1 Complete:** 50-55% pass rate (38-42 tests passing)
