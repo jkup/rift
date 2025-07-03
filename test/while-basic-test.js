@@ -11,6 +11,13 @@ while (i < 3) {
 }
 console.log("Final i:", i);
 
+// Test that simple counting loop worked
+if (i === 3) {
+    console.log("PASS: Simple counting loop worked correctly");
+} else {
+    console.log("FAIL: Simple counting loop worked correctly, got i =", i);
+}
+
 // Test 2: While loop with condition false from start
 console.log("\n2. While loop with false condition:");
 var j = 5;
@@ -19,6 +26,13 @@ while (j < 3) {
     j = j + 1;
 }
 console.log("j value unchanged:", j);
+
+// Test that false condition loop didn't execute
+if (j === 5) {
+    console.log("PASS: False condition loop didn't execute");
+} else {
+    console.log("FAIL: False condition loop didn't execute, got j =", j);
+}
 
 // Test 3: While loop that modifies multiple variables
 console.log("\n3. Multiple variable modification:");
@@ -30,6 +44,17 @@ while (a < 5) {
     b = b - 2;
 }
 console.log("Final a:", a, "b:", b);
+
+// Test that multiple variable modification worked
+if (a == 5) {
+    if (b == 2) {
+        console.log("PASS: Multiple variable modification worked correctly");
+    } else {
+        console.log("FAIL: Multiple variable modification worked correctly, b =", b, "expected 2");
+    }
+} else {
+    console.log("FAIL: Multiple variable modification worked correctly, a =", a, "expected 5");
+}
 
 // Test 4: While loop with string condition
 console.log("\n4. String condition (truthy):");
