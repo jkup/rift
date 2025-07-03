@@ -188,9 +188,9 @@ Value Object::keys(const std::vector<Value>& args) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    // Get all property names
+    // Get only own property names (not inherited prototype properties)
     std::vector<Value> keys;
-    auto propertyNames = jsObj->getPropertyNames();
+    auto propertyNames = jsObj->getOwnPropertyNames();
     for (const auto& propName : propertyNames) {
         keys.push_back(Value(propName));
     }
@@ -213,9 +213,9 @@ Value Object::values(const std::vector<Value>& args) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    // Get all property values
+    // Get only own property values (not inherited prototype properties)
     std::vector<Value> values;
-    auto propertyNames = jsObj->getPropertyNames();
+    auto propertyNames = jsObj->getOwnPropertyNames();
     for (const auto& propName : propertyNames) {
         values.push_back(jsObj->getProperty(propName));
     }
@@ -238,9 +238,9 @@ Value Object::entries(const std::vector<Value>& args) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    // Get all [key, value] pairs
+    // Get only own [key, value] pairs (not inherited prototype properties)
     std::vector<Value> entries;
-    auto propertyNames = jsObj->getPropertyNames();
+    auto propertyNames = jsObj->getOwnPropertyNames();
     for (const auto& propName : propertyNames) {
         std::vector<Value> entry = {Value(propName), jsObj->getProperty(propName)};
         entries.push_back(Value(Array::createArrayObject(object_factory_, entry)));
