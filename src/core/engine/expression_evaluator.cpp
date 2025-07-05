@@ -433,6 +433,10 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node, 
 
     // Collect arguments (skip first child which is the constructor)
     std::vector<Value> args;
+    
+    // Add special marker to indicate this is a constructor call
+    args.push_back(Value("__CONSTRUCTOR_CALL__"));
+    
     for (size_t i = 1; i < node->children.size(); ++i) {
         args.push_back(engine->evaluate(node->children[i], env));
     }

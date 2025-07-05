@@ -36,21 +36,34 @@ JSObject* Boolean::createPrototype(rift::memory::ObjectFactory* factory) {
 }
 
 Value Boolean::constructor(const std::vector<Value>& args) {
-    // Determine the boolean value
-    bool boolValue;
-    if (args.empty()) {
-        boolValue = false;
-    } else {
-        boolValue = args[0].toBool();
+    // Check if this is a constructor call (new Boolean()) or function call (Boolean())
+    bool isConstructorCall = false;
+    size_t argOffset = 0;
+    
+    if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
+        isConstructorCall = true;
+        argOffset = 1;  // Skip the constructor marker
     }
     
-    // Always create Boolean object when called as constructor
-    // This handles new Boolean() calls properly
-    auto booleanPrototype = getGlobalPrototype();
-    auto booleanObj = object_factory_->createJSObject(booleanPrototype);
-    booleanObj->setProperty("value", Value(boolValue));
+    // Determine the boolean value from the actual arguments
+    bool boolValue;
+    if (args.size() <= argOffset) {
+        boolValue = false;
+    } else {
+        boolValue = args[argOffset].toBool();
+    }
     
-    return Value(booleanObj);
+    // Return behavior depends on how we were called
+    if (isConstructorCall) {
+        // new Boolean() - return Boolean object
+        auto booleanPrototype = getGlobalPrototype();
+        auto booleanObj = object_factory_->createJSObject(booleanPrototype);
+        booleanObj->setProperty("value", Value(boolValue));
+        return Value(booleanObj);
+    } else {
+        // Boolean() - return primitive boolean
+        return Value(boolValue);
+    }
 }
 
 Value Boolean::toString(const std::vector<Value>& args) {

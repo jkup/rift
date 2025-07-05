@@ -40,6 +40,12 @@ JSObject* Error::createPrototype(rift::memory::ObjectFactory* factory) {
 }
 
 Value Error::constructor(const std::vector<Value>& args) {
+    // Skip constructor marker if present
+    size_t argOffset = 0;
+    if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
+        argOffset = 1;  // Skip the constructor marker
+    }
+    
     // Create Error object with proper prototype chain
     auto errorPrototype = getGlobalPrototype();
     auto errorObj = object_factory_->createJSObject(errorPrototype);  // Use factory
@@ -49,8 +55,8 @@ Value Error::constructor(const std::vector<Value>& args) {
     
     // Set the message property
     std::string message = "";
-    if (!args.empty() && !args[0].isUndefined()) {
-        message = args[0].toString();
+    if (args.size() > argOffset && !args[argOffset].isUndefined()) {
+        message = args[argOffset].toString();
     }
     errorObj->setProperty("message", Value(message));
     

@@ -46,14 +46,20 @@ JSObject* Object::createPrototype(rift::memory::ObjectFactory* factory) {
 }
 
 Value Object::constructor(const std::vector<Value>& args) {
+    // Skip constructor marker if present
+    size_t argOffset = 0;
+    if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
+        argOffset = 1;  // Skip the constructor marker
+    }
+    
     // Object constructor - create new object
-    if (args.empty()) {
+    if (args.size() <= argOffset) {
         // Always use factory for consistent GC management
         return Value(object_factory_->createJSObject());
     }
     
     // Convert argument to object
-    Value arg = args[0];
+    Value arg = args[argOffset];
     if (arg.isObject()) {
         return arg;
     }

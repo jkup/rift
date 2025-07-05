@@ -50,16 +50,24 @@ JSObject* Array::createPrototype(rift::memory::ObjectFactory* factory) {
 }
 
 Value Array::constructor(const std::vector<Value>& args) {
+    // Skip constructor marker if present
+    size_t argOffset = 0;
+    if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
+        argOffset = 1;  // Skip the constructor marker
+    }
+    
     // Create array with proper prototype chain using GC-managed creation
     auto arrayPrototype = getGlobalPrototype();
     auto arrayObj = object_factory_->createJSObject(arrayPrototype);
 
-    if (args.empty()) {
+    size_t effectiveArgCount = args.size() - argOffset;
+    
+    if (effectiveArgCount == 0) {
         // new Array() - create empty array
         setArrayLength(arrayObj, 0);
-    } else if (args.size() == 1 && args[0].isNumber()) {
+    } else if (effectiveArgCount == 1 && args[argOffset].isNumber()) {
         // new Array(length) - create array with specific length
-        double length = args[0].toNumber();
+        double length = args[argOffset].toNumber();
         if (length < 0 || std::isnan(length) || std::isinf(length)) {
             // In a real implementation, this would throw a RangeError
             setArrayLength(arrayObj, 0);
@@ -68,10 +76,10 @@ Value Array::constructor(const std::vector<Value>& args) {
         }
     } else {
         // new Array(element0, element1, ...) - create array with elements
-        for (size_t i = 0; i < args.size(); ++i) {
-            arrayObj->setProperty(std::to_string(i), args[i]);
+        for (size_t i = 0; i < effectiveArgCount; ++i) {
+            arrayObj->setProperty(std::to_string(i), args[argOffset + i]);
         }
-        setArrayLength(arrayObj, args.size());
+        setArrayLength(arrayObj, effectiveArgCount);
     }
 
     return Value(arrayObj);  // arrayObj is now raw pointer
