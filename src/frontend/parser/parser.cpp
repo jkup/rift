@@ -133,17 +133,17 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
         switch (op.type) {
             case TokenType::Plus:
             case TokenType::Minus:
-                op_precedence = 1;
+                op_precedence = 5;  // Arithmetic higher than logical operators
                 break;
             case TokenType::Multiply:
             case TokenType::Divide:
-                op_precedence = 2;
+                op_precedence = 6;  // Multiplication/division highest
                 break;
             case TokenType::LogicalOr:
-                op_precedence = 0;  // Lowest precedence
+                op_precedence = 1;  // Lowest precedence for logical operators
                 break;
             case TokenType::LogicalAnd:
-                op_precedence = 1;  // Higher than OR but lower than arithmetic
+                op_precedence = 2;  // Higher than OR, lower than comparison
                 break;
             case TokenType::Equal:
             case TokenType::EqualStrict:
@@ -153,10 +153,10 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::LessEqual:
             case TokenType::Greater:
             case TokenType::GreaterEqual:
-                op_precedence = 0;
+                op_precedence = 3;  // Comparison operators higher than logical operators
                 break;
             case TokenType::Assign:
-                op_precedence = 0;  // Try same precedence as comparison
+                op_precedence = 0;  // Assignment lowest precedence
                 is_assignment = true;
                 break;
             default:
