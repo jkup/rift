@@ -19,6 +19,25 @@ A JavaScript runtime implementation written in C++ with robust garbage collectio
 - Node.js 14+ (for test262 runner)
 - Git (for cloning test262)
 
+### Code Quality Tools (Optional but Recommended)
+
+- **clang-format**: Code formatting
+- **clang-tidy**: Static analysis
+- **cppcheck**: Additional static analysis
+
+**Installation**:
+```bash
+# macOS
+brew install llvm clang-format cppcheck
+
+# Ubuntu/Debian
+apt-get install clang-tidy clang-format cppcheck
+
+# One-time setup
+chmod +x scripts/setup-hooks.sh
+./scripts/setup-hooks.sh
+```
+
 ### Build the Runtime
 
 ```bash
@@ -49,6 +68,35 @@ The project includes integration with the official ECMAScript test suite (test26
 ```bash
 npm run test
 ```
+
+### Code Quality Commands
+
+The project includes comprehensive code quality tools:
+
+```bash
+# Format all source files
+make format
+
+# Check formatting without changing files
+make format-check
+
+# Run static analysis
+make clang-tidy
+
+# Run additional static analysis
+make cppcheck
+
+# Run all quality checks
+make quality
+
+# Build with sanitizers (for development)
+cmake .. -DENABLE_SANITIZERS=ON
+make
+```
+
+**Pre-commit Hook**: Automatically runs formatting and basic checks before each commit.
+
+**Documentation**: See [docs/CODE_QUALITY.md](docs/CODE_QUALITY.md) for detailed information.
 
 ## Implementation Status
 

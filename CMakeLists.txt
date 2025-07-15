@@ -4,6 +4,13 @@ project(Rift VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Add cmake modules path
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+# Include code quality tools
+include(CodeQuality)
+setup_code_quality()
+
 # Define source files organized by module
 set(FRONTEND_SOURCES
     src/frontend/lexer/lexer.cpp
