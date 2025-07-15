@@ -69,34 +69,20 @@ The project includes integration with the official ECMAScript test suite (test26
 npm run test
 ```
 
-### Code Quality Commands
+### Code Quality
 
-The project includes comprehensive code quality tools:
+The project includes comprehensive code quality tools including clang-format, clang-tidy, cppcheck, and pre-commit hooks.
 
+**Quick Setup**:
 ```bash
-# Format all source files
-make format
-
-# Check formatting without changing files
-make format-check
-
-# Run static analysis
-make clang-tidy
-
-# Run additional static analysis
-make cppcheck
-
-# Run all quality checks
-make quality
-
-# Build with sanitizers (for development)
-cmake .. -DENABLE_SANITIZERS=ON
-make
+# Setup development environment with git hooks
+chmod +x scripts/setup-hooks.sh
+./scripts/setup-hooks.sh
 ```
 
-**Pre-commit Hook**: Automatically runs formatting and basic checks before each commit.
+**Common Commands**: `make format`, `make clang-tidy`, `make quality`
 
-**Documentation**: See [docs/CODE_QUALITY.md](docs/CODE_QUALITY.md) for detailed information.
+**Full Documentation**: See [docs/CODE_QUALITY.md](docs/CODE_QUALITY.md) for complete installation instructions, available tools, and development workflow.
 
 ## Implementation Status
 
