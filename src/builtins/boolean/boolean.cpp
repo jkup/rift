@@ -1,5 +1,6 @@
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/evaluation_utils.h"
 
 namespace rift::builtins {
 
@@ -40,7 +41,7 @@ Value Boolean::constructor(const std::vector<Value>& args) {
     bool isConstructorCall = false;
     size_t argOffset = 0;
     
-    if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
+    if (!args.empty() && args[0].isString() && args[0].getString() == rift::core::EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
         isConstructorCall = true;
         argOffset = 2;  // Skip the constructor marker and the 'this' object
     }

@@ -1,6 +1,7 @@
 #include "rift/core/engine/statement_evaluator.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/evaluation_utils.h"
 #include "rift/runtime/values/object.h"
 #include <iostream>
 
@@ -181,27 +182,14 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
         auto funcEnv = std::make_shared<Environment>(env);
         
         // Handle constructor call context and 'this' binding
-        size_t argOffset = 0;
-        bool isConstructorCall = false;
-        Value thisValue = Value::undefined();
-        
-        // Check if this is a constructor call
-        if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
-            isConstructorCall = true;
-            argOffset = 1;
-            // The next argument should be the 'this' object
-            if (args.size() > 1) {
-                thisValue = args[1];
-                argOffset = 2;
-            }
-        }
+        auto constructorInfo = EvaluationUtils::parseConstructorCall(args);
         
         // Bind 'this' to the function environment
-        funcEnv->define("this", thisValue);
+        funcEnv->define("this", constructorInfo.thisValue);
         
         // Bind parameters to arguments (skip constructor marker and this object)
         for (size_t i = 0; i < parameters.size(); ++i) {
-            Value argValue = (i + argOffset < args.size()) ? args[i + argOffset] : Value::undefined();
+            Value argValue = (i + constructorInfo.argOffset < args.size()) ? args[i + constructorInfo.argOffset] : Value::undefined();
             funcEnv->define(parameters[i], argValue);
         }
         
