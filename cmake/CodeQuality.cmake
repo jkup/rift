@@ -3,7 +3,21 @@
 
 # Function to find and configure clang-tidy
 function(enable_clang_tidy)
-    find_program(CLANG_TIDY_PROGRAM clang-tidy)
+    # Look for clang-tidy in common locations including Homebrew
+    find_program(CLANG_TIDY_PROGRAM 
+        NAMES clang-tidy clang-tidy-20 clang-tidy-19 clang-tidy-18
+        PATHS
+            /opt/homebrew/bin
+            /opt/homebrew/opt/llvm/bin
+            /usr/local/bin
+            /usr/local/opt/llvm/bin
+            /usr/bin
+        NO_DEFAULT_PATH
+    )
+    # Fallback to system search if not found in specific paths
+    if(NOT CLANG_TIDY_PROGRAM)
+        find_program(CLANG_TIDY_PROGRAM clang-tidy)
+    endif()
     if(CLANG_TIDY_PROGRAM)
         message(STATUS "Found clang-tidy: ${CLANG_TIDY_PROGRAM}")
         set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_PROGRAM};-checks=*,-fuchsia-*,-google-readability-todo,-readability-magic-numbers,-cppcoreguidelines-avoid-magic-numbers,-llvm-header-guard,-google-runtime-references,-modernize-use-trailing-return-type" PARENT_SCOPE)
@@ -93,7 +107,21 @@ endfunction()
 
 # Function to create a format target
 function(enable_format_target)
-    find_program(CLANG_FORMAT_PROGRAM clang-format)
+    # Look for clang-format in common locations including Homebrew
+    find_program(CLANG_FORMAT_PROGRAM 
+        NAMES clang-format clang-format-20 clang-format-19 clang-format-18
+        PATHS
+            /opt/homebrew/bin
+            /opt/homebrew/opt/llvm/bin
+            /usr/local/bin
+            /usr/local/opt/llvm/bin
+            /usr/bin
+        NO_DEFAULT_PATH
+    )
+    # Fallback to system search if not found in specific paths
+    if(NOT CLANG_FORMAT_PROGRAM)
+        find_program(CLANG_FORMAT_PROGRAM clang-format)
+    endif()
     if(CLANG_FORMAT_PROGRAM)
         message(STATUS "Found clang-format: ${CLANG_FORMAT_PROGRAM}")
         
