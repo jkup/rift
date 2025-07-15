@@ -12,7 +12,7 @@ using namespace rift::runtime;
  * Constants for function call handling
  */
 namespace EvaluationConstants {
-    static const std::string CONSTRUCTOR_CALL_MARKER = "__CONSTRUCTOR_CALL__";
+    constexpr const char* CONSTRUCTOR_CALL_MARKER = "__CONSTRUCTOR_CALL__";
 }
 
 /**
