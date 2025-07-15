@@ -47,9 +47,12 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
 Value ExpressionEvaluator::evaluateIdentifier(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
     // Special handling for 'this' keyword
     if (node->value == "this") {
-        // For now, return undefined to allow function declarations to work
-        // TODO: Implement proper 'this' binding context
-        return Value::undefined();
+        // Try to get 'this' from environment, return undefined if not found
+        try {
+            return env->get("this");
+        } catch (const std::runtime_error&) {
+            return Value::undefined();
+        }
     }
     
     return env->get(node->value);
@@ -390,9 +393,28 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
         // Create new environment for function execution
         auto funcEnv = std::make_shared<Environment>(env);
         
-        // Bind parameters to arguments
+        // Handle constructor call context and 'this' binding
+        size_t argOffset = 0;
+        bool isConstructorCall = false;
+        Value thisValue = Value::undefined();
+        
+        // Check if this is a constructor call
+        if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
+            isConstructorCall = true;
+            argOffset = 1;
+            // The next argument should be the 'this' object
+            if (args.size() > 1) {
+                thisValue = args[1];
+                argOffset = 2;
+            }
+        }
+        
+        // Bind 'this' to the function environment
+        funcEnv->define("this", thisValue);
+        
+        // Bind parameters to arguments (skip constructor marker and this object)
         for (size_t i = 0; i < parameters.size(); ++i) {
-            Value argValue = (i < args.size()) ? args[i] : Value::undefined();
+            Value argValue = (i + argOffset < args.size()) ? args[i + argOffset] : Value::undefined();
             funcEnv->define(parameters[i], argValue);
         }
         
@@ -431,11 +453,17 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node, 
         return Value::undefined();
     }
 
+    // Create a new object that will be the 'this' context for the constructor
+    auto newObj = engine->getObjectFactory()->createJSObject();
+    
     // Collect arguments (skip first child which is the constructor)
     std::vector<Value> args;
     
     // Add special marker to indicate this is a constructor call
     args.push_back(Value("__CONSTRUCTOR_CALL__"));
+    
+    // Add the 'this' object as the first real argument
+    args.push_back(Value(newObj));
     
     for (size_t i = 1; i < node->children.size(); ++i) {
         args.push_back(engine->evaluate(node->children[i], env));
@@ -450,9 +478,8 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node, 
         return result;
     }
 
-    // If constructor returned a primitive (or undefined), create a new object
-    // This handles user-defined constructor functions using GC-managed creation
-    auto newObj = engine->getObjectFactory()->createJSObject();
+    // If constructor returned a primitive (or undefined), return the object we created
+    // This handles user-defined constructor functions
     return Value(newObj);
 }
 

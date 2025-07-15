@@ -42,7 +42,7 @@ Value Boolean::constructor(const std::vector<Value>& args) {
     
     if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
         isConstructorCall = true;
-        argOffset = 1;  // Skip the constructor marker
+        argOffset = 2;  // Skip the constructor marker and the 'this' object
     }
     
     // Determine the boolean value from the actual arguments

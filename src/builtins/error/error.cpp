@@ -43,7 +43,7 @@ Value Error::constructor(const std::vector<Value>& args) {
     // Skip constructor marker if present
     size_t argOffset = 0;
     if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
-        argOffset = 1;  // Skip the constructor marker
+        argOffset = 2;  // Skip the constructor marker and the 'this' object
     }
     
     // Create Error object with proper prototype chain
