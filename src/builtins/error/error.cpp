@@ -1,6 +1,7 @@
 #include "rift/builtins/error/error.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/evaluation_utils.h"
 
 namespace rift::builtins {
 
@@ -42,7 +43,7 @@ JSObject* Error::createPrototype(rift::memory::ObjectFactory* factory) {
 Value Error::constructor(const std::vector<Value>& args) {
     // Skip constructor marker if present
     size_t argOffset = 0;
-    if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
+    if (!args.empty() && args[0].isString() && args[0].getString() == rift::core::EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
         argOffset = 2;  // Skip the constructor marker and the 'this' object
     }
     

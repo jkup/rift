@@ -1,4 +1,5 @@
 #include "rift/builtins/object/object.h"
+#include "rift/core/engine/evaluation_utils.h"
 
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/string/string.h"
@@ -48,7 +49,7 @@ JSObject* Object::createPrototype(rift::memory::ObjectFactory* factory) {
 Value Object::constructor(const std::vector<Value>& args) {
     // Skip constructor marker if present
     size_t argOffset = 0;
-    if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
+    if (!args.empty() && args[0].isString() && args[0].getString() == rift::core::EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
         argOffset = 2;  // Skip the constructor marker and the 'this' object
     }
     
