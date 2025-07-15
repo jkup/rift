@@ -180,9 +180,28 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
         // Create new environment for function execution
         auto funcEnv = std::make_shared<Environment>(env);
         
-        // Bind parameters to arguments
+        // Handle constructor call context and 'this' binding
+        size_t argOffset = 0;
+        bool isConstructorCall = false;
+        Value thisValue = Value::undefined();
+        
+        // Check if this is a constructor call
+        if (!args.empty() && args[0].isString() && args[0].getString() == "__CONSTRUCTOR_CALL__") {
+            isConstructorCall = true;
+            argOffset = 1;
+            // The next argument should be the 'this' object
+            if (args.size() > 1) {
+                thisValue = args[1];
+                argOffset = 2;
+            }
+        }
+        
+        // Bind 'this' to the function environment
+        funcEnv->define("this", thisValue);
+        
+        // Bind parameters to arguments (skip constructor marker and this object)
         for (size_t i = 0; i < parameters.size(); ++i) {
-            Value argValue = (i < args.size()) ? args[i] : Value::undefined();
+            Value argValue = (i + argOffset < args.size()) ? args[i + argOffset] : Value::undefined();
             funcEnv->define(parameters[i], argValue);
         }
         
