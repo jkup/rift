@@ -31,6 +31,7 @@ function(enable_clang_tidy)
             --system-headers=false
             --quiet
             -extra-arg=-w
+            -extra-arg=-fno-caret-diagnostics
             "-header-filter=^${CMAKE_SOURCE_DIR}/(src|include)/.*"
             ${ALL_CXX_SOURCE_FILES}
             COMMENT "Running clang-tidy static analysis (project sources only)"
