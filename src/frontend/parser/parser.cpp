@@ -493,6 +493,11 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
 
     // Parse array elements
     do {
+        // Check for trailing comma (closing bracket after comma)
+        if(current_token().type == TokenType::RightBracket) {
+            break;  // Trailing comma is allowed, stop parsing elements
+        }
+        
         auto element = parse_expression();
         ASTFactory::addArrayElement(array, element);
     } while(match(TokenType::Comma));
@@ -514,6 +519,11 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
 
     // Parse object properties
     do {
+        // Check for trailing comma (closing brace after comma)
+        if(current_token().type == TokenType::RightBrace) {
+            break;  // Trailing comma is allowed, stop parsing properties
+        }
+        
         // Parse property key (can be identifier or string literal)
         std::shared_ptr<ASTNode> key;
 
