@@ -92,7 +92,7 @@ jobs:
           
           const comment = `## 🚀 Quick Test262 Check
           
-          **Pattern:** \`${pattern}\`  
+          **Pattern:** \\\`${pattern}\\\`  
           **Result:** ${emoji} ${status} (${passRate}%)
           
           ${passed > 0 ? '🎉 Some tests are passing!' : '⚠️ No tests passing yet - this is normal for new features.'}
