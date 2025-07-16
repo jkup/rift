@@ -2,11 +2,12 @@
 
 ## Executive Summary
 
-After comprehensive analysis of the current implementation, we've identified the **remaining blockers** for test262 compatibility. The implementation has made significant progress with a **45.5% pass rate** and solid foundation.
+After comprehensive analysis and debug testing, we've identified a **critical runtime bug** that prevents test262 harness from working properly. While the implementation has made significant progress with a **45.5% pass rate** and solid foundation, a function expression parameter scoping bug is blocking further test262 compatibility.
 
-**Current Status**: Implementation has solid foundation but needs specific refinements for test262 compatibility  
-**Root Cause**: Several specific compatibility issues prevent optimal test262 execution  
-**Prognosis**: High confidence these targeted fixes will significantly improve test262 pass rate
+**Current Status**: ❌ **CRITICAL BUG FOUND** - Function expressions cannot access parameters  
+**Root Cause**: Function expression parameter binding is completely broken in the runtime  
+**Impact**: Prevents test262 harness from executing (harness uses function expressions extensively)  
+**Prognosis**: High confidence that fixing this single bug will dramatically improve test262 compatibility
 
 ---
 
@@ -230,6 +231,49 @@ for (m = 0; m < 3; m = m + 1) {
 
 ---
 
+## 🔴 **BLOCKER #7: Function Expression Parameter Scoping Bug - CRITICAL**
+
+### **Impact**: 🔴 **PREVENTS TEST262 HARNESS FROM WORKING**
+
+**Current Status**: ❌ **CRITICAL BUG** - Function expressions cannot access parameters
+
+**Root Cause**: Function expression parameter scoping is completely broken in the runtime
+
+**What's Wrong**:
+```javascript
+// Function declarations work perfectly:
+function declared(a, b, c) {
+    console.log(a, b, c);  // ✅ Works correctly
+    return a + b + c;
+}
+
+// Function expressions fail completely:
+var expr = function(x, y) {
+    console.log(x);  // ❌ Error: Undefined variable: x
+    console.log(y);  // ❌ Error: Undefined variable: y
+    return x + y;
+};
+```
+
+**Technical Details**:
+- Function declarations properly bind parameters to function scope ✅
+- Function expressions fail to bind ANY parameters to function scope ❌
+- Even single parameter access fails: `function(single) { return single; }` → "Undefined variable: single"
+- This affects both anonymous and named function expressions
+- Method function expressions in objects also affected
+
+**Test262 Impact**: 
+- Test262 harness uses function expressions extensively
+- `function Test262Error(message)` works (declaration)
+- `var assert = function(condition, message)` fails (expression)
+- Many test262 utility functions are function expressions
+
+**Fix Priority**: 🔴 **CRITICAL** - Blocking test262 harness execution
+
+**Fix Location**: Likely in function expression evaluation in `src/core/engine/expression_evaluator.cpp`
+
+---
+
 ## 📊 **Current Implementation Status**
 
 | Component | Status | Complexity | Remaining Work |
@@ -240,8 +284,9 @@ for (m = 0; m < 3; m = m + 1) {
 | Error handling | ✅ Complete | N/A | None |
 | Logical AND bug | ✅ Fixed | N/A | None |
 | For loops | ✅ **FIXED** | N/A | Increment operators (`++`, `--`) |
+| **Function expression parameters** | ❌ **BROKEN** | High | **Fix parameter scoping for function expressions** |
 
-**Overall Assessment**: ✅ **EXCELLENT** - Major blocker fixed, significant improvement expected
+**Overall Assessment**: 🔴 **CRITICAL BLOCKER** - Function expression bug prevents test262 harness from working
 
 ---
 
@@ -281,17 +326,63 @@ for (m = 0; m < 3; m = m + 1) {
 - **Status**: ✅ **ENHANCED** - Universal calling context detection implemented
 - **Result**: All built-in and user-defined constructors work correctly
 
-### **🚀 Phase 2: Next Priority Areas**
+### **🚀 Phase 2: Critical Fix Required**
 
-#### 1. Test262 Compatibility Validation 🔴 **HIGH PRIORITY**
-- **Target**: Run test262 suite to measure improvement
-- **Expected**: Significant pass rate increase (potentially 55-65%)
+#### 🔴 1. Fix Function Expression Parameter Scoping - **CRITICAL PRIORITY**
+- **Target**: Fix function expression parameter binding in runtime
+- **Current**: Function expressions cannot access any parameters
+- **Impact**: Prevents test262 harness from working
+- **Location**: `src/core/engine/expression_evaluator.cpp` function expression evaluation
+- **Expected Result**: Will enable test262 harness to run properly
+- **Test**: Use `test/debug-function-expressions.js` to verify fix
+
+#### 2. Test262 Compatibility Validation 🔴 **HIGH PRIORITY** 
+- **Target**: Run test262 suite after function expression fix
+- **Expected**: Significant pass rate increase (potentially 60-75%)
 - **Action**: Execute test262 runner and identify remaining issues
+- **Dependency**: Requires function expression fix first
 
-#### 2. Performance Optimization 🟡 **MEDIUM PRIORITY**
+#### 3. Performance Optimization 🟡 **MEDIUM PRIORITY**
 - **Target**: Optimize constructor call performance
 - **Current**: Additional argument handling may impact performance
 - **Fix**: Profile and optimize hot paths if needed
+
+---
+
+## 📋 **TODO: Critical Runtime Issues Discovered**
+
+Based on debug testing, the following critical issues prevent optimal test262 compatibility:
+
+### **🔴 Priority 1: Function Expression Parameter Scoping**
+- [ ] **Fix function expression parameter binding** in `src/core/engine/expression_evaluator.cpp`
+  - **Issue**: `var fn = function(x) { return x; }` → "Undefined variable: x"
+  - **Impact**: Prevents test262 harness from working
+  - **Test**: `test/debug-function-expressions.js` should pass all tests
+  - **Root Cause**: Function expressions don't bind parameters to function scope
+
+### **🟡 Priority 2: Test262 Harness Compatibility**
+- [ ] **Verify test262 harness works** after function expression fix
+  - **Target**: Basic test262 tests should run without harness errors
+  - **Test**: `node test262-runner.js test/language/expressions/addition/S11.6.1_A3.1_T2.1.js`
+  - **Expected**: Test passes without "Undefined variable" errors in harness
+
+### **🟢 Priority 3: Additional Language Features**
+- [ ] **Implement increment operators** (`++`, `--`) for for loops
+  - **Current**: Must use `i = i + 1` syntax
+  - **Impact**: Minor - workaround exists
+  - **Test**: For loop tests with `i++` syntax
+
+### **🟢 Priority 4: Advanced Function Features**
+- [ ] **Implement arguments object** for function introspection
+  - **Current**: Not implemented
+  - **Impact**: Some advanced test262 tests may fail
+  - **Test**: Function tests checking `arguments.length`
+
+### **🟢 Priority 5: Strict Mode Compatibility**
+- [ ] **Investigate strict mode support** for test262
+  - **Current**: Unclear if supported
+  - **Impact**: Some test262 tests require strict mode
+  - **Test**: Tests with `"use strict";` directive
 
 ---
 
