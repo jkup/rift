@@ -230,6 +230,10 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
         return parse_while_statement();
     }
 
+    if(current_token().type == TokenType::For) {
+        return parse_for_statement();
+    }
+
     if(current_token().type == TokenType::Function) {
         return parse_function_declaration();
     }
@@ -295,6 +299,46 @@ std::shared_ptr<ASTNode> Parser::parse_while_statement() {
     auto body = parse_statement();
 
     return ASTFactory::makeWhileStatement(condition, body);
+}
+
+std::shared_ptr<ASTNode> Parser::parse_for_statement() {
+    consume(TokenType::For);  // consume 'for'
+
+    consume(TokenType::LeftParen);  // consume '('
+
+    // Parse the initialization (can be variable declaration or assignment expression or empty)
+    std::shared_ptr<ASTNode> initialization = nullptr;
+    if(current_token().type == TokenType::Var) {
+        // Variable declaration: for (var i = 0; ...)
+        initialization = parse_variable_declaration();
+    } else if(current_token().type != TokenType::Semicolon) {
+        // Assignment expression: for (i = 0; ...)
+        initialization = parse_expression();
+    }
+    // else: empty initialization: for (; ...)
+
+    consume(TokenType::Semicolon);  // consume first ';'
+
+    // Parse the condition (optional)
+    std::shared_ptr<ASTNode> condition = nullptr;
+    if(current_token().type != TokenType::Semicolon) {
+        condition = parse_expression();
+    }
+
+    consume(TokenType::Semicolon);  // consume second ';'
+
+    // Parse the update expression (optional)
+    std::shared_ptr<ASTNode> update = nullptr;
+    if(current_token().type != TokenType::RightParen) {
+        update = parse_expression();
+    }
+
+    consume(TokenType::RightParen);  // consume ')'
+
+    // Parse the body statement
+    auto body = parse_statement();
+
+    return ASTFactory::makeForStatement(initialization, condition, update, body);
 }
 
 std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
