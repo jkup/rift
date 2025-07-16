@@ -295,4 +295,3 @@ MIT License - see LICENSE file for details.
 - [test262](https://github.com/tc39/test262) - ECMAScript Test Suite
 - ECMAScript specification for language semantics
 # Testing CI formatting
-# CI Formatting Test
