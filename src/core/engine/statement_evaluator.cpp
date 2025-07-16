@@ -41,6 +41,8 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateIfStatement(node, env, engine);
         case ASTNodeType::WhileStatement:
             return evaluateWhileStatement(node, env, engine);
+        case ASTNodeType::ForStatement:
+            return evaluateForStatement(node, env, engine);
         case ASTNodeType::ReturnStatement:
             return evaluateReturnStatement(node, env, engine);
         case ASTNodeType::ThrowStatement:
@@ -134,6 +136,42 @@ Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
             break;
         }
         result = engine->evaluate(node->children[1], env);
+    }
+
+    return result;
+}
+
+Value StatementEvaluator::evaluateForStatement(std::shared_ptr<ASTNode> node,
+                                               std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.size() < 4) {
+        return Value::undefined();
+    }
+
+    Value result = Value::undefined();
+
+    // Execute initialization (can be null for empty initialization)
+    if(node->children[0] != nullptr) {
+        engine->evaluate(node->children[0], env);
+    }
+
+    // Keep looping while condition is truthy (or infinitely if no condition)
+    while(true) {
+        // Check condition (if present)
+        if(node->children[1] != nullptr) {
+            Value condition = engine->evaluate(node->children[1], env);
+            if(!condition.toBool()) {
+                break;
+            }
+        }
+        // If no condition, loop infinitely (unless break/return is encountered)
+
+        // Execute body
+        result = engine->evaluate(node->children[3], env);
+
+        // Execute update expression (if present)
+        if(node->children[2] != nullptr) {
+            engine->evaluate(node->children[2], env);
+        }
     }
 
     return result;

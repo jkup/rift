@@ -111,6 +111,30 @@ class ASTFactory {
         return node;
     }
 
+    static std::shared_ptr<ASTNode> makeForStatement(std::shared_ptr<ASTNode> initialization,
+                                                     std::shared_ptr<ASTNode> condition,
+                                                     std::shared_ptr<ASTNode> update,
+                                                     std::shared_ptr<ASTNode> body) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::ForStatement);
+        if(initialization) {
+            node->children.push_back(initialization);
+        } else {
+            node->children.push_back(nullptr);  // Placeholder for empty initialization
+        }
+        if(condition) {
+            node->children.push_back(condition);
+        } else {
+            node->children.push_back(nullptr);  // Placeholder for empty condition (infinite loop)
+        }
+        if(update) {
+            node->children.push_back(update);
+        } else {
+            node->children.push_back(nullptr);  // Placeholder for empty update
+        }
+        node->children.push_back(body);
+        return node;
+    }
+
     // Declaration factories
     static std::shared_ptr<ASTNode> makeVariableDeclaration(
         const std::string& name, std::shared_ptr<ASTNode> initializer = nullptr) {
