@@ -20,10 +20,10 @@ JSObject* String::create(rift::memory::ObjectFactory* factory) {
     setObjectFactory(factory);
     
     // Create String constructor using GC-managed creation
-    auto string = factory->createJSFunction(String::constructor);
+    auto *string = factory->createJSFunction(String::constructor);
 
     // Create and set prototype
-    auto prototype = createPrototype(factory);
+    auto *prototype = createPrototype(factory);
     string->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
 
     return string;  // Return raw pointer
@@ -31,7 +31,7 @@ JSObject* String::create(rift::memory::ObjectFactory* factory) {
 
 JSObject* String::createPrototype(rift::memory::ObjectFactory* factory) {
     // Create String.prototype using GC-managed creation
-    auto prototype = factory->createJSObject();
+    auto *prototype = factory->createJSObject();
 
     // Add prototype methods using GC-managed function creation
     prototype->setProperty("charAt", Value(factory->createJSFunction(String::charAt)));
@@ -284,7 +284,7 @@ Value String::split(const std::vector<Value>& args) {
     std::string str = getStringValue(args);
 
     // Create an array to hold the results using GC-managed creation
-    auto result = object_factory_->createJSObject();  // Use factory instead of std::make_shared
+    auto *result = object_factory_->createJSObject();  // Use factory instead of std::make_shared
     std::vector<Value> elements;
 
     if (args.size() < 2 || args[1].isUndefined()) {

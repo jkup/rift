@@ -17,10 +17,10 @@ JSObject* Error::create(rift::memory::ObjectFactory* factory) {
     setObjectFactory(factory);
     
     // Create Error constructor using GC-managed creation
-    auto error = factory->createJSFunction(Error::constructor);
+    auto *error = factory->createJSFunction(Error::constructor);
 
     // Create and set prototype
-    auto prototype = createPrototype(factory);
+    auto *prototype = createPrototype(factory);
     error->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
 
     return error;  // Return raw pointer
@@ -28,7 +28,7 @@ JSObject* Error::create(rift::memory::ObjectFactory* factory) {
 
 JSObject* Error::createPrototype(rift::memory::ObjectFactory* factory) {
     // Create Error.prototype using GC-managed creation
-    auto prototype = factory->createJSObject();
+    auto *prototype = factory->createJSObject();
 
     // Set default properties
     prototype->setProperty("name", Value("Error"));
@@ -49,7 +49,7 @@ Value Error::constructor(const std::vector<Value>& args) {
     
     // Create Error object with proper prototype chain
     auto errorPrototype = getGlobalPrototype();
-    auto errorObj = object_factory_->createJSObject(errorPrototype);  // Use factory
+    auto *errorObj = object_factory_->createJSObject(errorPrototype);  // Use factory
     
     // Set the name property
     errorObj->setProperty("name", Value("Error"));

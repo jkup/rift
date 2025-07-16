@@ -66,7 +66,9 @@ public:
         }
         
         collection_in_progress_ = true;
+        #ifdef DEBUG_GC
         auto start_time = std::chrono::high_resolution_clock::now();
+        #endif
         
         // Clear all marks first
         for (auto* obj : all_objects_) {
@@ -100,10 +102,9 @@ public:
         ++total_collections_;
         collection_in_progress_ = false;
         
+        #ifdef DEBUG_GC
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-        
-        #ifdef DEBUG_GC
         std::cout << "[GC] Collection #" << total_collections_ 
                   << " completed in " << duration.count() << "μs"
                   << " - Collected " << collected << " objects"

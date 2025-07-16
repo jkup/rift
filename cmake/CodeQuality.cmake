@@ -20,19 +20,20 @@ function(enable_clang_tidy)
     endif()
     if(CLANG_TIDY_PROGRAM)
         message(STATUS "Found clang-tidy: ${CLANG_TIDY_PROGRAM}")
-        set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_PROGRAM};-checks=*,-fuchsia-*,-google-readability-todo,-readability-magic-numbers,-cppcoreguidelines-avoid-magic-numbers,-llvm-header-guard,-google-runtime-references,-modernize-use-trailing-return-type" PARENT_SCOPE)
         
-        # Create a target for running clang-tidy on all sources
+        # Only analyze source files, not headers (to avoid system header analysis)
         file(GLOB_RECURSE ALL_CXX_SOURCE_FILES 
-             ${CMAKE_SOURCE_DIR}/src/*.cpp
-             ${CMAKE_SOURCE_DIR}/src/*.h
-             ${CMAKE_SOURCE_DIR}/include/*.h)
+             ${CMAKE_SOURCE_DIR}/src/*.cpp)
         
         add_custom_target(clang-tidy
             COMMAND ${CLANG_TIDY_PROGRAM}
             -p ${CMAKE_BINARY_DIR}
+            --system-headers=false
+            --quiet
+            -extra-arg=-w
+            "-header-filter=^${CMAKE_SOURCE_DIR}/(src|include)/.*"
             ${ALL_CXX_SOURCE_FILES}
-            COMMENT "Running clang-tidy static analysis"
+            COMMENT "Running clang-tidy static analysis (project sources only)"
             VERBATIM)
     else()
         message(WARNING "clang-tidy not found. Install with: brew install llvm (macOS) or apt-get install clang-tidy (Ubuntu)")

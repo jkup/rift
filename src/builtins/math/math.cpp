@@ -17,7 +17,7 @@ std::uniform_real_distribution<> Math::dis(0.0, 1.0);
 
 JSObject* Math::create(rift::memory::ObjectFactory* factory) {
     // Create Math object using GC-managed creation
-    auto math = factory->createJSObject();
+    auto *math = factory->createJSObject();
 
     // Add Math constants
     math->setProperty("PI", Value(M_PI));

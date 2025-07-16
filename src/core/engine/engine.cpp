@@ -107,10 +107,11 @@ bool Rift::isGCEnabled() const {
 }
 
 void Rift::enterExceptionHandling() {
-    int new_depth = exception_depth_.fetch_add(1) + 1;
-    
     #ifdef DEBUG_GC
+    int new_depth = exception_depth_.fetch_add(1) + 1;
     std::cout << "[GC] Entering exception handling, depth: " << new_depth << std::endl;
+    #else
+    exception_depth_.fetch_add(1);
     #endif
 }
 

@@ -191,7 +191,7 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
 
         // Set the property on the object
         if (object.isObject() || object.isFunction()) {
-            auto obj = object.getObject();
+            auto *obj = object.getObject();
             if (obj) {
                 obj->setProperty(property, rightValue);
 
@@ -262,7 +262,7 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
 
     // If it's a function object, call it
     if (callee.isFunction()) {
-        auto func = dynamic_cast<JSFunction*>(callee.getObject());  // Use dynamic_cast for raw pointers
+        auto *func = dynamic_cast<JSFunction*>(callee.getObject());  // Use dynamic_cast for raw pointers
         if (func) {
             return func->call(args);
         }
@@ -297,7 +297,7 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
 
     // If it's an object, get the property
     if (object.isObject() || object.isFunction()) {
-        auto obj = object.getObject();
+        auto *obj = object.getObject();
         if (obj) {
             return obj->getProperty(property);
         }
@@ -306,7 +306,7 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
     // Handle primitive boxing - look up prototype methods
     if (object.isString()) {
         // Get the String prototype and look up the property
-        auto stringPrototype = BuiltinManager::getStringPrototype();
+        auto *stringPrototype = BuiltinManager::getStringPrototype();
         if (stringPrototype) {
             return stringPrototype->getProperty(property);
         }
@@ -325,14 +325,14 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node, s
     }
 
     // Use the Array::createArrayObject helper to create the array with GC-managed creation
-    auto arrayObj = builtins::Array::createArrayObject(engine->getObjectFactory(), elements);
+    auto *arrayObj = builtins::Array::createArrayObject(engine->getObjectFactory(), elements);
     return Value(arrayObj);
 }
 
 Value ExpressionEvaluator::evaluateObjectLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
     // Create a new empty object using GC-managed creation with Object.prototype
-    auto objectPrototype = BuiltinManager::getObjectPrototype();
-    auto obj = engine->getObjectFactory()->createJSObject(objectPrototype);
+    auto *objectPrototype = BuiltinManager::getObjectPrototype();
+    auto *obj = engine->getObjectFactory()->createJSObject(objectPrototype);
 
     // Process key-value pairs from the AST
     // Children are stored in pairs: key, value, key, value, ...
@@ -390,7 +390,7 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
     auto body = node->children[1];
     
     // Create function object (anonymous) using GC-managed creation
-    auto func = engine->getObjectFactory()->createJSFunction([engine, parameters, body, env](const std::vector<Value>& args) -> Value {
+    auto *func = engine->getObjectFactory()->createJSFunction([engine, parameters, body, env](const std::vector<Value>& args) -> Value {
         // Create new environment for function execution
         auto funcEnv = std::make_shared<Environment>(env);
         
@@ -436,13 +436,13 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node, 
         return Value::undefined();
     }
 
-    auto constructorFunc = dynamic_cast<JSFunction*>(constructor.getObject());  // Use dynamic_cast for raw pointers
+    auto *constructorFunc = dynamic_cast<JSFunction*>(constructor.getObject());  // Use dynamic_cast for raw pointers
     if (!constructorFunc) {
         return Value::undefined();
     }
 
     // Create a new object that will be the 'this' context for the constructor
-    auto newObj = engine->getObjectFactory()->createJSObject();
+    auto *newObj = engine->getObjectFactory()->createJSObject();
     
     // Collect arguments (skip first child which is the constructor)
     std::vector<Value> args;

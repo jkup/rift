@@ -4,7 +4,7 @@ namespace rift::builtins {
 
 JSObject* Console::create(rift::memory::ObjectFactory* factory) {
     // Create console object using GC-managed creation
-    auto console = factory->createJSObject();
+    auto *console = factory->createJSObject();
 
     // Add console methods using GC-managed function creation
     console->setProperty("log", Value(factory->createJSFunction(log)));

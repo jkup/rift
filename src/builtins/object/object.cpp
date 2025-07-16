@@ -20,7 +20,7 @@ JSObject* Object::create(rift::memory::ObjectFactory* factory) {
     setObjectFactory(factory);
     
     // Create Object constructor using GC-managed creation
-    auto object = factory->createJSFunction(Object::constructor);
+    auto *object = factory->createJSFunction(Object::constructor);
 
     // Add static methods using GC-managed function creation
     object->setProperty("keys", Value(factory->createJSFunction(Object::keys)));
@@ -28,7 +28,7 @@ JSObject* Object::create(rift::memory::ObjectFactory* factory) {
     object->setProperty("entries", Value(factory->createJSFunction(Object::entries)));
 
     // Create and set prototype
-    auto prototype = createPrototype(factory);
+    auto *prototype = createPrototype(factory);
     object->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
 
     return object;  // Return raw pointer
@@ -36,7 +36,7 @@ JSObject* Object::create(rift::memory::ObjectFactory* factory) {
 
 JSObject* Object::createPrototype(rift::memory::ObjectFactory* factory) {
     // Create Object.prototype using GC-managed creation
-    auto prototype = factory->createJSObject();
+    auto *prototype = factory->createJSObject();
 
     // Add prototype methods using GC-managed function creation
     prototype->setProperty("toString", Value(factory->createJSFunction(Object::toString)));
@@ -68,13 +68,13 @@ Value Object::constructor(const std::vector<Value>& args) {
     // Handle primitive to object conversion according to ECMAScript spec
     if (arg.isString()) {
         // Convert string primitive to String object
-        auto stringObj = object_factory_->createJSObject();
+        auto *stringObj = object_factory_->createJSObject();
         // Store the primitive string value (following similar pattern to Boolean)
         stringObj->setProperty("value", arg);
         // Add basic String methods
         auto toStringFn = [](const std::vector<Value>& args) -> Value {
             if (!args.empty() && args[0].isObject()) {
-                auto obj = args[0].getObject();
+                auto *obj = args[0].getObject();
                 if (obj) {
                     Value val = obj->getProperty("value");
                     if (val.isString()) {
@@ -86,7 +86,7 @@ Value Object::constructor(const std::vector<Value>& args) {
         };
         auto valueOfFn = [](const std::vector<Value>& args) -> Value {
             if (!args.empty() && args[0].isObject()) {
-                auto obj = args[0].getObject();
+                auto *obj = args[0].getObject();
                 if (obj) {
                     Value val = obj->getProperty("value");
                     if (val.isString()) {
@@ -105,13 +105,13 @@ Value Object::constructor(const std::vector<Value>& args) {
     
     if (arg.isBoolean()) {
         // Convert boolean primitive to Boolean object  
-        auto booleanObj = object_factory_->createJSObject();
+        auto *booleanObj = object_factory_->createJSObject();
         // Store the primitive boolean value (following Boolean constructor pattern)
         booleanObj->setProperty("value", arg);
         // Add basic Boolean methods
         auto toStringFn = [](const std::vector<Value>& args) -> Value {
             if (!args.empty() && args[0].isObject()) {
-                auto obj = args[0].getObject();
+                auto *obj = args[0].getObject();
                 if (obj) {
                     Value val = obj->getProperty("value");
                     if (val.isBoolean()) {
@@ -123,7 +123,7 @@ Value Object::constructor(const std::vector<Value>& args) {
         };
         auto valueOfFn = [](const std::vector<Value>& args) -> Value {
             if (!args.empty() && args[0].isObject()) {
-                auto obj = args[0].getObject();
+                auto *obj = args[0].getObject();
                 if (obj) {
                     Value val = obj->getProperty("value");
                     if (val.isBoolean()) {
@@ -142,12 +142,12 @@ Value Object::constructor(const std::vector<Value>& args) {
     
     if (arg.isNumber()) {
         // Convert number primitive to Number-like object
-        auto numberObj = object_factory_->createJSObject();
+        auto *numberObj = object_factory_->createJSObject();
         numberObj->setProperty("value", arg);
         // Add basic Number methods
         auto toStringFn = [](const std::vector<Value>& args) -> Value {
             if (!args.empty() && args[0].isObject()) {
-                auto obj = args[0].getObject();
+                auto *obj = args[0].getObject();
                 if (obj) {
                     Value val = obj->getProperty("value");
                     if (val.isNumber()) {
@@ -159,7 +159,7 @@ Value Object::constructor(const std::vector<Value>& args) {
         };
         auto valueOfFn = [](const std::vector<Value>& args) -> Value {
             if (!args.empty() && args[0].isObject()) {
-                auto obj = args[0].getObject();
+                auto *obj = args[0].getObject();
                 if (obj) {
                     Value val = obj->getProperty("value");
                     if (val.isNumber()) {
@@ -190,7 +190,7 @@ Value Object::keys(const std::vector<Value>& args) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    auto jsObj = obj.getObject();  // getObject() now returns raw pointer
+    auto *jsObj = obj.getObject();  // getObject() now returns raw pointer
     if (!jsObj) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
@@ -215,7 +215,7 @@ Value Object::values(const std::vector<Value>& args) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    auto jsObj = obj.getObject();  // getObject() now returns raw pointer
+    auto *jsObj = obj.getObject();  // getObject() now returns raw pointer
     if (!jsObj) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
@@ -240,7 +240,7 @@ Value Object::entries(const std::vector<Value>& args) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
 
-    auto jsObj = obj.getObject();  // getObject() now returns raw pointer
+    auto *jsObj = obj.getObject();  // getObject() now returns raw pointer
     if (!jsObj) {
         return Value(Array::createArrayObject(object_factory_, {}));
     }
@@ -281,7 +281,7 @@ Value Object::hasOwnProperty(const std::vector<Value>& args) {
         return Value(false);
     }
 
-    auto obj = thisValue.getObject();  // getObject() now returns raw pointer
+    auto *obj = thisValue.getObject();  // getObject() now returns raw pointer
     if (!obj) {
         return Value(false);
     }

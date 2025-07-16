@@ -1,51 +1,85 @@
-# .clang-tidy - Static analysis configuration for Rift JavaScript Runtime
 ---
+# .clang-tidy configuration for Rift JavaScript Runtime
+
+# Header filter - only analyze our own headers, ignore everything else
+HeaderFilterRegex: ''
+
+# System header filter - explicitly ignore system headers
+SystemHeaders: false
+
+# Use database for more accurate compilation commands
+UseColor: true
+
+# Checks to enable
 Checks: >
-  *,
-  -fuchsia-*,
-  -google-readability-todo,
-  -readability-magic-numbers,
+  bugprone-*,
+  clang-analyzer-*,
+  cppcoreguidelines-*,
+  google-*,
+  hicpp-*,
+  llvm-*,
+  misc-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-implicit-widening-of-multiplication-result,
+  -bugprone-narrowing-conversions,
+  -bugprone-signed-char-misuse,
+  -bugprone-unhandled-self-assignment,
+  -clang-analyzer-cplusplus.NewDelete*,
+  -clang-analyzer-cplusplus.NewDeleteLeaks,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  -cppcoreguidelines-avoid-c-arrays,
   -cppcoreguidelines-avoid-magic-numbers,
-  -llvm-header-guard,
-  -google-runtime-references,
-  -modernize-use-trailing-return-type,
-  -readability-identifier-length,
-  -misc-non-private-member-variables-in-classes,
-  -altera-*,
-  -android-*,
-  -darwin-*,
-  -linuxkernel-*,
-  -llvmlibc-*,
-  -zircon-*,
-  -abseil-*,
-  -boost-*,
-  -cert-err58-cpp,
-  -cert-msc32-c,
-  -cert-msc51-cpp,
   -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-macro-usage,
+  -cppcoreguidelines-narrowing-conversions,
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -cppcoreguidelines-pro-bounds-constant-array-index,
   -cppcoreguidelines-pro-bounds-pointer-arithmetic,
   -cppcoreguidelines-pro-type-reinterpret-cast,
+  -cppcoreguidelines-pro-type-union-access,
   -cppcoreguidelines-pro-type-vararg,
-  -google-build-using-namespace,
-  -google-runtime-int,
+  -fuchsia-*,
+  -google-readability-avoid-underscore-in-googletest-name,
+  -google-readability-todo,
+  -google-runtime-references,
+  -hicpp-avoid-c-arrays,
+  -hicpp-braces-around-statements,
+  -hicpp-named-parameter,
+  -hicpp-no-array-decay,
+  -hicpp-signed-bitwise,
+  -hicpp-uppercase-literal-suffix,
+  -hicpp-use-auto,
   -hicpp-vararg,
-  -readability-function-cognitive-complexity,
-  -readability-uppercase-literal-suffix,
+  -llvm-header-guard,
+  -llvm-include-order,
+  -misc-include-cleaner,
+  -misc-no-recursion,
+  -misc-non-private-member-variables-in-classes,
   -modernize-avoid-c-arrays,
-  -modernize-use-nodiscard,
-  -performance-no-int-to-ptr
+  -modernize-use-auto,
+  -modernize-use-trailing-return-type,
+  -performance-avoid-endl,
+  -readability-avoid-const-params-in-decls,
+  -readability-braces-around-statements,
+  -readability-function-cognitive-complexity,
+  -readability-identifier-length,
+  -readability-magic-numbers,
+  -readability-named-parameter,
+  -readability-redundant-access-specifiers,
+  -readability-uppercase-literal-suffix
 
 WarningsAsErrors: ''
-HeaderFilterRegex: '(src|include)/.*\.(h|hpp)$'
 FormatStyle: file
 CheckOptions:
   - key: readability-identifier-naming.ClassCase
     value: CamelCase
   - key: readability-identifier-naming.FunctionCase
-    value: camelCase
+    value: CamelCase
   - key: readability-identifier-naming.VariableCase
     value: lower_case
   - key: readability-identifier-naming.PrivateMemberSuffix

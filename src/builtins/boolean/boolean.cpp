@@ -16,10 +16,10 @@ JSObject* Boolean::create(rift::memory::ObjectFactory* factory) {
     setObjectFactory(factory);
     
     // Create Boolean constructor using GC-managed creation
-    auto boolean = factory->createJSFunction(Boolean::constructor);
+    auto *boolean = factory->createJSFunction(Boolean::constructor);
 
     // Create and set prototype
-    auto prototype = createPrototype(factory);
+    auto *prototype = createPrototype(factory);
     boolean->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
 
     return boolean;  // Return raw pointer
@@ -27,7 +27,7 @@ JSObject* Boolean::create(rift::memory::ObjectFactory* factory) {
 
 JSObject* Boolean::createPrototype(rift::memory::ObjectFactory* factory) {
     // Create Boolean.prototype using GC-managed creation
-    auto prototype = factory->createJSObject();
+    auto *prototype = factory->createJSObject();
 
     // Add prototype methods using GC-managed function creation
     prototype->setProperty("toString", Value(factory->createJSFunction(Boolean::toString)));
@@ -58,7 +58,7 @@ Value Boolean::constructor(const std::vector<Value>& args) {
     if (isConstructorCall) {
         // new Boolean() - return Boolean object
         auto booleanPrototype = getGlobalPrototype();
-        auto booleanObj = object_factory_->createJSObject(booleanPrototype);
+        auto *booleanObj = object_factory_->createJSObject(booleanPrototype);
         booleanObj->setProperty("value", Value(boolValue));
         return Value(booleanObj);
     } else {

@@ -160,13 +160,13 @@ Value Global::isFinite(const std::vector<Value>& args) {
 
 Value Global::createArray(const std::vector<Value>& args) {
     // Use GC-managed creation instead of std::make_shared
-    auto arrayObj = object_factory_->createJSObject();
+    auto *arrayObj = object_factory_->createJSObject();
 
     // Set array properties and methods
     arrayObj->setProperty("length", Value(0.0));
 
     // Create bound push method that captures the array object using GC-managed creation
-    auto pushMethod = object_factory_->createJSFunction([arrayObj](const std::vector<Value>& callArgs) -> Value {
+    auto *pushMethod = object_factory_->createJSFunction([arrayObj](const std::vector<Value>& callArgs) -> Value {
         Value lengthVal = arrayObj->getProperty("length");
         size_t length = static_cast<size_t>(lengthVal.toNumber());
 
@@ -182,7 +182,7 @@ Value Global::createArray(const std::vector<Value>& args) {
     arrayObj->setProperty("push", Value(pushMethod));
 
     // Create bound pop method that captures the array object using GC-managed creation
-    auto popMethod = object_factory_->createJSFunction([arrayObj](const std::vector<Value>& callArgs) -> Value {
+    auto *popMethod = object_factory_->createJSFunction([arrayObj](const std::vector<Value>& callArgs) -> Value {
         Value lengthVal = arrayObj->getProperty("length");
         size_t length = static_cast<size_t>(lengthVal.toNumber());
 
