@@ -30,7 +30,8 @@ class Test262Runner {
     const skippedBox = chalk.yellow(
       `[⏭️  ${this.skipped.toString().padStart(3)}]`
     );
-
+    
+    // Progress bar
     const progressBar = this.createProgressBar(currentIndex, totalTests, 20);
 
     // Current test (truncated if too long)
