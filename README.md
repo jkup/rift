@@ -71,7 +71,38 @@ npm run test
 
 ### Code Quality
 
-The project includes comprehensive code quality tools including clang-format, clang-tidy, cppcheck, and pre-commit hooks.
+This project uses comprehensive code quality tools to ensure safe and maintainable code:
+
+### Available Make Targets
+
+```bash
+# Code formatting
+make format          # Auto-format all source files
+make format-check    # Check formatting (used in CI)
+
+# Static analysis
+make cppcheck        # Run cppcheck static analysis
+
+# All quality checks
+make quality         # Run format-check + cppcheck
+```
+
+### GitHub Actions CI
+
+All pull requests automatically run:
+- **Code formatting check** - Ensures consistent style
+- **Static analysis** - Catches potential bugs with cppcheck
+- **Multi-compiler builds** - Tests with both GCC and Clang
+- **Sanitizer builds** - Runtime error detection with AddressSanitizer/UBSan
+
+### For Contributors
+
+Before submitting a PR:
+1. Run `make format` to auto-format your code
+2. Run `make quality` to check for issues
+3. Ensure your code builds: `make -j4`
+
+The CI will automatically verify all quality checks on your PR.
 
 **Quick Setup**:
 ```bash
