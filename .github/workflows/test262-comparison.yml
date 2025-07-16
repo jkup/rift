@@ -120,13 +120,13 @@ jobs:
       run: |
         cp /tmp/test262-pr-results.txt .
         
-        # Calculate differences
-        PR_PASSED=${{ steps.test262-pr.outputs.pr_passed }}
-        MAIN_PASSED=${{ steps.test262-main.outputs.main_passed }}
-        PR_TOTAL=${{ steps.test262-pr.outputs.pr_total }}
-        MAIN_TOTAL=${{ steps.test262-main.outputs.main_total }}
-        PR_RATE=${{ steps.test262-pr.outputs.pr_pass_rate }}
-        MAIN_RATE=${{ steps.test262-main.outputs.main_pass_rate }}
+        # Calculate differences (with safe defaults)
+        PR_PASSED="${{ steps.test262-pr.outputs.pr_passed || '0' }}"
+        MAIN_PASSED="${{ steps.test262-main.outputs.main_passed || '0' }}"
+        PR_TOTAL="${{ steps.test262-pr.outputs.pr_total || '0' }}"
+        MAIN_TOTAL="${{ steps.test262-main.outputs.main_total || '0' }}"
+        PR_RATE="${{ steps.test262-pr.outputs.pr_pass_rate || '0' }}"
+        MAIN_RATE="${{ steps.test262-main.outputs.main_pass_rate || '0' }}"
         
         PASSED_DIFF=$((PR_PASSED - MAIN_PASSED))
         RATE_DIFF=$(echo "scale=2; $PR_RATE - $MAIN_RATE" | bc -l 2>/dev/null || echo "0")
@@ -246,12 +246,12 @@ jobs:
           }
     
     - name: Create status check
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && always()
       uses: actions/github-script@v7
       with:
         script: |
-          const passedDiff = ${{ steps.comparison.outputs.passed_diff }};
-          const status = '${{ steps.comparison.outputs.status }}';
+          const passedDiff = parseInt('${{ steps.comparison.outputs.passed_diff }}') || 0;
+          const status = '${{ steps.comparison.outputs.status }}' || 'unknown';
           
           let state, description;
           if (passedDiff > 0) {
