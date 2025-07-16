@@ -1,53 +1,6 @@
 # CodeQuality.cmake - Comprehensive code quality tools for Rift
 # This file provides functions to integrate various code quality tools
 
-# Function to find and configure clang-tidy
-function(enable_clang_tidy)
-    option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis" OFF)
-    
-    if(NOT ENABLE_CLANG_TIDY)
-        message(STATUS "clang-tidy disabled (use -DENABLE_CLANG_TIDY=ON to enable)")
-        return()
-    endif()
-    
-    # Look for clang-tidy in common locations including Homebrew
-    find_program(CLANG_TIDY_PROGRAM 
-        NAMES clang-tidy clang-tidy-20 clang-tidy-19 clang-tidy-18
-        PATHS
-            /opt/homebrew/bin
-            /opt/homebrew/opt/llvm/bin
-            /usr/local/bin
-            /usr/local/opt/llvm/bin
-            /usr/bin
-        NO_DEFAULT_PATH
-    )
-    # Fallback to system search if not found in specific paths
-    if(NOT CLANG_TIDY_PROGRAM)
-        find_program(CLANG_TIDY_PROGRAM clang-tidy)
-    endif()
-    if(CLANG_TIDY_PROGRAM)
-        message(STATUS "Found clang-tidy: ${CLANG_TIDY_PROGRAM}")
-        
-        # Only analyze source files, not headers (to avoid system header analysis)
-        file(GLOB_RECURSE ALL_CXX_SOURCE_FILES 
-             ${CMAKE_SOURCE_DIR}/src/*.cpp)
-        
-        # Simple clang-tidy with minimal checks
-        add_custom_target(clang-tidy
-            COMMAND ${CLANG_TIDY_PROGRAM}
-            -p ${CMAKE_BINARY_DIR}
-            --quiet
-            -extra-arg=-w
-            -extra-arg=-fno-caret-diagnostics
-            --checks=readability-*,bugprone-*,performance-*
-            ${ALL_CXX_SOURCE_FILES}
-            COMMENT "Running clang-tidy static analysis (minimal checks)"
-            VERBATIM)
-    else()
-        message(WARNING "clang-tidy not found. Install with: brew install llvm (macOS) or apt-get install clang-tidy (Ubuntu)")
-    endif()
-endfunction()
-
 # Function to enable cpplint as an alternative
 function(enable_cpplint)
     find_program(CPPLINT_PROGRAM cpplint)
@@ -217,7 +170,6 @@ function(setup_code_quality)
     enable_compile_commands()
     enable_warnings()
     enable_sanitizers()
-    enable_clang_tidy()
     enable_cpplint()
     enable_iwyu()
     enable_cppcheck()
@@ -229,7 +181,6 @@ function(setup_code_quality)
     message(STATUS "  - format-check: Check formatting without changing files")
     message(STATUS "  - cpplint: Run Google's C++ style checker")
     message(STATUS "  - iwyu: Run include-what-you-use")
-    message(STATUS "  - clang-tidy: Run clang-tidy static analysis (if enabled)")
     message(STATUS "  - cppcheck: Run cppcheck static analysis")
     message(STATUS "  - quality: Run all quality checks")
 endfunction() 
