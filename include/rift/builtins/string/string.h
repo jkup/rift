@@ -6,9 +6,9 @@
 #include <string>
 #include <vector>
 
+#include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
-#include "../../memory/object_factory.h"
 
 namespace rift::builtins {
 
@@ -26,14 +26,14 @@ using namespace rift::runtime;
 /// [spec]: https://tc39.es/ecma262/#sec-string-objects
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
 class String {
-   public:
+  public:
     // Static factory method
     static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
     // Create String constructor function - now returns raw pointer
     static JSObject* create(rift::memory::ObjectFactory* factory);
 
-    // Create String.prototype - now returns raw pointer  
+    // Create String.prototype - now returns raw pointer
     static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
 
     /// The `String()` constructor creates String objects or primitive strings.

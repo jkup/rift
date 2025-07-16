@@ -1,8 +1,10 @@
 #include "rift/core/engine/engine.h"
+
+#include <iostream>
+
+#include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/expression_evaluator.h"
 #include "rift/core/engine/statement_evaluator.h"
-#include "rift/core/engine/builtin_manager.h"
-#include <iostream>
 
 namespace rift::core {
 
@@ -11,40 +13,40 @@ Rift::Rift() {
     object_factory_ = std::make_unique<rift::memory::ObjectFactory>(object_manager_.get());
     global_env_ = std::make_shared<Environment>();
     global_env_gc_ = std::make_unique<rift::memory::GCEnvironment>(global_env_);
-    
+
     // Register global environment as a GC root
     object_manager_->addRoot(global_env_gc_.get());
-    
+
     setupBuiltins();
 }
 
 Rift::~Rift() {
     // Clean shutdown - remove roots and disable GC first
-    if (object_manager_ && global_env_gc_) {
+    if(object_manager_ && global_env_gc_) {
         object_manager_->removeRoot(global_env_gc_.get());
         object_manager_->setGCEnabled(false);
     }
-    
+
     // Clear builtin static prototypes to avoid dangling pointers
     BuiltinManager::clearStaticPrototypes();
-    
+
     // Explicit order of destruction to avoid issues
     global_env_gc_.reset();
     object_factory_.reset();
     object_manager_.reset();
 }
 
-Value Rift::execute(std::shared_ptr<ASTNode> ast) { 
-    return evaluate(ast, global_env_); 
+Value Rift::execute(std::shared_ptr<ASTNode> ast) {
+    return evaluate(ast, global_env_);
 }
 
 Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env) {
-    if (!node) {
+    if(!node) {
         return Value::undefined();
     }
 
     // Delegate to appropriate evaluator based on node type
-    switch (node->type) {
+    switch(node->type) {
         // Expression types
         case ASTNodeType::Identifier:
         case ASTNodeType::Literal:
@@ -85,11 +87,11 @@ void Rift::setupBuiltins() {
 
 void Rift::collectGarbage() {
     // If we're in exception handling, defer collection
-    if (isInExceptionHandling()) {
+    if(isInExceptionHandling()) {
         deferred_collection_needed_.store(true);
         return;
     }
-    
+
     object_manager_->collect();
     deferred_collection_needed_.store(false);
 }
@@ -107,40 +109,42 @@ bool Rift::isGCEnabled() const {
 }
 
 void Rift::enterExceptionHandling() {
-    #ifdef DEBUG_GC
+#ifdef DEBUG_GC
     int new_depth = exception_depth_.fetch_add(1) + 1;
     std::cout << "[GC] Entering exception handling, depth: " << new_depth << std::endl;
-    #else
+#else
     exception_depth_.fetch_add(1);
-    #endif
+#endif
 }
 
 void Rift::exitExceptionHandling() {
     int depth = exception_depth_.fetch_sub(1);
-    
+
     // Defensive programming: ensure we don't go negative
-    if (depth <= 0) {
-        // This should never happen in correct code - indicates a bug
-        #ifdef DEBUG_GC
-        std::cerr << "[GC] ERROR: exitExceptionHandling() called without matching enterExceptionHandling()!" << std::endl;
+    if(depth <= 0) {
+// This should never happen in correct code - indicates a bug
+#ifdef DEBUG_GC
+        std::cerr << "[GC] ERROR: exitExceptionHandling() called without matching "
+                     "enterExceptionHandling()!"
+                  << std::endl;
         std::cerr << "[GC] Previous depth was: " << depth << std::endl;
-        #endif
-        
+#endif
+
         // Reset to 0 to prevent further issues
         exception_depth_.store(0);
         return;
     }
-    
-    #ifdef DEBUG_GC
+
+#ifdef DEBUG_GC
     std::cout << "[GC] Exiting exception handling, depth: " << (depth - 1) << std::endl;
-    #endif
-    
+#endif
+
     // If we've exited all exception handling and have deferred collection
-    if (depth == 1 && deferred_collection_needed_.load()) {
-        #ifdef DEBUG_GC
+    if(depth == 1 && deferred_collection_needed_.load()) {
+#ifdef DEBUG_GC
         std::cout << "[GC] Triggering deferred collection" << std::endl;
-        #endif
-        
+#endif
+
         // Trigger the deferred collection now that it's safe
         object_manager_->collect();
         deferred_collection_needed_.store(false);

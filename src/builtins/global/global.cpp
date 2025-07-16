@@ -16,10 +16,11 @@ void Global::setObjectFactory(rift::memory::ObjectFactory* factory) {
     object_factory_ = factory;
 }
 
-void Global::setupGlobalFunctions(std::shared_ptr<Environment> global_env, rift::memory::ObjectFactory* factory) {
+void Global::setupGlobalFunctions(std::shared_ptr<Environment> global_env,
+                                  rift::memory::ObjectFactory* factory) {
     // Store factory for use in other methods
     setObjectFactory(factory);
-    
+
     // Add global functions using GC-managed creation
     global_env->define("parseInt", Value(factory->createJSFunction(parseInt)));
     global_env->define("parseFloat", Value(factory->createJSFunction(parseFloat)));
@@ -36,47 +37,47 @@ void Global::setupGlobalFunctions(std::shared_ptr<Environment> global_env, rift:
 }
 
 Value Global::parseInt(const std::vector<Value>& args) {
-    if (args.empty()) {
+    if(args.empty()) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
     std::string str = args[0].toString();
     int radix = 10;
 
-    if (args.size() >= 2) {
+    if(args.size() >= 2) {
         double radixNum = args[1].toNumber();
-        if (!std::isnan(radixNum)) {
+        if(!std::isnan(radixNum)) {
             radix = static_cast<int>(radixNum);
         }
     }
 
     // Radix must be between 2 and 36
-    if (radix < 2 || radix > 36) {
+    if(radix < 2 || radix > 36) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
     // Skip whitespace
     size_t i = 0;
-    while (i < str.length() && std::isspace(str[i])) {
+    while(i < str.length() && std::isspace(str[i])) {
         i++;
     }
 
-    if (i >= str.length()) {
+    if(i >= str.length()) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
     // Handle sign
     bool negative = false;
-    if (str[i] == '-') {
+    if(str[i] == '-') {
         negative = true;
         i++;
-    } else if (str[i] == '+') {
+    } else if(str[i] == '+') {
         i++;
     }
 
     // Handle hex prefix for radix 16
-    if (radix == 16 && i + 1 < str.length() && str[i] == '0' &&
-        (str[i + 1] == 'x' || str[i + 1] == 'X')) {
+    if(radix == 16 && i + 1 < str.length() && str[i] == '0' &&
+       (str[i + 1] == 'x' || str[i + 1] == 'X')) {
         i += 2;
     }
 
@@ -84,9 +85,9 @@ Value Global::parseInt(const std::vector<Value>& args) {
     double result = 0;
     bool foundValidDigit = false;
 
-    while (i < str.length()) {
+    while(i < str.length()) {
         char c = str[i];
-        if (!isValidDigit(c, radix)) {
+        if(!isValidDigit(c, radix)) {
             break;
         }
 
@@ -95,7 +96,7 @@ Value Global::parseInt(const std::vector<Value>& args) {
         i++;
     }
 
-    if (!foundValidDigit) {
+    if(!foundValidDigit) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
@@ -103,7 +104,7 @@ Value Global::parseInt(const std::vector<Value>& args) {
 }
 
 Value Global::parseFloat(const std::vector<Value>& args) {
-    if (args.empty()) {
+    if(args.empty()) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
@@ -111,22 +112,22 @@ Value Global::parseFloat(const std::vector<Value>& args) {
 
     // Skip leading whitespace
     size_t i = 0;
-    while (i < str.length() && std::isspace(str[i])) {
+    while(i < str.length() && std::isspace(str[i])) {
         i++;
     }
 
-    if (i >= str.length()) {
+    if(i >= str.length()) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
     // Handle infinity
-    if (str.substr(i, 8) == "Infinity") {
+    if(str.substr(i, 8) == "Infinity") {
         return Value(std::numeric_limits<double>::infinity());
     }
-    if (str.substr(i, 9) == "-Infinity") {
+    if(str.substr(i, 9) == "-Infinity") {
         return Value(-std::numeric_limits<double>::infinity());
     }
-    if (str.substr(i, 9) == "+Infinity") {
+    if(str.substr(i, 9) == "+Infinity") {
         return Value(std::numeric_limits<double>::infinity());
     }
 
@@ -135,13 +136,13 @@ Value Global::parseFloat(const std::vector<Value>& args) {
         size_t endPos;
         double result = std::stod(str.substr(i), &endPos);
         return Value(result);
-    } catch (...) {
+    } catch(...) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 }
 
 Value Global::isNaN(const std::vector<Value>& args) {
-    if (args.empty()) {
+    if(args.empty()) {
         return Value(true);  // isNaN(undefined) is true
     }
 
@@ -150,7 +151,7 @@ Value Global::isNaN(const std::vector<Value>& args) {
 }
 
 Value Global::isFinite(const std::vector<Value>& args) {
-    if (args.empty()) {
+    if(args.empty()) {
         return Value(false);  // isFinite(undefined) is false
     }
 
@@ -160,47 +161,50 @@ Value Global::isFinite(const std::vector<Value>& args) {
 
 Value Global::createArray(const std::vector<Value>& args) {
     // Use GC-managed creation instead of std::make_shared
-    auto *arrayObj = object_factory_->createJSObject();
+    auto* arrayObj = object_factory_->createJSObject();
 
     // Set array properties and methods
     arrayObj->setProperty("length", Value(0.0));
 
     // Create bound push method that captures the array object using GC-managed creation
-    auto *pushMethod = object_factory_->createJSFunction([arrayObj](const std::vector<Value>& callArgs) -> Value {
-        Value lengthVal = arrayObj->getProperty("length");
-        size_t length = static_cast<size_t>(lengthVal.toNumber());
+    auto* pushMethod =
+        object_factory_->createJSFunction([arrayObj](const std::vector<Value>& callArgs) -> Value {
+            Value lengthVal = arrayObj->getProperty("length");
+            size_t length = static_cast<size_t>(lengthVal.toNumber());
 
-        // Add all arguments to the array
-        for (size_t i = 0; i < callArgs.size(); ++i) {
-            arrayObj->setProperty(std::to_string(length), callArgs[i]);
-            length++;
-        }
+            // Add all arguments to the array
+            for(size_t i = 0; i < callArgs.size(); ++i) {
+                arrayObj->setProperty(std::to_string(length), callArgs[i]);
+                length++;
+            }
 
-        arrayObj->setProperty("length", Value(static_cast<double>(length)));
-        return Value(static_cast<double>(length));
-    });
+            arrayObj->setProperty("length", Value(static_cast<double>(length)));
+            return Value(static_cast<double>(length));
+        });
     arrayObj->setProperty("push", Value(pushMethod));
 
     // Create bound pop method that captures the array object using GC-managed creation
-    auto *popMethod = object_factory_->createJSFunction([arrayObj](const std::vector<Value>& callArgs) -> Value {
-        Value lengthVal = arrayObj->getProperty("length");
-        size_t length = static_cast<size_t>(lengthVal.toNumber());
+    auto* popMethod =
+        object_factory_->createJSFunction([arrayObj](const std::vector<Value>& callArgs) -> Value {
+            Value lengthVal = arrayObj->getProperty("length");
+            size_t length = static_cast<size_t>(lengthVal.toNumber());
 
-        if (length == 0) return Value::undefined();
+            if(length == 0)
+                return Value::undefined();
 
-        Value lastElement = arrayObj->getProperty(std::to_string(length - 1));
-        arrayObj->setProperty(std::to_string(length - 1), Value::undefined());
-        arrayObj->setProperty("length", Value(static_cast<double>(length - 1)));
+            Value lastElement = arrayObj->getProperty(std::to_string(length - 1));
+            arrayObj->setProperty(std::to_string(length - 1), Value::undefined());
+            arrayObj->setProperty("length", Value(static_cast<double>(length - 1)));
 
-        return lastElement;
-    });
+            return lastElement;
+        });
     arrayObj->setProperty("pop", Value(popMethod));
 
     return Value(arrayObj);
 }
 
 bool Global::isValidDigit(char c, int radix) {
-    if (radix <= 10) {
+    if(radix <= 10) {
         return c >= '0' && c < ('0' + radix);
     } else {
         return (c >= '0' && c <= '9') || (c >= 'a' && c < ('a' + radix - 10)) ||
@@ -209,11 +213,11 @@ bool Global::isValidDigit(char c, int radix) {
 }
 
 int Global::getDigitValue(char c) {
-    if (c >= '0' && c <= '9') {
+    if(c >= '0' && c <= '9') {
         return c - '0';
-    } else if (c >= 'a' && c <= 'z') {
+    } else if(c >= 'a' && c <= 'z') {
         return c - 'a' + 10;
-    } else if (c >= 'A' && c <= 'Z') {
+    } else if(c >= 'A' && c <= 'Z') {
         return c - 'A' + 10;
     }
     return 0;

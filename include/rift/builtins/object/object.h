@@ -2,9 +2,9 @@
 
 #include <vector>
 
+#include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
-#include "../../memory/object_factory.h"
 
 namespace rift::builtins {
 
@@ -22,7 +22,7 @@ using namespace rift::runtime;
 /// [spec]: https://tc39.es/ecma262/#sec-object-objects
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 class Object {
-   public:
+  public:
     /// Static factory method
     static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
@@ -32,7 +32,7 @@ class Object {
     /// Create Object.prototype - now returns raw pointer
     static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
 
-   private:
+  private:
     /// Static factory storage
     static rift::memory::ObjectFactory* object_factory_;
 
@@ -123,4 +123,4 @@ class Object {
     static Value hasOwnProperty(const std::vector<Value>& args);
 };
 
-}  // namespace rift::builtins 
+}  // namespace rift::builtins

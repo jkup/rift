@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+
 #include "../../frontend/ast/ast_node.h"
 #include "../../runtime/environment/environment.h"
 #include "../../runtime/values/value.h"
@@ -14,24 +15,37 @@ using namespace rift::ast;
 class Rift;
 
 class ExpressionEvaluator {
-public:
+  public:
     // Main evaluation dispatcher for expressions
-    static Value evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
+                          Rift* engine);
 
-private:
+  private:
     // Expression evaluation methods
-    static Value evaluateIdentifier(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
-    static Value evaluateLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
-    static Value evaluateBinaryExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
-    static Value evaluateUnaryExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
-    static Value evaluateAssignmentExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
-    static Value evaluateCallExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
-    static Value evaluateMemberExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
-    static Value evaluateArrayLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
-    static Value evaluateObjectLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
-    static Value evaluateFunctionExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
-    static Value evaluateNewExpression(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
-    static Value evaluateTemplateLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateIdentifier(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
+                                    Rift* engine);
+    static Value evaluateLiteral(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
+                                 Rift* engine);
+    static Value evaluateBinaryExpression(std::shared_ptr<ASTNode> node,
+                                          std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateUnaryExpression(std::shared_ptr<ASTNode> node,
+                                         std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateAssignmentExpression(std::shared_ptr<ASTNode> node,
+                                              std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateCallExpression(std::shared_ptr<ASTNode> node,
+                                        std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateMemberExpression(std::shared_ptr<ASTNode> node,
+                                          std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
+                                      std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateObjectLiteral(std::shared_ptr<ASTNode> node,
+                                       std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateFunctionExpression(std::shared_ptr<ASTNode> node,
+                                            std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateNewExpression(std::shared_ptr<ASTNode> node,
+                                       std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateTemplateLiteral(std::shared_ptr<ASTNode> node,
+                                         std::shared_ptr<Environment> env, Rift* engine);
 };
 
-}  // namespace rift::core 
+}  // namespace rift::core

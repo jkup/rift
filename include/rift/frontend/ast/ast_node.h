@@ -43,8 +43,10 @@ struct ASTNode {
     std::string value;
     std::string metadata;  // For storing additional type information
 
-    ASTNode(ASTNodeType t) : type(t) {}
-    ASTNode(ASTNodeType t, const std::string& v) : type(t), value(v) {}
+    ASTNode(ASTNodeType t) : type(t) {
+    }
+    ASTNode(ASTNodeType t, const std::string& v) : type(t), value(v) {
+    }
 };
 
 }  // namespace rift::ast

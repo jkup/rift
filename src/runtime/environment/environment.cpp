@@ -4,15 +4,17 @@
 
 namespace rift::runtime {
 
-void Environment::define(const std::string& name, const Value& value) { variables_[name] = value; }
+void Environment::define(const std::string& name, const Value& value) {
+    variables_[name] = value;
+}
 
 Value Environment::get(const std::string& name) {
     auto it = variables_.find(name);
-    if (it != variables_.end()) {
+    if(it != variables_.end()) {
         return it->second;
     }
 
-    if (parent_) {
+    if(parent_) {
         return parent_->get(name);
     }
 
@@ -21,16 +23,16 @@ Value Environment::get(const std::string& name) {
 
 void Environment::set(const std::string& name, const Value& value) {
     auto it = variables_.find(name);
-    if (it != variables_.end()) {
+    if(it != variables_.end()) {
         it->second = value;
         return;
     }
 
-    if (parent_) {
+    if(parent_) {
         try {
             parent_->set(name, value);
             return;
-        } catch (...) {
+        } catch(...) {
             // Fall through to define in current scope
         }
     }
@@ -40,11 +42,11 @@ void Environment::set(const std::string& name, const Value& value) {
 }
 
 bool Environment::has(const std::string& name) const {
-    if (variables_.find(name) != variables_.end()) {
+    if(variables_.find(name) != variables_.end()) {
         return true;
     }
 
-    if (parent_) {
+    if(parent_) {
         return parent_->has(name);
     }
 
@@ -57,7 +59,7 @@ std::shared_ptr<Environment> Environment::createChild() {
 
 std::vector<std::string> Environment::getVariableNames() const {
     std::vector<std::string> names;
-    for (const auto& pair : variables_) {
+    for(const auto& pair : variables_) {
         names.push_back(pair.first);
     }
     return names;

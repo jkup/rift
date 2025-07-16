@@ -2,9 +2,9 @@
 
 #include <string>
 
+#include "../../memory/object_factory.h"
 #include "../../runtime/environment/environment.h"
 #include "../../runtime/values/value.h"
-#include "../../memory/object_factory.h"
 
 namespace rift::builtins {
 
@@ -21,14 +21,15 @@ using namespace rift::runtime;
 /// [spec]: https://tc39.es/ecma262/#sec-global-object
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 class Global {
-   public:
+  public:
     /// Static factory method
     static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
     /// Setup global builtin functions in the provided environment.
-    static void setupGlobalFunctions(std::shared_ptr<Environment> global_env, rift::memory::ObjectFactory* factory);
+    static void setupGlobalFunctions(std::shared_ptr<Environment> global_env,
+                                     rift::memory::ObjectFactory* factory);
 
-   private:
+  private:
     /// Static factory storage
     static rift::memory::ObjectFactory* object_factory_;
 

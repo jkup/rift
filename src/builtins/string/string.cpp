@@ -1,10 +1,10 @@
 #include "rift/builtins/string/string.h"
 
+#include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <limits>
 #include <sstream>
-#include <algorithm>
-#include <cctype>
 
 namespace rift::builtins {
 
@@ -18,12 +18,12 @@ void String::setObjectFactory(rift::memory::ObjectFactory* factory) {
 JSObject* String::create(rift::memory::ObjectFactory* factory) {
     // Store factory for use in other methods
     setObjectFactory(factory);
-    
+
     // Create String constructor using GC-managed creation
-    auto *string = factory->createJSFunction(String::constructor);
+    auto* string = factory->createJSFunction(String::constructor);
 
     // Create and set prototype
-    auto *prototype = createPrototype(factory);
+    auto* prototype = createPrototype(factory);
     string->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
 
     return string;  // Return raw pointer
@@ -31,7 +31,7 @@ JSObject* String::create(rift::memory::ObjectFactory* factory) {
 
 JSObject* String::createPrototype(rift::memory::ObjectFactory* factory) {
     // Create String.prototype using GC-managed creation
-    auto *prototype = factory->createJSObject();
+    auto* prototype = factory->createJSObject();
 
     // Add prototype methods using GC-managed function creation
     prototype->setProperty("charAt", Value(factory->createJSFunction(String::charAt)));
@@ -54,7 +54,7 @@ JSObject* String::createPrototype(rift::memory::ObjectFactory* factory) {
 Value String::constructor(const std::vector<Value>& args) {
     // If called with new, create a String object
     // If called without new, return a primitive string
-    if (args.empty()) {
+    if(args.empty()) {
         return Value("");
     }
 
@@ -65,11 +65,11 @@ Value String::fromCharCode(const std::vector<Value>& args) {
     std::string result;
     result.reserve(args.size());
 
-    for (const auto& arg : args) {
+    for(const auto& arg : args) {
         double num = arg.toNumber();
-        if (!std::isnan(num) && std::isfinite(num)) {
+        if(!std::isnan(num) && std::isfinite(num)) {
             int charCode = static_cast<int>(num) & 0xFFFF;  // Take lower 16 bits
-            if (charCode >= 0 && charCode <= 127) {         // Basic ASCII range
+            if(charCode >= 0 && charCode <= 127) {          // Basic ASCII range
                 result += static_cast<char>(charCode);
             } else {
                 result += '?';  // Placeholder for non-ASCII characters
@@ -84,11 +84,11 @@ Value String::charAt(const std::vector<Value>& args) {
     std::string str = getStringValue(args);
 
     double index = 0;
-    if (args.size() >= 2) {          // Fixed: should check for second argument (index 1)
+    if(args.size() >= 2) {           // Fixed: should check for second argument (index 1)
         index = args[1].toNumber();  // Fixed: use args[1] since args[0] is the string
     }
 
-    if (std::isnan(index) || index < 0 || index >= static_cast<double>(str.length())) {
+    if(std::isnan(index) || index < 0 || index >= static_cast<double>(str.length())) {
         return Value("");
     }
 
@@ -100,11 +100,11 @@ Value String::charCodeAt(const std::vector<Value>& args) {
     std::string str = getStringValue(args);
 
     double index = 0;
-    if (args.size() >= 2) {
+    if(args.size() >= 2) {
         index = args[1].toNumber();
     }
 
-    if (std::isnan(index) || index < 0 || index >= static_cast<double>(str.length())) {
+    if(std::isnan(index) || index < 0 || index >= static_cast<double>(str.length())) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
@@ -116,7 +116,7 @@ Value String::concat(const std::vector<Value>& args) {
     std::string str = getStringValue(args);
 
     // Skip the first argument (the string itself) and concat the rest
-    for (size_t i = 1; i < args.size(); ++i) {
+    for(size_t i = 1; i < args.size(); ++i) {
         str += args[i].toString();
     }
 
@@ -126,26 +126,26 @@ Value String::concat(const std::vector<Value>& args) {
 Value String::indexOf(const std::vector<Value>& args) {
     std::string str = getStringValue(args);
 
-    if (args.size() < 2) {
+    if(args.size() < 2) {
         return Value(-1.0);
     }
 
     std::string searchString = args[1].toString();
     size_t fromIndex = 0;
 
-    if (args.size() >= 3) {
+    if(args.size() >= 3) {
         double fromIndexNum = args[2].toNumber();
-        if (!std::isnan(fromIndexNum) && fromIndexNum >= 0) {
+        if(!std::isnan(fromIndexNum) && fromIndexNum >= 0) {
             fromIndex = static_cast<size_t>(fromIndexNum);
         }
     }
 
-    if (fromIndex >= str.length()) {
+    if(fromIndex >= str.length()) {
         return Value(-1.0);
     }
 
     size_t pos = str.find(searchString, fromIndex);
-    if (pos == std::string::npos) {
+    if(pos == std::string::npos) {
         return Value(-1.0);
     }
 
@@ -155,24 +155,24 @@ Value String::indexOf(const std::vector<Value>& args) {
 Value String::lastIndexOf(const std::vector<Value>& args) {
     std::string str = getStringValue(args);
 
-    if (args.size() < 2) {
+    if(args.size() < 2) {
         return Value(-1.0);
     }
 
     std::string searchString = args[1].toString();
     size_t fromIndex = str.length();
 
-    if (args.size() >= 3) {
+    if(args.size() >= 3) {
         double fromIndexNum = args[2].toNumber();
-        if (!std::isnan(fromIndexNum) && fromIndexNum >= 0) {
+        if(!std::isnan(fromIndexNum) && fromIndexNum >= 0) {
             fromIndex = std::min(static_cast<size_t>(fromIndexNum), str.length());
         }
     }
 
     // Search backwards from fromIndex
-    for (size_t i = fromIndex; i != SIZE_MAX; --i) {
-        if (i + searchString.length() <= str.length() &&
-            str.substr(i, searchString.length()) == searchString) {
+    for(size_t i = fromIndex; i != SIZE_MAX; --i) {
+        if(i + searchString.length() <= str.length() &&
+           str.substr(i, searchString.length()) == searchString) {
             return Value(static_cast<double>(i));
         }
     }
@@ -187,19 +187,19 @@ Value String::slice(const std::vector<Value>& args) {
     double startNum = 0;
     double endNum = static_cast<double>(length);
 
-    if (args.size() >= 2) {
+    if(args.size() >= 2) {
         startNum = args[1].toNumber();
     }
 
-    if (args.size() >= 3 && !args[2].isUndefined()) {
+    if(args.size() >= 3 && !args[2].isUndefined()) {
         endNum = args[2].toNumber();
     }
 
     // Handle negative indices
-    if (startNum < 0) {
+    if(startNum < 0) {
         startNum = std::max(0.0, static_cast<double>(length) + startNum);
     }
-    if (endNum < 0) {
+    if(endNum < 0) {
         endNum = std::max(0.0, static_cast<double>(length) + endNum);
     }
 
@@ -207,7 +207,7 @@ Value String::slice(const std::vector<Value>& args) {
         static_cast<size_t>(std::max(0.0, std::min(startNum, static_cast<double>(length))));
     size_t end = static_cast<size_t>(std::max(0.0, std::min(endNum, static_cast<double>(length))));
 
-    if (start >= end) {
+    if(start >= end) {
         return Value("");
     }
 
@@ -221,11 +221,11 @@ Value String::substring(const std::vector<Value>& args) {
     double startNum = 0;
     double endNum = static_cast<double>(length);
 
-    if (args.size() >= 2) {
+    if(args.size() >= 2) {
         startNum = args[1].toNumber();
     }
 
-    if (args.size() >= 3 && !args[2].isUndefined()) {
+    if(args.size() >= 3 && !args[2].isUndefined()) {
         endNum = args[2].toNumber();
     }
 
@@ -234,7 +234,7 @@ Value String::substring(const std::vector<Value>& args) {
     endNum = std::max(0.0, endNum);
 
     // Swap if start > end
-    if (startNum > endNum) {
+    if(startNum > endNum) {
         std::swap(startNum, endNum);
     }
 
@@ -267,13 +267,13 @@ Value String::trim(const std::vector<Value>& args) {
 
     // Trim leading whitespace
     size_t start = 0;
-    while (start < str.length() && std::isspace(static_cast<unsigned char>(str[start]))) {
+    while(start < str.length() && std::isspace(static_cast<unsigned char>(str[start]))) {
         start++;
     }
 
     // Trim trailing whitespace
     size_t end = str.length();
-    while (end > start && std::isspace(static_cast<unsigned char>(str[end - 1]))) {
+    while(end > start && std::isspace(static_cast<unsigned char>(str[end - 1]))) {
         end--;
     }
 
@@ -284,18 +284,18 @@ Value String::split(const std::vector<Value>& args) {
     std::string str = getStringValue(args);
 
     // Create an array to hold the results using GC-managed creation
-    auto *result = object_factory_->createJSObject();  // Use factory instead of std::make_shared
+    auto* result = object_factory_->createJSObject();  // Use factory instead of std::make_shared
     std::vector<Value> elements;
 
-    if (args.size() < 2 || args[1].isUndefined()) {
+    if(args.size() < 2 || args[1].isUndefined()) {
         // No separator - return array with original string
         elements.push_back(Value(str));
     } else {
         std::string separator = args[1].toString();
 
-        if (separator.empty()) {
+        if(separator.empty()) {
             // Empty separator - split into individual characters
-            for (size_t i = 0; i < str.length(); ++i) {
+            for(size_t i = 0; i < str.length(); ++i) {
                 elements.push_back(Value(std::string(1, str[i])));
             }
         } else {
@@ -303,7 +303,7 @@ Value String::split(const std::vector<Value>& args) {
             size_t start = 0;
             size_t pos = 0;
 
-            while ((pos = str.find(separator, start)) != std::string::npos) {
+            while((pos = str.find(separator, start)) != std::string::npos) {
                 elements.push_back(Value(str.substr(start, pos - start)));
                 start = pos + separator.length();
             }
@@ -314,7 +314,7 @@ Value String::split(const std::vector<Value>& args) {
     }
 
     // Set array properties (simplified array-like object)
-    for (size_t i = 0; i < elements.size(); ++i) {
+    for(size_t i = 0; i < elements.size(); ++i) {
         result->setProperty(std::to_string(i), elements[i]);
     }
     result->setProperty("length", Value(static_cast<double>(elements.size())));
@@ -337,19 +337,19 @@ Value String::valueOf(const std::vector<Value>& args) {
 std::string String::getStringValue(const std::vector<Value>& args) {
     // In a full implementation, this would extract the 'this' value
     // For now, we'll use the first argument as a placeholder
-    if (!args.empty()) {
+    if(!args.empty()) {
         return args[0].toString();
     }
     return "";
 }
 
 size_t String::validateStringIndex(const std::string& str, double index) {
-    if (std::isnan(index) || index < 0) {
+    if(std::isnan(index) || index < 0) {
         return 0;
     }
 
     size_t maxIndex = str.length();
-    if (index >= static_cast<double>(maxIndex)) {
+    if(index >= static_cast<double>(maxIndex)) {
         return maxIndex;
     }
 

@@ -6,24 +6,25 @@
 namespace rift::frontend {
 
 // Lexer implementation
-Lexer::Lexer(const std::string& source) : source(source), position(0), line(1), column(1) {}
+Lexer::Lexer(const std::string& source) : source(source), position(0), line(1), column(1) {
+}
 
 char Lexer::current_char() {
-    if (position >= source.length()) {
+    if(position >= source.length()) {
         return '\0';
     }
     return source[position];
 }
 
 char Lexer::peek_char() {
-    if (position + 1 >= source.length()) {
+    if(position + 1 >= source.length()) {
         return '\0';
     }
     return source[position + 1];
 }
 
 void Lexer::advance() {
-    if (position < source.length() && source[position] == '\n') {
+    if(position < source.length() && source[position] == '\n') {
         line++;
         column = 1;
     } else {
@@ -33,14 +34,14 @@ void Lexer::advance() {
 }
 
 void Lexer::skip_whitespace() {
-    while (std::isspace(current_char())) {
+    while(std::isspace(current_char())) {
         advance();
     }
 }
 
 Token Lexer::read_number() {
     std::string value;
-    while (std::isdigit(current_char()) || current_char() == '.') {
+    while(std::isdigit(current_char()) || current_char() == '.') {
         value += current_char();
         advance();
     }
@@ -52,10 +53,10 @@ Token Lexer::read_string() {
     advance();  // Skip opening quote
 
     std::string value;
-    while (current_char() != quote && current_char() != '\0') {
-        if (current_char() == '\\') {
+    while(current_char() != quote && current_char() != '\0') {
+        if(current_char() == '\\') {
             advance();
-            switch (current_char()) {
+            switch(current_char()) {
                 case 'n':
                     value += '\n';
                     break;
@@ -84,7 +85,7 @@ Token Lexer::read_string() {
         advance();
     }
 
-    if (current_char() == quote) {
+    if(current_char() == quote) {
         advance();  // Skip closing quote
     }
 
@@ -95,10 +96,10 @@ Token Lexer::read_template_string() {
     advance();  // Skip opening backtick
 
     std::string value;
-    while (current_char() != '`' && current_char() != '\0') {
-        if (current_char() == '\\') {
+    while(current_char() != '`' && current_char() != '\0') {
+        if(current_char() == '\\') {
             advance();
-            switch (current_char()) {
+            switch(current_char()) {
                 case 'n':
                     value += '\n';
                     break;
@@ -124,7 +125,7 @@ Token Lexer::read_template_string() {
         advance();
     }
 
-    if (current_char() == '`') {
+    if(current_char() == '`') {
         advance();  // Skip closing backtick
     }
 
@@ -133,36 +134,27 @@ Token Lexer::read_template_string() {
 
 Token Lexer::read_identifier() {
     std::string value;
-    while (std::isalnum(current_char()) || current_char() == '_' || current_char() == '$') {
+    while(std::isalnum(current_char()) || current_char() == '_' || current_char() == '$') {
         value += current_char();
         advance();
     }
 
     // Check for keywords
     static std::unordered_map<std::string, TokenType> keywords = {
-        {"var", TokenType::Var},
-        {"let", TokenType::Let},
-        {"const", TokenType::Const},
-        {"function", TokenType::Function},
-        {"return", TokenType::Return},
-        {"if", TokenType::If},
-        {"else", TokenType::Else},
-        {"for", TokenType::For},
-        {"while", TokenType::While},
-        {"throw", TokenType::Throw},
-        {"try", TokenType::Try},
-        {"catch", TokenType::Catch},
-        {"new", TokenType::New},
-        {"this", TokenType::This},
-        {"true", TokenType::Boolean},
-        {"false", TokenType::Boolean},
-        {"null", TokenType::Null},
-        {"undefined", TokenType::Undefined},
+        {"var", TokenType::Var},       {"let", TokenType::Let},
+        {"const", TokenType::Const},   {"function", TokenType::Function},
+        {"return", TokenType::Return}, {"if", TokenType::If},
+        {"else", TokenType::Else},     {"for", TokenType::For},
+        {"while", TokenType::While},   {"throw", TokenType::Throw},
+        {"try", TokenType::Try},       {"catch", TokenType::Catch},
+        {"new", TokenType::New},       {"this", TokenType::This},
+        {"true", TokenType::Boolean},  {"false", TokenType::Boolean},
+        {"null", TokenType::Null},     {"undefined", TokenType::Undefined},
         {"typeof", TokenType::Typeof},
     };
 
     auto it = keywords.find(value);
-    if (it != keywords.end()) {
+    if(it != keywords.end()) {
         return Token(it->second, value, line, column);
     }
 
@@ -174,28 +166,28 @@ Token Lexer::next_token() {
 
     char ch = current_char();
 
-    if (ch == '\0') {
+    if(ch == '\0') {
         return Token(TokenType::EndOfFile, "", line, column);
     }
 
-    if (std::isdigit(ch)) {
+    if(std::isdigit(ch)) {
         return read_number();
     }
 
-    if (ch == '"' || ch == '\'') {
+    if(ch == '"' || ch == '\'') {
         return read_string();
     }
 
-    if (ch == '`') {
+    if(ch == '`') {
         return read_template_string();
     }
 
-    if (std::isalpha(ch) || ch == '_' || ch == '$') {
+    if(std::isalpha(ch) || ch == '_' || ch == '$') {
         return read_identifier();
     }
 
     // Single character tokens
-    switch (ch) {
+    switch(ch) {
         case '+':
             advance();
             return Token(TokenType::Plus, "+", line, column);
@@ -206,9 +198,9 @@ Token Lexer::next_token() {
             advance();
             return Token(TokenType::Multiply, "*", line, column);
         case '/':
-            if (peek_char() == '/') {
+            if(peek_char() == '/') {
                 // Skip single-line comment
-                while (current_char() != '\n' && current_char() != '\0') {
+                while(current_char() != '\n' && current_char() != '\0') {
                     advance();
                 }
                 return next_token();  // Recursively get the next token after the comment
@@ -248,10 +240,10 @@ Token Lexer::next_token() {
         case '=':
             advance();
             // Double equals
-            if (current_char() == '=') {
+            if(current_char() == '=') {
                 advance();
                 // Strict equals
-                if (current_char() == '=') {
+                if(current_char() == '=') {
                     advance();
                     return Token(TokenType::EqualStrict, "===", line, column);
                 }
@@ -260,10 +252,10 @@ Token Lexer::next_token() {
             return Token(TokenType::Assign, "=", line, column);
         case '!':
             advance();
-            if (current_char() == '=') {
+            if(current_char() == '=') {
                 advance();
                 // Strict not equals
-                if (current_char() == '=') {
+                if(current_char() == '=') {
                     advance();
                     return Token(TokenType::NotEqualStrict, "!==", line, column);
                 }
@@ -281,7 +273,7 @@ Token Lexer::next_token() {
             return Token(TokenType::BitwiseNot, "~", line, column);
         case '|':
             advance();
-            if (current_char() == '|') {
+            if(current_char() == '|') {
                 advance();
                 return Token(TokenType::LogicalOr, "||", line, column);
             }
@@ -289,7 +281,7 @@ Token Lexer::next_token() {
             return Token(TokenType::Invalid, "|", line, column);
         case '&':
             advance();
-            if (current_char() == '&') {
+            if(current_char() == '&') {
                 advance();
                 return Token(TokenType::LogicalAnd, "&&", line, column);
             }
@@ -305,7 +297,7 @@ std::vector<Token> Lexer::tokenize() {
     std::vector<Token> tokens;
     Token token = next_token();
 
-    while (token.type != TokenType::EndOfFile) {
+    while(token.type != TokenType::EndOfFile) {
         tokens.push_back(token);
         token = next_token();
     }

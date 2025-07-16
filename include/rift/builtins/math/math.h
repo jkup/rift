@@ -5,9 +5,9 @@
 #include <random>
 #include <vector>
 
+#include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
-#include "../../memory/object_factory.h"
 
 namespace rift::builtins {
 
@@ -25,7 +25,7 @@ using namespace rift::runtime;
 /// [spec]: https://tc39.es/ecma262/#sec-math-object
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math
 class Math {
-   public:
+  public:
     /// Create the Math object with all properties and methods.
     static JSObject* create(rift::memory::ObjectFactory* factory);
 

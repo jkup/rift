@@ -9,7 +9,7 @@ namespace rift::frontend {
 
 // Lexer class
 class Lexer {
-   private:
+  private:
     std::string source;
     size_t position;
     size_t line;
@@ -24,7 +24,7 @@ class Lexer {
     Token read_template_string();
     Token read_identifier();
 
-   public:
+  public:
     Lexer(const std::string& source);
     Token next_token();
     std::vector<Token> tokenize();

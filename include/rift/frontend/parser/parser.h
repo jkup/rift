@@ -13,7 +13,7 @@ using namespace ast;
 
 // Parser class
 class Parser {
-   private:
+  private:
     std::vector<Token> tokens;
     size_t current;
 
@@ -49,7 +49,7 @@ class Parser {
     std::shared_ptr<ASTNode> parse_block_statement();
     std::shared_ptr<ASTNode> parse_new_expression();
 
-   public:
+  public:
     Parser(const std::vector<Token>& tokens);
     std::shared_ptr<ASTNode> parse();
 };

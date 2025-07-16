@@ -11,12 +11,13 @@ namespace rift::runtime {
 
 // Environment for variable storage and scope management
 class Environment : public std::enable_shared_from_this<Environment> {
-   private:
+  private:
     std::unordered_map<std::string, Value> variables_;
     std::shared_ptr<Environment> parent_;
 
-   public:
-    Environment(std::shared_ptr<Environment> parent = nullptr) : parent_(parent) {}
+  public:
+    Environment(std::shared_ptr<Environment> parent = nullptr) : parent_(parent) {
+    }
 
     // Variable operations
     void define(const std::string& name, const Value& value);
@@ -25,8 +26,12 @@ class Environment : public std::enable_shared_from_this<Environment> {
     bool has(const std::string& name) const;
 
     // Scope management
-    std::shared_ptr<Environment> getParent() const { return parent_; }
-    void setParent(std::shared_ptr<Environment> parent) { parent_ = parent; }
+    std::shared_ptr<Environment> getParent() const {
+        return parent_;
+    }
+    void setParent(std::shared_ptr<Environment> parent) {
+        parent_ = parent;
+    }
 
     // Create child environment
     std::shared_ptr<Environment> createChild();

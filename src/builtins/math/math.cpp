@@ -1,6 +1,7 @@
 #include "rift/builtins/math/math.h"
-#include <cmath>
+
 #include <algorithm>
+#include <cmath>
 #include <random>
 
 namespace rift::builtins {
@@ -17,7 +18,7 @@ std::uniform_real_distribution<> Math::dis(0.0, 1.0);
 
 JSObject* Math::create(rift::memory::ObjectFactory* factory) {
     // Create Math object using GC-managed creation
-    auto *math = factory->createJSObject();
+    auto* math = factory->createJSObject();
 
     // Add Math constants
     math->setProperty("PI", Value(M_PI));
@@ -49,13 +50,13 @@ JSObject* Math::create(rift::memory::ObjectFactory* factory) {
 }
 
 double Math::validateAndGetNumber(const std::vector<Value>& args, size_t index) {
-    if (args.size() <= index) {
+    if(args.size() <= index) {
         return std::numeric_limits<double>::quiet_NaN();
     }
 
     double num = args[index].toNumber();
 
-    if (std::isnan(num)) {
+    if(std::isnan(num)) {
         return std::numeric_limits<double>::quiet_NaN();
     }
 
@@ -65,7 +66,7 @@ double Math::validateAndGetNumber(const std::vector<Value>& args, size_t index) 
 Value Math::abs(const std::vector<Value>& args) {
     double num = validateAndGetNumber(args, 1);
 
-    if (std::isnan(num)) {
+    if(std::isnan(num)) {
         return Value(num);
     }
 
@@ -75,7 +76,7 @@ Value Math::abs(const std::vector<Value>& args) {
 Value Math::ceil(const std::vector<Value>& args) {
     double num = validateAndGetNumber(args, 1);
 
-    if (std::isnan(num) || std::isinf(num)) {
+    if(std::isnan(num) || std::isinf(num)) {
         return Value(num);
     }
 
@@ -85,7 +86,7 @@ Value Math::ceil(const std::vector<Value>& args) {
 Value Math::floor(const std::vector<Value>& args) {
     double num = validateAndGetNumber(args, 1);
 
-    if (std::isnan(num) || std::isinf(num)) {
+    if(std::isnan(num) || std::isinf(num)) {
         return Value(num);
     }
 
@@ -95,12 +96,12 @@ Value Math::floor(const std::vector<Value>& args) {
 Value Math::round(const std::vector<Value>& args) {
     double num = validateAndGetNumber(args, 1);
 
-    if (std::isnan(num) || std::isinf(num)) {
+    if(std::isnan(num) || std::isinf(num)) {
         return Value(num);
     }
 
     // ECMAScript rounding: round half away from zero
-    if (num >= 0) {
+    if(num >= 0) {
         return Value(std::floor(num + 0.5));
     } else {
         return Value(std::ceil(num - 0.5));
@@ -109,18 +110,18 @@ Value Math::round(const std::vector<Value>& args) {
 
 Value Math::max(const std::vector<Value>& args) {
     // Skip the 'this' value - start from index 1
-    if (args.size() <= 1) {
+    if(args.size() <= 1) {
         return Value(-std::numeric_limits<double>::infinity());
     }
 
     double result = -std::numeric_limits<double>::infinity();
 
     // Start from index 1 to skip 'this' value
-    for (size_t i = 1; i < args.size(); ++i) {
+    for(size_t i = 1; i < args.size(); ++i) {
         double num = args[i].toNumber();
 
         // If any argument is NaN, return NaN
-        if (std::isnan(num)) {
+        if(std::isnan(num)) {
             return Value(std::numeric_limits<double>::quiet_NaN());
         }
 
@@ -132,18 +133,18 @@ Value Math::max(const std::vector<Value>& args) {
 
 Value Math::min(const std::vector<Value>& args) {
     // Skip the 'this' value - start from index 1
-    if (args.size() <= 1) {
+    if(args.size() <= 1) {
         return Value(std::numeric_limits<double>::infinity());
     }
 
     double result = std::numeric_limits<double>::infinity();
 
     // Start from index 1 to skip 'this' value
-    for (size_t i = 1; i < args.size(); ++i) {
+    for(size_t i = 1; i < args.size(); ++i) {
         double num = args[i].toNumber();
 
         // If any argument is NaN, return NaN
-        if (std::isnan(num)) {
+        if(std::isnan(num)) {
             return Value(std::numeric_limits<double>::quiet_NaN());
         }
 
@@ -154,7 +155,7 @@ Value Math::min(const std::vector<Value>& args) {
 }
 
 Value Math::pow(const std::vector<Value>& args) {
-    if (args.size() < 3) {  // Need 'this' + 2 arguments
+    if(args.size() < 3) {  // Need 'this' + 2 arguments
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
@@ -167,25 +168,27 @@ Value Math::pow(const std::vector<Value>& args) {
 Value Math::sqrt(const std::vector<Value>& args) {
     double num = validateAndGetNumber(args, 1);  // Skip 'this' value
 
-    if (std::isnan(num) || num < 0) {
+    if(std::isnan(num) || num < 0) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
     return Value(std::sqrt(num));
 }
 
-Value Math::random(const std::vector<Value>& args) { return Value(dis(gen)); }
+Value Math::random(const std::vector<Value>& args) {
+    return Value(dis(gen));
+}
 
 Value Math::sign(const std::vector<Value>& args) {
     double num = validateAndGetNumber(args, 1);  // Skip 'this' value
 
-    if (std::isnan(num)) {
+    if(std::isnan(num)) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
-    if (num > 0) {
+    if(num > 0) {
         return Value(1.0);
-    } else if (num < 0) {
+    } else if(num < 0) {
         return Value(-1.0);
     } else {
         // Handle both +0 and -0
@@ -196,7 +199,7 @@ Value Math::sign(const std::vector<Value>& args) {
 Value Math::trunc(const std::vector<Value>& args) {
     double num = validateAndGetNumber(args, 1);  // Skip 'this' value
 
-    if (std::isnan(num) || std::isinf(num)) {
+    if(std::isnan(num) || std::isinf(num)) {
         return Value(num);
     }
 
@@ -207,11 +210,11 @@ Value Math::trunc(const std::vector<Value>& args) {
 Value Math::sin(const std::vector<Value>& args) {
     double num = validateAndGetNumber(args, 1);  // Skip 'this' value
 
-    if (std::isnan(num)) {
+    if(std::isnan(num)) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
-    if (std::isinf(num)) {
+    if(std::isinf(num)) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
@@ -221,11 +224,11 @@ Value Math::sin(const std::vector<Value>& args) {
 Value Math::cos(const std::vector<Value>& args) {
     double num = validateAndGetNumber(args, 1);  // Skip 'this' value
 
-    if (std::isnan(num)) {
+    if(std::isnan(num)) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
-    if (std::isinf(num)) {
+    if(std::isinf(num)) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
@@ -235,11 +238,11 @@ Value Math::cos(const std::vector<Value>& args) {
 Value Math::tan(const std::vector<Value>& args) {
     double num = validateAndGetNumber(args, 1);  // Skip 'this' value
 
-    if (std::isnan(num)) {
+    if(std::isnan(num)) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 
-    if (std::isinf(num)) {
+    if(std::isinf(num)) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 

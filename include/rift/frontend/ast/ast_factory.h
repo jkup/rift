@@ -9,11 +9,12 @@ namespace rift::ast {
 
 // AST Node Factory - Helper functions for creating AST nodes
 class ASTFactory {
-   public:
+  public:
     // Expression factories
-    static std::shared_ptr<ASTNode> makeLiteral(const std::string& value, const std::string& literalType = "") {
+    static std::shared_ptr<ASTNode> makeLiteral(const std::string& value,
+                                                const std::string& literalType = "") {
         auto node = std::make_shared<ASTNode>(ASTNodeType::Literal, value);
-        if (!literalType.empty()) {
+        if(!literalType.empty()) {
             node->metadata = literalType;  // Store the literal type
         }
         return node;
@@ -96,14 +97,14 @@ class ASTFactory {
         auto node = std::make_shared<ASTNode>(ASTNodeType::IfStatement);
         node->children.push_back(condition);
         node->children.push_back(thenStatement);
-        if (elseStatement) {
+        if(elseStatement) {
             node->children.push_back(elseStatement);
         }
         return node;
     }
 
-    static std::shared_ptr<ASTNode> makeWhileStatement(
-        std::shared_ptr<ASTNode> condition, std::shared_ptr<ASTNode> body) {
+    static std::shared_ptr<ASTNode> makeWhileStatement(std::shared_ptr<ASTNode> condition,
+                                                       std::shared_ptr<ASTNode> body) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::WhileStatement);
         node->children.push_back(condition);
         node->children.push_back(body);
@@ -114,26 +115,24 @@ class ASTFactory {
     static std::shared_ptr<ASTNode> makeVariableDeclaration(
         const std::string& name, std::shared_ptr<ASTNode> initializer = nullptr) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::VariableDeclaration, name);
-        if (initializer) {
+        if(initializer) {
             node->children.push_back(initializer);
         }
         return node;
     }
 
     // Function-related factories
-    static std::shared_ptr<ASTNode> makeFunctionDeclaration(
-        const std::string& name,
-        std::shared_ptr<ASTNode> parameters,
-        std::shared_ptr<ASTNode> body) {
+    static std::shared_ptr<ASTNode> makeFunctionDeclaration(const std::string& name,
+                                                            std::shared_ptr<ASTNode> parameters,
+                                                            std::shared_ptr<ASTNode> body) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::FunctionDeclaration, name);
         node->children.push_back(parameters);  // Parameter list
         node->children.push_back(body);        // Function body
         return node;
     }
 
-    static std::shared_ptr<ASTNode> makeFunctionExpression(
-        std::shared_ptr<ASTNode> parameters,
-        std::shared_ptr<ASTNode> body) {
+    static std::shared_ptr<ASTNode> makeFunctionExpression(std::shared_ptr<ASTNode> parameters,
+                                                           std::shared_ptr<ASTNode> body) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::FunctionExpression);
         node->children.push_back(parameters);  // Parameter list
         node->children.push_back(body);        // Function body
@@ -142,7 +141,7 @@ class ASTFactory {
 
     static std::shared_ptr<ASTNode> makeReturnStatement(std::shared_ptr<ASTNode> argument) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::ReturnStatement);
-        if (argument) {
+        if(argument) {
             node->children.push_back(argument);
         }
         return node;
@@ -150,26 +149,24 @@ class ASTFactory {
 
     static std::shared_ptr<ASTNode> makeThrowStatement(std::shared_ptr<ASTNode> argument) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::ThrowStatement);
-        if (argument) {
+        if(argument) {
             node->children.push_back(argument);
         }
         return node;
     }
 
     static std::shared_ptr<ASTNode> makeTryStatement(
-        std::shared_ptr<ASTNode> tryBlock,
-        std::shared_ptr<ASTNode> catchClause = nullptr) {
+        std::shared_ptr<ASTNode> tryBlock, std::shared_ptr<ASTNode> catchClause = nullptr) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::TryStatement);
         node->children.push_back(tryBlock);
-        if (catchClause) {
+        if(catchClause) {
             node->children.push_back(catchClause);
         }
         return node;
     }
 
-    static std::shared_ptr<ASTNode> makeCatchClause(
-        const std::string& parameter,
-        std::shared_ptr<ASTNode> body) {
+    static std::shared_ptr<ASTNode> makeCatchClause(const std::string& parameter,
+                                                    std::shared_ptr<ASTNode> body) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::CatchClause, parameter);
         node->children.push_back(body);
         return node;
@@ -182,15 +179,15 @@ class ASTFactory {
     // Helper to add argument to call expression
     static void addArgument(std::shared_ptr<ASTNode> callExpression,
                             std::shared_ptr<ASTNode> argument) {
-        if (callExpression->type == ASTNodeType::CallExpression) {
+        if(callExpression->type == ASTNodeType::CallExpression) {
             callExpression->children.push_back(argument);
         }
     }
 
-    // Helper to add argument to new expression  
+    // Helper to add argument to new expression
     static void addNewArgument(std::shared_ptr<ASTNode> newExpression,
                                std::shared_ptr<ASTNode> argument) {
-        if (newExpression->type == ASTNodeType::NewExpression) {
+        if(newExpression->type == ASTNodeType::NewExpression) {
             newExpression->children.push_back(argument);
         }
     }
@@ -198,7 +195,7 @@ class ASTFactory {
     // Helper to add element to array literal
     static void addArrayElement(std::shared_ptr<ASTNode> arrayLiteral,
                                 std::shared_ptr<ASTNode> element) {
-        if (arrayLiteral->type == ASTNodeType::ArrayLiteral) {
+        if(arrayLiteral->type == ASTNodeType::ArrayLiteral) {
             arrayLiteral->children.push_back(element);
         }
     }
@@ -206,25 +203,26 @@ class ASTFactory {
     // Helper to add property to object literal
     // For object literals, we store key-value pairs as pairs of child nodes
     static void addObjectProperty(std::shared_ptr<ASTNode> objectLiteral,
-                                  std::shared_ptr<ASTNode> key,
-                                  std::shared_ptr<ASTNode> value) {
-        if (objectLiteral->type == ASTNodeType::ObjectLiteral) {
+                                  std::shared_ptr<ASTNode> key, std::shared_ptr<ASTNode> value) {
+        if(objectLiteral->type == ASTNodeType::ObjectLiteral) {
             objectLiteral->children.push_back(key);
             objectLiteral->children.push_back(value);
         }
     }
 
     // Helper to add statement to program or block
-    static void addStatement(std::shared_ptr<ASTNode> container, std::shared_ptr<ASTNode> statement) {
-        if (container->type == ASTNodeType::Program || container->type == ASTNodeType::BlockStatement) {
+    static void addStatement(std::shared_ptr<ASTNode> container,
+                             std::shared_ptr<ASTNode> statement) {
+        if(container->type == ASTNodeType::Program ||
+           container->type == ASTNodeType::BlockStatement) {
             container->children.push_back(statement);
         }
     }
 
     // Helper to add parameter to parameter list
     static void addParameter(std::shared_ptr<ASTNode> parameterList,
-                           std::shared_ptr<ASTNode> parameter) {
-        if (parameterList->type == ASTNodeType::ParameterList) {
+                             std::shared_ptr<ASTNode> parameter) {
+        if(parameterList->type == ASTNodeType::ParameterList) {
             parameterList->children.push_back(parameter);
         }
     }
@@ -233,22 +231,22 @@ class ASTFactory {
     static std::shared_ptr<ASTNode> makeTemplateLiteral() {
         return std::make_shared<ASTNode>(ASTNodeType::TemplateLiteral);
     }
-    
+
     static std::shared_ptr<ASTNode> makeTemplateElement(const std::string& value) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::TemplateElement, value);
         return node;
     }
-    
+
     static std::shared_ptr<ASTNode> makeTemplateExpression(std::shared_ptr<ASTNode> expression) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::TemplateExpression);
         node->children.push_back(expression);
         return node;
     }
-    
+
     // Helper to add element to template literal
-    static void addTemplateElement(std::shared_ptr<ASTNode> templateLiteral, 
-                                  std::shared_ptr<ASTNode> element) {
-        if (templateLiteral->type == ASTNodeType::TemplateLiteral) {
+    static void addTemplateElement(std::shared_ptr<ASTNode> templateLiteral,
+                                   std::shared_ptr<ASTNode> element) {
+        if(templateLiteral->type == ASTNodeType::TemplateLiteral) {
             templateLiteral->children.push_back(element);
         }
     }

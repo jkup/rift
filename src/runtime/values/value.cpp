@@ -11,19 +11,24 @@
 namespace rift::runtime {
 
 // Constructors
-Value::Value() : type_(ValueType::Undefined), data_(std::monostate{}) {}
+Value::Value() : type_(ValueType::Undefined), data_(std::monostate{}) {
+}
 
-Value::Value(bool b) : type_(ValueType::Boolean), data_(b) {}
+Value::Value(bool b) : type_(ValueType::Boolean), data_(b) {
+}
 
-Value::Value(double n) : type_(ValueType::Number), data_(n) {}
+Value::Value(double n) : type_(ValueType::Number), data_(n) {
+}
 
-Value::Value(const std::string& s) : type_(ValueType::String), data_(s) {}
+Value::Value(const std::string& s) : type_(ValueType::String), data_(s) {
+}
 
-Value::Value(const char* s) : type_(ValueType::String), data_(std::string(s)) {}
+Value::Value(const char* s) : type_(ValueType::String), data_(std::string(s)) {
+}
 
 // Constructor for objects - now takes raw pointer
 Value::Value(JSObject* obj) : data_(obj) {
-    if (obj) {
+    if(obj) {
         type_ = (obj->getTypeName() == "Function") ? ValueType::Function : ValueType::Object;
     } else {
         type_ = ValueType::Null;
@@ -32,7 +37,7 @@ Value::Value(JSObject* obj) : data_(obj) {
 
 // Conversion methods
 std::string Value::toString() const {
-    switch (type_) {
+    switch(type_) {
         case ValueType::Undefined:
             return "undefined";
         case ValueType::Null:
@@ -41,8 +46,10 @@ std::string Value::toString() const {
             return std::get<bool>(data_) ? "true" : "false";
         case ValueType::Number: {
             double num = std::get<double>(data_);
-            if (std::isnan(num)) return "NaN";
-            if (std::isinf(num)) return num > 0 ? "Infinity" : "-Infinity";
+            if(std::isnan(num))
+                return "NaN";
+            if(std::isinf(num))
+                return num > 0 ? "Infinity" : "-Infinity";
 
             std::ostringstream oss;
             oss << num;
@@ -61,7 +68,7 @@ std::string Value::toString() const {
 }
 
 bool Value::toBool() const {
-    switch (type_) {
+    switch(type_) {
         case ValueType::Undefined:
         case ValueType::Null:
             return false;
@@ -82,7 +89,7 @@ bool Value::toBool() const {
 }
 
 double Value::toNumber() const {
-    switch (type_) {
+    switch(type_) {
         case ValueType::Undefined:
             return std::numeric_limits<double>::quiet_NaN();
         case ValueType::Null:
@@ -93,10 +100,11 @@ double Value::toNumber() const {
             return std::get<double>(data_);
         case ValueType::String: {
             const std::string& str = std::get<std::string>(data_);
-            if (str.empty()) return 0.0;
+            if(str.empty())
+                return 0.0;
             try {
                 return std::stod(str);
-            } catch (...) {
+            } catch(...) {
                 return std::numeric_limits<double>::quiet_NaN();
             }
         }
@@ -109,7 +117,7 @@ double Value::toNumber() const {
 }
 
 JSObject* Value::toObject() const {
-    if (type_ == ValueType::Object || type_ == ValueType::Function) {
+    if(type_ == ValueType::Object || type_ == ValueType::Function) {
         return std::get<JSObject*>(data_);
     }
     return nullptr;
@@ -117,28 +125,28 @@ JSObject* Value::toObject() const {
 
 // Raw value getters
 bool Value::getBool() const {
-    if (type_ != ValueType::Boolean) {
+    if(type_ != ValueType::Boolean) {
         throw std::runtime_error("Value is not a boolean");
     }
     return std::get<bool>(data_);
 }
 
 double Value::getNumber() const {
-    if (type_ != ValueType::Number) {
+    if(type_ != ValueType::Number) {
         throw std::runtime_error("Value is not a number");
     }
     return std::get<double>(data_);
 }
 
 const std::string& Value::getString() const {
-    if (type_ != ValueType::String) {
+    if(type_ != ValueType::String) {
         throw std::runtime_error("Value is not a string");
     }
     return std::get<std::string>(data_);
 }
 
 JSObject* Value::getObject() const {
-    if (type_ != ValueType::Object && type_ != ValueType::Function) {
+    if(type_ != ValueType::Object && type_ != ValueType::Function) {
         throw std::runtime_error("Value is not an object");
     }
     return std::get<JSObject*>(data_);

@@ -1,4 +1,5 @@
 #include "rift/builtins/boolean/boolean.h"
+
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/evaluation_utils.h"
 
@@ -14,12 +15,12 @@ void Boolean::setObjectFactory(rift::memory::ObjectFactory* factory) {
 JSObject* Boolean::create(rift::memory::ObjectFactory* factory) {
     // Store factory for use in other methods
     setObjectFactory(factory);
-    
+
     // Create Boolean constructor using GC-managed creation
-    auto *boolean = factory->createJSFunction(Boolean::constructor);
+    auto* boolean = factory->createJSFunction(Boolean::constructor);
 
     // Create and set prototype
-    auto *prototype = createPrototype(factory);
+    auto* prototype = createPrototype(factory);
     boolean->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
 
     return boolean;  // Return raw pointer
@@ -27,7 +28,7 @@ JSObject* Boolean::create(rift::memory::ObjectFactory* factory) {
 
 JSObject* Boolean::createPrototype(rift::memory::ObjectFactory* factory) {
     // Create Boolean.prototype using GC-managed creation
-    auto *prototype = factory->createJSObject();
+    auto* prototype = factory->createJSObject();
 
     // Add prototype methods using GC-managed function creation
     prototype->setProperty("toString", Value(factory->createJSFunction(Boolean::toString)));
@@ -40,25 +41,26 @@ Value Boolean::constructor(const std::vector<Value>& args) {
     // Check if this is a constructor call (new Boolean()) or function call (Boolean())
     bool isConstructorCall = false;
     size_t argOffset = 0;
-    
-    if (!args.empty() && args[0].isString() && args[0].getString() == rift::core::EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
+
+    if(!args.empty() && args[0].isString() &&
+       args[0].getString() == rift::core::EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
         isConstructorCall = true;
         argOffset = 2;  // Skip the constructor marker and the 'this' object
     }
-    
+
     // Determine the boolean value from the actual arguments
     bool boolValue;
-    if (args.size() <= argOffset) {
+    if(args.size() <= argOffset) {
         boolValue = false;
     } else {
         boolValue = args[argOffset].toBool();
     }
-    
+
     // Return behavior depends on how we were called
-    if (isConstructorCall) {
+    if(isConstructorCall) {
         // new Boolean() - return Boolean object
         auto booleanPrototype = getGlobalPrototype();
-        auto *booleanObj = object_factory_->createJSObject(booleanPrototype);
+        auto* booleanObj = object_factory_->createJSObject(booleanPrototype);
         booleanObj->setProperty("value", Value(boolValue));
         return Value(booleanObj);
     } else {
@@ -81,29 +83,29 @@ Value Boolean::valueOf(const std::vector<Value>& args) {
 
 bool Boolean::getBooleanValue(const std::vector<Value>& args) {
     // For prototype methods, the first argument should be the 'this' value
-    if (args.empty()) {
+    if(args.empty()) {
         return false;
     }
 
     const Value& thisValue = args[0];
-    
+
     // If it's a boolean primitive, return it directly
-    if (thisValue.isBoolean()) {
+    if(thisValue.isBoolean()) {
         return thisValue.getBool();
     }
-    
+
     // If it's a Boolean object, extract the primitive value
-    if (thisValue.isObject()) {
+    if(thisValue.isObject()) {
         auto obj = thisValue.getObject();  // getObject() now returns raw pointer
-        if (obj) {
+        if(obj) {
             // Check if it has a boolean value property (for Boolean objects)
             Value valueProperty = obj->getProperty("value");
-            if (valueProperty.isBoolean()) {
+            if(valueProperty.isBoolean()) {
                 return valueProperty.getBool();
             }
         }
     }
-    
+
     // Default case: convert to boolean
     return thisValue.toBool();
 }
@@ -112,4 +114,4 @@ JSObject* Boolean::getGlobalPrototype() {
     return rift::core::BuiltinManager::getBooleanPrototype();  // Now returns raw pointer
 }
 
-}  // namespace rift::builtins 
+}  // namespace rift::builtins

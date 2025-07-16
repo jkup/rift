@@ -1,31 +1,34 @@
 #include "rift/core/engine/statement_evaluator.h"
-#include "rift/core/engine/engine.h"
-#include "rift/core/engine/javascript_exception.h"
-#include "rift/core/engine/evaluation_utils.h"
-#include "rift/runtime/values/object.h"
+
 #include <iostream>
+
+#include "rift/core/engine/engine.h"
+#include "rift/core/engine/evaluation_utils.h"
+#include "rift/core/engine/javascript_exception.h"
+#include "rift/runtime/values/object.h"
 
 namespace rift::core {
 
 // ExceptionGuard implementation
 ExceptionGuard::ExceptionGuard(Rift* engine) : engine_(engine) {
-    if (engine_) {
+    if(engine_) {
         engine_->enterExceptionHandling();
     }
 }
 
 ExceptionGuard::~ExceptionGuard() {
-    if (engine_) {
+    if(engine_) {
         engine_->exitExceptionHandling();
     }
 }
 
-Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    if (!node) {
+Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
+                                   Rift* engine) {
+    if(!node) {
         return Value::undefined();
     }
 
-    switch (node->type) {
+    switch(node->type) {
         case ASTNodeType::Program:
             return evaluateBlockStatement(node, env, engine);
         case ASTNodeType::BlockStatement:
@@ -54,23 +57,28 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
     }
 }
 
-Value StatementEvaluator::evaluateBlockStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+Value StatementEvaluator::evaluateBlockStatement(std::shared_ptr<ASTNode> node,
+                                                 std::shared_ptr<Environment> env, Rift* engine) {
     Value result = Value::undefined();
-    for (auto& child : node->children) {
+    for(auto& child : node->children) {
         result = engine->evaluate(child, env);
     }
     return result;
 }
 
-Value StatementEvaluator::evaluateExpressionStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    if (!node->children.empty()) {
+Value StatementEvaluator::evaluateExpressionStatement(std::shared_ptr<ASTNode> node,
+                                                      std::shared_ptr<Environment> env,
+                                                      Rift* engine) {
+    if(!node->children.empty()) {
         return engine->evaluate(node->children[0], env);
     }
     return Value::undefined();
 }
 
-Value StatementEvaluator::evaluateVariableDeclaration(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    if (node->children.size() < 1) {
+Value StatementEvaluator::evaluateVariableDeclaration(std::shared_ptr<ASTNode> node,
+                                                      std::shared_ptr<Environment> env,
+                                                      Rift* engine) {
+    if(node->children.size() < 1) {
         return Value::undefined();
     }
 
@@ -79,7 +87,7 @@ Value StatementEvaluator::evaluateVariableDeclaration(std::shared_ptr<ASTNode> n
 
     // Get the initial value if provided
     Value value = Value::undefined();
-    if (node->children.size() > 0) {
+    if(node->children.size() > 0) {
         value = engine->evaluate(node->children[0], env);
     }
 
@@ -89,8 +97,9 @@ Value StatementEvaluator::evaluateVariableDeclaration(std::shared_ptr<ASTNode> n
     return value;
 }
 
-Value StatementEvaluator::evaluateIfStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    if (node->children.size() < 2) {
+Value StatementEvaluator::evaluateIfStatement(std::shared_ptr<ASTNode> node,
+                                              std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.size() < 2) {
         return Value::undefined();
     }
 
@@ -98,52 +107,55 @@ Value StatementEvaluator::evaluateIfStatement(std::shared_ptr<ASTNode> node, std
     Value condition = engine->evaluate(node->children[0], env);
 
     // If condition is truthy, evaluate the then branch
-    if (condition.toBool()) {
+    if(condition.toBool()) {
         return engine->evaluate(node->children[1], env);
     }
 
     // If there's an else clause and condition is falsy, evaluate the else branch
-    if (node->children.size() > 2) {
+    if(node->children.size() > 2) {
         return engine->evaluate(node->children[2], env);
     }
 
     return Value::undefined();
 }
 
-Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    if (node->children.size() < 2) {
+Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
+                                                 std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.size() < 2) {
         return Value::undefined();
     }
 
     Value result = Value::undefined();
-    
+
     // Keep looping while condition is truthy
-    while (true) {
+    while(true) {
         Value condition = engine->evaluate(node->children[0], env);
-        if (!condition.toBool()) {
+        if(!condition.toBool()) {
             break;
         }
         result = engine->evaluate(node->children[1], env);
     }
-    
+
     return result;
 }
 
-Value StatementEvaluator::evaluateReturnStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
+Value StatementEvaluator::evaluateReturnStatement(std::shared_ptr<ASTNode> node,
+                                                  std::shared_ptr<Environment> env, Rift* engine) {
     Value returnValue = Value::undefined();
-    
+
     // If there's a return expression, evaluate it
-    if (!node->children.empty()) {
+    if(!node->children.empty()) {
         returnValue = engine->evaluate(node->children[0], env);
     }
-    
+
     // Throw a special exception to unwind the call stack
     // This is a simple way to implement return without proper exception handling
     throw ReturnException(returnValue);
 }
 
-Value StatementEvaluator::evaluateThrowStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    if (node->children.size() < 1) {
+Value StatementEvaluator::evaluateThrowStatement(std::shared_ptr<ASTNode> node,
+                                                 std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.size() < 1) {
         return Value::undefined();
     }
 
@@ -158,70 +170,76 @@ Value StatementEvaluator::evaluateThrowStatement(std::shared_ptr<ASTNode> node, 
     throw JavaScriptException(thrownValue);
 }
 
-Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    if (node->children.size() < 2) {
+Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> node,
+                                                      std::shared_ptr<Environment> env,
+                                                      Rift* engine) {
+    if(node->children.size() < 2) {
         return Value::undefined();
     }
 
     // Get function name
     std::string functionName = node->value;
-    
+
     // Get parameters (first child should be parameter list)
     auto paramList = node->children[0];
     std::vector<std::string> parameters;
-    for (const auto& param : paramList->children) {
+    for(const auto& param : paramList->children) {
         parameters.push_back(param->value);
     }
-    
+
     // Get function body (second child)
     auto body = node->children[1];
-    
+
     // Create function object using GC-managed creation
-    auto func = engine->getObjectFactory()->createJSFunction([engine, parameters, body, env](const std::vector<Value>& args) -> Value {
-        // Create new environment for function execution
-        auto funcEnv = std::make_shared<Environment>(env);
-        
-        // Handle constructor call context and 'this' binding
-        auto constructorInfo = EvaluationUtils::parseConstructorCall(args);
-        
-        // Bind 'this' to the function environment
-        funcEnv->define("this", constructorInfo.thisValue);
-        
-        // Bind parameters to arguments (skip constructor marker and this object)
-        for (size_t i = 0; i < parameters.size(); ++i) {
-            Value argValue = (i + constructorInfo.argOffset < args.size()) ? args[i + constructorInfo.argOffset] : Value::undefined();
-            funcEnv->define(parameters[i], argValue);
-        }
-        
-        // Execute function body
-        try {
-            return engine->evaluate(body, funcEnv);
-        } catch (const ReturnException& e) {
-            // Handle return statements - extract the actual return value
-            return e.getValue();
-        } catch (const std::runtime_error& e) {
-            // Handle other runtime errors
-            throw;
-        }
-    });
-    
+    auto func = engine->getObjectFactory()->createJSFunction(
+        [engine, parameters, body, env](const std::vector<Value>& args) -> Value {
+            // Create new environment for function execution
+            auto funcEnv = std::make_shared<Environment>(env);
+
+            // Handle constructor call context and 'this' binding
+            auto constructorInfo = EvaluationUtils::parseConstructorCall(args);
+
+            // Bind 'this' to the function environment
+            funcEnv->define("this", constructorInfo.thisValue);
+
+            // Bind parameters to arguments (skip constructor marker and this object)
+            for(size_t i = 0; i < parameters.size(); ++i) {
+                Value argValue = (i + constructorInfo.argOffset < args.size())
+                                     ? args[i + constructorInfo.argOffset]
+                                     : Value::undefined();
+                funcEnv->define(parameters[i], argValue);
+            }
+
+            // Execute function body
+            try {
+                return engine->evaluate(body, funcEnv);
+            } catch(const ReturnException& e) {
+                // Handle return statements - extract the actual return value
+                return e.getValue();
+            } catch(const std::runtime_error& e) {
+                // Handle other runtime errors
+                throw;
+            }
+        });
+
     // Define function in current environment
     env->define(functionName, Value(func));
-    
+
     return Value(func);
 }
 
-Value StatementEvaluator::evaluateTryStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine) {
-    if (node->children.size() < 1) {
+Value StatementEvaluator::evaluateTryStatement(std::shared_ptr<ASTNode> node,
+                                               std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.size() < 1) {
         return Value::undefined();
     }
 
     // Get try block (first child)
     auto tryBlock = node->children[0];
-    
+
     // Get catch clause (second child, if present)
     std::shared_ptr<ASTNode> catchClause = nullptr;
-    if (node->children.size() > 1) {
+    if(node->children.size() > 1) {
         catchClause = node->children[1];
     }
 
@@ -230,15 +248,15 @@ Value StatementEvaluator::evaluateTryStatement(std::shared_ptr<ASTNode> node, st
     try {
         // Execute try block
         result = engine->evaluate(tryBlock, env);
-    } catch (const JavaScriptException& e) {
+    } catch(const JavaScriptException& e) {
         // Handle JavaScript exceptions (thrown by 'throw' statements)
-        if (catchClause) {
+        if(catchClause) {
             result = evaluateCatchClause(catchClause, env, engine, e.getValue());
         } else {
             // Re-throw if no catch clause
             throw;
         }
-    } catch (const ReturnException& e) {
+    } catch(const ReturnException& e) {
         // Return exceptions should not be caught by try-catch
         throw;
     }
@@ -246,20 +264,22 @@ Value StatementEvaluator::evaluateTryStatement(std::shared_ptr<ASTNode> node, st
     return result;
 }
 
-Value StatementEvaluator::evaluateCatchClause(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env, Rift* engine, const Value& caughtValue) {
-    if (node->children.size() < 1) {
+Value StatementEvaluator::evaluateCatchClause(std::shared_ptr<ASTNode> node,
+                                              std::shared_ptr<Environment> env, Rift* engine,
+                                              const Value& caughtValue) {
+    if(node->children.size() < 1) {
         return Value::undefined();
     }
 
     // Get catch parameter name from node value
     std::string parameterName = node->value;
-    
+
     // Get catch body (first child)
     auto catchBody = node->children[0];
 
     // Create new environment for catch block
     auto catchEnv = env->createChild();
-    
+
     // Bind the caught value to the catch parameter
     catchEnv->define(parameterName, caughtValue);
 
@@ -267,4 +287,4 @@ Value StatementEvaluator::evaluateCatchClause(std::shared_ptr<ASTNode> node, std
     return engine->evaluate(catchBody, catchEnv);
 }
 
-}  // namespace rift::core 
+}  // namespace rift::core

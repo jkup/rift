@@ -2,9 +2,10 @@
 
 #include <iostream>
 #include <vector>
-#include "../../runtime/values/value.h"
-#include "../../runtime/values/object.h"
+
 #include "../../memory/object_factory.h"
+#include "../../runtime/values/object.h"
+#include "../../runtime/values/value.h"
 
 namespace rift::builtins {
 
@@ -12,7 +13,7 @@ using namespace rift::runtime;
 
 // Console built-in
 class Console {
-   public:
+  public:
     // Updated to return raw pointer for GC-managed creation
     static JSObject* create(rift::memory::ObjectFactory* factory);
 
@@ -22,7 +23,7 @@ class Console {
     static Value warn(const std::vector<Value>& args);
     static Value info(const std::vector<Value>& args);
 
-   private:
+  private:
     // Helper for output
     static void printValues(const std::vector<Value>& args, std::ostream& stream);
 };

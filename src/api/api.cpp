@@ -1,30 +1,35 @@
 #include "rift/api/api.h"
+
 #include "rift/core/engine/javascript_exception.h"
 
 namespace rift {
 
-JavaScript::JavaScript() { engine_ = std::make_unique<core::Rift>(); }
+JavaScript::JavaScript() {
+    engine_ = std::make_unique<core::Rift>();
+}
 
 std::string JavaScript::execute(const std::string& source) {
     try {
         auto ast = parse(source);
         auto result = engine_->execute(ast);
         return result.toString();
-    } catch (const rift::core::JavaScriptException& e) {
+    } catch(const rift::core::JavaScriptException& e) {
         // For JavaScript exceptions (throw statements), we want to propagate them
         // so test262 can detect Test262Error properly
         throw;  // Re-throw the JavaScriptException
-    } catch (const rift::core::ReturnException& e) {
+    } catch(const rift::core::ReturnException& e) {
         // Return exceptions should not happen at top level, but if they do,
         // treat them as errors
         return "Error: " + std::string(e.what());
-    } catch (const std::exception& e) {
+    } catch(const std::exception& e) {
         // Only catch other types of exceptions (parsing errors, etc.)
         return "Error: " + std::string(e.what());
     }
 }
 
-std::string JavaScript::evaluate(const std::string& expression) { return execute(expression); }
+std::string JavaScript::evaluate(const std::string& expression) {
+    return execute(expression);
+}
 
 std::shared_ptr<rift::ast::ASTNode> JavaScript::parse(const std::string& source) {
     rift::frontend::Lexer lexer(source);

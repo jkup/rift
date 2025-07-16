@@ -15,7 +15,7 @@ void print_usage(const char* program_name) {
 
 std::string read_file(const std::string& filename) {
     std::ifstream file(filename);
-    if (!file.is_open()) {
+    if(!file.is_open()) {
         throw std::runtime_error("Cannot open file: " + filename);
     }
 
@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     try {
         rift::JavaScript js;
 
-        if (argc == 1) {
+        if(argc == 1) {
             // Interactive mode (REPL) - for now just show help
             std::cout << "Rift - Minimal JavaScript Runtime\n";
             print_usage(argv[0]);
@@ -37,11 +37,11 @@ int main(int argc, char* argv[]) {
 
         std::string code;
 
-        if (argc >= 3 && std::string(argv[1]) == "-e") {
+        if(argc >= 3 && std::string(argv[1]) == "-e") {
             // Execute code directly
             code = argv[2];
-        } else if (argc >= 2) {
-            if (std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help") {
+        } else if(argc >= 2) {
+            if(std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help") {
                 print_usage(argv[0]);
                 return 0;
             }
@@ -55,11 +55,11 @@ int main(int argc, char* argv[]) {
         auto result = js.execute(code);
         std::cout << result << std::endl;
 
-    } catch (const rift::core::JavaScriptException& e) {
+    } catch(const rift::core::JavaScriptException& e) {
         // Handle JavaScript throw statements - output the thrown value
         std::cout << e.what() << std::endl;
         return 0;  // Don't treat thrown exceptions as system errors
-    } catch (const std::exception& e) {
+    } catch(const std::exception& e) {
         // Handle other system errors
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;

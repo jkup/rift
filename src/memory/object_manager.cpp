@@ -1,6 +1,8 @@
 #include "rift/memory/object_manager.h"
-#include "rift/runtime/values/object.h"
+
 #include <iostream>
+
+#include "rift/runtime/values/object.h"
 
 namespace rift::memory {
 
@@ -13,7 +15,7 @@ ObjectManager::ObjectManager() {
 ObjectManager::~ObjectManager() {
     // Clean shutdown - disable GC during destruction to prevent collection
     // while objects are being destroyed
-    if (gc_) {
+    if(gc_) {
         gc_->setGCEnabled(false);
     }
 }
@@ -24,7 +26,8 @@ rift::runtime::JSObject* ObjectManager::createJSObject(rift::runtime::JSObject* 
     return obj;
 }
 
-rift::runtime::JSFunction* ObjectManager::createJSFunction(std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func) {
+rift::runtime::JSFunction* ObjectManager::createJSFunction(
+    std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func) {
     rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(func);
     gc_->addObject(obj);  // GC now owns this object
     return obj;
@@ -70,4 +73,4 @@ bool ObjectManager::isGCEnabled() const {
     return gc_->isGCEnabled();
 }
 
-}  // namespace rift::memory 
+}  // namespace rift::memory

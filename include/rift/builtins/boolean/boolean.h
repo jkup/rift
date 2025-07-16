@@ -1,9 +1,10 @@
 #pragma once
 
 #include <vector>
-#include "../../runtime/values/value.h"
-#include "../../runtime/values/object.h"
+
 #include "../../memory/object_factory.h"
+#include "../../runtime/values/object.h"
+#include "../../runtime/values/value.h"
 
 namespace rift::builtins {
 
@@ -21,7 +22,7 @@ using namespace rift::runtime;
 /// [spec]: https://tc39.es/ecma262/#sec-boolean-objects
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 class Boolean {
-   public:
+  public:
     /// Static factory method
     static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
@@ -38,7 +39,7 @@ class Boolean {
     static Value toString(const std::vector<Value>& args);
     static Value valueOf(const std::vector<Value>& args);
 
-   private:
+  private:
     /// Static factory storage
     static rift::memory::ObjectFactory* object_factory_;
 
@@ -47,4 +48,4 @@ class Boolean {
     static bool getBooleanValue(const std::vector<Value>& args);
 };
 
-}  // namespace rift::builtins 
+}  // namespace rift::builtins

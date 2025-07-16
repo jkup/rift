@@ -1,7 +1,7 @@
 #include "rift/frontend/parser/parser.h"
 
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 
 namespace rift::frontend {
 
@@ -9,10 +9,11 @@ using namespace rift::ast;
 using ASTFactory = ast::ASTFactory;
 
 // Parser implementation
-Parser::Parser(const std::vector<Token>& tokens) : tokens(tokens), current(0) {}
+Parser::Parser(const std::vector<Token>& tokens) : tokens(tokens), current(0) {
+}
 
 Token& Parser::current_token() {
-    if (current >= tokens.size()) {
+    if(current >= tokens.size()) {
         static Token eof(TokenType::EndOfFile, "");
         return eof;
     }
@@ -20,7 +21,7 @@ Token& Parser::current_token() {
 }
 
 Token& Parser::peek_token() {
-    if (current + 1 >= tokens.size()) {
+    if(current + 1 >= tokens.size()) {
         static Token eof(TokenType::EndOfFile, "");
         return eof;
     }
@@ -28,7 +29,7 @@ Token& Parser::peek_token() {
 }
 
 bool Parser::match(TokenType type) {
-    if (current_token().type == type) {
+    if(current_token().type == type) {
         current++;
         return true;
     }
@@ -36,7 +37,7 @@ bool Parser::match(TokenType type) {
 }
 
 void Parser::consume(TokenType type) {
-    if (current_token().type != type) {
+    if(current_token().type != type) {
         throw std::runtime_error("Expected token type, got different type");
     }
     current++;
@@ -45,20 +46,31 @@ void Parser::consume(TokenType type) {
 std::shared_ptr<ASTNode> Parser::parse_primary() {
     Token& token = current_token();
 
-    switch (token.type) {
+    switch(token.type) {
         case TokenType::Number:
         case TokenType::String:
         case TokenType::Boolean:
         case TokenType::Null:
         case TokenType::Undefined: {
             std::string literalType;
-            switch (token.type) {
-                case TokenType::Number: literalType = "number"; break;
-                case TokenType::String: literalType = "string"; break;
-                case TokenType::Boolean: literalType = "boolean"; break;
-                case TokenType::Null: literalType = "null"; break;
-                case TokenType::Undefined: literalType = "undefined"; break;
-                default: break;
+            switch(token.type) {
+                case TokenType::Number:
+                    literalType = "number";
+                    break;
+                case TokenType::String:
+                    literalType = "string";
+                    break;
+                case TokenType::Boolean:
+                    literalType = "boolean";
+                    break;
+                case TokenType::Null:
+                    literalType = "null";
+                    break;
+                case TokenType::Undefined:
+                    literalType = "undefined";
+                    break;
+                default:
+                    break;
             }
             auto node = ASTFactory::makeLiteral(token.value, literalType);
             current++;
@@ -103,9 +115,9 @@ std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
     Token& token = current_token();
 
     // Check for unary operators
-    if (token.type == TokenType::Plus || token.type == TokenType::Minus ||
-        token.type == TokenType::LogicalNot || token.type == TokenType::Typeof ||
-        token.type == TokenType::BitwiseNot) {
+    if(token.type == TokenType::Plus || token.type == TokenType::Minus ||
+       token.type == TokenType::LogicalNot || token.type == TokenType::Typeof ||
+       token.type == TokenType::BitwiseNot) {
         std::string operator_ = token.value;
         current++;  // consume the operator
         auto operand = parse_postfix_expression();
@@ -113,7 +125,7 @@ std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
     }
 
     // Check for new operator
-    if (token.type == TokenType::New) {
+    if(token.type == TokenType::New) {
         current++;  // consume 'new'
         return parse_new_expression();
     }
@@ -125,12 +137,12 @@ std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
 std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
     auto left = parse_unary_expression();
 
-    while (true) {
+    while(true) {
         Token& op = current_token();
         int op_precedence = 0;
         bool is_assignment = false;
 
-        switch (op.type) {
+        switch(op.type) {
             case TokenType::Plus:
             case TokenType::Minus:
                 op_precedence = 5;  // Arithmetic higher than logical operators
@@ -164,14 +176,14 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
                 return left;
         }
 
-        if (op_precedence < precedence) {
+        if(op_precedence < precedence) {
             return left;
         }
 
         current++;  // consume operator
         auto right = parse_binary_expression(op_precedence + 1);
 
-        if (is_assignment) {
+        if(is_assignment) {
             left = ASTFactory::makeAssignmentExpression(left, right);
         } else {
             left = ASTFactory::makeBinaryExpression(op.value, left, right);
@@ -179,12 +191,14 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
     }
 }
 
-std::shared_ptr<ASTNode> Parser::parse_expression() { return parse_binary_expression(0); }
+std::shared_ptr<ASTNode> Parser::parse_expression() {
+    return parse_binary_expression(0);
+}
 
 std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
     consume(TokenType::Var);  // consume 'var'
 
-    if (current_token().type != TokenType::Identifier) {
+    if(current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected identifier after 'var'");
     }
 
@@ -192,7 +206,7 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
     current++;
 
     std::shared_ptr<ASTNode> initializer = nullptr;
-    if (match(TokenType::Assign)) {
+    if(match(TokenType::Assign)) {
         initializer = parse_expression();
     }
 
@@ -200,37 +214,37 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
 }
 
 std::shared_ptr<ASTNode> Parser::parse_statement() {
-    if (current_token().type == TokenType::Var) {
+    if(current_token().type == TokenType::Var) {
         auto stmt = parse_variable_declaration();
         match(TokenType::Semicolon);  // optional semicolon
         return stmt;
     }
 
-    if (current_token().type == TokenType::If) {
+    if(current_token().type == TokenType::If) {
         return parse_if_statement();
     }
 
-    if (current_token().type == TokenType::While) {
+    if(current_token().type == TokenType::While) {
         return parse_while_statement();
     }
 
-    if (current_token().type == TokenType::Function) {
+    if(current_token().type == TokenType::Function) {
         return parse_function_declaration();
     }
 
-    if (current_token().type == TokenType::Return) {
+    if(current_token().type == TokenType::Return) {
         return parse_return_statement();
     }
 
-    if (current_token().type == TokenType::Throw) {
+    if(current_token().type == TokenType::Throw) {
         return parse_throw_statement();
     }
 
-    if (current_token().type == TokenType::Try) {
+    if(current_token().type == TokenType::Try) {
         return parse_try_statement();
     }
 
-    if (current_token().type == TokenType::LeftBrace) {
+    if(current_token().type == TokenType::LeftBrace) {
         return parse_block_statement();
     }
 
@@ -256,7 +270,7 @@ std::shared_ptr<ASTNode> Parser::parse_if_statement() {
 
     // Check for optional 'else' clause
     std::shared_ptr<ASTNode> else_statement = nullptr;
-    if (current_token().type == TokenType::Else) {
+    if(current_token().type == TokenType::Else) {
         current++;  // consume 'else' token
         else_statement = parse_statement();
     }
@@ -285,7 +299,7 @@ std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
     consume(TokenType::Function);  // consume 'function'
 
     // Get function name
-    if (current_token().type != TokenType::Identifier) {
+    if(current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected function name");
     }
     std::string name = current_token().value;
@@ -320,20 +334,20 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
     auto parameters = ASTFactory::makeParameterList();
 
     // Handle empty parameter list
-    if (current_token().type == TokenType::RightParen) {
+    if(current_token().type == TokenType::RightParen) {
         return parameters;
     }
 
     // Parse first parameter
-    if (current_token().type != TokenType::Identifier) {
+    if(current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected parameter name");
     }
     ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(current_token().value));
     current++;  // consume parameter name
 
     // Parse remaining parameters
-    while (match(TokenType::Comma)) {
-        if (current_token().type != TokenType::Identifier) {
+    while(match(TokenType::Comma)) {
+        if(current_token().type != TokenType::Identifier) {
             throw std::runtime_error("Expected parameter name");
         }
         ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(current_token().value));
@@ -347,7 +361,7 @@ std::shared_ptr<ASTNode> Parser::parse_return_statement() {
     consume(TokenType::Return);  // consume 'return'
 
     std::shared_ptr<ASTNode> argument = nullptr;
-    if (current_token().type != TokenType::Semicolon) {
+    if(current_token().type != TokenType::Semicolon) {
         argument = parse_expression();
     }
 
@@ -359,7 +373,8 @@ std::shared_ptr<ASTNode> Parser::parse_throw_statement() {
     consume(TokenType::Throw);  // consume 'throw'
 
     // throw requires an expression (unlike return which is optional)
-    if (current_token().type == TokenType::Semicolon || current_token().type == TokenType::EndOfFile) {
+    if(current_token().type == TokenType::Semicolon ||
+       current_token().type == TokenType::EndOfFile) {
         throw std::runtime_error("Missing throw expression");
     }
 
@@ -372,8 +387,8 @@ std::shared_ptr<ASTNode> Parser::parse_block_statement() {
     consume(TokenType::LeftBrace);  // consume '{'
     auto block = ASTFactory::makeBlockStatement();
 
-    while (current_token().type != TokenType::RightBrace && 
-           current_token().type != TokenType::EndOfFile) {
+    while(current_token().type != TokenType::RightBrace &&
+          current_token().type != TokenType::EndOfFile) {
         auto stmt = parse_statement();
         ASTFactory::addStatement(block, stmt);
     }
@@ -385,12 +400,12 @@ std::shared_ptr<ASTNode> Parser::parse_block_statement() {
 std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
     auto expr = parse_primary();
 
-    while (true) {
-        if (current_token().type == TokenType::Dot) {
+    while(true) {
+        if(current_token().type == TokenType::Dot) {
             expr = parse_member_expression(expr);
-        } else if (current_token().type == TokenType::LeftBracket) {
+        } else if(current_token().type == TokenType::LeftBracket) {
             expr = parse_computed_member_expression(expr);
-        } else if (current_token().type == TokenType::LeftParen) {
+        } else if(current_token().type == TokenType::LeftParen) {
             expr = parse_call_expression(expr);
         } else {
             break;
@@ -406,11 +421,11 @@ std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> 
     auto call = ASTFactory::makeCallExpression(callee);
 
     // Parse arguments
-    if (current_token().type != TokenType::RightParen) {
+    if(current_token().type != TokenType::RightParen) {
         do {
             auto arg = parse_expression();
             ASTFactory::addArgument(call, arg);
-        } while (match(TokenType::Comma));
+        } while(match(TokenType::Comma));
     }
 
     consume(TokenType::RightParen);  // consume ')'
@@ -421,7 +436,7 @@ std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> 
 std::shared_ptr<ASTNode> Parser::parse_member_expression(std::shared_ptr<ASTNode> object) {
     consume(TokenType::Dot);  // consume '.'
 
-    if (current_token().type != TokenType::Identifier) {
+    if(current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected property name after '.'");
     }
 
@@ -444,17 +459,17 @@ std::shared_ptr<ASTNode> Parser::parse_computed_member_expression(std::shared_pt
 std::shared_ptr<ASTNode> Parser::parse() {
     auto program = ASTFactory::makeProgram();
 
-    while (current_token().type != TokenType::EndOfFile) {
+    while(current_token().type != TokenType::EndOfFile) {
         try {
             auto stmt = parse_statement();
             ASTFactory::addStatement(program, stmt);
-        } catch (const std::exception& e) {
+        } catch(const std::exception& e) {
             // Skip to next statement on error
-            while (current_token().type != TokenType::Semicolon &&
-                   current_token().type != TokenType::EndOfFile) {
+            while(current_token().type != TokenType::Semicolon &&
+                  current_token().type != TokenType::EndOfFile) {
                 current++;
             }
-            if (current_token().type == TokenType::Semicolon) {
+            if(current_token().type == TokenType::Semicolon) {
                 current++;
             }
         }
@@ -469,7 +484,7 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
     auto array = ASTFactory::makeArrayLiteral();
 
     // Handle empty array []
-    if (current_token().type == TokenType::RightBracket) {
+    if(current_token().type == TokenType::RightBracket) {
         current++;  // consume ']'
         return array;
     }
@@ -478,7 +493,7 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
     do {
         auto element = parse_expression();
         ASTFactory::addArrayElement(array, element);
-    } while (match(TokenType::Comma));
+    } while(match(TokenType::Comma));
 
     consume(TokenType::RightBracket);  // consume ']'
     return array;
@@ -490,7 +505,7 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
     auto object = ASTFactory::makeObjectLiteral();
 
     // Handle empty object {}
-    if (current_token().type == TokenType::RightBrace) {
+    if(current_token().type == TokenType::RightBrace) {
         current++;  // consume '}'
         return object;
     }
@@ -499,15 +514,16 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
     do {
         // Parse property key (can be identifier or string literal)
         std::shared_ptr<ASTNode> key;
-        
-        if (current_token().type == TokenType::Identifier) {
+
+        if(current_token().type == TokenType::Identifier) {
             // Property key as identifier: { name: value }
             key = ASTFactory::makeIdentifier(current_token().value);
             current++;  // consume identifier
-        } else if (current_token().type == TokenType::String) {
+        } else if(current_token().type == TokenType::String) {
             // Property key as string: { "name": value }
-                            std::string keyLiteralType = (current_token().type == TokenType::String) ? "string" : "number";
-                key = ASTFactory::makeLiteral(current_token().value, keyLiteralType);
+            std::string keyLiteralType =
+                (current_token().type == TokenType::String) ? "string" : "number";
+            key = ASTFactory::makeLiteral(current_token().value, keyLiteralType);
             current++;  // consume string
         } else {
             throw std::runtime_error("Expected property name in object literal");
@@ -521,8 +537,8 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
 
         // Add property to object
         ASTFactory::addObjectProperty(object, key, value);
-        
-    } while (match(TokenType::Comma));
+
+    } while(match(TokenType::Comma));
 
     consume(TokenType::RightBrace);  // consume '}'
     return object;
@@ -533,16 +549,16 @@ std::shared_ptr<ASTNode> Parser::parse_try_statement() {
 
     // Parse the try block
     auto tryBlock = parse_block_statement();
-    
+
     // Parse optional catch clause
     std::shared_ptr<ASTNode> catchClause = nullptr;
-    if (current_token().type == TokenType::Catch) {
+    if(current_token().type == TokenType::Catch) {
         catchClause = parse_catch_clause();
     }
 
     // In a full implementation, we would also handle 'finally' blocks
     // For now, we require at least a catch clause
-    if (!catchClause) {
+    if(!catchClause) {
         throw std::runtime_error("Missing catch clause after try block");
     }
 
@@ -555,7 +571,7 @@ std::shared_ptr<ASTNode> Parser::parse_catch_clause() {
     consume(TokenType::LeftParen);  // consume '('
 
     // Parse catch parameter (the variable that will hold the exception)
-    if (current_token().type != TokenType::Identifier) {
+    if(current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected identifier in catch clause");
     }
     std::string parameter = current_token().value;
@@ -573,22 +589,22 @@ std::shared_ptr<ASTNode> Parser::parse_new_expression() {
     // Parse the constructor (should be an identifier or member expression, not a call)
     auto constructor = parse_primary();
     auto newExpr = ASTFactory::makeNewExpression(constructor);
-    
+
     // Check if there are arguments (parentheses)
-    if (current_token().type == TokenType::LeftParen) {
+    if(current_token().type == TokenType::LeftParen) {
         consume(TokenType::LeftParen);  // consume '('
-        
+
         // Parse arguments
-        if (current_token().type != TokenType::RightParen) {
+        if(current_token().type != TokenType::RightParen) {
             do {
                 auto arg = parse_expression();
                 ASTFactory::addNewArgument(newExpr, arg);
-            } while (match(TokenType::Comma));
+            } while(match(TokenType::Comma));
         }
-        
+
         consume(TokenType::RightParen);  // consume ')'
     }
-    
+
     return newExpr;
 }
 

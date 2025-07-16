@@ -1,13 +1,13 @@
 #pragma once
 
 #include <algorithm>
-#include <vector>
-#include <memory>
 #include <functional>
+#include <memory>
+#include <vector>
 
+#include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
-#include "../../memory/object_factory.h"
 
 namespace rift::builtins {
 
@@ -25,7 +25,7 @@ using namespace rift::runtime;
 /// [spec]: https://tc39.es/ecma262/#sec-array-objects
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
 class Array {
-   public:
+  public:
     /// Create the Array constructor object with all properties and methods.
     static JSObject* create(rift::memory::ObjectFactory* factory);
 
@@ -33,7 +33,8 @@ class Array {
     static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
 
     /// Helper to create a new array object with the given elements
-    static JSObject* createArrayObject(rift::memory::ObjectFactory* factory, const std::vector<Value>& elements);
+    static JSObject* createArrayObject(rift::memory::ObjectFactory* factory,
+                                       const std::vector<Value>& elements);
 
     /// Helper to get the global Array prototype (for proper prototype chain)
     static JSObject* getGlobalPrototype();
@@ -197,7 +198,7 @@ class Array {
     static void setArrayLength(JSObject* obj, size_t length);
 
     // Array static methods
-    
+
     /// The `Array.isArray()` static method determines whether the passed value is an Array.
     ///
     /// More information:
@@ -209,7 +210,7 @@ class Array {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
     static Value isArray(const std::vector<Value>& args);
 
-   private:
+  private:
     // Store factory for use in static methods
     static rift::memory::ObjectFactory* object_factory_;
 };

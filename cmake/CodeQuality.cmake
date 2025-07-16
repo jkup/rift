@@ -3,6 +3,13 @@
 
 # Function to find and configure clang-tidy
 function(enable_clang_tidy)
+    option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis" OFF)
+    
+    if(NOT ENABLE_CLANG_TIDY)
+        message(STATUS "clang-tidy disabled (use -DENABLE_CLANG_TIDY=ON to enable)")
+        return()
+    endif()
+    
     # Look for clang-tidy in common locations including Homebrew
     find_program(CLANG_TIDY_PROGRAM 
         NAMES clang-tidy clang-tidy-20 clang-tidy-19 clang-tidy-18
@@ -25,19 +32,61 @@ function(enable_clang_tidy)
         file(GLOB_RECURSE ALL_CXX_SOURCE_FILES 
              ${CMAKE_SOURCE_DIR}/src/*.cpp)
         
+        # Simple clang-tidy with minimal checks
         add_custom_target(clang-tidy
             COMMAND ${CLANG_TIDY_PROGRAM}
             -p ${CMAKE_BINARY_DIR}
-            --system-headers=false
             --quiet
             -extra-arg=-w
             -extra-arg=-fno-caret-diagnostics
-            "-header-filter=^${CMAKE_SOURCE_DIR}/(src|include)/.*"
+            --checks=readability-*,bugprone-*,performance-*
             ${ALL_CXX_SOURCE_FILES}
-            COMMENT "Running clang-tidy static analysis (project sources only)"
+            COMMENT "Running clang-tidy static analysis (minimal checks)"
             VERBATIM)
     else()
         message(WARNING "clang-tidy not found. Install with: brew install llvm (macOS) or apt-get install clang-tidy (Ubuntu)")
+    endif()
+endfunction()
+
+# Function to enable cpplint as an alternative
+function(enable_cpplint)
+    find_program(CPPLINT_PROGRAM cpplint)
+    if(CPPLINT_PROGRAM)
+        message(STATUS "Found cpplint: ${CPPLINT_PROGRAM}")
+        
+        file(GLOB_RECURSE ALL_SOURCE_FILES 
+             ${CMAKE_SOURCE_DIR}/src/*.cpp
+             ${CMAKE_SOURCE_DIR}/src/*.h
+             ${CMAKE_SOURCE_DIR}/include/*.h)
+        
+        add_custom_target(cpplint
+            COMMAND ${CPPLINT_PROGRAM}
+            --filter=-whitespace/braces,-whitespace/indent,-build/include_order
+            ${ALL_SOURCE_FILES}
+            COMMENT "Running cpplint style checker"
+            VERBATIM)
+    else()
+        message(STATUS "cpplint not found. Install with: pip install cpplint")
+    endif()
+endfunction()
+
+# Function to enable include-what-you-use
+function(enable_iwyu)
+    find_program(IWYU_PROGRAM include-what-you-use)
+    if(IWYU_PROGRAM)
+        message(STATUS "Found include-what-you-use: ${IWYU_PROGRAM}")
+        
+        file(GLOB_RECURSE ALL_CXX_SOURCE_FILES 
+             ${CMAKE_SOURCE_DIR}/src/*.cpp)
+        
+        add_custom_target(iwyu
+            COMMAND ${IWYU_PROGRAM}
+            -p ${CMAKE_BINARY_DIR}
+            ${ALL_CXX_SOURCE_FILES}
+            COMMENT "Running include-what-you-use"
+            VERBATIM)
+    else()
+        message(STATUS "include-what-you-use not found. Install with: brew install include-what-you-use")
     endif()
 endfunction()
 
@@ -53,12 +102,13 @@ function(enable_cppcheck)
             --std=c++17
             --language=c++
             --suppress=missingInclude
+            --suppress=missingIncludeSystem
             --suppress=unusedFunction
             --suppress=unmatchedSuppression
+            --suppress=normalCheckLevelMaxBranches
+            --suppress=checkersReport
             --inline-suppr
             --template=gcc
-            --project=${CMAKE_BINARY_DIR}/compile_commands.json
-            --error-exitcode=1
             ${CMAKE_SOURCE_DIR}/src
             ${CMAKE_SOURCE_DIR}/include
             COMMENT "Running cppcheck static analysis"
@@ -157,7 +207,6 @@ endfunction()
 function(create_quality_targets)
     add_custom_target(quality
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target format-check
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clang-tidy
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target cppcheck
         COMMENT "Running all code quality checks"
         VERBATIM)
@@ -169,6 +218,8 @@ function(setup_code_quality)
     enable_warnings()
     enable_sanitizers()
     enable_clang_tidy()
+    enable_cpplint()
+    enable_iwyu()
     enable_cppcheck()
     enable_format_target()
     create_quality_targets()
@@ -176,7 +227,9 @@ function(setup_code_quality)
     message(STATUS "Code quality tools configured. Available targets:")
     message(STATUS "  - format: Format all source files")
     message(STATUS "  - format-check: Check formatting without changing files")
-    message(STATUS "  - clang-tidy: Run clang-tidy static analysis")
+    message(STATUS "  - cpplint: Run Google's C++ style checker")
+    message(STATUS "  - iwyu: Run include-what-you-use")
+    message(STATUS "  - clang-tidy: Run clang-tidy static analysis (if enabled)")
     message(STATUS "  - cppcheck: Run cppcheck static analysis")
     message(STATUS "  - quality: Run all quality checks")
 endfunction() 

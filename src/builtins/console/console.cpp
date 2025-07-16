@@ -4,7 +4,7 @@ namespace rift::builtins {
 
 JSObject* Console::create(rift::memory::ObjectFactory* factory) {
     // Create console object using GC-managed creation
-    auto *console = factory->createJSObject();
+    auto* console = factory->createJSObject();
 
     // Add console methods using GC-managed function creation
     console->setProperty("log", Value(factory->createJSFunction(log)));
@@ -36,8 +36,8 @@ Value Console::info(const std::vector<Value>& args) {
 }
 
 void Console::printValues(const std::vector<Value>& args, std::ostream& stream) {
-    for (size_t i = 0; i < args.size(); ++i) {
-        if (i > 0) {
+    for(size_t i = 0; i < args.size(); ++i) {
+        if(i > 0) {
             stream << " ";
         }
         stream << args[i].toString();

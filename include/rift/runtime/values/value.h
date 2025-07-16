@@ -23,17 +23,17 @@ enum class ValueType {
 
 // Rich value representation
 class Value {
-   private:
+  private:
     ValueType type_;
-    std::variant<std::monostate,    // Undefined/Null
-                 bool,              // Boolean
-                 double,            // Number
-                 std::string,       // String
-                 JSObject*          // Object/Function (GC-managed raw pointer)
+    std::variant<std::monostate,  // Undefined/Null
+                 bool,            // Boolean
+                 double,          // Number
+                 std::string,     // String
+                 JSObject*        // Object/Function (GC-managed raw pointer)
                  >
         data_;
 
-   public:
+  public:
     // Constructors
     Value();
     explicit Value(bool b);
@@ -43,7 +43,9 @@ class Value {
     explicit Value(JSObject* obj);  // Now takes raw pointer
 
     // Static factory methods
-    static Value undefined() { return Value(); }
+    static Value undefined() {
+        return Value();
+    }
     static Value null() {
         Value v;
         v.type_ = ValueType::Null;
@@ -51,13 +53,27 @@ class Value {
     }
 
     // Type checking
-    bool isUndefined() const { return type_ == ValueType::Undefined; }
-    bool isNull() const { return type_ == ValueType::Null; }
-    bool isBoolean() const { return type_ == ValueType::Boolean; }
-    bool isNumber() const { return type_ == ValueType::Number; }
-    bool isString() const { return type_ == ValueType::String; }
-    bool isObject() const { return type_ == ValueType::Object; }
-    bool isFunction() const { return type_ == ValueType::Function; }
+    bool isUndefined() const {
+        return type_ == ValueType::Undefined;
+    }
+    bool isNull() const {
+        return type_ == ValueType::Null;
+    }
+    bool isBoolean() const {
+        return type_ == ValueType::Boolean;
+    }
+    bool isNumber() const {
+        return type_ == ValueType::Number;
+    }
+    bool isString() const {
+        return type_ == ValueType::String;
+    }
+    bool isObject() const {
+        return type_ == ValueType::Object;
+    }
+    bool isFunction() const {
+        return type_ == ValueType::Function;
+    }
 
     // Conversion methods
     std::string toString() const;
@@ -66,7 +82,9 @@ class Value {
     JSObject* toObject() const;  // Now returns raw pointer
 
     // Getters
-    ValueType getType() const { return type_; }
+    ValueType getType() const {
+        return type_;
+    }
 
     // Get raw values (for internal use)
     bool getBool() const;

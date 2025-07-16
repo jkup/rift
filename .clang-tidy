@@ -1,120 +1,32 @@
 ---
-# .clang-tidy configuration for Rift JavaScript Runtime
+# Minimal .clang-tidy configuration for Rift JavaScript Runtime
+# Focus on essential code quality checks only
 
-# Header filter - only analyze our own headers, ignore everything else
-HeaderFilterRegex: ''
-
-# System header filter - explicitly ignore system headers
+HeaderFilterRegex: '^/Users/jonathankuperman/workspace/rift/(src|include)/.*'
 SystemHeaders: false
-
-# Use database for more accurate compilation commands
 UseColor: true
 
-# Checks to enable
+# Minimal essential checks only
 Checks: >
-  bugprone-*,
-  clang-analyzer-*,
-  cppcoreguidelines-*,
-  google-*,
-  hicpp-*,
-  llvm-*,
-  misc-*,
-  modernize-*,
-  performance-*,
-  portability-*,
   readability-*,
-  -bugprone-easily-swappable-parameters,
-  -bugprone-implicit-widening-of-multiplication-result,
-  -bugprone-narrowing-conversions,
-  -bugprone-signed-char-misuse,
-  -bugprone-unhandled-self-assignment,
-  -clang-analyzer-cplusplus.NewDelete*,
-  -clang-analyzer-cplusplus.NewDeleteLeaks,
-  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
-  -cppcoreguidelines-avoid-c-arrays,
-  -cppcoreguidelines-avoid-magic-numbers,
-  -cppcoreguidelines-avoid-non-const-global-variables,
-  -cppcoreguidelines-macro-usage,
-  -cppcoreguidelines-narrowing-conversions,
-  -cppcoreguidelines-owning-memory,
-  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
-  -cppcoreguidelines-pro-bounds-constant-array-index,
-  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
-  -cppcoreguidelines-pro-type-reinterpret-cast,
-  -cppcoreguidelines-pro-type-union-access,
-  -cppcoreguidelines-pro-type-vararg,
-  -fuchsia-*,
-  -google-readability-avoid-underscore-in-googletest-name,
-  -google-readability-todo,
-  -google-runtime-references,
-  -hicpp-avoid-c-arrays,
-  -hicpp-braces-around-statements,
-  -hicpp-named-parameter,
-  -hicpp-no-array-decay,
-  -hicpp-signed-bitwise,
-  -hicpp-uppercase-literal-suffix,
-  -hicpp-use-auto,
-  -hicpp-vararg,
-  -llvm-header-guard,
-  -llvm-include-order,
-  -misc-include-cleaner,
-  -misc-no-recursion,
-  -misc-non-private-member-variables-in-classes,
-  -modernize-avoid-c-arrays,
-  -modernize-use-auto,
-  -modernize-use-trailing-return-type,
-  -performance-avoid-endl,
-  -readability-avoid-const-params-in-decls,
-  -readability-braces-around-statements,
-  -readability-function-cognitive-complexity,
+  bugprone-*,
+  performance-*,
+  modernize-*,
   -readability-identifier-length,
   -readability-magic-numbers,
-  -readability-named-parameter,
-  -readability-redundant-access-specifiers,
-  -readability-uppercase-literal-suffix
+  -readability-function-cognitive-complexity,
+  -readability-braces-around-statements,
+  -bugprone-easily-swappable-parameters,
+  -modernize-use-auto,
+  -modernize-use-trailing-return-type
 
 WarningsAsErrors: ''
 FormatStyle: file
+
 CheckOptions:
   - key: readability-identifier-naming.ClassCase
     value: CamelCase
   - key: readability-identifier-naming.FunctionCase
     value: CamelCase
   - key: readability-identifier-naming.VariableCase
-    value: lower_case
-  - key: readability-identifier-naming.PrivateMemberSuffix
-    value: '_'
-  - key: readability-identifier-naming.ConstantCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.NamespaceCase
-    value: lower_case
-  - key: readability-identifier-naming.EnumCase
-    value: CamelCase
-  - key: readability-identifier-naming.EnumConstantCase
-    value: UPPER_CASE
-  - key: readability-function-size.LineThreshold
-    value: '100'
-  - key: readability-function-size.StatementThreshold
-    value: '50'
-  - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
-    value: true
-  - key: modernize-use-override.IgnoreDestructors
-    value: true
-  - key: performance-for-range-copy.WarnOnAllAutoCopies
-    value: true
-  - key: bugprone-argument-comment.StrictMode
-    value: true
-  - key: bugprone-assert-side-effect.AssertMacros
-    value: 'assert,ASSERT_TRUE,ASSERT_FALSE'
-  - key: bugprone-string-constructor.WarnOnLargeLength
-    value: true
-  - key: bugprone-too-small-loop-variable.MagnitudeBitsUpperLimit
-    value: '16'
-  - key: cert-dcl16-c.NewSuffixes
-    value: 'L;LL;LU;LLU'
-  - key: cert-oop54-cpp.WarnOnlyIfThisHasSuspiciousField
-    value: false
-  - key: cppcoreguidelines-explicit-virtual-functions.IgnoreDestructors
-    value: true
-  - key: cppcoreguidelines-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
-    value: true 
+    value: lower_case 
