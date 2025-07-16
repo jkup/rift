@@ -19,7 +19,7 @@ A JavaScript runtime implementation written in C++ with robust garbage collectio
 - Node.js 14+ (for test262 runner)
 - Git (for cloning test262)
 
-### Code Quality Tools (Optional but Recommended)
+### Code Quality Tools
 
 - **clang-format**: Code formatting
 - **cppcheck**: Static analysis
