@@ -132,6 +132,8 @@ jobs:
         MAIN_TOTAL="${{ steps.test262-main.outputs.main_total || '0' }}"
         PR_RATE="${{ steps.test262-pr.outputs.pr_pass_rate || '0' }}"
         MAIN_RATE="${{ steps.test262-main.outputs.main_pass_rate || '0' }}"
+        PR_FAILED="${{ steps.test262-pr.outputs.pr_failed || '0' }}"
+        MAIN_FAILED="${{ steps.test262-main.outputs.main_failed || '0' }}"
         
         PASSED_DIFF=$((PR_PASSED - MAIN_PASSED))
         RATE_DIFF=$(echo "scale=2; $PR_RATE - $MAIN_RATE" | bc -l 2>/dev/null || echo "0")
@@ -155,15 +157,15 @@ jobs:
         echo "color=$COLOR" >> $GITHUB_OUTPUT
         
         # Create detailed report
-        cat > comparison-report.md << 'EOF'
+        cat > comparison-report.md << EOF
         # 🧪 Test262 Compatibility Report
         
         ## 📊 Results Summary
         
         | Branch | Passed | Failed | Total | Pass Rate | 
         |--------|--------|--------|-------|-----------|
-        | **PR** | $PR_PASSED | ${{ steps.test262-pr.outputs.pr_failed }} | $PR_TOTAL | $PR_RATE% |
-        | **Main** | $MAIN_PASSED | ${{ steps.test262-main.outputs.main_failed }} | $MAIN_TOTAL | $MAIN_RATE% |
+        | **PR** | $PR_PASSED | $PR_FAILED | $PR_TOTAL | $PR_RATE% |
+        | **Main** | $MAIN_PASSED | $MAIN_FAILED | $MAIN_TOTAL | $MAIN_RATE% |
         | **Diff** | **$PASSED_DIFF** | | | **$RATE_DIFF%** |
         
         ## $STATUS
@@ -171,19 +173,19 @@ jobs:
         EOF
         
         if (( PASSED_DIFF > 0 )); then
-          cat >> comparison-report.md << 'EOF'
+          cat >> comparison-report.md << EOF
         🎉 **Congratulations!** This PR improves JavaScript compatibility by fixing additional test262 tests.
         
         ### What improved:
         EOF
         elif (( PASSED_DIFF < 0 )); then
-          cat >> comparison-report.md << 'EOF'
+          cat >> comparison-report.md << EOF
         ⚠️ **Warning:** This PR appears to break some previously passing test262 tests. Please review the changes.
         
         ### What regressed:
         EOF
         else
-          cat >> comparison-report.md << 'EOF'
+          cat >> comparison-report.md << EOF
         ➡️ This PR maintains the current level of JavaScript compatibility without significant changes to test262 results.
         EOF
         fi
