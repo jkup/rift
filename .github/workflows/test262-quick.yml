@@ -22,6 +22,10 @@ jobs:
   quick-test262:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     
     steps:
     - name: Checkout
@@ -78,21 +82,21 @@ jobs:
         echo "pattern=$TEST_PATTERN" >> $GITHUB_OUTPUT
     
     - name: Comment quick results
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && always()
       uses: actions/github-script@v7
       with:
         script: |
-          const passed = ${{ steps.quick-test.outputs.passed }};
-          const total = ${{ steps.quick-test.outputs.total }};
-          const passRate = '${{ steps.quick-test.outputs.pass_rate }}';
-          const pattern = '${{ steps.quick-test.outputs.pattern }}';
+          const passed = parseInt('${{ steps.quick-test.outputs.passed }}') || 0;
+          const total = parseInt('${{ steps.quick-test.outputs.total }}') || 0;
+          const passRate = '${{ steps.quick-test.outputs.pass_rate }}' || '0';
+          const pattern = '${{ steps.quick-test.outputs.pattern }}' || 'unknown';
           
           const emoji = passed > 0 ? '✅' : '❌';
           const status = passed === total ? 'All tests passing!' : `${passed}/${total} tests passing`;
           
           const comment = `## 🚀 Quick Test262 Check
           
-          **Pattern:** \`${pattern}\`  
+          **Pattern:** \\\`${pattern}\\\`  
           **Result:** ${emoji} ${status} (${passRate}%)
           
           ${passed > 0 ? '🎉 Some tests are passing!' : '⚠️ No tests passing yet - this is normal for new features.'}

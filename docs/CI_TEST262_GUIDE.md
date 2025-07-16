@@ -2,7 +2,7 @@
 
 This guide explains how to use the automated Test262 compatibility tracking in GitHub Actions.
 
-## 🚀 Overview
+## Overview
 
 The project includes two GitHub Actions workflows that automatically run Test262 compatibility tests:
 
