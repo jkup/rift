@@ -394,7 +394,7 @@ function Test262Error() {
     return false;
   }
 
-  async findTestFiles() {
+  async findTestFiles(includePattern = null) {
     const testDir = path.join(TEST262_DIR, "test");
     const testFiles = [];
 
@@ -408,6 +408,13 @@ function Test262Error() {
         if (stat.isDirectory()) {
           walkDir(filePath);
         } else if (file.endsWith(".js") && !file.includes("_FIXTURE")) {
+          // Apply include filter if specified
+          if (includePattern) {
+            const relativePath = path.relative(testDir, filePath);
+            if (!relativePath.includes(includePattern)) {
+              continue;
+            }
+          }
           testFiles.push(filePath);
         }
       }
@@ -418,11 +425,11 @@ function Test262Error() {
     return testFiles;
   }
 
-  async run() {
+  async run(includePattern = null) {
     await this.setupTest262();
     await this.buildRuntime();
 
-    const testFiles = await this.findTestFiles();
+    const testFiles = await this.findTestFiles(includePattern);
 
     this.showHeader(testFiles.length);
 
@@ -532,21 +539,41 @@ function Test262Error() {
   }
 }
 
+// Parse command line arguments
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const options = {
+    includePattern: null,
+    singleTest: null
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--include' && i + 1 < args.length) {
+      options.includePattern = args[i + 1];
+      i++; // Skip next argument as it's the value
+    } else if (!args[i].startsWith('--')) {
+      // If it's not a flag, treat it as a single test file
+      options.singleTest = args[i];
+    }
+  }
+
+  return options;
+}
+
 // Run the test suite
 const runner = new Test262Runner();
+const options = parseArgs();
 
-const testFilePath = process.argv[2];
-
-if (testFilePath) {
+if (options.singleTest) {
   try {
-    const result = await runner.runSingleTest(`${TEST262_DIR}/${testFilePath}`);
+    const result = await runner.runSingleTest(`${TEST262_DIR}/${options.singleTest}`);
     console.log(result);
   } catch (error) {
     console.error(error);
   }
 } else {
   try {
-    await runner.run();
+    await runner.run(options.includePattern);
   } catch (error) {
     console.error(error);
   }
