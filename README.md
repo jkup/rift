@@ -22,20 +22,15 @@ A JavaScript runtime implementation written in C++ with robust garbage collectio
 ### Code Quality Tools (Optional but Recommended)
 
 - **clang-format**: Code formatting
-- **clang-tidy**: Static analysis
-- **cppcheck**: Additional static analysis
+- **cppcheck**: Static analysis
 
 **Installation**:
 ```bash
 # macOS
-brew install llvm clang-format cppcheck
+brew install clang-format cppcheck
 
 # Ubuntu/Debian
-apt-get install clang-tidy clang-format cppcheck
-
-# One-time setup
-chmod +x scripts/setup-hooks.sh
-./scripts/setup-hooks.sh
+apt-get install clang-format cppcheck
 ```
 
 ### Build the Runtime
@@ -104,16 +99,7 @@ Before submitting a PR:
 
 The CI will automatically verify all quality checks on your PR.
 
-**Quick Setup**:
-```bash
-# Setup development environment with git hooks
-chmod +x scripts/setup-hooks.sh
-./scripts/setup-hooks.sh
-```
-
-**Common Commands**: `make format`, `make clang-tidy`, `make quality`
-
-**Full Documentation**: See [docs/CODE_QUALITY.md](docs/CODE_QUALITY.md) for complete installation instructions, available tools, and development workflow.
+**Common Commands**: `make format`, `make cppcheck`, `make quality`
 
 ## Implementation Status
 
@@ -308,3 +294,4 @@ MIT License - see LICENSE file for details.
 
 - [test262](https://github.com/tc39/test262) - ECMAScript Test Suite
 - ECMAScript specification for language semantics
+# Testing CI formatting
