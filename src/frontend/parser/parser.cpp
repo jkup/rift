@@ -499,7 +499,7 @@ std::shared_ptr<ASTNode> Parser::parse_computed_member_expression(std::shared_pt
 
     consume(TokenType::RightBracket);  // consume ']'
 
-    return ASTFactory::makeMemberExpression(object, index);
+    return ASTFactory::makeMemberExpression(object, index, true);  // Mark as computed
 }
 
 std::shared_ptr<ASTNode> Parser::parse() {

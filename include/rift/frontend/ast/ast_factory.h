@@ -55,10 +55,14 @@ class ASTFactory {
     }
 
     static std::shared_ptr<ASTNode> makeMemberExpression(std::shared_ptr<ASTNode> object,
-                                                         std::shared_ptr<ASTNode> property) {
+                                                         std::shared_ptr<ASTNode> property,
+                                                         bool computed = false) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::MemberExpression);
         node->children.push_back(object);
         node->children.push_back(property);
+        if(computed) {
+            node->metadata = "computed";
+        }
         return node;
     }
 

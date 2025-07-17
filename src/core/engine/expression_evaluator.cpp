@@ -192,9 +192,7 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
 
         // Get the property name - handle both dot and bracket notation
         std::string property;
-        if(leftSide->children[1]->type == ASTNodeType::Literal ||
-           leftSide->children[1]->type == ASTNodeType::BinaryExpression ||
-           leftSide->children[1]->type == ASTNodeType::CallExpression) {
+        if(leftSide->metadata == "computed") {
             // Bracket notation - evaluate the property expression
             Value propertyValue = engine->evaluate(leftSide->children[1], env);
             property = propertyValue.toString();
@@ -301,10 +299,8 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
     std::string property;
 
     // Check if this is computed member access (bracket notation)
-    // In bracket notation, the property is an expression that needs to be evaluated
-    if(node->children[1]->type == ASTNodeType::Literal ||
-       node->children[1]->type == ASTNodeType::BinaryExpression ||
-       node->children[1]->type == ASTNodeType::CallExpression) {
+    // Use metadata to determine if this should be computed
+    if(node->metadata == "computed") {
         // This is bracket notation - evaluate the property expression
         Value propertyValue = engine->evaluate(node->children[1], env);
         property = propertyValue.toString();
