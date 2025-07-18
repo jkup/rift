@@ -1,5 +1,66 @@
 # CLAUDE.md - Essential Guide for Working on Rift JavaScript Runtime
 
+**Last updated: July 19, 2025**
+
+---
+
+## 📚 Quick Reference & Docs
+
+| Task                        | Command / Location                                  |
+|-----------------------------|-----------------------------------------------------|
+| Build (recommended)         | `./build.sh`                                        |
+| Manual build                | `mkdir -p build && cd build && cmake .. && make -j$(sysctl -n hw.ncpu)` |
+| Run JS file                 | `./build/rift path/to/script.js`                    |
+| Run JS code (inline)        | `./build/rift -e "console.log('hi')"`              |
+| Run custom tests            | `npm test` or `node test-runner.js`                 |
+| Run Test262 suite           | `npm run test262` or `node test262-runner.js`       |
+| Run specific Test262 test   | `node test262-runner.js path/to/test.js`            |
+| Format code                 | `cd build && make format`                           |
+| Check formatting            | `cd build && make format-check`                     |
+| Static analysis             | `cd build && make cppcheck`                         |
+| All code quality checks     | `cd build && make quality`                          |
+| Docs: GC plan               | `docs/gc-implementation-plan.md`                    |
+| Docs: Code quality          | `docs/CODE_QUALITY.md`                              |
+| Docs: Test262 CI            | `docs/CI_TEST262_GUIDE.md`                          |
+| Docs: Test262 blockers      | `docs/TEST262_BLOCKERS.md`                          |
+| Test262 authoring guide     | `test262/CONTRIBUTING.md`                           |
+
+---
+
+## 🏆 Best Practices & Code Style (C++)
+
+- **Naming**: Classes `PascalCase`, functions `camelCase`, variables `snake_case`, constants `UPPER_CASE`, private members `trailing_underscore_`.
+- **Structure**: Max 100 lines per function, 50 statements per function, clear separation of concerns.
+- **Modern C++**: Use `auto` where appropriate, prefer `constexpr`, use range-based for, avoid raw pointers unless GC-managed.
+- **Formatting**: Use `make format` before committing. 4-space indent, 100-char line limit.
+- **Static analysis**: Address all `clang-tidy` and `cppcheck` warnings. Run sanitizers regularly.
+
+---
+
+## 📝 How to Add a New Feature (Checklist)
+
+1. **Plan**: Identify where the feature fits (e.g. built-in, parser, runtime).
+2. **Implement**: Add code in the appropriate `src/` subfolder.
+3. **Test**: Add/modify tests in `test/` or relevant Test262 files.
+4. **Build**: Run `./build.sh` and ensure no errors.
+5. **Run tests**: `npm test` and/or `node test262-runner.js --include="<feature>"`
+6. **Check code quality**: `cd build && make quality`
+7. **Update docs**: If needed, update this file or related docs.
+8. **Commit**: Format code, commit, and push.
+
+---
+
+## 🐞 Debugging & Troubleshooting
+
+- **Build fails**: Ensure C++23 support, clean build (`rm -rf build && ./build.sh`).
+- **Segfaults**: Usually GC shutdown; see `docs/gc-implementation-plan.md`.
+- **Test262 failures**: Many are expected; focus on your feature, check `docs/TEST262_BLOCKERS.md`.
+- **Memory issues**: Use sanitizers (`cmake .. -DENABLE_SANITIZERS=ON`), enable GC debug output in `CMakeLists.txt`.
+- **Formatting/static analysis**: Run `make format`, `make format-check`, `make cppcheck`.
+- **Node/npm issues**: Use Node.js 14+; run `npm install` after cloning.
+
+---
+
 ## 🎯 Project Overview
 
 **Rift** is a JavaScript runtime implementation written in C++ with robust garbage collection and comprehensive JavaScript language support. It's designed as a learning/hobby project that demonstrates the implementation of a modern JavaScript engine with:
