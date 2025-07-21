@@ -29,6 +29,7 @@
 
 ## 🏆 Best Practices & Code Style (C++)
 
+- **ECMAScript Compliance**: All features and fixes must follow ECMAScript specification. Reference https://262.ecma-international.org/16.0/index.html for official behavior and implementation details.
 - **Naming**: Classes `PascalCase`, functions `camelCase`, variables `snake_case`, constants `UPPER_CASE`, private members `trailing_underscore_`.
 - **Structure**: Max 100 lines per function, 50 statements per function, clear separation of concerns.
 - **Modern C++**: Use `auto` where appropriate, prefer `constexpr`, use range-based for, avoid raw pointers unless GC-managed.
