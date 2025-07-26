@@ -354,7 +354,7 @@ function Test262Error() {
       /\bclass\s+\w+/, // class declarations
       /\bfinally\s*\{/, // finally blocks
       /=>/, // arrow functions
-      /\bvar\s+\w+\s*=\s*function/, // function expressions
+      // Removed function expressions - they're now working!
       /\bconst\b/, // const declarations
       /\blet\b/, // let declarations
       /\basync\b/, // async functions
@@ -489,6 +489,15 @@ function Test262Error() {
     console.log(chalk.bold(`📊 Total:    ${total.toString().padStart(6)}`));
     console.log(chalk.bold(`📈 Pass Rate: ${passRate}%`));
     console.log(chalk.dim(`⏱️  Runtime:  ${runtime}s`));
+
+    // Output CI-friendly format that GitHub Actions can parse
+    console.log();
+    console.log(`Passed: ${this.passed}`);
+    console.log(`Failed: ${this.failed}`);
+    console.log(`Skipped: ${this.skipped}`);
+    console.log(`Total: ${total}`);
+    console.log(`Pass Rate: ${passRate}%`);
+    console.log();
 
     if (this.failed > 0) {
       console.log();
