@@ -106,6 +106,9 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             current++;
             return templateLiteral;
         }
+        case TokenType::Function: {
+            return parse_function_expression();
+        }
         default:
             throw std::runtime_error("Unexpected token in primary expression");
     }
