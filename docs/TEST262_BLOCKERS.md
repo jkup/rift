@@ -1,6 +1,5 @@
 # Test262 Compatibility Blockers
 
-# Test262 Compatibility Blockers
 
 ## Executive Summary
 
