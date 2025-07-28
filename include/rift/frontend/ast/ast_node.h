@@ -13,6 +13,7 @@ enum class ASTNodeType {
     Identifier,
     BinaryExpression,
     UnaryExpression,
+    UpdateExpression,
     AssignmentExpression,
     VariableDeclaration,
     ExpressionStatement,

@@ -30,6 +30,8 @@ class ExpressionEvaluator {
                                           std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateUnaryExpression(std::shared_ptr<ASTNode> node,
                                          std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateUpdateExpression(std::shared_ptr<ASTNode> node,
+                                          std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateAssignmentExpression(std::shared_ptr<ASTNode> node,
                                               std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateCallExpression(std::shared_ptr<ASTNode> node,
