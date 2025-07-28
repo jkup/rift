@@ -5,7 +5,9 @@ console.log("=== Missing Features Test ===");
 
 console.log("❌ Test 1: Template Literal Interpolation");
 console.log("MISSING: ${expression} interpolation in template literals");
-console.log("Status: Basic template strings work, interpolation evaluation needed");
+console.log(
+  "Status: Basic template strings work, interpolation evaluation needed"
+);
 // var name = "World";
 // console.log(`Hello, ${name}!`); // Shows literal ${name}!
 

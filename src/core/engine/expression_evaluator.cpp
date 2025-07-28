@@ -211,9 +211,9 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
 
                 // Special handling for arrays: update length if necessary
                 if(property != "length") {
-                    // Check if this is a numeric index
-                    try {
-                        size_t index = std::stoull(property);
+                    // Check if this is a numeric index using safe validation
+                    size_t index;
+                    if(EvaluationUtils::isValidArrayIndex(property, index)) {
                         Value lengthVal = obj->getProperty("length");
                         if(lengthVal.isNumber()) {
                             size_t currentLength = static_cast<size_t>(lengthVal.toNumber());
@@ -221,8 +221,6 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
                                 obj->setProperty("length", Value(static_cast<double>(index + 1)));
                             }
                         }
-                    } catch(...) {
-                        // Not a numeric index, ignore
                     }
                 }
             }
@@ -611,9 +609,9 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
                 
                 // Special handling for arrays: update length if necessary
                 if(property != "length") {
-                    // Check if this is a numeric index
-                    try {
-                        size_t index = std::stoull(property);
+                    // Check if this is a numeric index using safe validation
+                    size_t index;
+                    if(EvaluationUtils::isValidArrayIndex(property, index)) {
                         Value lengthVal = obj->getProperty("length");
                         if(lengthVal.isNumber()) {
                             size_t currentLength = static_cast<size_t>(lengthVal.toNumber());
@@ -621,8 +619,6 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
                                 obj->setProperty("length", Value(static_cast<double>(index + 1)));
                             }
                         }
-                    } catch(...) {
-                        // Not a numeric index, ignore
                     }
                 }
             }
