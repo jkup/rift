@@ -52,6 +52,7 @@ Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment>
         case ASTNodeType::Literal:
         case ASTNodeType::BinaryExpression:
         case ASTNodeType::UnaryExpression:
+        case ASTNodeType::UpdateExpression:
         case ASTNodeType::AssignmentExpression:
         case ASTNodeType::CallExpression:
         case ASTNodeType::MemberExpression:

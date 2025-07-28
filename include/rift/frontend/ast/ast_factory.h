@@ -40,6 +40,15 @@ class ASTFactory {
         return node;
     }
 
+    static std::shared_ptr<ASTNode> makeUpdateExpression(const std::string& operator_,
+                                                         std::shared_ptr<ASTNode> operand,
+                                                         bool prefix = true) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::UpdateExpression, operator_);
+        node->children.push_back(operand);
+        node->metadata = prefix ? "prefix" : "postfix";  // Store prefix/postfix info
+        return node;
+    }
+
     static std::shared_ptr<ASTNode> makeAssignmentExpression(std::shared_ptr<ASTNode> left,
                                                              std::shared_ptr<ASTNode> right) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::AssignmentExpression);

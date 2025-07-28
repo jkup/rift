@@ -117,6 +117,14 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
 std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
     Token& token = current_token();
 
+    // Check for increment/decrement operators (prefix)
+    if(token.type == TokenType::Increment || token.type == TokenType::Decrement) {
+        std::string operator_ = token.value;
+        current++;  // consume the operator
+        auto operand = parse_postfix_expression();
+        return ASTFactory::makeUpdateExpression(operator_, operand, true);  // prefix = true
+    }
+
     // Check for unary operators
     if(token.type == TokenType::Plus || token.type == TokenType::Minus ||
        token.type == TokenType::LogicalNot || token.type == TokenType::Typeof ||
@@ -456,6 +464,11 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
             expr = parse_computed_member_expression(expr);
         } else if(current_token().type == TokenType::LeftParen) {
             expr = parse_call_expression(expr);
+        } else if(current_token().type == TokenType::Increment || current_token().type == TokenType::Decrement) {
+            // Handle postfix increment/decrement
+            std::string operator_ = current_token().value;
+            current++;  // consume the operator
+            expr = ASTFactory::makeUpdateExpression(operator_, expr, false);  // prefix = false
         } else {
             break;
         }

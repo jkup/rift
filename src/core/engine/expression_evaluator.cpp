@@ -27,6 +27,8 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
             return evaluateBinaryExpression(node, env, engine);
         case ASTNodeType::UnaryExpression:
             return evaluateUnaryExpression(node, env, engine);
+        case ASTNodeType::UpdateExpression:
+            return evaluateUpdateExpression(node, env, engine);
         case ASTNodeType::AssignmentExpression:
             return evaluateAssignmentExpression(node, env, engine);
         case ASTNodeType::CallExpression:
@@ -513,6 +515,129 @@ Value ExpressionEvaluator::evaluateTemplateLiteral(std::shared_ptr<ASTNode> node
     }
 
     return Value(result);
+}
+
+Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> node,
+                                                   std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.size() != 1) {
+        return Value::undefined();
+    }
+
+    auto operandNode = node->children[0];
+    std::string operator_ = node->value;  // "++" or "--"
+    bool isPrefix = (node->metadata == "prefix");
+
+    // Handle variable increment/decrement
+    if(operandNode->type == ASTNodeType::Identifier) {
+        std::string varName = operandNode->value;
+        
+        // Get current value
+        Value currentValue = env->get(varName);
+        if(!currentValue.isNumber()) {
+            // Convert to number for increment/decrement
+            currentValue = Value(currentValue.toNumber());
+        }
+        
+        // Calculate new value
+        Value newValue;
+        if(operator_ == "++") {
+            newValue = Value(currentValue.toNumber() + 1.0);
+        } else if(operator_ == "--") {
+            newValue = Value(currentValue.toNumber() - 1.0);
+        } else {
+            return Value::undefined();
+        }
+        
+        // Update the variable
+        env->set(varName, newValue);
+        
+        // Return value depends on prefix vs postfix
+        if(isPrefix) {
+            return newValue;     // ++x returns new value
+        } else {
+            return currentValue; // x++ returns old value
+        }
+    }
+    
+    // Handle member expression increment/decrement (e.g., obj.prop++, arr[i]--)
+    else if(operandNode->type == ASTNodeType::MemberExpression) {
+        if(operandNode->children.size() != 2) {
+            return Value::undefined();
+        }
+
+        // Evaluate the object
+        Value object = engine->evaluate(operandNode->children[0], env);
+
+        // Get the property name - handle both dot and bracket notation
+        std::string property;
+        if(operandNode->metadata == "computed") {
+            // Bracket notation - evaluate the property expression
+            Value propertyValue = engine->evaluate(operandNode->children[1], env);
+            property = propertyValue.toString();
+        } else {
+            // Dot notation - use the identifier value directly
+            property = operandNode->children[1]->value;
+        }
+
+        // Get current property value
+        Value currentValue = Value::undefined();
+        if(object.isObject() || object.isFunction()) {
+            auto* obj = object.getObject();
+            if(obj) {
+                currentValue = obj->getProperty(property);
+            }
+        }
+        
+        if(!currentValue.isNumber()) {
+            // Convert to number for increment/decrement
+            currentValue = Value(currentValue.toNumber());
+        }
+        
+        // Calculate new value
+        Value newValue;
+        if(operator_ == "++") {
+            newValue = Value(currentValue.toNumber() + 1.0);
+        } else if(operator_ == "--") {
+            newValue = Value(currentValue.toNumber() - 1.0);
+        } else {
+            return Value::undefined();
+        }
+        
+        // Update the property
+        if(object.isObject() || object.isFunction()) {
+            auto* obj = object.getObject();
+            if(obj) {
+                obj->setProperty(property, newValue);
+                
+                // Special handling for arrays: update length if necessary
+                if(property != "length") {
+                    // Check if this is a numeric index
+                    try {
+                        size_t index = std::stoull(property);
+                        Value lengthVal = obj->getProperty("length");
+                        if(lengthVal.isNumber()) {
+                            size_t currentLength = static_cast<size_t>(lengthVal.toNumber());
+                            if(index >= currentLength) {
+                                obj->setProperty("length", Value(static_cast<double>(index + 1)));
+                            }
+                        }
+                    } catch(...) {
+                        // Not a numeric index, ignore
+                    }
+                }
+            }
+        }
+        
+        // Return value depends on prefix vs postfix
+        if(isPrefix) {
+            return newValue;     // ++obj.prop returns new value
+        } else {
+            return currentValue; // obj.prop++ returns old value
+        }
+    }
+
+    // Invalid operand for increment/decrement
+    return Value::undefined();
 }
 
 }  // namespace rift::core
