@@ -44,6 +44,8 @@ enum class TokenType {
     Multiply,
     Divide,
     Assign,
+    Increment,
+    Decrement,
     Equal,
     EqualStrict,
     NotEqual,

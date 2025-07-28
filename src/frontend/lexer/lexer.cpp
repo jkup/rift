@@ -190,9 +190,17 @@ Token Lexer::next_token() {
     switch(ch) {
         case '+':
             advance();
+            if(current_char() == '+') {
+                advance();
+                return Token(TokenType::Increment, "++", line, column);
+            }
             return Token(TokenType::Plus, "+", line, column);
         case '-':
             advance();
+            if(current_char() == '-') {
+                advance();
+                return Token(TokenType::Decrement, "--", line, column);
+            }
             return Token(TokenType::Minus, "-", line, column);
         case '*':
             advance();
