@@ -158,7 +158,7 @@ All core JavaScript language features are now implemented and verified:
 
 ### **Expected Milestones**
 - **Current Baseline:** Excellent foundation with all critical features working
-- **After Test262 Validation:** 60-80% pass rate expected (up from ~40-50%)
+- **After Test262 Validation:** 60-80% pass rate expected (up from ~40%)
 - **Ultimate Goal:** 75-85% pass rate for a hobby JavaScript runtime - **HIGHLY ACHIEVABLE**
 
 ### **Success Metrics**
