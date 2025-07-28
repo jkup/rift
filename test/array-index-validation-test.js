@@ -44,9 +44,9 @@ console.log('obj[""] =', obj[""]); // "empty"
 console.log("Original length:", originalLength);
 console.log("Current length:", obj.length);
 if (obj.length === originalLength) {
-    console.log("PASS: Length correctly unchanged for invalid indices");
+  console.log("PASS: Length correctly unchanged for invalid indices");
 } else {
-    console.log("FAIL: Length incorrectly changed for invalid indices");
+  console.log("FAIL: Length incorrectly changed for invalid indices");
 }
 
 console.log("✅ Test 3: Edge Cases - Boundary Values");

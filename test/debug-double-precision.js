@@ -12,7 +12,7 @@ var test = [];
 test[16777216] = "2^24"; // Should work fine
 console.log("test[16777216] length =", test.length);
 
-test[33554432] = "2^25"; // Should work fine  
+test[33554432] = "2^25"; // Should work fine
 console.log("test[33554432] length =", test.length);
 
 test[67108864] = "2^26"; // Should work fine

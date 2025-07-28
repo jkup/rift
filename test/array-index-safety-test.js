@@ -3,7 +3,9 @@
 
 console.log("=== Edge Case Safety Test ===");
 
-console.log("✅ Test 1: Large Number Strings (Would cause std::stoull overflow)");
+console.log(
+  "✅ Test 1: Large Number Strings (Would cause std::stoull overflow)"
+);
 var obj = [];
 
 // These would cause std::stoull to throw exceptions
@@ -16,9 +18,9 @@ console.log("Object length after large numbers:", obj.length);
 console.log('obj["99999999999999999999"] =', obj["99999999999999999999"]);
 
 if (obj.length === 0) {
-    console.log("PASS: Large numbers correctly rejected as array indices");
+  console.log("PASS: Large numbers correctly rejected as array indices");
 } else {
-    console.log("FAIL: Large numbers incorrectly accepted as array indices");
+  console.log("FAIL: Large numbers incorrectly accepted as array indices");
 }
 
 console.log("✅ Test 2: Malformed Number Strings");
@@ -36,9 +38,9 @@ console.log('malformed["123abc"] =', malformed["123abc"]);
 console.log('malformed["+123"] =', malformed["+123"]);
 
 if (malformed.length === 0) {
-    console.log("PASS: Malformed numbers correctly rejected");
+  console.log("PASS: Malformed numbers correctly rejected");
 } else {
-    console.log("FAIL: Malformed numbers incorrectly accepted");
+  console.log("FAIL: Malformed numbers incorrectly accepted");
 }
 
 console.log("✅ Test 3: JavaScript Array Index Specification Compliance");
@@ -59,9 +61,14 @@ console.log('spec["4294967296"] =', spec["4294967296"]); // Should be property, 
 console.log("Spec compliance array length:", spec.length);
 
 if (spec.length === 4294967295) {
-    console.log("PASS: ECMAScript array index specification correctly implemented");
+  console.log(
+    "PASS: ECMAScript array index specification correctly implemented"
+  );
 } else {
-    console.log("FAIL: Array index specification not correctly implemented, got length:", spec.length);
+  console.log(
+    "FAIL: Array index specification not correctly implemented, got length:",
+    spec.length
+  );
 }
 
 console.log("✅ Test 4: Leading Zeros (JavaScript specification)");
@@ -80,9 +87,11 @@ console.log('zeros["01"] =', zeros["01"]); // Property access
 console.log("Leading zeros array length:", zeros.length);
 
 if (zeros.length === 1) {
-    console.log("PASS: Leading zeros correctly handled per JavaScript specification");
+  console.log(
+    "PASS: Leading zeros correctly handled per JavaScript specification"
+  );
 } else {
-    console.log("FAIL: Leading zeros incorrectly handled");
+  console.log("FAIL: Leading zeros incorrectly handled");
 }
 
 console.log("✅ Test 5: Exception Safety");
@@ -92,27 +101,29 @@ var safe = [];
 
 // Array of potentially problematic strings
 var problematic = [
-    "9223372036854775808", // Larger than max signed long long
-    "18446744073709551615", // Max unsigned long long
-    "18446744073709551616", // Larger than max unsigned long long
-    "1" + "0".repeat(100), // Extremely long number string
-    "∞", // Unicode infinity
-    "NaN", // Not a number string
-    "undefined", // JavaScript undefined as string
-    "null" // JavaScript null as string
+  "9223372036854775808", // Larger than max signed long long
+  "18446744073709551615", // Max unsigned long long
+  "18446744073709551616", // Larger than max unsigned long long
+  "1" + "0".repeat(100), // Extremely long number string
+  "∞", // Unicode infinity
+  "NaN", // Not a number string
+  "undefined", // JavaScript undefined as string
+  "null", // JavaScript null as string
 ];
 
 for (var i = 0; i < problematic.length; i++) {
-    safe[problematic[i]] = "test-value-" + i;
+  safe[problematic[i]] = "test-value-" + i;
 }
 
 console.log("Exception safety test completed without crashes");
 console.log("Safe array length (should be 0):", safe.length);
 
 if (safe.length === 0) {
-    console.log("PASS: All problematic strings safely handled");
+  console.log("PASS: All problematic strings safely handled");
 } else {
-    console.log("FAIL: Some problematic strings incorrectly treated as array indices");
+  console.log(
+    "FAIL: Some problematic strings incorrectly treated as array indices"
+  );
 }
 
 console.log("=== Edge Case Safety Test Complete ===");
