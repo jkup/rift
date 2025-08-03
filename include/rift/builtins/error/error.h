@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "../builtin_base.h"
 #include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
@@ -21,16 +22,11 @@ using namespace rift::runtime;
 ///
 /// [spec]: https://tc39.es/ecma262/#sec-error-objects
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
-class Error {
+class Error : public BuiltinBase<Error> {
   public:
-    /// Static factory method
-    static void setObjectFactory(rift::memory::ObjectFactory* factory);
-
-    /// Create Error constructor function - now returns raw pointer
-    static JSObject* create(rift::memory::ObjectFactory* factory);
-
-    /// Create Error.prototype - now returns raw pointer
-    static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
+    /// Setup methods required by BuiltinBase template
+    static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
+    static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
     /// Error constructor
     static Value constructor(const std::vector<Value>& args);
@@ -39,9 +35,6 @@ class Error {
     static Value toString(const std::vector<Value>& args);
 
   private:
-    /// Static factory storage
-    static rift::memory::ObjectFactory* object_factory_;
-
     /// Helper methods - now work with raw pointers
     static JSObject* getThisErrorObject(const std::vector<Value>& args);
     static JSObject* getGlobalPrototype();
