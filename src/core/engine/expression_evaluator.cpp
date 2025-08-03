@@ -472,7 +472,7 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
     // Add special marker to indicate this is a constructor call
     // TODO: This is kept for backward compatibility. Future improvement would be to 
     // pass CallContext directly to functions instead of using magic strings.
-    args.push_back(Value("__CONSTRUCTOR_CALL__"));
+    args.push_back(Value(EvaluationConstants::CONSTRUCTOR_CALL_MARKER));
 
     // Add the 'this' object as the first real argument
     args.push_back(Value(newObj));

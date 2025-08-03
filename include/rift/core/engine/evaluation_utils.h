@@ -10,6 +10,15 @@ namespace rift::core {
 using namespace rift::runtime;
 
 /**
+ * Constants for backward compatibility during migration
+ * @deprecated These constants are kept only for backward compatibility
+ * and will be removed once the migration to CallContext is complete.
+ */
+namespace EvaluationConstants {
+constexpr const char* CONSTRUCTOR_CALL_MARKER = "__CONSTRUCTOR_CALL__";
+}
+
+/**
  * Enum to distinguish between different types of function calls
  */
 enum class CallType {
@@ -50,7 +59,7 @@ namespace EvaluationUtils {
 inline CallContext parseCallContext(const std::vector<Value>& args, std::vector<Value>& realArgs) {
     // Check for old magic string marker format (for backward compatibility)
     if(!args.empty() && args[0].isString() &&
-       args[0].getString() == "__CONSTRUCTOR_CALL__") {
+       args[0].getString() == EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
         
         // This is a constructor call with magic marker
         Value thisValue = Value::undefined();
