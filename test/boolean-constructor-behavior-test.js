@@ -41,4 +41,17 @@ console.log("boolObj.valueOf() =", boolObj.valueOf());
 console.log();
 console.log("=== Summary ===");
 console.log("Boolean(true) should be primitive:", typeof Boolean(true) === "boolean");
-console.log("new Boolean(true) should be object:", typeof new Boolean(true) === "object"); 
+console.log("new Boolean(true) should be object:", typeof new Boolean(true) === "object");
+
+// Add proper assertions
+if (typeof Boolean(true) === "boolean") console.log("PASS: Boolean() returns primitive");
+if (typeof Boolean(true) !== "boolean") console.log("FAIL: Boolean() should return primitive");
+
+if (typeof new Boolean(true) === "object") console.log("PASS: new Boolean() returns object");
+if (typeof new Boolean(true) !== "object") console.log("FAIL: new Boolean() should return object");
+
+if (Boolean(true) === true) console.log("PASS: Boolean(true) === true");
+if (Boolean(true) !== true) console.log("FAIL: Boolean(true) should equal true");
+
+if (Boolean(false) === false) console.log("PASS: Boolean(false) === false");
+if (Boolean(false) !== false) console.log("FAIL: Boolean(false) should equal false"); 

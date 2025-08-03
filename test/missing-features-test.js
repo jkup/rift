@@ -3,7 +3,7 @@
 
 console.log("=== Missing Features Test ===");
 
-console.log("❌ Test 1: Template Literal Interpolation");
+console.log("🔧 Test 1: Template Literal Interpolation");
 console.log("MISSING: ${expression} interpolation in template literals");
 console.log(
   "Status: Basic template strings work, interpolation evaluation needed"
@@ -11,7 +11,7 @@ console.log(
 // var name = "World";
 // console.log(`Hello, ${name}!`); // Shows literal ${name}!
 
-console.log("❌ Test 2: Advanced Closures");
+console.log("🔧 Test 2: Advanced Closures");
 console.log("MISSING: Complex closure variable capture");
 console.log("Status: Basic functions work, closure scoping needs refinement");
 // function makeCounter() {
@@ -19,13 +19,13 @@ console.log("Status: Basic functions work, closure scoping needs refinement");
 //     return function() { return ++count; };
 // }
 
-console.log("❌ Test 3: Let/Const Declarations");
+console.log("🔧 Test 3: Let/Const Declarations");
 console.log("MISSING: let and const keywords");
 console.log("Status: Tokens defined, parser/evaluator implementation needed");
 // let x = 5; // Not implemented
 // const y = 10; // Not implemented
 
-console.log("❌ Test 4: Arrow Functions");
+console.log("🔧 Test 4: Arrow Functions");
 console.log("MISSING: => arrow function syntax");
 console.log("Status: Not tokenized or parsed yet");
 // var add = (a, b) => a + b; // Not implemented

@@ -6,18 +6,26 @@ console.log("=== ARRAY CREATION TESTS ===");
 // Basic array creation
 var arr1 = [1, 2, 3];
 console.log("Basic array created:", typeof arr1, arr1.length);
+if (typeof arr1 == "object" && arr1.length == 3) console.log("PASS: Basic array creation");
+if (typeof arr1 != "object" || arr1.length != 3) console.log("FAIL: Basic array creation");
 
 // Empty array
 var arr2 = [];
 console.log("Empty array created:", typeof arr2, arr2.length);
+if (typeof arr2 == "object" && arr2.length == 0) console.log("PASS: Empty array creation");
+if (typeof arr2 != "object" || arr2.length != 0) console.log("FAIL: Empty array creation");
 
 // Mixed types
 var arr3 = [1, "hello", true, null, undefined];
 console.log("Mixed array created:", typeof arr3, arr3.length);
+if (typeof arr3 == "object" && arr3.length == 5) console.log("PASS: Mixed type array creation");
+if (typeof arr3 != "object" || arr3.length != 5) console.log("FAIL: Mixed type array creation");
 
 // Single element
 var arr4 = [42];
 console.log("Single element array:", typeof arr4, arr4.length);
+if (typeof arr4 == "object" && arr4.length == 1) console.log("PASS: Single element array creation");
+if (typeof arr4 != "object" || arr4.length != 1) console.log("FAIL: Single element array creation");
 
 console.log("\n=== ARRAY ELEMENT ACCESS TESTS ===");
 
@@ -27,6 +35,14 @@ console.log("testArr[0]:", testArr[0]);
 console.log("testArr[1]:", testArr[1]);
 console.log("testArr[2]:", testArr[2]);
 console.log("testArr[3]:", testArr[3]); // Should be undefined
+
+// Verify element access
+if (testArr[0] == 10) console.log("PASS: Array element [0] access");
+if (testArr[0] != 10) console.log("FAIL: Array element [0] access");
+if (testArr[1] == 20) console.log("PASS: Array element [1] access");
+if (testArr[1] != 20) console.log("FAIL: Array element [1] access");
+if (testArr[2] == 30) console.log("PASS: Array element [2] access");
+if (testArr[2] != 30) console.log("FAIL: Array element [2] access");
 
 // Negative indices (should be undefined in JS)
 console.log("testArr[-1]:", testArr[-1]);

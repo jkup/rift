@@ -46,30 +46,30 @@ if (!true != false) console.log("FAIL: !true equals false");
 if (!false == true) console.log("PASS: !false equals true");
 if (!false != true) console.log("FAIL: !false equals true");
 
-// Test boolean literals in logical AND
-if (true && true == true) console.log("PASS: true && true equals true");
-if (true && true != true) console.log("FAIL: true && true equals true");
+// Test boolean literals in logical AND (with proper operator precedence)
+if ((true && true) == true) console.log("PASS: true && true equals true");
+if ((true && true) != true) console.log("FAIL: true && true equals true");
 
-if (true && false == false) console.log("PASS: true && false equals false");
-if (true && false != false) console.log("FAIL: true && false equals false");
+if ((true && false) == false) console.log("PASS: true && false equals false");
+if ((true && false) != false) console.log("FAIL: true && false equals false");
 
-if (false && true == false) console.log("PASS: false && true equals false");
-if (false && true != false) console.log("FAIL: false && true equals false");
+if ((false && true) == false) console.log("PASS: false && true equals false");
+if ((false && true) != false) console.log("FAIL: false && true equals false");
 
-if (false && false == false) console.log("PASS: false && false equals false");
-if (false && false != false) console.log("FAIL: false && false equals false");
+if ((false && false) == false) console.log("PASS: false && false equals false");
+if ((false && false) != false) console.log("FAIL: false && false equals false");
 
-// Test boolean literals in logical OR
-if (true || true == true) console.log("PASS: true || true equals true");
-if (true || true != true) console.log("FAIL: true || true equals true");
+// Test boolean literals in logical OR (with proper operator precedence)
+if ((true || true) == true) console.log("PASS: true || true equals true");
+if ((true || true) != true) console.log("FAIL: true || true equals true");
 
-if (true || false == true) console.log("PASS: true || false equals true");
-if (true || false != true) console.log("FAIL: true || false equals true");
+if ((true || false) == true) console.log("PASS: true || false equals true");
+if ((true || false) != true) console.log("FAIL: true || false equals true");
 
-if (false || true == true) console.log("PASS: false || true equals true");
-if (false || true != true) console.log("FAIL: false || true equals true");
+if ((false || true) == true) console.log("PASS: false || true equals true");
+if ((false || true) != true) console.log("FAIL: false || true equals true");
 
-if (false || false == false) console.log("PASS: false || false equals false");
-if (false || false != false) console.log("FAIL: false || false equals false");
+if ((false || false) == false) console.log("PASS: false || false equals false");
+if ((false || false) != false) console.log("FAIL: false || false equals false");
 
 console.log("=== Boolean Literals Test Complete ==="); 

@@ -11,10 +11,10 @@ var obj = {};
 console.log("Created empty object");
 
 // Test Object.keys exists
-if (typeof Object == "object") {
+if (typeof Object == "function") {
     console.log("PASS: Object exists");
 } else {
-    console.log("FAIL: Object not found");
+    console.log("FAIL: Object not found, got type:", typeof Object);
 }
 
 if (typeof Object.keys == "function") {
