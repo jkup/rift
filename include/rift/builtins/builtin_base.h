@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <type_traits>
 #include <vector>
 
 #include "../memory/object_factory.h"
@@ -47,7 +48,7 @@ class BuiltinBase {
         auto* constructor = factory->createJSFunction(Derived::constructor);
 
         // Let derived class add static methods (e.g., Array.isArray, Object.keys)
-        Derived::setupStaticMethods(constructor, factory);
+        callSetupStaticMethods(constructor, factory);
 
         // Create and set prototype
         auto* prototype = createPrototype(factory);
@@ -65,7 +66,7 @@ class BuiltinBase {
         auto* prototype = factory->createJSObject();
 
         // Let derived class add prototype methods (e.g., Array.prototype.push)
-        Derived::setupPrototypeMethods(prototype, factory);
+        callSetupPrototypeMethods(prototype, factory);
 
         return prototype;
     }
@@ -79,25 +80,23 @@ class BuiltinBase {
         return object_factory_;
     }
 
-    /**
-     * Default implementation for static methods setup.
-     * Derived classes can override this if they have static methods.
-     */
-    static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-        // Default: no static methods
-        // Derived classes can override this
-    }
-
-    /**
-     * Pure virtual function that derived classes must implement.
-     * This is where each builtin adds its prototype methods.
-     */
-    static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-        // This should be implemented by derived classes
-        // We can't make it pure virtual in a template, but derived classes must provide it
-    }
-
   private:
+    /**
+     * CRTP method implementations - these call the derived class methods.
+     * This ensures derived classes MUST implement these methods.
+     */
+    static void callSetupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
+        Derived::setupStaticMethods(constructor, factory);
+    }
+    
+    static void callSetupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
+        // Static assert to ensure derived class implements this method
+        static_assert(std::is_same_v<decltype(&Derived::setupPrototypeMethods), 
+                                   void(*)(JSObject*, rift::memory::ObjectFactory*)>,
+                     "Derived class must implement setupPrototypeMethods(JSObject*, rift::memory::ObjectFactory*)");
+        Derived::setupPrototypeMethods(prototype, factory);
+    }
+
     /// Static factory storage (one per builtin type due to template instantiation)
     static rift::memory::ObjectFactory* object_factory_;
 };
