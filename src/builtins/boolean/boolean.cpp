@@ -38,26 +38,20 @@ JSObject* Boolean::createPrototype(rift::memory::ObjectFactory* factory) {
 }
 
 Value Boolean::constructor(const std::vector<Value>& args) {
-    // Check if this is a constructor call (new Boolean()) or function call (Boolean())
-    bool isConstructorCall = false;
-    size_t argOffset = 0;
-
-    if(!args.empty() && args[0].isString() &&
-       args[0].getString() == rift::core::EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
-        isConstructorCall = true;
-        argOffset = 2;  // Skip the constructor marker and the 'this' object
-    }
+    // Parse call context from arguments (handles both old and new calling conventions)
+    std::vector<Value> realArgs;
+    auto callContext = rift::core::EvaluationUtils::parseCallContext(args, realArgs);
 
     // Determine the boolean value from the actual arguments
     bool boolValue;
-    if(args.size() <= argOffset) {
+    if(realArgs.empty()) {
         boolValue = false;
     } else {
-        boolValue = args[argOffset].toBool();
+        boolValue = realArgs[0].toBool();
     }
 
     // Return behavior depends on how we were called
-    if(isConstructorCall) {
+    if(callContext.isConstructorCall()) {
         // new Boolean() - return Boolean object
         auto booleanPrototype = getGlobalPrototype();
         auto* booleanObj = object_factory_->createJSObject(booleanPrototype);

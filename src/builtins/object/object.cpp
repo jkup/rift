@@ -49,21 +49,18 @@ JSObject* Object::createPrototype(rift::memory::ObjectFactory* factory) {
 }
 
 Value Object::constructor(const std::vector<Value>& args) {
-    // Skip constructor marker if present
-    size_t argOffset = 0;
-    if(!args.empty() && args[0].isString() &&
-       args[0].getString() == rift::core::EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
-        argOffset = 2;  // Skip the constructor marker and the 'this' object
-    }
+    // Parse call context from arguments (handles both old and new calling conventions)
+    std::vector<Value> realArgs;
+    auto callContext = rift::core::EvaluationUtils::parseCallContext(args, realArgs);
 
     // Object constructor - create new object
-    if(args.size() <= argOffset) {
+    if(realArgs.empty()) {
         // Always use factory for consistent GC management
         return Value(object_factory_->createJSObject());
     }
 
     // Convert argument to object
-    Value arg = args[argOffset];
+    Value arg = realArgs[0];
     if(arg.isObject()) {
         return arg;
     }

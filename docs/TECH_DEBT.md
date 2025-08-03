@@ -4,23 +4,7 @@ This document identifies technical debt and code quality issues in the C++ engin
 
 ## 🔴 Critical - High Impact, Should Fix Soon
 
-### 1. **Constructor Call Handling System**
-**Location**: `src/core/engine/evaluation_utils.h`, builtin constructors  
-**Issue**: Using magic string markers (`"__CONSTRUCTOR_CALL__"`) to distinguish constructor vs function calls
-```cpp
-// Hacky approach throughout codebase:
-if(!args.empty() && args[0].isString() && 
-   args[0].getString() == EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
-```
-**Problems**: 
-- Brittle and error-prone
-- Performance overhead (string comparisons)  
-- Pollutes function argument lists
-- Not semantically clear
-
-**Recommended Fix**: Implement proper call context (e.g., `CallType` enum parameter)
-
-### 2. **Massive Code Duplication in Builtin Creation**
+### 1. **Massive Code Duplication in Builtin Creation**
 **Location**: All files in `src/builtins/*/`  
 **Issue**: Every builtin implements identical factory patterns with static storage
 ```cpp
@@ -37,7 +21,7 @@ void setObjectFactory(rift::memory::ObjectFactory* factory) {
 
 **Recommended Fix**: Create `BuiltinBase` template class or factory registry pattern
 
-### 3. **Raw Pointer Proliferation Despite GC**
+### 2. **Raw Pointer Proliferation Despite GC**
 **Location**: Throughout engine, especially `src/core/engine/expression_evaluator.cpp`  
 **Issue**: Heavy use of raw pointers even with garbage collector
 ```cpp
@@ -53,7 +37,7 @@ auto* obj = object.getObject();
 
 ## 🟡 High Priority - Medium Impact
 
-### 4. **Repetitive Argument Validation Everywhere**  
+### 3. **Repetitive Argument Validation Everywhere**  
 **Location**: All builtin function implementations  
 **Issue**: Manual argument checking repeated hundreds of times
 ```cpp
@@ -69,7 +53,7 @@ if(args.size() >= 3 && !args[2].isUndefined()) {
 
 **Recommended Fix**: Create argument validation helper/macro system
 
-### 5. **Excessive static_cast Usage**
+### 4. **Excessive static_cast Usage**
 **Location**: Primarily `src/builtins/string/string.cpp`, `src/builtins/array/array.cpp`  
 **Issue**: 40+ static_cast operations for numeric conversions
 ```cpp
@@ -83,7 +67,7 @@ obj->setProperty("length", Value(static_cast<double>(index + 1)));
 
 **Recommended Fix**: Create safe conversion utilities with bounds checking
 
-### 6. **Complex Exception/GC Interaction System**
+### 5. **Complex Exception/GC Interaction System**
 **Location**: `src/core/engine/engine.cpp`, `src/memory/mark_sweep_gc.cpp`  
 **Issue**: Intricate deferred GC collection during exception handling
 ```cpp
@@ -103,7 +87,7 @@ void Rift::collectGarbage() {
 
 ## 🟠 Medium Priority - Quality of Life
 
-### 7. **Giant Switch Statement Dispatchers**
+### 6. **Giant Switch Statement Dispatchers**
 **Location**: `src/core/engine/engine.cpp`, evaluators  
 **Issue**: Massive switch statements for AST node type dispatch (80+ lines)
 ```cpp
@@ -120,7 +104,7 @@ switch(node->type) {
 
 **Recommended Fix**: Visitor pattern or function pointer table
 
-### 8. **Hardcoded Magic Numbers**
+### 7. **Hardcoded Magic Numbers**
 **Location**: `src/core/engine/evaluation_utils.h`, string operations  
 **Issue**: Magic numbers throughout, especially for array index validation
 ```cpp
@@ -135,7 +119,7 @@ if(ull >= 4294967295ULL) return false;
 
 **Recommended Fix**: Named constants with clear documentation
 
-### 9. **Inconsistent Error Handling Patterns**
+### 8. **Inconsistent Error Handling Patterns**
 **Location**: Throughout codebase  
 **Issue**: Mix of exceptions, undefined returns, and error values
 ```cpp
@@ -155,7 +139,7 @@ return "Error: " + std::string(e.what());
 
 ## 🟢 Lower Priority - Technical Improvements
 
-### 10. **String Concatenation Performance**
+### 9. **String Concatenation Performance**
 **Location**: Error messages, debugging output  
 **Issue**: Inefficient string building with operator+
 ```cpp
@@ -167,7 +151,7 @@ throw std::runtime_error("Cannot open file: " + filename);
 
 **Recommended Fix**: Use string streams or fmt library
 
-### 11. **Debugging Code in Production Paths**
+### 10. **Debugging Code in Production Paths**
 **Location**: `src/memory/mark_sweep_gc.cpp`, `src/core/engine/engine.cpp`  
 **Issue**: Debug output scattered through normal execution
 ```cpp
@@ -181,7 +165,7 @@ throw std::runtime_error("Cannot open file: " + filename);
 
 **Recommended Fix**: Proper logging framework with levels
 
-### 12. **Value Type Conversion Inconsistencies**
+### 11. **Value Type Conversion Inconsistencies**
 **Location**: `src/runtime/values/value.cpp`  
 **Issue**: Inconsistent handling of edge cases in type conversions
 ```cpp
@@ -198,11 +182,11 @@ if(type_ != ValueType::Number) {
 
 ## Summary
 
-**Total Issues**: 12 major categories  
-**Estimated Technical Debt**: ~40% of engine codebase  
+**Total Issues**: 11 major categories  
+**Estimated Technical Debt**: ~35% of engine codebase  
 **Biggest Wins**: 
-1. Fix constructor call system (#1) 
-2. Eliminate builtin duplication (#2)
-3. Standardize argument validation (#4)
+1. ✅ ~~Fix constructor call system~~ **COMPLETED** - Implemented CallContext with CallType enum
+2. Eliminate builtin duplication (#1)
+3. Standardize argument validation (#3)
 
-**Recommended Approach**: Address critical issues first (especially #1-3) before adding new features, as they affect every builtin and core operation.
+**Recommended Approach**: Address critical issues first (especially #1-2) before adding new features, as they affect every builtin and core operation.

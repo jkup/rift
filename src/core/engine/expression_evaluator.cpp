@@ -413,17 +413,16 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
             // Create new environment for function execution
             auto funcEnv = std::make_shared<Environment>(env);
 
-            // Handle constructor call context and 'this' binding
-            auto constructorInfo = EvaluationUtils::parseConstructorCall(args);
+            // Parse call context from arguments (handles both old and new calling conventions)
+            std::vector<Value> realArgs;
+            auto callContext = EvaluationUtils::parseCallContext(args, realArgs);
 
             // Bind 'this' to the function environment
-            funcEnv->define("this", constructorInfo.thisValue);
+            funcEnv->define("this", callContext.thisValue);
 
-            // Bind parameters to arguments (skip constructor marker and this object)
+            // Bind parameters to real arguments
             for(size_t i = 0; i < parameters.size(); ++i) {
-                Value argValue = (i + constructorInfo.argOffset < args.size())
-                                     ? args[i + constructorInfo.argOffset]
-                                     : Value::undefined();
+                Value argValue = (i < realArgs.size()) ? realArgs[i] : Value::undefined();
                 funcEnv->define(parameters[i], argValue);
             }
 
@@ -471,7 +470,9 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
     std::vector<Value> args;
 
     // Add special marker to indicate this is a constructor call
-    args.push_back(Value(EvaluationConstants::CONSTRUCTOR_CALL_MARKER));
+    // TODO: This is kept for backward compatibility. Future improvement would be to 
+    // pass CallContext directly to functions instead of using magic strings.
+    args.push_back(Value("__CONSTRUCTOR_CALL__"));
 
     // Add the 'this' object as the first real argument
     args.push_back(Value(newObj));

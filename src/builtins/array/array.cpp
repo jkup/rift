@@ -52,25 +52,22 @@ JSObject* Array::createPrototype(rift::memory::ObjectFactory* factory) {
 }
 
 Value Array::constructor(const std::vector<Value>& args) {
-    // Skip constructor marker if present
-    size_t argOffset = 0;
-    if(!args.empty() && args[0].isString() &&
-       args[0].getString() == rift::core::EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
-        argOffset = 2;  // Skip the constructor marker and the 'this' object
-    }
+    // Parse call context from arguments (handles both old and new calling conventions)
+    std::vector<Value> realArgs;
+    auto callContext = rift::core::EvaluationUtils::parseCallContext(args, realArgs);
 
     // Create array with proper prototype chain using GC-managed creation
     auto* arrayPrototype = getGlobalPrototype();
     auto* arrayObj = object_factory_->createJSObject(arrayPrototype);
 
-    size_t effectiveArgCount = args.size() - argOffset;
+    size_t effectiveArgCount = realArgs.size();
 
     if(effectiveArgCount == 0) {
         // new Array() - create empty array
         setArrayLength(arrayObj, 0);
-    } else if(effectiveArgCount == 1 && args[argOffset].isNumber()) {
+    } else if(effectiveArgCount == 1 && realArgs[0].isNumber()) {
         // new Array(length) - create array with specific length
-        double length = args[argOffset].toNumber();
+        double length = realArgs[0].toNumber();
         if(length < 0 || std::isnan(length) || std::isinf(length)) {
             // In a real implementation, this would throw a RangeError
             setArrayLength(arrayObj, 0);
@@ -80,7 +77,7 @@ Value Array::constructor(const std::vector<Value>& args) {
     } else {
         // new Array(element0, element1, ...) - create array with elements
         for(size_t i = 0; i < effectiveArgCount; ++i) {
-            arrayObj->setProperty(std::to_string(i), args[argOffset + i]);
+            arrayObj->setProperty(std::to_string(i), realArgs[i]);
         }
         setArrayLength(arrayObj, effectiveArgCount);
     }
