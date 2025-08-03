@@ -229,8 +229,9 @@ class String : public BuiltinBase<String> {
     static Value valueOf(const std::vector<Value>& args);
 
   private:
-    /// Get the string value from 'this'
+    /// Extracts the string value from the first argument in `args`.
     static std::string getStringValue(const std::vector<Value>& args);
+    /// Extracts the string value from the `this` value (typically the receiver object) in `args`.
     static std::string getThisStringValue(const std::vector<Value>& args);
 
     /// Helper for index validation
