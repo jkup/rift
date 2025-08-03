@@ -6,39 +6,17 @@
 
 namespace rift::builtins {
 
-// Static factory storage
-rift::memory::ObjectFactory* Error::object_factory_ = nullptr;
-
-void Error::setObjectFactory(rift::memory::ObjectFactory* factory) {
-    object_factory_ = factory;
+void Error::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
+    // Error has no static methods (like Array.isArray), so this is empty
 }
 
-JSObject* Error::create(rift::memory::ObjectFactory* factory) {
-    // Store factory for use in other methods
-    setObjectFactory(factory);
-
-    // Create Error constructor using GC-managed creation
-    auto* error = factory->createJSFunction(Error::constructor);
-
-    // Create and set prototype
-    auto* prototype = createPrototype(factory);
-    error->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
-
-    return error;  // Return raw pointer
-}
-
-JSObject* Error::createPrototype(rift::memory::ObjectFactory* factory) {
-    // Create Error.prototype using GC-managed creation
-    auto* prototype = factory->createJSObject();
-
+void Error::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // Set default properties
     prototype->setProperty("name", Value("Error"));
     prototype->setProperty("message", Value(""));
 
-    // Add prototype methods using GC-managed function creation
+    // Add Error.prototype methods using GC-managed function creation
     prototype->setProperty("toString", Value(factory->createJSFunction(Error::toString)));
-
-    return prototype;  // Return raw pointer
 }
 
 Value Error::constructor(const std::vector<Value>& args) {
@@ -48,7 +26,7 @@ Value Error::constructor(const std::vector<Value>& args) {
 
     // Create Error object with proper prototype chain
     auto errorPrototype = getGlobalPrototype();
-    auto* errorObj = object_factory_->createJSObject(errorPrototype);  // Use factory
+    auto* errorObj = getObjectFactory()->createJSObject(errorPrototype);  // Use factory
 
     // Set the name property
     errorObj->setProperty("name", Value("Error"));
