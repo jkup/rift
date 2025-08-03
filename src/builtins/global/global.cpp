@@ -150,9 +150,9 @@ Value Global::isFinite(const std::vector<Value>& args) {
 }
 
 Value Global::createArray(const std::vector<Value>& args) {
-    // Simplified implementation - just return undefined as a placeholder
-    // In a real implementation, this would properly create an array using the available factory
-    // Since Global functions don't store factory anymore, this function is simplified
+    // TODO: Placeholder implementation. This should create and return a new array using the ObjectFactory.
+    // Currently returns undefined because the factory is not available in this context.
+    // To implement, refactor to provide access to the factory or pass it as an argument.
     return Value::undefined();
 }
 
