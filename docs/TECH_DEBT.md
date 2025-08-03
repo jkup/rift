@@ -4,16 +4,23 @@ This document identifies technical debt and code quality issues in the C++ engin
 
 ## 🔴 Critical - High Impact, Should Fix Soon
 
-### 1. ✅ ~~**Massive Code Duplication in Builtin Creation**~~ **COMPLETED**
+### 1. **Massive Code Duplication in Builtin Creation** 🔄 **IN PROGRESS (50% Complete)**
 **Location**: All files in `src/builtins/*/`  
-**Solution**: Implemented `BuiltinBase<T>` CRTP template class that eliminates duplication
-- ✅ **Created BuiltinBase template** with CRTP pattern for type-safe inheritance
-- ✅ **Eliminated ~50+ lines of duplicate code** per builtin (factory storage, create methods)
-- ✅ **Updated major builtins**: Array, Boolean, Object now use template system
-- ✅ **Improved maintainability**: Single implementation handles all factory patterns
-- ✅ **Type-safe design**: Each builtin gets its own static factory via template instantiation
+**Solution**: Implementing `BuiltinBase<T>` CRTP template class to eliminate duplication
 
-**Impact**: Reduced code duplication by ~85% across builtin implementations while maintaining performance
+**✅ Completed (3/6 builtins):**
+- ✅ **Boolean** - converted to BuiltinBase template
+- ✅ **Array** - converted to BuiltinBase template  
+- ✅ **Object** - converted to BuiltinBase template
+- ✅ **Template infrastructure** - CRTP design with compile-time enforcement
+
+**❌ Remaining (3/6 builtins):**
+- ❌ **Error builtin** - still uses old factory pattern (~25 lines of duplication)
+- ❌ **String builtin** - still uses old factory pattern (~25 lines of duplication)  
+- ❌ **Global builtin** - still uses old factory pattern (~25 lines of duplication)
+
+**Impact So Far**: Eliminated ~150 lines of duplicate code (50% reduction)
+**Recommended**: Complete remaining 3 builtins to fully eliminate this tech debt
 
 ### 2. **Raw Pointer Proliferation Despite GC**
 **Location**: Throughout engine, especially `src/core/engine/expression_evaluator.cpp`  
@@ -176,11 +183,11 @@ if(type_ != ValueType::Number) {
 
 ## Summary
 
-**Total Issues**: 10 major categories (2 completed)  
-**Estimated Technical Debt**: ~25% of engine codebase  
+**Total Issues**: 11 major categories (1 completed, 1 in progress)  
+**Estimated Technical Debt**: ~30% of engine codebase  
 **Biggest Wins**: 
 1. ✅ ~~Fix constructor call system~~ **COMPLETED** - Implemented CallContext with CallType enum
-2. ✅ ~~Eliminate builtin duplication~~ **COMPLETED** - Implemented BuiltinBase<T> CRTP template
+2. 🔄 **Eliminate builtin duplication** **IN PROGRESS (50%)** - BuiltinBase<T> template (3/6 builtins done)
 3. Standardize argument validation (#2)
 
 **Recommended Approach**: Address critical issues first (especially #2) before adding new features, as they affect every builtin and core operation.
