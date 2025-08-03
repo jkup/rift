@@ -5,36 +5,14 @@
 
 namespace rift::builtins {
 
-// Static factory storage
-rift::memory::ObjectFactory* Boolean::object_factory_ = nullptr;
-
-void Boolean::setObjectFactory(rift::memory::ObjectFactory* factory) {
-    object_factory_ = factory;
+void Boolean::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
+    // Boolean has no static methods (like Array.isArray), so this is empty
 }
 
-JSObject* Boolean::create(rift::memory::ObjectFactory* factory) {
-    // Store factory for use in other methods
-    setObjectFactory(factory);
-
-    // Create Boolean constructor using GC-managed creation
-    auto* boolean = factory->createJSFunction(Boolean::constructor);
-
-    // Create and set prototype
-    auto* prototype = createPrototype(factory);
-    boolean->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
-
-    return boolean;  // Return raw pointer
-}
-
-JSObject* Boolean::createPrototype(rift::memory::ObjectFactory* factory) {
-    // Create Boolean.prototype using GC-managed creation
-    auto* prototype = factory->createJSObject();
-
-    // Add prototype methods using GC-managed function creation
+void Boolean::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
+    // Add Boolean.prototype methods using GC-managed function creation
     prototype->setProperty("toString", Value(factory->createJSFunction(Boolean::toString)));
     prototype->setProperty("valueOf", Value(factory->createJSFunction(Boolean::valueOf)));
-
-    return prototype;  // Return raw pointer
 }
 
 Value Boolean::constructor(const std::vector<Value>& args) {
@@ -54,7 +32,7 @@ Value Boolean::constructor(const std::vector<Value>& args) {
     if(callContext.isConstructorCall()) {
         // new Boolean() - return Boolean object
         auto booleanPrototype = getGlobalPrototype();
-        auto* booleanObj = object_factory_->createJSObject(booleanPrototype);
+        auto* booleanObj = getObjectFactory()->createJSObject(booleanPrototype);
         booleanObj->setProperty("value", Value(boolValue));
         return Value(booleanObj);
     } else {

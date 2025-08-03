@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 
+#include "../builtin_base.h"
 #include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
@@ -24,23 +25,11 @@ using namespace rift::runtime;
 ///
 /// [spec]: https://tc39.es/ecma262/#sec-array-objects
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
-class Array {
+class Array : public BuiltinBase<Array> {
   public:
-    /// Create the Array constructor object with all properties and methods.
-    static JSObject* create(rift::memory::ObjectFactory* factory);
-
-    /// Create the Array.prototype object with all instance methods.
-    static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
-
-    /// Helper to create a new array object with the given elements
-    static JSObject* createArrayObject(rift::memory::ObjectFactory* factory,
-                                       const std::vector<Value>& elements);
-
-    /// Helper to get the global Array prototype (for proper prototype chain)
-    static JSObject* getGlobalPrototype();
-
-    /// Store the factory for use in static methods
-    static void setObjectFactory(rift::memory::ObjectFactory* factory);
+    /// Setup methods required by BuiltinBase template
+    static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
+    static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
     /// The `Array()` constructor creates Array objects.
     ///
@@ -52,6 +41,13 @@ class Array {
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Array
     static Value constructor(const std::vector<Value>& args);
+
+    /// Helper to create a new array object with the given elements
+    static JSObject* createArrayObject(rift::memory::ObjectFactory* factory,
+                                       const std::vector<Value>& elements);
+
+    /// Helper to get the global Array prototype (for proper prototype chain)
+    static JSObject* getGlobalPrototype();
 
     /// The `push()` method adds one or more elements to the end of an array and returns the new
     /// length.
@@ -211,8 +207,7 @@ class Array {
     static Value isArray(const std::vector<Value>& args);
 
   private:
-    // Store factory for use in static methods
-    static rift::memory::ObjectFactory* object_factory_;
+    // Static factory storage is now handled by BuiltinBase template
 };
 
 }  // namespace rift::builtins

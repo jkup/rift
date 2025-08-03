@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "../builtin_base.h"
 #include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
@@ -21,28 +22,20 @@ using namespace rift::runtime;
 ///
 /// [spec]: https://tc39.es/ecma262/#sec-boolean-objects
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
-class Boolean {
+class Boolean : public BuiltinBase<Boolean> {
   public:
-    /// Static factory method
-    static void setObjectFactory(rift::memory::ObjectFactory* factory);
-
-    /// Create Boolean constructor function - now returns raw pointer
-    static JSObject* create(rift::memory::ObjectFactory* factory);
-
-    /// Create Boolean.prototype - now returns raw pointer
-    static JSObject* createPrototype(rift::memory::ObjectFactory* factory);
-
-    /// Boolean constructor
+    /// Boolean constructor (required by BuiltinBase)
     static Value constructor(const std::vector<Value>& args);
 
     /// Boolean prototype methods
     static Value toString(const std::vector<Value>& args);
     static Value valueOf(const std::vector<Value>& args);
 
-  private:
-    /// Static factory storage
-    static rift::memory::ObjectFactory* object_factory_;
+    /// Setup methods required by BuiltinBase template
+    static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
+    static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
+  private:
     /// Helper methods - now work with raw pointers
     static JSObject* getGlobalPrototype();
     static bool getBooleanValue(const std::vector<Value>& args);
