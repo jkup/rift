@@ -9,43 +9,19 @@
 
 namespace rift::builtins {
 
-// Static factory storage
-rift::memory::ObjectFactory* Object::object_factory_ = nullptr;
-
-void Object::setObjectFactory(rift::memory::ObjectFactory* factory) {
-    object_factory_ = factory;
+void Object::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
+    // Add Object static methods
+    constructor->setProperty("keys", Value(factory->createJSFunction(Object::keys)));
+    constructor->setProperty("values", Value(factory->createJSFunction(Object::values)));
+    constructor->setProperty("entries", Value(factory->createJSFunction(Object::entries)));
 }
 
-JSObject* Object::create(rift::memory::ObjectFactory* factory) {
-    // Store factory for use in other methods
-    setObjectFactory(factory);
-
-    // Create Object constructor using GC-managed creation
-    auto* object = factory->createJSFunction(Object::constructor);
-
-    // Add static methods using GC-managed function creation
-    object->setProperty("keys", Value(factory->createJSFunction(Object::keys)));
-    object->setProperty("values", Value(factory->createJSFunction(Object::values)));
-    object->setProperty("entries", Value(factory->createJSFunction(Object::entries)));
-
-    // Create and set prototype
-    auto* prototype = createPrototype(factory);
-    object->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
-
-    return object;  // Return raw pointer
-}
-
-JSObject* Object::createPrototype(rift::memory::ObjectFactory* factory) {
-    // Create Object.prototype using GC-managed creation
-    auto* prototype = factory->createJSObject();
-
-    // Add prototype methods using GC-managed function creation
+void Object::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
+    // Add Object.prototype methods
     prototype->setProperty("toString", Value(factory->createJSFunction(Object::toString)));
     prototype->setProperty("valueOf", Value(factory->createJSFunction(Object::valueOf)));
     prototype->setProperty("hasOwnProperty",
                            Value(factory->createJSFunction(Object::hasOwnProperty)));
-
-    return prototype;  // Return raw pointer
 }
 
 Value Object::constructor(const std::vector<Value>& args) {
@@ -56,7 +32,7 @@ Value Object::constructor(const std::vector<Value>& args) {
     // Object constructor - create new object
     if(realArgs.empty()) {
         // Always use factory for consistent GC management
-        return Value(object_factory_->createJSObject());
+        return Value(getObjectFactory()->createJSObject());
     }
 
     // Convert argument to object
@@ -68,7 +44,7 @@ Value Object::constructor(const std::vector<Value>& args) {
     // Handle primitive to object conversion according to ECMAScript spec
     if(arg.isString()) {
         // Convert string primitive to String object
-        auto* stringObj = object_factory_->createJSObject();
+        auto* stringObj = getObjectFactory()->createJSObject();
         // Store the primitive string value (following similar pattern to Boolean)
         stringObj->setProperty("value", arg);
         // Add basic String methods
@@ -97,15 +73,15 @@ Value Object::constructor(const std::vector<Value>& args) {
             return Value("");
         };
 
-        stringObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
-        stringObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
+        stringObj->setProperty("toString", Value(getObjectFactory()->createJSFunction(toStringFn)));
+        stringObj->setProperty("valueOf", Value(getObjectFactory()->createJSFunction(valueOfFn)));
 
         return Value(stringObj);  // stringObj is now raw pointer
     }
 
     if(arg.isBoolean()) {
         // Convert boolean primitive to Boolean object
-        auto* booleanObj = object_factory_->createJSObject();
+        auto* booleanObj = getObjectFactory()->createJSObject();
         // Store the primitive boolean value (following Boolean constructor pattern)
         booleanObj->setProperty("value", arg);
         // Add basic Boolean methods
@@ -134,15 +110,15 @@ Value Object::constructor(const std::vector<Value>& args) {
             return Value(false);
         };
 
-        booleanObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
-        booleanObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
+        booleanObj->setProperty("toString", Value(getObjectFactory()->createJSFunction(toStringFn)));
+        booleanObj->setProperty("valueOf", Value(getObjectFactory()->createJSFunction(valueOfFn)));
 
         return Value(booleanObj);  // booleanObj is now raw pointer
     }
 
     if(arg.isNumber()) {
         // Convert number primitive to Number-like object
-        auto* numberObj = object_factory_->createJSObject();
+        auto* numberObj = getObjectFactory()->createJSObject();
         numberObj->setProperty("value", arg);
         // Add basic Number methods
         auto toStringFn = [](const std::vector<Value>& args) -> Value {
@@ -170,29 +146,29 @@ Value Object::constructor(const std::vector<Value>& args) {
             return Value(0.0);
         };
 
-        numberObj->setProperty("toString", Value(object_factory_->createJSFunction(toStringFn)));
-        numberObj->setProperty("valueOf", Value(object_factory_->createJSFunction(valueOfFn)));
+        numberObj->setProperty("toString", Value(getObjectFactory()->createJSFunction(toStringFn)));
+        numberObj->setProperty("valueOf", Value(getObjectFactory()->createJSFunction(valueOfFn)));
 
         return Value(numberObj);  // numberObj is now raw pointer
     }
 
     // For null, undefined, or other types, create plain object
-    return Value(object_factory_->createJSObject());
+    return Value(getObjectFactory()->createJSObject());
 }
 
 Value Object::keys(const std::vector<Value>& args) {
     if(args.size() < 2) {  // args[0] is 'this', args[1] is the object
-        return Value(Array::createArrayObject(object_factory_, {}));
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
     Value obj = args[1];
     if(!obj.isObject()) {
-        return Value(Array::createArrayObject(object_factory_, {}));
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
     auto* jsObj = obj.getObject();  // getObject() now returns raw pointer
     if(!jsObj) {
-        return Value(Array::createArrayObject(object_factory_, {}));
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
     // Get only own property names (not inherited prototype properties)
@@ -202,22 +178,22 @@ Value Object::keys(const std::vector<Value>& args) {
         keys.push_back(Value(propName));
     }
 
-    return Value(Array::createArrayObject(object_factory_, keys));
+    return Value(Array::createArrayObject(getObjectFactory(), keys));
 }
 
 Value Object::values(const std::vector<Value>& args) {
     if(args.size() < 2) {  // args[0] is 'this', args[1] is the object
-        return Value(Array::createArrayObject(object_factory_, {}));
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
     Value obj = args[1];
     if(!obj.isObject()) {
-        return Value(Array::createArrayObject(object_factory_, {}));
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
     auto* jsObj = obj.getObject();  // getObject() now returns raw pointer
     if(!jsObj) {
-        return Value(Array::createArrayObject(object_factory_, {}));
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
     // Get only own property values (not inherited prototype properties)
@@ -227,22 +203,22 @@ Value Object::values(const std::vector<Value>& args) {
         values.push_back(jsObj->getProperty(propName));
     }
 
-    return Value(Array::createArrayObject(object_factory_, values));
+    return Value(Array::createArrayObject(getObjectFactory(), values));
 }
 
 Value Object::entries(const std::vector<Value>& args) {
     if(args.size() < 2) {  // args[0] is 'this', args[1] is the object
-        return Value(Array::createArrayObject(object_factory_, {}));
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
     Value obj = args[1];
     if(!obj.isObject()) {
-        return Value(Array::createArrayObject(object_factory_, {}));
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
     auto* jsObj = obj.getObject();  // getObject() now returns raw pointer
     if(!jsObj) {
-        return Value(Array::createArrayObject(object_factory_, {}));
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
     // Get only own [key, value] pairs (not inherited prototype properties)
@@ -250,10 +226,10 @@ Value Object::entries(const std::vector<Value>& args) {
     auto propertyNames = jsObj->getOwnPropertyNames();
     for(const auto& propName : propertyNames) {
         std::vector<Value> entry = {Value(propName), jsObj->getProperty(propName)};
-        entries.push_back(Value(Array::createArrayObject(object_factory_, entry)));
+        entries.push_back(Value(Array::createArrayObject(getObjectFactory(), entry)));
     }
 
-    return Value(Array::createArrayObject(object_factory_, entries));
+    return Value(Array::createArrayObject(getObjectFactory(), entries));
 }
 
 Value Object::toString(const std::vector<Value>& args) {
@@ -266,7 +242,7 @@ Value Object::valueOf(const std::vector<Value>& args) {
     if(!args.empty() && (args[0].isObject() || args[0].isFunction())) {
         return args[0];
     }
-    return Value(object_factory_->createJSObject());  // Use factory instead of std::make_shared
+    return Value(getObjectFactory()->createJSObject());  // Use factory instead of std::make_shared
 }
 
 Value Object::hasOwnProperty(const std::vector<Value>& args) {

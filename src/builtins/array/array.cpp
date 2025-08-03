@@ -9,33 +9,13 @@
 
 namespace rift::builtins {
 
-// Static factory storage
-rift::memory::ObjectFactory* Array::object_factory_ = nullptr;
-
-void Array::setObjectFactory(rift::memory::ObjectFactory* factory) {
-    object_factory_ = factory;
+void Array::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
+    // Add Array static methods
+    constructor->setProperty("isArray", Value(factory->createJSFunction(Array::isArray)));
 }
 
-JSObject* Array::create(rift::memory::ObjectFactory* factory) {
-    // Store factory for use in other methods
-    setObjectFactory(factory);
-
-    auto* array = factory->createJSFunction(Array::constructor);
-
-    // Add static methods
-    array->setProperty("isArray", Value(factory->createJSFunction(Array::isArray)));
-
-    // Create and set prototype
-    auto* prototype = createPrototype(factory);
-    array->setProperty("prototype", Value(prototype));  // prototype is now raw pointer
-
-    return array;  // Return raw pointer
-}
-
-JSObject* Array::createPrototype(rift::memory::ObjectFactory* factory) {
-    auto* prototype = factory->createJSObject();
-
-    // Add prototype methods
+void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
+    // Add Array.prototype methods
     prototype->setProperty("push", Value(factory->createJSFunction(Array::push)));
     prototype->setProperty("pop", Value(factory->createJSFunction(Array::pop)));
     prototype->setProperty("forEach", Value(factory->createJSFunction(Array::forEach)));
@@ -47,8 +27,6 @@ JSObject* Array::createPrototype(rift::memory::ObjectFactory* factory) {
     prototype->setProperty("slice", Value(factory->createJSFunction(Array::slice)));
     prototype->setProperty("concat", Value(factory->createJSFunction(Array::concat)));
     prototype->setProperty("toString", Value(factory->createJSFunction(Array::toString)));
-
-    return prototype;  // Return raw pointer
 }
 
 Value Array::constructor(const std::vector<Value>& args) {
@@ -58,7 +36,7 @@ Value Array::constructor(const std::vector<Value>& args) {
 
     // Create array with proper prototype chain using GC-managed creation
     auto* arrayPrototype = getGlobalPrototype();
-    auto* arrayObj = object_factory_->createJSObject(arrayPrototype);
+    auto* arrayObj = getObjectFactory()->createJSObject(arrayPrototype);
 
     size_t effectiveArgCount = realArgs.size();
 
@@ -170,12 +148,12 @@ Value Array::forEach(const std::vector<Value>& args) {
 Value Array::map(const std::vector<Value>& args) {
     auto* arrayObj = getThisArrayObject(args);
     if(!arrayObj || args.size() < 2) {
-        return Value(createArrayObject(object_factory_, {}));
+        return Value(createArrayObject(getObjectFactory(), {}));
     }
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value(createArrayObject(object_factory_, {}));
+        return Value(createArrayObject(getObjectFactory(), {}));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -185,7 +163,7 @@ Value Array::map(const std::vector<Value>& args) {
     auto* callbackFn =
         dynamic_cast<JSFunction*>(callback.getObject());  // Use dynamic_cast for raw pointers
     if(!callbackFn) {
-        return Value(createArrayObject(object_factory_, {}));
+        return Value(createArrayObject(getObjectFactory(), {}));
     }
 
     for(size_t i = 0; i < length; ++i) {
@@ -200,18 +178,18 @@ Value Array::map(const std::vector<Value>& args) {
         }
     }
 
-    return Value(createArrayObject(object_factory_, results));
+    return Value(createArrayObject(getObjectFactory(), results));
 }
 
 Value Array::filter(const std::vector<Value>& args) {
     auto* arrayObj = getThisArrayObject(args);
     if(!arrayObj || args.size() < 2) {
-        return Value(createArrayObject(object_factory_, {}));
+        return Value(createArrayObject(getObjectFactory(), {}));
     }
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value(createArrayObject(object_factory_, {}));
+        return Value(createArrayObject(getObjectFactory(), {}));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -220,7 +198,7 @@ Value Array::filter(const std::vector<Value>& args) {
     auto* callbackFn =
         dynamic_cast<JSFunction*>(callback.getObject());  // Use dynamic_cast for raw pointers
     if(!callbackFn) {
-        return Value(createArrayObject(object_factory_, {}));
+        return Value(createArrayObject(getObjectFactory(), {}));
     }
 
     for(size_t i = 0; i < length; ++i) {
@@ -237,7 +215,7 @@ Value Array::filter(const std::vector<Value>& args) {
         }
     }
 
-    return Value(createArrayObject(object_factory_, results));
+    return Value(createArrayObject(getObjectFactory(), results));
 }
 
 Value Array::reduce(const std::vector<Value>& args) {
@@ -326,7 +304,7 @@ Value Array::includes(const std::vector<Value>& args) {
 Value Array::slice(const std::vector<Value>& args) {
     auto* arrayObj = getThisArrayObject(args);
     if(!arrayObj) {
-        return Value(createArrayObject(object_factory_, {}));
+        return Value(createArrayObject(getObjectFactory(), {}));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -361,13 +339,13 @@ Value Array::slice(const std::vector<Value>& args) {
         sliced.push_back(element);
     }
 
-    return Value(createArrayObject(object_factory_, sliced));
+    return Value(createArrayObject(getObjectFactory(), sliced));
 }
 
 Value Array::concat(const std::vector<Value>& args) {
     auto* arrayObj = getThisArrayObject(args);
     if(!arrayObj) {
-        return Value(createArrayObject(object_factory_, {}));
+        return Value(createArrayObject(getObjectFactory(), {}));
     }
 
     std::vector<Value> result;
@@ -395,7 +373,7 @@ Value Array::concat(const std::vector<Value>& args) {
         }
     }
 
-    return Value(createArrayObject(object_factory_, result));
+    return Value(createArrayObject(getObjectFactory(), result));
 }
 
 // Helper methods - now use raw pointers
