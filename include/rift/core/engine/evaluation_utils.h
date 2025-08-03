@@ -10,47 +10,78 @@ namespace rift::core {
 using namespace rift::runtime;
 
 /**
- * Constants for function call handling
+ * Enum to distinguish between different types of function calls
  */
-namespace EvaluationConstants {
-constexpr const char* CONSTRUCTOR_CALL_MARKER = "__CONSTRUCTOR_CALL__";
-}
+enum class CallType {
+    Function,      // Regular function call: func()
+    Constructor    // Constructor call: new func()
+};
 
 /**
- * Result of parsing constructor call arguments
+ * Context information for function calls
  */
-struct ConstructorCallInfo {
-    bool isConstructorCall = false;
+struct CallContext {
+    CallType type = CallType::Function;
     Value thisValue = Value::undefined();
-    size_t argOffset = 0;
+    
+    // Constructor for function calls
+    CallContext() = default;
+    
+    // Constructor for constructor calls with this value
+    CallContext(CallType callType, const Value& thisVal = Value::undefined()) 
+        : type(callType), thisValue(thisVal) {}
+    
+    bool isConstructorCall() const {
+        return type == CallType::Constructor;
+    }
 };
 
 /**
  * Utility functions for shared evaluation logic
  */
 namespace EvaluationUtils {
+
 /**
- * Parse constructor call arguments and extract 'this' context
- * @param args Function arguments vector
- * @return ConstructorCallInfo with parsed information
+ * Backward compatibility: Parse old-style constructor call arguments and convert to CallContext
+ * @param args Function arguments vector (may contain magic string marker)
+ * @param realArgs Output vector with real arguments (marker removed)
+ * @return CallContext with call type and this value
  */
-inline ConstructorCallInfo parseConstructorCall(const std::vector<Value>& args) {
-    ConstructorCallInfo info;
-
-    // Check if this is a constructor call
+inline CallContext parseCallContext(const std::vector<Value>& args, std::vector<Value>& realArgs) {
+    // Check for old magic string marker format (for backward compatibility)
     if(!args.empty() && args[0].isString() &&
-       args[0].getString() == EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
-        info.isConstructorCall = true;
-        info.argOffset = 1;
-
-        // The next argument should be the 'this' object
+       args[0].getString() == "__CONSTRUCTOR_CALL__") {
+        
+        // This is a constructor call with magic marker
+        Value thisValue = Value::undefined();
         if(args.size() > 1) {
-            info.thisValue = args[1];
-            info.argOffset = 2;
+            thisValue = args[1];
         }
+        
+        // Copy real arguments (skip marker and this value)
+        realArgs.clear();
+        for(size_t i = 2; i < args.size(); ++i) {
+            realArgs.push_back(args[i]);
+        }
+        
+        return CallContext(CallType::Constructor, thisValue);
+    } else {
+        // Regular function call - copy all arguments as-is
+        realArgs = args;
+        return CallContext(CallType::Function);
     }
+}
 
-    return info;
+/**
+ * New preferred API: Extract real arguments for a given call context
+ * @param callContext The call context
+ * @param args The function arguments
+ * @return Vector of real arguments (excluding context information)
+ */
+inline std::vector<Value> extractRealArgs(const CallContext& callContext, const std::vector<Value>& args) {
+    // With the new API, args should always be real arguments
+    // This function exists for consistency and future extensibility
+    return args;
 }
 
 /**

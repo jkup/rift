@@ -42,12 +42,9 @@ JSObject* Error::createPrototype(rift::memory::ObjectFactory* factory) {
 }
 
 Value Error::constructor(const std::vector<Value>& args) {
-    // Skip constructor marker if present
-    size_t argOffset = 0;
-    if(!args.empty() && args[0].isString() &&
-       args[0].getString() == rift::core::EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
-        argOffset = 2;  // Skip the constructor marker and the 'this' object
-    }
+    // Parse call context from arguments (handles both old and new calling conventions)
+    std::vector<Value> realArgs;
+    auto callContext = rift::core::EvaluationUtils::parseCallContext(args, realArgs);
 
     // Create Error object with proper prototype chain
     auto errorPrototype = getGlobalPrototype();
@@ -58,8 +55,8 @@ Value Error::constructor(const std::vector<Value>& args) {
 
     // Set the message property
     std::string message = "";
-    if(args.size() > argOffset && !args[argOffset].isUndefined()) {
-        message = args[argOffset].toString();
+    if(!realArgs.empty() && !realArgs[0].isUndefined()) {
+        message = realArgs[0].toString();
     }
     errorObj->setProperty("message", Value(message));
 
