@@ -99,7 +99,6 @@ Token Lexer::read_template_string() {
     template_depth++;
     template_started = false;  // Reset for new template
     
-    // For simple templates without ${}, use old behavior
     return read_template_part();
 }
 
