@@ -1,6 +1,7 @@
 #include "rift/frontend/lexer/lexer.h"
 
 #include <cctype>
+#include <stdexcept>
 #include <unordered_map>
 
 namespace rift::frontend {
@@ -153,16 +154,12 @@ Token Lexer::read_template_part() {
         advance();
     }
     
-    // EOF reached - if we have a simple template, return TemplateString
-    if(template_depth == 1) {
-        template_state = TemplateLiteralState::None;
-        template_depth--;
-        template_started = false;  // Reset for next template
-        return Token(TokenType::TemplateString, value, line, column);
-    }
-    
-    // Otherwise return what we have as TemplateEnd
-    return Token(TokenType::TemplateEnd, value, line, column);
+    // EOF reached while inside template literal - this is an error!
+    // Template literals must be properly closed with a backtick
+    template_state = TemplateLiteralState::None;
+    template_depth = 0;
+    template_started = false;
+    throw std::runtime_error("Unterminated template literal");
 }
 
 Token Lexer::read_identifier() {
