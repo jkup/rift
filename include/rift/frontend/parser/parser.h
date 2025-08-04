@@ -38,6 +38,7 @@ class Parser {
     std::shared_ptr<ASTNode> parse_for_statement();
     std::shared_ptr<ASTNode> parse_array_literal();
     std::shared_ptr<ASTNode> parse_object_literal();
+    std::shared_ptr<ASTNode> parse_template_literal();
 
     // New function-related parsing methods
     std::shared_ptr<ASTNode> parse_function_declaration();

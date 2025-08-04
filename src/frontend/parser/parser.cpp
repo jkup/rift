@@ -106,6 +106,12 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             current++;
             return templateLiteral;
         }
+        case TokenType::TemplateStart:
+        case TokenType::TemplateMiddle:
+        case TokenType::TemplateEnd: {
+            // Template literal with interpolation
+            return parse_template_literal();
+        }
         case TokenType::Function: {
             return parse_function_expression();
         }
@@ -678,6 +684,49 @@ std::shared_ptr<ASTNode> Parser::parse_new_expression() {
     }
 
     return newExpr;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_template_literal() {
+    auto templateLiteral = ASTFactory::makeTemplateLiteral();
+    
+    // Handle TemplateStart
+    if(current_token().type == TokenType::TemplateStart) {
+        auto element = ASTFactory::makeTemplateElement(current_token().value);
+        ASTFactory::addTemplateElement(templateLiteral, element);
+        current++;
+        
+        // Parse expressions and template parts until TemplateEnd
+        while(current_token().type != TokenType::TemplateEnd && 
+              current_token().type != TokenType::EndOfFile) {
+            // Parse the expression inside ${}
+            auto expression = parse_expression();
+            auto templateExpr = ASTFactory::makeTemplateExpression(expression);
+            ASTFactory::addTemplateElement(templateLiteral, templateExpr);
+            
+            // Next should be TemplateMiddle or TemplateEnd
+            if(current_token().type == TokenType::TemplateMiddle) {
+                auto element = ASTFactory::makeTemplateElement(current_token().value);
+                ASTFactory::addTemplateElement(templateLiteral, element);
+                current++;
+            } else if(current_token().type == TokenType::TemplateEnd) {
+                auto element = ASTFactory::makeTemplateElement(current_token().value);
+                ASTFactory::addTemplateElement(templateLiteral, element);
+                current++;
+                break;
+            } else {
+                throw std::runtime_error("Expected template middle or end");
+            }
+        }
+    }
+    // Handle TemplateMiddle/TemplateEnd directly (shouldn't happen in normal parsing)
+    else if(current_token().type == TokenType::TemplateMiddle || 
+            current_token().type == TokenType::TemplateEnd) {
+        auto element = ASTFactory::makeTemplateElement(current_token().value);
+        ASTFactory::addTemplateElement(templateLiteral, element);
+        current++;
+    }
+    
+    return templateLiteral;
 }
 
 }  // namespace rift::frontend

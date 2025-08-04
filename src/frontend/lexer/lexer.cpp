@@ -6,7 +6,8 @@
 namespace rift::frontend {
 
 // Lexer implementation
-Lexer::Lexer(const std::string& source) : source(source), position(0), line(1), column(1) {
+Lexer::Lexer(const std::string& source) : source(source), position(0), line(1), column(1), 
+      template_state(TemplateLiteralState::None), template_depth(0), brace_depth(0), template_started(false) {
 }
 
 char Lexer::current_char() {
@@ -94,42 +95,75 @@ Token Lexer::read_string() {
 
 Token Lexer::read_template_string() {
     advance();  // Skip opening backtick
+    template_state = TemplateLiteralState::InTemplate;
+    template_depth++;
+    template_started = false;  // Reset for new template
+    
+    // For simple templates without ${}, use old behavior
+    return read_template_part();
+}
 
+Token Lexer::read_template_part() {
     std::string value;
-    while(current_char() != '`' && current_char() != '\0') {
-        if(current_char() == '\\') {
+    
+    while(current_char() != '\0') {
+        // Check for ${ - start of expression
+        if(current_char() == '$' && peek_char() == '{') {
+            // Always advance past ${ and switch to expression mode
+            advance(); // skip $
+            advance(); // skip {
+            template_state = TemplateLiteralState::InExpression;
+            brace_depth = 1;
+            
+            // Return the text before ${ (if any)
+            TokenType type;
+            if(!template_started) {
+                template_started = true;
+                type = TokenType::TemplateStart;
+            } else {
+                type = TokenType::TemplateMiddle;
+            }
+            return Token(type, value, line, column);
+        }
+        // Check for end of template
+        else if(current_char() == '`') {
+            advance();  // Skip closing backtick
+            template_state = TemplateLiteralState::None;
+            template_depth--;
+            template_started = false;  // Reset for next template
+            
+            // Return final part
+            TokenType type = TokenType::TemplateEnd;
+            return Token(type, value, line, column);
+        }
+        // Handle escape sequences
+        else if(current_char() == '\\') {
             advance();
             switch(current_char()) {
-                case 'n':
-                    value += '\n';
-                    break;
-                case 't':
-                    value += '\t';
-                    break;
-                case 'r':
-                    value += '\r';
-                    break;
-                case '\\':
-                    value += '\\';
-                    break;
-                case '`':
-                    value += '`';
-                    break;
-                default:
-                    value += current_char();
-                    break;
+                case 'n': value += '\n'; break;
+                case 't': value += '\t'; break;
+                case 'r': value += '\r'; break;
+                case '\\': value += '\\'; break;
+                case '`': value += '`'; break;
+                case '$': value += '$'; break;  // Allow escaping $
+                default: value += current_char(); break;
             }
         } else {
             value += current_char();
         }
         advance();
     }
-
-    if(current_char() == '`') {
-        advance();  // Skip closing backtick
+    
+    // EOF reached - if we have a simple template, return TemplateString
+    if(template_depth == 1) {
+        template_state = TemplateLiteralState::None;
+        template_depth--;
+        template_started = false;  // Reset for next template
+        return Token(TokenType::TemplateString, value, line, column);
     }
-
-    return Token(TokenType::TemplateString, value, line, column);
+    
+    // Otherwise return what we have as TemplateEnd
+    return Token(TokenType::TemplateEnd, value, line, column);
 }
 
 Token Lexer::read_identifier() {
@@ -162,6 +196,12 @@ Token Lexer::read_identifier() {
 }
 
 Token Lexer::next_token() {
+    // Handle template literal state transitions
+    if(template_state == TemplateLiteralState::InTemplate) {
+        // We're inside a template, continue reading template part
+        return read_template_part();
+    }
+    
     skip_whitespace();
 
     char ch = current_char();
@@ -223,9 +263,20 @@ Token Lexer::next_token() {
             return Token(TokenType::RightParen, ")", line, column);
         case '{':
             advance();
+            if(template_state == TemplateLiteralState::InExpression) {
+                brace_depth++;
+            }
             return Token(TokenType::LeftBrace, "{", line, column);
         case '}':
             advance();
+            if(template_state == TemplateLiteralState::InExpression) {
+                brace_depth--;
+                if(brace_depth == 0) {
+                    // End of template expression, return to template parsing
+                    template_state = TemplateLiteralState::InTemplate;
+                    return read_template_part();
+                }
+            }
             return Token(TokenType::RightBrace, "}", line, column);
         case '[':
             advance();
