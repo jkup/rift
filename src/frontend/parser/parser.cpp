@@ -796,12 +796,6 @@ std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
     return switchNode;
 }
 
-std::shared_ptr<ASTNode> Parser::parse_case_clause() {
-    // This method is for potential future use
-    // Currently integrated into parse_switch_statement
-    return nullptr;
-}
-
 std::shared_ptr<ASTNode> Parser::parse_break_statement() {
     consume(TokenType::Break);  // consume 'break'
     match(TokenType::Semicolon);  // optional semicolon
