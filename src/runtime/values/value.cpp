@@ -152,4 +152,27 @@ JSObject* Value::getObject() const {
     return std::get<JSObject*>(data_);
 }
 
+bool Value::strictEquals(const Value& other) const {
+    // JavaScript strict equality (===) - same as OperationHandler implementation
+    if(type_ != other.type_) {
+        return false;
+    }
+    
+    // Same type, compare values
+    if(isNumber()) {
+        return toNumber() == other.toNumber();
+    } else if(isString()) {
+        return toString() == other.toString();
+    } else if(isBoolean()) {
+        return toBool() == other.toBool();
+    } else if(isNull() && other.isNull()) {
+        return true;
+    } else if(isUndefined() && other.isUndefined()) {
+        return true;
+    } else {
+        // For objects, compare reference (simplified)
+        return toString() == other.toString();
+    }
+}
+
 }  // namespace rift::runtime

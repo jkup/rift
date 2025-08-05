@@ -287,6 +287,44 @@ class ASTFactory {
             templateLiteral->children.push_back(element);
         }
     }
+
+    // Switch statement factory methods
+    static std::shared_ptr<ASTNode> makeSwitchStatement(std::shared_ptr<ASTNode> discriminant) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::SwitchStatement);
+        node->children.push_back(discriminant);
+        return node;
+    }
+
+    static std::shared_ptr<ASTNode> makeCaseClause(std::shared_ptr<ASTNode> test) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::CaseClause);
+        if(test) {
+            node->children.push_back(test);
+        }
+        return node;
+    }
+
+    static std::shared_ptr<ASTNode> makeDefaultClause() {
+        return std::make_shared<ASTNode>(ASTNodeType::DefaultClause);
+    }
+
+    static std::shared_ptr<ASTNode> makeBreakStatement() {
+        return std::make_shared<ASTNode>(ASTNodeType::BreakStatement);
+    }
+
+    static void addSwitchCase(std::shared_ptr<ASTNode> switchNode,
+                              std::shared_ptr<ASTNode> caseClause) {
+        if(switchNode->type == ASTNodeType::SwitchStatement) {
+            switchNode->children.push_back(caseClause);
+        }
+    }
+
+    static void addCaseStatement(std::shared_ptr<ASTNode> caseClause,
+                                 std::shared_ptr<ASTNode> statement) {
+        if(caseClause->type == ASTNodeType::CaseClause ||
+           caseClause->type == ASTNodeType::DefaultClause) {
+            caseClause->children.push_back(statement);
+        }
+    }
 };
 
 }  // namespace rift::ast
