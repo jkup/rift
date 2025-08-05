@@ -251,6 +251,14 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
         return parse_for_statement();
     }
 
+    if(current_token().type == TokenType::Switch) {
+        return parse_switch_statement();
+    }
+
+    if(current_token().type == TokenType::Break) {
+        return parse_break_statement();
+    }
+
     if(current_token().type == TokenType::Function) {
         return parse_function_declaration();
     }
@@ -727,6 +735,77 @@ std::shared_ptr<ASTNode> Parser::parse_template_literal() {
     }
     
     return templateLiteral;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
+    consume(TokenType::Switch);  // consume 'switch'
+    consume(TokenType::LeftParen);  // consume '('
+    
+    // Parse discriminant expression
+    auto discriminant = parse_expression();
+    
+    consume(TokenType::RightParen);  // consume ')'
+    consume(TokenType::LeftBrace);   // consume '{'
+    
+    auto switchNode = ASTFactory::makeSwitchStatement(discriminant);
+    
+    // Parse case clauses
+    while(current_token().type != TokenType::RightBrace && 
+          current_token().type != TokenType::EndOfFile) {
+        
+        if(current_token().type == TokenType::Case) {
+            current++;  // consume 'case'
+            auto test = parse_expression();
+            consume(TokenType::Colon);  // consume ':'
+            
+            auto caseClause = ASTFactory::makeCaseClause(test);
+            
+            // Parse statements until next case/default/}
+            while(current_token().type != TokenType::Case && 
+                  current_token().type != TokenType::Default &&
+                  current_token().type != TokenType::RightBrace &&
+                  current_token().type != TokenType::EndOfFile) {
+                auto stmt = parse_statement();
+                ASTFactory::addCaseStatement(caseClause, stmt);
+            }
+            
+            ASTFactory::addSwitchCase(switchNode, caseClause);
+            
+        } else if(current_token().type == TokenType::Default) {
+            current++;  // consume 'default'
+            consume(TokenType::Colon);  // consume ':'
+            
+            auto defaultClause = ASTFactory::makeDefaultClause();
+            
+            // Parse statements until next case/}
+            while(current_token().type != TokenType::Case && 
+                  current_token().type != TokenType::RightBrace &&
+                  current_token().type != TokenType::EndOfFile) {
+                auto stmt = parse_statement();
+                ASTFactory::addCaseStatement(defaultClause, stmt);
+            }
+            
+            ASTFactory::addSwitchCase(switchNode, defaultClause);
+            
+        } else {
+            throw std::runtime_error("Expected 'case' or 'default' in switch statement");
+        }
+    }
+    
+    consume(TokenType::RightBrace);  // consume '}'
+    return switchNode;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_case_clause() {
+    // This method is for potential future use
+    // Currently integrated into parse_switch_statement
+    return nullptr;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_break_statement() {
+    consume(TokenType::Break);  // consume 'break'
+    match(TokenType::Semicolon);  // optional semicolon
+    return ASTFactory::makeBreakStatement();
 }
 
 }  // namespace rift::frontend

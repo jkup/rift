@@ -49,4 +49,12 @@ class ReturnException : public std::exception {
     }
 };
 
+/// Exception for handling break statements
+class BreakException : public std::exception {
+  public:
+    const char* what() const noexcept override {
+        return "Break statement";
+    }
+};
+
 }  // namespace rift::core

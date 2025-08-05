@@ -36,6 +36,9 @@ class Parser {
     std::shared_ptr<ASTNode> parse_if_statement();
     std::shared_ptr<ASTNode> parse_while_statement();
     std::shared_ptr<ASTNode> parse_for_statement();
+    std::shared_ptr<ASTNode> parse_switch_statement();
+    std::shared_ptr<ASTNode> parse_case_clause();
+    std::shared_ptr<ASTNode> parse_break_statement();
     std::shared_ptr<ASTNode> parse_array_literal();
     std::shared_ptr<ASTNode> parse_object_literal();
     std::shared_ptr<ASTNode> parse_template_literal();

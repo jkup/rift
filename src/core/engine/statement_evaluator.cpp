@@ -43,6 +43,10 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateWhileStatement(node, env, engine);
         case ASTNodeType::ForStatement:
             return evaluateForStatement(node, env, engine);
+        case ASTNodeType::SwitchStatement:
+            return evaluateSwitchStatement(node, env, engine);
+        case ASTNodeType::BreakStatement:
+            return evaluateBreakStatement(node, env, engine);
         case ASTNodeType::ReturnStatement:
             return evaluateReturnStatement(node, env, engine);
         case ASTNodeType::ThrowStatement:
@@ -322,6 +326,76 @@ Value StatementEvaluator::evaluateCatchClause(std::shared_ptr<ASTNode> node,
 
     // Execute catch body in the new environment
     return engine->evaluate(catchBody, catchEnv);
+}
+
+Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
+                                                  std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.empty()) {
+        return Value::undefined();
+    }
+    
+    // First child is the discriminant expression
+    Value discriminant = engine->evaluate(node->children[0], env);
+    
+    bool foundMatch = false;
+    bool executeRemaining = false;
+    Value result = Value::undefined();
+    
+    // Iterate through all case/default clauses
+    for(size_t i = 1; i < node->children.size(); ++i) {
+        auto clause = node->children[i];
+        
+        if(clause->type == ASTNodeType::CaseClause) {
+            if(!foundMatch && !executeRemaining) {
+                // Check if this case matches
+                if(!clause->children.empty()) {
+                    Value testValue = engine->evaluate(clause->children[0], env);
+                    
+                    // JavaScript switch uses strict equality (===)
+                    if(discriminant.strictEquals(testValue)) {
+                        foundMatch = true;
+                        executeRemaining = true;
+                    }
+                }
+            }
+            
+            if(executeRemaining) {
+                // Execute all statements in this case (starting from index 1, since 0 is the test)
+                for(size_t j = 1; j < clause->children.size(); ++j) {
+                    try {
+                        result = engine->evaluate(clause->children[j], env);
+                    } catch(const BreakException&) {
+                        return result;
+                    }
+                }
+            }
+            
+        } else if(clause->type == ASTNodeType::DefaultClause) {
+            if(!foundMatch) {
+                foundMatch = true;
+                executeRemaining = true;
+            }
+            
+            if(executeRemaining) {
+                // Execute all statements in default clause
+                for(size_t j = 0; j < clause->children.size(); ++j) {
+                    try {
+                        result = engine->evaluate(clause->children[j], env);
+                    } catch(const BreakException&) {
+                        return result;
+                    }
+                }
+            }
+        }
+    }
+    
+    return result;
+}
+
+Value StatementEvaluator::evaluateBreakStatement(std::shared_ptr<ASTNode> node,
+                                                 std::shared_ptr<Environment> env, Rift* engine) {
+    // Throw a special exception to break out of loops/switch statements
+    throw BreakException();
 }
 
 }  // namespace rift::core
