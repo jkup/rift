@@ -113,7 +113,7 @@ The CI will automatically verify all quality checks on your PR.
   - ✅ Literals: string, number, boolean, null, undefined, object, array
   - ✅ Identifiers: variable access with lexical environments
   - ✅ Operators:
-    - Arithmetic: `+`, `-`, `*`, `/` (no `%` yet)
+    - Arithmetic: `+`, `-`, `*`, `/`, `%`
     - Comparison: `<`, `>`, `<=`, `>=`, `==`, `!=`, `===`, `!==`
     - Logical: `&&`, `||` with short-circuiting, unary `!`
     - Unary: `+`, `-`, `~`, `typeof`
@@ -199,7 +199,7 @@ The CI will automatically verify all quality checks on your PR.
   - ❌ Modules (`import`/`export`)
   - ❌ `for-in`, `for-of`
   - ❌ Optional chaining `?.`, nullish coalescing `??`
-  - ❌ Exponentiation `**`, modulo `%`
+  - ❌ Exponentiation `**`
   - ❌ Bitwise binary operators: `&`, `|`, `^`, `<<`, `>>`, `>>>`
 
 - **Built-in objects/APIs**

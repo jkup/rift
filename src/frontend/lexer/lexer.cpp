@@ -243,6 +243,9 @@ Token Lexer::next_token() {
         case '*':
             advance();
             return Token(TokenType::Multiply, "*", line, column);
+        case '%':
+            advance();
+            return Token(TokenType::Modulo, "%", line, column);
         case '/':
             if(peek_char() == '/') {
                 // Skip single-line comment
