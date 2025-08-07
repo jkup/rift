@@ -14,12 +14,12 @@ This document lists prioritized issues to address before adding more features. I
     - Bind `this` for user-defined functions when invoked as methods.
     - Update builtins to consume `CallContext` instead of positional `this`.
 
-- **Control flow: break/continue semantics in loops**
-  - `break` is implemented for `switch` but loops do not catch a `BreakException`. `continue` is not implemented.
-  - Impact: `break`/`continue` in `while`/`for` behave incorrectly or unwind unexpectedly.
+- **Control flow: continue semantics in loops (break implemented)**
+  - `break` now works correctly in `while` and `for` (handled via `BreakException`). `continue` is not implemented.
+  - Impact: `continue` in `while`/`for` is unsupported; labeled control flow not supported.
   - Actions:
-    - Add `ContinueException` and handle both in `while`/`for` evaluators.
-    - Support labeled `break`/`continue` later as a follow-up.
+    - Add `ContinueException` and handle in `while`/`for` evaluators.
+    - Consider labeled `break`/`continue` as a follow-up.
 
 - **Equality and comparison operators are not spec-accurate**
   - `==/!=` coercion rules are simplified; e.g., comparisons involving `null`/`undefined` and numbers are not spec-correct. Object comparisons use `toString()` rather than reference identity for `===`/`!==`.
@@ -111,11 +111,12 @@ This document lists prioritized issues to address before adding more features. I
 
 - Function expressions, `this` in object methods, `new` operator, try/catch, update (`++/--`), and template literal interpolation are implemented and working based on current code and tests.
 - GC architecture: single-ownership with raw pointers managed by GC is intentional and correct for this project; do not replace with shared_ptr.
+- Loop `break` semantics implemented for `while` and `for`; tests added: `test/while-break-test.js`, `test/for-break-test.js`.
 
 ## 🔭 Suggested Sequencing (before new features)
 
 1) CallContext migration + `this` binding correctness
-2) Loop `break`/`continue` semantics
+2) Loop `continue` semantics (and consider labeled control flow)
 3) Equality/abstract operations correctness
 4) let/const + block scoping groundwork
 5) Fill high-impact built-in gaps (Array/String/Object core methods)

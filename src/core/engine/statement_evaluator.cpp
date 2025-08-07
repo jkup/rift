@@ -139,7 +139,11 @@ Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
         if(!condition.toBool()) {
             break;
         }
-        result = engine->evaluate(node->children[1], env);
+        try {
+            result = engine->evaluate(node->children[1], env);
+        } catch(const BreakException&) {
+            break;
+        }
     }
 
     return result;
@@ -170,7 +174,11 @@ Value StatementEvaluator::evaluateForStatement(std::shared_ptr<ASTNode> node,
         // If no condition, loop infinitely (unless break/return is encountered)
 
         // Execute body
-        result = engine->evaluate(node->children[3], env);
+        try {
+            result = engine->evaluate(node->children[3], env);
+        } catch(const BreakException&) {
+            break;
+        }
 
         // Execute update expression (if present)
         if(node->children[2] != nullptr) {
