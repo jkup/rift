@@ -1,173 +1,125 @@
-# Technical Debt Analysis - Rift JavaScript Engine
+# Technical Debt – Rift JavaScript Engine
 
-This document identifies technical debt and code quality issues in the C++ engine implementation, prioritized by impact and effort to fix.
+Last updated: August 2025
 
-### 2. **Raw Pointer Proliferation Despite GC**
-**Location**: Throughout engine, especially `src/core/engine/expression_evaluator.cpp`  
-**Issue**: Heavy use of raw pointers even with garbage collector
-```cpp
-auto* func = dynamic_cast<JSFunction*>(callee.getObject());
-auto* obj = object.getObject();
-```
-**Problems**:
-- Dangling pointer risks
-- Unclear ownership semantics
-- GC complexity to track references
+This document lists prioritized issues to address before adding more features. Items are grouped by correctness/spec compliance first, then architecture/quality of life.
 
-**Recommended Fix**: Use RAII wrappers or reference-counted handles
+## 🔴 High Priority – Correctness and Spec Compliance
 
-## 🟡 High Priority - Medium Impact
+- **Function call context and `this` binding (migration incomplete)**
+  - Current behavior passes `this` as a positional first argument for method calls, and uses a magic string marker for constructors (`EvaluationConstants::CONSTRUCTOR_CALL_MARKER`). The new `CallContext` API exists but is not fully adopted.
+  - Impact: User-defined methods do not receive a proper `this` binding via `CallContext`; constructor detection relies on a magic string.
+  - Actions:
+    - Remove magic string marker; propagate `CallContext` for both method and constructor calls end-to-end.
+    - Bind `this` for user-defined functions when invoked as methods.
+    - Update builtins to consume `CallContext` instead of positional `this`.
 
-### 3. **Repetitive Argument Validation Everywhere**  
-**Location**: All builtin function implementations  
-**Issue**: Manual argument checking repeated hundreds of times
-```cpp
-// Pattern repeated in every function:
-if(args.empty()) return Value::undefined();
-if(args.size() < 2) return Value::undefined();
-if(args.size() >= 3 && !args[2].isUndefined()) {
-```
-**Problems**:
-- Verbose and error-prone
-- Inconsistent validation logic
-- Hard to maintain parameter requirements
+- **Control flow: break/continue semantics in loops**
+  - `break` is implemented for `switch` but loops do not catch a `BreakException`. `continue` is not implemented.
+  - Impact: `break`/`continue` in `while`/`for` behave incorrectly or unwind unexpectedly.
+  - Actions:
+    - Add `ContinueException` and handle both in `while`/`for` evaluators.
+    - Support labeled `break`/`continue` later as a follow-up.
 
-**Recommended Fix**: Create argument validation helper/macro system
+- **Equality and comparison operators are not spec-accurate**
+  - `==/!=` coercion rules are simplified; e.g., comparisons involving `null`/`undefined` and numbers are not spec-correct. Object comparisons use `toString()` rather than reference identity for `===`/`!==`.
+  - Impact: Silent logic errors; deviates from ECMAScript abstract operations.
+  - Actions:
+    - Implement spec-compliant equality using ECMAScript abstract operations (SameValue, StrictEqualityComparison, Abstract Equality Comparison).
+    - For objects in strict equality, compare identity (pointer) not string.
 
-### 4. **Excessive static_cast Usage**
-**Location**: Primarily `src/builtins/string/string.cpp`, `src/builtins/array/array.cpp`  
-**Issue**: 40+ static_cast operations for numeric conversions
-```cpp
-size_t currentLength = static_cast<size_t>(lengthVal.toNumber());
-obj->setProperty("length", Value(static_cast<double>(index + 1)));
-```
-**Problems**:
-- Potential data loss in conversions
-- Verbose and cluttered code
-- No overflow checking
+- **Scoping and declarations**
+  - Lexer recognizes `let`/`const` but parser/evaluator only implement `var`. No block scoping, no TDZ, no hoisting semantics for declarations and function declarations are simplified.
+  - Impact: Many spec tests for scope/TDZ/hoisting will fail; developer confusion.
+  - Actions:
+    - Add parser support for `let`/`const` and block environments.
+    - Implement hoisting semantics for `var` and function declarations (declaration instantiation for function/blocks).
 
-**Recommended Fix**: Create safe conversion utilities with bounds checking
+- **Template literals – advanced semantics**
+  - Basic interpolation works, but there is no support for tagged templates, raw strings, or full escape handling nuances.
+  - Actions: Add tagged template call path and raw template handling; verify escape sequences per spec.
 
-### 5. **Complex Exception/GC Interaction System**
-**Location**: `src/core/engine/engine.cpp`, `src/memory/mark_sweep_gc.cpp`  
-**Issue**: Intricate deferred GC collection during exception handling
-```cpp
-// Complex state tracking just for GC timing:
-void Rift::collectGarbage() {
-    if(isInExceptionHandling()) {
-        deferred_collection_needed_.store(true);
-        return;
-    }
-```
-**Problems**:
-- Over-engineered for uncertain benefit
-- Adds complexity to every exception path
-- Potential memory pressure during exceptions
+- **Error types and exceptions**
+  - Only base `Error` is implemented. Engine throws `std::runtime_error` in places where JavaScript errors (TypeError, ReferenceError, RangeError, etc.) should be thrown.
+  - Actions: Implement core error types and replace engine-side throws with appropriate JS errors; surface via `JavaScriptException` consistently.
 
-**Recommended Fix**: Simplify or remove deferred collection entirely
+## 🟠 Medium Priority – Built-in Coverage and Usability
 
-## 🟠 Medium Priority - Quality of Life
+- **Array API completeness**
+  - Missing common methods: `shift`, `unshift`, `splice`, `join`, `reverse`, `sort`, `find`, `findIndex`, `every`, `some`, `flat`, `flatMap`, `fill`, `copyWithin`, `from`, `of`.
+  - Validate index/length semantics per spec for all mutators.
 
-### 6. **Giant Switch Statement Dispatchers**
-**Location**: `src/core/engine/engine.cpp`, evaluators  
-**Issue**: Massive switch statements for AST node type dispatch (80+ lines)
-```cpp
-switch(node->type) {
-    case ASTNodeType::Identifier:
-    case ASTNodeType::Literal:
-    // ... 20+ more cases
-}
-```
-**Problems**:
-- Hard to maintain and extend
-- Violates open/closed principle
-- Scattered logic
+- **String API completeness**
+  - Implement frequently used methods not present: `includes`, `startsWith`, `endsWith`, `repeat`, `padStart`, `padEnd`, `replace`, `replaceAll`, `match`, `matchAll`, `search`, `localeCompare`.
 
-**Recommended Fix**: Visitor pattern or function pointer table
+- **Object API and property descriptors**
+  - Implement `Object.assign`, `create`, `getPrototypeOf`, `setPrototypeOf`, `defineProperty`, `defineProperties`, `getOwnPropertyDescriptor(s)`, `freeze`, `seal`, `preventExtensions`, and associated flags (enumerable/configurable/writable) via a descriptor model.
+  - Current enumeration uses own-properties but there’s no descriptor system.
 
-### 7. **Hardcoded Magic Numbers**
-**Location**: `src/core/engine/evaluation_utils.h`, string operations  
-**Issue**: Magic numbers throughout, especially for array index validation
-```cpp
-if(property.length() > 10) return false;
-if(property > "4294967294") return false;
-if(ull >= 4294967295ULL) return false;
-```
-**Problems**:
-- Unclear intent
-- Hard to maintain if limits change
-- Scattered constants
+- **Number/Boolean/String wrapper semantics**
+  - Wrapper objects exist in a minimal form. Ensure consistency with spec for `.valueOf()`, `.toString()`, and behavior when used as primitives vs objects.
 
-**Recommended Fix**: Named constants with clear documentation
+- **Global API**
+  - `Global::createArray` is a TODO and should be implemented or removed.
+  - Consider adding `encodeURI/URIComponent` and `decodeURI/URIComponent` later.
 
-### 8. **Inconsistent Error Handling Patterns**
-**Location**: Throughout codebase  
-**Issue**: Mix of exceptions, undefined returns, and error values
-```cpp
-// Sometimes throws:
-throw std::runtime_error("Value is not a number");
-// Sometimes returns undefined:
-return Value::undefined();
-// Sometimes returns error strings:
-return "Error: " + std::string(e.what());
-```
-**Problems**:
-- Unpredictable API behavior
-- Hard to handle errors consistently
-- Mixed error semantics
+- **Math API completeness**
+  - A subset is implemented (`abs`, `floor`, `ceil`, `round`, `max`, `min`, `pow`, `sqrt`, `random`, `sign`, `trunc`, `sin`, `cos`, `tan`). Add remaining core functions (e.g., `exp`, `log`, `log10`, `log2`, `cbrt`, `hypot`, `clz32`, `imul`, `fround`, `atan`, `asin`, `acos`, hyperbolics, etc.).
 
-**Recommended Fix**: Standardize on Result<T>/Expected<T> pattern
+## 🟡 Quality of Life – Architecture and Maintainability
 
-## 🟢 Lower Priority - Technical Improvements
+- **Complete migration to `CallContext`**
+  - Remove positional `this` convention and magic strings. Pass `CallContext` to all function invocations (user-defined and builtins) and update call sites accordingly.
 
-### 9. **String Concatenation Performance**
-**Location**: Error messages, debugging output  
-**Issue**: Inefficient string building with operator+
-```cpp
-throw std::runtime_error("Cannot open file: " + filename);
-```
-**Problems**:
-- Temporary object creation
-- Performance in error paths
+- **Control-flow implementation strategy**
+  - Unify control-flow via lightweight internal exceptions (`ReturnException`, `BreakException`, `ContinueException`) and ensure all relevant evaluators catch and handle them locally to avoid unexpected unwinds.
 
-**Recommended Fix**: Use string streams or fmt library
+- **Operator dispatch and abstract operations**
+  - `OperationHandler` uses string comparisons and simplified coercions. Extract an internal enum/token for operators and implement ECMAScript abstract operations (ToPrimitive, ToNumber, ToString, etc.) in one place.
 
-### 10. **Debugging Code in Production Paths**
-**Location**: `src/memory/mark_sweep_gc.cpp`, `src/core/engine/engine.cpp`  
-**Issue**: Debug output scattered through normal execution
-```cpp
-#ifdef DEBUG_GC
-    std::cout << "[GC] Collection #" << total_collections_ << std::endl;
-#endif
-```
-**Problems**:
-- Clutters production code
-- Performance overhead when enabled
+- **Environment API behaviors**
+  - `Environment::set` auto-defines in the current scope if not found. This diverges from JS assignment semantics (should throw in strict mode; in sloppy mode create global). Decide and document engine mode; adjust behavior or introduce strict-mode flag.
 
-**Recommended Fix**: Proper logging framework with levels
+- **Switch-based AST dispatch**
+  - Current large `switch` statements in evaluators are serviceable but grow with features. Consider a visitor or dispatch table later; low urgency.
 
-### 11. **Value Type Conversion Inconsistencies**
-**Location**: `src/runtime/values/value.cpp`  
-**Issue**: Inconsistent handling of edge cases in type conversions
-```cpp
-// Some throw exceptions, others return NaN/defaults
-if(type_ != ValueType::Number) {
-    throw std::runtime_error("Value is not a number");
-}
-```
-**Problems**:
-- Unpredictable behavior
-- Hard to debug conversion issues
+- **Magic numbers and constants**
+  - Array index validation uses hard-coded limits per spec (2^32-2). Factor these into named constants with brief spec references.
 
-**Recommended Fix**: Consistent conversion policy with clear documentation
+- **Consistent error surface**
+  - Replace ad hoc `std::runtime_error` throws (e.g., in `Value::get*`) with JavaScript error plumbing where appropriate, or gate with internal asserts and keep external exceptions JS-typed.
 
-## Summary
+## 🟢 Performance and Tooling
 
-**Total Issues**: 10 major categories (2 completed)  
-**Estimated Technical Debt**: ~20% of engine codebase  
-**Biggest Wins**: 
-1. ✅ ~~Fix constructor call system~~ **COMPLETED** - Implemented CallContext with CallType enum
-2. ✅ ~~Eliminate builtin duplication~~ **COMPLETED** - Implemented BuiltinBase<T> CRTP template
-3. Standardize argument validation (#1 remaining critical issue)
+- **Formatting and static analysis**
+  - Ensure CI regularly runs `format-check`, `cppcheck`, and `clang-tidy` and that new contributions are clean.
 
-**Recommended Approach**: Address critical issues first (especially #2) before adding new features, as they affect every builtin and core operation.
+- **OperationHandler micro-opts**
+  - If needed, replace string operator dispatch with tokenized enums for fewer comparisons in tight loops.
+
+- **Logging**
+  - `DEBUG_GC` guards are fine, but consider a simple logging macro/system to centralize runtime diagnostics without sprinkling `#ifdef`s.
+
+## 📌 Small Cleanups
+
+- Remove or implement `Global::createArray`.
+- Eliminate the constructor magic marker constant.
+- Audit dynamic_cast uses to ensure no null-deref paths; encapsulate into helpers.
+- Normalize number/string formatting to better match JS (e.g., integer formatting without trailing `.0` where applicable). Full spec formatting is a stretch goal.
+
+## ✅ Recently Addressed (to avoid duplicating work)
+
+- Function expressions, `this` in object methods, `new` operator, try/catch, update (`++/--`), and template literal interpolation are implemented and working based on current code and tests.
+- GC architecture: single-ownership with raw pointers managed by GC is intentional and correct for this project; do not replace with shared_ptr.
+
+## 🔭 Suggested Sequencing (before new features)
+
+1) CallContext migration + `this` binding correctness
+2) Loop `break`/`continue` semantics
+3) Equality/abstract operations correctness
+4) let/const + block scoping groundwork
+5) Fill high-impact built-in gaps (Array/String/Object core methods)
+
+This sequencing maximizes spec-correctness and testability while minimizing future refactors.
+
+
