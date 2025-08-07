@@ -1,12 +1,12 @@
 # Rift - A JavaScript Runtime in C++
 
-A JavaScript runtime implementation written in C++ with robust garbage collection and comprehensive JavaScript language support.
+A JavaScript runtime implementation written in C++ with robust garbage collection and a growing subset of JavaScript language support.
 
 ## Features
 
 ✅ **Fully functional garbage collection** with mark-sweep algorithm  
 ✅ **Memory-safe execution** with proper object lifecycle management  
-✅ **Comprehensive JavaScript language support** including closures, prototypes, and exception handling  
+✅ **Core JavaScript subset** including closures, prototypes, and exception handling  
 ✅ **Rich built-in object library** with Array, String, Math, Object, and more  
 ✅ **Test262 integration** for ECMAScript compliance testing  
 
@@ -103,142 +103,115 @@ The CI will automatically verify all quality checks on your PR.
 
 ## Implementation Status
 
-### ✅ **Language Constructs**
+### ✅ Supported Today
 
-#### **Data Types**
-- ✅ **Primitives**: `undefined`, `null`, `boolean`, `number`, `string`
-- ✅ **Objects**: Object literals, arrays, functions
-- ✅ **Type system**: Proper type checking and conversion
+- **Data types**
+  - ✅ Primitives: `undefined`, `null`, `boolean`, `number`, `string`
+  - ✅ Objects: Object literals, arrays, functions
 
-#### **Expressions**
-- ✅ **Literals**: String, number, boolean, null, undefined, object, array
-- ✅ **Identifiers**: Variable access and scoping
-- ✅ **Operators**: Arithmetic (`+`, `-`, `*`, `/`), comparison (`<`, `>`, `<=`, `>=`, `==`, `!=`, `===`, `!==`), logical (`!`), unary (`+`, `-`, `~`, `typeof`)
-- ✅ **Member access**: Dot notation (`obj.prop`) and bracket notation (`obj['prop']`)
-- ✅ **Function calls**: Function invocation with arguments
-- ✅ **Assignment**: Variable assignment and property assignment
-- ✅ **Object construction**: `new` operator
+- **Expressions**
+  - ✅ Literals: string, number, boolean, null, undefined, object, array
+  - ✅ Identifiers: variable access with lexical environments
+  - ✅ Operators:
+    - Arithmetic: `+`, `-`, `*`, `/` (no `%` yet)
+    - Comparison: `<`, `>`, `<=`, `>=`, `==`, `!=`, `===`, `!==`
+    - Logical: `&&`, `||` with short-circuiting, unary `!`
+    - Unary: `+`, `-`, `~`, `typeof`
+    - Update: prefix/postfix `++`, `--` on identifiers and member expressions
+  - ✅ Member access: dot (`obj.prop`) and computed (`obj[expr]`)
+  - ✅ Function calls: invocation with arguments
+  - ✅ Assignment: variable and property assignment
+  - ✅ Object construction: `new` operator
+  - ✅ Template literals: basic support including `${expr}` interpolation
 
-#### **Statements**
-- ✅ **Variable declarations**: `var` statements
-- ✅ **Control flow**: `if`/`else` statements, `while` loops
-- ✅ **Functions**: Function declarations and expressions
-- ✅ **Exception handling**: `try`/`catch`/`throw` statements
-- ✅ **Return statements**: Early function returns
+- **Statements**
+  - ✅ Variable declarations: `var` (block-scoped `let`/`const` not yet)
+  - ✅ Control flow: `if`/`else`, `while`, C-style `for (init; cond; update)`
+  - ✅ `switch`/`case`/`default` with `break`
+  - ✅ `break` and `continue` in loops
+  - ✅ Functions: declarations and expressions
+  - ✅ `return`
+  - ✅ Exceptions: `throw`, `try`/`catch` (no `finally` yet)
 
-#### **Advanced Features**
-- ✅ **Closures**: Lexical scoping and captured variables
-- ✅ **Prototype chains**: Object inheritance and prototype lookups
-- ✅ **Exception handling**: Proper error propagation and catching
-- ✅ **Garbage collection**: Automatic memory management with cycle detection
+- **Runtime semantics**
+  - ✅ Closures: lexical capture of outer variables
+  - ✅ Prototype chain: constructor `prototype` objects and prototype lookups
+  - ✅ Garbage collection: mark-sweep with root management
 
 ### ✅ **Built-in Objects**
 
 #### **Global Functions**
-- ✅ `parseInt(string, radix)` - Parse integers
-- ✅ `parseFloat(string)` - Parse floating-point numbers
-- ✅ `isNaN(value)` - Check for NaN
-- ✅ `isFinite(value)` - Check for finite numbers
+- ✅ `parseInt(string, radix)`
+- ✅ `parseFloat(string)`
+- ✅ `isNaN(value)`
+- ✅ `isFinite(value)`
 - ✅ Global constants: `undefined`, `NaN`, `Infinity`
 
 #### **Console Object**
-- ✅ `console.log(...args)` - Log messages
-- ✅ `console.error(...args)` - Log error messages  
-- ✅ `console.warn(...args)` - Log warning messages
-- ✅ `console.info(...args)` - Log info messages
+- ✅ `console.log(...args)`
+- ✅ `console.error(...args)`
+- ✅ `console.warn(...args)`
+- ✅ `console.info(...args)`
 
 #### **Array Constructor & Methods**
-- ✅ `Array()` constructor and `new Array()`
-- ✅ `Array.isArray(value)` - Check if value is array
-- ✅ `array.push(...items)` - Add elements to end
-- ✅ `array.pop()` - Remove last element
-- ✅ `array.length` - Array length property
-- ✅ `array.forEach(callback)` - Iterate over elements
-- ✅ `array.map(callback)` - Transform elements
-- ✅ `array.filter(callback)` - Filter elements
-- ✅ `array.reduce(callback, initial)` - Reduce to single value
-- ✅ `array.indexOf(searchElement)` - Find element index
-- ✅ `array.includes(searchElement)` - Check element presence
-- ✅ `array.slice(start, end)` - Extract array portion
-- ✅ `array.concat(...arrays)` - Concatenate arrays
-- ✅ `array.toString()` - Convert to string
+- ✅ `Array()` and `new Array()`
+- ✅ `Array.isArray(value)`
+- ✅ `array.length`
+- ✅ `array.push(...items)`, `array.pop()`
+- ✅ `array.forEach(fn)`, `array.map(fn)`, `array.filter(fn)`, `array.reduce(fn, initial)`
+- ✅ `array.indexOf(x)`, `array.includes(x)`
+- ✅ `array.slice(start, end)`, `array.concat(...items)`
+- ✅ `array.toString()`
 
 #### **String Constructor & Methods**
-- ✅ `String()` constructor
-- ✅ `string.charAt(index)` - Get character at index
-- ✅ `string.charCodeAt(index)` - Get character code
-- ✅ `string.concat(...strings)` - Concatenate strings
-- ✅ `string.indexOf(searchString)` - Find substring
-- ✅ `string.lastIndexOf(searchString)` - Find last occurrence
-- ✅ `string.slice(start, end)` - Extract substring
-- ✅ `string.split(separator)` - Split into array
-- ✅ `string.substring(start, end)` - Extract substring
-- ✅ `string.toLowerCase()` - Convert to lowercase
-- ✅ `string.toUpperCase()` - Convert to uppercase
-- ✅ `string.trim()` - Remove whitespace
-- ✅ `string.toString()` - Convert to string
-- ✅ `string.valueOf()` - Get primitive value
+- ✅ `String()`
+- ✅ `string.charAt`, `string.charCodeAt`, `string.concat`
+- ✅ `string.indexOf`, `string.lastIndexOf`
+- ✅ `string.slice`, `string.split`, `string.substring`
+- ✅ `string.toLowerCase`, `string.toUpperCase`, `string.trim`
+- ✅ `string.toString`, `string.valueOf`
 
 #### **Math Object**
-- ✅ Mathematical functions: `abs`, `floor`, `ceil`, `round`, `max`, `min`, `pow`, `sqrt`, `random`, `sign`, `trunc`
-- ✅ Trigonometric functions: `sin`, `cos`, `tan`
-- ✅ Mathematical constants: `Math.PI`, `Math.E`, `Math.LN2`, `Math.LN10`, etc.
+- ✅ Constants: `Math.PI`, `Math.E`, `Math.LN2`, `Math.LN10`, `Math.LOG2E`, `Math.LOG10E`, `Math.SQRT2`, `Math.SQRT1_2`
+- ✅ Functions: `abs`, `floor`, `ceil`, `round`, `max`, `min`, `pow`, `sqrt`, `random`, `sign`, `trunc`, `sin`, `cos`, `tan`
 
 #### **Object Constructor & Methods**
-- ✅ `Object()` constructor
-- ✅ `Object.keys(obj)` - Get object keys
-- ✅ `Object.values(obj)` - Get object values  
-- ✅ `Object.entries(obj)` - Get key-value pairs
-- ✅ `object.toString()` - Convert to string
-- ✅ `object.valueOf()` - Get primitive value
-- ✅ `object.hasOwnProperty(prop)` - Check own property
+- ✅ `Object()`
+- ✅ `Object.keys`, `Object.values`, `Object.entries`
+- ✅ `object.hasOwnProperty`, `object.toString`, `object.valueOf`
 
 #### **Boolean Constructor & Methods**
-- ✅ `Boolean()` constructor
-- ✅ `boolean.toString()` - Convert to string
-- ✅ `boolean.valueOf()` - Get primitive value
+- ✅ `Boolean()`
+- ✅ `boolean.toString`, `boolean.valueOf`
 
 #### **Error Constructor & Methods**
-- ✅ `Error()` constructor
-- ✅ `error.toString()` - Convert to string
+- ✅ `Error()`
+- ✅ `error.toString`
 
-### ❌ **Not Yet Implemented**
+### ❌ Not Yet Implemented
 
-#### **Language Constructs**
-- ❌ **For loops**: `for`, `for-in`, `for-of` statements
-- ❌ **Switch statements**: `switch`/`case`/`default`
-- ❌ **Arrow functions**: `() => {}` syntax
-- ❌ **Template literals**: `` `string ${expr}` ``
-- ❌ **Destructuring**: Array and object destructuring
-- ❌ **Spread operator**: `...` for arrays and objects
-- ❌ **Rest parameters**: `function(...args)`
-- ❌ **Classes**: `class`, `extends`, `super`
-- ❌ **Modules**: `import`/`export` statements
+- **Language constructs**
+  - ❌ Block-scoped declarations: `let`, `const`
+  - ❌ `finally` clause in `try`/`catch`
+  - ❌ Arrow functions `() => {}`
+  - ❌ Destructuring, spread (`...`), rest parameters
+  - ❌ Classes (`class`, `extends`, `super`)
+  - ❌ Modules (`import`/`export`)
+  - ❌ `for-in`, `for-of`
+  - ❌ Optional chaining `?.`, nullish coalescing `??`
+  - ❌ Exponentiation `**`, modulo `%`
+  - ❌ Bitwise binary operators: `&`, `|`, `^`, `<<`, `>>`, `>>>`
 
-#### **Built-in Objects**
-- ❌ **Date**: Date constructor and methods
-- ❌ **JSON**: `JSON.parse`, `JSON.stringify`
-- ❌ **RegExp**: Regular expression support
-- ❌ **Promise**: Asynchronous programming
-- ❌ **Set/Map**: Collection objects
-- ❌ **Symbol**: Symbol primitive type
-- ❌ **Proxy**: Meta-programming features
+- **Built-in objects/APIs**
+  - ❌ Date, JSON, RegExp
+  - ❌ Promise/Async (`async`/`await`), timers/event loop
+  - ❌ Set/Map, Symbol, Proxy
+  - ❌ Function.prototype methods: `call`, `apply`, `bind`
 
-#### **Advanced Array Methods**
-- ❌ `array.some(callback)` - Test if some elements pass test
-- ❌ `array.every(callback)` - Test if all elements pass test  
-- ❌ `array.find(callback)` - Find first matching element
-- ❌ `array.findIndex(callback)` - Find first matching index
+### ℹ️ Notes & Limitations
 
-#### **Function Methods**
-- ❌ `function.call(thisArg, ...args)` - Call with specific `this`
-- ❌ `function.apply(thisArg, argsArray)` - Apply with arguments array
-- ❌ `function.bind(thisArg, ...args)` - Create bound function
-
-#### **Async Features**
-- ❌ `async`/`await` syntax
-- ❌ Promise-based APIs
-- ❌ Event loops and timers
+- `this` binding in user-defined functions is limited: builtin methods receive the receiver as the first argument, but `this` inside user functions is currently not set from method calls.
+- Only `var` is supported; there is no block scope semantics yet.
 
 ## Architecture
 
