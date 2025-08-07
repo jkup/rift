@@ -14,12 +14,11 @@ This document lists prioritized issues to address before adding more features. I
     - Bind `this` for user-defined functions when invoked as methods.
     - Update builtins to consume `CallContext` instead of positional `this`.
 
-- **Control flow: continue semantics in loops (break implemented)**
-  - `break` now works correctly in `while` and `for` (handled via `BreakException`). `continue` is not implemented.
-  - Impact: `continue` in `while`/`for` is unsupported; labeled control flow not supported.
+- **Control flow: labeled `break`/`continue` (basic continue implemented)**
+  - `break` and `continue` now work in `while` and `for`. Labeled control flow is not supported.
+  - Impact: Code using labels will not behave per spec.
   - Actions:
-    - Add `ContinueException` and handle in `while`/`for` evaluators.
-    - Consider labeled `break`/`continue` as a follow-up.
+    - Add label parsing and tie labels to loop/switch targets for `break label;` and `continue label;`.
 
 - **Equality and comparison operators are not spec-accurate**
   - `==/!=` coercion rules are simplified; e.g., comparisons involving `null`/`undefined` and numbers are not spec-correct. Object comparisons use `toString()` rather than reference identity for `===`/`!==`.
@@ -111,12 +110,13 @@ This document lists prioritized issues to address before adding more features. I
 
 - Function expressions, `this` in object methods, `new` operator, try/catch, update (`++/--`), and template literal interpolation are implemented and working based on current code and tests.
 - GC architecture: single-ownership with raw pointers managed by GC is intentional and correct for this project; do not replace with shared_ptr.
-- Loop `break` semantics implemented for `while` and `for`; tests added: `test/while-break-test.js`, `test/for-break-test.js`.
+- Loop `break` implemented for `while` and `for`; tests added: `test/while-break-test.js`, `test/for-break-test.js`.
+- Loop `continue` implemented for `while` and `for`; tests added: `test/while-continue-test.js`, `test/for-continue-test.js`.
 
 ## 🔭 Suggested Sequencing (before new features)
 
 1) CallContext migration + `this` binding correctness
-2) Loop `continue` semantics (and consider labeled control flow)
+2) Labeled control flow for `break`/`continue`
 3) Equality/abstract operations correctness
 4) let/const + block scoping groundwork
 5) Fill high-impact built-in gaps (Array/String/Object core methods)

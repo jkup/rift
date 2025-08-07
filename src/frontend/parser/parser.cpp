@@ -259,6 +259,10 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
         return parse_break_statement();
     }
 
+    if(current_token().type == TokenType::Continue) {
+        return parse_continue_statement();
+    }
+
     if(current_token().type == TokenType::Function) {
         return parse_function_declaration();
     }
@@ -800,6 +804,13 @@ std::shared_ptr<ASTNode> Parser::parse_break_statement() {
     consume(TokenType::Break);  // consume 'break'
     match(TokenType::Semicolon);  // optional semicolon
     return ASTFactory::makeBreakStatement();
+}
+
+// continue statement
+std::shared_ptr<ASTNode> Parser::parse_continue_statement() {
+    consume(TokenType::Continue);  // consume 'continue'
+    match(TokenType::Semicolon);   // optional semicolon
+    return ASTFactory::makeContinueStatement();
 }
 
 }  // namespace rift::frontend

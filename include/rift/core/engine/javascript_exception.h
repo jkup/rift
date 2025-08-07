@@ -57,4 +57,12 @@ class BreakException : public std::exception {
     }
 };
 
+/// Exception for handling continue statements
+class ContinueException : public std::exception {
+  public:
+    const char* what() const noexcept override {
+      return "Continue statement";
+    }
+};
+
 }  // namespace rift::core

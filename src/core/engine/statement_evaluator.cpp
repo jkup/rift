@@ -47,6 +47,9 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateSwitchStatement(node, env, engine);
         case ASTNodeType::BreakStatement:
             return evaluateBreakStatement(node, env, engine);
+        case ASTNodeType::ContinueStatement:
+            // Signal a continue to loop evaluators
+            throw ContinueException();
         case ASTNodeType::ReturnStatement:
             return evaluateReturnStatement(node, env, engine);
         case ASTNodeType::ThrowStatement:
@@ -143,6 +146,9 @@ Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
             result = engine->evaluate(node->children[1], env);
         } catch(const BreakException&) {
             break;
+        } catch(const ContinueException&) {
+            // Skip to next iteration
+            continue;
         }
     }
 
@@ -178,6 +184,12 @@ Value StatementEvaluator::evaluateForStatement(std::shared_ptr<ASTNode> node,
             result = engine->evaluate(node->children[3], env);
         } catch(const BreakException&) {
             break;
+        } catch(const ContinueException&) {
+            // On continue in a for-loop, run the update expression (if any), then go to next iteration
+            if(node->children[2] != nullptr) {
+                engine->evaluate(node->children[2], env);
+            }
+            continue;
         }
 
         // Execute update expression (if present)

@@ -311,6 +311,10 @@ class ASTFactory {
         return std::make_shared<ASTNode>(ASTNodeType::BreakStatement);
     }
 
+    static std::shared_ptr<ASTNode> makeContinueStatement() {
+        return std::make_shared<ASTNode>(ASTNodeType::ContinueStatement);
+    }
+
     static void addSwitchCase(std::shared_ptr<ASTNode> switchNode,
                               std::shared_ptr<ASTNode> caseClause) {
         if(switchNode->type == ASTNodeType::SwitchStatement) {
