@@ -28,6 +28,7 @@ enum class ASTNodeType {
     CaseClause,
     DefaultClause,
     BreakStatement,
+    ContinueStatement,
     ArrayLiteral,
     ObjectLiteral,
     FunctionDeclaration,

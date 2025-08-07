@@ -36,6 +36,7 @@ enum class TokenType {
     Case,
     Default,
     Break,
+    Continue,
     Throw,
     Try,
     Catch,
