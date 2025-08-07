@@ -166,6 +166,7 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
                 break;
             case TokenType::Multiply:
             case TokenType::Divide:
+            case TokenType::Modulo:
                 op_precedence = 12;  // Multiplicative operators  
                 break;
             case TokenType::Equal:

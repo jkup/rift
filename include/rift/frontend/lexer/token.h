@@ -48,6 +48,7 @@ enum class TokenType {
     Minus,
     Multiply,
     Divide,
+    Modulo,
     Assign,
     Increment,
     Decrement,
