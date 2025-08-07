@@ -131,7 +131,7 @@ The CI will automatically verify all quality checks on your PR.
   - ✅ `break` and `continue` in loops
   - ✅ Functions: declarations and expressions
   - ✅ `return`
-  - ✅ Exceptions: `throw`, `try`/`catch` (no `finally` yet)
+  - ✅ Exceptions: `throw`, `try`/`catch`/`finally`
 
 - **Runtime semantics**
   - ✅ Closures: lexical capture of outer variables
@@ -192,7 +192,6 @@ The CI will automatically verify all quality checks on your PR.
 
 - **Language constructs**
   - ❌ Block-scoped declarations: `let`, `const`
-  - ❌ `finally` clause in `try`/`catch`
   - ❌ Arrow functions `() => {}`
   - ❌ Destructuring, spread (`...`), rest parameters
   - ❌ Classes (`class`, `extends`, `super`)

@@ -59,6 +59,9 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
         case ASTNodeType::CatchClause:
             // CatchClause is not evaluated directly, only through try-catch
             return Value::undefined();
+        case ASTNodeType::FinallyClause:
+            // FinallyClause is not evaluated directly, only through try-catch
+            return Value::undefined();
         case ASTNodeType::FunctionDeclaration:
             return evaluateFunctionDeclaration(node, env, engine);
         default:
@@ -300,26 +303,55 @@ Value StatementEvaluator::evaluateTryStatement(std::shared_ptr<ASTNode> node,
 
     // Get catch clause (second child, if present)
     std::shared_ptr<ASTNode> catchClause = nullptr;
+    std::shared_ptr<ASTNode> finallyClause = nullptr;
     if(node->children.size() > 1) {
-        catchClause = node->children[1];
+        // children: [0]=tryBlock, [1]=catch? or finally?, [2]=finally?
+        // Disambiguate by type
+        if(node->children[1] && node->children[1]->type == ASTNodeType::CatchClause) {
+            catchClause = node->children[1];
+            if(node->children.size() > 2 && node->children[2] &&
+               node->children[2]->type == ASTNodeType::FinallyClause) {
+                finallyClause = node->children[2];
+            }
+        } else if(node->children[1] && node->children[1]->type == ASTNodeType::FinallyClause) {
+            finallyClause = node->children[1];
+        }
     }
 
     Value result = Value::undefined();
 
+    bool normalCompletion = false;
+    Value pendingExceptionValue = Value::undefined();
+
     try {
         // Execute try block
         result = engine->evaluate(tryBlock, env);
+        normalCompletion = true;
     } catch(const JavaScriptException& e) {
         // Handle JavaScript exceptions (thrown by 'throw' statements)
         if(catchClause) {
             result = evaluateCatchClause(catchClause, env, engine, e.getValue());
+            normalCompletion = true; // caught
         } else {
-            // Re-throw if no catch clause
-            throw;
+            // Save exception to rethrow after finally
+            pendingExceptionValue = e.getValue();
         }
     } catch(const ReturnException& e) {
-        // Return exceptions should not be caught by try-catch
-        throw;
+        // Return exceptions should not be caught; run finally then rethrow
+        if(finallyClause) {
+            engine->evaluate(finallyClause->children[0], env);
+        }
+        throw; // rethrow return
+    }
+
+    // Run finally if present
+    if(finallyClause) {
+        engine->evaluate(finallyClause->children[0], env);
+    }
+
+    // If an exception was pending and no catch handled it, rethrow now
+    if(!normalCompletion && !pendingExceptionValue.isUndefined()) {
+        throw JavaScriptException(pendingExceptionValue);
     }
 
     return result;

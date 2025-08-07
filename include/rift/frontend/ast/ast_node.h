@@ -37,6 +37,7 @@ enum class ASTNodeType {
     ThrowStatement,
     TryStatement,
     CatchClause,
+    FinallyClause,
     ParameterList,
     NewExpression,
     TemplateLiteral,
