@@ -40,6 +40,7 @@ enum class TokenType {
     Throw,
     Try,
     Catch,
+    Finally,
     New,
     This,
 

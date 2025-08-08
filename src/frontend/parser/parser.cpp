@@ -647,13 +647,20 @@ std::shared_ptr<ASTNode> Parser::parse_try_statement() {
         catchClause = parse_catch_clause();
     }
 
-    // In a full implementation, we would also handle 'finally' blocks
-    // For now, we require at least a catch clause
-    if(!catchClause) {
-        throw std::runtime_error("Missing catch clause after try block");
+    // Parse optional finally clause
+    std::shared_ptr<ASTNode> finallyClause = nullptr;
+    if(current_token().type == TokenType::Finally) {
+        current++; // consume 'finally'
+        // finally must be followed by a block
+        finallyClause = ASTFactory::makeFinallyClause(parse_block_statement());
     }
 
-    return ASTFactory::makeTryStatement(tryBlock, catchClause);
+    // Require at least catch or finally
+    if(!catchClause && !finallyClause) {
+        throw std::runtime_error("Missing catch or finally clause after try block");
+    }
+
+    return ASTFactory::makeTryStatement(tryBlock, catchClause, finallyClause);
 }
 
 std::shared_ptr<ASTNode> Parser::parse_catch_clause() {

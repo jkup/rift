@@ -179,6 +179,7 @@ Token Lexer::read_identifier() {
         {"case", TokenType::Case},     {"default", TokenType::Default},
         {"break", TokenType::Break},   {"continue", TokenType::Continue}, {"throw", TokenType::Throw},
         {"try", TokenType::Try},       {"catch", TokenType::Catch},
+        {"finally", TokenType::Finally},
         {"new", TokenType::New},       {"this", TokenType::This},
         {"true", TokenType::Boolean},  {"false", TokenType::Boolean},
         {"null", TokenType::Null},     {"undefined", TokenType::Undefined},
