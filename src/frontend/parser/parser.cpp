@@ -712,8 +712,8 @@ std::shared_ptr<ASTNode> Parser::parse_template_literal() {
 
     // Handle TemplateStart
     if(current_token().type == TokenType::TemplateStart) {
-        auto element = ASTFactory::makeTemplateElement(current_token().value);
-        ASTFactory::addTemplateElement(templateLiteral, element);
+        auto startElement = ASTFactory::makeTemplateElement(current_token().value);
+        ASTFactory::addTemplateElement(templateLiteral, startElement);
         current++;
 
         // Parse expressions and template parts until TemplateEnd
@@ -726,12 +726,12 @@ std::shared_ptr<ASTNode> Parser::parse_template_literal() {
 
             // Next should be TemplateMiddle or TemplateEnd
             if(current_token().type == TokenType::TemplateMiddle) {
-                auto element = ASTFactory::makeTemplateElement(current_token().value);
-                ASTFactory::addTemplateElement(templateLiteral, element);
+                auto middleElement = ASTFactory::makeTemplateElement(current_token().value);
+                ASTFactory::addTemplateElement(templateLiteral, middleElement);
                 current++;
             } else if(current_token().type == TokenType::TemplateEnd) {
-                auto element = ASTFactory::makeTemplateElement(current_token().value);
-                ASTFactory::addTemplateElement(templateLiteral, element);
+                auto endElement = ASTFactory::makeTemplateElement(current_token().value);
+                ASTFactory::addTemplateElement(templateLiteral, endElement);
                 current++;
                 break;
             } else {
@@ -742,8 +742,8 @@ std::shared_ptr<ASTNode> Parser::parse_template_literal() {
     // Handle TemplateMiddle/TemplateEnd directly (shouldn't happen in normal parsing)
     else if(current_token().type == TokenType::TemplateMiddle ||
             current_token().type == TokenType::TemplateEnd) {
-        auto element = ASTFactory::makeTemplateElement(current_token().value);
-        ASTFactory::addTemplateElement(templateLiteral, element);
+        auto trailingElement = ASTFactory::makeTemplateElement(current_token().value);
+        ASTFactory::addTemplateElement(templateLiteral, trailingElement);
         current++;
     }
 

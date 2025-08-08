@@ -49,9 +49,8 @@ Value JSON::parse(const std::vector<Value>& args) {
         throw JavaScriptException(
             Value("SyntaxError: Invalid JSON input - received object instead of string"));
     }
-    size_t pos = 0;
-
     try {
+        size_t pos = 0;
         skipWhitespace(jsonString, pos);
         Value result = parseValue(jsonString, pos);
         skipWhitespace(jsonString, pos);

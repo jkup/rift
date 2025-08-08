@@ -57,11 +57,11 @@ std::vector<std::string> JSObject::getPropertyNames() const {
     // Add prototype property names (avoiding duplicates)
     if(prototype_) {
         auto prototype_names = prototype_->getPropertyNames();
-        for(const std::string& name : prototype_names) {
-            if(std::find(names.begin(), names.end(), name) == names.end()) {
-                names.push_back(name);
-            }
-        }
+        // Append only names that are not already present in names
+        std::copy_if(prototype_names.begin(), prototype_names.end(), std::back_inserter(names),
+                     [&](const std::string& name) {
+                         return std::find(names.begin(), names.end(), name) == names.end();
+                     });
     }
 
     return names;
