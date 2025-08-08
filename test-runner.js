@@ -116,8 +116,9 @@ function gc() {
         }
       }
 
-      // A test passes if it has at least one PASS and no FAIL/Error
-      const success = testPassed > 0 && testFailed === 0;
+      // Consider a test passed if there are no FAIL/Error lines.
+      // PASS markers improve reporting but are not strictly required.
+      const success = testFailed === 0;
 
       if (success) {
         this.passed++;

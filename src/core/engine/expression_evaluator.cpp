@@ -195,9 +195,9 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
         // Get the property name - handle both dot and bracket notation
         std::string property;
         if(leftSide->metadata == "computed") {
-            // Bracket notation - evaluate the property expression
+            // Bracket notation - evaluate the property expression and convert to a key string
             Value propertyValue = engine->evaluate(leftSide->children[1], env);
-            property = propertyValue.toString();
+            property = EvaluationUtils::toPropertyKeyString(propertyValue);
         } else {
             // Dot notation - use the identifier value directly
             property = leftSide->children[1]->value;
@@ -261,14 +261,13 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
         callee = engine->evaluate(calleeNode, env);
     }
 
-    // Evaluate arguments
+    // Evaluate arguments with call context for 'this'
     std::vector<Value> args;
-
-    // For method calls, prepend the 'this' value as first argument
+    std::vector<Value> realArgs;
     if(!thisValue.isUndefined()) {
+        // Backward-compatible constructor-like marker is not needed; we pass 'this' as arg[0]
         args.push_back(thisValue);
     }
-
     for(size_t i = 1; i < node->children.size(); ++i) {
         args.push_back(engine->evaluate(node->children[i], env));
     }
@@ -300,10 +299,10 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
 
     // Check if this is computed member access (bracket notation)
     // Use metadata to determine if this should be computed
-    if(node->metadata == "computed") {
-        // This is bracket notation - evaluate the property expression
+        if(node->metadata == "computed") {
+        // This is bracket notation - evaluate the property expression and convert carefully
         Value propertyValue = engine->evaluate(node->children[1], env);
-        property = propertyValue.toString();
+        property = EvaluationUtils::toPropertyKeyString(propertyValue);
     } else {
         // This is dot notation - use the identifier value directly
         property = node->children[1]->value;
@@ -571,9 +570,9 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
         // Get the property name - handle both dot and bracket notation
         std::string property;
         if(operandNode->metadata == "computed") {
-            // Bracket notation - evaluate the property expression
+            // Bracket notation - evaluate the property expression and convert carefully
             Value propertyValue = engine->evaluate(operandNode->children[1], env);
-            property = propertyValue.toString();
+            property = EvaluationUtils::toPropertyKeyString(propertyValue);
         } else {
             // Dot notation - use the identifier value directly
             property = operandNode->children[1]->value;

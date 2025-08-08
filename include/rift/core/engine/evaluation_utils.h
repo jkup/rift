@@ -2,6 +2,9 @@
 
 #include <string>
 #include <vector>
+#include <cmath>
+#include <iomanip>
+#include <sstream>
 
 #include "../../runtime/values/value.h"
 
@@ -152,6 +155,32 @@ inline bool isValidArrayIndex(const std::string& property, size_t& index) {
         // Any conversion error means invalid index
         return false;
     }
+}
+
+/**
+ * Convert a JavaScript value to a property key string.
+ * Ensures that numeric values are converted without scientific notation
+ * so that array index detection works correctly for large indices.
+ */
+inline std::string toPropertyKeyString(const Value& value) {
+    if(value.isNumber()) {
+        double num = value.toNumber();
+        if(!std::isfinite(num)) {
+            return value.toString();
+        }
+        // If integer within 64-bit range, format as plain integer string
+        double intpart;
+        if(std::modf(num, &intpart) == 0.0) {
+            long long asInt = static_cast<long long>(intpart);
+            return std::to_string(asInt);
+        }
+        // For non-integers, fall back to a non-scientific representation with sufficient precision
+        std::ostringstream oss;
+        oss.setf(std::ios::fmtflags(0), std::ios::floatfield);  // clear floatfield
+        oss << std::setprecision(15) << num;
+        return oss.str();
+    }
+    return value.toString();
 }
 }  // namespace EvaluationUtils
 
