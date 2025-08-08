@@ -56,12 +56,16 @@ This will create the `rift` executable in the `build/` directory.
 ./build/rift -e "var arr = [1, 2, 3]; arr.push(4); console.log(arr.length);"
 ```
 
-### Run Test262 Tests
+### Run Tests
 
 The project includes integration with the official ECMAScript test suite (test262):
 
 ```bash
+# Run the curated JS test suite
 npm run test
+
+# Run a single test file
+./build/rift test/let-const-parser-test.js
 ```
 
 ### Code Quality
@@ -205,7 +209,7 @@ The CI will automatically verify all quality checks on your PR.
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
-  - ❌ Block-scoped declarations: `let`, `const`
+  - ⚠️ `let`, `const` (parser support only; runtime semantics mirror `var` for now)
   - ❌ Arrow functions `() => {}`
   - ❌ Destructuring, spread (`...`), rest parameters
   - ❌ Classes (`class`, `extends`, `super`)
