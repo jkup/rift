@@ -5,6 +5,7 @@
 #include "rift/builtins/console/console.h"
 #include "rift/builtins/error/error.h"
 #include "rift/builtins/global/global.h"
+#include "rift/builtins/json/json.h"
 #include "rift/builtins/math/math.h"
 #include "rift/builtins/object/object.h"
 #include "rift/builtins/string/string.h"
@@ -39,6 +40,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupMath(globalEnv, factory);
     setupString(globalEnv, factory);
     setupArray(globalEnv, factory);
+    setupJSON(globalEnv, engine);
     setupObject(globalEnv, factory);
     setupBoolean(globalEnv, factory);
     setupError(globalEnv, factory);
@@ -186,6 +188,10 @@ void BuiltinManager::clearStaticPrototypes() {
     stringPrototype_ = nullptr;
     booleanPrototype_ = nullptr;
     errorPrototype_ = nullptr;
+}
+
+void BuiltinManager::setupJSON(std::shared_ptr<Environment> globalEnv, rift::core::Rift* engine) {
+    rift::builtins::JSON::setup(globalEnv, engine);
 }
 
 }  // namespace rift::core

@@ -35,6 +35,7 @@ set(MEMORY_SOURCES
 set(BUILTINS_SOURCES
     src/builtins/console/console.cpp
     src/builtins/math/math.cpp
+    src/builtins/json/json.cpp
     src/builtins/global/global.cpp
     src/builtins/string/string.cpp
     src/builtins/array/array.cpp

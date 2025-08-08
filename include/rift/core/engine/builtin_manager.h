@@ -47,6 +47,8 @@ class BuiltinManager {
                             rift::memory::ObjectFactory* factory);
     static void setupArray(std::shared_ptr<Environment> globalEnv,
                            rift::memory::ObjectFactory* factory);
+    static void setupJSON(std::shared_ptr<Environment> globalEnv,
+                          rift::core::Rift* engine);
     static void setupObject(std::shared_ptr<Environment> globalEnv,
                             rift::memory::ObjectFactory* factory);
     static void setupBoolean(std::shared_ptr<Environment> globalEnv,
