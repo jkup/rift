@@ -228,7 +228,7 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
     }
 
     if(current_token().type != TokenType::Identifier) {
-        throw std::runtime_error("Expected identifier after 'var'");
+        throw std::runtime_error("Expected identifier after variable declaration keyword");
     }
 
     std::string name = current_token().value;
