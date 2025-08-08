@@ -137,8 +137,7 @@ Value Array::forEach(const std::vector<Value>& args) {
         Value element = arrayObj->getProperty(std::to_string(i));
         if(!element.isUndefined()) {
             // Call callback(element, index, array)
-            std::vector<Value> callArgs = {Value(arrayObj), element, Value(static_cast<double>(i)),
-                                           Value(arrayObj)};
+            std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
             callbackFn->call(callArgs);
         }
     }
@@ -171,8 +170,7 @@ Value Array::map(const std::vector<Value>& args) {
         Value element = arrayObj->getProperty(std::to_string(i));
         if(!element.isUndefined()) {
             // Call callback(element, index, array) and collect result
-            std::vector<Value> callArgs = {Value(arrayObj), element, Value(static_cast<double>(i)),
-                                           Value(arrayObj)};
+            std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
             Value result = callbackFn->call(callArgs);
             results.push_back(result);
         } else {
@@ -207,8 +205,7 @@ Value Array::filter(const std::vector<Value>& args) {
         Value element = arrayObj->getProperty(std::to_string(i));
         if(!element.isUndefined()) {
             // Call callback(element, index, array)
-            std::vector<Value> callArgs = {Value(arrayObj), element, Value(static_cast<double>(i)),
-                                           Value(arrayObj)};
+            std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
             Value result = callbackFn->call(callArgs);
 
             // If callback returns truthy value, include element
