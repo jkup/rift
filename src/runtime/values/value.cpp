@@ -157,7 +157,7 @@ bool Value::strictEquals(const Value& other) const {
     if(type_ != other.type_) {
         return false;
     }
-    
+
     // Same type, compare values
     if(isNumber()) {
         return toNumber() == other.toNumber();

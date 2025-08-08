@@ -6,10 +6,10 @@
 #include <string>
 #include <vector>
 
-#include "../builtin_base.h"
 #include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
+#include "../builtin_base.h"
 
 namespace rift::builtins {
 
@@ -81,7 +81,8 @@ class String : public BuiltinBase<String> {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
     static Value charCodeAt(const std::vector<Value>& args);
 
-    /// The `concat()` method concatenates the string arguments to the calling string and returns a new string.
+    /// The `concat()` method concatenates the string arguments to the calling string and returns a
+    /// new string.
     static Value concat(const std::vector<Value>& args);
 
     /// The `indexOf()` method, given one argument: a substring to search for, searches the entire

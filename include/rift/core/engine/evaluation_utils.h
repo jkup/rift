@@ -22,8 +22,8 @@ constexpr const char* CONSTRUCTOR_CALL_MARKER = "__CONSTRUCTOR_CALL__";
  * Enum to distinguish between different types of function calls
  */
 enum class CallType {
-    Function,      // Regular function call: func()
-    Constructor    // Constructor call: new func()
+    Function,    // Regular function call: func()
+    Constructor  // Constructor call: new func()
 };
 
 /**
@@ -32,14 +32,15 @@ enum class CallType {
 struct CallContext {
     CallType type = CallType::Function;
     Value thisValue = Value::undefined();
-    
+
     // Constructor for function calls
     CallContext() = default;
-    
+
     // Constructor for constructor calls with this value
-    CallContext(CallType callType, const Value& thisVal = Value::undefined()) 
-        : type(callType), thisValue(thisVal) {}
-    
+    CallContext(CallType callType, const Value& thisVal = Value::undefined())
+        : type(callType), thisValue(thisVal) {
+    }
+
     bool isConstructorCall() const {
         return type == CallType::Constructor;
     }
@@ -60,19 +61,18 @@ inline CallContext parseCallContext(const std::vector<Value>& args, std::vector<
     // Check for old magic string marker format (for backward compatibility)
     if(!args.empty() && args[0].isString() &&
        args[0].getString() == EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
-        
         // This is a constructor call with magic marker
         Value thisValue = Value::undefined();
         if(args.size() > 1) {
             thisValue = args[1];
         }
-        
+
         // Copy real arguments (skip marker and this value)
         realArgs.clear();
         for(size_t i = 2; i < args.size(); ++i) {
             realArgs.push_back(args[i]);
         }
-        
+
         return CallContext(CallType::Constructor, thisValue);
     } else {
         // Regular function call - copy all arguments as-is
@@ -87,7 +87,8 @@ inline CallContext parseCallContext(const std::vector<Value>& args, std::vector<
  * @param args The function arguments
  * @return Vector of real arguments (excluding context information)
  */
-inline std::vector<Value> extractRealArgs(const CallContext& callContext, const std::vector<Value>& args) {
+inline std::vector<Value> extractRealArgs(const CallContext& callContext,
+                                          const std::vector<Value>& args) {
     // With the new API, args should always be real arguments
     // This function exists for consistency and future extensibility
     return args;
@@ -96,7 +97,7 @@ inline std::vector<Value> extractRealArgs(const CallContext& callContext, const 
 /**
  * Safely check if a property name is a valid array index and convert it
  * According to ECMAScript specification:
- * - A property name P is an array index if ToString(ToUint32(P)) is equal to P 
+ * - A property name P is an array index if ToString(ToUint32(P)) is equal to P
  *   and ToUint32(P) is not equal to 2^32 - 1
  * @param property The property string to check
  * @param index Output parameter for the converted index
@@ -138,13 +139,13 @@ inline bool isValidArrayIndex(const std::string& property, size_t& index) {
     // Safe to convert now
     try {
         unsigned long long ull = std::stoull(property);
-        
+
         // Check if it's within the valid range for array indices
         // Must be < 2^32 - 1 (4294967295)
         if(ull >= 4294967295ULL) {
             return false;
         }
-        
+
         index = static_cast<size_t>(ull);
         return true;
     } catch(const std::exception&) {

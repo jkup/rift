@@ -188,7 +188,8 @@ Value StatementEvaluator::evaluateForStatement(std::shared_ptr<ASTNode> node,
         } catch(const BreakException&) {
             break;
         } catch(const ContinueException&) {
-            // On continue in a for-loop, run the update expression (if any), then go to next iteration
+            // On continue in a for-loop, run the update expression (if any), then go to next
+            // iteration
             if(node->children[2] != nullptr) {
                 engine->evaluate(node->children[2], env);
             }
@@ -331,7 +332,7 @@ Value StatementEvaluator::evaluateTryStatement(std::shared_ptr<ASTNode> node,
         // Handle JavaScript exceptions (thrown by 'throw' statements)
         if(catchClause) {
             result = evaluateCatchClause(catchClause, env, engine, e.getValue());
-            normalCompletion = true; // caught
+            normalCompletion = true;  // caught
         } else {
             // Save exception to rethrow after finally
             pendingExceptionValue = e.getValue();
@@ -341,7 +342,7 @@ Value StatementEvaluator::evaluateTryStatement(std::shared_ptr<ASTNode> node,
         if(finallyClause) {
             engine->evaluate(finallyClause->children[0], env);
         }
-        throw; // rethrow return
+        throw;  // rethrow return
     }
 
     // Run finally if present
@@ -385,24 +386,24 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
     if(node->children.empty()) {
         return Value::undefined();
     }
-    
+
     // First child is the discriminant expression
     Value discriminant = engine->evaluate(node->children[0], env);
-    
+
     bool foundMatch = false;
     bool executeRemaining = false;
     Value result = Value::undefined();
-    
+
     // Iterate through all case/default clauses
     for(size_t i = 1; i < node->children.size(); ++i) {
         auto clause = node->children[i];
-        
+
         if(clause->type == ASTNodeType::CaseClause) {
             if(!foundMatch && !executeRemaining) {
                 // Check if this case matches
                 if(!clause->children.empty()) {
                     Value testValue = engine->evaluate(clause->children[0], env);
-                    
+
                     // JavaScript switch uses strict equality (===)
                     if(discriminant.strictEquals(testValue)) {
                         foundMatch = true;
@@ -410,7 +411,7 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
                     }
                 }
             }
-            
+
             if(executeRemaining) {
                 // Execute all statements in this case (starting from index 1, since 0 is the test)
                 for(size_t j = 1; j < clause->children.size(); ++j) {
@@ -421,13 +422,13 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
                     }
                 }
             }
-            
+
         } else if(clause->type == ASTNodeType::DefaultClause) {
             if(!foundMatch) {
                 foundMatch = true;
                 executeRemaining = true;
             }
-            
+
             if(executeRemaining) {
                 // Execute all statements in default clause
                 for(size_t j = 0; j < clause->children.size(); ++j) {
@@ -440,7 +441,7 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
             }
         }
     }
-    
+
     return result;
 }
 

@@ -10,7 +10,8 @@ namespace rift::builtins {
 
 void String::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Add String static methods
-    constructor->setProperty("fromCharCode", Value(factory->createJSFunction(String::fromCharCode)));
+    constructor->setProperty("fromCharCode",
+                             Value(factory->createJSFunction(String::fromCharCode)));
 }
 
 void String::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {

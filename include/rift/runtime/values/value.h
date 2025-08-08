@@ -91,7 +91,7 @@ class Value {
     double getNumber() const;
     const std::string& getString() const;
     JSObject* getObject() const;  // Now returns raw pointer
-    
+
     // Comparison methods
     bool strictEquals(const Value& other) const;
 };

@@ -167,25 +167,25 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::Multiply:
             case TokenType::Divide:
             case TokenType::Modulo:
-                op_precedence = 12;  // Multiplicative operators  
+                op_precedence = 12;  // Multiplicative operators
                 break;
             case TokenType::Equal:
             case TokenType::EqualStrict:
             case TokenType::NotEqual:
             case TokenType::NotEqualStrict:
-                op_precedence = 8;   // Equality operators
+                op_precedence = 8;  // Equality operators
                 break;
             case TokenType::Less:
             case TokenType::LessEqual:
             case TokenType::Greater:
             case TokenType::GreaterEqual:
-                op_precedence = 9;   // Relational operators
+                op_precedence = 9;  // Relational operators
                 break;
             case TokenType::LogicalAnd:
-                op_precedence = 4;   // Logical AND
+                op_precedence = 4;  // Logical AND
                 break;
             case TokenType::LogicalOr:
-                op_precedence = 3;   // Logical OR (lower than equality!)
+                op_precedence = 3;  // Logical OR (lower than equality!)
                 break;
             case TokenType::Assign:
                 op_precedence = 0;  // Assignment lowest precedence
@@ -483,7 +483,8 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
             expr = parse_computed_member_expression(expr);
         } else if(current_token().type == TokenType::LeftParen) {
             expr = parse_call_expression(expr);
-        } else if(current_token().type == TokenType::Increment || current_token().type == TokenType::Decrement) {
+        } else if(current_token().type == TokenType::Increment ||
+                  current_token().type == TokenType::Decrement) {
             // Handle postfix increment/decrement
             std::string operator_ = current_token().value;
             current++;  // consume the operator
@@ -576,7 +577,7 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
         if(current_token().type == TokenType::RightBracket) {
             break;  // Trailing comma is allowed, stop parsing elements
         }
-        
+
         auto element = parse_expression();
         ASTFactory::addArrayElement(array, element);
     } while(match(TokenType::Comma));
@@ -602,7 +603,7 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
         if(current_token().type == TokenType::RightBrace) {
             break;  // Trailing comma is allowed, stop parsing properties
         }
-        
+
         // Parse property key (can be identifier or string literal)
         std::shared_ptr<ASTNode> key;
 
@@ -650,7 +651,7 @@ std::shared_ptr<ASTNode> Parser::parse_try_statement() {
     // Parse optional finally clause
     std::shared_ptr<ASTNode> finallyClause = nullptr;
     if(current_token().type == TokenType::Finally) {
-        current++; // consume 'finally'
+        current++;  // consume 'finally'
         // finally must be followed by a block
         finallyClause = ASTFactory::makeFinallyClause(parse_block_statement());
     }
@@ -708,21 +709,21 @@ std::shared_ptr<ASTNode> Parser::parse_new_expression() {
 
 std::shared_ptr<ASTNode> Parser::parse_template_literal() {
     auto templateLiteral = ASTFactory::makeTemplateLiteral();
-    
+
     // Handle TemplateStart
     if(current_token().type == TokenType::TemplateStart) {
         auto element = ASTFactory::makeTemplateElement(current_token().value);
         ASTFactory::addTemplateElement(templateLiteral, element);
         current++;
-        
+
         // Parse expressions and template parts until TemplateEnd
-        while(current_token().type != TokenType::TemplateEnd && 
+        while(current_token().type != TokenType::TemplateEnd &&
               current_token().type != TokenType::EndOfFile) {
             // Parse the expression inside ${}
             auto expression = parse_expression();
             auto templateExpr = ASTFactory::makeTemplateExpression(expression);
             ASTFactory::addTemplateElement(templateLiteral, templateExpr);
-            
+
             // Next should be TemplateMiddle or TemplateEnd
             if(current_token().type == TokenType::TemplateMiddle) {
                 auto element = ASTFactory::makeTemplateElement(current_token().value);
@@ -739,77 +740,76 @@ std::shared_ptr<ASTNode> Parser::parse_template_literal() {
         }
     }
     // Handle TemplateMiddle/TemplateEnd directly (shouldn't happen in normal parsing)
-    else if(current_token().type == TokenType::TemplateMiddle || 
+    else if(current_token().type == TokenType::TemplateMiddle ||
             current_token().type == TokenType::TemplateEnd) {
         auto element = ASTFactory::makeTemplateElement(current_token().value);
         ASTFactory::addTemplateElement(templateLiteral, element);
         current++;
     }
-    
+
     return templateLiteral;
 }
 
 std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
-    consume(TokenType::Switch);  // consume 'switch'
+    consume(TokenType::Switch);     // consume 'switch'
     consume(TokenType::LeftParen);  // consume '('
-    
+
     // Parse discriminant expression
     auto discriminant = parse_expression();
-    
+
     consume(TokenType::RightParen);  // consume ')'
     consume(TokenType::LeftBrace);   // consume '{'
-    
+
     auto switchNode = ASTFactory::makeSwitchStatement(discriminant);
-    
+
     // Parse case clauses
-    while(current_token().type != TokenType::RightBrace && 
+    while(current_token().type != TokenType::RightBrace &&
           current_token().type != TokenType::EndOfFile) {
-        
         if(current_token().type == TokenType::Case) {
             current++;  // consume 'case'
             auto test = parse_expression();
             consume(TokenType::Colon);  // consume ':'
-            
+
             auto caseClause = ASTFactory::makeCaseClause(test);
-            
+
             // Parse statements until next case/default/}
-            while(current_token().type != TokenType::Case && 
+            while(current_token().type != TokenType::Case &&
                   current_token().type != TokenType::Default &&
                   current_token().type != TokenType::RightBrace &&
                   current_token().type != TokenType::EndOfFile) {
                 auto stmt = parse_statement();
                 ASTFactory::addCaseStatement(caseClause, stmt);
             }
-            
+
             ASTFactory::addSwitchCase(switchNode, caseClause);
-            
+
         } else if(current_token().type == TokenType::Default) {
-            current++;  // consume 'default'
+            current++;                  // consume 'default'
             consume(TokenType::Colon);  // consume ':'
-            
+
             auto defaultClause = ASTFactory::makeDefaultClause();
-            
+
             // Parse statements until next case/}
-            while(current_token().type != TokenType::Case && 
+            while(current_token().type != TokenType::Case &&
                   current_token().type != TokenType::RightBrace &&
                   current_token().type != TokenType::EndOfFile) {
                 auto stmt = parse_statement();
                 ASTFactory::addCaseStatement(defaultClause, stmt);
             }
-            
+
             ASTFactory::addSwitchCase(switchNode, defaultClause);
-            
+
         } else {
             throw std::runtime_error("Expected 'case' or 'default' in switch statement");
         }
     }
-    
+
     consume(TokenType::RightBrace);  // consume '}'
     return switchNode;
 }
 
 std::shared_ptr<ASTNode> Parser::parse_break_statement() {
-    consume(TokenType::Break);  // consume 'break'
+    consume(TokenType::Break);    // consume 'break'
     match(TokenType::Semicolon);  // optional semicolon
     return ASTFactory::makeBreakStatement();
 }

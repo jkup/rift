@@ -470,7 +470,7 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
     std::vector<Value> args;
 
     // Add special marker to indicate this is a constructor call
-    // TODO: This is kept for backward compatibility. Future improvement would be to 
+    // TODO: This is kept for backward compatibility. Future improvement would be to
     // pass CallContext directly to functions instead of using magic strings.
     args.push_back(Value(EvaluationConstants::CONSTRUCTOR_CALL_MARKER));
 
@@ -517,7 +517,8 @@ Value ExpressionEvaluator::evaluateTemplateLiteral(std::shared_ptr<ASTNode> node
 }
 
 Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> node,
-                                                   std::shared_ptr<Environment> env, Rift* engine) {
+                                                    std::shared_ptr<Environment> env,
+                                                    Rift* engine) {
     if(node->children.size() != 1) {
         return Value::undefined();
     }
@@ -529,14 +530,14 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
     // Handle variable increment/decrement
     if(operandNode->type == ASTNodeType::Identifier) {
         std::string varName = operandNode->value;
-        
+
         // Get current value
         Value currentValue = env->get(varName);
         if(!currentValue.isNumber()) {
             // Convert to number for increment/decrement
             currentValue = Value(currentValue.toNumber());
         }
-        
+
         // Calculate new value
         Value newValue;
         if(operator_ == "++") {
@@ -546,18 +547,18 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
         } else {
             return Value::undefined();
         }
-        
+
         // Update the variable
         env->set(varName, newValue);
-        
+
         // Return value depends on prefix vs postfix
         if(isPrefix) {
-            return newValue;     // ++x returns new value
+            return newValue;  // ++x returns new value
         } else {
-            return currentValue; // x++ returns old value
+            return currentValue;  // x++ returns old value
         }
     }
-    
+
     // Handle member expression increment/decrement (e.g., obj.prop++, arr[i]--)
     else if(operandNode->type == ASTNodeType::MemberExpression) {
         if(operandNode->children.size() != 2) {
@@ -586,12 +587,12 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
                 currentValue = obj->getProperty(property);
             }
         }
-        
+
         if(!currentValue.isNumber()) {
             // Convert to number for increment/decrement
             currentValue = Value(currentValue.toNumber());
         }
-        
+
         // Calculate new value
         Value newValue;
         if(operator_ == "++") {
@@ -601,13 +602,13 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
         } else {
             return Value::undefined();
         }
-        
+
         // Update the property
         if(object.isObject() || object.isFunction()) {
             auto* obj = object.getObject();
             if(obj) {
                 obj->setProperty(property, newValue);
-                
+
                 // Special handling for arrays: update length if necessary
                 if(property != "length") {
                     // Check if this is a numeric index using safe validation
@@ -624,12 +625,12 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
                 }
             }
         }
-        
+
         // Return value depends on prefix vs postfix
         if(isPrefix) {
-            return newValue;     // ++obj.prop returns new value
+            return newValue;  // ++obj.prop returns new value
         } else {
-            return currentValue; // obj.prop++ returns old value
+            return currentValue;  // obj.prop++ returns old value
         }
     }
 

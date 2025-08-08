@@ -110,7 +110,8 @@ Value Object::constructor(const std::vector<Value>& args) {
             return Value(false);
         };
 
-        booleanObj->setProperty("toString", Value(getObjectFactory()->createJSFunction(toStringFn)));
+        booleanObj->setProperty("toString",
+                                Value(getObjectFactory()->createJSFunction(toStringFn)));
         booleanObj->setProperty("valueOf", Value(getObjectFactory()->createJSFunction(valueOfFn)));
 
         return Value(booleanObj);  // booleanObj is now raw pointer

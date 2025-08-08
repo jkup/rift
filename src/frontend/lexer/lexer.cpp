@@ -7,8 +7,15 @@
 namespace rift::frontend {
 
 // Lexer implementation
-Lexer::Lexer(const std::string& source) : source(source), position(0), line(1), column(1), 
-      template_state(TemplateLiteralState::None), template_depth(0), brace_depth(0), template_started(false) {
+Lexer::Lexer(const std::string& source)
+    : source(source),
+      position(0),
+      line(1),
+      column(1),
+      template_state(TemplateLiteralState::None),
+      template_depth(0),
+      brace_depth(0),
+      template_started(false) {
 }
 
 char Lexer::current_char() {
@@ -99,22 +106,22 @@ Token Lexer::read_template_string() {
     template_state = TemplateLiteralState::InTemplate;
     template_depth++;
     template_started = false;  // Reset for new template
-    
+
     return read_template_part();
 }
 
 Token Lexer::read_template_part() {
     std::string value;
-    
+
     while(current_char() != '\0') {
         // Check for ${ - start of expression
         if(current_char() == '$' && peek_char() == '{') {
             // Always advance past ${ and switch to expression mode
-            advance(); // skip $
-            advance(); // skip {
+            advance();  // skip $
+            advance();  // skip {
             template_state = TemplateLiteralState::InExpression;
             brace_depth = 1;
-            
+
             // Return the text before ${ (if any)
             TokenType type;
             if(!template_started) {
@@ -131,7 +138,7 @@ Token Lexer::read_template_part() {
             template_state = TemplateLiteralState::None;
             template_depth--;
             template_started = false;  // Reset for next template
-            
+
             // Return final part
             TokenType type = TokenType::TemplateEnd;
             return Token(type, value, line, column);
@@ -140,20 +147,34 @@ Token Lexer::read_template_part() {
         else if(current_char() == '\\') {
             advance();
             switch(current_char()) {
-                case 'n': value += '\n'; break;
-                case 't': value += '\t'; break;
-                case 'r': value += '\r'; break;
-                case '\\': value += '\\'; break;
-                case '`': value += '`'; break;
-                case '$': value += '$'; break;  // Allow escaping $
-                default: value += current_char(); break;
+                case 'n':
+                    value += '\n';
+                    break;
+                case 't':
+                    value += '\t';
+                    break;
+                case 'r':
+                    value += '\r';
+                    break;
+                case '\\':
+                    value += '\\';
+                    break;
+                case '`':
+                    value += '`';
+                    break;
+                case '$':
+                    value += '$';
+                    break;  // Allow escaping $
+                default:
+                    value += current_char();
+                    break;
             }
         } else {
             value += current_char();
         }
         advance();
     }
-    
+
     // EOF reached while inside template literal - this is an error!
     // Template literals must be properly closed with a backtick
     template_state = TemplateLiteralState::None;
@@ -177,9 +198,9 @@ Token Lexer::read_identifier() {
         {"else", TokenType::Else},     {"for", TokenType::For},
         {"while", TokenType::While},   {"switch", TokenType::Switch},
         {"case", TokenType::Case},     {"default", TokenType::Default},
-        {"break", TokenType::Break},   {"continue", TokenType::Continue}, {"throw", TokenType::Throw},
-        {"try", TokenType::Try},       {"catch", TokenType::Catch},
-        {"finally", TokenType::Finally},
+        {"break", TokenType::Break},   {"continue", TokenType::Continue},
+        {"throw", TokenType::Throw},   {"try", TokenType::Try},
+        {"catch", TokenType::Catch},   {"finally", TokenType::Finally},
         {"new", TokenType::New},       {"this", TokenType::This},
         {"true", TokenType::Boolean},  {"false", TokenType::Boolean},
         {"null", TokenType::Null},     {"undefined", TokenType::Undefined},
@@ -200,7 +221,7 @@ Token Lexer::next_token() {
         // We're inside a template, continue reading template part
         return read_template_part();
     }
-    
+
     skip_whitespace();
 
     char ch = current_char();

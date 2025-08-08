@@ -3,8 +3,8 @@
 #include <memory>
 #include <vector>
 
-#include "rift/runtime/values/value.h"
 #include "rift/runtime/environment/environment.h"
+#include "rift/runtime/values/value.h"
 
 namespace rift::core {
 class Rift;
@@ -44,27 +44,27 @@ class JSON {
     /// @param pos Current position in string (modified during parsing)
     /// @returns Parsed JavaScript value
     static Value parseValue(const std::string& json, size_t& pos);
-    
+
     /// Parse JSON object
     static Value parseObject(const std::string& json, size_t& pos);
-    
+
     /// Parse JSON array
     static Value parseArray(const std::string& json, size_t& pos);
-    
+
     /// Parse JSON string literal
     static Value parseString(const std::string& json, size_t& pos);
-    
+
     /// Parse JSON number
     static Value parseNumber(const std::string& json, size_t& pos);
-    
+
     /// Skip whitespace in JSON string
     static void skipWhitespace(const std::string& json, size_t& pos);
-    
+
     /// Stringify JavaScript value recursively
     /// @param value Value to stringify
     /// @returns JSON string representation
     static std::string stringifyValue(const Value& value);
-    
+
     /// Escape string for JSON output
     static std::string escapeString(const std::string& str);
 };

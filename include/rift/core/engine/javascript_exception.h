@@ -61,7 +61,7 @@ class BreakException : public std::exception {
 class ContinueException : public std::exception {
   public:
     const char* what() const noexcept override {
-      return "Continue statement";
+        return "Continue statement";
     }
 };
 

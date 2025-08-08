@@ -14,18 +14,18 @@ using namespace rift::runtime;
 
 /**
  * Base class template for all JavaScript builtin objects.
- * 
+ *
  * This class uses the Curiously Recurring Template Pattern (CRTP) to eliminate
  * the massive code duplication that existed across all builtin implementations.
- * 
+ *
  * Each builtin class should inherit from this template and provide:
  * - constructor: static Value function for the builtin constructor
  * - setupStaticMethods: method to add static methods to constructor
  * - setupPrototypeMethods: method to add methods to prototype
- * 
+ *
  * @tparam Derived The derived builtin class (CRTP pattern)
  */
-template<typename Derived>
+template <typename Derived>
 class BuiltinBase {
   public:
     /**
@@ -85,15 +85,18 @@ class BuiltinBase {
      * CRTP method implementations - these call the derived class methods.
      * This ensures derived classes MUST implement these methods.
      */
-    static void callSetupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
+    static void callSetupStaticMethods(JSObject* constructor,
+                                       rift::memory::ObjectFactory* factory) {
         Derived::setupStaticMethods(constructor, factory);
     }
-    
-    static void callSetupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
+
+    static void callSetupPrototypeMethods(JSObject* prototype,
+                                          rift::memory::ObjectFactory* factory) {
         // Static assert to ensure derived class implements this method
-        static_assert(std::is_same_v<decltype(&Derived::setupPrototypeMethods), 
-                                   void(*)(JSObject*, rift::memory::ObjectFactory*)>,
-                     "Derived class must implement setupPrototypeMethods(JSObject*, rift::memory::ObjectFactory*)");
+        static_assert(std::is_same_v<decltype(&Derived::setupPrototypeMethods),
+                                     void (*)(JSObject*, rift::memory::ObjectFactory*)>,
+                      "Derived class must implement setupPrototypeMethods(JSObject*, "
+                      "rift::memory::ObjectFactory*)");
         Derived::setupPrototypeMethods(prototype, factory);
     }
 
@@ -102,7 +105,7 @@ class BuiltinBase {
 };
 
 // Template static member definition
-template<typename Derived>
+template <typename Derived>
 rift::memory::ObjectFactory* BuiltinBase<Derived>::object_factory_ = nullptr;
 
 }  // namespace rift::builtins
