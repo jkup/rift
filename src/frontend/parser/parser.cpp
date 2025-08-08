@@ -216,10 +216,19 @@ std::shared_ptr<ASTNode> Parser::parse_expression() {
 }
 
 std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
-    consume(TokenType::Var);  // consume 'var'
+    // Support var/let/const with identical behavior for now
+    if(current_token().type == TokenType::Var) {
+        consume(TokenType::Var);
+    } else if(current_token().type == TokenType::Let) {
+        consume(TokenType::Let);
+    } else if(current_token().type == TokenType::Const) {
+        consume(TokenType::Const);
+    } else {
+        throw std::runtime_error("Expected variable declaration keyword");
+    }
 
     if(current_token().type != TokenType::Identifier) {
-        throw std::runtime_error("Expected identifier after 'var'");
+        throw std::runtime_error("Expected identifier after variable declaration keyword");
     }
 
     std::string name = current_token().value;
@@ -235,6 +244,11 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
 
 std::shared_ptr<ASTNode> Parser::parse_statement() {
     if(current_token().type == TokenType::Var) {
+        auto stmt = parse_variable_declaration();
+        match(TokenType::Semicolon);  // optional semicolon
+        return stmt;
+    }
+    if(current_token().type == TokenType::Let || current_token().type == TokenType::Const) {
         auto stmt = parse_variable_declaration();
         match(TokenType::Semicolon);  // optional semicolon
         return stmt;
@@ -338,7 +352,8 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
 
     // Parse the initialization (can be variable declaration or assignment expression or empty)
     std::shared_ptr<ASTNode> initialization = nullptr;
-    if(current_token().type == TokenType::Var) {
+    if(current_token().type == TokenType::Var || current_token().type == TokenType::Let ||
+       current_token().type == TokenType::Const) {
         // Variable declaration: for (var i = 0; ...)
         initialization = parse_variable_declaration();
     } else if(current_token().type != TokenType::Semicolon) {
