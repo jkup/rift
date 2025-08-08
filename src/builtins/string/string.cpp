@@ -6,6 +6,8 @@
 #include <limits>
 #include <sstream>
 
+#include "rift/builtins/array/array.h"
+
 namespace rift::builtins {
 
 void String::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
@@ -264,7 +266,6 @@ Value String::split(const std::vector<Value>& args) {
     std::string str = getStringValue(args);
 
     // Create an array to hold the results using GC-managed creation
-    auto* result = getObjectFactory()->createJSObject();  // Use factory instead of std::make_shared
     std::vector<Value> elements;
 
     if(args.size() < 2 || args[1].isUndefined()) {
@@ -293,13 +294,8 @@ Value String::split(const std::vector<Value>& args) {
         }
     }
 
-    // Set array properties (simplified array-like object)
-    for(size_t i = 0; i < elements.size(); ++i) {
-        result->setProperty(std::to_string(i), elements[i]);
-    }
-    result->setProperty("length", Value(static_cast<double>(elements.size())));
-
-    return Value(result);  // result is now raw pointer
+    // Build a proper Array instance using Array helper
+    return Value(Array::createArrayObject(getObjectFactory(), elements));
 }
 
 Value String::toString(const std::vector<Value>& args) {
