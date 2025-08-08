@@ -188,6 +188,20 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `Error()`
 - ✅ `error.toString`
 
+#### **JSON**
+- ✅ `JSON.parse(text)` basic support:
+  - Objects, arrays, strings, numbers (incl. exponent), booleans, null
+  - Throws SyntaxError on invalid input
+- ✅ `JSON.stringify(value)` basic support:
+  - Primitives, plain objects (own enumerable props), arrays (by `length` and numeric indices)
+  - `NaN`/`Infinity` become `null`; functions/undefined are skipped
+- ⚠️ Limitations:
+  - `reviver`/`replacer`/`space` options not implemented
+  - Unicode escapes in strings are simplified; surrogate handling is not spec-accurate
+  - Circular references are not handled (results in undefined/throw)
+  - Array holes serialize as `null`
+  - Property ordering follows internal `getOwnPropertyNames()`
+
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
@@ -202,7 +216,7 @@ The CI will automatically verify all quality checks on your PR.
   - ❌ Bitwise binary operators: `&`, `|`, `^`, `<<`, `>>`, `>>>`
 
 - **Built-in objects/APIs**
-  - ❌ Date, JSON, RegExp
+  - ❌ Date, RegExp
   - ❌ Promise/Async (`async`/`await`), timers/event loop
   - ❌ Set/Map, Symbol, Proxy
   - ❌ Function.prototype methods: `call`, `apply`, `bind`
