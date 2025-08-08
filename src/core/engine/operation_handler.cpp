@@ -1,4 +1,5 @@
 #include "rift/core/engine/operation_handler.h"
+#include <cmath>
 
 namespace rift::core {
 
