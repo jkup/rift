@@ -261,13 +261,8 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
         callee = engine->evaluate(calleeNode, env);
     }
 
-    // Evaluate arguments with call context for 'this'
+    // Evaluate real arguments
     std::vector<Value> args;
-    std::vector<Value> realArgs;
-    if(!thisValue.isUndefined()) {
-        // Backward-compatible constructor-like marker is not needed; we pass 'this' as arg[0]
-        args.push_back(thisValue);
-    }
     for(size_t i = 1; i < node->children.size(); ++i) {
         args.push_back(engine->evaluate(node->children[i], env));
     }
@@ -277,7 +272,10 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
         auto* func =
             dynamic_cast<JSFunction*>(callee.getObject());  // Use dynamic_cast for raw pointers
         if(func) {
-            return func->call(args);
+            rift::core::CallContext callContext(
+                rift::core::CallType::Function,
+                thisValue.isUndefined() ? Value::undefined() : thisValue);
+            return func->call(callContext, args);
         }
     }
 
@@ -408,20 +406,16 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
 
     // Create function object (anonymous) using GC-managed creation
     auto* func = engine->getObjectFactory()->createJSFunction(
-        [engine, parameters, body, env](const std::vector<Value>& args) -> Value {
+        [engine, parameters, body, env](const rift::core::CallContext& callContext, const std::vector<Value>& args) -> Value {
             // Create new environment for function execution
             auto funcEnv = std::make_shared<Environment>(env);
-
-            // Parse call context from arguments (handles both old and new calling conventions)
-            std::vector<Value> realArgs;
-            auto callContext = EvaluationUtils::parseCallContext(args, realArgs);
 
             // Bind 'this' to the function environment
             funcEnv->define("this", callContext.thisValue);
 
             // Bind parameters to real arguments
             for(size_t i = 0; i < parameters.size(); ++i) {
-                Value argValue = (i < realArgs.size()) ? realArgs[i] : Value::undefined();
+                Value argValue = (i < args.size()) ? args[i] : Value::undefined();
                 funcEnv->define(parameters[i], argValue);
             }
 
@@ -465,24 +459,16 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
     // Create a new object that will be the 'this' context for the constructor
     auto* newObj = engine->getObjectFactory()->createJSObject();
 
-    // Collect arguments (skip first child which is the constructor)
+    // Collect real arguments (skip first child which is the constructor)
     std::vector<Value> args;
-
-    // Add special marker to indicate this is a constructor call
-    // TODO: This is kept for backward compatibility. Future improvement would be to
-    // pass CallContext directly to functions instead of using magic strings.
-    args.push_back(Value(EvaluationConstants::CONSTRUCTOR_CALL_MARKER));
-
-    // Add the 'this' object as the first real argument
-    args.push_back(Value(newObj));
-
     for(size_t i = 1; i < node->children.size(); ++i) {
         args.push_back(engine->evaluate(node->children[i], env));
     }
 
     // Call constructor function - built-in constructors like Array and Object
     // handle their own object creation and return the created object
-    Value result = constructorFunc->call(args);
+    rift::core::CallContext ctorContext(rift::core::CallType::Constructor, Value(newObj));
+    Value result = constructorFunc->call(ctorContext, args);
 
     // If the constructor returned an object, use it (this is the normal case for built-ins)
     if(result.isObject() || result.isFunction()) {

@@ -162,7 +162,7 @@ void BuiltinManager::setupError(std::shared_ptr<Environment> globalEnv,
 void BuiltinManager::setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Create GC functions that have access to the engine using GC-managed creation
     auto* gcFunction = engine->getObjectFactory()->createJSFunction(
-        [engine](const std::vector<Value>& args) -> Value {
+        [engine](const rift::core::CallContext& /*ctx*/, const std::vector<Value>& args) -> Value {
             if(engine) {
                 engine->collectGarbage();
             }
@@ -170,7 +170,7 @@ void BuiltinManager::setupGCFunctions(std::shared_ptr<Environment> globalEnv, Ri
         });
 
     auto* gcStatsFunction = engine->getObjectFactory()->createJSFunction(
-        [engine](const std::vector<Value>& args) -> Value {
+        [engine](const rift::core::CallContext& /*ctx*/, const std::vector<Value>& args) -> Value {
             if(engine) {
                 engine->printGCStats();
             }

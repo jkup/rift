@@ -7,6 +7,8 @@
 #include "../memory/object_factory.h"
 #include "../runtime/values/object.h"
 #include "../runtime/values/value.h"
+#include "../core/engine/call_context.h"
+#include <type_traits>
 
 namespace rift::builtins {
 
@@ -45,7 +47,25 @@ class BuiltinBase {
         setObjectFactory(factory);
 
         // Create constructor function using GC-managed creation
-        auto* constructor = factory->createJSFunction(Derived::constructor);
+        // If Derived::constructor accepts CallContext, pass it directly.
+        // Otherwise, wrap to drop CallContext and pass only args.
+        rift::runtime::JSFunction* constructor = nullptr;
+        if constexpr (requires {
+                          static_cast<rift::runtime::Value (*)(
+                              const rift::core::CallContext&,
+                              const std::vector<rift::runtime::Value>&)>(&Derived::constructor);
+                      }) {
+            constructor = factory->createJSFunction(
+                static_cast<rift::runtime::Value (*)(
+                    const rift::core::CallContext&,
+                    const std::vector<rift::runtime::Value>&)>(&Derived::constructor));
+        } else {
+            constructor = factory->createJSFunction(
+                [](const rift::core::CallContext& /*ctx*/,
+                   const std::vector<rift::runtime::Value>& args) -> rift::runtime::Value {
+                    return Derived::constructor(args);
+                });
+        }
 
         // Let derived class add static methods (e.g., Array.isArray, Object.keys)
         callSetupStaticMethods(constructor, factory);

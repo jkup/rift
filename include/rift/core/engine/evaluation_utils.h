@@ -7,95 +7,13 @@
 #include <sstream>
 
 #include "../../runtime/values/value.h"
+#include "call_context.h"
 
 namespace rift::core {
 
 using namespace rift::runtime;
 
-/**
- * Constants for backward compatibility during migration
- * @deprecated These constants are kept only for backward compatibility
- * and will be removed once the migration to CallContext is complete.
- */
-namespace EvaluationConstants {
-constexpr const char* CONSTRUCTOR_CALL_MARKER = "__CONSTRUCTOR_CALL__";
-}
-
-/**
- * Enum to distinguish between different types of function calls
- */
-enum class CallType {
-    Function,    // Regular function call: func()
-    Constructor  // Constructor call: new func()
-};
-
-/**
- * Context information for function calls
- */
-struct CallContext {
-    CallType type = CallType::Function;
-    Value thisValue = Value::undefined();
-
-    // Constructor for function calls
-    CallContext() = default;
-
-    // Constructor for constructor calls with this value
-    CallContext(CallType callType, const Value& thisVal = Value::undefined())
-        : type(callType), thisValue(thisVal) {
-    }
-
-    bool isConstructorCall() const {
-        return type == CallType::Constructor;
-    }
-};
-
-/**
- * Utility functions for shared evaluation logic
- */
 namespace EvaluationUtils {
-
-/**
- * Backward compatibility: Parse old-style constructor call arguments and convert to CallContext
- * @param args Function arguments vector (may contain magic string marker)
- * @param realArgs Output vector with real arguments (marker removed)
- * @return CallContext with call type and this value
- */
-inline CallContext parseCallContext(const std::vector<Value>& args, std::vector<Value>& realArgs) {
-    // Check for old magic string marker format (for backward compatibility)
-    if(!args.empty() && args[0].isString() &&
-       args[0].getString() == EvaluationConstants::CONSTRUCTOR_CALL_MARKER) {
-        // This is a constructor call with magic marker
-        Value thisValue = Value::undefined();
-        if(args.size() > 1) {
-            thisValue = args[1];
-        }
-
-        // Copy real arguments (skip marker and this value)
-        realArgs.clear();
-        for(size_t i = 2; i < args.size(); ++i) {
-            realArgs.push_back(args[i]);
-        }
-
-        return CallContext(CallType::Constructor, thisValue);
-    } else {
-        // Regular function call - copy all arguments as-is
-        realArgs = args;
-        return CallContext(CallType::Function);
-    }
-}
-
-/**
- * New preferred API: Extract real arguments for a given call context
- * @param callContext The call context
- * @param args The function arguments
- * @return Vector of real arguments (excluding context information)
- */
-inline std::vector<Value> extractRealArgs(const CallContext& callContext,
-                                          const std::vector<Value>& args) {
-    // With the new API, args should always be real arguments
-    // This function exists for consistency and future extensibility
-    return args;
-}
 
 /**
  * Safely check if a property name is a valid array index and convert it

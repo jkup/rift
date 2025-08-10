@@ -258,20 +258,16 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
 
     // Create function object using GC-managed creation
     auto func = engine->getObjectFactory()->createJSFunction(
-        [engine, parameters, body, env](const std::vector<Value>& args) -> Value {
+        [engine, parameters, body, env](const rift::core::CallContext& callContext, const std::vector<Value>& args) -> Value {
             // Create new environment for function execution
             auto funcEnv = std::make_shared<Environment>(env);
-
-            // Parse call context from arguments (handles both old and new calling conventions)
-            std::vector<Value> realArgs;
-            auto callContext = EvaluationUtils::parseCallContext(args, realArgs);
 
             // Bind 'this' to the function environment
             funcEnv->define("this", callContext.thisValue);
 
             // Bind parameters to real arguments
             for(size_t i = 0; i < parameters.size(); ++i) {
-                Value argValue = (i < realArgs.size()) ? realArgs[i] : Value::undefined();
+                Value argValue = (i < args.size()) ? args[i] : Value::undefined();
                 funcEnv->define(parameters[i], argValue);
             }
 

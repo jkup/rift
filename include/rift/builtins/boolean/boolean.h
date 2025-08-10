@@ -26,6 +26,9 @@ class Boolean : public BuiltinBase<Boolean> {
   public:
     /// Boolean constructor (required by BuiltinBase)
     static Value constructor(const std::vector<Value>& args);
+    /// New API: Constructor with call context to distinguish function vs constructor calls
+    static Value constructor(const rift::core::CallContext& callContext,
+                            const std::vector<Value>& args);
 
     /// Boolean prototype methods
     static Value toString(const std::vector<Value>& args);

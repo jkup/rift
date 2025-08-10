@@ -21,13 +21,17 @@ void JSON::setup(std::shared_ptr<Environment> env, rift::core::Rift* engine) {
     auto* jsonObject = new JSObject();
 
     // Add parse method
-    auto* parseFunc =
-        new JSFunction([](const std::vector<Value>& args) -> Value { return JSON::parse(args); });
+    auto* parseFunc = new JSFunction(
+        [](const rift::core::CallContext& /*ctx*/, const std::vector<Value>& args) -> Value {
+            return JSON::parse(args);
+        });
     jsonObject->setProperty("parse", Value(parseFunc));
 
     // Add stringify method
     auto* stringifyFunc = new JSFunction(
-        [](const std::vector<Value>& args) -> Value { return JSON::stringify(args); });
+        [](const rift::core::CallContext& /*ctx*/, const std::vector<Value>& args) -> Value {
+            return JSON::stringify(args);
+        });
     jsonObject->setProperty("stringify", Value(stringifyFunc));
 
     // Add to global environment

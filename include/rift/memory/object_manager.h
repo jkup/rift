@@ -28,6 +28,10 @@ class ObjectManager {
     // Specialized creation methods for common types - now return raw pointers
     rift::runtime::JSObject* createJSObject(rift::runtime::JSObject* prototype = nullptr);
     rift::runtime::JSFunction* createJSFunction(
+        std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func);
+
+    // Overload for legacy-style functions without CallContext
+    rift::runtime::JSFunction* createJSFunction(
         std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func);
 
     // Root management

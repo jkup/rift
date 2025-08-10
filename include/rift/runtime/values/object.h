@@ -7,6 +7,7 @@
 
 #include "../../memory/gc.h"
 #include "value.h"
+#include "../../core/engine/call_context.h"
 
 namespace rift::runtime {
 
@@ -69,15 +70,15 @@ class JSObject : public rift::memory::GCObject {
 // Function object
 class JSFunction : public JSObject {
   private:
-    std::function<Value(const std::vector<Value>&)> native_function_;
+    std::function<Value(const rift::core::CallContext&, const std::vector<Value>&)> native_function_;
 
   public:
-    JSFunction(std::function<Value(const std::vector<Value>&)> func)
+    JSFunction(std::function<Value(const rift::core::CallContext&, const std::vector<Value>&)> func)
         : JSObject(), native_function_(func) {
     }
 
-    Value call(const std::vector<Value>& args) const {
-        return native_function_(args);
+    Value call(const rift::core::CallContext& callContext, const std::vector<Value>& args) const {
+        return native_function_(callContext, args);
     }
 
     std::string getTypeName() const override {

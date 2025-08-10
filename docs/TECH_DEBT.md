@@ -6,13 +6,10 @@ This document lists prioritized issues to address before adding more features. I
 
 ## 🔴 High Priority – Correctness and Spec Compliance
 
-- **Function call context and `this` binding (migration incomplete)**
-  - Current behavior passes `this` as a positional first argument for method calls, and uses a magic string marker for constructors (`EvaluationConstants::CONSTRUCTOR_CALL_MARKER`). The new `CallContext` API exists but is not fully adopted.
-  - Impact: User-defined methods do not receive a proper `this` binding via `CallContext`; constructor detection relies on a magic string.
-  - Actions:
-    - Remove magic string marker; propagate `CallContext` for both method and constructor calls end-to-end.
-    - Bind `this` for user-defined functions when invoked as methods.
-    - Update builtins to consume `CallContext` instead of positional `this`.
+- **Function call context and `this` binding (COMPLETED)**
+  - Migration complete: `CallContext` is passed to all function invocations (user-defined and builtins). The constructor magic marker has been removed. Method calls bind `this` via `CallContext`.
+  - Follow-ups:
+    - Continue auditing builtins that assume `args[0]` is the receiver and migrate to use `this` carefully when we extend signatures to accept `CallContext` directly.
 
 - **Control flow: labeled `break`/`continue` (basic continue implemented)**
   - `break` and `continue` now work in `while` and `for`. Labeled control flow is not supported.
@@ -40,6 +37,7 @@ This document lists prioritized issues to address before adding more features. I
 
 - **Error types and exceptions**
   - Only base `Error` is implemented. Engine throws `std::runtime_error` in places where JavaScript errors (TypeError, ReferenceError, RangeError, etc.) should be thrown.
+  - Status: Partial. Base `Error` constructor and `toString` are wired; correct typed errors still pending.
   - Actions: Implement core error types and replace engine-side throws with appropriate JS errors; surface via `JavaScriptException` consistently.
 
 ## 🟠 Medium Priority – Built-in Coverage and Usability
@@ -67,8 +65,8 @@ This document lists prioritized issues to address before adding more features. I
 
 ## 🟡 Quality of Life – Architecture and Maintainability
 
-- **Complete migration to `CallContext`**
-  - Remove positional `this` convention and magic strings. Pass `CallContext` to all function invocations (user-defined and builtins) and update call sites accordingly.
+- **Complete migration to `CallContext` (COMPLETED)**
+  - Positional `this` convention and magic strings removed. `CallContext` is used at call sites; internals updated.
 
 - **Control-flow implementation strategy**
   - Unify control-flow via lightweight internal exceptions (`ReturnException`, `BreakException`, `ContinueException`) and ensure all relevant evaluators catch and handle them locally to avoid unexpected unwinds.
