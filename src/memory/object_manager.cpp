@@ -27,9 +27,30 @@ rift::runtime::JSObject* ObjectManager::createJSObject(rift::runtime::JSObject* 
 }
 
 rift::runtime::JSFunction* ObjectManager::createJSFunction(
-    std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func) {
+    std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func) {
     rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(func);
     gc_->addObject(obj);  // GC now owns this object
+    return obj;
+}
+
+rift::runtime::JSFunction* ObjectManager::createJSFunction(
+    std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func) {
+    // Wrap legacy function into CallContext-aware function.
+    // If a valid thisValue is present in call context, inject it as args[0]
+    // to preserve existing builtin convention that expects receiver in args[0].
+    auto wrapper = [func](const rift::core::CallContext& ctx,
+                          const std::vector<rift::runtime::Value>& args) {
+        if(!ctx.thisValue.isUndefined()) {
+            std::vector<rift::runtime::Value> injected;
+            injected.reserve(args.size() + 1);
+            injected.push_back(ctx.thisValue);
+            injected.insert(injected.end(), args.begin(), args.end());
+            return func(injected);
+        }
+        return func(args);
+    };
+    rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(wrapper);
+    gc_->addObject(obj);
     return obj;
 }
 

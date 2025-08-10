@@ -20,9 +20,7 @@ void Error::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
 }
 
 Value Error::constructor(const std::vector<Value>& args) {
-    // Parse call context from arguments (handles both old and new calling conventions)
-    std::vector<Value> realArgs;
-    auto callContext = rift::core::EvaluationUtils::parseCallContext(args, realArgs);
+    // With CallContext migration, args are the real constructor arguments
 
     // Create Error object with proper prototype chain
     auto errorPrototype = getGlobalPrototype();
@@ -33,8 +31,8 @@ Value Error::constructor(const std::vector<Value>& args) {
 
     // Set the message property
     std::string message = "";
-    if(!realArgs.empty() && !realArgs[0].isUndefined()) {
-        message = realArgs[0].toString();
+    if(!args.empty() && !args[0].isUndefined()) {
+        message = args[0].toString();
     }
     errorObj->setProperty("message", Value(message));
 

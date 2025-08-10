@@ -16,29 +16,25 @@ void Boolean::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFac
 }
 
 Value Boolean::constructor(const std::vector<Value>& args) {
-    // Parse call context from arguments (handles both old and new calling conventions)
-    std::vector<Value> realArgs;
-    auto callContext = rift::core::EvaluationUtils::parseCallContext(args, realArgs);
+    // Legacy entry: treat as function call semantics
 
     // Determine the boolean value from the actual arguments
-    bool boolValue;
-    if(realArgs.empty()) {
-        boolValue = false;
-    } else {
-        boolValue = realArgs[0].toBool();
-    }
+    bool boolValue = args.empty() ? false : args[0].toBool();
 
     // Return behavior depends on how we were called
+    return Value(boolValue);
+}
+
+Value Boolean::constructor(const rift::core::CallContext& callContext,
+                           const std::vector<Value>& args) {
+    bool boolValue = args.empty() ? false : args[0].toBool();
     if(callContext.isConstructorCall()) {
-        // new Boolean() - return Boolean object
         auto booleanPrototype = getGlobalPrototype();
         auto* booleanObj = getObjectFactory()->createJSObject(booleanPrototype);
         booleanObj->setProperty("value", Value(boolValue));
         return Value(booleanObj);
-    } else {
-        // Boolean() - return primitive boolean
-        return Value(boolValue);
     }
+    return Value(boolValue);
 }
 
 Value Boolean::toString(const std::vector<Value>& args) {

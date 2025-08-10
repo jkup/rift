@@ -30,22 +30,20 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
 }
 
 Value Array::constructor(const std::vector<Value>& args) {
-    // Parse call context from arguments (handles both old and new calling conventions)
-    std::vector<Value> realArgs;
-    auto callContext = rift::core::EvaluationUtils::parseCallContext(args, realArgs);
+    // With CallContext migration, args are the real constructor arguments
 
     // Create array with proper prototype chain using GC-managed creation
     auto* arrayPrototype = getGlobalPrototype();
     auto* arrayObj = getObjectFactory()->createJSObject(arrayPrototype);
 
-    size_t effectiveArgCount = realArgs.size();
+    size_t effectiveArgCount = args.size();
 
     if(effectiveArgCount == 0) {
         // new Array() - create empty array
         setArrayLength(arrayObj, 0);
-    } else if(effectiveArgCount == 1 && realArgs[0].isNumber()) {
+    } else if(effectiveArgCount == 1 && args[0].isNumber()) {
         // new Array(length) - create array with specific length
-        double length = realArgs[0].toNumber();
+        double length = args[0].toNumber();
         if(length < 0 || std::isnan(length) || std::isinf(length)) {
             // In a real implementation, this would throw a RangeError
             setArrayLength(arrayObj, 0);
@@ -55,7 +53,7 @@ Value Array::constructor(const std::vector<Value>& args) {
     } else {
         // new Array(element0, element1, ...) - create array with elements
         for(size_t i = 0; i < effectiveArgCount; ++i) {
-            arrayObj->setProperty(std::to_string(i), realArgs[i]);
+            arrayObj->setProperty(std::to_string(i), args[i]);
         }
         setArrayLength(arrayObj, effectiveArgCount);
     }
@@ -138,7 +136,8 @@ Value Array::forEach(const std::vector<Value>& args) {
         if(!element.isUndefined()) {
             // Call callback(element, index, array)
             std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-            callbackFn->call(callArgs);
+            rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+            callbackFn->call(cbCtx, callArgs);
         }
     }
 
@@ -171,7 +170,8 @@ Value Array::map(const std::vector<Value>& args) {
         if(!element.isUndefined()) {
             // Call callback(element, index, array) and collect result
             std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-            Value result = callbackFn->call(callArgs);
+            rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+            Value result = callbackFn->call(cbCtx, callArgs);
             results.push_back(result);
         } else {
             results.push_back(Value::undefined());
@@ -206,7 +206,8 @@ Value Array::filter(const std::vector<Value>& args) {
         if(!element.isUndefined()) {
             // Call callback(element, index, array)
             std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-            Value result = callbackFn->call(callArgs);
+            rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+            Value result = callbackFn->call(cbCtx, callArgs);
 
             // If callback returns truthy value, include element
             if(result.toBool()) {
@@ -259,7 +260,8 @@ Value Array::reduce(const std::vector<Value>& args) {
             // Call callback(accumulator, element, index, array)
             std::vector<Value> callArgs = {accumulator, element, Value(static_cast<double>(i)),
                                            Value(arrayObj)};
-            accumulator = callbackFn->call(callArgs);
+            rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+            accumulator = callbackFn->call(cbCtx, callArgs);
         }
     }
 

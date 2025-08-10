@@ -25,18 +25,16 @@ void Object::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFact
 }
 
 Value Object::constructor(const std::vector<Value>& args) {
-    // Parse call context from arguments (handles both old and new calling conventions)
-    std::vector<Value> realArgs;
-    auto callContext = rift::core::EvaluationUtils::parseCallContext(args, realArgs);
+    // With CallContext migration, args are the real constructor arguments
 
     // Object constructor - create new object
-    if(realArgs.empty()) {
+    if(args.empty()) {
         // Always use factory for consistent GC management
         return Value(getObjectFactory()->createJSObject());
     }
 
     // Convert argument to object
-    Value arg = realArgs[0];
+    Value arg = args[0];
     if(arg.isObject()) {
         return arg;
     }
