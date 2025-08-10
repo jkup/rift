@@ -6,7 +6,7 @@ A JavaScript runtime implementation written in C++ with robust garbage collectio
 
 ✅ **Fully functional garbage collection** with mark-sweep algorithm  
 ✅ **Memory-safe execution** with proper object lifecycle management  
-✅ **Core JavaScript subset** including closures, prototypes, and exception handling  
+✅ **Core JavaScript subset** including closures, prototypes, and exception handling (try/catch/finally)  
 ✅ **Rich built-in object library** with Array, String, Math, Object, and more  
 ✅ **Test262 integration** for ECMAScript compliance testing  
 
@@ -123,9 +123,9 @@ The CI will automatically verify all quality checks on your PR.
     - Unary: `+`, `-`, `~`, `typeof`
     - Update: prefix/postfix `++`, `--` on identifiers and member expressions
   - ✅ Member access: dot (`obj.prop`) and computed (`obj[expr]`)
-  - ✅ Function calls: invocation with arguments
+  - ✅ Function calls: invocation with arguments and correct `this` binding for method calls
   - ✅ Assignment: variable and property assignment
-  - ✅ Object construction: `new` operator
+  - ✅ Object construction: `new` operator with proper constructor `this` context
   - ✅ Template literals: basic support including `${expr}` interpolation
 
 - **Statements**
@@ -185,7 +185,8 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `object.hasOwnProperty`, `object.toString`, `object.valueOf`
 
 #### **Boolean Constructor & Methods**
-- ✅ `Boolean()`
+- ✅ `Boolean(x)` returns primitive boolean
+- ✅ `new Boolean(x)` returns Boolean object with `.valueOf()`/`.toString()`
 - ✅ `boolean.toString`, `boolean.valueOf`
 
 #### **Error Constructor & Methods**
@@ -209,7 +210,7 @@ The CI will automatically verify all quality checks on your PR.
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
-  - ⚠️ `let`, `const` (parser support only; runtime semantics mirror `var` for now)
+  - ⚠️ `let`, `const` (parser support exists; full block scoping/TDZ semantics not yet)
   - ❌ Arrow functions `() => {}`
   - ❌ Destructuring, spread (`...`), rest parameters
   - ❌ Classes (`class`, `extends`, `super`)
@@ -227,8 +228,8 @@ The CI will automatically verify all quality checks on your PR.
 
 ### ℹ️ Notes & Limitations
 
-- `this` binding in user-defined functions is limited: builtin methods receive the receiver as the first argument, but `this` inside user functions is currently not set from method calls.
-- Only `var` is supported; there is no block scope semantics yet.
+- `this` binding: user-defined methods invoked via `obj.method()` now receive proper `this` binding. Built-in methods internally still access the receiver as the first argument.
+- Declarations: Only `var` semantics are implemented; `let`/`const` lack block scoping/TDZ.
 
 ## Architecture
 

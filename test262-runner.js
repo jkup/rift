@@ -352,11 +352,7 @@ function Test262Error() {
     const unsupportedPatterns = [
       /\bdo\s*\{/, // do-while loops
       /\bclass\s+\w+/, // class declarations
-      /\bfinally\s*\{/, // finally blocks
       /=>/, // arrow functions
-      // Removed function expressions - they're now working!
-      /\bconst\b/, // const declarations
-      /\blet\b/, // let declarations
       /\basync\b/, // async functions
       /\bawait\b/, // await keyword
       /\byield\b/, // generators
