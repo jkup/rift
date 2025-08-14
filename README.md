@@ -129,7 +129,7 @@ The CI will automatically verify all quality checks on your PR.
   - ✅ Template literals: basic support including `${expr}` interpolation
 
 - **Statements**
-  - ✅ Variable declarations: `var` (block-scoped `let`/`const` not yet)
+  - ✅ Variable declarations: `var`, `let`, `const` with proper block scoping and TDZ
   - ✅ Control flow: `if`/`else`, `while`, C-style `for (init; cond; update)`
   - ✅ `switch`/`case`/`default` with `break`
   - ✅ `break` and `continue` in loops
@@ -210,7 +210,6 @@ The CI will automatically verify all quality checks on your PR.
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
-  - ⚠️ `let`, `const` (parser support exists; full block scoping/TDZ semantics not yet)
   - ❌ Arrow functions `() => {}`
   - ❌ Destructuring, spread (`...`), rest parameters
   - ❌ Classes (`class`, `extends`, `super`)
@@ -229,7 +228,7 @@ The CI will automatically verify all quality checks on your PR.
 ### ℹ️ Notes & Limitations
 
 - `this` binding: user-defined methods invoked via `obj.method()` now receive proper `this` binding. Built-in methods internally still access the receiver as the first argument.
-- Declarations: Only `var` semantics are implemented; `let`/`const` lack block scoping/TDZ.
+- Variable declarations: `var`, `let`, and `const` are fully implemented with proper block scoping, Temporal Dead Zone (TDZ), and immutability semantics.
 
 ## Architecture
 

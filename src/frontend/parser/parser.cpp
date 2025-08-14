@@ -216,12 +216,14 @@ std::shared_ptr<ASTNode> Parser::parse_expression() {
 }
 
 std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
-    // Support var/let/const with identical behavior for now
-    if(current_token().type == TokenType::Var) {
+    // Support var/let/const with proper distinction
+    TokenType declType = current_token().type;
+    
+    if(declType == TokenType::Var) {
         consume(TokenType::Var);
-    } else if(current_token().type == TokenType::Let) {
+    } else if(declType == TokenType::Let) {
         consume(TokenType::Let);
-    } else if(current_token().type == TokenType::Const) {
+    } else if(declType == TokenType::Const) {
         consume(TokenType::Const);
     } else {
         throw std::runtime_error("Expected variable declaration keyword");
@@ -237,9 +239,21 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
     std::shared_ptr<ASTNode> initializer = nullptr;
     if(match(TokenType::Assign)) {
         initializer = parse_expression();
+    } else if(declType == TokenType::Const) {
+        throw std::runtime_error("Missing initializer in const declaration");
     }
 
-    return ASTFactory::makeVariableDeclaration(name, initializer);
+    // Create appropriate AST node based on declaration type
+    switch(declType) {
+        case TokenType::Var:
+            return ASTFactory::makeVariableDeclaration(name, initializer);
+        case TokenType::Let:
+            return ASTFactory::makeLetDeclaration(name, initializer);
+        case TokenType::Const:
+            return ASTFactory::makeConstDeclaration(name, initializer);
+        default:
+            throw std::runtime_error("Invalid declaration type");
+    }
 }
 
 std::shared_ptr<ASTNode> Parser::parse_statement() {

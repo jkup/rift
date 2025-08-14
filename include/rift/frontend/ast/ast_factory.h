@@ -158,6 +158,24 @@ class ASTFactory {
         return node;
     }
 
+    static std::shared_ptr<ASTNode> makeLetDeclaration(
+        const std::string& name, std::shared_ptr<ASTNode> initializer = nullptr) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::LetDeclaration, name);
+        if(initializer) {
+            node->children.push_back(initializer);
+        }
+        return node;
+    }
+
+    static std::shared_ptr<ASTNode> makeConstDeclaration(
+        const std::string& name, std::shared_ptr<ASTNode> initializer = nullptr) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::ConstDeclaration, name);
+        if(initializer) {
+            node->children.push_back(initializer);
+        }
+        return node;
+    }
+
     // Function-related factories
     static std::shared_ptr<ASTNode> makeFunctionDeclaration(const std::string& name,
                                                             std::shared_ptr<ASTNode> parameters,
