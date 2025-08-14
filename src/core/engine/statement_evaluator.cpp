@@ -37,6 +37,10 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateExpressionStatement(node, env, engine);
         case ASTNodeType::VariableDeclaration:
             return evaluateVariableDeclaration(node, env, engine);
+        case ASTNodeType::LetDeclaration:
+            return evaluateLetDeclaration(node, env, engine);
+        case ASTNodeType::ConstDeclaration:
+            return evaluateConstDeclaration(node, env, engine);
         case ASTNodeType::IfStatement:
             return evaluateIfStatement(node, env, engine);
         case ASTNodeType::WhileStatement:
@@ -71,9 +75,24 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
 
 Value StatementEvaluator::evaluateBlockStatement(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
+    // Check if we need to create a block scope
+    bool needsBlockScope = false;
+    for(auto& child : node->children) {
+        if(child->type == ASTNodeType::LetDeclaration || 
+           child->type == ASTNodeType::ConstDeclaration) {
+            needsBlockScope = true;
+            break;
+        }
+    }
+    
+    std::shared_ptr<Environment> blockEnv = env;
+    if(needsBlockScope) {
+        blockEnv = env->createChild(true);  // Create block scope
+    }
+    
     Value result = Value::undefined();
     for(auto& child : node->children) {
-        result = engine->evaluate(child, env);
+        result = engine->evaluate(child, blockEnv);
     }
     return result;
 }
@@ -90,10 +109,6 @@ Value StatementEvaluator::evaluateExpressionStatement(std::shared_ptr<ASTNode> n
 Value StatementEvaluator::evaluateVariableDeclaration(std::shared_ptr<ASTNode> node,
                                                       std::shared_ptr<Environment> env,
                                                       Rift* engine) {
-    if(node->children.size() < 1) {
-        return Value::undefined();
-    }
-
     // Get the variable name
     std::string varName = node->value;
 
@@ -103,8 +118,46 @@ Value StatementEvaluator::evaluateVariableDeclaration(std::shared_ptr<ASTNode> n
         value = engine->evaluate(node->children[0], env);
     }
 
-    // Define the variable in the environment
-    env->define(varName, value);
+    // Define the variable in the environment with var semantics
+    env->define(varName, value, VariableType::Var);
+
+    return value;
+}
+
+Value StatementEvaluator::evaluateLetDeclaration(std::shared_ptr<ASTNode> node,
+                                                  std::shared_ptr<Environment> env,
+                                                  Rift* engine) {
+    // Get the variable name
+    std::string varName = node->value;
+
+    // Get the initial value if provided
+    Value value = Value::undefined();
+    if(node->children.size() > 0) {
+        value = engine->evaluate(node->children[0], env);
+    }
+
+    // Define the variable in the environment with let semantics
+    env->define(varName, value, VariableType::Let);
+
+    return value;
+}
+
+Value StatementEvaluator::evaluateConstDeclaration(std::shared_ptr<ASTNode> node,
+                                                    std::shared_ptr<Environment> env,
+                                                    Rift* engine) {
+    // Get the variable name
+    std::string varName = node->value;
+
+    // const must have an initializer (enforced by parser)
+    if(node->children.size() == 0) {
+        throw std::runtime_error("Missing initializer in const declaration");
+    }
+
+    // Evaluate the initial value
+    Value value = engine->evaluate(node->children[0], env);
+
+    // Define the variable in the environment with const semantics
+    env->define(varName, value, VariableType::Const);
 
     return value;
 }

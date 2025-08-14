@@ -16,6 +16,8 @@ enum class ASTNodeType {
     UpdateExpression,
     AssignmentExpression,
     VariableDeclaration,
+    LetDeclaration,
+    ConstDeclaration,
     ExpressionStatement,
     BlockStatement,
     CallExpression,
