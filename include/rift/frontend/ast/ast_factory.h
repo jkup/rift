@@ -124,6 +124,14 @@ class ASTFactory {
         return node;
     }
 
+    static std::shared_ptr<ASTNode> makeDoWhileStatement(std::shared_ptr<ASTNode> body,
+                                                         std::shared_ptr<ASTNode> condition) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::DoWhileStatement);
+        node->children.push_back(body);        // body first
+        node->children.push_back(condition);   // condition second
+        return node;
+    }
+
     static std::shared_ptr<ASTNode> makeForStatement(std::shared_ptr<ASTNode> initialization,
                                                      std::shared_ptr<ASTNode> condition,
                                                      std::shared_ptr<ASTNode> update,

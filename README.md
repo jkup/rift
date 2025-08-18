@@ -130,7 +130,7 @@ The CI will automatically verify all quality checks on your PR.
 
 - **Statements**
   - ✅ Variable declarations: `var`, `let`, `const` with proper block scoping and TDZ
-  - ✅ Control flow: `if`/`else`, `while`, C-style `for (init; cond; update)`
+  - ✅ Control flow: `if`/`else`, `while`, `do-while`, C-style `for (init; cond; update)`
   - ✅ `switch`/`case`/`default` with `break`
   - ✅ `break` and `continue` in loops
   - ✅ Functions: declarations and expressions

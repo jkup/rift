@@ -45,6 +45,8 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateIfStatement(node, env, engine);
         case ASTNodeType::WhileStatement:
             return evaluateWhileStatement(node, env, engine);
+        case ASTNodeType::DoWhileStatement:
+            return evaluateDoWhileStatement(node, env, engine);
         case ASTNodeType::ForStatement:
             return evaluateForStatement(node, env, engine);
         case ASTNodeType::SwitchStatement:
@@ -207,6 +209,34 @@ Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
             continue;
         }
     }
+
+    return result;
+}
+
+Value StatementEvaluator::evaluateDoWhileStatement(std::shared_ptr<ASTNode> node,
+                                                   std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.size() < 2) {
+        return Value::undefined();
+    }
+
+    Value result = Value::undefined();
+
+    // Execute body at least once, then check condition
+    do {
+        try {
+            result = engine->evaluate(node->children[0], env);  // body is first child
+        } catch(const BreakException&) {
+            break;
+        } catch(const ContinueException&) {
+            // Skip to condition check
+        }
+        
+        // Check condition after body execution
+        Value condition = engine->evaluate(node->children[1], env);  // condition is second child
+        if(!condition.toBool()) {
+            break;
+        }
+    } while(true);
 
     return result;
 }
