@@ -52,6 +52,8 @@ class StatementEvaluator {
                                      std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateWhileStatement(std::shared_ptr<ASTNode> node,
                                         std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateDoWhileStatement(std::shared_ptr<ASTNode> node,
+                                          std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateForStatement(std::shared_ptr<ASTNode> node,
                                       std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateSwitchStatement(std::shared_ptr<ASTNode> node,

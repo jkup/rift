@@ -32,6 +32,7 @@ enum class TokenType {
     Else,
     For,
     While,
+    Do,
     Switch,
     Case,
     Default,

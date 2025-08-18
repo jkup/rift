@@ -276,6 +276,10 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
         return parse_while_statement();
     }
 
+    if(current_token().type == TokenType::Do) {
+        return parse_do_while_statement();
+    }
+
     if(current_token().type == TokenType::For) {
         return parse_for_statement();
     }
@@ -357,6 +361,30 @@ std::shared_ptr<ASTNode> Parser::parse_while_statement() {
     auto body = parse_statement();
 
     return ASTFactory::makeWhileStatement(condition, body);
+}
+
+std::shared_ptr<ASTNode> Parser::parse_do_while_statement() {
+    consume(TokenType::Do);  // consume 'do'
+
+    // Parse the body statement first
+    auto body = parse_statement();
+
+    // Expect 'while' keyword
+    consume(TokenType::While);
+
+    // Expect '('
+    consume(TokenType::LeftParen);
+
+    // Parse the condition expression
+    auto condition = parse_expression();
+
+    // Expect ')'
+    consume(TokenType::RightParen);
+
+    // Expect semicolon (do-while requires semicolon at end)
+    consume(TokenType::Semicolon);
+
+    return ASTFactory::makeDoWhileStatement(body, condition);
 }
 
 std::shared_ptr<ASTNode> Parser::parse_for_statement() {
