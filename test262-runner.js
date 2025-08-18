@@ -350,7 +350,6 @@ function Test262Error() {
 
     // Very conservative - only skip genuinely complex features
     const unsupportedPatterns = [
-      /\bdo\s*\{/, // do-while loops
       /\bclass\s+\w+/, // class declarations
       /=>/, // arrow functions
       /\basync\b/, // async functions
