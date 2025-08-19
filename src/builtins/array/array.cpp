@@ -195,7 +195,21 @@ Value Array::join(const std::vector<Value>& args) {
         // null and undefined elements contribute empty string to join
     }
 
-    return Value(result);
+    std::ostringstream result;
+
+    for(size_t i = 0; i < length; ++i) {
+        if(i > 0) {
+            result << separator;
+        }
+        
+        Value element = arrayObj->getProperty(std::to_string(i));
+        if(!element.isUndefined() && !element.isNull()) {
+            result << element.toString();
+        }
+        // null and undefined elements contribute empty string to join
+    }
+
+    return Value(result.str());
 }
 
 Value Array::getLength(const std::vector<Value>& args) {
