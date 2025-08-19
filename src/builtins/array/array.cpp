@@ -128,7 +128,7 @@ Value Array::shift(const std::vector<Value>& args) {
     }
 
     // Remove the last element (now duplicate)
-    arrayObj->setProperty(std::to_string(length - 1), Value::undefined());
+    arrayObj->deleteProperty(std::to_string(length - 1));
 
     // Update length
     setArrayLength(arrayObj, length - 1);
