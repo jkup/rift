@@ -238,7 +238,7 @@ Value Array::splice(const std::vector<Value>& args) {
     }
     
     // Parse deleteCount
-    int deleteCount = length - start; // Default: delete to end
+    int deleteCount = static_cast<int>(length) - start; // Default: delete to end
     if(args.size() > 2) {
         deleteCount = std::max(0, static_cast<int>(args[2].toNumber()));
         deleteCount = std::min(deleteCount, static_cast<int>(length) - start);
@@ -258,20 +258,20 @@ Value Array::splice(const std::vector<Value>& args) {
     }
     
     // Calculate new length
-    size_t newLength = length - deleteCount + itemsToInsert.size();
+    size_t newLength = static_cast<size_t>(static_cast<int>(length) - deleteCount + static_cast<int>(itemsToInsert.size()));
     
     // If we're inserting more than deleting, shift elements right
-    if(itemsToInsert.size() > static_cast<size_t>(deleteCount)) {
-        int shift = itemsToInsert.size() - deleteCount;
-        for(int i = length - 1; i >= start + deleteCount; --i) {
+    if(static_cast<int>(itemsToInsert.size()) > deleteCount) {
+        int shift = static_cast<int>(itemsToInsert.size()) - deleteCount;
+        for(int i = static_cast<int>(length) - 1; i >= start + deleteCount; --i) {
             Value element = arrayObj->getProperty(std::to_string(i));
             arrayObj->setProperty(std::to_string(i + shift), element);
         }
     }
     // If we're deleting more than inserting, shift elements left
-    else if(itemsToInsert.size() < static_cast<size_t>(deleteCount)) {
-        int shift = deleteCount - itemsToInsert.size();
-        for(size_t i = start + deleteCount; i < length; ++i) {
+    else if(static_cast<int>(itemsToInsert.size()) < deleteCount) {
+        int shift = deleteCount - static_cast<int>(itemsToInsert.size());
+        for(int i = start + deleteCount; i < static_cast<int>(length); ++i) {
             Value element = arrayObj->getProperty(std::to_string(i));
             arrayObj->setProperty(std::to_string(i - shift), element);
         }
@@ -282,8 +282,8 @@ Value Array::splice(const std::vector<Value>& args) {
     }
     
     // Insert new items
-    for(size_t i = 0; i < itemsToInsert.size(); ++i) {
-        arrayObj->setProperty(std::to_string(start + i), itemsToInsert[i]);
+    for(int i = 0; i < static_cast<int>(itemsToInsert.size()); ++i) {
+        arrayObj->setProperty(std::to_string(start + i), itemsToInsert[static_cast<size_t>(i)]);
     }
     
     // Update length
