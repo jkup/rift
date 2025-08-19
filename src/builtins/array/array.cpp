@@ -21,6 +21,9 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     prototype->setProperty("shift", Value(factory->createJSFunction(Array::shift)));
     prototype->setProperty("unshift", Value(factory->createJSFunction(Array::unshift)));
     prototype->setProperty("join", Value(factory->createJSFunction(Array::join)));
+    prototype->setProperty("splice", Value(factory->createJSFunction(Array::splice)));
+    prototype->setProperty("reverse", Value(factory->createJSFunction(Array::reverse)));
+    prototype->setProperty("sort", Value(factory->createJSFunction(Array::sort)));
     prototype->setProperty("forEach", Value(factory->createJSFunction(Array::forEach)));
     prototype->setProperty("map", Value(factory->createJSFunction(Array::map)));
     prototype->setProperty("filter", Value(factory->createJSFunction(Array::filter)));
@@ -210,6 +213,150 @@ Value Array::join(const std::vector<Value>& args) {
     }
 
     return Value(result.str());
+}
+
+Value Array::splice(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj) {
+        return Value::undefined();
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    
+    // splice(start, deleteCount, ...itemsToInsert)
+    // args[0] = this array, args[1] = start, args[2] = deleteCount, args[3+] = items to insert
+    
+    // Parse start index
+    int start = 0;
+    if(args.size() > 1) {
+        start = static_cast<int>(args[1].toNumber());
+        if(start < 0) {
+            start = std::max(0, static_cast<int>(length) + start);
+        } else {
+            start = std::min(start, static_cast<int>(length));
+        }
+    }
+    
+    // Parse deleteCount
+    int deleteCount = length - start; // Default: delete to end
+    if(args.size() > 2) {
+        deleteCount = std::max(0, static_cast<int>(args[2].toNumber()));
+        deleteCount = std::min(deleteCount, static_cast<int>(length) - start);
+    }
+    
+    // Collect items to insert
+    std::vector<Value> itemsToInsert;
+    for(size_t i = 3; i < args.size(); ++i) {
+        itemsToInsert.push_back(args[i]);
+    }
+    
+    // Create array for deleted elements
+    std::vector<Value> deletedElements;
+    for(int i = 0; i < deleteCount; ++i) {
+        Value element = arrayObj->getProperty(std::to_string(start + i));
+        deletedElements.push_back(element);
+    }
+    
+    // Calculate new length
+    size_t newLength = length - deleteCount + itemsToInsert.size();
+    
+    // If we're inserting more than deleting, shift elements right
+    if(itemsToInsert.size() > static_cast<size_t>(deleteCount)) {
+        int shift = itemsToInsert.size() - deleteCount;
+        for(int i = length - 1; i >= start + deleteCount; --i) {
+            Value element = arrayObj->getProperty(std::to_string(i));
+            arrayObj->setProperty(std::to_string(i + shift), element);
+        }
+    }
+    // If we're deleting more than inserting, shift elements left
+    else if(itemsToInsert.size() < static_cast<size_t>(deleteCount)) {
+        int shift = deleteCount - itemsToInsert.size();
+        for(size_t i = start + deleteCount; i < length; ++i) {
+            Value element = arrayObj->getProperty(std::to_string(i));
+            arrayObj->setProperty(std::to_string(i - shift), element);
+        }
+        // Clear the end elements
+        for(size_t i = newLength; i < length; ++i) {
+            arrayObj->setProperty(std::to_string(i), Value::undefined());
+        }
+    }
+    
+    // Insert new items
+    for(size_t i = 0; i < itemsToInsert.size(); ++i) {
+        arrayObj->setProperty(std::to_string(start + i), itemsToInsert[i]);
+    }
+    
+    // Update length
+    setArrayLength(arrayObj, newLength);
+    
+    // Return array of deleted elements
+    return Value(createArrayObject(getObjectFactory(), deletedElements));
+}
+
+Value Array::reverse(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj) {
+        return Value::undefined();
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    
+    // Reverse elements in place
+    for(size_t i = 0; i < length / 2; ++i) {
+        size_t j = length - 1 - i;
+        
+        Value temp = arrayObj->getProperty(std::to_string(i));
+        Value other = arrayObj->getProperty(std::to_string(j));
+        
+        arrayObj->setProperty(std::to_string(i), other);
+        arrayObj->setProperty(std::to_string(j), temp);
+    }
+    
+    // Return reference to the same array
+    return Value(arrayObj);
+}
+
+Value Array::sort(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj) {
+        return Value::undefined();
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    
+    if(length <= 1) {
+        return Value(arrayObj);
+    }
+    
+    // Collect all elements for sorting
+    std::vector<Value> elements;
+    for(size_t i = 0; i < length; ++i) {
+        Value element = arrayObj->getProperty(std::to_string(i));
+        elements.push_back(element);
+    }
+    
+    // Simple bubble sort (can be optimized later)
+    // Sort by string comparison (default JavaScript behavior)
+    for(size_t i = 0; i < length - 1; ++i) {
+        for(size_t j = 0; j < length - 1 - i; ++j) {
+            std::string a = elements[j].toString();
+            std::string b = elements[j + 1].toString();
+            
+            if(a > b) {
+                Value temp = elements[j];
+                elements[j] = elements[j + 1];
+                elements[j + 1] = temp;
+            }
+        }
+    }
+    
+    // Put sorted elements back
+    for(size_t i = 0; i < length; ++i) {
+        arrayObj->setProperty(std::to_string(i), elements[i]);
+    }
+    
+    // Return reference to the same array
+    return Value(arrayObj);
 }
 
 Value Array::getLength(const std::vector<Value>& args) {

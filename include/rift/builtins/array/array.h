@@ -105,6 +105,39 @@ class Array : public BuiltinBase<Array> {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join
     static Value join(const std::vector<Value>& args);
 
+    /// The `splice()` method changes the contents of an array by removing or replacing existing elements and/or adding new elements in place.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.splice
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+    static Value splice(const std::vector<Value>& args);
+
+    /// The `reverse()` method reverses an array in place and returns the reference to the same array.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.reverse
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse
+    static Value reverse(const std::vector<Value>& args);
+
+    /// The `sort()` method sorts the elements of an array in place and returns the reference to the same array.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.sort
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    static Value sort(const std::vector<Value>& args);
+
     /// The `length` property of an Array instance is an integer with a positive sign and a
     /// magnitude less than 2^32 that specifies the number of elements in the array.
     ///

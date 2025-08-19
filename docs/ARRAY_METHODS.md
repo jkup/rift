@@ -9,14 +9,14 @@ This document tracks the implementation status of all JavaScript Array methods i
 
 ## 📊 **Implementation Summary**
 
-- ✅ **Implemented**: 14 methods (Static: 1, Prototype: 13)
+- ✅ **Implemented**: 17 methods (Static: 1, Prototype: 16)
 - 🔶 **Partially Implemented**: 0 methods  
-- ❌ **Missing**: 31+ methods
-- 📈 **Coverage**: ~31% of core Array API
+- ❌ **Missing**: 28+ methods
+- 📈 **Coverage**: ~38% of core Array API
 
 ---
 
-## ✅ **IMPLEMENTED METHODS** (14 total)
+## ✅ **IMPLEMENTED METHODS** (17 total)
 
 ### **Static Methods** (1/4 implemented)
 
@@ -24,15 +24,18 @@ This document tracks the implementation status of all JavaScript Array methods i
 |--------|--------|-------------|-------|
 | `Array.isArray()` | ✅ | Tests whether the passed value is an array | Full implementation |
 
-### **Prototype Methods** (13/40+ implemented)
+### **Prototype Methods** (16/40+ implemented)
 
-#### **Mutator Methods** (5/9 implemented)
+#### **Mutator Methods** (8/9 implemented)
 | Method | Status | Description | Notes |
 |--------|--------|-------------|-------|
 | `push()` | ✅ | Adds elements to end of array | Full implementation |
 | `pop()` | ✅ | Removes last element | Full implementation |
-| `shift()` | ✅ | Removes first element |
-| `unshift()` | ✅ | Adds elements to beginning |
+| `shift()` | ✅ | Removes first element | Full implementation |
+| `unshift()` | ✅ | Adds elements to beginning | Full implementation |
+| `splice()` | ✅ | Adds/removes elements at any position | **NEW** - Full implementation |
+| `reverse()` | ✅ | Reverses array in place | **NEW** - Full implementation |
+| `sort()` | ✅ | Sorts array in place | **NEW** - Full implementation |
 
 #### **Accessor Methods** (5/12 implemented)  
 | Method | Status | Description | Notes |
@@ -58,12 +61,9 @@ This document tracks the implementation status of all JavaScript Array methods i
 
 ### 🔴 **HIGH PRIORITY - Essential Methods** (8 methods)
 
-#### **Mutator Methods** (4 missing)
+#### **Mutator Methods** (1 missing)
 | Method | Description | Priority | Complexity |
 |--------|-------------|----------|------------|
-| `splice()` | Adds/removes elements at any position | HIGH | Medium |
-| `reverse()` | Reverses array in place | HIGH | Easy |
-| `sort()` | Sorts array in place | HIGH | Medium |
 | `fill()` | Fills array with static value | MEDIUM | Easy |
 | `copyWithin()` | Copies elements within array | MEDIUM | Medium |
 
@@ -128,22 +128,19 @@ This document tracks the implementation status of all JavaScript Array methods i
 ### **Phase 1: Essential Mutators** ✅ **COMPLETED**
 ~~Implement core array mutation methods that are heavily used~~
 
-✅ **COMPLETED METHODS**:
+✅ **ALL METHODS COMPLETED**:
 ```javascript
 arr.shift()           // ✅ Remove first element  
 arr.unshift(1, 2, 3)  // ✅ Add to beginning
 arr.join(', ')        // ✅ Join to string
-```
-
-🔄 **REMAINING IN PHASE 1**:
-```javascript
-arr.splice(1, 2, 'a') // Insert/remove at position
-arr.reverse()         // Reverse in place
-arr.sort()            // Basic sorting
+arr.splice(1, 2, 'a') // ✅ Insert/remove at position
+arr.reverse()         // ✅ Reverse in place
+arr.sort()            // ✅ Basic sorting (string comparison)
 ```
 
 **Files modified**: `src/builtins/array/array.cpp`, `include/rift/builtins/array/array.h`  
-**Test coverage**: `test/array-phase1-methods-test.js`
+**Test coverage**: `test/array-phase1-methods-test.js`, `test/array-phase1-final-test.js`  
+**Result**: +6 methods implemented, 31% → 38% coverage ✅
 
 ### **Phase 2: Search & Test Methods** (Priority: HIGH, Effort: 2-3 days)
 Complete the search and testing functionality:
@@ -243,9 +240,8 @@ test/
 ## 🏆 **SUCCESS METRICS**
 
 ### **Completion Targets**
-- **Phase 1 Partial**: 14/45 methods implemented (31% coverage) ✅ **CURRENT**
-- **Phase 1 Complete**: 17/45 methods implemented (38% coverage) - 3 methods remaining
-- **Phase 2 Complete**: 22/45 methods implemented (49% coverage)  
+- **Phase 1 Complete**: 17/45 methods implemented (38% coverage) ✅ **CURRENT**
+- **Phase 2 Complete**: 22/45 methods implemented (49% coverage) - Next target
 - **Phase 3 Complete**: 29/45 methods implemented (64% coverage)
 - **Phase 4 Complete**: 32/45 methods implemented (71% coverage)
 - **Phase 5 Complete**: 37/45 methods implemented (82% coverage)
