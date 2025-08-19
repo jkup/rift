@@ -165,8 +165,7 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ **Test methods**: `every()`, `some()`
 - ✅ **Iteration methods**: `forEach()`, `map()`, `filter()`, `reduce()`, `reduceRight()`, `flatMap()`, `flat()`
 - ✅ **Accessor methods**: `slice()`, `concat()`, `toString()`, `join()`
-- 📋 **Implementation Status**: **29/45+ methods (64% coverage)** - See [`docs/ARRAY_METHODS.md`](docs/ARRAY_METHODS.md)
-- ⚠️ **Iterator methods** (`keys()`, `values()`, `entries()`) require broader language iterator support
+- ❌ **Iterator methods** (`keys()`, `values()`, `entries()`) require broader language iterator support
 
 #### **String Constructor & Methods**
 - ✅ `String()`
