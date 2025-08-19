@@ -139,7 +139,7 @@ Value Array::shift(const std::vector<Value>& args) {
 Value Array::unshift(const std::vector<Value>& args) {
     auto* arrayObj = getThisArrayObject(args);
     if(!arrayObj) {
-        return Value(std::numeric_limits<double>::quiet_NaN());
+        return Value(0.0);
     }
 
     size_t length = getArrayLength(arrayObj);
