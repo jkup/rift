@@ -14,6 +14,8 @@ namespace rift::builtins {
 void Array::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Add Array static methods
     constructor->setProperty("isArray", Value(factory->createJSFunction(Array::isArray)));
+    constructor->setProperty("from", Value(factory->createJSFunction(Array::from)));
+    constructor->setProperty("of", Value(factory->createJSFunction(Array::of)));
 }
 
 void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
@@ -1171,6 +1173,75 @@ Value Array::isArray(const std::vector<Value>& args) {
     }
 
     return Value(false);
+}
+
+Value Array::from(const std::vector<Value>& args) {
+    // Array.from(arrayLike[, mapFn[, thisArg]])
+    // args[0] is the Array constructor (this), args[1] is arrayLike
+    if(args.size() < 2) {
+        // Return empty array if no arguments
+        return Value(createArrayObject(getObjectFactory(), {}));
+    }
+
+    Value arrayLike = args[1];
+    
+    // Handle null/undefined
+    if(arrayLike.isNull() || arrayLike.isUndefined()) {
+        // TODO: Should throw TypeError, but return empty array for now
+        return Value(createArrayObject(getObjectFactory(), {}));
+    }
+
+    std::vector<Value> result;
+
+    // If it's already an array, just copy its elements
+    if(arrayLike.isObject()) {
+        auto* obj = arrayLike.getObject();
+        Value lengthVal = obj->getProperty("length");
+        
+        if(lengthVal.isNumber()) {
+            size_t length = static_cast<size_t>(lengthVal.toNumber());
+            
+            // Copy elements
+            for(size_t i = 0; i < length; ++i) {
+                Value element = obj->getProperty(std::to_string(i));
+                result.push_back(element);
+            }
+        } else {
+            // Not array-like, just add the value itself
+            result.push_back(arrayLike);
+        }
+    } else {
+        // Primitive value, add as single element
+        result.push_back(arrayLike);
+    }
+
+    // Handle optional mapping function
+    if(args.size() >= 3 && args[2].isFunction()) {
+        auto* mapFn = dynamic_cast<JSFunction*>(args[2].getObject());
+        if(mapFn) {
+            for(size_t i = 0; i < result.size(); ++i) {
+                // Call mapFn(element, index)
+                std::vector<Value> callArgs = {result[i], Value(static_cast<double>(i))};
+                rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+                result[i] = mapFn->call(cbCtx, callArgs);
+            }
+        }
+    }
+
+    return Value(createArrayObject(getObjectFactory(), result));
+}
+
+Value Array::of(const std::vector<Value>& args) {
+    // Array.of(...elements)
+    // args[0] is the Array constructor (this), remaining args are the elements
+    std::vector<Value> elements;
+    
+    // Skip the first argument (the Array constructor)
+    for(size_t i = 1; i < args.size(); ++i) {
+        elements.push_back(args[i]);
+    }
+
+    return Value(createArrayObject(getObjectFactory(), elements));
 }
 
 }  // namespace rift::builtins

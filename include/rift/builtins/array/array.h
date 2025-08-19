@@ -382,6 +382,26 @@ class Array : public BuiltinBase<Array> {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
     static Value isArray(const std::vector<Value>& args);
 
+    /// The `Array.from()` method creates a new, shallow-copied Array instance from an iterable or array-like object.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.from
+    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from
+    static Value from(const std::vector<Value>& args);
+
+    /// The `Array.of()` method creates a new Array instance from a variable number of arguments.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.of
+    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    static Value of(const std::vector<Value>& args);
+
   private:
     // Static factory storage is now handled by BuiltinBase template
 };
