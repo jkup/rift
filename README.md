@@ -163,11 +163,14 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `array.length`
 - ✅ `array.push(...items)`, `array.pop()`, `array.shift()`, `array.unshift(...items)`
 - ✅ `array.splice(start, deleteCount, ...items)`, `array.reverse()`, `array.sort()`
-- ✅ `array.find(fn)`, `array.findIndex(fn)`, `array.every(fn)`, `array.some(fn)`
+- ✅ `array.find(fn)`, `array.findIndex(fn)`, `array.findLast(fn)`, `array.findLastIndex(fn)`
+- ✅ `array.every(fn)`, `array.some(fn)`
 - ✅ `array.forEach(fn)`, `array.map(fn)`, `array.filter(fn)`, `array.reduce(fn, initial)`
+- ✅ `array.reduceRight(fn, initial)`, `array.flatMap(fn)`, `array.flat(depth)`
 - ✅ `array.indexOf(x)`, `array.lastIndexOf(x)`, `array.includes(x)`
 - ✅ `array.slice(start, end)`, `array.concat(...items)`
 - ✅ `array.toString()`, `array.join(separator)`
+- 📋 **Implementation Status**: 27/45+ methods (~60% coverage) - See [`docs/ARRAY_METHODS.md`](docs/ARRAY_METHODS.md)
 
 #### **String Constructor & Methods**
 - ✅ `String()`

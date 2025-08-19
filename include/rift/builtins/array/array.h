@@ -193,6 +193,61 @@ class Array : public BuiltinBase<Array> {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
     static Value lastIndexOf(const std::vector<Value>& args);
 
+    /// The `reduceRight()` method applies a function against an accumulator and each value of the array (from right-to-left) to reduce it to a single value.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.reduceright
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight
+    static Value reduceRight(const std::vector<Value>& args);
+
+    /// The `flatMap()` method returns a new array formed by applying a given callback function to each element of the array, and then flattening the result by one level.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.flatmap
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap
+    static Value flatMap(const std::vector<Value>& args);
+
+    /// The `flat()` method creates a new array with all sub-array elements concatenated into it recursively up to the specified depth.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.flat
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat
+    static Value flat(const std::vector<Value>& args);
+
+    /// The `findLast()` method returns the last element in the array that satisfies the provided testing function.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.findlast
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast
+    static Value findLast(const std::vector<Value>& args);
+
+    /// The `findLastIndex()` method returns the index of the last element in the array that satisfies the provided testing function.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.findlastindex
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex
+    static Value findLastIndex(const std::vector<Value>& args);
+
     /// The `length` property of an Array instance is an integer with a positive sign and a
     /// magnitude less than 2^32 that specifies the number of elements in the array.
     ///

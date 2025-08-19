@@ -1,6 +1,7 @@
 #include "rift/builtins/array/array.h"
 
 #include <cmath>
+#include <functional>
 #include <iostream>
 #include <limits>
 
@@ -30,6 +31,11 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     prototype->setProperty("every", Value(factory->createJSFunction(Array::every)));
     prototype->setProperty("some", Value(factory->createJSFunction(Array::some)));
     prototype->setProperty("lastIndexOf", Value(factory->createJSFunction(Array::lastIndexOf)));
+    prototype->setProperty("reduceRight", Value(factory->createJSFunction(Array::reduceRight)));
+    prototype->setProperty("flatMap", Value(factory->createJSFunction(Array::flatMap)));
+    prototype->setProperty("flat", Value(factory->createJSFunction(Array::flat)));
+    prototype->setProperty("findLast", Value(factory->createJSFunction(Array::findLast)));
+    prototype->setProperty("findLastIndex", Value(factory->createJSFunction(Array::findLastIndex)));
     prototype->setProperty("forEach", Value(factory->createJSFunction(Array::forEach)));
     prototype->setProperty("map", Value(factory->createJSFunction(Array::map)));
     prototype->setProperty("filter", Value(factory->createJSFunction(Array::filter)));
@@ -516,6 +522,239 @@ Value Array::lastIndexOf(const std::vector<Value>& args) {
         
         // Use strict equality comparison
         if(element.strictEquals(searchElement)) {
+            return Value(static_cast<double>(i - 1));
+        }
+    }
+
+    return Value(-1.0);
+}
+
+Value Array::reduceRight(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj || args.size() < 2) {
+        // TODO: Throw TypeError for missing callback
+        return Value::undefined();
+    }
+
+    Value callback = args[1];
+    if(!callback.isFunction()) {
+        // TODO: Throw TypeError for non-function callback
+        return Value::undefined();
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    if(length == 0 && args.size() < 3) {
+        // TODO: Throw TypeError for reduce of empty array with no initial value
+        return Value::undefined();
+    }
+
+    auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
+    if(!callbackFn) {
+        return Value::undefined();
+    }
+
+    Value accumulator;
+    size_t startIndex;
+
+    // Initialize accumulator and starting index
+    if(args.size() >= 3) {
+        // Initial value provided
+        accumulator = args[2];
+        startIndex = length;
+    } else {
+        // No initial value, use last element as accumulator
+        if(length == 0) {
+            return Value::undefined();
+        }
+        accumulator = arrayObj->getProperty(std::to_string(length - 1));
+        startIndex = length - 1;
+    }
+
+    // Iterate from right to left
+    for(size_t i = startIndex; i > 0; --i) {
+        Value element = arrayObj->getProperty(std::to_string(i - 1));
+        
+        // Call callback with (accumulator, currentValue, currentIndex, array)
+        std::vector<Value> callArgs = {accumulator, element, Value(static_cast<double>(i - 1)), Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        accumulator = callbackFn->call(cbCtx, callArgs);
+    }
+
+    return accumulator;
+}
+
+Value Array::flatMap(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj || args.size() < 2) {
+        return Value(createArrayObject(getObjectFactory(), {}));
+    }
+
+    Value callback = args[1];
+    if(!callback.isFunction()) {
+        return Value(createArrayObject(getObjectFactory(), {}));
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    std::vector<Value> result;
+
+    auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
+    if(!callbackFn) {
+        return Value(createArrayObject(getObjectFactory(), {}));
+    }
+
+    for(size_t i = 0; i < length; ++i) {
+        Value element = arrayObj->getProperty(std::to_string(i));
+        
+        // Call the callback
+        std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        Value mappedValue = callbackFn->call(cbCtx, callArgs);
+        
+        // Flatten one level: if result is array, add its elements; otherwise add the value itself
+        if(mappedValue.isObject()) {
+            auto* mappedObj = mappedValue.getObject();
+            // Check if it's an array by looking for length property and numeric indices
+            Value lengthVal = mappedObj->getProperty("length");
+            if(lengthVal.isNumber()) {
+                size_t arrayLength = static_cast<size_t>(lengthVal.toNumber());
+                for(size_t j = 0; j < arrayLength; ++j) {
+                    Value arrayElement = mappedObj->getProperty(std::to_string(j));
+                    result.push_back(arrayElement);
+                }
+            } else {
+                result.push_back(mappedValue);
+            }
+        } else {
+            result.push_back(mappedValue);
+        }
+    }
+
+    return Value(createArrayObject(getObjectFactory(), result));
+}
+
+Value Array::flat(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj) {
+        return Value(createArrayObject(getObjectFactory(), {}));
+    }
+
+    // Get depth (default is 1)
+    double depth = 1.0;
+    if(args.size() > 1 && args[1].isNumber()) {
+        depth = args[1].toNumber();
+        if(depth < 0) depth = 0;
+        if(depth > 100) depth = 100; // Reasonable limit to prevent infinite recursion
+    }
+
+    std::vector<Value> result;
+
+    // Helper function to flatten recursively
+    std::function<void(JSObject*, double)> flattenArray = [&](JSObject* arr, double currentDepth) {
+        if(currentDepth <= 0) {
+            // No more flattening, just add all elements
+            Value lengthVal = arr->getProperty("length");
+            if(lengthVal.isNumber()) {
+                size_t arrLength = static_cast<size_t>(lengthVal.toNumber());
+                for(size_t i = 0; i < arrLength; ++i) {
+                    Value element = arr->getProperty(std::to_string(i));
+                    result.push_back(element);
+                }
+            }
+            return;
+        }
+
+        Value lengthVal = arr->getProperty("length");
+        if(lengthVal.isNumber()) {
+            size_t arrLength = static_cast<size_t>(lengthVal.toNumber());
+            for(size_t i = 0; i < arrLength; ++i) {
+                Value element = arr->getProperty(std::to_string(i));
+                
+                // Check if element is an array
+                if(element.isObject()) {
+                    auto* elementObj = element.getObject();
+                    Value elementLengthVal = elementObj->getProperty("length");
+                    if(elementLengthVal.isNumber()) {
+                        // It's an array, flatten it recursively
+                        flattenArray(elementObj, currentDepth - 1);
+                    } else {
+                        // Not an array, just add it
+                        result.push_back(element);
+                    }
+                } else {
+                    // Not an object, just add it
+                    result.push_back(element);
+                }
+            }
+        }
+    };
+
+    flattenArray(arrayObj, depth);
+    return Value(createArrayObject(getObjectFactory(), result));
+}
+
+Value Array::findLast(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj || args.size() < 2) {
+        return Value::undefined();
+    }
+
+    Value callback = args[1];
+    if(!callback.isFunction()) {
+        return Value::undefined();
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    
+    auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
+    if(!callbackFn) {
+        return Value::undefined();
+    }
+
+    // Search from right to left
+    for(size_t i = length; i > 0; --i) {
+        Value element = arrayObj->getProperty(std::to_string(i - 1));
+        
+        // Call the callback with (element, index, array)
+        std::vector<Value> callArgs = {element, Value(static_cast<double>(i - 1)), Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        Value result = callbackFn->call(cbCtx, callArgs);
+        
+        if(result.toBool()) {
+            return element;
+        }
+    }
+
+    return Value::undefined();
+}
+
+Value Array::findLastIndex(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj || args.size() < 2) {
+        return Value(-1.0);
+    }
+
+    Value callback = args[1];
+    if(!callback.isFunction()) {
+        return Value(-1.0);
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    
+    auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
+    if(!callbackFn) {
+        return Value(-1.0);
+    }
+
+    // Search from right to left
+    for(size_t i = length; i > 0; --i) {
+        Value element = arrayObj->getProperty(std::to_string(i - 1));
+        
+        // Call the callback with (element, index, array)
+        std::vector<Value> callArgs = {element, Value(static_cast<double>(i - 1)), Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        Value result = callbackFn->call(cbCtx, callArgs);
+        
+        if(result.toBool()) {
             return Value(static_cast<double>(i - 1));
         }
     }
