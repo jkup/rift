@@ -161,11 +161,12 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `Array()` and `new Array()`
 - ✅ `Array.isArray(value)`
 - ✅ `array.length`
-- ✅ `array.push(...items)`, `array.pop()`
+- ✅ `array.push(...items)`, `array.pop()`, `array.shift()`, `array.unshift(...items)`
 - ✅ `array.forEach(fn)`, `array.map(fn)`, `array.filter(fn)`, `array.reduce(fn, initial)`
 - ✅ `array.indexOf(x)`, `array.includes(x)`
 - ✅ `array.slice(start, end)`, `array.concat(...items)`
-- ✅ `array.toString()`
+- ✅ `array.toString()`, `array.join(separator)`
+- 📋 **Implementation Status**: 14/45+ methods (~31% coverage) - See [`docs/ARRAY_METHODS.md`](docs/ARRAY_METHODS.md)
 
 #### **String Constructor & Methods**
 - ✅ `String()`

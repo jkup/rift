@@ -18,6 +18,9 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     // Add Array.prototype methods
     prototype->setProperty("push", Value(factory->createJSFunction(Array::push)));
     prototype->setProperty("pop", Value(factory->createJSFunction(Array::pop)));
+    prototype->setProperty("shift", Value(factory->createJSFunction(Array::shift)));
+    prototype->setProperty("unshift", Value(factory->createJSFunction(Array::unshift)));
+    prototype->setProperty("join", Value(factory->createJSFunction(Array::join)));
     prototype->setProperty("forEach", Value(factory->createJSFunction(Array::forEach)));
     prototype->setProperty("map", Value(factory->createJSFunction(Array::map)));
     prototype->setProperty("filter", Value(factory->createJSFunction(Array::filter)));
@@ -101,6 +104,112 @@ Value Array::pop(const std::vector<Value>& args) {
     setArrayLength(arrayObj, length - 1);
 
     return lastElement;
+}
+
+Value Array::shift(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj) {
+        return Value::undefined();
+    }
+
+    size_t length = getArrayLength(arrayObj);
+
+    if(length == 0) {
+        return Value::undefined();
+    }
+
+    // Get the first element
+    Value firstElement = arrayObj->getProperty("0");
+
+    // Shift all elements down by one index
+    for(size_t i = 1; i < length; ++i) {
+        Value element = arrayObj->getProperty(std::to_string(i));
+        arrayObj->setProperty(std::to_string(i - 1), element);
+    }
+
+    // Remove the last element (now duplicate)
+    arrayObj->deleteProperty(std::to_string(length - 1));
+
+    // Update length
+    setArrayLength(arrayObj, length - 1);
+
+    return firstElement;
+}
+
+Value Array::unshift(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj) {
+        return Value(0.0);
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    size_t numArgs = args.size() - 1; // Skip first arg (the array itself)
+
+    if(numArgs == 0) {
+        return Value(static_cast<double>(length));
+    }
+
+    // Shift existing elements to the right by numArgs positions
+    for(size_t i = length; i > 0; --i) {
+        Value element = arrayObj->getProperty(std::to_string(i - 1));
+        arrayObj->setProperty(std::to_string(i - 1 + numArgs), element);
+    }
+
+    // Insert new elements at the beginning
+    for(size_t i = 0; i < numArgs; ++i) {
+        arrayObj->setProperty(std::to_string(i), args[i + 1]);
+    }
+
+    // Update length
+    size_t newLength = length + numArgs;
+    setArrayLength(arrayObj, newLength);
+
+    return Value(static_cast<double>(newLength));
+}
+
+Value Array::join(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj) {
+        return Value("");
+    }
+
+    size_t length = getArrayLength(arrayObj);
+
+    // Get separator (default is comma)
+    std::string separator = ",";
+    if(args.size() > 1 && !args[1].isUndefined()) {
+        separator = args[1].toString();
+    }
+
+    std::string result = "";
+
+    for(size_t i = 0; i < length; ++i) {
+        if(i > 0) {
+            result += separator;
+        }
+        
+        Value element = arrayObj->getProperty(std::to_string(i));
+        if(!element.isUndefined() && !element.isNull()) {
+            result += element.toString();
+        }
+        // null and undefined elements contribute empty string to join
+    }
+
+    std::ostringstream result;
+
+    for(size_t i = 0; i < length; ++i) {
+        if(i > 0) {
+            result << separator;
+        }
+        
+        Value element = arrayObj->getProperty(std::to_string(i));
+        if(!element.isUndefined() && !element.isNull()) {
+            result << element.toString();
+        }
+        // null and undefined elements contribute empty string to join
+    }
+
+    return Value(result.str());
 }
 
 Value Array::getLength(const std::vector<Value>& args) {
