@@ -6,6 +6,7 @@
 
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/evaluation_utils.h"
+#include "rift/core/engine/call_context.h"
 
 namespace rift::builtins {
 
@@ -24,6 +25,11 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     prototype->setProperty("splice", Value(factory->createJSFunction(Array::splice)));
     prototype->setProperty("reverse", Value(factory->createJSFunction(Array::reverse)));
     prototype->setProperty("sort", Value(factory->createJSFunction(Array::sort)));
+    prototype->setProperty("find", Value(factory->createJSFunction(Array::find)));
+    prototype->setProperty("findIndex", Value(factory->createJSFunction(Array::findIndex)));
+    prototype->setProperty("every", Value(factory->createJSFunction(Array::every)));
+    prototype->setProperty("some", Value(factory->createJSFunction(Array::some)));
+    prototype->setProperty("lastIndexOf", Value(factory->createJSFunction(Array::lastIndexOf)));
     prototype->setProperty("forEach", Value(factory->createJSFunction(Array::forEach)));
     prototype->setProperty("map", Value(factory->createJSFunction(Array::map)));
     prototype->setProperty("filter", Value(factory->createJSFunction(Array::filter)));
@@ -343,6 +349,178 @@ Value Array::sort(const std::vector<Value>& args) {
     
     // Return reference to the same array
     return Value(arrayObj);
+}
+
+Value Array::find(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj || args.size() < 2) {
+        return Value::undefined();
+    }
+
+    Value callback = args[1];
+    if(!callback.isFunction()) {
+        return Value::undefined();
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    
+    auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
+    if(!callbackFn) {
+        return Value::undefined();
+    }
+
+    for(size_t i = 0; i < length; ++i) {
+        Value element = arrayObj->getProperty(std::to_string(i));
+        
+        // Call the callback with (element, index, array)
+        std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        Value result = callbackFn->call(cbCtx, callArgs);
+        
+        if(result.toBool()) {
+            return element;
+        }
+    }
+
+    return Value::undefined();
+}
+
+Value Array::findIndex(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj || args.size() < 2) {
+        return Value(-1.0);
+    }
+
+    Value callback = args[1];
+    if(!callback.isFunction()) {
+        return Value(-1.0);
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    
+    auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
+    if(!callbackFn) {
+        return Value(-1.0);
+    }
+
+    for(size_t i = 0; i < length; ++i) {
+        Value element = arrayObj->getProperty(std::to_string(i));
+        
+        // Call the callback with (element, index, array)
+        std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        Value result = callbackFn->call(cbCtx, callArgs);
+        
+        if(result.toBool()) {
+            return Value(static_cast<double>(i));
+        }
+    }
+
+    return Value(-1.0);
+}
+
+Value Array::every(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj || args.size() < 2) {
+        return Value(true); // Empty array returns true for every()
+    }
+
+    Value callback = args[1];
+    if(!callback.isFunction()) {
+        return Value(false);
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    
+    // Empty array returns true
+    if(length == 0) {
+        return Value(true);
+    }
+    
+    auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
+    if(!callbackFn) {
+        return Value(false);
+    }
+
+    for(size_t i = 0; i < length; ++i) {
+        Value element = arrayObj->getProperty(std::to_string(i));
+        
+        // Call the callback with (element, index, array)
+        std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        Value result = callbackFn->call(cbCtx, callArgs);
+        
+        if(!result.toBool()) {
+            return Value(false);
+        }
+    }
+
+    return Value(true);
+}
+
+Value Array::some(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj || args.size() < 2) {
+        return Value(false); // Empty array returns false for some()
+    }
+
+    Value callback = args[1];
+    if(!callback.isFunction()) {
+        return Value(false);
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    
+    // Empty array returns false
+    if(length == 0) {
+        return Value(false);
+    }
+    
+    auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
+    if(!callbackFn) {
+        return Value(false);
+    }
+
+    for(size_t i = 0; i < length; ++i) {
+        Value element = arrayObj->getProperty(std::to_string(i));
+        
+        // Call the callback with (element, index, array)
+        std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        Value result = callbackFn->call(cbCtx, callArgs);
+        
+        if(result.toBool()) {
+            return Value(true);
+        }
+    }
+
+    return Value(false);
+}
+
+Value Array::lastIndexOf(const std::vector<Value>& args) {
+    auto* arrayObj = getThisArrayObject(args);
+    if(!arrayObj || args.size() < 2) {
+        return Value(-1.0);
+    }
+
+    size_t length = getArrayLength(arrayObj);
+    if(length == 0) {
+        return Value(-1.0);
+    }
+
+    Value searchElement = args[1];
+    
+    // Start from end and search backwards
+    for(size_t i = length; i > 0; --i) {
+        Value element = arrayObj->getProperty(std::to_string(i - 1));
+        
+        // Use strict equality comparison
+        if(element.strictEquals(searchElement)) {
+            return Value(static_cast<double>(i - 1));
+        }
+    }
+
+    return Value(-1.0);
 }
 
 Value Array::getLength(const std::vector<Value>& args) {

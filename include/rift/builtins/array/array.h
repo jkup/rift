@@ -138,6 +138,61 @@ class Array : public BuiltinBase<Array> {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
     static Value sort(const std::vector<Value>& args);
 
+    /// The `find()` method returns the first element in the array that satisfies the provided testing function.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.find
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+    static Value find(const std::vector<Value>& args);
+
+    /// The `findIndex()` method returns the index of the first element in the array that satisfies the provided testing function.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.findindex
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+    static Value findIndex(const std::vector<Value>& args);
+
+    /// The `every()` method tests whether all elements in the array pass the test implemented by the provided function.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.every
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every
+    static Value every(const std::vector<Value>& args);
+
+    /// The `some()` method tests whether at least one element in the array passes the test implemented by the provided function.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.some
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+    static Value some(const std::vector<Value>& args);
+
+    /// The `lastIndexOf()` method returns the last index at which a given element can be found in the array.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.lastindexof
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
+    static Value lastIndexOf(const std::vector<Value>& args);
+
     /// The `length` property of an Array instance is an integer with a positive sign and a
     /// magnitude less than 2^32 that specifies the number of elements in the array.
     ///
