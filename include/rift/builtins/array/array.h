@@ -72,6 +72,39 @@ class Array : public BuiltinBase<Array> {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop
     static Value pop(const std::vector<Value>& args);
 
+    /// The `shift()` method removes the first element from an array and returns that element.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.shift
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
+    static Value shift(const std::vector<Value>& args);
+
+    /// The `unshift()` method adds one or more elements to the beginning of an array and returns the new length.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.unshift
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift
+    static Value unshift(const std::vector<Value>& args);
+
+    /// The `join()` method creates and returns a new string by concatenating all elements in an array.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.join
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join
+    static Value join(const std::vector<Value>& args);
+
     /// The `length` property of an Array instance is an integer with a positive sign and a
     /// magnitude less than 2^32 that specifies the number of elements in the array.
     ///
