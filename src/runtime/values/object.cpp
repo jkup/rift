@@ -5,9 +5,11 @@
 namespace rift::runtime {
 
 bool JSObject::hasProperty(const std::string& key) const {
-    // Check own properties first
-    if(properties_.find(key) != properties_.end()) {
-        return true;
+    // Check own properties first (linear search through vector)
+    for(const auto& prop : properties_) {
+        if(prop.first == key) {
+            return true;
+        }
     }
 
     // Check prototype chain
@@ -19,10 +21,11 @@ bool JSObject::hasProperty(const std::string& key) const {
 }
 
 Value JSObject::getProperty(const std::string& key) const {
-    // Check own properties first
-    auto it = properties_.find(key);
-    if(it != properties_.end()) {
-        return it->second;
+    // Check own properties first (linear search through vector)
+    for(const auto& prop : properties_) {
+        if(prop.first == key) {
+            return prop.second;
+        }
     }
 
     // Check prototype chain
@@ -34,14 +37,25 @@ Value JSObject::getProperty(const std::string& key) const {
 }
 
 void JSObject::setProperty(const std::string& key, const Value& value) {
-    properties_[key] = value;
+    // Look for existing property to update
+    for(auto& prop : properties_) {
+        if(prop.first == key) {
+            prop.second = value;
+            return;
+        }
+    }
+    
+    // Property doesn't exist, add new one
+    properties_.emplace_back(key, value);
 }
 
 bool JSObject::deleteProperty(const std::string& key) {
-    auto it = properties_.find(key);
-    if(it != properties_.end()) {
-        properties_.erase(it);
-        return true;
+    // Find and remove property from vector
+    for(auto it = properties_.begin(); it != properties_.end(); ++it) {
+        if(it->first == key) {
+            properties_.erase(it);
+            return true;
+        }
     }
     return false;
 }
@@ -49,9 +63,9 @@ bool JSObject::deleteProperty(const std::string& key) {
 std::vector<std::string> JSObject::getPropertyNames() const {
     std::vector<std::string> names;
 
-    // Get own property names
-    for(const auto& pair : properties_) {
-        names.push_back(pair.first);
+    // Get own property names from vector
+    for(const auto& prop : properties_) {
+        names.push_back(prop.first);
     }
 
     // Add prototype property names (avoiding duplicates)

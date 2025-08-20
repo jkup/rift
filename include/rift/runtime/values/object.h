@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_map>
 #include <vector>
+#include <utility>
 
 #include "../../memory/gc.h"
 #include "value.h"
@@ -17,12 +18,16 @@ class Value;
 // Base JavaScript object
 class JSObject : public rift::memory::GCObject {
   private:
-    std::unordered_map<std::string, Value> properties_;
+    // Property storage using vector instead of unordered_map to avoid __next_prime overflow
+    // This is similar to how real JS engines store properties (V8's property arrays)
+    std::vector<std::pair<std::string, Value>> properties_;
     JSObject* prototype_;             // Now a raw pointer to GC-managed object
     mutable bool gc_marked_ = false;  // GC mark bit
 
   public:
     JSObject(JSObject* prototype = nullptr) : prototype_(prototype) {
+        // Pre-allocate space for properties to avoid frequent reallocations
+        properties_.reserve(64);
     }
 
     // Property operations
