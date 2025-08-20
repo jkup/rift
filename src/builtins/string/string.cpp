@@ -311,10 +311,28 @@ Value String::valueOf(const std::vector<Value>& args) {
 }
 
 std::string String::getStringValue(const std::vector<Value>& args) {
-    // In a full implementation, this would extract the 'this' value
-    // For now, we'll use the first argument as a placeholder
+    // Extract the string value from 'this' (first argument)
     if(!args.empty()) {
-        return args[0].toString();
+        const Value& thisValue = args[0];
+        
+        // If it's a string primitive, return it directly
+        if(thisValue.isString()) {
+            return thisValue.getString();
+        }
+        
+        // If it's a String object (created by Object(string)), check for value property
+        if(thisValue.isObject()) {
+            auto* obj = thisValue.getObject();
+            if(obj) {
+                Value valueProperty = obj->getProperty("value");
+                if(valueProperty.isString()) {
+                    return valueProperty.getString();
+                }
+            }
+        }
+        
+        // Fallback to toString() for other cases
+        return thisValue.toString();
     }
     return "";
 }

@@ -6,6 +6,7 @@
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/builtins/string/string.h"
 #include "rift/core/engine/evaluation_utils.h"
+#include "rift/core/engine/builtin_manager.h"
 
 namespace rift::builtins {
 
@@ -41,85 +42,30 @@ Value Object::constructor(const std::vector<Value>& args) {
 
     // Handle primitive to object conversion according to ECMAScript spec
     if(arg.isString()) {
-        // Convert string primitive to String object
-        auto* stringObj = getObjectFactory()->createJSObject();
+        // Convert string primitive to String object with proper prototype chain
+        auto* stringPrototype = rift::core::BuiltinManager::getStringPrototype();
+        auto* stringObj = getObjectFactory()->createJSObject(stringPrototype);
         // Store the primitive string value (following similar pattern to Boolean)
         stringObj->setProperty("value", arg);
-        // Add basic String methods
-        auto toStringFn = [](const std::vector<Value>& args) -> Value {
-            if(!args.empty() && args[0].isObject()) {
-                auto* obj = args[0].getObject();
-                if(obj) {
-                    Value val = obj->getProperty("value");
-                    if(val.isString()) {
-                        return val;
-                    }
-                }
-            }
-            return Value("");
-        };
-        auto valueOfFn = [](const std::vector<Value>& args) -> Value {
-            if(!args.empty() && args[0].isObject()) {
-                auto* obj = args[0].getObject();
-                if(obj) {
-                    Value val = obj->getProperty("value");
-                    if(val.isString()) {
-                        return val;
-                    }
-                }
-            }
-            return Value("");
-        };
-
-        stringObj->setProperty("toString", Value(getObjectFactory()->createJSFunction(toStringFn)));
-        stringObj->setProperty("valueOf", Value(getObjectFactory()->createJSFunction(valueOfFn)));
-
-        return Value(stringObj);  // stringObj is now raw pointer
+        
+        return Value(stringObj);  // stringObj is now raw pointer with String.prototype
     }
 
     if(arg.isBoolean()) {
-        // Convert boolean primitive to Boolean object
-        auto* booleanObj = getObjectFactory()->createJSObject();
+        // Convert boolean primitive to Boolean object with proper prototype chain
+        auto* booleanPrototype = rift::core::BuiltinManager::getBooleanPrototype();
+        auto* booleanObj = getObjectFactory()->createJSObject(booleanPrototype);
         // Store the primitive boolean value (following Boolean constructor pattern)
         booleanObj->setProperty("value", arg);
-        // Add basic Boolean methods
-        auto toStringFn = [](const std::vector<Value>& args) -> Value {
-            if(!args.empty() && args[0].isObject()) {
-                auto* obj = args[0].getObject();
-                if(obj) {
-                    Value val = obj->getProperty("value");
-                    if(val.isBoolean()) {
-                        return Value(val.getBool() ? "true" : "false");
-                    }
-                }
-            }
-            return Value("false");
-        };
-        auto valueOfFn = [](const std::vector<Value>& args) -> Value {
-            if(!args.empty() && args[0].isObject()) {
-                auto* obj = args[0].getObject();
-                if(obj) {
-                    Value val = obj->getProperty("value");
-                    if(val.isBoolean()) {
-                        return val;
-                    }
-                }
-            }
-            return Value(false);
-        };
 
-        booleanObj->setProperty("toString",
-                                Value(getObjectFactory()->createJSFunction(toStringFn)));
-        booleanObj->setProperty("valueOf", Value(getObjectFactory()->createJSFunction(valueOfFn)));
-
-        return Value(booleanObj);  // booleanObj is now raw pointer
+        return Value(booleanObj);  // booleanObj is now raw pointer with Boolean.prototype
     }
 
     if(arg.isNumber()) {
-        // Convert number primitive to Number-like object
+        // Convert number primitive to Number-like object (no Number.prototype yet)
         auto* numberObj = getObjectFactory()->createJSObject();
         numberObj->setProperty("value", arg);
-        // Add basic Number methods
+        // Add basic Number methods since we don't have Number.prototype yet
         auto toStringFn = [](const std::vector<Value>& args) -> Value {
             if(!args.empty() && args[0].isObject()) {
                 auto* obj = args[0].getObject();
