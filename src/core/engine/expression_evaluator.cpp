@@ -283,15 +283,17 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
     if(callee.isFunction()) {
         auto* func =
             dynamic_cast<JSFunction*>(callee.getObject());  // Use dynamic_cast for raw pointers
-        if(func) {
-            rift::core::CallContext callContext(
-                rift::core::CallType::Function,
-                thisValue.isUndefined() ? Value::undefined() : thisValue);
-            return func->call(callContext, args);
+        if(!func) {
+            throw JavaScriptException(Value("TypeError: callee is not a function"));
         }
+        rift::core::CallContext callContext(
+            rift::core::CallType::Function,
+            thisValue.isUndefined() ? Value::undefined() : thisValue);
+        return func->call(callContext, args);
     }
 
-    return Value::undefined();
+    // Not a function type - throw TypeError per ECMAScript spec
+    throw JavaScriptException(Value("TypeError: " + callee.toString() + " is not a function"));
 }
 
 Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> node,
@@ -357,46 +359,62 @@ Value ExpressionEvaluator::evaluateObjectLiteral(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
     // Create a new empty object using GC-managed creation with Object.prototype
     auto* objectPrototype = BuiltinManager::getObjectPrototype();
-    auto* obj = engine->getObjectFactory()->createJSObject(objectPrototype);
+    auto* factory = engine->getObjectFactory();
+    
+    // Temporarily disable GC to prevent collection of the object being constructed
+    // The object is not yet reachable from GC roots until it's returned and assigned
+    auto* objManager = factory->getObjectManager();
+    bool wasGCEnabled = objManager->isGCEnabled();
+    objManager->setGCEnabled(false);
+    
+    auto* obj = factory->createJSObject(objectPrototype);
 
     // Process key-value pairs from the AST
     // Children are stored in pairs: key, value, key, value, ...
-    for(size_t i = 0; i < node->children.size(); i += 2) {
-        if(i + 1 >= node->children.size()) {
-            // Odd number of children - this should not happen with proper parsing
-            break;
-        }
-
-        auto keyNode = node->children[i];
-        auto valueNode = node->children[i + 1];
-
-        // Get the property key
-        std::string key;
-        if(keyNode->type == ASTNodeType::Identifier) {
-            // Identifier keys are used as-is: { name: value }
-            key = keyNode->value;
-        } else if(keyNode->type == ASTNodeType::Literal) {
-            // String literal keys need to be processed: { "name": value }
-            std::string str = keyNode->value;
-            if(str.length() >= 2 && str[0] == '"' && str.back() == '"') {
-                key = str.substr(1, str.length() - 2);  // Remove quotes
-            } else {
-                key = str;
+    try {
+        for(size_t i = 0; i < node->children.size(); i += 2) {
+            if(i + 1 >= node->children.size()) {
+                // Odd number of children - this should not happen with proper parsing
+                break;
             }
-        } else {
-            // Other key types (computed keys) - evaluate as expression
-            Value keyValue = engine->evaluate(keyNode, env);
-            key = keyValue.toString();
+
+            auto keyNode = node->children[i];
+            auto valueNode = node->children[i + 1];
+
+            // Get the property key
+            std::string key;
+            if(keyNode->type == ASTNodeType::Identifier) {
+                // Identifier keys are used as-is: { name: value }
+                key = keyNode->value;
+            } else if(keyNode->type == ASTNodeType::Literal) {
+                // String literal keys need to be processed: { "name": value }
+                std::string str = keyNode->value;
+                if(str.length() >= 2 && str[0] == '"' && str.back() == '"') {
+                    key = str.substr(1, str.length() - 2);  // Remove quotes
+                } else {
+                    key = str;
+                }
+            } else {
+                // Other key types (computed keys) - evaluate as expression
+                Value keyValue = engine->evaluate(keyNode, env);
+                key = keyValue.toString();
+            }
+
+            // Evaluate the property value
+            Value value = engine->evaluate(valueNode, env);
+
+            // Set the property on the object
+            obj->setProperty(key, value);
         }
-
-        // Evaluate the property value
-        Value value = engine->evaluate(valueNode, env);
-
-        // Set the property on the object
-        obj->setProperty(key, value);
+        
+        // Re-enable GC before returning
+        objManager->setGCEnabled(wasGCEnabled);
+        return Value(obj);
+    } catch(...) {
+        // Re-enable GC in case of exception
+        objManager->setGCEnabled(wasGCEnabled);
+        throw;
     }
-
-    return Value(obj);
 }
 
 Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> node,
@@ -416,8 +434,14 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
     // Get function body (second child)
     auto body = node->children[1];
 
+    // Temporarily disable GC to prevent collection during function creation
+    auto* factory = engine->getObjectFactory();
+    auto* objManager = factory->getObjectManager();
+    bool wasGCEnabled = objManager->isGCEnabled();
+    objManager->setGCEnabled(false);
+
     // Create function object (anonymous) using GC-managed creation
-    auto* func = engine->getObjectFactory()->createJSFunction(
+    auto* func = factory->createJSFunction(
         [engine, parameters, body, env](const rift::core::CallContext& callContext, const std::vector<Value>& args) -> Value {
             // Create new environment for function execution
             auto funcEnv = std::make_shared<Environment>(env);
@@ -443,6 +467,8 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
             }
         });
 
+    // Re-enable GC before returning
+    objManager->setGCEnabled(wasGCEnabled);
     return Value(func);
 }
 
@@ -458,14 +484,14 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
 
     // Check if constructor is a function
     if(!constructor.isFunction()) {
-        // In a real JS engine, this would throw a TypeError
-        return Value::undefined();
+        throw JavaScriptException(
+            Value("TypeError: " + constructor.toString() + " is not a constructor"));
     }
 
     auto* constructorFunc =
         dynamic_cast<JSFunction*>(constructor.getObject());  // Use dynamic_cast for raw pointers
     if(!constructorFunc) {
-        return Value::undefined();
+        throw JavaScriptException(Value("TypeError: constructor is not a function"));
     }
 
     // Create a new object that will be the 'this' context for the constructor

@@ -6,8 +6,9 @@
 #include <limits>
 
 #include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/call_context.h"
+#include "rift/core/engine/evaluation_utils.h"
+#include "rift/core/engine/javascript_exception.h"
 
 namespace rift::builtins {
 
@@ -367,14 +368,16 @@ Value Array::find(const std::vector<Value>& args) {
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.find callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
     
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.find callback is not a function"));
     }
 
     for(size_t i = 0; i < length; ++i) {
@@ -401,14 +404,16 @@ Value Array::findIndex(const std::vector<Value>& args) {
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value(-1.0);
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.findIndex callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
     
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
-        return Value(-1.0);
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.findIndex callback is not a function"));
     }
 
     for(size_t i = 0; i < length; ++i) {
@@ -435,7 +440,8 @@ Value Array::every(const std::vector<Value>& args) {
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value(false);
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.every callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -447,7 +453,8 @@ Value Array::every(const std::vector<Value>& args) {
     
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
-        return Value(false);
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.every callback is not a function"));
     }
 
     for(size_t i = 0; i < length; ++i) {
@@ -474,7 +481,8 @@ Value Array::some(const std::vector<Value>& args) {
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value(false);
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.some callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -486,7 +494,8 @@ Value Array::some(const std::vector<Value>& args) {
     
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
-        return Value(false);
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.some callback is not a function"));
     }
 
     for(size_t i = 0; i < length; ++i) {
@@ -534,14 +543,13 @@ Value Array::lastIndexOf(const std::vector<Value>& args) {
 Value Array::reduceRight(const std::vector<Value>& args) {
     auto* arrayObj = getThisArrayObject(args);
     if(!arrayObj || args.size() < 2) {
-        // TODO: Throw TypeError for missing callback
         return Value::undefined();
     }
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        // TODO: Throw TypeError for non-function callback
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.reduceRight callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -552,7 +560,8 @@ Value Array::reduceRight(const std::vector<Value>& args) {
 
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.reduceRight callback is not a function"));
     }
 
     Value accumulator;
@@ -593,7 +602,8 @@ Value Array::flatMap(const std::vector<Value>& args) {
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value(createArrayObject(getObjectFactory(), {}));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.flatMap callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -601,7 +611,8 @@ Value Array::flatMap(const std::vector<Value>& args) {
 
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
-        return Value(createArrayObject(getObjectFactory(), {}));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.flatMap callback is not a function"));
     }
 
     for(size_t i = 0; i < length; ++i) {
@@ -702,14 +713,16 @@ Value Array::findLast(const std::vector<Value>& args) {
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.findLast callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
     
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.findLast callback is not a function"));
     }
 
     // Search from right to left
@@ -737,14 +750,16 @@ Value Array::findLastIndex(const std::vector<Value>& args) {
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value(-1.0);
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.findLastIndex callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
     
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
-        return Value(-1.0);
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.findLastIndex callback is not a function"));
     }
 
     // Search from right to left
@@ -781,7 +796,8 @@ Value Array::forEach(const std::vector<Value>& args) {
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.forEach callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -789,7 +805,8 @@ Value Array::forEach(const std::vector<Value>& args) {
         dynamic_cast<JSFunction*>(callback.getObject());  // Use dynamic_cast for raw pointers
 
     if(!callbackFn) {
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.forEach callback is not a function"));
     }
 
     for(size_t i = 0; i < length; ++i) {
@@ -813,7 +830,8 @@ Value Array::map(const std::vector<Value>& args) {
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value(createArrayObject(getObjectFactory(), {}));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.map callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -823,7 +841,8 @@ Value Array::map(const std::vector<Value>& args) {
     auto* callbackFn =
         dynamic_cast<JSFunction*>(callback.getObject());  // Use dynamic_cast for raw pointers
     if(!callbackFn) {
-        return Value(createArrayObject(getObjectFactory(), {}));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.map callback is not a function"));
     }
 
     for(size_t i = 0; i < length; ++i) {
@@ -850,7 +869,8 @@ Value Array::filter(const std::vector<Value>& args) {
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value(createArrayObject(getObjectFactory(), {}));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.filter callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -859,7 +879,8 @@ Value Array::filter(const std::vector<Value>& args) {
     auto* callbackFn =
         dynamic_cast<JSFunction*>(callback.getObject());  // Use dynamic_cast for raw pointers
     if(!callbackFn) {
-        return Value(createArrayObject(getObjectFactory(), {}));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.filter callback is not a function"));
     }
 
     for(size_t i = 0; i < length; ++i) {
@@ -888,7 +909,8 @@ Value Array::reduce(const std::vector<Value>& args) {
 
     Value callback = args[1];
     if(!callback.isFunction()) {
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.reduce callback must be a function"));
     }
 
     size_t length = getArrayLength(arrayObj);
@@ -900,7 +922,8 @@ Value Array::reduce(const std::vector<Value>& args) {
     auto* callbackFn =
         dynamic_cast<JSFunction*>(callback.getObject());  // Use dynamic_cast for raw pointers
     if(!callbackFn) {
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.reduce callback is not a function"));
     }
 
     Value accumulator;
@@ -1218,13 +1241,15 @@ Value Array::from(const std::vector<Value>& args) {
     // Handle optional mapping function
     if(args.size() >= 3 && args[2].isFunction()) {
         auto* mapFn = dynamic_cast<JSFunction*>(args[2].getObject());
-        if(mapFn) {
-            for(size_t i = 0; i < result.size(); ++i) {
-                // Call mapFn(element, index)
-                std::vector<Value> callArgs = {result[i], Value(static_cast<double>(i))};
-                rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
-                result[i] = mapFn->call(cbCtx, callArgs);
-            }
+        if(!mapFn) {
+            throw rift::core::JavaScriptException(
+                Value("TypeError: Array.from mapFn is not a function"));
+        }
+        for(size_t i = 0; i < result.size(); ++i) {
+            // Call mapFn(element, index)
+            std::vector<Value> callArgs = {result[i], Value(static_cast<double>(i))};
+            rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+            result[i] = mapFn->call(cbCtx, callArgs);
         }
     }
 

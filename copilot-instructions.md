@@ -40,6 +40,19 @@
   - Log unexpected exceptions with `std::cerr` for debugging: `std::cerr << "Warning: " << e.what() << std::endl;`
   - Add `#include <iostream>` when using `std::cerr` or `std::endl`
   - Add `#include <limits>` when using `std::numeric_limits`
+- **Type Safety & dynamic_cast**:
+  - ⚠️ **ALWAYS check `dynamic_cast` results for nullptr before use**
+  - **Required pattern**:
+    ```cpp
+    auto* funcPtr = dynamic_cast<JSFunction*>(value.getObject());
+    if (!funcPtr) {
+        throw JavaScriptException(Value("TypeError: expected function"));
+    }
+    // Now safe to use funcPtr
+    ```
+  - **Never** assume `dynamic_cast` succeeded - it returns `nullptr` for type mismatches
+  - For ECMAScript compliance, throw `TypeError` when type check fails (not just return undefined)
+  - Include `#include "rift/core/engine/javascript_exception.h"` when throwing TypeError
 - **Memory Management & GC**:
   - ⚠️ **NEVER use raw `new` for JavaScript objects - always use `ObjectFactory`**
   - **Correct**: `auto* obj = factory->createJSObject();` or `engine->getObjectFactory()->createJSObject();`
