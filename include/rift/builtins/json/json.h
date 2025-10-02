@@ -10,6 +10,10 @@ namespace rift::core {
 class Rift;
 }
 
+namespace rift::memory {
+class ObjectFactory;
+}
+
 namespace rift::builtins {
 
 using namespace rift::runtime;
@@ -26,9 +30,10 @@ class JSON {
     /// Parses a JSON string and returns the JavaScript value
     /// @param args[0] - String to parse as JSON
     /// @param args[1] - Optional reviver function (not implemented)
+    /// @param factory - ObjectFactory for GC-managed object creation
     /// @returns Parsed JavaScript value
     /// @throws SyntaxError for invalid JSON
-    static Value parse(const std::vector<Value>& args);
+    static Value parse(const std::vector<Value>& args, rift::memory::ObjectFactory* factory);
 
     /// JSON.stringify(value[, replacer[, space]])
     /// Converts a JavaScript value to a JSON string
@@ -42,14 +47,18 @@ class JSON {
     /// Parse JSON string recursively
     /// @param json JSON string to parse
     /// @param pos Current position in string (modified during parsing)
+    /// @param factory ObjectFactory for GC-managed object creation
     /// @returns Parsed JavaScript value
-    static Value parseValue(const std::string& json, size_t& pos);
+    static Value parseValue(const std::string& json, size_t& pos,
+                           rift::memory::ObjectFactory* factory);
 
     /// Parse JSON object
-    static Value parseObject(const std::string& json, size_t& pos);
+    static Value parseObject(const std::string& json, size_t& pos,
+                            rift::memory::ObjectFactory* factory);
 
     /// Parse JSON array
-    static Value parseArray(const std::string& json, size_t& pos);
+    static Value parseArray(const std::string& json, size_t& pos,
+                           rift::memory::ObjectFactory* factory);
 
     /// Parse JSON string literal
     static Value parseString(const std::string& json, size_t& pos);

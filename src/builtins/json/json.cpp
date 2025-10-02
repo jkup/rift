@@ -8,6 +8,7 @@
 
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/memory/object_factory.h"
 #include "rift/runtime/environment/environment.h"
 #include "rift/runtime/values/object.h"
 
@@ -17,18 +18,22 @@ using namespace rift::runtime;
 using namespace rift::core;
 
 void JSON::setup(std::shared_ptr<Environment> env, rift::core::Rift* engine) {
-    // Create JSON object
-    auto* jsonObject = new JSObject();
+    // Get ObjectFactory for GC-managed object creation
+    auto* factory = engine->getObjectFactory();
 
-    // Add parse method
-    auto* parseFunc = new JSFunction(
-        [](const rift::core::CallContext& /*ctx*/, const std::vector<Value>& args) -> Value {
-            return JSON::parse(args);
+    // Create JSON object using GC-managed allocation
+    auto* jsonObject = factory->createJSObject();
+
+    // Add parse method using GC-managed allocation
+    // Capture engine pointer to access ObjectFactory during parse
+    auto* parseFunc = factory->createJSFunction(
+        [engine](const rift::core::CallContext& /*ctx*/, const std::vector<Value>& args) -> Value {
+            return JSON::parse(args, engine->getObjectFactory());
         });
     jsonObject->setProperty("parse", Value(parseFunc));
 
-    // Add stringify method
-    auto* stringifyFunc = new JSFunction(
+    // Add stringify method using GC-managed allocation
+    auto* stringifyFunc = factory->createJSFunction(
         [](const rift::core::CallContext& /*ctx*/, const std::vector<Value>& args) -> Value {
             return JSON::stringify(args);
         });
@@ -38,7 +43,7 @@ void JSON::setup(std::shared_ptr<Environment> env, rift::core::Rift* engine) {
     env->define("JSON", Value(jsonObject));
 }
 
-Value JSON::parse(const std::vector<Value>& args) {
+Value JSON::parse(const std::vector<Value>& args, rift::memory::ObjectFactory* factory) {
     if(args.empty()) {
         throw JavaScriptException(Value("SyntaxError: Unexpected end of JSON input"));
     }
@@ -53,19 +58,34 @@ Value JSON::parse(const std::vector<Value>& args) {
         throw JavaScriptException(
             Value("SyntaxError: Invalid JSON input - received object instead of string"));
     }
+    
+    // Get the ObjectManager to temporarily disable GC during parsing
+    // This prevents premature collection of intermediate objects that aren't yet rooted
+    auto* objManager = factory->getObjectManager();
+    bool wasGCEnabled = objManager->isGCEnabled();
+    
     try {
+        // Disable GC during parsing to prevent collection of intermediate objects
+        objManager->setGCEnabled(false);
+        
         size_t pos = 0;
         skipWhitespace(jsonString, pos);
-        Value result = parseValue(jsonString, pos);
+        Value result = parseValue(jsonString, pos, factory);
         skipWhitespace(jsonString, pos);
 
         // Check if we consumed the entire string
         if(pos < jsonString.length()) {
+            // Re-enable GC before throwing
+            objManager->setGCEnabled(wasGCEnabled);
             throw JavaScriptException(Value("SyntaxError: Unexpected token in JSON"));
         }
 
+        // Re-enable GC after successful parse
+        objManager->setGCEnabled(wasGCEnabled);
         return result;
     } catch(const std::exception& e) {
+        // Re-enable GC before throwing
+        objManager->setGCEnabled(wasGCEnabled);
         throw JavaScriptException(Value("SyntaxError: " + std::string(e.what())));
     }
 }
@@ -84,7 +104,7 @@ Value JSON::stringify(const std::vector<Value>& args) {
     }
 }
 
-Value JSON::parseValue(const std::string& json, size_t& pos) {
+Value JSON::parseValue(const std::string& json, size_t& pos, rift::memory::ObjectFactory* factory) {
     skipWhitespace(json, pos);
 
     if(pos >= json.length()) {
@@ -95,9 +115,9 @@ Value JSON::parseValue(const std::string& json, size_t& pos) {
 
     switch(ch) {
         case '{':
-            return parseObject(json, pos);
+            return parseObject(json, pos, factory);
         case '[':
-            return parseArray(json, pos);
+            return parseArray(json, pos, factory);
         case '"':
             return parseString(json, pos);
         case 't':
@@ -131,8 +151,9 @@ Value JSON::parseValue(const std::string& json, size_t& pos) {
     }
 }
 
-Value JSON::parseObject(const std::string& json, size_t& pos) {
-    auto* object = new JSObject();
+Value JSON::parseObject(const std::string& json, size_t& pos, rift::memory::ObjectFactory* factory) {
+    // Use GC-managed object creation - object is immediately tracked by GC
+    auto* object = factory->createJSObject();
 
     pos++;  // Skip '{'
     skipWhitespace(json, pos);
@@ -162,7 +183,7 @@ Value JSON::parseObject(const std::string& json, size_t& pos) {
 
         // Parse value
         skipWhitespace(json, pos);
-        Value value = parseValue(json, pos);
+        Value value = parseValue(json, pos, factory);
 
         // Set property
         object->setProperty(key, value);
@@ -187,8 +208,9 @@ Value JSON::parseObject(const std::string& json, size_t& pos) {
     return Value(object);
 }
 
-Value JSON::parseArray(const std::string& json, size_t& pos) {
-    auto* array = new JSObject();
+Value JSON::parseArray(const std::string& json, size_t& pos, rift::memory::ObjectFactory* factory) {
+    // Use GC-managed object creation - object is immediately tracked by GC
+    auto* array = factory->createJSObject();
 
     pos++;  // Skip '['
     skipWhitespace(json, pos);
@@ -206,7 +228,7 @@ Value JSON::parseArray(const std::string& json, size_t& pos) {
     while(pos < json.length()) {
         // Parse value
         skipWhitespace(json, pos);
-        Value value = parseValue(json, pos);
+        Value value = parseValue(json, pos, factory);
 
         // Set array element
         array->setProperty(std::to_string(static_cast<int>(index)), value);

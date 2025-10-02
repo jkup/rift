@@ -46,6 +46,11 @@ class ObjectFactory {
     T* createObject(Args&&... args) {
         return object_manager_->createObject<T>(std::forward<Args>(args)...);
     }
+
+    // Get the underlying ObjectManager for direct GC control
+    ObjectManager* getObjectManager() const {
+        return object_manager_;
+    }
 };
 
 }  // namespace rift::memory
