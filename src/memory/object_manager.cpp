@@ -21,20 +21,36 @@ ObjectManager::~ObjectManager() {
 }
 
 rift::runtime::JSObject* ObjectManager::createJSObject(rift::runtime::JSObject* prototype) {
+    // Temporarily disable GC to prevent collection during object creation
+    bool wasEnabled = gc_->isGCEnabled();
+    gc_->setGCEnabled(false);
+    
     rift::runtime::JSObject* obj = new rift::runtime::JSObject(prototype);
-    gc_->addObject(obj);  // GC now owns this object
+    gc_->addObject(obj);  // GC owns object (won't trigger collection - GC disabled)
+    
+    // Re-enable GC
+    gc_->setGCEnabled(wasEnabled);
+    
     return obj;
 }
 
 rift::runtime::JSFunction* ObjectManager::createJSFunction(
     std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func) {
+    // Prevent GC from running between object creation and root registration
+    gc_->setGCEnabled(false);
+    
     rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(func);
-    gc_->addObject(obj);  // GC now owns this object
+    gc_->addObject(obj);  // Track the object (GC disabled, won't collect)
+    
+    gc_->setGCEnabled(true);  // Re-enable GC after object tracked
     return obj;
 }
 
 rift::runtime::JSFunction* ObjectManager::createJSFunction(
     std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func) {
+    // Prevent GC from running between object creation and root registration
+    gc_->setGCEnabled(false);
+    
     // Wrap legacy function into CallContext-aware function.
     // If a valid thisValue is present in call context, inject it as args[0]
     // to preserve existing builtin convention that expects receiver in args[0].
@@ -50,7 +66,9 @@ rift::runtime::JSFunction* ObjectManager::createJSFunction(
         return func(args);
     };
     rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(wrapper);
-    gc_->addObject(obj);
+    gc_->addObject(obj);  // Track the object (GC disabled, won't collect)
+    
+    gc_->setGCEnabled(true);  // Re-enable GC after object tracked
     return obj;
 }
 

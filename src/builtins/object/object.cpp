@@ -7,6 +7,7 @@
 #include "rift/builtins/string/string.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/builtin_manager.h"
+#include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
 
@@ -45,6 +46,10 @@ Value Object::constructor(const std::vector<Value>& args) {
         // Convert string primitive to String object with proper prototype chain
         auto* stringPrototype = rift::core::BuiltinManager::getStringPrototype();
         auto* stringObj = getObjectFactory()->createJSObject(stringPrototype);
+        
+        // Protect from GC during initialization
+        rift::memory::GCProtector protect(stringObj, getObjectFactory()->getObjectManager());
+        
         // Store the primitive string value (following similar pattern to Boolean)
         stringObj->setProperty("value", arg);
         
@@ -55,6 +60,10 @@ Value Object::constructor(const std::vector<Value>& args) {
         // Convert boolean primitive to Boolean object with proper prototype chain
         auto* booleanPrototype = rift::core::BuiltinManager::getBooleanPrototype();
         auto* booleanObj = getObjectFactory()->createJSObject(booleanPrototype);
+        
+        // Protect from GC during initialization
+        rift::memory::GCProtector protect(booleanObj, getObjectFactory()->getObjectManager());
+        
         // Store the primitive boolean value (following Boolean constructor pattern)
         booleanObj->setProperty("value", arg);
 
@@ -64,6 +73,10 @@ Value Object::constructor(const std::vector<Value>& args) {
     if(arg.isNumber()) {
         // Convert number primitive to Number-like object (no Number.prototype yet)
         auto* numberObj = getObjectFactory()->createJSObject();
+        
+        // Protect from GC during initialization
+        rift::memory::GCProtector protect(numberObj, getObjectFactory()->getObjectManager());
+        
         numberObj->setProperty("value", arg);
         // Add basic Number methods since we don't have Number.prototype yet
         auto toStringFn = [](const std::vector<Value>& args) -> Value {
@@ -91,8 +104,15 @@ Value Object::constructor(const std::vector<Value>& args) {
             return Value(0.0);
         };
 
-        numberObj->setProperty("toString", Value(getObjectFactory()->createJSFunction(toStringFn)));
-        numberObj->setProperty("valueOf", Value(getObjectFactory()->createJSFunction(valueOfFn)));
+        // Create both functions and protect them during property assignment
+        auto* toStringFunc = getObjectFactory()->createJSFunction(toStringFn);
+        rift::memory::GCProtector protectToString(toStringFunc, getObjectFactory()->getObjectManager());
+        
+        auto* valueOfFunc = getObjectFactory()->createJSFunction(valueOfFn);
+        rift::memory::GCProtector protectValueOf(valueOfFunc, getObjectFactory()->getObjectManager());
+        
+        numberObj->setProperty("toString", Value(toStringFunc));
+        numberObj->setProperty("valueOf", Value(valueOfFunc));
 
         return Value(numberObj);  // numberObj is now raw pointer
     }
