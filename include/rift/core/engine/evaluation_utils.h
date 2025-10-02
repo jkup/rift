@@ -15,6 +15,42 @@ using namespace rift::runtime;
 
 namespace EvaluationUtils {
 
+// Maximum safe array length per ECMAScript spec (2^32 - 1)
+constexpr size_t MAX_ARRAY_LENGTH = 4294967295ULL;
+
+/**
+ * Safely convert a double to size_t for array operations.
+ * Returns false if the value is invalid (NaN, Infinity, negative, or > MAX_ARRAY_LENGTH).
+ * @param value The double value to convert
+ * @param result Output parameter for the converted size_t
+ * @return true if conversion is safe, false otherwise
+ */
+inline bool toSafeArrayLength(double value, size_t& result) {
+    // Check for invalid values
+    if(!std::isfinite(value) || value < 0.0 || value > static_cast<double>(MAX_ARRAY_LENGTH)) {
+        return false;
+    }
+    
+    // Truncate to integer (matches ECMAScript ToLength behavior)
+    result = static_cast<size_t>(value);
+    return true;
+}
+
+/**
+ * Safely increment a size_t index, checking for overflow.
+ * @param index The index to increment
+ * @param result Output parameter for index + 1
+ * @return true if increment is safe (no overflow), false otherwise
+ */
+inline bool safeIncrementIndex(size_t index, size_t& result) {
+    // Check if incrementing would overflow or exceed max array length
+    if(index >= MAX_ARRAY_LENGTH) {
+        return false;
+    }
+    result = index + 1;
+    return true;
+}
+
 /**
  * Safely check if a property name is a valid array index and convert it
  * According to ECMAScript specification:

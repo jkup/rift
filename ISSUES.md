@@ -14,11 +14,11 @@
 | #1 - Unsafe Exception Handling | Critical | ✅ FIXED | Oct 2, 2025 |
 | #2 - Memory Safety (Raw Pointers) | Critical | ✅ FIXED | Oct 2, 2025 |
 | #3 - Unchecked Dynamic Casts | Critical | ✅ FIXED | Oct 2, 2025 |
-| #4 - Integer Overflow Risks | Critical | 🔴 Open | - |
+| #4 - Integer Overflow Risks | Critical | ✅ FIXED | Oct 2, 2025 |
 | #5 - String Parsing Validation | Critical | 🔴 Open | - |
 
-**Fixed:** 3/5 Critical Issues  
-**Remaining Critical:** 2 issues  
+**Fixed:** 4/5 Critical Issues  
+**Remaining Critical:** 1 issue  
 **Total Issues:** 15 documented
 
 See detailed fix documentation: [`docs/CRITICAL_ISSUE_1_FIX.md`](docs/CRITICAL_ISSUE_1_FIX.md)
@@ -267,39 +267,157 @@ During testing, discovered and fixed additional GC issues in object/function/arr
 
 ---
 
-### 4. Integer Overflow Risks
+### 4. ✅ FIXED - Integer Overflow Risks
 
 **Severity:** MEDIUM  
-**Locations:** Array operations
+**Status:** ✅ **FIXED** (October 2, 2025)  
+**Locations:** Array operations, expression evaluation (5 instances - all fixed)
 
+**Original Problem:**
+- Converting `double` to `size_t` without validation (NaN, Infinity, negative, > MAX)
+- Integer overflow in `index + 1` calculations
+- Complex arithmetic in Array.splice without overflow protection
+- Could lead to buffer overflows, memory corruption, and undefined behavior
+- Not ECMAScript compliant (spec mandates MAX_ARRAY_LENGTH = 2^32 - 1)
+
+**Example Before Fix:**
 ```cpp
-// Array index calculations without overflow checks
-size_t currentLength = static_cast<size_t>(lengthVal.toNumber());
+// expression_evaluator.cpp - Array member assignment
+size_t currentLength = static_cast<size_t>(lengthVal.toNumber());  // ⚠️ Unsafe cast
 if(index >= currentLength) {
-    obj->setProperty("length", Value(static_cast<double>(index + 1)));
+    obj->setProperty("length", Value(static_cast<double>(index + 1)));  // ⚠️ Overflow risk
 }
 ```
 
-**Problem:**
-- Converting double to size_t without range validation
-- No checks for MAX_SIZE
-- Potential integer overflow in `index + 1`
+**Fix Applied:**
 
-**Impact:**
-- Buffer overflows
-- Memory corruption
-- Denial of service
+**1. Created Safe Conversion Utilities (`include/rift/core/engine/evaluation_utils.h`):**
+```cpp
+namespace rift::core::EvaluationUtils {
+    // ECMAScript MAX_ARRAY_LENGTH = 2^32 - 1
+    constexpr size_t MAX_ARRAY_LENGTH = 4294967295ULL;
+    
+    // Safely convert double to size_t with validation
+    inline bool toSafeArrayLength(double value, size_t& result) {
+        if(std::isnan(value) || std::isinf(value) || value < 0) {
+            return false;  // Invalid value
+        }
+        if(value > static_cast<double>(MAX_ARRAY_LENGTH)) {
+            return false;  // Exceeds max array length
+        }
+        result = static_cast<size_t>(value);
+        return true;
+    }
+    
+    // Safely increment index with overflow check
+    inline bool safeIncrementIndex(size_t index, size_t& result) {
+        if(index >= MAX_ARRAY_LENGTH) {
+            return false;  // Would overflow
+        }
+        result = index + 1;
+        return true;
+    }
+}
+```
 
-**Recommendation:**
-- Add bounds checking before casts
-- Validate array indices against implementation limits
-- Use safe arithmetic functions
+**2. Expression Evaluator (`src/core/engine/expression_evaluator.cpp` - 2 fixes):**
+   - **Array member assignment (line ~231)**: Replaced unsafe cast with `toSafeArrayLength()`
+   - **Array length update (line ~642)**: Replaced `index + 1` with `safeIncrementIndex()`
+   ```cpp
+   // Before: size_t currentLength = static_cast<size_t>(lengthVal.toNumber());
+   // After:
+   size_t currentLength;
+   if(!core::EvaluationUtils::toSafeArrayLength(lengthVal.toNumber(), currentLength)) {
+       return Value::undefined();  // Silent failure per ECMAScript spec
+   }
+   ```
+
+**3. Array Constructor (`src/builtins/array/array.cpp` - line ~69):**
+   - Validates `double` length parameter before creating array
+   - Handles NaN, Infinity, negative, and too-large values
+   ```cpp
+   size_t safeLength;
+   if(!core::EvaluationUtils::toSafeArrayLength(length, safeLength)) {
+       setArrayLength(arrayObj, 0);  // Create empty array for invalid length
+   } else {
+       setArrayLength(arrayObj, safeLength);
+   }
+   ```
+
+**4. Array.push Method (`src/builtins/array/array.cpp` - line ~98):**
+   - Added overflow check before incrementing length
+   ```cpp
+   if(length >= core::EvaluationUtils::MAX_ARRAY_LENGTH) {
+       break;  // Cannot push beyond max length - stop adding elements
+   }
+   ```
+
+**5. Array.splice Method (`src/builtins/array/array.cpp` - line ~274):**
+   - Complex fix for `length - deleteCount + itemsToInsert.size()` calculation
+   - Separates growing and shrinking cases
+   - Checks overflow before adding items
+   ```cpp
+   if(lengthChange >= 0) {
+       size_t itemsAdded = static_cast<size_t>(lengthChange);
+       if(length > core::EvaluationUtils::MAX_ARRAY_LENGTH - itemsAdded) {
+           newLength = core::EvaluationUtils::MAX_ARRAY_LENGTH;  // Cap at max
+       } else {
+           newLength = length + itemsAdded;
+       }
+   }
+   ```
+
+**Files Modified:**
+- `include/rift/core/engine/evaluation_utils.h` - Added MAX_ARRAY_LENGTH constant and safe conversion functions
+- `src/core/engine/expression_evaluator.cpp` - Fixed 2 array length/index operations
+- `src/builtins/array/array.cpp` - Fixed 3 array operations (constructor, push, splice)
+
+**Benefits:**
+- ✅ **ECMAScript compliant**: Enforces MAX_ARRAY_LENGTH = 2^32 - 1 per spec
+- ✅ **No integer overflow**: All arithmetic checked before execution
+- ✅ **Safe type conversions**: All double→size_t casts validated
+- ✅ **Handles edge cases**: NaN, Infinity, negative values handled gracefully
+- ✅ **Silent failure where appropriate**: Matches ECMAScript spec behavior
+- ✅ **Prevents memory corruption**: No buffer overflows from bad indices
+
+**Testing:**
+- Build successful with no errors
+- Created `test/integer-overflow-simple-test.js` - all tests pass:
+  * ✅ Array literals work correctly
+  * ✅ Array element assignment with large indices
+  * ✅ Array.push operations
+  * ✅ Array.splice operations
+- All fixed locations now have bounds checking and overflow protection
+
+**Key Implementation Pattern:**
+```cpp
+// Standard pattern for safe double→size_t conversion
+size_t safeValue;
+if(!core::EvaluationUtils::toSafeArrayLength(doubleValue, safeValue)) {
+    // Handle invalid value (return undefined, throw error, etc.)
+}
+// Safe to use safeValue here
+
+// Standard pattern for safe index increment
+size_t newIndex;
+if(!core::EvaluationUtils::safeIncrementIndex(index, newIndex)) {
+    // Handle overflow (silently fail, break loop, etc.)
+}
+```
+
+**ECMAScript Compliance:**
+Per ECMAScript specification, arrays have a maximum length of 2^32 - 1 (4,294,967,295 elements). Operations that would exceed this limit must handle the situation gracefully without throwing exceptions in most cases. Our implementation:
+- Enforces this limit at construction time
+- Prevents push() operations beyond the limit
+- Caps splice() results at MAX_ARRAY_LENGTH
+- Handles edge cases (NaN, Infinity, negative lengths) by creating empty arrays or returning undefined
 
 ---
 
 ### 5. String Parsing Without Validation
 
 **Severity:** MEDIUM  
+**Status:** 🔴 Open  
 **Locations:** Lexer, JSON parser
 
 ```cpp

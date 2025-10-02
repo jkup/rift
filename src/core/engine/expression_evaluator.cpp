@@ -228,9 +228,15 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
                     if(EvaluationUtils::isValidArrayIndex(property, index)) {
                         Value lengthVal = obj->getProperty("length");
                         if(lengthVal.isNumber()) {
-                            size_t currentLength = static_cast<size_t>(lengthVal.toNumber());
-                            if(index >= currentLength) {
-                                obj->setProperty("length", Value(static_cast<double>(index + 1)));
+                            size_t currentLength;
+                            if(EvaluationUtils::toSafeArrayLength(lengthVal.toNumber(), currentLength)) {
+                                if(index >= currentLength) {
+                                    size_t newLength;
+                                    if(EvaluationUtils::safeIncrementIndex(index, newLength)) {
+                                        obj->setProperty("length", Value(static_cast<double>(newLength)));
+                                    }
+                                    // If overflow would occur, don't update length (silent failure per spec)
+                                }
                             }
                         }
                     }
@@ -639,9 +645,15 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
                     if(EvaluationUtils::isValidArrayIndex(property, index)) {
                         Value lengthVal = obj->getProperty("length");
                         if(lengthVal.isNumber()) {
-                            size_t currentLength = static_cast<size_t>(lengthVal.toNumber());
-                            if(index >= currentLength) {
-                                obj->setProperty("length", Value(static_cast<double>(index + 1)));
+                            size_t currentLength;
+                            if(EvaluationUtils::toSafeArrayLength(lengthVal.toNumber(), currentLength)) {
+                                if(index >= currentLength) {
+                                    size_t newLength;
+                                    if(EvaluationUtils::safeIncrementIndex(index, newLength)) {
+                                        obj->setProperty("length", Value(static_cast<double>(newLength)));
+                                    }
+                                    // If overflow would occur, don't update length (silent failure per spec)
+                                }
                             }
                         }
                     }

@@ -65,11 +65,13 @@ Value Array::constructor(const std::vector<Value>& args) {
     } else if(effectiveArgCount == 1 && args[0].isNumber()) {
         // new Array(length) - create array with specific length
         double length = args[0].toNumber();
-        if(length < 0 || std::isnan(length) || std::isinf(length)) {
-            // In a real implementation, this would throw a RangeError
+        size_t safeLength;
+        if(!core::EvaluationUtils::toSafeArrayLength(length, safeLength)) {
+            // Invalid length: NaN, Infinity, negative, or > MAX_ARRAY_LENGTH
+            // ECMAScript spec requires RangeError for invalid array length
             setArrayLength(arrayObj, 0);
         } else {
-            setArrayLength(arrayObj, static_cast<size_t>(length));
+            setArrayLength(arrayObj, safeLength);
         }
     } else {
         // new Array(element0, element1, ...) - create array with elements
@@ -92,6 +94,11 @@ Value Array::push(const std::vector<Value>& args) {
 
     // Add all arguments to the end of the array
     for(size_t i = 1; i < args.size(); ++i) {  // Skip first arg (the array itself)
+        // Check for overflow before incrementing length
+        if(length >= core::EvaluationUtils::MAX_ARRAY_LENGTH) {
+            // Cannot push more elements - array at max length
+            break;
+        }
         arrayObj->setProperty(std::to_string(length), args[i]);
         length++;
     }
@@ -258,8 +265,24 @@ Value Array::splice(const std::vector<Value>& args) {
         deletedElements.push_back(element);
     }
     
-    // Calculate new length
-    size_t newLength = static_cast<size_t>(static_cast<int>(length) - deleteCount + static_cast<int>(itemsToInsert.size()));
+    // Calculate new length - check for overflow
+    // newLength = length - deleteCount + itemsToInsert.size()
+    int lengthChange = static_cast<int>(itemsToInsert.size()) - deleteCount;
+    size_t newLength;
+    
+    if(lengthChange >= 0) {
+        // Growing or same size - check for overflow
+        size_t itemsAdded = static_cast<size_t>(lengthChange);
+        if(length > core::EvaluationUtils::MAX_ARRAY_LENGTH - itemsAdded) {
+            // Would overflow - limit to MAX_ARRAY_LENGTH
+            newLength = core::EvaluationUtils::MAX_ARRAY_LENGTH;
+        } else {
+            newLength = length + itemsAdded;
+        }
+    } else {
+        // Shrinking
+        newLength = length - static_cast<size_t>(-lengthChange);
+    }
     
     // If we're inserting more than deleting, shift elements right
     if(static_cast<int>(itemsToInsert.size()) > deleteCount) {
