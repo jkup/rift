@@ -1,5 +1,7 @@
 #include "rift/memory/gc_environment.h"
 
+#include <iostream>
+
 #include "rift/runtime/values/object.h"
 #include "rift/runtime/values/value.h"
 
@@ -27,8 +29,13 @@ std::vector<GCObject*> GCEnvironment::getReferences() const {
                     refs.push_back(obj);
                 }
             }
-        } catch(...) {
-            // Ignore errors when getting variables during GC
+        } catch(const std::runtime_error&) {
+            // Variable doesn't exist or error accessing it during GC - skip it
+            continue;
+        } catch(const std::exception& e) {
+            // Log unexpected exceptions during GC traversal
+            std::cerr << "Warning: Unexpected exception during GC environment traversal for '" 
+                      << varName << "': " << e.what() << std::endl;
             continue;
         }
     }

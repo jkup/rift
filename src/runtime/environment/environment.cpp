@@ -72,8 +72,8 @@ void Environment::set(const std::string& name, const Value& value) {
         try {
             parent_->set(name, value);
             return;
-        } catch(...) {
-            // Fall through to define in current scope (for var semantics)
+        } catch(const std::runtime_error&) {
+            // Variable not found in parent chain - fall through to define in current scope (for var semantics)
         }
     }
 

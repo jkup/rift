@@ -104,8 +104,12 @@ double Value::toNumber() const {
                 return 0.0;
             try {
                 return std::stod(str);
-            } catch(...) {
+            } catch(const std::invalid_argument&) {
+                // String is not a valid number
                 return std::numeric_limits<double>::quiet_NaN();
+            } catch(const std::out_of_range&) {
+                // Number out of range
+                return std::numeric_limits<double>::infinity();
             }
         }
         case ValueType::Object:

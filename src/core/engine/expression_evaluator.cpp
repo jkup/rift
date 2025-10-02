@@ -1,6 +1,7 @@
 #include "rift/core/engine/expression_evaluator.h"
 
 #include <iostream>
+#include <limits>
 
 #include "rift/builtins/array/array.h"
 #include "rift/core/engine/builtin_manager.h"
@@ -75,8 +76,12 @@ Value ExpressionEvaluator::evaluateLiteral(std::shared_ptr<ASTNode> node,
             try {
                 double num = std::stod(node->value);
                 return Value(num);
-            } catch(...) {
+            } catch(const std::invalid_argument& e) {
+                std::cerr << "Warning: Invalid number literal '" << node->value << "': " << e.what() << std::endl;
                 return Value(0.0);  // fallback
+            } catch(const std::out_of_range& e) {
+                std::cerr << "Warning: Number literal out of range '" << node->value << "': " << e.what() << std::endl;
+                return Value(std::numeric_limits<double>::infinity());  // fallback to infinity
             }
         } else if(node->metadata == "boolean") {
             return Value(node->value == "true");
@@ -101,13 +106,16 @@ Value ExpressionEvaluator::evaluateLiteral(std::shared_ptr<ASTNode> node,
     try {
         double num = std::stod(node->value);
         return Value(num);
-    } catch(...) {
-        // Must be a string - remove quotes if present
+    } catch(const std::invalid_argument&) {
+        // Not a number - must be a string - remove quotes if present
         std::string str = node->value;
         if(str.length() >= 2 && str[0] == '"' && str.back() == '"') {
             str = str.substr(1, str.length() - 2);
         }
         return Value(str);
+    } catch(const std::out_of_range&) {
+        // Number out of range - treat as infinity
+        return Value(std::numeric_limits<double>::infinity());
     }
 }
 
@@ -157,8 +165,12 @@ Value ExpressionEvaluator::evaluateUnaryExpression(std::shared_ptr<ASTNode> node
             try {
                 Value operand = engine->evaluate(operandNode, env);
                 return OperationHandler::performUnaryOperation(node->value, operand);
-            } catch(...) {
-                // If the identifier doesn't exist, typeof should return "undefined"
+            } catch(const std::runtime_error&) {
+                // If the identifier doesn't exist, typeof should return "undefined" per ECMAScript spec
+                return Value("undefined");
+            } catch(const std::exception& e) {
+                // Log unexpected exceptions but still return "undefined" for typeof robustness
+                std::cerr << "Warning: Unexpected exception in typeof evaluation: " << e.what() << std::endl;
                 return Value("undefined");
             }
         } else {

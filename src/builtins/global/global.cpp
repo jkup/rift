@@ -126,8 +126,13 @@ Value Global::parseFloat(const std::vector<Value>& args) {
         size_t endPos;
         double result = std::stod(str.substr(i), &endPos);
         return Value(result);
-    } catch(...) {
+    } catch(const std::invalid_argument&) {
+        // String is not a valid number
         return Value(std::numeric_limits<double>::quiet_NaN());
+    } catch(const std::out_of_range&) {
+        // Number out of range - return infinity with appropriate sign
+        return Value(str[0] == '-' ? -std::numeric_limits<double>::infinity() 
+                                   : std::numeric_limits<double>::infinity());
     }
 }
 
