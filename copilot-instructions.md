@@ -40,6 +40,25 @@
   - Log unexpected exceptions with `std::cerr` for debugging: `std::cerr << "Warning: " << e.what() << std::endl;`
   - Add `#include <iostream>` when using `std::cerr` or `std::endl`
   - Add `#include <limits>` when using `std::numeric_limits`
+- **Memory Management & GC**:
+  - ⚠️ **NEVER use raw `new` for JavaScript objects - always use `ObjectFactory`**
+  - **Correct**: `auto* obj = factory->createJSObject();` or `engine->getObjectFactory()->createJSObject();`
+  - **Wrong**: `auto* obj = new JSObject();` (not tracked by GC, will leak or cause use-after-free)
+  - All JSObject/JSFunction instances MUST be created via `ObjectFactory` methods
+  - When creating multiple objects that won't be immediately rooted (e.g., during parsing), temporarily disable GC:
+    ```cpp
+    auto* objManager = factory->getObjectManager();
+    bool wasGCEnabled = objManager->isGCEnabled();
+    objManager->setGCEnabled(false);
+    try {
+        // Create objects safely
+        objManager->setGCEnabled(wasGCEnabled);
+    } catch(...) {
+        objManager->setGCEnabled(wasGCEnabled);
+        throw;
+    }
+    ```
+  - Objects are tracked from creation but may be collected if not reachable from GC roots
 - **Formatting**: Use `make format` before committing. 4-space indent, 100-char line limit.
 - **Static analysis**: Address all `clang-tidy` and `cppcheck` warnings. Run sanitizers regularly.
 
