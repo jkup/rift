@@ -309,8 +309,8 @@ Value JSON::parseString(const std::string& json, size_t& pos) {
                     break;
                 case 'u': {
                     // Unicode escape sequence \uXXXX
-                    // Validate we have 4 hex digits
-                    if(pos + 4 >= json.length()) {
+                    // Validate we have 4 hex digits available after current position
+                    if(pos + 4 > json.length()) {
                         throw std::runtime_error("JSON: Incomplete unicode escape sequence");
                     }
                     

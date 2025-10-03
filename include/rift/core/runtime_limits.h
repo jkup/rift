@@ -11,8 +11,9 @@ namespace rift::core {
  */
 class RuntimeLimits {
   public:
-    // Maximum string length (100 MB as chars)
-    // ECMAScript doesn't mandate a limit, but we need one for security
+    // Maximum string length: 100 million characters (≈100 MB assuming 1 byte per character).
+    // ECMAScript doesn't mandate a limit, but we need one for security.
+    // Note: This is a character count limit; actual memory usage may vary with encoding.
     static constexpr size_t MAX_STRING_LENGTH = 100 * 1024 * 1024;
 
     // Maximum recursion depth (prevents stack overflow)
