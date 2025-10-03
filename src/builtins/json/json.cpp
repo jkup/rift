@@ -8,6 +8,7 @@
 
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/core/runtime_limits.h"
 #include "rift/memory/object_factory.h"
 #include "rift/runtime/environment/environment.h"
 #include "rift/runtime/values/object.h"
@@ -259,8 +260,16 @@ Value JSON::parseArray(const std::string& json, size_t& pos, rift::memory::Objec
 Value JSON::parseString(const std::string& json, size_t& pos) {
     pos++;  // Skip opening quote
     std::string result;
+    result.reserve(256);  // Reserve some space to reduce allocations
 
     while(pos < json.length()) {
+        // Check string length limit (prevent DoS via huge JSON strings)
+        if(result.length() >= rift::core::RuntimeLimits::MAX_STRING_LENGTH) {
+            throw std::runtime_error("JSON string exceeds maximum length (" +
+                                     std::to_string(rift::core::RuntimeLimits::MAX_STRING_LENGTH) +
+                                     " characters)");
+        }
+
         char ch = json[pos];
 
         if(ch == '"') {
@@ -269,7 +278,7 @@ Value JSON::parseString(const std::string& json, size_t& pos) {
         } else if(ch == '\\') {
             pos++;
             if(pos >= json.length()) {
-                throw std::runtime_error("Unterminated string");
+                throw std::runtime_error("JSON: Unterminated escape sequence in string");
             }
 
             char escaped = json[pos];
@@ -298,21 +307,41 @@ Value JSON::parseString(const std::string& json, size_t& pos) {
                 case 't':
                     result += '\t';
                     break;
-                case 'u':
-                    // Unicode escape (simplified - just treat as literal for now)
+                case 'u': {
+                    // Unicode escape sequence \uXXXX
+                    // Validate we have 4 hex digits available after current position
+                    if(pos + 4 > json.length()) {
+                        throw std::runtime_error("JSON: Incomplete unicode escape sequence");
+                    }
+                    
+                    // For now, just preserve the escape sequence literally
+                    // Full unicode support would require proper UTF-8 encoding
                     result += "\\u";
+                    for(size_t i = 1; i <= 4; i++) {
+                        char hexChar = json[pos + i];
+                        if(!std::isxdigit(hexChar)) {
+                            throw std::runtime_error("JSON: Invalid unicode escape sequence (non-hex digit)");
+                        }
+                        result += hexChar;
+                    }
+                    pos += 4;  // Skip the 4 hex digits (pos++ happens below)
                     break;
+                }
                 default:
-                    throw std::runtime_error("Invalid escape sequence");
+                    throw std::runtime_error("JSON: Invalid escape sequence '\\" + std::string(1, escaped) + "'");
             }
             pos++;
+        } else if(ch < 0x20) {
+            // Control characters must be escaped in JSON
+            throw std::runtime_error("JSON: Unescaped control character in string (char code " +
+                                     std::to_string(static_cast<int>(ch)) + ")");
         } else {
             result += ch;
             pos++;
         }
     }
 
-    throw std::runtime_error("Unterminated string");
+    throw std::runtime_error("JSON: Unterminated string");
 }
 
 Value JSON::parseNumber(const std::string& json, size_t& pos) {
