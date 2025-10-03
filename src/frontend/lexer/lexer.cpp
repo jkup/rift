@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <unordered_map>
 
+#include "rift/core/runtime_limits.h"
+
 namespace rift::frontend {
 
 // Lexer implementation
@@ -62,9 +64,24 @@ Token Lexer::read_string() {
     advance();  // Skip opening quote
 
     std::string value;
+    value.reserve(256);  // Reserve some space to reduce allocations
+
     while(current_char() != quote && current_char() != '\0') {
+        // Check string length limit (prevent DoS via huge strings)
+        if(value.length() >= rift::core::RuntimeLimits::MAX_STRING_LENGTH) {
+            throw std::runtime_error("String literal exceeds maximum length (" +
+                                     std::to_string(rift::core::RuntimeLimits::MAX_STRING_LENGTH) +
+                                     " characters)");
+        }
+
         if(current_char() == '\\') {
             advance();
+            
+            // Validate escape sequence exists
+            if(current_char() == '\0') {
+                throw std::runtime_error("Unterminated escape sequence in string literal");
+            }
+            
             switch(current_char()) {
                 case 'n':
                     value += '\n';
@@ -84,7 +101,22 @@ Token Lexer::read_string() {
                 case '\'':
                     value += '\'';
                     break;
+                case '0':
+                    value += '\0';
+                    break;
+                case 'b':
+                    value += '\b';
+                    break;
+                case 'f':
+                    value += '\f';
+                    break;
+                case 'v':
+                    value += '\v';
+                    break;
+                // For unrecognized escape sequences, include the backslash
+                // (ECMAScript behavior for non-standard escapes)
                 default:
+                    value += '\\';
                     value += current_char();
                     break;
             }
@@ -92,6 +124,11 @@ Token Lexer::read_string() {
             value += current_char();
         }
         advance();
+    }
+
+    // Check for unterminated string
+    if(current_char() != quote) {
+        throw std::runtime_error("Unterminated string literal");
     }
 
     if(current_char() == quote) {
@@ -112,8 +149,16 @@ Token Lexer::read_template_string() {
 
 Token Lexer::read_template_part() {
     std::string value;
+    value.reserve(256);  // Reserve some space
 
     while(current_char() != '\0') {
+        // Check string length limit
+        if(value.length() >= rift::core::RuntimeLimits::MAX_STRING_LENGTH) {
+            throw std::runtime_error("Template literal exceeds maximum length (" +
+                                     std::to_string(rift::core::RuntimeLimits::MAX_STRING_LENGTH) +
+                                     " characters)");
+        }
+
         // Check for ${ - start of expression
         if(current_char() == '$' && peek_char() == '{') {
             // Always advance past ${ and switch to expression mode
