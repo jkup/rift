@@ -3,6 +3,7 @@
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
 
@@ -25,6 +26,9 @@ Value Error::constructor(const std::vector<Value>& args) {
     // Create Error object with proper prototype chain
     auto errorPrototype = getGlobalPrototype();
     auto* errorObj = getObjectFactory()->createJSObject(errorPrototype);  // Use factory
+    
+    // Protect from GC during initialization
+    rift::memory::GCProtector protect(errorObj, getObjectFactory()->getObjectManager());
 
     // Set the name property
     errorObj->setProperty("name", Value("Error"));

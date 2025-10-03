@@ -2,6 +2,7 @@
 
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/evaluation_utils.h"
+#include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
 
@@ -31,6 +32,10 @@ Value Boolean::constructor(const rift::core::CallContext& callContext,
     if(callContext.isConstructorCall()) {
         auto booleanPrototype = getGlobalPrototype();
         auto* booleanObj = getObjectFactory()->createJSObject(booleanPrototype);
+        
+        // Protect from GC during initialization
+        rift::memory::GCProtector protect(booleanObj, getObjectFactory()->getObjectManager());
+        
         booleanObj->setProperty("value", Value(boolValue));
         return Value(booleanObj);
     }

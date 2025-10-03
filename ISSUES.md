@@ -267,11 +267,11 @@ During testing, discovered and fixed additional GC issues in object/function/arr
 
 ---
 
-### 4. ✅ FIXED - Integer Overflow Risks
+### 4. ✅ FIXED - Integer Overflow Risks & GC Heap-Use-After-Free
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM (Integer Overflow) + HIGH (GC Memory Safety)  
 **Status:** ✅ **FIXED** (October 2, 2025)  
-**Locations:** Array operations, expression evaluation (5 instances - all fixed)
+**Locations:** Array operations, expression evaluation (5 instances - all fixed), GC object initialization (architecture-wide fix)
 
 **Original Problem:**
 - Converting `double` to `size_t` without validation (NaN, Infinity, negative, > MAX)
@@ -411,6 +411,163 @@ Per ECMAScript specification, arrays have a maximum length of 2^32 - 1 (4,294,96
 - Prevents push() operations beyond the limit
 - Caps splice() results at MAX_ARRAY_LENGTH
 - Handles edge cases (NaN, Infinity, negative lengths) by creating empty arrays or returning undefined
+
+---
+
+#### 4b. GC Heap-Use-After-Free During Object Initialization
+
+**Severity:** HIGH  
+**Status:** ✅ **FIXED** (October 2, 2025)  
+**Discovered:** During testing of integer overflow fixes
+
+**Original Problem:**
+- Objects created via `ObjectFactory::createJSObject()` were immediately added to GC tracking
+- If GC collection triggered during object initialization, objects could be collected BEFORE they were reachable from GC roots
+- Led to heap-use-after-free crashes in Array, Boolean, Object, and Error constructors
+- **Root Cause:** Timing window between object creation and the object becoming reachable from roots
+
+**Attack Scenario:**
+```cpp
+// Array constructor (simplified)
+auto* arrayObj = factory->createJSObject();  // Object created and tracked by GC
+// ⚠️ If GC threshold reached here, collection runs
+// ⚠️ Object not yet reachable from roots, gets collected
+arrayObj->setProperty("length", Value(0.0));  // ⚠️ CRASH - object already deleted!
+```
+
+**Timeline of Bug:**
+1. `createJSObject()` allocates object
+2. Calls `gc_->addObject(obj)` to track it
+3. `addObject()` checks if threshold reached (e.g., 100 objects)
+4. If yes, `collect()` runs immediately
+5. GC marks from roots, doesn't find new object (not a root yet)
+6. GC deletes the "unreachable" object
+7. Constructor code tries to initialize deleted object → heap-use-after-free
+
+**Fix Applied:**
+
+**1. Created GCProtector RAII Class (`include/rift/memory/gc_protector.h` + `src/memory/gc_protector.cpp`):**
+```cpp
+// RAII class for protecting objects during initialization
+class GCProtector {
+public:
+    GCProtector(JSObject* obj, ObjectManager* manager)
+        : protected_obj_(obj), obj_manager_(manager) {
+        if(obj_manager_ && protected_obj_) {
+            obj_manager_->addRoot(protected_obj_);  // Add as temporary root
+        }
+    }
+    
+    ~GCProtector() {
+        if(obj_manager_ && protected_obj_) {
+            obj_manager_->removeRoot(protected_obj_);  // Remove when object reachable via normal paths
+        }
+    }
+private:
+    JSObject* protected_obj_;
+    ObjectManager* obj_manager_;
+};
+```
+
+**2. Modified ObjectFactory to Disable GC During Creation (`src/memory/object_manager.cpp`):**
+```cpp
+// Uses RAII GCDisabler for exception-safe GC suspension
+JSObject* ObjectManager::createJSObject(JSObject* prototype) {
+    GCDisabler disabler(gc_.get());  // GC disabled, auto-restored on exception or return
+    
+    JSObject* obj = new JSObject(prototype);
+    gc_->addObject(obj);  // Track but can't collect (GC disabled)
+    
+    return obj;  // GC automatically re-enabled here
+}
+
+JSFunction* ObjectManager::createJSFunction(...) {
+    GCDisabler disabler(gc_.get());  // Same exception-safe pattern
+    JSFunction* obj = new JSFunction(wrapper);
+    gc_->addObject(obj);
+    return obj;
+}
+```
+
+**Exception Safety**: If `new` throws `std::bad_alloc`, `GCDisabler` destructor ensures GC is re-enabled.
+
+**3. Updated All Major Constructors to Use GCProtector:**
+   - `Array::constructor()` - `src/builtins/array/array.cpp`
+   - `Array::createArrayObject()` - utility function
+   - `Boolean::constructor()` - `src/builtins/boolean/boolean.cpp`
+   - `Object::constructor()` - `src/builtins/object/object.cpp` (for primitive wrappers)
+   - `Error::constructor()` - `src/builtins/error/error.cpp`
+
+**Usage Pattern:**
+```cpp
+// In any constructor that does complex initialization
+auto* obj = getObjectFactory()->createJSObject(prototype);
+GCProtector protect(obj, getObjectFactory()->getObjectManager());
+
+// Now safe to initialize properties, call methods, etc.
+obj->setProperty("length", Value(0.0));
+obj->setProperty("name", Value("Example"));
+// ... more initialization ...
+
+return Value(obj);  // GCProtector destructor removes temporary root
+```
+
+**Advanced Pattern (Multiple Function Creation):**
+```cpp
+// When creating multiple functions that need to be assigned as properties
+auto* toStringFunc = getObjectFactory()->createJSFunction(toStringFn);
+GCProtector protectToString(toStringFunc, getObjectFactory()->getObjectManager());
+
+auto* valueOfFunc = getObjectFactory()->createJSFunction(valueOfFn);
+GCProtector protectValueOf(valueOfFunc, getObjectFactory()->getObjectManager());
+
+obj->setProperty("toString", Value(toStringFunc));
+obj->setProperty("valueOf", Value(valueOfFunc));
+```
+
+**Files Modified:**
+- `include/rift/memory/gc_protector.h` - NEW: RAII protection class
+- `src/memory/gc_protector.cpp` - NEW: Implementation
+- `include/rift/memory/gc_disabler.h` - NEW: RAII GC suspension class
+- `src/memory/gc_disabler.cpp` - NEW: Implementation
+- `src/memory/object_manager.cpp` - Added GC suspension during object creation (exception-safe via RAII)
+- `src/builtins/array/array.cpp` - Added GCProtector usage
+- `src/builtins/boolean/boolean.cpp` - Added GCProtector usage
+- `src/builtins/object/object.cpp` - Added GCProtector usage
+- `src/builtins/error/error.cpp` - Added GCProtector usage
+- `CMakeLists.txt` - Added gc_protector.cpp and gc_disabler.cpp to build
+- `copilot-instructions.md` - Added GC safety documentation
+
+**Benefits:**
+- ✅ **Zero heap-use-after-free errors**: Objects protected during initialization
+- ✅ **RAII pattern**: Exception-safe, automatic cleanup
+- ✅ **Scalable architecture**: Pattern works for all future object types
+- ✅ **No memory leaks**: Roots automatically removed when objects become reachable
+- ✅ **Minimal performance impact**: GC disabled only during brief creation window
+- ✅ **Clean API**: Simple to use, hard to misuse
+
+**Testing:**
+- Build successful with AddressSanitizer enabled
+- All integer overflow tests pass (no regressions)
+- Created `test/gc-leak-test.js` to verify proper collection
+- Tested with Array, Boolean, Object, and Error constructors
+- No heap-use-after-free errors detected
+- Verified objects are still properly collected when unreachable
+
+**Key Architectural Improvement:**
+This fix establishes a clear pattern for safe object initialization in a GC-managed environment:
+1. ObjectFactory disables GC during creation
+2. Constructor immediately creates GCProtector to add object as temporary root
+3. Constructor safely initializes object properties
+4. GCProtector destructor removes temporary root when initialization complete
+5. Object becomes reachable via normal GC root traversal (e.g., stored in variable, property, etc.)
+
+**Solution Evolution:**
+- **Attempt 1**: Auto-add all objects as permanent roots → memory leaks
+- **Attempt 2**: Only add as root during GCProtector lifetime → still collected before protector created
+- **Final Solution**: Disable GC during creation + GCProtector for initialization window → works perfectly
+
+This pattern ensures GC safety as the project grows and more complex object initialization scenarios are added.
 
 ---
 

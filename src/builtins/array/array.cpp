@@ -9,6 +9,7 @@
 #include "rift/core/engine/call_context.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
 
@@ -56,6 +57,11 @@ Value Array::constructor(const std::vector<Value>& args) {
     // Create array with proper prototype chain using GC-managed creation
     auto* arrayPrototype = getGlobalPrototype();
     auto* arrayObj = getObjectFactory()->createJSObject(arrayPrototype);
+    
+    // CRITICAL: Protect arrayObj from GC collection during initialization
+    // The object is not yet reachable from any roots, but setProperty() calls
+    // below may trigger GC if allocation threshold is reached.
+    rift::memory::GCProtector protect(arrayObj, getObjectFactory()->getObjectManager());
 
     size_t effectiveArgCount = args.size();
 
@@ -81,8 +87,8 @@ Value Array::constructor(const std::vector<Value>& args) {
         setArrayLength(arrayObj, effectiveArgCount);
     }
 
-    return Value(arrayObj);  // arrayObj is now raw pointer
-}
+    return Value(arrayObj);  // GCProtector releases protection here
+}                           // arrayObj is now reachable via return Value
 
 Value Array::push(const std::vector<Value>& args) {
     auto* arrayObj = getThisArrayObject(args);
@@ -1127,6 +1133,9 @@ JSObject* Array::createArrayObject(rift::memory::ObjectFactory* factory,
 
     // Use factory for GC-managed creation
     auto* arrayObj = factory->createJSObject(arrayPrototype);
+    
+    // CRITICAL: Protect arrayObj from GC during initialization
+    rift::memory::GCProtector protect(arrayObj, factory->getObjectManager());
 
     // Set up array elements
     for(size_t i = 0; i < elements.size(); ++i) {
@@ -1136,7 +1145,7 @@ JSObject* Array::createArrayObject(rift::memory::ObjectFactory* factory,
     // Set array length
     setArrayLength(arrayObj, elements.size());
 
-    return arrayObj;  // Return raw pointer
+    return arrayObj;  // GCProtector releases protection here
 }
 
 Value Array::toString(const std::vector<Value>& args) {

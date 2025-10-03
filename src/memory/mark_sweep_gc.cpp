@@ -32,6 +32,14 @@ class MarkSweepGC : public GarbageCollector {
             all_objects_.insert(obj);
 
             // Only trigger collection if GC is enabled and threshold reached
+            // NOTE: Newly added objects are NOT automatically roots. They must be
+            // either:
+            // 1. Protected via GCProtector during initialization
+            // 2. Immediately made reachable (returned, stored in variable, etc.)
+            // 3. Stored in a property of another object
+            //
+            // If threshold is reached and collection triggers, unprotected objects
+            // may be collected. Callers must use GCProtector for complex init.
             if(gc_enabled_ && shouldCollect()) {
                 collect();
             }

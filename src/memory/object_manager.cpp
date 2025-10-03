@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "rift/runtime/values/object.h"
+#include "rift/memory/gc_disabler.h"
 
 namespace rift::memory {
 
@@ -21,20 +22,32 @@ ObjectManager::~ObjectManager() {
 }
 
 rift::runtime::JSObject* ObjectManager::createJSObject(rift::runtime::JSObject* prototype) {
+    // Disable GC during object creation - automatically re-enabled when disabler goes out of scope
+    // This prevents collection if an exception is thrown during object creation
+    GCDisabler disabler(gc_.get());
+    
     rift::runtime::JSObject* obj = new rift::runtime::JSObject(prototype);
-    gc_->addObject(obj);  // GC now owns this object
+    gc_->addObject(obj);  // GC owns object (won't trigger collection - GC disabled)
+    
     return obj;
 }
 
 rift::runtime::JSFunction* ObjectManager::createJSFunction(
     std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func) {
+    // Disable GC during object creation - automatically re-enabled when disabler goes out of scope
+    GCDisabler disabler(gc_.get());
+    
     rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(func);
-    gc_->addObject(obj);  // GC now owns this object
+    gc_->addObject(obj);  // Track the object (GC disabled, won't collect)
+    
     return obj;
 }
 
 rift::runtime::JSFunction* ObjectManager::createJSFunction(
     std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func) {
+    // Disable GC during object creation - automatically re-enabled when disabler goes out of scope
+    GCDisabler disabler(gc_.get());
+    
     // Wrap legacy function into CallContext-aware function.
     // If a valid thisValue is present in call context, inject it as args[0]
     // to preserve existing builtin convention that expects receiver in args[0].
@@ -50,7 +63,8 @@ rift::runtime::JSFunction* ObjectManager::createJSFunction(
         return func(args);
     };
     rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(wrapper);
-    gc_->addObject(obj);
+    gc_->addObject(obj);  // Track the object (GC disabled, won't collect)
+    
     return obj;
 }
 

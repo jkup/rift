@@ -58,20 +58,42 @@
   - **Correct**: `auto* obj = factory->createJSObject();` or `engine->getObjectFactory()->createJSObject();`
   - **Wrong**: `auto* obj = new JSObject();` (not tracked by GC, will leak or cause use-after-free)
   - All JSObject/JSFunction instances MUST be created via `ObjectFactory` methods
-  - When creating multiple objects that won't be immediately rooted (e.g., during parsing), temporarily disable GC:
+  - **GC Protection During Initialization**:
+    - Objects are tracked from creation but may be collected if not reachable from GC roots
+    - ⚠️ **ALWAYS use `GCProtector` in constructors that do complex initialization**
+    - **Required pattern for constructors**:
+
+      ```cpp
+      #include "rift/memory/gc_protector.h"
+
+      // In Array constructor, Boolean constructor, etc.
+      auto* obj = getObjectFactory()->createJSObject(prototype);
+      GCProtector protect(obj, getObjectFactory()->getObjectManager());
+
+      // Now safe to initialize properties, call methods, etc.
+      obj->setProperty("length", Value(0.0));
+      // ... more initialization ...
+
+      return Value(obj);  // GCProtector destructor removes temporary root
+      ```
+
+    - Without `GCProtector`, objects may be collected during initialization if GC triggers
+    - `GCProtector` uses RAII to automatically add/remove objects as temporary GC roots
+    - `ObjectFactory::createJSObject()` and `createJSFunction()` already disable GC during creation
+    - Use `GCProtector` for the initialization window between creation and first root reference
+  - When creating multiple objects in a tight loop, temporarily disable GC for performance:
     ```cpp
     auto* objManager = factory->getObjectManager();
     bool wasGCEnabled = objManager->isGCEnabled();
     objManager->setGCEnabled(false);
     try {
-        // Create objects safely
+        // Create many objects safely
         objManager->setGCEnabled(wasGCEnabled);
     } catch(...) {
         objManager->setGCEnabled(wasGCEnabled);
         throw;
     }
     ```
-  - Objects are tracked from creation but may be collected if not reachable from GC roots
 - **Formatting**: Use `make format` before committing. 4-space indent, 100-char line limit.
 - **Static analysis**: Address all `clang-tidy` and `cppcheck` warnings. Run sanitizers regularly.
 
