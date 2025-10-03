@@ -471,26 +471,25 @@ private:
 
 **2. Modified ObjectFactory to Disable GC During Creation (`src/memory/object_manager.cpp`):**
 ```cpp
+// Uses RAII GCDisabler for exception-safe GC suspension
 JSObject* ObjectManager::createJSObject(JSObject* prototype) {
-    // Prevent GC from running between creation and root registration
-    gc_->setGCEnabled(false);
+    GCDisabler disabler(gc_.get());  // GC disabled, auto-restored on exception or return
     
     JSObject* obj = new JSObject(prototype);
     gc_->addObject(obj);  // Track but can't collect (GC disabled)
     
-    gc_->setGCEnabled(true);  // Re-enable after tracking
-    return obj;
+    return obj;  // GC automatically re-enabled here
 }
 
 JSFunction* ObjectManager::createJSFunction(...) {
-    // Same GC suspension pattern for functions
-    gc_->setGCEnabled(false);
+    GCDisabler disabler(gc_.get());  // Same exception-safe pattern
     JSFunction* obj = new JSFunction(wrapper);
     gc_->addObject(obj);
-    gc_->setGCEnabled(true);
     return obj;
 }
 ```
+
+**Exception Safety**: If `new` throws `std::bad_alloc`, `GCDisabler` destructor ensures GC is re-enabled.
 
 **3. Updated All Major Constructors to Use GCProtector:**
    - `Array::constructor()` - `src/builtins/array/array.cpp`
@@ -529,12 +528,14 @@ obj->setProperty("valueOf", Value(valueOfFunc));
 **Files Modified:**
 - `include/rift/memory/gc_protector.h` - NEW: RAII protection class
 - `src/memory/gc_protector.cpp` - NEW: Implementation
-- `src/memory/object_manager.cpp` - Added GC suspension during object creation
+- `include/rift/memory/gc_disabler.h` - NEW: RAII GC suspension class
+- `src/memory/gc_disabler.cpp` - NEW: Implementation
+- `src/memory/object_manager.cpp` - Added GC suspension during object creation (exception-safe via RAII)
 - `src/builtins/array/array.cpp` - Added GCProtector usage
 - `src/builtins/boolean/boolean.cpp` - Added GCProtector usage
 - `src/builtins/object/object.cpp` - Added GCProtector usage
 - `src/builtins/error/error.cpp` - Added GCProtector usage
-- `CMakeLists.txt` - Added gc_protector.cpp to build
+- `CMakeLists.txt` - Added gc_protector.cpp and gc_disabler.cpp to build
 - `copilot-instructions.md` - Added GC safety documentation
 
 **Benefits:**

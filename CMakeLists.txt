@@ -31,6 +31,7 @@ set(MEMORY_SOURCES
     src/memory/object_manager.cpp
     src/memory/gc_environment.cpp
     src/memory/gc_protector.cpp
+    src/memory/gc_disabler.cpp
 )
 
 set(BUILTINS_SOURCES
