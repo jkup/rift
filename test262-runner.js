@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
 import chalk from "chalk";
+import { Test262ResultsTracker } from "./test262-results-tracker.js";
 
 // Configuration
 const TEST262_DIR = "./test262";
@@ -16,6 +17,7 @@ class Test262Runner {
     this.skipped = 0;
     this.results = [];
     this.startTime = Date.now();
+    this.tracker = new Test262ResultsTracker();
   }
 
   // Display a simple status line that updates in place
@@ -194,6 +196,7 @@ class Test262Runner {
     // Fix 1: Check if this test uses unsupported features FIRST
     if (this.testUsesUnsupportedFeatures(test)) {
       this.skipped++;
+      this.tracker.recordResult(testFile, 'skipped', 'Uses unsupported language features');
       return {
         status: "skipped",
         reason: "Uses unsupported language features",
@@ -251,13 +254,16 @@ function Test262Error() {
       if (test.negative) {
         // Test expected to fail but didn't - this is wrong
         this.failed++;
+        this.tracker.recordResult(testFile, 'failed', 'Expected error but test passed');
         return { status: "failed", reason: "Expected error but test passed" };
       } else {
         if (stdout.includes("Test262Error")) {
           this.failed++;
+          const reason = "Test assertion failed: " + stdout.substring(0, 150);
+          this.tracker.recordResult(testFile, 'failed', reason);
           return {
             status: "failed",
-            reason: "Test assertion failed: " + stdout.substring(0, 150),
+            reason: reason,
           };
         }
 
@@ -271,14 +277,17 @@ function Test262Error() {
           (stdout.includes("Exception") && !stdout.includes("Test262Error"))
         ) {
           this.failed++;
+          const reason = "Runtime error: " + stdout.substring(0, 150);
+          this.tracker.recordResult(testFile, 'failed', reason);
           return {
             status: "failed",
-            reason: "Runtime error: " + stdout.substring(0, 150),
+            reason: reason,
           };
         }
 
         // If no errors or exceptions, the test passed
         this.passed++;
+        this.tracker.recordResult(testFile, 'passed');
         return { status: "passed" };
       }
     } catch (error) {
@@ -288,6 +297,7 @@ function Test262Error() {
       if (test.negative) {
         // Test expected to fail and did fail - this is correct
         this.passed++;
+        this.tracker.recordResult(testFile, 'passed', 'Expected error occurred');
         return { status: "passed", reason: "Expected error occurred" };
       } else {
         // Check if we got output before the crash
@@ -295,9 +305,11 @@ function Test262Error() {
           // Test262 assertion failure
           if (stdout.includes("Test262Error")) {
             this.failed++;
+            const reason = "Test assertion failed: " + stdout.substring(0, 150);
+            this.tracker.recordResult(testFile, 'failed', reason);
             return {
               status: "failed",
-              reason: "Test assertion failed: " + stdout.substring(0, 150),
+              reason: reason,
             };
           }
 
@@ -311,15 +323,18 @@ function Test262Error() {
             (stdout.includes("Exception") && !stdout.includes("Test262Error"))
           ) {
             this.failed++;
+            const reason = "Runtime error: " + stdout.substring(0, 150);
+            this.tracker.recordResult(testFile, 'failed', reason);
             return {
               status: "failed",
-              reason: "Runtime error: " + stdout.substring(0, 150),
+              reason: reason,
             };
           }
 
           // If we got output but no errors, the test may have passed (despite segfault)
           // The segfault might be a cleanup issue, not a test failure
           this.passed++;
+          this.tracker.recordResult(testFile, 'passed', 'Test completed successfully (runtime crashed during cleanup)');
           return {
             status: "passed", 
             reason: "Test completed successfully (runtime crashed during cleanup)"
@@ -335,6 +350,7 @@ function Test262Error() {
             lines.find((line) => line.includes("Error:")) || lines[0];
           cleanReason = errorLine.replace(/^.*Error:\s*/, "").trim();
         }
+        this.tracker.recordResult(testFile, 'failed', "Runtime crash: " + cleanReason);
         return {
           status: "failed",
           reason: "Runtime crash: " + cleanReason,
@@ -492,11 +508,18 @@ function Test262Error() {
     console.log(`Skipped: ${this.skipped}`);
     console.log(`Total: ${total}`);
     console.log(`Pass Rate: ${passRate}%`);
+
+    // Save detailed results using tracker
+    const resultsFile = this.tracker.saveResults('test262-results.json');
     console.log();
+    console.log(chalk.green(`💾 Detailed results saved to: ${resultsFile}`));
+
+    // Print category-based summary
+    this.tracker.printSummary();
 
     if (this.failed > 0) {
       console.log();
-      console.log(chalk.bold.red("❌ Failed Tests:"));
+      console.log(chalk.bold.red("❌ Failed Tests (sample):"));
       console.log(chalk.red("─".repeat(50)));
 
       this.results

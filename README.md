@@ -58,7 +58,7 @@ This will create the `rift` executable in the `build/` directory.
 
 ### Run Tests
 
-The project includes integration with the official ECMAScript test suite (test262):
+The project includes comprehensive testing capabilities:
 
 ```bash
 # Run the curated JS test suite
@@ -66,7 +66,21 @@ npm run test
 
 # Run a single test file
 ./build/rift test/let-const-parser-test.js
+
+# Test262 (ECMAScript compliance testing)
+npm run test262              # Run full Test262 suite (30-45 min)
+npm run test262:groups       # List available test groups
+npm run test262:group -- basic-types        # Run specific group (~20s)
+npm run test262:group -- built-in-array     # Test Array implementation
+npm run test262:all-groups   # Run all groups with summary
 ```
+
+**New!** Category-based testing for faster feedback:
+- Run specific feature groups instead of the full suite
+- Get detailed breakdowns by category (built-ins, language features, etc.)
+- See which areas are strongest vs need improvement
+
+See [`docs/TEST262_GROUPS_GUIDE.md`](docs/TEST262_GROUPS_GUIDE.md) for detailed usage.
 
 ### Code Quality
 

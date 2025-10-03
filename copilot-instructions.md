@@ -14,6 +14,8 @@
 | Run JS code (inline)      | `./build/rift -e "console.log('hi')"`                                   |
 | Run custom tests          | `npm test` or `node test-runner.js`                                     |
 | Run Test262 suite         | `npm run test262` or `node test262-runner.js`                           |
+| Run Test262 group         | `npm run test262:group -- <group-name>`                                 |
+| List Test262 groups       | `npm run test262:groups`                                                |
 | Run specific Test262 test | `node test262-runner.js path/to/test.js`                                |
 | Format code               | `cd build && make format`                                               |
 | Check formatting          | `cd build && make format-check`                                         |
@@ -22,7 +24,8 @@
 | Docs: GC plan             | `docs/gc-implementation-plan.md`                                        |
 | Docs: Code quality        | `docs/CODE_QUALITY.md`                                                  |
 | Docs: Test262 CI          | `docs/CI_TEST262_GUIDE.md`                                              |
-| Docs: Test262 blockers    | `docs/TEST262_BLOCKERS.md`                                              |
+| Docs: Test262 groups      | `docs/TEST262_GROUPS_GUIDE.md`                                          |
+| Docs: Test262 improvements| `docs/TEST262_IMPROVEMENT_IDEAS.md`                                     |
 | Test262 authoring guide   | `test262/CONTRIBUTING.md`                                               |
 
 ---
