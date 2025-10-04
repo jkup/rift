@@ -50,6 +50,125 @@ void Lexer::skip_whitespace() {
     }
 }
 
+// Helper function to parse hex digit
+int Lexer::parse_hex_digit(char c) {
+    if(c >= '0' && c <= '9') return c - '0';
+    if(c >= 'a' && c <= 'f') return 10 + (c - 'a');
+    if(c >= 'A' && c <= 'F') return 10 + (c - 'A');
+    return -1;  // Invalid hex digit
+}
+
+// Helper function to parse 2-digit hex escape (\xHH)
+char Lexer::parse_hex_escape() {
+    // Current char should be first hex digit after \x
+    int digit1 = parse_hex_digit(current_char());
+    if(digit1 == -1) {
+        throw std::runtime_error("Invalid hex escape sequence: expected hex digit");
+    }
+    advance();
+    
+    int digit2 = parse_hex_digit(current_char());
+    if(digit2 == -1) {
+        throw std::runtime_error("Invalid hex escape sequence: expected second hex digit");
+    }
+    
+    return static_cast<char>((digit1 << 4) | digit2);
+}
+
+// Helper function to parse 4-digit unicode escape (\uHHHH)
+std::string Lexer::parse_unicode_escape() {
+    // Parse 4 hex digits
+    int codepoint = 0;
+    for(int i = 0; i < 4; i++) {
+        int digit = parse_hex_digit(current_char());
+        if(digit == -1) {
+            throw std::runtime_error("Invalid unicode escape sequence: expected 4 hex digits");
+        }
+        codepoint = (codepoint << 4) | digit;
+        advance();
+    }
+    
+    // Convert Unicode code point to UTF-8
+    std::string result;
+    if(codepoint <= 0x7F) {
+        // 1-byte sequence (ASCII)
+        result += static_cast<char>(codepoint);
+    } else if(codepoint <= 0x7FF) {
+        // 2-byte sequence
+        result += static_cast<char>(0xC0 | (codepoint >> 6));
+        result += static_cast<char>(0x80 | (codepoint & 0x3F));
+    } else {
+        // 3-byte sequence (covers BMP 0x0800 to 0xFFFF)
+        result += static_cast<char>(0xE0 | (codepoint >> 12));
+        result += static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F));
+        result += static_cast<char>(0x80 | (codepoint & 0x3F));
+    }
+    
+    // Back up one character since the loop will advance again
+    position--;
+    column--;
+    
+    return result;
+}
+
+// Helper function to parse unicode code point escape (\u{H...})
+std::string Lexer::parse_unicode_codepoint_escape() {
+    // Current char should be '{' after \u
+    if(current_char() != '{') {
+        throw std::runtime_error("Invalid unicode code point escape: expected '{'");
+    }
+    advance();
+    
+    // Parse hex digits until we hit '}'
+    int codepoint = 0;
+    int digitCount = 0;
+    while(current_char() != '}' && current_char() != '\0') {
+        int digit = parse_hex_digit(current_char());
+        if(digit == -1) {
+            throw std::runtime_error("Invalid unicode code point escape: expected hex digit or '}'");
+        }
+        codepoint = (codepoint << 4) | digit;
+        digitCount++;
+        if(digitCount > 6) {  // Max 6 hex digits (0x10FFFF)
+            throw std::runtime_error("Invalid unicode code point escape: code point too large");
+        }
+        advance();
+    }
+    
+    if(current_char() != '}') {
+        throw std::runtime_error("Invalid unicode code point escape: expected '}'");
+    }
+    
+    // Validate code point range
+    if(codepoint > 0x10FFFF) {
+        throw std::runtime_error("Invalid unicode code point escape: code point out of range");
+    }
+    
+    // Convert Unicode code point to UTF-8
+    std::string result;
+    if(codepoint <= 0x7F) {
+        // 1-byte sequence
+        result += static_cast<char>(codepoint);
+    } else if(codepoint <= 0x7FF) {
+        // 2-byte sequence
+        result += static_cast<char>(0xC0 | (codepoint >> 6));
+        result += static_cast<char>(0x80 | (codepoint & 0x3F));
+    } else if(codepoint <= 0xFFFF) {
+        // 3-byte sequence
+        result += static_cast<char>(0xE0 | (codepoint >> 12));
+        result += static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F));
+        result += static_cast<char>(0x80 | (codepoint & 0x3F));
+    } else {
+        // 4-byte sequence (for code points above BMP)
+        result += static_cast<char>(0xF0 | (codepoint >> 18));
+        result += static_cast<char>(0x80 | ((codepoint >> 12) & 0x3F));
+        result += static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F));
+        result += static_cast<char>(0x80 | (codepoint & 0x3F));
+    }
+    
+    return result;
+}
+
 Token Lexer::read_number() {
     std::string value;
     while(std::isdigit(current_char()) || current_char() == '.') {
@@ -112,6 +231,28 @@ Token Lexer::read_string() {
                     break;
                 case 'v':
                     value += '\v';
+                    break;
+                case 'x':
+                    // Hex escape: \xHH
+                    advance();
+                    value += parse_hex_escape();
+                    break;
+                case 'u':
+                    // Unicode escape: \uHHHH or \u{H...}
+                    advance();
+                    if(current_char() == '{') {
+                        value += parse_unicode_codepoint_escape();
+                    } else {
+                        value += parse_unicode_escape();
+                    }
+                    break;
+                case '\n':
+                case '\r':
+                    // Line continuation: backslash followed by newline
+                    // Just skip the newline, don't add anything to the string
+                    if(current_char() == '\r' && peek_char() == '\n') {
+                        advance();  // Skip \r\n
+                    }
                     break;
                 // For unrecognized escape sequences, include the backslash
                 // (ECMAScript behavior for non-standard escapes)
@@ -210,6 +351,27 @@ Token Lexer::read_template_part() {
                 case '$':
                     value += '$';
                     break;  // Allow escaping $
+                case 'x':
+                    // Hex escape: \xHH
+                    advance();
+                    value += parse_hex_escape();
+                    break;
+                case 'u':
+                    // Unicode escape: \uHHHH or \u{H...}
+                    advance();
+                    if(current_char() == '{') {
+                        value += parse_unicode_codepoint_escape();
+                    } else {
+                        value += parse_unicode_escape();
+                    }
+                    break;
+                case '\n':
+                case '\r':
+                    // Line continuation in template literals
+                    if(current_char() == '\r' && peek_char() == '\n') {
+                        advance();  // Skip \r\n
+                    }
+                    break;
                 default:
                     value += current_char();
                     break;

@@ -188,6 +188,13 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `string.slice`, `string.split`, `string.substring`
 - ✅ `string.toLowerCase`, `string.toUpperCase`, `string.trim`
 - ✅ `string.toString`, `string.valueOf`
+- ✅ **String Escape Sequences** ✅ **NEW**
+  - Basic escapes: `\n`, `\t`, `\r`, `\\`, `\"`, `\'`, `\0`, `\b`, `\f`, `\v`
+  - Hex escapes: `\xHH` (e.g., `\x41` → "A")
+  - Unicode escapes: `\uHHHH` (e.g., `\u2665` → "♥")
+  - Unicode code point escapes: `\u{...}` (e.g., `\u{1F600}` → "😀")
+  - Line continuation: backslash-newline in strings
+  - All escapes work in both regular strings and template literals
 
 #### **Math Object**
 - ✅ Constants: `Math.PI`, `Math.E`, `Math.LN2`, `Math.LN10`, `Math.LOG2E`, `Math.LOG10E`, `Math.SQRT2`, `Math.SQRT1_2`
