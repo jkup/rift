@@ -207,30 +207,53 @@ class Test262Runner {
       // Build combined code with harness files
       let combinedCode = '';
       
-      // Skip problematic harness files - use our own minimal implementation instead
+      // Use our compatibility harness that works with our current runtime capabilities
+      const compatHarnessPath = './test262-harness-compat.js';
+      if (fs.existsSync(compatHarnessPath)) {
+        const harnessContent = fs.readFileSync(compatHarnessPath, 'utf8');
+        combinedCode += harnessContent + '\n';
+      } else {
+        // If harness not found, this test will fail
+        console.error('Warning: test262-harness-compat.js not found');
+      }
       
-      // Add a minimal assert implementation that doesn't use template literals
-      combinedCode += `
-// Very simple Test262Error that doesn't use parameters
-function Test262Error() {
-  var error = {};
-  error.message = "Test failed";
-  error.name = "Test262Error";
-  return error;
-}
-`;
-      
-      // Include test-specific harness files (skip ones with template literals)
+      // Include test-specific harness files that we can support
       if (test.includes && test.includes.length > 0) {
         for (const includeFile of test.includes) {
-          // Skip problematic harness files
-          if (includeFile === 'assert.js') {
-            continue; // Skip original assert.js due to template literals
+          // Skip standard harness files since we're using our compat version
+          if (includeFile === 'sta.js' || includeFile === 'assert.js' || includeFile === 'propertyHelper.js') {
+            continue;
+          }
+          
+          // Skip other complex harness files we don't support yet
+          const unsupportedHarness = [
+            'compareArray.js',      // Uses Array methods we may not have
+            'compareIterator.js',   // Uses iterators
+            'isConstructor.js',     // Needs Reflect.construct
+            'nativeFunctionMatcher.js', // Uses regex
+            'asyncHelpers.js',      // Async/await
+            'atomicsHelper.js',     // Atomics
+            'temporalHelpers.js',   // Temporal API
+            'testAtomics.js',
+            'testBigIntTypedArray.js',
+            'testIntl.js',
+            'testTypedArray.js',
+            'promiseHelper.js',
+            'detachArrayBuffer.js',
+            'resizableArrayBufferUtils.js',
+          ];
+          
+          if (unsupportedHarness.includes(includeFile)) {
+            continue;
           }
           
           const harnessPath = path.join(TEST262_DIR, 'harness', includeFile);
           if (fs.existsSync(harnessPath)) {
-            combinedCode += fs.readFileSync(harnessPath, 'utf8') + '\n';
+            try {
+              combinedCode += fs.readFileSync(harnessPath, 'utf8') + '\n';
+            } catch (e) {
+              // If we can't read it, skip it
+            }
           }
         }
       }
