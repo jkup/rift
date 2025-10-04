@@ -203,6 +203,14 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `new Boolean(x)` returns Boolean object with `.valueOf()`/`.toString()`
 - ✅ `boolean.toString`, `boolean.valueOf`
 
+#### **Number Constructor & Methods** ✅ **NEW**
+- ✅ `Number(x)` returns primitive number
+- ✅ `new Number(x)` returns Number object
+- ✅ **Constants**: `Number.NaN`, `Number.POSITIVE_INFINITY`, `Number.NEGATIVE_INFINITY`, `Number.MAX_VALUE`, `Number.MIN_VALUE`, `Number.MAX_SAFE_INTEGER`, `Number.MIN_SAFE_INTEGER`, `Number.EPSILON`
+- ✅ **Static methods**: `Number.isNaN()`, `Number.isFinite()`, `Number.isInteger()`, `Number.isSafeInteger()`, `Number.parseFloat()`, `Number.parseInt()`
+- ✅ **Prototype methods**: `number.toString([radix])`, `number.valueOf()`, `number.toFixed()`, `number.toExponential()`, `number.toPrecision()`
+- ⚠️ **Limitation**: Primitive auto-boxing not yet supported (use Number objects explicitly)
+
 #### **Error Constructor & Methods**
 - ✅ `Error()`
 - ✅ `error.toString`

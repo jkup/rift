@@ -7,6 +7,7 @@
 #include "rift/builtins/global/global.h"
 #include "rift/builtins/json/json.h"
 #include "rift/builtins/math/math.h"
+#include "rift/builtins/number/number.h"
 #include "rift/builtins/object/object.h"
 #include "rift/builtins/string/string.h"
 #include "rift/core/engine/engine.h"
@@ -19,6 +20,7 @@ JSObject* BuiltinManager::objectPrototype_ = nullptr;
 JSObject* BuiltinManager::arrayPrototype_ = nullptr;
 JSObject* BuiltinManager::stringPrototype_ = nullptr;
 JSObject* BuiltinManager::booleanPrototype_ = nullptr;
+JSObject* BuiltinManager::numberPrototype_ = nullptr;
 JSObject* BuiltinManager::errorPrototype_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
@@ -31,6 +33,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::Object::setObjectFactory(factory);
         builtins::String::setObjectFactory(factory);
         builtins::Boolean::setObjectFactory(factory);
+        builtins::Number::setObjectFactory(factory);
         builtins::Error::setObjectFactory(factory);
     }
 
@@ -43,6 +46,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupJSON(globalEnv, engine);
     setupObject(globalEnv, factory);
     setupBoolean(globalEnv, factory);
+    setupNumber(globalEnv, factory);
     setupError(globalEnv, factory);
 
     // After all builtins are created, get their prototypes from the constructors
@@ -50,6 +54,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     auto* arrayConstructor = globalEnv->get("Array").getObject();
     auto* stringConstructor = globalEnv->get("String").getObject();
     auto* booleanConstructor = globalEnv->get("Boolean").getObject();
+    auto* numberConstructor = globalEnv->get("Number").getObject();
     auto* errorConstructor = globalEnv->get("Error").getObject();
 
     if(objectConstructor)
@@ -60,6 +65,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         stringPrototype_ = stringConstructor->getProperty("prototype").getObject();
     if(booleanConstructor)
         booleanPrototype_ = booleanConstructor->getProperty("prototype").getObject();
+    if(numberConstructor)
+        numberPrototype_ = numberConstructor->getProperty("prototype").getObject();
     if(errorConstructor)
         errorPrototype_ = errorConstructor->getProperty("prototype").getObject();
 
@@ -72,6 +79,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     }
     if(objectPrototype_ && booleanPrototype_) {
         booleanPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && numberPrototype_) {
+        numberPrototype_->setPrototype(objectPrototype_);
     }
     if(objectPrototype_ && errorPrototype_) {
         errorPrototype_->setPrototype(objectPrototype_);
@@ -98,6 +108,10 @@ JSObject* BuiltinManager::getStringPrototype() {
 
 JSObject* BuiltinManager::getBooleanPrototype() {
     return booleanPrototype_;
+}
+
+JSObject* BuiltinManager::getNumberPrototype() {
+    return numberPrototype_;
 }
 
 JSObject* BuiltinManager::getErrorPrototype() {
@@ -152,6 +166,13 @@ void BuiltinManager::setupBoolean(std::shared_ptr<Environment> globalEnv,
     globalEnv->define("Boolean", Value(boolean));
 }
 
+void BuiltinManager::setupNumber(std::shared_ptr<Environment> globalEnv,
+                                 rift::memory::ObjectFactory* factory) {
+    // Setup Number object using GC-managed creation
+    auto* number = builtins::Number::create(factory);  // number is now raw pointer
+    globalEnv->define("Number", Value(number));
+}
+
 void BuiltinManager::setupError(std::shared_ptr<Environment> globalEnv,
                                 rift::memory::ObjectFactory* factory) {
     // Setup Error object using GC-managed creation
@@ -187,6 +208,7 @@ void BuiltinManager::clearStaticPrototypes() {
     arrayPrototype_ = nullptr;
     stringPrototype_ = nullptr;
     booleanPrototype_ = nullptr;
+    numberPrototype_ = nullptr;
     errorPrototype_ = nullptr;
 }
 

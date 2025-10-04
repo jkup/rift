@@ -23,6 +23,7 @@ class BuiltinManager {
     static JSObject* getArrayPrototype();
     static JSObject* getStringPrototype();
     static JSObject* getBooleanPrototype();
+    static JSObject* getNumberPrototype();
     static JSObject* getErrorPrototype();
 
     // Cleanup method for shutdown
@@ -34,6 +35,7 @@ class BuiltinManager {
     static JSObject* arrayPrototype_;
     static JSObject* stringPrototype_;
     static JSObject* booleanPrototype_;
+    static JSObject* numberPrototype_;
     static JSObject* errorPrototype_;
 
     // Individual builtin setup methods - now accept ObjectFactory
@@ -52,6 +54,8 @@ class BuiltinManager {
                             rift::memory::ObjectFactory* factory);
     static void setupBoolean(std::shared_ptr<Environment> globalEnv,
                              rift::memory::ObjectFactory* factory);
+    static void setupNumber(std::shared_ptr<Environment> globalEnv,
+                            rift::memory::ObjectFactory* factory);
     static void setupError(std::shared_ptr<Environment> globalEnv,
                            rift::memory::ObjectFactory* factory);
     static void setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine);
