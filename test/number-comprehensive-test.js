@@ -13,7 +13,7 @@ console.log("Expected: 0");
 console.log("Number(42): " + Number(42));
 console.log("Expected: 42");
 
-console.log("Number('123'): " + Number('123'));
+console.log("Number('123'): " + Number("123"));
 console.log("Expected: 123");
 
 console.log("Number(true): " + Number(true));
@@ -74,7 +74,7 @@ console.log("Expected: true");
 console.log("Number.isNaN(42): " + Number.isNaN(42));
 console.log("Expected: false");
 
-console.log("Number.isNaN('NaN'): " + Number.isNaN('NaN'));
+console.log("Number.isNaN('NaN'): " + Number.isNaN("NaN"));
 console.log("Expected: false (string, not number type)");
 
 console.log("Number.isNaN(undefined): " + Number.isNaN(undefined));
@@ -100,7 +100,7 @@ console.log("Expected: false");
 console.log("Number.isFinite(NaN): " + Number.isFinite(NaN));
 console.log("Expected: false");
 
-console.log("Number.isFinite('42'): " + Number.isFinite('42'));
+console.log("Number.isFinite('42'): " + Number.isFinite("42"));
 console.log("Expected: false (string, not number type)");
 
 console.log("\n--- Number.isInteger() ---");
@@ -131,13 +131,22 @@ console.log("\n--- Number.isSafeInteger() ---");
 console.log("Number.isSafeInteger(42): " + Number.isSafeInteger(42));
 console.log("Expected: true");
 
-console.log("Number.isSafeInteger(9007199254740991): " + Number.isSafeInteger(9007199254740991));
+console.log(
+  "Number.isSafeInteger(9007199254740991): " +
+    Number.isSafeInteger(9007199254740991)
+);
 console.log("Expected: true (MAX_SAFE_INTEGER)");
 
-console.log("Number.isSafeInteger(-9007199254740991): " + Number.isSafeInteger(-9007199254740991));
+console.log(
+  "Number.isSafeInteger(-9007199254740991): " +
+    Number.isSafeInteger(-9007199254740991)
+);
 console.log("Expected: true (MIN_SAFE_INTEGER)");
 
-console.log("Number.isSafeInteger(9007199254740992): " + Number.isSafeInteger(9007199254740992));
+console.log(
+  "Number.isSafeInteger(9007199254740992): " +
+    Number.isSafeInteger(9007199254740992)
+);
 console.log("Expected: false (exceeds MAX_SAFE_INTEGER)");
 
 console.log("Number.isSafeInteger(42.5): " + Number.isSafeInteger(42.5));
@@ -145,33 +154,33 @@ console.log("Expected: false (not an integer)");
 
 console.log("\n--- Number.parseFloat() ---");
 
-console.log("Number.parseFloat('123.45'): " + Number.parseFloat('123.45'));
+console.log("Number.parseFloat('123.45'): " + Number.parseFloat("123.45"));
 console.log("Expected: 123.45");
 
-console.log("Number.parseFloat('  3.14  '): " + Number.parseFloat('  3.14  '));
+console.log("Number.parseFloat('  3.14  '): " + Number.parseFloat("  3.14  "));
 console.log("Expected: 3.14");
 
-console.log("Number.parseFloat('-42.5'): " + Number.parseFloat('-42.5'));
+console.log("Number.parseFloat('-42.5'): " + Number.parseFloat("-42.5"));
 console.log("Expected: -42.5");
 
-console.log("Number.parseFloat('123abc'): " + Number.parseFloat('123abc'));
+console.log("Number.parseFloat('123abc'): " + Number.parseFloat("123abc"));
 console.log("Expected: 123");
 
 console.log("\n--- Number.parseInt() ---");
 
-console.log("Number.parseInt('123'): " + Number.parseInt('123'));
+console.log("Number.parseInt('123'): " + Number.parseInt("123"));
 console.log("Expected: 123");
 
-console.log("Number.parseInt('  42  '): " + Number.parseInt('  42  '));
+console.log("Number.parseInt('  42  '): " + Number.parseInt("  42  "));
 console.log("Expected: 42");
 
-console.log("Number.parseInt('101', 2): " + Number.parseInt('101', 2));
+console.log("Number.parseInt('101', 2): " + Number.parseInt("101", 2));
 console.log("Expected: 5");
 
-console.log("Number.parseInt('FF', 16): " + Number.parseInt('FF', 16));
+console.log("Number.parseInt('FF', 16): " + Number.parseInt("FF", 16));
 console.log("Expected: 255");
 
-console.log("Number.parseInt('10', 8): " + Number.parseInt('10', 8));
+console.log("Number.parseInt('10', 8): " + Number.parseInt("10", 8));
 console.log("Expected: 8");
 
 // ===== Prototype Methods =====
@@ -190,10 +199,10 @@ console.log("Expected: 2a (hexadecimal)");
 console.log("(255).toString(16): " + (255).toString(16));
 console.log("Expected: ff");
 
-console.log("(NaN).toString(): " + (NaN).toString());
+console.log("(NaN).toString(): " + NaN.toString());
 console.log("Expected: NaN");
 
-console.log("(Infinity).toString(): " + (Infinity).toString());
+console.log("(Infinity).toString(): " + Infinity.toString());
 console.log("Expected: Infinity");
 
 console.log("\n--- Number.prototype.valueOf() ---");
@@ -256,13 +265,13 @@ console.log("Expected: 0");
 console.log("Number(undefined): " + Number(undefined));
 console.log("Expected: NaN");
 
-console.log("Number(''): " + Number(''));
+console.log("Number(''): " + Number(""));
 console.log("Expected: 0");
 
-console.log("Number('   '): " + Number('   '));
+console.log("Number('   '): " + Number("   "));
 console.log("Expected: 0");
 
-console.log("Number('abc'): " + Number('abc'));
+console.log("Number('abc'): " + Number("abc"));
 console.log("Expected: NaN");
 
 console.log("\n--- Number Object vs Primitive ---");
@@ -284,4 +293,6 @@ console.log("Expected: 42");
 
 console.log("\n=== Number Tests Complete ===");
 console.log("✅ All Number constructor, static properties, and methods tested");
-console.log("📊 Coverage: Constructor, 8 constants, 6 static methods, 5 prototype methods");
+console.log(
+  "📊 Coverage: Constructor, 8 constants, 6 static methods, 5 prototype methods"
+);
