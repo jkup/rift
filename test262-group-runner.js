@@ -187,39 +187,43 @@ class Test262GroupRunner {
 
     try {
       // Use our compatibility harness that works with our current runtime capabilities
-      let combinedCode = '';
-      
-      const compatHarnessPath = './test262-harness-compat.js';
+      let combinedCode = "";
+
+      const compatHarnessPath = "./test262-harness-compat.js";
       if (fs.existsSync(compatHarnessPath)) {
-        combinedCode += fs.readFileSync(compatHarnessPath, 'utf8') + '\n';
+        combinedCode += fs.readFileSync(compatHarnessPath, "utf8") + "\n";
       }
 
       // Include test-specific harness files that we can support
       if (test.includes && test.includes.length > 0) {
         for (const includeFile of test.includes) {
           // Skip standard harness files since we're using our compat version
-          if (includeFile === "assert.js" || includeFile === 'sta.js' || includeFile === 'propertyHelper.js') {
+          if (
+            includeFile === "assert.js" ||
+            includeFile === "sta.js" ||
+            includeFile === "propertyHelper.js"
+          ) {
             continue;
           }
-          
+
           // Skip other complex harness files we don't support yet
           const unsupportedHarness = [
-            'compareArray.js',
-            'compareIterator.js',
-            'isConstructor.js',
-            'nativeFunctionMatcher.js',
-            'asyncHelpers.js',
-            'atomicsHelper.js',
-            'temporalHelpers.js',
-            'testAtomics.js',
-            'testBigIntTypedArray.js',
-            'testIntl.js',
-            'testTypedArray.js',
-            'promiseHelper.js',
-            'detachArrayBuffer.js',
-            'resizableArrayBufferUtils.js',
+            "compareArray.js",
+            "compareIterator.js",
+            "isConstructor.js",
+            "nativeFunctionMatcher.js",
+            "asyncHelpers.js",
+            "atomicsHelper.js",
+            "temporalHelpers.js",
+            "testAtomics.js",
+            "testBigIntTypedArray.js",
+            "testIntl.js",
+            "testTypedArray.js",
+            "promiseHelper.js",
+            "detachArrayBuffer.js",
+            "resizableArrayBufferUtils.js",
           ];
-          
+
           if (unsupportedHarness.includes(includeFile)) {
             continue;
           }

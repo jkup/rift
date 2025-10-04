@@ -32,7 +32,7 @@ class Test262Runner {
     const skippedBox = chalk.yellow(
       `[⏭️  ${this.skipped.toString().padStart(3)}]`
     );
-    
+
     const progressBar = this.createProgressBar(currentIndex, totalTests, 20);
 
     // Current test (truncated if too long)
@@ -196,7 +196,11 @@ class Test262Runner {
     // Fix 1: Check if this test uses unsupported features FIRST
     if (this.testUsesUnsupportedFeatures(test)) {
       this.skipped++;
-      this.tracker.recordResult(testFile, 'skipped', 'Uses unsupported language features');
+      this.tracker.recordResult(
+        testFile,
+        "skipped",
+        "Uses unsupported language features"
+      );
       return {
         status: "skipped",
         reason: "Uses unsupported language features",
@@ -205,59 +209,63 @@ class Test262Runner {
 
     try {
       // Build combined code with harness files
-      let combinedCode = '';
-      
+      let combinedCode = "";
+
       // Use our compatibility harness that works with our current runtime capabilities
-      const compatHarnessPath = './test262-harness-compat.js';
+      const compatHarnessPath = "./test262-harness-compat.js";
       if (fs.existsSync(compatHarnessPath)) {
-        const harnessContent = fs.readFileSync(compatHarnessPath, 'utf8');
-        combinedCode += harnessContent + '\n';
+        const harnessContent = fs.readFileSync(compatHarnessPath, "utf8");
+        combinedCode += harnessContent + "\n";
       } else {
         // If harness not found, this test will fail
-        console.error('Warning: test262-harness-compat.js not found');
+        console.error("Warning: test262-harness-compat.js not found");
       }
-      
+
       // Include test-specific harness files that we can support
       if (test.includes && test.includes.length > 0) {
         for (const includeFile of test.includes) {
           // Skip standard harness files since we're using our compat version
-          if (includeFile === 'sta.js' || includeFile === 'assert.js' || includeFile === 'propertyHelper.js') {
+          if (
+            includeFile === "sta.js" ||
+            includeFile === "assert.js" ||
+            includeFile === "propertyHelper.js"
+          ) {
             continue;
           }
-          
+
           // Skip other complex harness files we don't support yet
           const unsupportedHarness = [
-            'compareArray.js',      // Uses Array methods we may not have
-            'compareIterator.js',   // Uses iterators
-            'isConstructor.js',     // Needs Reflect.construct
-            'nativeFunctionMatcher.js', // Uses regex
-            'asyncHelpers.js',      // Async/await
-            'atomicsHelper.js',     // Atomics
-            'temporalHelpers.js',   // Temporal API
-            'testAtomics.js',
-            'testBigIntTypedArray.js',
-            'testIntl.js',
-            'testTypedArray.js',
-            'promiseHelper.js',
-            'detachArrayBuffer.js',
-            'resizableArrayBufferUtils.js',
+            "compareArray.js", // Uses Array methods we may not have
+            "compareIterator.js", // Uses iterators
+            "isConstructor.js", // Needs Reflect.construct
+            "nativeFunctionMatcher.js", // Uses regex
+            "asyncHelpers.js", // Async/await
+            "atomicsHelper.js", // Atomics
+            "temporalHelpers.js", // Temporal API
+            "testAtomics.js",
+            "testBigIntTypedArray.js",
+            "testIntl.js",
+            "testTypedArray.js",
+            "promiseHelper.js",
+            "detachArrayBuffer.js",
+            "resizableArrayBufferUtils.js",
           ];
-          
+
           if (unsupportedHarness.includes(includeFile)) {
             continue;
           }
-          
-          const harnessPath = path.join(TEST262_DIR, 'harness', includeFile);
+
+          const harnessPath = path.join(TEST262_DIR, "harness", includeFile);
           if (fs.existsSync(harnessPath)) {
             try {
-              combinedCode += fs.readFileSync(harnessPath, 'utf8') + '\n';
+              combinedCode += fs.readFileSync(harnessPath, "utf8") + "\n";
             } catch (e) {
               // If we can't read it, skip it
             }
           }
         }
       }
-      
+
       // Add the actual test code
       combinedCode += test.code;
 
@@ -277,13 +285,17 @@ class Test262Runner {
       if (test.negative) {
         // Test expected to fail but didn't - this is wrong
         this.failed++;
-        this.tracker.recordResult(testFile, 'failed', 'Expected error but test passed');
+        this.tracker.recordResult(
+          testFile,
+          "failed",
+          "Expected error but test passed"
+        );
         return { status: "failed", reason: "Expected error but test passed" };
       } else {
         if (stdout.includes("Test262Error")) {
           this.failed++;
           const reason = "Test assertion failed: " + stdout.substring(0, 150);
-          this.tracker.recordResult(testFile, 'failed', reason);
+          this.tracker.recordResult(testFile, "failed", reason);
           return {
             status: "failed",
             reason: reason,
@@ -301,7 +313,7 @@ class Test262Runner {
         ) {
           this.failed++;
           const reason = "Runtime error: " + stdout.substring(0, 150);
-          this.tracker.recordResult(testFile, 'failed', reason);
+          this.tracker.recordResult(testFile, "failed", reason);
           return {
             status: "failed",
             reason: reason,
@@ -310,7 +322,7 @@ class Test262Runner {
 
         // If no errors or exceptions, the test passed
         this.passed++;
-        this.tracker.recordResult(testFile, 'passed');
+        this.tracker.recordResult(testFile, "passed");
         return { status: "passed" };
       }
     } catch (error) {
@@ -320,7 +332,11 @@ class Test262Runner {
       if (test.negative) {
         // Test expected to fail and did fail - this is correct
         this.passed++;
-        this.tracker.recordResult(testFile, 'passed', 'Expected error occurred');
+        this.tracker.recordResult(
+          testFile,
+          "passed",
+          "Expected error occurred"
+        );
         return { status: "passed", reason: "Expected error occurred" };
       } else {
         // Check if we got output before the crash
@@ -329,7 +345,7 @@ class Test262Runner {
           if (stdout.includes("Test262Error")) {
             this.failed++;
             const reason = "Test assertion failed: " + stdout.substring(0, 150);
-            this.tracker.recordResult(testFile, 'failed', reason);
+            this.tracker.recordResult(testFile, "failed", reason);
             return {
               status: "failed",
               reason: reason,
@@ -347,7 +363,7 @@ class Test262Runner {
           ) {
             this.failed++;
             const reason = "Runtime error: " + stdout.substring(0, 150);
-            this.tracker.recordResult(testFile, 'failed', reason);
+            this.tracker.recordResult(testFile, "failed", reason);
             return {
               status: "failed",
               reason: reason,
@@ -357,10 +373,15 @@ class Test262Runner {
           // If we got output but no errors, the test may have passed (despite segfault)
           // The segfault might be a cleanup issue, not a test failure
           this.passed++;
-          this.tracker.recordResult(testFile, 'passed', 'Test completed successfully (runtime crashed during cleanup)');
+          this.tracker.recordResult(
+            testFile,
+            "passed",
+            "Test completed successfully (runtime crashed during cleanup)"
+          );
           return {
-            status: "passed", 
-            reason: "Test completed successfully (runtime crashed during cleanup)"
+            status: "passed",
+            reason:
+              "Test completed successfully (runtime crashed during cleanup)",
           };
         }
 
@@ -373,7 +394,11 @@ class Test262Runner {
             lines.find((line) => line.includes("Error:")) || lines[0];
           cleanReason = errorLine.replace(/^.*Error:\s*/, "").trim();
         }
-        this.tracker.recordResult(testFile, 'failed', "Runtime crash: " + cleanReason);
+        this.tracker.recordResult(
+          testFile,
+          "failed",
+          "Runtime crash: " + cleanReason
+        );
         return {
           status: "failed",
           reason: "Runtime crash: " + cleanReason,
@@ -409,14 +434,14 @@ class Test262Runner {
     if (test.includes && test.includes.length > 0) {
       // Check if any includes are for features we definitely don't support
       const unsupportedIncludes = [
-        'temporalHelpers.js',  // Temporal API
-        'testAtomics.js',      // SharedArrayBuffer/Atomics
-        'testIntl.js',         // Internationalization
-        'testBigIntTypedArray.js', // BigInt
-        'asyncHelpers.js',     // async/await
-        'atomicsHelper.js',    // Atomics
+        "temporalHelpers.js", // Temporal API
+        "testAtomics.js", // SharedArrayBuffer/Atomics
+        "testIntl.js", // Internationalization
+        "testBigIntTypedArray.js", // BigInt
+        "asyncHelpers.js", // async/await
+        "atomicsHelper.js", // Atomics
       ];
-      
+
       for (const include of test.includes) {
         if (unsupportedIncludes.includes(include)) {
           return true;
@@ -533,7 +558,7 @@ class Test262Runner {
     console.log(`Pass Rate: ${passRate}%`);
 
     // Save detailed results using tracker
-    const resultsFile = this.tracker.saveResults('test262-results.json');
+    const resultsFile = this.tracker.saveResults("test262-results.json");
     console.log();
     console.log(chalk.green(`💾 Detailed results saved to: ${resultsFile}`));
 
@@ -593,14 +618,14 @@ function parseArgs() {
   const args = process.argv.slice(2);
   const options = {
     includePattern: null,
-    singleTest: null
+    singleTest: null,
   };
 
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--include' && i + 1 < args.length) {
+    if (args[i] === "--include" && i + 1 < args.length) {
       options.includePattern = args[i + 1];
       i++; // Skip next argument as it's the value
-    } else if (!args[i].startsWith('--')) {
+    } else if (!args[i].startsWith("--")) {
       // If it's not a flag, treat it as a single test file
       options.singleTest = args[i];
     }
@@ -615,7 +640,9 @@ const options = parseArgs();
 
 if (options.singleTest) {
   try {
-    const result = await runner.runSingleTest(`${TEST262_DIR}/${options.singleTest}`);
+    const result = await runner.runSingleTest(
+      `${TEST262_DIR}/${options.singleTest}`
+    );
     console.log(result);
   } catch (error) {
     console.error(error);

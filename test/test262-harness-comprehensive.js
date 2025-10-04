@@ -40,14 +40,26 @@ console.log("✓ Passed\n");
 
 // Test 7: Number.isFinite with assert
 console.log("Test 7: Number.isFinite with assert");
-assert.sameValue(Number.isFinite(42), true, "Number.isFinite(42) should be true");
-assert.sameValue(Number.isFinite(Infinity), false, "Number.isFinite(Infinity) should be false");
+assert.sameValue(
+  Number.isFinite(42),
+  true,
+  "Number.isFinite(42) should be true"
+);
+assert.sameValue(
+  Number.isFinite(Infinity),
+  false,
+  "Number.isFinite(Infinity) should be false"
+);
 console.log("✓ Passed\n");
 
 // Test 8: Number.parseInt with assert
 console.log("Test 8: Number.parseInt with assert");
 assert.sameValue(Number.parseInt("255"), 255, "parseInt('255') should be 255");
-assert.sameValue(Number.parseInt("FF", 16), 255, "parseInt('FF', 16) should be 255");
+assert.sameValue(
+  Number.parseInt("FF", 16),
+  255,
+  "parseInt('FF', 16) should be 255"
+);
 console.log("✓ Passed\n");
 
 // Test 9: verifyProperty basic
@@ -63,7 +75,9 @@ assert.sameValue(num.valueOf(), 123.456, "valueOf should return 123.456");
 console.log("✓ Passed\n");
 
 // Test 11: assert.throws (basic) - Skip for now, we don't have TypeError constructor yet
-console.log("Test 11: assert.throws - SKIPPED (no TypeError constructor yet)\n");
+console.log(
+  "Test 11: assert.throws - SKIPPED (no TypeError constructor yet)\n"
+);
 
 // Test 12: verifyCallableProperty
 console.log("Test 12: verifyCallableProperty");
