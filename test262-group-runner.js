@@ -43,9 +43,7 @@ class Test262GroupRunner {
     });
 
     console.log(chalk.cyan("\n" + "═".repeat(70)));
-    console.log(
-      chalk.dim("\nUsage: npm run test262:group -- <group-name>")
-    );
+    console.log(chalk.dim("\nUsage: npm run test262:group -- <group-name>"));
     console.log(chalk.dim("Example: npm run test262:group -- core-language\n"));
   }
 
@@ -238,7 +236,11 @@ function Test262Error() {
           stdout.includes("Exception")
         ) {
           this.failed++;
-          this.tracker.recordResult(testFile, "failed", stdout.substring(0, 150));
+          this.tracker.recordResult(
+            testFile,
+            "failed",
+            stdout.substring(0, 150)
+          );
           return { status: "failed" };
         }
 
@@ -291,11 +293,13 @@ function Test262Error() {
           `\n⚠️  No tests found for group '${groupName}'. This might mean:`
         )
       );
+      console.log(chalk.dim("   - The test262 suite hasn't been cloned yet"));
       console.log(
-        chalk.dim("   - The test262 suite hasn't been cloned yet")
+        chalk.dim("   - The patterns in the group don't match any tests")
       );
-      console.log(chalk.dim("   - The patterns in the group don't match any tests"));
-      console.log(chalk.dim("\nRun 'npm run test262' to clone the test suite."));
+      console.log(
+        chalk.dim("\nRun 'npm run test262' to clone the test suite.")
+      );
       return;
     }
 
@@ -318,9 +322,12 @@ function Test262Error() {
 
       // Progress indicator
       const progress = ((i + 1) / testFiles.length) * 100;
-      const filled = Math.round((progressBarWidth * (i + 1)) / testFiles.length);
+      const filled = Math.round(
+        (progressBarWidth * (i + 1)) / testFiles.length
+      );
       const empty = progressBarWidth - filled;
-      const bar = chalk.green("█".repeat(filled)) + chalk.gray("░".repeat(empty));
+      const bar =
+        chalk.green("█".repeat(filled)) + chalk.gray("░".repeat(empty));
 
       process.stdout.write(
         `\r[${bar}] ${progress.toFixed(1)}% | ` +
@@ -371,7 +378,9 @@ function Test262Error() {
 
       console.log(
         chalk.dim(
-          `   ✅ ${groupRunner.passed} ❌ ${groupRunner.failed} (${passRate.toFixed(1)}%)`
+          `   ✅ ${groupRunner.passed} ❌ ${
+            groupRunner.failed
+          } (${passRate.toFixed(1)}%)`
         )
       );
     }

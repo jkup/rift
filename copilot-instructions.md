@@ -6,29 +6,29 @@
 
 ## 📚 Quick Reference & Docs
 
-| Task                      | Command / Location                                                      |
-| ------------------------- | ----------------------------------------------------------------------- |
-| Build (recommended)       | `./build.sh`                                                            |
-| Manual build              | `mkdir -p build && cd build && cmake .. && make -j$(sysctl -n hw.ncpu)` |
-| Run JS file               | `./build/rift path/to/script.js`                                        |
-| Run JS code (inline)      | `./build/rift -e "console.log('hi')"`                                   |
-| Run custom tests          | `npm test` or `node test-runner.js`                                     |
-| Run Test262 suite         | `npm run test262` or `node test262-runner.js`                           |
-| Run Test262 group         | `npm run test262:group -- <group-name>`                                 |
-| List Test262 groups       | `npm run test262:groups`                                                |
-| Analyze Test262 impact    | `npm run test262:analyze`                                               |
-| Run specific Test262 test | `node test262-runner.js path/to/test.js`                                |
-| Format code               | `cd build && make format`                                               |
-| Check formatting          | `cd build && make format-check`                                         |
-| Static analysis           | `cd build && make cppcheck`                                             |
-| All code quality checks   | `cd build && make quality`                                              |
-| Docs: GC plan             | `docs/gc-implementation-plan.md`                                        |
-| Docs: Code quality        | `docs/CODE_QUALITY.md`                                                  |
-| Docs: Test262 CI          | `docs/CI_TEST262_GUIDE.md`                                              |
-| Docs: Test262 groups      | `docs/TEST262_GROUPS_GUIDE.md`                                          |
-| Docs: Test262 impact      | `docs/TEST262_IMPACT_ANALYSIS.md`                                       |
-| Docs: Test262 improvements| `docs/TEST262_IMPROVEMENT_IDEAS.md`                                     |
-| Test262 authoring guide   | `test262/CONTRIBUTING.md`                                               |
+| Task                       | Command / Location                                                      |
+| -------------------------- | ----------------------------------------------------------------------- |
+| Build (recommended)        | `./build.sh`                                                            |
+| Manual build               | `mkdir -p build && cd build && cmake .. && make -j$(sysctl -n hw.ncpu)` |
+| Run JS file                | `./build/rift path/to/script.js`                                        |
+| Run JS code (inline)       | `./build/rift -e "console.log('hi')"`                                   |
+| Run custom tests           | `npm test` or `node test-runner.js`                                     |
+| Run Test262 suite          | `npm run test262` or `node test262-runner.js`                           |
+| Run Test262 group          | `npm run test262:group -- <group-name>`                                 |
+| List Test262 groups        | `npm run test262:groups`                                                |
+| Analyze Test262 impact     | `npm run test262:analyze`                                               |
+| Run specific Test262 test  | `node test262-runner.js path/to/test.js`                                |
+| Format code                | `cd build && make format`                                               |
+| Check formatting           | `cd build && make format-check`                                         |
+| Static analysis            | `cd build && make cppcheck`                                             |
+| All code quality checks    | `cd build && make quality`                                              |
+| Docs: GC plan              | `docs/gc-implementation-plan.md`                                        |
+| Docs: Code quality         | `docs/CODE_QUALITY.md`                                                  |
+| Docs: Test262 CI           | `docs/CI_TEST262_GUIDE.md`                                              |
+| Docs: Test262 groups       | `docs/TEST262_GROUPS_GUIDE.md`                                          |
+| Docs: Test262 impact       | `docs/TEST262_IMPACT_ANALYSIS.md`                                       |
+| Docs: Test262 improvements | `docs/TEST262_IMPROVEMENT_IDEAS.md`                                     |
+| Test262 authoring guide    | `test262/CONTRIBUTING.md`                                               |
 
 ---
 
@@ -59,11 +59,13 @@
   - For ECMAScript compliance, throw `TypeError` when type check fails (not just return undefined)
   - Include `#include "rift/core/engine/javascript_exception.h"` when throwing TypeError
 - **Memory Management & GC**:
+
   - ⚠️ **NEVER use raw `new` for JavaScript objects - always use `ObjectFactory`**
   - **Correct**: `auto* obj = factory->createJSObject();` or `engine->getObjectFactory()->createJSObject();`
   - **Wrong**: `auto* obj = new JSObject();` (not tracked by GC, will leak or cause use-after-free)
   - All JSObject/JSFunction instances MUST be created via `ObjectFactory` methods
   - **GC Protection During Initialization**:
+
     - Objects are tracked from creation but may be collected if not reachable from GC roots
     - ⚠️ **ALWAYS use `GCProtector` in constructors that do complex initialization**
     - **Required pattern for constructors**:
@@ -86,6 +88,7 @@
     - `GCProtector` uses RAII to automatically add/remove objects as temporary GC roots
     - `ObjectFactory::createJSObject()` and `createJSFunction()` already disable GC during creation
     - Use `GCProtector` for the initialization window between creation and first root reference
+
   - When creating multiple objects in a tight loop, temporarily disable GC for performance:
     ```cpp
     auto* objManager = factory->getObjectManager();
@@ -99,6 +102,7 @@
         throw;
     }
     ```
+
 - **Formatting**: Use `make format` before committing. 4-space indent, 100-char line limit.
 - **Static analysis**: Address all `clang-tidy` and `cppcheck` warnings. Run sanitizers regularly.
 

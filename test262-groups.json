@@ -45,46 +45,31 @@
   },
   "built-in-array": {
     "description": "Array built-in and all methods",
-    "patterns": [
-      "built-ins/Array"
-    ]
+    "patterns": ["built-ins/Array"]
   },
   "built-in-string": {
     "description": "String built-in and all methods",
-    "patterns": [
-      "built-ins/String"
-    ]
+    "patterns": ["built-ins/String"]
   },
   "built-in-object": {
     "description": "Object built-in and utilities",
-    "patterns": [
-      "built-ins/Object"
-    ]
+    "patterns": ["built-ins/Object"]
   },
   "built-in-math": {
     "description": "Math built-in and all methods",
-    "patterns": [
-      "built-ins/Math"
-    ]
+    "patterns": ["built-ins/Math"]
   },
   "built-in-boolean": {
     "description": "Boolean built-in and Boolean type",
-    "patterns": [
-      "built-ins/Boolean"
-    ]
+    "patterns": ["built-ins/Boolean"]
   },
   "built-in-number": {
     "description": "Number built-in and number operations",
-    "patterns": [
-      "built-ins/Number"
-    ]
+    "patterns": ["built-ins/Number"]
   },
   "built-in-function": {
     "description": "Function built-in and function features",
-    "patterns": [
-      "built-ins/Function",
-      "language/expressions/function"
-    ]
+    "patterns": ["built-ins/Function", "language/expressions/function"]
   },
   "error-handling": {
     "description": "Error objects and exception handling",

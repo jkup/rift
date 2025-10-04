@@ -12,12 +12,12 @@ export class Test262ResultsTracker {
     this.results = {
       metadata: {
         timestamp: new Date().toISOString(),
-        commit: process.env.GITHUB_SHA || 'local',
-        branch: process.env.GITHUB_REF || 'local'
+        commit: process.env.GITHUB_SHA || "local",
+        branch: process.env.GITHUB_REF || "local",
       },
       categories: {},
       tests: [],
-      summary: {}
+      summary: {},
     };
   }
 
@@ -29,23 +29,23 @@ export class Test262ResultsTracker {
   categorizeTest(testPath) {
     // Extract category from path
     // e.g., "test262/test/built-ins/Array/prototype/map/..." -> "built-ins/Array"
-    const normalizedPath = testPath.replace(/\\/g, '/');
-    const parts = normalizedPath.split('/test/')[1]?.split('/') || [];
-    
+    const normalizedPath = testPath.replace(/\\/g, "/");
+    const parts = normalizedPath.split("/test/")[1]?.split("/") || [];
+
     if (parts.length === 0) {
       return {
-        topLevel: 'unknown',
-        feature: 'unknown',
+        topLevel: "unknown",
+        feature: "unknown",
         subFeature: null,
-        fullPath: 'unknown'
+        fullPath: "unknown",
       };
     }
 
     return {
-      topLevel: parts[0],           // "built-ins", "language", "annexB"
-      feature: parts[1] || 'general',             // "Array", "expressions", etc.
+      topLevel: parts[0], // "built-ins", "language", "annexB"
+      feature: parts[1] || "general", // "Array", "expressions", etc.
       subFeature: parts[2] || null, // "prototype", "addition", etc.
-      fullPath: parts.slice(0, 3).join('/')
+      fullPath: parts.slice(0, 3).join("/"),
     };
   }
 
@@ -57,7 +57,7 @@ export class Test262ResultsTracker {
    */
   recordResult(testPath, status, reason = null) {
     const category = this.categorizeTest(testPath);
-    
+
     // Initialize category if needed
     if (!this.results.categories[category.fullPath]) {
       this.results.categories[category.fullPath] = {
@@ -67,30 +67,30 @@ export class Test262ResultsTracker {
         passed: 0,
         failed: 0,
         skipped: 0,
-        failedTests: []
+        failedTests: [],
       };
     }
-    
+
     // Update counts
     const cat = this.results.categories[category.fullPath];
     cat[status]++;
-    
+
     // Store individual test info
     const testInfo = {
-      path: testPath.replace(/.*test262\/test\//, ''),
+      path: testPath.replace(/.*test262\/test\//, ""),
       category: category.fullPath,
-      status
+      status,
     };
-    
+
     // Only store reason for failed tests to save space
-    if (status === 'failed' && reason) {
+    if (status === "failed" && reason) {
       testInfo.reason = reason.substring(0, 200); // Truncate long errors
       cat.failedTests.push({
         path: testInfo.path,
-        reason: testInfo.reason
+        reason: testInfo.reason,
       });
     }
-    
+
     this.results.tests.push(testInfo);
   }
 
@@ -100,22 +100,24 @@ export class Test262ResultsTracker {
    */
   generateReport() {
     const categories = Object.entries(this.results.categories);
-    
+
     // Calculate pass rates
     const categoryStats = categories.map(([name, stats]) => {
       const total = stats.passed + stats.failed;
       const passRate = total > 0 ? (stats.passed / total) * 100 : 0;
-      
+
       return {
         name,
         ...stats,
         total,
-        passRate: parseFloat(passRate.toFixed(2))
+        passRate: parseFloat(passRate.toFixed(2)),
       };
     });
 
     // Sort by various metrics
-    const byPassRate = [...categoryStats].sort((a, b) => b.passRate - a.passRate);
+    const byPassRate = [...categoryStats].sort(
+      (a, b) => b.passRate - a.passRate
+    );
     const byTestCount = [...categoryStats].sort((a, b) => b.total - a.total);
     const byFailures = [...categoryStats].sort((a, b) => b.failed - a.failed);
 
@@ -124,7 +126,8 @@ export class Test262ResultsTracker {
     const totalFailed = categoryStats.reduce((sum, c) => sum + c.failed, 0);
     const totalSkipped = categoryStats.reduce((sum, c) => sum + c.skipped, 0);
     const totalTests = totalPassed + totalFailed;
-    const overallPassRate = totalTests > 0 ? (totalPassed / totalTests) * 100 : 0;
+    const overallPassRate =
+      totalTests > 0 ? (totalPassed / totalTests) * 100 : 0;
 
     this.results.summary = {
       overall: {
@@ -132,48 +135,44 @@ export class Test262ResultsTracker {
         passed: totalPassed,
         failed: totalFailed,
         skipped: totalSkipped,
-        passRate: parseFloat(overallPassRate.toFixed(2))
+        passRate: parseFloat(overallPassRate.toFixed(2)),
       },
       totalCategories: categories.length,
       strongestCategories: byPassRate
-        .filter(c => c.passRate >= 70 && c.total >= 5)
+        .filter((c) => c.passRate >= 70 && c.total >= 5)
         .slice(0, 10)
-        .map(c => ({
+        .map((c) => ({
           name: c.name,
           passRate: c.passRate,
           passed: c.passed,
-          total: c.total
+          total: c.total,
         })),
       weakestCategories: byPassRate
-        .filter(c => c.total >= 5) // Only categories with enough tests
+        .filter((c) => c.total >= 5) // Only categories with enough tests
         .slice(-10)
         .reverse()
-        .map(c => ({
+        .map((c) => ({
           name: c.name,
           passRate: c.passRate,
           failed: c.failed,
-          total: c.total
-        })),
-      largestCategories: byTestCount
-        .slice(0, 10)
-        .map(c => ({
-          name: c.name,
           total: c.total,
-          passRate: c.passRate
         })),
-      mostFailures: byFailures
-        .slice(0, 10)
-        .map(c => ({
-          name: c.name,
-          failed: c.failed,
-          total: c.total,
-          passRate: c.passRate
-        }))
+      largestCategories: byTestCount.slice(0, 10).map((c) => ({
+        name: c.name,
+        total: c.total,
+        passRate: c.passRate,
+      })),
+      mostFailures: byFailures.slice(0, 10).map((c) => ({
+        name: c.name,
+        failed: c.failed,
+        total: c.total,
+        passRate: c.passRate,
+      })),
     };
 
     return {
       ...this.results,
-      categoryStats: categoryStats.sort((a, b) => a.name.localeCompare(b.name))
+      categoryStats: categoryStats.sort((a, b) => a.name.localeCompare(b.name)),
     };
   }
 
@@ -181,7 +180,7 @@ export class Test262ResultsTracker {
    * Save results to a JSON file
    * @param {string} filename - Output filename
    */
-  saveResults(filename = 'test262-results.json') {
+  saveResults(filename = "test262-results.json") {
     const report = this.generateReport();
     fs.writeFileSync(filename, JSON.stringify(report, null, 2));
     return filename;
@@ -194,38 +193,52 @@ export class Test262ResultsTracker {
     const report = this.generateReport();
     const { summary } = report;
 
-    console.log('\n' + '═'.repeat(60));
-    console.log('📊 Test262 Results Summary');
-    console.log('═'.repeat(60));
-    
-    console.log('\n🎯 Overall Results:');
+    console.log("\n" + "═".repeat(60));
+    console.log("📊 Test262 Results Summary");
+    console.log("═".repeat(60));
+
+    console.log("\n🎯 Overall Results:");
     console.log(`   Total Tests: ${summary.overall.total}`);
-    console.log(`   ✅ Passed: ${summary.overall.passed} (${summary.overall.passRate}%)`);
+    console.log(
+      `   ✅ Passed: ${summary.overall.passed} (${summary.overall.passRate}%)`
+    );
     console.log(`   ❌ Failed: ${summary.overall.failed}`);
     console.log(`   ⏭️  Skipped: ${summary.overall.skipped}`);
-    
+
     if (summary.strongestCategories.length > 0) {
-      console.log('\n💪 Strongest Categories (≥70% pass rate):');
+      console.log("\n💪 Strongest Categories (≥70% pass rate):");
       summary.strongestCategories.forEach((cat, i) => {
-        console.log(`   ${i + 1}. ${cat.name.padEnd(40)} ${cat.passRate.toFixed(1)}% (${cat.passed}/${cat.total})`);
+        console.log(
+          `   ${i + 1}. ${cat.name.padEnd(40)} ${cat.passRate.toFixed(1)}% (${
+            cat.passed
+          }/${cat.total})`
+        );
       });
     }
-    
+
     if (summary.weakestCategories.length > 0) {
-      console.log('\n🎯 Improvement Opportunities (lowest pass rates):');
+      console.log("\n🎯 Improvement Opportunities (lowest pass rates):");
       summary.weakestCategories.forEach((cat, i) => {
-        console.log(`   ${i + 1}. ${cat.name.padEnd(40)} ${cat.passRate.toFixed(1)}% (${cat.failed} failed)`);
+        console.log(
+          `   ${i + 1}. ${cat.name.padEnd(40)} ${cat.passRate.toFixed(1)}% (${
+            cat.failed
+          } failed)`
+        );
       });
     }
-    
-    console.log('\n📦 Largest Test Categories:');
+
+    console.log("\n📦 Largest Test Categories:");
     summary.largestCategories.slice(0, 5).forEach((cat, i) => {
-      console.log(`   ${i + 1}. ${cat.name.padEnd(40)} ${cat.total} tests (${cat.passRate.toFixed(1)}%)`);
+      console.log(
+        `   ${i + 1}. ${cat.name.padEnd(40)} ${
+          cat.total
+        } tests (${cat.passRate.toFixed(1)}%)`
+      );
     });
-    
-    console.log('\n' + '═'.repeat(60));
+
+    console.log("\n" + "═".repeat(60));
     console.log(`📄 Detailed results saved to: test262-results.json`);
-    console.log('═'.repeat(60) + '\n');
+    console.log("═".repeat(60) + "\n");
   }
 
   /**
@@ -237,7 +250,7 @@ export class Test262ResultsTracker {
     if (!fs.existsSync(filename)) {
       throw new Error(`Results file not found: ${filename}`);
     }
-    return JSON.parse(fs.readFileSync(filename, 'utf8'));
+    return JSON.parse(fs.readFileSync(filename, "utf8"));
   }
 
   /**
@@ -248,27 +261,27 @@ export class Test262ResultsTracker {
    */
   static compareResults(baseline, current) {
     const baselineMap = new Map();
-    baseline.tests.forEach(t => baselineMap.set(t.path, t.status));
-    
+    baseline.tests.forEach((t) => baselineMap.set(t.path, t.status));
+
     const newlyPassing = [];
     const newlyFailing = [];
     const stillPassing = [];
     const stillFailing = [];
-    
-    current.tests.forEach(test => {
+
+    current.tests.forEach((test) => {
       const prevStatus = baselineMap.get(test.path);
-      
-      if (prevStatus === 'failed' && test.status === 'passed') {
+
+      if (prevStatus === "failed" && test.status === "passed") {
         newlyPassing.push(test);
-      } else if (prevStatus === 'passed' && test.status === 'failed') {
+      } else if (prevStatus === "passed" && test.status === "failed") {
         newlyFailing.push(test);
-      } else if (test.status === 'passed') {
+      } else if (test.status === "passed") {
         stillPassing.push(test);
-      } else if (test.status === 'failed') {
+      } else if (test.status === "failed") {
         stillFailing.push(test);
       }
     });
-    
+
     return {
       newlyPassing,
       newlyFailing,
@@ -279,8 +292,8 @@ export class Test262ResultsTracker {
         improvements: newlyPassing.length,
         netChange: newlyPassing.length - newlyFailing.length,
         baselinePassRate: baseline.summary?.overall?.passRate || 0,
-        currentPassRate: current.summary?.overall?.passRate || 0
-      }
+        currentPassRate: current.summary?.overall?.passRate || 0,
+      },
     };
   }
 }

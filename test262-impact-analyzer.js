@@ -28,14 +28,14 @@ const REAL_WORLD_IMPORTANCE = {
   "language/statements/while": 9,
   "language/statements/return": 10,
   "language/statements/function": 10,
-  
+
   // Types (fundamental)
   "language/types/number": 10,
   "language/types/string": 10,
   "language/types/boolean": 10,
   "language/types/undefined": 9,
   "language/types/null": 9,
-  
+
   // Array methods (very commonly used)
   "built-ins/Array/prototype/map": 10,
   "built-ins/Array/prototype/filter": 10,
@@ -52,7 +52,7 @@ const REAL_WORLD_IMPORTANCE = {
   "built-ins/Array/prototype/every": 7,
   "built-ins/Array/isArray": 9,
   "built-ins/Array": 9, // General Array
-  
+
   // String methods (heavily used)
   "built-ins/String/prototype/charAt": 8,
   "built-ins/String/prototype/indexOf": 9,
@@ -65,7 +65,7 @@ const REAL_WORLD_IMPORTANCE = {
   "built-ins/String/prototype/replace": 9,
   "built-ins/String/prototype/match": 7,
   "built-ins/String": 8, // General String
-  
+
   // Object methods (very important)
   "built-ins/Object/keys": 10,
   "built-ins/Object/values": 8,
@@ -75,7 +75,7 @@ const REAL_WORLD_IMPORTANCE = {
   "built-ins/Object/defineProperty": 6,
   "built-ins/Object/getOwnPropertyNames": 7,
   "built-ins/Object": 8,
-  
+
   // Math (commonly used)
   "built-ins/Math/floor": 9,
   "built-ins/Math/ceil": 8,
@@ -87,33 +87,33 @@ const REAL_WORLD_IMPORTANCE = {
   "built-ins/Math/sqrt": 7,
   "built-ins/Math/pow": 7,
   "built-ins/Math": 8,
-  
+
   // Number methods
   "built-ins/Number/isNaN": 8,
   "built-ins/Number/isFinite": 7,
   "built-ins/Number/parseInt": 8,
   "built-ins/Number/parseFloat": 8,
   "built-ins/Number": 7,
-  
+
   // Boolean
   "built-ins/Boolean": 7,
-  
+
   // Function
   "built-ins/Function/prototype/call": 7,
   "built-ins/Function/prototype/apply": 7,
   "built-ins/Function/prototype/bind": 6,
   "built-ins/Function": 6,
-  
+
   // Error handling (important for stability)
   "built-ins/Error": 8,
   "language/statements/throw": 8,
   "language/statements/try": 9,
-  
+
   // Control flow
   "language/statements/break": 8,
   "language/statements/continue": 7,
   "language/statements/switch": 7,
-  
+
   // Advanced (lower priority for now)
   "language/expressions/class": 5,
   "language/expressions/arrow-function": 6,
@@ -131,13 +131,13 @@ const COMPLEXITY_ESTIMATES = {
   "language/types/boolean": 2,
   "language/types/undefined": 1,
   "language/types/null": 1,
-  
+
   // Simple operators
   "language/expressions/addition": 2,
   "language/expressions/subtraction": 2,
   "language/expressions/multiplication": 2,
   "language/expressions/division": 2,
-  
+
   // Simple array methods
   "built-ins/Array/prototype/push": 2,
   "built-ins/Array/prototype/pop": 2,
@@ -148,7 +148,7 @@ const COMPLEXITY_ESTIMATES = {
   "built-ins/Array/prototype/slice": 4,
   "built-ins/Array/prototype/concat": 4,
   "built-ins/Array/isArray": 2,
-  
+
   // Callback-based array methods (need proper function handling)
   "built-ins/Array/prototype/map": 5,
   "built-ins/Array/prototype/filter": 5,
@@ -157,7 +157,7 @@ const COMPLEXITY_ESTIMATES = {
   "built-ins/Array/prototype/find": 5,
   "built-ins/Array/prototype/some": 5,
   "built-ins/Array/prototype/every": 5,
-  
+
   // String methods (mostly straightforward)
   "built-ins/String/prototype/charAt": 2,
   "built-ins/String/prototype/indexOf": 3,
@@ -169,7 +169,7 @@ const COMPLEXITY_ESTIMATES = {
   "built-ins/String/prototype/split": 5,
   "built-ins/String/prototype/replace": 6,
   "built-ins/String/prototype/match": 7,
-  
+
   // Object methods
   "built-ins/Object/keys": 4,
   "built-ins/Object/values": 4,
@@ -177,13 +177,13 @@ const COMPLEXITY_ESTIMATES = {
   "built-ins/Object/assign": 5,
   "built-ins/Object/create": 6,
   "built-ins/Object/defineProperty": 8,
-  
+
   // Math (mostly simple)
   "built-ins/Math": 2,
-  
+
   // Number methods
   "built-ins/Number": 3,
-  
+
   // Complex features
   "language/expressions/class": 9,
   "language/expressions/arrow-function": 7,
@@ -263,7 +263,7 @@ class ImpactAnalyzer {
   calculateImpactScore(category) {
     const stats = category.stats;
     const total = stats.passed + stats.failed;
-    
+
     if (total === 0) return 0;
 
     const passRate = (stats.passed / total) * 100;
@@ -280,12 +280,12 @@ class ImpactAnalyzer {
     // - Room for improvement matters (50% pass = more opportunity than 90%)
     // - Real-world importance matters (Array.map > obscure feature)
     // - Lower complexity is better (quick wins)
-    
+
     const impactScore =
-      (testCount * 0.2) +           // More tests = more impact (0-60 range)
-      (roomForImprovement * 0.3) +  // More room = more opportunity (0-30 range)
-      (importance * 0.35) +          // Real-world importance (0-3.5 range)
-      ((10 - complexity) * 0.15);   // Lower complexity = higher score (0-1.5 range)
+      testCount * 0.2 + // More tests = more impact (0-60 range)
+      roomForImprovement * 0.3 + // More room = more opportunity (0-30 range)
+      importance * 0.35 + // Real-world importance (0-3.5 range)
+      (10 - complexity) * 0.15; // Lower complexity = higher score (0-1.5 range)
 
     // ROI = Impact per unit of effort
     const roi = impactScore / complexity;
@@ -338,7 +338,9 @@ class ImpactAnalyzer {
     );
 
     console.log(
-      chalk.bold("\n📊 Top Priorities by Overall Impact (Value × Opportunity):\n")
+      chalk.bold(
+        "\n📊 Top Priorities by Overall Impact (Value × Opportunity):\n"
+      )
     );
     console.log(
       chalk.bold(
@@ -383,7 +385,9 @@ class ImpactAnalyzer {
     });
 
     // Quick wins (high ROI, low complexity)
-    console.log(chalk.bold.green("\n\n🚀 Quick Wins (High ROI, Low Complexity):\n"));
+    console.log(
+      chalk.bold.green("\n\n🚀 Quick Wins (High ROI, Low Complexity):\n")
+    );
     const quickWins = [...categories]
       .filter((c) => c.complexity <= 4 && c.roi > 2)
       .sort((a, b) => b.roi - a.roi)
@@ -399,7 +403,9 @@ class ImpactAnalyzer {
     });
 
     // High impact (regardless of complexity)
-    console.log(chalk.bold.yellow("\n\n⭐ High Impact Features (Worth the Effort):\n"));
+    console.log(
+      chalk.bold.yellow("\n\n⭐ High Impact Features (Worth the Effort):\n")
+    );
     const highImpact = [...categories]
       .filter((c) => c.impactScore > 15 && c.passRate < 80)
       .sort((a, b) => b.impactScore - a.impactScore)
@@ -416,7 +422,9 @@ class ImpactAnalyzer {
 
     // Low hanging fruit (bad pass rate but easy)
     console.log(
-      chalk.bold.cyan("\n\n🍎 Low Hanging Fruit (Easy Fixes with Decent Impact):\n")
+      chalk.bold.cyan(
+        "\n\n🍎 Low Hanging Fruit (Easy Fixes with Decent Impact):\n"
+      )
     );
     const lowHanging = [...categories]
       .filter((c) => c.complexity <= 3 && c.passRate < 50 && c.total >= 5)
@@ -475,8 +483,7 @@ class ImpactAnalyzer {
           cats.reduce((sum, c) => sum + c.impactScore, 0) / cats.length,
         avgROI: cats.reduce((sum, c) => sum + c.roi, 0) / cats.length,
         totalTests: cats.reduce((sum, c) => sum + c.total, 0),
-        avgPassRate:
-          cats.reduce((sum, c) => sum + c.passRate, 0) / cats.length,
+        avgPassRate: cats.reduce((sum, c) => sum + c.passRate, 0) / cats.length,
         categories: cats.length,
       }))
       .sort((a, b) => b.avgImpact - a.avgImpact);
