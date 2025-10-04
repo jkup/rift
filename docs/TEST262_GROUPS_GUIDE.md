@@ -1,5 +1,19 @@
 # Test262 Group Testing Guide
 
+This guide explains how to use the category-based Test262 testing system for Rift.
+
+## 🚀 New! Impact Analysis
+
+**Want to know what to work on for maximum value?**
+
+```bash
+npm run test262:analyze
+```
+
+See [`TEST262_IMPACT_ANALYSIS.md`](TEST262_IMPACT_ANALYSIS.md) for details on finding high-value features to implement.
+
+## Quick Startt262 Group Testing Guide
+
 This guide explains how to use the new category-based Test262 testing system for Rift.
 
 ## Quick Start
