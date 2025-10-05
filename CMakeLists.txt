@@ -14,6 +14,42 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(CodeQuality)
 setup_code_quality()
 
+# ===== Fetch dependencies for RegExp support =====
+include(FetchContent)
+
+# Fetch Abseil (required by RE2)
+message(STATUS "Fetching Abseil (required by RE2)...")
+FetchContent_Declare(
+    abseil
+    GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
+    GIT_TAG        20240722.0  # Stable release
+    GIT_SHALLOW    TRUE
+)
+
+# Disable Abseil testing
+set(ABSL_PROPAGATE_CXX_STD ON CACHE BOOL "" FORCE)
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(ABSL_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(abseil)
+message(STATUS "Abseil is ready")
+
+# Now fetch RE2
+message(STATUS "Fetching RE2 for RegExp support...")
+FetchContent_Declare(
+    re2
+    GIT_REPOSITORY https://github.com/google/re2.git
+    GIT_TAG        2024-07-02  # Stable release
+    GIT_SHALLOW    TRUE        # Only download this version
+)
+
+# Disable RE2 testing and benchmarks to speed up build
+set(RE2_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(re2)
+message(STATUS "RE2 is ready")
+# ====================================================
+
 # Define source files organized by module
 set(FRONTEND_SOURCES
     src/frontend/lexer/lexer.cpp
@@ -45,6 +81,7 @@ set(BUILTINS_SOURCES
     src/builtins/boolean/boolean.cpp
     src/builtins/number/number.cpp
     src/builtins/error/error.cpp
+    src/builtins/regexp/regexp.cpp
 )
 
 set(CORE_SOURCES
@@ -72,6 +109,9 @@ add_executable(rift
 )
 
 target_include_directories(rift PRIVATE include src)
+
+# Link RE2 library for RegExp support
+target_link_libraries(rift PRIVATE re2)
 
 # Enable debug symbols and warnings
 target_compile_options(rift PRIVATE
