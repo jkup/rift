@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "re2/re2.h"
@@ -28,6 +29,26 @@ public:
     int lastIndex;
 
     RegExpData(const std::string& p, const std::string& f);
+};
+
+/**
+ * Registry to manage RegExpData lifecycle
+ * Maps JSObject* to RegExpData to avoid unsafe pointer casting
+ * 
+ * NOTE: This registry currently does not automatically clean up entries
+ * when RegExp objects are garbage collected. This is acceptable for now
+ * because RegExp objects are typically long-lived, but a future improvement
+ * would be to integrate with GC finalization or use weak references.
+ */
+class RegExpRegistry {
+private:
+    static std::unordered_map<JSObject*, std::unique_ptr<RegExpData>> registry_;
+
+public:
+    static void store(JSObject* obj, std::unique_ptr<RegExpData> data);
+    static RegExpData* get(JSObject* obj);
+    static void remove(JSObject* obj);
+    static void clear();
 };
 
 /**

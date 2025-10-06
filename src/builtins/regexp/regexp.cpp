@@ -5,6 +5,30 @@
 
 namespace rift::builtins {
 
+// ===== RegExpRegistry Implementation =====
+
+std::unordered_map<JSObject*, std::unique_ptr<RegExpData>> RegExpRegistry::registry_;
+
+void RegExpRegistry::store(JSObject* obj, std::unique_ptr<RegExpData> data) {
+    registry_[obj] = std::move(data);
+}
+
+RegExpData* RegExpRegistry::get(JSObject* obj) {
+    auto it = registry_.find(obj);
+    if (it != registry_.end()) {
+        return it->second.get();
+    }
+    return nullptr;
+}
+
+void RegExpRegistry::remove(JSObject* obj) {
+    registry_.erase(obj);
+}
+
+void RegExpRegistry::clear() {
+    registry_.clear();
+}
+
 // ===== RegExpData Implementation =====
 
 RegExpData::RegExpData(const std::string& p, const std::string& f)
@@ -74,12 +98,8 @@ Value RegExp::constructor(const std::vector<Value>& args) {
     // Protect from GC during initialization
     rift::memory::GCProtector protect(regexpObj, getObjectFactory()->getObjectManager());
     
-    // Create and store RegExpData
-    auto* data = new RegExpData(pattern, flags);
-    
-    // Store data pointer as a property (internal) - cast to double to avoid ambiguity
-    double ptrAsDouble = static_cast<double>(reinterpret_cast<intptr_t>(data));
-    regexpObj->setProperty("[[RegExpData]]", Value(ptrAsDouble));
+    // Create RegExpData with smart pointer for proper memory management
+    auto data = std::make_unique<RegExpData>(pattern, flags);
     
     // Set JavaScript-visible properties
     regexpObj->setProperty("source", Value(pattern));
@@ -88,6 +108,12 @@ Value RegExp::constructor(const std::vector<Value>& args) {
     regexpObj->setProperty("multiline", Value(data->multiline));
     regexpObj->setProperty("lastIndex", Value(0.0));
     regexpObj->setProperty("flags", Value(flags));
+    
+    // Store data in registry (transfers ownership to registry)
+    // NOTE: This creates a potential memory leak if RegExp objects are GC'd.
+    // A future improvement would be to integrate with GC finalization or
+    // use weak references to automatically clean up unused entries.
+    RegExpRegistry::store(regexpObj, std::move(data));
     
     return Value(regexpObj);
 }
@@ -105,10 +131,8 @@ RegExpData* RegExp::getRegExpData(const std::vector<Value>& args) {
     if (thisValue.isObject()) {
         auto obj = thisValue.getObject();
         if (obj) {
-            Value dataValue = obj->getProperty("[[RegExpData]]");
-            if (dataValue.isNumber()) {
-                return reinterpret_cast<RegExpData*>(static_cast<intptr_t>(dataValue.getNumber()));
-            }
+            // Look up data in registry - no unsafe pointer casting!
+            return RegExpRegistry::get(obj);
         }
     }
     
