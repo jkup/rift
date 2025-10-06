@@ -9,6 +9,7 @@
 #include "rift/builtins/math/math.h"
 #include "rift/builtins/number/number.h"
 #include "rift/builtins/object/object.h"
+#include "rift/builtins/regexp/regexp.h"
 #include "rift/builtins/string/string.h"
 #include "rift/core/engine/engine.h"
 #include "rift/runtime/values/value.h"
@@ -22,6 +23,7 @@ JSObject* BuiltinManager::stringPrototype_ = nullptr;
 JSObject* BuiltinManager::booleanPrototype_ = nullptr;
 JSObject* BuiltinManager::numberPrototype_ = nullptr;
 JSObject* BuiltinManager::errorPrototype_ = nullptr;
+JSObject* BuiltinManager::regexpPrototype_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Get the object factory from the engine
@@ -35,6 +37,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::Boolean::setObjectFactory(factory);
         builtins::Number::setObjectFactory(factory);
         builtins::Error::setObjectFactory(factory);
+        builtins::RegExp::setObjectFactory(factory);
     }
 
     // Now setup builtins with factory - these will create their own prototypes
@@ -48,6 +51,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupBoolean(globalEnv, factory);
     setupNumber(globalEnv, factory);
     setupError(globalEnv, factory);
+    setupRegExp(globalEnv, factory);
 
     // After all builtins are created, get their prototypes from the constructors
     auto* objectConstructor = globalEnv->get("Object").getObject();
@@ -56,6 +60,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     auto* booleanConstructor = globalEnv->get("Boolean").getObject();
     auto* numberConstructor = globalEnv->get("Number").getObject();
     auto* errorConstructor = globalEnv->get("Error").getObject();
+    auto* regexpConstructor = globalEnv->get("RegExp").getObject();
 
     if(objectConstructor)
         objectPrototype_ = objectConstructor->getProperty("prototype").getObject();
@@ -69,6 +74,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         numberPrototype_ = numberConstructor->getProperty("prototype").getObject();
     if(errorConstructor)
         errorPrototype_ = errorConstructor->getProperty("prototype").getObject();
+    if(regexpConstructor)
+        regexpPrototype_ = regexpConstructor->getProperty("prototype").getObject();
 
     // Set up prototype chain: All prototypes -> Object.prototype (except Object itself)
     if(objectPrototype_ && arrayPrototype_) {
@@ -85,6 +92,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     }
     if(objectPrototype_ && errorPrototype_) {
         errorPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && regexpPrototype_) {
+        regexpPrototype_->setPrototype(objectPrototype_);
     }
 
     // Setup GC functions if engine is provided
@@ -116,6 +126,10 @@ JSObject* BuiltinManager::getNumberPrototype() {
 
 JSObject* BuiltinManager::getErrorPrototype() {
     return errorPrototype_;
+}
+
+JSObject* BuiltinManager::getRegExpPrototype() {
+    return regexpPrototype_;
 }
 
 void BuiltinManager::setupGlobalFunctions(std::shared_ptr<Environment> globalEnv,
@@ -210,6 +224,14 @@ void BuiltinManager::clearStaticPrototypes() {
     booleanPrototype_ = nullptr;
     numberPrototype_ = nullptr;
     errorPrototype_ = nullptr;
+    regexpPrototype_ = nullptr;
+}
+
+void BuiltinManager::setupRegExp(std::shared_ptr<Environment> globalEnv,
+                                  rift::memory::ObjectFactory* factory) {
+    // Setup RegExp object using GC-managed creation
+    auto* regexp = builtins::RegExp::create(factory);
+    globalEnv->define("RegExp", Value(regexp));
 }
 
 void BuiltinManager::setupJSON(std::shared_ptr<Environment> globalEnv, rift::core::Rift* engine) {

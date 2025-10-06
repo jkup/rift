@@ -7,7 +7,8 @@ A JavaScript runtime implementation written in C++ with robust garbage collectio
 ✅ **Fully functional garbage collection** with mark-sweep algorithm  
 ✅ **Memory-safe execution** with proper object lifecycle management  
 ✅ **Core JavaScript subset** including closures, prototypes, and exception handling (try/catch/finally)  
-✅ **Rich built-in object library** with Array, String, Math, Object, and more  
+✅ **Rich built-in object library** with Array, String, Math, Object, RegExp and more  
+✅ **RegExp support** via [Google RE2](https://github.com/google/re2) for safe, linear-time pattern matching  
 ✅ **Test262 integration** for ECMAScript compliance testing  
 
 ## Building and Running
@@ -222,6 +223,20 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `Error()`
 - ✅ `error.toString`
 
+#### **RegExp Constructor & Methods** ✅ **NEW**
+- ✅ `new RegExp(pattern, flags)` creates regular expression objects
+- ✅ `regexp.test(string)` returns true if pattern matches
+- ✅ `regexp.toString()` returns string representation `/pattern/flags`
+- ✅ **Properties**: `source`, `flags`, `global`, `ignoreCase`, `multiline`, `lastIndex`
+- ✅ **Flags**: `g` (global), `i` (ignore case), `m` (multiline), `s` (dotAll)
+- ⚠️ **Implementation**: Uses [Google RE2](https://github.com/google/re2) for safe, linear-time matching
+- ⚠️ **Limitations**: 
+  - RE2 does not support backreferences (e.g., `\1`, `\2`)
+  - RE2 does not support lookahead/lookbehind assertions (e.g., `(?=...)`, `(?!...)`)
+  - `exec()` currently returns null (not yet implemented with capture groups)
+  - These limitations are by design to prevent ReDoS (Regular Expression Denial of Service) attacks
+  - See [`docs/INTEGRATING_RE2.md`](docs/INTEGRATING_RE2.md) for detailed information
+
 #### **JSON**
 - ✅ `JSON.parse(text)` basic support:
   - Objects, arrays, strings, numbers (incl. exponent), booleans, null
@@ -249,7 +264,7 @@ The CI will automatically verify all quality checks on your PR.
   - ❌ Bitwise binary operators: `&`, `|`, `^`, `<<`, `>>`, `>>>`
 
 - **Built-in objects/APIs**
-  - ❌ Date, RegExp
+  - ❌ Date
   - ❌ Promise/Async (`async`/`await`), timers/event loop
   - ❌ Set/Map, Symbol, Proxy
   - ❌ Function.prototype methods: `call`, `apply`, `bind`
