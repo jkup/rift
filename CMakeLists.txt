@@ -26,10 +26,11 @@ FetchContent_Declare(
     GIT_SHALLOW    TRUE
 )
 
-# Disable Abseil testing
+# Disable Abseil testing and install
 set(ABSL_PROPAGATE_CXX_STD ON CACHE BOOL "" FORCE)
 set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
 set(ABSL_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(ABSL_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(abseil)
 message(STATUS "Abseil is ready")
@@ -43,10 +44,18 @@ FetchContent_Declare(
     GIT_SHALLOW    TRUE        # Only download this version
 )
 
-# Disable RE2 testing and benchmarks to speed up build
+# Disable RE2 testing and install rules
 set(RE2_BUILD_TESTING OFF CACHE BOOL "" FORCE)
 
-FetchContent_MakeAvailable(re2)
+# Fetch RE2 but handle install rules manually
+FetchContent_GetProperties(re2)
+if(NOT re2_POPULATED)
+    FetchContent_Populate(re2)
+    # Disable install rules for RE2 to avoid export conflicts with Abseil
+    set(CMAKE_SKIP_INSTALL_RULES ON)
+    add_subdirectory(${re2_SOURCE_DIR} ${re2_BINARY_DIR} EXCLUDE_FROM_ALL)
+    set(CMAKE_SKIP_INSTALL_RULES OFF)
+endif()
 message(STATUS "RE2 is ready")
 # ====================================================
 
