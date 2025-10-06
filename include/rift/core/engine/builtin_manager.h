@@ -25,6 +25,10 @@ class BuiltinManager {
     static JSObject* getBooleanPrototype();
     static JSObject* getNumberPrototype();
     static JSObject* getErrorPrototype();
+    static JSObject* getTypeErrorPrototype();
+    static JSObject* getReferenceErrorPrototype();
+    static JSObject* getSyntaxErrorPrototype();
+    static JSObject* getRangeErrorPrototype();
     static JSObject* getRegExpPrototype();
 
     // Cleanup method for shutdown
@@ -38,6 +42,10 @@ class BuiltinManager {
     static JSObject* booleanPrototype_;
     static JSObject* numberPrototype_;
     static JSObject* errorPrototype_;
+    static JSObject* typeErrorPrototype_;
+    static JSObject* referenceErrorPrototype_;
+    static JSObject* syntaxErrorPrototype_;
+    static JSObject* rangeErrorPrototype_;
     static JSObject* regexpPrototype_;
 
     // Individual builtin setup methods - now accept ObjectFactory
@@ -60,6 +68,14 @@ class BuiltinManager {
                             rift::memory::ObjectFactory* factory);
     static void setupError(std::shared_ptr<Environment> globalEnv,
                            rift::memory::ObjectFactory* factory);
+    static void setupTypeError(std::shared_ptr<Environment> globalEnv,
+                               rift::memory::ObjectFactory* factory);
+    static void setupReferenceError(std::shared_ptr<Environment> globalEnv,
+                                    rift::memory::ObjectFactory* factory);
+    static void setupSyntaxError(std::shared_ptr<Environment> globalEnv,
+                                 rift::memory::ObjectFactory* factory);
+    static void setupRangeError(std::shared_ptr<Environment> globalEnv,
+                                rift::memory::ObjectFactory* factory);
     static void setupRegExp(std::shared_ptr<Environment> globalEnv,
                             rift::memory::ObjectFactory* factory);
     static void setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine);

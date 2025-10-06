@@ -1,0 +1,85 @@
+#include "rift/builtins/error/type_error.h"
+
+#include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/evaluation_utils.h"
+#include "rift/core/engine/javascript_exception.h"
+#include "rift/memory/gc_protector.h"
+
+namespace rift::builtins {
+
+void TypeError::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
+    // TypeError has no static methods
+}
+
+void TypeError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
+    // Set default properties
+    prototype->setProperty("name", Value("TypeError"));
+    prototype->setProperty("message", Value(""));
+
+    // Add TypeError.prototype methods using GC-managed function creation
+    prototype->setProperty("toString", Value(factory->createJSFunction(TypeError::toString)));
+}
+
+Value TypeError::constructor(const std::vector<Value>& args) {
+    // Create TypeError object with proper prototype chain
+    auto errorPrototype = getGlobalPrototype();
+    auto* errorObj = getObjectFactory()->createJSObject(errorPrototype);
+    
+    // Protect from GC during initialization
+    rift::memory::GCProtector protect(errorObj, getObjectFactory()->getObjectManager());
+
+    // Set the name property
+    errorObj->setProperty("name", Value("TypeError"));
+
+    // Set the message property
+    std::string message = "";
+    if(!args.empty() && !args[0].isUndefined()) {
+        message = args[0].toString();
+    }
+    errorObj->setProperty("message", Value(message));
+
+    return Value(errorObj);
+}
+
+Value TypeError::toString(const std::vector<Value>& args) {
+    auto errorObj = getThisErrorObject(args);
+    if(!errorObj) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: TypeError.prototype.toString called on non-object"));
+    }
+
+    // Get name and message properties
+    Value nameValue = errorObj->getProperty("name");
+    Value messageValue = errorObj->getProperty("message");
+
+    std::string name = nameValue.isUndefined() ? "TypeError" : nameValue.toString();
+    std::string message = messageValue.isUndefined() ? "" : messageValue.toString();
+
+    // Format according to ECMAScript spec
+    if(message.empty()) {
+        return Value(name);
+    } else {
+        return Value(name + ": " + message);
+    }
+}
+
+JSObject* TypeError::getThisErrorObject(const std::vector<Value>& args) {
+    // For prototype methods, the first argument should be the 'this' value
+    if(args.empty()) {
+        return nullptr;
+    }
+
+    const Value& thisValue = args[0];
+
+    if(thisValue.isObject()) {
+        return thisValue.getObject();
+    }
+
+    return nullptr;
+}
+
+JSObject* TypeError::getGlobalPrototype() {
+    return rift::core::BuiltinManager::getTypeErrorPrototype();
+}
+
+}  // namespace rift::builtins
