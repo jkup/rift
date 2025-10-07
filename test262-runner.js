@@ -22,6 +22,11 @@ class Test262Runner {
 
   // Display a simple status line that updates in place
   displayStatus(currentTest = "", totalTests = 0, currentIndex = 0) {
+    // Skip interactive display in CI environments
+    if (process.env.CI) {
+      return;
+    }
+
     const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(1);
     const progress =
       totalTests > 0 ? ((currentIndex / totalTests) * 100).toFixed(1) : 0;
@@ -65,6 +70,12 @@ class Test262Runner {
 
   // Show the initial header
   showHeader(totalTests) {
+    // Simplified header for CI
+    if (process.env.CI) {
+      console.log(`Running ${totalTests} tests...`);
+      return;
+    }
+
     console.log(chalk.bold.cyan("🚀 Test262 Runner for rift"));
     console.log(chalk.cyan("═".repeat(50)));
     console.log();
@@ -93,30 +104,40 @@ class Test262Runner {
   }
 
   async setupTest262() {
-    console.log(chalk.bold.cyan("🚀 Test262 Runner for rift"));
-    console.log(chalk.cyan("═".repeat(50)));
-    console.log();
-    console.log(chalk.yellow("⚙️  Setting up test262..."));
+    if (!process.env.CI) {
+      console.log(chalk.bold.cyan("🚀 Test262 Runner for rift"));
+      console.log(chalk.cyan("═".repeat(50)));
+      console.log();
+      console.log(chalk.yellow("⚙️  Setting up test262..."));
+    }
 
     if (!fs.existsSync(TEST262_DIR)) {
-      console.log(chalk.blue("📥 Cloning test262 repository..."));
+      if (!process.env.CI) {
+        console.log(chalk.blue("📥 Cloning test262 repository..."));
+      }
       try {
         execSync(
           `git clone --depth 1 https://github.com/tc39/test262.git ${TEST262_DIR}`,
-          { stdio: "inherit" }
+          { stdio: process.env.CI ? "pipe" : "inherit" }
         );
-        console.log(chalk.green("✅ Successfully cloned test262"));
+        if (!process.env.CI) {
+          console.log(chalk.green("✅ Successfully cloned test262"));
+        }
       } catch (error) {
         console.error(chalk.red("❌ Failed to clone test262:"), error.message);
         process.exit(1);
       }
     } else {
-      console.log(chalk.green("✅ test262 directory already exists"));
+      if (!process.env.CI) {
+        console.log(chalk.green("✅ test262 directory already exists"));
+      }
     }
   }
 
   async buildRuntime() {
-    console.log(chalk.yellow("🔨 Building runtime..."));
+    if (!process.env.CI) {
+      console.log(chalk.yellow("🔨 Building runtime..."));
+    }
 
     if (!fs.existsSync("./build.sh")) {
       console.error(chalk.red("❌ build.sh not found"));
@@ -124,8 +145,10 @@ class Test262Runner {
     }
 
     try {
-      execSync("./build.sh", { stdio: "inherit" });
-      console.log(chalk.green("✅ Runtime built successfully"));
+      execSync("./build.sh", { stdio: process.env.CI ? "pipe" : "inherit" });
+      if (!process.env.CI) {
+        console.log(chalk.green("✅ Runtime built successfully"));
+      }
     } catch (error) {
       console.error(chalk.red("❌ Failed to build runtime:"), error.message);
       process.exit(1);
@@ -523,11 +546,8 @@ class Test262Runner {
 
   printSummary() {
     console.log();
-    console.log(chalk.bold.cyan("📊 Final Results"));
-    console.log(chalk.cyan("═".repeat(50)));
-    console.log();
 
-    // Summary stats with colors
+    // Calculate stats
     const total = this.passed + this.failed + this.skipped;
     const passRate =
       total > 0
@@ -535,6 +555,27 @@ class Test262Runner {
         : 0;
     const runtime = ((Date.now() - this.startTime) / 1000).toFixed(1);
 
+    // Simple output for CI
+    if (process.env.CI) {
+      console.log(`\nTest Results:`);
+      console.log(`Passed: ${this.passed}`);
+      console.log(`Failed: ${this.failed}`);
+      console.log(`Skipped: ${this.skipped}`);
+      console.log(`Total: ${total}`);
+      console.log(`Pass Rate: ${passRate}%`);
+      console.log(`Runtime: ${runtime}s`);
+
+      // Save detailed results
+      const resultsFile = this.tracker.saveResults("test262-results.json");
+      console.log(`Results saved to: ${resultsFile}`);
+      return;
+    }
+
+    console.log(chalk.bold.cyan("📊 Final Results"));
+    console.log(chalk.cyan("═".repeat(50)));
+    console.log();
+
+    // Summary stats with colors
     console.log(
       chalk.green(`✅ Passed:   ${this.passed.toString().padStart(6)}`)
     );

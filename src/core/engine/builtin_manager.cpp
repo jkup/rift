@@ -4,6 +4,10 @@
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/builtins/console/console.h"
 #include "rift/builtins/error/error.h"
+#include "rift/builtins/error/type_error.h"
+#include "rift/builtins/error/reference_error.h"
+#include "rift/builtins/error/syntax_error.h"
+#include "rift/builtins/error/range_error.h"
 #include "rift/builtins/global/global.h"
 #include "rift/builtins/json/json.h"
 #include "rift/builtins/math/math.h"
@@ -23,6 +27,10 @@ JSObject* BuiltinManager::stringPrototype_ = nullptr;
 JSObject* BuiltinManager::booleanPrototype_ = nullptr;
 JSObject* BuiltinManager::numberPrototype_ = nullptr;
 JSObject* BuiltinManager::errorPrototype_ = nullptr;
+JSObject* BuiltinManager::typeErrorPrototype_ = nullptr;
+JSObject* BuiltinManager::referenceErrorPrototype_ = nullptr;
+JSObject* BuiltinManager::syntaxErrorPrototype_ = nullptr;
+JSObject* BuiltinManager::rangeErrorPrototype_ = nullptr;
 JSObject* BuiltinManager::regexpPrototype_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
@@ -37,6 +45,10 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::Boolean::setObjectFactory(factory);
         builtins::Number::setObjectFactory(factory);
         builtins::Error::setObjectFactory(factory);
+        builtins::TypeError::setObjectFactory(factory);
+        builtins::ReferenceError::setObjectFactory(factory);
+        builtins::SyntaxError::setObjectFactory(factory);
+        builtins::RangeError::setObjectFactory(factory);
         builtins::RegExp::setObjectFactory(factory);
     }
 
@@ -51,6 +63,10 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupBoolean(globalEnv, factory);
     setupNumber(globalEnv, factory);
     setupError(globalEnv, factory);
+    setupTypeError(globalEnv, factory);
+    setupReferenceError(globalEnv, factory);
+    setupSyntaxError(globalEnv, factory);
+    setupRangeError(globalEnv, factory);
     setupRegExp(globalEnv, factory);
 
     // After all builtins are created, get their prototypes from the constructors
@@ -60,6 +76,10 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     auto* booleanConstructor = globalEnv->get("Boolean").getObject();
     auto* numberConstructor = globalEnv->get("Number").getObject();
     auto* errorConstructor = globalEnv->get("Error").getObject();
+    auto* typeErrorConstructor = globalEnv->get("TypeError").getObject();
+    auto* referenceErrorConstructor = globalEnv->get("ReferenceError").getObject();
+    auto* syntaxErrorConstructor = globalEnv->get("SyntaxError").getObject();
+    auto* rangeErrorConstructor = globalEnv->get("RangeError").getObject();
     auto* regexpConstructor = globalEnv->get("RegExp").getObject();
 
     if(objectConstructor)
@@ -74,6 +94,14 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         numberPrototype_ = numberConstructor->getProperty("prototype").getObject();
     if(errorConstructor)
         errorPrototype_ = errorConstructor->getProperty("prototype").getObject();
+    if(typeErrorConstructor)
+        typeErrorPrototype_ = typeErrorConstructor->getProperty("prototype").getObject();
+    if(referenceErrorConstructor)
+        referenceErrorPrototype_ = referenceErrorConstructor->getProperty("prototype").getObject();
+    if(syntaxErrorConstructor)
+        syntaxErrorPrototype_ = syntaxErrorConstructor->getProperty("prototype").getObject();
+    if(rangeErrorConstructor)
+        rangeErrorPrototype_ = rangeErrorConstructor->getProperty("prototype").getObject();
     if(regexpConstructor)
         regexpPrototype_ = regexpConstructor->getProperty("prototype").getObject();
 
@@ -132,6 +160,22 @@ JSObject* BuiltinManager::getRegExpPrototype() {
     return regexpPrototype_;
 }
 
+JSObject* BuiltinManager::getTypeErrorPrototype() {
+    return typeErrorPrototype_;
+}
+
+JSObject* BuiltinManager::getReferenceErrorPrototype() {
+    return referenceErrorPrototype_;
+}
+
+JSObject* BuiltinManager::getSyntaxErrorPrototype() {
+    return syntaxErrorPrototype_;
+}
+
+JSObject* BuiltinManager::getRangeErrorPrototype() {
+    return rangeErrorPrototype_;
+}
+
 void BuiltinManager::setupGlobalFunctions(std::shared_ptr<Environment> globalEnv,
                                           rift::memory::ObjectFactory* factory) {
     // Setup global functions (parseInt, parseFloat, isNaN, isFinite, etc.)
@@ -188,12 +232,39 @@ void BuiltinManager::setupNumber(std::shared_ptr<Environment> globalEnv,
 }
 
 void BuiltinManager::setupError(std::shared_ptr<Environment> globalEnv,
-                                rift::memory::ObjectFactory* factory) {
+                                 rift::memory::ObjectFactory* factory) {
     // Setup Error object using GC-managed creation
     auto* error = builtins::Error::create(factory);  // error is now raw pointer
     globalEnv->define("Error", Value(error));
 }
 
+void BuiltinManager::setupTypeError(std::shared_ptr<Environment> globalEnv,
+                                    rift::memory::ObjectFactory* factory) {
+    // Setup TypeError object using GC-managed creation
+    auto* typeError = builtins::TypeError::create(factory);
+    globalEnv->define("TypeError", Value(typeError));
+}
+
+void BuiltinManager::setupReferenceError(std::shared_ptr<Environment> globalEnv,
+                                         rift::memory::ObjectFactory* factory) {
+    // Setup ReferenceError object using GC-managed creation
+    auto* referenceError = builtins::ReferenceError::create(factory);
+    globalEnv->define("ReferenceError", Value(referenceError));
+}
+
+void BuiltinManager::setupSyntaxError(std::shared_ptr<Environment> globalEnv,
+                                      rift::memory::ObjectFactory* factory) {
+    // Setup SyntaxError object using GC-managed creation
+    auto* syntaxError = builtins::SyntaxError::create(factory);
+    globalEnv->define("SyntaxError", Value(syntaxError));
+}
+
+void BuiltinManager::setupRangeError(std::shared_ptr<Environment> globalEnv,
+                                     rift::memory::ObjectFactory* factory) {
+    // Setup RangeError object using GC-managed creation
+    auto* rangeError = builtins::RangeError::create(factory);
+    globalEnv->define("RangeError", Value(rangeError));
+}
 void BuiltinManager::setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Create GC functions that have access to the engine using GC-managed creation
     auto* gcFunction = engine->getObjectFactory()->createJSFunction(
@@ -225,6 +296,10 @@ void BuiltinManager::clearStaticPrototypes() {
     numberPrototype_ = nullptr;
     errorPrototype_ = nullptr;
     regexpPrototype_ = nullptr;
+    typeErrorPrototype_ = nullptr;
+    referenceErrorPrototype_ = nullptr;
+    syntaxErrorPrototype_ = nullptr;
+    rangeErrorPrototype_ = nullptr;
 }
 
 void BuiltinManager::setupRegExp(std::shared_ptr<Environment> globalEnv,
