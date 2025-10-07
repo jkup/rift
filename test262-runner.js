@@ -22,6 +22,11 @@ class Test262Runner {
 
   // Display a simple status line that updates in place
   displayStatus(currentTest = "", totalTests = 0, currentIndex = 0) {
+    // Skip interactive display in CI environments
+    if (process.env.CI) {
+      return;
+    }
+    
     const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(1);
     const progress =
       totalTests > 0 ? ((currentIndex / totalTests) * 100).toFixed(1) : 0;
@@ -65,6 +70,12 @@ class Test262Runner {
 
   // Show the initial header
   showHeader(totalTests) {
+    // Simplified header for CI
+    if (process.env.CI) {
+      console.log(`Running ${totalTests} tests...`);
+      return;
+    }
+    
     console.log(chalk.bold.cyan("🚀 Test262 Runner for rift"));
     console.log(chalk.cyan("═".repeat(50)));
     console.log();
@@ -523,11 +534,8 @@ class Test262Runner {
 
   printSummary() {
     console.log();
-    console.log(chalk.bold.cyan("📊 Final Results"));
-    console.log(chalk.cyan("═".repeat(50)));
-    console.log();
-
-    // Summary stats with colors
+    
+    // Calculate stats
     const total = this.passed + this.failed + this.skipped;
     const passRate =
       total > 0
@@ -535,6 +543,27 @@ class Test262Runner {
         : 0;
     const runtime = ((Date.now() - this.startTime) / 1000).toFixed(1);
 
+    // Simple output for CI
+    if (process.env.CI) {
+      console.log(`\nTest Results:`);
+      console.log(`Passed: ${this.passed}`);
+      console.log(`Failed: ${this.failed}`);
+      console.log(`Skipped: ${this.skipped}`);
+      console.log(`Total: ${total}`);
+      console.log(`Pass Rate: ${passRate}%`);
+      console.log(`Runtime: ${runtime}s`);
+      
+      // Save detailed results
+      const resultsFile = this.tracker.saveResults("test262-results.json");
+      console.log(`Results saved to: ${resultsFile}`);
+      return;
+    }
+
+    console.log(chalk.bold.cyan("📊 Final Results"));
+    console.log(chalk.cyan("═".repeat(50)));
+    console.log();
+
+    // Summary stats with colors
     console.log(
       chalk.green(`✅ Passed:   ${this.passed.toString().padStart(6)}`)
     );
