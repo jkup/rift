@@ -26,7 +26,7 @@ class Test262Runner {
     if (process.env.CI) {
       return;
     }
-    
+
     const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(1);
     const progress =
       totalTests > 0 ? ((currentIndex / totalTests) * 100).toFixed(1) : 0;
@@ -75,7 +75,7 @@ class Test262Runner {
       console.log(`Running ${totalTests} tests...`);
       return;
     }
-    
+
     console.log(chalk.bold.cyan("🚀 Test262 Runner for rift"));
     console.log(chalk.cyan("═".repeat(50)));
     console.log();
@@ -534,7 +534,7 @@ class Test262Runner {
 
   printSummary() {
     console.log();
-    
+
     // Calculate stats
     const total = this.passed + this.failed + this.skipped;
     const passRate =
@@ -552,7 +552,7 @@ class Test262Runner {
       console.log(`Total: ${total}`);
       console.log(`Pass Rate: ${passRate}%`);
       console.log(`Runtime: ${runtime}s`);
-      
+
       // Save detailed results
       const resultsFile = this.tracker.saveResults("test262-results.json");
       console.log(`Results saved to: ${resultsFile}`);
