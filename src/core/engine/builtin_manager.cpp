@@ -264,7 +264,8 @@ void BuiltinManager::setupRangeError(std::shared_ptr<Environment> globalEnv,
     // Setup RangeError object using GC-managed creation
     auto* rangeError = builtins::RangeError::create(factory);
     globalEnv->define("RangeError", Value(rangeError));
-}void BuiltinManager::setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine) {
+}
+void BuiltinManager::setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Create GC functions that have access to the engine using GC-managed creation
     auto* gcFunction = engine->getObjectFactory()->createJSFunction(
         [engine](const rift::core::CallContext& /*ctx*/, const std::vector<Value>& args) -> Value {

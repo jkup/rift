@@ -1,7 +1,6 @@
 #include "rift/builtins/error/reference_error.h"
 
 #include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/memory/gc_protector.h"
 
