@@ -25,6 +25,8 @@ class Object : public BuiltinBase<Object> {
     static Value keys(const std::vector<Value>& args);
     static Value values(const std::vector<Value>& args);
     static Value entries(const std::vector<Value>& args);
+    static Value defineProperty(const std::vector<Value>& args);
+    static Value getOwnPropertyDescriptor(const std::vector<Value>& args);
 
     /// Prototype methods
     static Value toString(const std::vector<Value>& args);

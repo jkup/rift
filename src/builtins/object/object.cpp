@@ -16,6 +16,8 @@ void Object::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
     constructor->setProperty("keys", Value(factory->createJSFunction(Object::keys)));
     constructor->setProperty("values", Value(factory->createJSFunction(Object::values)));
     constructor->setProperty("entries", Value(factory->createJSFunction(Object::entries)));
+    constructor->setProperty("defineProperty", Value(factory->createJSFunction(Object::defineProperty)));
+    constructor->setProperty("getOwnPropertyDescriptor", Value(factory->createJSFunction(Object::getOwnPropertyDescriptor)));
 }
 
 void Object::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
@@ -136,9 +138,9 @@ Value Object::keys(const std::vector<Value>& args) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
-    // Get only own property names (not inherited prototype properties)
+    // Get only own enumerable property names (not inherited and not non-enumerable)
     std::vector<Value> keys;
-    auto propertyNames = jsObj->getOwnPropertyNames();
+    auto propertyNames = jsObj->getEnumerablePropertyNames();
     for(const auto& propName : propertyNames) {
         keys.push_back(Value(propName));
     }
@@ -236,6 +238,111 @@ Value Object::hasOwnProperty(const std::vector<Value>& args) {
                           ownPropertyNames.end();
 
     return Value(hasOwnProperty);
+}
+
+Value Object::defineProperty(const std::vector<Value>& args) {
+    // Object.defineProperty(obj, prop, descriptor)
+    // args: [this, obj, prop, descriptor]
+    if(args.size() < 4) {
+        // Should throw TypeError in strict mode
+        return Value::undefined();
+    }
+
+    Value objVal = args[1];
+    if(!objVal.isObject()) {
+        // Should throw TypeError
+        return Value::undefined();
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        return Value::undefined();
+    }
+
+    std::string propertyKey = args[2].toString();
+
+    // Parse descriptor object
+    Value descriptorVal = args[3];
+    if(!descriptorVal.isObject()) {
+        // Should throw TypeError - descriptor must be an object
+        return Value::undefined();
+    }
+
+    auto* descriptorObj = descriptorVal.getObject();
+    if(!descriptorObj) {
+        return Value::undefined();
+    }
+
+    // Build property descriptor from descriptor object
+    rift::runtime::PropertyDescriptor desc;
+    
+    // Get value (if present)
+    Value valueVal = descriptorObj->getProperty("value");
+    if(!valueVal.isUndefined()) {
+        desc.value = valueVal;
+    } else {
+        desc.value = Value::undefined();
+    }
+    
+    // Get writable (default: false for defineProperty, unlike regular assignment)
+    Value writableVal = descriptorObj->getProperty("writable");
+    desc.writable = !writableVal.isUndefined() && writableVal.toBool();
+    
+    // Get enumerable (default: false for defineProperty)
+    Value enumerableVal = descriptorObj->getProperty("enumerable");
+    desc.enumerable = !enumerableVal.isUndefined() && enumerableVal.toBool();
+    
+    // Get configurable (default: false for defineProperty)
+    Value configurableVal = descriptorObj->getProperty("configurable");
+    desc.configurable = !configurableVal.isUndefined() && configurableVal.toBool();
+
+    // Define the property with the descriptor
+    obj->defineProperty(propertyKey, desc);
+
+    // Return the object (first argument after 'this')
+    return objVal;
+}
+
+Value Object::getOwnPropertyDescriptor(const std::vector<Value>& args) {
+    // Object.getOwnPropertyDescriptor(obj, prop)
+    // args: [this, obj, prop]
+    if(args.size() < 3) {
+        return Value::undefined();
+    }
+
+    Value objVal = args[1];
+    if(!objVal.isObject()) {
+        // Should throw TypeError
+        return Value::undefined();
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        return Value::undefined();
+    }
+
+    std::string propertyKey = args[2].toString();
+
+    // Check if property exists
+    if(!obj->hasOwnProperty(propertyKey)) {
+        return Value::undefined();
+    }
+
+    // Get the property descriptor
+    rift::runtime::PropertyDescriptor desc = obj->getOwnPropertyDescriptor(propertyKey);
+
+    // Create descriptor object to return
+    auto* descriptorObj = getObjectFactory()->createJSObject();
+    
+    // Protect from GC
+    rift::memory::GCProtector protect(descriptorObj, getObjectFactory()->getObjectManager());
+    
+    descriptorObj->setProperty("value", desc.value);
+    descriptorObj->setProperty("writable", Value(desc.writable));
+    descriptorObj->setProperty("enumerable", Value(desc.enumerable));
+    descriptorObj->setProperty("configurable", Value(desc.configurable));
+
+    return Value(descriptorObj);
 }
 
 }  // namespace rift::builtins
