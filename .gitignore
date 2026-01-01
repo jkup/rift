@@ -51,3 +51,12 @@ node_modules/
 /tmp/
 
 .vscode/
+
+# Swift
+.build/
+.swiftpm/
+Package.resolved
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+xcuserdata/
