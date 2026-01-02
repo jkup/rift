@@ -334,7 +334,9 @@ final class ParserTests: XCTestCase {
     // MARK: - Object Literals
 
     func testEmptyObject() throws {
-        let program = try parse("{};")
+        // Note: {} at statement position is a block, not an object.
+        // Must wrap in parentheses to parse as object expression.
+        let program = try parse("({});")
         let stmt = program.body[0] as! ExpressionStatement
         let obj = stmt.expression as! ObjectExpression
 
