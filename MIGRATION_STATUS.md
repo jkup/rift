@@ -16,7 +16,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | Phase 4: Parser | Complete | 100% |
 | Phase 5: Runtime Core | Complete | 100% |
 | Phase 6: Interpreter | Complete | 100% |
-| Phase 7: Built-ins | Partial | 20% |
+| Phase 7: Built-ins | Partial | 30% |
 | Phase 8: Integration | Partial | 10% |
 
 ---
@@ -60,6 +60,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 - [x] `isNaN`, `isFinite`
 - [x] `parseInt`, `parseFloat`
 - [x] `NaN`, `Infinity`, `undefined` globals
+- [x] `Math` object (all 30+ methods: abs, floor, ceil, round, sin, cos, tan, sqrt, pow, min, max, random, etc.)
 
 ### Phase 8: Integration (Partial)
 - [x] `Package.swift` - SPM configuration
@@ -72,13 +73,13 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 
 | Test Suite | Tests | Status |
 |------------|-------|--------|
-| TokenTests | 3 | All passing |
+| TokenTests | 6 | All passing |
 | LexerTests | 22 | All passing |
 | ParserTests | 61 | All passing |
 | ValueTests | 14 | All passing |
-| InterpreterTests | 49 | All passing |
+| InterpreterTests | 63 | All passing |
 
-**Total: 185 tests, all passing**
+**Total: 198 tests, all passing**
 
 ---
 
@@ -105,7 +106,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 ### Sources/RiftCore/Core/
 | File | Lines | Status |
 |------|-------|--------|
-| Interpreter.swift | 1178 | Complete |
+| Interpreter.swift | 1428 | Complete |
 
 ### Sources/RiftCore/
 | File | Lines | Status |
@@ -120,9 +121,9 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | LexerTests.swift | 393 | Complete |
 | ParserTests.swift | 636 | Complete |
 | ValueTests.swift | 181 | Complete |
-| InterpreterTests.swift | 377 | Complete |
+| InterpreterTests.swift | 463 | Complete |
 
-**Total Swift Lines:** ~7,539 (Sources: 5,874 + Tests: 1,665)
+**Total Swift Lines:** ~7,789 (Sources: 6,124 + Tests: 1,665)
 
 ---
 
@@ -140,13 +141,14 @@ The interpreter can now execute JavaScript code including:
 - Try/catch/finally with throw
 - typeof operator
 - console.log and global functions
+- Math object with all methods
 
 ---
 
 ## Next Steps
 
 ### Phase 7: Built-ins (Remaining)
-1. [ ] `Math` object (all static methods)
+1. [x] `Math` object (all static methods) ✓
 2. [ ] `Array.prototype` methods (map, filter, reduce, forEach, find, etc.)
 3. [ ] `String.prototype` methods (charAt, slice, split, etc.)
 4. [ ] `Object` methods (keys, values, entries, assign, etc.)

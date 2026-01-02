@@ -374,4 +374,90 @@ final class InterpreterTests: XCTestCase {
         XCTAssertEqual(try interpreter.execute("parseFloat(\"3.14\")"), .number(3.14))
         XCTAssertEqual(try interpreter.execute("parseFloat(\"  3.14  \")"), .number(3.14))
     }
+
+    // MARK: - Math Object
+
+    func testMathConstants() throws {
+        XCTAssertEqual(try interpreter.execute("Math.PI"), .number(Double.pi))
+        XCTAssertEqual(try interpreter.execute("Math.E"), .number(2.718281828459045))
+        XCTAssertEqual(try interpreter.execute("Math.LN2"), .number(0.6931471805599453))
+        XCTAssertEqual(try interpreter.execute("Math.LN10"), .number(2.302585092994046))
+        XCTAssertEqual(try interpreter.execute("Math.SQRT2"), .number(1.4142135623730951))
+    }
+
+    func testMathAbs() throws {
+        XCTAssertEqual(try interpreter.execute("Math.abs(-5)"), .number(5))
+        XCTAssertEqual(try interpreter.execute("Math.abs(5)"), .number(5))
+        XCTAssertEqual(try interpreter.execute("Math.abs(0)"), .number(0))
+    }
+
+    func testMathFloorCeil() throws {
+        XCTAssertEqual(try interpreter.execute("Math.floor(3.7)"), .number(3))
+        XCTAssertEqual(try interpreter.execute("Math.floor(-3.7)"), .number(-4))
+        XCTAssertEqual(try interpreter.execute("Math.ceil(3.2)"), .number(4))
+        XCTAssertEqual(try interpreter.execute("Math.ceil(-3.2)"), .number(-3))
+    }
+
+    func testMathRound() throws {
+        XCTAssertEqual(try interpreter.execute("Math.round(3.5)"), .number(4))
+        XCTAssertEqual(try interpreter.execute("Math.round(3.4)"), .number(3))
+        XCTAssertEqual(try interpreter.execute("Math.round(-3.5)"), .number(-3))
+    }
+
+    func testMathTrunc() throws {
+        XCTAssertEqual(try interpreter.execute("Math.trunc(3.7)"), .number(3))
+        XCTAssertEqual(try interpreter.execute("Math.trunc(-3.7)"), .number(-3))
+    }
+
+    func testMathSqrt() throws {
+        XCTAssertEqual(try interpreter.execute("Math.sqrt(4)"), .number(2))
+        XCTAssertEqual(try interpreter.execute("Math.sqrt(9)"), .number(3))
+        XCTAssertEqual(try interpreter.execute("Math.sqrt(2)"), .number(1.4142135623730951))
+    }
+
+    func testMathPow() throws {
+        XCTAssertEqual(try interpreter.execute("Math.pow(2, 3)"), .number(8))
+        XCTAssertEqual(try interpreter.execute("Math.pow(3, 2)"), .number(9))
+        XCTAssertEqual(try interpreter.execute("Math.pow(2, 0)"), .number(1))
+    }
+
+    func testMathMinMax() throws {
+        XCTAssertEqual(try interpreter.execute("Math.min(1, 2, 3)"), .number(1))
+        XCTAssertEqual(try interpreter.execute("Math.max(1, 2, 3)"), .number(3))
+        XCTAssertEqual(try interpreter.execute("Math.min(-1, -5, 0)"), .number(-5))
+        XCTAssertEqual(try interpreter.execute("Math.max(-1, -5, 0)"), .number(0))
+    }
+
+    func testMathSign() throws {
+        XCTAssertEqual(try interpreter.execute("Math.sign(5)"), .number(1))
+        XCTAssertEqual(try interpreter.execute("Math.sign(-5)"), .number(-1))
+        XCTAssertEqual(try interpreter.execute("Math.sign(0)"), .number(0))
+    }
+
+    func testMathTrigonometry() throws {
+        XCTAssertEqual(try interpreter.execute("Math.sin(0)"), .number(0))
+        XCTAssertEqual(try interpreter.execute("Math.cos(0)"), .number(1))
+        XCTAssertEqual(try interpreter.execute("Math.tan(0)"), .number(0))
+    }
+
+    func testMathLog() throws {
+        XCTAssertEqual(try interpreter.execute("Math.log(1)"), .number(0))
+        XCTAssertEqual(try interpreter.execute("Math.log10(100)"), .number(2))
+        XCTAssertEqual(try interpreter.execute("Math.log2(8)"), .number(3))
+    }
+
+    func testMathRandom() throws {
+        // Random should return a value between 0 and 1
+        let result = try interpreter.execute("Math.random()")
+        guard case .number(let n) = result else {
+            XCTFail("Expected number")
+            return
+        }
+        XCTAssertTrue(n >= 0 && n < 1, "Math.random() should return value in [0, 1)")
+    }
+
+    func testMathHypot() throws {
+        XCTAssertEqual(try interpreter.execute("Math.hypot(3, 4)"), .number(5))
+        XCTAssertEqual(try interpreter.execute("Math.hypot(5, 12)"), .number(13))
+    }
 }

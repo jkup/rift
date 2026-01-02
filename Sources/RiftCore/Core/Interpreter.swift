@@ -96,8 +96,259 @@ public class Interpreter {
         // Infinity
         try? globalEnvironment.define("Infinity", value: .number(.infinity), kind: .var)
 
+        // Math object
+        setupMath()
+
         // Global functions
         setupGlobalFunctions()
+    }
+
+    private func setupMath() {
+        let math = JSObject(prototype: objectPrototype)
+
+        // Constants
+        math["E"] = .number(Double.pi.advanced(by: 0) == Double.pi ? 2.718281828459045 : Darwin.M_E)
+        math["LN10"] = .number(2.302585092994046)
+        math["LN2"] = .number(0.6931471805599453)
+        math["LOG10E"] = .number(0.4342944819032518)
+        math["LOG2E"] = .number(1.4426950408889634)
+        math["PI"] = .number(Double.pi)
+        math["SQRT1_2"] = .number(0.7071067811865476)
+        math["SQRT2"] = .number(1.4142135623730951)
+
+        // abs(x)
+        math["abs"] = .object(JSFunction.native(name: "abs", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(abs(x))
+        })
+
+        // acos(x)
+        math["acos"] = .object(JSFunction.native(name: "acos", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(acos(x))
+        })
+
+        // acosh(x)
+        math["acosh"] = .object(JSFunction.native(name: "acosh", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(acosh(x))
+        })
+
+        // asin(x)
+        math["asin"] = .object(JSFunction.native(name: "asin", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(asin(x))
+        })
+
+        // asinh(x)
+        math["asinh"] = .object(JSFunction.native(name: "asinh", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(asinh(x))
+        })
+
+        // atan(x)
+        math["atan"] = .object(JSFunction.native(name: "atan", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(atan(x))
+        })
+
+        // atanh(x)
+        math["atanh"] = .object(JSFunction.native(name: "atanh", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(atanh(x))
+        })
+
+        // atan2(y, x)
+        math["atan2"] = .object(JSFunction.native(name: "atan2", arity: 2) { _, args in
+            let y = args.first?.toNumber() ?? .nan
+            let x = args.count > 1 ? args[1].toNumber() : Double.nan
+            return .number(atan2(y, x))
+        })
+
+        // cbrt(x)
+        math["cbrt"] = .object(JSFunction.native(name: "cbrt", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(cbrt(x))
+        })
+
+        // ceil(x)
+        math["ceil"] = .object(JSFunction.native(name: "ceil", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(ceil(x))
+        })
+
+        // clz32(x)
+        math["clz32"] = .object(JSFunction.native(name: "clz32", arity: 1) { _, args in
+            let x = args.first?.toUInt32() ?? 0
+            return .number(Double(x.leadingZeroBitCount))
+        })
+
+        // cos(x)
+        math["cos"] = .object(JSFunction.native(name: "cos", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(cos(x))
+        })
+
+        // cosh(x)
+        math["cosh"] = .object(JSFunction.native(name: "cosh", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(cosh(x))
+        })
+
+        // exp(x)
+        math["exp"] = .object(JSFunction.native(name: "exp", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(exp(x))
+        })
+
+        // expm1(x)
+        math["expm1"] = .object(JSFunction.native(name: "expm1", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(expm1(x))
+        })
+
+        // floor(x)
+        math["floor"] = .object(JSFunction.native(name: "floor", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(floor(x))
+        })
+
+        // fround(x) - round to nearest float32
+        math["fround"] = .object(JSFunction.native(name: "fround", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(Double(Float(x)))
+        })
+
+        // hypot(...values)
+        math["hypot"] = .object(JSFunction.native(name: "hypot", arity: 2) { _, args in
+            if args.isEmpty { return .number(0) }
+            let values = args.map { $0.toNumber() }
+            if values.contains(where: { $0.isInfinite }) { return .number(.infinity) }
+            if values.contains(where: { $0.isNaN }) { return .number(.nan) }
+            let sumOfSquares = values.reduce(0.0) { $0 + $1 * $1 }
+            return .number(sqrt(sumOfSquares))
+        })
+
+        // imul(a, b) - 32-bit integer multiplication
+        math["imul"] = .object(JSFunction.native(name: "imul", arity: 2) { _, args in
+            let a = args.first?.toInt32() ?? 0
+            let b = args.count > 1 ? args[1].toInt32() : 0
+            return .number(Double(a &* b))
+        })
+
+        // log(x)
+        math["log"] = .object(JSFunction.native(name: "log", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(log(x))
+        })
+
+        // log1p(x)
+        math["log1p"] = .object(JSFunction.native(name: "log1p", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(log1p(x))
+        })
+
+        // log10(x)
+        math["log10"] = .object(JSFunction.native(name: "log10", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(log10(x))
+        })
+
+        // log2(x)
+        math["log2"] = .object(JSFunction.native(name: "log2", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(log2(x))
+        })
+
+        // max(...values)
+        math["max"] = .object(JSFunction.native(name: "max", arity: 2) { _, args in
+            if args.isEmpty { return .number(-.infinity) }
+            var result = -Double.infinity
+            for arg in args {
+                let n = arg.toNumber()
+                if n.isNaN { return .number(.nan) }
+                if n > result { result = n }
+            }
+            return .number(result)
+        })
+
+        // min(...values)
+        math["min"] = .object(JSFunction.native(name: "min", arity: 2) { _, args in
+            if args.isEmpty { return .number(.infinity) }
+            var result = Double.infinity
+            for arg in args {
+                let n = arg.toNumber()
+                if n.isNaN { return .number(.nan) }
+                if n < result { result = n }
+            }
+            return .number(result)
+        })
+
+        // pow(base, exponent)
+        math["pow"] = .object(JSFunction.native(name: "pow", arity: 2) { _, args in
+            let base = args.first?.toNumber() ?? .nan
+            let exponent = args.count > 1 ? args[1].toNumber() : Double.nan
+            return .number(pow(base, exponent))
+        })
+
+        // random()
+        math["random"] = .object(JSFunction.native(name: "random", arity: 0) { _, _ in
+            return .number(Double.random(in: 0..<1))
+        })
+
+        // round(x) - JavaScript uses "round half up" (toward +∞ for .5)
+        math["round"] = .object(JSFunction.native(name: "round", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            // floor(x + 0.5) gives JavaScript's round-half-up behavior
+            return .number(floor(x + 0.5))
+        })
+
+        // sign(x)
+        math["sign"] = .object(JSFunction.native(name: "sign", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            if x.isNaN { return .number(.nan) }
+            if x == 0 { return .number(x) } // Preserve -0
+            return .number(x > 0 ? 1 : -1)
+        })
+
+        // sin(x)
+        math["sin"] = .object(JSFunction.native(name: "sin", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(sin(x))
+        })
+
+        // sinh(x)
+        math["sinh"] = .object(JSFunction.native(name: "sinh", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(sinh(x))
+        })
+
+        // sqrt(x)
+        math["sqrt"] = .object(JSFunction.native(name: "sqrt", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(sqrt(x))
+        })
+
+        // tan(x)
+        math["tan"] = .object(JSFunction.native(name: "tan", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(tan(x))
+        })
+
+        // tanh(x)
+        math["tanh"] = .object(JSFunction.native(name: "tanh", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(tanh(x))
+        })
+
+        // trunc(x)
+        math["trunc"] = .object(JSFunction.native(name: "trunc", arity: 1) { _, args in
+            let x = args.first?.toNumber() ?? .nan
+            return .number(trunc(x))
+        })
+
+        globalObject["Math"] = .object(math)
+        try? globalEnvironment.define("Math", value: .object(math), kind: .var)
     }
 
     private func setupGlobalFunctions() {
