@@ -460,4 +460,155 @@ final class InterpreterTests: XCTestCase {
         XCTAssertEqual(try interpreter.execute("Math.hypot(3, 4)"), .number(5))
         XCTAssertEqual(try interpreter.execute("Math.hypot(5, 12)"), .number(13))
     }
+
+    // MARK: - Array.prototype Methods
+
+    func testArrayPushPop() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var arr = [1, 2];
+            arr.push(3);
+            arr.push(4, 5);
+            arr.length
+        """), .number(5))
+        XCTAssertEqual(try interpreter.execute("""
+            var arr = [1, 2, 3];
+            arr.pop()
+        """), .number(3))
+        XCTAssertEqual(try interpreter.execute("""
+            var arr = [1, 2, 3];
+            arr.pop();
+            arr.length
+        """), .number(2))
+    }
+
+    func testArrayShiftUnshift() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var arr = [1, 2, 3];
+            arr.shift()
+        """), .number(1))
+        XCTAssertEqual(try interpreter.execute("""
+            var arr = [1, 2, 3];
+            arr.unshift(0);
+            arr[0]
+        """), .number(0))
+    }
+
+    func testArrayIndexOf() throws {
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3, 2].indexOf(2)"), .number(1))
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3].indexOf(4)"), .number(-1))
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3, 2].lastIndexOf(2)"), .number(3))
+    }
+
+    func testArrayIncludes() throws {
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3].includes(2)"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3].includes(4)"), .boolean(false))
+    }
+
+    func testArrayJoin() throws {
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3].join('-')"), .string("1-2-3"))
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3].join()"), .string("1,2,3"))
+    }
+
+    func testArrayReverse() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var arr = [1, 2, 3];
+            arr.reverse();
+            arr[0]
+        """), .number(3))
+    }
+
+    func testArraySlice() throws {
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3, 4, 5].slice(1, 3).length"), .number(2))
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3, 4, 5].slice(1, 3)[0]"), .number(2))
+    }
+
+    func testArrayConcat() throws {
+        XCTAssertEqual(try interpreter.execute("[1, 2].concat([3, 4]).length"), .number(4))
+        XCTAssertEqual(try interpreter.execute("[1, 2].concat([3, 4])[2]"), .number(3))
+    }
+
+    func testArrayForEach() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var sum = 0;
+            [1, 2, 3].forEach(function(x) { sum = sum + x; });
+            sum
+        """), .number(6))
+    }
+
+    func testArrayMap() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var result = [1, 2, 3].map(function(x) { return x * 2; });
+            result[1]
+        """), .number(4))
+    }
+
+    func testArrayFilter() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var result = [1, 2, 3, 4, 5].filter(function(x) { return x > 2; });
+            result.length
+        """), .number(3))
+    }
+
+    func testArrayReduce() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            [1, 2, 3, 4].reduce(function(acc, x) { return acc + x; }, 0)
+        """), .number(10))
+        XCTAssertEqual(try interpreter.execute("""
+            [1, 2, 3, 4].reduce(function(acc, x) { return acc + x; })
+        """), .number(10))
+    }
+
+    func testArrayFind() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            [1, 2, 3, 4].find(function(x) { return x > 2; })
+        """), .number(3))
+        XCTAssertEqual(try interpreter.execute("""
+            [1, 2, 3, 4].findIndex(function(x) { return x > 2; })
+        """), .number(2))
+    }
+
+    func testArrayEvery() throws {
+        XCTAssertEqual(try interpreter.execute("[2, 4, 6].every(function(x) { return x % 2 === 0; })"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("[2, 3, 6].every(function(x) { return x % 2 === 0; })"), .boolean(false))
+    }
+
+    func testArraySome() throws {
+        XCTAssertEqual(try interpreter.execute("[1, 3, 5].some(function(x) { return x % 2 === 0; })"), .boolean(false))
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3].some(function(x) { return x % 2 === 0; })"), .boolean(true))
+    }
+
+    func testArrayFill() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var arr = [1, 2, 3];
+            arr.fill(0);
+            arr[1]
+        """), .number(0))
+    }
+
+    func testArrayAt() throws {
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3].at(0)"), .number(1))
+        XCTAssertEqual(try interpreter.execute("[1, 2, 3].at(-1)"), .number(3))
+    }
+
+    func testArrayFlat() throws {
+        XCTAssertEqual(try interpreter.execute("[[1, 2], [3, 4]].flat().length"), .number(4))
+        XCTAssertEqual(try interpreter.execute("[[1, 2], [3, 4]].flat()[2]"), .number(3))
+    }
+
+    func testArrayIsArray() throws {
+        XCTAssertEqual(try interpreter.execute("Array.isArray([1, 2, 3])"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("Array.isArray('hello')"), .boolean(false))
+    }
+
+    func testArrayFrom() throws {
+        // Use bracket notation since 'from' is a keyword
+        XCTAssertEqual(try interpreter.execute("Array[\"from\"]('abc').length"), .number(3))
+        XCTAssertEqual(try interpreter.execute("Array[\"from\"]('abc')[0]"), .string("a"))
+    }
+
+    func testArrayOf() throws {
+        // Use bracket notation since 'of' is a keyword
+        XCTAssertEqual(try interpreter.execute("Array[\"of\"](1, 2, 3).length"), .number(3))
+        XCTAssertEqual(try interpreter.execute("Array[\"of\"](1, 2, 3)[1]"), .number(2))
+    }
 }

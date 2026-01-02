@@ -99,6 +99,9 @@ public class Interpreter {
         // Math object
         setupMath()
 
+        // Array.prototype methods
+        setupArrayPrototype()
+
         // Global functions
         setupGlobalFunctions()
     }
@@ -349,6 +352,467 @@ public class Interpreter {
 
         globalObject["Math"] = .object(math)
         try? globalEnvironment.define("Math", value: .object(math), kind: .var)
+    }
+
+    private func setupArrayPrototype() {
+        // push(...items) - adds elements to end, returns new length
+        arrayPrototype["push"] = .object(JSFunction.native(name: "push", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .undefined
+            }
+            return .number(Double(array.push(args)))
+        })
+
+        // pop() - removes and returns last element
+        arrayPrototype["pop"] = .object(JSFunction.native(name: "pop", arity: 0) { ctx, _ in
+            guard case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .undefined
+            }
+            return array.pop()
+        })
+
+        // shift() - removes and returns first element
+        arrayPrototype["shift"] = .object(JSFunction.native(name: "shift", arity: 0) { ctx, _ in
+            guard case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .undefined
+            }
+            return array.shift()
+        })
+
+        // unshift(...items) - adds elements to beginning, returns new length
+        arrayPrototype["unshift"] = .object(JSFunction.native(name: "unshift", arity: 1) { ctx, args in
+            guard case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .undefined
+            }
+            return .number(Double(array.unshift(args)))
+        })
+
+        // indexOf(searchElement, fromIndex?)
+        arrayPrototype["indexOf"] = .object(JSFunction.native(name: "indexOf", arity: 1) { ctx, args in
+            guard case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .number(-1)
+            }
+            let searchElement = args.first ?? .undefined
+            let fromIndex = args.count > 1 ? Int(args[1].toNumber()) : 0
+            return .number(Double(array.indexOf(searchElement, fromIndex: fromIndex)))
+        })
+
+        // lastIndexOf(searchElement, fromIndex?)
+        arrayPrototype["lastIndexOf"] = .object(JSFunction.native(name: "lastIndexOf", arity: 1) { ctx, args in
+            guard case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .number(-1)
+            }
+            let searchElement = args.first ?? .undefined
+            let fromIndex = args.count > 1 ? Int(args[1].toNumber()) : nil
+            return .number(Double(array.lastIndexOf(searchElement, fromIndex: fromIndex)))
+        })
+
+        // includes(searchElement, fromIndex?)
+        arrayPrototype["includes"] = .object(JSFunction.native(name: "includes", arity: 1) { ctx, args in
+            guard case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .boolean(false)
+            }
+            let searchElement = args.first ?? .undefined
+            let fromIndex = args.count > 1 ? Int(args[1].toNumber()) : 0
+            return .boolean(array.includes(searchElement, fromIndex: fromIndex))
+        })
+
+        // join(separator?)
+        arrayPrototype["join"] = .object(JSFunction.native(name: "join", arity: 1) { ctx, args in
+            guard case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .string("")
+            }
+            let separator = args.first.map { $0.isUndefined ? "," : $0.toString() } ?? ","
+            return .string(array.join(separator: separator))
+        })
+
+        // reverse()
+        arrayPrototype["reverse"] = .object(JSFunction.native(name: "reverse", arity: 0) { ctx, _ in
+            guard case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .undefined
+            }
+            array.reverse()
+            return .object(array)
+        })
+
+        // slice(start?, end?)
+        arrayPrototype["slice"] = .object(JSFunction.native(name: "slice", arity: 2) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .undefined
+            }
+            let start = args.count > 0 ? Int(args[0].toNumber()) : 0
+            let end = args.count > 1 ? Int(args[1].toNumber()) : array.length
+            let result = array.slice(start: start, end: end)
+            result.prototype = self.arrayPrototype
+            return .object(result)
+        })
+
+        // concat(...arrays)
+        arrayPrototype["concat"] = .object(JSFunction.native(name: "concat", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .undefined
+            }
+            var arrays: [JSArray] = []
+            for arg in args {
+                if case .object(let o) = arg, let arr = o as? JSArray {
+                    arrays.append(arr)
+                } else {
+                    // Non-array values become single-element arrays
+                    let singleArray = JSArray(elements: [arg])
+                    arrays.append(singleArray)
+                }
+            }
+            let result = array.concat(arrays)
+            result.prototype = self.arrayPrototype
+            return .object(result)
+        })
+
+        // forEach(callback, thisArg?)
+        arrayPrototype["forEach"] = .object(JSFunction.native(name: "forEach", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray,
+                  let callbackArg = args.first,
+                  case .object(let callbackObj) = callbackArg,
+                  let callback = callbackObj as? JSFunction else {
+                return .undefined
+            }
+            let thisArg = args.count > 1 ? args[1] : .undefined
+            for i in 0..<array.length {
+                if array.hasElement(at: i) {
+                    let element = array.getElement(at: i) ?? .undefined
+                    _ = try? self.callFunction(callback, thisValue: thisArg, arguments: [element, .number(Double(i)), .object(array)])
+                }
+            }
+            return .undefined
+        })
+
+        // map(callback, thisArg?)
+        arrayPrototype["map"] = .object(JSFunction.native(name: "map", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray,
+                  let callbackArg = args.first,
+                  case .object(let callbackObj) = callbackArg,
+                  let callback = callbackObj as? JSFunction else {
+                return .undefined
+            }
+            let thisArg = args.count > 1 ? args[1] : .undefined
+            let result = JSArray(prototype: self.arrayPrototype)
+            for i in 0..<array.length {
+                if array.hasElement(at: i) {
+                    let element = array.getElement(at: i) ?? .undefined
+                    if let value = try? self.callFunction(callback, thisValue: thisArg, arguments: [element, .number(Double(i)), .object(array)]) {
+                        result.setElement(at: i, value: value)
+                    }
+                }
+            }
+            return .object(result)
+        })
+
+        // filter(callback, thisArg?)
+        arrayPrototype["filter"] = .object(JSFunction.native(name: "filter", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray,
+                  let callbackArg = args.first,
+                  case .object(let callbackObj) = callbackArg,
+                  let callback = callbackObj as? JSFunction else {
+                return .undefined
+            }
+            let thisArg = args.count > 1 ? args[1] : .undefined
+            let result = JSArray(prototype: self.arrayPrototype)
+            for i in 0..<array.length {
+                if array.hasElement(at: i) {
+                    let element = array.getElement(at: i) ?? .undefined
+                    if let value = try? self.callFunction(callback, thisValue: thisArg, arguments: [element, .number(Double(i)), .object(array)]),
+                       value.toBoolean() {
+                        _ = result.push([element])
+                    }
+                }
+            }
+            return .object(result)
+        })
+
+        // reduce(callback, initialValue?)
+        arrayPrototype["reduce"] = .object(JSFunction.native(name: "reduce", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray,
+                  let callbackArg = args.first,
+                  case .object(let callbackObj) = callbackArg,
+                  let callback = callbackObj as? JSFunction else {
+                return .undefined
+            }
+
+            var accumulator: Value
+            var startIndex = 0
+
+            if args.count > 1 {
+                accumulator = args[1]
+            } else {
+                // Find first non-hole element
+                while startIndex < array.length && !array.hasElement(at: startIndex) {
+                    startIndex += 1
+                }
+                guard startIndex < array.length else {
+                    throw RuntimeError.typeError("Reduce of empty array with no initial value")
+                }
+                accumulator = array.getElement(at: startIndex) ?? .undefined
+                startIndex += 1
+            }
+
+            for i in startIndex..<array.length {
+                if array.hasElement(at: i) {
+                    let element = array.getElement(at: i) ?? .undefined
+                    accumulator = try self.callFunction(callback, thisValue: .undefined, arguments: [accumulator, element, .number(Double(i)), .object(array)])
+                }
+            }
+            return accumulator
+        })
+
+        // reduceRight(callback, initialValue?)
+        arrayPrototype["reduceRight"] = .object(JSFunction.native(name: "reduceRight", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray,
+                  let callbackArg = args.first,
+                  case .object(let callbackObj) = callbackArg,
+                  let callback = callbackObj as? JSFunction else {
+                return .undefined
+            }
+
+            var accumulator: Value
+            var startIndex = array.length - 1
+
+            if args.count > 1 {
+                accumulator = args[1]
+            } else {
+                while startIndex >= 0 && !array.hasElement(at: startIndex) {
+                    startIndex -= 1
+                }
+                guard startIndex >= 0 else {
+                    throw RuntimeError.typeError("Reduce of empty array with no initial value")
+                }
+                accumulator = array.getElement(at: startIndex) ?? .undefined
+                startIndex -= 1
+            }
+
+            for i in stride(from: startIndex, through: 0, by: -1) {
+                if array.hasElement(at: i) {
+                    let element = array.getElement(at: i) ?? .undefined
+                    accumulator = try self.callFunction(callback, thisValue: .undefined, arguments: [accumulator, element, .number(Double(i)), .object(array)])
+                }
+            }
+            return accumulator
+        })
+
+        // find(callback, thisArg?)
+        arrayPrototype["find"] = .object(JSFunction.native(name: "find", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray,
+                  let callbackArg = args.first,
+                  case .object(let callbackObj) = callbackArg,
+                  let callback = callbackObj as? JSFunction else {
+                return .undefined
+            }
+            let thisArg = args.count > 1 ? args[1] : .undefined
+            for i in 0..<array.length {
+                let element = array.getElement(at: i) ?? .undefined
+                if let result = try? self.callFunction(callback, thisValue: thisArg, arguments: [element, .number(Double(i)), .object(array)]),
+                   result.toBoolean() {
+                    return element
+                }
+            }
+            return .undefined
+        })
+
+        // findIndex(callback, thisArg?)
+        arrayPrototype["findIndex"] = .object(JSFunction.native(name: "findIndex", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray,
+                  let callbackArg = args.first,
+                  case .object(let callbackObj) = callbackArg,
+                  let callback = callbackObj as? JSFunction else {
+                return .number(-1)
+            }
+            let thisArg = args.count > 1 ? args[1] : .undefined
+            for i in 0..<array.length {
+                let element = array.getElement(at: i) ?? .undefined
+                if let result = try? self.callFunction(callback, thisValue: thisArg, arguments: [element, .number(Double(i)), .object(array)]),
+                   result.toBoolean() {
+                    return .number(Double(i))
+                }
+            }
+            return .number(-1)
+        })
+
+        // every(callback, thisArg?)
+        arrayPrototype["every"] = .object(JSFunction.native(name: "every", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray,
+                  let callbackArg = args.first,
+                  case .object(let callbackObj) = callbackArg,
+                  let callback = callbackObj as? JSFunction else {
+                return .boolean(true)
+            }
+            let thisArg = args.count > 1 ? args[1] : .undefined
+            for i in 0..<array.length {
+                if array.hasElement(at: i) {
+                    let element = array.getElement(at: i) ?? .undefined
+                    if let result = try? self.callFunction(callback, thisValue: thisArg, arguments: [element, .number(Double(i)), .object(array)]),
+                       !result.toBoolean() {
+                        return .boolean(false)
+                    }
+                }
+            }
+            return .boolean(true)
+        })
+
+        // some(callback, thisArg?)
+        arrayPrototype["some"] = .object(JSFunction.native(name: "some", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray,
+                  let callbackArg = args.first,
+                  case .object(let callbackObj) = callbackArg,
+                  let callback = callbackObj as? JSFunction else {
+                return .boolean(false)
+            }
+            let thisArg = args.count > 1 ? args[1] : .undefined
+            for i in 0..<array.length {
+                if array.hasElement(at: i) {
+                    let element = array.getElement(at: i) ?? .undefined
+                    if let result = try? self.callFunction(callback, thisValue: thisArg, arguments: [element, .number(Double(i)), .object(array)]),
+                       result.toBoolean() {
+                        return .boolean(true)
+                    }
+                }
+            }
+            return .boolean(false)
+        })
+
+        // fill(value, start?, end?)
+        arrayPrototype["fill"] = .object(JSFunction.native(name: "fill", arity: 1) { ctx, args in
+            guard case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .undefined
+            }
+            let value = args.first ?? .undefined
+            let len = array.length
+            var start = args.count > 1 ? Int(args[1].toNumber()) : 0
+            var end = args.count > 2 ? Int(args[2].toNumber()) : len
+
+            // Normalize indices
+            start = start < 0 ? max(len + start, 0) : min(start, len)
+            end = end < 0 ? max(len + end, 0) : min(end, len)
+
+            for i in start..<end {
+                array.setElement(at: i, value: value)
+            }
+            return .object(array)
+        })
+
+        // at(index)
+        arrayPrototype["at"] = .object(JSFunction.native(name: "at", arity: 1) { ctx, args in
+            guard case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .undefined
+            }
+            var index = args.first.map { Int($0.toNumber()) } ?? 0
+            if index < 0 {
+                index = array.length + index
+            }
+            guard index >= 0 && index < array.length else {
+                return .undefined
+            }
+            return array.getElement(at: index) ?? .undefined
+        })
+
+        // flat(depth?)
+        arrayPrototype["flat"] = .object(JSFunction.native(name: "flat", arity: 1) { [weak self] ctx, args in
+            guard let self = self,
+                  case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .undefined
+            }
+            let depth = args.first.map { Int($0.toNumber()) } ?? 1
+
+            func flatten(_ arr: JSArray, _ d: Int) -> [Value] {
+                var result: [Value] = []
+                for i in 0..<arr.length {
+                    if let element = arr.getElement(at: i) {
+                        if d > 0, case .object(let obj) = element, let nested = obj as? JSArray {
+                            result.append(contentsOf: flatten(nested, d - 1))
+                        } else {
+                            result.append(element)
+                        }
+                    }
+                }
+                return result
+            }
+
+            let flattened = flatten(array, depth)
+            return .object(JSArray(elements: flattened, prototype: self.arrayPrototype))
+        })
+
+        // toString()
+        arrayPrototype["toString"] = .object(JSFunction.native(name: "toString", arity: 0) { ctx, _ in
+            guard case .object(let obj) = ctx.thisValue,
+                  let array = obj as? JSArray else {
+                return .string("")
+            }
+            return .string(array.join(separator: ","))
+        })
+
+        // Array.isArray
+        let arrayConstructor = JSObject(prototype: functionPrototype)
+        arrayConstructor["isArray"] = .object(JSFunction.native(name: "isArray", arity: 1) { _, args in
+            guard let first = args.first else { return .boolean(false) }
+            return .boolean(JSArray.isArray(first))
+        })
+
+        // Array.from
+        arrayConstructor["from"] = .object(JSFunction.native(name: "from", arity: 1) { [weak self] _, args in
+            guard let self = self, let first = args.first else {
+                return .object(JSArray(prototype: self?.arrayPrototype))
+            }
+
+            if case .object(let obj) = first, let sourceArray = obj as? JSArray {
+                let result = JSArray(elements: sourceArray.toArray(), prototype: self.arrayPrototype)
+                return .object(result)
+            } else if case .string(let str) = first {
+                let chars = str.map { Value.string(String($0)) }
+                return .object(JSArray(elements: chars, prototype: self.arrayPrototype))
+            }
+            return .object(JSArray(prototype: self.arrayPrototype))
+        })
+
+        // Array.of
+        arrayConstructor["of"] = .object(JSFunction.native(name: "of", arity: 0) { [weak self] _, args in
+            guard let self = self else { return .undefined }
+            return .object(JSArray(elements: args, prototype: self.arrayPrototype))
+        })
+
+        globalObject["Array"] = .object(arrayConstructor)
+        try? globalEnvironment.define("Array", value: .object(arrayConstructor), kind: .var)
     }
 
     private func setupGlobalFunctions() {
