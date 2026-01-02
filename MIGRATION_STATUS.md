@@ -15,8 +15,8 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | Phase 3: AST | Complete | 100% |
 | Phase 4: Parser | Complete | 100% |
 | Phase 5: Runtime Core | Complete | 100% |
-| Phase 6: Interpreter | Not Started | 0% |
-| Phase 7: Built-ins | Not Started | 0% |
+| Phase 6: Interpreter | Complete | 100% |
+| Phase 7: Built-ins | Partial | 20% |
 | Phase 8: Integration | Partial | 10% |
 
 ---
@@ -34,34 +34,32 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 - [x] `LexerTests.swift` (393 lines) - Comprehensive lexer tests
 
 ### Phase 3: AST
-- [x] `AST.swift` (661 lines) - All AST node types:
-  - Expression nodes (Literal, Identifier, Binary, Unary, Call, Member, Assignment, Array, Object, Function, New, Conditional, Update, Sequence, This)
-  - Statement nodes (Program, ExpressionStatement, Block, VariableDeclaration, If, While, DoWhile, For, ForIn, ForOf, Switch, Break, Continue, Return, Throw, Try, FunctionDeclaration, EmptyStatement)
+- [x] `AST.swift` (661 lines) - All AST node types
 
 ### Phase 4: Parser
 - [x] `Parser.swift` (1154 lines) - Recursive descent parser
 - [x] `ParserTests.swift` (636 lines) - Parser unit tests (61 tests)
 
 ### Phase 5: Runtime Core
-- [x] `JSObject.swift` (375 lines) - Base object class with:
-  - PropertyDescriptor (data and accessor properties)
-  - Prototype chain traversal
-  - Property get/set/delete/define
-  - Object.freeze/seal/preventExtensions support
-- [x] `JSFunction.swift` (319 lines) - Function objects with:
-  - Native functions (Swift implementations)
-  - User-defined functions (parsed JS code)
-  - Bound functions (.bind() support)
-  - Constructor support
-- [x] `JSArray.swift` (430 lines) - Array objects with:
-  - Sparse array support (holes)
-  - Special length property handling
-  - Core array methods (push, pop, shift, unshift, slice, concat, reverse, join, indexOf, includes)
-- [x] `Environment.swift` (292 lines) - Scope chain with:
-  - var/let/const declaration semantics
-  - Block scope vs function scope
-  - Temporal dead zone (TDZ) for let/const
-  - With statement support
+- [x] `JSObject.swift` (375 lines) - Base object class with property descriptors
+- [x] `JSFunction.swift` (319 lines) - Function objects (native + user-defined)
+- [x] `JSArray.swift` (430 lines) - Array with special length handling
+- [x] `Environment.swift` (292 lines) - Scope chain with var/let/const semantics
+
+### Phase 6: Interpreter
+- [x] `Interpreter.swift` (1178 lines) - Full interpreter implementation:
+  - Expression evaluation (all types: literals, binary, unary, calls, member access, etc.)
+  - Statement evaluation (if, while, for, for-in, for-of, switch, try/catch/finally, etc.)
+  - Function invocation with closures and recursion support
+  - Control flow (return, break, continue with labels)
+  - Built-in globals (console, isNaN, isFinite, parseInt, parseFloat)
+- [x] `InterpreterTests.swift` (377 lines) - 49 interpreter tests
+
+### Phase 7: Built-ins (Partial)
+- [x] `console.log/warn/error`
+- [x] `isNaN`, `isFinite`
+- [x] `parseInt`, `parseFloat`
+- [x] `NaN`, `Infinity`, `undefined` globals
 
 ### Phase 8: Integration (Partial)
 - [x] `Package.swift` - SPM configuration
@@ -72,14 +70,15 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 
 ## Test Status
 
-| Test Suite | Tests | Passing | Notes |
-|------------|-------|---------|-------|
-| TokenTests | All | Yes | 78 lines |
-| LexerTests | All | Yes | 393 lines |
-| ParserTests | 61 | Yes | All passing |
-| ValueTests | 14 | Yes | 181 lines |
+| Test Suite | Tests | Status |
+|------------|-------|--------|
+| TokenTests | 3 | All passing |
+| LexerTests | 22 | All passing |
+| ParserTests | 61 | All passing |
+| ValueTests | 14 | All passing |
+| InterpreterTests | 49 | All passing |
 
-**Total: 136 tests, all passing**
+**Total: 185 tests, all passing**
 
 ---
 
@@ -103,6 +102,11 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | JSArray.swift | 430 | Complete |
 | Environment.swift | 292 | Complete |
 
+### Sources/RiftCore/Core/
+| File | Lines | Status |
+|------|-------|--------|
+| Interpreter.swift | 1178 | Complete |
+
 ### Sources/RiftCore/
 | File | Lines | Status |
 |------|-------|--------|
@@ -116,54 +120,64 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | LexerTests.swift | 393 | Complete |
 | ParserTests.swift | 636 | Complete |
 | ValueTests.swift | 181 | Complete |
+| InterpreterTests.swift | 377 | Complete |
 
-**Total Swift Lines:** ~5,984 (Sources: 4,696 + Tests: 1,288)
+**Total Swift Lines:** ~7,539 (Sources: 5,874 + Tests: 1,665)
+
+---
+
+## What Works Now
+
+The interpreter can now execute JavaScript code including:
+- All primitive literals (numbers, strings, booleans, null, undefined)
+- Arithmetic, comparison, logical, and bitwise operators
+- Variable declarations (var, let, const) with proper scoping
+- Assignment and update operators (++, --, +=, etc.)
+- Control flow (if/else, while, do-while, for, for-in, for-of, switch)
+- Functions (declarations, expressions, arrows, closures, recursion)
+- Arrays (literals, indexing, length)
+- Objects (literals, property access, assignment)
+- Try/catch/finally with throw
+- typeof operator
+- console.log and global functions
 
 ---
 
 ## Next Steps
 
-### Phase 6: Interpreter
-1. [ ] Implement `Interpreter.swift` - Main evaluation engine
-2. [ ] Expression evaluation (literals, binary, unary, calls, member access, etc.)
-3. [ ] Statement evaluation (if, while, for, try/catch, switch, etc.)
-4. [ ] Control flow handling (return, break, continue with labels)
-5. [ ] Function invocation (user-defined functions with closures)
-6. [ ] Add interpreter tests
-
-### Phase 7: Built-ins
-7. [ ] `console` object (log, warn, error)
-8. [ ] `Math` object (all static methods)
-9. [ ] `Array.prototype` methods (map, filter, reduce, forEach, etc.)
-10. [ ] `String.prototype` methods
-11. [ ] `Object` methods (keys, values, entries, assign, etc.)
-12. [ ] `JSON` parse/stringify
-13. [ ] Global functions (parseInt, parseFloat, isNaN, isFinite, etc.)
-14. [ ] Error constructors (Error, TypeError, ReferenceError, etc.)
+### Phase 7: Built-ins (Remaining)
+1. [ ] `Math` object (all static methods)
+2. [ ] `Array.prototype` methods (map, filter, reduce, forEach, find, etc.)
+3. [ ] `String.prototype` methods (charAt, slice, split, etc.)
+4. [ ] `Object` methods (keys, values, entries, assign, etc.)
+5. [ ] `JSON` parse/stringify
+6. [ ] Error constructors (Error, TypeError, ReferenceError, etc.)
+7. [ ] `Number` and `Boolean` wrapper objects
 
 ### Phase 8: Integration (Remaining)
-15. [ ] CLI argument parsing with ArgumentParser
-16. [ ] REPL implementation
-17. [ ] File execution mode
-18. [ ] Test262 runner adaptation
+8. [ ] CLI argument parsing with ArgumentParser
+9. [ ] REPL implementation
+10. [ ] File execution mode
+11. [ ] Test262 runner adaptation
 
 ---
 
 ## Architecture Notes
 
 ### Design Decisions Made
-- **Value type**: Using Swift enum with associated values (cleaner than C++ variant)
+- **Value type**: Swift enum with associated values
 - **AST**: Protocol-based with concrete struct types
-- **Parser**: Recursive descent with precedence climbing for expressions
-- **Objects**: Class-based (reference semantics) with JSObjectRef protocol for Value enum
-- **Environment**: Class-based scope chain with support for var hoisting and TDZ
-- **Memory**: Using ARC; may add mark-sweep GC later if needed for cycles
+- **Parser**: Recursive descent with precedence climbing
+- **Objects**: Class-based (reference semantics) with JSObjectRef protocol
+- **Environment**: Class-based scope chain with var hoisting and TDZ
+- **Interpreter**: Tree-walking interpreter using pattern matching
 
 ### Key Implementation Details
-- `PropertyDescriptor` supports both data and accessor (getter/setter) properties
-- `JSFunction` has three body types: native, userDefined, and bound
-- `JSArray` uses sparse storage with holes (nil values)
-- `Environment` properly separates block scope (let/const) from function scope (var)
+- Control flow (return/break/continue) implemented via Swift's error throwing mechanism
+- Function closures captured via Environment reference
+- Arrays use sparse storage with proper hole handling
+- Short-circuit evaluation for &&, ||, ??
+- Stack overflow protection (max 10,000 call depth)
 
 ---
 
@@ -176,7 +190,7 @@ swift build
 # Test
 swift test
 
-# Run (once interpreter is complete)
+# Run (once CLI is complete)
 swift run rift-swift <file.js>
 ```
 
