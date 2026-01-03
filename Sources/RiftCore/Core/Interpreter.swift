@@ -105,6 +105,9 @@ public class Interpreter {
         // String.prototype methods
         setupStringPrototype()
 
+        // Object methods
+        setupObjectMethods()
+
         // Global functions
         setupGlobalFunctions()
     }
@@ -1292,6 +1295,316 @@ public class Interpreter {
 
         globalObject["String"] = .object(stringConstructor)
         try? globalEnvironment.define("String", value: .object(stringConstructor), kind: .var)
+    }
+
+    private func setupObjectMethods() {
+        // Object.prototype methods
+
+        // hasOwnProperty(prop)
+        objectPrototype["hasOwnProperty"] = .object(JSFunction.native(name: "hasOwnProperty", arity: 1) { ctx, args in
+            guard case .object(let obj) = ctx.thisValue,
+                  let jsObj = obj as? JSObject else {
+                return .boolean(false)
+            }
+            let prop = args.first?.toString() ?? ""
+            return .boolean(jsObj.hasOwnProperty(prop))
+        })
+
+        // isPrototypeOf(obj)
+        objectPrototype["isPrototypeOf"] = .object(JSFunction.native(name: "isPrototypeOf", arity: 1) { ctx, args in
+            guard case .object(let thisObj) = ctx.thisValue,
+                  let thisJsObj = thisObj as? JSObject,
+                  let first = args.first,
+                  case .object(let argObj) = first,
+                  let argJsObj = argObj as? JSObject else {
+                return .boolean(false)
+            }
+            var proto = argJsObj.prototype
+            while let p = proto {
+                if p === thisJsObj {
+                    return .boolean(true)
+                }
+                proto = p.prototype
+            }
+            return .boolean(false)
+        })
+
+        // propertyIsEnumerable(prop)
+        objectPrototype["propertyIsEnumerable"] = .object(JSFunction.native(name: "propertyIsEnumerable", arity: 1) { ctx, args in
+            guard case .object(let obj) = ctx.thisValue,
+                  let jsObj = obj as? JSObject else {
+                return .boolean(false)
+            }
+            let prop = args.first?.toString() ?? ""
+            if let descriptor = jsObj.getOwnPropertyDescriptor(prop) {
+                return .boolean(descriptor.enumerable)
+            }
+            return .boolean(false)
+        })
+
+        // toString()
+        objectPrototype["toString"] = .object(JSFunction.native(name: "toString", arity: 0) { ctx, _ in
+            switch ctx.thisValue {
+            case .undefined:
+                return .string("[object Undefined]")
+            case .null:
+                return .string("[object Null]")
+            case .boolean:
+                return .string("[object Boolean]")
+            case .number:
+                return .string("[object Number]")
+            case .string:
+                return .string("[object String]")
+            case .object(let obj):
+                if obj is JSArray {
+                    return .string("[object Array]")
+                } else if obj is JSFunction {
+                    return .string("[object Function]")
+                }
+                return .string("[object Object]")
+            }
+        })
+
+        // valueOf()
+        objectPrototype["valueOf"] = .object(JSFunction.native(name: "valueOf", arity: 0) { ctx, _ in
+            return ctx.thisValue
+        })
+
+        // Object constructor
+        let objectConstructor = JSFunction.native(name: "Object", arity: 1) { [weak self] _, args in
+            guard let self = self else { return .undefined }
+            if let first = args.first, !first.isNullish {
+                // If given a value, convert to object (simplified - just return as-is for objects)
+                if case .object = first {
+                    return first
+                }
+                // For primitives, wrap in object (simplified)
+                let obj = JSObject(prototype: self.objectPrototype)
+                return .object(obj)
+            }
+            // No argument or null/undefined: create empty object
+            return .object(JSObject(prototype: self.objectPrototype))
+        }
+
+        // Object.keys(obj)
+        objectConstructor["keys"] = .object(JSFunction.native(name: "keys", arity: 1) { [weak self] _, args in
+            guard let self = self,
+                  let first = args.first,
+                  case .object(let obj) = first,
+                  let jsObj = obj as? JSObject else {
+                return .object(JSArray(prototype: self?.arrayPrototype))
+            }
+            let keys = jsObj.enumerableKeys().map { Value.string($0) }
+            return .object(JSArray(elements: keys, prototype: self.arrayPrototype))
+        })
+
+        // Object.values(obj)
+        objectConstructor["values"] = .object(JSFunction.native(name: "values", arity: 1) { [weak self] _, args in
+            guard let self = self,
+                  let first = args.first,
+                  case .object(let obj) = first,
+                  let jsObj = obj as? JSObject else {
+                return .object(JSArray(prototype: self?.arrayPrototype))
+            }
+            let values = jsObj.enumerableKeys().map { jsObj.getProperty($0) }
+            return .object(JSArray(elements: values, prototype: self.arrayPrototype))
+        })
+
+        // Object.entries(obj)
+        objectConstructor["entries"] = .object(JSFunction.native(name: "entries", arity: 1) { [weak self] _, args in
+            guard let self = self,
+                  let first = args.first,
+                  case .object(let obj) = first,
+                  let jsObj = obj as? JSObject else {
+                return .object(JSArray(prototype: self?.arrayPrototype))
+            }
+            let entries = jsObj.enumerableKeys().map { key -> Value in
+                let value = jsObj.getProperty(key)
+                return .object(JSArray(elements: [.string(key), value], prototype: self.arrayPrototype))
+            }
+            return .object(JSArray(elements: entries, prototype: self.arrayPrototype))
+        })
+
+        // Object.assign(target, ...sources)
+        objectConstructor["assign"] = .object(JSFunction.native(name: "assign", arity: 2) { _, args in
+            guard let first = args.first,
+                  case .object(let targetObj) = first,
+                  let target = targetObj as? JSObject else {
+                return args.first ?? .undefined
+            }
+
+            for i in 1..<args.count {
+                if case .object(let sourceObj) = args[i],
+                   let source = sourceObj as? JSObject {
+                    for key in source.enumerableKeys() {
+                        let value = source.getProperty(key)
+                        try? target.setProperty(key, value)
+                    }
+                }
+            }
+            return .object(target)
+        })
+
+        // Object.create(proto, propertiesObject?)
+        objectConstructor["create"] = .object(JSFunction.native(name: "create", arity: 2) { _, args in
+            let proto: JSObject?
+            if let first = args.first {
+                if case .null = first {
+                    proto = nil
+                } else if case .object(let obj) = first, let jsObj = obj as? JSObject {
+                    proto = jsObj
+                } else {
+                    proto = nil
+                }
+            } else {
+                proto = nil
+            }
+
+            let newObj = JSObject(prototype: proto)
+
+            // Handle properties object (simplified)
+            if args.count > 1, case .object(let propsObj) = args[1], let props = propsObj as? JSObject {
+                for key in props.enumerableKeys() {
+                    let descriptor = props.getProperty(key)
+                    if case .object(let descObj) = descriptor, let desc = descObj as? JSObject {
+                        let value = desc.getProperty("value")
+                        try? newObj.setProperty(key, value)
+                    }
+                }
+            }
+
+            return .object(newObj)
+        })
+
+        // Object.freeze(obj)
+        objectConstructor["freeze"] = .object(JSFunction.native(name: "freeze", arity: 1) { _, args in
+            guard let first = args.first,
+                  case .object(let obj) = first,
+                  let jsObj = obj as? JSObject else {
+                return args.first ?? .undefined
+            }
+            jsObj.freeze()
+            return .object(jsObj)
+        })
+
+        // Object.seal(obj)
+        objectConstructor["seal"] = .object(JSFunction.native(name: "seal", arity: 1) { _, args in
+            guard let first = args.first,
+                  case .object(let obj) = first,
+                  let jsObj = obj as? JSObject else {
+                return args.first ?? .undefined
+            }
+            jsObj.seal()
+            return .object(jsObj)
+        })
+
+        // Object.isFrozen(obj)
+        objectConstructor["isFrozen"] = .object(JSFunction.native(name: "isFrozen", arity: 1) { _, args in
+            guard let first = args.first,
+                  case .object(let obj) = first,
+                  let jsObj = obj as? JSObject else {
+                return .boolean(true)  // Non-objects are considered frozen
+            }
+            return .boolean(jsObj.isFrozen)
+        })
+
+        // Object.isSealed(obj)
+        objectConstructor["isSealed"] = .object(JSFunction.native(name: "isSealed", arity: 1) { _, args in
+            guard let first = args.first,
+                  case .object(let obj) = first,
+                  let jsObj = obj as? JSObject else {
+                return .boolean(true)  // Non-objects are considered sealed
+            }
+            return .boolean(jsObj.isSealed)
+        })
+
+        // Object.isExtensible(obj)
+        objectConstructor["isExtensible"] = .object(JSFunction.native(name: "isExtensible", arity: 1) { _, args in
+            guard let first = args.first,
+                  case .object(let obj) = first,
+                  let jsObj = obj as? JSObject else {
+                return .boolean(false)  // Non-objects are not extensible
+            }
+            return .boolean(jsObj.isExtensible)
+        })
+
+        // Object.preventExtensions(obj)
+        objectConstructor["preventExtensions"] = .object(JSFunction.native(name: "preventExtensions", arity: 1) { _, args in
+            guard let first = args.first,
+                  case .object(let obj) = first,
+                  let jsObj = obj as? JSObject else {
+                return args.first ?? .undefined
+            }
+            jsObj.preventExtensions()
+            return .object(jsObj)
+        })
+
+        // Object.getOwnPropertyNames(obj)
+        objectConstructor["getOwnPropertyNames"] = .object(JSFunction.native(name: "getOwnPropertyNames", arity: 1) { [weak self] _, args in
+            guard let self = self,
+                  let first = args.first,
+                  case .object(let obj) = first,
+                  let jsObj = obj as? JSObject else {
+                return .object(JSArray(prototype: self?.arrayPrototype))
+            }
+            let names = jsObj.ownKeys().map { Value.string($0) }
+            return .object(JSArray(elements: names, prototype: self.arrayPrototype))
+        })
+
+        // Object.getPrototypeOf(obj)
+        objectConstructor["getPrototypeOf"] = .object(JSFunction.native(name: "getPrototypeOf", arity: 1) { _, args in
+            guard let first = args.first,
+                  case .object(let obj) = first,
+                  let jsObj = obj as? JSObject else {
+                return .null
+            }
+            if let proto = jsObj.prototype {
+                return .object(proto)
+            }
+            return .null
+        })
+
+        // Object.setPrototypeOf(obj, proto)
+        objectConstructor["setPrototypeOf"] = .object(JSFunction.native(name: "setPrototypeOf", arity: 2) { _, args in
+            guard args.count >= 2,
+                  case .object(let obj) = args[0],
+                  let jsObj = obj as? JSObject else {
+                return args.first ?? .undefined
+            }
+
+            if case .null = args[1] {
+                jsObj.prototype = nil
+            } else if case .object(let protoObj) = args[1], let proto = protoObj as? JSObject {
+                jsObj.prototype = proto
+            }
+            return .object(jsObj)
+        })
+
+        // Object.fromEntries(iterable)
+        objectConstructor["fromEntries"] = .object(JSFunction.native(name: "fromEntries", arity: 1) { [weak self] _, args in
+            guard let self = self,
+                  let first = args.first,
+                  case .object(let obj) = first,
+                  let array = obj as? JSArray else {
+                return .object(JSObject(prototype: self?.objectPrototype))
+            }
+
+            let result = JSObject(prototype: self.objectPrototype)
+            for i in 0..<array.length {
+                if let entry = array.getElement(at: i),
+                   case .object(let entryObj) = entry,
+                   let entryArray = entryObj as? JSArray,
+                   entryArray.length >= 2 {
+                    let key = entryArray.getElement(at: 0)?.toString() ?? ""
+                    let value = entryArray.getElement(at: 1) ?? .undefined
+                    try? result.setProperty(key, value)
+                }
+            }
+            return .object(result)
+        })
+
+        globalObject["Object"] = .object(objectConstructor)
+        try? globalEnvironment.define("Object", value: .object(objectConstructor), kind: .var)
     }
 
     private func setupGlobalFunctions() {

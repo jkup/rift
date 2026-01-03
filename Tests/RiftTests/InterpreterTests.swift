@@ -750,4 +750,110 @@ final class InterpreterTests: XCTestCase {
         XCTAssertEqual(try interpreter.execute("String(true)"), .string("true"))
         XCTAssertEqual(try interpreter.execute("String(null)"), .string("null"))
     }
+
+    // MARK: - Object Methods
+
+    func testObjectKeys() throws {
+        XCTAssertEqual(try interpreter.execute("Object.keys({a: 1, b: 2}).length"), .number(2))
+        XCTAssertEqual(try interpreter.execute("Object.keys({}).length"), .number(0))
+    }
+
+    func testObjectValues() throws {
+        XCTAssertEqual(try interpreter.execute("Object.values({a: 1, b: 2}).length"), .number(2))
+        XCTAssertEqual(try interpreter.execute("""
+            var vals = Object.values({a: 1, b: 2});
+            vals.includes(1) && vals.includes(2)
+        """), .boolean(true))
+    }
+
+    func testObjectEntries() throws {
+        XCTAssertEqual(try interpreter.execute("Object.entries({a: 1, b: 2}).length"), .number(2))
+        XCTAssertEqual(try interpreter.execute("Object.entries({a: 1})[0][0]"), .string("a"))
+        XCTAssertEqual(try interpreter.execute("Object.entries({a: 1})[0][1]"), .number(1))
+    }
+
+    func testObjectAssign() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var target = {a: 1};
+            Object.assign(target, {b: 2});
+            target.b
+        """), .number(2))
+        XCTAssertEqual(try interpreter.execute("""
+            var target = {a: 1};
+            Object.assign(target, {a: 2});
+            target.a
+        """), .number(2))
+    }
+
+    func testObjectCreate() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var proto = {greet: function() { return 'hello'; }};
+            var obj = Object.create(proto);
+            obj.greet()
+        """), .string("hello"))
+    }
+
+    func testObjectFreeze() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var obj = {a: 1};
+            Object.freeze(obj);
+            Object.isFrozen(obj)
+        """), .boolean(true))
+    }
+
+    func testObjectSeal() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var obj = {a: 1};
+            Object.seal(obj);
+            Object.isSealed(obj)
+        """), .boolean(true))
+    }
+
+    func testObjectIsExtensible() throws {
+        XCTAssertEqual(try interpreter.execute("Object.isExtensible({})"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("""
+            var obj = {};
+            Object.preventExtensions(obj);
+            Object.isExtensible(obj)
+        """), .boolean(false))
+    }
+
+    func testObjectGetPrototypeOf() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var proto = {x: 1};
+            var obj = Object.create(proto);
+            Object.getPrototypeOf(obj).x
+        """), .number(1))
+    }
+
+    func testObjectHasOwnProperty() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var obj = {a: 1};
+            obj.hasOwnProperty('a')
+        """), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("""
+            var obj = {a: 1};
+            obj.hasOwnProperty('b')
+        """), .boolean(false))
+    }
+
+    func testObjectFromEntries() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var entries = [['a', 1], ['b', 2]];
+            var obj = Object.fromEntries(entries);
+            obj.a
+        """), .number(1))
+        XCTAssertEqual(try interpreter.execute("""
+            var entries = [['a', 1], ['b', 2]];
+            var obj = Object.fromEntries(entries);
+            obj.b
+        """), .number(2))
+    }
+
+    func testObjectGetOwnPropertyNames() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var obj = {a: 1, b: 2};
+            Object.getOwnPropertyNames(obj).length
+        """), .number(2))
+    }
 }
