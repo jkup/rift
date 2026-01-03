@@ -927,4 +927,72 @@ final class InterpreterTests: XCTestCase {
             parsed.value
         """), .number(42))
     }
+
+    // MARK: - Error Constructors
+
+    func testErrorConstructor() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var e = Error('something went wrong');
+            e.message
+        """), .string("something went wrong"))
+        XCTAssertEqual(try interpreter.execute("""
+            var e = Error('something went wrong');
+            e.name
+        """), .string("Error"))
+    }
+
+    func testErrorToString() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var e = Error('oops');
+            e.toString()
+        """), .string("Error: oops"))
+        XCTAssertEqual(try interpreter.execute("""
+            var e = Error();
+            e.toString()
+        """), .string("Error"))
+    }
+
+    func testTypeError() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var e = TypeError('not a function');
+            e.name
+        """), .string("TypeError"))
+        XCTAssertEqual(try interpreter.execute("""
+            var e = TypeError('not a function');
+            e.message
+        """), .string("not a function"))
+    }
+
+    func testReferenceError() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var e = ReferenceError('x is not defined');
+            e.name
+        """), .string("ReferenceError"))
+    }
+
+    func testSyntaxError() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var e = SyntaxError('unexpected token');
+            e.name
+        """), .string("SyntaxError"))
+    }
+
+    func testRangeError() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var e = RangeError('invalid array length');
+            e.name
+        """), .string("RangeError"))
+    }
+
+    func testThrowCatchError() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var result = '';
+            try {
+                throw Error('test error');
+            } catch (e) {
+                result = e.message;
+            }
+            result
+        """), .string("test error"))
+    }
 }

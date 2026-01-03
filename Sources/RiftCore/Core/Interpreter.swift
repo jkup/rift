@@ -111,6 +111,9 @@ public class Interpreter {
         // JSON object
         setupJSON()
 
+        // Error constructors
+        setupErrors()
+
         // Global functions
         setupGlobalFunctions()
     }
@@ -1793,6 +1796,90 @@ public class Interpreter {
             let newIndent = currentIndent + indent
             return "{\n" + pairs.map { newIndent + $0 }.joined(separator: ",\n") + "\n" + currentIndent + "}"
         }
+    }
+
+    private func setupErrors() {
+        // Create Error.prototype
+        let errorPrototype = JSObject(prototype: objectPrototype)
+        errorPrototype["name"] = .string("Error")
+        errorPrototype["message"] = .string("")
+
+        // Error.prototype.toString()
+        errorPrototype["toString"] = .object(JSFunction.native(name: "toString", arity: 0) { ctx, _ in
+            guard case .object(let obj) = ctx.thisValue,
+                  let jsObj = obj as? JSObject else {
+                return .string("Error")
+            }
+            let name = jsObj.getProperty("name").toString()
+            let message = jsObj.getProperty("message").toString()
+            if message.isEmpty {
+                return .string(name)
+            }
+            return .string("\(name): \(message)")
+        })
+
+        // Helper to create error constructor
+        func createErrorConstructor(name: String, prototype: JSObject) -> JSFunction {
+            let constructor = JSFunction.native(name: name, arity: 1) { _, args in
+                let errorObj = JSObject(prototype: prototype)
+                errorObj["name"] = .string(name)
+                if let messageArg = args.first, !messageArg.isUndefined {
+                    errorObj["message"] = .string(messageArg.toString())
+                } else {
+                    errorObj["message"] = .string("")
+                }
+                return .object(errorObj)
+            }
+            constructor["prototype"] = .object(prototype)
+            return constructor
+        }
+
+        // Create Error constructor
+        let errorConstructor = createErrorConstructor(name: "Error", prototype: errorPrototype)
+        globalObject["Error"] = .object(errorConstructor)
+        try? globalEnvironment.define("Error", value: .object(errorConstructor), kind: .var)
+
+        // TypeError
+        let typeErrorPrototype = JSObject(prototype: errorPrototype)
+        typeErrorPrototype["name"] = .string("TypeError")
+        let typeErrorConstructor = createErrorConstructor(name: "TypeError", prototype: typeErrorPrototype)
+        globalObject["TypeError"] = .object(typeErrorConstructor)
+        try? globalEnvironment.define("TypeError", value: .object(typeErrorConstructor), kind: .var)
+
+        // ReferenceError
+        let referenceErrorPrototype = JSObject(prototype: errorPrototype)
+        referenceErrorPrototype["name"] = .string("ReferenceError")
+        let referenceErrorConstructor = createErrorConstructor(name: "ReferenceError", prototype: referenceErrorPrototype)
+        globalObject["ReferenceError"] = .object(referenceErrorConstructor)
+        try? globalEnvironment.define("ReferenceError", value: .object(referenceErrorConstructor), kind: .var)
+
+        // SyntaxError
+        let syntaxErrorPrototype = JSObject(prototype: errorPrototype)
+        syntaxErrorPrototype["name"] = .string("SyntaxError")
+        let syntaxErrorConstructor = createErrorConstructor(name: "SyntaxError", prototype: syntaxErrorPrototype)
+        globalObject["SyntaxError"] = .object(syntaxErrorConstructor)
+        try? globalEnvironment.define("SyntaxError", value: .object(syntaxErrorConstructor), kind: .var)
+
+        // RangeError
+        let rangeErrorPrototype = JSObject(prototype: errorPrototype)
+        rangeErrorPrototype["name"] = .string("RangeError")
+        let rangeErrorConstructor = createErrorConstructor(name: "RangeError", prototype: rangeErrorPrototype)
+        globalObject["RangeError"] = .object(rangeErrorConstructor)
+        try? globalEnvironment.define("RangeError", value: .object(rangeErrorConstructor), kind: .var)
+
+        // URIError
+        let uriErrorPrototype = JSObject(prototype: errorPrototype)
+        uriErrorPrototype["name"] = .string("URIError")
+        let uriErrorConstructor = createErrorConstructor(name: "URIError", prototype: uriErrorPrototype)
+        globalObject["URIError"] = .object(uriErrorConstructor)
+        try? globalEnvironment.define("URIError", value: .object(uriErrorConstructor), kind: .var)
+
+        // EvalError
+        let evalErrorPrototype = JSObject(prototype: errorPrototype)
+        evalErrorPrototype["name"] = .string("EvalError")
+        let evalErrorConstructor = createErrorConstructor(name: "EvalError", prototype: evalErrorPrototype)
+        globalObject["EvalError"] = .object(evalErrorConstructor)
+        try? globalEnvironment.define("EvalError", value: .object(evalErrorConstructor), kind: .var)
     }
 
     private func setupGlobalFunctions() {

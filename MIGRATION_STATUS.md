@@ -16,7 +16,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | Phase 4: Parser | Complete | 100% |
 | Phase 5: Runtime Core | Complete | 100% |
 | Phase 6: Interpreter | Complete | 100% |
-| Phase 7: Built-ins | Partial | 75% |
+| Phase 7: Built-ins | Partial | 85% |
 | Phase 8: Integration | Partial | 10% |
 
 ---
@@ -68,6 +68,8 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 - [x] `Object` static methods (keys, values, entries, assign, create, freeze, seal, isFrozen, isSealed, isExtensible, preventExtensions, getPrototypeOf, setPrototypeOf, getOwnPropertyNames, fromEntries)
 - [x] `Object.prototype` methods (hasOwnProperty, isPrototypeOf, propertyIsEnumerable, toString, valueOf)
 - [x] `JSON` object (parse, stringify)
+- [x] Error constructors (Error, TypeError, ReferenceError, SyntaxError, RangeError, URIError, EvalError)
+- [x] `Error.prototype` (toString)
 
 ### Phase 8: Integration (Partial)
 - [x] `Package.swift` - SPM configuration
@@ -84,9 +86,9 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | LexerTests | 22 | All passing |
 | ParserTests | 61 | All passing |
 | ValueTests | 14 | All passing |
-| InterpreterTests | 129 | All passing |
+| InterpreterTests | 136 | All passing |
 
-**Total: 265 tests, all passing**
+**Total: 272 tests, all passing**
 
 ---
 
@@ -113,7 +115,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 ### Sources/RiftCore/Core/
 | File | Lines | Status |
 |------|-------|--------|
-| Interpreter.swift | 2873 | Complete |
+| Interpreter.swift | 2960 | Complete |
 
 ### Sources/RiftCore/
 | File | Lines | Status |
@@ -128,9 +130,9 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | LexerTests.swift | 393 | Complete |
 | ParserTests.swift | 636 | Complete |
 | ValueTests.swift | 181 | Complete |
-| InterpreterTests.swift | 930 | Complete |
+| InterpreterTests.swift | 998 | Complete |
 
-**Total Swift Lines:** ~9,800 (Sources: 7,569 + Tests: 2,131)
+**Total Swift Lines:** ~10,100 (Sources: 7,656 + Tests: 2,199)
 
 ---
 
@@ -153,6 +155,7 @@ The interpreter can now execute JavaScript code including:
 - String.prototype methods (charAt, slice, split, trim, etc.)
 - Object methods (keys, values, entries, assign, create, freeze, etc.)
 - JSON.parse and JSON.stringify
+- Error constructors (Error, TypeError, ReferenceError, etc.)
 
 ---
 
@@ -164,7 +167,7 @@ The interpreter can now execute JavaScript code including:
 3. [x] `String.prototype` methods (charAt, slice, split, etc.) ✓
 4. [x] `Object` methods (keys, values, entries, assign, etc.) ✓
 5. [x] `JSON` parse/stringify ✓
-6. [ ] Error constructors (Error, TypeError, ReferenceError, etc.)
+6. [x] Error constructors (Error, TypeError, ReferenceError, etc.) ✓
 7. [ ] `Number` and `Boolean` wrapper objects
 
 ### Phase 8: Integration (Remaining)
