@@ -108,6 +108,9 @@ public class Interpreter {
         // Object methods
         setupObjectMethods()
 
+        // JSON object
+        setupJSON()
+
         // Global functions
         setupGlobalFunctions()
     }
@@ -1605,6 +1608,191 @@ public class Interpreter {
 
         globalObject["Object"] = .object(objectConstructor)
         try? globalEnvironment.define("Object", value: .object(objectConstructor), kind: .var)
+    }
+
+    private func setupJSON() {
+        let json = JSObject(prototype: objectPrototype)
+
+        // JSON.parse(text, reviver?)
+        json["parse"] = .object(JSFunction.native(name: "parse", arity: 1) { [weak self] _, args in
+            guard let self = self else { return .undefined }
+            let text = args.first?.toString() ?? ""
+
+            // Use Swift's JSONSerialization to parse
+            guard let data = text.data(using: .utf8) else {
+                return .undefined
+            }
+
+            do {
+                let jsonObject = try JSONSerialization.jsonObject(with: data, options: [.fragmentsAllowed])
+                return self.jsonToValue(jsonObject)
+            } catch {
+                return .undefined  // Should throw SyntaxError
+            }
+        })
+
+        // JSON.stringify(value, replacer?, space?)
+        json["stringify"] = .object(JSFunction.native(name: "stringify", arity: 1) { [weak self] _, args in
+            guard let self = self else { return .undefined }
+            guard let value = args.first else { return .undefined }
+
+            // Get space argument for indentation
+            var indent = ""
+            if args.count > 2 {
+                let spaceArg = args[2]
+                if case .number(let n) = spaceArg {
+                    let spaces = min(max(Int(n), 0), 10)
+                    indent = String(repeating: " ", count: spaces)
+                } else if case .string(let s) = spaceArg {
+                    indent = String(s.prefix(10))
+                }
+            }
+
+            if let result = self.valueToJsonString(value, indent: indent, currentIndent: "") {
+                return .string(result)
+            }
+            return .undefined
+        })
+
+        globalObject["JSON"] = .object(json)
+        try? globalEnvironment.define("JSON", value: .object(json), kind: .var)
+    }
+
+    /// Convert a Swift JSON object to a JS Value
+    private func jsonToValue(_ json: Any) -> Value {
+        switch json {
+        case is NSNull:
+            return .null
+        case let num as NSNumber:
+            // Check if it's actually a boolean (CFBoolean)
+            if CFGetTypeID(num) == CFBooleanGetTypeID() {
+                return .boolean(num.boolValue)
+            }
+            return .number(num.doubleValue)
+        case let str as String:
+            return .string(str)
+        case let arr as [Any]:
+            let elements = arr.map { jsonToValue($0) }
+            return .object(JSArray(elements: elements, prototype: arrayPrototype))
+        case let dict as [String: Any]:
+            let obj = JSObject(prototype: objectPrototype)
+            for (key, value) in dict {
+                try? obj.setProperty(key, jsonToValue(value))
+            }
+            return .object(obj)
+        default:
+            return .undefined
+        }
+    }
+
+    /// Convert a JS Value to a JSON string
+    private func valueToJsonString(_ value: Value, indent: String, currentIndent: String) -> String? {
+        switch value {
+        case .undefined:
+            return nil  // undefined values are omitted
+        case .null:
+            return "null"
+        case .boolean(let b):
+            return b ? "true" : "false"
+        case .number(let n):
+            if n.isNaN || n.isInfinite {
+                return "null"
+            }
+            if n == n.rounded() && abs(n) < Double(Int.max) {
+                return String(Int(n))
+            }
+            return String(n)
+        case .string(let s):
+            return escapeJsonString(s)
+        case .object(let obj):
+            if let array = obj as? JSArray {
+                return arrayToJsonString(array, indent: indent, currentIndent: currentIndent)
+            } else if obj is JSFunction {
+                return nil  // Functions are omitted
+            } else if let jsObj = obj as? JSObject {
+                return objectToJsonString(jsObj, indent: indent, currentIndent: currentIndent)
+            }
+            return nil
+        }
+    }
+
+    /// Escape a string for JSON
+    private func escapeJsonString(_ s: String) -> String {
+        var result = "\""
+        for char in s {
+            switch char {
+            case "\"": result += "\\\""
+            case "\\": result += "\\\\"
+            case "\n": result += "\\n"
+            case "\r": result += "\\r"
+            case "\t": result += "\\t"
+            default:
+                if char.asciiValue ?? 0 < 32 {
+                    let hex = String(format: "\\u%04x", char.asciiValue ?? 0)
+                    result += hex
+                } else {
+                    result.append(char)
+                }
+            }
+        }
+        result += "\""
+        return result
+    }
+
+    /// Convert a JS array to JSON string
+    private func arrayToJsonString(_ array: JSArray, indent: String, currentIndent: String) -> String {
+        if array.length == 0 {
+            return "[]"
+        }
+
+        var elements: [String] = []
+        for i in 0..<array.length {
+            if let element = array.getElement(at: i),
+               let str = valueToJsonString(element, indent: indent, currentIndent: currentIndent + indent) {
+                elements.append(str)
+            } else {
+                elements.append("null")
+            }
+        }
+
+        if indent.isEmpty {
+            return "[" + elements.joined(separator: ",") + "]"
+        } else {
+            let newIndent = currentIndent + indent
+            return "[\n" + elements.map { newIndent + $0 }.joined(separator: ",\n") + "\n" + currentIndent + "]"
+        }
+    }
+
+    /// Convert a JS object to JSON string
+    private func objectToJsonString(_ obj: JSObject, indent: String, currentIndent: String) -> String {
+        let keys = obj.enumerableKeys()
+        if keys.isEmpty {
+            return "{}"
+        }
+
+        var pairs: [String] = []
+        for key in keys {
+            let value = obj.getProperty(key)
+            if let valueStr = valueToJsonString(value, indent: indent, currentIndent: currentIndent + indent) {
+                let keyStr = escapeJsonString(key)
+                if indent.isEmpty {
+                    pairs.append("\(keyStr):\(valueStr)")
+                } else {
+                    pairs.append("\(keyStr): \(valueStr)")
+                }
+            }
+        }
+
+        if pairs.isEmpty {
+            return "{}"
+        }
+
+        if indent.isEmpty {
+            return "{" + pairs.joined(separator: ",") + "}"
+        } else {
+            let newIndent = currentIndent + indent
+            return "{\n" + pairs.map { newIndent + $0 }.joined(separator: ",\n") + "\n" + currentIndent + "}"
+        }
     }
 
     private func setupGlobalFunctions() {

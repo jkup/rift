@@ -856,4 +856,75 @@ final class InterpreterTests: XCTestCase {
             Object.getOwnPropertyNames(obj).length
         """), .number(2))
     }
+
+    // MARK: - JSON Methods
+
+    func testJSONParseObject() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var obj = JSON.parse('{"a": 1, "b": 2}');
+            obj.a
+        """), .number(1))
+        XCTAssertEqual(try interpreter.execute("""
+            var obj = JSON.parse('{"a": 1, "b": 2}');
+            obj.b
+        """), .number(2))
+    }
+
+    func testJSONParseArray() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var arr = JSON.parse('[1, 2, 3]');
+            arr.length
+        """), .number(3))
+        XCTAssertEqual(try interpreter.execute("JSON.parse('[1, 2, 3]')[1]"), .number(2))
+    }
+
+    func testJSONParsePrimitives() throws {
+        XCTAssertEqual(try interpreter.execute("JSON.parse('true')"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("JSON.parse('false')"), .boolean(false))
+        XCTAssertEqual(try interpreter.execute("JSON.parse('null')"), .null)
+        XCTAssertEqual(try interpreter.execute("JSON.parse('42')"), .number(42))
+        XCTAssertEqual(try interpreter.execute("JSON.parse('\"hello\"')"), .string("hello"))
+    }
+
+    func testJSONParseNested() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var obj = JSON.parse('{"nested": {"x": 10}}');
+            obj.nested.x
+        """), .number(10))
+    }
+
+    func testJSONStringifyObject() throws {
+        XCTAssertEqual(try interpreter.execute("JSON.stringify({a: 1})"), .string("{\"a\":1}"))
+    }
+
+    func testJSONStringifyArray() throws {
+        XCTAssertEqual(try interpreter.execute("JSON.stringify([1, 2, 3])"), .string("[1,2,3]"))
+    }
+
+    func testJSONStringifyPrimitives() throws {
+        XCTAssertEqual(try interpreter.execute("JSON.stringify(true)"), .string("true"))
+        XCTAssertEqual(try interpreter.execute("JSON.stringify(false)"), .string("false"))
+        XCTAssertEqual(try interpreter.execute("JSON.stringify(null)"), .string("null"))
+        XCTAssertEqual(try interpreter.execute("JSON.stringify(42)"), .string("42"))
+        XCTAssertEqual(try interpreter.execute("JSON.stringify('hello')"), .string("\"hello\""))
+    }
+
+    func testJSONStringifyNested() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            JSON.stringify({a: {b: 1}})
+        """), .string("{\"a\":{\"b\":1}}"))
+    }
+
+    func testJSONRoundTrip() throws {
+        XCTAssertEqual(try interpreter.execute("""
+            var original = {name: 'test', value: 42, items: [1, 2, 3]};
+            var parsed = JSON.parse(JSON.stringify(original));
+            parsed.name
+        """), .string("test"))
+        XCTAssertEqual(try interpreter.execute("""
+            var original = {name: 'test', value: 42, items: [1, 2, 3]};
+            var parsed = JSON.parse(JSON.stringify(original));
+            parsed.value
+        """), .number(42))
+    }
 }

@@ -16,7 +16,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | Phase 4: Parser | Complete | 100% |
 | Phase 5: Runtime Core | Complete | 100% |
 | Phase 6: Interpreter | Complete | 100% |
-| Phase 7: Built-ins | Partial | 65% |
+| Phase 7: Built-ins | Partial | 75% |
 | Phase 8: Integration | Partial | 10% |
 
 ---
@@ -67,6 +67,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 - [x] `String` static methods (fromCharCode, fromCodePoint)
 - [x] `Object` static methods (keys, values, entries, assign, create, freeze, seal, isFrozen, isSealed, isExtensible, preventExtensions, getPrototypeOf, setPrototypeOf, getOwnPropertyNames, fromEntries)
 - [x] `Object.prototype` methods (hasOwnProperty, isPrototypeOf, propertyIsEnumerable, toString, valueOf)
+- [x] `JSON` object (parse, stringify)
 
 ### Phase 8: Integration (Partial)
 - [x] `Package.swift` - SPM configuration
@@ -83,9 +84,9 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | LexerTests | 22 | All passing |
 | ParserTests | 61 | All passing |
 | ValueTests | 14 | All passing |
-| InterpreterTests | 120 | All passing |
+| InterpreterTests | 129 | All passing |
 
-**Total: 256 tests, all passing**
+**Total: 265 tests, all passing**
 
 ---
 
@@ -112,7 +113,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 ### Sources/RiftCore/Core/
 | File | Lines | Status |
 |------|-------|--------|
-| Interpreter.swift | 2685 | Complete |
+| Interpreter.swift | 2873 | Complete |
 
 ### Sources/RiftCore/
 | File | Lines | Status |
@@ -127,9 +128,9 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | LexerTests.swift | 393 | Complete |
 | ParserTests.swift | 636 | Complete |
 | ValueTests.swift | 181 | Complete |
-| InterpreterTests.swift | 859 | Complete |
+| InterpreterTests.swift | 930 | Complete |
 
-**Total Swift Lines:** ~9,500 (Sources: 7,381 + Tests: 2,060)
+**Total Swift Lines:** ~9,800 (Sources: 7,569 + Tests: 2,131)
 
 ---
 
@@ -151,6 +152,7 @@ The interpreter can now execute JavaScript code including:
 - Array.prototype methods (map, filter, reduce, forEach, etc.)
 - String.prototype methods (charAt, slice, split, trim, etc.)
 - Object methods (keys, values, entries, assign, create, freeze, etc.)
+- JSON.parse and JSON.stringify
 
 ---
 
@@ -161,7 +163,7 @@ The interpreter can now execute JavaScript code including:
 2. [x] `Array.prototype` methods (map, filter, reduce, forEach, find, etc.) ✓
 3. [x] `String.prototype` methods (charAt, slice, split, etc.) ✓
 4. [x] `Object` methods (keys, values, entries, assign, etc.) ✓
-5. [ ] `JSON` parse/stringify
+5. [x] `JSON` parse/stringify ✓
 6. [ ] Error constructors (Error, TypeError, ReferenceError, etc.)
 7. [ ] `Number` and `Boolean` wrapper objects
 
