@@ -80,6 +80,14 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 - [x] `main.swift` - Entry point stub
 - [x] `RiftCore.swift` - Module placeholder
 
+
+### Suggestions for next steps
+
+  1. CLI argument parsing - Using ArgumentParser
+  2. REPL implementation
+  3. File execution mode
+  4. Test262 runner adaptation
+
 ---
 
 ## Test Status
