@@ -611,4 +611,143 @@ final class InterpreterTests: XCTestCase {
         XCTAssertEqual(try interpreter.execute("Array[\"of\"](1, 2, 3).length"), .number(3))
         XCTAssertEqual(try interpreter.execute("Array[\"of\"](1, 2, 3)[1]"), .number(2))
     }
+
+    // MARK: - String.prototype Methods
+
+    func testStringLength() throws {
+        XCTAssertEqual(try interpreter.execute("'hello'.length"), .number(5))
+        XCTAssertEqual(try interpreter.execute("''.length"), .number(0))
+    }
+
+    func testStringCharAt() throws {
+        XCTAssertEqual(try interpreter.execute("'hello'.charAt(0)"), .string("h"))
+        XCTAssertEqual(try interpreter.execute("'hello'.charAt(4)"), .string("o"))
+        XCTAssertEqual(try interpreter.execute("'hello'.charAt(10)"), .string(""))
+    }
+
+    func testStringCharCodeAt() throws {
+        XCTAssertEqual(try interpreter.execute("'A'.charCodeAt(0)"), .number(65))
+        XCTAssertEqual(try interpreter.execute("'abc'.charCodeAt(1)"), .number(98))
+    }
+
+    func testStringConcat() throws {
+        XCTAssertEqual(try interpreter.execute("'hello'.concat(' ', 'world')"), .string("hello world"))
+        XCTAssertEqual(try interpreter.execute("'a'.concat('b', 'c')"), .string("abc"))
+    }
+
+    func testStringIncludes() throws {
+        XCTAssertEqual(try interpreter.execute("'hello world'.includes('world')"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("'hello world'.includes('xyz')"), .boolean(false))
+        XCTAssertEqual(try interpreter.execute("'hello world'.includes('hello', 1)"), .boolean(false))
+    }
+
+    func testStringIndexOf() throws {
+        XCTAssertEqual(try interpreter.execute("'hello world'.indexOf('world')"), .number(6))
+        XCTAssertEqual(try interpreter.execute("'hello world'.indexOf('xyz')"), .number(-1))
+        XCTAssertEqual(try interpreter.execute("'hello world'.indexOf('o')"), .number(4))
+        XCTAssertEqual(try interpreter.execute("'hello world'.indexOf('o', 5)"), .number(7))
+    }
+
+    func testStringLastIndexOf() throws {
+        XCTAssertEqual(try interpreter.execute("'hello world'.lastIndexOf('o')"), .number(7))
+        XCTAssertEqual(try interpreter.execute("'hello world'.lastIndexOf('o', 6)"), .number(4))
+    }
+
+    func testStringSlice() throws {
+        XCTAssertEqual(try interpreter.execute("'hello'.slice(1, 4)"), .string("ell"))
+        XCTAssertEqual(try interpreter.execute("'hello'.slice(-2)"), .string("lo"))
+        XCTAssertEqual(try interpreter.execute("'hello'.slice(1)"), .string("ello"))
+    }
+
+    func testStringSubstring() throws {
+        XCTAssertEqual(try interpreter.execute("'hello'.substring(1, 4)"), .string("ell"))
+        XCTAssertEqual(try interpreter.execute("'hello'.substring(4, 1)"), .string("ell"))
+        XCTAssertEqual(try interpreter.execute("'hello'.substring(1)"), .string("ello"))
+    }
+
+    func testStringSplit() throws {
+        XCTAssertEqual(try interpreter.execute("'a,b,c'.split(',').length"), .number(3))
+        XCTAssertEqual(try interpreter.execute("'a,b,c'.split(',')[1]"), .string("b"))
+        XCTAssertEqual(try interpreter.execute("'hello'.split('').length"), .number(5))
+        XCTAssertEqual(try interpreter.execute("'a,b,c'.split(',', 2).length"), .number(2))
+    }
+
+    func testStringToLowerCase() throws {
+        XCTAssertEqual(try interpreter.execute("'HELLO'.toLowerCase()"), .string("hello"))
+        XCTAssertEqual(try interpreter.execute("'HeLLo WoRLd'.toLowerCase()"), .string("hello world"))
+    }
+
+    func testStringToUpperCase() throws {
+        XCTAssertEqual(try interpreter.execute("'hello'.toUpperCase()"), .string("HELLO"))
+        XCTAssertEqual(try interpreter.execute("'HeLLo WoRLd'.toUpperCase()"), .string("HELLO WORLD"))
+    }
+
+    func testStringTrim() throws {
+        XCTAssertEqual(try interpreter.execute("'  hello  '.trim()"), .string("hello"))
+        XCTAssertEqual(try interpreter.execute("'\\n\\thello\\n\\t'.trim()"), .string("hello"))
+    }
+
+    func testStringTrimStart() throws {
+        XCTAssertEqual(try interpreter.execute("'  hello  '.trimStart()"), .string("hello  "))
+        XCTAssertEqual(try interpreter.execute("'  hello  '.trimLeft()"), .string("hello  "))
+    }
+
+    func testStringTrimEnd() throws {
+        XCTAssertEqual(try interpreter.execute("'  hello  '.trimEnd()"), .string("  hello"))
+        XCTAssertEqual(try interpreter.execute("'  hello  '.trimRight()"), .string("  hello"))
+    }
+
+    func testStringRepeat() throws {
+        XCTAssertEqual(try interpreter.execute("'ab'.repeat(3)"), .string("ababab"))
+        XCTAssertEqual(try interpreter.execute("'x'.repeat(0)"), .string(""))
+    }
+
+    func testStringReplace() throws {
+        XCTAssertEqual(try interpreter.execute("'hello world'.replace('world', 'there')"), .string("hello there"))
+        XCTAssertEqual(try interpreter.execute("'aaa'.replace('a', 'b')"), .string("baa"))
+    }
+
+    func testStringReplaceAll() throws {
+        XCTAssertEqual(try interpreter.execute("'aaa'.replaceAll('a', 'b')"), .string("bbb"))
+        XCTAssertEqual(try interpreter.execute("'hello world world'.replaceAll('world', 'there')"), .string("hello there there"))
+    }
+
+    func testStringStartsWith() throws {
+        XCTAssertEqual(try interpreter.execute("'hello'.startsWith('hel')"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("'hello'.startsWith('ell')"), .boolean(false))
+        XCTAssertEqual(try interpreter.execute("'hello'.startsWith('ell', 1)"), .boolean(true))
+    }
+
+    func testStringEndsWith() throws {
+        XCTAssertEqual(try interpreter.execute("'hello'.endsWith('llo')"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("'hello'.endsWith('hel')"), .boolean(false))
+        XCTAssertEqual(try interpreter.execute("'hello'.endsWith('hel', 3)"), .boolean(true))
+    }
+
+    func testStringPadStart() throws {
+        XCTAssertEqual(try interpreter.execute("'5'.padStart(3, '0')"), .string("005"))
+        XCTAssertEqual(try interpreter.execute("'abc'.padStart(6, '123')"), .string("123abc"))
+    }
+
+    func testStringPadEnd() throws {
+        XCTAssertEqual(try interpreter.execute("'5'.padEnd(3, '0')"), .string("500"))
+        XCTAssertEqual(try interpreter.execute("'abc'.padEnd(6, '123')"), .string("abc123"))
+    }
+
+    func testStringAt() throws {
+        XCTAssertEqual(try interpreter.execute("'hello'.at(0)"), .string("h"))
+        XCTAssertEqual(try interpreter.execute("'hello'.at(-1)"), .string("o"))
+        XCTAssertEqual(try interpreter.execute("'hello'.at(10)"), .undefined)
+    }
+
+    func testStringFromCharCode() throws {
+        XCTAssertEqual(try interpreter.execute("String.fromCharCode(65, 66, 67)"), .string("ABC"))
+        XCTAssertEqual(try interpreter.execute("String.fromCharCode(72, 105)"), .string("Hi"))
+    }
+
+    func testStringConstructor() throws {
+        XCTAssertEqual(try interpreter.execute("String(123)"), .string("123"))
+        XCTAssertEqual(try interpreter.execute("String(true)"), .string("true"))
+        XCTAssertEqual(try interpreter.execute("String(null)"), .string("null"))
+    }
 }

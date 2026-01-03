@@ -2,7 +2,7 @@
 
 This document tracks the progress of migrating Rift from C++ to Swift.
 
-**Last Updated:** 2026-01-02
+**Last Updated:** 2026-01-03
 
 ---
 
@@ -16,7 +16,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | Phase 4: Parser | Complete | 100% |
 | Phase 5: Runtime Core | Complete | 100% |
 | Phase 6: Interpreter | Complete | 100% |
-| Phase 7: Built-ins | Partial | 45% |
+| Phase 7: Built-ins | Partial | 55% |
 | Phase 8: Integration | Partial | 10% |
 
 ---
@@ -63,6 +63,8 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 - [x] `Math` object (all 30+ methods: abs, floor, ceil, round, sin, cos, tan, sqrt, pow, min, max, random, etc.)
 - [x] `Array.prototype` methods (push, pop, shift, unshift, map, filter, reduce, forEach, find, findIndex, every, some, indexOf, includes, slice, concat, join, reverse, fill, flat, at)
 - [x] `Array` static methods (isArray, from, of)
+- [x] `String.prototype` methods (charAt, charCodeAt, codePointAt, concat, includes, indexOf, lastIndexOf, slice, substring, substr, split, toLowerCase, toUpperCase, trim, trimStart, trimEnd, repeat, replace, replaceAll, startsWith, endsWith, padStart, padEnd, at, localeCompare, normalize)
+- [x] `String` static methods (fromCharCode, fromCodePoint)
 
 ### Phase 8: Integration (Partial)
 - [x] `Package.swift` - SPM configuration
@@ -79,9 +81,9 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | LexerTests | 22 | All passing |
 | ParserTests | 61 | All passing |
 | ValueTests | 14 | All passing |
-| InterpreterTests | 83 | All passing |
+| InterpreterTests | 108 | All passing |
 
-**Total: 219 tests, all passing**
+**Total: 244 tests, all passing**
 
 ---
 
@@ -108,7 +110,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 ### Sources/RiftCore/Core/
 | File | Lines | Status |
 |------|-------|--------|
-| Interpreter.swift | 1888 | Complete |
+| Interpreter.swift | 2372 | Complete |
 
 ### Sources/RiftCore/
 | File | Lines | Status |
@@ -123,9 +125,9 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | LexerTests.swift | 393 | Complete |
 | ParserTests.swift | 636 | Complete |
 | ValueTests.swift | 181 | Complete |
-| InterpreterTests.swift | 615 | Complete |
+| InterpreterTests.swift | 753 | Complete |
 
-**Total Swift Lines:** ~8,400 (Sources: 6,584 + Tests: 1,816)
+**Total Swift Lines:** ~9,000 (Sources: 7,068 + Tests: 1,954)
 
 ---
 
@@ -145,6 +147,7 @@ The interpreter can now execute JavaScript code including:
 - console.log and global functions
 - Math object with all methods
 - Array.prototype methods (map, filter, reduce, forEach, etc.)
+- String.prototype methods (charAt, slice, split, trim, etc.)
 
 ---
 
@@ -153,7 +156,7 @@ The interpreter can now execute JavaScript code including:
 ### Phase 7: Built-ins (Remaining)
 1. [x] `Math` object (all static methods) ✓
 2. [x] `Array.prototype` methods (map, filter, reduce, forEach, find, etc.) ✓
-3. [ ] `String.prototype` methods (charAt, slice, split, etc.)
+3. [x] `String.prototype` methods (charAt, slice, split, etc.) ✓
 4. [ ] `Object` methods (keys, values, entries, assign, etc.)
 5. [ ] `JSON` parse/stringify
 6. [ ] Error constructors (Error, TypeError, ReferenceError, etc.)

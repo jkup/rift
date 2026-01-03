@@ -102,6 +102,9 @@ public class Interpreter {
         // Array.prototype methods
         setupArrayPrototype()
 
+        // String.prototype methods
+        setupStringPrototype()
+
         // Global functions
         setupGlobalFunctions()
     }
@@ -813,6 +816,482 @@ public class Interpreter {
 
         globalObject["Array"] = .object(arrayConstructor)
         try? globalEnvironment.define("Array", value: .object(arrayConstructor), kind: .var)
+    }
+
+    private func setupStringPrototype() {
+        // charAt(index)
+        stringPrototype["charAt"] = .object(JSFunction.native(name: "charAt", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            let index = args.first.map { Int($0.toNumber()) } ?? 0
+            guard index >= 0 && index < s.count else {
+                return .string("")
+            }
+            let idx = s.index(s.startIndex, offsetBy: index)
+            return .string(String(s[idx]))
+        })
+
+        // charCodeAt(index)
+        stringPrototype["charCodeAt"] = .object(JSFunction.native(name: "charCodeAt", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .number(.nan)
+            }
+            let index = args.first.map { Int($0.toNumber()) } ?? 0
+            guard index >= 0 && index < s.count else {
+                return .number(.nan)
+            }
+            let idx = s.index(s.startIndex, offsetBy: index)
+            let scalar = s[idx].unicodeScalars.first?.value ?? 0
+            return .number(Double(scalar))
+        })
+
+        // codePointAt(index)
+        stringPrototype["codePointAt"] = .object(JSFunction.native(name: "codePointAt", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .undefined
+            }
+            let index = args.first.map { Int($0.toNumber()) } ?? 0
+            guard index >= 0 && index < s.count else {
+                return .undefined
+            }
+            let idx = s.index(s.startIndex, offsetBy: index)
+            let scalar = s[idx].unicodeScalars.first?.value ?? 0
+            return .number(Double(scalar))
+        })
+
+        // concat(...strings)
+        stringPrototype["concat"] = .object(JSFunction.native(name: "concat", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            var result = s
+            for arg in args {
+                result += arg.toString()
+            }
+            return .string(result)
+        })
+
+        // includes(searchString, position?)
+        stringPrototype["includes"] = .object(JSFunction.native(name: "includes", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .boolean(false)
+            }
+            let searchString = args.first?.toString() ?? ""
+            let position = args.count > 1 ? max(0, Int(args[1].toNumber())) : 0
+
+            if position >= s.count {
+                return .boolean(searchString.isEmpty)
+            }
+
+            let startIdx = s.index(s.startIndex, offsetBy: position)
+            return .boolean(s[startIdx...].contains(searchString))
+        })
+
+        // indexOf(searchValue, fromIndex?)
+        stringPrototype["indexOf"] = .object(JSFunction.native(name: "indexOf", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .number(-1)
+            }
+            let searchString = args.first?.toString() ?? ""
+            var fromIndex = args.count > 1 ? Int(args[1].toNumber()) : 0
+
+            if fromIndex < 0 { fromIndex = 0 }
+            if fromIndex >= s.count {
+                return .number(searchString.isEmpty ? Double(s.count) : -1)
+            }
+
+            let startIdx = s.index(s.startIndex, offsetBy: fromIndex)
+            if let range = s[startIdx...].range(of: searchString) {
+                return .number(Double(s.distance(from: s.startIndex, to: range.lowerBound)))
+            }
+            return .number(-1)
+        })
+
+        // lastIndexOf(searchValue, fromIndex?)
+        stringPrototype["lastIndexOf"] = .object(JSFunction.native(name: "lastIndexOf", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .number(-1)
+            }
+            let searchString = args.first?.toString() ?? ""
+            var fromIndex = args.count > 1 ? Int(args[1].toNumber()) : s.count
+
+            if fromIndex < 0 { fromIndex = 0 }
+            if fromIndex > s.count { fromIndex = s.count }
+
+            let endIdx = s.index(s.startIndex, offsetBy: min(fromIndex + searchString.count, s.count))
+            if let range = s[..<endIdx].range(of: searchString, options: .backwards) {
+                return .number(Double(s.distance(from: s.startIndex, to: range.lowerBound)))
+            }
+            return .number(-1)
+        })
+
+        // slice(start, end?)
+        stringPrototype["slice"] = .object(JSFunction.native(name: "slice", arity: 2) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            let len = s.count
+            var start = args.first.map { Int($0.toNumber()) } ?? 0
+            var end = args.count > 1 && !args[1].isUndefined ? Int(args[1].toNumber()) : len
+
+            // Normalize negative indices
+            if start < 0 { start = max(len + start, 0) }
+            if end < 0 { end = max(len + end, 0) }
+            start = min(start, len)
+            end = min(end, len)
+
+            if start >= end { return .string("") }
+
+            let startIdx = s.index(s.startIndex, offsetBy: start)
+            let endIdx = s.index(s.startIndex, offsetBy: end)
+            return .string(String(s[startIdx..<endIdx]))
+        })
+
+        // substring(start, end?)
+        stringPrototype["substring"] = .object(JSFunction.native(name: "substring", arity: 2) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            let len = s.count
+            var start = args.first.map { Int($0.toNumber()) } ?? 0
+            var end = args.count > 1 && !args[1].isUndefined ? Int(args[1].toNumber()) : len
+
+            // Clamp to valid range
+            start = max(0, min(start, len))
+            end = max(0, min(end, len))
+
+            // Swap if start > end
+            if start > end { swap(&start, &end) }
+
+            let startIdx = s.index(s.startIndex, offsetBy: start)
+            let endIdx = s.index(s.startIndex, offsetBy: end)
+            return .string(String(s[startIdx..<endIdx]))
+        })
+
+        // substr(start, length?) - deprecated but still widely used
+        stringPrototype["substr"] = .object(JSFunction.native(name: "substr", arity: 2) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            let len = s.count
+            var start = args.first.map { Int($0.toNumber()) } ?? 0
+            let length = args.count > 1 && !args[1].isUndefined ? max(0, Int(args[1].toNumber())) : len - start
+
+            // Normalize negative start
+            if start < 0 { start = max(len + start, 0) }
+            start = min(start, len)
+
+            let actualLength = min(length, len - start)
+            if actualLength <= 0 { return .string("") }
+
+            let startIdx = s.index(s.startIndex, offsetBy: start)
+            let endIdx = s.index(startIdx, offsetBy: actualLength)
+            return .string(String(s[startIdx..<endIdx]))
+        })
+
+        // split(separator, limit?)
+        stringPrototype["split"] = .object(JSFunction.native(name: "split", arity: 2) { [weak self] ctx, args in
+            guard let self = self,
+                  case .string(let s) = ctx.thisValue else {
+                return .object(JSArray(prototype: self?.arrayPrototype))
+            }
+
+            // If separator is undefined, return array with the whole string
+            guard let separatorArg = args.first, !separatorArg.isUndefined else {
+                return .object(JSArray(elements: [.string(s)], prototype: self.arrayPrototype))
+            }
+
+            let separator = separatorArg.toString()
+            let limit = args.count > 1 && !args[1].isUndefined ? Int(args[1].toNumber()) : Int.max
+
+            if limit == 0 {
+                return .object(JSArray(prototype: self.arrayPrototype))
+            }
+
+            // Empty separator: split into characters
+            if separator.isEmpty {
+                let chars = s.prefix(limit).map { Value.string(String($0)) }
+                return .object(JSArray(elements: Array(chars), prototype: self.arrayPrototype))
+            }
+
+            var result: [Value] = []
+            var remaining = s
+            while result.count < limit - 1 {
+                if let range = remaining.range(of: separator) {
+                    result.append(.string(String(remaining[..<range.lowerBound])))
+                    remaining = String(remaining[range.upperBound...])
+                } else {
+                    break
+                }
+            }
+            if result.count < limit {
+                result.append(.string(remaining))
+            }
+            return .object(JSArray(elements: result, prototype: self.arrayPrototype))
+        })
+
+        // toLowerCase()
+        stringPrototype["toLowerCase"] = .object(JSFunction.native(name: "toLowerCase", arity: 0) { ctx, _ in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            return .string(s.lowercased())
+        })
+
+        // toUpperCase()
+        stringPrototype["toUpperCase"] = .object(JSFunction.native(name: "toUpperCase", arity: 0) { ctx, _ in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            return .string(s.uppercased())
+        })
+
+        // toLocaleLowerCase()
+        stringPrototype["toLocaleLowerCase"] = .object(JSFunction.native(name: "toLocaleLowerCase", arity: 0) { ctx, _ in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            return .string(s.lowercased())
+        })
+
+        // toLocaleUpperCase()
+        stringPrototype["toLocaleUpperCase"] = .object(JSFunction.native(name: "toLocaleUpperCase", arity: 0) { ctx, _ in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            return .string(s.uppercased())
+        })
+
+        // trim()
+        stringPrototype["trim"] = .object(JSFunction.native(name: "trim", arity: 0) { ctx, _ in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            return .string(s.trimmingCharacters(in: .whitespacesAndNewlines))
+        })
+
+        // trimStart() / trimLeft()
+        stringPrototype["trimStart"] = .object(JSFunction.native(name: "trimStart", arity: 0) { ctx, _ in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            var result = s
+            while let first = result.first, first.isWhitespace || first.isNewline {
+                result.removeFirst()
+            }
+            return .string(result)
+        })
+        stringPrototype["trimLeft"] = stringPrototype["trimStart"]
+
+        // trimEnd() / trimRight()
+        stringPrototype["trimEnd"] = .object(JSFunction.native(name: "trimEnd", arity: 0) { ctx, _ in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            var result = s
+            while let last = result.last, last.isWhitespace || last.isNewline {
+                result.removeLast()
+            }
+            return .string(result)
+        })
+        stringPrototype["trimRight"] = stringPrototype["trimEnd"]
+
+        // repeat(count)
+        stringPrototype["repeat"] = .object(JSFunction.native(name: "repeat", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            let count = args.first.map { Int($0.toNumber()) } ?? 0
+            guard count >= 0 else {
+                return .string("")  // Should throw RangeError, but returning empty for now
+            }
+            return .string(String(repeating: s, count: count))
+        })
+
+        // replace(searchValue, replaceValue)
+        stringPrototype["replace"] = .object(JSFunction.native(name: "replace", arity: 2) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            let searchValue = args.first?.toString() ?? ""
+            let replaceValue = args.count > 1 ? args[1].toString() : "undefined"
+
+            if let range = s.range(of: searchValue) {
+                return .string(s.replacingCharacters(in: range, with: replaceValue))
+            }
+            return .string(s)
+        })
+
+        // replaceAll(searchValue, replaceValue)
+        stringPrototype["replaceAll"] = .object(JSFunction.native(name: "replaceAll", arity: 2) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            let searchValue = args.first?.toString() ?? ""
+            let replaceValue = args.count > 1 ? args[1].toString() : "undefined"
+
+            if searchValue.isEmpty {
+                // Insert replaceValue between each character
+                var result = replaceValue
+                for char in s {
+                    result += String(char) + replaceValue
+                }
+                return .string(result)
+            }
+
+            return .string(s.replacingOccurrences(of: searchValue, with: replaceValue))
+        })
+
+        // startsWith(searchString, position?)
+        stringPrototype["startsWith"] = .object(JSFunction.native(name: "startsWith", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .boolean(false)
+            }
+            let searchString = args.first?.toString() ?? ""
+            let position = args.count > 1 ? max(0, Int(args[1].toNumber())) : 0
+
+            if position >= s.count {
+                return .boolean(searchString.isEmpty)
+            }
+
+            let startIdx = s.index(s.startIndex, offsetBy: position)
+            return .boolean(s[startIdx...].hasPrefix(searchString))
+        })
+
+        // endsWith(searchString, length?)
+        stringPrototype["endsWith"] = .object(JSFunction.native(name: "endsWith", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .boolean(false)
+            }
+            let searchString = args.first?.toString() ?? ""
+            let endPosition = args.count > 1 && !args[1].isUndefined
+                ? min(max(0, Int(args[1].toNumber())), s.count)
+                : s.count
+
+            let endIdx = s.index(s.startIndex, offsetBy: endPosition)
+            return .boolean(s[..<endIdx].hasSuffix(searchString))
+        })
+
+        // padStart(targetLength, padString?)
+        stringPrototype["padStart"] = .object(JSFunction.native(name: "padStart", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            let targetLength = args.first.map { Int($0.toNumber()) } ?? 0
+            let padString = args.count > 1 && !args[1].isUndefined ? args[1].toString() : " "
+
+            if targetLength <= s.count || padString.isEmpty {
+                return .string(s)
+            }
+
+            let padLength = targetLength - s.count
+            var padding = ""
+            while padding.count < padLength {
+                padding += padString
+            }
+            return .string(String(padding.prefix(padLength)) + s)
+        })
+
+        // padEnd(targetLength, padString?)
+        stringPrototype["padEnd"] = .object(JSFunction.native(name: "padEnd", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            let targetLength = args.first.map { Int($0.toNumber()) } ?? 0
+            let padString = args.count > 1 && !args[1].isUndefined ? args[1].toString() : " "
+
+            if targetLength <= s.count || padString.isEmpty {
+                return .string(s)
+            }
+
+            let padLength = targetLength - s.count
+            var padding = ""
+            while padding.count < padLength {
+                padding += padString
+            }
+            return .string(s + String(padding.prefix(padLength)))
+        })
+
+        // at(index)
+        stringPrototype["at"] = .object(JSFunction.native(name: "at", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .undefined
+            }
+            var index = args.first.map { Int($0.toNumber()) } ?? 0
+            if index < 0 {
+                index = s.count + index
+            }
+            guard index >= 0 && index < s.count else {
+                return .undefined
+            }
+            let idx = s.index(s.startIndex, offsetBy: index)
+            return .string(String(s[idx]))
+        })
+
+        // toString()
+        stringPrototype["toString"] = .object(JSFunction.native(name: "toString", arity: 0) { ctx, _ in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            return .string(s)
+        })
+
+        // valueOf()
+        stringPrototype["valueOf"] = .object(JSFunction.native(name: "valueOf", arity: 0) { ctx, _ in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            return .string(s)
+        })
+
+        // localeCompare(compareString) - simplified implementation
+        stringPrototype["localeCompare"] = .object(JSFunction.native(name: "localeCompare", arity: 1) { ctx, args in
+            guard case .string(let s) = ctx.thisValue else {
+                return .number(0)
+            }
+            let compareString = args.first?.toString() ?? ""
+            let result = s.localizedCompare(compareString)
+            return .number(Double(result.rawValue))
+        })
+
+        // normalize(form?) - simplified, returns string as-is
+        stringPrototype["normalize"] = .object(JSFunction.native(name: "normalize", arity: 0) { ctx, _ in
+            guard case .string(let s) = ctx.thisValue else {
+                return .string("")
+            }
+            return .string(s)
+        })
+
+        // String constructor (as a function, converts to string)
+        let stringConstructor = JSFunction.native(name: "String", arity: 1) { _, args in
+            let value = args.first?.toString() ?? ""
+            return .string(value)
+        }
+
+        // String.fromCharCode(...codes)
+        stringConstructor["fromCharCode"] = .object(JSFunction.native(name: "fromCharCode", arity: 1) { _, args in
+            let chars = args.compactMap { arg -> Character? in
+                let code = Int(arg.toNumber())
+                guard code >= 0 && code <= 0xFFFF else { return nil }
+                return Character(UnicodeScalar(code)!)
+            }
+            return .string(String(chars))
+        })
+
+        // String.fromCodePoint(...codePoints)
+        stringConstructor["fromCodePoint"] = .object(JSFunction.native(name: "fromCodePoint", arity: 1) { _, args in
+            let chars = args.compactMap { arg -> Character? in
+                let code = Int(arg.toNumber())
+                guard code >= 0 && code <= 0x10FFFF,
+                      let scalar = UnicodeScalar(code) else { return nil }
+                return Character(scalar)
+            }
+            return .string(String(chars))
+        })
+
+        globalObject["String"] = .object(stringConstructor)
+        try? globalEnvironment.define("String", value: .object(stringConstructor), kind: .var)
     }
 
     private func setupGlobalFunctions() {
@@ -1709,8 +2188,8 @@ public class Interpreter {
                 let idx = s.index(s.startIndex, offsetBy: index)
                 return .string(String(s[idx]))
             }
-            // String prototype methods would go here
-            return .undefined
+            // String prototype methods
+            return stringPrototype.getProperty(key)
 
         case .null, .undefined:
             throw RuntimeError.typeError("Cannot read property '\(key)' of \(object.typeOf)")
