@@ -16,7 +16,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | Phase 4: Parser | Complete | 100% |
 | Phase 5: Runtime Core | Complete | 100% |
 | Phase 6: Interpreter | Complete | 100% |
-| Phase 7: Built-ins | Partial | 85% |
+| Phase 7: Built-ins | Complete | 100% |
 | Phase 8: Integration | Partial | 10% |
 
 ---
@@ -70,6 +70,10 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 - [x] `JSON` object (parse, stringify)
 - [x] Error constructors (Error, TypeError, ReferenceError, SyntaxError, RangeError, URIError, EvalError)
 - [x] `Error.prototype` (toString)
+- [x] `Number` constructor and static methods (isNaN, isFinite, isInteger, isSafeInteger, parseInt, parseFloat)
+- [x] `Number.prototype` methods (toString, valueOf, toFixed, toExponential, toPrecision)
+- [x] `Number` constants (MAX_VALUE, MIN_VALUE, MAX_SAFE_INTEGER, MIN_SAFE_INTEGER, EPSILON, NaN, POSITIVE/NEGATIVE_INFINITY)
+- [x] `Boolean` constructor and prototype methods (toString, valueOf)
 
 ### Phase 8: Integration (Partial)
 - [x] `Package.swift` - SPM configuration
@@ -86,9 +90,9 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | LexerTests | 22 | All passing |
 | ParserTests | 61 | All passing |
 | ValueTests | 14 | All passing |
-| InterpreterTests | 136 | All passing |
+| InterpreterTests | 144 | All passing |
 
-**Total: 272 tests, all passing**
+**Total: 280 tests, all passing**
 
 ---
 
@@ -115,7 +119,7 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 ### Sources/RiftCore/Core/
 | File | Lines | Status |
 |------|-------|--------|
-| Interpreter.swift | 2960 | Complete |
+| Interpreter.swift | 3138 | Complete |
 
 ### Sources/RiftCore/
 | File | Lines | Status |
@@ -130,9 +134,9 @@ This document tracks the progress of migrating Rift from C++ to Swift.
 | LexerTests.swift | 393 | Complete |
 | ParserTests.swift | 636 | Complete |
 | ValueTests.swift | 181 | Complete |
-| InterpreterTests.swift | 998 | Complete |
+| InterpreterTests.swift | 1050 | Complete |
 
-**Total Swift Lines:** ~10,100 (Sources: 7,656 + Tests: 2,199)
+**Total Swift Lines:** ~10,500 (Sources: 7,834 + Tests: 2,251)
 
 ---
 
@@ -156,19 +160,20 @@ The interpreter can now execute JavaScript code including:
 - Object methods (keys, values, entries, assign, create, freeze, etc.)
 - JSON.parse and JSON.stringify
 - Error constructors (Error, TypeError, ReferenceError, etc.)
+- Number and Boolean constructors with prototype methods
 
 ---
 
 ## Next Steps
 
-### Phase 7: Built-ins (Remaining)
+### Phase 7: Built-ins (Complete ✓)
 1. [x] `Math` object (all static methods) ✓
 2. [x] `Array.prototype` methods (map, filter, reduce, forEach, find, etc.) ✓
 3. [x] `String.prototype` methods (charAt, slice, split, etc.) ✓
 4. [x] `Object` methods (keys, values, entries, assign, etc.) ✓
 5. [x] `JSON` parse/stringify ✓
 6. [x] Error constructors (Error, TypeError, ReferenceError, etc.) ✓
-7. [ ] `Number` and `Boolean` wrapper objects
+7. [x] `Number` and `Boolean` wrapper objects ✓
 
 ### Phase 8: Integration (Remaining)
 8. [ ] CLI argument parsing with ArgumentParser

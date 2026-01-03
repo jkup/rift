@@ -995,4 +995,56 @@ final class InterpreterTests: XCTestCase {
             result
         """), .string("test error"))
     }
+
+    // MARK: - Number Methods
+
+    func testNumberConstructor() throws {
+        XCTAssertEqual(try interpreter.execute("Number('42')"), .number(42))
+        XCTAssertEqual(try interpreter.execute("Number(true)"), .number(1))
+        XCTAssertEqual(try interpreter.execute("Number(false)"), .number(0))
+        XCTAssertEqual(try interpreter.execute("Number()"), .number(0))
+    }
+
+    func testNumberConstants() throws {
+        XCTAssertEqual(try interpreter.execute("Number.MAX_SAFE_INTEGER"), .number(9007199254740991))
+        XCTAssertEqual(try interpreter.execute("Number.MIN_SAFE_INTEGER"), .number(-9007199254740991))
+    }
+
+    func testNumberIsNaN() throws {
+        XCTAssertEqual(try interpreter.execute("Number.isNaN(NaN)"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("Number.isNaN(42)"), .boolean(false))
+        XCTAssertEqual(try interpreter.execute("Number.isNaN('NaN')"), .boolean(false))
+    }
+
+    func testNumberIsFinite() throws {
+        XCTAssertEqual(try interpreter.execute("Number.isFinite(42)"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("Number.isFinite(Infinity)"), .boolean(false))
+        XCTAssertEqual(try interpreter.execute("Number.isFinite(NaN)"), .boolean(false))
+    }
+
+    func testNumberIsInteger() throws {
+        XCTAssertEqual(try interpreter.execute("Number.isInteger(42)"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("Number.isInteger(42.5)"), .boolean(false))
+        XCTAssertEqual(try interpreter.execute("Number.isInteger('42')"), .boolean(false))
+    }
+
+    func testNumberToFixed() throws {
+        XCTAssertEqual(try interpreter.execute("(3.14159).toFixed(2)"), .string("3.14"))
+        XCTAssertEqual(try interpreter.execute("(42).toFixed(0)"), .string("42"))
+    }
+
+    // MARK: - Boolean Methods
+
+    func testBooleanConstructor() throws {
+        XCTAssertEqual(try interpreter.execute("Boolean(1)"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("Boolean(0)"), .boolean(false))
+        XCTAssertEqual(try interpreter.execute("Boolean('hello')"), .boolean(true))
+        XCTAssertEqual(try interpreter.execute("Boolean('')"), .boolean(false))
+        XCTAssertEqual(try interpreter.execute("Boolean(null)"), .boolean(false))
+    }
+
+    func testBooleanToString() throws {
+        XCTAssertEqual(try interpreter.execute("true.toString()"), .string("true"))
+        XCTAssertEqual(try interpreter.execute("false.toString()"), .string("false"))
+    }
 }

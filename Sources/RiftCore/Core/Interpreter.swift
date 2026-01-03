@@ -114,6 +114,9 @@ public class Interpreter {
         // Error constructors
         setupErrors()
 
+        // Number and Boolean
+        setupNumberAndBoolean()
+
         // Global functions
         setupGlobalFunctions()
     }
@@ -1882,6 +1885,176 @@ public class Interpreter {
         try? globalEnvironment.define("EvalError", value: .object(evalErrorConstructor), kind: .var)
     }
 
+    private func setupNumberAndBoolean() {
+        // Number.prototype
+        numberPrototype["toString"] = .object(JSFunction.native(name: "toString", arity: 1) { ctx, args in
+            guard case .number(let n) = ctx.thisValue else {
+                return .string("NaN")
+            }
+            let radix = args.first.map { Int($0.toNumber()) } ?? 10
+            if radix == 10 || radix < 2 || radix > 36 {
+                // Just use default string conversion for radix 10 or invalid
+                if n.isNaN { return .string("NaN") }
+                if n.isInfinite { return .string(n > 0 ? "Infinity" : "-Infinity") }
+                if n == n.rounded() && abs(n) < Double(Int.max) {
+                    return .string(String(Int(n)))
+                }
+                return .string(String(n))
+            }
+            // Convert to different base
+            let intValue = Int(n)
+            return .string(String(intValue, radix: radix))
+        })
+
+        numberPrototype["valueOf"] = .object(JSFunction.native(name: "valueOf", arity: 0) { ctx, _ in
+            guard case .number(let n) = ctx.thisValue else {
+                return .number(.nan)
+            }
+            return .number(n)
+        })
+
+        numberPrototype["toFixed"] = .object(JSFunction.native(name: "toFixed", arity: 1) { ctx, args in
+            guard case .number(let n) = ctx.thisValue else {
+                return .string("NaN")
+            }
+            if n.isNaN { return .string("NaN") }
+            if n.isInfinite { return .string(n > 0 ? "Infinity" : "-Infinity") }
+
+            let digits = args.first.map { max(0, min(100, Int($0.toNumber()))) } ?? 0
+            return .string(String(format: "%.\(digits)f", n))
+        })
+
+        numberPrototype["toExponential"] = .object(JSFunction.native(name: "toExponential", arity: 1) { ctx, args in
+            guard case .number(let n) = ctx.thisValue else {
+                return .string("NaN")
+            }
+            if n.isNaN { return .string("NaN") }
+            if n.isInfinite { return .string(n > 0 ? "Infinity" : "-Infinity") }
+
+            let digits = args.first.map { max(0, min(100, Int($0.toNumber()))) } ?? 6
+            return .string(String(format: "%.\(digits)e", n))
+        })
+
+        numberPrototype["toPrecision"] = .object(JSFunction.native(name: "toPrecision", arity: 1) { ctx, args in
+            guard case .number(let n) = ctx.thisValue else {
+                return .string("NaN")
+            }
+            if n.isNaN { return .string("NaN") }
+            if n.isInfinite { return .string(n > 0 ? "Infinity" : "-Infinity") }
+
+            guard let first = args.first, !first.isUndefined else {
+                // No argument: use toString()
+                if n == n.rounded() && abs(n) < Double(Int.max) {
+                    return .string(String(Int(n)))
+                }
+                return .string(String(n))
+            }
+            let precision = max(1, min(100, Int(first.toNumber())))
+            return .string(String(format: "%.\(precision)g", n))
+        })
+
+        // Number constructor
+        let numberConstructor = JSFunction.native(name: "Number", arity: 1) { _, args in
+            let value = args.first?.toNumber() ?? 0
+            return .number(value)
+        }
+
+        // Number constants
+        numberConstructor["MAX_VALUE"] = .number(Double.greatestFiniteMagnitude)
+        numberConstructor["MIN_VALUE"] = .number(Double.leastNonzeroMagnitude)
+        numberConstructor["NaN"] = .number(.nan)
+        numberConstructor["NEGATIVE_INFINITY"] = .number(-.infinity)
+        numberConstructor["POSITIVE_INFINITY"] = .number(.infinity)
+        numberConstructor["MAX_SAFE_INTEGER"] = .number(9007199254740991)
+        numberConstructor["MIN_SAFE_INTEGER"] = .number(-9007199254740991)
+        numberConstructor["EPSILON"] = .number(Double.ulpOfOne * 2)
+
+        // Number.isNaN(value)
+        numberConstructor["isNaN"] = .object(JSFunction.native(name: "isNaN", arity: 1) { _, args in
+            guard let first = args.first, case .number(let n) = first else {
+                return .boolean(false)
+            }
+            return .boolean(n.isNaN)
+        })
+
+        // Number.isFinite(value)
+        numberConstructor["isFinite"] = .object(JSFunction.native(name: "isFinite", arity: 1) { _, args in
+            guard let first = args.first, case .number(let n) = first else {
+                return .boolean(false)
+            }
+            return .boolean(n.isFinite)
+        })
+
+        // Number.isInteger(value)
+        numberConstructor["isInteger"] = .object(JSFunction.native(name: "isInteger", arity: 1) { _, args in
+            guard let first = args.first, case .number(let n) = first else {
+                return .boolean(false)
+            }
+            return .boolean(n.isFinite && n == n.rounded())
+        })
+
+        // Number.isSafeInteger(value)
+        numberConstructor["isSafeInteger"] = .object(JSFunction.native(name: "isSafeInteger", arity: 1) { _, args in
+            guard let first = args.first, case .number(let n) = first else {
+                return .boolean(false)
+            }
+            let maxSafe: Double = 9007199254740991
+            return .boolean(n.isFinite && n == n.rounded() && abs(n) <= maxSafe)
+        })
+
+        // Number.parseInt(string, radix)
+        numberConstructor["parseInt"] = .object(JSFunction.native(name: "parseInt", arity: 2) { _, args in
+            let string = args.first?.toString().trimmingCharacters(in: .whitespaces) ?? ""
+            let radix = args.count > 1 ? Int(args[1].toNumber()) : 10
+
+            guard radix == 0 || (radix >= 2 && radix <= 36) else {
+                return .number(.nan)
+            }
+
+            let actualRadix = radix == 0 ? 10 : radix
+            if let result = Int(string, radix: actualRadix) {
+                return .number(Double(result))
+            }
+            return .number(.nan)
+        })
+
+        // Number.parseFloat(string)
+        numberConstructor["parseFloat"] = .object(JSFunction.native(name: "parseFloat", arity: 1) { _, args in
+            let string = args.first?.toString().trimmingCharacters(in: .whitespaces) ?? ""
+            if let result = Double(string) {
+                return .number(result)
+            }
+            return .number(.nan)
+        })
+
+        globalObject["Number"] = .object(numberConstructor)
+        try? globalEnvironment.define("Number", value: .object(numberConstructor), kind: .var)
+
+        // Boolean.prototype
+        booleanPrototype["toString"] = .object(JSFunction.native(name: "toString", arity: 0) { ctx, _ in
+            guard case .boolean(let b) = ctx.thisValue else {
+                return .string("false")
+            }
+            return .string(b ? "true" : "false")
+        })
+
+        booleanPrototype["valueOf"] = .object(JSFunction.native(name: "valueOf", arity: 0) { ctx, _ in
+            guard case .boolean(let b) = ctx.thisValue else {
+                return .boolean(false)
+            }
+            return .boolean(b)
+        })
+
+        // Boolean constructor
+        let booleanConstructor = JSFunction.native(name: "Boolean", arity: 1) { _, args in
+            let value = args.first?.toBoolean() ?? false
+            return .boolean(value)
+        }
+
+        globalObject["Boolean"] = .object(booleanConstructor)
+        try? globalEnvironment.define("Boolean", value: .object(booleanConstructor), kind: .var)
+    }
+
     private func setupGlobalFunctions() {
         // isNaN
         let isNaN = JSFunction.native(name: "isNaN", arity: 1) { _, args in
@@ -2779,11 +2952,16 @@ public class Interpreter {
             // String prototype methods
             return stringPrototype.getProperty(key)
 
+        case .number:
+            // Number prototype methods
+            return numberPrototype.getProperty(key)
+
+        case .boolean:
+            // Boolean prototype methods
+            return booleanPrototype.getProperty(key)
+
         case .null, .undefined:
             throw RuntimeError.typeError("Cannot read property '\(key)' of \(object.typeOf)")
-
-        default:
-            return .undefined
         }
     }
 
