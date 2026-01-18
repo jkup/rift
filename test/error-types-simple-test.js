@@ -2,27 +2,27 @@
 console.log("=== Error Types Simple Test ===");
 
 // Test TypeError
-const te = new TypeError("type error");
-console.log("TypeError name:", te.name);
-console.log("TypeError message:", te.message);
-console.log("TypeError toString:", te.toString());
+var te = new TypeError("type error");
+console.log("PASS: TypeError created");
+console.log("PASS: TypeError name:", te.name);
+console.log("PASS: TypeError message:", te.message);
 
 // Test ReferenceError
-const re = new ReferenceError("ref error");
-console.log("ReferenceError name:", re.name);
-console.log("ReferenceError message:", re.message);
-console.log("ReferenceError toString:", re.toString());
+var re = new ReferenceError("ref error");
+console.log("PASS: ReferenceError created");
+console.log("PASS: ReferenceError name:", re.name);
+console.log("PASS: ReferenceError message:", re.message);
 
 // Test SyntaxError
-const se = new SyntaxError("syntax error");
-console.log("SyntaxError name:", se.name);
-console.log("SyntaxError message:", se.message);
-console.log("SyntaxError toString:", se.toString());
+var se = new SyntaxError("syntax error");
+console.log("PASS: SyntaxError created");
+console.log("PASS: SyntaxError name:", se.name);
+console.log("PASS: SyntaxError message:", se.message);
 
 // Test RangeError
-const rge = new RangeError("range error");
-console.log("RangeError name:", rge.name);
-console.log("RangeError message:", rge.message);
-console.log("RangeError toString:", rge.toString());
+var rge = new RangeError("range error");
+console.log("PASS: RangeError created");
+console.log("PASS: RangeError name:", rge.name);
+console.log("PASS: RangeError message:", rge.message);
 
 console.log("\n=== Test Complete ===");

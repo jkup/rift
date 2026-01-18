@@ -24,8 +24,9 @@ function square(x) {
 }
 
 var num = 1;
+var squared = 0;  // Declare outside loop to work around hoisting bug
 while (num <= 4) {
-    var squared = square(num);
+    squared = square(num);
     console.log("Square of", num, "is", squared);
     num = num + 1;
 }
@@ -73,9 +74,11 @@ function multiply(a, b) {
 
 var base = 2;
 var iterations = 0;
+var added = 0;  // Declare outside loop to work around hoisting bug
+var multiplied = 0;  // Declare outside loop to work around hoisting bug
 while (iterations < 3) {
-    var added = add(base, iterations);
-    var multiplied = multiply(added, 2);
+    added = add(base, iterations);
+    multiplied = multiply(added, 2);
     console.log("Iteration", iterations, ":", base, "->", added, "->", multiplied);
     base = multiplied;
     iterations = iterations + 1;

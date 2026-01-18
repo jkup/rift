@@ -18,12 +18,10 @@ if (sum1 === 10) {
     console.log("FAIL: Basic counting loop, expected 10, got", sum1);
 }
 
-// Test 2: Loop with pre-declared variable (working around assignment initialization)
+// Test 2: Loop with pre-declared variable
 console.log("2. Loop with pre-declared variable:");
-var j = 0;
 var sumProduct = 0;
-j = 1;  // Initialize before loop
-for (; j <= 4; j = j + 1) {
+for (var j = 1; j <= 4; j = j + 1) {
     console.log("  Adding:", j, " to sum:", sumProduct);
     sumProduct = sumProduct + j;
 }
