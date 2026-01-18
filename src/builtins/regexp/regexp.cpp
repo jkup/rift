@@ -2,9 +2,12 @@
 
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/call_context.h"
+#include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
+
+using rift::core::extractThisObject;
 
 // ===== RegExpRegistry Implementation =====
 
@@ -122,14 +125,10 @@ Value RegExp::constructor(const CallContext& ctx, const std::vector<Value>& args
 // ===== Helper to Get RegExpData =====
 
 RegExpData* RegExp::getRegExpData(const CallContext& ctx) {
-    if (ctx.thisValue.isObject()) {
-        auto obj = ctx.thisValue.getObject();
-        if (obj) {
-            // Look up data in registry - no unsafe pointer casting!
-            return RegExpRegistry::get(obj);
-        }
+    auto* obj = extractThisObject(ctx);
+    if (obj) {
+        return RegExpRegistry::get(obj);
     }
-
     return nullptr;
 }
 

@@ -2,11 +2,13 @@
 
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/call_context.h"
-#include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
+
+using rift::core::extractThisObject;
 
 void Error::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Error has no static methods (like Array.isArray), so this is empty
@@ -45,7 +47,7 @@ Value Error::constructor(const CallContext& ctx, const std::vector<Value>& args)
 }
 
 Value Error::toString(const CallContext& ctx, const std::vector<Value>& args) {
-    auto errorObj = getThisObject(ctx);
+    auto errorObj = extractThisObject(ctx);
     if(!errorObj) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Error.prototype.toString called on non-object"));
@@ -64,13 +66,6 @@ Value Error::toString(const CallContext& ctx, const std::vector<Value>& args) {
     } else {
         return Value(name + ": " + message);
     }
-}
-
-JSObject* Error::getThisObject(const CallContext& ctx) {
-    if(ctx.thisValue.isObject()) {
-        return ctx.thisValue.getObject();
-    }
-    return nullptr;
 }
 
 JSObject* Error::getGlobalPrototype() {

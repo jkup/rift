@@ -8,8 +8,11 @@
 
 #include "rift/builtins/array/array.h"
 #include "rift/core/engine/call_context.h"
+#include "rift/core/engine/this_helpers.h"
 
 namespace rift::builtins {
+
+using rift::core::extractThisString;
 
 void String::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Add String static methods
@@ -64,7 +67,7 @@ Value String::fromCharCode(const CallContext& ctx, const std::vector<Value>& arg
 }
 
 Value String::charAt(const CallContext& ctx, const std::vector<Value>& args) {
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
 
     double index = 0;
     if(!args.empty()) {
@@ -80,7 +83,7 @@ Value String::charAt(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value String::charCodeAt(const CallContext& ctx, const std::vector<Value>& args) {
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
 
     double index = 0;
     if(!args.empty()) {
@@ -96,7 +99,7 @@ Value String::charCodeAt(const CallContext& ctx, const std::vector<Value>& args)
 }
 
 Value String::concat(const CallContext& ctx, const std::vector<Value>& args) {
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
 
     // Concat all arguments
     for(size_t i = 0; i < args.size(); ++i) {
@@ -107,7 +110,7 @@ Value String::concat(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value String::indexOf(const CallContext& ctx, const std::vector<Value>& args) {
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
 
     if(args.empty()) {
         return Value(-1.0);
@@ -136,7 +139,7 @@ Value String::indexOf(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value String::lastIndexOf(const CallContext& ctx, const std::vector<Value>& args) {
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
 
     if(args.empty()) {
         return Value(-1.0);
@@ -164,7 +167,7 @@ Value String::lastIndexOf(const CallContext& ctx, const std::vector<Value>& args
 }
 
 Value String::slice(const CallContext& ctx, const std::vector<Value>& args) {
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
 
     size_t length = str.length();
     double startNum = 0;
@@ -198,7 +201,7 @@ Value String::slice(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value String::substring(const CallContext& ctx, const std::vector<Value>& args) {
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
 
     size_t length = str.length();
     double startNum = 0;
@@ -228,7 +231,7 @@ Value String::substring(const CallContext& ctx, const std::vector<Value>& args) 
 }
 
 Value String::toLowerCase(const CallContext& ctx, const std::vector<Value>& args) {
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
 
     std::transform(str.begin(), str.end(), str.begin(),
                    [](unsigned char c) { return std::tolower(c); });
@@ -237,7 +240,7 @@ Value String::toLowerCase(const CallContext& ctx, const std::vector<Value>& args
 }
 
 Value String::toUpperCase(const CallContext& ctx, const std::vector<Value>& args) {
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
 
     std::transform(str.begin(), str.end(), str.begin(),
                    [](unsigned char c) { return std::toupper(c); });
@@ -246,7 +249,7 @@ Value String::toUpperCase(const CallContext& ctx, const std::vector<Value>& args
 }
 
 Value String::trim(const CallContext& ctx, const std::vector<Value>& args) {
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
 
     // Trim leading whitespace
     size_t start = 0;
@@ -264,7 +267,7 @@ Value String::trim(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value String::split(const CallContext& ctx, const std::vector<Value>& args) {
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
 
     // Create an array to hold the results using GC-managed creation
     std::vector<Value> elements;
@@ -301,37 +304,14 @@ Value String::split(const CallContext& ctx, const std::vector<Value>& args) {
 
 Value String::toString(const CallContext& ctx, const std::vector<Value>& args) {
     // Get the string value from 'this'
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
     return Value(str);
 }
 
 Value String::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     // Get the string value from 'this'
-    std::string str = getThisStringValue(ctx);
+    std::string str = extractThisString(ctx);
     return Value(str);
-}
-
-std::string String::getThisStringValue(const CallContext& ctx) {
-    const Value& thisValue = ctx.thisValue;
-
-    // If it's a string primitive, return it directly
-    if(thisValue.isString()) {
-        return thisValue.getString();
-    }
-
-    // If it's a String object (created by Object(string)), check for value property
-    if(thisValue.isObject()) {
-        auto* obj = thisValue.getObject();
-        if(obj) {
-            Value valueProperty = obj->getProperty("value");
-            if(valueProperty.isString()) {
-                return valueProperty.getString();
-            }
-        }
-    }
-
-    // Fallback to toString() for other cases
-    return thisValue.toString();
 }
 
 size_t String::validateStringIndex(const std::string& str, double index) {

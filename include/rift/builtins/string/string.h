@@ -232,9 +232,6 @@ class String : public BuiltinBase<String> {
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
   private:
-    /// Extracts the string value from the CallContext's thisValue
-    static std::string getThisStringValue(const CallContext& ctx);
-
     /// Helper for index validation
     static size_t validateStringIndex(const std::string& str, double index);
 

@@ -7,13 +7,14 @@
 
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/call_context.h"
-#include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
 
 using rift::core::CallContext;
+using rift::core::extractThisNumber;
 
 // ECMAScript Number constants (20.1.2)
 // These values are from the IEEE 754 double-precision 64-bit binary format
@@ -229,7 +230,7 @@ Value Number::parseInt(const CallContext& ctx, const std::vector<Value>& args) {
 // 20.1.3.6 Number.prototype.toString ( [ radix ] )
 Value Number::toString(const CallContext& ctx, const std::vector<Value>& args) {
     // Get the number value from 'this'
-    double numValue = getThisNumberValue(ctx);
+    double numValue = extractThisNumber(ctx);
 
     // Default radix is 10
     int radix = 10;
@@ -286,13 +287,13 @@ Value Number::toString(const CallContext& ctx, const std::vector<Value>& args) {
 // 20.1.3.7 Number.prototype.valueOf ( )
 Value Number::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     // Get the number value from 'this'
-    double numValue = getThisNumberValue(ctx);
+    double numValue = extractThisNumber(ctx);
     return Value(numValue);
 }
 
 // 20.1.3.3 Number.prototype.toFixed ( fractionDigits )
 Value Number::toFixed(const CallContext& ctx, const std::vector<Value>& args) {
-    double numValue = getThisNumberValue(ctx);
+    double numValue = extractThisNumber(ctx);
 
     // Get fraction digits (default 0)
     int fractionDigits = 0;
@@ -322,7 +323,7 @@ Value Number::toFixed(const CallContext& ctx, const std::vector<Value>& args) {
 
 // 20.1.3.2 Number.prototype.toExponential ( fractionDigits )
 Value Number::toExponential(const CallContext& ctx, const std::vector<Value>& args) {
-    double numValue = getThisNumberValue(ctx);
+    double numValue = extractThisNumber(ctx);
 
     // Handle special values
     if(std::isnan(numValue)) {
@@ -360,7 +361,7 @@ Value Number::toExponential(const CallContext& ctx, const std::vector<Value>& ar
 
 // 20.1.3.5 Number.prototype.toPrecision ( precision )
 Value Number::toPrecision(const CallContext& ctx, const std::vector<Value>& args) {
-    double numValue = getThisNumberValue(ctx);
+    double numValue = extractThisNumber(ctx);
 
     // If precision is undefined, use toString
     if(args.empty() || args[0].isUndefined()) {
@@ -390,32 +391,6 @@ Value Number::toPrecision(const CallContext& ctx, const std::vector<Value>& args
     std::ostringstream oss;
     oss << std::setprecision(precision) << numValue;
     return Value(oss.str());
-}
-
-// ===== Helper Methods =====
-
-double Number::getThisNumberValue(const CallContext& ctx) {
-    const Value& thisValue = ctx.thisValue;
-
-    // If it's a number primitive, return it directly
-    if(thisValue.isNumber()) {
-        return thisValue.toNumber();
-    }
-
-    // If it's a Number object, extract the primitive value
-    if(thisValue.isObject()) {
-        auto obj = thisValue.getObject();
-        if(obj) {
-            // Check if it has a number value property (for Number objects)
-            Value valueProperty = obj->getProperty("value");
-            if(valueProperty.isNumber()) {
-                return valueProperty.toNumber();
-            }
-        }
-    }
-
-    // Default case: convert to number
-    return thisValue.toNumber();
 }
 
 JSObject* Number::getGlobalPrototype() {
