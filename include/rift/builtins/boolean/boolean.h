@@ -38,9 +38,7 @@ class Boolean : public BuiltinBase<Boolean> {
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
   private:
-    /// Helper methods
     static JSObject* getGlobalPrototype();
-    static bool getThisBooleanValue(const CallContext& ctx);
 };
 
 }  // namespace rift::builtins

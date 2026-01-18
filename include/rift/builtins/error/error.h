@@ -37,8 +37,6 @@ class Error : public BuiltinBase<Error> {
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
   private:
-    /// Helper methods
-    static JSObject* getThisObject(const CallContext& ctx);
     static JSObject* getGlobalPrototype();
 };
 

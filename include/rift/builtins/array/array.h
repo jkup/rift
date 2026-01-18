@@ -362,9 +362,6 @@ class Array : public BuiltinBase<Array> {
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
     // Helper methods
-    /// Helper to get the array object from the CallContext's thisValue
-    static JSObject* getThisObject(const CallContext& ctx);
-
     /// Helper to get the length of an array-like object
     static size_t getArrayLength(JSObject* obj);
 

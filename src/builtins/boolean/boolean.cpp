@@ -2,12 +2,13 @@
 
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/call_context.h"
-#include "rift/core/engine/evaluation_utils.h"
+#include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
 
 using rift::core::CallContext;
+using rift::core::extractThisBool;
 
 void Boolean::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Boolean has no static methods (like Array.isArray), so this is empty
@@ -35,39 +36,13 @@ Value Boolean::constructor(const CallContext& ctx, const std::vector<Value>& arg
 }
 
 Value Boolean::toString(const CallContext& ctx, const std::vector<Value>& args) {
-    // Get the boolean value from 'this'
-    bool boolValue = getThisBooleanValue(ctx);
+    bool boolValue = extractThisBool(ctx);
     return Value(boolValue ? "true" : "false");
 }
 
 Value Boolean::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
-    // Get the boolean value from 'this'
-    bool boolValue = getThisBooleanValue(ctx);
+    bool boolValue = extractThisBool(ctx);
     return Value(boolValue);
-}
-
-bool Boolean::getThisBooleanValue(const CallContext& ctx) {
-    const Value& thisValue = ctx.thisValue;
-
-    // If it's a boolean primitive, return it directly
-    if(thisValue.isBoolean()) {
-        return thisValue.getBool();
-    }
-
-    // If it's a Boolean object, extract the primitive value
-    if(thisValue.isObject()) {
-        auto obj = thisValue.getObject();
-        if(obj) {
-            // Check if it has a boolean value property (for Boolean objects)
-            Value valueProperty = obj->getProperty("value");
-            if(valueProperty.isBoolean()) {
-                return valueProperty.getBool();
-            }
-        }
-    }
-
-    // Default case: convert to boolean
-    return thisValue.toBool();
 }
 
 JSObject* Boolean::getGlobalPrototype() {

@@ -9,9 +9,12 @@
 #include "rift/core/engine/call_context.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
+
+using rift::core::extractThisObject;
 
 void Array::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Add Array static methods
@@ -86,7 +89,7 @@ Value Array::constructor(const CallContext& ctx, const std::vector<Value>& args)
 }
 
 Value Array::push(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
@@ -107,7 +110,7 @@ Value Array::push(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::pop(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value::undefined();
     }
@@ -126,7 +129,7 @@ Value Array::pop(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::shift(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value::undefined();
     }
@@ -151,7 +154,7 @@ Value Array::shift(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::unshift(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value(0.0);
     }
@@ -181,7 +184,7 @@ Value Array::unshift(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::join(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value("");
     }
@@ -210,7 +213,7 @@ Value Array::join(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::splice(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value::undefined();
     }
@@ -286,7 +289,7 @@ Value Array::splice(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::reverse(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value::undefined();
     }
@@ -307,7 +310,7 @@ Value Array::reverse(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::sort(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value::undefined();
     }
@@ -345,7 +348,7 @@ Value Array::sort(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::find(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value::undefined();
     }
@@ -380,7 +383,7 @@ Value Array::find(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::findIndex(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value(-1.0);
     }
@@ -415,7 +418,7 @@ Value Array::findIndex(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::every(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value(true);
     }
@@ -454,7 +457,7 @@ Value Array::every(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::some(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value(false);
     }
@@ -493,7 +496,7 @@ Value Array::some(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::lastIndexOf(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value(-1.0);
     }
@@ -517,7 +520,7 @@ Value Array::lastIndexOf(const CallContext& ctx, const std::vector<Value>& args)
 }
 
 Value Array::reduceRight(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value::undefined();
     }
@@ -565,7 +568,7 @@ Value Array::reduceRight(const CallContext& ctx, const std::vector<Value>& args)
 }
 
 Value Array::flatMap(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value(createArrayObject(getObjectFactory(), {}));
     }
@@ -613,7 +616,7 @@ Value Array::flatMap(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::flat(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value(createArrayObject(getObjectFactory(), {}));
     }
@@ -666,7 +669,7 @@ Value Array::flat(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::findLast(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value::undefined();
     }
@@ -701,7 +704,7 @@ Value Array::findLast(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::findLastIndex(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value(-1.0);
     }
@@ -736,7 +739,7 @@ Value Array::findLastIndex(const CallContext& ctx, const std::vector<Value>& arg
 }
 
 Value Array::getLength(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value(0.0);
     }
@@ -745,7 +748,7 @@ Value Array::getLength(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::forEach(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value::undefined();
     }
@@ -777,7 +780,7 @@ Value Array::forEach(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::map(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value(createArrayObject(getObjectFactory(), {}));
     }
@@ -814,7 +817,7 @@ Value Array::map(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::filter(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value(createArrayObject(getObjectFactory(), {}));
     }
@@ -851,7 +854,7 @@ Value Array::filter(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::reduce(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value::undefined();
     }
@@ -897,7 +900,7 @@ Value Array::reduce(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::indexOf(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj || args.empty()) {
         return Value(-1.0);
     }
@@ -931,7 +934,7 @@ Value Array::includes(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::slice(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value(createArrayObject(getObjectFactory(), {}));
     }
@@ -972,7 +975,7 @@ Value Array::slice(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Array::concat(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value(createArrayObject(getObjectFactory(), {}));
     }
@@ -999,14 +1002,6 @@ Value Array::concat(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     return Value(createArrayObject(getObjectFactory(), result));
-}
-
-// Helper to get this object from CallContext
-JSObject* Array::getThisObject(const CallContext& ctx) {
-    if(ctx.thisValue.isObject()) {
-        return ctx.thisValue.getObject();
-    }
-    return nullptr;
 }
 
 size_t Array::getArrayLength(JSObject* obj) {
@@ -1048,7 +1043,7 @@ JSObject* Array::createArrayObject(rift::memory::ObjectFactory* factory,
 }
 
 Value Array::toString(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = getThisObject(ctx);
+    auto* arrayObj = extractThisObject(ctx);
     if(!arrayObj) {
         return Value("");
     }

@@ -148,9 +148,7 @@ class Number : public BuiltinBase<Number> {
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
   private:
-    /// Helper methods
     static JSObject* getGlobalPrototype();
-    static double getThisNumberValue(const CallContext& ctx);
 };
 
 }  // namespace rift::builtins
