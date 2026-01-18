@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "../../core/engine/call_context.h"
 #include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
@@ -10,6 +11,7 @@
 namespace rift::builtins {
 
 using namespace rift::runtime;
+using rift::core::CallContext;
 
 /// The `Object` builtin object and constructor.
 class Object : public BuiltinBase<Object> {
@@ -19,19 +21,19 @@ class Object : public BuiltinBase<Object> {
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
     /// Object constructor
-    static Value constructor(const std::vector<Value>& args);
+    static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Static methods
-    static Value keys(const std::vector<Value>& args);
-    static Value values(const std::vector<Value>& args);
-    static Value entries(const std::vector<Value>& args);
-    static Value defineProperty(const std::vector<Value>& args);
-    static Value getOwnPropertyDescriptor(const std::vector<Value>& args);
+    static Value keys(const CallContext& ctx, const std::vector<Value>& args);
+    static Value values(const CallContext& ctx, const std::vector<Value>& args);
+    static Value entries(const CallContext& ctx, const std::vector<Value>& args);
+    static Value defineProperty(const CallContext& ctx, const std::vector<Value>& args);
+    static Value getOwnPropertyDescriptor(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Prototype methods
-    static Value toString(const std::vector<Value>& args);
-    static Value valueOf(const std::vector<Value>& args);
-    static Value hasOwnProperty(const std::vector<Value>& args);
+    static Value toString(const CallContext& ctx, const std::vector<Value>& args);
+    static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
+    static Value hasOwnProperty(const CallContext& ctx, const std::vector<Value>& args);
 
   private:
     // Static factory storage is now handled by BuiltinBase template

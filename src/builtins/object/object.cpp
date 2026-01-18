@@ -5,11 +5,14 @@
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/builtins/string/string.h"
-#include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/call_context.h"
+#include "rift/core/engine/evaluation_utils.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
+
+using rift::core::CallContext;
 
 void Object::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Add Object static methods
@@ -28,9 +31,7 @@ void Object::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFact
                            Value(factory->createJSFunction(Object::hasOwnProperty)));
 }
 
-Value Object::constructor(const std::vector<Value>& args) {
-    // With CallContext migration, args are the real constructor arguments
-
+Value Object::constructor(const CallContext& ctx, const std::vector<Value>& args) {
     // Object constructor - create new object
     if(args.empty()) {
         // Always use factory for consistent GC management
@@ -48,92 +49,57 @@ Value Object::constructor(const std::vector<Value>& args) {
         // Convert string primitive to String object with proper prototype chain
         auto* stringPrototype = rift::core::BuiltinManager::getStringPrototype();
         auto* stringObj = getObjectFactory()->createJSObject(stringPrototype);
-        
+
         // Protect from GC during initialization
         rift::memory::GCProtector protect(stringObj, getObjectFactory()->getObjectManager());
-        
+
         // Store the primitive string value (following similar pattern to Boolean)
         stringObj->setProperty("value", arg);
-        
-        return Value(stringObj);  // stringObj is now raw pointer with String.prototype
+
+        return Value(stringObj);
     }
 
     if(arg.isBoolean()) {
         // Convert boolean primitive to Boolean object with proper prototype chain
         auto* booleanPrototype = rift::core::BuiltinManager::getBooleanPrototype();
         auto* booleanObj = getObjectFactory()->createJSObject(booleanPrototype);
-        
+
         // Protect from GC during initialization
         rift::memory::GCProtector protect(booleanObj, getObjectFactory()->getObjectManager());
-        
+
         // Store the primitive boolean value (following Boolean constructor pattern)
         booleanObj->setProperty("value", arg);
 
-        return Value(booleanObj);  // booleanObj is now raw pointer with Boolean.prototype
+        return Value(booleanObj);
     }
 
     if(arg.isNumber()) {
-        // Convert number primitive to Number-like object (no Number.prototype yet)
-        auto* numberObj = getObjectFactory()->createJSObject();
-        
+        // Convert number primitive to Number object with proper prototype chain
+        auto* numberPrototype = rift::core::BuiltinManager::getNumberPrototype();
+        auto* numberObj = getObjectFactory()->createJSObject(numberPrototype);
+
         // Protect from GC during initialization
         rift::memory::GCProtector protect(numberObj, getObjectFactory()->getObjectManager());
-        
+
         numberObj->setProperty("value", arg);
-        // Add basic Number methods since we don't have Number.prototype yet
-        auto toStringFn = [](const std::vector<Value>& args) -> Value {
-            if(!args.empty() && args[0].isObject()) {
-                auto* obj = args[0].getObject();
-                if(obj) {
-                    Value val = obj->getProperty("value");
-                    if(val.isNumber()) {
-                        return Value(val.toString());
-                    }
-                }
-            }
-            return Value("0");
-        };
-        auto valueOfFn = [](const std::vector<Value>& args) -> Value {
-            if(!args.empty() && args[0].isObject()) {
-                auto* obj = args[0].getObject();
-                if(obj) {
-                    Value val = obj->getProperty("value");
-                    if(val.isNumber()) {
-                        return val;
-                    }
-                }
-            }
-            return Value(0.0);
-        };
-
-        // Create both functions and protect them during property assignment
-        auto* toStringFunc = getObjectFactory()->createJSFunction(toStringFn);
-        rift::memory::GCProtector protectToString(toStringFunc, getObjectFactory()->getObjectManager());
-        
-        auto* valueOfFunc = getObjectFactory()->createJSFunction(valueOfFn);
-        rift::memory::GCProtector protectValueOf(valueOfFunc, getObjectFactory()->getObjectManager());
-        
-        numberObj->setProperty("toString", Value(toStringFunc));
-        numberObj->setProperty("valueOf", Value(valueOfFunc));
-
-        return Value(numberObj);  // numberObj is now raw pointer
+        return Value(numberObj);
     }
 
     // For null, undefined, or other types, create plain object
     return Value(getObjectFactory()->createJSObject());
 }
 
-Value Object::keys(const std::vector<Value>& args) {
-    if(args.size() < 2) {  // args[0] is 'this', args[1] is the object
+Value Object::keys(const CallContext& ctx, const std::vector<Value>& args) {
+    if(args.empty()) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
-    Value obj = args[1];
+    Value obj = args[0];
     if(!obj.isObject()) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
-    auto* jsObj = obj.getObject();  // getObject() now returns raw pointer
+    auto* jsObj = obj.getObject();
     if(!jsObj) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
@@ -148,17 +114,17 @@ Value Object::keys(const std::vector<Value>& args) {
     return Value(Array::createArrayObject(getObjectFactory(), keys));
 }
 
-Value Object::values(const std::vector<Value>& args) {
-    if(args.size() < 2) {  // args[0] is 'this', args[1] is the object
+Value Object::values(const CallContext& ctx, const std::vector<Value>& args) {
+    if(args.empty()) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
-    Value obj = args[1];
+    Value obj = args[0];
     if(!obj.isObject()) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
-    auto* jsObj = obj.getObject();  // getObject() now returns raw pointer
+    auto* jsObj = obj.getObject();
     if(!jsObj) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
@@ -173,17 +139,17 @@ Value Object::values(const std::vector<Value>& args) {
     return Value(Array::createArrayObject(getObjectFactory(), values));
 }
 
-Value Object::entries(const std::vector<Value>& args) {
-    if(args.size() < 2) {  // args[0] is 'this', args[1] is the object
+Value Object::entries(const CallContext& ctx, const std::vector<Value>& args) {
+    if(args.empty()) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
-    Value obj = args[1];
+    Value obj = args[0];
     if(!obj.isObject()) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
-    auto* jsObj = obj.getObject();  // getObject() now returns raw pointer
+    auto* jsObj = obj.getObject();
     if(!jsObj) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
@@ -199,32 +165,33 @@ Value Object::entries(const std::vector<Value>& args) {
     return Value(Array::createArrayObject(getObjectFactory(), entries));
 }
 
-Value Object::toString(const std::vector<Value>& args) {
+Value Object::toString(const CallContext& ctx, const std::vector<Value>& args) {
     // Default toString implementation
     return Value("[object Object]");
 }
 
-Value Object::valueOf(const std::vector<Value>& args) {
+Value Object::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     // Default valueOf implementation - return the object itself
-    if(!args.empty() && (args[0].isObject() || args[0].isFunction())) {
-        return args[0];
+    const Value& thisValue = ctx.thisValue;
+    if(thisValue.isObject() || thisValue.isFunction()) {
+        return thisValue;
     }
-    return Value(getObjectFactory()->createJSObject());  // Use factory instead of std::make_shared
+    return Value(getObjectFactory()->createJSObject());
 }
 
-Value Object::hasOwnProperty(const std::vector<Value>& args) {
-    if(args.size() < 2) {
+Value Object::hasOwnProperty(const CallContext& ctx, const std::vector<Value>& args) {
+    if(args.empty()) {
         return Value(false);
     }
 
-    Value thisValue = args[0];
-    Value propertyName = args[1];
+    const Value& thisValue = ctx.thisValue;
+    Value propertyName = args[0];
 
     if(!thisValue.isObject() && !thisValue.isFunction()) {
         return Value(false);
     }
 
-    auto* obj = thisValue.getObject();  // getObject() now returns raw pointer
+    auto* obj = thisValue.getObject();
     if(!obj) {
         return Value(false);
     }
@@ -232,23 +199,21 @@ Value Object::hasOwnProperty(const std::vector<Value>& args) {
     std::string propName = propertyName.toString();
 
     // ECMAScript spec: hasOwnProperty() checks only own properties, not inherited ones
-    // Use getOwnPropertyNames() to check only own properties, excluding prototype chain
     auto ownPropertyNames = obj->getOwnPropertyNames();
-    bool hasOwnProperty = std::find(ownPropertyNames.begin(), ownPropertyNames.end(), propName) !=
-                          ownPropertyNames.end();
+    bool hasOwn = std::find(ownPropertyNames.begin(), ownPropertyNames.end(), propName) !=
+                  ownPropertyNames.end();
 
-    return Value(hasOwnProperty);
+    return Value(hasOwn);
 }
 
-Value Object::defineProperty(const std::vector<Value>& args) {
+Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& args) {
     // Object.defineProperty(obj, prop, descriptor)
-    // args: [this, obj, prop, descriptor]
-    if(args.size() < 4) {
+    if(args.size() < 3) {
         // Should throw TypeError in strict mode
         return Value::undefined();
     }
 
-    Value objVal = args[1];
+    Value objVal = args[0];
     if(!objVal.isObject()) {
         // Should throw TypeError
         return Value::undefined();
@@ -259,10 +224,10 @@ Value Object::defineProperty(const std::vector<Value>& args) {
         return Value::undefined();
     }
 
-    std::string propertyKey = args[2].toString();
+    std::string propertyKey = args[1].toString();
 
     // Parse descriptor object
-    Value descriptorVal = args[3];
+    Value descriptorVal = args[2];
     if(!descriptorVal.isObject()) {
         // Should throw TypeError - descriptor must be an object
         return Value::undefined();
@@ -275,7 +240,7 @@ Value Object::defineProperty(const std::vector<Value>& args) {
 
     // Build property descriptor from descriptor object
     rift::runtime::PropertyDescriptor desc;
-    
+
     // Get value (if present)
     Value valueVal = descriptorObj->getProperty("value");
     if(!valueVal.isUndefined()) {
@@ -283,15 +248,15 @@ Value Object::defineProperty(const std::vector<Value>& args) {
     } else {
         desc.value = Value::undefined();
     }
-    
+
     // Get writable (default: false for defineProperty, unlike regular assignment)
     Value writableVal = descriptorObj->getProperty("writable");
     desc.writable = !writableVal.isUndefined() && writableVal.toBool();
-    
+
     // Get enumerable (default: false for defineProperty)
     Value enumerableVal = descriptorObj->getProperty("enumerable");
     desc.enumerable = !enumerableVal.isUndefined() && enumerableVal.toBool();
-    
+
     // Get configurable (default: false for defineProperty)
     Value configurableVal = descriptorObj->getProperty("configurable");
     desc.configurable = !configurableVal.isUndefined() && configurableVal.toBool();
@@ -299,18 +264,17 @@ Value Object::defineProperty(const std::vector<Value>& args) {
     // Define the property with the descriptor
     obj->defineProperty(propertyKey, desc);
 
-    // Return the object (first argument after 'this')
+    // Return the object
     return objVal;
 }
 
-Value Object::getOwnPropertyDescriptor(const std::vector<Value>& args) {
+Value Object::getOwnPropertyDescriptor(const CallContext& ctx, const std::vector<Value>& args) {
     // Object.getOwnPropertyDescriptor(obj, prop)
-    // args: [this, obj, prop]
-    if(args.size() < 3) {
+    if(args.size() < 2) {
         return Value::undefined();
     }
 
-    Value objVal = args[1];
+    Value objVal = args[0];
     if(!objVal.isObject()) {
         // Should throw TypeError
         return Value::undefined();
@@ -321,7 +285,7 @@ Value Object::getOwnPropertyDescriptor(const std::vector<Value>& args) {
         return Value::undefined();
     }
 
-    std::string propertyKey = args[2].toString();
+    std::string propertyKey = args[1].toString();
 
     // Check if property exists
     if(!obj->hasOwnProperty(propertyKey)) {
@@ -333,10 +297,10 @@ Value Object::getOwnPropertyDescriptor(const std::vector<Value>& args) {
 
     // Create descriptor object to return
     auto* descriptorObj = getObjectFactory()->createJSObject();
-    
+
     // Protect from GC
     rift::memory::GCProtector protect(descriptorObj, getObjectFactory()->getObjectManager());
-    
+
     descriptorObj->setProperty("value", desc.value);
     descriptorObj->setProperty("writable", Value(desc.writable));
     descriptorObj->setProperty("enumerable", Value(desc.enumerable));

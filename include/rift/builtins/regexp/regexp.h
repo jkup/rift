@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "re2/re2.h"
+#include "../../core/engine/call_context.h"
 #include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
@@ -14,6 +15,7 @@
 namespace rift::builtins {
 
 using namespace rift::runtime;
+using rift::core::CallContext;
 
 /**
  * Internal class to store regex state
@@ -70,12 +72,12 @@ public:
 class RegExp : public BuiltinBase<RegExp> {
 public:
     /// RegExp constructor (required by BuiltinBase)
-    static Value constructor(const std::vector<Value>& args);
+    static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
     /// RegExp prototype methods
-    static Value test(const std::vector<Value>& args);
-    static Value exec(const std::vector<Value>& args);
-    static Value toString(const std::vector<Value>& args);
+    static Value test(const CallContext& ctx, const std::vector<Value>& args);
+    static Value exec(const CallContext& ctx, const std::vector<Value>& args);
+    static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Setup methods required by BuiltinBase template
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
@@ -84,7 +86,7 @@ public:
 private:
     /// Helper methods
     static JSObject* getGlobalPrototype();
-    static RegExpData* getRegExpData(const std::vector<Value>& args);
+    static RegExpData* getRegExpData(const CallContext& ctx);
 };
 
 } // namespace rift::builtins

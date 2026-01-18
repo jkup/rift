@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "../../core/engine/call_context.h"
 #include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
@@ -10,6 +11,7 @@
 namespace rift::builtins {
 
 using namespace rift::runtime;
+using rift::core::CallContext;
 
 /// The `Boolean` builtin object and constructor.
 ///
@@ -24,24 +26,21 @@ using namespace rift::runtime;
 /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 class Boolean : public BuiltinBase<Boolean> {
   public:
-    /// Boolean constructor (required by BuiltinBase)
-    static Value constructor(const std::vector<Value>& args);
-    /// New API: Constructor with call context to distinguish function vs constructor calls
-    static Value constructor(const rift::core::CallContext& callContext,
-                            const std::vector<Value>& args);
+    /// Boolean constructor with call context to distinguish function vs constructor calls
+    static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Boolean prototype methods
-    static Value toString(const std::vector<Value>& args);
-    static Value valueOf(const std::vector<Value>& args);
+    static Value toString(const CallContext& ctx, const std::vector<Value>& args);
+    static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Setup methods required by BuiltinBase template
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
   private:
-    /// Helper methods - now work with raw pointers
+    /// Helper methods
     static JSObject* getGlobalPrototype();
-    static bool getBooleanValue(const std::vector<Value>& args);
+    static bool getThisBooleanValue(const CallContext& ctx);
 };
 
 }  // namespace rift::builtins

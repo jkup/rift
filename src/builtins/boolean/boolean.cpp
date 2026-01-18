@@ -1,10 +1,13 @@
 #include "rift/builtins/boolean/boolean.h"
 
 #include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/call_context.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
+
+using rift::core::CallContext;
 
 void Boolean::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Boolean has no static methods (like Array.isArray), so this is empty
@@ -16,51 +19,35 @@ void Boolean::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFac
     prototype->setProperty("valueOf", Value(factory->createJSFunction(Boolean::valueOf)));
 }
 
-Value Boolean::constructor(const std::vector<Value>& args) {
-    // Legacy entry: treat as function call semantics
-
-    // Determine the boolean value from the actual arguments
+Value Boolean::constructor(const CallContext& ctx, const std::vector<Value>& args) {
     bool boolValue = args.empty() ? false : args[0].toBool();
-
-    // Return behavior depends on how we were called
-    return Value(boolValue);
-}
-
-Value Boolean::constructor(const rift::core::CallContext& callContext,
-                           const std::vector<Value>& args) {
-    bool boolValue = args.empty() ? false : args[0].toBool();
-    if(callContext.isConstructorCall()) {
+    if(ctx.isConstructorCall()) {
         auto booleanPrototype = getGlobalPrototype();
         auto* booleanObj = getObjectFactory()->createJSObject(booleanPrototype);
-        
+
         // Protect from GC during initialization
         rift::memory::GCProtector protect(booleanObj, getObjectFactory()->getObjectManager());
-        
+
         booleanObj->setProperty("value", Value(boolValue));
         return Value(booleanObj);
     }
     return Value(boolValue);
 }
 
-Value Boolean::toString(const std::vector<Value>& args) {
+Value Boolean::toString(const CallContext& ctx, const std::vector<Value>& args) {
     // Get the boolean value from 'this'
-    bool boolValue = getBooleanValue(args);
+    bool boolValue = getThisBooleanValue(ctx);
     return Value(boolValue ? "true" : "false");
 }
 
-Value Boolean::valueOf(const std::vector<Value>& args) {
+Value Boolean::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     // Get the boolean value from 'this'
-    bool boolValue = getBooleanValue(args);
+    bool boolValue = getThisBooleanValue(ctx);
     return Value(boolValue);
 }
 
-bool Boolean::getBooleanValue(const std::vector<Value>& args) {
-    // For prototype methods, the first argument should be the 'this' value
-    if(args.empty()) {
-        return false;
-    }
-
-    const Value& thisValue = args[0];
+bool Boolean::getThisBooleanValue(const CallContext& ctx) {
+    const Value& thisValue = ctx.thisValue;
 
     // If it's a boolean primitive, return it directly
     if(thisValue.isBoolean()) {
@@ -69,7 +56,7 @@ bool Boolean::getBooleanValue(const std::vector<Value>& args) {
 
     // If it's a Boolean object, extract the primitive value
     if(thisValue.isObject()) {
-        auto obj = thisValue.getObject();  // getObject() now returns raw pointer
+        auto obj = thisValue.getObject();
         if(obj) {
             // Check if it has a boolean value property (for Boolean objects)
             Value valueProperty = obj->getProperty("value");
@@ -84,7 +71,7 @@ bool Boolean::getBooleanValue(const std::vector<Value>& args) {
 }
 
 JSObject* Boolean::getGlobalPrototype() {
-    return rift::core::BuiltinManager::getBooleanPrototype();  // Now returns raw pointer
+    return rift::core::BuiltinManager::getBooleanPrototype();
 }
 
 }  // namespace rift::builtins

@@ -6,11 +6,14 @@
 #include <sstream>
 
 #include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/call_context.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
+
+using rift::core::CallContext;
 
 // ECMAScript Number constants (20.1.2)
 // These values are from the IEEE 754 double-precision 64-bit binary format
@@ -49,33 +52,24 @@ void Number::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFact
     prototype->setProperty("toPrecision", Value(factory->createJSFunction(Number::toPrecision)));
 }
 
-// 20.1.1.1 Number ( value )
-Value Number::constructor(const std::vector<Value>& args) {
-    // Legacy entry: treat as function call semantics
-    // When called as a function, Number(value) converts to primitive number
-    double numValue = args.empty() ? 0.0 : args[0].toNumber();
-    return Value(numValue);
-}
-
 // 20.1.1.1 Number ( value ) with call context
-Value Number::constructor(const rift::core::CallContext& callContext,
-                         const std::vector<Value>& args) {
+Value Number::constructor(const CallContext& ctx, const std::vector<Value>& args) {
     double numValue = args.empty() ? 0.0 : args[0].toNumber();
-    
-    if(callContext.isConstructorCall()) {
+
+    if(ctx.isConstructorCall()) {
         // Called as constructor: new Number(value)
         // Create a Number object with [[NumberData]] internal slot
         auto numberPrototype = getGlobalPrototype();
         auto* numberObj = getObjectFactory()->createJSObject(numberPrototype);
-        
+
         // Protect from GC during initialization
         rift::memory::GCProtector protect(numberObj, getObjectFactory()->getObjectManager());
-        
+
         // Store the primitive number value in a property (represents [[NumberData]])
         numberObj->setProperty("value", Value(numValue));
         return Value(numberObj);
     }
-    
+
     // Called as function: Number(value)
     // Return primitive number
     return Value(numValue);
@@ -84,95 +78,93 @@ Value Number::constructor(const rift::core::CallContext& callContext,
 // ===== Static Methods =====
 
 // 20.1.2.4 Number.isNaN ( number )
-Value Number::isNaN(const std::vector<Value>& args) {
+Value Number::isNaN(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. If Type(number) is not Number, return false.
-    if(args.size() < 2 || !args[1].isNumber()) {
+    if(args.empty() || !args[0].isNumber()) {
         return Value(false);
     }
-    
+
     // 2. If number is NaN, return true.
     // 3. Otherwise, return false.
-    double num = args[1].toNumber();
+    double num = args[0].toNumber();
     return Value(std::isnan(num));
 }
 
 // 20.1.2.2 Number.isFinite ( number )
-Value Number::isFinite(const std::vector<Value>& args) {
+Value Number::isFinite(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. If Type(number) is not Number, return false.
-    if(args.size() < 2 || !args[1].isNumber()) {
+    if(args.empty() || !args[0].isNumber()) {
         return Value(false);
     }
-    
+
     // 2. If number is NaN, +∞, or -∞, return false.
     // 3. Otherwise, return true.
-    double num = args[1].toNumber();
+    double num = args[0].toNumber();
     return Value(std::isfinite(num));
 }
 
 // 20.1.2.3 Number.isInteger ( number )
-Value Number::isInteger(const std::vector<Value>& args) {
+Value Number::isInteger(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. If Type(number) is not Number, return false.
-    if(args.size() < 2 || !args[1].isNumber()) {
+    if(args.empty() || !args[0].isNumber()) {
         return Value(false);
     }
-    
-    double num = args[1].toNumber();
-    
+
+    double num = args[0].toNumber();
+
     // 2. If number is NaN, +∞, or -∞, return false.
     if(!std::isfinite(num)) {
         return Value(false);
     }
-    
+
     // 3. If floor(abs(number)) ≠ abs(number), return false.
     // 4. Otherwise, return true.
     return Value(std::floor(std::abs(num)) == std::abs(num));
 }
 
 // 20.1.2.5 Number.isSafeInteger ( number )
-Value Number::isSafeInteger(const std::vector<Value>& args) {
+Value Number::isSafeInteger(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. If Type(number) is not Number, return false.
-    if(args.size() < 2 || !args[1].isNumber()) {
+    if(args.empty() || !args[0].isNumber()) {
         return Value(false);
     }
-    
-    double num = args[1].toNumber();
-    
+
+    double num = args[0].toNumber();
+
     // 2. If number is NaN, +∞, or -∞, return false.
     if(!std::isfinite(num)) {
         return Value(false);
     }
-    
+
     // 3. If floor(abs(number)) ≠ abs(number), return false.
     if(std::floor(std::abs(num)) != std::abs(num)) {
         return Value(false);
     }
-    
+
     // 4. If abs(number) > 2^53 - 1, return false.
     // 5. Otherwise, return true.
     return Value(std::abs(num) <= MAX_SAFE_INTEGER);
 }
 
 // 20.1.2.13 Number.parseFloat ( string )
-Value Number::parseFloat(const std::vector<Value>& args) {
+Value Number::parseFloat(const CallContext& ctx, const std::vector<Value>& args) {
     // Number.parseFloat is the same function as the global parseFloat
-    // For now, we'll implement a simple version here
-    // In a complete implementation, this would call the same underlying function
-    if(args.size() < 2) {
+    if(args.empty()) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
-    
-    std::string str = args[1].toString();
-    
+
+    std::string str = args[0].toString();
+
     // Trim leading whitespace
     size_t start = 0;
     while(start < str.length() && std::isspace(str[start])) {
         start++;
     }
-    
+
     if(start >= str.length()) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
-    
+
     // Try to parse as float
     try {
         size_t pos;
@@ -184,17 +176,17 @@ Value Number::parseFloat(const std::vector<Value>& args) {
 }
 
 // 20.1.2.14 Number.parseInt ( string, radix )
-Value Number::parseInt(const std::vector<Value>& args) {
+Value Number::parseInt(const CallContext& ctx, const std::vector<Value>& args) {
     // Number.parseInt is the same function as the global parseInt
-    if(args.size() < 2) {
+    if(args.empty()) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
-    
-    std::string str = args[1].toString();
+
+    std::string str = args[0].toString();
     int radix = 10;
-    
-    if(args.size() >= 3) {
-        radix = static_cast<int>(args[2].toNumber());
+
+    if(args.size() >= 2) {
+        radix = static_cast<int>(args[1].toNumber());
         if(radix != 0 && (radix < 2 || radix > 36)) {
             return Value(std::numeric_limits<double>::quiet_NaN());
         }
@@ -202,17 +194,17 @@ Value Number::parseInt(const std::vector<Value>& args) {
             radix = 10;
         }
     }
-    
+
     // Trim leading whitespace
     size_t start = 0;
     while(start < str.length() && std::isspace(str[start])) {
         start++;
     }
-    
+
     if(start >= str.length()) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
-    
+
     // Handle sign
     int sign = 1;
     if(str[start] == '-') {
@@ -221,7 +213,7 @@ Value Number::parseInt(const std::vector<Value>& args) {
     } else if(str[start] == '+') {
         start++;
     }
-    
+
     // Try to parse as integer with given radix
     try {
         size_t pos;
@@ -235,22 +227,22 @@ Value Number::parseInt(const std::vector<Value>& args) {
 // ===== Prototype Methods =====
 
 // 20.1.3.6 Number.prototype.toString ( [ radix ] )
-Value Number::toString(const std::vector<Value>& args) {
+Value Number::toString(const CallContext& ctx, const std::vector<Value>& args) {
     // Get the number value from 'this'
-    double numValue = getNumberValue(args);
-    
+    double numValue = getThisNumberValue(ctx);
+
     // Default radix is 10
     int radix = 10;
-    if(args.size() >= 2 && !args[1].isUndefined()) {
-        radix = static_cast<int>(args[1].toNumber());
-        
+    if(!args.empty() && !args[0].isUndefined()) {
+        radix = static_cast<int>(args[0].toNumber());
+
         // Radix must be between 2 and 36
         if(radix < 2 || radix > 36) {
             throw rift::core::JavaScriptException(
                 Value("RangeError: toString() radix must be between 2 and 36"));
         }
     }
-    
+
     // Handle special values
     if(std::isnan(numValue)) {
         return Value("NaN");
@@ -261,23 +253,23 @@ Value Number::toString(const std::vector<Value>& args) {
     if(numValue == 0.0) {
         return Value("0");
     }
-    
+
     // For radix 10, use standard conversion
     if(radix == 10) {
         std::ostringstream oss;
         oss << numValue;
         return Value(oss.str());
     }
-    
+
     // For other radixes, convert integer part only
     // (Full implementation would handle fractional parts too)
     long long intValue = static_cast<long long>(numValue);
     bool negative = intValue < 0;
     if(negative) intValue = -intValue;
-    
+
     std::string result;
     const char* digits = "0123456789abcdefghijklmnopqrstuvwxyz";
-    
+
     if(intValue == 0) {
         result = "0";
     } else {
@@ -286,34 +278,34 @@ Value Number::toString(const std::vector<Value>& args) {
             intValue /= radix;
         }
     }
-    
+
     if(negative) result = "-" + result;
     return Value(result);
 }
 
 // 20.1.3.7 Number.prototype.valueOf ( )
-Value Number::valueOf(const std::vector<Value>& args) {
+Value Number::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     // Get the number value from 'this'
-    double numValue = getNumberValue(args);
+    double numValue = getThisNumberValue(ctx);
     return Value(numValue);
 }
 
 // 20.1.3.3 Number.prototype.toFixed ( fractionDigits )
-Value Number::toFixed(const std::vector<Value>& args) {
-    double numValue = getNumberValue(args);
-    
+Value Number::toFixed(const CallContext& ctx, const std::vector<Value>& args) {
+    double numValue = getThisNumberValue(ctx);
+
     // Get fraction digits (default 0)
     int fractionDigits = 0;
-    if(args.size() >= 2 && !args[1].isUndefined()) {
-        fractionDigits = static_cast<int>(args[1].toNumber());
-        
+    if(!args.empty() && !args[0].isUndefined()) {
+        fractionDigits = static_cast<int>(args[0].toNumber());
+
         // Must be between 0 and 100
         if(fractionDigits < 0 || fractionDigits > 100) {
             throw rift::core::JavaScriptException(
                 Value("RangeError: toFixed() digits must be between 0 and 100"));
         }
     }
-    
+
     // Handle special values
     if(std::isnan(numValue)) {
         return Value("NaN");
@@ -321,7 +313,7 @@ Value Number::toFixed(const std::vector<Value>& args) {
     if(std::isinf(numValue)) {
         return Value(numValue < 0 ? "-Infinity" : "Infinity");
     }
-    
+
     // Format the number
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(fractionDigits) << numValue;
@@ -329,9 +321,9 @@ Value Number::toFixed(const std::vector<Value>& args) {
 }
 
 // 20.1.3.2 Number.prototype.toExponential ( fractionDigits )
-Value Number::toExponential(const std::vector<Value>& args) {
-    double numValue = getNumberValue(args);
-    
+Value Number::toExponential(const CallContext& ctx, const std::vector<Value>& args) {
+    double numValue = getThisNumberValue(ctx);
+
     // Handle special values
     if(std::isnan(numValue)) {
         return Value("NaN");
@@ -339,22 +331,22 @@ Value Number::toExponential(const std::vector<Value>& args) {
     if(std::isinf(numValue)) {
         return Value(numValue < 0 ? "-Infinity" : "Infinity");
     }
-    
+
     // Get fraction digits
     int fractionDigits = 0;
     bool fractionDigitsSpecified = false;
-    
-    if(args.size() >= 2 && !args[1].isUndefined()) {
-        fractionDigits = static_cast<int>(args[1].toNumber());
+
+    if(!args.empty() && !args[0].isUndefined()) {
+        fractionDigits = static_cast<int>(args[0].toNumber());
         fractionDigitsSpecified = true;
-        
+
         // Must be between 0 and 100
         if(fractionDigits < 0 || fractionDigits > 100) {
             throw rift::core::JavaScriptException(
                 Value("RangeError: toExponential() digits must be between 0 and 100"));
         }
     }
-    
+
     // Format the number in exponential notation
     std::ostringstream oss;
     if(fractionDigitsSpecified) {
@@ -362,21 +354,21 @@ Value Number::toExponential(const std::vector<Value>& args) {
     } else {
         oss << std::scientific << numValue;
     }
-    
+
     return Value(oss.str());
 }
 
 // 20.1.3.5 Number.prototype.toPrecision ( precision )
-Value Number::toPrecision(const std::vector<Value>& args) {
-    double numValue = getNumberValue(args);
-    
+Value Number::toPrecision(const CallContext& ctx, const std::vector<Value>& args) {
+    double numValue = getThisNumberValue(ctx);
+
     // If precision is undefined, use toString
-    if(args.size() < 2 || args[1].isUndefined()) {
+    if(args.empty() || args[0].isUndefined()) {
         std::ostringstream oss;
         oss << numValue;
         return Value(oss.str());
     }
-    
+
     // Handle special values
     if(std::isnan(numValue)) {
         return Value("NaN");
@@ -384,16 +376,16 @@ Value Number::toPrecision(const std::vector<Value>& args) {
     if(std::isinf(numValue)) {
         return Value(numValue < 0 ? "-Infinity" : "Infinity");
     }
-    
+
     // Get precision
-    int precision = static_cast<int>(args[1].toNumber());
-    
+    int precision = static_cast<int>(args[0].toNumber());
+
     // Must be between 1 and 100
     if(precision < 1 || precision > 100) {
         throw rift::core::JavaScriptException(
             Value("RangeError: toPrecision() precision must be between 1 and 100"));
     }
-    
+
     // Format the number with specified precision
     std::ostringstream oss;
     oss << std::setprecision(precision) << numValue;
@@ -402,19 +394,14 @@ Value Number::toPrecision(const std::vector<Value>& args) {
 
 // ===== Helper Methods =====
 
-double Number::getNumberValue(const std::vector<Value>& args) {
-    // For prototype methods, the first argument should be the 'this' value
-    if(args.empty()) {
-        return 0.0;
-    }
-    
-    const Value& thisValue = args[0];
-    
+double Number::getThisNumberValue(const CallContext& ctx) {
+    const Value& thisValue = ctx.thisValue;
+
     // If it's a number primitive, return it directly
     if(thisValue.isNumber()) {
         return thisValue.toNumber();
     }
-    
+
     // If it's a Number object, extract the primitive value
     if(thisValue.isObject()) {
         auto obj = thisValue.getObject();
@@ -426,7 +413,7 @@ double Number::getNumberValue(const std::vector<Value>& args) {
             }
         }
     }
-    
+
     // Default case: convert to number
     return thisValue.toNumber();
 }

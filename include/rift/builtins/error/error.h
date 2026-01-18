@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "../../core/engine/call_context.h"
 #include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
@@ -10,6 +11,7 @@
 namespace rift::builtins {
 
 using namespace rift::runtime;
+using rift::core::CallContext;
 
 /// The `Error` builtin object and constructor.
 ///
@@ -29,14 +31,14 @@ class Error : public BuiltinBase<Error> {
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
     /// Error constructor
-    static Value constructor(const std::vector<Value>& args);
+    static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Error prototype methods
-    static Value toString(const std::vector<Value>& args);
+    static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
   private:
-    /// Helper methods - now work with raw pointers
-    static JSObject* getThisErrorObject(const std::vector<Value>& args);
+    /// Helper methods
+    static JSObject* getThisObject(const CallContext& ctx);
     static JSObject* getGlobalPrototype();
 };
 

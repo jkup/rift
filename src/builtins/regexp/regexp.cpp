@@ -1,6 +1,7 @@
 #include "rift/builtins/regexp/regexp.h"
 
 #include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/call_context.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
@@ -86,21 +87,21 @@ void RegExp::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFact
 
 // ===== RegExp Constructor =====
 
-Value RegExp::constructor(const std::vector<Value>& args) {
+Value RegExp::constructor(const CallContext& ctx, const std::vector<Value>& args) {
     // Get pattern and flags
     std::string pattern = args.empty() ? "" : args[0].toString();
     std::string flags = args.size() > 1 ? args[1].toString() : "";
-    
+
     // Create RegExp object
     auto regexpPrototype = getGlobalPrototype();
     auto* regexpObj = getObjectFactory()->createJSObject(regexpPrototype);
-    
+
     // Protect from GC during initialization
     rift::memory::GCProtector protect(regexpObj, getObjectFactory()->getObjectManager());
-    
+
     // Create RegExpData with smart pointer for proper memory management
     auto data = std::make_unique<RegExpData>(pattern, flags);
-    
+
     // Set JavaScript-visible properties
     regexpObj->setProperty("source", Value(pattern));
     regexpObj->setProperty("global", Value(data->global));
@@ -108,70 +109,63 @@ Value RegExp::constructor(const std::vector<Value>& args) {
     regexpObj->setProperty("multiline", Value(data->multiline));
     regexpObj->setProperty("lastIndex", Value(0.0));
     regexpObj->setProperty("flags", Value(flags));
-    
+
     // Store data in registry (transfers ownership to registry)
     // NOTE: This creates a potential memory leak if RegExp objects are GC'd.
     // A future improvement would be to integrate with GC finalization or
     // use weak references to automatically clean up unused entries.
     RegExpRegistry::store(regexpObj, std::move(data));
-    
+
     return Value(regexpObj);
 }
 
 // ===== Helper to Get RegExpData =====
 
-RegExpData* RegExp::getRegExpData(const std::vector<Value>& args) {
-    // For prototype methods, the first argument should be the 'this' value
-    if (args.empty()) {
-        return nullptr;
-    }
-    
-    const Value& thisValue = args[0];
-    
-    if (thisValue.isObject()) {
-        auto obj = thisValue.getObject();
+RegExpData* RegExp::getRegExpData(const CallContext& ctx) {
+    if (ctx.thisValue.isObject()) {
+        auto obj = ctx.thisValue.getObject();
         if (obj) {
             // Look up data in registry - no unsafe pointer casting!
             return RegExpRegistry::get(obj);
         }
     }
-    
+
     return nullptr;
 }
 
 // ===== RegExp.prototype.test =====
 
-Value RegExp::test(const std::vector<Value>& args) {
-    auto* data = getRegExpData(args);
+Value RegExp::test(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getRegExpData(ctx);
     if (!data) {
         return Value(false);
     }
-    
-    // Get string to test (second argument, since first is 'this')
-    std::string str = args.size() > 1 ? args[1].toString() : "";
-    
+
+    // Get string to test
+    std::string str = !args.empty() ? args[0].toString() : "";
+
     // Test if pattern matches
     bool matches = RE2::PartialMatch(str, *data->regex);
-    
+
     return Value(matches);
 }
 
 // ===== RegExp.prototype.exec =====
 
-Value RegExp::exec(const std::vector<Value>& args) {
-    auto* data = getRegExpData(args);
+Value RegExp::exec(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getRegExpData(ctx);
     if (!data) {
         return Value::null();
     }
-    
+
     // Get string to test
-    std::string str = args.size() > 1 ? args[1].toString() : "";
-    
+    std::string str = !args.empty() ? args[0].toString() : "";
+
     // Check if pattern matches
     if (!RE2::PartialMatch(str, *data->regex)) {
         return Value::null();
     }
-    
+
     // For now, return null even on match
     // TODO: Return proper match array with captured groups
     return Value::null();
@@ -179,15 +173,15 @@ Value RegExp::exec(const std::vector<Value>& args) {
 
 // ===== RegExp.prototype.toString =====
 
-Value RegExp::toString(const std::vector<Value>& args) {
-    auto* data = getRegExpData(args);
+Value RegExp::toString(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getRegExpData(ctx);
     if (!data) {
         return Value("/(?:)/");
     }
-    
+
     // Format: /pattern/flags
     std::string result = "/" + data->pattern + "/" + data->flags;
-    
+
     return Value(result);
 }
 

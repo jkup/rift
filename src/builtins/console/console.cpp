@@ -15,22 +15,22 @@ JSObject* Console::create(rift::memory::ObjectFactory* factory) {
     return console;  // Return raw pointer
 }
 
-Value Console::log(const std::vector<Value>& args) {
+Value Console::log(const CallContext& ctx, const std::vector<Value>& args) {
     printValues(args, std::cout);
     return Value::undefined();
 }
 
-Value Console::error(const std::vector<Value>& args) {
+Value Console::error(const CallContext& ctx, const std::vector<Value>& args) {
     printValues(args, std::cout);
     return Value::undefined();
 }
 
-Value Console::warn(const std::vector<Value>& args) {
+Value Console::warn(const CallContext& ctx, const std::vector<Value>& args) {
     printValues(args, std::cout);
     return Value::undefined();
 }
 
-Value Console::info(const std::vector<Value>& args) {
+Value Console::info(const CallContext& ctx, const std::vector<Value>& args) {
     printValues(args, std::cout);
     return Value::undefined();
 }

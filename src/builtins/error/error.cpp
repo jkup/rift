@@ -1,6 +1,7 @@
 #include "rift/builtins/error/error.h"
 
 #include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/call_context.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/memory/gc_protector.h"
@@ -20,13 +21,13 @@ void Error::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     prototype->setProperty("toString", Value(factory->createJSFunction(Error::toString)));
 }
 
-Value Error::constructor(const std::vector<Value>& args) {
+Value Error::constructor(const CallContext& ctx, const std::vector<Value>& args) {
     // With CallContext migration, args are the real constructor arguments
 
     // Create Error object with proper prototype chain
     auto errorPrototype = getGlobalPrototype();
     auto* errorObj = getObjectFactory()->createJSObject(errorPrototype);  // Use factory
-    
+
     // Protect from GC during initialization
     rift::memory::GCProtector protect(errorObj, getObjectFactory()->getObjectManager());
 
@@ -43,8 +44,8 @@ Value Error::constructor(const std::vector<Value>& args) {
     return Value(errorObj);  // errorObj is now raw pointer
 }
 
-Value Error::toString(const std::vector<Value>& args) {
-    auto errorObj = getThisErrorObject(args);
+Value Error::toString(const CallContext& ctx, const std::vector<Value>& args) {
+    auto errorObj = getThisObject(ctx);
     if(!errorObj) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Error.prototype.toString called on non-object"));
@@ -65,19 +66,10 @@ Value Error::toString(const std::vector<Value>& args) {
     }
 }
 
-JSObject* Error::getThisErrorObject(const std::vector<Value>& args) {
-    // For prototype methods, the first argument should be the 'this' value
-    if(args.empty()) {
-        return nullptr;
+JSObject* Error::getThisObject(const CallContext& ctx) {
+    if(ctx.thisValue.isObject()) {
+        return ctx.thisValue.getObject();
     }
-
-    const Value& thisValue = args[0];
-
-    // If it's an object, return it (assuming it's an Error object)
-    if(thisValue.isObject()) {
-        return thisValue.getObject();  // getObject() now returns raw pointer
-    }
-
     return nullptr;
 }
 

@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "../../core/engine/call_context.h"
 #include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
@@ -14,6 +15,7 @@
 namespace rift::builtins {
 
 using namespace rift::runtime;
+using rift::core::CallContext;
 
 /// The `String` builtin object and constructor.
 ///
@@ -41,7 +43,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string-constructor
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/String
-    static Value constructor(const std::vector<Value>& args);
+    static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `String.fromCharCode()` static method returns a string created from the specified
     /// sequence of UTF-16 code units.
@@ -53,7 +55,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.fromcharcode
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
-    static Value fromCharCode(const std::vector<Value>& args);
+    static Value fromCharCode(const CallContext& ctx, const std::vector<Value>& args);
 
     /// String prototype methods
 
@@ -67,7 +69,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.charat
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
-    static Value charAt(const std::vector<Value>& args);
+    static Value charAt(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `charCodeAt()` method returns an integer between 0 and 65535 representing the UTF-16
     /// code unit at the given index.
@@ -79,11 +81,11 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.charcodeat
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
-    static Value charCodeAt(const std::vector<Value>& args);
+    static Value charCodeAt(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `concat()` method concatenates the string arguments to the calling string and returns a
     /// new string.
-    static Value concat(const std::vector<Value>& args);
+    static Value concat(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `indexOf()` method, given one argument: a substring to search for, searches the entire
     /// calling string, and returns the index of the first occurrence of the specified substring.
@@ -95,7 +97,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.indexof
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf
-    static Value indexOf(const std::vector<Value>& args);
+    static Value indexOf(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `lastIndexOf()` method, given one argument: a substring to search for, searches the
     /// entire calling string, and returns the index of the last occurrence of the specified
@@ -108,7 +110,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.lastindexof
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/lastIndexOf
-    static Value lastIndexOf(const std::vector<Value>& args);
+    static Value lastIndexOf(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `slice()` method extracts a section of a string and returns it as a new string, without
     /// modifying the original string.
@@ -120,7 +122,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.slice
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
-    static Value slice(const std::vector<Value>& args);
+    static Value slice(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `substring()` method returns the part of the string from the start index up to and
     /// excluding the end index, or to the end of the string if no end index is supplied.
@@ -132,7 +134,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.substring
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring
-    static Value substring(const std::vector<Value>& args);
+    static Value substring(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `substr()` method returns a portion of the string, starting at the specified index and
     /// extending for a given number of characters afterwards.
@@ -144,7 +146,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.substr
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr
-    static Value substr(const std::vector<Value>& args);
+    static Value substr(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `toUpperCase()` method returns the calling string value converted to uppercase (the
     /// value will be converted to a string if it isn't one).
@@ -156,7 +158,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.touppercase
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase
-    static Value toUpperCase(const std::vector<Value>& args);
+    static Value toUpperCase(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `toLowerCase()` method returns the calling string value converted to lower case (the
     /// value will be converted to a string if it isn't one).
@@ -168,7 +170,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.tolowercase
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLowerCase
-    static Value toLowerCase(const std::vector<Value>& args);
+    static Value toLowerCase(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `trim()` method removes whitespace from both ends of a string and returns a new string,
     /// without modifying the original string.
@@ -180,7 +182,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.trim
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim
-    static Value trim(const std::vector<Value>& args);
+    static Value trim(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `replace()` method returns a new string with one, some, or all matches of a pattern
     /// replaced by a replacement.
@@ -192,7 +194,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.replace
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
-    static Value replace(const std::vector<Value>& args);
+    static Value replace(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `split()` method takes a pattern and divides a String into an ordered list of
     /// substrings by searching for the pattern, puts these substrings into an array, and returns
@@ -205,7 +207,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.split
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
-    static Value split(const std::vector<Value>& args);
+    static Value split(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `toString()` method returns a string representing the specified object.
     ///
@@ -216,7 +218,7 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.tostring
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toString
-    static Value toString(const std::vector<Value>& args);
+    static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `valueOf()` method returns the primitive value of a String object.
     ///
@@ -227,13 +229,11 @@ class String : public BuiltinBase<String> {
     /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.valueof
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/valueOf
-    static Value valueOf(const std::vector<Value>& args);
+    static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
   private:
-    /// Extracts the string value from the first argument in `args`.
-    static std::string getStringValue(const std::vector<Value>& args);
-    /// Extracts the string value from the `this` value (typically the receiver object) in `args`.
-    static std::string getThisStringValue(const std::vector<Value>& args);
+    /// Extracts the string value from the CallContext's thisValue
+    static std::string getThisStringValue(const CallContext& ctx);
 
     /// Helper for index validation
     static size_t validateStringIndex(const std::string& str, double index);
