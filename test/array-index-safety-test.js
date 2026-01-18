@@ -104,7 +104,7 @@ var problematic = [
   "9223372036854775808", // Larger than max signed long long
   "18446744073709551615", // Max unsigned long long
   "18446744073709551616", // Larger than max unsigned long long
-  "1" + "0".repeat(100), // Extremely long number string
+  "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", // Extremely long number string (100 zeros)
   "∞", // Unicode infinity
   "NaN", // Not a number string
   "undefined", // JavaScript undefined as string

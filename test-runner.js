@@ -161,7 +161,10 @@ function gc() {
         const fullPath = path.join(dir, file);
         const stat = fs.statSync(fullPath);
         if (stat.isDirectory()) {
-          walk(fullPath);
+          // Skip the 'skipped' folder which contains tests for unimplemented features
+          if (file !== 'skipped') {
+            walk(fullPath);
+          }
         } else if (file.endsWith('.js') && !file.includes('temp')) {
           testFiles.push(fullPath);
         }
