@@ -17,225 +17,300 @@ on:
       - 'CMakeLists.txt'
       - 'test262-runner.js'
       - 'package.json'
-  workflow_dispatch: # Allow manual triggers
+  workflow_dispatch:
 
 env:
   CMAKE_BUILD_TYPE: Release
   TEST262_TIMEOUT: 30m
+  CCACHE_DIR: ~/.ccache
+  CCACHE_MAXSIZE: 500M
 
 jobs:
-  test262-comparison:
+  # Build and test the PR/current branch
+  test262-current:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
-    permissions:
-      contents: read
-      issues: write
-      pull-requests: write
-      statuses: write
-    
+    timeout-minutes: 35
+    outputs:
+      passed: ${{ steps.test262.outputs.passed }}
+      failed: ${{ steps.test262.outputs.failed }}
+      total: ${{ steps.test262.outputs.total }}
+      pass_rate: ${{ steps.test262.outputs.pass_rate }}
+
     steps:
-    - name: Checkout PR branch
+    - name: Checkout
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0 # Need full history for comparison
-    
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
-    
-    - name: Install dependencies
+
+    - name: Install npm dependencies
       run: npm ci
-    
+
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ runner.os }}-test262-current
+        max-size: 500M
+
+    - name: Cache build directory
+      uses: actions/cache@v4
+      with:
+        path: build
+        key: ${{ runner.os }}-build-test262-${{ hashFiles('src/**', 'include/**', 'CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-build-test262-
+
     - name: Setup build environment
       run: |
         sudo apt-get update
         sudo apt-get install -y cmake build-essential clang
-    
-    - name: Build runtime (PR branch)
+
+    - name: Build runtime
       run: |
         mkdir -p build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
+        cmake .. -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         make -j$(nproc)
-        echo "✅ PR branch runtime built successfully"
-    
-    - name: Run Test262 on PR branch
-      id: test262-pr
+
+    - name: Run Test262
+      id: test262
       timeout-minutes: 30
       run: |
-        echo "🔬 Running Test262 on PR branch..."
-        npm run test262 > test262-pr-results.txt 2>&1 || true
-        
+        echo "🔬 Running Test262..."
+        npm run test262 > test262-results.txt 2>&1 || true
+
         # Extract key metrics
-        PASSED=$(grep -o "Passed: [0-9]*" test262-pr-results.txt | grep -o "[0-9]*" || echo "0")
-        FAILED=$(grep -o "Failed: [0-9]*" test262-pr-results.txt | grep -o "[0-9]*" || echo "0")
+        PASSED=$(grep -o "Passed: [0-9]*" test262-results.txt | grep -o "[0-9]*" || echo "0")
+        FAILED=$(grep -o "Failed: [0-9]*" test262-results.txt | grep -o "[0-9]*" || echo "0")
         TOTAL=$((PASSED + FAILED))
         PASS_RATE=$(echo "scale=2; $PASSED * 100 / $TOTAL" | bc -l 2>/dev/null || echo "0")
-        
-        echo "pr_passed=$PASSED" >> $GITHUB_OUTPUT
-        echo "pr_failed=$FAILED" >> $GITHUB_OUTPUT
-        echo "pr_total=$TOTAL" >> $GITHUB_OUTPUT
-        echo "pr_pass_rate=$PASS_RATE" >> $GITHUB_OUTPUT
-        
-        echo "📊 PR Results: $PASSED/$TOTAL passed ($PASS_RATE%)"
-    
-    - name: Stash PR results
+
+        echo "passed=$PASSED" >> $GITHUB_OUTPUT
+        echo "failed=$FAILED" >> $GITHUB_OUTPUT
+        echo "total=$TOTAL" >> $GITHUB_OUTPUT
+        echo "pass_rate=$PASS_RATE" >> $GITHUB_OUTPUT
+
+        echo "📊 Results: $PASSED/$TOTAL passed ($PASS_RATE%)"
+
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      with:
+        name: test262-current-results
+        path: test262-results.txt
+        retention-days: 30
+
+  # Get baseline from cache (for PRs) or compute it (for main pushes)
+  get-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    outputs:
+      passed: ${{ steps.baseline.outputs.passed }}
+      failed: ${{ steps.baseline.outputs.failed }}
+      total: ${{ steps.baseline.outputs.total }}
+      pass_rate: ${{ steps.baseline.outputs.pass_rate }}
+      cache_hit: ${{ steps.cache-check.outputs.cache-hit }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        fetch-depth: 1
+
+    - name: Check for cached baseline
+      id: cache-check
+      uses: actions/cache@v4
+      with:
+        path: .github/test262-baseline
+        key: test262-baseline-${{ hashFiles('src/**', 'include/**', 'CMakeLists.txt') }}
+        restore-keys: |
+          test262-baseline-
+
+    - name: Use cached baseline
+      id: use-cache
+      if: steps.cache-check.outputs.cache-hit == 'true'
       run: |
-        cp test262-pr-results.txt /tmp/
-        cp build/rift /tmp/rift-pr || true
-    
-    - name: Checkout main branch
+        echo "✅ Using cached baseline"
+        if [ -f .github/test262-baseline/metrics.txt ]; then
+          source .github/test262-baseline/metrics.txt
+          echo "passed=$PASSED" >> $GITHUB_OUTPUT
+          echo "failed=$FAILED" >> $GITHUB_OUTPUT
+          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+          echo "pass_rate=$PASS_RATE" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Setup Node.js
+      if: steps.cache-check.outputs.cache-hit != 'true'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install npm dependencies
+      if: steps.cache-check.outputs.cache-hit != 'true'
+      run: npm ci
+
+    - name: Setup ccache
+      if: steps.cache-check.outputs.cache-hit != 'true'
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ runner.os }}-test262-baseline
+        max-size: 500M
+
+    - name: Setup build environment
+      if: steps.cache-check.outputs.cache-hit != 'true'
       run: |
-        git checkout main
-        git clean -fd
-    
-    - name: Build runtime (main branch)
+        sudo apt-get update
+        sudo apt-get install -y cmake build-essential clang
+
+    - name: Build and test main branch
+      if: steps.cache-check.outputs.cache-hit != 'true'
+      id: build-baseline
+      timeout-minutes: 30
       run: |
-        rm -rf build
+        echo "🔨 Building main branch baseline..."
         mkdir -p build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         make -j$(nproc)
-        echo "✅ Main branch runtime built successfully"
-    
-    - name: Run Test262 on main branch
-      id: test262-main
-      timeout-minutes: 30
-      run: |
-        echo "🔬 Running Test262 on main branch..."
-        npm run test262 > test262-main-results.txt 2>&1 || true
-        
-        # Extract key metrics
-        PASSED=$(grep -o "Passed: [0-9]*" test262-main-results.txt | grep -o "[0-9]*" || echo "0")
-        FAILED=$(grep -o "Failed: [0-9]*" test262-main-results.txt | grep -o "[0-9]*" || echo "0")
+        cd ..
+
+        echo "🔬 Running Test262 on main..."
+        npm run test262 > test262-baseline.txt 2>&1 || true
+
+        # Extract metrics
+        PASSED=$(grep -o "Passed: [0-9]*" test262-baseline.txt | grep -o "[0-9]*" || echo "0")
+        FAILED=$(grep -o "Failed: [0-9]*" test262-baseline.txt | grep -o "[0-9]*" || echo "0")
         TOTAL=$((PASSED + FAILED))
         PASS_RATE=$(echo "scale=2; $PASSED * 100 / $TOTAL" | bc -l 2>/dev/null || echo "0")
-        
-        echo "main_passed=$PASSED" >> $GITHUB_OUTPUT
-        echo "main_failed=$FAILED" >> $GITHUB_OUTPUT
-        echo "main_total=$TOTAL" >> $GITHUB_OUTPUT
-        echo "main_pass_rate=$PASS_RATE" >> $GITHUB_OUTPUT
-        
-        echo "📊 Main Results: $PASSED/$TOTAL passed ($PASS_RATE%)"
-    
+
+        # Save to cache directory
+        mkdir -p .github/test262-baseline
+        echo "PASSED=$PASSED" > .github/test262-baseline/metrics.txt
+        echo "FAILED=$FAILED" >> .github/test262-baseline/metrics.txt
+        echo "TOTAL=$TOTAL" >> .github/test262-baseline/metrics.txt
+        echo "PASS_RATE=$PASS_RATE" >> .github/test262-baseline/metrics.txt
+        cp test262-baseline.txt .github/test262-baseline/
+
+        echo "passed=$PASSED" >> $GITHUB_OUTPUT
+        echo "failed=$FAILED" >> $GITHUB_OUTPUT
+        echo "total=$TOTAL" >> $GITHUB_OUTPUT
+        echo "pass_rate=$PASS_RATE" >> $GITHUB_OUTPUT
+
+    - name: Set baseline outputs
+      id: baseline
+      run: |
+        if [ "${{ steps.cache-check.outputs.cache-hit }}" == "true" ]; then
+          source .github/test262-baseline/metrics.txt
+        else
+          PASSED="${{ steps.build-baseline.outputs.passed }}"
+          FAILED="${{ steps.build-baseline.outputs.failed }}"
+          TOTAL="${{ steps.build-baseline.outputs.total }}"
+          PASS_RATE="${{ steps.build-baseline.outputs.pass_rate }}"
+        fi
+        echo "passed=${PASSED:-0}" >> $GITHUB_OUTPUT
+        echo "failed=${FAILED:-0}" >> $GITHUB_OUTPUT
+        echo "total=${TOTAL:-0}" >> $GITHUB_OUTPUT
+        echo "pass_rate=${PASS_RATE:-0}" >> $GITHUB_OUTPUT
+
+  # Compare results and generate report
+  compare:
+    runs-on: ubuntu-latest
+    needs: [test262-current, get-baseline]
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      statuses: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
     - name: Generate comparison report
       id: comparison
       run: |
-        cp /tmp/test262-pr-results.txt .
-        
-        # Calculate differences (with safe defaults)
-        PR_PASSED="${{ steps.test262-pr.outputs.pr_passed || '0' }}"
-        MAIN_PASSED="${{ steps.test262-main.outputs.main_passed || '0' }}"
-        PR_TOTAL="${{ steps.test262-pr.outputs.pr_total || '0' }}"
-        MAIN_TOTAL="${{ steps.test262-main.outputs.main_total || '0' }}"
-        PR_RATE="${{ steps.test262-pr.outputs.pr_pass_rate || '0' }}"
-        MAIN_RATE="${{ steps.test262-main.outputs.main_pass_rate || '0' }}"
-        PR_FAILED="${{ steps.test262-pr.outputs.pr_failed || '0' }}"
-        MAIN_FAILED="${{ steps.test262-main.outputs.main_failed || '0' }}"
-        
+        PR_PASSED="${{ needs.test262-current.outputs.passed }}"
+        PR_FAILED="${{ needs.test262-current.outputs.failed }}"
+        PR_TOTAL="${{ needs.test262-current.outputs.total }}"
+        PR_RATE="${{ needs.test262-current.outputs.pass_rate }}"
+
+        MAIN_PASSED="${{ needs.get-baseline.outputs.passed }}"
+        MAIN_FAILED="${{ needs.get-baseline.outputs.failed }}"
+        MAIN_TOTAL="${{ needs.get-baseline.outputs.total }}"
+        MAIN_RATE="${{ needs.get-baseline.outputs.pass_rate }}"
+
         PASSED_DIFF=$((PR_PASSED - MAIN_PASSED))
         RATE_DIFF=$(echo "scale=2; $PR_RATE - $MAIN_RATE" | bc -l 2>/dev/null || echo "0")
-        
+
         echo "passed_diff=$PASSED_DIFF" >> $GITHUB_OUTPUT
         echo "rate_diff=$RATE_DIFF" >> $GITHUB_OUTPUT
-        
-        # Determine status emoji and message
+
+        # Determine status
         if (( PASSED_DIFF > 0 )); then
           STATUS="🎉 IMPROVEMENT"
           COLOR="28a745"
         elif (( PASSED_DIFF < 0 )); then
-          STATUS="⚠️ REGRESSION"  
+          STATUS="⚠️ REGRESSION"
           COLOR="d73a49"
         else
           STATUS="➡️ NO CHANGE"
           COLOR="6f42c1"
         fi
-        
+
         echo "status=$STATUS" >> $GITHUB_OUTPUT
         echo "color=$COLOR" >> $GITHUB_OUTPUT
-        
-        # Create detailed report
+
+        # Create report
         cat > comparison-report.md << EOF
         # 🧪 Test262 Compatibility Report
-        
+
         ## 📊 Results Summary
-        
-        | Branch | Passed | Failed | Total | Pass Rate | 
+
+        | Branch | Passed | Failed | Total | Pass Rate |
         |--------|--------|--------|-------|-----------|
         | **PR** | $PR_PASSED | $PR_FAILED | $PR_TOTAL | $PR_RATE% |
         | **Main** | $MAIN_PASSED | $MAIN_FAILED | $MAIN_TOTAL | $MAIN_RATE% |
         | **Diff** | **$PASSED_DIFF** | | | **$RATE_DIFF%** |
-        
+
         ## $STATUS
-        
+
         EOF
-        
+
         if (( PASSED_DIFF > 0 )); then
-          cat >> comparison-report.md << EOF
-        🎉 **Congratulations!** This PR improves JavaScript compatibility by fixing additional test262 tests.
-        
-        ### What improved:
-        EOF
+          echo "🎉 **Congratulations!** This PR improves JavaScript compatibility by fixing $PASSED_DIFF additional test262 tests." >> comparison-report.md
         elif (( PASSED_DIFF < 0 )); then
-          cat >> comparison-report.md << EOF
-        ⚠️ **Warning:** This PR appears to break some previously passing test262 tests. Please review the changes.
-        
-        ### What regressed:
-        EOF
+          echo "⚠️ **Warning:** This PR appears to break ${PASSED_DIFF#-} previously passing test262 tests. Please review the changes." >> comparison-report.md
         else
-          cat >> comparison-report.md << EOF
-        ➡️ This PR maintains the current level of JavaScript compatibility without significant changes to test262 results.
-        EOF
+          echo "➡️ This PR maintains the current level of JavaScript compatibility." >> comparison-report.md
         fi
-        
-        # Add test details if there are differences
-        if (( PASSED_DIFF != 0 )); then
-          echo "" >> comparison-report.md
-          echo "### 📋 Test Details" >> comparison-report.md
-          echo "" >> comparison-report.md
-          echo "\`\`\`" >> comparison-report.md
-          echo "Tests affected: $PASSED_DIFF" >> comparison-report.md
-          echo "Pass rate change: $RATE_DIFF%" >> comparison-report.md
-          echo "\`\`\`" >> comparison-report.md
-        fi
-        
+
         echo "" >> comparison-report.md
         echo "---" >> comparison-report.md
         echo "*Report generated by GitHub Actions on $(date)*" >> comparison-report.md
-    
-    - name: Upload test results as artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: test262-results
-        path: |
-          test262-pr-results.txt
-          test262-main-results.txt
-          comparison-report.md
-        retention-days: 30
-    
-    - name: Comment on PR (if this is a PR)
-      if: github.event_name == 'pull_request'
+
+    - name: Comment on PR
       uses: actions/github-script@v7
       with:
         script: |
           const fs = require('fs');
           const reportContent = fs.readFileSync('comparison-report.md', 'utf8');
-          
-          // Find existing comment
+
           const comments = await github.rest.issues.listComments({
             owner: context.repo.owner,
             repo: context.repo.repo,
             issue_number: context.issue.number,
           });
-          
-          const botComment = comments.data.find(comment => 
+
+          const botComment = comments.data.find(comment =>
             comment.user.type === 'Bot' && comment.body.includes('🧪 Test262 Compatibility Report')
           );
-          
+
           if (botComment) {
-            // Update existing comment
             await github.rest.issues.updateComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -243,7 +318,6 @@ jobs:
               body: reportContent
             });
           } else {
-            // Create new comment
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -251,27 +325,25 @@ jobs:
               body: reportContent
             });
           }
-    
+
     - name: Create status check
-      if: github.event_name == 'pull_request' && always()
       uses: actions/github-script@v7
       with:
         script: |
           const passedDiff = parseInt('${{ steps.comparison.outputs.passed_diff }}') || 0;
-          const status = '${{ steps.comparison.outputs.status }}' || 'unknown';
-          
+
           let state, description;
           if (passedDiff > 0) {
             state = 'success';
             description = `✅ Improved: +${passedDiff} tests passing`;
           } else if (passedDiff < 0) {
-            state = 'failure'; 
+            state = 'failure';
             description = `❌ Regression: ${passedDiff} tests failing`;
           } else {
             state = 'success';
             description = '➡️ No change in test262 compatibility';
           }
-          
+
           await github.rest.repos.createCommitStatus({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -281,11 +353,27 @@ jobs:
             description: description,
             context: 'test262-compatibility'
           });
-    
-    - name: Save baseline (if main branch)
-      if: github.ref == 'refs/heads/main'
+
+  # Update baseline cache on main branch pushes
+  update-baseline:
+    runs-on: ubuntu-latest
+    needs: [test262-current]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Save new baseline
       run: |
-        mkdir -p .github/test262-baselines
-        cp test262-main-results.txt .github/test262-baselines/latest.txt
-        echo "${{ steps.test262-main.outputs.main_passed }}" > .github/test262-baselines/latest-count.txt
-        echo "💾 Saved new baseline: ${{ steps.test262-main.outputs.main_passed }} tests passing" 
+        mkdir -p .github/test262-baseline
+        echo "PASSED=${{ needs.test262-current.outputs.passed }}" > .github/test262-baseline/metrics.txt
+        echo "FAILED=${{ needs.test262-current.outputs.failed }}" >> .github/test262-baseline/metrics.txt
+        echo "TOTAL=${{ needs.test262-current.outputs.total }}" >> .github/test262-baseline/metrics.txt
+        echo "PASS_RATE=${{ needs.test262-current.outputs.pass_rate }}" >> .github/test262-baseline/metrics.txt
+
+    - name: Update baseline cache
+      uses: actions/cache/save@v4
+      with:
+        path: .github/test262-baseline
+        key: test262-baseline-${{ hashFiles('src/**', 'include/**', 'CMakeLists.txt') }}
