@@ -73,16 +73,19 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
                     break;
             }
             auto node = ASTFactory::makeLiteral(token.value, literalType);
+            node->setLocation(token.line, token.column);
             current++;
             return node;
         }
         case TokenType::Identifier: {
             auto node = ASTFactory::makeIdentifier(token.value);
+            node->setLocation(token.line, token.column);
             current++;
             return node;
         }
         case TokenType::This: {
             auto node = ASTFactory::makeIdentifier("this");
+            node->setLocation(token.line, token.column);
             current++;
             return node;
         }
@@ -429,6 +432,7 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
 }
 
 std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
+    Token& startToken = current_token();  // Save 'function' location
     consume(TokenType::Function);  // consume 'function'
 
     // Get function name
@@ -446,10 +450,13 @@ std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
     // Parse function body
     auto body = parse_block_statement();
 
-    return ASTFactory::makeFunctionDeclaration(name, parameters, body);
+    auto node = ASTFactory::makeFunctionDeclaration(name, parameters, body);
+    node->setLocation(startToken.line, startToken.column);
+    return node;
 }
 
 std::shared_ptr<ASTNode> Parser::parse_function_expression() {
+    Token& startToken = current_token();  // Save 'function' location
     consume(TokenType::Function);  // consume 'function'
 
     // Parse parameters (anonymous function)
@@ -460,7 +467,9 @@ std::shared_ptr<ASTNode> Parser::parse_function_expression() {
     // Parse function body
     auto body = parse_block_statement();
 
-    return ASTFactory::makeFunctionExpression(parameters, body);
+    auto node = ASTFactory::makeFunctionExpression(parameters, body);
+    node->setLocation(startToken.line, startToken.column);
+    return node;
 }
 
 std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
@@ -618,9 +627,11 @@ std::shared_ptr<ASTNode> Parser::parse() {
 }
 
 std::shared_ptr<ASTNode> Parser::parse_array_literal() {
+    Token& startToken = current_token();  // Save location before consuming
     consume(TokenType::LeftBracket);  // consume '['
 
     auto array = ASTFactory::makeArrayLiteral();
+    array->setLocation(startToken.line, startToken.column);
 
     // Handle empty array []
     if(current_token().type == TokenType::RightBracket) {
@@ -644,9 +655,11 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
 }
 
 std::shared_ptr<ASTNode> Parser::parse_object_literal() {
+    Token& startToken = current_token();  // Save location before consuming
     consume(TokenType::LeftBrace);  // consume '{'
 
     auto object = ASTFactory::makeObjectLiteral();
+    object->setLocation(startToken.line, startToken.column);
 
     // Handle empty object {}
     if(current_token().type == TokenType::RightBrace) {

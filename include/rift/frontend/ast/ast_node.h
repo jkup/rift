@@ -54,9 +54,35 @@ struct ASTNode {
     std::string value;
     std::string metadata;  // For storing additional type information
 
+    // Source location tracking
+    size_t line = 0;    // 1-indexed line number (0 = unknown)
+    size_t column = 0;  // 1-indexed column number (0 = unknown)
+
     ASTNode(ASTNodeType t) : type(t) {
     }
     ASTNode(ASTNodeType t, const std::string& v) : type(t), value(v) {
+    }
+    ASTNode(ASTNodeType t, const std::string& v, size_t l, size_t c)
+        : type(t), value(v), line(l), column(c) {
+    }
+
+    /// Set source location from another node (useful for derived nodes)
+    void setLocation(size_t l, size_t c) {
+        line = l;
+        column = c;
+    }
+
+    /// Copy source location from another node
+    void copyLocationFrom(const std::shared_ptr<ASTNode>& other) {
+        if (other) {
+            line = other->line;
+            column = other->column;
+        }
+    }
+
+    /// Check if this node has valid source location
+    bool hasLocation() const {
+        return line > 0 && column > 0;
     }
 };
 
