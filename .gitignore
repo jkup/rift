@@ -41,6 +41,7 @@ test262/
 test262-results.json
 test262-group-*-results.json
 test262-impact-report.json
+.test262-cache.json
 
 # Node.js dependencies (if any)
 node_modules/
