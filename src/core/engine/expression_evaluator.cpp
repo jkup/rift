@@ -542,7 +542,7 @@ Value ExpressionEvaluator::evaluateTemplateLiteral(std::shared_ptr<ASTNode> node
         }
     }
 
-    return Value(result);
+    return Value(std::move(result));
 }
 
 Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> node,

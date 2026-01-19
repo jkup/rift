@@ -80,7 +80,7 @@ Value Array::map(const CallContext& ctx, const std::vector<Value>& args) {
         }
     }
 
-    return Value(createArrayObject(getObjectFactory(), results));
+    return Value(createArrayObject(getObjectFactory(), std::move(results)));
 }
 
 Value Array::filter(const CallContext& ctx, const std::vector<Value>& args) {
@@ -117,7 +117,7 @@ Value Array::filter(const CallContext& ctx, const std::vector<Value>& args) {
         }
     }
 
-    return Value(createArrayObject(getObjectFactory(), results));
+    return Value(createArrayObject(getObjectFactory(), std::move(results)));
 }
 
 Value Array::reduce(const CallContext& ctx, const std::vector<Value>& args) {
@@ -482,7 +482,7 @@ Value Array::flat(const CallContext& ctx, const std::vector<Value>& args) {
     };
 
     flattenArray(arrayObj, depth);
-    return Value(createArrayObject(getObjectFactory(), result));
+    return Value(createArrayObject(getObjectFactory(), std::move(result)));
 }
 
 Value Array::flatMap(const CallContext& ctx, const std::vector<Value>& args) {
@@ -530,7 +530,7 @@ Value Array::flatMap(const CallContext& ctx, const std::vector<Value>& args) {
         }
     }
 
-    return Value(createArrayObject(getObjectFactory(), result));
+    return Value(createArrayObject(getObjectFactory(), std::move(result)));
 }
 
 }  // namespace rift::builtins

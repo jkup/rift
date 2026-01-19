@@ -63,7 +63,7 @@ Value String::fromCharCode(const CallContext& ctx, const std::vector<Value>& arg
         }
     }
 
-    return Value(result);
+    return Value(std::move(result));
 }
 
 Value String::charAt(const CallContext& ctx, const std::vector<Value>& args) {
@@ -106,7 +106,7 @@ Value String::concat(const CallContext& ctx, const std::vector<Value>& args) {
         str += args[i].toString();
     }
 
-    return Value(str);
+    return Value(std::move(str));
 }
 
 Value String::indexOf(const CallContext& ctx, const std::vector<Value>& args) {
@@ -236,7 +236,7 @@ Value String::toLowerCase(const CallContext& ctx, const std::vector<Value>& args
     std::transform(str.begin(), str.end(), str.begin(),
                    [](unsigned char c) { return std::tolower(c); });
 
-    return Value(str);
+    return Value(std::move(str));
 }
 
 Value String::toUpperCase(const CallContext& ctx, const std::vector<Value>& args) {
@@ -245,7 +245,7 @@ Value String::toUpperCase(const CallContext& ctx, const std::vector<Value>& args
     std::transform(str.begin(), str.end(), str.begin(),
                    [](unsigned char c) { return std::toupper(c); });
 
-    return Value(str);
+    return Value(std::move(str));
 }
 
 Value String::trim(const CallContext& ctx, const std::vector<Value>& args) {
@@ -274,7 +274,7 @@ Value String::split(const CallContext& ctx, const std::vector<Value>& args) {
 
     if(args.empty() || args[0].isUndefined()) {
         // No separator - return array with original string
-        elements.push_back(Value(str));
+        elements.push_back(Value(std::move(str)));
     } else {
         std::string separator = args[0].toString();
 
@@ -299,19 +299,19 @@ Value String::split(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     // Build a proper Array instance using Array helper
-    return Value(Array::createArrayObject(getObjectFactory(), elements));
+    return Value(Array::createArrayObject(getObjectFactory(), std::move(elements)));
 }
 
 Value String::toString(const CallContext& ctx, const std::vector<Value>& args) {
     // Get the string value from 'this'
     std::string str = extractThisString(ctx);
-    return Value(str);
+    return Value(std::move(str));
 }
 
 Value String::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     // Get the string value from 'this'
     std::string str = extractThisString(ctx);
-    return Value(str);
+    return Value(std::move(str));
 }
 
 size_t String::validateStringIndex(const std::string& str, double index) {

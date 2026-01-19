@@ -46,7 +46,7 @@ class Array : public BuiltinBase<Array> {
 
     /// Helper to create a new array object with the given elements
     static JSObject* createArrayObject(rift::memory::ObjectFactory* factory,
-                                       const std::vector<Value>& elements);
+                                       std::vector<Value> elements);
 
     /// Helper to get the global Array prototype (for proper prototype chain)
     static JSObject* getGlobalPrototype();
