@@ -7,6 +7,7 @@ import { Worker } from "worker_threads";
 import { cpus } from "os";
 import chalk from "chalk";
 import { Test262ResultsTracker } from "./test262-results-tracker.js";
+import { Test262Cache } from "./test262-cache.js";
 import {
   TEST262_DIR,
   RUNTIME_EXECUTABLE,
@@ -145,11 +146,16 @@ class Test262Runner {
     this.passed = 0;
     this.failed = 0;
     this.skipped = 0;
+    this.cached = 0; // Tests using cached results
     this.results = [];
     this.startTime = Date.now();
     this.tracker = new Test262ResultsTracker();
     this.workerCount = options.workers || DEFAULT_WORKER_COUNT;
     this.sequential = options.sequential || false;
+    this.incremental = options.incremental || false;
+    this.force = options.force || false;
+    this.cache = new Test262Cache();
+    this.runtimeChanged = false;
   }
 
   displayStatus(currentTest = "", totalTests = 0, currentIndex = 0) {
@@ -168,6 +174,9 @@ class Test262Runner {
     const skippedBox = chalk.yellow(
       `[S ${this.skipped.toString().padStart(4)}]`
     );
+    const cachedBox = this.incremental
+      ? chalk.cyan(`[C ${this.cached.toString().padStart(4)}]`)
+      : "";
 
     const progressBar = this.createProgressBar(currentIndex, totalTests, 20);
 
@@ -185,6 +194,7 @@ class Test262Runner {
       passedBox,
       failedBox,
       skippedBox,
+      cachedBox,
       progressBar,
       chalk.dim(`${progress}%`),
       chalk.dim(`${elapsed}s`),
@@ -213,6 +223,18 @@ class Test262Runner {
       );
     } else {
       console.log(chalk.dim("Running in sequential mode"));
+    }
+
+    if (this.incremental) {
+      const stats = this.cache.getStats();
+      console.log(
+        chalk.cyan(
+          `Incremental mode: ${stats.totalCached} cached results available`
+        )
+      );
+      if (this.runtimeChanged) {
+        console.log(chalk.yellow("Runtime changed - all tests will re-run"));
+      }
     }
 
     console.log(chalk.dim("Press Ctrl+C to stop at any time"));
@@ -306,6 +328,11 @@ class Test262Runner {
       this.tracker.recordResult(testFile, "skipped", result.reason);
     }
 
+    // Record to cache for incremental testing
+    if (this.incremental) {
+      this.cache.recordResult(testFile, result.status, result.reason);
+    }
+
     const relativePath = path.relative(TEST262_DIR, testFile);
     this.results.push({
       file: relativePath,
@@ -347,19 +374,81 @@ class Test262Runner {
 
     const testFiles = findTestFiles(includePattern);
 
+    // Initialize incremental cache if enabled
+    let testsToRun = testFiles;
+    if (this.incremental && !this.force) {
+      this.cache.load();
+      this.runtimeChanged = this.cache.hasRuntimeChanged(RUNTIME_EXECUTABLE);
+
+      // Prune stale entries from cache
+      this.cache.pruneStaleEntries(testFiles);
+
+      // Filter tests that need to run
+      testsToRun = [];
+      for (const testFile of testFiles) {
+        const { needsRun, cachedResult } = this.cache.checkTest(
+          testFile,
+          this.runtimeChanged
+        );
+
+        if (needsRun) {
+          testsToRun.push(testFile);
+        } else {
+          // Use cached result
+          this.cached++;
+          if (cachedResult.status === "passed") {
+            this.passed++;
+          } else if (cachedResult.status === "failed") {
+            this.failed++;
+          } else if (cachedResult.status === "skipped") {
+            this.skipped++;
+          }
+
+          this.tracker.recordResult(
+            testFile,
+            cachedResult.status,
+            cachedResult.reason
+          );
+
+          const relativePath = path.relative(TEST262_DIR, testFile);
+          this.results.push({
+            file: relativePath,
+            ...cachedResult,
+            cached: true,
+          });
+        }
+      }
+    }
+
     this.showHeader(testFiles.length);
+
+    if (this.incremental && !this.force) {
+      console.log(
+        chalk.cyan(
+          `Running ${testsToRun.length} tests (${this.cached} cached)`
+        )
+      );
+      console.log();
+    }
 
     // Wait a moment before starting
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    if (this.sequential) {
-      await this.runSequential(testFiles);
-    } else {
-      await this.runParallel(testFiles);
+    if (testsToRun.length > 0) {
+      if (this.sequential) {
+        await this.runSequential(testsToRun);
+      } else {
+        await this.runParallel(testsToRun);
+      }
     }
 
     // Add a newline to finish the status line
     console.log();
+
+    // Save cache if incremental mode is enabled
+    if (this.incremental) {
+      this.cache.save();
+    }
 
     // Wait a moment before showing summary
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -382,6 +471,9 @@ class Test262Runner {
       console.log(`Passed: ${this.passed}`);
       console.log(`Failed: ${this.failed}`);
       console.log(`Skipped: ${this.skipped}`);
+      if (this.incremental && this.cached > 0) {
+        console.log(`Cached: ${this.cached}`);
+      }
       console.log(`Total: ${total}`);
       console.log(`Pass Rate: ${passRate}%`);
       console.log(`Runtime: ${runtime}s`);
@@ -413,10 +505,17 @@ class Test262Runner {
       console.log(chalk.dim(`Workers:  ${this.workerCount}`));
     }
 
+    if (this.incremental && this.cached > 0) {
+      console.log(chalk.cyan(`Cached:   ${this.cached.toString().padStart(6)}`));
+    }
+
     console.log();
     console.log(`Passed: ${this.passed}`);
     console.log(`Failed: ${this.failed}`);
     console.log(`Skipped: ${this.skipped}`);
+    if (this.incremental && this.cached > 0) {
+      console.log(`Cached: ${this.cached}`);
+    }
     console.log(`Total: ${total}`);
     console.log(`Pass Rate: ${passRate}%`);
 
@@ -481,6 +580,9 @@ function parseArgs() {
     singleTest: null,
     workers: DEFAULT_WORKER_COUNT,
     sequential: false,
+    incremental: false,
+    force: false,
+    clearCache: false,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -496,6 +598,12 @@ function parseArgs() {
       i++;
     } else if (args[i] === "--sequential" || args[i] === "-s") {
       options.sequential = true;
+    } else if (args[i] === "--incremental" || args[i] === "-i") {
+      options.incremental = true;
+    } else if (args[i] === "--force" || args[i] === "-f") {
+      options.force = true;
+    } else if (args[i] === "--clear-cache") {
+      options.clearCache = true;
     } else if (args[i] === "--help" || args[i] === "-h") {
       console.log(`
 Test262 Runner for Rift
@@ -506,12 +614,17 @@ Options:
   --include <pattern>   Only run tests matching pattern
   --workers <count>     Number of parallel workers (default: ${DEFAULT_WORKER_COUNT})
   --sequential, -s      Run tests sequentially (no parallelism)
+  --incremental, -i     Skip unchanged tests (uses cached results)
+  --force, -f           Force re-run all tests (ignores cache)
+  --clear-cache         Clear the test cache and exit
   --help, -h            Show this help message
 
 Examples:
   node test262-runner.js                           # Run all tests in parallel
   node test262-runner.js --workers 4               # Run with 4 workers
   node test262-runner.js --sequential              # Run sequentially
+  node test262-runner.js --incremental             # Skip unchanged tests
+  node test262-runner.js -i --force                # Re-run all and update cache
   node test262-runner.js --include "Array"         # Run only Array tests
   node test262-runner.js test/language/expressions/addition/test.js  # Run single test
 `);
@@ -526,9 +639,18 @@ Examples:
 
 // Run the test suite
 const options = parseArgs();
+
+// Handle --clear-cache option
+if (options.clearCache) {
+  Test262Cache.clear();
+  process.exit(0);
+}
+
 const runner = new Test262Runner({
   workers: options.workers,
   sequential: options.sequential,
+  incremental: options.incremental,
+  force: options.force,
 });
 
 if (options.singleTest) {
