@@ -11,12 +11,9 @@ void TypeError::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFa
 }
 
 void TypeError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    // Set default properties
-    prototype->setProperty("name", Value("TypeError"));
-    prototype->setProperty("message", Value(""));
-
-    // Add TypeError.prototype methods using GC-managed function creation
-    prototype->setProperty("toString", Value(factory->createJSFunction(TypeError::toString)));
+    RIFT_PROPERTY(prototype, "name", Value("TypeError"));
+    RIFT_PROPERTY(prototype, "message", Value(""));
+    RIFT_METHOD(prototype, "toString", TypeError::toString);
 }
 
 Value TypeError::constructor(const std::vector<Value>& args) {

@@ -15,20 +15,17 @@ namespace rift::builtins {
 using rift::core::CallContext;
 
 void Object::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    // Add Object static methods
-    constructor->setProperty("keys", Value(factory->createJSFunction(Object::keys)));
-    constructor->setProperty("values", Value(factory->createJSFunction(Object::values)));
-    constructor->setProperty("entries", Value(factory->createJSFunction(Object::entries)));
-    constructor->setProperty("defineProperty", Value(factory->createJSFunction(Object::defineProperty)));
-    constructor->setProperty("getOwnPropertyDescriptor", Value(factory->createJSFunction(Object::getOwnPropertyDescriptor)));
+    RIFT_STATIC_METHOD(constructor, "keys", Object::keys);
+    RIFT_STATIC_METHOD(constructor, "values", Object::values);
+    RIFT_STATIC_METHOD(constructor, "entries", Object::entries);
+    RIFT_STATIC_METHOD(constructor, "defineProperty", Object::defineProperty);
+    RIFT_STATIC_METHOD(constructor, "getOwnPropertyDescriptor", Object::getOwnPropertyDescriptor);
 }
 
 void Object::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    // Add Object.prototype methods
-    prototype->setProperty("toString", Value(factory->createJSFunction(Object::toString)));
-    prototype->setProperty("valueOf", Value(factory->createJSFunction(Object::valueOf)));
-    prototype->setProperty("hasOwnProperty",
-                           Value(factory->createJSFunction(Object::hasOwnProperty)));
+    RIFT_METHOD(prototype, "toString", Object::toString);
+    RIFT_METHOD(prototype, "valueOf", Object::valueOf);
+    RIFT_METHOD(prototype, "hasOwnProperty", Object::hasOwnProperty);
 }
 
 Value Object::constructor(const CallContext& ctx, const std::vector<Value>& args) {

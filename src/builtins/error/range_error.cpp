@@ -11,12 +11,9 @@ void RangeError::setupStaticMethods(JSObject* constructor, rift::memory::ObjectF
 }
 
 void RangeError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    // Set default properties
-    prototype->setProperty("name", Value("RangeError"));
-    prototype->setProperty("message", Value(""));
-
-    // Add RangeError.prototype methods using GC-managed function creation
-    prototype->setProperty("toString", Value(factory->createJSFunction(RangeError::toString)));
+    RIFT_PROPERTY(prototype, "name", Value("RangeError"));
+    RIFT_PROPERTY(prototype, "message", Value(""));
+    RIFT_METHOD(prototype, "toString", RangeError::toString);
 }
 
 Value RangeError::constructor(const std::vector<Value>& args) {

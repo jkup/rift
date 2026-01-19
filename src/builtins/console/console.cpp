@@ -1,18 +1,18 @@
 #include "rift/builtins/console/console.h"
 
+#include "rift/builtins/builtin_base.h"  // For RIFT_METHOD macro
+
 namespace rift::builtins {
 
 JSObject* Console::create(rift::memory::ObjectFactory* factory) {
-    // Create console object using GC-managed creation
     auto* console = factory->createJSObject();
 
-    // Add console methods using GC-managed function creation
-    console->setProperty("log", Value(factory->createJSFunction(log)));
-    console->setProperty("error", Value(factory->createJSFunction(error)));
-    console->setProperty("warn", Value(factory->createJSFunction(warn)));
-    console->setProperty("info", Value(factory->createJSFunction(info)));
+    RIFT_METHOD(console, "log", log);
+    RIFT_METHOD(console, "error", error);
+    RIFT_METHOD(console, "warn", warn);
+    RIFT_METHOD(console, "info", info);
 
-    return console;  // Return raw pointer
+    return console;
 }
 
 Value Console::log(const CallContext& ctx, const std::vector<Value>& args) {

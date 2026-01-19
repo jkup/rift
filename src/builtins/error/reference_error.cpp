@@ -11,12 +11,9 @@ void ReferenceError::setupStaticMethods(JSObject* constructor, rift::memory::Obj
 }
 
 void ReferenceError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    // Set default properties
-    prototype->setProperty("name", Value("ReferenceError"));
-    prototype->setProperty("message", Value(""));
-
-    // Add ReferenceError.prototype methods using GC-managed function creation
-    prototype->setProperty("toString", Value(factory->createJSFunction(ReferenceError::toString)));
+    RIFT_PROPERTY(prototype, "name", Value("ReferenceError"));
+    RIFT_PROPERTY(prototype, "message", Value(""));
+    RIFT_METHOD(prototype, "toString", ReferenceError::toString);
 }
 
 Value ReferenceError::constructor(const std::vector<Value>& args) {

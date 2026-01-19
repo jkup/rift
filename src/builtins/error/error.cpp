@@ -16,11 +16,11 @@ void Error::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactor
 
 void Error::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // Set default properties
-    prototype->setProperty("name", Value("Error"));
-    prototype->setProperty("message", Value(""));
+    RIFT_PROPERTY(prototype, "name", Value("Error"));
+    RIFT_PROPERTY(prototype, "message", Value(""));
 
-    // Add Error.prototype methods using GC-managed function creation
-    prototype->setProperty("toString", Value(factory->createJSFunction(Error::toString)));
+    // Add Error.prototype methods
+    RIFT_METHOD(prototype, "toString", Error::toString);
 }
 
 Value Error::constructor(const CallContext& ctx, const std::vector<Value>& args) {

@@ -26,31 +26,30 @@ static constexpr double EPSILON = 2.220446049250313e-16;        // 2^-52
 
 void Number::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Number static properties (20.1.2)
-    constructor->setProperty("NaN", Value(std::numeric_limits<double>::quiet_NaN()));
-    constructor->setProperty("POSITIVE_INFINITY", Value(std::numeric_limits<double>::infinity()));
-    constructor->setProperty("NEGATIVE_INFINITY", Value(-std::numeric_limits<double>::infinity()));
-    constructor->setProperty("MAX_VALUE", Value(MAX_VALUE));
-    constructor->setProperty("MIN_VALUE", Value(MIN_VALUE));
-    constructor->setProperty("MAX_SAFE_INTEGER", Value(MAX_SAFE_INTEGER));
-    constructor->setProperty("MIN_SAFE_INTEGER", Value(MIN_SAFE_INTEGER));
-    constructor->setProperty("EPSILON", Value(EPSILON));
-    
+    RIFT_PROPERTY(constructor, "NaN", Value(std::numeric_limits<double>::quiet_NaN()));
+    RIFT_PROPERTY(constructor, "POSITIVE_INFINITY", Value(std::numeric_limits<double>::infinity()));
+    RIFT_PROPERTY(constructor, "NEGATIVE_INFINITY", Value(-std::numeric_limits<double>::infinity()));
+    RIFT_PROPERTY(constructor, "MAX_VALUE", Value(MAX_VALUE));
+    RIFT_PROPERTY(constructor, "MIN_VALUE", Value(MIN_VALUE));
+    RIFT_PROPERTY(constructor, "MAX_SAFE_INTEGER", Value(MAX_SAFE_INTEGER));
+    RIFT_PROPERTY(constructor, "MIN_SAFE_INTEGER", Value(MIN_SAFE_INTEGER));
+    RIFT_PROPERTY(constructor, "EPSILON", Value(EPSILON));
+
     // Number static methods
-    constructor->setProperty("isNaN", Value(factory->createJSFunction(Number::isNaN)));
-    constructor->setProperty("isFinite", Value(factory->createJSFunction(Number::isFinite)));
-    constructor->setProperty("isInteger", Value(factory->createJSFunction(Number::isInteger)));
-    constructor->setProperty("isSafeInteger", Value(factory->createJSFunction(Number::isSafeInteger)));
-    constructor->setProperty("parseFloat", Value(factory->createJSFunction(Number::parseFloat)));
-    constructor->setProperty("parseInt", Value(factory->createJSFunction(Number::parseInt)));
+    RIFT_STATIC_METHOD(constructor, "isNaN", Number::isNaN);
+    RIFT_STATIC_METHOD(constructor, "isFinite", Number::isFinite);
+    RIFT_STATIC_METHOD(constructor, "isInteger", Number::isInteger);
+    RIFT_STATIC_METHOD(constructor, "isSafeInteger", Number::isSafeInteger);
+    RIFT_STATIC_METHOD(constructor, "parseFloat", Number::parseFloat);
+    RIFT_STATIC_METHOD(constructor, "parseInt", Number::parseInt);
 }
 
 void Number::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    // Number.prototype methods (20.1.3)
-    prototype->setProperty("toString", Value(factory->createJSFunction(Number::toString)));
-    prototype->setProperty("valueOf", Value(factory->createJSFunction(Number::valueOf)));
-    prototype->setProperty("toFixed", Value(factory->createJSFunction(Number::toFixed)));
-    prototype->setProperty("toExponential", Value(factory->createJSFunction(Number::toExponential)));
-    prototype->setProperty("toPrecision", Value(factory->createJSFunction(Number::toPrecision)));
+    RIFT_METHOD(prototype, "toString", Number::toString);
+    RIFT_METHOD(prototype, "valueOf", Number::valueOf);
+    RIFT_METHOD(prototype, "toFixed", Number::toFixed);
+    RIFT_METHOD(prototype, "toExponential", Number::toExponential);
+    RIFT_METHOD(prototype, "toPrecision", Number::toPrecision);
 }
 
 // 20.1.1.1 Number ( value ) with call context

@@ -15,9 +15,8 @@ void Boolean::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFact
 }
 
 void Boolean::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    // Add Boolean.prototype methods using GC-managed function creation
-    prototype->setProperty("toString", Value(factory->createJSFunction(Boolean::toString)));
-    prototype->setProperty("valueOf", Value(factory->createJSFunction(Boolean::valueOf)));
+    RIFT_METHOD(prototype, "toString", Boolean::toString);
+    RIFT_METHOD(prototype, "valueOf", Boolean::valueOf);
 }
 
 Value Boolean::constructor(const CallContext& ctx, const std::vector<Value>& args) {

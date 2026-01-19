@@ -26,44 +26,44 @@ namespace rift::builtins {
 // ============================================================================
 
 void Array::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    constructor->setProperty("isArray", Value(factory->createJSFunction(Array::isArray)));
-    constructor->setProperty("from", Value(factory->createJSFunction(Array::from)));
-    constructor->setProperty("of", Value(factory->createJSFunction(Array::of)));
+    RIFT_STATIC_METHOD(constructor, "isArray", Array::isArray);
+    RIFT_STATIC_METHOD(constructor, "from", Array::from);
+    RIFT_STATIC_METHOD(constructor, "of", Array::of);
 }
 
 void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // Mutator methods (array_mutators.cpp)
-    prototype->setProperty("push", Value(factory->createJSFunction(Array::push)));
-    prototype->setProperty("pop", Value(factory->createJSFunction(Array::pop)));
-    prototype->setProperty("shift", Value(factory->createJSFunction(Array::shift)));
-    prototype->setProperty("unshift", Value(factory->createJSFunction(Array::unshift)));
-    prototype->setProperty("splice", Value(factory->createJSFunction(Array::splice)));
-    prototype->setProperty("reverse", Value(factory->createJSFunction(Array::reverse)));
-    prototype->setProperty("sort", Value(factory->createJSFunction(Array::sort)));
+    RIFT_METHOD(prototype, "push", Array::push);
+    RIFT_METHOD(prototype, "pop", Array::pop);
+    RIFT_METHOD(prototype, "shift", Array::shift);
+    RIFT_METHOD(prototype, "unshift", Array::unshift);
+    RIFT_METHOD(prototype, "splice", Array::splice);
+    RIFT_METHOD(prototype, "reverse", Array::reverse);
+    RIFT_METHOD(prototype, "sort", Array::sort);
 
     // Iterator methods (array_iterators.cpp)
-    prototype->setProperty("forEach", Value(factory->createJSFunction(Array::forEach)));
-    prototype->setProperty("map", Value(factory->createJSFunction(Array::map)));
-    prototype->setProperty("filter", Value(factory->createJSFunction(Array::filter)));
-    prototype->setProperty("reduce", Value(factory->createJSFunction(Array::reduce)));
-    prototype->setProperty("reduceRight", Value(factory->createJSFunction(Array::reduceRight)));
-    prototype->setProperty("find", Value(factory->createJSFunction(Array::find)));
-    prototype->setProperty("findIndex", Value(factory->createJSFunction(Array::findIndex)));
-    prototype->setProperty("findLast", Value(factory->createJSFunction(Array::findLast)));
-    prototype->setProperty("findLastIndex", Value(factory->createJSFunction(Array::findLastIndex)));
-    prototype->setProperty("every", Value(factory->createJSFunction(Array::every)));
-    prototype->setProperty("some", Value(factory->createJSFunction(Array::some)));
-    prototype->setProperty("flat", Value(factory->createJSFunction(Array::flat)));
-    prototype->setProperty("flatMap", Value(factory->createJSFunction(Array::flatMap)));
+    RIFT_METHOD(prototype, "forEach", Array::forEach);
+    RIFT_METHOD(prototype, "map", Array::map);
+    RIFT_METHOD(prototype, "filter", Array::filter);
+    RIFT_METHOD(prototype, "reduce", Array::reduce);
+    RIFT_METHOD(prototype, "reduceRight", Array::reduceRight);
+    RIFT_METHOD(prototype, "find", Array::find);
+    RIFT_METHOD(prototype, "findIndex", Array::findIndex);
+    RIFT_METHOD(prototype, "findLast", Array::findLast);
+    RIFT_METHOD(prototype, "findLastIndex", Array::findLastIndex);
+    RIFT_METHOD(prototype, "every", Array::every);
+    RIFT_METHOD(prototype, "some", Array::some);
+    RIFT_METHOD(prototype, "flat", Array::flat);
+    RIFT_METHOD(prototype, "flatMap", Array::flatMap);
 
     // Accessor methods (array_accessors.cpp)
-    prototype->setProperty("indexOf", Value(factory->createJSFunction(Array::indexOf)));
-    prototype->setProperty("lastIndexOf", Value(factory->createJSFunction(Array::lastIndexOf)));
-    prototype->setProperty("includes", Value(factory->createJSFunction(Array::includes)));
-    prototype->setProperty("slice", Value(factory->createJSFunction(Array::slice)));
-    prototype->setProperty("concat", Value(factory->createJSFunction(Array::concat)));
-    prototype->setProperty("join", Value(factory->createJSFunction(Array::join)));
-    prototype->setProperty("toString", Value(factory->createJSFunction(Array::toString)));
+    RIFT_METHOD(prototype, "indexOf", Array::indexOf);
+    RIFT_METHOD(prototype, "lastIndexOf", Array::lastIndexOf);
+    RIFT_METHOD(prototype, "includes", Array::includes);
+    RIFT_METHOD(prototype, "slice", Array::slice);
+    RIFT_METHOD(prototype, "concat", Array::concat);
+    RIFT_METHOD(prototype, "join", Array::join);
+    RIFT_METHOD(prototype, "toString", Array::toString);
 }
 
 // ============================================================================
