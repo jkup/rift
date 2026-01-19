@@ -315,8 +315,8 @@ Value StatementEvaluator::evaluateThrowStatement(std::shared_ptr<ASTNode> node,
     // Evaluate the expression to throw
     Value thrownValue = engine->evaluate(node->children[0], env);
 
-    // Throw the JavaScript exception with the actual value
-    throw JavaScriptException(thrownValue);
+    // Throw the JavaScript exception with the actual value and source location
+    throw JavaScriptException(thrownValue, node->line, node->column);
 }
 
 Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> node,

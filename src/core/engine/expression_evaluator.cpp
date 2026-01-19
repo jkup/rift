@@ -290,7 +290,8 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
         auto* func =
             dynamic_cast<JSFunction*>(callee.getObject());  // Use dynamic_cast for raw pointers
         if(!func) {
-            throw JavaScriptException(Value("TypeError: callee is not a function"));
+            throw JavaScriptException(Value("TypeError: callee is not a function"),
+                                      node->line, node->column);
         }
         rift::core::CallContext callContext(
             rift::core::CallType::Function,
@@ -299,7 +300,8 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
     }
 
     // Not a function type - throw TypeError per ECMAScript spec
-    throw JavaScriptException(Value("TypeError: " + callee.toString() + " is not a function"));
+    throw JavaScriptException(Value("TypeError: " + callee.toString() + " is not a function"),
+                              node->line, node->column);
 }
 
 Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> node,
@@ -491,13 +493,15 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
     // Check if constructor is a function
     if(!constructor.isFunction()) {
         throw JavaScriptException(
-            Value("TypeError: " + constructor.toString() + " is not a constructor"));
+            Value("TypeError: " + constructor.toString() + " is not a constructor"),
+            node->line, node->column);
     }
 
     auto* constructorFunc =
         dynamic_cast<JSFunction*>(constructor.getObject());  // Use dynamic_cast for raw pointers
     if(!constructorFunc) {
-        throw JavaScriptException(Value("TypeError: constructor is not a function"));
+        throw JavaScriptException(Value("TypeError: constructor is not a function"),
+                                  node->line, node->column);
     }
 
     // Create a new object that will be the 'this' context for the constructor
