@@ -32,13 +32,13 @@ class ObjectFactory {
     // Create a JS function - now returns raw pointer
     rift::runtime::JSFunction* createJSFunction(
         std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func) {
-        return object_manager_->createJSFunction(func);
+        return object_manager_->createJSFunction(std::move(func));
     }
 
     // Overload for legacy-style functions without CallContext
     rift::runtime::JSFunction* createJSFunction(
         std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func) {
-        return object_manager_->createJSFunction(func);
+        return object_manager_->createJSFunction(std::move(func));
     }
 
     // Generic object creation (for future extensibility) - now returns raw pointer

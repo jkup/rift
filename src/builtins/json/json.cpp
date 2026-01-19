@@ -98,7 +98,7 @@ Value JSON::stringify(const std::vector<Value>& args) {
 
     try {
         std::string result = stringifyValue(args[0]);
-        return Value(result);
+        return Value(std::move(result));
     } catch(const std::exception& e) {
         // JSON.stringify returns undefined for unstringifiable values
         return Value::undefined();
@@ -274,7 +274,7 @@ Value JSON::parseString(const std::string& json, size_t& pos) {
 
         if(ch == '"') {
             pos++;  // Skip closing quote
-            return Value(result);
+            return Value(std::move(result));
         } else if(ch == '\\') {
             pos++;
             if(pos >= json.length()) {

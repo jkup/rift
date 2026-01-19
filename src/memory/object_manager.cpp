@@ -37,9 +37,9 @@ rift::runtime::JSFunction* ObjectManager::createJSFunction(
     // Disable GC during object creation - automatically re-enabled when disabler goes out of scope
     GCDisabler disabler(gc_.get());
     
-    rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(func);
+    rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(std::move(func));
     gc_->addObject(obj);  // Track the object (GC disabled, won't collect)
-    
+
     return obj;
 }
 
@@ -62,9 +62,9 @@ rift::runtime::JSFunction* ObjectManager::createJSFunction(
         }
         return func(args);
     };
-    rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(wrapper);
+    rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(std::move(wrapper));
     gc_->addObject(obj);  // Track the object (GC disabled, won't collect)
-    
+
     return obj;
 }
 

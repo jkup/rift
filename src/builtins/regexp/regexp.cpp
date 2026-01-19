@@ -181,7 +181,7 @@ Value RegExp::toString(const CallContext& ctx, const std::vector<Value>& args) {
     // Format: /pattern/flags
     std::string result = "/" + data->pattern + "/" + data->flags;
 
-    return Value(result);
+    return Value(std::move(result));
 }
 
 // ===== Helper Methods =====

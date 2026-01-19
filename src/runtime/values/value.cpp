@@ -23,6 +23,9 @@ Value::Value(double n) : type_(ValueType::Number), data_(n) {
 Value::Value(const std::string& s) : type_(ValueType::String), data_(s) {
 }
 
+Value::Value(std::string&& s) : type_(ValueType::String), data_(std::move(s)) {
+}
+
 Value::Value(const char* s) : type_(ValueType::String), data_(std::string(s)) {
 }
 

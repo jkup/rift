@@ -131,7 +131,7 @@ void Array::setArrayLength(JSObject* obj, size_t length) {
 }
 
 JSObject* Array::createArrayObject(rift::memory::ObjectFactory* factory,
-                                   const std::vector<Value>& elements) {
+                                   std::vector<Value> elements) {
     auto* arrayPrototype = getGlobalPrototype();
     auto* arrayObj = factory->createJSObject(arrayPrototype);
 
@@ -244,7 +244,7 @@ Value Array::from(const CallContext& ctx, const std::vector<Value>& args) {
         }
     }
 
-    return Value(createArrayObject(getObjectFactory(), result));
+    return Value(createArrayObject(getObjectFactory(), std::move(result)));
 }
 
 Value Array::of(const CallContext& ctx, const std::vector<Value>& args) {
@@ -254,7 +254,7 @@ Value Array::of(const CallContext& ctx, const std::vector<Value>& args) {
         elements.push_back(args[i]);
     }
 
-    return Value(createArrayObject(getObjectFactory(), elements));
+    return Value(createArrayObject(getObjectFactory(), std::move(elements)));
 }
 
 }  // namespace rift::builtins

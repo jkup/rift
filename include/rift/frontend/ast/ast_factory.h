@@ -28,15 +28,15 @@ class ASTFactory {
                                                          std::shared_ptr<ASTNode> left,
                                                          std::shared_ptr<ASTNode> right) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::BinaryExpression, operator_);
-        node->children.push_back(left);
-        node->children.push_back(right);
+        node->children.push_back(std::move(left));
+        node->children.push_back(std::move(right));
         return node;
     }
 
     static std::shared_ptr<ASTNode> makeUnaryExpression(const std::string& operator_,
                                                         std::shared_ptr<ASTNode> operand) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::UnaryExpression, operator_);
-        node->children.push_back(operand);
+        node->children.push_back(std::move(operand));
         return node;
     }
 
@@ -44,7 +44,7 @@ class ASTFactory {
                                                          std::shared_ptr<ASTNode> operand,
                                                          bool prefix = true) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::UpdateExpression, operator_);
-        node->children.push_back(operand);
+        node->children.push_back(std::move(operand));
         node->metadata = prefix ? "prefix" : "postfix";  // Store prefix/postfix info
         return node;
     }
@@ -52,14 +52,14 @@ class ASTFactory {
     static std::shared_ptr<ASTNode> makeAssignmentExpression(std::shared_ptr<ASTNode> left,
                                                              std::shared_ptr<ASTNode> right) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::AssignmentExpression);
-        node->children.push_back(left);
-        node->children.push_back(right);
+        node->children.push_back(std::move(left));
+        node->children.push_back(std::move(right));
         return node;
     }
 
     static std::shared_ptr<ASTNode> makeCallExpression(std::shared_ptr<ASTNode> callee) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::CallExpression);
-        node->children.push_back(callee);
+        node->children.push_back(std::move(callee));
         return node;
     }
 
@@ -67,8 +67,8 @@ class ASTFactory {
                                                          std::shared_ptr<ASTNode> property,
                                                          bool computed = false) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::MemberExpression);
-        node->children.push_back(object);
-        node->children.push_back(property);
+        node->children.push_back(std::move(object));
+        node->children.push_back(std::move(property));
         if(computed) {
             node->metadata = "computed";
         }
@@ -85,7 +85,7 @@ class ASTFactory {
 
     static std::shared_ptr<ASTNode> makeNewExpression(std::shared_ptr<ASTNode> constructor) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::NewExpression);
-        node->children.push_back(constructor);
+        node->children.push_back(std::move(constructor));
         return node;
     }
 
@@ -96,7 +96,7 @@ class ASTFactory {
 
     static std::shared_ptr<ASTNode> makeExpressionStatement(std::shared_ptr<ASTNode> expression) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::ExpressionStatement);
-        node->children.push_back(expression);
+        node->children.push_back(std::move(expression));
         return node;
     }
 
@@ -108,10 +108,10 @@ class ASTFactory {
         std::shared_ptr<ASTNode> condition, std::shared_ptr<ASTNode> thenStatement,
         std::shared_ptr<ASTNode> elseStatement = nullptr) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::IfStatement);
-        node->children.push_back(condition);
-        node->children.push_back(thenStatement);
+        node->children.push_back(std::move(condition));
+        node->children.push_back(std::move(thenStatement));
         if(elseStatement) {
-            node->children.push_back(elseStatement);
+            node->children.push_back(std::move(elseStatement));
         }
         return node;
     }
@@ -119,16 +119,16 @@ class ASTFactory {
     static std::shared_ptr<ASTNode> makeWhileStatement(std::shared_ptr<ASTNode> condition,
                                                        std::shared_ptr<ASTNode> body) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::WhileStatement);
-        node->children.push_back(condition);
-        node->children.push_back(body);
+        node->children.push_back(std::move(condition));
+        node->children.push_back(std::move(body));
         return node;
     }
 
     static std::shared_ptr<ASTNode> makeDoWhileStatement(std::shared_ptr<ASTNode> body,
                                                          std::shared_ptr<ASTNode> condition) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::DoWhileStatement);
-        node->children.push_back(body);        // body first
-        node->children.push_back(condition);   // condition second
+        node->children.push_back(std::move(body));        // body first
+        node->children.push_back(std::move(condition));   // condition second
         return node;
     }
 
@@ -138,21 +138,21 @@ class ASTFactory {
                                                      std::shared_ptr<ASTNode> body) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::ForStatement);
         if(initialization) {
-            node->children.push_back(initialization);
+            node->children.push_back(std::move(initialization));
         } else {
             node->children.push_back(nullptr);  // Placeholder for empty initialization
         }
         if(condition) {
-            node->children.push_back(condition);
+            node->children.push_back(std::move(condition));
         } else {
             node->children.push_back(nullptr);  // Placeholder for empty condition (infinite loop)
         }
         if(update) {
-            node->children.push_back(update);
+            node->children.push_back(std::move(update));
         } else {
             node->children.push_back(nullptr);  // Placeholder for empty update
         }
-        node->children.push_back(body);
+        node->children.push_back(std::move(body));
         return node;
     }
 
@@ -161,7 +161,7 @@ class ASTFactory {
         const std::string& name, std::shared_ptr<ASTNode> initializer = nullptr) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::VariableDeclaration, name);
         if(initializer) {
-            node->children.push_back(initializer);
+            node->children.push_back(std::move(initializer));
         }
         return node;
     }
@@ -170,7 +170,7 @@ class ASTFactory {
         const std::string& name, std::shared_ptr<ASTNode> initializer = nullptr) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::LetDeclaration, name);
         if(initializer) {
-            node->children.push_back(initializer);
+            node->children.push_back(std::move(initializer));
         }
         return node;
     }
@@ -179,7 +179,7 @@ class ASTFactory {
         const std::string& name, std::shared_ptr<ASTNode> initializer = nullptr) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::ConstDeclaration, name);
         if(initializer) {
-            node->children.push_back(initializer);
+            node->children.push_back(std::move(initializer));
         }
         return node;
     }
@@ -189,23 +189,23 @@ class ASTFactory {
                                                             std::shared_ptr<ASTNode> parameters,
                                                             std::shared_ptr<ASTNode> body) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::FunctionDeclaration, name);
-        node->children.push_back(parameters);  // Parameter list
-        node->children.push_back(body);        // Function body
+        node->children.push_back(std::move(parameters));  // Parameter list
+        node->children.push_back(std::move(body));        // Function body
         return node;
     }
 
     static std::shared_ptr<ASTNode> makeFunctionExpression(std::shared_ptr<ASTNode> parameters,
                                                            std::shared_ptr<ASTNode> body) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::FunctionExpression);
-        node->children.push_back(parameters);  // Parameter list
-        node->children.push_back(body);        // Function body
+        node->children.push_back(std::move(parameters));  // Parameter list
+        node->children.push_back(std::move(body));        // Function body
         return node;
     }
 
     static std::shared_ptr<ASTNode> makeReturnStatement(std::shared_ptr<ASTNode> argument) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::ReturnStatement);
         if(argument) {
-            node->children.push_back(argument);
+            node->children.push_back(std::move(argument));
         }
         return node;
     }
@@ -213,7 +213,7 @@ class ASTFactory {
     static std::shared_ptr<ASTNode> makeThrowStatement(std::shared_ptr<ASTNode> argument) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::ThrowStatement);
         if(argument) {
-            node->children.push_back(argument);
+            node->children.push_back(std::move(argument));
         }
         return node;
     }
@@ -222,12 +222,12 @@ class ASTFactory {
         std::shared_ptr<ASTNode> tryBlock, std::shared_ptr<ASTNode> catchClause = nullptr,
         std::shared_ptr<ASTNode> finallyClause = nullptr) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::TryStatement);
-        node->children.push_back(tryBlock);
+        node->children.push_back(std::move(tryBlock));
         if(catchClause) {
-            node->children.push_back(catchClause);
+            node->children.push_back(std::move(catchClause));
         }
         if(finallyClause) {
-            node->children.push_back(finallyClause);
+            node->children.push_back(std::move(finallyClause));
         }
         return node;
     }
@@ -235,13 +235,13 @@ class ASTFactory {
     static std::shared_ptr<ASTNode> makeCatchClause(const std::string& parameter,
                                                     std::shared_ptr<ASTNode> body) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::CatchClause, parameter);
-        node->children.push_back(body);
+        node->children.push_back(std::move(body));
         return node;
     }
 
     static std::shared_ptr<ASTNode> makeFinallyClause(std::shared_ptr<ASTNode> body) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::FinallyClause);
-        node->children.push_back(body);
+        node->children.push_back(std::move(body));
         return node;
     }
 
@@ -253,7 +253,7 @@ class ASTFactory {
     static void addArgument(std::shared_ptr<ASTNode> callExpression,
                             std::shared_ptr<ASTNode> argument) {
         if(callExpression->type == ASTNodeType::CallExpression) {
-            callExpression->children.push_back(argument);
+            callExpression->children.push_back(std::move(argument));
         }
     }
 
@@ -261,7 +261,7 @@ class ASTFactory {
     static void addNewArgument(std::shared_ptr<ASTNode> newExpression,
                                std::shared_ptr<ASTNode> argument) {
         if(newExpression->type == ASTNodeType::NewExpression) {
-            newExpression->children.push_back(argument);
+            newExpression->children.push_back(std::move(argument));
         }
     }
 
@@ -269,7 +269,7 @@ class ASTFactory {
     static void addArrayElement(std::shared_ptr<ASTNode> arrayLiteral,
                                 std::shared_ptr<ASTNode> element) {
         if(arrayLiteral->type == ASTNodeType::ArrayLiteral) {
-            arrayLiteral->children.push_back(element);
+            arrayLiteral->children.push_back(std::move(element));
         }
     }
 

@@ -106,7 +106,7 @@ class JSFunction : public JSObject {
 
   public:
     JSFunction(std::function<Value(const rift::core::CallContext&, const std::vector<Value>&)> func)
-        : JSObject(), native_function_(func) {
+        : JSObject(), native_function_(std::move(func)) {
     }
 
     Value call(const rift::core::CallContext& callContext, const std::vector<Value>& args) const {

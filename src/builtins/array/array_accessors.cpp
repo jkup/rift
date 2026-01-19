@@ -116,7 +116,7 @@ Value Array::slice(const CallContext& ctx, const std::vector<Value>& args) {
         sliced.push_back(element);
     }
 
-    return Value(createArrayObject(getObjectFactory(), sliced));
+    return Value(createArrayObject(getObjectFactory(), std::move(sliced)));
 }
 
 Value Array::concat(const CallContext& ctx, const std::vector<Value>& args) {
@@ -146,7 +146,7 @@ Value Array::concat(const CallContext& ctx, const std::vector<Value>& args) {
         }
     }
 
-    return Value(createArrayObject(getObjectFactory(), result));
+    return Value(createArrayObject(getObjectFactory(), std::move(result)));
 }
 
 Value Array::join(const CallContext& ctx, const std::vector<Value>& args) {
@@ -175,7 +175,7 @@ Value Array::join(const CallContext& ctx, const std::vector<Value>& args) {
         }
     }
 
-    return Value(result);
+    return Value(std::move(result));
 }
 
 Value Array::toString(const CallContext& ctx, const std::vector<Value>& args) {
@@ -197,7 +197,7 @@ Value Array::toString(const CallContext& ctx, const std::vector<Value>& args) {
         }
     }
 
-    return Value(result);
+    return Value(std::move(result));
 }
 
 }  // namespace rift::builtins

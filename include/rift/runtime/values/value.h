@@ -39,6 +39,7 @@ class Value {
     explicit Value(bool b);
     explicit Value(double n);
     explicit Value(const std::string& s);
+    explicit Value(std::string&& s);  // Move overload
     explicit Value(const char* s);
     explicit Value(JSObject* obj);  // Now takes raw pointer
 
