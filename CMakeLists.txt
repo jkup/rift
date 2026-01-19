@@ -86,6 +86,9 @@ set(BUILTINS_SOURCES
     src/builtins/global/global.cpp
     src/builtins/string/string.cpp
     src/builtins/array/array.cpp
+    src/builtins/array/array_mutators.cpp
+    src/builtins/array/array_iterators.cpp
+    src/builtins/array/array_accessors.cpp
     src/builtins/object/object.cpp
     src/builtins/boolean/boolean.cpp
     src/builtins/number/number.cpp
