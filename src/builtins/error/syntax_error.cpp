@@ -11,12 +11,9 @@ void SyntaxError::setupStaticMethods(JSObject* constructor, rift::memory::Object
 }
 
 void SyntaxError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    // Set default properties
-    prototype->setProperty("name", Value("SyntaxError"));
-    prototype->setProperty("message", Value(""));
-
-    // Add SyntaxError.prototype methods using GC-managed function creation
-    prototype->setProperty("toString", Value(factory->createJSFunction(SyntaxError::toString)));
+    RIFT_PROPERTY(prototype, "name", Value("SyntaxError"));
+    RIFT_PROPERTY(prototype, "message", Value(""));
+    RIFT_METHOD(prototype, "toString", SyntaxError::toString);
 }
 
 Value SyntaxError::constructor(const std::vector<Value>& args) {

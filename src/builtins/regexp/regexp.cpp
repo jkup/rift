@@ -82,10 +82,9 @@ void RegExp::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
 }
 
 void RegExp::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    // Add RegExp.prototype methods using GC-managed function creation
-    prototype->setProperty("test", Value(factory->createJSFunction(RegExp::test)));
-    prototype->setProperty("exec", Value(factory->createJSFunction(RegExp::exec)));
-    prototype->setProperty("toString", Value(factory->createJSFunction(RegExp::toString)));
+    RIFT_METHOD(prototype, "test", RegExp::test);
+    RIFT_METHOD(prototype, "exec", RegExp::exec);
+    RIFT_METHOD(prototype, "toString", RegExp::toString);
 }
 
 // ===== RegExp Constructor =====

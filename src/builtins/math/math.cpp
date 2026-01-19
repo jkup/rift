@@ -4,6 +4,7 @@
 #include <cmath>
 #include <random>
 
+#include "rift/builtins/builtin_base.h"  // For RIFT_METHOD and RIFT_PROPERTY macros
 #include "rift/core/engine/call_context.h"
 
 namespace rift::builtins {
@@ -21,36 +22,35 @@ std::mt19937 Math::gen(Math::rd());
 std::uniform_real_distribution<> Math::dis(0.0, 1.0);
 
 JSObject* Math::create(rift::memory::ObjectFactory* factory) {
-    // Create Math object using GC-managed creation
     auto* math = factory->createJSObject();
 
-    // Add Math constants
-    math->setProperty("PI", Value(M_PI));
-    math->setProperty("E", Value(M_E));
-    math->setProperty("SQRT2", Value(M_SQRT2));
-    math->setProperty("LN2", Value(M_LN2));
-    math->setProperty("LN10", Value(M_LN10));
-    math->setProperty("LOG2E", Value(M_LOG2E));
-    math->setProperty("LOG10E", Value(M_LOG10E));
-    math->setProperty("SQRT1_2", Value(M_SQRT1_2));
+    // Math constants
+    RIFT_PROPERTY(math, "PI", Value(M_PI));
+    RIFT_PROPERTY(math, "E", Value(M_E));
+    RIFT_PROPERTY(math, "SQRT2", Value(M_SQRT2));
+    RIFT_PROPERTY(math, "LN2", Value(M_LN2));
+    RIFT_PROPERTY(math, "LN10", Value(M_LN10));
+    RIFT_PROPERTY(math, "LOG2E", Value(M_LOG2E));
+    RIFT_PROPERTY(math, "LOG10E", Value(M_LOG10E));
+    RIFT_PROPERTY(math, "SQRT1_2", Value(M_SQRT1_2));
 
-    // Add Math methods using GC-managed function creation
-    math->setProperty("abs", Value(factory->createJSFunction(abs)));
-    math->setProperty("floor", Value(factory->createJSFunction(floor)));
-    math->setProperty("ceil", Value(factory->createJSFunction(ceil)));
-    math->setProperty("round", Value(factory->createJSFunction(round)));
-    math->setProperty("max", Value(factory->createJSFunction(max)));
-    math->setProperty("min", Value(factory->createJSFunction(min)));
-    math->setProperty("pow", Value(factory->createJSFunction(pow)));
-    math->setProperty("sqrt", Value(factory->createJSFunction(sqrt)));
-    math->setProperty("random", Value(factory->createJSFunction(random)));
-    math->setProperty("sign", Value(factory->createJSFunction(sign)));
-    math->setProperty("trunc", Value(factory->createJSFunction(trunc)));
-    math->setProperty("sin", Value(factory->createJSFunction(sin)));
-    math->setProperty("cos", Value(factory->createJSFunction(cos)));
-    math->setProperty("tan", Value(factory->createJSFunction(tan)));
+    // Math methods
+    RIFT_METHOD(math, "abs", abs);
+    RIFT_METHOD(math, "floor", floor);
+    RIFT_METHOD(math, "ceil", ceil);
+    RIFT_METHOD(math, "round", round);
+    RIFT_METHOD(math, "max", max);
+    RIFT_METHOD(math, "min", min);
+    RIFT_METHOD(math, "pow", pow);
+    RIFT_METHOD(math, "sqrt", sqrt);
+    RIFT_METHOD(math, "random", random);
+    RIFT_METHOD(math, "sign", sign);
+    RIFT_METHOD(math, "trunc", trunc);
+    RIFT_METHOD(math, "sin", sin);
+    RIFT_METHOD(math, "cos", cos);
+    RIFT_METHOD(math, "tan", tan);
 
-    return math;  // Return raw pointer
+    return math;
 }
 
 double Math::validateAndGetNumber(const std::vector<Value>& args, size_t index) {

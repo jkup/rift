@@ -8,11 +8,36 @@
 #include "../runtime/values/object.h"
 #include "../runtime/values/value.h"
 #include "../core/engine/call_context.h"
-#include <type_traits>
 
 namespace rift::builtins {
 
 using namespace rift::runtime;
+
+// ============================================================================
+// Method Registration Macros
+// ============================================================================
+//
+// These macros simplify the repetitive pattern of registering builtin methods.
+// They must be used within setupStaticMethods() or setupPrototypeMethods()
+// where 'factory' is available as a parameter.
+//
+// Usage:
+//   RIFT_METHOD(prototype, "push", Array::push);
+//   RIFT_STATIC_METHOD(constructor, "isArray", Array::isArray);
+//   RIFT_PROPERTY(constructor, "PI", Value(3.14159));
+//
+
+/// Register an instance method on a prototype object
+#define RIFT_METHOD(obj, name, func) \
+    (obj)->setProperty(name, rift::runtime::Value(factory->createJSFunction(func)))
+
+/// Register a static method on a constructor object
+#define RIFT_STATIC_METHOD(obj, name, func) \
+    (obj)->setProperty(name, rift::runtime::Value(factory->createJSFunction(func)))
+
+/// Register a static property (constant value) on an object
+#define RIFT_PROPERTY(obj, name, value) \
+    (obj)->setProperty(name, value)
 
 /**
  * Base class template for all JavaScript builtin objects.
@@ -98,6 +123,36 @@ class BuiltinBase {
      */
     static rift::memory::ObjectFactory* getObjectFactory() {
         return object_factory_;
+    }
+
+    // ========================================================================
+    // Method Registration Helpers
+    // ========================================================================
+    // Alternative to macros - use these static methods directly if preferred.
+
+    /// Type alias for builtin method signature
+    using MethodFunc = Value (*)(const rift::core::CallContext&, const std::vector<Value>&);
+
+    /**
+     * Register a method on an object (prototype or constructor).
+     * @param obj The object to add the method to
+     * @param name The JavaScript property name for the method
+     * @param func The C++ function implementing the method
+     * @param factory The object factory for creating the JSFunction
+     */
+    static void registerMethod(JSObject* obj, const char* name, MethodFunc func,
+                               rift::memory::ObjectFactory* factory) {
+        obj->setProperty(name, Value(factory->createJSFunction(func)));
+    }
+
+    /**
+     * Register a static property (constant value) on an object.
+     * @param obj The object to add the property to
+     * @param name The JavaScript property name
+     * @param value The value to set
+     */
+    static void registerProperty(JSObject* obj, const char* name, const Value& value) {
+        obj->setProperty(name, value);
     }
 
   private:
