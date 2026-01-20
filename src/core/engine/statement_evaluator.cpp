@@ -1,9 +1,22 @@
+/**
+ * Statement Evaluator - Core Implementation
+ *
+ * This file contains the core statement evaluator functionality including:
+ * - ExceptionGuard RAII class
+ * - Main dispatcher (evaluate)
+ * - Block and expression statements
+ * - Variable declarations (var, let, const)
+ * - Function declarations
+ *
+ * Control flow statements are in statement_evaluator_control_flow.cpp
+ * Exception handling statements are in statement_evaluator_exceptions.cpp
+ */
+
 #include "rift/core/engine/statement_evaluator.h"
 
 #include <iostream>
 
 #include "rift/core/engine/engine.h"
-#include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/runtime/values/object.h"
 
@@ -22,6 +35,7 @@ ExceptionGuard::~ExceptionGuard() {
     }
 }
 
+// Main dispatcher
 Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
                                    Rift* engine) {
     if(!node) {
@@ -75,23 +89,24 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
     }
 }
 
+// Block and expression statements
 Value StatementEvaluator::evaluateBlockStatement(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
     // Check if we need to create a block scope
     bool needsBlockScope = false;
     for(auto& child : node->children) {
-        if(child->type == ASTNodeType::LetDeclaration || 
+        if(child->type == ASTNodeType::LetDeclaration ||
            child->type == ASTNodeType::ConstDeclaration) {
             needsBlockScope = true;
             break;
         }
     }
-    
+
     std::shared_ptr<Environment> blockEnv = env;
     if(needsBlockScope) {
         blockEnv = env->createChild(true);  // Create block scope
     }
-    
+
     Value result = Value::undefined();
     for(auto& child : node->children) {
         result = engine->evaluate(child, blockEnv);
@@ -108,6 +123,7 @@ Value StatementEvaluator::evaluateExpressionStatement(std::shared_ptr<ASTNode> n
     return Value::undefined();
 }
 
+// Variable declarations
 Value StatementEvaluator::evaluateVariableDeclaration(std::shared_ptr<ASTNode> node,
                                                       std::shared_ptr<Environment> env,
                                                       Rift* engine) {
@@ -127,8 +143,7 @@ Value StatementEvaluator::evaluateVariableDeclaration(std::shared_ptr<ASTNode> n
 }
 
 Value StatementEvaluator::evaluateLetDeclaration(std::shared_ptr<ASTNode> node,
-                                                  std::shared_ptr<Environment> env,
-                                                  Rift* engine) {
+                                                 std::shared_ptr<Environment> env, Rift* engine) {
     // Get the variable name
     std::string varName = node->value;
 
@@ -145,8 +160,7 @@ Value StatementEvaluator::evaluateLetDeclaration(std::shared_ptr<ASTNode> node,
 }
 
 Value StatementEvaluator::evaluateConstDeclaration(std::shared_ptr<ASTNode> node,
-                                                    std::shared_ptr<Environment> env,
-                                                    Rift* engine) {
+                                                   std::shared_ptr<Environment> env, Rift* engine) {
     // Get the variable name
     std::string varName = node->value;
 
@@ -164,161 +178,7 @@ Value StatementEvaluator::evaluateConstDeclaration(std::shared_ptr<ASTNode> node
     return value;
 }
 
-Value StatementEvaluator::evaluateIfStatement(std::shared_ptr<ASTNode> node,
-                                              std::shared_ptr<Environment> env, Rift* engine) {
-    if(node->children.size() < 2) {
-        return Value::undefined();
-    }
-
-    // Evaluate the condition
-    Value condition = engine->evaluate(node->children[0], env);
-
-    // If condition is truthy, evaluate the then branch
-    if(condition.toBool()) {
-        return engine->evaluate(node->children[1], env);
-    }
-
-    // If there's an else clause and condition is falsy, evaluate the else branch
-    if(node->children.size() > 2) {
-        return engine->evaluate(node->children[2], env);
-    }
-
-    return Value::undefined();
-}
-
-Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
-                                                 std::shared_ptr<Environment> env, Rift* engine) {
-    if(node->children.size() < 2) {
-        return Value::undefined();
-    }
-
-    Value result = Value::undefined();
-
-    // Keep looping while condition is truthy
-    while(true) {
-        Value condition = engine->evaluate(node->children[0], env);
-        if(!condition.toBool()) {
-            break;
-        }
-        try {
-            result = engine->evaluate(node->children[1], env);
-        } catch(const BreakException&) {
-            break;
-        } catch(const ContinueException&) {
-            // Skip to next iteration
-            continue;
-        }
-    }
-
-    return result;
-}
-
-Value StatementEvaluator::evaluateDoWhileStatement(std::shared_ptr<ASTNode> node,
-                                                   std::shared_ptr<Environment> env, Rift* engine) {
-    if(node->children.size() < 2) {
-        return Value::undefined();
-    }
-
-    Value result = Value::undefined();
-
-    // Execute body at least once, then check condition
-    do {
-        try {
-            result = engine->evaluate(node->children[0], env);  // body is first child
-        } catch(const BreakException&) {
-            break;
-        } catch(const ContinueException&) {
-            // Skip to condition check
-        }
-        
-        // Check condition after body execution
-        Value condition = engine->evaluate(node->children[1], env);  // condition is second child
-        if(!condition.toBool()) {
-            break;
-        }
-    } while(true);
-
-    return result;
-}
-
-Value StatementEvaluator::evaluateForStatement(std::shared_ptr<ASTNode> node,
-                                               std::shared_ptr<Environment> env, Rift* engine) {
-    if(node->children.size() < 4) {
-        return Value::undefined();
-    }
-
-    Value result = Value::undefined();
-
-    // Execute initialization (can be null for empty initialization)
-    if(node->children[0] != nullptr) {
-        engine->evaluate(node->children[0], env);
-    }
-
-    // Keep looping while condition is truthy (or infinitely if no condition)
-    while(true) {
-        // Check condition (if present)
-        if(node->children[1] != nullptr) {
-            Value condition = engine->evaluate(node->children[1], env);
-            if(!condition.toBool()) {
-                break;
-            }
-        }
-        // If no condition, loop infinitely (unless break/return is encountered)
-
-        // Execute body
-        try {
-            result = engine->evaluate(node->children[3], env);
-        } catch(const BreakException&) {
-            break;
-        } catch(const ContinueException&) {
-            // On continue in a for-loop, run the update expression (if any), then go to next
-            // iteration
-            if(node->children[2] != nullptr) {
-                engine->evaluate(node->children[2], env);
-            }
-            continue;
-        }
-
-        // Execute update expression (if present)
-        if(node->children[2] != nullptr) {
-            engine->evaluate(node->children[2], env);
-        }
-    }
-
-    return result;
-}
-
-Value StatementEvaluator::evaluateReturnStatement(std::shared_ptr<ASTNode> node,
-                                                  std::shared_ptr<Environment> env, Rift* engine) {
-    Value returnValue = Value::undefined();
-
-    // If there's a return expression, evaluate it
-    if(!node->children.empty()) {
-        returnValue = engine->evaluate(node->children[0], env);
-    }
-
-    // Throw a special exception to unwind the call stack
-    // This is a simple way to implement return without proper exception handling
-    throw ReturnException(returnValue);
-}
-
-Value StatementEvaluator::evaluateThrowStatement(std::shared_ptr<ASTNode> node,
-                                                 std::shared_ptr<Environment> env, Rift* engine) {
-    if(node->children.size() < 1) {
-        return Value::undefined();
-    }
-
-    // Use RAII guard to properly manage exception handling state
-    // This defers GC collection instead of permanently disabling it
-    ExceptionGuard guard(engine);
-
-    // Evaluate the expression to throw
-    Value thrownValue = engine->evaluate(node->children[0], env);
-
-    // Throw the JavaScript exception with the actual value and source location
-    throw JavaScriptException(thrownValue, node->line, node->column);
-}
-
+// Function declaration
 Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> node,
                                                       std::shared_ptr<Environment> env,
                                                       Rift* engine) {
@@ -341,7 +201,9 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
 
     // Create function object using GC-managed creation
     auto func = engine->getObjectFactory()->createJSFunction(
-        [engine, parameters, body, env](const rift::core::CallContext& callContext, const std::vector<Value>& args) -> Value {
+        [engine, parameters, body,
+         env](const rift::core::CallContext& callContext,
+              const std::vector<Value>& args) -> Value {
             // Create new environment for function execution
             auto funcEnv = std::make_shared<Environment>(env);
 
@@ -370,164 +232,6 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
     env->define(functionName, Value(func));
 
     return Value(func);
-}
-
-Value StatementEvaluator::evaluateTryStatement(std::shared_ptr<ASTNode> node,
-                                               std::shared_ptr<Environment> env, Rift* engine) {
-    if(node->children.size() < 1) {
-        return Value::undefined();
-    }
-
-    // Get try block (first child)
-    auto tryBlock = node->children[0];
-
-    // Get catch clause (second child, if present)
-    std::shared_ptr<ASTNode> catchClause = nullptr;
-    std::shared_ptr<ASTNode> finallyClause = nullptr;
-    if(node->children.size() > 1) {
-        // children: [0]=tryBlock, [1]=catch? or finally?, [2]=finally?
-        // Disambiguate by type
-        if(node->children[1] && node->children[1]->type == ASTNodeType::CatchClause) {
-            catchClause = node->children[1];
-            if(node->children.size() > 2 && node->children[2] &&
-               node->children[2]->type == ASTNodeType::FinallyClause) {
-                finallyClause = node->children[2];
-            }
-        } else if(node->children[1] && node->children[1]->type == ASTNodeType::FinallyClause) {
-            finallyClause = node->children[1];
-        }
-    }
-
-    Value result = Value::undefined();
-
-    bool normalCompletion = false;
-    Value pendingExceptionValue = Value::undefined();
-
-    try {
-        // Execute try block
-        result = engine->evaluate(tryBlock, env);
-        normalCompletion = true;
-    } catch(const JavaScriptException& e) {
-        // Handle JavaScript exceptions (thrown by 'throw' statements)
-        if(catchClause) {
-            result = evaluateCatchClause(catchClause, env, engine, e.getValue());
-            normalCompletion = true;  // caught
-        } else {
-            // Save exception to rethrow after finally
-            pendingExceptionValue = e.getValue();
-        }
-    } catch(const ReturnException& e) {
-        // Return exceptions should not be caught; run finally then rethrow
-        if(finallyClause) {
-            engine->evaluate(finallyClause->children[0], env);
-        }
-        throw;  // rethrow return
-    }
-
-    // Run finally if present
-    if(finallyClause) {
-        engine->evaluate(finallyClause->children[0], env);
-    }
-
-    // If an exception was pending and no catch handled it, rethrow now
-    if(!normalCompletion && !pendingExceptionValue.isUndefined()) {
-        throw JavaScriptException(pendingExceptionValue);
-    }
-
-    return result;
-}
-
-Value StatementEvaluator::evaluateCatchClause(std::shared_ptr<ASTNode> node,
-                                              std::shared_ptr<Environment> env, Rift* engine,
-                                              const Value& caughtValue) {
-    if(node->children.size() < 1) {
-        return Value::undefined();
-    }
-
-    // Get catch parameter name from node value
-    std::string parameterName = node->value;
-
-    // Get catch body (first child)
-    auto catchBody = node->children[0];
-
-    // Create new environment for catch block
-    auto catchEnv = env->createChild();
-
-    // Bind the caught value to the catch parameter
-    catchEnv->define(parameterName, caughtValue);
-
-    // Execute catch body in the new environment
-    return engine->evaluate(catchBody, catchEnv);
-}
-
-Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
-                                                  std::shared_ptr<Environment> env, Rift* engine) {
-    if(node->children.empty()) {
-        return Value::undefined();
-    }
-
-    // First child is the discriminant expression
-    Value discriminant = engine->evaluate(node->children[0], env);
-
-    bool foundMatch = false;
-    bool executeRemaining = false;
-    Value result = Value::undefined();
-
-    // Iterate through all case/default clauses
-    for(size_t i = 1; i < node->children.size(); ++i) {
-        auto clause = node->children[i];
-
-        if(clause->type == ASTNodeType::CaseClause) {
-            if(!foundMatch && !executeRemaining) {
-                // Check if this case matches
-                if(!clause->children.empty()) {
-                    Value testValue = engine->evaluate(clause->children[0], env);
-
-                    // JavaScript switch uses strict equality (===)
-                    if(discriminant.strictEquals(testValue)) {
-                        foundMatch = true;
-                        executeRemaining = true;
-                    }
-                }
-            }
-
-            if(executeRemaining) {
-                // Execute all statements in this case (starting from index 1, since 0 is the test)
-                for(size_t j = 1; j < clause->children.size(); ++j) {
-                    try {
-                        result = engine->evaluate(clause->children[j], env);
-                    } catch(const BreakException&) {
-                        return result;
-                    }
-                }
-            }
-
-        } else if(clause->type == ASTNodeType::DefaultClause) {
-            if(!foundMatch) {
-                foundMatch = true;
-                executeRemaining = true;
-            }
-
-            if(executeRemaining) {
-                // Execute all statements in default clause
-                for(size_t j = 0; j < clause->children.size(); ++j) {
-                    try {
-                        result = engine->evaluate(clause->children[j], env);
-                    } catch(const BreakException&) {
-                        return result;
-                    }
-                }
-            }
-        }
-    }
-
-    return result;
-}
-
-Value StatementEvaluator::evaluateBreakStatement(std::shared_ptr<ASTNode> node,
-                                                 std::shared_ptr<Environment> env, Rift* engine) {
-    // Throw a special exception to break out of loops/switch statements
-    throw BreakException();
 }
 
 }  // namespace rift::core
