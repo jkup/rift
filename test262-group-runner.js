@@ -15,13 +15,17 @@ const GROUPS_CONFIG = "./test262-groups.json";
  * Provides targeted testing and group-based reports
  */
 class Test262GroupRunner {
-  constructor() {
+  constructor(groupId = null) {
     this.groups = this.loadGroups();
     this.tracker = new Test262ResultsTracker();
     this.passed = 0;
     this.failed = 0;
     this.skipped = 0;
     this.startTime = Date.now();
+    // Use unique temp file per runner instance to enable parallel execution
+    this.tempFile = groupId
+      ? `/tmp/test262_temp_${groupId}.js`
+      : `/tmp/test262_temp_${process.pid}_${Date.now()}.js`;
   }
 
   loadGroups() {
@@ -241,10 +245,9 @@ class Test262GroupRunner {
 
       combinedCode += test.code;
 
-      const tempFile = "/tmp/test262_temp.js";
-      fs.writeFileSync(tempFile, combinedCode);
+      fs.writeFileSync(this.tempFile, combinedCode);
 
-      const result = execSync(`${RUNTIME_EXECUTABLE} ${tempFile}`, {
+      const result = execSync(`${RUNTIME_EXECUTABLE} ${this.tempFile}`, {
         timeout: 5000,
         encoding: "utf8",
         stdio: ["pipe", "pipe", "pipe"],
@@ -372,52 +375,132 @@ class Test262GroupRunner {
     this.printSummary(groupName);
   }
 
-  async runAllGroups() {
+  /**
+   * Run a single group and return results (used for parallel execution)
+   */
+  async runGroupForParallel(groupName) {
+    const groupRunner = new Test262GroupRunner(groupName);
+    const testFiles = await groupRunner.findTestFilesForGroup(groupName);
+
+    if (testFiles.length === 0) {
+      groupRunner.cleanup();
+      return null;
+    }
+
+    for (const testFile of testFiles) {
+      await groupRunner.runSingleTest(testFile);
+    }
+
+    groupRunner.cleanup();
+
+    const total = groupRunner.passed + groupRunner.failed;
+    const passRate = total > 0 ? (groupRunner.passed / total) * 100 : 0;
+
+    return {
+      name: groupName,
+      passed: groupRunner.passed,
+      failed: groupRunner.failed,
+      skipped: groupRunner.skipped,
+      total: total,
+      passRate: passRate.toFixed(1),
+      testCount: testFiles.length,
+    };
+  }
+
+  /**
+   * Clean up temp file
+   */
+  cleanup() {
+    try {
+      if (fs.existsSync(this.tempFile)) {
+        fs.unlinkSync(this.tempFile);
+      }
+    } catch (e) {
+      // Ignore cleanup errors
+    }
+  }
+
+  async runAllGroups(options = {}) {
+    const { concurrency = 4, sequential = false } = options;
+    const startTime = Date.now();
+
     console.log(chalk.bold.cyan("\n🚀 Test262 All Groups Report\n"));
     console.log(chalk.cyan("═".repeat(70)));
 
-    const groupResults = [];
+    const groupNames = Object.keys(this.groups);
 
-    for (const groupName of Object.keys(this.groups)) {
-      console.log(chalk.bold(`\n📦 Running group: ${groupName}`));
-
-      const groupRunner = new Test262GroupRunner();
-      const testFiles = await groupRunner.findTestFilesForGroup(groupName);
-
-      if (testFiles.length === 0) {
-        console.log(chalk.dim("   No tests found, skipping..."));
-        continue;
-      }
-
-      console.log(chalk.dim(`   Found ${testFiles.length} tests`));
-
-      for (const testFile of testFiles) {
-        await groupRunner.runSingleTest(testFile);
-      }
-
-      const total = groupRunner.passed + groupRunner.failed;
-      const passRate = total > 0 ? (groupRunner.passed / total) * 100 : 0;
-
-      groupResults.push({
-        name: groupName,
-        passed: groupRunner.passed,
-        failed: groupRunner.failed,
-        skipped: groupRunner.skipped,
-        total: total,
-        passRate: passRate.toFixed(1),
-      });
-
-      console.log(
-        chalk.dim(
-          `   ✅ ${groupRunner.passed} ❌ ${
-            groupRunner.failed
-          } (${passRate.toFixed(1)}%)`
-        )
-      );
+    if (sequential) {
+      console.log(chalk.dim(`Running ${groupNames.length} groups sequentially...\n`));
+    } else {
+      console.log(chalk.dim(`Running ${groupNames.length} groups in parallel (concurrency: ${concurrency})...\n`));
     }
 
+    let groupResults = [];
+
+    if (sequential) {
+      // Sequential execution (original behavior)
+      for (const groupName of groupNames) {
+        process.stdout.write(chalk.dim(`  ${groupName}... `));
+        const result = await this.runGroupForParallel(groupName);
+        if (result) {
+          groupResults.push(result);
+          console.log(chalk.green(`✅ ${result.passed}`) + chalk.red(` ❌ ${result.failed}`));
+        } else {
+          console.log(chalk.yellow("skipped (no tests)"));
+        }
+      }
+    } else {
+      // Parallel execution with concurrency limit
+      const runWithConcurrencyLimit = async (items, limit, fn) => {
+        const results = [];
+        const executing = new Set();
+
+        for (const item of items) {
+          const promise = fn(item).then((result) => {
+            executing.delete(promise);
+            return { item, result };
+          });
+          executing.add(promise);
+          results.push(promise);
+
+          if (executing.size >= limit) {
+            await Promise.race(executing);
+          }
+        }
+
+        return Promise.all(results);
+      };
+
+      // Show progress as groups complete
+      let completed = 0;
+      const total = groupNames.length;
+
+      const results = await runWithConcurrencyLimit(
+        groupNames,
+        concurrency,
+        async (groupName) => {
+          const result = await this.runGroupForParallel(groupName);
+          completed++;
+          const progress = ((completed / total) * 100).toFixed(0);
+          process.stdout.write(`\r  Progress: ${completed}/${total} groups (${progress}%)`);
+          return result;
+        }
+      );
+
+      console.log("\n");
+
+      // Collect results
+      for (const { item: groupName, result } of results) {
+        if (result) {
+          groupResults.push(result);
+        }
+      }
+    }
+
+    const totalTime = ((Date.now() - startTime) / 1000).toFixed(1);
+
     // Print summary table
-    console.log(chalk.bold.cyan("\n\n📊 Groups Summary Report\n"));
+    console.log(chalk.bold.cyan("\n📊 Groups Summary Report\n"));
     console.log(chalk.cyan("═".repeat(70)));
 
     console.log(
@@ -450,7 +533,28 @@ class Test262GroupRunner {
         );
       });
 
-    console.log(chalk.cyan("\n" + "═".repeat(70) + "\n"));
+    // Print totals
+    const totalTests = groupResults.reduce((sum, r) => sum + r.total, 0);
+    const totalPassed = groupResults.reduce((sum, r) => sum + r.passed, 0);
+    const totalFailed = groupResults.reduce((sum, r) => sum + r.failed, 0);
+    const totalSkipped = groupResults.reduce((sum, r) => sum + r.skipped, 0);
+    const overallRate = totalTests > 0 ? ((totalPassed / totalTests) * 100).toFixed(1) : "0.0";
+
+    console.log(chalk.dim("─".repeat(70)));
+    console.log(
+      chalk.bold("TOTAL".padEnd(30)) +
+        totalTests.toString().padStart(8) +
+        chalk.green(totalPassed.toString().padStart(8)) +
+        chalk.red(totalFailed.toString().padStart(8)) +
+        chalk.bold(`${overallRate}%`.padStart(10))
+    );
+
+    console.log(chalk.cyan("\n" + "═".repeat(70)));
+    console.log(chalk.dim(`\n⏱️  Total runtime: ${totalTime}s`));
+    if (!sequential) {
+      console.log(chalk.dim(`   (${groupNames.length} groups ran with concurrency ${concurrency})`));
+    }
+    console.log();
   }
 
   printSummary(groupName) {
@@ -479,24 +583,82 @@ class Test262GroupRunner {
 }
 
 // CLI Interface
+function parseArgs(args) {
+  const options = {
+    command: null,
+    groupName: null,
+    concurrency: 4,
+    sequential: false,
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+
+    if (arg === "--list" || arg === "-l") {
+      options.command = "list";
+    } else if (arg === "--all") {
+      options.command = "all";
+    } else if (arg === "--sequential" || arg === "-s") {
+      options.sequential = true;
+    } else if (arg === "--concurrency" || arg === "-c") {
+      const next = args[i + 1];
+      if (next && !next.startsWith("-")) {
+        options.concurrency = parseInt(next, 10) || 4;
+        i++;
+      }
+    } else if (arg.startsWith("--concurrency=")) {
+      options.concurrency = parseInt(arg.split("=")[1], 10) || 4;
+    } else if (!arg.startsWith("-")) {
+      options.groupName = arg;
+    }
+  }
+
+  return options;
+}
+
+function printUsage() {
+  console.log(chalk.bold.cyan("\n📋 Test262 Group Runner\n"));
+  console.log("Usage:");
+  console.log("  node test262-group-runner.js [options] [group-name]");
+  console.log("\nOptions:");
+  console.log("  --list, -l              List available groups");
+  console.log("  --all                   Run all groups");
+  console.log("  --sequential, -s        Run groups sequentially (default: parallel)");
+  console.log("  --concurrency, -c N     Max parallel groups (default: 4)");
+  console.log("\nExamples:");
+  console.log("  npm run test262:group -- core-language");
+  console.log("  npm run test262:group -- --all");
+  console.log("  npm run test262:group -- --all --concurrency 8");
+  console.log("  npm run test262:group -- --all --sequential");
+  console.log();
+}
+
 async function main() {
   const args = process.argv.slice(2);
+  const options = parseArgs(args);
 
-  if (args.length === 0 || args[0] === "--list" || args[0] === "-l") {
+  if (args.length === 0 || options.command === "list") {
     const runner = new Test262GroupRunner();
     runner.listGroups();
     return;
   }
 
-  if (args[0] === "--all") {
+  if (options.command === "all") {
     const runner = new Test262GroupRunner();
-    await runner.runAllGroups();
+    await runner.runAllGroups({
+      concurrency: options.concurrency,
+      sequential: options.sequential,
+    });
     return;
   }
 
-  const groupName = args[0];
-  const runner = new Test262GroupRunner();
-  await runner.runGroup(groupName);
+  if (options.groupName) {
+    const runner = new Test262GroupRunner(options.groupName);
+    await runner.runGroup(options.groupName);
+    return;
+  }
+
+  printUsage();
 }
 
 main().catch((error) => {
