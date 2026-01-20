@@ -1,0 +1,214 @@
+/**
+ * Expression Evaluator - Assignment and Update Methods
+ *
+ * This file contains assignment and update expression evaluation methods:
+ * - Assignment expressions (=)
+ * - Update expressions (++, --)
+ *
+ * Split from expression_evaluator.cpp for better maintainability.
+ */
+
+#include "rift/core/engine/expression_evaluator.h"
+
+#include "rift/core/engine/engine.h"
+#include "rift/core/engine/evaluation_utils.h"
+
+namespace rift::core {
+
+Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode> node,
+                                                        std::shared_ptr<Environment> env,
+                                                        Rift* engine) {
+    if(node->children.size() != 2) {
+        return Value::undefined();
+    }
+
+    auto leftSide = node->children[0];
+    Value rightValue = engine->evaluate(node->children[1], env);
+
+    // Check if left side is a member expression (property assignment)
+    if(leftSide->type == ASTNodeType::MemberExpression) {
+        if(leftSide->children.size() != 2) {
+            return Value::undefined();
+        }
+
+        // Evaluate the object
+        Value object = engine->evaluate(leftSide->children[0], env);
+
+        // Get the property name - handle both dot and bracket notation
+        std::string property;
+        if(leftSide->metadata == "computed") {
+            // Bracket notation - evaluate the property expression and convert to a key string
+            Value propertyValue = engine->evaluate(leftSide->children[1], env);
+            property = EvaluationUtils::toPropertyKeyString(propertyValue);
+        } else {
+            // Dot notation - use the identifier value directly
+            property = leftSide->children[1]->value;
+        }
+
+        // Set the property on the object
+        if(object.isObject() || object.isFunction()) {
+            auto* obj = object.getObject();
+            if(obj) {
+                obj->setProperty(property, rightValue);
+
+                // Special handling for arrays: update length if necessary
+                if(property != "length") {
+                    // Check if this is a numeric index using safe validation
+                    size_t index;
+                    if(EvaluationUtils::isValidArrayIndex(property, index)) {
+                        Value lengthVal = obj->getProperty("length");
+                        if(lengthVal.isNumber()) {
+                            size_t currentLength;
+                            if(EvaluationUtils::toSafeArrayLength(lengthVal.toNumber(), currentLength)) {
+                                if(index >= currentLength) {
+                                    size_t newLength;
+                                    if(EvaluationUtils::safeIncrementIndex(index, newLength)) {
+                                        obj->setProperty("length", Value(static_cast<double>(newLength)));
+                                    }
+                                    // If overflow would occur, don't update length (silent failure per spec)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return rightValue;
+    } else {
+        // Simple variable assignment
+        std::string varName = leftSide->value;
+        env->set(varName, rightValue);
+        return rightValue;
+    }
+}
+
+Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> node,
+                                                    std::shared_ptr<Environment> env,
+                                                    Rift* engine) {
+    if(node->children.size() != 1) {
+        return Value::undefined();
+    }
+
+    auto operandNode = node->children[0];
+    std::string operator_ = node->value;  // "++" or "--"
+    bool isPrefix = (node->metadata == "prefix");
+
+    // Handle variable increment/decrement
+    if(operandNode->type == ASTNodeType::Identifier) {
+        std::string varName = operandNode->value;
+
+        // Get current value
+        Value currentValue = env->get(varName);
+        if(!currentValue.isNumber()) {
+            // Convert to number for increment/decrement
+            currentValue = Value(currentValue.toNumber());
+        }
+
+        // Calculate new value
+        Value newValue;
+        if(operator_ == "++") {
+            newValue = Value(currentValue.toNumber() + 1.0);
+        } else if(operator_ == "--") {
+            newValue = Value(currentValue.toNumber() - 1.0);
+        } else {
+            return Value::undefined();
+        }
+
+        // Update the variable
+        env->set(varName, newValue);
+
+        // Return value depends on prefix vs postfix
+        if(isPrefix) {
+            return newValue;  // ++x returns new value
+        } else {
+            return currentValue;  // x++ returns old value
+        }
+    }
+
+    // Handle member expression increment/decrement (e.g., obj.prop++, arr[i]--)
+    else if(operandNode->type == ASTNodeType::MemberExpression) {
+        if(operandNode->children.size() != 2) {
+            return Value::undefined();
+        }
+
+        // Evaluate the object
+        Value object = engine->evaluate(operandNode->children[0], env);
+
+        // Get the property name - handle both dot and bracket notation
+        std::string property;
+        if(operandNode->metadata == "computed") {
+            // Bracket notation - evaluate the property expression and convert carefully
+            Value propertyValue = engine->evaluate(operandNode->children[1], env);
+            property = EvaluationUtils::toPropertyKeyString(propertyValue);
+        } else {
+            // Dot notation - use the identifier value directly
+            property = operandNode->children[1]->value;
+        }
+
+        // Get current property value
+        Value currentValue = Value::undefined();
+        if(object.isObject() || object.isFunction()) {
+            auto* obj = object.getObject();
+            if(obj) {
+                currentValue = obj->getProperty(property);
+            }
+        }
+
+        if(!currentValue.isNumber()) {
+            // Convert to number for increment/decrement
+            currentValue = Value(currentValue.toNumber());
+        }
+
+        // Calculate new value
+        Value newValue;
+        if(operator_ == "++") {
+            newValue = Value(currentValue.toNumber() + 1.0);
+        } else if(operator_ == "--") {
+            newValue = Value(currentValue.toNumber() - 1.0);
+        } else {
+            return Value::undefined();
+        }
+
+        // Update the property
+        if(object.isObject() || object.isFunction()) {
+            auto* obj = object.getObject();
+            if(obj) {
+                obj->setProperty(property, newValue);
+
+                // Special handling for arrays: update length if necessary
+                if(property != "length") {
+                    // Check if this is a numeric index using safe validation
+                    size_t index;
+                    if(EvaluationUtils::isValidArrayIndex(property, index)) {
+                        Value lengthVal = obj->getProperty("length");
+                        if(lengthVal.isNumber()) {
+                            size_t currentLength;
+                            if(EvaluationUtils::toSafeArrayLength(lengthVal.toNumber(), currentLength)) {
+                                if(index >= currentLength) {
+                                    size_t newLength;
+                                    if(EvaluationUtils::safeIncrementIndex(index, newLength)) {
+                                        obj->setProperty("length", Value(static_cast<double>(newLength)));
+                                    }
+                                    // If overflow would occur, don't update length (silent failure per spec)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Return value depends on prefix vs postfix
+        if(isPrefix) {
+            return newValue;  // ++obj.prop returns new value
+        } else {
+            return currentValue;  // obj.prop++ returns old value
+        }
+    }
+
+    // Invalid operand for increment/decrement
+    return Value::undefined();
+}
+
+}  // namespace rift::core

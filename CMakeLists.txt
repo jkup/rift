@@ -63,6 +63,8 @@ message(STATUS "RE2 is ready")
 set(FRONTEND_SOURCES
     src/frontend/lexer/lexer.cpp
     src/frontend/parser/parser.cpp
+    src/frontend/parser/parser_expressions.cpp
+    src/frontend/parser/parser_statements.cpp
 )
 
 set(RUNTIME_SOURCES
@@ -104,7 +106,11 @@ set(CORE_SOURCES
     src/core/engine/engine.cpp
     src/core/engine/builtin_manager.cpp
     src/core/engine/statement_evaluator.cpp
+    src/core/engine/statement_evaluator_control_flow.cpp
+    src/core/engine/statement_evaluator_exceptions.cpp
     src/core/engine/expression_evaluator.cpp
+    src/core/engine/expression_evaluator_assignment.cpp
+    src/core/engine/expression_evaluator_objects.cpp
     src/core/engine/operation_handler.cpp
 )
 
