@@ -10,10 +10,42 @@
 
 #include "rift/core/engine/expression_evaluator.h"
 
+#include <cmath>
+
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/evaluation_utils.h"
 
 namespace rift::core {
+
+// Helper function to apply compound assignment operation
+static Value applyCompoundOperation(const std::string& operator_, Value currentValue, Value rightValue) {
+    if(operator_ == "=") {
+        return rightValue;
+    }
+
+    // For compound assignments, convert to numbers and apply operation
+    double left = currentValue.toNumber();
+    double right = rightValue.toNumber();
+
+    if(operator_ == "+=") {
+        // Special case: string concatenation for +=
+        if(currentValue.isString() || rightValue.isString()) {
+            return Value(currentValue.toString() + rightValue.toString());
+        }
+        return Value(left + right);
+    } else if(operator_ == "-=") {
+        return Value(left - right);
+    } else if(operator_ == "*=") {
+        return Value(left * right);
+    } else if(operator_ == "/=") {
+        return Value(left / right);
+    } else if(operator_ == "%=") {
+        return Value(std::fmod(left, right));
+    }
+
+    // Fallback for unknown operator
+    return rightValue;
+}
 
 Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode> node,
                                                         std::shared_ptr<Environment> env,
@@ -24,6 +56,7 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
 
     auto leftSide = node->children[0];
     Value rightValue = engine->evaluate(node->children[1], env);
+    std::string operator_ = node->value.empty() ? "=" : node->value;
 
     // Check if left side is a member expression (property assignment)
     if(leftSide->type == ASTNodeType::MemberExpression) {
@@ -49,7 +82,11 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
         if(object.isObject() || object.isFunction()) {
             auto* obj = object.getObject();
             if(obj) {
-                obj->setProperty(property, rightValue);
+                // For compound assignment, get current value and apply operation
+                Value currentValue = obj->getProperty(property);
+                Value newValue = applyCompoundOperation(operator_, currentValue, rightValue);
+
+                obj->setProperty(property, newValue);
 
                 // Special handling for arrays: update length if necessary
                 if(property != "length") {
@@ -71,6 +108,8 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
                         }
                     }
                 }
+
+                return newValue;
             }
         }
 
@@ -78,8 +117,13 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
     } else {
         // Simple variable assignment
         std::string varName = leftSide->value;
-        env->set(varName, rightValue);
-        return rightValue;
+
+        // For compound assignment, get current value and apply operation
+        Value currentValue = env->get(varName);
+        Value newValue = applyCompoundOperation(operator_, currentValue, rightValue);
+
+        env->set(varName, newValue);
+        return newValue;
     }
 }
 

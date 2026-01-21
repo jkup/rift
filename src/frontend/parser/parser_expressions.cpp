@@ -163,6 +163,11 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
                 op_precedence = 3;  // Logical OR (lower than equality!)
                 break;
             case TokenType::Assign:
+            case TokenType::PlusAssign:
+            case TokenType::MinusAssign:
+            case TokenType::MultiplyAssign:
+            case TokenType::DivideAssign:
+            case TokenType::ModuloAssign:
                 op_precedence = 0;  // Assignment lowest precedence
                 is_assignment = true;
                 break;
@@ -179,7 +184,7 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
         auto right = parse_binary_expression(op_precedence + 1);
 
         if(is_assignment) {
-            left = ASTFactory::makeAssignmentExpression(left, right);
+            left = ASTFactory::makeAssignmentExpression(left, right, op.value);
         } else {
             left = ASTFactory::makeBinaryExpression(op.value, left, right);
         }

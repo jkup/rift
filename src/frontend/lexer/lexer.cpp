@@ -461,6 +461,10 @@ Token Lexer::next_token() {
                 advance();
                 return Token(TokenType::Increment, "++", line, column);
             }
+            if(current_char() == '=') {
+                advance();
+                return Token(TokenType::PlusAssign, "+=", line, column);
+            }
             return Token(TokenType::Plus, "+", line, column);
         case '-':
             advance();
@@ -468,12 +472,24 @@ Token Lexer::next_token() {
                 advance();
                 return Token(TokenType::Decrement, "--", line, column);
             }
+            if(current_char() == '=') {
+                advance();
+                return Token(TokenType::MinusAssign, "-=", line, column);
+            }
             return Token(TokenType::Minus, "-", line, column);
         case '*':
             advance();
+            if(current_char() == '=') {
+                advance();
+                return Token(TokenType::MultiplyAssign, "*=", line, column);
+            }
             return Token(TokenType::Multiply, "*", line, column);
         case '%':
             advance();
+            if(current_char() == '=') {
+                advance();
+                return Token(TokenType::ModuloAssign, "%=", line, column);
+            }
             return Token(TokenType::Modulo, "%", line, column);
         case '/':
             if(peek_char() == '/') {
@@ -484,6 +500,10 @@ Token Lexer::next_token() {
                 return next_token();  // Recursively get the next token after the comment
             }
             advance();
+            if(current_char() == '=') {
+                advance();
+                return Token(TokenType::DivideAssign, "/=", line, column);
+            }
             return Token(TokenType::Divide, "/", line, column);
         case '(':
             advance();
