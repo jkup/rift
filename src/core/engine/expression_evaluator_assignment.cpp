@@ -83,8 +83,15 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
             auto* obj = object.getObject();
             if(obj) {
                 // For compound assignment, get current value and apply operation
-                Value currentValue = obj->getProperty(property);
-                Value newValue = applyCompoundOperation(operator_, currentValue, rightValue);
+                Value newValue;
+                if(operator_ == "=") {
+                    // Simple assignment
+                    newValue = rightValue;
+                } else {
+                    // Compound assignment - need current value
+                    Value currentValue = obj->getProperty(property);
+                    newValue = applyCompoundOperation(operator_, currentValue, rightValue);
+                }
 
                 obj->setProperty(property, newValue);
 
@@ -119,8 +126,15 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
         std::string varName = leftSide->value;
 
         // For compound assignment, get current value and apply operation
-        Value currentValue = env->get(varName);
-        Value newValue = applyCompoundOperation(operator_, currentValue, rightValue);
+        Value newValue;
+        if(operator_ == "=") {
+            // Simple assignment - no need to get current value
+            newValue = rightValue;
+        } else {
+            // Compound assignment - need current value
+            Value currentValue = env->get(varName);
+            newValue = applyCompoundOperation(operator_, currentValue, rightValue);
+        }
 
         env->set(varName, newValue);
         return newValue;
