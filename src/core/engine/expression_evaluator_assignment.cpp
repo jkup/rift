@@ -41,6 +41,8 @@ static Value applyCompoundOperation(const std::string& operator_, Value currentV
         return Value(left / right);
     } else if(operator_ == "%=") {
         return Value(std::fmod(left, right));
+    } else if(operator_ == "**=") {
+        return Value(std::pow(left, right));
     }
 
     // Fallback for unknown operator

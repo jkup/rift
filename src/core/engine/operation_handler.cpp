@@ -19,6 +19,8 @@ Value OperationHandler::performBinaryOperation(const std::string& op, const Valu
         return Value(left.toNumber() / right.toNumber());
     if(op == "%")
         return Value(std::fmod(left.toNumber(), right.toNumber()));
+    if(op == "**")
+        return Value(std::pow(left.toNumber(), right.toNumber()));
     if(op == "==") {
         // JavaScript loose equality with type coercion
         // If both are the same type, compare directly

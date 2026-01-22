@@ -51,12 +51,14 @@ enum class TokenType {
     Multiply,
     Divide,
     Modulo,
+    Exponent,        // **
     Assign,
     PlusAssign,      // +=
     MinusAssign,     // -=
     MultiplyAssign,  // *=
     DivideAssign,    // /=
     ModuloAssign,    // %=
+    ExponentAssign,  // **=
     Increment,
     Decrement,
     Equal,
