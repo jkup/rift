@@ -50,8 +50,9 @@ class ASTFactory {
     }
 
     static std::shared_ptr<ASTNode> makeAssignmentExpression(std::shared_ptr<ASTNode> left,
-                                                             std::shared_ptr<ASTNode> right) {
-        auto node = std::make_shared<ASTNode>(ASTNodeType::AssignmentExpression);
+                                                             std::shared_ptr<ASTNode> right,
+                                                             const std::string& operator_ = "=") {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::AssignmentExpression, operator_);
         node->children.push_back(std::move(left));
         node->children.push_back(std::move(right));
         return node;
