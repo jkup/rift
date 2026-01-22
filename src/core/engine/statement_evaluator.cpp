@@ -216,6 +216,15 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
                 funcEnv->define(parameters[i], argValue);
             }
 
+            // Create 'arguments' object (array-like object with all passed arguments)
+            auto* argsFactory = engine->getObjectFactory();
+            auto* argumentsObj = argsFactory->createJSObject();
+            for(size_t i = 0; i < args.size(); ++i) {
+                argumentsObj->setProperty(std::to_string(i), args[i]);
+            }
+            argumentsObj->setProperty("length", Value(static_cast<double>(args.size())));
+            funcEnv->define("arguments", Value(argumentsObj));
+
             // Execute function body
             try {
                 return engine->evaluate(body, funcEnv);
