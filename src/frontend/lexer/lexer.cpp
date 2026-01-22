@@ -479,6 +479,14 @@ Token Lexer::next_token() {
             return Token(TokenType::Minus, "-", line, column);
         case '*':
             advance();
+            if(current_char() == '*') {
+                advance();
+                if(current_char() == '=') {
+                    advance();
+                    return Token(TokenType::ExponentAssign, "**=", line, column);
+                }
+                return Token(TokenType::Exponent, "**", line, column);
+            }
             if(current_char() == '=') {
                 advance();
                 return Token(TokenType::MultiplyAssign, "*=", line, column);

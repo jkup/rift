@@ -133,6 +133,7 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
         Token& op = current_token();
         int op_precedence = 0;
         bool is_assignment = false;
+        bool is_right_associative = false;
 
         switch(op.type) {
             case TokenType::Plus:
@@ -143,6 +144,10 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::Divide:
             case TokenType::Modulo:
                 op_precedence = 12;  // Multiplicative operators
+                break;
+            case TokenType::Exponent:
+                op_precedence = 13;  // Exponentiation (higher than multiply)
+                is_right_associative = true;  // ** is right-associative
                 break;
             case TokenType::Equal:
             case TokenType::EqualStrict:
@@ -168,6 +173,7 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::MultiplyAssign:
             case TokenType::DivideAssign:
             case TokenType::ModuloAssign:
+            case TokenType::ExponentAssign:
                 op_precedence = 0;  // Assignment lowest precedence
                 is_assignment = true;
                 break;
@@ -181,7 +187,9 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
         }
 
         current++;  // consume operator
-        auto right = parse_binary_expression(op_precedence + 1);
+        // Right-associative operators use op_precedence, left-associative use op_precedence + 1
+        int next_precedence = is_right_associative ? op_precedence : op_precedence + 1;
+        auto right = parse_binary_expression(next_precedence);
 
         if(is_assignment) {
             left = ASTFactory::makeAssignmentExpression(left, right, op.value);
