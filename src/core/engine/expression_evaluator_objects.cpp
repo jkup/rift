@@ -233,6 +233,15 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
                 func_env->define(parameters[i], arg_value);
             }
 
+            // Create 'arguments' object (array-like object with all passed arguments)
+            auto* args_factory = engine->getObjectFactory();
+            auto* arguments_obj = args_factory->createJSObject();
+            for(size_t i = 0; i < args.size(); ++i) {
+                arguments_obj->setProperty(std::to_string(i), args[i]);
+            }
+            arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
+            func_env->define("arguments", Value(arguments_obj));
+
             // Execute function body
             try {
                 return engine->evaluate(body, func_env);
