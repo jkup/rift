@@ -27,6 +27,7 @@ enum class ASTNodeType {
     WhileStatement,
     DoWhileStatement,
     ForStatement,
+    ForInStatement,
     SwitchStatement,
     CaseClause,
     DefaultClause,

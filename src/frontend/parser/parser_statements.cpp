@@ -126,18 +126,85 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
 
     consume(TokenType::LeftParen);  // consume '('
 
-    // Parse the initialization (can be variable declaration or assignment expression or empty)
-    std::shared_ptr<ASTNode> initialization = nullptr;
+    // Check for for-in: for (var x in obj) or for (x in obj)
+    std::shared_ptr<ASTNode> left = nullptr;
+    bool is_for_in = false;
+
     if(current_token().type == TokenType::Var || current_token().type == TokenType::Let ||
        current_token().type == TokenType::Const) {
-        // Variable declaration: for (var i = 0; ...)
-        initialization = parse_variable_declaration();
+        // Save position to potentially backtrack
+        TokenType decl_type = current_token().type;
+        current++;  // consume var/let/const
+
+        if(current_token().type == TokenType::Identifier) {
+            std::string var_name = current_token().value;
+            current++;  // consume identifier
+
+            // Check if this is for-in (no initializer, followed by 'in')
+            if(current_token().type == TokenType::In) {
+                // This is for-in: for (var x in obj)
+                is_for_in = true;
+                if(decl_type == TokenType::Var) {
+                    left = ASTFactory::makeVariableDeclaration(var_name, nullptr);
+                } else if(decl_type == TokenType::Let) {
+                    left = ASTFactory::makeLetDeclaration(var_name, nullptr);
+                } else {
+                    left = ASTFactory::makeConstDeclaration(var_name, nullptr);
+                }
+                current++;  // consume 'in'
+
+                // Parse the object expression
+                auto right = parse_expression();
+
+                consume(TokenType::RightParen);  // consume ')'
+
+                // Parse the body statement
+                auto body = parse_statement();
+
+                return ASTFactory::makeForInStatement(left, right, body);
+            } else {
+                // Not for-in, backtrack and parse as regular for loop
+                // We need to re-parse the variable declaration properly
+                current -= 2;  // go back to var/let/const
+                left = parse_variable_declaration();
+            }
+        } else {
+            // No identifier after var/let/const - syntax error or edge case
+            current--;  // go back
+            left = parse_variable_declaration();
+        }
+    } else if(current_token().type == TokenType::Identifier) {
+        // Could be for (x in obj) or for (x = 0; ...)
+        std::string var_name = current_token().value;
+        current++;  // consume identifier
+
+        if(current_token().type == TokenType::In) {
+            // This is for-in: for (x in obj)
+            is_for_in = true;
+            left = ASTFactory::makeIdentifier(var_name);
+            current++;  // consume 'in'
+
+            // Parse the object expression
+            auto right = parse_expression();
+
+            consume(TokenType::RightParen);  // consume ')'
+
+            // Parse the body statement
+            auto body = parse_statement();
+
+            return ASTFactory::makeForInStatement(left, right, body);
+        } else {
+            // Not for-in, backtrack and parse as regular for loop expression
+            current--;  // go back to identifier
+            left = parse_expression();
+        }
     } else if(current_token().type != TokenType::Semicolon) {
-        // Assignment expression: for (i = 0; ...)
-        initialization = parse_expression();
+        // Some other expression
+        left = parse_expression();
     }
     // else: empty initialization: for (; ...)
 
+    // Regular for loop
     consume(TokenType::Semicolon);  // consume first ';'
 
     // Parse the condition (optional)
@@ -159,7 +226,7 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
     // Parse the body statement
     auto body = parse_statement();
 
-    return ASTFactory::makeForStatement(initialization, condition, update, body);
+    return ASTFactory::makeForStatement(left, condition, update, body);
 }
 
 std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
