@@ -44,6 +44,7 @@ enum class TokenType {
     Finally,
     New,
     This,
+    In,
 
     // Operators
     Plus,

@@ -409,7 +409,8 @@ Token Lexer::read_identifier() {
         {"continue", TokenType::Continue}, {"throw", TokenType::Throw},
         {"try", TokenType::Try},       {"catch", TokenType::Catch},
         {"finally", TokenType::Finally}, {"new", TokenType::New},
-        {"this", TokenType::This},     {"true", TokenType::Boolean},
+        {"this", TokenType::This},     {"in", TokenType::In},
+        {"true", TokenType::Boolean},
         {"false", TokenType::Boolean}, {"null", TokenType::Null},
         {"undefined", TokenType::Undefined}, {"typeof", TokenType::Typeof},
     };
