@@ -132,11 +132,12 @@ The CI will automatically verify all quality checks on your PR.
   - ✅ Literals: string, number, boolean, null, undefined, object, array
   - ✅ Identifiers: variable access with lexical environments
   - ✅ Operators:
-    - Arithmetic: `+`, `-`, `*`, `/`, `%`
+    - Arithmetic: `+`, `-`, `*`, `/`, `%`, `**` (exponentiation)
     - Comparison: `<`, `>`, `<=`, `>=`, `==`, `!=`, `===`, `!==`
     - Logical: `&&`, `||` with short-circuiting, unary `!`
     - Unary: `+`, `-`, `~`, `typeof`
     - Update: prefix/postfix `++`, `--` on identifiers and member expressions
+    - Compound assignment: `**=` (exponentiation assignment)
   - ✅ Member access: dot (`obj.prop`) and computed (`obj[expr]`)
   - ✅ Function calls: invocation with arguments and correct `this` binding for method calls
   - ✅ Assignment: variable and property assignment
@@ -156,6 +157,7 @@ The CI will automatically verify all quality checks on your PR.
   - ✅ Closures: lexical capture of outer variables
   - ✅ Prototype chain: constructor `prototype` objects and prototype lookups
   - ✅ Garbage collection: mark-sweep with root management
+  - ✅ `arguments` object: array-like object with passed arguments and `length` property
 
 ### ✅ **Built-in Objects**
 
@@ -260,7 +262,6 @@ The CI will automatically verify all quality checks on your PR.
   - ❌ Modules (`import`/`export`)
   - ❌ `for-in`, `for-of`
   - ❌ Optional chaining `?.`, nullish coalescing `??`
-  - ❌ Exponentiation `**`
   - ❌ Bitwise binary operators: `&`, `|`, `^`, `<<`, `>>`, `>>>`
 
 - **Built-in objects/APIs**
