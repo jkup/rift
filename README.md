@@ -137,7 +137,7 @@ The CI will automatically verify all quality checks on your PR.
     - Logical: `&&`, `||` with short-circuiting, unary `!`
     - Unary: `+`, `-`, `~`, `typeof`
     - Update: prefix/postfix `++`, `--` on identifiers and member expressions
-    - Compound assignment: `**=` (exponentiation assignment)
+    - Compound assignment: `+=`, `-=`, `*=`, `/=`, `%=`, `**=`
   - ✅ Member access: dot (`obj.prop`) and computed (`obj[expr]`)
   - ✅ Function calls: invocation with arguments and correct `this` binding for method calls
   - ✅ Assignment: variable and property assignment
