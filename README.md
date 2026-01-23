@@ -135,9 +135,10 @@ The CI will automatically verify all quality checks on your PR.
     - Arithmetic: `+`, `-`, `*`, `/`, `%`, `**` (exponentiation)
     - Comparison: `<`, `>`, `<=`, `>=`, `==`, `!=`, `===`, `!==`
     - Logical: `&&`, `||` with short-circuiting, unary `!`
+    - Bitwise: `&`, `|`, `^`, `~`, `<<`, `>>`, `>>>`
     - Unary: `+`, `-`, `~`, `typeof`
     - Update: prefix/postfix `++`, `--` on identifiers and member expressions
-    - Compound assignment: `+=`, `-=`, `*=`, `/=`, `%=`, `**=`
+    - Compound assignment: `+=`, `-=`, `*=`, `/=`, `%=`, `**=`, `&=`, `|=`, `^=`, `<<=`, `>>=`, `>>>=`
   - ✅ Member access: dot (`obj.prop`) and computed (`obj[expr]`)
   - ✅ Function calls: invocation with arguments and correct `this` binding for method calls
   - ✅ Assignment: variable and property assignment
@@ -262,7 +263,6 @@ The CI will automatically verify all quality checks on your PR.
   - ❌ Modules (`import`/`export`)
   - ❌ `for-in`, `for-of`
   - ❌ Optional chaining `?.`, nullish coalescing `??`
-  - ❌ Bitwise binary operators: `&`, `|`, `^`, `<<`, `>>`, `>>>`
 
 - **Built-in objects/APIs**
   - ❌ Date

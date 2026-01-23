@@ -108,6 +108,42 @@ Value OperationHandler::performBinaryOperation(const std::string& op, const Valu
     if(op == ">=")
         return Value(left.toNumber() >= right.toNumber());
 
+    // Bitwise operators - convert to 32-bit integers
+    if(op == "&") {
+        int32_t leftInt = static_cast<int32_t>(left.toNumber());
+        int32_t rightInt = static_cast<int32_t>(right.toNumber());
+        return Value(static_cast<double>(leftInt & rightInt));
+    }
+    if(op == "|") {
+        int32_t leftInt = static_cast<int32_t>(left.toNumber());
+        int32_t rightInt = static_cast<int32_t>(right.toNumber());
+        return Value(static_cast<double>(leftInt | rightInt));
+    }
+    if(op == "^") {
+        int32_t leftInt = static_cast<int32_t>(left.toNumber());
+        int32_t rightInt = static_cast<int32_t>(right.toNumber());
+        return Value(static_cast<double>(leftInt ^ rightInt));
+    }
+    if(op == "<<") {
+        int32_t leftInt = static_cast<int32_t>(left.toNumber());
+        // Shift amount is masked to 5 bits (0-31) per ECMAScript spec
+        uint32_t shiftAmount = static_cast<uint32_t>(right.toNumber()) & 0x1F;
+        return Value(static_cast<double>(leftInt << shiftAmount));
+    }
+    if(op == ">>") {
+        int32_t leftInt = static_cast<int32_t>(left.toNumber());
+        // Shift amount is masked to 5 bits (0-31) per ECMAScript spec
+        uint32_t shiftAmount = static_cast<uint32_t>(right.toNumber()) & 0x1F;
+        return Value(static_cast<double>(leftInt >> shiftAmount));
+    }
+    if(op == ">>>") {
+        // Unsigned right shift - treat left operand as unsigned
+        uint32_t leftUint = static_cast<uint32_t>(static_cast<int32_t>(left.toNumber()));
+        // Shift amount is masked to 5 bits (0-31) per ECMAScript spec
+        uint32_t shiftAmount = static_cast<uint32_t>(right.toNumber()) & 0x1F;
+        return Value(static_cast<double>(leftUint >> shiftAmount));
+    }
+
     return Value::undefined();
 }
 
