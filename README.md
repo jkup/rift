@@ -147,7 +147,7 @@ The CI will automatically verify all quality checks on your PR.
 
 - **Statements**
   - ✅ Variable declarations: `var`, `let`, `const` with proper block scoping and TDZ
-  - ✅ Control flow: `if`/`else`, `while`, `do-while`, C-style `for (init; cond; update)`
+  - ✅ Control flow: `if`/`else`, `while`, `do-while`, C-style `for (init; cond; update)`, `for-in`
   - ✅ `switch`/`case`/`default` with `break`
   - ✅ `break` and `continue` in loops
   - ✅ Functions: declarations and expressions
@@ -261,7 +261,7 @@ The CI will automatically verify all quality checks on your PR.
   - ❌ Destructuring, spread (`...`), rest parameters
   - ❌ Classes (`class`, `extends`, `super`)
   - ❌ Modules (`import`/`export`)
-  - ❌ `for-in`, `for-of`
+  - ❌ `for-of`
   - ❌ Optional chaining `?.`, nullish coalescing `??`
 
 - **Built-in objects/APIs**

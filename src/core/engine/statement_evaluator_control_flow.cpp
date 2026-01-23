@@ -141,6 +141,88 @@ Value StatementEvaluator::evaluateForStatement(std::shared_ptr<ASTNode> node,
     return result;
 }
 
+Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
+                                                 std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.size() < 3) {
+        return Value::undefined();
+    }
+
+    auto left_node = node->children[0];   // Variable declaration or identifier
+    auto right_node = node->children[1];  // Object to iterate
+    auto body_node = node->children[2];   // Loop body
+
+    Value result = Value::undefined();
+
+    // Evaluate the object to iterate over
+    Value obj_value = engine->evaluate(right_node, env);
+
+    // Get the variable name
+    std::string var_name;
+    bool is_declaration = false;
+
+    if(left_node->type == ASTNodeType::VariableDeclaration ||
+       left_node->type == ASTNodeType::LetDeclaration ||
+       left_node->type == ASTNodeType::ConstDeclaration) {
+        var_name = left_node->value;
+        is_declaration = true;
+        // Declare the variable in the current scope
+        if(left_node->type == ASTNodeType::LetDeclaration) {
+            env->define(var_name, Value::undefined(), VariableType::Let);
+        } else if(left_node->type == ASTNodeType::ConstDeclaration) {
+            // Note: const in for-in is allowed but reassigned each iteration
+            env->define(var_name, Value::undefined(), VariableType::Let);  // Use let semantics
+        } else {
+            env->define(var_name, Value::undefined());
+        }
+    } else if(left_node->type == ASTNodeType::Identifier) {
+        var_name = left_node->value;
+    } else {
+        return Value::undefined();  // Invalid left side
+    }
+
+    // Handle different types
+    if(obj_value.isObject() || obj_value.isFunction()) {
+        auto* obj = obj_value.getObject();
+        if(obj) {
+            // Get all enumerable property names
+            auto keys = obj->getOwnPropertyNames();
+
+            for(const auto& key : keys) {
+                // Assign the key to the loop variable
+                env->set(var_name, Value(key));
+
+                // Execute the body
+                try {
+                    result = engine->evaluate(body_node, env);
+                } catch(const BreakException&) {
+                    break;
+                } catch(const ContinueException&) {
+                    continue;
+                }
+            }
+        }
+    } else if(obj_value.isString()) {
+        // Iterate over string indices
+        std::string str = obj_value.toString();
+        for(size_t i = 0; i < str.length(); i++) {
+            // Assign the index (as string) to the loop variable
+            env->set(var_name, Value(std::to_string(i)));
+
+            // Execute the body
+            try {
+                result = engine->evaluate(body_node, env);
+            } catch(const BreakException&) {
+                break;
+            } catch(const ContinueException&) {
+                continue;
+            }
+        }
+    }
+    // For null, undefined, numbers, booleans - the loop body never executes
+
+    return result;
+}
+
 Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
                                                   std::shared_ptr<Environment> env, Rift* engine) {
     if(node->children.empty()) {
