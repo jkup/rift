@@ -581,9 +581,17 @@ Token Lexer::next_token() {
             return Token(TokenType::LogicalNot, "!", line, column);
         case '<':
             advance();
+            if(current_char() == '=') {
+                advance();
+                return Token(TokenType::LessEqual, "<=", line, column);
+            }
             return Token(TokenType::Less, "<", line, column);
         case '>':
             advance();
+            if(current_char() == '=') {
+                advance();
+                return Token(TokenType::GreaterEqual, ">=", line, column);
+            }
             return Token(TokenType::Greater, ">", line, column);
         case '~':
             advance();

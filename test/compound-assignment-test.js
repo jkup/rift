@@ -148,7 +148,7 @@ if (result !== 15 || ret !== 15) console.log("FAIL: (ret += 5) expected 15, got 
 console.log("Test 17: Compound Assignment in Loop");
 var sum = 0;
 var i = 1;
-while (i < 6) {  // Using < instead of <= due to separate <= bug
+while (i <= 5) {
     sum += i;
     i++;
 }
@@ -159,7 +159,7 @@ if (sum !== 15) console.log("FAIL: sum of 1-5 expected 15, got " + sum);
 console.log("Test 18: Factorial using *=");
 var factorial = 1;
 var n = 1;
-while (n < 6) {  // Using < instead of <= due to separate <= bug
+while (n <= 5) {
     factorial *= n;
     n++;
 }
