@@ -149,6 +149,11 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
                 op_precedence = 13;  // Exponentiation (higher than multiply)
                 is_right_associative = true;  // ** is right-associative
                 break;
+            case TokenType::LeftShift:
+            case TokenType::RightShift:
+            case TokenType::UnsignedRightShift:
+                op_precedence = 10;  // Shift operators (between additive and relational)
+                break;
             case TokenType::Equal:
             case TokenType::EqualStrict:
             case TokenType::NotEqual:
@@ -160,6 +165,15 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::Greater:
             case TokenType::GreaterEqual:
                 op_precedence = 9;  // Relational operators
+                break;
+            case TokenType::BitwiseAnd:
+                op_precedence = 7;  // Bitwise AND (between equality and bitwise XOR)
+                break;
+            case TokenType::BitwiseXor:
+                op_precedence = 6;  // Bitwise XOR (between bitwise AND and bitwise OR)
+                break;
+            case TokenType::BitwiseOr:
+                op_precedence = 5;  // Bitwise OR (between bitwise XOR and logical AND)
                 break;
             case TokenType::LogicalAnd:
                 op_precedence = 4;  // Logical AND
@@ -174,6 +188,12 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::DivideAssign:
             case TokenType::ModuloAssign:
             case TokenType::ExponentAssign:
+            case TokenType::BitwiseAndAssign:
+            case TokenType::BitwiseOrAssign:
+            case TokenType::BitwiseXorAssign:
+            case TokenType::LeftShiftAssign:
+            case TokenType::RightShiftAssign:
+            case TokenType::UnsignedRightShiftAssign:
                 op_precedence = 0;  // Assignment lowest precedence
                 is_assignment = true;
                 break;

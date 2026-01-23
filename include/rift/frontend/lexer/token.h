@@ -73,6 +73,18 @@ enum class TokenType {
     LogicalOr,
     LogicalAnd,
     BitwiseNot,
+    BitwiseAnd,          // &
+    BitwiseOr,           // |
+    BitwiseXor,          // ^
+    LeftShift,           // <<
+    RightShift,          // >>
+    UnsignedRightShift,  // >>>
+    BitwiseAndAssign,    // &=
+    BitwiseOrAssign,     // |=
+    BitwiseXorAssign,    // ^=
+    LeftShiftAssign,     // <<=
+    RightShiftAssign,    // >>=
+    UnsignedRightShiftAssign,  // >>>=
     Typeof,
 
     // Punctuation

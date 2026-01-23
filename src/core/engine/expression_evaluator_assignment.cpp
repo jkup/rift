@@ -45,6 +45,28 @@ static Value applyCompoundOperation(const std::string& operator_, Value currentV
         return Value(std::pow(left, right));
     }
 
+    // Bitwise compound assignments - convert to 32-bit integers
+    int32_t leftInt = static_cast<int32_t>(left);
+    int32_t rightInt = static_cast<int32_t>(right);
+
+    if(operator_ == "&=") {
+        return Value(static_cast<double>(leftInt & rightInt));
+    } else if(operator_ == "|=") {
+        return Value(static_cast<double>(leftInt | rightInt));
+    } else if(operator_ == "^=") {
+        return Value(static_cast<double>(leftInt ^ rightInt));
+    } else if(operator_ == "<<=") {
+        uint32_t shiftAmount = static_cast<uint32_t>(rightInt) & 0x1F;
+        return Value(static_cast<double>(leftInt << shiftAmount));
+    } else if(operator_ == ">>=") {
+        uint32_t shiftAmount = static_cast<uint32_t>(rightInt) & 0x1F;
+        return Value(static_cast<double>(leftInt >> shiftAmount));
+    } else if(operator_ == ">>>=") {
+        uint32_t leftUint = static_cast<uint32_t>(leftInt);
+        uint32_t shiftAmount = static_cast<uint32_t>(rightInt) & 0x1F;
+        return Value(static_cast<double>(leftUint >> shiftAmount));
+    }
+
     // Fallback for unknown operator
     return rightValue;
 }

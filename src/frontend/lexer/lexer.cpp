@@ -581,6 +581,14 @@ Token Lexer::next_token() {
             return Token(TokenType::LogicalNot, "!", line, column);
         case '<':
             advance();
+            if(current_char() == '<') {
+                advance();
+                if(current_char() == '=') {
+                    advance();
+                    return Token(TokenType::LeftShiftAssign, "<<=", line, column);
+                }
+                return Token(TokenType::LeftShift, "<<", line, column);
+            }
             if(current_char() == '=') {
                 advance();
                 return Token(TokenType::LessEqual, "<=", line, column);
@@ -588,6 +596,22 @@ Token Lexer::next_token() {
             return Token(TokenType::Less, "<", line, column);
         case '>':
             advance();
+            if(current_char() == '>') {
+                advance();
+                if(current_char() == '>') {
+                    advance();
+                    if(current_char() == '=') {
+                        advance();
+                        return Token(TokenType::UnsignedRightShiftAssign, ">>>=", line, column);
+                    }
+                    return Token(TokenType::UnsignedRightShift, ">>>", line, column);
+                }
+                if(current_char() == '=') {
+                    advance();
+                    return Token(TokenType::RightShiftAssign, ">>=", line, column);
+                }
+                return Token(TokenType::RightShift, ">>", line, column);
+            }
             if(current_char() == '=') {
                 advance();
                 return Token(TokenType::GreaterEqual, ">=", line, column);
@@ -602,16 +626,29 @@ Token Lexer::next_token() {
                 advance();
                 return Token(TokenType::LogicalOr, "||", line, column);
             }
-            // Single | would be bitwise OR (not implemented yet)
-            return Token(TokenType::Invalid, "|", line, column);
+            if(current_char() == '=') {
+                advance();
+                return Token(TokenType::BitwiseOrAssign, "|=", line, column);
+            }
+            return Token(TokenType::BitwiseOr, "|", line, column);
         case '&':
             advance();
             if(current_char() == '&') {
                 advance();
                 return Token(TokenType::LogicalAnd, "&&", line, column);
             }
-            // Single & would be bitwise AND (not implemented yet)
-            return Token(TokenType::Invalid, "&", line, column);
+            if(current_char() == '=') {
+                advance();
+                return Token(TokenType::BitwiseAndAssign, "&=", line, column);
+            }
+            return Token(TokenType::BitwiseAnd, "&", line, column);
+        case '^':
+            advance();
+            if(current_char() == '=') {
+                advance();
+                return Token(TokenType::BitwiseXorAssign, "^=", line, column);
+            }
+            return Token(TokenType::BitwiseXor, "^", line, column);
         default:
             advance();
             return Token(TokenType::Invalid, std::string(1, ch), line, column);
