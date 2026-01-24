@@ -13,6 +13,7 @@
 | Run Test262 group          | `npm run test262:group -- <group-name>`                                 |
 | List Test262 groups        | `npm run test262:groups`                                                |
 | Analyze Test262 impact     | `npm run test262:analyze`                                               |
+| **Find Test262 regressions** | `npm run test262:diff` or `node test262-diff.js`                      |
 | Run specific Test262 test  | `node test262-runner.js path/to/test.js`                                |
 | Format code                | `cd build && make format`                                               |
 | Check formatting           | `cd build && make format-check`                                         |
@@ -228,6 +229,19 @@ npm run test262:groups             # List available groups
 npm run test262:group -- <name>    # Run specific group
 npm run test262:analyze            # Analyze impact
 ```
+
+### Finding Test262 Regressions
+When CI shows a regression (tests that used to pass now fail), use the diff tool to find which specific tests changed:
+```bash
+npm run test262:diff               # Compare current results to main branch
+node test262-diff.js --verbose     # Show all changed tests (not truncated)
+node test262-diff.js --json        # JSON output for CI integration
+
+# Compare two specific result files
+node test262-diff.js --baseline old-results.json --current new-results.json
+```
+
+**Note:** For the diff tool to work automatically, `test262-results.json` must be committed to the main branch. Otherwise, use `--baseline` to specify a baseline file.
 
 ---
 
