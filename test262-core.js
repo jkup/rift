@@ -11,7 +11,6 @@ export const RUNTIME_EXECUTABLE = "./build/rift";
 // Pre-compile regex patterns once at module load (P1 optimization)
 const UNSUPPORTED_PATTERNS = [
   /\bclass\s+\w+/, // class declarations
-  /=>/, // arrow functions
   /\basync\b/, // async functions
   /\bawait\b/, // await keyword
   /\byield\b/, // generators

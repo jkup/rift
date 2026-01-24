@@ -109,12 +109,17 @@
       "language/expressions/delete"
     ]
   },
+  "arrow-functions": {
+    "description": "Arrow function expressions",
+    "patterns": [
+      "language/expressions/arrow-function"
+    ]
+  },
   "not-yet-supported": {
     "description": "Features we know we don't support yet",
     "patterns": [
       "language/expressions/class",
       "language/statements/class",
-      "language/expressions/arrow-function",
       "language/expressions/async-function",
       "language/expressions/async-arrow-function",
       "language/expressions/generators",
