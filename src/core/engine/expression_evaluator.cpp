@@ -52,6 +52,8 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
             return evaluateObjectLiteral(node, env, engine);
         case ASTNodeType::FunctionExpression:
             return evaluateFunctionExpression(node, env, engine);
+        case ASTNodeType::ArrowFunctionExpression:
+            return evaluateArrowFunctionExpression(node, env, engine);
         case ASTNodeType::NewExpression:
             return evaluateNewExpression(node, env, engine);
         case ASTNodeType::TemplateLiteral:

@@ -37,6 +37,7 @@ enum class ASTNodeType {
     ObjectLiteral,
     FunctionDeclaration,
     FunctionExpression,
+    ArrowFunctionExpression,
     ReturnStatement,
     ThrowStatement,
     TryStatement,

@@ -47,6 +47,9 @@ class Parser {
     // New function-related parsing methods
     std::shared_ptr<ASTNode> parse_function_declaration();
     std::shared_ptr<ASTNode> parse_function_expression();
+    std::shared_ptr<ASTNode> parse_arrow_function();
+    std::shared_ptr<ASTNode> parse_arrow_function_from_identifier(std::shared_ptr<ASTNode> param);
+    bool looks_like_arrow_params();
     std::shared_ptr<ASTNode> parse_parameter_list();
     std::shared_ptr<ASTNode> parse_return_statement();
     std::shared_ptr<ASTNode> parse_throw_statement();
