@@ -100,6 +100,7 @@ set(BUILTINS_SOURCES
     src/builtins/error/syntax_error.cpp
     src/builtins/error/range_error.cpp
     src/builtins/regexp/regexp.cpp
+    src/builtins/symbol/symbol.cpp
 )
 
 set(CORE_SOURCES

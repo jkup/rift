@@ -13,7 +13,7 @@
 | Run Test262 group          | `npm run test262:group -- <group-name>`                                 |
 | List Test262 groups        | `npm run test262:groups`                                                |
 | Analyze Test262 impact     | `npm run test262:analyze`                                               |
-| **Find Test262 regressions** | `npm run test262:diff` or `node test262-diff.js`                      |
+| Find Test262 regressions   | `npm run test262:diff` or `node test262-diff.js`                        |
 | Run specific Test262 test  | `node test262-runner.js path/to/test.js`                                |
 | Format code                | `cd build && make format`                                               |
 | Check formatting           | `cd build && make format-check`                                         |

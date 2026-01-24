@@ -61,6 +61,10 @@ std::string Value::toString() const {
         case ValueType::String: {
             return std::get<std::string>(data_);
         }
+        case ValueType::Symbol: {
+            const SymbolData& sym = std::get<SymbolData>(data_);
+            return "Symbol(" + sym.description + ")";
+        }
         case ValueType::Object:
             return "[object Object]";
         case ValueType::Function:
@@ -83,6 +87,8 @@ bool Value::toBool() const {
         }
         case ValueType::String:
             return !std::get<std::string>(data_).empty();
+        case ValueType::Symbol:
+            return true;  // Symbols are always truthy
         case ValueType::Object:
         case ValueType::Function:
             return true;  // Objects are always truthy
@@ -115,6 +121,8 @@ double Value::toNumber() const {
                 return std::numeric_limits<double>::infinity();
             }
         }
+        case ValueType::Symbol:
+            throw std::runtime_error("TypeError: Cannot convert a Symbol value to a number");
         case ValueType::Object:
         case ValueType::Function:
             return std::numeric_limits<double>::quiet_NaN();
@@ -152,6 +160,20 @@ const std::string& Value::getString() const {
     return std::get<std::string>(data_);
 }
 
+const SymbolData& Value::getSymbol() const {
+    if(type_ != ValueType::Symbol) {
+        throw std::runtime_error("Value is not a symbol");
+    }
+    return std::get<SymbolData>(data_);
+}
+
+Value Value::symbol(uint64_t id, const std::string& description) {
+    Value v;
+    v.type_ = ValueType::Symbol;
+    v.data_ = SymbolData(id, description);
+    return v;
+}
+
 JSObject* Value::getObject() const {
     if(type_ != ValueType::Object && type_ != ValueType::Function) {
         throw std::runtime_error("Value is not an object");
@@ -172,6 +194,9 @@ bool Value::strictEquals(const Value& other) const {
         return toString() == other.toString();
     } else if(isBoolean()) {
         return toBool() == other.toBool();
+    } else if(isSymbol()) {
+        // Symbols are equal only if they have the same ID
+        return getSymbol() == other.getSymbol();
     } else if(isNull() && other.isNull()) {
         return true;
     } else if(isUndefined() && other.isUndefined()) {

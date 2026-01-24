@@ -24,6 +24,7 @@ class BuiltinManager {
     static JSObject* getStringPrototype();
     static JSObject* getBooleanPrototype();
     static JSObject* getNumberPrototype();
+    static JSObject* getSymbolPrototype();
     static JSObject* getErrorPrototype();
     static JSObject* getTypeErrorPrototype();
     static JSObject* getReferenceErrorPrototype();
@@ -41,6 +42,7 @@ class BuiltinManager {
     static JSObject* stringPrototype_;
     static JSObject* booleanPrototype_;
     static JSObject* numberPrototype_;
+    static JSObject* symbolPrototype_;
     static JSObject* errorPrototype_;
     static JSObject* typeErrorPrototype_;
     static JSObject* referenceErrorPrototype_;
@@ -77,6 +79,8 @@ class BuiltinManager {
     static void setupRangeError(std::shared_ptr<Environment> globalEnv,
                                 rift::memory::ObjectFactory* factory);
     static void setupRegExp(std::shared_ptr<Environment> globalEnv,
+                            rift::memory::ObjectFactory* factory);
+    static void setupSymbol(std::shared_ptr<Environment> globalEnv,
                             rift::memory::ObjectFactory* factory);
     static void setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine);
 };

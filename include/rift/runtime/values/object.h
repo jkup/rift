@@ -85,6 +85,9 @@ class JSObject : public rift::memory::GCObject {
     // Get only enumerable own property names
     std::vector<std::string> getEnumerablePropertyNames() const;
 
+    // Get only symbol-keyed own property names
+    std::vector<std::string> getOwnPropertySymbols() const;
+
     // GC interface implementation
     std::vector<rift::memory::GCObject*> getReferences() const override;
     void markReachable() override {

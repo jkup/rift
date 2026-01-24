@@ -24,6 +24,14 @@ Value OperationHandler::performBinaryOperation(const std::string& op, const Valu
         return Value(std::pow(left.toNumber(), right.toNumber()));
     if(op == "==") {
         // JavaScript loose equality with type coercion
+        // Symbols are only equal to themselves (no coercion)
+        if(left.isSymbol() || right.isSymbol()) {
+            if(left.getType() != right.getType()) {
+                return Value(false);
+            }
+            return Value(left.getSymbol() == right.getSymbol());
+        }
+
         // If both are the same type, compare directly
         if(left.getType() == right.getType()) {
             if(left.isNumber())
@@ -70,6 +78,9 @@ Value OperationHandler::performBinaryOperation(const std::string& op, const Valu
             return Value(left.toString() == right.toString());
         } else if(left.isBoolean()) {
             return Value(left.toBool() == right.toBool());
+        } else if(left.isSymbol()) {
+            // Symbols are equal only if they have the same ID
+            return Value(left.getSymbol() == right.getSymbol());
         } else if(left.isNull() && right.isNull()) {
             return Value(true);
         } else if(left.isUndefined() && right.isUndefined()) {
@@ -91,6 +102,9 @@ Value OperationHandler::performBinaryOperation(const std::string& op, const Valu
             return Value(left.toString() != right.toString());
         } else if(left.isBoolean()) {
             return Value(left.toBool() != right.toBool());
+        } else if(left.isSymbol()) {
+            // Symbols are not equal unless they have the same ID
+            return Value(left.getSymbol() != right.getSymbol());
         } else if(left.isNull() && right.isNull()) {
             return Value(false);
         } else if(left.isUndefined() && right.isUndefined()) {
@@ -171,6 +185,8 @@ Value OperationHandler::performUnaryOperation(const std::string& op, const Value
             return Value("number");
         } else if(operand.isString()) {
             return Value("string");
+        } else if(operand.isSymbol()) {
+            return Value("symbol");
         } else if(operand.isFunction()) {
             return Value("function");
         } else if(operand.isObject()) {

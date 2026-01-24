@@ -4,6 +4,13 @@
 
 namespace rift::runtime {
 
+// Symbol property key prefix - must match evaluation_utils.h
+static const char* SYMBOL_KEY_PREFIX = "@@sym:";
+
+static bool isSymbolKey(const std::string& key) {
+    return key.rfind(SYMBOL_KEY_PREFIX, 0) == 0;
+}
+
 bool JSObject::hasProperty(const std::string& key) const {
     // Check own properties first (linear search through vector)
     for(const auto& prop : properties_) {
@@ -114,8 +121,11 @@ std::vector<std::string> JSObject::getPropertyNames() const {
     std::vector<std::string> names;
 
     // Get own property names from vector (including non-enumerable)
+    // Exclude symbol-keyed properties per ECMAScript spec
     for(const auto& prop : properties_) {
-        names.push_back(prop.first);
+        if(!isSymbolKey(prop.first)) {
+            names.push_back(prop.first);
+        }
     }
 
     // Add prototype property names (avoiding duplicates)
@@ -135,8 +145,11 @@ std::vector<std::string> JSObject::getOwnPropertyNames() const {
     std::vector<std::string> names;
 
     // Get only own property names (not from prototype), including non-enumerable
+    // Exclude symbol-keyed properties per ECMAScript spec
     for(const auto& pair : properties_) {
-        names.push_back(pair.first);
+        if(!isSymbolKey(pair.first)) {
+            names.push_back(pair.first);
+        }
     }
 
     return names;
@@ -146,13 +159,27 @@ std::vector<std::string> JSObject::getEnumerablePropertyNames() const {
     std::vector<std::string> names;
 
     // Get only own enumerable property names
+    // Exclude symbol-keyed properties per ECMAScript spec
     for(const auto& [key, descriptor] : properties_) {
-        if(descriptor.enumerable) {
+        if(descriptor.enumerable && !isSymbolKey(key)) {
             names.push_back(key);
         }
     }
 
     return names;
+}
+
+std::vector<std::string> JSObject::getOwnPropertySymbols() const {
+    std::vector<std::string> symbols;
+
+    // Get only symbol-keyed property names
+    for(const auto& pair : properties_) {
+        if(isSymbolKey(pair.first)) {
+            symbols.push_back(pair.first);
+        }
+    }
+
+    return symbols;
 }
 
 std::vector<rift::memory::GCObject*> JSObject::getReferences() const {
