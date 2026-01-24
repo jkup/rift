@@ -41,6 +41,13 @@ class ObjectFactory {
         return object_manager_->createJSFunction(std::move(func));
     }
 
+    // Create arrow function with captured this
+    rift::runtime::JSArrowFunction* createJSArrowFunction(
+        std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func,
+        const rift::runtime::Value& capturedThis) {
+        return object_manager_->createJSArrowFunction(std::move(func), capturedThis);
+    }
+
     // Generic object creation (for future extensibility) - now returns raw pointer
     template <typename T, typename... Args>
     T* createObject(Args&&... args) {

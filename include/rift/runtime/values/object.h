@@ -109,12 +109,55 @@ class JSFunction : public JSObject {
         : JSObject(), native_function_(std::move(func)) {
     }
 
-    Value call(const rift::core::CallContext& callContext, const std::vector<Value>& args) const {
+    virtual Value call(const rift::core::CallContext& callContext, const std::vector<Value>& args) const {
         return native_function_(callContext, args);
+    }
+
+    // Check if this function can be used as a constructor
+    virtual bool isConstructor() const {
+        return true;  // Regular functions can be constructors
     }
 
     std::string getTypeName() const override {
         return "Function";
+    }
+};
+
+// Arrow function object - has lexical this binding
+class JSArrowFunction : public JSFunction {
+  private:
+    Value captured_this_;  // Lexical this value, captured at creation time
+
+  public:
+    JSArrowFunction(
+        std::function<Value(const rift::core::CallContext&, const std::vector<Value>&)> func,
+        const Value& capturedThis)
+        : JSFunction(std::move(func)), captured_this_(capturedThis) {
+    }
+
+    // Arrow functions always use captured this, ignoring call context
+    Value call(const rift::core::CallContext& callContext, const std::vector<Value>& args) const override {
+        // Create modified context with captured this
+        rift::core::CallContext arrow_context(callContext.type, captured_this_);
+        return JSFunction::call(arrow_context, args);
+    }
+
+    // Arrow functions cannot be constructors
+    bool isConstructor() const override {
+        return false;
+    }
+
+    std::string getTypeName() const override {
+        return "Function";  // Arrow functions still report as "function"
+    }
+
+    // For GC - ensure captured_this_ is traversed
+    std::vector<rift::memory::GCObject*> getReferences() const override {
+        auto refs = JSFunction::getReferences();
+        if (captured_this_.isObject()) {
+            refs.push_back(captured_this_.getObject());
+        }
+        return refs;
     }
 };
 

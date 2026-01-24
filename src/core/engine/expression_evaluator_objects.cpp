@@ -259,6 +259,83 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
     return Value(func);
 }
 
+Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNode> node,
+                                                            std::shared_ptr<Environment> env,
+                                                            Rift* engine) {
+    if (node->children.size() < 2) {
+        return Value::undefined();
+    }
+
+    // Get parameters (first child should be parameter list)
+    auto param_list = node->children[0];
+    std::vector<std::string> parameters;
+    for (const auto& param : param_list->children) {
+        parameters.push_back(param->value);
+    }
+
+    // Get function body (second child)
+    auto body = node->children[1];
+
+    // Check if this is an expression body (implicit return)
+    bool is_expression_body = (node->metadata == "expression");
+
+    // CRITICAL: Capture current 'this' value from enclosing environment
+    Value captured_this = Value::undefined();
+    try {
+        captured_this = env->get("this");
+    } catch (const std::runtime_error&) {
+        // No 'this' in scope - use undefined
+    }
+
+    // Temporarily disable GC to prevent collection during function creation
+    auto* factory = engine->getObjectFactory();
+    auto* obj_manager = factory->getObjectManager();
+    bool was_gc_enabled = obj_manager->isGCEnabled();
+    obj_manager->setGCEnabled(false);
+
+    // Create arrow function object with captured this
+    auto* arrow_func = factory->createJSArrowFunction(
+        [engine, parameters, body, env, is_expression_body](
+            const rift::core::CallContext& call_context,
+            const std::vector<Value>& args) -> Value {
+
+            // Create new environment for function execution
+            // Note: Arrow functions get 'this' from captured_this via JSArrowFunction,
+            // which modifies the call_context before calling
+            auto func_env = std::make_shared<Environment>(env);
+
+            // Bind 'this' from call context (already set to captured_this by JSArrowFunction)
+            func_env->define("this", call_context.thisValue);
+
+            // Bind parameters to arguments
+            for (size_t i = 0; i < parameters.size(); ++i) {
+                Value arg_value = (i < args.size()) ? args[i] : Value::undefined();
+                func_env->define(parameters[i], arg_value);
+            }
+
+            // Arrow functions do NOT have their own 'arguments' object per spec
+            // (They inherit 'arguments' from enclosing scope if available)
+
+            // Execute function body
+            try {
+                Value result = engine->evaluate(body, func_env);
+                // If expression body, the result IS the return value (implicit return)
+                if (is_expression_body) {
+                    return result;
+                }
+                // Block body without return statement returns undefined
+                return Value::undefined();
+            } catch (const ReturnException& e) {
+                return e.getValue();
+            }
+        },
+        captured_this);
+
+    // Re-enable GC before returning
+    obj_manager->setGCEnabled(was_gc_enabled);
+    return Value(arrow_func);
+}
+
 Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
     if(node->children.empty()) {
@@ -281,6 +358,13 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
     if(!constructor_func) {
         throw JavaScriptException(Value("TypeError: constructor is not a function"),
                                   node->line, node->column);
+    }
+
+    // Check if this is an arrow function - they cannot be constructors
+    if (!constructor_func->isConstructor()) {
+        throw JavaScriptException(
+            Value("TypeError: arrow function is not a constructor"),
+            node->line, node->column);
     }
 
     // Create a new object that will be the 'this' context for the constructor

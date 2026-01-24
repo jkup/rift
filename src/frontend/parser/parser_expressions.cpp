@@ -62,7 +62,33 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             return node;
         }
         case TokenType::LeftParen: {
+            // Could be: grouped expression (x), arrow params () =>, (x) =>, or (x, y) =>
+            // Save position for potential backtrack
+            size_t saved_pos = current;
+
             current++;  // consume '('
+
+            // Check for empty params: () =>
+            if (current_token().type == TokenType::RightParen) {
+                size_t after_rparen = current + 1;
+                if (after_rparen < tokens.size() &&
+                    tokens[after_rparen].type == TokenType::Arrow) {
+                    // Arrow function with no params
+                    current = saved_pos;  // backtrack
+                    return parse_arrow_function();
+                }
+                // Just empty parens - syntax error for grouped expression
+                throw std::runtime_error("Unexpected token ')'");
+            }
+
+            // Check if this looks like arrow params: (id, id, ...) =>
+            if (looks_like_arrow_params()) {
+                current = saved_pos;  // backtrack
+                return parse_arrow_function();
+            }
+
+            // Not arrow function - parse as grouped expression
+            // current is already past '(' so just parse expression
             auto expr = parse_expression();
             consume(TokenType::RightParen);
             return expr;
@@ -225,6 +251,12 @@ std::shared_ptr<ASTNode> Parser::parse_expression() {
 
 std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
     auto expr = parse_primary();
+
+    // Check for single-param arrow function: x => ...
+    if (expr->type == ASTNodeType::Identifier &&
+        current_token().type == TokenType::Arrow) {
+        return parse_arrow_function_from_identifier(expr);
+    }
 
     while(true) {
         if(current_token().type == TokenType::Dot) {
@@ -448,6 +480,106 @@ std::shared_ptr<ASTNode> Parser::parse_function_expression() {
 
     auto node = ASTFactory::makeFunctionExpression(parameters, body);
     node->setLocation(startToken.line, startToken.column);
+    return node;
+}
+
+// Helper to check if current position looks like arrow function parameters
+// Called when current position is AFTER the opening '('
+bool Parser::looks_like_arrow_params() {
+    // Save position
+    size_t saved = current;
+
+    // Check for (id, id, ...) pattern followed by ) =>
+    while (current < tokens.size() && current_token().type != TokenType::EndOfFile) {
+        if (current_token().type == TokenType::Identifier) {
+            current++;
+            if (current_token().type == TokenType::Comma) {
+                current++;
+                continue;
+            }
+            if (current_token().type == TokenType::RightParen) {
+                current++;
+                bool is_arrow = (current_token().type == TokenType::Arrow);
+                current = saved;  // restore
+                return is_arrow;
+            }
+        }
+        break;
+    }
+    current = saved;
+    return false;
+}
+
+// Parse arrow function: () => expr, (x) => expr, (x, y) => expr
+std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
+    Token& startToken = current_token();
+
+    // Parse parameters
+    std::shared_ptr<ASTNode> parameters;
+
+    if (current_token().type == TokenType::Identifier) {
+        // Single param without parens: x => ...
+        parameters = ASTFactory::makeParameterList();
+        ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(current_token().value));
+        current++;  // consume identifier
+    } else {
+        // Parenthesized params: () => ... or (x) => ... or (x, y) => ...
+        consume(TokenType::LeftParen);
+        parameters = parse_parameter_list();
+        consume(TokenType::RightParen);
+    }
+
+    // Consume =>
+    consume(TokenType::Arrow);
+
+    // Parse body - either block or expression
+    std::shared_ptr<ASTNode> body;
+    bool isExpressionBody = false;
+
+    if (current_token().type == TokenType::LeftBrace) {
+        // Block body: x => { statements }
+        body = parse_block_statement();
+    } else {
+        // Expression body: x => expression
+        // For expression bodies, we parse using parse_binary_expression to handle
+        // operator precedence correctly (arrow has very low precedence)
+        body = parse_binary_expression(0);
+        isExpressionBody = true;
+    }
+
+    auto node = ASTFactory::makeArrowFunctionExpression(parameters, body, isExpressionBody);
+    node->setLocation(startToken.line, startToken.column);
+    return node;
+}
+
+// Parse arrow function when we already have the single identifier param
+std::shared_ptr<ASTNode> Parser::parse_arrow_function_from_identifier(std::shared_ptr<ASTNode> param) {
+    // param is the identifier node, we're positioned at '=>'
+    size_t line = param->line;
+    size_t column = param->column;
+
+    // Create parameter list from the identifier
+    auto parameters = ASTFactory::makeParameterList();
+    ASTFactory::addParameter(parameters, param);
+
+    // Consume =>
+    consume(TokenType::Arrow);
+
+    // Parse body - either block or expression
+    std::shared_ptr<ASTNode> body;
+    bool isExpressionBody = false;
+
+    if (current_token().type == TokenType::LeftBrace) {
+        // Block body: x => { statements }
+        body = parse_block_statement();
+    } else {
+        // Expression body: x => expression
+        body = parse_binary_expression(0);
+        isExpressionBody = true;
+    }
+
+    auto node = ASTFactory::makeArrowFunctionExpression(parameters, body, isExpressionBody);
+    node->setLocation(line, column);
     return node;
 }
 

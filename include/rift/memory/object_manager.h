@@ -34,6 +34,11 @@ class ObjectManager {
     rift::runtime::JSFunction* createJSFunction(
         std::function<rift::runtime::Value(const std::vector<rift::runtime::Value>&)> func);
 
+    // Create arrow function with captured this
+    rift::runtime::JSArrowFunction* createJSArrowFunction(
+        std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func,
+        const rift::runtime::Value& capturedThis);
+
     // Root management
     void addRoot(GCObject* root);
     void removeRoot(GCObject* root);

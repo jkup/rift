@@ -557,6 +557,11 @@ Token Lexer::next_token() {
             return Token(TokenType::Colon, ":", line, column);
         case '=':
             advance();
+            // Arrow function =>
+            if(current_char() == '>') {
+                advance();
+                return Token(TokenType::Arrow, "=>", line, column);
+            }
             // Double equals
             if(current_char() == '=') {
                 advance();

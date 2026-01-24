@@ -54,6 +54,7 @@ enum class TokenType {
     Modulo,
     Exponent,        // **
     Assign,
+    Arrow,           // =>
     PlusAssign,      // +=
     MinusAssign,     // -=
     MultiplyAssign,  // *=
