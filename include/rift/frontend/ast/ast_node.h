@@ -76,7 +76,7 @@ struct ASTNode {
 
     /// Copy source location from another node
     void copyLocationFrom(const std::shared_ptr<ASTNode>& other) {
-        if (other) {
+        if(other) {
             line = other->line;
             column = other->column;
         }

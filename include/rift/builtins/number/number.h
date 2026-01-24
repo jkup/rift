@@ -31,14 +31,16 @@ class Number : public BuiltinBase<Number> {
 
     // ===== Static Methods (Number.isNaN, Number.isFinite, etc.) =====
 
-    /// The `Number.isNaN()` method determines whether the passed value is NaN and its type is Number.
+    /// The `Number.isNaN()` method determines whether the passed value is NaN and its type is
+    /// Number.
     ///
     /// More information:
     ///  - [ECMAScript reference][spec]
     ///  - [MDN documentation][mdn]
     ///
     /// [spec]: https://tc39.es/ecma262/#sec-number.isnan
-    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
     static Value isNaN(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `Number.isFinite()` method determines whether the passed value is a finite number.
@@ -48,7 +50,8 @@ class Number : public BuiltinBase<Number> {
     ///  - [MDN documentation][mdn]
     ///
     /// [spec]: https://tc39.es/ecma262/#sec-number.isfinite
-    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite
     static Value isFinite(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `Number.isInteger()` method determines whether the passed value is an integer.
@@ -58,7 +61,8 @@ class Number : public BuiltinBase<Number> {
     ///  - [MDN documentation][mdn]
     ///
     /// [spec]: https://tc39.es/ecma262/#sec-number.isinteger
-    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
     static Value isInteger(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `Number.isSafeInteger()` method determines whether the passed value is a safe integer.
@@ -68,7 +72,8 @@ class Number : public BuiltinBase<Number> {
     ///  - [MDN documentation][mdn]
     ///
     /// [spec]: https://tc39.es/ecma262/#sec-number.issafeinteger
-    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger
     static Value isSafeInteger(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `Number.parseFloat()` method parses an argument and returns a floating point number.
@@ -78,17 +83,20 @@ class Number : public BuiltinBase<Number> {
     ///  - [MDN documentation][mdn]
     ///
     /// [spec]: https://tc39.es/ecma262/#sec-number.parsefloat
-    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseFloat
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseFloat
     static Value parseFloat(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `Number.parseInt()` method parses a string argument and returns an integer of the specified radix.
+    /// The `Number.parseInt()` method parses a string argument and returns an integer of the
+    /// specified radix.
     ///
     /// More information:
     ///  - [ECMAScript reference][spec]
     ///  - [MDN documentation][mdn]
     ///
     /// [spec]: https://tc39.es/ecma262/#sec-number.parseint
-    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseInt
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseInt
     static Value parseInt(const CallContext& ctx, const std::vector<Value>& args);
 
     // ===== Prototype Methods (Number.prototype.toString, etc.) =====
@@ -100,7 +108,8 @@ class Number : public BuiltinBase<Number> {
     ///  - [MDN documentation][mdn]
     ///
     /// [spec]: https://tc39.es/ecma262/#sec-number.prototype.tostring
-    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `valueOf()` method returns the wrapped primitive value of a Number object.
@@ -110,7 +119,8 @@ class Number : public BuiltinBase<Number> {
     ///  - [MDN documentation][mdn]
     ///
     /// [spec]: https://tc39.es/ecma262/#sec-number.prototype.valueof
-    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/valueOf
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/valueOf
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
     /// The `toFixed()` method formats a number using fixed-point notation.
@@ -120,27 +130,32 @@ class Number : public BuiltinBase<Number> {
     ///  - [MDN documentation][mdn]
     ///
     /// [spec]: https://tc39.es/ecma262/#sec-number.prototype.tofixed
-    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed
     static Value toFixed(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `toExponential()` method returns a string representing the Number object in exponential notation.
+    /// The `toExponential()` method returns a string representing the Number object in exponential
+    /// notation.
     ///
     /// More information:
     ///  - [ECMAScript reference][spec]
     ///  - [MDN documentation][mdn]
     ///
     /// [spec]: https://tc39.es/ecma262/#sec-number.prototype.toexponential
-    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential
     static Value toExponential(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `toPrecision()` method returns a string representing the Number object to the specified precision.
+    /// The `toPrecision()` method returns a string representing the Number object to the specified
+    /// precision.
     ///
     /// More information:
     ///  - [ECMAScript reference][spec]
     ///  - [MDN documentation][mdn]
     ///
     /// [spec]: https://tc39.es/ecma262/#sec-number.prototype.toprecision
-    /// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
     static Value toPrecision(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Setup methods required by BuiltinBase template

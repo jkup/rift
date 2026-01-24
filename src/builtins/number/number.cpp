@@ -20,15 +20,16 @@ using rift::core::extractThisNumber;
 // These values are from the IEEE 754 double-precision 64-bit binary format
 static constexpr double MAX_VALUE = 1.7976931348623157e+308;
 static constexpr double MIN_VALUE = 5e-324;
-static constexpr double MAX_SAFE_INTEGER = 9007199254740991.0;  // 2^53 - 1
-static constexpr double MIN_SAFE_INTEGER = -9007199254740991.0; // -(2^53 - 1)
-static constexpr double EPSILON = 2.220446049250313e-16;        // 2^-52
+static constexpr double MAX_SAFE_INTEGER = 9007199254740991.0;   // 2^53 - 1
+static constexpr double MIN_SAFE_INTEGER = -9007199254740991.0;  // -(2^53 - 1)
+static constexpr double EPSILON = 2.220446049250313e-16;         // 2^-52
 
 void Number::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Number static properties (20.1.2)
     RIFT_PROPERTY(constructor, "NaN", Value(std::numeric_limits<double>::quiet_NaN()));
     RIFT_PROPERTY(constructor, "POSITIVE_INFINITY", Value(std::numeric_limits<double>::infinity()));
-    RIFT_PROPERTY(constructor, "NEGATIVE_INFINITY", Value(-std::numeric_limits<double>::infinity()));
+    RIFT_PROPERTY(constructor, "NEGATIVE_INFINITY",
+                  Value(-std::numeric_limits<double>::infinity()));
     RIFT_PROPERTY(constructor, "MAX_VALUE", Value(MAX_VALUE));
     RIFT_PROPERTY(constructor, "MIN_VALUE", Value(MIN_VALUE));
     RIFT_PROPERTY(constructor, "MAX_SAFE_INTEGER", Value(MAX_SAFE_INTEGER));
@@ -265,7 +266,8 @@ Value Number::toString(const CallContext& ctx, const std::vector<Value>& args) {
     // (Full implementation would handle fractional parts too)
     long long intValue = static_cast<long long>(numValue);
     bool negative = intValue < 0;
-    if(negative) intValue = -intValue;
+    if(negative)
+        intValue = -intValue;
 
     std::string result;
     const char* digits = "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -279,7 +281,8 @@ Value Number::toString(const CallContext& ctx, const std::vector<Value>& args) {
         }
     }
 
-    if(negative) result = "-" + result;
+    if(negative)
+        result = "-" + result;
     return Value(result);
 }
 

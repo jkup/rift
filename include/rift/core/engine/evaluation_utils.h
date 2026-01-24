@@ -1,10 +1,10 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <cmath>
 #include <iomanip>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #include "../../runtime/values/value.h"
 #include "call_context.h"
@@ -30,7 +30,7 @@ inline bool toSafeArrayLength(double value, size_t& result) {
     if(!std::isfinite(value) || value < 0.0 || value > static_cast<double>(MAX_ARRAY_LENGTH)) {
         return false;
     }
-    
+
     // Truncate to integer (matches ECMAScript ToLength behavior)
     result = static_cast<size_t>(value);
     return true;

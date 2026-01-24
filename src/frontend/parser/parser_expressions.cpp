@@ -5,10 +5,10 @@
  * Split from parser.cpp for better maintainability.
  */
 
-#include "rift/frontend/parser/parser.h"
-
 #include <iostream>
 #include <stdexcept>
+
+#include "rift/frontend/parser/parser.h"
 
 namespace rift::frontend {
 
@@ -69,10 +69,9 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             current++;  // consume '('
 
             // Check for empty params: () =>
-            if (current_token().type == TokenType::RightParen) {
+            if(current_token().type == TokenType::RightParen) {
                 size_t after_rparen = current + 1;
-                if (after_rparen < tokens.size() &&
-                    tokens[after_rparen].type == TokenType::Arrow) {
+                if(after_rparen < tokens.size() && tokens[after_rparen].type == TokenType::Arrow) {
                     // Arrow function with no params
                     current = saved_pos;  // backtrack
                     return parse_arrow_function();
@@ -82,7 +81,7 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             }
 
             // Check if this looks like arrow params: (id, id, ...) =>
-            if (looks_like_arrow_params()) {
+            if(looks_like_arrow_params()) {
                 current = saved_pos;  // backtrack
                 return parse_arrow_function();
             }
@@ -172,7 +171,7 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
                 op_precedence = 12;  // Multiplicative operators
                 break;
             case TokenType::Exponent:
-                op_precedence = 13;  // Exponentiation (higher than multiply)
+                op_precedence = 13;           // Exponentiation (higher than multiply)
                 is_right_associative = true;  // ** is right-associative
                 break;
             case TokenType::LeftShift:
@@ -253,8 +252,7 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
     auto expr = parse_primary();
 
     // Check for single-param arrow function: x => ...
-    if (expr->type == ASTNodeType::Identifier &&
-        current_token().type == TokenType::Arrow) {
+    if(expr->type == ASTNodeType::Identifier && current_token().type == TokenType::Arrow) {
         return parse_arrow_function_from_identifier(expr);
     }
 
@@ -322,7 +320,7 @@ std::shared_ptr<ASTNode> Parser::parse_computed_member_expression(std::shared_pt
 
 std::shared_ptr<ASTNode> Parser::parse_array_literal() {
     Token& startToken = current_token();  // Save location before consuming
-    consume(TokenType::LeftBracket);  // consume '['
+    consume(TokenType::LeftBracket);      // consume '['
 
     auto array = ASTFactory::makeArrayLiteral();
     array->setLocation(startToken.line, startToken.column);
@@ -350,7 +348,7 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
 
 std::shared_ptr<ASTNode> Parser::parse_object_literal() {
     Token& startToken = current_token();  // Save location before consuming
-    consume(TokenType::LeftBrace);  // consume '{'
+    consume(TokenType::LeftBrace);        // consume '{'
 
     auto object = ASTFactory::makeObjectLiteral();
     object->setLocation(startToken.line, startToken.column);
@@ -468,7 +466,7 @@ std::shared_ptr<ASTNode> Parser::parse_template_literal() {
 
 std::shared_ptr<ASTNode> Parser::parse_function_expression() {
     Token& startToken = current_token();  // Save 'function' location
-    consume(TokenType::Function);  // consume 'function'
+    consume(TokenType::Function);         // consume 'function'
 
     // Parse parameters (anonymous function)
     consume(TokenType::LeftParen);
@@ -489,15 +487,45 @@ bool Parser::looks_like_arrow_params() {
     // Save position
     size_t saved = current;
 
-    // Check for (id, id, ...) pattern followed by ) =>
-    while (current < tokens.size() && current_token().type != TokenType::EndOfFile) {
-        if (current_token().type == TokenType::Identifier) {
+    // Track parenthesis depth for skipping default value expressions
+    int paren_depth = 0;
+
+    // Check for (id, id, id = expr, ...) pattern followed by ) =>
+    while(current < tokens.size() && current_token().type != TokenType::EndOfFile) {
+        if(current_token().type == TokenType::Identifier) {
             current++;
-            if (current_token().type == TokenType::Comma) {
+
+            // Check for default value: id = expr
+            if(current_token().type == TokenType::Assign) {
+                current++;  // skip '='
+                // Skip the default value expression (handle nested parens)
+                paren_depth = 0;
+                while(current < tokens.size()) {
+                    TokenType tok = current_token().type;
+                    if(tok == TokenType::LeftParen) {
+                        paren_depth++;
+                        current++;
+                    } else if(tok == TokenType::RightParen) {
+                        if(paren_depth == 0) {
+                            break;  // found the closing paren of params
+                        }
+                        paren_depth--;
+                        current++;
+                    } else if(tok == TokenType::Comma && paren_depth == 0) {
+                        break;  // found next param separator
+                    } else if(tok == TokenType::EndOfFile) {
+                        break;
+                    } else {
+                        current++;
+                    }
+                }
+            }
+
+            if(current_token().type == TokenType::Comma) {
                 current++;
                 continue;
             }
-            if (current_token().type == TokenType::RightParen) {
+            if(current_token().type == TokenType::RightParen) {
                 current++;
                 bool is_arrow = (current_token().type == TokenType::Arrow);
                 current = saved;  // restore
@@ -517,7 +545,7 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
     // Parse parameters
     std::shared_ptr<ASTNode> parameters;
 
-    if (current_token().type == TokenType::Identifier) {
+    if(current_token().type == TokenType::Identifier) {
         // Single param without parens: x => ...
         parameters = ASTFactory::makeParameterList();
         ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(current_token().value));
@@ -536,7 +564,7 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
     std::shared_ptr<ASTNode> body;
     bool isExpressionBody = false;
 
-    if (current_token().type == TokenType::LeftBrace) {
+    if(current_token().type == TokenType::LeftBrace) {
         // Block body: x => { statements }
         body = parse_block_statement();
     } else {
@@ -553,7 +581,8 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
 }
 
 // Parse arrow function when we already have the single identifier param
-std::shared_ptr<ASTNode> Parser::parse_arrow_function_from_identifier(std::shared_ptr<ASTNode> param) {
+std::shared_ptr<ASTNode> Parser::parse_arrow_function_from_identifier(
+    std::shared_ptr<ASTNode> param) {
     // param is the identifier node, we're positioned at '=>'
     size_t line = param->line;
     size_t column = param->column;
@@ -569,7 +598,7 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function_from_identifier(std::share
     std::shared_ptr<ASTNode> body;
     bool isExpressionBody = false;
 
-    if (current_token().type == TokenType::LeftBrace) {
+    if(current_token().type == TokenType::LeftBrace) {
         // Block body: x => { statements }
         body = parse_block_statement();
     } else {

@@ -7,10 +7,10 @@ class GarbageCollector;
 
 /**
  * RAII class to temporarily disable garbage collection.
- * 
+ *
  * Ensures GC is always re-enabled when the GCDisabler goes out of scope,
  * even if an exception occurs during the protected operations.
- * 
+ *
  * Usage:
  *   {
  *       GCDisabler disabler(gc_);  // GC disabled

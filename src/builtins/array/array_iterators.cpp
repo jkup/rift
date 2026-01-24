@@ -1,11 +1,10 @@
 // Array iterator methods - methods that use callbacks to iterate over elements
 // Part of the Array builtin split for better code organization
 
-#include "rift/builtins/array/array.h"
-
 #include <cmath>
 #include <functional>
 
+#include "rift/builtins/array/array.h"
 #include "rift/core/engine/call_context.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/core/engine/this_helpers.h"
@@ -206,7 +205,8 @@ Value Array::reduceRight(const CallContext& ctx, const std::vector<Value>& args)
     for(size_t i = startIndex; i > 0; --i) {
         Value element = arrayObj->getProperty(std::to_string(i - 1));
 
-        std::vector<Value> callArgs = {accumulator, element, Value(static_cast<double>(i - 1)), Value(arrayObj)};
+        std::vector<Value> callArgs = {accumulator, element, Value(static_cast<double>(i - 1)),
+                                       Value(arrayObj)};
         rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
         accumulator = callbackFn->call(cbCtx, callArgs);
     }
@@ -441,8 +441,10 @@ Value Array::flat(const CallContext& ctx, const std::vector<Value>& args) {
     double depth = 1.0;
     if(!args.empty() && args[0].isNumber()) {
         depth = args[0].toNumber();
-        if(depth < 0) depth = 0;
-        if(depth > 100) depth = 100;
+        if(depth < 0)
+            depth = 0;
+        if(depth > 100)
+            depth = 100;
     }
 
     std::vector<Value> result;

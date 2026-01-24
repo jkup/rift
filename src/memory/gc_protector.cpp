@@ -1,4 +1,5 @@
 #include "rift/memory/gc_protector.h"
+
 #include "rift/memory/object_manager.h"
 
 namespace rift::memory {

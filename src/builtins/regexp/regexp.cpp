@@ -19,7 +19,7 @@ void RegExpRegistry::store(JSObject* obj, std::unique_ptr<RegExpData> data) {
 
 RegExpData* RegExpRegistry::get(JSObject* obj) {
     auto it = registry_.find(obj);
-    if (it != registry_.end()) {
+    if(it != registry_.end()) {
         return it->second.get();
     }
     return nullptr;
@@ -36,19 +36,13 @@ void RegExpRegistry::clear() {
 // ===== RegExpData Implementation =====
 
 RegExpData::RegExpData(const std::string& p, const std::string& f)
-    : pattern(p)
-    , flags(f)
-    , global(false)
-    , ignoreCase(false)
-    , multiline(false)
-    , lastIndex(0)
-{
+    : pattern(p), flags(f), global(false), ignoreCase(false), multiline(false), lastIndex(0) {
     RE2::Options opts;
     opts.set_log_errors(false);
-    
+
     // Parse flags
-    for (char c : f) {
-        switch (c) {
+    for(char c : f) {
+        switch(c) {
             case 'g':
                 global = true;
                 break;
@@ -71,7 +65,7 @@ RegExpData::RegExpData(const std::string& p, const std::string& f)
                 break;
         }
     }
-    
+
     regex = std::make_unique<RE2>(p, opts);
 }
 
@@ -125,7 +119,7 @@ Value RegExp::constructor(const CallContext& ctx, const std::vector<Value>& args
 
 RegExpData* RegExp::getRegExpData(const CallContext& ctx) {
     auto* obj = extractThisObject(ctx);
-    if (obj) {
+    if(obj) {
         return RegExpRegistry::get(obj);
     }
     return nullptr;
@@ -135,7 +129,7 @@ RegExpData* RegExp::getRegExpData(const CallContext& ctx) {
 
 Value RegExp::test(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getRegExpData(ctx);
-    if (!data) {
+    if(!data) {
         return Value(false);
     }
 
@@ -152,7 +146,7 @@ Value RegExp::test(const CallContext& ctx, const std::vector<Value>& args) {
 
 Value RegExp::exec(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getRegExpData(ctx);
-    if (!data) {
+    if(!data) {
         return Value::null();
     }
 
@@ -160,7 +154,7 @@ Value RegExp::exec(const CallContext& ctx, const std::vector<Value>& args) {
     std::string str = !args.empty() ? args[0].toString() : "";
 
     // Check if pattern matches
-    if (!RE2::PartialMatch(str, *data->regex)) {
+    if(!RE2::PartialMatch(str, *data->regex)) {
         return Value::null();
     }
 
@@ -173,7 +167,7 @@ Value RegExp::exec(const CallContext& ctx, const std::vector<Value>& args) {
 
 Value RegExp::toString(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getRegExpData(ctx);
-    if (!data) {
+    if(!data) {
         return Value("/(?:)/");
     }
 
@@ -189,4 +183,4 @@ JSObject* RegExp::getGlobalPrototype() {
     return rift::core::BuiltinManager::getRegExpPrototype();
 }
 
-} // namespace rift::builtins
+}  // namespace rift::builtins

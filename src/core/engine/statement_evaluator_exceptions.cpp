@@ -8,10 +8,9 @@
  * Split from statement_evaluator.cpp for better maintainability.
  */
 
-#include "rift/core/engine/statement_evaluator.h"
-
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/statement_evaluator.h"
 
 namespace rift::core {
 

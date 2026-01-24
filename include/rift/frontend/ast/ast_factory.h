@@ -128,8 +128,8 @@ class ASTFactory {
     static std::shared_ptr<ASTNode> makeDoWhileStatement(std::shared_ptr<ASTNode> body,
                                                          std::shared_ptr<ASTNode> condition) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::DoWhileStatement);
-        node->children.push_back(std::move(body));        // body first
-        node->children.push_back(std::move(condition));   // condition second
+        node->children.push_back(std::move(body));       // body first
+        node->children.push_back(std::move(condition));  // condition second
         return node;
     }
 
@@ -222,12 +222,12 @@ class ASTFactory {
     // children[1] = body (BlockStatement or expression)
     // metadata = "expression" if concise body (implicit return), empty if block body
     static std::shared_ptr<ASTNode> makeArrowFunctionExpression(std::shared_ptr<ASTNode> parameters,
-                                                                 std::shared_ptr<ASTNode> body,
-                                                                 bool isExpressionBody = false) {
+                                                                std::shared_ptr<ASTNode> body,
+                                                                bool isExpressionBody = false) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::ArrowFunctionExpression);
         node->children.push_back(std::move(parameters));  // Parameter list
         node->children.push_back(std::move(body));        // Body (block or expression)
-        if (isExpressionBody) {
+        if(isExpressionBody) {
             node->metadata = "expression";  // Flag for implicit return
         }
         return node;

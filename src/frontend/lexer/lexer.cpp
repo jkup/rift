@@ -52,9 +52,12 @@ void Lexer::skip_whitespace() {
 
 // Helper function to parse hex digit
 int Lexer::parse_hex_digit(char c) {
-    if(c >= '0' && c <= '9') return c - '0';
-    if(c >= 'a' && c <= 'f') return 10 + (c - 'a');
-    if(c >= 'A' && c <= 'F') return 10 + (c - 'A');
+    if(c >= '0' && c <= '9')
+        return c - '0';
+    if(c >= 'a' && c <= 'f')
+        return 10 + (c - 'a');
+    if(c >= 'A' && c <= 'F')
+        return 10 + (c - 'A');
     return -1;  // Invalid hex digit
 }
 
@@ -66,12 +69,12 @@ char Lexer::parse_hex_escape() {
         throw std::runtime_error("Invalid hex escape sequence: expected hex digit");
     }
     advance();
-    
+
     int digit2 = parse_hex_digit(current_char());
     if(digit2 == -1) {
         throw std::runtime_error("Invalid hex escape sequence: expected second hex digit");
     }
-    
+
     return static_cast<char>((digit1 << 4) | digit2);
 }
 
@@ -87,7 +90,7 @@ std::string Lexer::parse_unicode_escape() {
         codepoint = (codepoint << 4) | digit;
         advance();
     }
-    
+
     // Convert Unicode code point to UTF-8
     std::string result;
     if(codepoint <= 0x7F) {
@@ -103,11 +106,11 @@ std::string Lexer::parse_unicode_escape() {
         result += static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F));
         result += static_cast<char>(0x80 | (codepoint & 0x3F));
     }
-    
+
     // Back up one character since the loop will advance again
     position--;
     column--;
-    
+
     return result;
 }
 
@@ -118,14 +121,15 @@ std::string Lexer::parse_unicode_codepoint_escape() {
         throw std::runtime_error("Invalid unicode code point escape: expected '{'");
     }
     advance();
-    
+
     // Parse hex digits until we hit '}'
     int codepoint = 0;
     int digitCount = 0;
     while(current_char() != '}' && current_char() != '\0') {
         int digit = parse_hex_digit(current_char());
         if(digit == -1) {
-            throw std::runtime_error("Invalid unicode code point escape: expected hex digit or '}'");
+            throw std::runtime_error(
+                "Invalid unicode code point escape: expected hex digit or '}'");
         }
         codepoint = (codepoint << 4) | digit;
         digitCount++;
@@ -134,16 +138,16 @@ std::string Lexer::parse_unicode_codepoint_escape() {
         }
         advance();
     }
-    
+
     if(current_char() != '}') {
         throw std::runtime_error("Invalid unicode code point escape: expected '}'");
     }
-    
+
     // Validate code point range
     if(codepoint > 0x10FFFF) {
         throw std::runtime_error("Invalid unicode code point escape: code point out of range");
     }
-    
+
     // Convert Unicode code point to UTF-8
     std::string result;
     if(codepoint <= 0x7F) {
@@ -165,7 +169,7 @@ std::string Lexer::parse_unicode_codepoint_escape() {
         result += static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F));
         result += static_cast<char>(0x80 | (codepoint & 0x3F));
     }
-    
+
     return result;
 }
 
@@ -195,12 +199,12 @@ Token Lexer::read_string() {
 
         if(current_char() == '\\') {
             advance();
-            
+
             // Validate escape sequence exists
             if(current_char() == '\0') {
                 throw std::runtime_error("Unterminated escape sequence in string literal");
             }
-            
+
             switch(current_char()) {
                 case 'n':
                     value += '\n';
@@ -399,20 +403,20 @@ Token Lexer::read_identifier() {
 
     // Check for keywords
     static std::unordered_map<std::string, TokenType> keywords = {
-        {"var", TokenType::Var},       {"let", TokenType::Let},
-        {"const", TokenType::Const},   {"function", TokenType::Function},
-        {"return", TokenType::Return}, {"if", TokenType::If},
-        {"else", TokenType::Else},     {"for", TokenType::For},
-        {"while", TokenType::While},   {"do", TokenType::Do},
-        {"switch", TokenType::Switch}, {"case", TokenType::Case},
-        {"default", TokenType::Default}, {"break", TokenType::Break},
+        {"var", TokenType::Var},           {"let", TokenType::Let},
+        {"const", TokenType::Const},       {"function", TokenType::Function},
+        {"return", TokenType::Return},     {"if", TokenType::If},
+        {"else", TokenType::Else},         {"for", TokenType::For},
+        {"while", TokenType::While},       {"do", TokenType::Do},
+        {"switch", TokenType::Switch},     {"case", TokenType::Case},
+        {"default", TokenType::Default},   {"break", TokenType::Break},
         {"continue", TokenType::Continue}, {"throw", TokenType::Throw},
-        {"try", TokenType::Try},       {"catch", TokenType::Catch},
-        {"finally", TokenType::Finally}, {"new", TokenType::New},
-        {"this", TokenType::This},     {"in", TokenType::In},
-        {"true", TokenType::Boolean},
-        {"false", TokenType::Boolean}, {"null", TokenType::Null},
-        {"undefined", TokenType::Undefined}, {"typeof", TokenType::Typeof},
+        {"try", TokenType::Try},           {"catch", TokenType::Catch},
+        {"finally", TokenType::Finally},   {"new", TokenType::New},
+        {"this", TokenType::This},         {"in", TokenType::In},
+        {"true", TokenType::Boolean},      {"false", TokenType::Boolean},
+        {"null", TokenType::Null},         {"undefined", TokenType::Undefined},
+        {"typeof", TokenType::Typeof},
     };
 
     auto it = keywords.find(value);

@@ -4,10 +4,10 @@
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/builtins/console/console.h"
 #include "rift/builtins/error/error.h"
-#include "rift/builtins/error/type_error.h"
+#include "rift/builtins/error/range_error.h"
 #include "rift/builtins/error/reference_error.h"
 #include "rift/builtins/error/syntax_error.h"
-#include "rift/builtins/error/range_error.h"
+#include "rift/builtins/error/type_error.h"
 #include "rift/builtins/global/global.h"
 #include "rift/builtins/json/json.h"
 #include "rift/builtins/math/math.h"
@@ -232,7 +232,7 @@ void BuiltinManager::setupNumber(std::shared_ptr<Environment> globalEnv,
 }
 
 void BuiltinManager::setupError(std::shared_ptr<Environment> globalEnv,
-                                 rift::memory::ObjectFactory* factory) {
+                                rift::memory::ObjectFactory* factory) {
     // Setup Error object using GC-managed creation
     auto* error = builtins::Error::create(factory);  // error is now raw pointer
     globalEnv->define("Error", Value(error));
@@ -303,7 +303,7 @@ void BuiltinManager::clearStaticPrototypes() {
 }
 
 void BuiltinManager::setupRegExp(std::shared_ptr<Environment> globalEnv,
-                                  rift::memory::ObjectFactory* factory) {
+                                 rift::memory::ObjectFactory* factory) {
     // Setup RegExp object using GC-managed creation
     auto* regexp = builtins::RegExp::create(factory);
     globalEnv->define("RegExp", Value(regexp));

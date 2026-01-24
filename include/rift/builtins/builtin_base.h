@@ -4,10 +4,10 @@
 #include <type_traits>
 #include <vector>
 
+#include "../core/engine/call_context.h"
 #include "../memory/object_factory.h"
 #include "../runtime/values/object.h"
 #include "../runtime/values/value.h"
-#include "../core/engine/call_context.h"
 
 namespace rift::builtins {
 
@@ -36,8 +36,7 @@ using namespace rift::runtime;
     (obj)->setProperty(name, rift::runtime::Value(factory->createJSFunction(func)))
 
 /// Register a static property (constant value) on an object
-#define RIFT_PROPERTY(obj, name, value) \
-    (obj)->setProperty(name, value)
+#define RIFT_PROPERTY(obj, name, value) (obj)->setProperty(name, value)
 
 /**
  * Base class template for all JavaScript builtin objects.
@@ -75,15 +74,15 @@ class BuiltinBase {
         // If Derived::constructor accepts CallContext, pass it directly.
         // Otherwise, wrap to drop CallContext and pass only args.
         rift::runtime::JSFunction* constructor = nullptr;
-        if constexpr (requires {
-                          static_cast<rift::runtime::Value (*)(
-                              const rift::core::CallContext&,
-                              const std::vector<rift::runtime::Value>&)>(&Derived::constructor);
-                      }) {
+        if constexpr(requires {
+                         static_cast<rift::runtime::Value (*)(
+                             const rift::core::CallContext&,
+                             const std::vector<rift::runtime::Value>&)>(&Derived::constructor);
+                     }) {
             constructor = factory->createJSFunction(
-                static_cast<rift::runtime::Value (*)(
-                    const rift::core::CallContext&,
-                    const std::vector<rift::runtime::Value>&)>(&Derived::constructor));
+                static_cast<rift::runtime::Value (*)(const rift::core::CallContext&,
+                                                     const std::vector<rift::runtime::Value>&)>(
+                    &Derived::constructor));
         } else {
             constructor = factory->createJSFunction(
                 [](const rift::core::CallContext& /*ctx*/,

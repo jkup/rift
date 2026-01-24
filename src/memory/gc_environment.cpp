@@ -34,7 +34,7 @@ std::vector<GCObject*> GCEnvironment::getReferences() const {
             continue;
         } catch(const std::exception& e) {
             // Log unexpected exceptions during GC traversal
-            std::cerr << "Warning: Unexpected exception during GC environment traversal for '" 
+            std::cerr << "Warning: Unexpected exception during GC environment traversal for '"
                       << varName << "': " << e.what() << std::endl;
             continue;
         }

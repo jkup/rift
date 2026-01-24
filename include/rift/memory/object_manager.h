@@ -28,7 +28,9 @@ class ObjectManager {
     // Specialized creation methods for common types - now return raw pointers
     rift::runtime::JSObject* createJSObject(rift::runtime::JSObject* prototype = nullptr);
     rift::runtime::JSFunction* createJSFunction(
-        std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func);
+        std::function<rift::runtime::Value(const rift::core::CallContext&,
+                                           const std::vector<rift::runtime::Value>&)>
+            func);
 
     // Overload for legacy-style functions without CallContext
     rift::runtime::JSFunction* createJSFunction(
@@ -36,7 +38,9 @@ class ObjectManager {
 
     // Create arrow function with captured this
     rift::runtime::JSArrowFunction* createJSArrowFunction(
-        std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func,
+        std::function<rift::runtime::Value(const rift::core::CallContext&,
+                                           const std::vector<rift::runtime::Value>&)>
+            func,
         const rift::runtime::Value& capturedThis);
 
     // Root management

@@ -8,17 +8,17 @@
  * Split from expression_evaluator.cpp for better maintainability.
  */
 
-#include "rift/core/engine/expression_evaluator.h"
-
 #include <cmath>
 
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/evaluation_utils.h"
+#include "rift/core/engine/expression_evaluator.h"
 
 namespace rift::core {
 
 // Helper function to apply compound assignment operation
-static Value applyCompoundOperation(const std::string& operator_, Value currentValue, Value rightValue) {
+static Value applyCompoundOperation(const std::string& operator_, Value currentValue,
+                                    Value rightValue) {
     if(operator_ == "=") {
         return rightValue;
     }
@@ -127,13 +127,16 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
                         Value lengthVal = obj->getProperty("length");
                         if(lengthVal.isNumber()) {
                             size_t currentLength;
-                            if(EvaluationUtils::toSafeArrayLength(lengthVal.toNumber(), currentLength)) {
+                            if(EvaluationUtils::toSafeArrayLength(lengthVal.toNumber(),
+                                                                  currentLength)) {
                                 if(index >= currentLength) {
                                     size_t newLength;
                                     if(EvaluationUtils::safeIncrementIndex(index, newLength)) {
-                                        obj->setProperty("length", Value(static_cast<double>(newLength)));
+                                        obj->setProperty("length",
+                                                         Value(static_cast<double>(newLength)));
                                     }
-                                    // If overflow would occur, don't update length (silent failure per spec)
+                                    // If overflow would occur, don't update length (silent failure
+                                    // per spec)
                                 }
                             }
                         }
@@ -266,13 +269,16 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
                         Value lengthVal = obj->getProperty("length");
                         if(lengthVal.isNumber()) {
                             size_t currentLength;
-                            if(EvaluationUtils::toSafeArrayLength(lengthVal.toNumber(), currentLength)) {
+                            if(EvaluationUtils::toSafeArrayLength(lengthVal.toNumber(),
+                                                                  currentLength)) {
                                 if(index >= currentLength) {
                                     size_t newLength;
                                     if(EvaluationUtils::safeIncrementIndex(index, newLength)) {
-                                        obj->setProperty("length", Value(static_cast<double>(newLength)));
+                                        obj->setProperty("length",
+                                                         Value(static_cast<double>(newLength)));
                                     }
-                                    // If overflow would occur, don't update length (silent failure per spec)
+                                    // If overflow would occur, don't update length (silent failure
+                                    // per spec)
                                 }
                             }
                         }

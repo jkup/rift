@@ -6,7 +6,7 @@ namespace rift::core {
 
 /**
  * Security and resource limits for the JavaScript runtime.
- * 
+ *
  * These limits prevent denial-of-service attacks and resource exhaustion.
  */
 class RuntimeLimits {

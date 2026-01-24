@@ -69,7 +69,7 @@ void JSObject::setProperty(const std::string& key, const Value& value) {
             return;
         }
     }
-    
+
     // Property doesn't exist, add new one with default descriptor (all true)
     properties_.emplace_back(key, PropertyDescriptor(value));
 }
@@ -89,7 +89,7 @@ void JSObject::defineProperty(const std::string& key, const PropertyDescriptor& 
             return;
         }
     }
-    
+
     // Property doesn't exist, add new one
     properties_.emplace_back(key, descriptor);
 }

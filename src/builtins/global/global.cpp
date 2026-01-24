@@ -131,7 +131,7 @@ Value Global::parseFloat(const std::vector<Value>& args) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     } catch(const std::out_of_range&) {
         // Number out of range - return infinity with appropriate sign
-        return Value(str[0] == '-' ? -std::numeric_limits<double>::infinity() 
+        return Value(str[0] == '-' ? -std::numeric_limits<double>::infinity()
                                    : std::numeric_limits<double>::infinity());
     }
 }

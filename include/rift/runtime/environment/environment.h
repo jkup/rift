@@ -12,9 +12,9 @@ namespace rift::runtime {
 
 // Variable declaration types for let/const support
 enum class VariableType {
-    Var,    // function-scoped, hoisted
-    Let,    // block-scoped, TDZ
-    Const   // block-scoped, TDZ, immutable
+    Var,   // function-scoped, hoisted
+    Let,   // block-scoped, TDZ
+    Const  // block-scoped, TDZ, immutable
 };
 
 // Variable entry with type information
@@ -22,16 +22,16 @@ struct VariableEntry {
     Value value;
     VariableType type;
     bool initialized;  // For TDZ support
-    
+
     // Default constructor for unordered_map
-    VariableEntry() 
-        : value(Value::undefined()), type(VariableType::Var), initialized(true) {}
-    
-    VariableEntry(const Value& v, VariableType t) 
-        : value(v), type(t), initialized(true) {}
-    
-    VariableEntry(VariableType t) 
-        : value(Value::undefined()), type(t), initialized(false) {}
+    VariableEntry() : value(Value::undefined()), type(VariableType::Var), initialized(true) {
+    }
+
+    VariableEntry(const Value& v, VariableType t) : value(v), type(t), initialized(true) {
+    }
+
+    VariableEntry(VariableType t) : value(Value::undefined()), type(t), initialized(false) {
+    }
 };
 
 // Environment for variable storage and scope management
@@ -42,7 +42,7 @@ class Environment : public std::enable_shared_from_this<Environment> {
     bool is_block_scope_;  // true for let/const block scopes
 
   public:
-    Environment(std::shared_ptr<Environment> parent = nullptr, bool is_block_scope = false) 
+    Environment(std::shared_ptr<Environment> parent = nullptr, bool is_block_scope = false)
         : parent_(parent), is_block_scope_(is_block_scope) {
     }
 

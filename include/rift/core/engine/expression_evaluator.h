@@ -45,7 +45,7 @@ class ExpressionEvaluator {
     static Value evaluateFunctionExpression(std::shared_ptr<ASTNode> node,
                                             std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateArrowFunctionExpression(std::shared_ptr<ASTNode> node,
-                                                  std::shared_ptr<Environment> env, Rift* engine);
+                                                 std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateNewExpression(std::shared_ptr<ASTNode> node,
                                        std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateTemplateLiteral(std::shared_ptr<ASTNode> node,

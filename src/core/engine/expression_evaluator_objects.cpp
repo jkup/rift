@@ -12,12 +12,11 @@
  * Split from expression_evaluator.cpp for better maintainability.
  */
 
-#include "rift/core/engine/expression_evaluator.h"
-
 #include "rift/builtins/array/array.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/evaluation_utils.h"
+#include "rift/core/engine/expression_evaluator.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/runtime/values/object.h"
 
@@ -60,8 +59,8 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
         auto* func =
             dynamic_cast<JSFunction*>(callee.getObject());  // Use dynamic_cast for raw pointers
         if(!func) {
-            throw JavaScriptException(Value("TypeError: callee is not a function"),
-                                      node->line, node->column);
+            throw JavaScriptException(Value("TypeError: callee is not a function"), node->line,
+                                      node->column);
         }
         rift::core::CallContext call_context(
             rift::core::CallType::Function,
@@ -89,7 +88,7 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
 
     // Check if this is computed member access (bracket notation)
     // Use metadata to determine if this should be computed
-        if(node->metadata == "computed") {
+    if(node->metadata == "computed") {
         // This is bracket notation - evaluate the property expression and convert carefully
         Value property_value = engine->evaluate(node->children[1], env);
         property = EvaluationUtils::toPropertyKeyString(property_value);
@@ -203,10 +202,17 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
     }
 
     // Get parameters (first child should be parameter list)
+    // Each parameter can be either an Identifier or an AssignmentExpression (for defaults)
     auto param_list = node->children[0];
-    std::vector<std::string> parameters;
+    std::vector<std::pair<std::string, std::shared_ptr<ASTNode>>> param_info;
     for(const auto& param : param_list->children) {
-        parameters.push_back(param->value);
+        if(param->type == ASTNodeType::AssignmentExpression) {
+            // Parameter with default value: children[0] = name, children[1] = default
+            param_info.emplace_back(param->children[0]->value, param->children[1]);
+        } else {
+            // Simple identifier parameter (no default)
+            param_info.emplace_back(param->value, nullptr);
+        }
     }
 
     // Get function body (second child)
@@ -220,17 +226,31 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
 
     // Create function object (anonymous) using GC-managed creation
     auto* func = factory->createJSFunction(
-        [engine, parameters, body, env](const rift::core::CallContext& call_context, const std::vector<Value>& args) -> Value {
+        [engine, param_info, body, env](const rift::core::CallContext& call_context,
+                                        const std::vector<Value>& args) -> Value {
             // Create new environment for function execution
             auto func_env = std::make_shared<Environment>(env);
 
             // Bind 'this' to the function environment
             func_env->define("this", call_context.thisValue);
 
-            // Bind parameters to real arguments
-            for(size_t i = 0; i < parameters.size(); ++i) {
-                Value arg_value = (i < args.size()) ? args[i] : Value::undefined();
-                func_env->define(parameters[i], arg_value);
+            // Bind parameters to real arguments (with default value support)
+            for(size_t i = 0; i < param_info.size(); ++i) {
+                const auto& [param_name, default_ast] = param_info[i];
+                Value arg_value;
+
+                // Use default if: argument not provided OR argument is undefined
+                bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                if(use_default && default_ast) {
+                    // Evaluate default value in the function's environment
+                    arg_value = engine->evaluate(default_ast, func_env);
+                } else if(i < args.size()) {
+                    arg_value = args[i];
+                } else {
+                    arg_value = Value::undefined();
+                }
+                func_env->define(param_name, arg_value);
             }
 
             // Create 'arguments' object (array-like object with all passed arguments)
@@ -260,17 +280,24 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
 }
 
 Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNode> node,
-                                                            std::shared_ptr<Environment> env,
-                                                            Rift* engine) {
-    if (node->children.size() < 2) {
+                                                           std::shared_ptr<Environment> env,
+                                                           Rift* engine) {
+    if(node->children.size() < 2) {
         return Value::undefined();
     }
 
     // Get parameters (first child should be parameter list)
+    // Each parameter can be either an Identifier or an AssignmentExpression (for defaults)
     auto param_list = node->children[0];
-    std::vector<std::string> parameters;
-    for (const auto& param : param_list->children) {
-        parameters.push_back(param->value);
+    std::vector<std::pair<std::string, std::shared_ptr<ASTNode>>> param_info;
+    for(const auto& param : param_list->children) {
+        if(param->type == ASTNodeType::AssignmentExpression) {
+            // Parameter with default value: children[0] = name, children[1] = default
+            param_info.emplace_back(param->children[0]->value, param->children[1]);
+        } else {
+            // Simple identifier parameter (no default)
+            param_info.emplace_back(param->value, nullptr);
+        }
     }
 
     // Get function body (second child)
@@ -283,7 +310,7 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
     Value captured_this = Value::undefined();
     try {
         captured_this = env->get("this");
-    } catch (const std::runtime_error&) {
+    } catch(const std::runtime_error&) {
         // No 'this' in scope - use undefined
     }
 
@@ -295,10 +322,8 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
 
     // Create arrow function object with captured this
     auto* arrow_func = factory->createJSArrowFunction(
-        [engine, parameters, body, env, is_expression_body](
-            const rift::core::CallContext& call_context,
-            const std::vector<Value>& args) -> Value {
-
+        [engine, param_info, body, env, is_expression_body](
+            const rift::core::CallContext& call_context, const std::vector<Value>& args) -> Value {
             // Create new environment for function execution
             // Note: Arrow functions get 'this' from captured_this via JSArrowFunction,
             // which modifies the call_context before calling
@@ -307,10 +332,23 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
             // Bind 'this' from call context (already set to captured_this by JSArrowFunction)
             func_env->define("this", call_context.thisValue);
 
-            // Bind parameters to arguments
-            for (size_t i = 0; i < parameters.size(); ++i) {
-                Value arg_value = (i < args.size()) ? args[i] : Value::undefined();
-                func_env->define(parameters[i], arg_value);
+            // Bind parameters to arguments (with default value support)
+            for(size_t i = 0; i < param_info.size(); ++i) {
+                const auto& [param_name, default_ast] = param_info[i];
+                Value arg_value;
+
+                // Use default if: argument not provided OR argument is undefined
+                bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                if(use_default && default_ast) {
+                    // Evaluate default value in the function's environment
+                    arg_value = engine->evaluate(default_ast, func_env);
+                } else if(i < args.size()) {
+                    arg_value = args[i];
+                } else {
+                    arg_value = Value::undefined();
+                }
+                func_env->define(param_name, arg_value);
             }
 
             // Arrow functions do NOT have their own 'arguments' object per spec
@@ -320,12 +358,12 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
             try {
                 Value result = engine->evaluate(body, func_env);
                 // If expression body, the result IS the return value (implicit return)
-                if (is_expression_body) {
+                if(is_expression_body) {
                     return result;
                 }
                 // Block body without return statement returns undefined
                 return Value::undefined();
-            } catch (const ReturnException& e) {
+            } catch(const ReturnException& e) {
                 return e.getValue();
             }
         },
@@ -349,22 +387,21 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
     // Check if constructor is a function
     if(!constructor.isFunction()) {
         throw JavaScriptException(
-            Value("TypeError: " + constructor.toString() + " is not a constructor"),
-            node->line, node->column);
+            Value("TypeError: " + constructor.toString() + " is not a constructor"), node->line,
+            node->column);
     }
 
     auto* constructor_func =
         dynamic_cast<JSFunction*>(constructor.getObject());  // Use dynamic_cast for raw pointers
     if(!constructor_func) {
-        throw JavaScriptException(Value("TypeError: constructor is not a function"),
-                                  node->line, node->column);
+        throw JavaScriptException(Value("TypeError: constructor is not a function"), node->line,
+                                  node->column);
     }
 
     // Check if this is an arrow function - they cannot be constructors
-    if (!constructor_func->isConstructor()) {
-        throw JavaScriptException(
-            Value("TypeError: arrow function is not a constructor"),
-            node->line, node->column);
+    if(!constructor_func->isConstructor()) {
+        throw JavaScriptException(Value("TypeError: arrow function is not a constructor"),
+                                  node->line, node->column);
     }
 
     // Create a new object that will be the 'this' context for the constructor

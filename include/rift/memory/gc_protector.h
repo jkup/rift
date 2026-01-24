@@ -9,24 +9,24 @@ class ObjectManager;
 
 /**
  * RAII-based GC protection manager for objects under construction.
- * 
- * Problem: When objects are created via createJSObject() or createJSFunction(), 
+ *
+ * Problem: When objects are created via createJSObject() or createJSFunction(),
  * they are immediately added to GC tracking. If GC collection is triggered during
- * initialization (via setProperty or other operations), objects that aren't yet 
+ * initialization (via setProperty or other operations), objects that aren't yet
  * reachable from any GC root will be collected, leading to heap-use-after-free.
- * 
+ *
  * Solution: GCProtector temporarily adds objects as GC roots during initialization
  * and removes them when initialization is complete. By then, the object should be
  * reachable through normal means (stored in a variable, property, or return value)
  * and will be kept alive by mark-sweep traversal.
- * 
+ *
  * Usage:
  *   auto* obj = factory->createJSObject(prototype);
  *   GCProtector protect(obj, objectManager);  // Add as temporary root
- *   
+ *
  *   obj->setProperty("length", Value(100));  // Safe - obj is a root
  *   obj->setProperty("data", someValue);      // Safe - obj is a root
- *   
+ *
  *   return Value(obj);  // GCProtector destructor removes from roots
  *                       // obj is now reachable via return value
  */
@@ -40,7 +40,7 @@ class GCProtector {
      * Add an object as a temporary GC root for safe initialization.
      * @param obj The object to protect (must be GC-tracked via createJSObject/createJSFunction)
      * @param manager The ObjectManager to use for root management
-     * 
+     *
      * Objects created via ObjectFactory are GC-tracked but not automatically roots.
      * This constructor adds them as temporary roots to prevent premature collection
      * during complex initialization.

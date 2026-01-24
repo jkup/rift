@@ -5,10 +5,10 @@
  * Split from parser.cpp for better maintainability.
  */
 
-#include "rift/frontend/parser/parser.h"
-
 #include <iostream>
 #include <stdexcept>
+
+#include "rift/frontend/parser/parser.h"
 
 namespace rift::frontend {
 
@@ -289,7 +289,7 @@ std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
 
 std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
     Token& startToken = current_token();  // Save 'function' location
-    consume(TokenType::Function);  // consume 'function'
+    consume(TokenType::Function);         // consume 'function'
 
     // Get function name
     if(current_token().type != TokenType::Identifier) {
@@ -319,20 +319,33 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
         return parameters;
     }
 
-    // Parse first parameter
-    if(current_token().type != TokenType::Identifier) {
-        throw std::runtime_error("Expected parameter name");
-    }
-    ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(current_token().value));
-    current++;  // consume parameter name
-
-    // Parse remaining parameters
-    while(match(TokenType::Comma)) {
+    // Helper lambda to parse a single parameter (with optional default value)
+    auto parse_single_parameter = [this]() -> std::shared_ptr<ASTNode> {
         if(current_token().type != TokenType::Identifier) {
             throw std::runtime_error("Expected parameter name");
         }
-        ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(current_token().value));
+        auto param_name = ASTFactory::makeIdentifier(current_token().value);
         current++;  // consume parameter name
+
+        // Check for default value (= expression)
+        if(current_token().type == TokenType::Assign) {
+            current++;  // consume '='
+            // Parse default value expression (but stop at comma or right paren)
+            // Use parse_binary_expression with assignment precedence
+            auto default_value = parse_binary_expression(1);  // precedence 1 to stop before commas
+            // Create an AssignmentExpression to represent param = defaultValue
+            return ASTFactory::makeAssignmentExpression(param_name, default_value);
+        }
+
+        return param_name;
+    };
+
+    // Parse first parameter
+    ASTFactory::addParameter(parameters, parse_single_parameter());
+
+    // Parse remaining parameters
+    while(match(TokenType::Comma)) {
+        ASTFactory::addParameter(parameters, parse_single_parameter());
     }
 
     return parameters;

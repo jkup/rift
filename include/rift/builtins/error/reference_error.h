@@ -20,7 +20,8 @@ using namespace rift::runtime;
 ///  - [MDN documentation][mdn]
 ///
 /// [spec]: https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-referenceerror
-/// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError
+/// [mdn]:
+/// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError
 class ReferenceError : public BuiltinBase<ReferenceError> {
   public:
     /// Setup methods required by BuiltinBase template
