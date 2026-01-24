@@ -159,6 +159,7 @@ The CI will automatically verify all quality checks on your PR.
   - ✅ Default parameters: `function f(x = 1, y = x + 1) { }`
   - ✅ Rest parameters: `function f(a, ...rest) { }` - collects remaining args into array
   - ✅ Spread operator: `[...arr]`, `fn(...args)` - expands arrays in literals and calls
+  - ✅ Destructuring: `const [a, b] = arr`, `const {x, y} = obj` - with defaults, rest, and nesting
 
 - **Runtime semantics**
   - ✅ Closures: lexical capture of outer variables
@@ -263,7 +264,6 @@ The CI will automatically verify all quality checks on your PR.
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
-  - ❌ Destructuring: `const {a, b} = obj`, `const [x, y] = arr`
   - ❌ Classes (`class`, `extends`, `super`)
   - ❌ Modules (`import`/`export`)
   - ❌ `for-of` loops

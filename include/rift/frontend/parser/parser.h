@@ -57,6 +57,11 @@ class Parser {
     std::shared_ptr<ASTNode> parse_block_statement();
     std::shared_ptr<ASTNode> parse_new_expression();
 
+    // Destructuring pattern parsing
+    std::shared_ptr<ASTNode> parse_array_pattern();
+    std::shared_ptr<ASTNode> parse_object_pattern();
+    std::shared_ptr<ASTNode> parse_binding_pattern();  // Dispatches to array or object pattern
+
   public:
     Parser(const std::vector<Token>& tokens);
     std::shared_ptr<ASTNode> parse();

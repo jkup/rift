@@ -49,6 +49,11 @@ enum class ASTNodeType {
     TemplateElement,
     TemplateExpression,
     SpreadElement,
+    // Destructuring patterns
+    ArrayPattern,       // [x, y, ...rest]
+    ObjectPattern,      // {a, b: renamed, ...rest}
+    AssignmentPattern,  // x = defaultValue (pattern with default)
+    RestElement,        // ...rest in patterns
 };
 
 struct ASTNode {
