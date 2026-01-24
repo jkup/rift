@@ -202,16 +202,19 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
     }
 
     // Get parameters (first child should be parameter list)
-    // Each parameter can be either an Identifier or an AssignmentExpression (for defaults)
+    // Each parameter can be: Identifier, AssignmentExpression (default), or Identifier with "rest"
     auto param_list = node->children[0];
-    std::vector<std::pair<std::string, std::shared_ptr<ASTNode>>> param_info;
+    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> param_info;
     for(const auto& param : param_list->children) {
         if(param->type == ASTNodeType::AssignmentExpression) {
             // Parameter with default value: children[0] = name, children[1] = default
-            param_info.emplace_back(param->children[0]->value, param->children[1]);
+            param_info.emplace_back(param->children[0]->value, param->children[1], false);
+        } else if(param->metadata == "rest") {
+            // Rest parameter: ...name
+            param_info.emplace_back(param->value, nullptr, true);
         } else {
             // Simple identifier parameter (no default)
-            param_info.emplace_back(param->value, nullptr);
+            param_info.emplace_back(param->value, nullptr, false);
         }
     }
 
@@ -234,23 +237,35 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
             // Bind 'this' to the function environment
             func_env->define("this", call_context.thisValue);
 
-            // Bind parameters to real arguments (with default value support)
+            // Bind parameters to real arguments (with default value and rest support)
             for(size_t i = 0; i < param_info.size(); ++i) {
-                const auto& [param_name, default_ast] = param_info[i];
-                Value arg_value;
+                const auto& [param_name, default_ast, is_rest] = param_info[i];
 
-                // Use default if: argument not provided OR argument is undefined
-                bool use_default = (i >= args.size()) || args[i].isUndefined();
-
-                if(use_default && default_ast) {
-                    // Evaluate default value in the function's environment
-                    arg_value = engine->evaluate(default_ast, func_env);
-                } else if(i < args.size()) {
-                    arg_value = args[i];
+                if(is_rest) {
+                    // Rest parameter: collect all remaining arguments into an array
+                    std::vector<Value> rest_args;
+                    for(size_t j = i; j < args.size(); ++j) {
+                        rest_args.push_back(args[j]);
+                    }
+                    auto* rest_array =
+                        builtins::Array::createArrayObject(engine->getObjectFactory(), rest_args);
+                    func_env->define(param_name, Value(rest_array));
                 } else {
-                    arg_value = Value::undefined();
+                    Value arg_value;
+
+                    // Use default if: argument not provided OR argument is undefined
+                    bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                    if(use_default && default_ast) {
+                        // Evaluate default value in the function's environment
+                        arg_value = engine->evaluate(default_ast, func_env);
+                    } else if(i < args.size()) {
+                        arg_value = args[i];
+                    } else {
+                        arg_value = Value::undefined();
+                    }
+                    func_env->define(param_name, arg_value);
                 }
-                func_env->define(param_name, arg_value);
             }
 
             // Create 'arguments' object (array-like object with all passed arguments)
@@ -287,16 +302,19 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
     }
 
     // Get parameters (first child should be parameter list)
-    // Each parameter can be either an Identifier or an AssignmentExpression (for defaults)
+    // Each parameter can be: Identifier, AssignmentExpression (default), or Identifier with "rest"
     auto param_list = node->children[0];
-    std::vector<std::pair<std::string, std::shared_ptr<ASTNode>>> param_info;
+    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> param_info;
     for(const auto& param : param_list->children) {
         if(param->type == ASTNodeType::AssignmentExpression) {
             // Parameter with default value: children[0] = name, children[1] = default
-            param_info.emplace_back(param->children[0]->value, param->children[1]);
+            param_info.emplace_back(param->children[0]->value, param->children[1], false);
+        } else if(param->metadata == "rest") {
+            // Rest parameter: ...name
+            param_info.emplace_back(param->value, nullptr, true);
         } else {
             // Simple identifier parameter (no default)
-            param_info.emplace_back(param->value, nullptr);
+            param_info.emplace_back(param->value, nullptr, false);
         }
     }
 
@@ -332,23 +350,35 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
             // Bind 'this' from call context (already set to captured_this by JSArrowFunction)
             func_env->define("this", call_context.thisValue);
 
-            // Bind parameters to arguments (with default value support)
+            // Bind parameters to arguments (with default value and rest support)
             for(size_t i = 0; i < param_info.size(); ++i) {
-                const auto& [param_name, default_ast] = param_info[i];
-                Value arg_value;
+                const auto& [param_name, default_ast, is_rest] = param_info[i];
 
-                // Use default if: argument not provided OR argument is undefined
-                bool use_default = (i >= args.size()) || args[i].isUndefined();
-
-                if(use_default && default_ast) {
-                    // Evaluate default value in the function's environment
-                    arg_value = engine->evaluate(default_ast, func_env);
-                } else if(i < args.size()) {
-                    arg_value = args[i];
+                if(is_rest) {
+                    // Rest parameter: collect all remaining arguments into an array
+                    std::vector<Value> rest_args;
+                    for(size_t j = i; j < args.size(); ++j) {
+                        rest_args.push_back(args[j]);
+                    }
+                    auto* rest_array =
+                        builtins::Array::createArrayObject(engine->getObjectFactory(), rest_args);
+                    func_env->define(param_name, Value(rest_array));
                 } else {
-                    arg_value = Value::undefined();
+                    Value arg_value;
+
+                    // Use default if: argument not provided OR argument is undefined
+                    bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                    if(use_default && default_ast) {
+                        // Evaluate default value in the function's environment
+                        arg_value = engine->evaluate(default_ast, func_env);
+                    } else if(i < args.size()) {
+                        arg_value = args[i];
+                    } else {
+                        arg_value = Value::undefined();
+                    }
+                    func_env->define(param_name, arg_value);
                 }
-                func_env->define(param_name, arg_value);
             }
 
             // Arrow functions do NOT have their own 'arguments' object per spec

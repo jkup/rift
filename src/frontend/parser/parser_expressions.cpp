@@ -490,8 +490,27 @@ bool Parser::looks_like_arrow_params() {
     // Track parenthesis depth for skipping default value expressions
     int paren_depth = 0;
 
-    // Check for (id, id, id = expr, ...) pattern followed by ) =>
+    // Check for (id, id, id = expr, ...rest) pattern followed by ) =>
     while(current < tokens.size() && current_token().type != TokenType::EndOfFile) {
+        // Handle rest parameter: ...id
+        if(current_token().type == TokenType::Spread) {
+            current++;  // skip '...'
+            if(current_token().type != TokenType::Identifier) {
+                current = saved;
+                return false;
+            }
+            current++;  // skip identifier
+            // Rest param must be last, so check for ) =>
+            if(current_token().type == TokenType::RightParen) {
+                current++;
+                bool is_arrow = (current_token().type == TokenType::Arrow);
+                current = saved;
+                return is_arrow;
+            }
+            current = saved;
+            return false;
+        }
+
         if(current_token().type == TokenType::Identifier) {
             current++;
 
