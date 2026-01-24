@@ -555,6 +555,12 @@ Token Lexer::next_token() {
             return Token(TokenType::Comma, ",", line, column);
         case '.':
             advance();
+            // Check for spread operator ...
+            if(current_char() == '.' && peek_char() == '.') {
+                advance();  // consume second dot
+                advance();  // consume third dot
+                return Token(TokenType::Spread, "...", line, column);
+            }
             return Token(TokenType::Dot, ".", line, column);
         case ':':
             advance();

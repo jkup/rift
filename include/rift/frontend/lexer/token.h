@@ -99,6 +99,7 @@ enum class TokenType {
     Semicolon,
     Comma,
     Dot,
+    Spread,  // ... (rest/spread operator)
     Colon,
 
     // Special

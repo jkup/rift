@@ -16,6 +16,7 @@
 
 #include <iostream>
 
+#include "rift/builtins/array/array.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/runtime/values/object.h"
@@ -192,17 +193,21 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
     std::string functionName = node->value;
 
     // Get parameters (first child should be parameter list)
-    // Each parameter can be either an Identifier or an AssignmentExpression (for defaults)
+    // Each parameter can be: Identifier, AssignmentExpression (default), or Identifier with "rest"
+    // metadata
     auto paramList = node->children[0];
-    // Store pairs of (param_name, default_value_ast) - nullptr means no default
-    std::vector<std::pair<std::string, std::shared_ptr<ASTNode>>> param_info;
+    // Store tuples of (param_name, default_value_ast, is_rest)
+    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> param_info;
     for(const auto& param : paramList->children) {
         if(param->type == ASTNodeType::AssignmentExpression) {
             // Parameter with default value: children[0] = name, children[1] = default
-            param_info.emplace_back(param->children[0]->value, param->children[1]);
+            param_info.emplace_back(param->children[0]->value, param->children[1], false);
+        } else if(param->metadata == "rest") {
+            // Rest parameter: ...name
+            param_info.emplace_back(param->value, nullptr, true);
         } else {
             // Simple identifier parameter (no default)
-            param_info.emplace_back(param->value, nullptr);
+            param_info.emplace_back(param->value, nullptr, false);
         }
     }
 
@@ -219,24 +224,36 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
             // Bind 'this' to the function environment
             funcEnv->define("this", callContext.thisValue);
 
-            // Bind parameters to real arguments (with default value support)
+            // Bind parameters to real arguments (with default value and rest support)
             for(size_t i = 0; i < param_info.size(); ++i) {
-                const auto& [param_name, default_ast] = param_info[i];
-                Value arg_value;
+                const auto& [param_name, default_ast, is_rest] = param_info[i];
 
-                // Use default if: argument not provided OR argument is undefined
-                bool use_default = (i >= args.size()) || args[i].isUndefined();
-
-                if(use_default && default_ast) {
-                    // Evaluate default value in the function's environment
-                    // (so earlier params can be referenced in later defaults)
-                    arg_value = engine->evaluate(default_ast, funcEnv);
-                } else if(i < args.size()) {
-                    arg_value = args[i];
+                if(is_rest) {
+                    // Rest parameter: collect all remaining arguments into an array
+                    std::vector<Value> rest_args;
+                    for(size_t j = i; j < args.size(); ++j) {
+                        rest_args.push_back(args[j]);
+                    }
+                    auto* rest_array =
+                        builtins::Array::createArrayObject(engine->getObjectFactory(), rest_args);
+                    funcEnv->define(param_name, Value(rest_array));
                 } else {
-                    arg_value = Value::undefined();
+                    Value arg_value;
+
+                    // Use default if: argument not provided OR argument is undefined
+                    bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                    if(use_default && default_ast) {
+                        // Evaluate default value in the function's environment
+                        // (so earlier params can be referenced in later defaults)
+                        arg_value = engine->evaluate(default_ast, funcEnv);
+                    } else if(i < args.size()) {
+                        arg_value = args[i];
+                    } else {
+                        arg_value = Value::undefined();
+                    }
+                    funcEnv->define(param_name, arg_value);
                 }
-                funcEnv->define(param_name, arg_value);
             }
 
             // Create 'arguments' object (array-like object with all passed arguments)

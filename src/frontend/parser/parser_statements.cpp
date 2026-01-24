@@ -313,19 +313,37 @@ std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
 
 std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
     auto parameters = ASTFactory::makeParameterList();
+    bool has_rest_param = false;
 
     // Handle empty parameter list
     if(current_token().type == TokenType::RightParen) {
         return parameters;
     }
 
-    // Helper lambda to parse a single parameter (with optional default value)
-    auto parse_single_parameter = [this]() -> std::shared_ptr<ASTNode> {
+    // Helper lambda to parse a single parameter (with optional default value or rest)
+    auto parse_single_parameter = [this, &has_rest_param]() -> std::shared_ptr<ASTNode> {
+        // Check for rest parameter (...name)
+        bool is_rest = false;
+        if(current_token().type == TokenType::Spread) {
+            if(has_rest_param) {
+                throw std::runtime_error("Rest parameter must be last formal parameter");
+            }
+            is_rest = true;
+            has_rest_param = true;
+            current++;  // consume '...'
+        }
+
         if(current_token().type != TokenType::Identifier) {
             throw std::runtime_error("Expected parameter name");
         }
         auto param_name = ASTFactory::makeIdentifier(current_token().value);
         current++;  // consume parameter name
+
+        // Rest parameters cannot have default values
+        if(is_rest) {
+            param_name->metadata = "rest";  // Mark as rest parameter
+            return param_name;
+        }
 
         // Check for default value (= expression)
         if(current_token().type == TokenType::Assign) {
@@ -345,6 +363,9 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
 
     // Parse remaining parameters
     while(match(TokenType::Comma)) {
+        if(has_rest_param) {
+            throw std::runtime_error("Rest parameter must be last formal parameter");
+        }
         ASTFactory::addParameter(parameters, parse_single_parameter());
     }
 
