@@ -23,11 +23,12 @@ struct CallContext {
 
     CallContext() = default;
     CallContext(CallType callType, const Value& thisVal = Value::undefined())
-        : type(callType), thisValue(thisVal) {}
+        : type(callType), thisValue(thisVal) {
+    }
 
-    bool isConstructorCall() const { return type == CallType::Constructor; }
+    bool isConstructorCall() const {
+        return type == CallType::Constructor;
+    }
 };
 
 }  // namespace rift::core
-
-

@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-#include "rift/runtime/values/object.h"
 #include "rift/memory/gc_disabler.h"
+#include "rift/runtime/values/object.h"
 
 namespace rift::memory {
 
@@ -25,18 +25,20 @@ rift::runtime::JSObject* ObjectManager::createJSObject(rift::runtime::JSObject* 
     // Disable GC during object creation - automatically re-enabled when disabler goes out of scope
     // This prevents collection if an exception is thrown during object creation
     GCDisabler disabler(gc_.get());
-    
+
     rift::runtime::JSObject* obj = new rift::runtime::JSObject(prototype);
     gc_->addObject(obj);  // GC owns object (won't trigger collection - GC disabled)
-    
+
     return obj;
 }
 
 rift::runtime::JSFunction* ObjectManager::createJSFunction(
-    std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func) {
+    std::function<rift::runtime::Value(const rift::core::CallContext&,
+                                       const std::vector<rift::runtime::Value>&)>
+        func) {
     // Disable GC during object creation - automatically re-enabled when disabler goes out of scope
     GCDisabler disabler(gc_.get());
-    
+
     rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(std::move(func));
     gc_->addObject(obj);  // Track the object (GC disabled, won't collect)
 
@@ -69,12 +71,15 @@ rift::runtime::JSFunction* ObjectManager::createJSFunction(
 }
 
 rift::runtime::JSArrowFunction* ObjectManager::createJSArrowFunction(
-    std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func,
+    std::function<rift::runtime::Value(const rift::core::CallContext&,
+                                       const std::vector<rift::runtime::Value>&)>
+        func,
     const rift::runtime::Value& capturedThis) {
     // Disable GC during object creation - automatically re-enabled when disabler goes out of scope
     GCDisabler disabler(gc_.get());
 
-    rift::runtime::JSArrowFunction* obj = new rift::runtime::JSArrowFunction(std::move(func), capturedThis);
+    rift::runtime::JSArrowFunction* obj =
+        new rift::runtime::JSArrowFunction(std::move(func), capturedThis);
     gc_->addObject(obj);  // Track the object (GC disabled, won't collect)
 
     return obj;

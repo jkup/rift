@@ -1,12 +1,11 @@
 // Array mutator methods - methods that modify the array in place
 // Part of the Array builtin split for better code organization
 
-#include "rift/builtins/array/array.h"
-
 #include <algorithm>
 #include <cmath>
 #include <limits>
 
+#include "rift/builtins/array/array.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/this_helpers.h"
 

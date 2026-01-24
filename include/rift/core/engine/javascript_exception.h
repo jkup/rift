@@ -20,9 +20,9 @@ class JavaScriptException : public std::exception {
 
     void buildMessage() {
         message_ = "Uncaught " + thrownValue_.toString();
-        if (line_ > 0) {
+        if(line_ > 0) {
             message_ += " at line " + std::to_string(line_);
-            if (column_ > 0) {
+            if(column_ > 0) {
                 message_ += ":" + std::to_string(column_);
             }
         }

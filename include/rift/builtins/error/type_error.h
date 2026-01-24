@@ -21,7 +21,8 @@ using namespace rift::runtime;
 ///  - [MDN documentation][mdn]
 ///
 /// [spec]: https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-typeerror
-/// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
+/// [mdn]:
+/// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
 class TypeError : public BuiltinBase<TypeError> {
   public:
     /// Setup methods required by BuiltinBase template

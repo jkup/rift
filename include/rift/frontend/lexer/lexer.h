@@ -37,7 +37,7 @@ class Lexer {
     Token read_template_string();
     Token read_template_part();  // New: read template string part
     Token read_identifier();
-    
+
     // Helper functions for escape sequences
     int parse_hex_digit(char c);
     char parse_hex_escape();

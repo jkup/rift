@@ -3,12 +3,12 @@
 #include <functional>
 #include <memory>
 #include <unordered_map>
-#include <vector>
 #include <utility>
+#include <vector>
 
+#include "../../core/engine/call_context.h"
 #include "../../memory/gc.h"
 #include "value.h"
-#include "../../core/engine/call_context.h"
 
 namespace rift::runtime {
 
@@ -21,17 +21,19 @@ struct PropertyDescriptor {
     bool writable = true;
     bool enumerable = true;
     bool configurable = true;
-    
+
     // Constructor for default descriptor (all true)
     PropertyDescriptor() = default;
-    
+
     // Constructor with value and default attributes
-    explicit PropertyDescriptor(const Value& val) 
-        : value(val), writable(true), enumerable(true), configurable(true) {}
-    
+    explicit PropertyDescriptor(const Value& val)
+        : value(val), writable(true), enumerable(true), configurable(true) {
+    }
+
     // Constructor with all attributes
     PropertyDescriptor(const Value& val, bool w, bool e, bool c)
-        : value(val), writable(w), enumerable(e), configurable(c) {}
+        : value(val), writable(w), enumerable(e), configurable(c) {
+    }
 };
 
 // Base JavaScript object
@@ -54,7 +56,7 @@ class JSObject : public rift::memory::GCObject {
     Value getProperty(const std::string& key) const;
     void setProperty(const std::string& key, const Value& value);
     bool deleteProperty(const std::string& key);
-    
+
     // Property descriptor operations
     bool hasOwnProperty(const std::string& key) const;
     PropertyDescriptor getOwnPropertyDescriptor(const std::string& key) const;
@@ -79,7 +81,7 @@ class JSObject : public rift::memory::GCObject {
 
     // Get only own property names (not inherited from prototype)
     std::vector<std::string> getOwnPropertyNames() const;
-    
+
     // Get only enumerable own property names
     std::vector<std::string> getEnumerablePropertyNames() const;
 
@@ -102,14 +104,16 @@ class JSObject : public rift::memory::GCObject {
 // Function object
 class JSFunction : public JSObject {
   private:
-    std::function<Value(const rift::core::CallContext&, const std::vector<Value>&)> native_function_;
+    std::function<Value(const rift::core::CallContext&, const std::vector<Value>&)>
+        native_function_;
 
   public:
     JSFunction(std::function<Value(const rift::core::CallContext&, const std::vector<Value>&)> func)
         : JSObject(), native_function_(std::move(func)) {
     }
 
-    virtual Value call(const rift::core::CallContext& callContext, const std::vector<Value>& args) const {
+    virtual Value call(const rift::core::CallContext& callContext,
+                       const std::vector<Value>& args) const {
         return native_function_(callContext, args);
     }
 
@@ -136,7 +140,8 @@ class JSArrowFunction : public JSFunction {
     }
 
     // Arrow functions always use captured this, ignoring call context
-    Value call(const rift::core::CallContext& callContext, const std::vector<Value>& args) const override {
+    Value call(const rift::core::CallContext& callContext,
+               const std::vector<Value>& args) const override {
         // Create modified context with captured this
         rift::core::CallContext arrow_context(callContext.type, captured_this_);
         return JSFunction::call(arrow_context, args);
@@ -154,7 +159,7 @@ class JSArrowFunction : public JSFunction {
     // For GC - ensure captured_this_ is traversed
     std::vector<rift::memory::GCObject*> getReferences() const override {
         auto refs = JSFunction::getReferences();
-        if (captured_this_.isObject()) {
+        if(captured_this_.isObject()) {
             refs.push_back(captured_this_.getObject());
         }
         return refs;

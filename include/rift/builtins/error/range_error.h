@@ -13,14 +13,16 @@ using namespace rift::runtime;
 
 /// The `RangeError` builtin object and constructor.
 ///
-/// The RangeError object represents an error when a value is not in the set or range of allowed values.
+/// The RangeError object represents an error when a value is not in the set or range of allowed
+/// values.
 ///
 /// More information:
 ///  - [ECMAScript reference][spec]
 ///  - [MDN documentation][mdn]
 ///
 /// [spec]: https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror
-/// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError
+/// [mdn]:
+/// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError
 class RangeError : public BuiltinBase<RangeError> {
   public:
     /// Setup methods required by BuiltinBase template

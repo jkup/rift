@@ -59,16 +59,16 @@ Value JSON::parse(const std::vector<Value>& args, rift::memory::ObjectFactory* f
         throw JavaScriptException(
             Value("SyntaxError: Invalid JSON input - received object instead of string"));
     }
-    
+
     // Get the ObjectManager to temporarily disable GC during parsing
     // This prevents premature collection of intermediate objects that aren't yet rooted
     auto* objManager = factory->getObjectManager();
     bool wasGCEnabled = objManager->isGCEnabled();
-    
+
     try {
         // Disable GC during parsing to prevent collection of intermediate objects
         objManager->setGCEnabled(false);
-        
+
         size_t pos = 0;
         skipWhitespace(jsonString, pos);
         Value result = parseValue(jsonString, pos, factory);
@@ -152,7 +152,8 @@ Value JSON::parseValue(const std::string& json, size_t& pos, rift::memory::Objec
     }
 }
 
-Value JSON::parseObject(const std::string& json, size_t& pos, rift::memory::ObjectFactory* factory) {
+Value JSON::parseObject(const std::string& json, size_t& pos,
+                        rift::memory::ObjectFactory* factory) {
     // Use GC-managed object creation - object is immediately tracked by GC
     auto* object = factory->createJSObject();
 
@@ -313,14 +314,15 @@ Value JSON::parseString(const std::string& json, size_t& pos) {
                     if(pos + 4 > json.length()) {
                         throw std::runtime_error("JSON: Incomplete unicode escape sequence");
                     }
-                    
+
                     // For now, just preserve the escape sequence literally
                     // Full unicode support would require proper UTF-8 encoding
                     result += "\\u";
                     for(size_t i = 1; i <= 4; i++) {
                         char hexChar = json[pos + i];
                         if(!std::isxdigit(hexChar)) {
-                            throw std::runtime_error("JSON: Invalid unicode escape sequence (non-hex digit)");
+                            throw std::runtime_error(
+                                "JSON: Invalid unicode escape sequence (non-hex digit)");
                         }
                         result += hexChar;
                     }
@@ -328,7 +330,8 @@ Value JSON::parseString(const std::string& json, size_t& pos) {
                     break;
                 }
                 default:
-                    throw std::runtime_error("JSON: Invalid escape sequence '\\" + std::string(1, escaped) + "'");
+                    throw std::runtime_error("JSON: Invalid escape sequence '\\" +
+                                             std::string(1, escaped) + "'");
             }
             pos++;
         } else if(ch < 0x20) {

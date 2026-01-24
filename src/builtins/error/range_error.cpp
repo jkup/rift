@@ -20,7 +20,7 @@ Value RangeError::constructor(const std::vector<Value>& args) {
     // Create RangeError object with proper prototype chain
     auto errorPrototype = getGlobalPrototype();
     auto* errorObj = getObjectFactory()->createJSObject(errorPrototype);
-    
+
     // Protect from GC during initialization
     rift::memory::GCProtector protect(errorObj, getObjectFactory()->getObjectManager());
 

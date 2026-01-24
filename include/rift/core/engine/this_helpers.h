@@ -1,8 +1,8 @@
 #pragma once
 
-#include "call_context.h"
-#include "../../runtime/values/value.h"
 #include "../../runtime/values/object.h"
+#include "../../runtime/values/value.h"
+#include "call_context.h"
 
 namespace rift::core {
 
@@ -20,7 +20,7 @@ namespace rift::core {
  * @return JSObject* if this is an object, nullptr otherwise
  */
 inline runtime::JSObject* extractThisObject(const CallContext& ctx) {
-    if (ctx.thisValue.isObject()) {
+    if(ctx.thisValue.isObject()) {
         return ctx.thisValue.getObject();
     }
     return nullptr;
@@ -37,16 +37,16 @@ inline std::string extractThisString(const CallContext& ctx) {
     const runtime::Value& thisValue = ctx.thisValue;
 
     // If it's a string primitive, return it directly
-    if (thisValue.isString()) {
+    if(thisValue.isString()) {
         return thisValue.getString();
     }
 
     // If it's a String object, check for "value" property
-    if (thisValue.isObject()) {
+    if(thisValue.isObject()) {
         auto* obj = thisValue.getObject();
-        if (obj) {
+        if(obj) {
             runtime::Value valueProperty = obj->getProperty("value");
-            if (valueProperty.isString()) {
+            if(valueProperty.isString()) {
                 return valueProperty.getString();
             }
         }
@@ -67,16 +67,16 @@ inline bool extractThisBool(const CallContext& ctx) {
     const runtime::Value& thisValue = ctx.thisValue;
 
     // If it's a boolean primitive, return it directly
-    if (thisValue.isBoolean()) {
+    if(thisValue.isBoolean()) {
         return thisValue.getBool();
     }
 
     // If it's a Boolean object, check for "value" property
-    if (thisValue.isObject()) {
+    if(thisValue.isObject()) {
         auto* obj = thisValue.getObject();
-        if (obj) {
+        if(obj) {
             runtime::Value valueProperty = obj->getProperty("value");
-            if (valueProperty.isBoolean()) {
+            if(valueProperty.isBoolean()) {
                 return valueProperty.getBool();
             }
         }
@@ -97,16 +97,16 @@ inline double extractThisNumber(const CallContext& ctx) {
     const runtime::Value& thisValue = ctx.thisValue;
 
     // If it's a number primitive, return it directly
-    if (thisValue.isNumber()) {
+    if(thisValue.isNumber()) {
         return thisValue.toNumber();
     }
 
     // If it's a Number object, check for "value" property
-    if (thisValue.isObject()) {
+    if(thisValue.isObject()) {
         auto* obj = thisValue.getObject();
-        if (obj) {
+        if(obj) {
             runtime::Value valueProperty = obj->getProperty("value");
-            if (valueProperty.isNumber()) {
+            if(valueProperty.isNumber()) {
                 return valueProperty.toNumber();
             }
         }

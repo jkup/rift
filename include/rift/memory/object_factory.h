@@ -31,7 +31,9 @@ class ObjectFactory {
 
     // Create a JS function - now returns raw pointer
     rift::runtime::JSFunction* createJSFunction(
-        std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func) {
+        std::function<rift::runtime::Value(const rift::core::CallContext&,
+                                           const std::vector<rift::runtime::Value>&)>
+            func) {
         return object_manager_->createJSFunction(std::move(func));
     }
 
@@ -43,7 +45,9 @@ class ObjectFactory {
 
     // Create arrow function with captured this
     rift::runtime::JSArrowFunction* createJSArrowFunction(
-        std::function<rift::runtime::Value(const rift::core::CallContext&, const std::vector<rift::runtime::Value>&)> func,
+        std::function<rift::runtime::Value(const rift::core::CallContext&,
+                                           const std::vector<rift::runtime::Value>&)>
+            func,
         const rift::runtime::Value& capturedThis) {
         return object_manager_->createJSArrowFunction(std::move(func), capturedThis);
     }

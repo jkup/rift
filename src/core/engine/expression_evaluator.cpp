@@ -89,10 +89,12 @@ Value ExpressionEvaluator::evaluateLiteral(std::shared_ptr<ASTNode> node,
                 double num = std::stod(node->value);
                 return Value(num);
             } catch(const std::invalid_argument& e) {
-                std::cerr << "Warning: Invalid number literal '" << node->value << "': " << e.what() << std::endl;
+                std::cerr << "Warning: Invalid number literal '" << node->value << "': " << e.what()
+                          << std::endl;
                 return Value(0.0);  // fallback
             } catch(const std::out_of_range& e) {
-                std::cerr << "Warning: Number literal out of range '" << node->value << "': " << e.what() << std::endl;
+                std::cerr << "Warning: Number literal out of range '" << node->value
+                          << "': " << e.what() << std::endl;
                 return Value(std::numeric_limits<double>::infinity());  // fallback to infinity
             }
         } else if(node->metadata == "boolean") {
@@ -178,11 +180,13 @@ Value ExpressionEvaluator::evaluateUnaryExpression(std::shared_ptr<ASTNode> node
                 Value operand = engine->evaluate(operand_node, env);
                 return OperationHandler::performUnaryOperation(node->value, operand);
             } catch(const std::runtime_error&) {
-                // If the identifier doesn't exist, typeof should return "undefined" per ECMAScript spec
+                // If the identifier doesn't exist, typeof should return "undefined" per ECMAScript
+                // spec
                 return Value("undefined");
             } catch(const std::exception& e) {
                 // Log unexpected exceptions but still return "undefined" for typeof robustness
-                std::cerr << "Warning: Unexpected exception in typeof evaluation: " << e.what() << std::endl;
+                std::cerr << "Warning: Unexpected exception in typeof evaluation: " << e.what()
+                          << std::endl;
                 return Value("undefined");
             }
         } else {

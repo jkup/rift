@@ -6,11 +6,13 @@
 
 namespace rift::builtins {
 
-void ReferenceError::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
+void ReferenceError::setupStaticMethods(JSObject* constructor,
+                                        rift::memory::ObjectFactory* factory) {
     // ReferenceError has no static methods
 }
 
-void ReferenceError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
+void ReferenceError::setupPrototypeMethods(JSObject* prototype,
+                                           rift::memory::ObjectFactory* factory) {
     RIFT_PROPERTY(prototype, "name", Value("ReferenceError"));
     RIFT_PROPERTY(prototype, "message", Value(""));
     RIFT_METHOD(prototype, "toString", ReferenceError::toString);
@@ -20,7 +22,7 @@ Value ReferenceError::constructor(const std::vector<Value>& args) {
     // Create ReferenceError object with proper prototype chain
     auto errorPrototype = getGlobalPrototype();
     auto* errorObj = getObjectFactory()->createJSObject(errorPrototype);
-    
+
     // Protect from GC during initialization
     rift::memory::GCProtector protect(errorObj, getObjectFactory()->getObjectManager());
 

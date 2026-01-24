@@ -17,7 +17,7 @@ void Environment::define(const std::string& name, const Value& value, VariableTy
         // let/const cannot be redeclared in same scope
         throw std::runtime_error("Identifier '" + name + "' has already been declared");
     }
-    
+
     variables_[name] = VariableEntry(value, type);
 }
 
@@ -32,7 +32,7 @@ void Environment::declare(const std::string& name, VariableType type) {
         // let/const cannot be redeclared in same scope
         throw std::runtime_error("Identifier '" + name + "' has already been declared");
     }
-    
+
     variables_[name] = VariableEntry(type);  // Not initialized yet (TDZ)
 }
 
@@ -73,7 +73,8 @@ void Environment::set(const std::string& name, const Value& value) {
             parent_->set(name, value);
             return;
         } catch(const std::runtime_error&) {
-            // Variable not found in parent chain - fall through to define in current scope (for var semantics)
+            // Variable not found in parent chain - fall through to define in current scope (for var
+            // semantics)
         }
     }
 

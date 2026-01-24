@@ -1,10 +1,9 @@
 // Array accessor methods - methods that access, search, or copy array elements
 // Part of the Array builtin split for better code organization
 
-#include "rift/builtins/array/array.h"
-
 #include <cmath>
 
+#include "rift/builtins/array/array.h"
 #include "rift/core/engine/this_helpers.h"
 
 namespace rift::builtins {

@@ -50,15 +50,15 @@ class JSON {
     /// @param factory ObjectFactory for GC-managed object creation
     /// @returns Parsed JavaScript value
     static Value parseValue(const std::string& json, size_t& pos,
-                           rift::memory::ObjectFactory* factory);
+                            rift::memory::ObjectFactory* factory);
 
     /// Parse JSON object
     static Value parseObject(const std::string& json, size_t& pos,
-                            rift::memory::ObjectFactory* factory);
+                             rift::memory::ObjectFactory* factory);
 
     /// Parse JSON array
     static Value parseArray(const std::string& json, size_t& pos,
-                           rift::memory::ObjectFactory* factory);
+                            rift::memory::ObjectFactory* factory);
 
     /// Parse JSON string literal
     static Value parseString(const std::string& json, size_t& pos);

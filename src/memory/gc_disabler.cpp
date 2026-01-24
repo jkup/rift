@@ -1,4 +1,5 @@
 #include "rift/memory/gc_disabler.h"
+
 #include "rift/memory/gc.h"
 
 namespace rift::memory {

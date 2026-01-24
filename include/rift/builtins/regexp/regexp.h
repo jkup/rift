@@ -5,12 +5,12 @@
 #include <unordered_map>
 #include <vector>
 
-#include "re2/re2.h"
 #include "../../core/engine/call_context.h"
 #include "../../memory/object_factory.h"
 #include "../../runtime/values/object.h"
 #include "../../runtime/values/value.h"
 #include "../builtin_base.h"
+#include "re2/re2.h"
 
 namespace rift::builtins {
 
@@ -21,7 +21,7 @@ using rift::core::CallContext;
  * Internal class to store regex state
  */
 class RegExpData {
-public:
+  public:
     std::string pattern;
     std::string flags;
     std::unique_ptr<RE2> regex;
@@ -36,17 +36,17 @@ public:
 /**
  * Registry to manage RegExpData lifecycle
  * Maps JSObject* to RegExpData to avoid unsafe pointer casting
- * 
+ *
  * NOTE: This registry currently does not automatically clean up entries
  * when RegExp objects are garbage collected. This is acceptable for now
  * because RegExp objects are typically long-lived, but a future improvement
  * would be to integrate with GC finalization or use weak references.
  */
 class RegExpRegistry {
-private:
+  private:
     static std::unordered_map<JSObject*, std::unique_ptr<RegExpData>> registry_;
 
-public:
+  public:
     static void store(JSObject* obj, std::unique_ptr<RegExpData> data);
     static RegExpData* get(JSObject* obj);
     static void remove(JSObject* obj);
@@ -55,7 +55,7 @@ public:
 
 /**
  * RegExp built-in object implementation using Google RE2
- * 
+ *
  * Note: RE2 is a safe, fast regex library that guarantees linear time execution.
  * It does not support some JavaScript regex features (backreferences, lookahead/lookbehind)
  * but covers the most common use cases and prevents catastrophic backtracking.
@@ -70,7 +70,7 @@ public:
  * [re2]: https://github.com/google/re2/wiki/Syntax
  */
 class RegExp : public BuiltinBase<RegExp> {
-public:
+  public:
     /// RegExp constructor (required by BuiltinBase)
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
@@ -83,10 +83,10 @@ public:
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
-private:
+  private:
     /// Helper methods
     static JSObject* getGlobalPrototype();
     static RegExpData* getRegExpData(const CallContext& ctx);
 };
 
-} // namespace rift::builtins
+}  // namespace rift::builtins
