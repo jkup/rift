@@ -15,6 +15,7 @@
 #include "rift/core/engine/statement_evaluator.h"
 
 #include <iostream>
+#include <unordered_set>
 
 #include "rift/builtins/array/array.h"
 #include "rift/core/engine/engine.h"
@@ -126,58 +127,203 @@ Value StatementEvaluator::evaluateExpressionStatement(std::shared_ptr<ASTNode> n
     return Value::undefined();
 }
 
+// Helper to extract array elements from a value
+static std::vector<Value> extractArrayElements(const Value& value) {
+    std::vector<Value> elements;
+
+    if(value.isObject()) {
+        auto* obj = value.getObject();
+        Value length_val = obj->getProperty("length");
+        if(length_val.isNumber()) {
+            size_t length = static_cast<size_t>(length_val.getNumber());
+            for(size_t i = 0; i < length; ++i) {
+                elements.push_back(obj->getProperty(std::to_string(i)));
+            }
+        }
+    } else if(value.isString()) {
+        // Strings are iterable - each character becomes an element
+        std::string str = value.getString();
+        for(char c : str) {
+            elements.push_back(Value(std::string(1, c)));
+        }
+    }
+
+    return elements;
+}
+
+// Helper to apply destructuring pattern binding
+static void applyPatternBinding(std::shared_ptr<ASTNode> pattern, const Value& value,
+                                std::shared_ptr<Environment> env, Rift* engine,
+                                VariableType var_type) {
+    if(!pattern) {
+        return;
+    }
+
+    if(pattern->type == ASTNodeType::Identifier) {
+        // Simple identifier binding
+        env->define(pattern->value, value, var_type);
+
+    } else if(pattern->type == ASTNodeType::ArrayPattern) {
+        // Array destructuring: [x, y, ...rest]
+        std::vector<Value> elements = extractArrayElements(value);
+
+        size_t elem_idx = 0;
+        for(size_t i = 0; i < pattern->children.size(); ++i) {
+            auto& elem_pattern = pattern->children[i];
+
+            if(!elem_pattern) {
+                // Hole: [x, , z] - skip this element
+                elem_idx++;
+                continue;
+            }
+
+            if(elem_pattern->type == ASTNodeType::RestElement) {
+                // Rest element: collect remaining elements into array
+                std::vector<Value> rest_elements;
+                while(elem_idx < elements.size()) {
+                    rest_elements.push_back(elements[elem_idx++]);
+                }
+                auto* rest_array =
+                    builtins::Array::createArrayObject(engine->getObjectFactory(), rest_elements);
+                env->define(elem_pattern->children[0]->value, Value(rest_array), var_type);
+
+            } else if(elem_pattern->type == ASTNodeType::AssignmentPattern) {
+                // Element with default: [x = 10]
+                Value elem_value =
+                    elem_idx < elements.size() ? elements[elem_idx] : Value::undefined();
+
+                if(elem_value.isUndefined() && elem_pattern->children.size() > 1) {
+                    // Use default value
+                    elem_value = engine->evaluate(elem_pattern->children[1], env);
+                }
+
+                applyPatternBinding(elem_pattern->children[0], elem_value, env, engine, var_type);
+                elem_idx++;
+
+            } else {
+                // Nested pattern or identifier
+                Value elem_value =
+                    elem_idx < elements.size() ? elements[elem_idx] : Value::undefined();
+                applyPatternBinding(elem_pattern, elem_value, env, engine, var_type);
+                elem_idx++;
+            }
+        }
+
+    } else if(pattern->type == ASTNodeType::ObjectPattern) {
+        // Object destructuring: {a, b: renamed, ...rest}
+        JSObject* obj = nullptr;
+        if(value.isObject()) {
+            obj = value.getObject();
+        }
+
+        std::unordered_set<std::string> consumed_keys;
+
+        // Object pattern stores key-value pairs: key, value, key, value, ...
+        for(size_t i = 0; i < pattern->children.size(); i += 2) {
+            auto& key_node = pattern->children[i];
+
+            if(key_node->type == ASTNodeType::RestElement) {
+                // Rest property: {...rest} - collect non-consumed properties
+                auto* rest_obj = engine->getObjectFactory()->createJSObject();
+                if(obj) {
+                    auto all_keys = obj->getOwnPropertyNames();
+                    for(const auto& key : all_keys) {
+                        if(consumed_keys.find(key) == consumed_keys.end()) {
+                            rest_obj->setProperty(key, obj->getProperty(key));
+                        }
+                    }
+                }
+                env->define(key_node->children[0]->value, Value(rest_obj), var_type);
+                break;  // Rest must be last
+            }
+
+            // Regular property
+            std::string key = key_node->value;
+            consumed_keys.insert(key);
+
+            Value prop_value = obj ? obj->getProperty(key) : Value::undefined();
+
+            // Get the value pattern (might be identifier, nested pattern, or assignment pattern)
+            auto& value_pattern = pattern->children[i + 1];
+            applyPatternBinding(value_pattern, prop_value, env, engine, var_type);
+        }
+
+    } else if(pattern->type == ASTNodeType::AssignmentPattern) {
+        // Pattern with default value
+        if(value.isUndefined() && pattern->children.size() > 1) {
+            Value default_val = engine->evaluate(pattern->children[1], env);
+            applyPatternBinding(pattern->children[0], default_val, env, engine, var_type);
+        } else {
+            applyPatternBinding(pattern->children[0], value, env, engine, var_type);
+        }
+    }
+}
+
 // Variable declarations
 Value StatementEvaluator::evaluateVariableDeclaration(std::shared_ptr<ASTNode> node,
                                                       std::shared_ptr<Environment> env,
                                                       Rift* engine) {
-    // Get the variable name
+    // Check for destructuring declaration (marked with metadata)
+    if(node->metadata == "destructuring" && node->children.size() >= 2) {
+        auto& pattern = node->children[0];
+        Value value = engine->evaluate(node->children[1], env);
+        applyPatternBinding(pattern, value, env, engine, VariableType::Var);
+        return value;
+    }
+
+    // Simple identifier declaration (existing behavior)
     std::string varName = node->value;
 
-    // Get the initial value if provided
     Value value = Value::undefined();
     if(node->children.size() > 0) {
         value = engine->evaluate(node->children[0], env);
     }
 
-    // Define the variable in the environment with var semantics
     env->define(varName, value, VariableType::Var);
-
     return value;
 }
 
 Value StatementEvaluator::evaluateLetDeclaration(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
-    // Get the variable name
+    // Check for destructuring declaration
+    if(node->metadata == "destructuring" && node->children.size() >= 2) {
+        auto& pattern = node->children[0];
+        Value value = engine->evaluate(node->children[1], env);
+        applyPatternBinding(pattern, value, env, engine, VariableType::Let);
+        return value;
+    }
+
+    // Simple identifier declaration
     std::string varName = node->value;
 
-    // Get the initial value if provided
     Value value = Value::undefined();
     if(node->children.size() > 0) {
         value = engine->evaluate(node->children[0], env);
     }
 
-    // Define the variable in the environment with let semantics
     env->define(varName, value, VariableType::Let);
-
     return value;
 }
 
 Value StatementEvaluator::evaluateConstDeclaration(std::shared_ptr<ASTNode> node,
                                                    std::shared_ptr<Environment> env, Rift* engine) {
-    // Get the variable name
+    // Check for destructuring declaration
+    if(node->metadata == "destructuring" && node->children.size() >= 2) {
+        auto& pattern = node->children[0];
+        Value value = engine->evaluate(node->children[1], env);
+        applyPatternBinding(pattern, value, env, engine, VariableType::Const);
+        return value;
+    }
+
+    // Simple identifier declaration
     std::string varName = node->value;
 
-    // const must have an initializer (enforced by parser)
     if(node->children.size() == 0) {
         throw std::runtime_error("Missing initializer in const declaration");
     }
 
-    // Evaluate the initial value
     Value value = engine->evaluate(node->children[0], env);
-
-    // Define the variable in the environment with const semantics
     env->define(varName, value, VariableType::Const);
-
     return value;
 }
 

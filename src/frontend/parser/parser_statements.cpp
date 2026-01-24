@@ -29,6 +29,43 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
         throw std::runtime_error("Expected variable declaration keyword");
     }
 
+    // Check for destructuring pattern: [ or {
+    bool is_destructuring = (current_token().type == TokenType::LeftBracket ||
+                             current_token().type == TokenType::LeftBrace);
+
+    if(is_destructuring) {
+        // Parse destructuring pattern
+        auto pattern = parse_binding_pattern();
+
+        // Destructuring requires an initializer
+        if(!match(TokenType::Assign)) {
+            throw std::runtime_error("Destructuring declaration requires initializer");
+        }
+        auto initializer = parse_expression();
+
+        // Create declaration node with pattern in children[0] and initializer in children[1]
+        // Use metadata to mark this as a destructuring declaration
+        std::shared_ptr<ASTNode> node;
+        switch(declType) {
+            case TokenType::Var:
+                node = std::make_shared<ASTNode>(ASTNodeType::VariableDeclaration);
+                break;
+            case TokenType::Let:
+                node = std::make_shared<ASTNode>(ASTNodeType::LetDeclaration);
+                break;
+            case TokenType::Const:
+                node = std::make_shared<ASTNode>(ASTNodeType::ConstDeclaration);
+                break;
+            default:
+                throw std::runtime_error("Invalid declaration type");
+        }
+        node->metadata = "destructuring";
+        node->children.push_back(pattern);
+        node->children.push_back(initializer);
+        return node;
+    }
+
+    // Simple identifier declaration (existing behavior)
     if(current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected identifier after variable declaration keyword");
     }
@@ -54,6 +91,186 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
         default:
             throw std::runtime_error("Invalid declaration type");
     }
+}
+
+std::shared_ptr<ASTNode> Parser::parse_binding_pattern() {
+    if(current_token().type == TokenType::LeftBracket) {
+        return parse_array_pattern();
+    } else if(current_token().type == TokenType::LeftBrace) {
+        return parse_object_pattern();
+    } else {
+        throw std::runtime_error("Expected '[' or '{' for destructuring pattern");
+    }
+}
+
+std::shared_ptr<ASTNode> Parser::parse_array_pattern() {
+    consume(TokenType::LeftBracket);  // consume '['
+    auto pattern = ASTFactory::makeArrayPattern();
+
+    // Handle empty pattern []
+    if(current_token().type == TokenType::RightBracket) {
+        current++;
+        return pattern;
+    }
+
+    while(true) {
+        // Check for hole (elision): [x, , z]
+        if(current_token().type == TokenType::Comma) {
+            ASTFactory::addArrayPatternElement(pattern, nullptr);
+            current++;  // consume ','
+            continue;
+        }
+
+        // Check for closing bracket (handles trailing comma)
+        if(current_token().type == TokenType::RightBracket) {
+            break;
+        }
+
+        // Check for rest element: [...rest]
+        if(current_token().type == TokenType::Spread) {
+            current++;  // consume '...'
+            if(current_token().type != TokenType::Identifier) {
+                throw std::runtime_error("Expected identifier after '...' in array pattern");
+            }
+            auto rest_id = ASTFactory::makeIdentifier(current_token().value);
+            current++;  // consume identifier
+            auto rest_elem = ASTFactory::makeRestElement(rest_id);
+            ASTFactory::addArrayPatternElement(pattern, rest_elem);
+
+            // Rest element must be last
+            if(current_token().type != TokenType::RightBracket) {
+                throw std::runtime_error("Rest element must be last in array pattern");
+            }
+            break;
+        }
+
+        // Check for nested pattern
+        std::shared_ptr<ASTNode> element;
+        if(current_token().type == TokenType::LeftBracket ||
+           current_token().type == TokenType::LeftBrace) {
+            element = parse_binding_pattern();
+        } else if(current_token().type == TokenType::Identifier) {
+            element = ASTFactory::makeIdentifier(current_token().value);
+            current++;  // consume identifier
+        } else {
+            throw std::runtime_error("Expected identifier or pattern in array destructuring");
+        }
+
+        // Check for default value: [x = 10]
+        if(current_token().type == TokenType::Assign) {
+            current++;  // consume '='
+            auto default_val = parse_binary_expression(1);  // Stop before comma
+            element = ASTFactory::makeAssignmentPattern(element, default_val);
+        }
+
+        ASTFactory::addArrayPatternElement(pattern, element);
+
+        // Check for comma or end
+        if(current_token().type == TokenType::Comma) {
+            current++;  // consume ','
+        } else if(current_token().type != TokenType::RightBracket) {
+            throw std::runtime_error("Expected ',' or ']' in array pattern");
+        }
+    }
+
+    consume(TokenType::RightBracket);  // consume ']'
+    return pattern;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
+    consume(TokenType::LeftBrace);  // consume '{'
+    auto pattern = ASTFactory::makeObjectPattern();
+
+    // Handle empty pattern {}
+    if(current_token().type == TokenType::RightBrace) {
+        current++;
+        return pattern;
+    }
+
+    while(true) {
+        // Check for closing brace (handles trailing comma)
+        if(current_token().type == TokenType::RightBrace) {
+            break;
+        }
+
+        // Check for rest element: {...rest}
+        if(current_token().type == TokenType::Spread) {
+            current++;  // consume '...'
+            if(current_token().type != TokenType::Identifier) {
+                throw std::runtime_error("Expected identifier after '...' in object pattern");
+            }
+            auto rest_id = ASTFactory::makeIdentifier(current_token().value);
+            current++;  // consume identifier
+            auto rest_elem = ASTFactory::makeRestElement(rest_id);
+            ASTFactory::addObjectPatternProperty(pattern, rest_elem, nullptr);
+
+            // Rest element must be last
+            if(current_token().type != TokenType::RightBrace) {
+                throw std::runtime_error("Rest element must be last in object pattern");
+            }
+            break;
+        }
+
+        // Expect property name (identifier or string)
+        if(current_token().type != TokenType::Identifier &&
+           current_token().type != TokenType::String) {
+            throw std::runtime_error("Expected property name in object pattern");
+        }
+
+        std::string key_name = current_token().value;
+        // Remove quotes from string keys
+        if(current_token().type == TokenType::String && key_name.size() >= 2) {
+            key_name = key_name.substr(1, key_name.size() - 2);
+        }
+        auto key = ASTFactory::makeIdentifier(key_name);
+        current++;  // consume key
+
+        std::shared_ptr<ASTNode> value_pattern;
+
+        if(current_token().type == TokenType::Colon) {
+            // {key: pattern} or {key: renamed} or {key: [nested]}
+            current++;  // consume ':'
+
+            if(current_token().type == TokenType::LeftBracket ||
+               current_token().type == TokenType::LeftBrace) {
+                // Nested destructuring
+                value_pattern = parse_binding_pattern();
+            } else if(current_token().type == TokenType::Identifier) {
+                value_pattern = ASTFactory::makeIdentifier(current_token().value);
+                current++;  // consume identifier
+            } else {
+                throw std::runtime_error("Expected identifier or pattern after ':' in object pattern");
+            }
+
+            // Check for default value after renaming: {key: renamed = 10}
+            if(current_token().type == TokenType::Assign) {
+                current++;  // consume '='
+                auto default_val = parse_binary_expression(1);
+                value_pattern = ASTFactory::makeAssignmentPattern(value_pattern, default_val);
+            }
+        } else if(current_token().type == TokenType::Assign) {
+            // Shorthand with default: {key = 10}
+            current++;  // consume '='
+            auto default_val = parse_binary_expression(1);
+            value_pattern = ASTFactory::makeAssignmentPattern(
+                ASTFactory::makeIdentifier(key_name), default_val);
+        } else {
+            // Shorthand: {key} - key and variable name are the same
+            value_pattern = ASTFactory::makeIdentifier(key_name);
+        }
+
+        ASTFactory::addObjectPatternProperty(pattern, key, value_pattern);
+
+        // Check for comma or end
+        if(current_token().type == TokenType::Comma) {
+            current++;  // consume ','
+        } else if(current_token().type != TokenType::RightBrace) {
+            throw std::runtime_error("Expected ',' or '}' in object pattern");
+        }
+    }
+
+    consume(TokenType::RightBrace);  // consume '}'
+    return pattern;
 }
 
 std::shared_ptr<ASTNode> Parser::parse_if_statement() {

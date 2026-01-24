@@ -403,6 +403,56 @@ class ASTFactory {
             caseClause->children.push_back(statement);
         }
     }
+
+    // Destructuring pattern factories
+    static std::shared_ptr<ASTNode> makeArrayPattern() {
+        return std::make_shared<ASTNode>(ASTNodeType::ArrayPattern);
+    }
+
+    static std::shared_ptr<ASTNode> makeObjectPattern() {
+        return std::make_shared<ASTNode>(ASTNodeType::ObjectPattern);
+    }
+
+    // AssignmentPattern represents a pattern with default value: x = 10
+    // children[0] = pattern (Identifier, ArrayPattern, or ObjectPattern)
+    // children[1] = default value expression
+    static std::shared_ptr<ASTNode> makeAssignmentPattern(std::shared_ptr<ASTNode> left,
+                                                          std::shared_ptr<ASTNode> right) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::AssignmentPattern);
+        node->children.push_back(std::move(left));
+        node->children.push_back(std::move(right));
+        return node;
+    }
+
+    // RestElement represents ...rest in destructuring patterns
+    // children[0] = identifier that collects remaining values
+    static std::shared_ptr<ASTNode> makeRestElement(std::shared_ptr<ASTNode> argument) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::RestElement);
+        node->children.push_back(std::move(argument));
+        return node;
+    }
+
+    static void addArrayPatternElement(std::shared_ptr<ASTNode> pattern,
+                                       std::shared_ptr<ASTNode> element) {
+        if(pattern->type == ASTNodeType::ArrayPattern) {
+            pattern->children.push_back(std::move(element));
+        }
+    }
+
+    // Object pattern stores key-value pairs like ObjectLiteral
+    // For {a: b}, key=Identifier("a"), value=Identifier("b")
+    // For {a}, key=Identifier("a"), value=Identifier("a") (shorthand)
+    // For {...rest}, key=RestElement, value=nullptr
+    static void addObjectPatternProperty(std::shared_ptr<ASTNode> pattern,
+                                         std::shared_ptr<ASTNode> key,
+                                         std::shared_ptr<ASTNode> value) {
+        if(pattern->type == ASTNodeType::ObjectPattern) {
+            pattern->children.push_back(std::move(key));
+            if(value) {
+                pattern->children.push_back(std::move(value));
+            }
+        }
+    }
 };
 
 }  // namespace rift::ast
