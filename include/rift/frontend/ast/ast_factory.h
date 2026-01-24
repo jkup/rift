@@ -355,6 +355,13 @@ class ASTFactory {
         }
     }
 
+    // Spread element factory for spread operator (...expr)
+    static std::shared_ptr<ASTNode> makeSpreadElement(std::shared_ptr<ASTNode> argument) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::SpreadElement);
+        node->children.push_back(std::move(argument));
+        return node;
+    }
+
     // Switch statement factory methods
     static std::shared_ptr<ASTNode> makeSwitchStatement(std::shared_ptr<ASTNode> discriminant) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::SwitchStatement);

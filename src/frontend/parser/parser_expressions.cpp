@@ -285,8 +285,16 @@ std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> 
     // Parse arguments
     if(current_token().type != TokenType::RightParen) {
         do {
-            auto arg = parse_expression();
-            ASTFactory::addArgument(call, arg);
+            // Check for spread argument (...expr)
+            if(current_token().type == TokenType::Spread) {
+                current++;  // consume '...'
+                auto spread_arg = parse_binary_expression(1);  // Parse at assignment precedence
+                auto spread_element = ASTFactory::makeSpreadElement(spread_arg);
+                ASTFactory::addArgument(call, spread_element);
+            } else {
+                auto arg = parse_expression();
+                ASTFactory::addArgument(call, arg);
+            }
         } while(match(TokenType::Comma));
     }
 
@@ -338,8 +346,16 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
             break;  // Trailing comma is allowed, stop parsing elements
         }
 
-        auto element = parse_expression();
-        ASTFactory::addArrayElement(array, element);
+        // Check for spread element (...expr)
+        if(current_token().type == TokenType::Spread) {
+            current++;  // consume '...'
+            auto spread_arg = parse_binary_expression(1);  // Parse at assignment precedence
+            auto spread_element = ASTFactory::makeSpreadElement(spread_arg);
+            ASTFactory::addArrayElement(array, spread_element);
+        } else {
+            auto element = parse_expression();
+            ASTFactory::addArrayElement(array, element);
+        }
     } while(match(TokenType::Comma));
 
     consume(TokenType::RightBracket);  // consume ']'
