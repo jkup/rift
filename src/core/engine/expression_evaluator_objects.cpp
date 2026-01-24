@@ -48,10 +48,37 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
         callee = engine->evaluate(callee_node, env);
     }
 
-    // Evaluate real arguments
+    // Evaluate arguments, expanding spread elements
     std::vector<Value> args;
     for(size_t i = 1; i < node->children.size(); ++i) {
-        args.push_back(engine->evaluate(node->children[i], env));
+        auto& arg_node = node->children[i];
+
+        if(arg_node->type == ASTNodeType::SpreadElement) {
+            // Spread argument: expand the iterable into individual arguments
+            Value spread_value = engine->evaluate(arg_node->children[0], env);
+
+            if(spread_value.isObject()) {
+                auto* obj = spread_value.getObject();
+                // Check if it's an array-like object with length property
+                Value length_val = obj->getProperty("length");
+                if(length_val.isNumber()) {
+                    size_t length = static_cast<size_t>(length_val.getNumber());
+                    for(size_t j = 0; j < length; ++j) {
+                        Value elem = obj->getProperty(std::to_string(j));
+                        args.push_back(elem);
+                    }
+                }
+            } else if(spread_value.isString()) {
+                // Spread a string into individual characters
+                std::string str = spread_value.getString();
+                for(char c : str) {
+                    args.push_back(Value(std::string(1, c)));
+                }
+            }
+            // For non-iterable values, spread does nothing
+        } else {
+            args.push_back(engine->evaluate(arg_node, env));
+        }
     }
 
     // If it's a function object, call it
@@ -119,12 +146,37 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
 
 Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
                                                 std::shared_ptr<Environment> env, Rift* engine) {
-    // Evaluate each element in the array literal
+    // Evaluate each element in the array literal, expanding spread elements
     std::vector<Value> elements;
     elements.reserve(node->children.size());
 
     for(const auto& child : node->children) {
-        elements.push_back(engine->evaluate(child, env));
+        if(child->type == ASTNodeType::SpreadElement) {
+            // Spread element: expand the iterable into individual elements
+            Value spread_value = engine->evaluate(child->children[0], env);
+
+            if(spread_value.isObject()) {
+                auto* obj = spread_value.getObject();
+                // Check if it's an array-like object with length property
+                Value length_val = obj->getProperty("length");
+                if(length_val.isNumber()) {
+                    size_t length = static_cast<size_t>(length_val.getNumber());
+                    for(size_t idx = 0; idx < length; ++idx) {
+                        Value elem = obj->getProperty(std::to_string(idx));
+                        elements.push_back(elem);
+                    }
+                }
+            } else if(spread_value.isString()) {
+                // Spread a string into individual characters
+                std::string str = spread_value.getString();
+                for(char c : str) {
+                    elements.push_back(Value(std::string(1, c)));
+                }
+            }
+            // For non-iterable values, spread does nothing (per ECMAScript spec would throw)
+        } else {
+            elements.push_back(engine->evaluate(child, env));
+        }
     }
 
     // Use the Array::createArrayObject helper to create the array with GC-managed creation

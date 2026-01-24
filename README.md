@@ -158,6 +158,7 @@ The CI will automatically verify all quality checks on your PR.
   - ✅ Arrow functions: `() => expr`, `(a, b) => { ... }`, `x => x * 2`
   - ✅ Default parameters: `function f(x = 1, y = x + 1) { }`
   - ✅ Rest parameters: `function f(a, ...rest) { }` - collects remaining args into array
+  - ✅ Spread operator: `[...arr]`, `fn(...args)` - expands arrays in literals and calls
 
 - **Runtime semantics**
   - ✅ Closures: lexical capture of outer variables
@@ -262,7 +263,6 @@ The CI will automatically verify all quality checks on your PR.
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
-  - ❌ Spread operator in arrays/calls: `[...arr]`, `fn(...args)`
   - ❌ Destructuring: `const {a, b} = obj`, `const [x, y] = arr`
   - ❌ Classes (`class`, `extends`, `super`)
   - ❌ Modules (`import`/`export`)

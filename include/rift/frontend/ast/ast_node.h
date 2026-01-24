@@ -48,6 +48,7 @@ enum class ASTNodeType {
     TemplateLiteral,
     TemplateElement,
     TemplateExpression,
+    SpreadElement,
 };
 
 struct ASTNode {
