@@ -23,6 +23,7 @@ function parseArgs() {
     const args = process.argv.slice(2);
     const options = {
         baseline: null,
+        commit: null,
         current: 'test262-results.json',
         verbose: false,
         json: false,
@@ -34,6 +35,9 @@ function parseArgs() {
             case '--baseline':
             case '-b':
                 options.baseline = args[++i];
+                break;
+            case '--commit':
+                options.commit = args[++i];
                 break;
             case '--current':
             case '-c':
@@ -59,13 +63,14 @@ function parseArgs() {
 
 function printUsage() {
     console.log(`
-Test262 Diff Tool - Find which tests changed between branches
+Test262 Diff Tool - Find which tests changed between branches/commits
 
 Usage:
   node test262-diff.js [options]
 
 Options:
   --baseline, -b <file>   Baseline results file (default: fetches from main branch)
+  --commit <hash>         Fetch baseline from specific git commit (instead of main)
   --current, -c <file>    Current results file (default: test262-results.json)
   --verbose, -v           Show all changed tests (default: first 10 per category)
   --json, -j              Output results as JSON
@@ -74,6 +79,9 @@ Options:
 Examples:
   # Compare current branch to main
   node test262-diff.js
+
+  # Compare against a specific commit
+  node test262-diff.js --commit 9413b53299e53367ed7d32efde272fa8bc1aa2fd
 
   # Compare two specific result files
   node test262-diff.js --baseline old-results.json --current new-results.json
@@ -86,6 +94,22 @@ Examples:
 `);
 }
 
+function getResultsFromCommit(commitish) {
+    console.log(`Fetching test262-results.json from ${commitish}...`);
+
+    try {
+        const content = execSync(`git show ${commitish}:test262-results.json`, {
+            encoding: 'utf-8',
+            maxBuffer: 50 * 1024 * 1024 // 50MB buffer for large results file
+        });
+        const results = JSON.parse(content);
+        console.log(`Loaded results from ${commitish}`);
+        return results;
+    } catch (error) {
+        throw new Error(`Could not find test262-results.json in ${commitish}`);
+    }
+}
+
 function getMainBranchResults() {
     console.log('Fetching test262-results.json from main branch...');
 
@@ -93,21 +117,11 @@ function getMainBranchResults() {
         // Try to get the file from main branch
         let mainResults;
         try {
-            const mainContent = execSync('git show main:test262-results.json', {
-                encoding: 'utf-8',
-                maxBuffer: 50 * 1024 * 1024 // 50MB buffer for large results file
-            });
-            mainResults = JSON.parse(mainContent);
-            console.log('Loaded results from main branch');
+            mainResults = getResultsFromCommit('main');
         } catch (e) {
             // Try origin/main if local main doesn't have the file
             try {
-                const mainContent = execSync('git show origin/main:test262-results.json', {
-                    encoding: 'utf-8',
-                    maxBuffer: 50 * 1024 * 1024
-                });
-                mainResults = JSON.parse(mainContent);
-                console.log('Loaded results from origin/main branch');
+                mainResults = getResultsFromCommit('origin/main');
             } catch (e2) {
                 throw new Error('Could not find test262-results.json in main or origin/main branch');
             }
@@ -117,7 +131,7 @@ function getMainBranchResults() {
     } catch (error) {
         console.error('Error fetching main branch results:', error.message);
         console.error('\nTip: Make sure test262-results.json is committed to the main branch.');
-        console.error('     Or use --baseline <file> to specify a baseline file manually.');
+        console.error('     Or use --baseline <file> or --commit <hash> to specify a baseline.');
         process.exit(1);
     }
 }
@@ -263,6 +277,14 @@ async function main() {
         }
         console.log(`Loading baseline from: ${options.baseline}`);
         baselineResults = Test262ResultsTracker.loadResults(options.baseline);
+    } else if (options.commit) {
+        try {
+            baselineResults = getResultsFromCommit(options.commit);
+        } catch (error) {
+            console.error(`Error: ${error.message}`);
+            console.error('\nTip: Make sure test262-results.json was committed at that point.');
+            process.exit(1);
+        }
     } else {
         baselineResults = getMainBranchResults();
     }
