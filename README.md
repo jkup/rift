@@ -154,6 +154,11 @@ The CI will automatically verify all quality checks on your PR.
   - ✅ `return`
   - ✅ Exceptions: `throw`, `try`/`catch`/`finally`
 
+- **ES6+ Features** ✅ **NEW**
+  - ✅ Arrow functions: `() => expr`, `(a, b) => { ... }`, `x => x * 2`
+  - ✅ Default parameters: `function f(x = 1, y = x + 1) { }`
+  - ✅ Rest parameters: `function f(a, ...rest) { }` - collects remaining args into array
+
 - **Runtime semantics**
   - ✅ Closures: lexical capture of outer variables
   - ✅ Prototype chain: constructor `prototype` objects and prototype lookups
@@ -257,11 +262,11 @@ The CI will automatically verify all quality checks on your PR.
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
-  - ❌ Arrow functions `() => {}`
-  - ❌ Destructuring, spread (`...`), rest parameters
+  - ❌ Spread operator in arrays/calls: `[...arr]`, `fn(...args)`
+  - ❌ Destructuring: `const {a, b} = obj`, `const [x, y] = arr`
   - ❌ Classes (`class`, `extends`, `super`)
   - ❌ Modules (`import`/`export`)
-  - ❌ `for-of`
+  - ❌ `for-of` loops
   - ❌ Optional chaining `?.`, nullish coalescing `??`
 
 - **Built-in objects/APIs**
@@ -329,4 +334,3 @@ MIT License - see LICENSE file for details.
 
 - [test262](https://github.com/tc39/test262) - ECMAScript Test Suite
 - ECMAScript specification for language semantics
-# Testing CI formatting
