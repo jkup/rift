@@ -57,6 +57,7 @@ class Symbol : public BuiltinBase<Symbol> {
 
     /// Get the symbol ID for a well-known symbol (for use in property access)
     static uint64_t getIteratorId();
+    static uint64_t getToStringTagId();
 
   private:
     static JSObject* getGlobalPrototype();

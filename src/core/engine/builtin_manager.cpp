@@ -1,6 +1,7 @@
 #include "rift/core/engine/builtin_manager.h"
 
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/array/array_iterator.h"
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/builtins/console/console.h"
 #include "rift/builtins/error/error.h"
@@ -15,7 +16,9 @@
 #include "rift/builtins/object/object.h"
 #include "rift/builtins/regexp/regexp.h"
 #include "rift/builtins/string/string.h"
+#include "rift/builtins/string/string_iterator.h"
 #include "rift/builtins/symbol/symbol.h"
+#include "rift/builtins/iterator/iterator_prototype.h"
 #include "rift/core/engine/engine.h"
 #include "rift/runtime/values/value.h"
 
@@ -34,6 +37,7 @@ JSObject* BuiltinManager::referenceErrorPrototype_ = nullptr;
 JSObject* BuiltinManager::syntaxErrorPrototype_ = nullptr;
 JSObject* BuiltinManager::rangeErrorPrototype_ = nullptr;
 JSObject* BuiltinManager::regexpPrototype_ = nullptr;
+JSObject* BuiltinManager::iteratorPrototype_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Get the object factory from the engine
@@ -54,6 +58,13 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::RegExp::setObjectFactory(factory);
         builtins::Symbol::setObjectFactory(factory);
     }
+
+    // Setup iterator prototype FIRST - other iterators inherit from this
+    setupIteratorPrototype(factory);
+
+    // Setup iterator subtype prototypes (must be after iterator prototype)
+    builtins::ArrayIterator::setupPrototype(factory, iteratorPrototype_);
+    builtins::StringIterator::setupPrototype(factory, iteratorPrototype_);
 
     // Now setup builtins with factory - these will create their own prototypes
     setupGlobalFunctions(globalEnv, factory);
@@ -172,6 +183,10 @@ JSObject* BuiltinManager::getErrorPrototype() {
 
 JSObject* BuiltinManager::getRegExpPrototype() {
     return regexpPrototype_;
+}
+
+JSObject* BuiltinManager::getIteratorPrototype() {
+    return iteratorPrototype_;
 }
 
 JSObject* BuiltinManager::getTypeErrorPrototype() {
@@ -301,6 +316,11 @@ void BuiltinManager::setupGCFunctions(std::shared_ptr<Environment> globalEnv, Ri
     globalEnv->define("gcStats", Value(gcStatsFunction));
 }
 
+void BuiltinManager::setupIteratorPrototype(rift::memory::ObjectFactory* factory) {
+    // Create %IteratorPrototype% - the hidden prototype all iterators inherit from
+    iteratorPrototype_ = builtins::IteratorPrototype::create(factory);
+}
+
 void BuiltinManager::clearStaticPrototypes() {
     // Clear all static prototype pointers to avoid dangling references during shutdown
     objectPrototype_ = nullptr;
@@ -315,6 +335,7 @@ void BuiltinManager::clearStaticPrototypes() {
     referenceErrorPrototype_ = nullptr;
     syntaxErrorPrototype_ = nullptr;
     rangeErrorPrototype_ = nullptr;
+    iteratorPrototype_ = nullptr;
 }
 
 void BuiltinManager::setupRegExp(std::shared_ptr<Environment> globalEnv,

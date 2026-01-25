@@ -7,7 +7,10 @@
 #include <sstream>
 
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/string/string_iterator.h"
+#include "rift/builtins/symbol/symbol.h"
 #include "rift/core/engine/call_context.h"
+#include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/this_helpers.h"
 
 namespace rift::builtins {
@@ -32,6 +35,11 @@ void String::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFact
     RIFT_METHOD(prototype, "toString", String::toString);
     RIFT_METHOD(prototype, "trim", String::trim);
     RIFT_METHOD(prototype, "valueOf", String::valueOf);
+
+    // Symbol.iterator - for for-of loop support
+    std::string iterator_key = core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
+    auto* iterator_func = factory->createJSFunction(String::symbolIterator);
+    prototype->setProperty(iterator_key, Value(iterator_func));
 }
 
 Value String::constructor(const CallContext& ctx, const std::vector<Value>& args) {
@@ -322,6 +330,12 @@ size_t String::validateStringIndex(const std::string& str, double index) {
     }
 
     return static_cast<size_t>(index);
+}
+
+Value String::symbolIterator(const CallContext& ctx, const std::vector<Value>& /* args */) {
+    // Get the string value from 'this'
+    std::string str = extractThisString(ctx);
+    return Value(StringIterator::create(getObjectFactory(), str));
 }
 
 }  // namespace rift::builtins

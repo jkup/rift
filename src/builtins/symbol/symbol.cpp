@@ -168,6 +168,13 @@ uint64_t Symbol::getIteratorId() {
     return iterator_id_;
 }
 
+uint64_t Symbol::getToStringTagId() {
+    if(to_string_tag_id_ == 0) {
+        to_string_tag_id_ = generateSymbolId();
+    }
+    return to_string_tag_id_;
+}
+
 void Symbol::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Static methods
     RIFT_STATIC_METHOD(constructor, "for", Symbol::symbolFor);
