@@ -376,6 +376,17 @@ class Array : public BuiltinBase<Array> {
     /// The `toString()` method returns a string representing the array.
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// The `[Symbol.iterator]()` method returns an iterator object that iterates over array values.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype-@@iterator
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/@@iterator
+    static Value symbolIterator(const CallContext& ctx, const std::vector<Value>& args);
+
     // Helper methods
     /// Helper to get the length of an array-like object
     static size_t getArrayLength(JSObject* obj);

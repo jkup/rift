@@ -67,6 +67,8 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateForStatement(node, env, engine);
         case ASTNodeType::ForInStatement:
             return evaluateForInStatement(node, env, engine);
+        case ASTNodeType::ForOfStatement:
+            return evaluateForOfStatement(node, env, engine);
         case ASTNodeType::SwitchStatement:
             return evaluateSwitchStatement(node, env, engine);
         case ASTNodeType::BreakStatement:

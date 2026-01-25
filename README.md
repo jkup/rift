@@ -147,7 +147,7 @@ The CI will automatically verify all quality checks on your PR.
 
 - **Statements**
   - ✅ Variable declarations: `var`, `let`, `const` with proper block scoping and TDZ
-  - ✅ Control flow: `if`/`else`, `while`, `do-while`, C-style `for (init; cond; update)`, `for-in`
+  - ✅ Control flow: `if`/`else`, `while`, `do-while`, C-style `for (init; cond; update)`, `for-in`, `for-of`
   - ✅ `switch`/`case`/`default` with `break`
   - ✅ `break` and `continue` in loops
   - ✅ Functions: declarations and expressions
@@ -276,13 +276,12 @@ The CI will automatically verify all quality checks on your PR.
 - **Language constructs**
   - ❌ Classes (`class`, `extends`, `super`)
   - ❌ Modules (`import`/`export`)
-  - ❌ `for-of` loops
   - ❌ Optional chaining `?.`, nullish coalescing `??`
 
 - **Built-in objects/APIs**
   - ❌ Date
   - ❌ Promise/Async (`async`/`await`), timers/event loop
-  - ❌ Set/Map, Symbol, Proxy
+  - ❌ Set/Map, Proxy
   - ❌ Function.prototype methods: `call`, `apply`, `bind`
 
 ### ℹ️ Notes & Limitations
