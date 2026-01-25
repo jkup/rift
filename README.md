@@ -160,6 +160,9 @@ The CI will automatically verify all quality checks on your PR.
   - ✅ Rest parameters: `function f(a, ...rest) { }` - collects remaining args into array
   - ✅ Spread operator: `[...arr]`, `fn(...args)` - expands arrays in literals and calls
   - ✅ Destructuring: `const [a, b] = arr`, `const {x, y} = obj` - with defaults, rest, and nesting
+  - ✅ Classes: `class Foo { constructor() {} method() {} }` - class declarations and expressions
+  - ✅ Class inheritance: `class Bar extends Foo { }` with `super()` and `super.method()` support
+  - ✅ Static methods: `static myMethod() { }` on classes
 
 - **Runtime semantics**
   - ✅ Closures: lexical capture of outer variables
@@ -274,7 +277,6 @@ The CI will automatically verify all quality checks on your PR.
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
-  - ❌ Classes (`class`, `extends`, `super`)
   - ❌ Modules (`import`/`export`)
   - ❌ Optional chaining `?.`, nullish coalescing `??`
 

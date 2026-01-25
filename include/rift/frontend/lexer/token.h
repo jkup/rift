@@ -46,6 +46,10 @@ enum class TokenType {
     This,
     In,
     Of,
+    Class,
+    Extends,
+    Super,
+    Static,
 
     // Operators
     Plus,

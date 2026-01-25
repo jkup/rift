@@ -13,11 +13,16 @@ struct SymbolData {
     std::string description;
 
     SymbolData(uint64_t symbolId, std::string desc = "")
-        : id(symbolId), description(std::move(desc)) {}
+        : id(symbolId), description(std::move(desc)) {
+    }
 
     // Symbols are equal only if they have the same ID
-    bool operator==(const SymbolData& other) const { return id == other.id; }
-    bool operator!=(const SymbolData& other) const { return id != other.id; }
+    bool operator==(const SymbolData& other) const {
+        return id == other.id;
+    }
+    bool operator!=(const SymbolData& other) const {
+        return id != other.id;
+    }
 };
 
 }  // namespace rift::runtime

@@ -158,7 +158,7 @@ std::shared_ptr<ASTNode> Parser::parse_array_pattern() {
 
         // Check for default value: [x = 10]
         if(current_token().type == TokenType::Assign) {
-            current++;  // consume '='
+            current++;                                      // consume '='
             auto default_val = parse_binary_expression(1);  // Stop before comma
             element = ASTFactory::makeAssignmentPattern(element, default_val);
         }
@@ -239,7 +239,8 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
                 value_pattern = ASTFactory::makeIdentifier(current_token().value);
                 current++;  // consume identifier
             } else {
-                throw std::runtime_error("Expected identifier or pattern after ':' in object pattern");
+                throw std::runtime_error(
+                    "Expected identifier or pattern after ':' in object pattern");
             }
 
             // Check for default value after renaming: {key: renamed = 10}
@@ -252,8 +253,8 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
             // Shorthand with default: {key = 10}
             current++;  // consume '='
             auto default_val = parse_binary_expression(1);
-            value_pattern = ASTFactory::makeAssignmentPattern(
-                ASTFactory::makeIdentifier(key_name), default_val);
+            value_pattern = ASTFactory::makeAssignmentPattern(ASTFactory::makeIdentifier(key_name),
+                                                              default_val);
         } else {
             // Shorthand: {key} - key and variable name are the same
             value_pattern = ASTFactory::makeIdentifier(key_name);
@@ -701,6 +702,126 @@ std::shared_ptr<ASTNode> Parser::parse_continue_statement() {
     consume(TokenType::Continue);  // consume 'continue'
     match(TokenType::Semicolon);   // optional semicolon
     return ASTFactory::makeContinueStatement();
+}
+
+// Class parsing methods
+
+std::shared_ptr<ASTNode> Parser::parse_class_declaration() {
+    Token& startToken = current_token();
+    consume(TokenType::Class);  // consume 'class'
+
+    // Get class name (required for declarations)
+    if(current_token().type != TokenType::Identifier) {
+        throw std::runtime_error("Expected class name");
+    }
+    std::string name = current_token().value;
+    current++;  // consume class name
+
+    // Check for extends clause
+    std::shared_ptr<ASTNode> superClass = nullptr;
+    if(current_token().type == TokenType::Extends) {
+        current++;  // consume 'extends'
+        // Parse superclass expression (can be complex expression like Foo.Bar)
+        superClass = parse_expression();
+    }
+
+    // Parse class body
+    auto body = parse_class_body();
+
+    auto node = ASTFactory::makeClassDeclaration(name, superClass, body);
+    node->setLocation(startToken.line, startToken.column);
+    return node;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_class_expression() {
+    Token& startToken = current_token();
+    consume(TokenType::Class);  // consume 'class'
+
+    // Optional class name
+    std::string name;
+    if(current_token().type == TokenType::Identifier) {
+        name = current_token().value;
+        current++;  // consume class name
+    }
+
+    // Check for extends clause
+    std::shared_ptr<ASTNode> superClass = nullptr;
+    if(current_token().type == TokenType::Extends) {
+        current++;  // consume 'extends'
+        superClass = parse_expression();
+    }
+
+    // Parse class body
+    auto body = parse_class_body();
+
+    auto node = ASTFactory::makeClassExpression(name, superClass, body);
+    node->setLocation(startToken.line, startToken.column);
+    return node;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_class_body() {
+    consume(TokenType::LeftBrace);  // consume '{'
+
+    auto body = ASTFactory::makeClassBody();
+
+    while(current_token().type != TokenType::RightBrace &&
+          current_token().type != TokenType::EndOfFile) {
+        // Skip any semicolons in class body (empty statements)
+        if(current_token().type == TokenType::Semicolon) {
+            current++;
+            continue;
+        }
+
+        auto method = parse_method_definition();
+        ASTFactory::addMethodToClassBody(body, method);
+    }
+
+    consume(TokenType::RightBrace);  // consume '}'
+    return body;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_method_definition() {
+    Token& startToken = current_token();
+    bool isStatic = false;
+    bool isComputed = false;
+    std::string methodName;
+    std::shared_ptr<ASTNode> computedKey = nullptr;
+
+    // Check for 'static' keyword
+    if(current_token().type == TokenType::Static) {
+        isStatic = true;
+        current++;  // consume 'static'
+    }
+
+    // Get method name
+    if(current_token().type == TokenType::LeftBracket) {
+        // Computed property name: [expression]
+        isComputed = true;
+        current++;  // consume '['
+        computedKey = parse_expression();
+        consume(TokenType::RightBracket);
+    } else if(current_token().type == TokenType::Identifier) {
+        methodName = current_token().value;
+        current++;  // consume identifier
+    } else if(current_token().type == TokenType::String) {
+        methodName = current_token().value;
+        current++;  // consume string
+    } else {
+        throw std::runtime_error("Expected method name in class body");
+    }
+
+    // Parse parameters
+    consume(TokenType::LeftParen);
+    auto parameters = parse_parameter_list();
+    consume(TokenType::RightParen);
+
+    // Parse method body
+    auto methodBody = parse_block_statement();
+
+    auto node = ASTFactory::makeMethodDefinition(methodName, parameters, methodBody, isStatic,
+                                                 isComputed, computedKey);
+    node->setLocation(startToken.line, startToken.column);
+    return node;
 }
 
 }  // namespace rift::frontend

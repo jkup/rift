@@ -50,6 +50,10 @@ class ExpressionEvaluator {
                                        std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateTemplateLiteral(std::shared_ptr<ASTNode> node,
                                          std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateClassExpression(std::shared_ptr<ASTNode> node,
+                                         std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateSuperExpression(std::shared_ptr<ASTNode> node,
+                                         std::shared_ptr<Environment> env, Rift* engine);
 };
 
 }  // namespace rift::core

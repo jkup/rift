@@ -10,15 +10,14 @@
  * Split from statement_evaluator.cpp for better maintainability.
  */
 
+#include <cmath>
+
+#include "rift/builtins/symbol/symbol.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/core/engine/statement_evaluator.h"
-
-#include "rift/builtins/symbol/symbol.h"
 #include "rift/runtime/values/object.h"
-
-#include <cmath>
 
 namespace rift::core {
 
