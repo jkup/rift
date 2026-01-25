@@ -21,7 +21,8 @@ using namespace rift::ast;
 using ASTFactory = ast::ASTFactory;
 
 // Constructor
-Parser::Parser(const std::vector<Token>& tokens) : tokens(tokens), current(0) {
+Parser::Parser(const std::vector<Token>& tokens)
+    : tokens(tokens), current(0), in_generator_context_(false) {
 }
 
 // Utility methods
@@ -121,6 +122,10 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
     }
 
     if(current_token().type == TokenType::Function) {
+        // Check for generator function: function* name() {}
+        if(peek_token().type == TokenType::Multiply) {
+            return parse_generator_function_declaration();
+        }
         return parse_function_declaration();
     }
 

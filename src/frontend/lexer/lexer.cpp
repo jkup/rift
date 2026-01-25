@@ -435,6 +435,7 @@ Token Lexer::read_identifier() {
         {"extends", TokenType::Extends},
         {"super", TokenType::Super},
         {"static", TokenType::Static},
+        {"yield", TokenType::Yield},
     };
 
     auto it = keywords.find(value);

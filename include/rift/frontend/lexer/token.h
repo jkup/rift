@@ -50,6 +50,7 @@ enum class TokenType {
     Extends,
     Super,
     Static,
+    Yield,
 
     // Operators
     Plus,

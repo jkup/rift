@@ -64,6 +64,8 @@ Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment>
         case ASTNodeType::TemplateLiteral:
         case ASTNodeType::ClassExpression:
         case ASTNodeType::SuperExpression:
+        case ASTNodeType::GeneratorFunctionExpression:
+        case ASTNodeType::YieldExpression:
             return ExpressionEvaluator::evaluate(node, env, this);
 
         // Statement types
@@ -90,6 +92,7 @@ Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment>
         case ASTNodeType::CatchClause:
         case ASTNodeType::FinallyClause:
         case ASTNodeType::FunctionDeclaration:
+        case ASTNodeType::GeneratorFunctionDeclaration:
         case ASTNodeType::ClassDeclaration:
             return StatementEvaluator::evaluate(node, env, this);
 

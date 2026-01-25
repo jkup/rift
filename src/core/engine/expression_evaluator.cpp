@@ -62,6 +62,10 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
             return evaluateClassExpression(node, env, engine);
         case ASTNodeType::SuperExpression:
             return evaluateSuperExpression(node, env, engine);
+        case ASTNodeType::GeneratorFunctionExpression:
+            return evaluateGeneratorFunctionExpression(node, env, engine);
+        case ASTNodeType::YieldExpression:
+            return evaluateYieldExpression(node, env, engine);
         default:
             return Value::undefined();
     }
