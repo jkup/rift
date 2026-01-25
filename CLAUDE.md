@@ -269,7 +269,7 @@ Each built-in module follows this pattern:
 - Raw pointer returns (GC-managed)
 - Prototype chain setup via `BuiltinManager`
 
-Current built-ins: Array, Boolean, Console, Error (TypeError, ReferenceError, SyntaxError, RangeError), Global, JSON, Math, Number, Object, RegExp, String
+Current built-ins: Array, Boolean, Console, Error (TypeError, ReferenceError, SyntaxError, RangeError), Global, JSON, Math, Number, Object, RegExp, String, Symbol, Iterator prototypes (Array/String iterators)
 
 ### Dependencies
 - **RE2** (Google): Regular expression support via FetchContent
@@ -281,11 +281,90 @@ Current built-ins: Array, Boolean, Console, Error (TypeError, ReferenceError, Sy
 
 1. **Plan**: Identify where the feature fits (built-in, parser, runtime)
 2. **Implement**: Add code in the appropriate `src/` subfolder
-3. **Test**: Add tests in `test/` or relevant Test262 files
-4. **Build**: Run `./build.sh` and ensure no errors
-5. **Run tests**: `npm test` and/or `node test262-runner.js --include="<feature>"`
-6. **Check quality**: `cd build && make quality`
-7. **Commit**: Format code with `make format`, then commit
+3. **Update CMakeLists.txt**: Add new `.cpp` files to the appropriate `*_SOURCES` section (e.g., `BUILTINS_SOURCES`, `CORE_SOURCES`)
+4. **Test**: Add tests in `test/` or relevant Test262 files
+5. **Build**: Run `./build.sh` and ensure no errors
+6. **Run tests**: `npm test` and/or `node test262-runner.js --include="<feature>"`
+7. **Check quality**: `cd build && make quality`
+8. **Commit**: Format code with `make format`, then commit
+
+---
+
+## Adding New Builtins
+
+New built-in objects follow the `BuiltinBase<T>` CRTP pattern. Here's the complete process:
+
+### 1. Create Header (`include/rift/builtins/<name>/<name>.h`)
+
+```cpp
+#pragma once
+#include "rift/builtins/builtin_base.h"
+
+namespace rift::builtins {
+
+class MyBuiltin : public BuiltinBase<MyBuiltin> {
+public:
+    static JSObject* create(rift::memory::ObjectFactory* factory);
+    static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
+
+    // Prototype methods
+    static Value myMethod(const CallContext& ctx, const std::vector<Value>& args);
+};
+
+}
+```
+
+### 2. Create Implementation (`src/builtins/<name>/<name>.cpp`)
+
+Use the `RIFT_METHOD` and `RIFT_STATIC_METHOD` macros to register methods:
+
+```cpp
+#include "rift/builtins/<name>/<name>.h"
+
+namespace rift::builtins {
+
+void MyBuiltin::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
+    RIFT_METHOD(prototype, "myMethod", MyBuiltin::myMethod);
+    // For static methods on the constructor:
+    // RIFT_STATIC_METHOD(constructor, "staticMethod", MyBuiltin::staticMethod);
+}
+
+Value MyBuiltin::myMethod(const CallContext& ctx, const std::vector<Value>& args) {
+    // Implementation
+}
+
+}
+```
+
+### 3. Register in BuiltinManager
+
+In `src/core/engine/builtin_manager.cpp`:
+- Add `#include` for your header
+- Add `setup<Name>()` method
+- Call it from `setupBuiltins()` (order matters if your builtin depends on others)
+- If it has a prototype, add static pointer and accessor like other builtins
+
+### 4. Symbol-keyed Properties
+
+For well-known symbols like `[Symbol.iterator]`:
+
+```cpp
+#include "rift/builtins/symbol/symbol.h"
+#include "rift/core/engine/evaluation_utils.h"
+
+// In setupPrototypeMethods:
+std::string key = core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
+auto* func = factory->createJSFunction(MyBuiltin::symbolIterator);
+prototype->setProperty(key, Value(func));
+```
+
+### 5. Iterator Types
+
+Iterator builtins should:
+- Have a static `prototype_` member initialized via `setupPrototype(factory, iteratorPrototype)`
+- Inherit from `%IteratorPrototype%` (passed from BuiltinManager)
+- Store iteration state as internal properties (e.g., `[[IteratedArray]]`, `[[NextIndex]]`)
+- Implement `next()` returning `{done: bool, value: any}`
 
 ---
 
@@ -299,6 +378,7 @@ Current built-ins: Array, Boolean, Console, Error (TypeError, ReferenceError, Sy
 | Memory issues | Use sanitizers: `cmake .. -DENABLE_SANITIZERS=ON` |
 | Formatting issues | Run `make format`, then `make format-check` |
 | Node/npm issues | Use Node.js 14+; run `npm install` after cloning |
+| Computed property syntax | `{[Symbol.iterator]: fn}` not supported; use `obj[Symbol.iterator] = fn` instead |
 
 ---
 
