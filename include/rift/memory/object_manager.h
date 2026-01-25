@@ -56,6 +56,10 @@ class ObjectManager {
     void setGCEnabled(bool enabled);
     bool isGCEnabled() const;
 
+    // Check if an object pointer is still valid (tracked by GC)
+    // Used by WeakMap/WeakSet to detect if a weak key has been collected
+    bool objectExists(GCObject* obj) const;
+
     // Statistics
     size_t getObjectCount() const;
     size_t getLastCollectionCount() const;

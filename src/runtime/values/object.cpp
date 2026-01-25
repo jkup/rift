@@ -182,6 +182,22 @@ std::vector<std::string> JSObject::getOwnPropertySymbols() const {
     return symbols;
 }
 
+void JSObject::setWeakProperty(const std::string& key, const Value& value) {
+    // Set the property value
+    setProperty(key, value);
+    // Mark it as a weak property (excluded from GC traversal)
+    weak_properties_.insert(key);
+}
+
+bool JSObject::isWeakProperty(const std::string& key) const {
+    return weak_properties_.find(key) != weak_properties_.end();
+}
+
+void JSObject::clearWeakProperty(const std::string& key) {
+    weak_properties_.erase(key);
+    deleteProperty(key);
+}
+
 std::vector<rift::memory::GCObject*> JSObject::getReferences() const {
     std::vector<rift::memory::GCObject*> refs;
 
@@ -191,7 +207,12 @@ std::vector<rift::memory::GCObject*> JSObject::getReferences() const {
     }
 
     // Add object references from property descriptors
+    // Skip weak properties - they should not keep referenced objects alive
     for(const auto& [key, descriptor] : properties_) {
+        // Skip weak properties (used by WeakMap/WeakSet)
+        if(weak_properties_.find(key) != weak_properties_.end()) {
+            continue;
+        }
         if(descriptor.value.isObject() || descriptor.value.isFunction()) {
             JSObject* obj = descriptor.value.getObject();  // getObject() now returns raw pointer
             if(obj) {

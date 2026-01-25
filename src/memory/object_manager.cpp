@@ -125,4 +125,8 @@ bool ObjectManager::isGCEnabled() const {
     return gc_->isGCEnabled();
 }
 
+bool ObjectManager::objectExists(GCObject* obj) const {
+    return gc_->objectExists(obj);
+}
+
 }  // namespace rift::memory

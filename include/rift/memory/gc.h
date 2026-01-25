@@ -43,6 +43,10 @@ class GarbageCollector {
     virtual void setCollectionThreshold(size_t threshold) = 0;
     virtual bool shouldCollect() const = 0;
 
+    // Check if an object pointer is still valid (tracked by GC)
+    // Used by WeakMap/WeakSet to detect if a weak key has been collected
+    virtual bool objectExists(GCObject* obj) const = 0;
+
     // GC state control for exception handling
     virtual void setGCEnabled(bool enabled) = 0;
     virtual bool isGCEnabled() const = 0;

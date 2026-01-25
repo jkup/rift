@@ -137,6 +137,13 @@ class MarkSweepGC : public GarbageCollector {
         return all_objects_.size() >= collection_threshold_;
     }
 
+    bool objectExists(GCObject* obj) const override {
+        if(!obj) {
+            return false;
+        }
+        return all_objects_.find(obj) != all_objects_.end();
+    }
+
     void printStats() const override {
         std::cout << "[GC Stats]" << std::endl;
         std::cout << "  Total objects: " << all_objects_.size() << std::endl;

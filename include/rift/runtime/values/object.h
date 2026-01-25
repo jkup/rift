@@ -3,6 +3,7 @@
 #include <functional>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -44,6 +45,10 @@ class JSObject : public rift::memory::GCObject {
     std::vector<std::pair<std::string, PropertyDescriptor>> properties_;
     JSObject* prototype_;             // Now a raw pointer to GC-managed object
     mutable bool gc_marked_ = false;  // GC mark bit
+
+    // Track which properties hold weak references (for WeakMap/WeakSet support)
+    // Properties in this set are excluded from GC traversal in getReferences()
+    std::unordered_set<std::string> weak_properties_;
 
   public:
     JSObject(JSObject* prototype = nullptr) : prototype_(prototype) {
@@ -87,6 +92,13 @@ class JSObject : public rift::memory::GCObject {
 
     // Get only symbol-keyed own property names
     std::vector<std::string> getOwnPropertySymbols() const;
+
+    // Weak property support (for WeakMap/WeakSet)
+    // Weak properties are excluded from GC traversal - their referenced objects
+    // can be garbage collected even if this object holds a reference to them
+    void setWeakProperty(const std::string& key, const Value& value);
+    bool isWeakProperty(const std::string& key) const;
+    void clearWeakProperty(const std::string& key);
 
     // GC interface implementation
     std::vector<rift::memory::GCObject*> getReferences() const override;
