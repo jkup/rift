@@ -225,22 +225,73 @@ Value Array::from(const CallContext& ctx, const std::vector<Value>& args) {
 
     std::vector<Value> result;
 
-    if(arrayLike.isObject()) {
+    if(arrayLike.isString()) {
+        // Spread a string into individual characters
+        std::string str = arrayLike.getString();
+        for(char c : str) {
+            result.push_back(Value(std::string(1, c)));
+        }
+    } else if(arrayLike.isObject()) {
         auto* obj = arrayLike.getObject();
-        Value lengthVal = obj->getProperty("length");
 
-        if(lengthVal.isNumber()) {
-            size_t length = static_cast<size_t>(lengthVal.toNumber());
+        // First, check for Symbol.iterator (iterator protocol)
+        std::string iterator_key =
+            rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
+        Value iterator_method = obj->getProperty(iterator_key);
 
-            for(size_t i = 0; i < length; ++i) {
-                Value element = obj->getProperty(std::to_string(i));
-                result.push_back(element);
+        if(iterator_method.isFunction()) {
+            // Use iterator protocol
+            auto* iterator_func = dynamic_cast<JSFunction*>(iterator_method.getObject());
+            if(iterator_func) {
+                rift::core::CallContext iter_ctx(rift::core::CallType::Function, arrayLike);
+                Value iterator = iterator_func->call(iter_ctx, {});
+
+                if(iterator.isObject()) {
+                    auto* iterator_obj = iterator.getObject();
+
+                    // Repeatedly call next() until done
+                    while(true) {
+                        Value next_method = iterator_obj->getProperty("next");
+                        if(!next_method.isFunction()) {
+                            break;
+                        }
+
+                        auto* next_func = dynamic_cast<JSFunction*>(next_method.getObject());
+                        if(!next_func) {
+                            break;
+                        }
+
+                        rift::core::CallContext next_ctx(rift::core::CallType::Function, iterator);
+                        Value iter_result = next_func->call(next_ctx, {});
+
+                        if(!iter_result.isObject()) {
+                            break;
+                        }
+
+                        auto* result_obj = iter_result.getObject();
+                        Value done = result_obj->getProperty("done");
+                        if(done.toBool()) {
+                            break;
+                        }
+
+                        Value value = result_obj->getProperty("value");
+                        result.push_back(value);
+                    }
+                }
             }
         } else {
-            result.push_back(arrayLike);
+            // Fall back to array-like iteration (length property)
+            Value lengthVal = obj->getProperty("length");
+
+            if(lengthVal.isNumber()) {
+                size_t length = static_cast<size_t>(lengthVal.toNumber());
+
+                for(size_t i = 0; i < length; ++i) {
+                    Value element = obj->getProperty(std::to_string(i));
+                    result.push_back(element);
+                }
+            }
         }
-    } else {
-        result.push_back(arrayLike);
     }
 
     if(args.size() >= 2 && args[1].isFunction()) {

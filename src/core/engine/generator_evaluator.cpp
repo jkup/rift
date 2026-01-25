@@ -48,11 +48,10 @@ Value GeneratorEvaluator::evaluateBlock(std::shared_ptr<ASTNode> block,
     Value result = Value::undefined();
 
     // Determine starting index
+    // When resuming, we always start from 0 and use containsYieldPoint to find
+    // the right statement. This is necessary because resumeStatementIndex is relative
+    // to the block where the yield occurred, which may be nested (e.g., inside a try block).
     int startIndex = 0;
-    if(context.isResuming) {
-        // When resuming, start from the statement that contains our yield point
-        startIndex = context.resumeStatementIndex;
-    }
 
     for(size_t i = static_cast<size_t>(startIndex); i < block->children.size(); ++i) {
         auto& stmt = block->children[i];
@@ -103,7 +102,8 @@ Value GeneratorEvaluator::evaluateStatement(std::shared_ptr<ASTNode> stmt,
                       stmt->type != ASTNodeType::LetDeclaration &&
                       stmt->type != ASTNodeType::ConstDeclaration &&
                       stmt->type != ASTNodeType::WhileStatement &&
-                      stmt->type != ASTNodeType::ForStatement) {
+                      stmt->type != ASTNodeType::ForStatement &&
+                      stmt->type != ASTNodeType::TryStatement) {
                 // For other complex cases, clear resuming flag
                 context.isResuming = false;
             }
@@ -152,6 +152,11 @@ Value GeneratorEvaluator::evaluateStatement(std::shared_ptr<ASTNode> stmt,
     // Handle for loops that might contain yield
     if(stmt->type == ASTNodeType::ForStatement) {
         return evaluateFor(stmt, env, engine, context, statementIndex);
+    }
+
+    // Handle try/catch/finally that might contain yield
+    if(stmt->type == ASTNodeType::TryStatement) {
+        return evaluateTryStatement(stmt, env, engine, context, statementIndex);
     }
 
     // Default: use the engine's normal evaluation
@@ -556,6 +561,139 @@ Value GeneratorEvaluator::evaluateYieldStar(Value iterable, Rift* engine,
 
     // Yield the value to the outer caller
     throw YieldException(value, yieldId, statementIndex);
+}
+
+Value GeneratorEvaluator::evaluateTryStatement(std::shared_ptr<ASTNode> node,
+                                               std::shared_ptr<Environment> env, Rift* engine,
+                                               GeneratorExecutionContext& context,
+                                               int statementIndex) {
+    if(node->children.size() < 1) {
+        return Value::undefined();
+    }
+
+    // Get try block (first child)
+    auto tryBlock = node->children[0];
+
+    // Get catch clause (second child, if present)
+    std::shared_ptr<ASTNode> catchClause = nullptr;
+    std::shared_ptr<ASTNode> finallyClause = nullptr;
+    if(node->children.size() > 1) {
+        // children: [0]=tryBlock, [1]=catch? or finally?, [2]=finally?
+        if(node->children[1] && node->children[1]->type == ASTNodeType::CatchClause) {
+            catchClause = node->children[1];
+            if(node->children.size() > 2 && node->children[2] &&
+               node->children[2]->type == ASTNodeType::FinallyClause) {
+                finallyClause = node->children[2];
+            }
+        } else if(node->children[1] && node->children[1]->type == ASTNodeType::FinallyClause) {
+            finallyClause = node->children[1];
+        }
+    }
+
+    Value result = Value::undefined();
+    bool normalCompletion = false;
+    Value pendingExceptionValue = Value::undefined();
+
+    // Check if we're resuming from a yield that was inside the catch block
+    if(context.isResuming && context.inCatchBlock && catchClause) {
+        auto catchBody = catchClause->children[0];
+        if(containsYieldPoint(catchBody, context.currentYieldId)) {
+            // Resuming into the catch block - recreate the catch environment
+            std::string parameterName = catchClause->value;
+            auto catchEnv = env->createChild();
+            catchEnv->define(parameterName, context.caughtValue);
+
+            try {
+                result = evaluateBlock(catchBody, catchEnv, engine, context);
+                context.inCatchBlock = false;  // Leaving catch block normally
+                normalCompletion = true;
+            } catch(const YieldException&) {
+                // Still in catch block, state already set
+                if(finallyClause && !finallyClause->children.empty()) {
+                    evaluateBlock(finallyClause->children[0], env, engine, context);
+                }
+                throw;
+            }
+
+            // Run finally if present
+            if(finallyClause && !finallyClause->children.empty()) {
+                evaluateBlock(finallyClause->children[0], env, engine, context);
+            }
+
+            return result;
+        }
+    }
+
+    // Check if we're resuming from a yield in the finally block
+    if(context.isResuming && finallyClause && !finallyClause->children.empty()) {
+        if(containsYieldPoint(finallyClause->children[0], context.currentYieldId)) {
+            // Resuming into finally block
+            result = evaluateBlock(finallyClause->children[0], env, engine, context);
+            return result;
+        }
+    }
+
+    try {
+        // Execute try block using generator-aware evaluation
+        result = evaluateBlock(tryBlock, env, engine, context);
+        normalCompletion = true;
+    } catch(const YieldException&) {
+        // YieldException should propagate - run finally if present, then rethrow
+        if(finallyClause && !finallyClause->children.empty()) {
+            evaluateBlock(finallyClause->children[0], env, engine, context);
+        }
+        throw;  // Rethrow YieldException
+    } catch(const JavaScriptException& e) {
+        // Handle JavaScript exceptions (thrown by 'throw' statements)
+        if(catchClause) {
+            // Get catch parameter name from node value
+            std::string parameterName = catchClause->value;
+            // Get catch body (first child)
+            auto catchBody = catchClause->children[0];
+            // Create new environment for catch block
+            auto catchEnv = env->createChild();
+            // Bind the caught value to the catch parameter
+            catchEnv->define(parameterName, e.getValue());
+
+            // Store state in case we yield from the catch block
+            context.inCatchBlock = true;
+            context.caughtValue = e.getValue();
+
+            try {
+                // Execute catch body using generator-aware evaluation
+                result = evaluateBlock(catchBody, catchEnv, engine, context);
+                context.inCatchBlock = false;  // Leaving catch block normally
+                normalCompletion = true;  // caught
+            } catch(const YieldException&) {
+                // Yielding from catch block - state already set
+                if(finallyClause && !finallyClause->children.empty()) {
+                    evaluateBlock(finallyClause->children[0], env, engine, context);
+                }
+                throw;
+            }
+        } else {
+            // Save exception to rethrow after finally
+            pendingExceptionValue = e.getValue();
+        }
+    } catch(const ReturnException&) {
+        // Return exceptions should not be caught; run finally then rethrow
+        if(finallyClause && !finallyClause->children.empty()) {
+            evaluateBlock(finallyClause->children[0], env, engine, context);
+        }
+        throw;  // Rethrow return
+    }
+
+    // Run finally if present
+    if(finallyClause && !finallyClause->children.empty()) {
+        evaluateBlock(finallyClause->children[0], env, engine, context);
+    }
+
+    // If an exception was pending and no catch handled it, rethrow now
+    if(!normalCompletion && !pendingExceptionValue.isUndefined()) {
+        throw JavaScriptException(pendingExceptionValue);
+    }
+
+    return result;
 }
 
 }  // namespace rift::core

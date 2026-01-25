@@ -29,6 +29,10 @@ struct GeneratorExecutionContext {
     bool inDelegation = false;      // True if we're delegating to an inner iterator
     Value delegatedIterator;        // The inner iterator object
     int delegationYieldId = -1;     // The yield* point we're delegating from
+
+    // try/catch resumption state
+    bool inCatchBlock = false;      // True if we yielded from inside a catch block
+    Value caughtValue;              // The caught exception value (for recreating catch env)
 };
 
 /**
@@ -130,6 +134,14 @@ class GeneratorEvaluator {
      */
     static Value evaluateYieldStar(Value iterable, Rift* engine, GeneratorExecutionContext& context,
                                    int yieldId, int statementIndex);
+
+    /**
+     * Evaluate a try/catch/finally statement within a generator.
+     * Properly handles YieldException propagation while catching JavaScriptExceptions.
+     */
+    static Value evaluateTryStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
+                                      Rift* engine, GeneratorExecutionContext& context,
+                                      int statementIndex);
 };
 
 }  // namespace rift::core

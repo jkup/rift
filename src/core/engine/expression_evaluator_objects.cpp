@@ -14,6 +14,7 @@
 
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/generator/generator_iterator.h"
+#include "rift/builtins/symbol/symbol.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/evaluation_utils.h"
@@ -286,22 +287,72 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
             // Spread element: expand the iterable into individual elements
             Value spread_value = engine->evaluate(child->children[0], env);
 
-            if(spread_value.isObject()) {
-                auto* obj = spread_value.getObject();
-                // Check if it's an array-like object with length property
-                Value length_val = obj->getProperty("length");
-                if(length_val.isNumber()) {
-                    size_t length = static_cast<size_t>(length_val.getNumber());
-                    for(size_t idx = 0; idx < length; ++idx) {
-                        Value elem = obj->getProperty(std::to_string(idx));
-                        elements.push_back(elem);
-                    }
-                }
-            } else if(spread_value.isString()) {
+            if(spread_value.isString()) {
                 // Spread a string into individual characters
                 std::string str = spread_value.getString();
                 for(char c : str) {
                     elements.push_back(Value(std::string(1, c)));
+                }
+            } else if(spread_value.isObject()) {
+                auto* obj = spread_value.getObject();
+
+                // First, check for Symbol.iterator (iterator protocol)
+                std::string iterator_key =
+                    EvaluationUtils::symbolToPropertyKey(builtins::Symbol::getIteratorId());
+                Value iterator_method = obj->getProperty(iterator_key);
+
+                if(iterator_method.isFunction()) {
+                    // Use iterator protocol
+                    auto* iterator_func =
+                        dynamic_cast<rift::runtime::JSFunction*>(iterator_method.getObject());
+                    if(iterator_func) {
+                        CallContext ctx(CallType::Function, spread_value);
+                        Value iterator = iterator_func->call(ctx, {});
+
+                        if(iterator.isObject()) {
+                            auto* iterator_obj = iterator.getObject();
+
+                            // Repeatedly call next() until done
+                            while(true) {
+                                Value next_method = iterator_obj->getProperty("next");
+                                if(!next_method.isFunction()) {
+                                    break;
+                                }
+
+                                auto* next_func =
+                                    dynamic_cast<rift::runtime::JSFunction*>(next_method.getObject());
+                                if(!next_func) {
+                                    break;
+                                }
+
+                                CallContext next_ctx(CallType::Function, iterator);
+                                Value result = next_func->call(next_ctx, {});
+
+                                if(!result.isObject()) {
+                                    break;
+                                }
+
+                                auto* result_obj = result.getObject();
+                                Value done = result_obj->getProperty("done");
+                                if(done.toBool()) {
+                                    break;
+                                }
+
+                                Value value = result_obj->getProperty("value");
+                                elements.push_back(value);
+                            }
+                        }
+                    }
+                } else {
+                    // Fall back to array-like iteration (length property)
+                    Value length_val = obj->getProperty("length");
+                    if(length_val.isNumber()) {
+                        size_t length = static_cast<size_t>(length_val.getNumber());
+                        for(size_t idx = 0; idx < length; ++idx) {
+                            Value elem = obj->getProperty(std::to_string(idx));
+                            elements.push_back(elem);
+                        }
+                    }
                 }
             }
             // For non-iterable values, spread does nothing (per ECMAScript spec would throw)

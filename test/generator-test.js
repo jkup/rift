@@ -282,6 +282,110 @@ test("nested yield* L1 end", gn.next().value === "L1-end");
 test("nested yield* done", gn.next().done === true);
 
 // ============================================================================
+// Spread Operator with Generators
+// ============================================================================
+
+function* spreadGen() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+var spreadArr = [...spreadGen()];
+test("spread with generator length", spreadArr.length === 3);
+test("spread with generator [0]", spreadArr[0] === 1);
+test("spread with generator [1]", spreadArr[1] === 2);
+test("spread with generator [2]", spreadArr[2] === 3);
+
+// ============================================================================
+// Array.from with Generators
+// ============================================================================
+
+function* arrayFromGen() {
+    yield "x";
+    yield "y";
+    yield "z";
+}
+
+var fromArr = Array.from(arrayFromGen());
+test("Array.from with generator length", fromArr.length === 3);
+test("Array.from with generator [0]", fromArr[0] === "x");
+test("Array.from with generator [1]", fromArr[1] === "y");
+test("Array.from with generator [2]", fromArr[2] === "z");
+
+// ============================================================================
+// Generator Function Properties
+// ============================================================================
+
+function* namedGenerator(a, b, c) {
+    yield a + b + c;
+}
+
+test("generator function name", namedGenerator.name === "namedGenerator");
+test("generator function length", namedGenerator.length === 3);
+test("typeof generator function", typeof namedGenerator === "function");
+
+// ============================================================================
+// try/catch Inside Generators
+// ============================================================================
+
+function* genTryCatch() {
+    try {
+        yield 1;
+        yield 2;
+    } catch (e) {
+        yield "caught: " + e;
+    }
+    yield "after try";
+}
+
+var gtc = genTryCatch();
+test("try/catch gen first", gtc.next().value === 1);
+test("try/catch gen second", gtc.next().value === 2);
+test("try/catch gen after", gtc.next().value === "after try");
+test("try/catch gen done", gtc.next().done === true);
+
+// Test try/catch with thrown exception
+function* genTryCatchThrow() {
+    try {
+        yield 1;
+        throw "test error";
+        yield 2;
+    } catch (e) {
+        yield "caught: " + e;
+    }
+    yield "after catch";
+}
+
+var gtct = genTryCatchThrow();
+test("try/catch throw first", gtct.next().value === 1);
+test("try/catch throw caught", gtct.next().value === "caught: test error");
+test("try/catch throw after", gtct.next().value === "after catch");
+test("try/catch throw done", gtct.next().done === true);
+
+// ============================================================================
+// try/finally Inside Generators
+// ============================================================================
+
+function* genTryFinally() {
+    var finallyRan = false;
+    try {
+        yield 1;
+        yield 2;
+    } finally {
+        finallyRan = true;
+    }
+    // Test that finally ran by checking the variable
+    yield finallyRan;
+}
+
+var gtf = genTryFinally();
+test("try/finally first", gtf.next().value === 1);
+test("try/finally second", gtf.next().value === 2);
+test("try/finally after (finally ran)", gtf.next().value === true);
+test("try/finally done", gtf.next().done === true);
+
+// ============================================================================
 // Summary
 // ============================================================================
 
