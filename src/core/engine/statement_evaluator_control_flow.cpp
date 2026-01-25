@@ -3,7 +3,7 @@
  *
  * This file contains control flow statement evaluation methods:
  * - if/else statements
- * - while, do-while, for loops
+ * - while, do-while, for loops (including for-in and for-of)
  * - switch statements
  * - break and return statements
  *
@@ -11,8 +11,14 @@
  */
 
 #include "rift/core/engine/engine.h"
+#include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/core/engine/statement_evaluator.h"
+
+#include "rift/builtins/symbol/symbol.h"
+#include "rift/runtime/values/object.h"
+
+#include <cmath>
 
 namespace rift::core {
 
@@ -218,6 +224,156 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
         }
     }
     // For null, undefined, numbers, booleans - the loop body never executes
+
+    return result;
+}
+
+// Helper to get all values from an iterable using Symbol.iterator protocol
+static std::vector<Value> getIterableValues(const Value& iterable) {
+    std::vector<Value> values;
+
+    // Handle string iteration (each character)
+    if(iterable.isString()) {
+        std::string str = iterable.getString();
+        for(char c : str) {
+            values.push_back(Value(std::string(1, c)));
+        }
+        return values;
+    }
+
+    // Handle object/array iteration via Symbol.iterator
+    if(!iterable.isObject() && !iterable.isFunction()) {
+        return values;  // Not iterable
+    }
+
+    auto* obj = iterable.getObject();
+    if(!obj) {
+        return values;
+    }
+
+    // First, try array-like iteration (objects with numeric length property)
+    // This is more reliable than the iterator protocol for basic arrays
+    Value length_val = obj->getProperty("length");
+    if(length_val.isNumber()) {
+        double len = length_val.getNumber();
+        if(len >= 0 && !std::isnan(len) && !std::isinf(len)) {
+            size_t length = static_cast<size_t>(len);
+            for(size_t i = 0; i < length; ++i) {
+                values.push_back(obj->getProperty(std::to_string(i)));
+            }
+            return values;
+        }
+    }
+
+    // Fall back to Symbol.iterator protocol for custom iterables
+    std::string iterator_key =
+        EvaluationUtils::symbolToPropertyKey(builtins::Symbol::getIteratorId());
+    Value iterator_method = obj->getProperty(iterator_key);
+
+    if(iterator_method.isUndefined() || !iterator_method.isFunction()) {
+        return values;  // Not iterable
+    }
+
+    // Call [Symbol.iterator]() to get iterator object
+    auto* iterator_func = dynamic_cast<rift::runtime::JSFunction*>(iterator_method.getObject());
+    if(!iterator_func) {
+        return values;
+    }
+
+    CallContext ctx(CallType::Function, iterable);
+    Value iterator = iterator_func->call(ctx, {});
+
+    if(!iterator.isObject()) {
+        return values;
+    }
+
+    auto* iterator_obj = iterator.getObject();
+
+    // Repeatedly call next() until done
+    while(true) {
+        Value next_method = iterator_obj->getProperty("next");
+        if(!next_method.isFunction()) {
+            break;
+        }
+
+        auto* next_func = dynamic_cast<rift::runtime::JSFunction*>(next_method.getObject());
+        if(!next_func) {
+            break;
+        }
+
+        CallContext next_ctx(CallType::Function, iterator);
+        Value result = next_func->call(next_ctx, {});
+
+        if(!result.isObject()) {
+            break;
+        }
+
+        auto* result_obj = result.getObject();
+        Value done = result_obj->getProperty("done");
+        if(done.toBool()) {
+            break;
+        }
+
+        Value value = result_obj->getProperty("value");
+        values.push_back(value);
+    }
+
+    return values;
+}
+
+Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
+                                                 std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.size() < 3) {
+        return Value::undefined();
+    }
+
+    auto left_node = node->children[0];   // Variable declaration or identifier
+    auto right_node = node->children[1];  // Iterable
+    auto body_node = node->children[2];   // Loop body
+
+    Value result = Value::undefined();
+
+    // Evaluate the iterable
+    Value iterable = engine->evaluate(right_node, env);
+
+    // Get the variable name and handle declaration
+    std::string var_name;
+    if(left_node->type == ASTNodeType::VariableDeclaration ||
+       left_node->type == ASTNodeType::LetDeclaration ||
+       left_node->type == ASTNodeType::ConstDeclaration) {
+        var_name = left_node->value;
+        // Declare variable in current scope
+        if(left_node->type == ASTNodeType::LetDeclaration) {
+            env->define(var_name, Value::undefined(), VariableType::Let);
+        } else if(left_node->type == ASTNodeType::ConstDeclaration) {
+            // Note: const in for-of is allowed but reassigned each iteration
+            env->define(var_name, Value::undefined(), VariableType::Let);  // Use let semantics
+        } else {
+            env->define(var_name, Value::undefined());
+        }
+    } else if(left_node->type == ASTNodeType::Identifier) {
+        var_name = left_node->value;
+    } else {
+        return Value::undefined();  // Invalid left side
+    }
+
+    // Get all values from the iterable using iterator protocol
+    auto values = getIterableValues(iterable);
+
+    // Iterate over values
+    for(const auto& value : values) {
+        // Assign the value to the loop variable
+        env->set(var_name, value);
+
+        // Execute the body
+        try {
+            result = engine->evaluate(body_node, env);
+        } catch(const BreakException&) {
+            break;
+        } catch(const ContinueException&) {
+            continue;
+        }
+    }
 
     return result;
 }

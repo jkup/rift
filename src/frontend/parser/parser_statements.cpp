@@ -338,6 +338,11 @@ std::shared_ptr<ASTNode> Parser::parse_do_while_statement() {
     return ASTFactory::makeDoWhileStatement(body, condition);
 }
 
+// Helper to check for contextual keyword "of" (which is lexed as an identifier)
+static bool isContextualOf(const Token& tok) {
+    return tok.type == TokenType::Identifier && tok.value == "of";
+}
+
 std::shared_ptr<ASTNode> Parser::parse_for_statement() {
     consume(TokenType::For);  // consume 'for'
 
@@ -357,10 +362,11 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             std::string var_name = current_token().value;
             current++;  // consume identifier
 
-            // Check if this is for-in (no initializer, followed by 'in')
-            if(current_token().type == TokenType::In) {
-                // This is for-in: for (var x in obj)
-                is_for_in = true;
+            // Check if this is for-in or for-of (no initializer, followed by 'in' or 'of')
+            // Note: "of" is a contextual keyword, lexed as identifier
+            if(current_token().type == TokenType::In || isContextualOf(current_token())) {
+                bool is_for_of = isContextualOf(current_token());
+                is_for_in = !is_for_of;
                 if(decl_type == TokenType::Var) {
                     left = ASTFactory::makeVariableDeclaration(var_name, nullptr);
                 } else if(decl_type == TokenType::Let) {
@@ -368,9 +374,9 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
                 } else {
                     left = ASTFactory::makeConstDeclaration(var_name, nullptr);
                 }
-                current++;  // consume 'in'
+                current++;  // consume 'in' or 'of'
 
-                // Parse the object expression
+                // Parse the object/iterable expression
                 auto right = parse_expression();
 
                 consume(TokenType::RightParen);  // consume ')'
@@ -378,6 +384,9 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
                 // Parse the body statement
                 auto body = parse_statement();
 
+                if(is_for_of) {
+                    return ASTFactory::makeForOfStatement(left, right, body);
+                }
                 return ASTFactory::makeForInStatement(left, right, body);
             } else {
                 // Not for-in, backtrack and parse as regular for loop
@@ -391,17 +400,19 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             left = parse_variable_declaration();
         }
     } else if(current_token().type == TokenType::Identifier) {
-        // Could be for (x in obj) or for (x = 0; ...)
+        // Could be for (x in obj), for (x of arr), or for (x = 0; ...)
         std::string var_name = current_token().value;
         current++;  // consume identifier
 
-        if(current_token().type == TokenType::In) {
-            // This is for-in: for (x in obj)
-            is_for_in = true;
+        // Note: "of" is a contextual keyword, lexed as identifier
+        if(current_token().type == TokenType::In || isContextualOf(current_token())) {
+            // This is for-in or for-of: for (x in obj) or for (x of arr)
+            bool is_for_of = isContextualOf(current_token());
+            is_for_in = !is_for_of;
             left = ASTFactory::makeIdentifier(var_name);
-            current++;  // consume 'in'
+            current++;  // consume 'in' or 'of'
 
-            // Parse the object expression
+            // Parse the object/iterable expression
             auto right = parse_expression();
 
             consume(TokenType::RightParen);  // consume ')'
@@ -409,6 +420,9 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             // Parse the body statement
             auto body = parse_statement();
 
+            if(is_for_of) {
+                return ASTFactory::makeForOfStatement(left, right, body);
+            }
             return ASTFactory::makeForInStatement(left, right, body);
         } else {
             // Not for-in, backtrack and parse as regular for loop expression
