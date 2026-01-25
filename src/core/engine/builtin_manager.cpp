@@ -24,6 +24,7 @@
 #include "rift/builtins/string/string_iterator.h"
 #include "rift/builtins/symbol/symbol.h"
 #include "rift/builtins/weakmap/weakmap.h"
+#include "rift/builtins/weakset/weakset.h"
 #include "rift/core/engine/engine.h"
 #include "rift/runtime/values/value.h"
 
@@ -46,6 +47,7 @@ JSObject* BuiltinManager::iteratorPrototype_ = nullptr;
 JSObject* BuiltinManager::setPrototype_ = nullptr;
 JSObject* BuiltinManager::mapPrototype_ = nullptr;
 JSObject* BuiltinManager::weakMapPrototype_ = nullptr;
+JSObject* BuiltinManager::weakSetPrototype_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Get the object factory from the engine
@@ -68,6 +70,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::Set::setObjectFactory(factory);
         builtins::Map::setObjectFactory(factory);
         builtins::WeakMap::setObjectFactory(factory);
+        builtins::WeakSet::setObjectFactory(factory);
     }
 
     // Setup iterator prototype FIRST - other iterators inherit from this
@@ -99,6 +102,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupSet(globalEnv, factory);
     setupMap(globalEnv, factory);
     setupWeakMap(globalEnv, factory);
+    setupWeakSet(globalEnv, factory);
 
     // After all builtins are created, get their prototypes from the constructors
     auto* objectConstructor = globalEnv->get("Object").getObject();
@@ -116,6 +120,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     auto* setConstructor = globalEnv->get("Set").getObject();
     auto* mapConstructor = globalEnv->get("Map").getObject();
     auto* weakMapConstructor = globalEnv->get("WeakMap").getObject();
+    auto* weakSetConstructor = globalEnv->get("WeakSet").getObject();
 
     if(objectConstructor)
         objectPrototype_ = objectConstructor->getProperty("prototype").getObject();
@@ -147,6 +152,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         mapPrototype_ = mapConstructor->getProperty("prototype").getObject();
     if(weakMapConstructor)
         weakMapPrototype_ = weakMapConstructor->getProperty("prototype").getObject();
+    if(weakSetConstructor)
+        weakSetPrototype_ = weakSetConstructor->getProperty("prototype").getObject();
 
     // Set up prototype chain: All prototypes -> Object.prototype (except Object itself)
     if(objectPrototype_ && arrayPrototype_) {
@@ -178,6 +185,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     }
     if(objectPrototype_ && weakMapPrototype_) {
         weakMapPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && weakSetPrototype_) {
+        weakSetPrototype_->setPrototype(objectPrototype_);
     }
 
     // Setup GC functions if engine is provided
@@ -233,6 +243,10 @@ JSObject* BuiltinManager::getMapPrototype() {
 
 JSObject* BuiltinManager::getWeakMapPrototype() {
     return weakMapPrototype_;
+}
+
+JSObject* BuiltinManager::getWeakSetPrototype() {
+    return weakSetPrototype_;
 }
 
 JSObject* BuiltinManager::getTypeErrorPrototype() {
@@ -385,6 +399,7 @@ void BuiltinManager::clearStaticPrototypes() {
     setPrototype_ = nullptr;
     mapPrototype_ = nullptr;
     weakMapPrototype_ = nullptr;
+    weakSetPrototype_ = nullptr;
 }
 
 void BuiltinManager::setupRegExp(std::shared_ptr<Environment> globalEnv,
@@ -424,6 +439,13 @@ void BuiltinManager::setupWeakMap(std::shared_ptr<Environment> globalEnv,
     // Setup WeakMap object using GC-managed creation
     auto* weakMap = builtins::WeakMap::create(factory);
     globalEnv->define("WeakMap", Value(weakMap));
+}
+
+void BuiltinManager::setupWeakSet(std::shared_ptr<Environment> globalEnv,
+                                  rift::memory::ObjectFactory* factory) {
+    // Setup WeakSet object using GC-managed creation
+    auto* weakSet = builtins::WeakSet::create(factory);
+    globalEnv->define("WeakSet", Value(weakSet));
 }
 
 }  // namespace rift::core
