@@ -104,6 +104,8 @@ set(BUILTINS_SOURCES
     src/builtins/regexp/regexp.cpp
     src/builtins/symbol/symbol.cpp
     src/builtins/iterator/iterator_prototype.cpp
+    src/builtins/set/set.cpp
+    src/builtins/set/set_iterator.cpp
 )
 
 set(CORE_SOURCES
