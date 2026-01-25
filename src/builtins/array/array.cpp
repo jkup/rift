@@ -274,16 +274,16 @@ Value Array::of(const CallContext& ctx, const std::vector<Value>& args) {
 // ============================================================================
 
 Value Array::keys(const CallContext& ctx, const std::vector<Value>& /* args */) {
-    if (!ctx.thisValue.isObject()) {
+    if(!ctx.thisValue.isObject()) {
         throw core::JavaScriptException(
             Value("TypeError: Array.prototype.keys called on non-object"));
     }
-    return Value(
-        ArrayIterator::create(getObjectFactory(), ctx.thisValue.getObject(), ArrayIterationKind::Key));
+    return Value(ArrayIterator::create(getObjectFactory(), ctx.thisValue.getObject(),
+                                       ArrayIterationKind::Key));
 }
 
 Value Array::values(const CallContext& ctx, const std::vector<Value>& /* args */) {
-    if (!ctx.thisValue.isObject()) {
+    if(!ctx.thisValue.isObject()) {
         throw core::JavaScriptException(
             Value("TypeError: Array.prototype.values called on non-object"));
     }
@@ -292,7 +292,7 @@ Value Array::values(const CallContext& ctx, const std::vector<Value>& /* args */
 }
 
 Value Array::entries(const CallContext& ctx, const std::vector<Value>& /* args */) {
-    if (!ctx.thisValue.isObject()) {
+    if(!ctx.thisValue.isObject()) {
         throw core::JavaScriptException(
             Value("TypeError: Array.prototype.entries called on non-object"));
     }

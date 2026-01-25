@@ -33,6 +33,7 @@ class BuiltinManager {
     static JSObject* getRegExpPrototype();
     static JSObject* getIteratorPrototype();
     static JSObject* getSetPrototype();
+    static JSObject* getMapPrototype();
 
     // Cleanup method for shutdown
     static void clearStaticPrototypes();
@@ -53,6 +54,7 @@ class BuiltinManager {
     static JSObject* regexpPrototype_;
     static JSObject* iteratorPrototype_;
     static JSObject* setPrototype_;
+    static JSObject* mapPrototype_;
 
     // Individual builtin setup methods - now accept ObjectFactory
     static void setupGlobalFunctions(std::shared_ptr<Environment> globalEnv,
@@ -87,6 +89,8 @@ class BuiltinManager {
     static void setupSymbol(std::shared_ptr<Environment> globalEnv,
                             rift::memory::ObjectFactory* factory);
     static void setupSet(std::shared_ptr<Environment> globalEnv,
+                         rift::memory::ObjectFactory* factory);
+    static void setupMap(std::shared_ptr<Environment> globalEnv,
                          rift::memory::ObjectFactory* factory);
     static void setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine);
     static void setupIteratorPrototype(rift::memory::ObjectFactory* factory);

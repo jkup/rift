@@ -269,7 +269,7 @@ Each built-in module follows this pattern:
 - Raw pointer returns (GC-managed)
 - Prototype chain setup via `BuiltinManager`
 
-Current built-ins: Array, Boolean, Console, Error (TypeError, ReferenceError, SyntaxError, RangeError), Global, JSON, Math, Number, Object, RegExp, String, Symbol, Iterator prototypes (Array/String iterators)
+Current built-ins: Array, Boolean, Console, Error (TypeError, ReferenceError, SyntaxError, RangeError), Global, JSON, Map, Math, Number, Object, RegExp, Set, String, Symbol, Iterator prototypes (Array/String/Set/Map iterators)
 
 ### Dependencies
 - **RE2** (Google): Regular expression support via FetchContent

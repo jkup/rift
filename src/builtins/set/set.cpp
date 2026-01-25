@@ -214,15 +214,17 @@ Value Set::constructor(const CallContext& ctx, const std::vector<Value>& args) {
                                     if(!keysObj->hasOwnProperty(key)) {
                                         Value entriesVal = setObj->getProperty("[[SetEntries]]");
                                         auto* entriesObj = entriesVal.getObject();
-                                        Value nextIndexVal = setObj->getProperty("[[SetNextIndex]]");
+                                        Value nextIndexVal =
+                                            setObj->getProperty("[[SetNextIndex]]");
                                         size_t nextIndex =
                                             static_cast<size_t>(nextIndexVal.toNumber());
 
                                         entriesObj->setProperty(std::to_string(nextIndex), value);
                                         keysObj->setProperty(key,
                                                              Value(static_cast<double>(nextIndex)));
-                                        setObj->setProperty("[[SetNextIndex]]",
-                                                            Value(static_cast<double>(nextIndex + 1)));
+                                        setObj->setProperty(
+                                            "[[SetNextIndex]]",
+                                            Value(static_cast<double>(nextIndex + 1)));
 
                                         Value sizeVal = setObj->getProperty("[[SetSize]]");
                                         size_t size = static_cast<size_t>(sizeVal.toNumber());

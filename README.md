@@ -283,6 +283,17 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ **SameValueZero equality**: NaN === NaN, +0 === -0
 - ✅ **Insertion order preservation**: iteration yields values in insertion order
 
+#### **Map Constructor & Methods** ✅ **NEW**
+- ✅ `new Map()` creates empty Map
+- ✅ `new Map(iterable)` creates Map from iterable of [key, value] pairs
+- ✅ **Instance methods**: `get()`, `set()`, `has()`, `delete()`, `clear()`, `forEach()`
+- ✅ **Iterator methods**: `keys()`, `values()`, `entries()`, `[Symbol.iterator]`
+- ✅ **Properties**: `size` (via getter)
+- ✅ **Any value as key**: objects, functions, primitives, NaN, undefined all work as keys
+- ✅ **SameValueZero equality**: NaN === NaN, +0 === -0 for key comparison
+- ✅ **Insertion order preservation**: iteration yields entries in insertion order
+- ✅ **Method chaining**: `set()` returns the Map for chaining
+
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
@@ -292,7 +303,7 @@ The CI will automatically verify all quality checks on your PR.
 - **Built-in objects/APIs**
   - ❌ Date
   - ❌ Promise/Async (`async`/`await`), timers/event loop
-  - ❌ Map, WeakSet, WeakMap, Proxy
+  - ❌ WeakSet, WeakMap, Proxy
   - ❌ Function.prototype methods: `call`, `apply`, `bind`
 
 ### ℹ️ Notes & Limitations
