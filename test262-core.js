@@ -12,7 +12,6 @@ export const RUNTIME_EXECUTABLE = "./build/rift";
 const UNSUPPORTED_PATTERNS = [
   /\basync\b/, // async functions
   /\bawait\b/, // await keyword
-  /\byield\b/, // generators
   /\bwith\s*\(/, // with statements
 ];
 

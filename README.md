@@ -76,7 +76,7 @@ npm run test262:group -- built-in-array     # Test Array implementation
 npm run test262:all-groups   # Run all groups with summary
 ```
 
-**New!** Category-based testing for faster feedback:
+### Category-based testing for faster feedback:
 - Run specific feature groups instead of the full suite
 - Get detailed breakdowns by category (built-ins, language features, etc.)
 - See which areas are strongest vs need improvement
@@ -154,7 +154,7 @@ The CI will automatically verify all quality checks on your PR.
   - ✅ `return`
   - ✅ Exceptions: `throw`, `try`/`catch`/`finally`
 
-- **ES6+ Features** ✅ **NEW**
+- **ES6+ Features**
   - ✅ Arrow functions: `() => expr`, `(a, b) => { ... }`, `x => x * 2`
   - ✅ Default parameters: `function f(x = 1, y = x + 1) { }`
   - ✅ Rest parameters: `function f(a, ...rest) { }` - collects remaining args into array
@@ -163,6 +163,7 @@ The CI will automatically verify all quality checks on your PR.
   - ✅ Classes: `class Foo { constructor() {} method() {} }` - class declarations and expressions
   - ✅ Class inheritance: `class Bar extends Foo { }` with `super()` and `super.method()` support
   - ✅ Static methods: `static myMethod() { }` on classes
+  - ✅ Generators: `function* gen() { yield 1; }` with full iterator protocol support
 
 - **Runtime semantics**
   - ✅ Closures: lexical capture of outer variables
@@ -185,7 +186,7 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `console.warn(...args)`
 - ✅ `console.info(...args)`
 
-#### **Array Constructor & Methods** ✅ **COMPLETE** 
+#### **Array Constructor & Methods**
 - ✅ `Array()`, `new Array()`, `Array.isArray(value)`, `Array.from()`, `Array.of()`
 - ✅ `array.length` property with automatic management
 - ✅ **Mutator methods**: `push()`, `pop()`, `shift()`, `unshift()`, `splice()`, `reverse()`, `sort()`
@@ -193,7 +194,7 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ **Test methods**: `every()`, `some()`
 - ✅ **Iteration methods**: `forEach()`, `map()`, `filter()`, `reduce()`, `reduceRight()`, `flatMap()`, `flat()`
 - ✅ **Accessor methods**: `slice()`, `concat()`, `toString()`, `join()`
-- ❌ **Iterator methods** (`keys()`, `values()`, `entries()`) require broader language iterator support
+- ✅ **Iterator methods**: `keys()`, `values()`, `entries()`, `[Symbol.iterator]`
 
 #### **String Constructor & Methods**
 - ✅ `String()`
@@ -202,7 +203,7 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `string.slice`, `string.split`, `string.substring`
 - ✅ `string.toLowerCase`, `string.toUpperCase`, `string.trim`
 - ✅ `string.toString`, `string.valueOf`
-- ✅ **String Escape Sequences** ✅ **NEW**
+- ✅ **String Escape Sequences**
   - Basic escapes: `\n`, `\t`, `\r`, `\\`, `\"`, `\'`, `\0`, `\b`, `\f`, `\v`
   - Hex escapes: `\xHH` (e.g., `\x41` → "A")
   - Unicode escapes: `\uHHHH` (e.g., `\u2665` → "♥")
@@ -224,7 +225,7 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `new Boolean(x)` returns Boolean object with `.valueOf()`/`.toString()`
 - ✅ `boolean.toString`, `boolean.valueOf`
 
-#### **Number Constructor & Methods** ✅ **NEW**
+#### **Number Constructor & Methods**
 - ✅ `Number(x)` returns primitive number
 - ✅ `new Number(x)` returns Number object
 - ✅ **Constants**: `Number.NaN`, `Number.POSITIVE_INFINITY`, `Number.NEGATIVE_INFINITY`, `Number.MAX_VALUE`, `Number.MIN_VALUE`, `Number.MAX_SAFE_INTEGER`, `Number.MIN_SAFE_INTEGER`, `Number.EPSILON`
@@ -232,7 +233,7 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ **Prototype methods**: `number.toString([radix])`, `number.valueOf()`, `number.toFixed()`, `number.toExponential()`, `number.toPrecision()`
 - ⚠️ **Limitation**: Primitive auto-boxing not yet supported (use Number objects explicitly)
 
-#### **Symbol Type & Methods** ✅ **NEW**
+#### **Symbol Type & Methods**
 - ✅ `Symbol(description)` creates unique symbol
 - ✅ `new Symbol()` throws TypeError (symbols cannot be constructed)
 - ✅ `typeof symbol === 'symbol'`
@@ -246,7 +247,7 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `Error()`
 - ✅ `error.toString`
 
-#### **RegExp Constructor & Methods** ✅ **NEW**
+#### **RegExp Constructor & Methods**
 - ✅ `new RegExp(pattern, flags)` creates regular expression objects
 - ✅ `regexp.test(string)` returns true if pattern matches
 - ✅ `regexp.toString()` returns string representation `/pattern/flags`
@@ -274,7 +275,7 @@ The CI will automatically verify all quality checks on your PR.
   - Array holes serialize as `null`
   - Property ordering follows internal `getOwnPropertyNames()`
 
-#### **Set Constructor & Methods** ✅ **NEW**
+#### **Set Constructor & Methods**
 - ✅ `new Set()` creates empty Set
 - ✅ `new Set(iterable)` creates Set from iterable (arrays, other Sets, etc.)
 - ✅ **Instance methods**: `add()`, `has()`, `delete()`, `clear()`, `forEach()`
@@ -283,7 +284,7 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ **SameValueZero equality**: NaN === NaN, +0 === -0
 - ✅ **Insertion order preservation**: iteration yields values in insertion order
 
-#### **Map Constructor & Methods** ✅ **NEW**
+#### **Map Constructor & Methods**
 - ✅ `new Map()` creates empty Map
 - ✅ `new Map(iterable)` creates Map from iterable of [key, value] pairs
 - ✅ **Instance methods**: `get()`, `set()`, `has()`, `delete()`, `clear()`, `forEach()`
@@ -294,6 +295,27 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ **Insertion order preservation**: iteration yields entries in insertion order
 - ✅ **Method chaining**: `set()` returns the Map for chaining
 
+#### **Generators**
+- ✅ `function* name() { }` generator function declarations
+- ✅ `const gen = function*() { }` generator function expressions
+- ✅ `yield value` yields a value and suspends execution
+- ✅ `yield* iterable` delegates to another iterable (generators, arrays)
+- ✅ **Iterator protocol**: `next()`, `return()`, `throw()` methods on generator objects
+- ✅ **Value passing**: `gen.next(value)` passes value into generator as yield result
+- ✅ **Spread/Array.from**: `[...gen()]` and `Array.from(gen())` work correctly
+- ✅ **for...of**: generators work with for...of loops
+- ✅ **try/catch/finally**: yields inside try/catch/finally blocks work correctly
+- ✅ **Yields in loops**: yields inside while and for loops work correctly
+- ⚠️ **Limitation**: Yields inside if/else blocks not yet supported
+
+#### **WeakMap & WeakSet**
+- ✅ `new WeakMap()` creates empty WeakMap
+- ✅ `new WeakSet()` creates empty WeakSet
+- ✅ **WeakMap methods**: `get()`, `set()`, `has()`, `delete()`
+- ✅ **WeakSet methods**: `add()`, `has()`, `delete()`
+- ✅ **Object-only keys**: Only objects can be keys (throws TypeError for primitives)
+- ✅ **Weak references**: Does not prevent garbage collection of keys
+
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
@@ -303,7 +325,7 @@ The CI will automatically verify all quality checks on your PR.
 - **Built-in objects/APIs**
   - ❌ Date
   - ❌ Promise/Async (`async`/`await`), timers/event loop
-  - ❌ WeakSet, WeakMap, Proxy
+  - ❌ Proxy, Reflect
   - ❌ Function.prototype methods: `call`, `apply`, `bind`
 
 ### ℹ️ Notes & Limitations
