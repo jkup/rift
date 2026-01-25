@@ -30,6 +30,122 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
 
     auto callee_node = node->children[0];
 
+    // Handle super() call
+    if(callee_node->type == ASTNodeType::SuperExpression && callee_node->value == "call") {
+        // Get the super constructor from environment
+        Value super_ctor;
+        try {
+            super_ctor = env->get("[[SuperConstructor]]");
+        } catch(const std::runtime_error&) {
+            throw JavaScriptException(Value("SyntaxError: 'super' keyword is unexpected here"),
+                                      node->line, node->column);
+        }
+
+        if(!super_ctor.isFunction()) {
+            throw JavaScriptException(Value("TypeError: Super constructor is not a function"),
+                                      node->line, node->column);
+        }
+
+        // Get current 'this' value
+        Value this_value = env->get("this");
+
+        // Evaluate arguments
+        std::vector<Value> args;
+        for(size_t i = 1; i < node->children.size(); ++i) {
+            auto& arg_node = node->children[i];
+            if(arg_node->type == ASTNodeType::SpreadElement) {
+                Value spread_value = engine->evaluate(arg_node->children[0], env);
+                if(spread_value.isObject()) {
+                    auto* obj = spread_value.getObject();
+                    Value length_val = obj->getProperty("length");
+                    if(length_val.isNumber()) {
+                        size_t length = static_cast<size_t>(length_val.getNumber());
+                        for(size_t j = 0; j < length; ++j) {
+                            args.push_back(obj->getProperty(std::to_string(j)));
+                        }
+                    }
+                }
+            } else {
+                args.push_back(engine->evaluate(arg_node, env));
+            }
+        }
+
+        // Call parent constructor with current 'this'
+        auto* ctor = dynamic_cast<JSFunction*>(super_ctor.getObject());
+        rift::core::CallContext ctx(rift::core::CallType::Constructor, this_value);
+        return ctor->call(ctx, args);
+    }
+
+    // Handle super.method() call
+    if(callee_node->type == ASTNodeType::SuperExpression && callee_node->value == "member") {
+        // Get the parent prototype from environment
+        Value super_proto;
+        try {
+            super_proto = env->get("[[SuperPrototype]]");
+        } catch(const std::runtime_error&) {
+            // Try getting from [[SuperConstructor]] as fallback
+            try {
+                Value super_ctor = env->get("[[SuperConstructor]]");
+                if(super_ctor.isFunction()) {
+                    super_proto = super_ctor.getObject()->getProperty("prototype");
+                }
+            } catch(const std::runtime_error&) {
+                throw JavaScriptException(Value("SyntaxError: 'super' keyword is unexpected here"),
+                                          node->line, node->column);
+            }
+        }
+
+        if(!super_proto.isObject()) {
+            throw JavaScriptException(Value("TypeError: Cannot read properties of undefined"),
+                                      node->line, node->column);
+        }
+
+        // Get the method name
+        std::string method_name;
+        if(callee_node->metadata == "computed") {
+            Value key_value = engine->evaluate(callee_node->children[0], env);
+            method_name = key_value.toString();
+        } else {
+            method_name = callee_node->children[0]->value;
+        }
+
+        Value method = super_proto.getObject()->getProperty(method_name);
+        if(!method.isFunction()) {
+            throw JavaScriptException(
+                Value("TypeError: super." + method_name + " is not a function"), node->line,
+                node->column);
+        }
+
+        // Get current 'this' value
+        Value this_value = env->get("this");
+
+        // Evaluate arguments
+        std::vector<Value> args;
+        for(size_t i = 1; i < node->children.size(); ++i) {
+            auto& arg_node = node->children[i];
+            if(arg_node->type == ASTNodeType::SpreadElement) {
+                Value spread_value = engine->evaluate(arg_node->children[0], env);
+                if(spread_value.isObject()) {
+                    auto* obj = spread_value.getObject();
+                    Value length_val = obj->getProperty("length");
+                    if(length_val.isNumber()) {
+                        size_t length = static_cast<size_t>(length_val.getNumber());
+                        for(size_t j = 0; j < length; ++j) {
+                            args.push_back(obj->getProperty(std::to_string(j)));
+                        }
+                    }
+                }
+            } else {
+                args.push_back(engine->evaluate(arg_node, env));
+            }
+        }
+
+        // Call method with current 'this'
+        auto* func = dynamic_cast<JSFunction*>(method.getObject());
+        rift::core::CallContext ctx(rift::core::CallType::Function, this_value);
+        return func->call(ctx, args);
+    }
+
     // Check if this is a method call (member expression)
     Value this_value = Value::undefined();
     Value callee;
@@ -500,8 +616,15 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
                                   node->line, node->column);
     }
 
-    // Create a new object that will be the 'this' context for the constructor
-    auto* new_obj = engine->getObjectFactory()->createJSObject();
+    // Get the constructor's prototype and set it on the new object
+    Value proto_value = constructor_func->getProperty("prototype");
+    JSObject* prototype = nullptr;
+    if(proto_value.isObject()) {
+        prototype = proto_value.getObject();
+    }
+
+    // Create a new object with the constructor's prototype
+    auto* new_obj = engine->getObjectFactory()->createJSObject(prototype);
 
     // Collect real arguments (skip first child which is the constructor)
     std::vector<Value> args;
@@ -522,6 +645,360 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
     // If constructor returned a primitive (or undefined), return the object we created
     // This handles user-defined constructor functions
     return Value(new_obj);
+}
+
+Value ExpressionEvaluator::evaluateClassExpression(std::shared_ptr<ASTNode> node,
+                                                   std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.size() < 2) {
+        return Value::undefined();
+    }
+
+    // Get optional class name (for named class expressions)
+    std::string class_name = node->value;
+
+    // Get superclass (may be nullptr)
+    auto superclass_node = node->children[0];
+    // Get class body
+    auto class_body = node->children[1];
+
+    // Evaluate superclass if present
+    JSFunction* parent_constructor = nullptr;
+    JSObject* parent_prototype = nullptr;
+
+    if(superclass_node) {
+        Value super_value = engine->evaluate(superclass_node, env);
+        if(!super_value.isFunction()) {
+            throw JavaScriptException(
+                Value("TypeError: Class extends value is not a constructor or null"), node->line,
+                node->column);
+        }
+        parent_constructor = dynamic_cast<JSFunction*>(super_value.getObject());
+        if(!parent_constructor) {
+            throw JavaScriptException(Value("TypeError: Class extends value is not a constructor"),
+                                      node->line, node->column);
+        }
+        Value proto_value = parent_constructor->getProperty("prototype");
+        if(proto_value.isObject()) {
+            parent_prototype = proto_value.getObject();
+        }
+    }
+
+    // Create prototype object
+    auto* factory = engine->getObjectFactory();
+    auto* obj_manager = factory->getObjectManager();
+    bool was_gc_enabled = obj_manager->isGCEnabled();
+    obj_manager->setGCEnabled(false);
+
+    try {
+        auto* class_prototype = factory->createJSObject(parent_prototype);
+
+        // Process class body
+        std::shared_ptr<ASTNode> constructor_method = nullptr;
+        std::vector<std::shared_ptr<ASTNode>> instance_methods;
+        std::vector<std::shared_ptr<ASTNode>> static_methods;
+
+        for(const auto& method : class_body->children) {
+            if(method->type != ASTNodeType::MethodDefinition) {
+                continue;
+            }
+
+            bool is_static = (method->metadata.find("static") != std::string::npos);
+            bool is_constructor = (method->value == "constructor");
+
+            if(is_constructor && !is_static) {
+                constructor_method = method;
+            } else if(is_static) {
+                static_methods.push_back(method);
+            } else {
+                instance_methods.push_back(method);
+            }
+        }
+
+        // Extract constructor parameters and body
+        std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> ctor_param_info;
+        std::shared_ptr<ASTNode> ctor_body = nullptr;
+
+        if(constructor_method) {
+            auto ctor_params = constructor_method->children[0];
+            ctor_body = constructor_method->children[1];
+
+            for(const auto& param : ctor_params->children) {
+                if(param->type == ASTNodeType::AssignmentExpression) {
+                    ctor_param_info.emplace_back(param->children[0]->value, param->children[1],
+                                                 false);
+                } else if(param->metadata == "rest") {
+                    ctor_param_info.emplace_back(param->value, nullptr, true);
+                } else {
+                    ctor_param_info.emplace_back(param->value, nullptr, false);
+                }
+            }
+        }
+
+        auto* constructor =
+            factory->createJSFunction([engine, ctor_param_info, ctor_body, env, parent_constructor,
+                                       class_prototype](const rift::core::CallContext& call_context,
+                                                        const std::vector<Value>& args) -> Value {
+                if(call_context.type != rift::core::CallType::Constructor) {
+                    throw JavaScriptException(
+                        Value("TypeError: Class constructor cannot be invoked without 'new'"));
+                }
+
+                auto func_env = std::make_shared<Environment>(env);
+                func_env->define("this", call_context.thisValue);
+                func_env->define("[[HomeObject]]", Value(class_prototype));
+                if(parent_constructor) {
+                    func_env->define("[[SuperConstructor]]", Value(parent_constructor));
+                }
+
+                // Bind parameters
+                for(size_t i = 0; i < ctor_param_info.size(); ++i) {
+                    const auto& [param_name, default_ast, is_rest] = ctor_param_info[i];
+
+                    if(is_rest) {
+                        std::vector<Value> rest_args;
+                        for(size_t j = i; j < args.size(); ++j) {
+                            rest_args.push_back(args[j]);
+                        }
+                        auto* rest_array = builtins::Array::createArrayObject(
+                            engine->getObjectFactory(), rest_args);
+                        func_env->define(param_name, Value(rest_array));
+                    } else {
+                        Value arg_value;
+                        bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                        if(use_default && default_ast) {
+                            arg_value = engine->evaluate(default_ast, func_env);
+                        } else if(i < args.size()) {
+                            arg_value = args[i];
+                        } else {
+                            arg_value = Value::undefined();
+                        }
+                        func_env->define(param_name, arg_value);
+                    }
+                }
+
+                if(ctor_body) {
+                    try {
+                        engine->evaluate(ctor_body, func_env);
+                    } catch(const ReturnException& e) {
+                        Value returned = e.getValue();
+                        if(returned.isObject()) {
+                            return returned;
+                        }
+                    }
+                }
+
+                return call_context.thisValue;
+            });
+
+        // Set up prototype chain
+        constructor->setProperty("prototype", Value(class_prototype));
+        class_prototype->setProperty("constructor", Value(constructor));
+        constructor->setHomeObject(class_prototype);
+
+        // Add instance methods to prototype
+        for(const auto& method : instance_methods) {
+            std::string method_name = method->value;
+            bool is_computed = (method->metadata.find("computed") != std::string::npos);
+
+            if(is_computed && method->children.size() > 2) {
+                Value key_value = engine->evaluate(method->children[2], env);
+                method_name = key_value.toString();
+            }
+
+            auto method_params = method->children[0];
+            auto method_body = method->children[1];
+
+            std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> method_param_info;
+            for(const auto& param : method_params->children) {
+                if(param->type == ASTNodeType::AssignmentExpression) {
+                    method_param_info.emplace_back(param->children[0]->value, param->children[1],
+                                                   false);
+                } else if(param->metadata == "rest") {
+                    method_param_info.emplace_back(param->value, nullptr, true);
+                } else {
+                    method_param_info.emplace_back(param->value, nullptr, false);
+                }
+            }
+
+            auto* method_func = factory->createJSFunction(
+                [engine, method_param_info, method_body, env, class_prototype, parent_prototype](
+                    const rift::core::CallContext& call_context,
+                    const std::vector<Value>& args) -> Value {
+                    auto func_env = std::make_shared<Environment>(env);
+                    func_env->define("this", call_context.thisValue);
+                    func_env->define("[[HomeObject]]", Value(class_prototype));
+                    if(parent_prototype) {
+                        func_env->define("[[SuperPrototype]]", Value(parent_prototype));
+                    }
+
+                    for(size_t i = 0; i < method_param_info.size(); ++i) {
+                        const auto& [param_name, default_ast, is_rest] = method_param_info[i];
+
+                        if(is_rest) {
+                            std::vector<Value> rest_args;
+                            for(size_t j = i; j < args.size(); ++j) {
+                                rest_args.push_back(args[j]);
+                            }
+                            auto* rest_array = builtins::Array::createArrayObject(
+                                engine->getObjectFactory(), rest_args);
+                            func_env->define(param_name, Value(rest_array));
+                        } else {
+                            Value arg_value;
+                            bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                            if(use_default && default_ast) {
+                                arg_value = engine->evaluate(default_ast, func_env);
+                            } else if(i < args.size()) {
+                                arg_value = args[i];
+                            } else {
+                                arg_value = Value::undefined();
+                            }
+                            func_env->define(param_name, arg_value);
+                        }
+                    }
+
+                    try {
+                        return engine->evaluate(method_body, func_env);
+                    } catch(const ReturnException& e) {
+                        return e.getValue();
+                    }
+                });
+
+            method_func->setHomeObject(class_prototype);
+            class_prototype->setProperty(method_name, Value(method_func));
+        }
+
+        // Add static methods to constructor
+        for(const auto& method : static_methods) {
+            std::string method_name = method->value;
+            bool is_computed = (method->metadata.find("computed") != std::string::npos);
+
+            if(is_computed && method->children.size() > 2) {
+                Value key_value = engine->evaluate(method->children[2], env);
+                method_name = key_value.toString();
+            }
+
+            auto method_params = method->children[0];
+            auto method_body = method->children[1];
+
+            std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> method_param_info;
+            for(const auto& param : method_params->children) {
+                if(param->type == ASTNodeType::AssignmentExpression) {
+                    method_param_info.emplace_back(param->children[0]->value, param->children[1],
+                                                   false);
+                } else if(param->metadata == "rest") {
+                    method_param_info.emplace_back(param->value, nullptr, true);
+                } else {
+                    method_param_info.emplace_back(param->value, nullptr, false);
+                }
+            }
+
+            auto* method_func =
+                factory->createJSFunction([engine, method_param_info, method_body, env](
+                                              const rift::core::CallContext& call_context,
+                                              const std::vector<Value>& args) -> Value {
+                    auto func_env = std::make_shared<Environment>(env);
+                    func_env->define("this", call_context.thisValue);
+
+                    for(size_t i = 0; i < method_param_info.size(); ++i) {
+                        const auto& [param_name, default_ast, is_rest] = method_param_info[i];
+
+                        if(is_rest) {
+                            std::vector<Value> rest_args;
+                            for(size_t j = i; j < args.size(); ++j) {
+                                rest_args.push_back(args[j]);
+                            }
+                            auto* rest_array = builtins::Array::createArrayObject(
+                                engine->getObjectFactory(), rest_args);
+                            func_env->define(param_name, Value(rest_array));
+                        } else {
+                            Value arg_value;
+                            bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                            if(use_default && default_ast) {
+                                arg_value = engine->evaluate(default_ast, func_env);
+                            } else if(i < args.size()) {
+                                arg_value = args[i];
+                            } else {
+                                arg_value = Value::undefined();
+                            }
+                            func_env->define(param_name, arg_value);
+                        }
+                    }
+
+                    try {
+                        return engine->evaluate(method_body, func_env);
+                    } catch(const ReturnException& e) {
+                        return e.getValue();
+                    }
+                });
+
+            constructor->setProperty(method_name, Value(method_func));
+        }
+
+        // For named class expressions, define the name in a scope visible to the class body
+        // (This is a simplification - full spec has more complex scoping)
+        if(!class_name.empty()) {
+            // Named class expressions don't define in outer scope,
+            // but the name is accessible within the class
+        }
+
+        obj_manager->setGCEnabled(was_gc_enabled);
+        return Value(constructor);
+
+    } catch(...) {
+        obj_manager->setGCEnabled(was_gc_enabled);
+        throw;
+    }
+}
+
+Value ExpressionEvaluator::evaluateSuperExpression(std::shared_ptr<ASTNode> node,
+                                                   std::shared_ptr<Environment> env,
+                                                   Rift* /*engine*/) {
+    // SuperExpression when not in a call context
+    // This handles super.property access (not super.method())
+
+    if(node->value == "member") {
+        // super.property or super[expr]
+        Value super_proto;
+        try {
+            super_proto = env->get("[[SuperPrototype]]");
+        } catch(const std::runtime_error&) {
+            // Try getting from [[SuperConstructor]] as fallback
+            try {
+                Value super_ctor = env->get("[[SuperConstructor]]");
+                if(super_ctor.isFunction()) {
+                    super_proto = super_ctor.getObject()->getProperty("prototype");
+                }
+            } catch(const std::runtime_error&) {
+                throw JavaScriptException(Value("SyntaxError: 'super' keyword is unexpected here"),
+                                          node->line, node->column);
+            }
+        }
+
+        if(!super_proto.isObject()) {
+            return Value::undefined();
+        }
+
+        // Get property name
+        std::string prop_name;
+        if(node->metadata == "computed") {
+            // Need engine to evaluate computed key
+            // For now, just get the value directly if it's a literal
+            if(node->children[0]->type == ASTNodeType::Literal) {
+                prop_name = node->children[0]->value;
+            }
+        } else {
+            prop_name = node->children[0]->value;
+        }
+
+        return super_proto.getObject()->getProperty(prop_name);
+    }
+
+    // super() call is handled in evaluateCallExpression
+    throw JavaScriptException(Value("SyntaxError: 'super' keyword is unexpected here"), node->line,
+                              node->column);
 }
 
 }  // namespace rift::core

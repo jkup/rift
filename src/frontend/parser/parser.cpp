@@ -124,6 +124,10 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
         return parse_function_declaration();
     }
 
+    if(current_token().type == TokenType::Class) {
+        return parse_class_declaration();
+    }
+
     if(current_token().type == TokenType::Return) {
         return parse_return_statement();
     }

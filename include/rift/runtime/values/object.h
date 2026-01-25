@@ -109,6 +109,7 @@ class JSFunction : public JSObject {
   private:
     std::function<Value(const rift::core::CallContext&, const std::vector<Value>&)>
         native_function_;
+    JSObject* home_object_ = nullptr;  // [[HomeObject]] for super support in methods
 
   public:
     JSFunction(std::function<Value(const rift::core::CallContext&, const std::vector<Value>&)> func)
@@ -125,8 +126,25 @@ class JSFunction : public JSObject {
         return true;  // Regular functions can be constructors
     }
 
+    // Home object for super support (set when method is defined in a class)
+    void setHomeObject(JSObject* home) {
+        home_object_ = home;
+    }
+    JSObject* getHomeObject() const {
+        return home_object_;
+    }
+
     std::string getTypeName() const override {
         return "Function";
+    }
+
+    // Override to include home_object_ in GC traversal
+    std::vector<rift::memory::GCObject*> getReferences() const override {
+        auto refs = JSObject::getReferences();
+        if(home_object_) {
+            refs.push_back(home_object_);
+        }
+        return refs;
     }
 };
 

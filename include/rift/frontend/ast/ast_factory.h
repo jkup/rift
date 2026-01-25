@@ -467,6 +467,99 @@ class ASTFactory {
             }
         }
     }
+
+    // Class-related factories
+
+    // ClassDeclaration: class Foo extends Bar { ... }
+    // value = class name
+    // children[0] = superclass expression (or nullptr if no extends)
+    // children[1] = class body
+    static std::shared_ptr<ASTNode> makeClassDeclaration(const std::string& name,
+                                                         std::shared_ptr<ASTNode> superClass,
+                                                         std::shared_ptr<ASTNode> body) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::ClassDeclaration, name);
+        node->children.push_back(std::move(superClass));  // May be nullptr
+        node->children.push_back(std::move(body));
+        return node;
+    }
+
+    // ClassExpression: const Foo = class { ... } or class Bar { ... }
+    // value = optional class name (empty for anonymous)
+    // children[0] = superclass expression (or nullptr)
+    // children[1] = class body
+    static std::shared_ptr<ASTNode> makeClassExpression(const std::string& name,
+                                                        std::shared_ptr<ASTNode> superClass,
+                                                        std::shared_ptr<ASTNode> body) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::ClassExpression, name);
+        node->children.push_back(std::move(superClass));  // May be nullptr
+        node->children.push_back(std::move(body));
+        return node;
+    }
+
+    // ClassBody: container for method definitions
+    static std::shared_ptr<ASTNode> makeClassBody() {
+        return std::make_shared<ASTNode>(ASTNodeType::ClassBody);
+    }
+
+    // MethodDefinition: method() { } or static method() { }
+    // value = method name
+    // metadata = "static" for static methods, "constructor" for constructor, "" otherwise
+    //            may include "computed" flag for computed property names
+    // children[0] = parameters (ParameterList)
+    // children[1] = body (BlockStatement)
+    // children[2] = computed key expression (optional, for computed property names)
+    static std::shared_ptr<ASTNode> makeMethodDefinition(
+        const std::string& name, std::shared_ptr<ASTNode> parameters, std::shared_ptr<ASTNode> body,
+        bool isStatic = false, bool isComputed = false,
+        std::shared_ptr<ASTNode> computedKey = nullptr) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::MethodDefinition, name);
+        node->children.push_back(std::move(parameters));
+        node->children.push_back(std::move(body));
+
+        // Build metadata string
+        std::string metadata;
+        if(name == "constructor") {
+            metadata = "constructor";
+        }
+        if(isStatic) {
+            metadata = metadata.empty() ? "static" : metadata + ",static";
+        }
+        if(isComputed) {
+            metadata = metadata.empty() ? "computed" : metadata + ",computed";
+            if(computedKey) {
+                node->children.push_back(std::move(computedKey));
+            }
+        }
+        node->metadata = metadata;
+        return node;
+    }
+
+    // SuperExpression: super (for super() calls)
+    static std::shared_ptr<ASTNode> makeSuperExpression() {
+        return std::make_shared<ASTNode>(ASTNodeType::SuperExpression, "call");
+    }
+
+    // SuperMemberExpression: super.property or super[expr]
+    // value = "member"
+    // children[0] = property identifier or computed expression
+    // metadata = "computed" if bracket notation
+    static std::shared_ptr<ASTNode> makeSuperMemberExpression(std::shared_ptr<ASTNode> property,
+                                                              bool computed = false) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::SuperExpression, "member");
+        node->children.push_back(std::move(property));
+        if(computed) {
+            node->metadata = "computed";
+        }
+        return node;
+    }
+
+    // Helper to add method to class body
+    static void addMethodToClassBody(std::shared_ptr<ASTNode> body,
+                                     std::shared_ptr<ASTNode> method) {
+        if(body->type == ASTNodeType::ClassBody) {
+            body->children.push_back(std::move(method));
+        }
+    }
 };
 
 }  // namespace rift::ast

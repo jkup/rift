@@ -67,8 +67,7 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     RIFT_METHOD(prototype, "toString", Array::toString);
 
     // Symbol.iterator - for for-of loop support
-    std::string iterator_key =
-        core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
+    std::string iterator_key = core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
     auto* iterator_func = factory->createJSFunction(Array::symbolIterator);
     prototype->setProperty(iterator_key, Value(iterator_func));
 }
@@ -288,8 +287,7 @@ Value Array::symbolIterator(const CallContext& ctx, const std::vector<Value>& ar
 
     // Create next() method
     auto* next_func = getObjectFactory()->createJSFunction(
-        [](const core::CallContext& next_ctx,
-           const std::vector<Value>& /* next_args */) -> Value {
+        [](const core::CallContext& next_ctx, const std::vector<Value>& /* next_args */) -> Value {
             auto* iter = next_ctx.thisValue.getObject();
             if(!iter) {
                 return Value::undefined();
@@ -308,9 +306,8 @@ Value Array::symbolIterator(const CallContext& ctx, const std::vector<Value>& ar
             } else {
                 result->setProperty("done", Value(false));
                 if(arr_val.isObject()) {
-                    result->setProperty(
-                        "value",
-                        arr_val.getObject()->getProperty(std::to_string(static_cast<size_t>(index))));
+                    result->setProperty("value", arr_val.getObject()->getProperty(
+                                                     std::to_string(static_cast<size_t>(index))));
                 }
                 iter->setProperty("__index__", Value(index + 1));
             }

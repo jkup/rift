@@ -55,6 +55,12 @@ enum class ASTNodeType {
     ObjectPattern,      // {a, b: renamed, ...rest}
     AssignmentPattern,  // x = defaultValue (pattern with default)
     RestElement,        // ...rest in patterns
+    // Class-related nodes
+    ClassDeclaration,  // class Foo extends Bar { ... }
+    ClassExpression,   // const Foo = class { ... }
+    ClassBody,         // { constructor() {} method() {} }
+    MethodDefinition,  // method() { } or static method() { }
+    SuperExpression,   // super or super.method
 };
 
 struct ASTNode {

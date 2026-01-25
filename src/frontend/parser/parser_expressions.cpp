@@ -115,6 +115,40 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
         case TokenType::Function: {
             return parse_function_expression();
         }
+        case TokenType::Class: {
+            return parse_class_expression();
+        }
+        case TokenType::Super: {
+            // super or super.method or super[expr]
+            Token& startToken = current_token();
+            current++;  // consume 'super'
+
+            if(current_token().type == TokenType::Dot) {
+                // super.property
+                current++;  // consume '.'
+                if(current_token().type != TokenType::Identifier) {
+                    throw std::runtime_error("Expected property name after 'super.'");
+                }
+                auto property = ASTFactory::makeIdentifier(current_token().value);
+                current++;
+                auto node = ASTFactory::makeSuperMemberExpression(property, false);
+                node->setLocation(startToken.line, startToken.column);
+                return node;
+            } else if(current_token().type == TokenType::LeftBracket) {
+                // super[expr]
+                current++;  // consume '['
+                auto property = parse_expression();
+                consume(TokenType::RightBracket);
+                auto node = ASTFactory::makeSuperMemberExpression(property, true);
+                node->setLocation(startToken.line, startToken.column);
+                return node;
+            } else {
+                // Just 'super' (for super() call)
+                auto node = ASTFactory::makeSuperExpression();
+                node->setLocation(startToken.line, startToken.column);
+                return node;
+            }
+        }
         default:
             throw std::runtime_error("Unexpected token in primary expression");
     }
@@ -287,7 +321,7 @@ std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> 
         do {
             // Check for spread argument (...expr)
             if(current_token().type == TokenType::Spread) {
-                current++;  // consume '...'
+                current++;                                     // consume '...'
                 auto spread_arg = parse_binary_expression(1);  // Parse at assignment precedence
                 auto spread_element = ASTFactory::makeSpreadElement(spread_arg);
                 ASTFactory::addArgument(call, spread_element);
@@ -348,7 +382,7 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
 
         // Check for spread element (...expr)
         if(current_token().type == TokenType::Spread) {
-            current++;  // consume '...'
+            current++;                                     // consume '...'
             auto spread_arg = parse_binary_expression(1);  // Parse at assignment precedence
             auto spread_element = ASTFactory::makeSpreadElement(spread_arg);
             ASTFactory::addArrayElement(array, spread_element);

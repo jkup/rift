@@ -58,6 +58,10 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
             return evaluateNewExpression(node, env, engine);
         case ASTNodeType::TemplateLiteral:
             return evaluateTemplateLiteral(node, env, engine);
+        case ASTNodeType::ClassExpression:
+            return evaluateClassExpression(node, env, engine);
+        case ASTNodeType::SuperExpression:
+            return evaluateSuperExpression(node, env, engine);
         default:
             return Value::undefined();
     }
