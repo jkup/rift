@@ -29,13 +29,13 @@ JSObject* StringIterator::create(rift::memory::ObjectFactory* factory, const std
 
 Value StringIterator::next(const CallContext& ctx, const std::vector<Value>& /* args */) {
     // Get the iterator object
-    if (!ctx.thisValue.isObject()) {
+    if(!ctx.thisValue.isObject()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: StringIterator.next called on non-object"));
     }
 
     auto* iter = ctx.thisValue.getObject();
-    if (!iter) {
+    if(!iter) {
         throw rift::core::JavaScriptException(Value("TypeError: invalid StringIterator"));
     }
 
@@ -48,7 +48,7 @@ Value StringIterator::next(const CallContext& ctx, const std::vector<Value>& /* 
     rift::memory::GCProtector protect_result(result, object_factory_->getObjectManager());
 
     // Check if iterator is exhausted
-    if (str_val.isUndefined()) {
+    if(str_val.isUndefined()) {
         result->setProperty("done", Value(true));
         result->setProperty("value", Value::undefined());
         return Value(result);
@@ -59,7 +59,7 @@ Value StringIterator::next(const CallContext& ctx, const std::vector<Value>& /* 
     size_t len = str.length();
 
     // Check if we've reached the end
-    if (position >= len) {
+    if(position >= len) {
         // Mark as exhausted
         iter->setProperty("[[IteratedString]]", Value::undefined());
         result->setProperty("done", Value(true));

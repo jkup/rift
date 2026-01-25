@@ -10,17 +10,19 @@
 #include "rift/builtins/error/syntax_error.h"
 #include "rift/builtins/error/type_error.h"
 #include "rift/builtins/global/global.h"
+#include "rift/builtins/iterator/iterator_prototype.h"
 #include "rift/builtins/json/json.h"
+#include "rift/builtins/map/map.h"
+#include "rift/builtins/map/map_iterator.h"
 #include "rift/builtins/math/math.h"
 #include "rift/builtins/number/number.h"
 #include "rift/builtins/object/object.h"
 #include "rift/builtins/regexp/regexp.h"
+#include "rift/builtins/set/set.h"
+#include "rift/builtins/set/set_iterator.h"
 #include "rift/builtins/string/string.h"
 #include "rift/builtins/string/string_iterator.h"
 #include "rift/builtins/symbol/symbol.h"
-#include "rift/builtins/set/set.h"
-#include "rift/builtins/set/set_iterator.h"
-#include "rift/builtins/iterator/iterator_prototype.h"
 #include "rift/core/engine/engine.h"
 #include "rift/runtime/values/value.h"
 
@@ -41,6 +43,7 @@ JSObject* BuiltinManager::rangeErrorPrototype_ = nullptr;
 JSObject* BuiltinManager::regexpPrototype_ = nullptr;
 JSObject* BuiltinManager::iteratorPrototype_ = nullptr;
 JSObject* BuiltinManager::setPrototype_ = nullptr;
+JSObject* BuiltinManager::mapPrototype_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Get the object factory from the engine
@@ -61,6 +64,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::RegExp::setObjectFactory(factory);
         builtins::Symbol::setObjectFactory(factory);
         builtins::Set::setObjectFactory(factory);
+        builtins::Map::setObjectFactory(factory);
     }
 
     // Setup iterator prototype FIRST - other iterators inherit from this
@@ -70,6 +74,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     builtins::ArrayIterator::setupPrototype(factory, iteratorPrototype_);
     builtins::StringIterator::setupPrototype(factory, iteratorPrototype_);
     builtins::SetIterator::setupPrototype(factory, iteratorPrototype_);
+    builtins::MapIterator::setupPrototype(factory, iteratorPrototype_);
 
     // Now setup builtins with factory - these will create their own prototypes
     setupGlobalFunctions(globalEnv, factory);
@@ -89,6 +94,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupRegExp(globalEnv, factory);
     setupSymbol(globalEnv, factory);
     setupSet(globalEnv, factory);
+    setupMap(globalEnv, factory);
 
     // After all builtins are created, get their prototypes from the constructors
     auto* objectConstructor = globalEnv->get("Object").getObject();
@@ -104,6 +110,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     auto* regexpConstructor = globalEnv->get("RegExp").getObject();
     auto* symbolConstructor = globalEnv->get("Symbol").getObject();
     auto* setConstructor = globalEnv->get("Set").getObject();
+    auto* mapConstructor = globalEnv->get("Map").getObject();
 
     if(objectConstructor)
         objectPrototype_ = objectConstructor->getProperty("prototype").getObject();
@@ -131,6 +138,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         symbolPrototype_ = symbolConstructor->getProperty("prototype").getObject();
     if(setConstructor)
         setPrototype_ = setConstructor->getProperty("prototype").getObject();
+    if(mapConstructor)
+        mapPrototype_ = mapConstructor->getProperty("prototype").getObject();
 
     // Set up prototype chain: All prototypes -> Object.prototype (except Object itself)
     if(objectPrototype_ && arrayPrototype_) {
@@ -156,6 +165,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     }
     if(objectPrototype_ && setPrototype_) {
         setPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && mapPrototype_) {
+        mapPrototype_->setPrototype(objectPrototype_);
     }
 
     // Setup GC functions if engine is provided
@@ -203,6 +215,10 @@ JSObject* BuiltinManager::getIteratorPrototype() {
 
 JSObject* BuiltinManager::getSetPrototype() {
     return setPrototype_;
+}
+
+JSObject* BuiltinManager::getMapPrototype() {
+    return mapPrototype_;
 }
 
 JSObject* BuiltinManager::getTypeErrorPrototype() {
@@ -353,6 +369,7 @@ void BuiltinManager::clearStaticPrototypes() {
     rangeErrorPrototype_ = nullptr;
     iteratorPrototype_ = nullptr;
     setPrototype_ = nullptr;
+    mapPrototype_ = nullptr;
 }
 
 void BuiltinManager::setupRegExp(std::shared_ptr<Environment> globalEnv,
@@ -378,6 +395,13 @@ void BuiltinManager::setupSet(std::shared_ptr<Environment> globalEnv,
 
 void BuiltinManager::setupJSON(std::shared_ptr<Environment> globalEnv, rift::core::Rift* engine) {
     rift::builtins::JSON::setup(globalEnv, engine);
+}
+
+void BuiltinManager::setupMap(std::shared_ptr<Environment> globalEnv,
+                              rift::memory::ObjectFactory* factory) {
+    // Setup Map object using GC-managed creation
+    auto* map = builtins::Map::create(factory);
+    globalEnv->define("Map", Value(map));
 }
 
 }  // namespace rift::core

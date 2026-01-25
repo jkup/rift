@@ -106,6 +106,8 @@ set(BUILTINS_SOURCES
     src/builtins/iterator/iterator_prototype.cpp
     src/builtins/set/set.cpp
     src/builtins/set/set_iterator.cpp
+    src/builtins/map/map.cpp
+    src/builtins/map/map_iterator.cpp
 )
 
 set(CORE_SOURCES

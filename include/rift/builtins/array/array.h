@@ -376,8 +376,8 @@ class Array : public BuiltinBase<Array> {
     /// The `toString()` method returns a string representing the array.
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `keys()` method returns a new Array Iterator object that contains the keys for each index
-    /// in the array.
+    /// The `keys()` method returns a new Array Iterator object that contains the keys for each
+    /// index in the array.
     ///
     /// More information:
     ///  - [ECMAScript reference][spec]

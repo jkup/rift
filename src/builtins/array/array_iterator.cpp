@@ -27,13 +27,13 @@ JSObject* ArrayIterator::create(rift::memory::ObjectFactory* factory, JSObject* 
 
 Value ArrayIterator::next(const CallContext& ctx, const std::vector<Value>& /* args */) {
     // Get the iterator object
-    if (!ctx.thisValue.isObject()) {
+    if(!ctx.thisValue.isObject()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: ArrayIterator.next called on non-object"));
     }
 
     auto* iter = ctx.thisValue.getObject();
-    if (!iter) {
+    if(!iter) {
         throw rift::core::JavaScriptException(Value("TypeError: invalid ArrayIterator"));
     }
 
@@ -50,7 +50,7 @@ Value ArrayIterator::next(const CallContext& ctx, const std::vector<Value>& /* a
     rift::memory::GCProtector protect_result(result, factory->getObjectManager());
 
     // Check if iterator is exhausted
-    if (array_val.isUndefined()) {
+    if(array_val.isUndefined()) {
         result->setProperty("done", Value(true));
         result->setProperty("value", Value::undefined());
         return Value(result);
@@ -58,7 +58,7 @@ Value ArrayIterator::next(const CallContext& ctx, const std::vector<Value>& /* a
 
     // Get array and check length
     auto* array = array_val.getObject();
-    if (!array) {
+    if(!array) {
         // Mark as exhausted
         iter->setProperty("[[IteratedArrayLike]]", Value::undefined());
         result->setProperty("done", Value(true));
@@ -71,7 +71,7 @@ Value ArrayIterator::next(const CallContext& ctx, const std::vector<Value>& /* a
     auto kind = static_cast<ArrayIterationKind>(static_cast<int>(kind_val.toNumber()));
 
     // Check if we've reached the end
-    if (index >= length) {
+    if(index >= length) {
         // Mark as exhausted - set [[IteratedArrayLike]] to undefined
         iter->setProperty("[[IteratedArrayLike]]", Value::undefined());
         result->setProperty("done", Value(true));
@@ -85,7 +85,7 @@ Value ArrayIterator::next(const CallContext& ctx, const std::vector<Value>& /* a
     // Return the appropriate value based on iteration kind
     result->setProperty("done", Value(false));
 
-    switch (kind) {
+    switch(kind) {
         case ArrayIterationKind::Key:
             result->setProperty("value", Value(static_cast<double>(index)));
             break;
