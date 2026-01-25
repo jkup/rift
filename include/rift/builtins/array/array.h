@@ -376,16 +376,41 @@ class Array : public BuiltinBase<Array> {
     /// The `toString()` method returns a string representing the array.
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `[Symbol.iterator]()` method returns an iterator object that iterates over array values.
+    /// The `keys()` method returns a new Array Iterator object that contains the keys for each index
+    /// in the array.
     ///
     /// More information:
     ///  - [ECMAScript reference][spec]
     ///  - [MDN documentation][mdn]
     ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype-@@iterator
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.keys
     /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/@@iterator
-    static Value symbolIterator(const CallContext& ctx, const std::vector<Value>& args);
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys
+    static Value keys(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// The `values()` method returns a new Array Iterator object that contains the values for each
+    /// index in the array.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.values
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values
+    static Value values(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// The `entries()` method returns a new Array Iterator object that contains the key/value pairs
+    /// for each index in the array.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.entries
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries
+    static Value entries(const CallContext& ctx, const std::vector<Value>& args);
 
     // Helper methods
     /// Helper to get the length of an array-like object
@@ -429,6 +454,11 @@ class Array : public BuiltinBase<Array> {
     /// [mdn]:
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
     static Value of(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// Get the object factory (needed by ArrayIterator)
+    static rift::memory::ObjectFactory* getObjectFactory() {
+        return BuiltinBase<Array>::getObjectFactory();
+    }
 
   private:
     // Static factory storage is now handled by BuiltinBase template

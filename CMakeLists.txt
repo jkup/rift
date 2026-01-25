@@ -87,10 +87,12 @@ set(BUILTINS_SOURCES
     src/builtins/json/json.cpp
     src/builtins/global/global.cpp
     src/builtins/string/string.cpp
+    src/builtins/string/string_iterator.cpp
     src/builtins/array/array.cpp
     src/builtins/array/array_mutators.cpp
     src/builtins/array/array_iterators.cpp
     src/builtins/array/array_accessors.cpp
+    src/builtins/array/array_iterator.cpp
     src/builtins/object/object.cpp
     src/builtins/boolean/boolean.cpp
     src/builtins/number/number.cpp
@@ -101,6 +103,7 @@ set(BUILTINS_SOURCES
     src/builtins/error/range_error.cpp
     src/builtins/regexp/regexp.cpp
     src/builtins/symbol/symbol.cpp
+    src/builtins/iterator/iterator_prototype.cpp
 )
 
 set(CORE_SOURCES

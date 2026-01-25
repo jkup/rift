@@ -231,6 +231,23 @@ class String : public BuiltinBase<String> {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/valueOf
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// The `[Symbol.iterator]()` method returns a new iterator object that iterates over the
+    /// code points of a String value.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype-@@iterator
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/@@iterator
+    static Value symbolIterator(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// Get the object factory (needed by StringIterator)
+    static rift::memory::ObjectFactory* getObjectFactory() {
+        return BuiltinBase<String>::getObjectFactory();
+    }
+
   private:
     /// Helper for index validation
     static size_t validateStringIndex(const std::string& str, double index);

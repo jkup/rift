@@ -12,6 +12,7 @@
 #include <cmath>
 #include <limits>
 
+#include "rift/builtins/array/array_iterator.h"
 #include "rift/builtins/symbol/symbol.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/call_context.h"
@@ -66,9 +67,14 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     RIFT_METHOD(prototype, "join", Array::join);
     RIFT_METHOD(prototype, "toString", Array::toString);
 
-    // Symbol.iterator - for for-of loop support
+    // Iterator methods
+    RIFT_METHOD(prototype, "keys", Array::keys);
+    RIFT_METHOD(prototype, "values", Array::values);
+    RIFT_METHOD(prototype, "entries", Array::entries);
+
+    // Symbol.iterator - alias for values() per ECMAScript spec
     std::string iterator_key = core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
-    auto* iterator_func = factory->createJSFunction(Array::symbolIterator);
+    auto* iterator_func = factory->createJSFunction(Array::values);
     prototype->setProperty(iterator_key, Value(iterator_func));
 }
 
@@ -264,60 +270,36 @@ Value Array::of(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 // ============================================================================
-// Symbol.iterator - Array Iterator for for-of loops
+// Iterator Methods - keys(), values(), entries()
 // ============================================================================
 
-Value Array::symbolIterator(const CallContext& ctx, const std::vector<Value>& args) {
-    if(!ctx.thisValue.isObject()) {
+Value Array::keys(const CallContext& ctx, const std::vector<Value>& /* args */) {
+    if (!ctx.thisValue.isObject()) {
         throw core::JavaScriptException(
-            Value("TypeError: Array.prototype[Symbol.iterator] called on non-object"));
+            Value("TypeError: Array.prototype.keys called on non-object"));
     }
-
-    auto* arr = ctx.thisValue.getObject();
-    Value length_val = arr->getProperty("length");
-    size_t length = length_val.isNumber() ? static_cast<size_t>(length_val.getNumber()) : 0;
-
-    // Create iterator object with index state
-    auto* iterator = getObjectFactory()->createJSObject();
-
-    // Store array reference and current index
-    iterator->setProperty("__array__", ctx.thisValue);
-    iterator->setProperty("__index__", Value(0.0));
-    iterator->setProperty("__length__", Value(static_cast<double>(length)));
-
-    // Create next() method
-    auto* next_func = getObjectFactory()->createJSFunction(
-        [](const core::CallContext& next_ctx, const std::vector<Value>& /* next_args */) -> Value {
-            auto* iter = next_ctx.thisValue.getObject();
-            if(!iter) {
-                return Value::undefined();
-            }
-
-            double index = iter->getProperty("__index__").toNumber();
-            double iter_length = iter->getProperty("__length__").toNumber();
-            Value arr_val = iter->getProperty("__array__");
-
-            auto* factory = Array::getObjectFactory();
-            auto* result = factory->createJSObject();
-
-            if(index >= iter_length) {
-                result->setProperty("done", Value(true));
-                result->setProperty("value", Value::undefined());
-            } else {
-                result->setProperty("done", Value(false));
-                if(arr_val.isObject()) {
-                    result->setProperty("value", arr_val.getObject()->getProperty(
-                                                     std::to_string(static_cast<size_t>(index))));
-                }
-                iter->setProperty("__index__", Value(index + 1));
-            }
-
-            return Value(result);
-        });
-
-    iterator->setProperty("next", Value(next_func));
-
-    return Value(iterator);
+    return Value(
+        ArrayIterator::create(getObjectFactory(), ctx.thisValue.getObject(), ArrayIterationKind::Key));
 }
+
+Value Array::values(const CallContext& ctx, const std::vector<Value>& /* args */) {
+    if (!ctx.thisValue.isObject()) {
+        throw core::JavaScriptException(
+            Value("TypeError: Array.prototype.values called on non-object"));
+    }
+    return Value(ArrayIterator::create(getObjectFactory(), ctx.thisValue.getObject(),
+                                       ArrayIterationKind::Value));
+}
+
+Value Array::entries(const CallContext& ctx, const std::vector<Value>& /* args */) {
+    if (!ctx.thisValue.isObject()) {
+        throw core::JavaScriptException(
+            Value("TypeError: Array.prototype.entries called on non-object"));
+    }
+    return Value(ArrayIterator::create(getObjectFactory(), ctx.thisValue.getObject(),
+                                       ArrayIterationKind::KeyValue));
+}
+
+// symbolIterator is now an alias for values() - registered in setupPrototypeMethods
 
 }  // namespace rift::builtins
