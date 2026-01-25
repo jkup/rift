@@ -96,7 +96,13 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
         if(leftSide->metadata == "computed") {
             // Bracket notation - evaluate the property expression and convert to a key string
             Value propertyValue = engine->evaluate(leftSide->children[1], env);
-            property = EvaluationUtils::toPropertyKeyString(propertyValue);
+
+            // Handle symbol property keys
+            if(propertyValue.isSymbol()) {
+                property = EvaluationUtils::symbolToPropertyKey(propertyValue.getSymbol().id);
+            } else {
+                property = EvaluationUtils::toPropertyKeyString(propertyValue);
+            }
         } else {
             // Dot notation - use the identifier value directly
             property = leftSide->children[1]->value;
@@ -225,7 +231,13 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
         if(operandNode->metadata == "computed") {
             // Bracket notation - evaluate the property expression and convert carefully
             Value propertyValue = engine->evaluate(operandNode->children[1], env);
-            property = EvaluationUtils::toPropertyKeyString(propertyValue);
+
+            // Handle symbol property keys
+            if(propertyValue.isSymbol()) {
+                property = EvaluationUtils::symbolToPropertyKey(propertyValue.getSymbol().id);
+            } else {
+                property = EvaluationUtils::toPropertyKeyString(propertyValue);
+            }
         } else {
             // Dot notation - use the identifier value directly
             property = operandNode->children[1]->value;

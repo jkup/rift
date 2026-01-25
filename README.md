@@ -7,7 +7,7 @@ A JavaScript runtime implementation written in C++ with robust garbage collectio
 ✅ **Fully functional garbage collection** with mark-sweep algorithm  
 ✅ **Memory-safe execution** with proper object lifecycle management  
 ✅ **Core JavaScript subset** including closures, prototypes, and exception handling (try/catch/finally)  
-✅ **Rich built-in object library** with Array, String, Math, Object, RegExp and more  
+✅ **Rich built-in object library** with Array, String, Math, Object, Symbol, RegExp and more  
 ✅ **RegExp support** via [Google RE2](https://github.com/google/re2) for safe, linear-time pattern matching  
 ✅ **Test262 integration** for ECMAScript compliance testing  
 
@@ -228,6 +228,16 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ **Static methods**: `Number.isNaN()`, `Number.isFinite()`, `Number.isInteger()`, `Number.isSafeInteger()`, `Number.parseFloat()`, `Number.parseInt()`
 - ✅ **Prototype methods**: `number.toString([radix])`, `number.valueOf()`, `number.toFixed()`, `number.toExponential()`, `number.toPrecision()`
 - ⚠️ **Limitation**: Primitive auto-boxing not yet supported (use Number objects explicitly)
+
+#### **Symbol Type & Methods** ✅ **NEW**
+- ✅ `Symbol(description)` creates unique symbol
+- ✅ `new Symbol()` throws TypeError (symbols cannot be constructed)
+- ✅ `typeof symbol === 'symbol'`
+- ✅ **Static methods**: `Symbol.for(key)`, `Symbol.keyFor(symbol)`
+- ✅ **Prototype methods**: `symbol.toString()`, `symbol.valueOf()`, `symbol.description()`
+- ✅ **Well-known symbols**: `Symbol.iterator`, `Symbol.toStringTag`, `Symbol.hasInstance`, `Symbol.toPrimitive`, `Symbol.unscopables`, `Symbol.isConcatSpreadable`
+- ✅ **As property keys**: Symbols can be used as object property keys via bracket notation
+- ⚠️ **Limitation**: `Symbol.for` must be accessed via bracket notation (`Symbol['for']`) due to parser handling of reserved keywords
 
 #### **Error Constructor & Methods**
 - ✅ `Error()`

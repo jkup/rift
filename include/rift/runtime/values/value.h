@@ -4,6 +4,8 @@
 #include <string>
 #include <variant>
 
+#include "symbol_data.h"
+
 namespace rift::runtime {
 
 // Forward declarations
@@ -17,6 +19,7 @@ enum class ValueType {
     Boolean,
     Number,
     String,
+    Symbol,
     Object,
     Function,
 };
@@ -29,6 +32,7 @@ class Value {
                  bool,            // Boolean
                  double,          // Number
                  std::string,     // String
+                 SymbolData,      // Symbol
                  JSObject*        // Object/Function (GC-managed raw pointer)
                  >
         data_;
@@ -69,6 +73,9 @@ class Value {
     bool isString() const {
         return type_ == ValueType::String;
     }
+    bool isSymbol() const {
+        return type_ == ValueType::Symbol;
+    }
     bool isObject() const {
         return type_ == ValueType::Object;
     }
@@ -91,7 +98,11 @@ class Value {
     bool getBool() const;
     double getNumber() const;
     const std::string& getString() const;
+    const SymbolData& getSymbol() const;
     JSObject* getObject() const;  // Now returns raw pointer
+
+    // Static factory for symbols
+    static Value symbol(uint64_t id, const std::string& description = "");
 
     // Comparison methods
     bool strictEquals(const Value& other) const;

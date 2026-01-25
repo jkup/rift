@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <cstring>
 #include <iomanip>
 #include <sstream>
 #include <string>
@@ -135,6 +136,39 @@ inline std::string toPropertyKeyString(const Value& value) {
         return oss.str();
     }
     return value.toString();
+}
+
+// Symbol property key prefix - used to store symbol-keyed properties as strings internally
+constexpr const char* SYMBOL_KEY_PREFIX = "@@sym:";
+
+/**
+ * Convert a symbol ID to an internal property key string.
+ * Uses a special prefix to distinguish symbol keys from string keys.
+ */
+inline std::string symbolToPropertyKey(uint64_t symbol_id) {
+    return std::string(SYMBOL_KEY_PREFIX) + std::to_string(symbol_id);
+}
+
+/**
+ * Check if a property key string represents a symbol key.
+ */
+inline bool isSymbolPropertyKey(const std::string& key) {
+    return key.rfind(SYMBOL_KEY_PREFIX, 0) == 0;
+}
+
+/**
+ * Extract the symbol ID from a symbol property key string.
+ * Returns 0 if the key is not a valid symbol property key.
+ */
+inline uint64_t symbolIdFromPropertyKey(const std::string& key) {
+    if(!isSymbolPropertyKey(key)) {
+        return 0;
+    }
+    try {
+        return std::stoull(key.substr(strlen(SYMBOL_KEY_PREFIX)));
+    } catch(const std::exception&) {
+        return 0;
+    }
 }
 }  // namespace EvaluationUtils
 

@@ -15,6 +15,7 @@
 #include "rift/builtins/object/object.h"
 #include "rift/builtins/regexp/regexp.h"
 #include "rift/builtins/string/string.h"
+#include "rift/builtins/symbol/symbol.h"
 #include "rift/core/engine/engine.h"
 #include "rift/runtime/values/value.h"
 
@@ -26,6 +27,7 @@ JSObject* BuiltinManager::arrayPrototype_ = nullptr;
 JSObject* BuiltinManager::stringPrototype_ = nullptr;
 JSObject* BuiltinManager::booleanPrototype_ = nullptr;
 JSObject* BuiltinManager::numberPrototype_ = nullptr;
+JSObject* BuiltinManager::symbolPrototype_ = nullptr;
 JSObject* BuiltinManager::errorPrototype_ = nullptr;
 JSObject* BuiltinManager::typeErrorPrototype_ = nullptr;
 JSObject* BuiltinManager::referenceErrorPrototype_ = nullptr;
@@ -50,6 +52,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::SyntaxError::setObjectFactory(factory);
         builtins::RangeError::setObjectFactory(factory);
         builtins::RegExp::setObjectFactory(factory);
+        builtins::Symbol::setObjectFactory(factory);
     }
 
     // Now setup builtins with factory - these will create their own prototypes
@@ -68,6 +71,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupSyntaxError(globalEnv, factory);
     setupRangeError(globalEnv, factory);
     setupRegExp(globalEnv, factory);
+    setupSymbol(globalEnv, factory);
 
     // After all builtins are created, get their prototypes from the constructors
     auto* objectConstructor = globalEnv->get("Object").getObject();
@@ -81,6 +85,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     auto* syntaxErrorConstructor = globalEnv->get("SyntaxError").getObject();
     auto* rangeErrorConstructor = globalEnv->get("RangeError").getObject();
     auto* regexpConstructor = globalEnv->get("RegExp").getObject();
+    auto* symbolConstructor = globalEnv->get("Symbol").getObject();
 
     if(objectConstructor)
         objectPrototype_ = objectConstructor->getProperty("prototype").getObject();
@@ -104,6 +109,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         rangeErrorPrototype_ = rangeErrorConstructor->getProperty("prototype").getObject();
     if(regexpConstructor)
         regexpPrototype_ = regexpConstructor->getProperty("prototype").getObject();
+    if(symbolConstructor)
+        symbolPrototype_ = symbolConstructor->getProperty("prototype").getObject();
 
     // Set up prototype chain: All prototypes -> Object.prototype (except Object itself)
     if(objectPrototype_ && arrayPrototype_) {
@@ -123,6 +130,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     }
     if(objectPrototype_ && regexpPrototype_) {
         regexpPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && symbolPrototype_) {
+        symbolPrototype_->setPrototype(objectPrototype_);
     }
 
     // Setup GC functions if engine is provided
@@ -150,6 +160,10 @@ JSObject* BuiltinManager::getBooleanPrototype() {
 
 JSObject* BuiltinManager::getNumberPrototype() {
     return numberPrototype_;
+}
+
+JSObject* BuiltinManager::getSymbolPrototype() {
+    return symbolPrototype_;
 }
 
 JSObject* BuiltinManager::getErrorPrototype() {
@@ -294,6 +308,7 @@ void BuiltinManager::clearStaticPrototypes() {
     stringPrototype_ = nullptr;
     booleanPrototype_ = nullptr;
     numberPrototype_ = nullptr;
+    symbolPrototype_ = nullptr;
     errorPrototype_ = nullptr;
     regexpPrototype_ = nullptr;
     typeErrorPrototype_ = nullptr;
@@ -307,6 +322,13 @@ void BuiltinManager::setupRegExp(std::shared_ptr<Environment> globalEnv,
     // Setup RegExp object using GC-managed creation
     auto* regexp = builtins::RegExp::create(factory);
     globalEnv->define("RegExp", Value(regexp));
+}
+
+void BuiltinManager::setupSymbol(std::shared_ptr<Environment> globalEnv,
+                                 rift::memory::ObjectFactory* factory) {
+    // Setup Symbol object using GC-managed creation
+    auto* symbol = builtins::Symbol::create(factory);
+    globalEnv->define("Symbol", Value(symbol));
 }
 
 void BuiltinManager::setupJSON(std::shared_ptr<Environment> globalEnv, rift::core::Rift* engine) {
