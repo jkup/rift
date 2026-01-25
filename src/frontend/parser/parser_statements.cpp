@@ -784,6 +784,7 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     Token& startToken = current_token();
     bool isStatic = false;
     bool isComputed = false;
+    bool isGenerator = false;
     std::string methodName;
     std::shared_ptr<ASTNode> computedKey = nullptr;
 
@@ -791,6 +792,12 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     if(current_token().type == TokenType::Static) {
         isStatic = true;
         current++;  // consume 'static'
+    }
+
+    // Check for generator method: *methodName() {}
+    if(current_token().type == TokenType::Multiply) {
+        isGenerator = true;
+        current++;  // consume '*'
     }
 
     // Get method name
@@ -815,11 +822,80 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     auto parameters = parse_parameter_list();
     consume(TokenType::RightParen);
 
-    // Parse method body
+    // Parse method body (with generator context if this is a generator method)
+    bool was_in_generator = in_generator_context_;
+    if(isGenerator) {
+        in_generator_context_ = true;
+    }
     auto methodBody = parse_block_statement();
+    in_generator_context_ = was_in_generator;
 
-    auto node = ASTFactory::makeMethodDefinition(methodName, parameters, methodBody, isStatic,
-                                                 isComputed, computedKey);
+    std::shared_ptr<ASTNode> node;
+    if(isGenerator) {
+        node = ASTFactory::makeGeneratorMethod(methodName, parameters, methodBody, isStatic,
+                                               isComputed, computedKey);
+    } else {
+        node = ASTFactory::makeMethodDefinition(methodName, parameters, methodBody, isStatic,
+                                                isComputed, computedKey);
+    }
+    node->setLocation(startToken.line, startToken.column);
+    return node;
+}
+
+// Generator function parsing
+
+std::shared_ptr<ASTNode> Parser::parse_generator_function_declaration() {
+    Token& startToken = current_token();  // Save 'function' location
+    consume(TokenType::Function);         // consume 'function'
+    consume(TokenType::Multiply);         // consume '*'
+
+    // Get function name (required for declarations)
+    if(current_token().type != TokenType::Identifier) {
+        throw std::runtime_error("Expected generator function name");
+    }
+    std::string name = current_token().value;
+    current++;  // consume function name
+
+    // Parse parameters
+    consume(TokenType::LeftParen);
+    auto parameters = parse_parameter_list();
+    consume(TokenType::RightParen);
+
+    // Parse function body with generator context enabled
+    bool was_in_generator = in_generator_context_;
+    in_generator_context_ = true;
+    auto body = parse_block_statement();
+    in_generator_context_ = was_in_generator;
+
+    auto node = ASTFactory::makeGeneratorFunctionDeclaration(name, parameters, body);
+    node->setLocation(startToken.line, startToken.column);
+    return node;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_generator_function_expression() {
+    Token& startToken = current_token();  // Save 'function' location
+    consume(TokenType::Function);         // consume 'function'
+    consume(TokenType::Multiply);         // consume '*'
+
+    // Optional function name for named generator expressions
+    std::string name;
+    if(current_token().type == TokenType::Identifier) {
+        name = current_token().value;
+        current++;  // consume function name
+    }
+
+    // Parse parameters
+    consume(TokenType::LeftParen);
+    auto parameters = parse_parameter_list();
+    consume(TokenType::RightParen);
+
+    // Parse function body with generator context enabled
+    bool was_in_generator = in_generator_context_;
+    in_generator_context_ = true;
+    auto body = parse_block_statement();
+    in_generator_context_ = was_in_generator;
+
+    auto node = ASTFactory::makeGeneratorFunctionExpression(parameters, body, name);
     node->setLocation(startToken.line, startToken.column);
     return node;
 }

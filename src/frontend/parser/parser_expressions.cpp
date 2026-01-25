@@ -113,7 +113,15 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             return parse_template_literal();
         }
         case TokenType::Function: {
+            // Check for generator function expression: function*() {}
+            if(peek_token().type == TokenType::Multiply) {
+                return parse_generator_function_expression();
+            }
             return parse_function_expression();
+        }
+        case TokenType::Yield: {
+            // yield expression - must be inside a generator
+            return parse_yield_expression();
         }
         case TokenType::Class: {
             return parse_class_expression();
@@ -678,6 +686,54 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function_from_identifier(
 
     auto node = ASTFactory::makeArrowFunctionExpression(parameters, body, isExpressionBody);
     node->setLocation(line, column);
+    return node;
+}
+
+// Parse yield expression: yield, yield expr, yield* expr
+std::shared_ptr<ASTNode> Parser::parse_yield_expression() {
+    Token& startToken = current_token();
+
+    // Validate we're inside a generator
+    if(!in_generator_context_) {
+        throw std::runtime_error("'yield' expression is only allowed inside generator functions");
+    }
+
+    consume(TokenType::Yield);  // consume 'yield'
+
+    // Check for yield* (delegate)
+    bool is_delegate = false;
+    if(current_token().type == TokenType::Multiply) {
+        is_delegate = true;
+        current++;  // consume '*'
+    }
+
+    // Parse optional argument
+    // yield without argument is valid (yields undefined)
+    // yield* requires an argument (the iterable to delegate to)
+    std::shared_ptr<ASTNode> argument = nullptr;
+
+    // Check if there's an expression following yield
+    // We need to be careful about ASI (automatic semicolon insertion)
+    // If the next token could start an expression and is on the same line, parse it
+    TokenType next = current_token().type;
+    bool has_argument = (next != TokenType::Semicolon && next != TokenType::RightParen &&
+                         next != TokenType::RightBrace && next != TokenType::RightBracket &&
+                         next != TokenType::Comma && next != TokenType::Colon &&
+                         next != TokenType::EndOfFile);
+
+    if(is_delegate) {
+        // yield* requires an argument
+        if(!has_argument) {
+            throw std::runtime_error("'yield*' requires an iterable expression");
+        }
+        argument = parse_binary_expression(2);  // Parse with assignment precedence
+    } else if(has_argument) {
+        // yield with optional argument
+        argument = parse_binary_expression(2);  // Parse with assignment precedence
+    }
+
+    auto node = ASTFactory::makeYieldExpression(argument, is_delegate);
+    node->setLocation(startToken.line, startToken.column);
     return node;
 }
 

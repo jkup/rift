@@ -16,6 +16,7 @@ class Parser {
   private:
     std::vector<Token> tokens;
     size_t current;
+    bool in_generator_context_;  // Track if we're inside a generator function
 
     Token& current_token();
     Token& peek_token();
@@ -56,6 +57,11 @@ class Parser {
     std::shared_ptr<ASTNode> parse_catch_clause();
     std::shared_ptr<ASTNode> parse_block_statement();
     std::shared_ptr<ASTNode> parse_new_expression();
+
+    // Generator-related parsing methods
+    std::shared_ptr<ASTNode> parse_generator_function_declaration();
+    std::shared_ptr<ASTNode> parse_generator_function_expression();
+    std::shared_ptr<ASTNode> parse_yield_expression();
 
     // Destructuring pattern parsing
     std::shared_ptr<ASTNode> parse_array_pattern();

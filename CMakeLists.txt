@@ -110,6 +110,7 @@ set(BUILTINS_SOURCES
     src/builtins/map/map_iterator.cpp
     src/builtins/weakmap/weakmap.cpp
     src/builtins/weakset/weakset.cpp
+    src/builtins/generator/generator_iterator.cpp
 )
 
 set(CORE_SOURCES
@@ -122,6 +123,7 @@ set(CORE_SOURCES
     src/core/engine/expression_evaluator_assignment.cpp
     src/core/engine/expression_evaluator_objects.cpp
     src/core/engine/operation_handler.cpp
+    src/core/engine/generator_evaluator.cpp
 )
 
 set(API_SOURCES

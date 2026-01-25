@@ -25,6 +25,7 @@
 #include "rift/builtins/symbol/symbol.h"
 #include "rift/builtins/weakmap/weakmap.h"
 #include "rift/builtins/weakset/weakset.h"
+#include "rift/builtins/generator/generator_iterator.h"
 #include "rift/core/engine/engine.h"
 #include "rift/runtime/values/value.h"
 
@@ -81,6 +82,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     builtins::StringIterator::setupPrototype(factory, iteratorPrototype_);
     builtins::SetIterator::setupPrototype(factory, iteratorPrototype_);
     builtins::MapIterator::setupPrototype(factory, iteratorPrototype_);
+    builtins::GeneratorIterator::setupPrototype(factory, iteratorPrototype_);
 
     // Now setup builtins with factory - these will create their own prototypes
     setupGlobalFunctions(globalEnv, factory);

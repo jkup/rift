@@ -13,6 +13,7 @@
  */
 
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/generator/generator_iterator.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/evaluation_utils.h"
@@ -999,6 +1000,114 @@ Value ExpressionEvaluator::evaluateSuperExpression(std::shared_ptr<ASTNode> node
     // super() call is handled in evaluateCallExpression
     throw JavaScriptException(Value("SyntaxError: 'super' keyword is unexpected here"), node->line,
                               node->column);
+}
+
+Value ExpressionEvaluator::evaluateGeneratorFunctionExpression(std::shared_ptr<ASTNode> node,
+                                                                std::shared_ptr<Environment> env,
+                                                                Rift* engine) {
+    if(node->children.size() < 2) {
+        return Value::undefined();
+    }
+
+    // Get parameters (first child should be parameter list)
+    auto param_list = node->children[0];
+    std::vector<std::string> param_names;
+    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> param_info;
+
+    for(const auto& param : param_list->children) {
+        if(param->type == ASTNodeType::AssignmentExpression) {
+            param_info.emplace_back(param->children[0]->value, param->children[1], false);
+            param_names.push_back(param->children[0]->value);
+        } else if(param->metadata == "rest") {
+            param_info.emplace_back(param->value, nullptr, true);
+            param_names.push_back(param->value);
+        } else {
+            param_info.emplace_back(param->value, nullptr, false);
+            param_names.push_back(param->value);
+        }
+    }
+
+    // Get function body (second child)
+    auto body = node->children[1];
+
+    // Get optional function name
+    std::string func_name = node->value;
+
+    // Temporarily disable GC to prevent collection during function creation
+    auto* factory = engine->getObjectFactory();
+    auto* obj_manager = factory->getObjectManager();
+    bool was_gc_enabled = obj_manager->isGCEnabled();
+    obj_manager->setGCEnabled(false);
+
+    // Create generator function - when called, it returns a GeneratorIterator
+    // instead of executing the body directly
+    auto* func = factory->createJSFunction(
+        [engine, param_info, param_names, body, env](const rift::core::CallContext& call_context,
+                                                     const std::vector<Value>& args) -> Value {
+            // Generator functions cannot be used as constructors
+            if(call_context.type == rift::core::CallType::Constructor) {
+                throw JavaScriptException(Value("TypeError: Generator cannot be called with new"));
+            }
+
+            // Process arguments with default values
+            std::vector<Value> processed_args;
+            auto func_env = std::make_shared<Environment>(env);
+
+            for(size_t i = 0; i < param_info.size(); ++i) {
+                const auto& [param_name, default_ast, is_rest] = param_info[i];
+
+                if(is_rest) {
+                    // Rest parameter: collect remaining args
+                    std::vector<Value> rest_args;
+                    for(size_t j = i; j < args.size(); ++j) {
+                        rest_args.push_back(args[j]);
+                    }
+                    auto* rest_array =
+                        builtins::Array::createArrayObject(engine->getObjectFactory(), rest_args);
+                    processed_args.push_back(Value(rest_array));
+                } else {
+                    Value arg_value;
+                    bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                    if(use_default && default_ast) {
+                        arg_value = engine->evaluate(default_ast, func_env);
+                    } else if(i < args.size()) {
+                        arg_value = args[i];
+                    } else {
+                        arg_value = Value::undefined();
+                    }
+                    processed_args.push_back(arg_value);
+                }
+            }
+
+            // Create and return a GeneratorIterator object
+            auto* generator = builtins::GeneratorIterator::create(
+                engine->getObjectFactory(), body, env, engine, param_names, processed_args);
+
+            return Value(generator);
+        });
+
+    // Set function name if provided
+    if(!func_name.empty()) {
+        func->setProperty("name", Value(func_name));
+    }
+
+    // Set length property (number of parameters)
+    func->setProperty("length", Value(static_cast<double>(param_names.size())));
+
+    // Re-enable GC before returning
+    obj_manager->setGCEnabled(was_gc_enabled);
+    return Value(func);
+}
+
+Value ExpressionEvaluator::evaluateYieldExpression(std::shared_ptr<ASTNode> /*node*/,
+                                                   std::shared_ptr<Environment> /*env*/,
+                                                   Rift* /*engine*/) {
+    // PHASE 3: This will be implemented when we add the actual generator execution.
+    // For now, yield expressions are parsed but not executed in this code path.
+    // The actual yield handling will happen in the generator evaluator.
+    throw JavaScriptException(
+        Value("Error: yield expression not yet implemented (Phase 3)"));
 }
 
 }  // namespace rift::core

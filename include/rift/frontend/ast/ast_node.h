@@ -61,6 +61,11 @@ enum class ASTNodeType {
     ClassBody,         // { constructor() {} method() {} }
     MethodDefinition,  // method() { } or static method() { }
     SuperExpression,   // super or super.method
+    // Generator-related nodes
+    GeneratorFunctionDeclaration,  // function* name() {}
+    GeneratorFunctionExpression,   // const g = function*() {}
+    GeneratorMethod,               // { *method() {} }
+    YieldExpression,               // yield value (metadata: "" or "delegate" for yield*)
 };
 
 struct ASTNode {

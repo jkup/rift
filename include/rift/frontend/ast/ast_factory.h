@@ -247,6 +247,78 @@ class ASTFactory {
         return node;
     }
 
+    // Generator function declaration: function* name() {}
+    // value = function name
+    // children[0] = parameters (ParameterList)
+    // children[1] = body (BlockStatement)
+    static std::shared_ptr<ASTNode> makeGeneratorFunctionDeclaration(
+        const std::string& name, std::shared_ptr<ASTNode> parameters,
+        std::shared_ptr<ASTNode> body) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::GeneratorFunctionDeclaration, name);
+        node->children.push_back(std::move(parameters));
+        node->children.push_back(std::move(body));
+        return node;
+    }
+
+    // Generator function expression: function*() {} or function* name() {}
+    // value = optional function name (empty for anonymous)
+    // children[0] = parameters (ParameterList)
+    // children[1] = body (BlockStatement)
+    static std::shared_ptr<ASTNode> makeGeneratorFunctionExpression(
+        std::shared_ptr<ASTNode> parameters, std::shared_ptr<ASTNode> body,
+        const std::string& name = "") {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::GeneratorFunctionExpression, name);
+        node->children.push_back(std::move(parameters));
+        node->children.push_back(std::move(body));
+        return node;
+    }
+
+    // Yield expression: yield value or yield* iterable
+    // children[0] = argument expression (may be nullptr for bare yield)
+    // metadata = "" for yield, "delegate" for yield*
+    static std::shared_ptr<ASTNode> makeYieldExpression(std::shared_ptr<ASTNode> argument,
+                                                        bool delegate = false) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::YieldExpression);
+        if(argument) {
+            node->children.push_back(std::move(argument));
+        }
+        if(delegate) {
+            node->metadata = "delegate";
+        }
+        return node;
+    }
+
+    // Generator method in class: *method() {}
+    // Same structure as MethodDefinition but with GeneratorMethod type
+    // value = method name
+    // metadata = "static" for static methods, "computed" for computed names
+    // children[0] = parameters (ParameterList)
+    // children[1] = body (BlockStatement)
+    // children[2] = computed key expression (optional)
+    static std::shared_ptr<ASTNode> makeGeneratorMethod(const std::string& name,
+                                                        std::shared_ptr<ASTNode> parameters,
+                                                        std::shared_ptr<ASTNode> body,
+                                                        bool isStatic = false,
+                                                        bool isComputed = false,
+                                                        std::shared_ptr<ASTNode> computedKey = nullptr) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::GeneratorMethod, name);
+        node->children.push_back(std::move(parameters));
+        node->children.push_back(std::move(body));
+
+        std::string metadata;
+        if(isStatic) {
+            metadata = "static";
+        }
+        if(isComputed) {
+            metadata = metadata.empty() ? "computed" : metadata + ",computed";
+            if(computedKey) {
+                node->children.push_back(std::move(computedKey));
+            }
+        }
+        node->metadata = metadata;
+        return node;
+    }
+
     static std::shared_ptr<ASTNode> makeReturnStatement(std::shared_ptr<ASTNode> argument) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::ReturnStatement);
         if(argument) {

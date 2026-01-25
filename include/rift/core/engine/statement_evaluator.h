@@ -75,6 +75,9 @@ class StatementEvaluator {
                                      const Value& caughtValue);
     static Value evaluateFunctionDeclaration(std::shared_ptr<ASTNode> node,
                                              std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateGeneratorFunctionDeclaration(std::shared_ptr<ASTNode> node,
+                                                      std::shared_ptr<Environment> env,
+                                                      Rift* engine);
     static Value evaluateClassDeclaration(std::shared_ptr<ASTNode> node,
                                           std::shared_ptr<Environment> env, Rift* engine);
 };
