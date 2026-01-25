@@ -338,6 +338,11 @@ std::shared_ptr<ASTNode> Parser::parse_do_while_statement() {
     return ASTFactory::makeDoWhileStatement(body, condition);
 }
 
+// Helper to check for contextual keyword "of" (which is lexed as an identifier)
+static bool isContextualOf(const Token& tok) {
+    return tok.type == TokenType::Identifier && tok.value == "of";
+}
+
 std::shared_ptr<ASTNode> Parser::parse_for_statement() {
     consume(TokenType::For);  // consume 'for'
 
@@ -358,8 +363,9 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             current++;  // consume identifier
 
             // Check if this is for-in or for-of (no initializer, followed by 'in' or 'of')
-            if(current_token().type == TokenType::In || current_token().type == TokenType::Of) {
-                bool is_for_of = (current_token().type == TokenType::Of);
+            // Note: "of" is a contextual keyword, lexed as identifier
+            if(current_token().type == TokenType::In || isContextualOf(current_token())) {
+                bool is_for_of = isContextualOf(current_token());
                 is_for_in = !is_for_of;
                 if(decl_type == TokenType::Var) {
                     left = ASTFactory::makeVariableDeclaration(var_name, nullptr);
@@ -398,9 +404,10 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
         std::string var_name = current_token().value;
         current++;  // consume identifier
 
-        if(current_token().type == TokenType::In || current_token().type == TokenType::Of) {
+        // Note: "of" is a contextual keyword, lexed as identifier
+        if(current_token().type == TokenType::In || isContextualOf(current_token())) {
             // This is for-in or for-of: for (x in obj) or for (x of arr)
-            bool is_for_of = (current_token().type == TokenType::Of);
+            bool is_for_of = isContextualOf(current_token());
             is_for_in = !is_for_of;
             left = ASTFactory::makeIdentifier(var_name);
             current++;  // consume 'in' or 'of'
