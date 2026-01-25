@@ -79,6 +79,13 @@ rift/
 
 ---
 
+## Working Preferences
+
+### TODO List Management
+When completing tasks from TODO.md, **remove finished items entirely** rather than marking them as "DONE", crossing them out with strikethrough, or adding checkmarks. Keep the TODO list clean and focused on remaining work.
+
+---
+
 ## Code Style & Best Practices
 
 ### Naming Conventions
