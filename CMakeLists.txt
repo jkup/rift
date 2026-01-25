@@ -108,6 +108,7 @@ set(BUILTINS_SOURCES
     src/builtins/set/set_iterator.cpp
     src/builtins/map/map.cpp
     src/builtins/map/map_iterator.cpp
+    src/builtins/weakmap/weakmap.cpp
 )
 
 set(CORE_SOURCES
