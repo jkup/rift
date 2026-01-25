@@ -274,6 +274,15 @@ The CI will automatically verify all quality checks on your PR.
   - Array holes serialize as `null`
   - Property ordering follows internal `getOwnPropertyNames()`
 
+#### **Set Constructor & Methods** ✅ **NEW**
+- ✅ `new Set()` creates empty Set
+- ✅ `new Set(iterable)` creates Set from iterable (arrays, other Sets, etc.)
+- ✅ **Instance methods**: `add()`, `has()`, `delete()`, `clear()`, `forEach()`
+- ✅ **Iterator methods**: `values()`, `keys()`, `entries()`, `[Symbol.iterator]`
+- ✅ **Properties**: `size` (via getter)
+- ✅ **SameValueZero equality**: NaN === NaN, +0 === -0
+- ✅ **Insertion order preservation**: iteration yields values in insertion order
+
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
@@ -283,7 +292,7 @@ The CI will automatically verify all quality checks on your PR.
 - **Built-in objects/APIs**
   - ❌ Date
   - ❌ Promise/Async (`async`/`await`), timers/event loop
-  - ❌ Set/Map, Proxy
+  - ❌ Map, WeakSet, WeakMap, Proxy
   - ❌ Function.prototype methods: `call`, `apply`, `bind`
 
 ### ℹ️ Notes & Limitations
