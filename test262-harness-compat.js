@@ -199,51 +199,114 @@ function verifyCallableProperty(
   return true;
 }
 
+// Helper to check if descriptor verification is available
+var hasDescriptorSupport = typeof Object.getOwnPropertyDescriptor === "function";
+
 // Deprecated functions that some tests might still use
 function verifyWritable(obj, name) {
-  // Simplified - just check property exists
-  if (obj[name] === undefined) {
-    throw "Test262Error: Property " + String(name) + " should exist";
+  if (hasDescriptorSupport) {
+    var desc = Object.getOwnPropertyDescriptor(obj, name);
+    if (!desc) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
+    if (desc.writable !== true) {
+      throw "Test262Error: Property " + String(name) + " should be writable";
+    }
+  } else {
+    // Fallback - just check property exists
+    if (obj[name] === undefined && !(name in obj)) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
   }
   return true;
 }
 
 function verifyNotWritable(obj, name) {
-  // Simplified - just check property exists
-  if (obj[name] === undefined) {
-    throw "Test262Error: Property " + String(name) + " should exist";
+  if (hasDescriptorSupport) {
+    var desc = Object.getOwnPropertyDescriptor(obj, name);
+    if (!desc) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
+    if (desc.writable !== false) {
+      throw "Test262Error: Property " + String(name) + " should not be writable";
+    }
+  } else {
+    // Fallback - just check property exists
+    if (obj[name] === undefined && !(name in obj)) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
   }
   return true;
 }
 
 function verifyEnumerable(obj, name) {
-  // Simplified - just check property exists
-  if (obj[name] === undefined) {
-    throw "Test262Error: Property " + String(name) + " should exist";
+  if (hasDescriptorSupport) {
+    var desc = Object.getOwnPropertyDescriptor(obj, name);
+    if (!desc) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
+    if (desc.enumerable !== true) {
+      throw "Test262Error: Property " + String(name) + " should be enumerable";
+    }
+  } else {
+    // Fallback - just check property exists
+    if (obj[name] === undefined && !(name in obj)) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
   }
   return true;
 }
 
 function verifyNotEnumerable(obj, name) {
-  // Simplified - just check property exists
-  if (obj[name] === undefined) {
-    throw "Test262Error: Property " + String(name) + " should exist";
+  if (hasDescriptorSupport) {
+    var desc = Object.getOwnPropertyDescriptor(obj, name);
+    if (!desc) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
+    if (desc.enumerable !== false) {
+      throw "Test262Error: Property " + String(name) + " should not be enumerable";
+    }
+  } else {
+    // Fallback - just check property exists
+    if (obj[name] === undefined && !(name in obj)) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
   }
   return true;
 }
 
 function verifyConfigurable(obj, name) {
-  // Simplified - just check property exists
-  if (obj[name] === undefined) {
-    throw "Test262Error: Property " + String(name) + " should exist";
+  if (hasDescriptorSupport) {
+    var desc = Object.getOwnPropertyDescriptor(obj, name);
+    if (!desc) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
+    if (desc.configurable !== true) {
+      throw "Test262Error: Property " + String(name) + " should be configurable";
+    }
+  } else {
+    // Fallback - just check property exists
+    if (obj[name] === undefined && !(name in obj)) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
   }
   return true;
 }
 
 function verifyNotConfigurable(obj, name) {
-  // Simplified - just check property exists
-  if (obj[name] === undefined) {
-    throw "Test262Error: Property " + String(name) + " should exist";
+  if (hasDescriptorSupport) {
+    var desc = Object.getOwnPropertyDescriptor(obj, name);
+    if (!desc) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
+    if (desc.configurable !== false) {
+      throw "Test262Error: Property " + String(name) + " should not be configurable";
+    }
+  } else {
+    // Fallback - just check property exists
+    if (obj[name] === undefined && !(name in obj)) {
+      throw "Test262Error: Property " + String(name) + " should exist";
+    }
   }
   return true;
 }
@@ -252,3 +315,110 @@ function verifyNotConfigurable(obj, name) {
 function $DONOTEVALUATE() {
   throw "Test262Error: This statement should not be evaluated";
 }
+
+// $262 host object - provides test262-specific functionality
+var $262 = {
+  // Reference to the global object
+  global: this,
+
+  // Garbage collection hint (no-op if not available)
+  gc: function() {
+    // No-op - Rift doesn't expose GC to JavaScript
+  },
+
+  // Evaluate code in a new script context
+  evalScript: function(code) {
+    // Use indirect eval to evaluate in global scope
+    // Note: This is a simplified implementation
+    var indirectEval = eval;
+    return indirectEval(code);
+  },
+
+  // Create a new realm (not fully supported)
+  createRealm: function() {
+    throw "Test262Error: $262.createRealm is not implemented - Rift doesn't support multiple realms";
+  },
+
+  // Detach an ArrayBuffer (not supported)
+  detachArrayBuffer: function(buffer) {
+    throw "Test262Error: $262.detachArrayBuffer is not implemented";
+  },
+
+  // Get the agent information
+  agent: {
+    start: function(script) {
+      throw "Test262Error: $262.agent.start is not implemented - Rift doesn't support agents";
+    },
+    broadcast: function(buffer, descriptor) {
+      throw "Test262Error: $262.agent.broadcast is not implemented";
+    },
+    getReport: function() {
+      throw "Test262Error: $262.agent.getReport is not implemented";
+    },
+    sleep: function(ms) {
+      throw "Test262Error: $262.agent.sleep is not implemented";
+    },
+    monotonicNow: function() {
+      throw "Test262Error: $262.agent.monotonicNow is not implemented";
+    }
+  }
+};
+
+// compareArray - Compare the contents of two arrays
+function compareArray(a, b) {
+  if (b.length !== a.length) {
+    return false;
+  }
+
+  for (var i = 0; i < a.length; i++) {
+    if (!compareArray.isSameValue(b[i], a[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// Use the existing isSameValue helper
+compareArray.isSameValue = function(a, b) {
+  if (a === 0 && b === 0) return 1 / a === 1 / b;
+  if (a !== a && b !== b) return true;
+  return a === b;
+};
+
+// Format array for error messages (without template literals)
+compareArray.format = function(arrayLike) {
+  var result = "[";
+  for (var i = 0; i < arrayLike.length; i++) {
+    if (i > 0) {
+      result = result + ", ";
+    }
+    result = result + String(arrayLike[i]);
+  }
+  result = result + "]";
+  return result;
+};
+
+// assert.compareArray
+assert.compareArray = function(actual, expected, message) {
+  if (message === undefined) {
+    message = "";
+  }
+
+  if (typeof message === "symbol") {
+    message = message.toString();
+  }
+
+  if (actual === null || actual === undefined) {
+    throw "Test262Error: Actual argument shouldn't be nullish. " + message;
+  }
+  if (expected === null || expected === undefined) {
+    throw "Test262Error: Expected argument shouldn't be nullish. " + message;
+  }
+
+  var result = compareArray(actual, expected);
+
+  if (!result) {
+    var format = compareArray.format;
+    throw "Test262Error: Actual " + format(actual) + " and expected " + format(expected) + " should have the same contents. " + message;
+  }
+};

@@ -32,7 +32,6 @@ const SKIP_HARNESS_FILES = new Set([
 ]);
 
 const UNSUPPORTED_HARNESS = new Set([
-  "compareArray.js",
   "compareIterator.js",
   "isConstructor.js",
   "nativeFunctionMatcher.js",
@@ -614,6 +613,16 @@ export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
   const hasOnlyStrict = flags.includes("onlyStrict");
   const hasModule = flags.includes("module");
   const hasRaw = flags.includes("raw");
+  const hasAsync = flags.includes("async");
+
+  // Skip async tests - they require special handling with $DONE callback
+  // and timeout-based completion detection that we don't support yet
+  if (hasAsync) {
+    return {
+      status: "skipped",
+      reason: "Async tests not supported (requires $DONE callback handling)",
+    };
+  }
 
   // Determine execution modes
   // - raw: no modifications, single non-strict run

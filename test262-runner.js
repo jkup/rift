@@ -460,9 +460,14 @@ class Test262Runner {
     console.log();
 
     const total = this.passed + this.failed + this.skipped;
-    const passRate =
+    const runTests = this.passed + this.failed;
+    const runPassRate =
+      runTests > 0
+        ? ((this.passed / runTests) * 100).toFixed(1)
+        : 0;
+    const overallPassRate =
       total > 0
-        ? ((this.passed / (this.passed + this.failed)) * 100).toFixed(1)
+        ? ((this.passed / total) * 100).toFixed(1)
         : 0;
     const runtime = ((Date.now() - this.startTime) / 1000).toFixed(1);
 
@@ -475,7 +480,8 @@ class Test262Runner {
         console.log(`Cached: ${this.cached}`);
       }
       console.log(`Total: ${total}`);
-      console.log(`Pass Rate: ${passRate}%`);
+      console.log(`Pass Rate (run): ${runPassRate}%`);
+      console.log(`Pass Rate (all): ${overallPassRate}%`);
       console.log(`Runtime: ${runtime}s`);
 
       const resultsFile = this.tracker.saveResults("test262-results.json");
@@ -498,7 +504,8 @@ class Test262Runner {
     );
     console.log(chalk.dim("-".repeat(20)));
     console.log(chalk.bold(`Total:    ${total.toString().padStart(6)}`));
-    console.log(chalk.bold(`Pass Rate: ${passRate}%`));
+    console.log(chalk.bold(`Pass Rate (run tests): ${runPassRate}%`));
+    console.log(chalk.bold(`Pass Rate (all tests): ${overallPassRate}%`));
     console.log(chalk.dim(`Runtime:  ${runtime}s`));
 
     if (!this.sequential) {
@@ -517,7 +524,8 @@ class Test262Runner {
       console.log(`Cached: ${this.cached}`);
     }
     console.log(`Total: ${total}`);
-    console.log(`Pass Rate: ${passRate}%`);
+    console.log(`Pass Rate (run): ${runPassRate}%`);
+    console.log(`Pass Rate (all): ${overallPassRate}%`);
 
     const resultsFile = this.tracker.saveResults("test262-results.json");
     console.log();
