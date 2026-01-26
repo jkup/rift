@@ -21,6 +21,7 @@ void Promise::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFact
     RIFT_STATIC_METHOD(constructor, "race", Promise::race);
     RIFT_STATIC_METHOD(constructor, "allSettled", Promise::allSettled);
     RIFT_STATIC_METHOD(constructor, "any", Promise::any);
+    RIFT_STATIC_METHOD(constructor, "withResolvers", Promise::withResolvers);
 }
 
 void Promise::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
@@ -1269,6 +1270,62 @@ Value Promise::any(const CallContext& /*ctx*/, const std::vector<Value>& args) {
     }
 
     return Value(result_promise);
+}
+
+/**
+ * Promise.withResolvers()
+ *
+ * ES2024 addition that returns an object with:
+ * - promise: A new pending Promise
+ * - resolve: Function to resolve the promise
+ * - reject: Function to reject the promise
+ *
+ * This is useful when you need the resolve/reject functions outside the executor.
+ */
+Value Promise::withResolvers(const CallContext& /*ctx*/, const std::vector<Value>& /*args*/) {
+    auto* factory = getObjectFactory();
+
+    // Create a new promise
+    auto* promise_obj = createPromiseObject(factory);
+    rift::memory::GCProtector protect(promise_obj, factory->getObjectManager());
+
+    // Create resolve function
+    auto* resolve_func = factory->createJSFunction(
+        [promise_obj](const CallContext& /*resolve_ctx*/,
+                      const std::vector<Value>& resolve_args) -> Value {
+            Value resolution = resolve_args.empty() ? Value::undefined() : resolve_args[0];
+
+            std::string state = getState(promise_obj);
+            if(state != STATE_PENDING) {
+                return Value::undefined();
+            }
+
+            resolvePromise(promise_obj, resolution);
+            return Value::undefined();
+        });
+
+    // Create reject function
+    auto* reject_func = factory->createJSFunction(
+        [promise_obj](const CallContext& /*reject_ctx*/,
+                      const std::vector<Value>& reject_args) -> Value {
+            Value reason = reject_args.empty() ? Value::undefined() : reject_args[0];
+
+            std::string state = getState(promise_obj);
+            if(state != STATE_PENDING) {
+                return Value::undefined();
+            }
+
+            rejectPromise(promise_obj, reason);
+            return Value::undefined();
+        });
+
+    // Create the result object { promise, resolve, reject }
+    auto* result = factory->createJSObject();
+    result->setProperty("promise", Value(promise_obj));
+    result->setProperty("resolve", Value(resolve_func));
+    result->setProperty("reject", Value(reject_func));
+
+    return Value(result);
 }
 
 }  // namespace rift::builtins

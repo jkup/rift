@@ -52,13 +52,14 @@ class Promise : public BuiltinBase<Promise> {
     static Value catch_(const CallContext& ctx, const std::vector<Value>& args);
     static Value finally_(const CallContext& ctx, const std::vector<Value>& args);
 
-    // Static methods (to be implemented in Phase 7)
+    // Static methods
     static Value resolve(const CallContext& ctx, const std::vector<Value>& args);
     static Value reject(const CallContext& ctx, const std::vector<Value>& args);
     static Value all(const CallContext& ctx, const std::vector<Value>& args);
     static Value race(const CallContext& ctx, const std::vector<Value>& args);
     static Value allSettled(const CallContext& ctx, const std::vector<Value>& args);
     static Value any(const CallContext& ctx, const std::vector<Value>& args);
+    static Value withResolvers(const CallContext& ctx, const std::vector<Value>& args);
 
     // Global prototype access
     static JSObject* getGlobalPrototype();

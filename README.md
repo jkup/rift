@@ -320,7 +320,7 @@ The CI will automatically verify all quality checks on your PR.
 #### **Promise**
 - ✅ `new Promise(executor)` creates Promise with resolve/reject functions
 - ✅ **Instance methods**: `then()`, `catch()`, `finally()`
-- ✅ **Static methods**: `Promise.resolve()`, `Promise.reject()`
+- ✅ **Static methods**: `Promise.resolve()`, `Promise.reject()`, `Promise.withResolvers()` (ES2024)
 - ✅ **Combinator methods**: `Promise.all()`, `Promise.race()`, `Promise.allSettled()`, `Promise.any()`
 - ✅ **Microtask queue**: Proper async execution semantics
 - ✅ **Thenable adoption**: Resolving with thenables adopts their state
