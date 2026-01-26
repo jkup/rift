@@ -93,6 +93,26 @@ assert.throws = function (expectedErrorConstructor, func, message) {
     message = message + " ";
   }
 
+  // Get the expected error name by creating a test instance
+  // This works because error instances have .name even if constructors don't
+  var expectedName = "Error";
+  if (expectedErrorConstructor) {
+    if (expectedErrorConstructor.name) {
+      // If constructor has .name property, use it directly
+      expectedName = expectedErrorConstructor.name;
+    } else {
+      // Create a test instance to get the error name
+      try {
+        var testInstance = new expectedErrorConstructor("test");
+        if (testInstance && testInstance.name) {
+          expectedName = testInstance.name;
+        }
+      } catch (e) {
+        // If we can't create an instance, fall back to "Error"
+      }
+    }
+  }
+
   var thrown = false;
   var actualError = null;
 
@@ -102,22 +122,30 @@ assert.throws = function (expectedErrorConstructor, func, message) {
     thrown = true;
     actualError = e;
 
-    // For now, we can't properly check constructor types since we don't have full OOP support
-    // Just check if something was thrown
-    return;
+    // Check if the thrown error matches the expected type
+    if (typeof e === "object" && e !== null && e.name !== undefined) {
+      // Compare error names
+      if (e.name !== expectedName) {
+        throw "Test262Error: " + message + "Expected a " + expectedName + " but got a " + e.name;
+      }
+      // Error type matches
+      return;
+    } else if (typeof e === "string") {
+      // Handle string errors (like our Test262Error throws)
+      // Check if the string contains the expected error type
+      if (e.indexOf(expectedName) === -1 && expectedName !== "Error") {
+        throw "Test262Error: " + message + "Expected a " + expectedName + " but got a string error: " + e.substring(0, 50);
+      }
+      return;
+    } else {
+      // Something was thrown but we can't verify its type
+      // For primitive throws, we can only verify something was thrown
+      return;
+    }
   }
 
   if (!thrown) {
-    var errorName = "Error";
-    if (expectedErrorConstructor && expectedErrorConstructor.name) {
-      errorName = expectedErrorConstructor.name;
-    }
-    message =
-      message +
-      "Expected a " +
-      errorName +
-      " to be thrown but no exception was thrown at all";
-    throw "Test262Error: " + message;
+    throw "Test262Error: " + message + "Expected a " + expectedName + " to be thrown but no exception was thrown at all";
   }
 };
 
