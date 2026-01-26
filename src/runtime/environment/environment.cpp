@@ -71,17 +71,23 @@ void Environment::set(const std::string& name, const Value& value) {
         return;
     }
 
+    // Variable not in current scope - check if it exists anywhere in the parent chain
     if(parent_) {
-        try {
+        if(parent_->has(name)) {
+            // Variable exists in parent chain - delegate to parent
             parent_->set(name, value);
             return;
-        } catch(const std::runtime_error&) {
-            // Variable not found in parent chain - fall through to define in current scope (for var
-            // semantics)
         }
     }
 
-    // Define in current scope if not found (for var semantics)
+    // Variable doesn't exist anywhere in the scope chain
+    // In strict mode, this is an error
+    if(inheritsStrictMode()) {
+        throw JavaScriptException(Value("ReferenceError: " + name + " is not defined"));
+    }
+
+    // In non-strict mode, create as global (define in current scope for simplicity)
+    // Note: Ideally this should go to the global scope, but for now this works
     variables_[name] = VariableEntry(value, VariableType::Var);
 }
 

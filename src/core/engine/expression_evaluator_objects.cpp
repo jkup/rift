@@ -455,6 +455,25 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
     // Get function body (second child)
     auto body = node->children[1];
 
+    // Check if function body contains "use strict" directive
+    bool function_is_strict = false;
+    if(body->type == ASTNodeType::BlockStatement) {
+        for(const auto& stmt : body->children) {
+            // Check for "use strict" directive
+            if(stmt->type == ASTNodeType::ExpressionStatement && !stmt->children.empty()) {
+                const auto& expr = stmt->children[0];
+                if(expr->type == ASTNodeType::Literal && expr->metadata == "string") {
+                    if(expr->value == "use strict") {
+                        function_is_strict = true;
+                    }
+                    continue;  // Other string directive - keep checking
+                }
+            }
+            // Non-directive statement found - stop checking
+            break;
+        }
+    }
+
     // Temporarily disable GC to prevent collection during function creation
     auto* factory = engine->getObjectFactory();
     auto* obj_manager = factory->getObjectManager();
@@ -463,10 +482,15 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
 
     // Create function object (anonymous) using GC-managed creation
     auto* func = factory->createJSFunction(
-        [engine, param_info, body, env](const rift::core::CallContext& call_context,
+        [engine, param_info, body, env, function_is_strict](const rift::core::CallContext& call_context,
                                         const std::vector<Value>& args) -> Value {
             // Create new environment for function execution
             auto func_env = std::make_shared<Environment>(env);
+
+            // Set strict mode if function has "use strict" directive
+            if(function_is_strict) {
+                func_env->setStrictMode(true);
+            }
 
             // Bind 'this' to the function environment
             func_env->define("this", call_context.thisValue);

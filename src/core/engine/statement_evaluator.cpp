@@ -100,6 +100,29 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
     }
 }
 
+// Helper to check if a statement is a "use strict" directive
+static bool isUseStrictDirective(const std::shared_ptr<ASTNode>& stmt) {
+    if(stmt->type == ASTNodeType::ExpressionStatement && !stmt->children.empty()) {
+        const auto& expr = stmt->children[0];
+        if(expr->type == ASTNodeType::Literal && expr->metadata == "string" &&
+           expr->value == "use strict") {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Helper to check if a statement is any string directive
+static bool isStringDirective(const std::shared_ptr<ASTNode>& stmt) {
+    if(stmt->type == ASTNodeType::ExpressionStatement && !stmt->children.empty()) {
+        const auto& expr = stmt->children[0];
+        if(expr->type == ASTNodeType::Literal && expr->metadata == "string") {
+            return true;
+        }
+    }
+    return false;
+}
+
 // Block and expression statements
 Value StatementEvaluator::evaluateBlockStatement(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
@@ -116,6 +139,20 @@ Value StatementEvaluator::evaluateBlockStatement(std::shared_ptr<ASTNode> node,
     std::shared_ptr<Environment> blockEnv = env;
     if(needsBlockScope) {
         blockEnv = env->createChild(true);  // Create block scope
+    }
+
+    // Check for "use strict" directive at the beginning of the block
+    // Directives must appear before any non-directive statements
+    for(const auto& child : node->children) {
+        if(isUseStrictDirective(child)) {
+            blockEnv->setStrictMode(true);
+        } else if(isStringDirective(child)) {
+            // Other string directive - skip but continue checking
+            continue;
+        } else {
+            // Non-directive statement found - stop checking for directives
+            break;
+        }
     }
 
     Value result = Value::undefined();
@@ -367,12 +404,31 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
     // Get function body (second child)
     auto body = node->children[1];
 
+    // Check if function body contains "use strict" directive
+    bool functionIsStrict = false;
+    if(body->type == ASTNodeType::BlockStatement) {
+        for(const auto& stmt : body->children) {
+            if(isUseStrictDirective(stmt)) {
+                functionIsStrict = true;
+            } else if(isStringDirective(stmt)) {
+                continue;
+            } else {
+                break;
+            }
+        }
+    }
+
     // Create function object using GC-managed creation
     auto func = engine->getObjectFactory()->createJSFunction(
-        [engine, param_info, body, env](const rift::core::CallContext& callContext,
+        [engine, param_info, body, env, functionIsStrict](const rift::core::CallContext& callContext,
                                         const std::vector<Value>& args) -> Value {
             // Create new environment for function execution
             auto funcEnv = std::make_shared<Environment>(env);
+
+            // Set strict mode if the function has "use strict" directive
+            if(functionIsStrict) {
+                funcEnv->setStrictMode(true);
+            }
 
             // Bind 'this' to the function environment
             funcEnv->define("this", callContext.thisValue);
