@@ -99,6 +99,47 @@ Value Promise::getResult(JSObject* promise) {
     return promise->getProperty("[[PromiseResult]]");
 }
 
+/**
+ * Check if a value is a thenable (has a callable .then property).
+ * Per ES spec, a thenable is any object with a .then method.
+ */
+bool Promise::isThenable(const Value& value) {
+    if(!value.isObject()) {
+        return false;
+    }
+
+    auto* obj = value.getObject();
+    if(obj == nullptr) {
+        return false;
+    }
+
+    // Check if .then property exists and is callable
+    Value then_val = obj->getProperty("then");
+    return then_val.isFunction();
+}
+
+/**
+ * Get the .then method from a thenable.
+ * Returns nullptr if not a thenable or .then is not a function.
+ */
+JSFunction* Promise::getThenMethod(const Value& value) {
+    if(!value.isObject()) {
+        return nullptr;
+    }
+
+    auto* obj = value.getObject();
+    if(obj == nullptr) {
+        return nullptr;
+    }
+
+    Value then_val = obj->getProperty("then");
+    if(!then_val.isFunction()) {
+        return nullptr;
+    }
+
+    return dynamic_cast<JSFunction*>(then_val.getObject());
+}
+
 // ============================================================================
 // Reaction Management
 // ============================================================================
@@ -164,8 +205,8 @@ void Promise::executeReaction(JSFunction* handler, JSObject* result_promise,
         Value result = handler->call(ctx, {argument});
 
         // Handler returned successfully - resolve the result promise with the return value
-        // TODO (Phase 5): Handle thenable return values
-        fulfillPromise(result_promise, result);
+        // Uses resolvePromise to handle thenable adoption
+        resolvePromise(result_promise, result);
     } catch(const rift::core::JavaScriptException& e) {
         // Handler threw - reject the result promise
         rejectPromise(result_promise, e.getValue());
@@ -222,15 +263,8 @@ Value Promise::constructor(const CallContext& /*ctx*/, const std::vector<Value>&
                 return Value::undefined();
             }
 
-            // Self-resolution check
-            if(resolution.isObject() && resolution.getObject() == promise_obj) {
-                rejectPromise(promise_obj,
-                              Value("TypeError: A promise cannot be resolved with itself"));
-                return Value::undefined();
-            }
-
-            // TODO (Phase 5): Handle thenable adoption
-            fulfillPromise(promise_obj, resolution);
+            // resolvePromise handles self-resolution check and thenable adoption
+            resolvePromise(promise_obj, resolution);
             return Value::undefined();
         });
 
@@ -289,6 +323,106 @@ void Promise::rejectPromise(JSObject* promise, const Value& reason) {
     promise->setProperty("[[PromiseState]]", Value(STATE_REJECTED));
     promise->setProperty("[[PromiseResult]]", reason);
     triggerReactions(promise, "reject");
+}
+
+/**
+ * Resolve a promise with thenable adoption.
+ * Per ES spec:
+ * - If value is a thenable (has a .then method), adopt its state by calling value.then(resolve, reject)
+ * - Otherwise, fulfill the promise with the value
+ * - Self-resolution throws TypeError
+ */
+void Promise::resolvePromise(JSObject* promise, const Value& value) {
+    // Self-resolution check
+    if(value.isObject() && value.getObject() == promise) {
+        rejectPromise(promise, Value("TypeError: A promise cannot be resolved with itself"));
+        return;
+    }
+
+    // Check if value is a thenable
+    if(!isThenable(value)) {
+        // Not a thenable - fulfill directly
+        fulfillPromise(promise, value);
+        return;
+    }
+
+    // Value is a thenable - adopt its state via microtask
+    auto* then_method = getThenMethod(value);
+    if(then_method == nullptr) {
+        // .then exists but is not callable - fulfill with the value
+        fulfillPromise(promise, value);
+        return;
+    }
+
+    auto* factory = getFactory();
+    auto* engine = getEngine();
+
+    // Create resolve/reject functions for the thenable adoption
+    auto* resolve_func = factory->createJSFunction(
+        [promise](const CallContext& /*resolve_ctx*/,
+                  const std::vector<Value>& resolve_args) -> Value {
+            Value resolution = resolve_args.empty() ? Value::undefined() : resolve_args[0];
+
+            std::string state = getState(promise);
+            if(state != STATE_PENDING) {
+                return Value::undefined();  // Already settled
+            }
+
+            // Recursively resolve (handles thenable chains)
+            resolvePromise(promise, resolution);
+            return Value::undefined();
+        });
+
+    auto* reject_func = factory->createJSFunction(
+        [promise](const CallContext& /*reject_ctx*/,
+                  const std::vector<Value>& reject_args) -> Value {
+            Value reason = reject_args.empty() ? Value::undefined() : reject_args[0];
+
+            std::string state = getState(promise);
+            if(state != STATE_PENDING) {
+                return Value::undefined();  // Already settled
+            }
+
+            rejectPromise(promise, reason);
+            return Value::undefined();
+        });
+
+    // Per spec, the thenable.then() call is made as a microtask
+    auto* thenable_obj = value.getObject();
+    if(engine != nullptr) {
+        auto* microtask_func = factory->createJSFunction(
+            [then_method, thenable_obj, resolve_func, reject_func](
+                const CallContext& /*mt_ctx*/,
+                const std::vector<Value>& /*mt_args*/) -> Value {
+                try {
+                    // Call then() with thenable as 'this'
+                    CallContext then_ctx(rift::core::CallType::Function, Value(thenable_obj));
+                    then_method->call(then_ctx, {Value(resolve_func), Value(reject_func)});
+                } catch(const rift::core::JavaScriptException& e) {
+                    // If .then() throws, reject the promise
+                    CallContext reject_ctx(rift::core::CallType::Function, Value::undefined());
+                    reject_func->call(reject_ctx, {e.getValue()});
+                } catch(const std::exception& e) {
+                    CallContext reject_ctx(rift::core::CallType::Function, Value::undefined());
+                    reject_func->call(reject_ctx, {Value(std::string("Error: ") + e.what())});
+                }
+                return Value::undefined();
+            });
+        engine->enqueueMicrotask(microtask_func, {}, Value::undefined());
+    } else {
+        // No engine - execute synchronously (for testing)
+        try {
+            // Call then() with thenable as 'this'
+            CallContext then_ctx(rift::core::CallType::Function, Value(thenable_obj));
+            then_method->call(then_ctx, {Value(resolve_func), Value(reject_func)});
+        } catch(const rift::core::JavaScriptException& e) {
+            CallContext reject_ctx(rift::core::CallType::Function, Value::undefined());
+            reject_func->call(reject_ctx, {e.getValue()});
+        } catch(const std::exception& e) {
+            CallContext reject_ctx(rift::core::CallType::Function, Value::undefined());
+            reject_func->call(reject_ctx, {Value(std::string("Error: ") + e.what())});
+        }
+    }
 }
 
 /**
@@ -392,7 +526,7 @@ Value Promise::then(const CallContext& ctx, const std::vector<Value>& args) {
     auto* factory = getFactory();
 
     // Get handlers (can be undefined for pass-through)
-    Value on_fulfilled_val = args.size() > 0 ? args[0] : Value::undefined();
+    Value on_fulfilled_val = !args.empty() ? args[0] : Value::undefined();
     Value on_rejected_val = args.size() > 1 ? args[1] : Value::undefined();
 
     JSFunction* on_fulfilled = nullptr;
@@ -488,9 +622,10 @@ Value Promise::resolve(const CallContext& /*ctx*/, const std::vector<Value>& arg
         return value;
     }
 
-    // Create a fulfilled promise
+    // Create a promise and resolve it
+    // resolvePromise handles thenable adoption
     auto* promise_obj = createPromiseObject(factory);
-    fulfillPromise(promise_obj, value);
+    resolvePromise(promise_obj, value);
     return Value(promise_obj);
 }
 

@@ -62,10 +62,11 @@ var pC = pB.then(function(v) { chainResult = v; });
 console.log("PASS (async verification needed)");
 
 // Test 10: .catch() is sugar for .then(undefined, handler)
+// Note: Using ['catch'] because Rift's parser doesn't support obj.catch (reserved keyword)
 console.log("Test 10: .catch()");
 var p7 = Promise.reject("test error");
 var caughtError = null;
-p7.catch(function(e) { caughtError = e; });
+p7['catch'](function(e) { caughtError = e; });
 console.log("PASS (async verification needed)");
 
 // Test 11: Handler return value resolves next promise
@@ -81,7 +82,7 @@ console.log("Test 12: Handler exception handling");
 var caught12 = false;
 var pErr = Promise.resolve(1);
 var pErr2 = pErr.then(function(v) { throw new Error("oops"); });
-pErr2.catch(function(e) { caught12 = true; });
+pErr2['catch'](function(e) { caught12 = true; });
 console.log("PASS (async verification needed)");
 
 // Test 13: Pass-through for non-function handlers

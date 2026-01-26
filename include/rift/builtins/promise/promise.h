@@ -69,6 +69,12 @@ class Promise : public BuiltinBase<Promise> {
     // Helper: Check if value is a Promise
     static bool isPromise(const Value& value);
 
+    // Helper: Check if value is a thenable (has a callable .then property)
+    static bool isThenable(const Value& value);
+
+    // Helper: Get the .then method from a thenable (returns nullptr if not thenable)
+    static JSFunction* getThenMethod(const Value& value);
+
     // Helper: Get promise state
     static std::string getState(JSObject* promise);
 
@@ -80,6 +86,10 @@ class Promise : public BuiltinBase<Promise> {
 
     // Internal: Reject a promise (Phase 3)
     static void rejectPromise(JSObject* promise, const Value& reason);
+
+    // Internal: Resolve a promise with thenable adoption (Phase 5)
+    // If value is a thenable, adopts its state; otherwise fulfills with value
+    static void resolvePromise(JSObject* promise, const Value& value);
 
     // Internal: Trigger promise reactions (Phase 3)
     static void triggerReactions(JSObject* promise, const std::string& reaction_type);
