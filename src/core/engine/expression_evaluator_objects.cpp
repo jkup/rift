@@ -38,7 +38,7 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
         Value super_ctor;
         try {
             super_ctor = env->get("[[SuperConstructor]]");
-        } catch(const std::runtime_error&) {
+        } catch(const JavaScriptException&) {
             throw JavaScriptException(Value("SyntaxError: 'super' keyword is unexpected here"),
                                       node->line, node->column);
         }
@@ -84,14 +84,14 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
         Value super_proto;
         try {
             super_proto = env->get("[[SuperPrototype]]");
-        } catch(const std::runtime_error&) {
+        } catch(const JavaScriptException&) {
             // Try getting from [[SuperConstructor]] as fallback
             try {
                 Value super_ctor = env->get("[[SuperConstructor]]");
                 if(super_ctor.isFunction()) {
                     super_proto = super_ctor.getObject()->getProperty("prototype");
                 }
-            } catch(const std::runtime_error&) {
+            } catch(const JavaScriptException&) {
                 throw JavaScriptException(Value("SyntaxError: 'super' keyword is unexpected here"),
                                           node->line, node->column);
             }
@@ -586,7 +586,7 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
     Value captured_this = Value::undefined();
     try {
         captured_this = env->get("this");
-    } catch(const std::runtime_error&) {
+    } catch(const JavaScriptException&) {
         // No 'this' in scope - use undefined
     }
 
@@ -1040,14 +1040,14 @@ Value ExpressionEvaluator::evaluateSuperExpression(std::shared_ptr<ASTNode> node
         Value super_proto;
         try {
             super_proto = env->get("[[SuperPrototype]]");
-        } catch(const std::runtime_error&) {
+        } catch(const JavaScriptException&) {
             // Try getting from [[SuperConstructor]] as fallback
             try {
                 Value super_ctor = env->get("[[SuperConstructor]]");
                 if(super_ctor.isFunction()) {
                     super_proto = super_ctor.getObject()->getProperty("prototype");
                 }
-            } catch(const std::runtime_error&) {
+            } catch(const JavaScriptException&) {
                 throw JavaScriptException(Value("SyntaxError: 'super' keyword is unexpected here"),
                                           node->line, node->column);
             }

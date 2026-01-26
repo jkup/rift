@@ -19,6 +19,7 @@
 #include <limits>
 
 #include "rift/core/engine/engine.h"
+#include "rift/core/engine/javascript_exception.h"
 #include "rift/core/engine/operation_handler.h"
 
 namespace rift::core {
@@ -78,7 +79,7 @@ Value ExpressionEvaluator::evaluateIdentifier(std::shared_ptr<ASTNode> node,
         // Try to get 'this' from environment, return undefined if not found
         try {
             return env->get("this");
-        } catch(const std::runtime_error&) {
+        } catch(const JavaScriptException&) {
             return Value::undefined();
         }
     }
@@ -187,7 +188,7 @@ Value ExpressionEvaluator::evaluateUnaryExpression(std::shared_ptr<ASTNode> node
             try {
                 Value operand = engine->evaluate(operand_node, env);
                 return OperationHandler::performUnaryOperation(node->value, operand);
-            } catch(const std::runtime_error&) {
+            } catch(const JavaScriptException&) {
                 // If the identifier doesn't exist, typeof should return "undefined" per ECMAScript
                 // spec
                 return Value("undefined");
