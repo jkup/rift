@@ -26,6 +26,7 @@
 #include "rift/builtins/weakmap/weakmap.h"
 #include "rift/builtins/weakset/weakset.h"
 #include "rift/builtins/generator/generator_iterator.h"
+#include "rift/builtins/promise/promise.h"
 #include "rift/core/engine/engine.h"
 #include "rift/runtime/values/value.h"
 
@@ -49,6 +50,7 @@ JSObject* BuiltinManager::setPrototype_ = nullptr;
 JSObject* BuiltinManager::mapPrototype_ = nullptr;
 JSObject* BuiltinManager::weakMapPrototype_ = nullptr;
 JSObject* BuiltinManager::weakSetPrototype_ = nullptr;
+JSObject* BuiltinManager::promisePrototype_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Get the object factory from the engine
@@ -72,6 +74,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::Map::setObjectFactory(factory);
         builtins::WeakMap::setObjectFactory(factory);
         builtins::WeakSet::setObjectFactory(factory);
+        builtins::Promise::setObjectFactory(factory);
     }
 
     // Setup iterator prototype FIRST - other iterators inherit from this
@@ -105,6 +108,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupMap(globalEnv, factory);
     setupWeakMap(globalEnv, factory);
     setupWeakSet(globalEnv, factory);
+    setupPromise(globalEnv, factory);
 
     // After all builtins are created, get their prototypes from the constructors
     auto* objectConstructor = globalEnv->get("Object").getObject();
@@ -123,6 +127,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     auto* mapConstructor = globalEnv->get("Map").getObject();
     auto* weakMapConstructor = globalEnv->get("WeakMap").getObject();
     auto* weakSetConstructor = globalEnv->get("WeakSet").getObject();
+    auto* promiseConstructor = globalEnv->get("Promise").getObject();
 
     if(objectConstructor)
         objectPrototype_ = objectConstructor->getProperty("prototype").getObject();
@@ -156,6 +161,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         weakMapPrototype_ = weakMapConstructor->getProperty("prototype").getObject();
     if(weakSetConstructor)
         weakSetPrototype_ = weakSetConstructor->getProperty("prototype").getObject();
+    if(promiseConstructor)
+        promisePrototype_ = promiseConstructor->getProperty("prototype").getObject();
 
     // Set up prototype chain: All prototypes -> Object.prototype (except Object itself)
     if(objectPrototype_ && arrayPrototype_) {
@@ -190,6 +197,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     }
     if(objectPrototype_ && weakSetPrototype_) {
         weakSetPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && promisePrototype_) {
+        promisePrototype_->setPrototype(objectPrototype_);
     }
 
     // Setup GC functions if engine is provided
@@ -249,6 +259,10 @@ JSObject* BuiltinManager::getWeakMapPrototype() {
 
 JSObject* BuiltinManager::getWeakSetPrototype() {
     return weakSetPrototype_;
+}
+
+JSObject* BuiltinManager::getPromisePrototype() {
+    return promisePrototype_;
 }
 
 JSObject* BuiltinManager::getTypeErrorPrototype() {
@@ -402,6 +416,7 @@ void BuiltinManager::clearStaticPrototypes() {
     mapPrototype_ = nullptr;
     weakMapPrototype_ = nullptr;
     weakSetPrototype_ = nullptr;
+    promisePrototype_ = nullptr;
 }
 
 void BuiltinManager::setupRegExp(std::shared_ptr<Environment> globalEnv,
@@ -448,6 +463,13 @@ void BuiltinManager::setupWeakSet(std::shared_ptr<Environment> globalEnv,
     // Setup WeakSet object using GC-managed creation
     auto* weakSet = builtins::WeakSet::create(factory);
     globalEnv->define("WeakSet", Value(weakSet));
+}
+
+void BuiltinManager::setupPromise(std::shared_ptr<Environment> globalEnv,
+                                  rift::memory::ObjectFactory* factory) {
+    // Setup Promise object using GC-managed creation
+    auto* promise = builtins::Promise::create(factory);
+    globalEnv->define("Promise", Value(promise));
 }
 
 }  // namespace rift::core

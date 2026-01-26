@@ -36,6 +36,7 @@ class BuiltinManager {
     static JSObject* getMapPrototype();
     static JSObject* getWeakMapPrototype();
     static JSObject* getWeakSetPrototype();
+    static JSObject* getPromisePrototype();
 
     // Cleanup method for shutdown
     static void clearStaticPrototypes();
@@ -59,6 +60,7 @@ class BuiltinManager {
     static JSObject* mapPrototype_;
     static JSObject* weakMapPrototype_;
     static JSObject* weakSetPrototype_;
+    static JSObject* promisePrototype_;
 
     // Individual builtin setup methods - now accept ObjectFactory
     static void setupGlobalFunctions(std::shared_ptr<Environment> globalEnv,
@@ -99,6 +101,8 @@ class BuiltinManager {
     static void setupWeakMap(std::shared_ptr<Environment> globalEnv,
                              rift::memory::ObjectFactory* factory);
     static void setupWeakSet(std::shared_ptr<Environment> globalEnv,
+                             rift::memory::ObjectFactory* factory);
+    static void setupPromise(std::shared_ptr<Environment> globalEnv,
                              rift::memory::ObjectFactory* factory);
     static void setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine);
     static void setupIteratorPrototype(rift::memory::ObjectFactory* factory);
