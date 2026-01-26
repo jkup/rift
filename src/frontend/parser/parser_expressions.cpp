@@ -624,9 +624,14 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
 
     if(current_token().type == TokenType::Identifier) {
         // Single param without parens: x => ...
+        std::string paramValue = current_token().value;
+        size_t paramLine = current_token().line;
+        size_t paramColumn = current_token().column;
         parameters = ASTFactory::makeParameterList();
-        ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(current_token().value));
+        ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(paramValue));
         current++;  // consume identifier
+        // Validate parameter in strict mode
+        validateIdentifier(paramValue, paramLine, paramColumn);
     } else {
         // Parenthesized params: () => ... or (x) => ... or (x, y) => ...
         consume(TokenType::LeftParen);
@@ -663,6 +668,9 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function_from_identifier(
     // param is the identifier node, we're positioned at '=>'
     size_t line = param->line;
     size_t column = param->column;
+
+    // Validate parameter in strict mode
+    validateIdentifier(param->value, line, column);
 
     // Create parameter list from the identifier
     auto parameters = ASTFactory::makeParameterList();

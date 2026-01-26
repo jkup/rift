@@ -17,8 +17,13 @@ class Parser {
     std::vector<Token> tokens;
     size_t current;
     bool in_generator_context_;  // Track if we're inside a generator function
+    bool in_strict_mode_;        // Track if we're in strict mode
 
     Token& current_token();
+
+    // Strict mode reserved word checking
+    bool isStrictModeReservedWord(const std::string& name) const;
+    void validateIdentifier(const std::string& name, size_t line, size_t column);
     Token& peek_token();
     bool match(TokenType type);
     void consume(TokenType type);

@@ -22,7 +22,25 @@ using ASTFactory = ast::ASTFactory;
 
 // Constructor
 Parser::Parser(const std::vector<Token>& tokens)
-    : tokens(tokens), current(0), in_generator_context_(false) {
+    : tokens(tokens), current(0), in_generator_context_(false), in_strict_mode_(false) {
+}
+
+// Check if a name is a strict mode reserved word
+bool Parser::isStrictModeReservedWord(const std::string& name) const {
+    // These are reserved as variable/parameter names in strict mode
+    return name == "eval" || name == "arguments" ||
+           name == "implements" || name == "interface" ||
+           name == "let" || name == "package" ||
+           name == "private" || name == "protected" ||
+           name == "public" || name == "static" || name == "yield";
+}
+
+// Validate that an identifier is not a reserved word in strict mode
+void Parser::validateIdentifier(const std::string& name, size_t line, size_t column) {
+    if(in_strict_mode_ && isStrictModeReservedWord(name)) {
+        throw std::runtime_error("SyntaxError: Unexpected strict mode reserved word '" + name +
+                                "' at line " + std::to_string(line) + ":" + std::to_string(column));
+    }
 }
 
 // Utility methods
@@ -61,12 +79,35 @@ void Parser::consume(TokenType type) {
 std::shared_ptr<ASTNode> Parser::parse() {
     auto program = ASTFactory::makeProgram();
 
+    // Check for "use strict" directive at the start of the program
+    // This must be done before parsing statements to correctly validate identifiers
+    bool checked_directives = false;
     while(current_token().type != TokenType::EndOfFile) {
         try {
+            // Check for directive prologue (string literals at the start)
+            if(!checked_directives && current_token().type == TokenType::String) {
+                std::string directive = current_token().value;
+                // Remove quotes from the string value
+                if((directive == "\"use strict\"" || directive == "'use strict'" ||
+                    directive == "use strict")) {
+                    in_strict_mode_ = true;
+                }
+                // Parse the directive as a statement
+                auto stmt = parse_statement();
+                ASTFactory::addStatement(program, stmt);
+                continue;
+            }
+            checked_directives = true;
+
             auto stmt = parse_statement();
             ASTFactory::addStatement(program, stmt);
         } catch(const std::exception& e) {
-            // Skip to next statement on error
+            // Re-throw SyntaxError exceptions (strict mode violations, etc.)
+            std::string error_msg = e.what();
+            if(error_msg.find("SyntaxError") != std::string::npos) {
+                throw;
+            }
+            // Skip to next statement on other errors
             while(current_token().type != TokenType::Semicolon &&
                   current_token().type != TokenType::EndOfFile) {
                 current++;

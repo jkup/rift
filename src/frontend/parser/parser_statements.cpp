@@ -71,7 +71,12 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
     }
 
     std::string name = current_token().value;
+    size_t line = current_token().line;
+    size_t column = current_token().column;
     current++;
+
+    // Validate identifier in strict mode
+    validateIdentifier(name, line, column);
 
     std::shared_ptr<ASTNode> initializer = nullptr;
     if(match(TokenType::Assign)) {
@@ -528,7 +533,12 @@ std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
         throw std::runtime_error("Expected function name");
     }
     std::string name = current_token().value;
+    size_t nameLine = current_token().line;
+    size_t nameColumn = current_token().column;
     current++;  // consume function name
+
+    // Validate function name in strict mode
+    validateIdentifier(name, nameLine, nameColumn);
 
     // Parse parameters
     consume(TokenType::LeftParen);
@@ -568,8 +578,14 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
         if(current_token().type != TokenType::Identifier) {
             throw std::runtime_error("Expected parameter name");
         }
-        auto param_name = ASTFactory::makeIdentifier(current_token().value);
+        std::string paramValue = current_token().value;
+        size_t paramLine = current_token().line;
+        size_t paramColumn = current_token().column;
+        auto param_name = ASTFactory::makeIdentifier(paramValue);
         current++;  // consume parameter name
+
+        // Validate parameter name in strict mode
+        validateIdentifier(paramValue, paramLine, paramColumn);
 
         // Rest parameters cannot have default values
         if(is_rest) {
@@ -668,7 +684,12 @@ std::shared_ptr<ASTNode> Parser::parse_catch_clause() {
         throw std::runtime_error("Expected identifier in catch clause");
     }
     std::string parameter = current_token().value;
+    size_t paramLine = current_token().line;
+    size_t paramColumn = current_token().column;
     current++;  // consume parameter name
+
+    // Validate catch parameter in strict mode
+    validateIdentifier(parameter, paramLine, paramColumn);
 
     consume(TokenType::RightParen);  // consume ')'
 
@@ -715,7 +736,12 @@ std::shared_ptr<ASTNode> Parser::parse_class_declaration() {
         throw std::runtime_error("Expected class name");
     }
     std::string name = current_token().value;
+    size_t nameLine = current_token().line;
+    size_t nameColumn = current_token().column;
     current++;  // consume class name
+
+    // Validate class name in strict mode
+    validateIdentifier(name, nameLine, nameColumn);
 
     // Check for extends clause
     std::shared_ptr<ASTNode> superClass = nullptr;
@@ -741,7 +767,11 @@ std::shared_ptr<ASTNode> Parser::parse_class_expression() {
     std::string name;
     if(current_token().type == TokenType::Identifier) {
         name = current_token().value;
+        size_t nameLine = current_token().line;
+        size_t nameColumn = current_token().column;
         current++;  // consume class name
+        // Validate class name in strict mode
+        validateIdentifier(name, nameLine, nameColumn);
     }
 
     // Check for extends clause
@@ -809,7 +839,11 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
         consume(TokenType::RightBracket);
     } else if(current_token().type == TokenType::Identifier) {
         methodName = current_token().value;
+        size_t methodLine = current_token().line;
+        size_t methodColumn = current_token().column;
         current++;  // consume identifier
+        // Validate method name in strict mode
+        validateIdentifier(methodName, methodLine, methodColumn);
     } else if(current_token().type == TokenType::String) {
         methodName = current_token().value;
         current++;  // consume string
@@ -854,7 +888,12 @@ std::shared_ptr<ASTNode> Parser::parse_generator_function_declaration() {
         throw std::runtime_error("Expected generator function name");
     }
     std::string name = current_token().value;
+    size_t nameLine = current_token().line;
+    size_t nameColumn = current_token().column;
     current++;  // consume function name
+
+    // Validate generator function name in strict mode
+    validateIdentifier(name, nameLine, nameColumn);
 
     // Parse parameters
     consume(TokenType::LeftParen);
@@ -881,7 +920,11 @@ std::shared_ptr<ASTNode> Parser::parse_generator_function_expression() {
     std::string name;
     if(current_token().type == TokenType::Identifier) {
         name = current_token().value;
+        size_t nameLine = current_token().line;
+        size_t nameColumn = current_token().column;
         current++;  // consume function name
+        // Validate generator function name in strict mode
+        validateIdentifier(name, nameLine, nameColumn);
     }
 
     // Parse parameters
