@@ -28,7 +28,7 @@
 
 - Mark-sweep garbage collection with memory-safe execution
 - Comprehensive JavaScript language support including closures, prototypes, exception handling
-- Rich built-in object library (Array, String, Math, Object, Console, Boolean, Number, Error, JSON, RegExp)
+- Rich built-in object library (Array, String, Math, Object, Console, Boolean, Number, Error, JSON, RegExp, Promise)
 - Test262 integration for ECMAScript compliance testing
 - Modern C++23 architecture
 
@@ -276,7 +276,7 @@ Each built-in module follows this pattern:
 - Raw pointer returns (GC-managed)
 - Prototype chain setup via `BuiltinManager`
 
-Current built-ins: Array, Boolean, Console, Error (TypeError, ReferenceError, SyntaxError, RangeError), Generator, Global, JSON, Map, Math, Number, Object, RegExp, Set, String, Symbol, WeakMap, WeakSet, Iterator prototypes (Array/String/Set/Map/Generator iterators)
+Current built-ins: Array, Boolean, Console, Error (TypeError, ReferenceError, SyntaxError, RangeError), Generator, Global, JSON, Map, Math, Number, Object, Promise, RegExp, Set, String, Symbol, WeakMap, WeakSet, Iterator prototypes (Array/String/Set/Map/Generator iterators)
 
 ### Dependencies
 - **RE2** (Google): Regular expression support via FetchContent

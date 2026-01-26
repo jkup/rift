@@ -4,11 +4,12 @@ A JavaScript runtime implementation written in C++ with robust garbage collectio
 
 ## Features
 
-✅ **Fully functional garbage collection** with mark-sweep algorithm  
-✅ **Memory-safe execution** with proper object lifecycle management  
-✅ **Core JavaScript subset** including closures, prototypes, and exception handling (try/catch/finally)  
-✅ **Rich built-in object library** with Array, String, Math, Object, Symbol, RegExp and more  
-✅ **RegExp support** via [Google RE2](https://github.com/google/re2) for safe, linear-time pattern matching  
+✅ **Fully functional garbage collection** with mark-sweep algorithm
+✅ **Memory-safe execution** with proper object lifecycle management
+✅ **Core JavaScript subset** including closures, prototypes, and exception handling (try/catch/finally)
+✅ **Rich built-in object library** with Array, String, Math, Object, Symbol, RegExp, Promise and more
+✅ **Promise support** with full API including `all`, `race`, `allSettled`, `any`, and proper microtask semantics
+✅ **RegExp support** via [Google RE2](https://github.com/google/re2) for safe, linear-time pattern matching
 ✅ **Test262 integration** for ECMAScript compliance testing  
 
 ## Building and Running
@@ -316,15 +317,27 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ **Object-only keys**: Only objects can be keys (throws TypeError for primitives)
 - ✅ **Weak references**: Does not prevent garbage collection of keys
 
+#### **Promise**
+- ✅ `new Promise(executor)` creates Promise with resolve/reject functions
+- ✅ **Instance methods**: `then()`, `catch()`, `finally()`
+- ✅ **Static methods**: `Promise.resolve()`, `Promise.reject()`
+- ✅ **Combinator methods**: `Promise.all()`, `Promise.race()`, `Promise.allSettled()`, `Promise.any()`
+- ✅ **Microtask queue**: Proper async execution semantics
+- ✅ **Thenable adoption**: Resolving with thenables adopts their state
+- ✅ **Chaining**: Handler return values propagate through the chain
+- ✅ **Error propagation**: Exceptions in handlers reject the chained promise
+- ⚠️ **Parser limitation**: Use bracket notation for `catch` and `finally` (e.g., `p['catch'](fn)`) due to reserved keyword handling
+
 ### ❌ Not Yet Implemented
 
 - **Language constructs**
   - ❌ Modules (`import`/`export`)
   - ❌ Optional chaining `?.`, nullish coalescing `??`
+  - ❌ `async`/`await` syntax (Promise infrastructure is ready)
 
 - **Built-in objects/APIs**
   - ❌ Date
-  - ❌ Promise/Async (`async`/`await`), timers/event loop
+  - ❌ Timers (`setTimeout`, `setInterval`) / event loop
   - ❌ Proxy, Reflect
   - ❌ Function.prototype methods: `call`, `apply`, `bind`
 
