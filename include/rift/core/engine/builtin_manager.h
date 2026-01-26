@@ -103,7 +103,7 @@ class BuiltinManager {
     static void setupWeakSet(std::shared_ptr<Environment> globalEnv,
                              rift::memory::ObjectFactory* factory);
     static void setupPromise(std::shared_ptr<Environment> globalEnv,
-                             rift::memory::ObjectFactory* factory);
+                             rift::memory::ObjectFactory* factory, Rift* engine);
     static void setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine);
     static void setupIteratorPrototype(rift::memory::ObjectFactory* factory);
 };

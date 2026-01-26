@@ -9,6 +9,11 @@
 #include "../../runtime/values/value.h"
 #include "../builtin_base.h"
 
+// Forward declaration
+namespace rift::core {
+class Rift;
+}
+
 namespace rift::builtins {
 
 using namespace rift::runtime;
@@ -83,6 +88,28 @@ class Promise : public BuiltinBase<Promise> {
     static rift::memory::ObjectFactory* getFactory() {
         return BuiltinBase<Promise>::getObjectFactory();
     }
+
+    // Engine access for microtask queue
+    static void setEngine(rift::core::Rift* engine) {
+        engine_ = engine;
+    }
+    static rift::core::Rift* getEngine() {
+        return engine_;
+    }
+
+    // Internal: Add a reaction to a promise
+    // reactionType is "fulfill" or "reject"
+    // handler can be nullptr for pass-through behavior
+    // resultPromise is the promise returned by .then()
+    static void addReaction(JSObject* promise, const std::string& reaction_type,
+                            JSFunction* handler, JSObject* result_promise);
+
+    // Internal: Execute a single reaction (called as microtask)
+    static void executeReaction(JSFunction* handler, JSObject* result_promise,
+                                const Value& argument, bool is_fulfill);
+
+  private:
+    static rift::core::Rift* engine_;
 };
 
 }  // namespace rift::builtins

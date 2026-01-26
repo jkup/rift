@@ -108,7 +108,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupMap(globalEnv, factory);
     setupWeakMap(globalEnv, factory);
     setupWeakSet(globalEnv, factory);
-    setupPromise(globalEnv, factory);
+    setupPromise(globalEnv, factory, engine);
 
     // After all builtins are created, get their prototypes from the constructors
     auto* objectConstructor = globalEnv->get("Object").getObject();
@@ -466,10 +466,13 @@ void BuiltinManager::setupWeakSet(std::shared_ptr<Environment> globalEnv,
 }
 
 void BuiltinManager::setupPromise(std::shared_ptr<Environment> globalEnv,
-                                  rift::memory::ObjectFactory* factory) {
+                                  rift::memory::ObjectFactory* factory, Rift* engine) {
     // Setup Promise object using GC-managed creation
     auto* promise = builtins::Promise::create(factory);
     globalEnv->define("Promise", Value(promise));
+
+    // Store engine reference for microtask queue access
+    builtins::Promise::setEngine(engine);
 }
 
 }  // namespace rift::core

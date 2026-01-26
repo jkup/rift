@@ -1,10 +1,14 @@
 #include "rift/builtins/promise/promise.h"
 
 #include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
+
+// Static member initialization
+rift::core::Rift* Promise::engine_ = nullptr;
 
 // ============================================================================
 // Setup Methods
@@ -45,6 +49,7 @@ JSObject* Promise::createPromiseObject(rift::memory::ObjectFactory* factory) {
     promise_obj->setProperty("[[PromiseResult]]", Value::undefined());
 
     // Create empty arrays for reaction handlers
+    // Each reaction is stored as an object with {handler, resultPromise}
     auto* fulfill_reactions = factory->createJSObject();
     fulfill_reactions->setProperty("length", Value(0.0));
 
@@ -95,6 +100,82 @@ Value Promise::getResult(JSObject* promise) {
 }
 
 // ============================================================================
+// Reaction Management
+// ============================================================================
+
+/**
+ * Add a reaction to a promise's reaction list.
+ * reaction_type is "fulfill" or "reject"
+ * handler can be nullptr for pass-through behavior
+ * result_promise is the promise returned by .then()
+ */
+void Promise::addReaction(JSObject* promise, const std::string& reaction_type,
+                          JSFunction* handler, JSObject* result_promise) {
+    std::string slot_name = (reaction_type == "fulfill") ? "[[PromiseFulfillReactions]]"
+                                                         : "[[PromiseRejectReactions]]";
+
+    Value reactions_val = promise->getProperty(slot_name);
+    if(!reactions_val.isObject()) {
+        return;
+    }
+
+    auto* reactions = reactions_val.getObject();
+    Value length_val = reactions->getProperty("length");
+    int length = length_val.isNumber() ? static_cast<int>(length_val.getNumber()) : 0;
+
+    // Create reaction record object
+    auto* factory = getFactory();
+    auto* reaction = factory->createJSObject();
+
+    // Store handler (can be null/undefined for pass-through)
+    if(handler != nullptr) {
+        reaction->setProperty("handler", Value(handler));
+    } else {
+        reaction->setProperty("handler", Value::undefined());
+    }
+
+    // Store result promise
+    reaction->setProperty("resultPromise", Value(result_promise));
+
+    // Add to reactions array
+    reactions->setProperty(std::to_string(length), Value(reaction));
+    reactions->setProperty("length", Value(static_cast<double>(length + 1)));
+}
+
+/**
+ * Execute a single reaction.
+ * This is called as a microtask after the promise settles.
+ */
+void Promise::executeReaction(JSFunction* handler, JSObject* result_promise,
+                              const Value& argument, bool is_fulfill) {
+    if(handler == nullptr) {
+        // No handler - pass through the value/reason
+        if(is_fulfill) {
+            fulfillPromise(result_promise, argument);
+        } else {
+            rejectPromise(result_promise, argument);
+        }
+        return;
+    }
+
+    // Call the handler
+    try {
+        CallContext ctx(rift::core::CallType::Function, Value::undefined());
+        Value result = handler->call(ctx, {argument});
+
+        // Handler returned successfully - resolve the result promise with the return value
+        // TODO (Phase 5): Handle thenable return values
+        fulfillPromise(result_promise, result);
+    } catch(const rift::core::JavaScriptException& e) {
+        // Handler threw - reject the result promise
+        rejectPromise(result_promise, e.getValue());
+    } catch(const std::exception& e) {
+        // C++ exception - reject with error message
+        rejectPromise(result_promise, Value(std::string("Error: ") + e.what()));
+    }
+}
+
+// ============================================================================
 // Constructor
 // ============================================================================
 
@@ -104,7 +185,7 @@ Value Promise::getResult(JSObject* promise) {
  *
  * The executor is called synchronously. If executor throws, the promise is rejected.
  */
-Value Promise::constructor(const CallContext& ctx, const std::vector<Value>& args) {
+Value Promise::constructor(const CallContext& /*ctx*/, const std::vector<Value>& args) {
     auto* factory = getObjectFactory();
 
     // Executor is required and must be a function
@@ -130,20 +211,18 @@ Value Promise::constructor(const CallContext& ctx, const std::vector<Value>& arg
     rift::memory::GCProtector protect(promise_obj, factory->getObjectManager());
 
     // Create resolve function that captures the promise
-    // The resolve function will transition the promise to fulfilled state
     auto* resolve_func = factory->createJSFunction(
         [promise_obj](const CallContext& /*resolve_ctx*/,
                       const std::vector<Value>& resolve_args) -> Value {
-            // Get resolution value
             Value resolution = resolve_args.empty() ? Value::undefined() : resolve_args[0];
 
-            // Check if already settled (one-shot behavior)
+            // One-shot: ignore if already settled
             std::string state = getState(promise_obj);
             if(state != STATE_PENDING) {
-                return Value::undefined();  // Already settled, ignore
+                return Value::undefined();
             }
 
-            // Check for self-resolution
+            // Self-resolution check
             if(resolution.isObject() && resolution.getObject() == promise_obj) {
                 rejectPromise(promise_obj,
                               Value("TypeError: A promise cannot be resolved with itself"));
@@ -151,41 +230,36 @@ Value Promise::constructor(const CallContext& ctx, const std::vector<Value>& arg
             }
 
             // TODO (Phase 5): Handle thenable adoption
-            // For now, directly fulfill
             fulfillPromise(promise_obj, resolution);
             return Value::undefined();
         });
 
     // Create reject function that captures the promise
-    // The reject function will transition the promise to rejected state
     auto* reject_func = factory->createJSFunction(
         [promise_obj](const CallContext& /*reject_ctx*/,
                       const std::vector<Value>& reject_args) -> Value {
-            // Get rejection reason
             Value reason = reject_args.empty() ? Value::undefined() : reject_args[0];
 
-            // Check if already settled (one-shot behavior)
+            // One-shot: ignore if already settled
             std::string state = getState(promise_obj);
             if(state != STATE_PENDING) {
-                return Value::undefined();  // Already settled, ignore
+                return Value::undefined();
             }
 
             rejectPromise(promise_obj, reason);
             return Value::undefined();
         });
 
-    // Call the executor synchronously with resolve and reject functions
+    // Call the executor synchronously
     try {
         CallContext executor_ctx(rift::core::CallType::Function, Value::undefined());
         executor_func->call(executor_ctx, {Value(resolve_func), Value(reject_func)});
     } catch(const rift::core::JavaScriptException& e) {
-        // If executor throws, reject the promise with the thrown value
         std::string state = getState(promise_obj);
         if(state == STATE_PENDING) {
             rejectPromise(promise_obj, e.getValue());
         }
     } catch(const std::exception& e) {
-        // Handle other C++ exceptions
         std::string state = getState(promise_obj);
         if(state == STATE_PENDING) {
             rejectPromise(promise_obj, Value(std::string("Error: ") + e.what()));
@@ -196,32 +270,24 @@ Value Promise::constructor(const CallContext& ctx, const std::vector<Value>& arg
 }
 
 // ============================================================================
-// Internal Promise Operations (Phase 3 implementation)
+// Internal Promise Operations
 // ============================================================================
 
 /**
  * Fulfill a promise with a value.
- * Transitions state from pending to fulfilled and triggers reactions.
  */
 void Promise::fulfillPromise(JSObject* promise, const Value& value) {
-    // Set state to fulfilled
     promise->setProperty("[[PromiseState]]", Value(STATE_FULFILLED));
     promise->setProperty("[[PromiseResult]]", value);
-
-    // Trigger fulfillment reactions
     triggerReactions(promise, "fulfill");
 }
 
 /**
  * Reject a promise with a reason.
- * Transitions state from pending to rejected and triggers reactions.
  */
 void Promise::rejectPromise(JSObject* promise, const Value& reason) {
-    // Set state to rejected
     promise->setProperty("[[PromiseState]]", Value(STATE_REJECTED));
     promise->setProperty("[[PromiseResult]]", reason);
-
-    // Trigger rejection reactions
     triggerReactions(promise, "reject");
 }
 
@@ -230,7 +296,6 @@ void Promise::rejectPromise(JSObject* promise, const Value& reason) {
  * Enqueues handlers as microtasks to be executed after current sync code.
  */
 void Promise::triggerReactions(JSObject* promise, const std::string& reaction_type) {
-    // Get the appropriate reactions array
     std::string slot_name = (reaction_type == "fulfill") ? "[[PromiseFulfillReactions]]"
                                                          : "[[PromiseRejectReactions]]";
 
@@ -239,10 +304,58 @@ void Promise::triggerReactions(JSObject* promise, const std::string& reaction_ty
         return;
     }
 
-    // TODO (Phase 4): Enqueue each reaction as a microtask
-    // For now, we just clear the reactions since we don't have .then() yet
-    // The actual microtask enqueueing will be added when we implement .then()
-    (void)reactions_val;  // Unused until Phase 4
+    auto* reactions = reactions_val.getObject();
+    Value length_val = reactions->getProperty("length");
+    int length = length_val.isNumber() ? static_cast<int>(length_val.getNumber()) : 0;
+    Value result = promise->getProperty("[[PromiseResult]]");
+    bool is_fulfill = (reaction_type == "fulfill");
+
+    // Get engine for microtask queue
+    auto* engine = getEngine();
+
+    // Enqueue each reaction as a microtask
+    for(int i = 0; i < length; i++) {
+        Value reaction_val = reactions->getProperty(std::to_string(i));
+        if(!reaction_val.isObject()) {
+            continue;
+        }
+
+        auto* reaction = reaction_val.getObject();
+        Value handler_val = reaction->getProperty("handler");
+        Value result_promise_val = reaction->getProperty("resultPromise");
+
+        JSFunction* handler = nullptr;
+        if(handler_val.isFunction()) {
+            handler = dynamic_cast<JSFunction*>(handler_val.getObject());
+        }
+
+        JSObject* result_promise = nullptr;
+        if(result_promise_val.isObject()) {
+            result_promise = result_promise_val.getObject();
+        }
+
+        if(result_promise == nullptr) {
+            continue;  // Invalid reaction
+        }
+
+        // Enqueue microtask to execute this reaction
+        if(engine != nullptr) {
+            // Create a function that executes the reaction
+            auto* factory = getFactory();
+            auto* microtask_func = factory->createJSFunction(
+                [handler, result_promise, result, is_fulfill](
+                    const CallContext& /*mt_ctx*/,
+                    const std::vector<Value>& /*mt_args*/) -> Value {
+                    executeReaction(handler, result_promise, result, is_fulfill);
+                    return Value::undefined();
+                });
+
+            engine->enqueueMicrotask(microtask_func, {}, Value::undefined());
+        } else {
+            // No engine - execute synchronously (for testing)
+            executeReaction(handler, result_promise, result, is_fulfill);
+        }
+    }
 
     // Clear the reactions arrays
     auto* factory = getFactory();
@@ -256,17 +369,105 @@ void Promise::triggerReactions(JSObject* promise, const std::string& reaction_ty
 }
 
 // ============================================================================
-// Instance Methods (Stubs for Phase 4+)
+// Instance Methods
 // ============================================================================
 
-Value Promise::then(const CallContext& /*ctx*/, const std::vector<Value>& /*args*/) {
-    // TODO: Implement in Phase 4
-    throw rift::core::JavaScriptException(Value("Promise.prototype.then not yet implemented"));
+/**
+ * Promise.prototype.then(onFulfilled, onRejected)
+ * Returns a new promise that resolves/rejects based on the handler results.
+ */
+Value Promise::then(const CallContext& ctx, const std::vector<Value>& args) {
+    // Get the promise (this value)
+    if(!ctx.thisValue.isObject()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Promise.prototype.then called on non-object"));
+    }
+
+    auto* promise = ctx.thisValue.getObject();
+    if(!isPromise(Value(promise))) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Promise.prototype.then called on non-Promise"));
+    }
+
+    auto* factory = getFactory();
+
+    // Get handlers (can be undefined for pass-through)
+    Value on_fulfilled_val = args.size() > 0 ? args[0] : Value::undefined();
+    Value on_rejected_val = args.size() > 1 ? args[1] : Value::undefined();
+
+    JSFunction* on_fulfilled = nullptr;
+    if(on_fulfilled_val.isFunction()) {
+        on_fulfilled = dynamic_cast<JSFunction*>(on_fulfilled_val.getObject());
+    }
+
+    JSFunction* on_rejected = nullptr;
+    if(on_rejected_val.isFunction()) {
+        on_rejected = dynamic_cast<JSFunction*>(on_rejected_val.getObject());
+    }
+
+    // Create the result promise (what .then() returns)
+    auto* result_promise = createPromiseObject(factory);
+    rift::memory::GCProtector protect(result_promise, factory->getObjectManager());
+
+    // Mark this promise as handled (for unhandled rejection tracking)
+    promise->setProperty("[[PromiseIsHandled]]", Value(true));
+
+    std::string state = getState(promise);
+
+    if(state == STATE_PENDING) {
+        // Promise is pending - queue the reactions
+        addReaction(promise, "fulfill", on_fulfilled, result_promise);
+        addReaction(promise, "reject", on_rejected, result_promise);
+    } else if(state == STATE_FULFILLED) {
+        // Promise is already fulfilled - enqueue fulfillment handler as microtask
+        Value result = getResult(promise);
+        auto* engine = getEngine();
+
+        if(engine != nullptr) {
+            auto* microtask_func = factory->createJSFunction(
+                [on_fulfilled, result_promise, result](const CallContext& /*mt_ctx*/,
+                                                       const std::vector<Value>& /*mt_args*/)
+                    -> Value {
+                    executeReaction(on_fulfilled, result_promise, result, true);
+                    return Value::undefined();
+                });
+            engine->enqueueMicrotask(microtask_func, {}, Value::undefined());
+        } else {
+            executeReaction(on_fulfilled, result_promise, result, true);
+        }
+    } else {
+        // Promise is rejected - enqueue rejection handler as microtask
+        Value reason = getResult(promise);
+        auto* engine = getEngine();
+
+        if(engine != nullptr) {
+            auto* microtask_func = factory->createJSFunction(
+                [on_rejected, result_promise, reason](const CallContext& /*mt_ctx*/,
+                                                      const std::vector<Value>& /*mt_args*/)
+                    -> Value {
+                    executeReaction(on_rejected, result_promise, reason, false);
+                    return Value::undefined();
+                });
+            engine->enqueueMicrotask(microtask_func, {}, Value::undefined());
+        } else {
+            executeReaction(on_rejected, result_promise, reason, false);
+        }
+    }
+
+    return Value(result_promise);
 }
 
-Value Promise::catch_(const CallContext& /*ctx*/, const std::vector<Value>& /*args*/) {
-    // TODO: Implement in Phase 6
-    throw rift::core::JavaScriptException(Value("Promise.prototype.catch not yet implemented"));
+/**
+ * Promise.prototype.catch(onRejected)
+ * Sugar for .then(undefined, onRejected)
+ */
+Value Promise::catch_(const CallContext& ctx, const std::vector<Value>& args) {
+    // .catch(onRejected) is .then(undefined, onRejected)
+    std::vector<Value> then_args = {Value::undefined()};
+    if(!args.empty()) {
+        then_args.push_back(args[0]);
+    }
+    return then(ctx, then_args);
 }
 
 Value Promise::finally_(const CallContext& /*ctx*/, const std::vector<Value>& /*args*/) {
@@ -275,11 +476,10 @@ Value Promise::finally_(const CallContext& /*ctx*/, const std::vector<Value>& /*
 }
 
 // ============================================================================
-// Static Methods (Stubs for Phase 7)
+// Static Methods
 // ============================================================================
 
 Value Promise::resolve(const CallContext& /*ctx*/, const std::vector<Value>& args) {
-    // Basic implementation for Phase 2 testing
     auto* factory = getObjectFactory();
     Value value = args.empty() ? Value::undefined() : args[0];
 
@@ -295,7 +495,6 @@ Value Promise::resolve(const CallContext& /*ctx*/, const std::vector<Value>& arg
 }
 
 Value Promise::reject(const CallContext& /*ctx*/, const std::vector<Value>& args) {
-    // Basic implementation for Phase 2 testing
     auto* factory = getObjectFactory();
     Value reason = args.empty() ? Value::undefined() : args[0];
 
