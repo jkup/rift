@@ -604,9 +604,170 @@ Value Promise::catch_(const CallContext& ctx, const std::vector<Value>& args) {
     return then(ctx, then_args);
 }
 
-Value Promise::finally_(const CallContext& /*ctx*/, const std::vector<Value>& /*args*/) {
-    // TODO: Implement in Phase 6
-    throw rift::core::JavaScriptException(Value("Promise.prototype.finally not yet implemented"));
+/**
+ * Promise.prototype.finally(onFinally)
+ *
+ * The finally() method runs a callback regardless of whether the promise
+ * fulfilled or rejected, but preserves the original value/reason.
+ *
+ * Equivalent to:
+ *   .then(
+ *     value => Promise.resolve(onFinally()).then(() => value),
+ *     reason => Promise.resolve(onFinally()).then(() => { throw reason; })
+ *   )
+ */
+Value Promise::finally_(const CallContext& ctx, const std::vector<Value>& args) {
+    // Get the promise (this value)
+    if(!ctx.thisValue.isObject()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Promise.prototype.finally called on non-object"));
+    }
+
+    auto* promise = ctx.thisValue.getObject();
+    if(!isPromise(Value(promise))) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Promise.prototype.finally called on non-Promise"));
+    }
+
+    auto* factory = getFactory();
+
+    // Get onFinally callback
+    Value on_finally_val = !args.empty() ? args[0] : Value::undefined();
+
+    // If onFinally is not callable, pass through the value/reason unchanged
+    if(!on_finally_val.isFunction()) {
+        // .finally(nonFunction) is like .then(x => x, r => { throw r; })
+        // which is essentially a pass-through
+        return then(ctx, {Value::undefined(), Value::undefined()});
+    }
+
+    auto* on_finally = dynamic_cast<JSFunction*>(on_finally_val.getObject());
+
+    // Create the fulfillment wrapper:
+    // value => Promise.resolve(onFinally()).then(() => value)
+    auto* then_finally = factory->createJSFunction(
+        [on_finally, factory](const CallContext& /*wrapper_ctx*/,
+                              const std::vector<Value>& wrapper_args) -> Value {
+            Value original_value = wrapper_args.empty() ? Value::undefined() : wrapper_args[0];
+
+            // Call onFinally()
+            Value callback_result;
+            try {
+                CallContext finally_ctx(rift::core::CallType::Function, Value::undefined());
+                callback_result = on_finally->call(finally_ctx, {});
+            } catch(const rift::core::JavaScriptException& e) {
+                // onFinally threw - propagate the exception
+                throw;
+            }
+
+            // If callback_result is a thenable, we need to wait for it
+            // then return the original value
+            if(isThenable(callback_result)) {
+                // Create a promise that waits for the callback result
+                // then resolves with the original value
+                auto* result_promise = createPromiseObject(factory);
+                rift::memory::GCProtector protect(result_promise, factory->getObjectManager());
+
+                // Get the then method from the callback result
+                auto* then_method = getThenMethod(callback_result);
+                auto* thenable_obj = callback_result.getObject();
+
+                // Create resolve handler that ignores thenable result and uses original value
+                auto* value_resolver = factory->createJSFunction(
+                    [result_promise, original_value](const CallContext& /*res_ctx*/,
+                                                     const std::vector<Value>& /*res_args*/)
+                        -> Value {
+                        fulfillPromise(result_promise, original_value);
+                        return Value::undefined();
+                    });
+
+                // Create reject handler that rejects with thenable's rejection
+                auto* value_rejecter = factory->createJSFunction(
+                    [result_promise](const CallContext& /*rej_ctx*/,
+                                     const std::vector<Value>& rej_args) -> Value {
+                        Value reason = rej_args.empty() ? Value::undefined() : rej_args[0];
+                        rejectPromise(result_promise, reason);
+                        return Value::undefined();
+                    });
+
+                // Call thenable.then(valueResolver, valueRejecter)
+                try {
+                    CallContext then_ctx(rift::core::CallType::Function, Value(thenable_obj));
+                    then_method->call(then_ctx, {Value(value_resolver), Value(value_rejecter)});
+                } catch(const rift::core::JavaScriptException& e) {
+                    rejectPromise(result_promise, e.getValue());
+                }
+
+                return Value(result_promise);
+            }
+
+            // Not a thenable - just return the original value
+            return original_value;
+        });
+
+    // Create the rejection wrapper:
+    // reason => Promise.resolve(onFinally()).then(() => { throw reason; })
+    auto* catch_finally = factory->createJSFunction(
+        [on_finally, factory](const CallContext& /*wrapper_ctx*/,
+                              const std::vector<Value>& wrapper_args) -> Value {
+            Value original_reason = wrapper_args.empty() ? Value::undefined() : wrapper_args[0];
+
+            // Call onFinally()
+            Value callback_result;
+            try {
+                CallContext finally_ctx(rift::core::CallType::Function, Value::undefined());
+                callback_result = on_finally->call(finally_ctx, {});
+            } catch(const rift::core::JavaScriptException& e) {
+                // onFinally threw - propagate the new exception
+                throw;
+            }
+
+            // If callback_result is a thenable, we need to wait for it
+            // then re-throw the original reason
+            if(isThenable(callback_result)) {
+                // Create a promise that waits for the callback result
+                // then rejects with the original reason
+                auto* result_promise = createPromiseObject(factory);
+                rift::memory::GCProtector protect(result_promise, factory->getObjectManager());
+
+                auto* then_method = getThenMethod(callback_result);
+                auto* thenable_obj = callback_result.getObject();
+
+                // Create resolve handler that re-throws original reason
+                auto* reason_rethrower = factory->createJSFunction(
+                    [result_promise, original_reason](const CallContext& /*res_ctx*/,
+                                                      const std::vector<Value>& /*res_args*/)
+                        -> Value {
+                        rejectPromise(result_promise, original_reason);
+                        return Value::undefined();
+                    });
+
+                // Create reject handler that rejects with thenable's rejection
+                auto* reason_rejecter = factory->createJSFunction(
+                    [result_promise](const CallContext& /*rej_ctx*/,
+                                     const std::vector<Value>& rej_args) -> Value {
+                        Value reason = rej_args.empty() ? Value::undefined() : rej_args[0];
+                        rejectPromise(result_promise, reason);
+                        return Value::undefined();
+                    });
+
+                // Call thenable.then(reasonRethrower, reasonRejecter)
+                try {
+                    CallContext then_ctx(rift::core::CallType::Function, Value(thenable_obj));
+                    then_method->call(then_ctx, {Value(reason_rethrower), Value(reason_rejecter)});
+                } catch(const rift::core::JavaScriptException& e) {
+                    rejectPromise(result_promise, e.getValue());
+                }
+
+                return Value(result_promise);
+            }
+
+            // Not a thenable - re-throw the original reason
+            throw rift::core::JavaScriptException(original_reason);
+        });
+
+    // Call .then(thenFinally, catchFinally)
+    return then(ctx, {Value(then_finally), Value(catch_finally)});
 }
 
 // ============================================================================
