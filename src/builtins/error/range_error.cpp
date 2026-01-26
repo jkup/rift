@@ -7,7 +7,8 @@
 namespace rift::builtins {
 
 void RangeError::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    // RangeError has no static methods
+    // Set the name property on the constructor
+    RIFT_PROPERTY(constructor, "name", Value("RangeError"));
 }
 
 void RangeError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {

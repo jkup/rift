@@ -7,7 +7,8 @@
 namespace rift::builtins {
 
 void SyntaxError::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    // SyntaxError has no static methods
+    // Set the name property on the constructor
+    RIFT_PROPERTY(constructor, "name", Value("SyntaxError"));
 }
 
 void SyntaxError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {

@@ -65,8 +65,30 @@ std::string Value::toString() const {
             const SymbolData& sym = std::get<SymbolData>(data_);
             return "Symbol(" + sym.description + ")";
         }
-        case ValueType::Object:
+        case ValueType::Object: {
+            // Check if this is an Error object (has name and message properties)
+            auto* obj = std::get<JSObject*>(data_);
+            if(obj) {
+                Value nameVal = obj->getProperty("name");
+                Value messageVal = obj->getProperty("message");
+                // If it has a name property that looks like an error type, format as error
+                if(!nameVal.isUndefined() && nameVal.isString()) {
+                    std::string name = nameVal.toString();
+                    // Check if it's an error-like name
+                    if(name == "Error" || name == "TypeError" || name == "ReferenceError" ||
+                       name == "SyntaxError" || name == "RangeError" || name == "URIError" ||
+                       name == "EvalError" || name == "AggregateError" || name == "Test262Error") {
+                        std::string message = messageVal.isUndefined() ? "" : messageVal.toString();
+                        if(message.empty()) {
+                            return name;
+                        } else {
+                            return name + ": " + message;
+                        }
+                    }
+                }
+            }
             return "[object Object]";
+        }
         case ValueType::Function:
             return "[object Function]";
         default:

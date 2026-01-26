@@ -8,7 +8,8 @@ namespace rift::builtins {
 
 void ReferenceError::setupStaticMethods(JSObject* constructor,
                                         rift::memory::ObjectFactory* factory) {
-    // ReferenceError has no static methods
+    // Set the name property on the constructor
+    RIFT_PROPERTY(constructor, "name", Value("ReferenceError"));
 }
 
 void ReferenceError::setupPrototypeMethods(JSObject* prototype,

@@ -7,7 +7,8 @@
 namespace rift::builtins {
 
 void TypeError::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    // TypeError has no static methods
+    // Set the name property on the constructor
+    RIFT_PROPERTY(constructor, "name", Value("TypeError"));
 }
 
 void TypeError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {

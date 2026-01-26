@@ -1,8 +1,11 @@
 #include "rift/runtime/environment/environment.h"
 
 #include <stdexcept>
+#include "rift/core/engine/javascript_exception.h"
 
 namespace rift::runtime {
+
+using rift::core::JavaScriptException;
 
 void Environment::define(const std::string& name, const Value& value, VariableType type) {
     // Check for redeclaration conflicts
@@ -15,7 +18,7 @@ void Environment::define(const std::string& name, const Value& value, VariableTy
             return;
         }
         // let/const cannot be redeclared in same scope
-        throw std::runtime_error("Identifier '" + name + "' has already been declared");
+        throw JavaScriptException(Value("SyntaxError: Identifier '" + name + "' has already been declared"));
     }
 
     variables_[name] = VariableEntry(value, type);
@@ -30,7 +33,7 @@ void Environment::declare(const std::string& name, VariableType type) {
             return;  // Already declared
         }
         // let/const cannot be redeclared in same scope
-        throw std::runtime_error("Identifier '" + name + "' has already been declared");
+        throw JavaScriptException(Value("SyntaxError: Identifier '" + name + "' has already been declared"));
     }
 
     variables_[name] = VariableEntry(type);  // Not initialized yet (TDZ)
@@ -41,7 +44,7 @@ Value Environment::get(const std::string& name) {
     if(it != variables_.end()) {
         // Check for TDZ access
         if(!it->second.initialized) {
-            throw std::runtime_error("Cannot access '" + name + "' before initialization");
+            throw JavaScriptException(Value("ReferenceError: Cannot access '" + name + "' before initialization"));
         }
         return it->second.value;
     }
@@ -50,7 +53,7 @@ Value Environment::get(const std::string& name) {
         return parent_->get(name);
     }
 
-    throw std::runtime_error("Undefined variable: " + name);
+    throw JavaScriptException(Value("ReferenceError: " + name + " is not defined"));
 }
 
 void Environment::set(const std::string& name, const Value& value) {
@@ -58,11 +61,11 @@ void Environment::set(const std::string& name, const Value& value) {
     if(it != variables_.end()) {
         // Check for TDZ access
         if(!it->second.initialized) {
-            throw std::runtime_error("Cannot access '" + name + "' before initialization");
+            throw JavaScriptException(Value("ReferenceError: Cannot access '" + name + "' before initialization"));
         }
         // Check for const assignment
         if(it->second.type == VariableType::Const) {
-            throw std::runtime_error("Assignment to constant variable '" + name + "'");
+            throw JavaScriptException(Value("TypeError: Assignment to constant variable '" + name + "'"));
         }
         it->second.value = value;
         return;

@@ -97,6 +97,8 @@ class BuiltinBase {
         // Create and set prototype
         auto* prototype = createPrototype(factory);
         constructor->setProperty("prototype", Value(prototype));
+        // Set constructor property on prototype (prototype.constructor = Constructor)
+        prototype->setProperty("constructor", Value(constructor));
 
         return constructor;
     }

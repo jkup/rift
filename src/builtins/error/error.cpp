@@ -11,7 +11,8 @@ namespace rift::builtins {
 using rift::core::extractThisObject;
 
 void Error::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    // Error has no static methods (like Array.isArray), so this is empty
+    // Set the name property on the constructor
+    RIFT_PROPERTY(constructor, "name", Value("Error"));
 }
 
 void Error::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
