@@ -124,6 +124,7 @@ set(CORE_SOURCES
     src/core/engine/expression_evaluator_objects.cpp
     src/core/engine/operation_handler.cpp
     src/core/engine/generator_evaluator.cpp
+    src/core/engine/microtask_queue.cpp
 )
 
 set(API_SOURCES

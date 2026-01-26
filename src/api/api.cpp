@@ -12,6 +12,11 @@ std::string JavaScript::execute(const std::string& source) {
     try {
         auto ast = parse(source);
         auto result = engine_->execute(ast);
+
+        // Drain microtasks after successful synchronous execution
+        // This is where Promise callbacks run (after sync code, before returning)
+        engine_->drainMicrotasks();
+
         return result.toString();
     } catch(const rift::core::JavaScriptException& e) {
         // For JavaScript exceptions (throw statements), we want to propagate them

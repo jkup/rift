@@ -3,8 +3,10 @@
 #include <iostream>
 
 #include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/call_context.h"
 #include "rift/core/engine/expression_evaluator.h"
 #include "rift/core/engine/statement_evaluator.h"
+#include "rift/runtime/values/object.h"
 
 namespace rift::core {
 
@@ -173,6 +175,39 @@ void Rift::exitExceptionHandling() {
 
 bool Rift::isInExceptionHandling() const {
     return exception_depth_.load() > 0;
+}
+
+// Microtask queue methods for Promise support
+
+void Rift::enqueueMicrotask(rift::runtime::JSFunction* callback,
+                            std::vector<rift::runtime::Value> args,
+                            rift::runtime::Value this_value) {
+    microtask_queue_.enqueue(callback, std::move(args), std::move(this_value));
+}
+
+void Rift::drainMicrotasks() {
+    // Process all microtasks, including any new ones enqueued during processing
+    while(!microtask_queue_.isEmpty()) {
+        Microtask task = microtask_queue_.dequeue();
+
+        if(task.callback) {
+            try {
+                CallContext ctx(CallType::Function, task.this_value);
+                task.callback->call(ctx, task.args);
+            } catch(const std::exception& e) {
+                // Log error but continue processing other microtasks
+                // In the future, this should trigger unhandled rejection handling
+#ifdef DEBUG_GC
+                std::cerr << "[Microtask] Exception during microtask execution: " << e.what()
+                          << std::endl;
+#endif
+            }
+        }
+    }
+}
+
+bool Rift::hasPendingMicrotasks() const {
+    return !microtask_queue_.isEmpty();
 }
 
 }  // namespace rift::core

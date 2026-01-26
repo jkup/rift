@@ -10,6 +10,7 @@
 #include "../../memory/object_manager.h"
 #include "../../runtime/environment/environment.h"
 #include "../../runtime/values/value.h"
+#include "microtask_queue.h"
 
 namespace rift::core {
 
@@ -28,6 +29,9 @@ class Rift {
     std::unique_ptr<rift::memory::ObjectManager> object_manager_;
     std::unique_ptr<rift::memory::ObjectFactory> object_factory_;
     std::unique_ptr<rift::memory::GCEnvironment> global_env_gc_;
+
+    // Microtask queue for Promise reactions and other async operations
+    MicrotaskQueue microtask_queue_;
 
     // Exception handling state tracking
     std::atomic<int> exception_depth_{0};
@@ -64,6 +68,13 @@ class Rift {
     void enterExceptionHandling();
     void exitExceptionHandling();
     bool isInExceptionHandling() const;
+
+    // Microtask queue for Promise support
+    void enqueueMicrotask(rift::runtime::JSFunction* callback,
+                          std::vector<rift::runtime::Value> args,
+                          rift::runtime::Value this_value = rift::runtime::Value::undefined());
+    void drainMicrotasks();
+    bool hasPendingMicrotasks() const;
 
     // Built-in setup
     void setupBuiltins();
