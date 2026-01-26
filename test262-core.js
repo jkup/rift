@@ -172,10 +172,19 @@ export function testUsesUnsupportedFeatures(test) {
 /**
  * Build combined code for a test with harness files
  * @param {Object} test - Parsed test object
+ * @param {boolean} useStrict - Whether to prepend "use strict" directive
  * @returns {string} Combined code ready to execute
  */
-export function buildCombinedCode(test) {
-  let combinedCode = getHarnessContent() + "\n";
+export function buildCombinedCode(test, useStrict = false) {
+  let combinedCode = "";
+
+  // Add "use strict" directive if requested
+  // Must be at the very beginning of the code
+  if (useStrict) {
+    combinedCode = '"use strict";\n';
+  }
+
+  combinedCode += getHarnessContent() + "\n";
 
   // Include test-specific harness files that we can support
   if (test.includes && test.includes.length > 0) {
@@ -268,24 +277,15 @@ function checkNegativeTestResult(negative, stdout, stderr) {
 }
 
 /**
- * Run a single test and return the result
- * @param {string} testFile - Path to the test file
- * @param {string} tempFile - Path to use for temporary file (default: /tmp/test262_temp.js)
+ * Execute a single test run with the given code
+ * @param {Object} test - Parsed test object
+ * @param {string} combinedCode - The code to execute
+ * @param {string} tempFile - Path to temporary file
+ * @param {string} mode - "strict" or "non-strict" for error messages
  * @returns {Object} Test result with status and optional reason
  */
-export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
-  const test = parseTestFile(testFile);
-
-  // Check if this test uses unsupported features first
-  if (testUsesUnsupportedFeatures(test)) {
-    return {
-      status: "skipped",
-      reason: "Uses unsupported language features",
-    };
-  }
-
+function executeTestRun(test, combinedCode, tempFile, mode) {
   try {
-    const combinedCode = buildCombinedCode(test);
     fs.writeFileSync(tempFile, combinedCode);
 
     const result = execSync(`${RUNTIME_EXECUTABLE} ${tempFile}`, {
@@ -300,13 +300,13 @@ export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
       // Test was expected to throw but didn't
       return {
         status: "failed",
-        reason: `Expected ${test.negative.type} to be thrown but test passed without error`,
+        reason: `[${mode}] Expected ${test.negative.type} to be thrown but test passed without error`,
       };
     } else {
       if (stdout.includes("Test262Error")) {
         return {
           status: "failed",
-          reason: "Test assertion failed: " + stdout.substring(0, 150),
+          reason: `[${mode}] Test assertion failed: ` + stdout.substring(0, 150),
         };
       }
 
@@ -320,7 +320,7 @@ export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
       ) {
         return {
           status: "failed",
-          reason: "Runtime error: " + stdout.substring(0, 150),
+          reason: `[${mode}] Runtime error: ` + stdout.substring(0, 150),
         };
       }
 
@@ -342,7 +342,7 @@ export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
       } else {
         return {
           status: "failed",
-          reason: check.reason,
+          reason: `[${mode}] ${check.reason}`,
         };
       }
     } else {
@@ -350,7 +350,7 @@ export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
         if (stdout.includes("Test262Error")) {
           return {
             status: "failed",
-            reason: "Test assertion failed: " + stdout.substring(0, 150),
+            reason: `[${mode}] Test assertion failed: ` + stdout.substring(0, 150),
           };
         }
 
@@ -364,7 +364,7 @@ export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
         ) {
           return {
             status: "failed",
-            reason: "Runtime error: " + stdout.substring(0, 150),
+            reason: `[${mode}] Runtime error: ` + stdout.substring(0, 150),
           };
         }
 
@@ -384,11 +384,91 @@ export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
       }
       return {
         status: "failed",
-        reason: "Runtime crash: " + cleanReason,
+        reason: `[${mode}] Runtime crash: ` + cleanReason,
         stderr: stderr.substring(0, 200),
       };
     }
   }
+}
+
+/**
+ * Run a single test and return the result
+ * Handles strict mode dual execution per test262 spec
+ * @param {string} testFile - Path to the test file
+ * @param {string} tempFile - Path to use for temporary file (default: /tmp/test262_temp.js)
+ * @returns {Object} Test result with status and optional reason
+ */
+export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
+  const test = parseTestFile(testFile);
+
+  // Check if this test uses unsupported features first
+  if (testUsesUnsupportedFeatures(test)) {
+    return {
+      status: "skipped",
+      reason: "Uses unsupported language features",
+    };
+  }
+
+  // Determine which modes to run based on flags
+  const flags = test.flags || [];
+  const hasNoStrict = flags.includes("noStrict");
+  const hasOnlyStrict = flags.includes("onlyStrict");
+  const hasModule = flags.includes("module");
+  const hasRaw = flags.includes("raw");
+
+  // Determine execution modes
+  // - raw: no modifications, single non-strict run
+  // - module: single run (modules are always strict)
+  // - noStrict: only non-strict run
+  // - onlyStrict: only strict run
+  // - default: both strict and non-strict runs
+  let runNonStrict = true;
+  let runStrict = true;
+
+  if (hasRaw) {
+    // Raw tests: no modifications at all, single non-strict run
+    runStrict = false;
+  } else if (hasModule) {
+    // Module tests: modules are implicitly strict, single run
+    // We don't have module support, so run as strict
+    runNonStrict = false;
+  } else if (hasNoStrict) {
+    // noStrict flag: only run in non-strict mode
+    runStrict = false;
+  } else if (hasOnlyStrict) {
+    // onlyStrict flag: only run in strict mode
+    runNonStrict = false;
+  }
+
+  // Run non-strict mode if needed
+  if (runNonStrict) {
+    const nonStrictCode = buildCombinedCode(test, false);
+    const nonStrictResult = executeTestRun(test, nonStrictCode, tempFile, "non-strict");
+
+    if (nonStrictResult.status === "failed") {
+      return nonStrictResult;
+    }
+
+    // If we only need non-strict, return the result
+    if (!runStrict) {
+      return nonStrictResult;
+    }
+  }
+
+  // Run strict mode if needed
+  if (runStrict) {
+    const strictCode = buildCombinedCode(test, true);
+    const strictResult = executeTestRun(test, strictCode, tempFile, "strict");
+
+    if (strictResult.status === "failed") {
+      return strictResult;
+    }
+
+    return strictResult;
+  }
+
+  // Should not reach here, but just in case
+  return { status: "passed" };
 }
 
 /**
