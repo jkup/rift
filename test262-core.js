@@ -3,6 +3,7 @@
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
+import YAML from "yaml";
 
 // Configuration
 export const TEST262_DIR = "./test262";
@@ -74,49 +75,66 @@ export function getHarnessContent() {
  */
 export function parseTestFile(filePath) {
   const content = fs.readFileSync(filePath, "utf8");
-  const lines = content.split("\n");
 
   const test = {
     file: filePath,
     description: "",
-    negative: false,
-    expectedError: null,
+    negative: null, // Will be { phase, type } or null
     includes: [],
     flags: [],
+    features: [],
     code: content,
   };
 
-  // Parse YAML frontmatter
-  let inFrontmatter = false;
-  let frontmatterLines = [];
-
-  for (const line of lines) {
-    if (line.trim() === "---") {
-      if (!inFrontmatter) {
-        inFrontmatter = true;
-      } else {
-        break;
-      }
-      continue;
-    }
-
-    if (inFrontmatter) {
-      frontmatterLines.push(line);
-    }
+  // Extract YAML frontmatter between /*--- and ---*/
+  const frontmatterMatch = content.match(/\/\*---\n?([\s\S]*?)\n?---\*\//);
+  if (!frontmatterMatch) {
+    return test;
   }
 
-  // Simple YAML parsing for basic fields
-  for (const line of frontmatterLines) {
-    if (line.startsWith("description:")) {
-      test.description = line.substring(12).trim();
-    } else if (line.includes("negative:")) {
-      test.negative = true;
-    } else if (line.includes("includes:")) {
-      const match = line.match(/\[(.*?)\]/);
-      if (match) {
-        test.includes = match[1]
-          .split(",")
-          .map((s) => s.trim().replace(/['"]/g, ""));
+  try {
+    const metadata = YAML.parse(frontmatterMatch[1]);
+
+    if (metadata) {
+      test.description = metadata.description || "";
+      test.includes = metadata.includes || [];
+      test.flags = metadata.flags || [];
+      test.features = metadata.features || [];
+
+      // Parse negative metadata properly
+      if (metadata.negative) {
+        test.negative = {
+          phase: metadata.negative.phase || "runtime",
+          type: metadata.negative.type || "Error",
+        };
+      }
+    }
+  } catch (e) {
+    // Fall back to simple parsing if YAML parsing fails
+    const lines = content.split("\n");
+    let inFrontmatter = false;
+
+    for (const line of lines) {
+      if (line.trim() === "---") {
+        if (!inFrontmatter) {
+          inFrontmatter = true;
+        } else {
+          break;
+        }
+        continue;
+      }
+
+      if (inFrontmatter) {
+        if (line.startsWith("description:")) {
+          test.description = line.substring(12).trim();
+        } else if (line.includes("includes:")) {
+          const match = line.match(/\[(.*?)\]/);
+          if (match) {
+            test.includes = match[1]
+              .split(",")
+              .map((s) => s.trim().replace(/['"]/g, ""));
+          }
+        }
       }
     }
   }
@@ -186,6 +204,70 @@ export function buildCombinedCode(test) {
 }
 
 /**
+ * Extract the error type from output text
+ * @param {string} output - stdout or stderr text
+ * @returns {string|null} The error type name or null
+ */
+function extractErrorType(output) {
+  // Match common error patterns: "TypeError:", "SyntaxError:", etc.
+  const errorPatterns = [
+    /\b(SyntaxError)(?::|])/,
+    /\b(TypeError)(?::|])/,
+    /\b(ReferenceError)(?::|])/,
+    /\b(RangeError)(?::|])/,
+    /\b(EvalError)(?::|])/,
+    /\b(URIError)(?::|])/,
+    /\b(AggregateError)(?::|])/,
+    /\b(Test262Error)(?::|])/,
+    /\b(Error)(?::|])/,
+  ];
+
+  for (const pattern of errorPatterns) {
+    const match = output.match(pattern);
+    if (match) {
+      return match[1];
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Check if the thrown error matches the expected negative test requirements
+ * @param {Object} negative - The negative metadata { phase, type }
+ * @param {string} stdout - stdout from execution
+ * @param {string} stderr - stderr from execution
+ * @returns {Object} { matches: boolean, actualType: string|null, reason: string }
+ */
+function checkNegativeTestResult(negative, stdout, stderr) {
+  const combinedOutput = stdout + "\n" + stderr;
+  const actualType = extractErrorType(combinedOutput);
+
+  if (!actualType) {
+    return {
+      matches: false,
+      actualType: null,
+      reason: "No error type found in output",
+    };
+  }
+
+  // Check if the error type matches
+  if (actualType !== negative.type) {
+    return {
+      matches: false,
+      actualType,
+      reason: `Expected ${negative.type} but got ${actualType}`,
+    };
+  }
+
+  return {
+    matches: true,
+    actualType,
+    reason: `Correctly threw ${negative.type}`,
+  };
+}
+
+/**
  * Run a single test and return the result
  * @param {string} testFile - Path to the test file
  * @param {string} tempFile - Path to use for temporary file (default: /tmp/test262_temp.js)
@@ -215,7 +297,11 @@ export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
     const stdout = result.toString().trim();
 
     if (test.negative) {
-      return { status: "failed", reason: "Expected error but test passed" };
+      // Test was expected to throw but didn't
+      return {
+        status: "failed",
+        reason: `Expected ${test.negative.type} to be thrown but test passed without error`,
+      };
     } else {
       if (stdout.includes("Test262Error")) {
         return {
@@ -245,7 +331,20 @@ export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
     const stdout = error.stdout ? error.stdout.toString() : "";
 
     if (test.negative) {
-      return { status: "passed", reason: "Expected error occurred" };
+      // Test was expected to throw - verify the error type matches
+      const check = checkNegativeTestResult(test.negative, stdout, stderr);
+
+      if (check.matches) {
+        return {
+          status: "passed",
+          reason: check.reason,
+        };
+      } else {
+        return {
+          status: "failed",
+          reason: check.reason,
+        };
+      }
     } else {
       if (stdout.trim()) {
         if (stdout.includes("Test262Error")) {
