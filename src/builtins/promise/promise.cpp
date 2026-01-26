@@ -800,24 +800,475 @@ Value Promise::reject(const CallContext& /*ctx*/, const std::vector<Value>& args
     return Value(promise_obj);
 }
 
-Value Promise::all(const CallContext& /*ctx*/, const std::vector<Value>& /*args*/) {
-    // TODO: Implement in Phase 7
-    throw rift::core::JavaScriptException(Value("Promise.all not yet implemented"));
+/**
+ * Promise.all(iterable)
+ *
+ * Returns a promise that:
+ * - Resolves with an array of all values when ALL input promises resolve
+ * - Rejects immediately with the first rejection reason if ANY rejects
+ * - Resolves with [] if given an empty iterable
+ */
+Value Promise::all(const CallContext& /*ctx*/, const std::vector<Value>& args) {
+    auto* factory = getObjectFactory();
+
+    // Create the result promise
+    auto* result_promise = createPromiseObject(factory);
+    rift::memory::GCProtector protect(result_promise, factory->getObjectManager());
+
+    // Get the iterable (first argument)
+    if(args.empty()) {
+        // No argument - treat as empty iterable
+        auto* empty_array = factory->createJSObject();
+        empty_array->setProperty("length", Value(0.0));
+        fulfillPromise(result_promise, Value(empty_array));
+        return Value(result_promise);
+    }
+
+    const Value& iterable = args[0];
+
+    // Must be an object with a length property (array-like)
+    if(!iterable.isObject()) {
+        rejectPromise(result_promise, Value("TypeError: Promise.all requires an iterable"));
+        return Value(result_promise);
+    }
+
+    auto* iterable_obj = iterable.getObject();
+    Value length_val = iterable_obj->getProperty("length");
+
+    if(!length_val.isNumber()) {
+        rejectPromise(result_promise, Value("TypeError: Promise.all requires an iterable"));
+        return Value(result_promise);
+    }
+
+    int length = static_cast<int>(length_val.getNumber());
+
+    // Empty iterable - resolve with empty array
+    if(length == 0) {
+        auto* empty_array = factory->createJSObject();
+        empty_array->setProperty("length", Value(0.0));
+        fulfillPromise(result_promise, Value(empty_array));
+        return Value(result_promise);
+    }
+
+    // Create results array and counter object (shared state)
+    auto* results = factory->createJSObject();
+    results->setProperty("length", Value(static_cast<double>(length)));
+
+    // Use an object to track remaining count (mutable shared state)
+    auto* state = factory->createJSObject();
+    state->setProperty("remaining", Value(static_cast<double>(length)));
+    state->setProperty("rejected", Value(false));
+
+    // Process each element
+    for(int i = 0; i < length; i++) {
+        Value element = iterable_obj->getProperty(std::to_string(i));
+
+        // Wrap with Promise.resolve to handle non-promise values
+        auto* element_promise = createPromiseObject(factory);
+        resolvePromise(element_promise, element);
+
+        // Create fulfillment handler for this index
+        int index = i;  // Capture by value
+        auto* on_fulfilled = factory->createJSFunction(
+            [results, state, result_promise, index](
+                const CallContext& /*handler_ctx*/,
+                const std::vector<Value>& handler_args) -> Value {
+                // Check if already rejected
+                Value rejected = state->getProperty("rejected");
+                if(rejected.isBoolean() && rejected.getBool()) {
+                    return Value::undefined();
+                }
+
+                // Store the value at the correct index
+                Value value = handler_args.empty() ? Value::undefined() : handler_args[0];
+                results->setProperty(std::to_string(index), value);
+
+                // Decrement remaining count
+                Value remaining_val = state->getProperty("remaining");
+                int remaining = static_cast<int>(remaining_val.getNumber()) - 1;
+                state->setProperty("remaining", Value(static_cast<double>(remaining)));
+
+                // If all done, resolve with results array
+                if(remaining == 0) {
+                    fulfillPromise(result_promise, Value(results));
+                }
+
+                return Value::undefined();
+            });
+
+        // Create rejection handler
+        auto* on_rejected = factory->createJSFunction(
+            [state, result_promise](const CallContext& /*handler_ctx*/,
+                                    const std::vector<Value>& handler_args) -> Value {
+                // Check if already rejected (only first rejection counts)
+                Value rejected = state->getProperty("rejected");
+                if(rejected.isBoolean() && rejected.getBool()) {
+                    return Value::undefined();
+                }
+
+                // Mark as rejected
+                state->setProperty("rejected", Value(true));
+
+                // Reject with the reason
+                Value reason = handler_args.empty() ? Value::undefined() : handler_args[0];
+                rejectPromise(result_promise, reason);
+
+                return Value::undefined();
+            });
+
+        // Attach handlers to the element promise
+        CallContext then_ctx(rift::core::CallType::Function, Value(element_promise));
+        then(then_ctx, {Value(on_fulfilled), Value(on_rejected)});
+    }
+
+    return Value(result_promise);
 }
 
-Value Promise::race(const CallContext& /*ctx*/, const std::vector<Value>& /*args*/) {
-    // TODO: Implement in Phase 7
-    throw rift::core::JavaScriptException(Value("Promise.race not yet implemented"));
+/**
+ * Promise.race(iterable)
+ *
+ * Returns a promise that settles with the first promise to settle.
+ * - Resolves with the first fulfilled value
+ * - Rejects with the first rejection reason
+ * - Never settles if given an empty iterable (pending forever)
+ */
+Value Promise::race(const CallContext& /*ctx*/, const std::vector<Value>& args) {
+    auto* factory = getObjectFactory();
+
+    // Create the result promise
+    auto* result_promise = createPromiseObject(factory);
+    rift::memory::GCProtector protect(result_promise, factory->getObjectManager());
+
+    // Get the iterable (first argument)
+    if(args.empty()) {
+        // No argument - promise stays pending forever
+        return Value(result_promise);
+    }
+
+    const Value& iterable = args[0];
+
+    // Must be an object with a length property (array-like)
+    if(!iterable.isObject()) {
+        rejectPromise(result_promise, Value("TypeError: Promise.race requires an iterable"));
+        return Value(result_promise);
+    }
+
+    auto* iterable_obj = iterable.getObject();
+    Value length_val = iterable_obj->getProperty("length");
+
+    if(!length_val.isNumber()) {
+        rejectPromise(result_promise, Value("TypeError: Promise.race requires an iterable"));
+        return Value(result_promise);
+    }
+
+    int length = static_cast<int>(length_val.getNumber());
+
+    // Empty iterable - promise stays pending forever (per spec)
+    if(length == 0) {
+        return Value(result_promise);
+    }
+
+    // Use an object to track if we've already settled
+    auto* state = factory->createJSObject();
+    state->setProperty("settled", Value(false));
+
+    // Process each element - first to settle wins
+    for(int i = 0; i < length; i++) {
+        Value element = iterable_obj->getProperty(std::to_string(i));
+
+        // Wrap with Promise.resolve to handle non-promise values
+        auto* element_promise = createPromiseObject(factory);
+        resolvePromise(element_promise, element);
+
+        // Create fulfillment handler
+        auto* on_fulfilled = factory->createJSFunction(
+            [state, result_promise](const CallContext& /*handler_ctx*/,
+                                    const std::vector<Value>& handler_args) -> Value {
+                // Check if already settled
+                Value settled = state->getProperty("settled");
+                if(settled.isBoolean() && settled.getBool()) {
+                    return Value::undefined();
+                }
+
+                // Mark as settled and fulfill
+                state->setProperty("settled", Value(true));
+                Value value = handler_args.empty() ? Value::undefined() : handler_args[0];
+                fulfillPromise(result_promise, value);
+
+                return Value::undefined();
+            });
+
+        // Create rejection handler
+        auto* on_rejected = factory->createJSFunction(
+            [state, result_promise](const CallContext& /*handler_ctx*/,
+                                    const std::vector<Value>& handler_args) -> Value {
+                // Check if already settled
+                Value settled = state->getProperty("settled");
+                if(settled.isBoolean() && settled.getBool()) {
+                    return Value::undefined();
+                }
+
+                // Mark as settled and reject
+                state->setProperty("settled", Value(true));
+                Value reason = handler_args.empty() ? Value::undefined() : handler_args[0];
+                rejectPromise(result_promise, reason);
+
+                return Value::undefined();
+            });
+
+        // Attach handlers to the element promise
+        CallContext then_ctx(rift::core::CallType::Function, Value(element_promise));
+        then(then_ctx, {Value(on_fulfilled), Value(on_rejected)});
+    }
+
+    return Value(result_promise);
 }
 
-Value Promise::allSettled(const CallContext& /*ctx*/, const std::vector<Value>& /*args*/) {
-    // TODO: Implement in Phase 7
-    throw rift::core::JavaScriptException(Value("Promise.allSettled not yet implemented"));
+/**
+ * Promise.allSettled(iterable)
+ *
+ * Returns a promise that resolves when ALL promises have settled (fulfilled or rejected).
+ * Never rejects. Resolves with an array of result objects:
+ * - { status: "fulfilled", value: ... } for fulfilled promises
+ * - { status: "rejected", reason: ... } for rejected promises
+ */
+Value Promise::allSettled(const CallContext& /*ctx*/, const std::vector<Value>& args) {
+    auto* factory = getObjectFactory();
+
+    // Create the result promise
+    auto* result_promise = createPromiseObject(factory);
+    rift::memory::GCProtector protect(result_promise, factory->getObjectManager());
+
+    // Get the iterable (first argument)
+    if(args.empty()) {
+        // No argument - treat as empty iterable
+        auto* empty_array = factory->createJSObject();
+        empty_array->setProperty("length", Value(0.0));
+        fulfillPromise(result_promise, Value(empty_array));
+        return Value(result_promise);
+    }
+
+    const Value& iterable = args[0];
+
+    // Must be an object with a length property (array-like)
+    if(!iterable.isObject()) {
+        rejectPromise(result_promise, Value("TypeError: Promise.allSettled requires an iterable"));
+        return Value(result_promise);
+    }
+
+    auto* iterable_obj = iterable.getObject();
+    Value length_val = iterable_obj->getProperty("length");
+
+    if(!length_val.isNumber()) {
+        rejectPromise(result_promise, Value("TypeError: Promise.allSettled requires an iterable"));
+        return Value(result_promise);
+    }
+
+    int length = static_cast<int>(length_val.getNumber());
+
+    // Empty iterable - resolve with empty array
+    if(length == 0) {
+        auto* empty_array = factory->createJSObject();
+        empty_array->setProperty("length", Value(0.0));
+        fulfillPromise(result_promise, Value(empty_array));
+        return Value(result_promise);
+    }
+
+    // Create results array and counter
+    auto* results = factory->createJSObject();
+    results->setProperty("length", Value(static_cast<double>(length)));
+
+    auto* state = factory->createJSObject();
+    state->setProperty("remaining", Value(static_cast<double>(length)));
+
+    // Process each element
+    for(int i = 0; i < length; i++) {
+        Value element = iterable_obj->getProperty(std::to_string(i));
+
+        // Wrap with Promise.resolve to handle non-promise values
+        auto* element_promise = createPromiseObject(factory);
+        resolvePromise(element_promise, element);
+
+        int index = i;
+
+        // Create fulfillment handler
+        auto* on_fulfilled = factory->createJSFunction(
+            [factory, results, state, result_promise, index](
+                const CallContext& /*handler_ctx*/,
+                const std::vector<Value>& handler_args) -> Value {
+                Value value = handler_args.empty() ? Value::undefined() : handler_args[0];
+
+                // Create result object: { status: "fulfilled", value: ... }
+                auto* result_obj = factory->createJSObject();
+                result_obj->setProperty("status", Value("fulfilled"));
+                result_obj->setProperty("value", value);
+                results->setProperty(std::to_string(index), Value(result_obj));
+
+                // Decrement remaining
+                Value remaining_val = state->getProperty("remaining");
+                int remaining = static_cast<int>(remaining_val.getNumber()) - 1;
+                state->setProperty("remaining", Value(static_cast<double>(remaining)));
+
+                if(remaining == 0) {
+                    fulfillPromise(result_promise, Value(results));
+                }
+
+                return Value::undefined();
+            });
+
+        // Create rejection handler
+        auto* on_rejected = factory->createJSFunction(
+            [factory, results, state, result_promise, index](
+                const CallContext& /*handler_ctx*/,
+                const std::vector<Value>& handler_args) -> Value {
+                Value reason = handler_args.empty() ? Value::undefined() : handler_args[0];
+
+                // Create result object: { status: "rejected", reason: ... }
+                auto* result_obj = factory->createJSObject();
+                result_obj->setProperty("status", Value("rejected"));
+                result_obj->setProperty("reason", reason);
+                results->setProperty(std::to_string(index), Value(result_obj));
+
+                // Decrement remaining
+                Value remaining_val = state->getProperty("remaining");
+                int remaining = static_cast<int>(remaining_val.getNumber()) - 1;
+                state->setProperty("remaining", Value(static_cast<double>(remaining)));
+
+                if(remaining == 0) {
+                    fulfillPromise(result_promise, Value(results));
+                }
+
+                return Value::undefined();
+            });
+
+        // Attach handlers
+        CallContext then_ctx(rift::core::CallType::Function, Value(element_promise));
+        then(then_ctx, {Value(on_fulfilled), Value(on_rejected)});
+    }
+
+    return Value(result_promise);
 }
 
-Value Promise::any(const CallContext& /*ctx*/, const std::vector<Value>& /*args*/) {
-    // TODO: Implement in Phase 7
-    throw rift::core::JavaScriptException(Value("Promise.any not yet implemented"));
+/**
+ * Promise.any(iterable)
+ *
+ * Returns a promise that:
+ * - Resolves with the first fulfilled value
+ * - Rejects with AggregateError if ALL promises reject
+ * - Rejects immediately if given an empty iterable
+ */
+Value Promise::any(const CallContext& /*ctx*/, const std::vector<Value>& args) {
+    auto* factory = getObjectFactory();
+
+    // Create the result promise
+    auto* result_promise = createPromiseObject(factory);
+    rift::memory::GCProtector protect(result_promise, factory->getObjectManager());
+
+    // Get the iterable (first argument)
+    if(args.empty()) {
+        // No argument - reject with AggregateError
+        rejectPromise(result_promise, Value("AggregateError: All promises were rejected"));
+        return Value(result_promise);
+    }
+
+    const Value& iterable = args[0];
+
+    // Must be an object with a length property (array-like)
+    if(!iterable.isObject()) {
+        rejectPromise(result_promise, Value("TypeError: Promise.any requires an iterable"));
+        return Value(result_promise);
+    }
+
+    auto* iterable_obj = iterable.getObject();
+    Value length_val = iterable_obj->getProperty("length");
+
+    if(!length_val.isNumber()) {
+        rejectPromise(result_promise, Value("TypeError: Promise.any requires an iterable"));
+        return Value(result_promise);
+    }
+
+    int length = static_cast<int>(length_val.getNumber());
+
+    // Empty iterable - reject with AggregateError
+    if(length == 0) {
+        rejectPromise(result_promise, Value("AggregateError: All promises were rejected"));
+        return Value(result_promise);
+    }
+
+    // Track errors and state
+    auto* errors = factory->createJSObject();
+    errors->setProperty("length", Value(static_cast<double>(length)));
+
+    auto* state = factory->createJSObject();
+    state->setProperty("remaining", Value(static_cast<double>(length)));
+    state->setProperty("fulfilled", Value(false));
+
+    // Process each element
+    for(int i = 0; i < length; i++) {
+        Value element = iterable_obj->getProperty(std::to_string(i));
+
+        // Wrap with Promise.resolve to handle non-promise values
+        auto* element_promise = createPromiseObject(factory);
+        resolvePromise(element_promise, element);
+
+        int index = i;
+
+        // Create fulfillment handler - first fulfillment wins
+        auto* on_fulfilled = factory->createJSFunction(
+            [state, result_promise](const CallContext& /*handler_ctx*/,
+                                    const std::vector<Value>& handler_args) -> Value {
+                // Check if already fulfilled
+                Value fulfilled = state->getProperty("fulfilled");
+                if(fulfilled.isBoolean() && fulfilled.getBool()) {
+                    return Value::undefined();
+                }
+
+                // Mark as fulfilled and resolve
+                state->setProperty("fulfilled", Value(true));
+                Value value = handler_args.empty() ? Value::undefined() : handler_args[0];
+                fulfillPromise(result_promise, value);
+
+                return Value::undefined();
+            });
+
+        // Create rejection handler - collect errors
+        auto* on_rejected = factory->createJSFunction(
+            [errors, state, result_promise, index](
+                const CallContext& /*handler_ctx*/,
+                const std::vector<Value>& handler_args) -> Value {
+                // Check if already fulfilled
+                Value fulfilled = state->getProperty("fulfilled");
+                if(fulfilled.isBoolean() && fulfilled.getBool()) {
+                    return Value::undefined();
+                }
+
+                // Store error
+                Value reason = handler_args.empty() ? Value::undefined() : handler_args[0];
+                errors->setProperty(std::to_string(index), reason);
+
+                // Decrement remaining
+                Value remaining_val = state->getProperty("remaining");
+                int remaining = static_cast<int>(remaining_val.getNumber()) - 1;
+                state->setProperty("remaining", Value(static_cast<double>(remaining)));
+
+                // If all rejected, reject with AggregateError
+                if(remaining == 0) {
+                    // Create AggregateError-like object
+                    // Note: Proper AggregateError would have .errors property
+                    // For now, just use a string message
+                    rejectPromise(result_promise,
+                                  Value("AggregateError: All promises were rejected"));
+                }
+
+                return Value::undefined();
+            });
+
+        // Attach handlers
+        CallContext then_ctx(rift::core::CallType::Function, Value(element_promise));
+        then(then_ctx, {Value(on_fulfilled), Value(on_rejected)});
+    }
+
+    return Value(result_promise);
 }
 
 }  // namespace rift::builtins
