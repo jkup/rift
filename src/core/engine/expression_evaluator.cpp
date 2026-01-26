@@ -21,6 +21,7 @@
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/core/engine/operation_handler.h"
+#include "rift/runtime/values/object.h"
 
 namespace rift::core {
 
@@ -164,6 +165,29 @@ Value ExpressionEvaluator::evaluateBinaryExpression(std::shared_ptr<ASTNode> nod
             return left;  // Short-circuit: return left if falsy
         }
         return engine->evaluate(node->children[1], env);  // Evaluate right only if left is truthy
+    }
+
+    // Handle 'in' operator: check if property exists in object
+    if(node->value == "in") {
+        Value left = engine->evaluate(node->children[0], env);
+        Value right = engine->evaluate(node->children[1], env);
+
+        if(!right.isObject()) {
+            throw JavaScriptException(Value("TypeError: Cannot use 'in' operator to search for '" +
+                                            left.toString() + "' in " + right.toString()));
+        }
+
+        std::string propertyKey = left.toString();
+        JSObject* obj = right.getObject();
+
+        // Check if property exists (own or inherited)
+        while(obj != nullptr) {
+            if(obj->hasOwnProperty(propertyKey)) {
+                return Value(true);
+            }
+            obj = obj->getPrototype();
+        }
+        return Value(false);
     }
 
     // For all other operators, evaluate both operands

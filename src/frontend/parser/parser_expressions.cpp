@@ -231,6 +231,7 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::LessEqual:
             case TokenType::Greater:
             case TokenType::GreaterEqual:
+            case TokenType::In:
                 op_precedence = 9;  // Relational operators
                 break;
             case TokenType::BitwiseAnd:
