@@ -48,6 +48,193 @@ const UNSUPPORTED_HARNESS = new Set([
   "resizableArrayBufferUtils.js",
 ]);
 
+// Features that Rift doesn't support yet
+// Tests requiring these features will be skipped
+const UNSUPPORTED_FEATURES = new Set([
+  // Async features
+  "async-functions",
+  "async-iteration",
+  "top-level-await",
+
+  // Generators
+  "generators",
+
+  // Class features
+  "class",
+  "class-fields-private",
+  "class-fields-public",
+  "class-methods-private",
+  "class-static-fields-private",
+  "class-static-fields-public",
+  "class-static-methods-private",
+  "decorators",
+
+  // BigInt
+  "BigInt",
+
+  // Temporal
+  "Temporal",
+
+  // Import/Export features
+  "dynamic-import",
+  "import.meta",
+  "import-attributes",
+  "import-assertions",
+  "source-phase-imports",
+  "source-phase-imports-module-source",
+
+  // Modern syntax
+  "optional-chaining",
+  "nullish-coalescing",
+  "logical-assignment-operators",
+  "numeric-separator-literal",
+
+  // Destructuring and spread
+  "destructuring-binding",
+  "destructuring-assignment",
+  "rest-parameters",
+  "spread",
+  "object-spread",
+  "object-rest",
+
+  // Realms and cross-realm
+  "ShadowRealm",
+  "cross-realm",
+
+  // Concurrency
+  "Atomics",
+  "SharedArrayBuffer",
+
+  // WeakRef and FinalizationRegistry
+  "WeakRef",
+  "FinalizationRegistry",
+  "symbols-as-weakmap-keys",
+
+  // Proxy and Reflect
+  "Proxy",
+  "Reflect",
+  "Reflect.construct",
+  "Reflect.set",
+  "Reflect.setPrototypeOf",
+
+  // TypedArrays and ArrayBuffer
+  "TypedArray",
+  "ArrayBuffer",
+  "DataView",
+  "resizable-arraybuffer",
+  "arraybuffer-transfer",
+  "Float16Array",
+  "uint8array-base64",
+
+  // Intl features
+  "Intl.Collator",
+  "Intl.DateTimeFormat",
+  "Intl.DisplayNames",
+  "Intl.DurationFormat",
+  "Intl.ListFormat",
+  "Intl.Locale",
+  "Intl.Locale-info",
+  "Intl.NumberFormat",
+  "Intl.NumberFormat-v3",
+  "Intl.PluralRules",
+  "Intl.RelativeTimeFormat",
+  "Intl.Segmenter",
+
+  // Tail call optimization
+  "tail-call-optimization",
+
+  // Iterator helpers
+  "iterator-helpers",
+
+  // String/Array features we might not support
+  "Array.fromAsync",
+  "String.prototype.isWellFormed",
+  "String.prototype.toWellFormed",
+
+  // Regex features
+  "regexp-lookbehind",
+  "regexp-named-groups",
+  "regexp-dotall",
+  "regexp-unicode-property-escapes",
+  "regexp-match-indices",
+  "regexp-duplicate-named-groups",
+  "regexp-v-flag",
+  "RegExp.escape",
+
+  // Other advanced features
+  "well-formed-json-stringify",
+  "json-parse-with-source",
+  "explicit-resource-management",
+  "Math.sumPrecise",
+  "IsHTMLDDA",
+  "caller",
+  "__proto__",
+  "__getter__",
+  "__setter__",
+  "legacy-regexp",
+
+  // Hashbang
+  "hashbang",
+
+  // Set methods
+  "set-methods",
+
+  // Promise features (partial support)
+  "Promise.any",
+  "Promise.allSettled",
+
+  // Coalescing
+  "coalesce-expression",
+
+  // Array features
+  "Array.prototype.flat",
+  "Array.prototype.flatMap",
+  "Array.prototype.includes",
+  "Array.prototype.at",
+  "change-array-by-copy",
+
+  // Object features
+  "Object.fromEntries",
+  "Object.hasOwn",
+
+  // String features
+  "String.prototype.at",
+  "string-trimming",
+
+  // Symbol features (partial support)
+  "Symbol.asyncIterator",
+  "Symbol.hasInstance",
+  "Symbol.isConcatSpreadable",
+  "Symbol.matchAll",
+  "Symbol.species",
+  "Symbol.toPrimitive",
+  "Symbol.toStringTag",
+  "Symbol.unscopables",
+  "well-known-intrinsic-objects",
+
+  // Arrow functions (detected by pattern, but also as feature)
+  "arrow-function",
+
+  // Template literals
+  "template",
+
+  // Let/const (might have partial support)
+  "let",
+  "const",
+
+  // For-of
+  "for-of",
+
+  // Default parameters
+  "default-parameters",
+
+  // Computed property names
+  "computed-property-names",
+
+  // Shorthand properties
+  "shorthand-properties",
+]);
+
 // Cached harness content (P1 optimization - loaded once per process)
 let cachedHarnessContent = null;
 
@@ -145,7 +332,7 @@ export function parseTestFile(filePath) {
 /**
  * Check if a test uses unsupported features
  * @param {Object} test - Parsed test object
- * @returns {boolean} True if test uses unsupported features
+ * @returns {boolean|string} True/feature name if test uses unsupported features, false otherwise
  */
 export function testUsesUnsupportedFeatures(test) {
   const code = test.code;
@@ -162,6 +349,15 @@ export function testUsesUnsupportedFeatures(test) {
     for (const include of test.includes) {
       if (UNSUPPORTED_INCLUDES.has(include)) {
         return true;
+      }
+    }
+  }
+
+  // Check features metadata
+  if (test.features && test.features.length > 0) {
+    for (const feature of test.features) {
+      if (UNSUPPORTED_FEATURES.has(feature)) {
+        return feature; // Return the unsupported feature name for better logging
       }
     }
   }
@@ -402,10 +598,13 @@ export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
   const test = parseTestFile(testFile);
 
   // Check if this test uses unsupported features first
-  if (testUsesUnsupportedFeatures(test)) {
+  const unsupportedFeature = testUsesUnsupportedFeatures(test);
+  if (unsupportedFeature) {
     return {
       status: "skipped",
-      reason: "Uses unsupported language features",
+      reason: typeof unsupportedFeature === "string"
+        ? `Uses unsupported feature: ${unsupportedFeature}`
+        : "Uses unsupported language features",
     };
   }
 

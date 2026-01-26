@@ -2,12 +2,17 @@
 
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
 import chalk from "chalk";
 import { Test262ResultsTracker } from "./test262-results-tracker.js";
+// Import shared functions from test262-core to avoid duplication
+import {
+  TEST262_DIR,
+  RUNTIME_EXECUTABLE,
+  parseTestFile,
+  testUsesUnsupportedFeatures,
+  runSingleTest as coreRunSingleTest,
+} from "./test262-core.js";
 
-const TEST262_DIR = "./test262";
-const RUNTIME_EXECUTABLE = "./build/rift";
 const GROUPS_CONFIG = "./test262-groups.json";
 
 /**
@@ -94,220 +99,29 @@ class Test262GroupRunner {
     return testFiles;
   }
 
-  parseTestFile(filePath) {
-    const content = fs.readFileSync(filePath, "utf8");
-    const lines = content.split("\n");
-
-    const test = {
-      file: filePath,
-      description: "",
-      negative: false,
-      includes: [],
-      code: content,
-    };
-
-    let inFrontmatter = false;
-    let frontmatterLines = [];
-
-    for (const line of lines) {
-      if (line.trim() === "---") {
-        if (!inFrontmatter) {
-          inFrontmatter = true;
-        } else {
-          break;
-        }
-        continue;
-      }
-
-      if (inFrontmatter) {
-        frontmatterLines.push(line);
-      }
-    }
-
-    for (const line of frontmatterLines) {
-      if (line.startsWith("description:")) {
-        test.description = line.substring(12).trim();
-      } else if (line.includes("negative:")) {
-        test.negative = true;
-      } else if (line.includes("includes:")) {
-        const match = line.match(/\[(.*?)\]/);
-        if (match) {
-          test.includes = match[1]
-            .split(",")
-            .map((s) => s.trim().replace(/['"]/g, ""));
-        }
-      }
-    }
-
-    return test;
-  }
-
-  testUsesUnsupportedFeatures(test) {
-    const code = test.code;
-
-    const unsupportedPatterns = [
-      /\bclass\s+\w+/,
-      /=>/,
-      /\basync\b/,
-      /\bawait\b/,
-      /\byield\b/,
-      /\bwith\s*\(/,
-    ];
-
-    for (const pattern of unsupportedPatterns) {
-      if (pattern.test(code)) {
-        return true;
-      }
-    }
-
-    if (test.includes && test.includes.length > 0) {
-      const unsupportedIncludes = [
-        "temporalHelpers.js",
-        "testAtomics.js",
-        "testIntl.js",
-        "testBigIntTypedArray.js",
-        "asyncHelpers.js",
-        "atomicsHelper.js",
-      ];
-
-      for (const include of test.includes) {
-        if (unsupportedIncludes.includes(include)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
+  /**
+   * Run a single test using shared core logic
+   * Wraps coreRunSingleTest to integrate with tracker and counters
+   */
   async runSingleTest(testFile) {
-    const test = this.parseTestFile(testFile);
+    // Use the shared runSingleTest from test262-core.js
+    // This ensures consistent behavior: proper YAML parsing, feature checking,
+    // negative test validation, and strict mode dual execution
+    const result = coreRunSingleTest(testFile, this.tempFile);
 
-    if (this.testUsesUnsupportedFeatures(test)) {
+    // Update counters and tracker based on result
+    if (result.status === "passed") {
+      this.passed++;
+      this.tracker.recordResult(testFile, "passed", result.reason);
+    } else if (result.status === "failed") {
+      this.failed++;
+      this.tracker.recordResult(testFile, "failed", result.reason);
+    } else if (result.status === "skipped") {
       this.skipped++;
-      this.tracker.recordResult(testFile, "skipped", "Unsupported features");
-      return { status: "skipped" };
+      this.tracker.recordResult(testFile, "skipped", result.reason);
     }
 
-    try {
-      // Use our compatibility harness that works with our current runtime capabilities
-      let combinedCode = "";
-
-      const compatHarnessPath = "./test262-harness-compat.js";
-      if (fs.existsSync(compatHarnessPath)) {
-        combinedCode += fs.readFileSync(compatHarnessPath, "utf8") + "\n";
-      }
-
-      // Include test-specific harness files that we can support
-      if (test.includes && test.includes.length > 0) {
-        for (const includeFile of test.includes) {
-          // Skip standard harness files since we're using our compat version
-          if (
-            includeFile === "assert.js" ||
-            includeFile === "sta.js" ||
-            includeFile === "propertyHelper.js"
-          ) {
-            continue;
-          }
-
-          // Skip other complex harness files we don't support yet
-          const unsupportedHarness = [
-            "compareArray.js",
-            "compareIterator.js",
-            "isConstructor.js",
-            "nativeFunctionMatcher.js",
-            "asyncHelpers.js",
-            "atomicsHelper.js",
-            "temporalHelpers.js",
-            "testAtomics.js",
-            "testBigIntTypedArray.js",
-            "testIntl.js",
-            "testTypedArray.js",
-            "promiseHelper.js",
-            "detachArrayBuffer.js",
-            "resizableArrayBufferUtils.js",
-          ];
-
-          if (unsupportedHarness.includes(includeFile)) {
-            continue;
-          }
-
-          const harnessPath = path.join(TEST262_DIR, "harness", includeFile);
-          if (fs.existsSync(harnessPath)) {
-            try {
-              combinedCode += fs.readFileSync(harnessPath, "utf8") + "\n";
-            } catch (e) {
-              // If we can't read it, skip it
-            }
-          }
-        }
-      }
-
-      combinedCode += test.code;
-
-      fs.writeFileSync(this.tempFile, combinedCode);
-
-      const result = execSync(`${RUNTIME_EXECUTABLE} ${this.tempFile}`, {
-        timeout: 5000,
-        encoding: "utf8",
-        stdio: ["pipe", "pipe", "pipe"],
-      });
-
-      const stdout = result.toString().trim();
-
-      if (test.negative) {
-        this.failed++;
-        this.tracker.recordResult(
-          testFile,
-          "failed",
-          "Expected error but passed"
-        );
-        return { status: "failed" };
-      } else {
-        if (
-          stdout.includes("Test262Error") ||
-          stdout.includes("Error:") ||
-          stdout.includes("Exception")
-        ) {
-          this.failed++;
-          this.tracker.recordResult(
-            testFile,
-            "failed",
-            stdout.substring(0, 150)
-          );
-          return { status: "failed" };
-        }
-
-        this.passed++;
-        this.tracker.recordResult(testFile, "passed");
-        return { status: "passed" };
-      }
-    } catch (error) {
-      const stderr = error.stderr ? error.stderr.toString() : "";
-      const stdout = error.stdout ? error.stdout.toString() : "";
-
-      if (test.negative) {
-        this.passed++;
-        this.tracker.recordResult(testFile, "passed", "Expected error");
-        return { status: "passed" };
-      } else {
-        if (stdout.trim()) {
-          if (
-            !stdout.includes("Test262Error") &&
-            !stdout.includes("Error:") &&
-            !stdout.includes("Exception")
-          ) {
-            this.passed++;
-            this.tracker.recordResult(testFile, "passed", "Completed");
-            return { status: "passed" };
-          }
-        }
-
-        this.failed++;
-        this.tracker.recordResult(testFile, "failed", error.message);
-        return { status: "failed" };
-      }
-    }
+    return result;
   }
 
   async runGroup(groupName) {
