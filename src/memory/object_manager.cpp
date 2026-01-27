@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "rift/core/engine/builtin_manager.h"
 #include "rift/memory/gc_disabler.h"
 #include "rift/runtime/values/object.h"
 
@@ -42,6 +43,12 @@ rift::runtime::JSFunction* ObjectManager::createJSFunction(
     rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(std::move(func));
     gc_->addObject(obj);  // Track the object (GC disabled, won't collect)
 
+    // Set Function.prototype if available (handles bootstrap case when it's not yet created)
+    auto* func_proto = rift::core::BuiltinManager::getFunctionPrototype();
+    if (func_proto) {
+        obj->setPrototype(func_proto);
+    }
+
     return obj;
 }
 
@@ -67,6 +74,12 @@ rift::runtime::JSFunction* ObjectManager::createJSFunction(
     rift::runtime::JSFunction* obj = new rift::runtime::JSFunction(std::move(wrapper));
     gc_->addObject(obj);  // Track the object (GC disabled, won't collect)
 
+    // Set Function.prototype if available (handles bootstrap case when it's not yet created)
+    auto* func_proto = rift::core::BuiltinManager::getFunctionPrototype();
+    if (func_proto) {
+        obj->setPrototype(func_proto);
+    }
+
     return obj;
 }
 
@@ -81,6 +94,12 @@ rift::runtime::JSArrowFunction* ObjectManager::createJSArrowFunction(
     rift::runtime::JSArrowFunction* obj =
         new rift::runtime::JSArrowFunction(std::move(func), capturedThis);
     gc_->addObject(obj);  // Track the object (GC disabled, won't collect)
+
+    // Set Function.prototype if available (handles bootstrap case when it's not yet created)
+    auto* func_proto = rift::core::BuiltinManager::getFunctionPrototype();
+    if (func_proto) {
+        obj->setPrototype(func_proto);
+    }
 
     return obj;
 }

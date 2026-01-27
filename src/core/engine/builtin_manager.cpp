@@ -27,6 +27,7 @@
 #include "rift/builtins/weakset/weakset.h"
 #include "rift/builtins/generator/generator_iterator.h"
 #include "rift/builtins/promise/promise.h"
+#include "rift/builtins/function/function.h"
 #include "rift/core/engine/engine.h"
 #include "rift/runtime/values/value.h"
 
@@ -51,6 +52,7 @@ JSObject* BuiltinManager::mapPrototype_ = nullptr;
 JSObject* BuiltinManager::weakMapPrototype_ = nullptr;
 JSObject* BuiltinManager::weakSetPrototype_ = nullptr;
 JSObject* BuiltinManager::promisePrototype_ = nullptr;
+JSObject* BuiltinManager::functionPrototype_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Get the object factory from the engine
@@ -75,6 +77,16 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::WeakMap::setObjectFactory(factory);
         builtins::WeakSet::setObjectFactory(factory);
         builtins::Promise::setObjectFactory(factory);
+        builtins::Function::setObjectFactory(factory);
+    }
+
+    // Setup Function FIRST so other functions can inherit from Function.prototype
+    setupFunction(globalEnv, factory);
+
+    // Get Function.prototype immediately so createJSFunction can use it
+    auto* functionConstructor = globalEnv->get("Function").getObject();
+    if (functionConstructor) {
+        functionPrototype_ = functionConstructor->getProperty("prototype").getObject();
     }
 
     // Setup iterator prototype FIRST - other iterators inherit from this
@@ -201,6 +213,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     if(objectPrototype_ && promisePrototype_) {
         promisePrototype_->setPrototype(objectPrototype_);
     }
+    if(objectPrototype_ && functionPrototype_) {
+        functionPrototype_->setPrototype(objectPrototype_);
+    }
 
     // Setup GC functions if engine is provided
     if(engine) {
@@ -279,6 +294,10 @@ JSObject* BuiltinManager::getSyntaxErrorPrototype() {
 
 JSObject* BuiltinManager::getRangeErrorPrototype() {
     return rangeErrorPrototype_;
+}
+
+JSObject* BuiltinManager::getFunctionPrototype() {
+    return functionPrototype_;
 }
 
 void BuiltinManager::setupGlobalFunctions(std::shared_ptr<Environment> globalEnv,
@@ -417,6 +436,7 @@ void BuiltinManager::clearStaticPrototypes() {
     weakMapPrototype_ = nullptr;
     weakSetPrototype_ = nullptr;
     promisePrototype_ = nullptr;
+    functionPrototype_ = nullptr;
 }
 
 void BuiltinManager::setupRegExp(std::shared_ptr<Environment> globalEnv,
@@ -473,6 +493,13 @@ void BuiltinManager::setupPromise(std::shared_ptr<Environment> globalEnv,
 
     // Store engine reference for microtask queue access
     builtins::Promise::setEngine(engine);
+}
+
+void BuiltinManager::setupFunction(std::shared_ptr<Environment> globalEnv,
+                                   rift::memory::ObjectFactory* factory) {
+    // Setup Function object using GC-managed creation
+    auto* function = builtins::Function::create(factory);
+    globalEnv->define("Function", Value(function));
 }
 
 }  // namespace rift::core

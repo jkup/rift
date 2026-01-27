@@ -112,6 +112,7 @@ set(BUILTINS_SOURCES
     src/builtins/weakset/weakset.cpp
     src/builtins/generator/generator_iterator.cpp
     src/builtins/promise/promise.cpp
+    src/builtins/function/function.cpp
 )
 
 set(CORE_SOURCES
