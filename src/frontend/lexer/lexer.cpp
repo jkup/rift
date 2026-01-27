@@ -531,6 +531,20 @@ Token Lexer::next_token() {
                 }
                 return next_token();  // Recursively get the next token after the comment
             }
+            if(peek_char() == '*') {
+                // Skip multi-line comment /* ... */
+                advance();  // skip /
+                advance();  // skip *
+                while(current_char() != '\0') {
+                    if(current_char() == '*' && peek_char() == '/') {
+                        advance();  // skip *
+                        advance();  // skip /
+                        break;
+                    }
+                    advance();
+                }
+                return next_token();  // Recursively get the next token after the comment
+            }
             advance();
             if(current_char() == '=') {
                 advance();
