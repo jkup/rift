@@ -49,17 +49,19 @@ const UNSUPPORTED_HARNESS = new Set([
 
 // Features that Rift doesn't support yet
 // Tests requiring these features will be skipped
+//
+// NOTE: The following features ARE supported and should NOT be in this list:
+//   - generators, class, arrow-function, template, for-of, let, const
+//   - destructuring-binding, destructuring-assignment, spread, rest-parameters
+//   - object-spread, object-rest, default-parameters, computed-property-names
+//   - shorthand-properties, Symbol.iterator
 const UNSUPPORTED_FEATURES = new Set([
   // Async features
   "async-functions",
   "async-iteration",
   "top-level-await",
 
-  // Generators
-  "generators",
-
-  // Class features
-  "class",
+  // Class features (basic class IS supported, but not these advanced features)
   "class-fields-private",
   "class-fields-public",
   "class-methods-private",
@@ -82,19 +84,11 @@ const UNSUPPORTED_FEATURES = new Set([
   "source-phase-imports",
   "source-phase-imports-module-source",
 
-  // Modern syntax
+  // Modern syntax (not yet implemented)
   "optional-chaining",
   "nullish-coalescing",
   "logical-assignment-operators",
   "numeric-separator-literal",
-
-  // Destructuring and spread
-  "destructuring-binding",
-  "destructuring-assignment",
-  "rest-parameters",
-  "spread",
-  "object-spread",
-  "object-rest",
 
   // Realms and cross-realm
   "ShadowRealm",
@@ -210,28 +204,6 @@ const UNSUPPORTED_FEATURES = new Set([
   "Symbol.toStringTag",
   "Symbol.unscopables",
   "well-known-intrinsic-objects",
-
-  // Arrow functions (detected by pattern, but also as feature)
-  "arrow-function",
-
-  // Template literals
-  "template",
-
-  // Let/const (might have partial support)
-  "let",
-  "const",
-
-  // For-of
-  "for-of",
-
-  // Default parameters
-  "default-parameters",
-
-  // Computed property names
-  "computed-property-names",
-
-  // Shorthand properties
-  "shorthand-properties",
 ]);
 
 // Cached harness content (P1 optimization - loaded once per process)
