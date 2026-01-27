@@ -186,6 +186,10 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
         return parse_try_statement();
     }
 
+    if(current_token().type == TokenType::With) {
+        return parse_with_statement();
+    }
+
     if(current_token().type == TokenType::LeftBrace) {
         return parse_block_statement();
     }

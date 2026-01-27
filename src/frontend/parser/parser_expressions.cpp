@@ -44,6 +44,18 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
                 default:
                     break;
             }
+            // Check for legacy octal in strict mode
+            if(in_strict_mode_ && token.has_legacy_octal) {
+                if(token.type == TokenType::Number) {
+                    throw std::runtime_error(
+                        "SyntaxError: Octal literals are not allowed in strict mode at line " +
+                        std::to_string(token.line) + ":" + std::to_string(token.column));
+                } else if(token.type == TokenType::String) {
+                    throw std::runtime_error(
+                        "SyntaxError: Octal escape sequences are not allowed in strict mode at line " +
+                        std::to_string(token.line) + ":" + std::to_string(token.column));
+                }
+            }
             auto node = ASTFactory::makeLiteral(token.value, literalType);
             node->setLocation(token.line, token.column);
             current++;
@@ -173,6 +185,27 @@ std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
         return ASTFactory::makeUpdateExpression(operator_, operand, true);  // prefix = true
     }
 
+    // Check for void operator
+    if(token.type == TokenType::Void) {
+        current++;  // consume 'void'
+        auto operand = parse_postfix_expression();
+        return ASTFactory::makeUnaryExpression("void", operand);
+    }
+
+    // Check for delete operator
+    if(token.type == TokenType::Delete) {
+        current++;  // consume 'delete'
+        auto operand = parse_postfix_expression();
+
+        // In strict mode, delete on an unqualified identifier is a SyntaxError
+        if(in_strict_mode_ && operand->type == ASTNodeType::Identifier) {
+            throw std::runtime_error(
+                "SyntaxError: Delete of an unqualified identifier in strict mode");
+        }
+
+        return ASTFactory::makeUnaryExpression("delete", operand);
+    }
+
     // Check for unary operators
     if(token.type == TokenType::Plus || token.type == TokenType::Minus ||
        token.type == TokenType::LogicalNot || token.type == TokenType::Typeof ||
@@ -280,6 +313,10 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
         auto right = parse_binary_expression(next_precedence);
 
         if(is_assignment) {
+            // In strict mode, validate the assignment target is not a reserved word
+            if(in_strict_mode_ && left->type == ASTNodeType::Identifier) {
+                validateIdentifier(left->value, op.line, op.column);
+            }
             left = ASTFactory::makeAssignmentExpression(left, right, op.value);
         } else {
             left = ASTFactory::makeBinaryExpression(op.value, left, right);
@@ -349,7 +386,26 @@ std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> 
 std::shared_ptr<ASTNode> Parser::parse_member_expression(std::shared_ptr<ASTNode> object) {
     consume(TokenType::Dot);  // consume '.'
 
-    if(current_token().type != TokenType::Identifier) {
+    // Allow keywords as property names (e.g., obj.delete, obj.class, obj.return)
+    // In JavaScript, any IdentifierName (including reserved words) can follow a dot
+    Token& tok = current_token();
+    bool is_identifier_name = (tok.type == TokenType::Identifier || tok.type == TokenType::Delete ||
+                               tok.type == TokenType::Void || tok.type == TokenType::With ||
+                               tok.type == TokenType::Typeof || tok.type == TokenType::In ||
+                               tok.type == TokenType::New || tok.type == TokenType::This ||
+                               tok.type == TokenType::Return || tok.type == TokenType::Throw ||
+                               tok.type == TokenType::Try || tok.type == TokenType::Catch ||
+                               tok.type == TokenType::Finally || tok.type == TokenType::If ||
+                               tok.type == TokenType::Else || tok.type == TokenType::For ||
+                               tok.type == TokenType::While || tok.type == TokenType::Do ||
+                               tok.type == TokenType::Switch || tok.type == TokenType::Case ||
+                               tok.type == TokenType::Default || tok.type == TokenType::Break ||
+                               tok.type == TokenType::Continue || tok.type == TokenType::Function ||
+                               tok.type == TokenType::Class || tok.type == TokenType::Extends ||
+                               tok.type == TokenType::Super || tok.type == TokenType::Static ||
+                               tok.type == TokenType::Var || tok.type == TokenType::Let ||
+                               tok.type == TokenType::Const || tok.type == TokenType::Yield);
+    if(!is_identifier_name) {
         throw std::runtime_error("Expected property name after '.'");
     }
 

@@ -13,6 +13,7 @@
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/expression_evaluator.h"
+#include "rift/core/engine/javascript_exception.h"
 
 namespace rift::core {
 
@@ -158,6 +159,12 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
         // Simple variable assignment
         std::string varName = leftSide->value;
 
+        // Strict mode: cannot assign to eval or arguments
+        if(env->inheritsStrictMode() && (varName == "eval" || varName == "arguments")) {
+            throw JavaScriptException(
+                Value("SyntaxError: Cannot assign to '" + varName + "' in strict mode"));
+        }
+
         // For compound assignment, get current value and apply operation
         Value newValue;
         if(operator_ == "=") {
@@ -188,6 +195,12 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
     // Handle variable increment/decrement
     if(operandNode->type == ASTNodeType::Identifier) {
         std::string varName = operandNode->value;
+
+        // Strict mode: cannot use ++/-- on eval or arguments
+        if(env->inheritsStrictMode() && (varName == "eval" || varName == "arguments")) {
+            throw JavaScriptException(
+                Value("SyntaxError: Cannot modify '" + varName + "' in strict mode"));
+        }
 
         // Get current value
         Value currentValue = env->get(varName);

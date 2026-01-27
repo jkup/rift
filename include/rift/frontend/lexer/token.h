@@ -94,6 +94,9 @@ enum class TokenType {
     RightShiftAssign,          // >>=
     UnsignedRightShiftAssign,  // >>>=
     Typeof,
+    Delete,
+    Void,
+    With,
 
     // Punctuation
     LeftParen,
@@ -118,6 +121,7 @@ struct Token {
     std::string value;
     size_t line;
     size_t column;
+    bool has_legacy_octal = false;
 
     Token(TokenType t, const std::string& v, size_t l = 0, size_t c = 0)
         : type(t), value(v), line(l), column(c) {

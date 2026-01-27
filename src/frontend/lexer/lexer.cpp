@@ -174,10 +174,53 @@ std::string Lexer::parse_unicode_codepoint_escape() {
 
 Token Lexer::read_number() {
     std::string value;
+    // Check for legacy octal: starts with 0 followed by octal digits
+    if(current_char() == '0') {
+        value += current_char();
+        advance();
+        char next = current_char();
+        // 0x/0X = hex, 0o/0O = modern octal, 0b/0B = binary — not legacy octal
+        if(next == 'x' || next == 'X' || next == 'o' || next == 'O' || next == 'b' || next == 'B') {
+            value += current_char();
+            advance();
+            while(std::isxdigit(current_char())) {
+                value += current_char();
+                advance();
+            }
+            return Token(TokenType::Number, value, line, column);
+        }
+        // 0 followed by octal digits (0-7) = legacy octal
+        if(next >= '0' && next <= '7') {
+            while(current_char() >= '0' && current_char() <= '7') {
+                value += current_char();
+                advance();
+            }
+            Token tok(TokenType::Number, value, line, column);
+            tok.has_legacy_octal = true;
+            return tok;
+        }
+        // Otherwise fall through to normal decimal parsing (e.g., 0.5, just 0)
+    }
+
     while(std::isdigit(current_char()) || current_char() == '.') {
         value += current_char();
         advance();
     }
+
+    // Support exponential notation (e.g., 1e10, 2.5E-3)
+    if(current_char() == 'e' || current_char() == 'E') {
+        value += current_char();
+        advance();
+        if(current_char() == '+' || current_char() == '-') {
+            value += current_char();
+            advance();
+        }
+        while(std::isdigit(current_char())) {
+            value += current_char();
+            advance();
+        }
+    }
+
     return Token(TokenType::Number, value, line, column);
 }
 
@@ -187,6 +230,7 @@ Token Lexer::read_string() {
 
     std::string value;
     value.reserve(256);  // Reserve some space to reduce allocations
+    bool has_octal_escape = false;
 
     while(current_char() != quote && current_char() != '\0' && current_char() != '\n' &&
           current_char() != '\r') {
@@ -225,7 +269,33 @@ Token Lexer::read_string() {
                     value += '\'';
                     break;
                 case '0':
+                    // \0 followed by another digit is a legacy octal escape
+                    if(peek_char() >= '0' && peek_char() <= '9') {
+                        has_octal_escape = true;
+                    }
                     value += '\0';
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                    // Legacy octal escape sequences \1-\7
+                    has_octal_escape = true;
+                    {
+                        int octal_val = current_char() - '0';
+                        if(peek_char() >= '0' && peek_char() <= '7') {
+                            advance();
+                            octal_val = octal_val * 8 + (current_char() - '0');
+                            if(octal_val <= 037 && peek_char() >= '0' && peek_char() <= '7') {
+                                advance();
+                                octal_val = octal_val * 8 + (current_char() - '0');
+                            }
+                        }
+                        value += static_cast<char>(octal_val);
+                    }
                     break;
                 case 'b':
                     value += '\b';
@@ -280,7 +350,9 @@ Token Lexer::read_string() {
         advance();  // Skip closing quote
     }
 
-    return Token(TokenType::String, value, line, column);
+    Token tok(TokenType::String, value, line, column);
+    tok.has_legacy_octal = has_octal_escape;
+    return tok;
 }
 
 Token Lexer::read_template_string() {
@@ -444,6 +516,9 @@ Token Lexer::read_identifier() {
         {"null", TokenType::Null},
         {"undefined", TokenType::Undefined},
         {"typeof", TokenType::Typeof},
+        {"delete", TokenType::Delete},
+        {"void", TokenType::Void},
+        {"with", TokenType::With},
         {"class", TokenType::Class},
         {"extends", TokenType::Extends},
         {"super", TokenType::Super},

@@ -203,6 +203,46 @@ Value ExpressionEvaluator::evaluateUnaryExpression(std::shared_ptr<ASTNode> node
         return Value::undefined();
     }
 
+    // Special handling for void operator
+    if(node->value == "void") {
+        engine->evaluate(node->children[0], env);  // evaluate for side effects
+        return Value::undefined();
+    }
+
+    // Special handling for delete operator
+    if(node->value == "delete") {
+        auto operand_node = node->children[0];
+
+        // delete on member expression: delete obj.prop or delete obj[key]
+        if(operand_node->type == ASTNodeType::MemberExpression && operand_node->children.size() == 2) {
+            Value object = engine->evaluate(operand_node->children[0], env);
+            if(object.isObject() || object.isFunction()) {
+                auto* obj = object.getObject();
+                if(obj) {
+                    std::string property;
+                    if(operand_node->metadata == "computed") {
+                        Value prop_val = engine->evaluate(operand_node->children[1], env);
+                        property = prop_val.toString();
+                    } else {
+                        property = operand_node->children[1]->value;
+                    }
+                    obj->deleteProperty(property);
+                    return Value(true);
+                }
+            }
+            return Value(true);
+        }
+
+        // delete on identifier in non-strict mode returns false (can't delete variables)
+        if(operand_node->type == ASTNodeType::Identifier) {
+            return Value(false);
+        }
+
+        // delete on other expressions: evaluate and return true
+        engine->evaluate(operand_node, env);
+        return Value(true);
+    }
+
     // Special handling for typeof operator
     if(node->value == "typeof") {
         auto operand_node = node->children[0];

@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <unordered_set>
 
 #include "rift/frontend/parser/parser.h"
 
@@ -556,6 +557,7 @@ std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
 std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
     auto parameters = ASTFactory::makeParameterList();
     bool has_rest_param = false;
+    std::unordered_set<std::string> seen_params;
 
     // Handle empty parameter list
     if(current_token().type == TokenType::RightParen) {
@@ -563,7 +565,8 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
     }
 
     // Helper lambda to parse a single parameter (with optional default value or rest)
-    auto parse_single_parameter = [this, &has_rest_param]() -> std::shared_ptr<ASTNode> {
+    auto parse_single_parameter = [this, &has_rest_param,
+                                   &seen_params]() -> std::shared_ptr<ASTNode> {
         // Check for rest parameter (...name)
         bool is_rest = false;
         if(current_token().type == TokenType::Spread) {
@@ -586,6 +589,16 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
 
         // Validate parameter name in strict mode
         validateIdentifier(paramValue, paramLine, paramColumn);
+
+        // Check for duplicate parameter names in strict mode
+        if(in_strict_mode_) {
+            if(seen_params.count(paramValue)) {
+                throw std::runtime_error(
+                    "SyntaxError: Duplicate parameter name not allowed in this context at line " +
+                    std::to_string(paramLine) + ":" + std::to_string(paramColumn));
+            }
+            seen_params.insert(paramValue);
+        }
 
         // Rest parameters cannot have default values
         if(is_rest) {
@@ -711,6 +724,25 @@ std::shared_ptr<ASTNode> Parser::parse_block_statement() {
 
     consume(TokenType::RightBrace);  // consume '}'
     return block;
+}
+
+std::shared_ptr<ASTNode> Parser::parse_with_statement() {
+    size_t with_line = current_token().line;
+    size_t with_column = current_token().column;
+    consume(TokenType::With);  // consume 'with'
+
+    if(in_strict_mode_) {
+        throw std::runtime_error("SyntaxError: Strict mode code may not include a with statement at line " +
+                                 std::to_string(with_line) + ":" + std::to_string(with_column));
+    }
+
+    // Non-strict mode: parse but throw not-implemented
+    consume(TokenType::LeftParen);
+    parse_expression();
+    consume(TokenType::RightParen);
+    auto body = parse_statement();
+    // with is not implemented in non-strict mode, but we parse it to avoid syntax errors
+    throw std::runtime_error("'with' statement is not supported");
 }
 
 std::shared_ptr<ASTNode> Parser::parse_break_statement() {
