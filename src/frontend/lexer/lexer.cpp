@@ -15,7 +15,6 @@ Lexer::Lexer(const std::string& source)
       line(1),
       column(1),
       template_state(TemplateLiteralState::None),
-      template_depth(0),
       brace_depth(0),
       template_started(false) {
 }
@@ -284,9 +283,13 @@ Token Lexer::read_string() {
 }
 
 Token Lexer::read_template_string() {
+    // If we're inside a template expression, save the outer state before nesting
+    if(template_state == TemplateLiteralState::InExpression) {
+        template_stack.push_back({brace_depth, template_started});
+    }
+
     advance();  // Skip opening backtick
     template_state = TemplateLiteralState::InTemplate;
-    template_depth++;
     template_started = false;  // Reset for new template
 
     return read_template_part();
@@ -325,9 +328,18 @@ Token Lexer::read_template_part() {
         // Check for end of template
         else if(current_char() == '`') {
             advance();  // Skip closing backtick
-            template_state = TemplateLiteralState::None;
-            template_depth--;
-            template_started = false;  // Reset for next template
+
+            // Restore outer template state if we were nested
+            if(!template_stack.empty()) {
+                auto outer = template_stack.back();
+                template_stack.pop_back();
+                template_state = TemplateLiteralState::InExpression;
+                brace_depth = outer.brace_depth;
+                template_started = outer.template_started;
+            } else {
+                template_state = TemplateLiteralState::None;
+                template_started = false;
+            }
 
             // Return final part
             TokenType type = TokenType::TemplateEnd;
@@ -389,8 +401,8 @@ Token Lexer::read_template_part() {
     // EOF reached while inside template literal - this is an error!
     // Template literals must be properly closed with a backtick
     template_state = TemplateLiteralState::None;
-    template_depth = 0;
     template_started = false;
+    template_stack.clear();
     throw std::runtime_error("Unterminated template literal");
 }
 

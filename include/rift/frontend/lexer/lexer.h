@@ -24,9 +24,15 @@ class Lexer {
 
     // Template literal state management
     TemplateLiteralState template_state;
-    int template_depth;     // Track nested templates
     int brace_depth;        // Track {} depth in expressions
     bool template_started;  // Track if we've returned TemplateStart yet
+
+    // Stack for nested template literals - saves outer template state
+    struct TemplateContext {
+        int brace_depth;
+        bool template_started;
+    };
+    std::vector<TemplateContext> template_stack;
 
     char current_char();
     char peek_char();
