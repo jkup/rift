@@ -248,6 +248,13 @@ The CI will automatically verify all quality checks on your PR.
 - ✅ `Error()`
 - ✅ `error.toString`
 
+#### **Function Prototype Methods**
+- ✅ `Function.prototype.call(thisArg, ...args)` - invoke with explicit `this`
+- ✅ `Function.prototype.apply(thisArg, argsArray)` - invoke with args array
+- ✅ `Function.prototype.bind(thisArg, ...args)` - create bound function with partial application
+- ✅ `Function.prototype.toString()` - string representation
+- ✅ Composition patterns like `Function.prototype.call.bind(Array.prototype.join)`
+
 #### **RegExp Constructor & Methods**
 - ✅ `new RegExp(pattern, flags)` creates regular expression objects
 - ✅ `regexp.test(string)` returns true if pattern matches
@@ -339,7 +346,6 @@ The CI will automatically verify all quality checks on your PR.
   - ❌ Date
   - ❌ Timers (`setTimeout`, `setInterval`) / event loop
   - ❌ Proxy, Reflect
-  - ❌ Function.prototype methods: `call`, `apply`, `bind`
 
 ### ℹ️ Notes & Limitations
 

@@ -28,7 +28,6 @@ const UNSUPPORTED_INCLUDES = new Set([
 const SKIP_HARNESS_FILES = new Set([
   "sta.js",
   "assert.js",
-  "propertyHelper.js",
 ]);
 
 const UNSUPPORTED_HARNESS = new Set([

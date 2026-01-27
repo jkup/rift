@@ -80,14 +80,10 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::Function::setObjectFactory(factory);
     }
 
-    // Setup Function FIRST so other functions can inherit from Function.prototype
+    // Setup Function FIRST so other functions can inherit from Function.prototype.
+    // setupFunction uses two-phase bootstrap: creates Function.prototype before
+    // any JSFunction objects, so all functions get the correct prototype chain.
     setupFunction(globalEnv, factory);
-
-    // Get Function.prototype immediately so createJSFunction can use it
-    auto* functionConstructor = globalEnv->get("Function").getObject();
-    if (functionConstructor) {
-        functionPrototype_ = functionConstructor->getProperty("prototype").getObject();
-    }
 
     // Setup iterator prototype FIRST - other iterators inherit from this
     setupIteratorPrototype(factory);
@@ -497,9 +493,27 @@ void BuiltinManager::setupPromise(std::shared_ptr<Environment> globalEnv,
 
 void BuiltinManager::setupFunction(std::shared_ptr<Environment> globalEnv,
                                    rift::memory::ObjectFactory* factory) {
-    // Setup Function object using GC-managed creation
-    auto* function = builtins::Function::create(factory);
-    globalEnv->define("Function", Value(function));
+    // Two-phase bootstrap: Function.prototype must exist BEFORE we create any
+    // JSFunction objects, so that createJSFunction() can set the correct
+    // prototype chain on every function from the start.
+    //
+    // Phase 1: Create the bare Function.prototype object and register it.
+    auto* prototype = factory->createJSObject();
+    functionPrototype_ = prototype;
+
+    // Phase 2: Now that functionPrototype_ is set, every call to
+    // createJSFunction() will automatically get the right prototype.
+    // Populate Function.prototype with methods and create the constructor.
+    builtins::Function::setupPrototypeMethods(prototype, factory);
+
+    builtins::Function::setObjectFactory(factory);
+    auto* constructor = factory->createJSFunction(builtins::Function::constructor);
+    builtins::Function::setupStaticMethods(constructor, factory);
+
+    constructor->setProperty("prototype", Value(prototype));
+    prototype->setProperty("constructor", Value(constructor));
+
+    globalEnv->define("Function", Value(constructor));
 }
 
 }  // namespace rift::core
