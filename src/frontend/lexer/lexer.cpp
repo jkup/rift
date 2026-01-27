@@ -188,7 +188,8 @@ Token Lexer::read_string() {
     std::string value;
     value.reserve(256);  // Reserve some space to reduce allocations
 
-    while(current_char() != quote && current_char() != '\0') {
+    while(current_char() != quote && current_char() != '\0' && current_char() != '\n' &&
+          current_char() != '\r') {
         // Check string length limit (prevent DoS via huge strings)
         if(value.length() >= rift::core::RuntimeLimits::MAX_STRING_LENGTH) {
             throw std::runtime_error("String literal exceeds maximum length (" +
