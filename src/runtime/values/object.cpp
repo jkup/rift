@@ -77,7 +77,14 @@ void JSObject::setProperty(const std::string& key, const Value& value) {
         }
     }
 
-    // Property doesn't exist, add new one with default descriptor (all true)
+    // Property doesn't exist - check if object is extensible
+    if(!extensible_) {
+        // Cannot add new properties to non-extensible object
+        // Silently fail (or could throw TypeError in strict mode)
+        return;
+    }
+
+    // Add new property with default descriptor (all true)
     properties_.emplace_back(key, PropertyDescriptor(value));
 }
 
@@ -97,7 +104,13 @@ void JSObject::defineProperty(const std::string& key, const PropertyDescriptor& 
         }
     }
 
-    // Property doesn't exist, add new one
+    // Property doesn't exist - check if object is extensible
+    if(!extensible_) {
+        // Cannot add new properties to non-extensible object
+        return;
+    }
+
+    // Add new property
     properties_.emplace_back(key, descriptor);
 }
 

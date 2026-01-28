@@ -94,7 +94,8 @@ Value GeneratorIterator::next(const CallContext& ctx, const std::vector<Value>& 
 
     auto* factory = getObjectFactory();
     if(!factory) {
-        throw rift::core::JavaScriptException(Value("TypeError: Generator factory not initialized"));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Generator factory not initialized"));
     }
 
     // Get current state
@@ -149,9 +150,8 @@ Value GeneratorIterator::next(const CallContext& ctx, const std::vector<Value>& 
 
     try {
         // Execute the generator body
-        Value final_value =
-            rift::core::GeneratorEvaluator::execute(gen_ctx.body, gen_ctx.env, gen_ctx.engine,
-                                                    gen_ctx.exec_context);
+        Value final_value = rift::core::GeneratorEvaluator::execute(
+            gen_ctx.body, gen_ctx.env, gen_ctx.engine, gen_ctx.exec_context);
 
         // Generator completed normally (no more yields)
         gen->setProperty("[[GeneratorState]]",

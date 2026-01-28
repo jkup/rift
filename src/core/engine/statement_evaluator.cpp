@@ -420,8 +420,8 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
 
     // Create function object using GC-managed creation
     auto func = engine->getObjectFactory()->createJSFunction(
-        [engine, param_info, body, env, functionIsStrict](const rift::core::CallContext& callContext,
-                                        const std::vector<Value>& args) -> Value {
+        [engine, param_info, body, env, functionIsStrict](
+            const rift::core::CallContext& callContext, const std::vector<Value>& args) -> Value {
             // Create new environment for function execution
             auto funcEnv = std::make_shared<Environment>(env);
 
@@ -494,8 +494,8 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
 
 // Generator function declaration
 Value StatementEvaluator::evaluateGeneratorFunctionDeclaration(std::shared_ptr<ASTNode> node,
-                                                                std::shared_ptr<Environment> env,
-                                                                Rift* engine) {
+                                                               std::shared_ptr<Environment> env,
+                                                               Rift* engine) {
     if(node->children.size() < 2) {
         return Value::undefined();
     }
@@ -678,11 +678,10 @@ Value StatementEvaluator::evaluateClassDeclaration(std::shared_ptr<ASTNode> node
             }
         }
 
-        auto* constructor =
-            factory->createJSFunction([engine, ctor_param_info, ctor_body, class_env,
-                                       parent_constructor,
-                                       class_prototype](const rift::core::CallContext& call_context,
-                                                        const std::vector<Value>& args) -> Value {
+        auto* constructor = factory->createJSFunction(
+            [engine, ctor_param_info, ctor_body, class_env, parent_constructor, class_prototype](
+                const rift::core::CallContext& call_context,
+                const std::vector<Value>& args) -> Value {
                 // Classes must be called with 'new'
                 if(call_context.type != rift::core::CallType::Constructor) {
                     throw JavaScriptException(

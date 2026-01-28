@@ -16,7 +16,7 @@ namespace rift::builtins {
 // ============================================================================
 
 void WeakMap::setupStaticMethods(JSObject* /*constructor*/,
-                                  rift::memory::ObjectFactory* /*factory*/) {
+                                 rift::memory::ObjectFactory* /*factory*/) {
     // WeakMap has no static methods in ES2024
 }
 

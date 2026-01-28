@@ -45,7 +45,7 @@ rift::runtime::JSFunction* ObjectManager::createJSFunction(
 
     // Set Function.prototype if available (handles bootstrap case when it's not yet created)
     auto* func_proto = rift::core::BuiltinManager::getFunctionPrototype();
-    if (func_proto) {
+    if(func_proto) {
         obj->setPrototype(func_proto);
     }
 
@@ -76,7 +76,7 @@ rift::runtime::JSFunction* ObjectManager::createJSFunction(
 
     // Set Function.prototype if available (handles bootstrap case when it's not yet created)
     auto* func_proto = rift::core::BuiltinManager::getFunctionPrototype();
-    if (func_proto) {
+    if(func_proto) {
         obj->setPrototype(func_proto);
     }
 
@@ -97,7 +97,7 @@ rift::runtime::JSArrowFunction* ObjectManager::createJSArrowFunction(
 
     // Set Function.prototype if available (handles bootstrap case when it's not yet created)
     auto* func_proto = rift::core::BuiltinManager::getFunctionPrototype();
-    if (func_proto) {
+    if(func_proto) {
         obj->setPrototype(func_proto);
     }
 

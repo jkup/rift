@@ -732,8 +732,9 @@ std::shared_ptr<ASTNode> Parser::parse_with_statement() {
     consume(TokenType::With);  // consume 'with'
 
     if(in_strict_mode_) {
-        throw std::runtime_error("SyntaxError: Strict mode code may not include a with statement at line " +
-                                 std::to_string(with_line) + ":" + std::to_string(with_column));
+        throw std::runtime_error(
+            "SyntaxError: Strict mode code may not include a with statement at line " +
+            std::to_string(with_line) + ":" + std::to_string(with_column));
     }
 
     // Non-strict mode: parse but throw not-implemented

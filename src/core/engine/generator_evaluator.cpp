@@ -128,8 +128,8 @@ Value GeneratorEvaluator::evaluateStatement(std::shared_ptr<ASTNode> stmt,
         // Check if the initializer is a yield
         if(!stmt->children.empty() && stmt->children[0]->type == ASTNodeType::YieldExpression) {
             // const x = yield value;
-            Value yieldResult = evaluateYield(stmt->children[0], env, engine, context,
-                                              statementIndex);
+            Value yieldResult =
+                evaluateYield(stmt->children[0], env, engine, context, statementIndex);
 
             // Define the variable with the yield result
             std::string var_name = stmt->value;
@@ -174,7 +174,8 @@ Value GeneratorEvaluator::evaluateYield(std::shared_ptr<ASTNode> node,
     // Check if we're resuming from a delegation at this yield point
     if(context.isResuming && context.inDelegation && context.delegationYieldId == yieldId) {
         // We're resuming into a yield* delegation - continue with the inner iterator
-        return evaluateYieldStar(context.delegatedIterator, engine, context, yieldId, statementIndex);
+        return evaluateYieldStar(context.delegatedIterator, engine, context, yieldId,
+                                 statementIndex);
     }
 
     // Check if we're resuming at this exact yield point (non-delegation)
@@ -203,9 +204,9 @@ Value GeneratorEvaluator::evaluateYield(std::shared_ptr<ASTNode> node,
     throw YieldException(yielded_value, yieldId, statementIndex);
 }
 
-Value GeneratorEvaluator::evaluateWhile(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
-                                        Rift* engine, GeneratorExecutionContext& context,
-                                        int statementIndex) {
+Value GeneratorEvaluator::evaluateWhile(std::shared_ptr<ASTNode> node,
+                                        std::shared_ptr<Environment> env, Rift* engine,
+                                        GeneratorExecutionContext& context, int statementIndex) {
     // WhileStatement structure:
     // children[0] = condition
     // children[1] = body
@@ -248,9 +249,9 @@ Value GeneratorEvaluator::evaluateWhile(std::shared_ptr<ASTNode> node, std::shar
     return result;
 }
 
-Value GeneratorEvaluator::evaluateFor(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
-                                      Rift* engine, GeneratorExecutionContext& context,
-                                      int statementIndex) {
+Value GeneratorEvaluator::evaluateFor(std::shared_ptr<ASTNode> node,
+                                      std::shared_ptr<Environment> env, Rift* engine,
+                                      GeneratorExecutionContext& context, int statementIndex) {
     // ForStatement structure:
     // children[0] = init (or nullptr)
     // children[1] = condition (or nullptr)
@@ -356,8 +357,8 @@ Value GeneratorEvaluator::evaluateLoopBodyStatement(std::shared_ptr<ASTNode> stm
     }
 
     // Handle variable declarations with yield
-    if(stmt->type == ASTNodeType::VariableDeclaration || stmt->type == ASTNodeType::LetDeclaration ||
-       stmt->type == ASTNodeType::ConstDeclaration) {
+    if(stmt->type == ASTNodeType::VariableDeclaration ||
+       stmt->type == ASTNodeType::LetDeclaration || stmt->type == ASTNodeType::ConstDeclaration) {
         if(!stmt->children.empty() && stmt->children[0]->type == ASTNodeType::YieldExpression) {
             Value yield_result =
                 evaluateYield(stmt->children[0], env, engine, context, statementIndex);
@@ -663,7 +664,7 @@ Value GeneratorEvaluator::evaluateTryStatement(std::shared_ptr<ASTNode> node,
                 // Execute catch body using generator-aware evaluation
                 result = evaluateBlock(catchBody, catchEnv, engine, context);
                 context.inCatchBlock = false;  // Leaving catch block normally
-                normalCompletion = true;  // caught
+                normalCompletion = true;       // caught
             } catch(const YieldException&) {
                 // Yielding from catch block - state already set
                 if(finallyClause && !finallyClause->children.empty()) {

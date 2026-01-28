@@ -13,12 +13,9 @@ using rift::core::CallContext;
 
 class Function : public BuiltinBase<Function> {
   public:
-    static void setupStaticMethods(JSObject* constructor,
-                                   rift::memory::ObjectFactory* factory);
-    static void setupPrototypeMethods(JSObject* prototype,
-                                      rift::memory::ObjectFactory* factory);
-    static Value constructor(const CallContext& ctx,
-                             const std::vector<Value>& args);
+    static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
+    static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
+    static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
     // Prototype methods
     static Value call(const CallContext& ctx, const std::vector<Value>& args);

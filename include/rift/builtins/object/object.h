@@ -29,6 +29,18 @@ class Object : public BuiltinBase<Object> {
     static Value entries(const CallContext& ctx, const std::vector<Value>& args);
     static Value defineProperty(const CallContext& ctx, const std::vector<Value>& args);
     static Value getOwnPropertyDescriptor(const CallContext& ctx, const std::vector<Value>& args);
+    static Value jsCreate(const CallContext& ctx, const std::vector<Value>& args);
+    static Value getPrototypeOf(const CallContext& ctx, const std::vector<Value>& args);
+    static Value setPrototypeOf(const CallContext& ctx, const std::vector<Value>& args);
+    static Value getOwnPropertyNames(const CallContext& ctx, const std::vector<Value>& args);
+    static Value getOwnPropertySymbols(const CallContext& ctx, const std::vector<Value>& args);
+    static Value assign(const CallContext& ctx, const std::vector<Value>& args);
+    static Value preventExtensions(const CallContext& ctx, const std::vector<Value>& args);
+    static Value isExtensible(const CallContext& ctx, const std::vector<Value>& args);
+    static Value seal(const CallContext& ctx, const std::vector<Value>& args);
+    static Value isSealed(const CallContext& ctx, const std::vector<Value>& args);
+    static Value freeze(const CallContext& ctx, const std::vector<Value>& args);
+    static Value isFrozen(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Prototype methods
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);

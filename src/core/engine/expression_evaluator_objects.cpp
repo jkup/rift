@@ -319,8 +319,8 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
                                     break;
                                 }
 
-                                auto* next_func =
-                                    dynamic_cast<rift::runtime::JSFunction*>(next_method.getObject());
+                                auto* next_func = dynamic_cast<rift::runtime::JSFunction*>(
+                                    next_method.getObject());
                                 if(!next_func) {
                                     break;
                                 }
@@ -482,8 +482,8 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
 
     // Create function object (anonymous) using GC-managed creation
     auto* func = factory->createJSFunction(
-        [engine, param_info, body, env, function_is_strict](const rift::core::CallContext& call_context,
-                                        const std::vector<Value>& args) -> Value {
+        [engine, param_info, body, env, function_is_strict](
+            const rift::core::CallContext& call_context, const std::vector<Value>& args) -> Value {
             // Create new environment for function execution
             auto func_env = std::make_shared<Environment>(env);
 
@@ -815,10 +815,10 @@ Value ExpressionEvaluator::evaluateClassExpression(std::shared_ptr<ASTNode> node
             }
         }
 
-        auto* constructor =
-            factory->createJSFunction([engine, ctor_param_info, ctor_body, class_env, parent_constructor,
-                                       class_prototype](const rift::core::CallContext& call_context,
-                                                        const std::vector<Value>& args) -> Value {
+        auto* constructor = factory->createJSFunction(
+            [engine, ctor_param_info, ctor_body, class_env, parent_constructor, class_prototype](
+                const rift::core::CallContext& call_context,
+                const std::vector<Value>& args) -> Value {
                 if(call_context.type != rift::core::CallType::Constructor) {
                     throw JavaScriptException(
                         Value("TypeError: Class constructor cannot be invoked without 'new'"));
@@ -1167,8 +1167,8 @@ Value ExpressionEvaluator::evaluateSuperExpression(std::shared_ptr<ASTNode> node
 }
 
 Value ExpressionEvaluator::evaluateGeneratorFunctionExpression(std::shared_ptr<ASTNode> node,
-                                                                std::shared_ptr<Environment> env,
-                                                                Rift* engine) {
+                                                               std::shared_ptr<Environment> env,
+                                                               Rift* engine) {
     if(node->children.size() < 2) {
         return Value::undefined();
     }
@@ -1270,8 +1270,7 @@ Value ExpressionEvaluator::evaluateYieldExpression(std::shared_ptr<ASTNode> /*no
     // PHASE 3: This will be implemented when we add the actual generator execution.
     // For now, yield expressions are parsed but not executed in this code path.
     // The actual yield handling will happen in the generator evaluator.
-    throw JavaScriptException(
-        Value("Error: yield expression not yet implemented (Phase 3)"));
+    throw JavaScriptException(Value("Error: yield expression not yet implemented (Phase 3)"));
 }
 
 }  // namespace rift::core

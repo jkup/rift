@@ -28,10 +28,8 @@ Parser::Parser(const std::vector<Token>& tokens)
 // Check if a name is a strict mode reserved word
 bool Parser::isStrictModeReservedWord(const std::string& name) const {
     // These are reserved as variable/parameter names in strict mode
-    return name == "eval" || name == "arguments" ||
-           name == "implements" || name == "interface" ||
-           name == "let" || name == "package" ||
-           name == "private" || name == "protected" ||
+    return name == "eval" || name == "arguments" || name == "implements" || name == "interface" ||
+           name == "let" || name == "package" || name == "private" || name == "protected" ||
            name == "public" || name == "static" || name == "yield";
 }
 
@@ -39,7 +37,8 @@ bool Parser::isStrictModeReservedWord(const std::string& name) const {
 void Parser::validateIdentifier(const std::string& name, size_t line, size_t column) {
     if(in_strict_mode_ && isStrictModeReservedWord(name)) {
         throw std::runtime_error("SyntaxError: Unexpected strict mode reserved word '" + name +
-                                "' at line " + std::to_string(line) + ":" + std::to_string(column));
+                                 "' at line " + std::to_string(line) + ":" +
+                                 std::to_string(column));
     }
 }
 

@@ -16,7 +16,7 @@ namespace rift::builtins {
 // ============================================================================
 
 void WeakSet::setupStaticMethods(JSObject* /*constructor*/,
-                                  rift::memory::ObjectFactory* /*factory*/) {
+                                 rift::memory::ObjectFactory* /*factory*/) {
     // WeakSet has no static methods in ES2024
 }
 
@@ -230,8 +230,7 @@ Value WeakSet::add(const CallContext& ctx, const std::vector<Value>& args) {
 
     // WeakSet values must be objects
     if(!isValidWeakValue(val)) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: Invalid value used in weak set"));
+        throw rift::core::JavaScriptException(Value("TypeError: Invalid value used in weak set"));
     }
 
     auto* entries = entriesVal.getObject();

@@ -52,7 +52,8 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
                         std::to_string(token.line) + ":" + std::to_string(token.column));
                 } else if(token.type == TokenType::String) {
                     throw std::runtime_error(
-                        "SyntaxError: Octal escape sequences are not allowed in strict mode at line " +
+                        "SyntaxError: Octal escape sequences are not allowed in strict mode at "
+                        "line " +
                         std::to_string(token.line) + ":" + std::to_string(token.column));
                 }
             }
@@ -389,22 +390,22 @@ std::shared_ptr<ASTNode> Parser::parse_member_expression(std::shared_ptr<ASTNode
     // Allow keywords as property names (e.g., obj.delete, obj.class, obj.return)
     // In JavaScript, any IdentifierName (including reserved words) can follow a dot
     Token& tok = current_token();
-    bool is_identifier_name = (tok.type == TokenType::Identifier || tok.type == TokenType::Delete ||
-                               tok.type == TokenType::Void || tok.type == TokenType::With ||
-                               tok.type == TokenType::Typeof || tok.type == TokenType::In ||
-                               tok.type == TokenType::New || tok.type == TokenType::This ||
-                               tok.type == TokenType::Return || tok.type == TokenType::Throw ||
-                               tok.type == TokenType::Try || tok.type == TokenType::Catch ||
-                               tok.type == TokenType::Finally || tok.type == TokenType::If ||
-                               tok.type == TokenType::Else || tok.type == TokenType::For ||
-                               tok.type == TokenType::While || tok.type == TokenType::Do ||
-                               tok.type == TokenType::Switch || tok.type == TokenType::Case ||
-                               tok.type == TokenType::Default || tok.type == TokenType::Break ||
-                               tok.type == TokenType::Continue || tok.type == TokenType::Function ||
-                               tok.type == TokenType::Class || tok.type == TokenType::Extends ||
-                               tok.type == TokenType::Super || tok.type == TokenType::Static ||
-                               tok.type == TokenType::Var || tok.type == TokenType::Let ||
-                               tok.type == TokenType::Const || tok.type == TokenType::Yield);
+    bool is_identifier_name =
+        (tok.type == TokenType::Identifier || tok.type == TokenType::Delete ||
+         tok.type == TokenType::Void || tok.type == TokenType::With ||
+         tok.type == TokenType::Typeof || tok.type == TokenType::In || tok.type == TokenType::New ||
+         tok.type == TokenType::This || tok.type == TokenType::Return ||
+         tok.type == TokenType::Throw || tok.type == TokenType::Try ||
+         tok.type == TokenType::Catch || tok.type == TokenType::Finally ||
+         tok.type == TokenType::If || tok.type == TokenType::Else || tok.type == TokenType::For ||
+         tok.type == TokenType::While || tok.type == TokenType::Do ||
+         tok.type == TokenType::Switch || tok.type == TokenType::Case ||
+         tok.type == TokenType::Default || tok.type == TokenType::Break ||
+         tok.type == TokenType::Continue || tok.type == TokenType::Function ||
+         tok.type == TokenType::Class || tok.type == TokenType::Extends ||
+         tok.type == TokenType::Super || tok.type == TokenType::Static ||
+         tok.type == TokenType::Var || tok.type == TokenType::Let || tok.type == TokenType::Const ||
+         tok.type == TokenType::Yield);
     if(!is_identifier_name) {
         throw std::runtime_error("Expected property name after '.'");
     }
@@ -781,10 +782,10 @@ std::shared_ptr<ASTNode> Parser::parse_yield_expression() {
     // We need to be careful about ASI (automatic semicolon insertion)
     // If the next token could start an expression and is on the same line, parse it
     TokenType next = current_token().type;
-    bool has_argument = (next != TokenType::Semicolon && next != TokenType::RightParen &&
-                         next != TokenType::RightBrace && next != TokenType::RightBracket &&
-                         next != TokenType::Comma && next != TokenType::Colon &&
-                         next != TokenType::EndOfFile);
+    bool has_argument =
+        (next != TokenType::Semicolon && next != TokenType::RightParen &&
+         next != TokenType::RightBrace && next != TokenType::RightBracket &&
+         next != TokenType::Comma && next != TokenType::Colon && next != TokenType::EndOfFile);
 
     if(is_delegate) {
         // yield* requires an argument

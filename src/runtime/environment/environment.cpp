@@ -1,6 +1,7 @@
 #include "rift/runtime/environment/environment.h"
 
 #include <stdexcept>
+
 #include "rift/core/engine/javascript_exception.h"
 
 namespace rift::runtime {
@@ -18,7 +19,8 @@ void Environment::define(const std::string& name, const Value& value, VariableTy
             return;
         }
         // let/const cannot be redeclared in same scope
-        throw JavaScriptException(Value("SyntaxError: Identifier '" + name + "' has already been declared"));
+        throw JavaScriptException(
+            Value("SyntaxError: Identifier '" + name + "' has already been declared"));
     }
 
     variables_[name] = VariableEntry(value, type);
@@ -33,7 +35,8 @@ void Environment::declare(const std::string& name, VariableType type) {
             return;  // Already declared
         }
         // let/const cannot be redeclared in same scope
-        throw JavaScriptException(Value("SyntaxError: Identifier '" + name + "' has already been declared"));
+        throw JavaScriptException(
+            Value("SyntaxError: Identifier '" + name + "' has already been declared"));
     }
 
     variables_[name] = VariableEntry(type);  // Not initialized yet (TDZ)
@@ -44,7 +47,8 @@ Value Environment::get(const std::string& name) {
     if(it != variables_.end()) {
         // Check for TDZ access
         if(!it->second.initialized) {
-            throw JavaScriptException(Value("ReferenceError: Cannot access '" + name + "' before initialization"));
+            throw JavaScriptException(
+                Value("ReferenceError: Cannot access '" + name + "' before initialization"));
         }
         return it->second.value;
     }
@@ -61,11 +65,13 @@ void Environment::set(const std::string& name, const Value& value) {
     if(it != variables_.end()) {
         // Check for TDZ access
         if(!it->second.initialized) {
-            throw JavaScriptException(Value("ReferenceError: Cannot access '" + name + "' before initialization"));
+            throw JavaScriptException(
+                Value("ReferenceError: Cannot access '" + name + "' before initialization"));
         }
         // Check for const assignment
         if(it->second.type == VariableType::Const) {
-            throw JavaScriptException(Value("TypeError: Assignment to constant variable '" + name + "'"));
+            throw JavaScriptException(
+                Value("TypeError: Assignment to constant variable '" + name + "'"));
         }
         it->second.value = value;
         return;

@@ -50,6 +50,9 @@ class JSObject : public rift::memory::GCObject {
     // Properties in this set are excluded from GC traversal in getReferences()
     std::unordered_set<std::string> weak_properties_;
 
+    // Extensibility flag - when false, no new properties can be added
+    bool extensible_ = true;
+
   public:
     JSObject(JSObject* prototype = nullptr) : prototype_(prototype) {
         // Pre-allocate space for properties to avoid frequent reallocations
@@ -73,6 +76,14 @@ class JSObject : public rift::memory::GCObject {
     }
     void setPrototype(JSObject* prototype) {
         prototype_ = prototype;
+    }
+
+    // Extensibility - controls whether new properties can be added
+    bool isExtensible() const {
+        return extensible_;
+    }
+    void preventExtensions() {
+        extensible_ = false;
     }
 
     // Object type identification

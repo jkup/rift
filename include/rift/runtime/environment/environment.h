@@ -39,8 +39,8 @@ class Environment : public std::enable_shared_from_this<Environment> {
   private:
     std::unordered_map<std::string, VariableEntry> variables_;
     std::shared_ptr<Environment> parent_;
-    bool is_block_scope_;   // true for let/const block scopes
-    bool is_strict_mode_;   // true when running in strict mode
+    bool is_block_scope_;  // true for let/const block scopes
+    bool is_strict_mode_;  // true when running in strict mode
 
   public:
     Environment(std::shared_ptr<Environment> parent = nullptr, bool is_block_scope = false)
@@ -75,8 +75,10 @@ class Environment : public std::enable_shared_from_this<Environment> {
     }
     // Check if this environment or any parent is in strict mode
     bool inheritsStrictMode() const {
-        if(is_strict_mode_) return true;
-        if(parent_) return parent_->inheritsStrictMode();
+        if(is_strict_mode_)
+            return true;
+        if(parent_)
+            return parent_->inheritsStrictMode();
         return false;
     }
 

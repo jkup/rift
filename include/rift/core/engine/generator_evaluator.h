@@ -20,19 +20,19 @@ class Rift;
  * This tracks the state needed to resume a generator.
  */
 struct GeneratorExecutionContext {
-    int currentYieldId = -1;        // Which yield we stopped at (-1 = not started)
-    int resumeStatementIndex = 0;   // Which statement to resume from
-    Value sentValue;                // Value passed to next()
-    bool isResuming = false;        // True if we're resuming from a yield
+    int currentYieldId = -1;       // Which yield we stopped at (-1 = not started)
+    int resumeStatementIndex = 0;  // Which statement to resume from
+    Value sentValue;               // Value passed to next()
+    bool isResuming = false;       // True if we're resuming from a yield
 
     // yield* delegation state
-    bool inDelegation = false;      // True if we're delegating to an inner iterator
-    Value delegatedIterator;        // The inner iterator object
-    int delegationYieldId = -1;     // The yield* point we're delegating from
+    bool inDelegation = false;   // True if we're delegating to an inner iterator
+    Value delegatedIterator;     // The inner iterator object
+    int delegationYieldId = -1;  // The yield* point we're delegating from
 
     // try/catch resumption state
-    bool inCatchBlock = false;      // True if we yielded from inside a catch block
-    Value caughtValue;              // The caught exception value (for recreating catch env)
+    bool inCatchBlock = false;  // True if we yielded from inside a catch block
+    Value caughtValue;          // The caught exception value (for recreating catch env)
 };
 
 /**
@@ -105,7 +105,8 @@ class GeneratorEvaluator {
      * Evaluate a while loop that may contain yields.
      */
     static Value evaluateWhile(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
-                               Rift* engine, GeneratorExecutionContext& context, int statementIndex);
+                               Rift* engine, GeneratorExecutionContext& context,
+                               int statementIndex);
 
     /**
      * Evaluate a for loop that may contain yields.
@@ -139,9 +140,9 @@ class GeneratorEvaluator {
      * Evaluate a try/catch/finally statement within a generator.
      * Properly handles YieldException propagation while catching JavaScriptExceptions.
      */
-    static Value evaluateTryStatement(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
-                                      Rift* engine, GeneratorExecutionContext& context,
-                                      int statementIndex);
+    static Value evaluateTryStatement(std::shared_ptr<ASTNode> node,
+                                      std::shared_ptr<Environment> env, Rift* engine,
+                                      GeneratorExecutionContext& context, int statementIndex);
 };
 
 }  // namespace rift::core

@@ -295,12 +295,10 @@ class ASTFactory {
     // children[0] = parameters (ParameterList)
     // children[1] = body (BlockStatement)
     // children[2] = computed key expression (optional)
-    static std::shared_ptr<ASTNode> makeGeneratorMethod(const std::string& name,
-                                                        std::shared_ptr<ASTNode> parameters,
-                                                        std::shared_ptr<ASTNode> body,
-                                                        bool isStatic = false,
-                                                        bool isComputed = false,
-                                                        std::shared_ptr<ASTNode> computedKey = nullptr) {
+    static std::shared_ptr<ASTNode> makeGeneratorMethod(
+        const std::string& name, std::shared_ptr<ASTNode> parameters, std::shared_ptr<ASTNode> body,
+        bool isStatic = false, bool isComputed = false,
+        std::shared_ptr<ASTNode> computedKey = nullptr) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::GeneratorMethod, name);
         node->children.push_back(std::move(parameters));
         node->children.push_back(std::move(body));

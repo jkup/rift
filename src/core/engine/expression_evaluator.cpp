@@ -214,7 +214,8 @@ Value ExpressionEvaluator::evaluateUnaryExpression(std::shared_ptr<ASTNode> node
         auto operand_node = node->children[0];
 
         // delete on member expression: delete obj.prop or delete obj[key]
-        if(operand_node->type == ASTNodeType::MemberExpression && operand_node->children.size() == 2) {
+        if(operand_node->type == ASTNodeType::MemberExpression &&
+           operand_node->children.size() == 2) {
             Value object = engine->evaluate(operand_node->children[0], env);
             if(object.isObject() || object.isFunction()) {
                 auto* obj = object.getObject();

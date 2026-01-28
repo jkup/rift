@@ -8,6 +8,7 @@
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/call_context.h"
 #include "rift/core/engine/evaluation_utils.h"
+#include "rift/core/engine/javascript_exception.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
@@ -20,6 +21,18 @@ void Object::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
     RIFT_STATIC_METHOD(constructor, "entries", Object::entries);
     RIFT_STATIC_METHOD(constructor, "defineProperty", Object::defineProperty);
     RIFT_STATIC_METHOD(constructor, "getOwnPropertyDescriptor", Object::getOwnPropertyDescriptor);
+    RIFT_STATIC_METHOD(constructor, "create", Object::jsCreate);
+    RIFT_STATIC_METHOD(constructor, "getPrototypeOf", Object::getPrototypeOf);
+    RIFT_STATIC_METHOD(constructor, "setPrototypeOf", Object::setPrototypeOf);
+    RIFT_STATIC_METHOD(constructor, "getOwnPropertyNames", Object::getOwnPropertyNames);
+    RIFT_STATIC_METHOD(constructor, "getOwnPropertySymbols", Object::getOwnPropertySymbols);
+    RIFT_STATIC_METHOD(constructor, "assign", Object::assign);
+    RIFT_STATIC_METHOD(constructor, "preventExtensions", Object::preventExtensions);
+    RIFT_STATIC_METHOD(constructor, "isExtensible", Object::isExtensible);
+    RIFT_STATIC_METHOD(constructor, "seal", Object::seal);
+    RIFT_STATIC_METHOD(constructor, "isSealed", Object::isSealed);
+    RIFT_STATIC_METHOD(constructor, "freeze", Object::freeze);
+    RIFT_STATIC_METHOD(constructor, "isFrozen", Object::isFrozen);
 }
 
 void Object::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
@@ -304,6 +317,437 @@ Value Object::getOwnPropertyDescriptor(const CallContext& ctx, const std::vector
     descriptorObj->setProperty("configurable", Value(desc.configurable));
 
     return Value(descriptorObj);
+}
+
+Value Object::jsCreate(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.create(proto, propertiesObject)
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Object prototype may only be an Object or null: undefined"));
+    }
+
+    Value protoArg = args[0];
+    JSObject* prototype = nullptr;
+
+    if(protoArg.isNull()) {
+        prototype = nullptr;  // Object with null prototype
+    } else if(protoArg.isObject()) {
+        prototype = protoArg.getObject();
+    } else {
+        // TypeError: Object prototype may only be an Object or null
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Object prototype may only be an Object or null"));
+    }
+
+    // Create the new object with the specified prototype
+    auto* obj = getObjectFactory()->createJSObject(prototype);
+    rift::memory::GCProtector protect(obj, getObjectFactory()->getObjectManager());
+
+    // If propertiesObject is provided, define properties
+    if(args.size() >= 2 && args[1].isObject()) {
+        auto* propsObj = args[1].getObject();
+        if(propsObj) {
+            auto propNames = propsObj->getOwnPropertyNames();
+            for(const auto& propName : propNames) {
+                Value descriptorVal = propsObj->getProperty(propName);
+                if(descriptorVal.isObject()) {
+                    auto* descriptorObj = descriptorVal.getObject();
+                    if(descriptorObj) {
+                        rift::runtime::PropertyDescriptor desc;
+
+                        Value valueVal = descriptorObj->getProperty("value");
+                        desc.value = valueVal.isUndefined() ? Value::undefined() : valueVal;
+
+                        Value writableVal = descriptorObj->getProperty("writable");
+                        desc.writable = !writableVal.isUndefined() && writableVal.toBool();
+
+                        Value enumerableVal = descriptorObj->getProperty("enumerable");
+                        desc.enumerable = !enumerableVal.isUndefined() && enumerableVal.toBool();
+
+                        Value configurableVal = descriptorObj->getProperty("configurable");
+                        desc.configurable =
+                            !configurableVal.isUndefined() && configurableVal.toBool();
+
+                        obj->defineProperty(propName, desc);
+                    }
+                }
+            }
+        }
+    }
+
+    return Value(obj);
+}
+
+Value Object::getPrototypeOf(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.getPrototypeOf(obj)
+    if(args.empty()) {
+        return Value::undefined();
+    }
+
+    Value objVal = args[0];
+    if(!objVal.isObject()) {
+        // ECMAScript 6+: coerce to object first, but for primitives return their prototype
+        // For simplicity, return undefined for non-objects
+        return Value::undefined();
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        return Value::undefined();
+    }
+
+    JSObject* proto = obj->getPrototype();
+    if(!proto) {
+        return Value::null();
+    }
+    return Value(proto);
+}
+
+Value Object::setPrototypeOf(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.setPrototypeOf(obj, proto)
+    if(args.size() < 2) {
+        return Value::undefined();
+    }
+
+    Value objVal = args[0];
+    if(!objVal.isObject()) {
+        // TypeError for non-objects in strict mode
+        return objVal;  // Return the value as-is per spec for non-objects
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        return objVal;
+    }
+
+    // Check if object is extensible
+    if(!obj->isExtensible()) {
+        // TypeError: cannot set prototype on non-extensible object
+        return objVal;
+    }
+
+    Value protoArg = args[1];
+    JSObject* newProto = nullptr;
+
+    if(protoArg.isNull()) {
+        newProto = nullptr;
+    } else if(protoArg.isObject()) {
+        newProto = protoArg.getObject();
+    } else {
+        // TypeError: Object prototype may only be an Object or null
+        return objVal;
+    }
+
+    obj->setPrototype(newProto);
+    return objVal;
+}
+
+Value Object::getOwnPropertyNames(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.getOwnPropertyNames(obj)
+    if(args.empty()) {
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
+    }
+
+    Value objVal = args[0];
+    if(!objVal.isObject()) {
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
+    }
+
+    std::vector<Value> names;
+    auto propNames = obj->getOwnPropertyNames();
+    for(const auto& name : propNames) {
+        names.push_back(Value(name));
+    }
+
+    return Value(Array::createArrayObject(getObjectFactory(), names));
+}
+
+Value Object::getOwnPropertySymbols(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.getOwnPropertySymbols(obj)
+    if(args.empty()) {
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
+    }
+
+    Value objVal = args[0];
+    if(!objVal.isObject()) {
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
+    }
+
+    std::vector<Value> symbols;
+    auto symbolKeys = obj->getOwnPropertySymbols();
+    for(const auto& key : symbolKeys) {
+        symbols.push_back(Value(key));
+    }
+
+    return Value(Array::createArrayObject(getObjectFactory(), symbols));
+}
+
+Value Object::assign(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.assign(target, ...sources)
+    if(args.empty()) {
+        // TypeError: Cannot convert undefined or null to object
+        return Value::undefined();
+    }
+
+    Value targetVal = args[0];
+    if(!targetVal.isObject()) {
+        // Should coerce to object, but for simplicity return undefined for non-objects
+        return Value::undefined();
+    }
+
+    auto* target = targetVal.getObject();
+    if(!target) {
+        return Value::undefined();
+    }
+
+    // Copy properties from each source
+    for(size_t i = 1; i < args.size(); ++i) {
+        Value sourceVal = args[i];
+        if(sourceVal.isNull() || sourceVal.isUndefined()) {
+            continue;  // Skip null/undefined sources
+        }
+        if(!sourceVal.isObject()) {
+            continue;  // Skip non-objects
+        }
+
+        auto* source = sourceVal.getObject();
+        if(!source) {
+            continue;
+        }
+
+        // Copy own enumerable properties
+        auto propNames = source->getEnumerablePropertyNames();
+        for(const auto& propName : propNames) {
+            Value value = source->getProperty(propName);
+            target->setProperty(propName, value);
+        }
+
+        // Also copy enumerable symbol properties
+        auto symbolKeys = source->getOwnPropertySymbols();
+        for(const auto& symbolKey : symbolKeys) {
+            auto desc = source->getOwnPropertyDescriptor(symbolKey);
+            if(desc.enumerable) {
+                target->setProperty(symbolKey, desc.value);
+            }
+        }
+    }
+
+    return targetVal;
+}
+
+Value Object::preventExtensions(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.preventExtensions(obj)
+    if(args.empty()) {
+        return Value::undefined();
+    }
+
+    Value objVal = args[0];
+    if(!objVal.isObject()) {
+        // Return the value as-is for non-objects (ES6 behavior)
+        return objVal;
+    }
+
+    auto* obj = objVal.getObject();
+    if(obj) {
+        obj->preventExtensions();
+    }
+
+    return objVal;
+}
+
+Value Object::isExtensible(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.isExtensible(obj)
+    if(args.empty()) {
+        return Value(false);
+    }
+
+    Value objVal = args[0];
+    if(!objVal.isObject()) {
+        // Non-objects are considered non-extensible (ES6 behavior)
+        return Value(false);
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        return Value(false);
+    }
+
+    return Value(obj->isExtensible());
+}
+
+Value Object::seal(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.seal(obj)
+    // Makes all properties non-configurable and prevents new properties
+    if(args.empty()) {
+        return Value::undefined();
+    }
+
+    Value objVal = args[0];
+    if(!objVal.isObject()) {
+        return objVal;
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        return objVal;
+    }
+
+    // Get all own property names (including non-enumerable)
+    auto propNames = obj->getOwnPropertyNames();
+    for(const auto& propName : propNames) {
+        auto desc = obj->getOwnPropertyDescriptor(propName);
+        desc.configurable = false;
+        // Force define even if not configurable (we're sealing)
+        obj->defineProperty(propName, desc);
+    }
+
+    // Also seal symbol properties
+    auto symbolKeys = obj->getOwnPropertySymbols();
+    for(const auto& symbolKey : symbolKeys) {
+        auto desc = obj->getOwnPropertyDescriptor(symbolKey);
+        desc.configurable = false;
+        obj->defineProperty(symbolKey, desc);
+    }
+
+    // Prevent new properties
+    obj->preventExtensions();
+
+    return objVal;
+}
+
+Value Object::isSealed(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.isSealed(obj)
+    if(args.empty()) {
+        return Value(true);  // undefined/missing is considered sealed
+    }
+
+    Value objVal = args[0];
+    if(!objVal.isObject()) {
+        return Value(true);  // Non-objects are considered sealed (ES6)
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        return Value(true);
+    }
+
+    // Must be non-extensible
+    if(obj->isExtensible()) {
+        return Value(false);
+    }
+
+    // All own properties must be non-configurable
+    auto propNames = obj->getOwnPropertyNames();
+    for(const auto& propName : propNames) {
+        auto desc = obj->getOwnPropertyDescriptor(propName);
+        if(desc.configurable) {
+            return Value(false);
+        }
+    }
+
+    // Check symbol properties too
+    auto symbolKeys = obj->getOwnPropertySymbols();
+    for(const auto& symbolKey : symbolKeys) {
+        auto desc = obj->getOwnPropertyDescriptor(symbolKey);
+        if(desc.configurable) {
+            return Value(false);
+        }
+    }
+
+    return Value(true);
+}
+
+Value Object::freeze(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.freeze(obj)
+    // Makes all properties non-writable and non-configurable, prevents new properties
+    if(args.empty()) {
+        return Value::undefined();
+    }
+
+    Value objVal = args[0];
+    if(!objVal.isObject()) {
+        return objVal;
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        return objVal;
+    }
+
+    // Get all own property names
+    auto propNames = obj->getOwnPropertyNames();
+    for(const auto& propName : propNames) {
+        auto desc = obj->getOwnPropertyDescriptor(propName);
+        desc.writable = false;
+        desc.configurable = false;
+        obj->defineProperty(propName, desc);
+    }
+
+    // Also freeze symbol properties
+    auto symbolKeys = obj->getOwnPropertySymbols();
+    for(const auto& symbolKey : symbolKeys) {
+        auto desc = obj->getOwnPropertyDescriptor(symbolKey);
+        desc.writable = false;
+        desc.configurable = false;
+        obj->defineProperty(symbolKey, desc);
+    }
+
+    // Prevent new properties
+    obj->preventExtensions();
+
+    return objVal;
+}
+
+Value Object::isFrozen(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.isFrozen(obj)
+    if(args.empty()) {
+        return Value(true);  // undefined/missing is considered frozen
+    }
+
+    Value objVal = args[0];
+    if(!objVal.isObject()) {
+        return Value(true);  // Non-objects are considered frozen (ES6)
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        return Value(true);
+    }
+
+    // Must be non-extensible
+    if(obj->isExtensible()) {
+        return Value(false);
+    }
+
+    // All own properties must be non-writable and non-configurable
+    auto propNames = obj->getOwnPropertyNames();
+    for(const auto& propName : propNames) {
+        auto desc = obj->getOwnPropertyDescriptor(propName);
+        if(desc.writable || desc.configurable) {
+            return Value(false);
+        }
+    }
+
+    // Check symbol properties too
+    auto symbolKeys = obj->getOwnPropertySymbols();
+    for(const auto& symbolKey : symbolKeys) {
+        auto desc = obj->getOwnPropertyDescriptor(symbolKey);
+        if(desc.writable || desc.configurable) {
+            return Value(false);
+        }
+    }
+
+    return Value(true);
 }
 
 }  // namespace rift::builtins

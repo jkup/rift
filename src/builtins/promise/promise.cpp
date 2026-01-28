@@ -151,10 +151,10 @@ JSFunction* Promise::getThenMethod(const Value& value) {
  * handler can be nullptr for pass-through behavior
  * result_promise is the promise returned by .then()
  */
-void Promise::addReaction(JSObject* promise, const std::string& reaction_type,
-                          JSFunction* handler, JSObject* result_promise) {
-    std::string slot_name = (reaction_type == "fulfill") ? "[[PromiseFulfillReactions]]"
-                                                         : "[[PromiseRejectReactions]]";
+void Promise::addReaction(JSObject* promise, const std::string& reaction_type, JSFunction* handler,
+                          JSObject* result_promise) {
+    std::string slot_name =
+        (reaction_type == "fulfill") ? "[[PromiseFulfillReactions]]" : "[[PromiseRejectReactions]]";
 
     Value reactions_val = promise->getProperty(slot_name);
     if(!reactions_val.isObject()) {
@@ -188,8 +188,8 @@ void Promise::addReaction(JSObject* promise, const std::string& reaction_type,
  * Execute a single reaction.
  * This is called as a microtask after the promise settles.
  */
-void Promise::executeReaction(JSFunction* handler, JSObject* result_promise,
-                              const Value& argument, bool is_fulfill) {
+void Promise::executeReaction(JSFunction* handler, JSObject* result_promise, const Value& argument,
+                              bool is_fulfill) {
     if(handler == nullptr) {
         // No handler - pass through the value/reason
         if(is_fulfill) {
@@ -244,8 +244,7 @@ Value Promise::constructor(const CallContext& /*ctx*/, const std::vector<Value>&
 
     auto* executor_func = dynamic_cast<JSFunction*>(executor.getObject());
     if(executor_func == nullptr) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: Promise executor is not callable"));
+        throw rift::core::JavaScriptException(Value("TypeError: Promise executor is not callable"));
     }
 
     // Create the Promise object
@@ -253,9 +252,9 @@ Value Promise::constructor(const CallContext& /*ctx*/, const std::vector<Value>&
     rift::memory::GCProtector protect(promise_obj, factory->getObjectManager());
 
     // Create resolve function that captures the promise
-    auto* resolve_func = factory->createJSFunction(
-        [promise_obj](const CallContext& /*resolve_ctx*/,
-                      const std::vector<Value>& resolve_args) -> Value {
+    auto* resolve_func =
+        factory->createJSFunction([promise_obj](const CallContext& /*resolve_ctx*/,
+                                                const std::vector<Value>& resolve_args) -> Value {
             Value resolution = resolve_args.empty() ? Value::undefined() : resolve_args[0];
 
             // One-shot: ignore if already settled
@@ -270,9 +269,9 @@ Value Promise::constructor(const CallContext& /*ctx*/, const std::vector<Value>&
         });
 
     // Create reject function that captures the promise
-    auto* reject_func = factory->createJSFunction(
-        [promise_obj](const CallContext& /*reject_ctx*/,
-                      const std::vector<Value>& reject_args) -> Value {
+    auto* reject_func =
+        factory->createJSFunction([promise_obj](const CallContext& /*reject_ctx*/,
+                                                const std::vector<Value>& reject_args) -> Value {
             Value reason = reject_args.empty() ? Value::undefined() : reject_args[0];
 
             // One-shot: ignore if already settled
@@ -329,7 +328,8 @@ void Promise::rejectPromise(JSObject* promise, const Value& reason) {
 /**
  * Resolve a promise with thenable adoption.
  * Per ES spec:
- * - If value is a thenable (has a .then method), adopt its state by calling value.then(resolve, reject)
+ * - If value is a thenable (has a .then method), adopt its state by calling value.then(resolve,
+ * reject)
  * - Otherwise, fulfill the promise with the value
  * - Self-resolution throws TypeError
  */
@@ -359,9 +359,9 @@ void Promise::resolvePromise(JSObject* promise, const Value& value) {
     auto* engine = getEngine();
 
     // Create resolve/reject functions for the thenable adoption
-    auto* resolve_func = factory->createJSFunction(
-        [promise](const CallContext& /*resolve_ctx*/,
-                  const std::vector<Value>& resolve_args) -> Value {
+    auto* resolve_func =
+        factory->createJSFunction([promise](const CallContext& /*resolve_ctx*/,
+                                            const std::vector<Value>& resolve_args) -> Value {
             Value resolution = resolve_args.empty() ? Value::undefined() : resolve_args[0];
 
             std::string state = getState(promise);
@@ -374,9 +374,9 @@ void Promise::resolvePromise(JSObject* promise, const Value& value) {
             return Value::undefined();
         });
 
-    auto* reject_func = factory->createJSFunction(
-        [promise](const CallContext& /*reject_ctx*/,
-                  const std::vector<Value>& reject_args) -> Value {
+    auto* reject_func =
+        factory->createJSFunction([promise](const CallContext& /*reject_ctx*/,
+                                            const std::vector<Value>& reject_args) -> Value {
             Value reason = reject_args.empty() ? Value::undefined() : reject_args[0];
 
             std::string state = getState(promise);
@@ -393,8 +393,7 @@ void Promise::resolvePromise(JSObject* promise, const Value& value) {
     if(engine != nullptr) {
         auto* microtask_func = factory->createJSFunction(
             [then_method, thenable_obj, resolve_func, reject_func](
-                const CallContext& /*mt_ctx*/,
-                const std::vector<Value>& /*mt_args*/) -> Value {
+                const CallContext& /*mt_ctx*/, const std::vector<Value>& /*mt_args*/) -> Value {
                 try {
                     // Call then() with thenable as 'this'
                     CallContext then_ctx(rift::core::CallType::Function, Value(thenable_obj));
@@ -431,8 +430,8 @@ void Promise::resolvePromise(JSObject* promise, const Value& value) {
  * Enqueues handlers as microtasks to be executed after current sync code.
  */
 void Promise::triggerReactions(JSObject* promise, const std::string& reaction_type) {
-    std::string slot_name = (reaction_type == "fulfill") ? "[[PromiseFulfillReactions]]"
-                                                         : "[[PromiseRejectReactions]]";
+    std::string slot_name =
+        (reaction_type == "fulfill") ? "[[PromiseFulfillReactions]]" : "[[PromiseRejectReactions]]";
 
     Value reactions_val = promise->getProperty(slot_name);
     if(!reactions_val.isObject()) {
@@ -479,8 +478,7 @@ void Promise::triggerReactions(JSObject* promise, const std::string& reaction_ty
             auto* factory = getFactory();
             auto* microtask_func = factory->createJSFunction(
                 [handler, result_promise, result, is_fulfill](
-                    const CallContext& /*mt_ctx*/,
-                    const std::vector<Value>& /*mt_args*/) -> Value {
+                    const CallContext& /*mt_ctx*/, const std::vector<Value>& /*mt_args*/) -> Value {
                     executeReaction(handler, result_promise, result, is_fulfill);
                     return Value::undefined();
                 });
@@ -560,9 +558,8 @@ Value Promise::then(const CallContext& ctx, const std::vector<Value>& args) {
 
         if(engine != nullptr) {
             auto* microtask_func = factory->createJSFunction(
-                [on_fulfilled, result_promise, result](const CallContext& /*mt_ctx*/,
-                                                       const std::vector<Value>& /*mt_args*/)
-                    -> Value {
+                [on_fulfilled, result_promise, result](
+                    const CallContext& /*mt_ctx*/, const std::vector<Value>& /*mt_args*/) -> Value {
                     executeReaction(on_fulfilled, result_promise, result, true);
                     return Value::undefined();
                 });
@@ -577,9 +574,8 @@ Value Promise::then(const CallContext& ctx, const std::vector<Value>& args) {
 
         if(engine != nullptr) {
             auto* microtask_func = factory->createJSFunction(
-                [on_rejected, result_promise, reason](const CallContext& /*mt_ctx*/,
-                                                      const std::vector<Value>& /*mt_args*/)
-                    -> Value {
+                [on_rejected, result_promise, reason](
+                    const CallContext& /*mt_ctx*/, const std::vector<Value>& /*mt_args*/) -> Value {
                     executeReaction(on_rejected, result_promise, reason, false);
                     return Value::undefined();
                 });
@@ -674,10 +670,10 @@ Value Promise::finally_(const CallContext& ctx, const std::vector<Value>& args) 
                 auto* thenable_obj = callback_result.getObject();
 
                 // Create resolve handler that ignores thenable result and uses original value
-                auto* value_resolver = factory->createJSFunction(
-                    [result_promise, original_value](const CallContext& /*res_ctx*/,
-                                                     const std::vector<Value>& /*res_args*/)
-                        -> Value {
+                auto* value_resolver =
+                    factory->createJSFunction([result_promise, original_value](
+                                                  const CallContext& /*res_ctx*/,
+                                                  const std::vector<Value>& /*res_args*/) -> Value {
                         fulfillPromise(result_promise, original_value);
                         return Value::undefined();
                     });
@@ -735,10 +731,10 @@ Value Promise::finally_(const CallContext& ctx, const std::vector<Value>& args) 
                 auto* thenable_obj = callback_result.getObject();
 
                 // Create resolve handler that re-throws original reason
-                auto* reason_rethrower = factory->createJSFunction(
-                    [result_promise, original_reason](const CallContext& /*res_ctx*/,
-                                                      const std::vector<Value>& /*res_args*/)
-                        -> Value {
+                auto* reason_rethrower =
+                    factory->createJSFunction([result_promise, original_reason](
+                                                  const CallContext& /*res_ctx*/,
+                                                  const std::vector<Value>& /*res_args*/) -> Value {
                         rejectPromise(result_promise, original_reason);
                         return Value::undefined();
                     });
@@ -870,10 +866,10 @@ Value Promise::all(const CallContext& /*ctx*/, const std::vector<Value>& args) {
 
         // Create fulfillment handler for this index
         int index = i;  // Capture by value
-        auto* on_fulfilled = factory->createJSFunction(
-            [results, state, result_promise, index](
-                const CallContext& /*handler_ctx*/,
-                const std::vector<Value>& handler_args) -> Value {
+        auto* on_fulfilled =
+            factory->createJSFunction([results, state, result_promise, index](
+                                          const CallContext& /*handler_ctx*/,
+                                          const std::vector<Value>& handler_args) -> Value {
                 // Check if already rejected
                 Value rejected = state->getProperty("rejected");
                 if(rejected.isBoolean() && rejected.getBool()) {
@@ -1093,10 +1089,10 @@ Value Promise::allSettled(const CallContext& /*ctx*/, const std::vector<Value>& 
         int index = i;
 
         // Create fulfillment handler
-        auto* on_fulfilled = factory->createJSFunction(
-            [factory, results, state, result_promise, index](
-                const CallContext& /*handler_ctx*/,
-                const std::vector<Value>& handler_args) -> Value {
+        auto* on_fulfilled =
+            factory->createJSFunction([factory, results, state, result_promise, index](
+                                          const CallContext& /*handler_ctx*/,
+                                          const std::vector<Value>& handler_args) -> Value {
                 Value value = handler_args.empty() ? Value::undefined() : handler_args[0];
 
                 // Create result object: { status: "fulfilled", value: ... }
@@ -1118,10 +1114,10 @@ Value Promise::allSettled(const CallContext& /*ctx*/, const std::vector<Value>& 
             });
 
         // Create rejection handler
-        auto* on_rejected = factory->createJSFunction(
-            [factory, results, state, result_promise, index](
-                const CallContext& /*handler_ctx*/,
-                const std::vector<Value>& handler_args) -> Value {
+        auto* on_rejected =
+            factory->createJSFunction([factory, results, state, result_promise, index](
+                                          const CallContext& /*handler_ctx*/,
+                                          const std::vector<Value>& handler_args) -> Value {
                 Value reason = handler_args.empty() ? Value::undefined() : handler_args[0];
 
                 // Create result object: { status: "rejected", reason: ... }
@@ -1233,10 +1229,10 @@ Value Promise::any(const CallContext& /*ctx*/, const std::vector<Value>& args) {
             });
 
         // Create rejection handler - collect errors
-        auto* on_rejected = factory->createJSFunction(
-            [errors, state, result_promise, index](
-                const CallContext& /*handler_ctx*/,
-                const std::vector<Value>& handler_args) -> Value {
+        auto* on_rejected =
+            factory->createJSFunction([errors, state, result_promise, index](
+                                          const CallContext& /*handler_ctx*/,
+                                          const std::vector<Value>& handler_args) -> Value {
                 // Check if already fulfilled
                 Value fulfilled = state->getProperty("fulfilled");
                 if(fulfilled.isBoolean() && fulfilled.getBool()) {
@@ -1290,9 +1286,9 @@ Value Promise::withResolvers(const CallContext& /*ctx*/, const std::vector<Value
     rift::memory::GCProtector protect(promise_obj, factory->getObjectManager());
 
     // Create resolve function
-    auto* resolve_func = factory->createJSFunction(
-        [promise_obj](const CallContext& /*resolve_ctx*/,
-                      const std::vector<Value>& resolve_args) -> Value {
+    auto* resolve_func =
+        factory->createJSFunction([promise_obj](const CallContext& /*resolve_ctx*/,
+                                                const std::vector<Value>& resolve_args) -> Value {
             Value resolution = resolve_args.empty() ? Value::undefined() : resolve_args[0];
 
             std::string state = getState(promise_obj);
@@ -1305,9 +1301,9 @@ Value Promise::withResolvers(const CallContext& /*ctx*/, const std::vector<Value
         });
 
     // Create reject function
-    auto* reject_func = factory->createJSFunction(
-        [promise_obj](const CallContext& /*reject_ctx*/,
-                      const std::vector<Value>& reject_args) -> Value {
+    auto* reject_func =
+        factory->createJSFunction([promise_obj](const CallContext& /*reject_ctx*/,
+                                                const std::vector<Value>& reject_args) -> Value {
             Value reason = reject_args.empty() ? Value::undefined() : reject_args[0];
 
             std::string state = getState(promise_obj);

@@ -102,9 +102,9 @@ class ContinueException : public std::exception {
 /// This is thrown when a yield is encountered and caught by the generator's next() method
 class YieldException : public std::exception {
   private:
-    Value yieldedValue_;     // The value being yielded
-    int yieldPointId_;       // Unique ID of this yield point
-    int statementIndex_;     // Index of statement in the block
+    Value yieldedValue_;  // The value being yielded
+    int yieldPointId_;    // Unique ID of this yield point
+    int statementIndex_;  // Index of statement in the block
 
   public:
     YieldException(const Value& value, int yieldPointId, int statementIndex)
