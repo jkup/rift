@@ -637,7 +637,8 @@ Value StatementEvaluator::evaluateClassDeclaration(std::shared_ptr<ASTNode> node
         std::vector<std::shared_ptr<ASTNode>> static_methods;
 
         for(const auto& method : class_body->children) {
-            if(method->type != ASTNodeType::MethodDefinition) {
+            if(method->type != ASTNodeType::MethodDefinition &&
+               method->type != ASTNodeType::GeneratorMethod) {
                 continue;
             }
 
@@ -652,6 +653,9 @@ Value StatementEvaluator::evaluateClassDeclaration(std::shared_ptr<ASTNode> node
                 instance_methods.push_back(method);
             }
         }
+
+        // Create class-scoped environment so class name is visible inside methods
+        auto class_env = std::make_shared<Environment>(env);
 
         // Create constructor function
         // Extract constructor parameters and body
@@ -675,7 +679,8 @@ Value StatementEvaluator::evaluateClassDeclaration(std::shared_ptr<ASTNode> node
         }
 
         auto* constructor =
-            factory->createJSFunction([engine, ctor_param_info, ctor_body, env, parent_constructor,
+            factory->createJSFunction([engine, ctor_param_info, ctor_body, class_env,
+                                       parent_constructor,
                                        class_prototype](const rift::core::CallContext& call_context,
                                                         const std::vector<Value>& args) -> Value {
                 // Classes must be called with 'new'
@@ -685,7 +690,7 @@ Value StatementEvaluator::evaluateClassDeclaration(std::shared_ptr<ASTNode> node
                 }
 
                 // Create function environment
-                auto func_env = std::make_shared<Environment>(env);
+                auto func_env = std::make_shared<Environment>(class_env);
 
                 // Bind 'this' to the new object
                 func_env->define("this", call_context.thisValue);
@@ -743,14 +748,18 @@ Value StatementEvaluator::evaluateClassDeclaration(std::shared_ptr<ASTNode> node
         class_prototype->setProperty("constructor", Value(constructor));
         constructor->setHomeObject(class_prototype);
 
+        // Bind class name in class-scoped environment (visible to methods)
+        class_env->define(class_name, Value(constructor));
+
         // Add instance methods to prototype
         for(const auto& method : instance_methods) {
             std::string method_name = method->value;
             bool is_computed = (method->metadata.find("computed") != std::string::npos);
+            bool is_generator = (method->type == ASTNodeType::GeneratorMethod);
 
             // Handle computed property names
             if(is_computed && method->children.size() > 2) {
-                Value key_value = engine->evaluate(method->children[2], env);
+                Value key_value = engine->evaluate(method->children[2], class_env);
                 method_name = key_value.toString();
             }
 
@@ -758,63 +767,105 @@ Value StatementEvaluator::evaluateClassDeclaration(std::shared_ptr<ASTNode> node
             auto method_params = method->children[0];
             auto method_body = method->children[1];
 
+            std::vector<std::string> param_names;
             std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> method_param_info;
             for(const auto& param : method_params->children) {
                 if(param->type == ASTNodeType::AssignmentExpression) {
                     method_param_info.emplace_back(param->children[0]->value, param->children[1],
                                                    false);
+                    param_names.push_back(param->children[0]->value);
                 } else if(param->metadata == "rest") {
                     method_param_info.emplace_back(param->value, nullptr, true);
+                    param_names.push_back(param->value);
                 } else {
                     method_param_info.emplace_back(param->value, nullptr, false);
+                    param_names.push_back(param->value);
                 }
             }
 
-            auto* method_func = factory->createJSFunction(
-                [engine, method_param_info, method_body, env, class_prototype, parent_prototype](
-                    const rift::core::CallContext& call_context,
-                    const std::vector<Value>& args) -> Value {
-                    auto func_env = std::make_shared<Environment>(env);
-                    func_env->define("this", call_context.thisValue);
-                    func_env->define("[[HomeObject]]", Value(class_prototype));
-                    if(parent_prototype) {
-                        func_env->define("[[SuperPrototype]]", Value(parent_prototype));
-                    }
-
-                    // Bind parameters
-                    for(size_t i = 0; i < method_param_info.size(); ++i) {
-                        const auto& [param_name, default_ast, is_rest] = method_param_info[i];
-
-                        if(is_rest) {
-                            std::vector<Value> rest_args;
-                            for(size_t j = i; j < args.size(); ++j) {
-                                rest_args.push_back(args[j]);
-                            }
-                            auto* rest_array = builtins::Array::createArrayObject(
-                                engine->getObjectFactory(), rest_args);
-                            func_env->define(param_name, Value(rest_array));
-                        } else {
-                            Value arg_value;
-                            bool use_default = (i >= args.size()) || args[i].isUndefined();
-
-                            if(use_default && default_ast) {
-                                arg_value = engine->evaluate(default_ast, func_env);
-                            } else if(i < args.size()) {
-                                arg_value = args[i];
+            rift::runtime::JSFunction* method_func = nullptr;
+            if(is_generator) {
+                method_func = factory->createJSFunction(
+                    [engine, method_param_info, param_names, method_body, class_env](
+                        const rift::core::CallContext& /*call_context*/,
+                        const std::vector<Value>& args) -> Value {
+                        std::vector<Value> processed_args;
+                        auto func_env = std::make_shared<Environment>(class_env);
+                        for(size_t i = 0; i < method_param_info.size(); ++i) {
+                            const auto& [param_name, default_ast, is_rest] = method_param_info[i];
+                            if(is_rest) {
+                                std::vector<Value> rest_args;
+                                for(size_t j = i; j < args.size(); ++j) {
+                                    rest_args.push_back(args[j]);
+                                }
+                                auto* rest_array = builtins::Array::createArrayObject(
+                                    engine->getObjectFactory(), rest_args);
+                                processed_args.push_back(Value(rest_array));
                             } else {
-                                arg_value = Value::undefined();
+                                Value arg_value;
+                                bool use_default = (i >= args.size()) || args[i].isUndefined();
+                                if(use_default && default_ast) {
+                                    arg_value = engine->evaluate(default_ast, func_env);
+                                } else if(i < args.size()) {
+                                    arg_value = args[i];
+                                } else {
+                                    arg_value = Value::undefined();
+                                }
+                                processed_args.push_back(arg_value);
                             }
-                            func_env->define(param_name, arg_value);
                         }
-                    }
+                        auto* generator = builtins::GeneratorIterator::create(
+                            engine->getObjectFactory(), method_body, class_env, engine, param_names,
+                            processed_args);
+                        return Value(generator);
+                    });
+            } else {
+                method_func = factory->createJSFunction(
+                    [engine, method_param_info, method_body, class_env, class_prototype,
+                     parent_prototype](const rift::core::CallContext& call_context,
+                                       const std::vector<Value>& args) -> Value {
+                        auto func_env = std::make_shared<Environment>(class_env);
+                        func_env->define("this", call_context.thisValue);
+                        func_env->define("[[HomeObject]]", Value(class_prototype));
+                        if(parent_prototype) {
+                            func_env->define("[[SuperPrototype]]", Value(parent_prototype));
+                        }
 
-                    // Execute method body
-                    try {
-                        return engine->evaluate(method_body, func_env);
-                    } catch(const ReturnException& e) {
-                        return e.getValue();
-                    }
-                });
+                        // Bind parameters
+                        for(size_t i = 0; i < method_param_info.size(); ++i) {
+                            const auto& [param_name, default_ast, is_rest] = method_param_info[i];
+
+                            if(is_rest) {
+                                std::vector<Value> rest_args;
+                                for(size_t j = i; j < args.size(); ++j) {
+                                    rest_args.push_back(args[j]);
+                                }
+                                auto* rest_array = builtins::Array::createArrayObject(
+                                    engine->getObjectFactory(), rest_args);
+                                func_env->define(param_name, Value(rest_array));
+                            } else {
+                                Value arg_value;
+                                bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                                if(use_default && default_ast) {
+                                    arg_value = engine->evaluate(default_ast, func_env);
+                                } else if(i < args.size()) {
+                                    arg_value = args[i];
+                                } else {
+                                    arg_value = Value::undefined();
+                                }
+                                func_env->define(param_name, arg_value);
+                            }
+                        }
+
+                        // Execute method body
+                        try {
+                            return engine->evaluate(method_body, func_env);
+                        } catch(const ReturnException& e) {
+                            return e.getValue();
+                        }
+                    });
+            }
 
             method_func->setHomeObject(class_prototype);
             class_prototype->setProperty(method_name, Value(method_func));
@@ -824,72 +875,115 @@ Value StatementEvaluator::evaluateClassDeclaration(std::shared_ptr<ASTNode> node
         for(const auto& method : static_methods) {
             std::string method_name = method->value;
             bool is_computed = (method->metadata.find("computed") != std::string::npos);
+            bool is_generator = (method->type == ASTNodeType::GeneratorMethod);
 
             if(is_computed && method->children.size() > 2) {
-                Value key_value = engine->evaluate(method->children[2], env);
+                Value key_value = engine->evaluate(method->children[2], class_env);
                 method_name = key_value.toString();
             }
 
             auto method_params = method->children[0];
             auto method_body = method->children[1];
 
+            std::vector<std::string> param_names;
             std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> method_param_info;
             for(const auto& param : method_params->children) {
                 if(param->type == ASTNodeType::AssignmentExpression) {
                     method_param_info.emplace_back(param->children[0]->value, param->children[1],
                                                    false);
+                    param_names.push_back(param->children[0]->value);
                 } else if(param->metadata == "rest") {
                     method_param_info.emplace_back(param->value, nullptr, true);
+                    param_names.push_back(param->value);
                 } else {
                     method_param_info.emplace_back(param->value, nullptr, false);
+                    param_names.push_back(param->value);
                 }
             }
 
-            auto* method_func =
-                factory->createJSFunction([engine, method_param_info, method_body, env](
-                                              const rift::core::CallContext& call_context,
-                                              const std::vector<Value>& args) -> Value {
-                    auto func_env = std::make_shared<Environment>(env);
-                    func_env->define("this", call_context.thisValue);
-
-                    // Bind parameters
-                    for(size_t i = 0; i < method_param_info.size(); ++i) {
-                        const auto& [param_name, default_ast, is_rest] = method_param_info[i];
-
-                        if(is_rest) {
-                            std::vector<Value> rest_args;
-                            for(size_t j = i; j < args.size(); ++j) {
-                                rest_args.push_back(args[j]);
-                            }
-                            auto* rest_array = builtins::Array::createArrayObject(
-                                engine->getObjectFactory(), rest_args);
-                            func_env->define(param_name, Value(rest_array));
-                        } else {
-                            Value arg_value;
-                            bool use_default = (i >= args.size()) || args[i].isUndefined();
-
-                            if(use_default && default_ast) {
-                                arg_value = engine->evaluate(default_ast, func_env);
-                            } else if(i < args.size()) {
-                                arg_value = args[i];
+            rift::runtime::JSFunction* method_func = nullptr;
+            if(is_generator) {
+                method_func = factory->createJSFunction(
+                    [engine, method_param_info, param_names, method_body, class_env](
+                        const rift::core::CallContext& /*call_context*/,
+                        const std::vector<Value>& args) -> Value {
+                        std::vector<Value> processed_args;
+                        auto func_env = std::make_shared<Environment>(class_env);
+                        for(size_t i = 0; i < method_param_info.size(); ++i) {
+                            const auto& [param_name, default_ast, is_rest] = method_param_info[i];
+                            if(is_rest) {
+                                std::vector<Value> rest_args;
+                                for(size_t j = i; j < args.size(); ++j) {
+                                    rest_args.push_back(args[j]);
+                                }
+                                auto* rest_array = builtins::Array::createArrayObject(
+                                    engine->getObjectFactory(), rest_args);
+                                processed_args.push_back(Value(rest_array));
                             } else {
-                                arg_value = Value::undefined();
+                                Value arg_value;
+                                bool use_default = (i >= args.size()) || args[i].isUndefined();
+                                if(use_default && default_ast) {
+                                    arg_value = engine->evaluate(default_ast, func_env);
+                                } else if(i < args.size()) {
+                                    arg_value = args[i];
+                                } else {
+                                    arg_value = Value::undefined();
+                                }
+                                processed_args.push_back(arg_value);
                             }
-                            func_env->define(param_name, arg_value);
                         }
-                    }
+                        auto* generator = builtins::GeneratorIterator::create(
+                            engine->getObjectFactory(), method_body, class_env, engine, param_names,
+                            processed_args);
+                        return Value(generator);
+                    });
+            } else {
+                method_func =
+                    factory->createJSFunction([engine, method_param_info, method_body, class_env](
+                                                  const rift::core::CallContext& call_context,
+                                                  const std::vector<Value>& args) -> Value {
+                        auto func_env = std::make_shared<Environment>(class_env);
+                        func_env->define("this", call_context.thisValue);
 
-                    try {
-                        return engine->evaluate(method_body, func_env);
-                    } catch(const ReturnException& e) {
-                        return e.getValue();
-                    }
-                });
+                        // Bind parameters
+                        for(size_t i = 0; i < method_param_info.size(); ++i) {
+                            const auto& [param_name, default_ast, is_rest] = method_param_info[i];
+
+                            if(is_rest) {
+                                std::vector<Value> rest_args;
+                                for(size_t j = i; j < args.size(); ++j) {
+                                    rest_args.push_back(args[j]);
+                                }
+                                auto* rest_array = builtins::Array::createArrayObject(
+                                    engine->getObjectFactory(), rest_args);
+                                func_env->define(param_name, Value(rest_array));
+                            } else {
+                                Value arg_value;
+                                bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                                if(use_default && default_ast) {
+                                    arg_value = engine->evaluate(default_ast, func_env);
+                                } else if(i < args.size()) {
+                                    arg_value = args[i];
+                                } else {
+                                    arg_value = Value::undefined();
+                                }
+                                func_env->define(param_name, arg_value);
+                            }
+                        }
+
+                        try {
+                            return engine->evaluate(method_body, func_env);
+                        } catch(const ReturnException& e) {
+                            return e.getValue();
+                        }
+                    });
+            }
 
             constructor->setProperty(method_name, Value(method_func));
         }
 
-        // Define class in environment
+        // Define class in outer environment (declarations are visible outside)
         env->define(class_name, Value(constructor));
 
         obj_manager->setGCEnabled(was_gc_enabled);
