@@ -158,11 +158,40 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
     if(callee_node->type == ASTNodeType::MemberExpression) {
         // This is a method call: obj.method(args)
         if(callee_node->children.size() == 2) {
-            // Get the object (this value)
+            // Get the object (this value) - evaluate ONCE
             this_value = engine->evaluate(callee_node->children[0], env);
 
-            // Get the method from the object
-            callee = engine->evaluate(callee_node, env);
+            // Get property name from the member expression
+            std::string property;
+            if(callee_node->metadata == "computed") {
+                Value property_value = engine->evaluate(callee_node->children[1], env);
+                if(property_value.isSymbol()) {
+                    property =
+                        EvaluationUtils::symbolToPropertyKey(property_value.getSymbol().id);
+                } else {
+                    property = EvaluationUtils::toPropertyKeyString(property_value);
+                }
+            } else {
+                property = callee_node->children[1]->value;
+            }
+
+            // Look up the method on the already-evaluated object
+            if(this_value.isObject() || this_value.isFunction()) {
+                auto* obj = this_value.getObject();
+                if(obj) {
+                    callee = obj->getProperty(property);
+                }
+            } else if(this_value.isString()) {
+                auto* string_prototype = BuiltinManager::getStringPrototype();
+                if(string_prototype) {
+                    callee = string_prototype->getProperty(property);
+                }
+            } else if(this_value.isSymbol()) {
+                auto* symbol_prototype = BuiltinManager::getSymbolPrototype();
+                if(symbol_prototype) {
+                    callee = symbol_prototype->getProperty(property);
+                }
+            }
         }
     } else {
         // Regular function call

@@ -14,7 +14,6 @@
 
 #include "rift/core/engine/statement_evaluator.h"
 
-#include <iostream>
 #include <unordered_set>
 
 #include "rift/builtins/array/array.h"

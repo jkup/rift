@@ -34,6 +34,12 @@ struct AsyncExecutionContext {
     // try/catch resumption state
     bool inCatchBlock = false;  // True if we awaited from inside a catch block
     Value caughtValue;          // The caught exception value (for recreating catch env)
+
+    // finally block resumption state
+    bool inFinallyBlock = false;       // True if we awaited from inside a finally block
+    bool hasPendingReturn = false;     // Finally was triggered by a return statement
+    bool hasPendingException = false;  // Finally was triggered by an uncaught exception
+    Value pendingCompletionValue;      // The value to restore after finally completes
 };
 
 /**

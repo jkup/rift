@@ -513,7 +513,28 @@ Value AsyncExecutor::evaluateTryStatement(std::shared_ptr<ASTNode> node,
     bool normal_completion = false;
     Value pending_exception_value = Value::undefined();
 
-    // Check if we're resuming from an await that was inside the catch block
+    // --- Resumption: await was inside the finally block ---
+    if(context.isResuming && context.inFinallyBlock && finally_clause &&
+       !finally_clause->children.empty() &&
+       containsAwaitPoint(finally_clause->children[0], context.currentAwaitId)) {
+        evaluateBlock(finally_clause->children[0], env, engine, context);
+        // Finally completed - replay the original completion
+        Value completionValue = context.pendingCompletionValue;
+        bool hadReturn = context.hasPendingReturn;
+        bool hadException = context.hasPendingException;
+        context.inFinallyBlock = false;
+        context.hasPendingReturn = false;
+        context.hasPendingException = false;
+        if(hadReturn) {
+            throw ReturnException(completionValue);
+        }
+        if(hadException) {
+            throw JavaScriptException(completionValue);
+        }
+        return completionValue;
+    }
+
+    // --- Resumption: await was inside the catch block ---
     if(context.isResuming && context.inCatchBlock && catch_clause) {
         auto catch_body = catch_clause->children[0];
         if(containsAwaitPoint(catch_body, context.currentAwaitId)) {
@@ -527,42 +548,45 @@ Value AsyncExecutor::evaluateTryStatement(std::shared_ptr<ASTNode> node,
                 context.inCatchBlock = false;
                 normal_completion = true;
             } catch(const AwaitException&) {
-                // Still in catch block, state already set
+                // Re-suspending from catch block - just propagate
+                throw;
+            } catch(const ReturnException& e) {
+                // Return from catch body - run finally then re-throw
+                context.inCatchBlock = false;
                 if(finally_clause && !finally_clause->children.empty()) {
+                    context.inFinallyBlock = true;
+                    context.hasPendingReturn = true;
+                    context.pendingCompletionValue = e.getValue();
                     evaluateBlock(finally_clause->children[0], env, engine, context);
+                    context.inFinallyBlock = false;
+                    context.hasPendingReturn = false;
                 }
                 throw;
             }
 
-            // Run finally if present
+            // Catch completed normally - run finally if present
             if(finally_clause && !finally_clause->children.empty()) {
+                context.inFinallyBlock = true;
+                context.pendingCompletionValue = result;
                 evaluateBlock(finally_clause->children[0], env, engine, context);
+                context.inFinallyBlock = false;
             }
 
             return result;
         }
     }
 
-    // Check if we're resuming from an await in the finally block
-    if(context.isResuming && finally_clause && !finally_clause->children.empty()) {
-        if(containsAwaitPoint(finally_clause->children[0], context.currentAwaitId)) {
-            result = evaluateBlock(finally_clause->children[0], env, engine, context);
-            return result;
-        }
-    }
+    // --- Normal execution ---
 
     try {
-        // Execute try block using async-aware evaluation
         result = evaluateBlock(try_block, env, engine, context);
         normal_completion = true;
     } catch(const AwaitException&) {
-        // AwaitException should propagate - run finally if present, then rethrow
-        if(finally_clause && !finally_clause->children.empty()) {
-            evaluateBlock(finally_clause->children[0], env, engine, context);
-        }
+        // Suspension from try block - just propagate, don't run finally.
+        // AwaitException is a suspension mechanism, not a real exception.
+        // Finally will run when the try block actually completes on resumption.
         throw;
     } catch(const JavaScriptException& e) {
-        // Handle JavaScript exceptions
         if(catch_clause) {
             std::string parameter_name = catch_clause->value;
             auto catch_body = catch_clause->children[0];
@@ -578,26 +602,51 @@ Value AsyncExecutor::evaluateTryStatement(std::shared_ptr<ASTNode> node,
                 context.inCatchBlock = false;
                 normal_completion = true;
             } catch(const AwaitException&) {
-                // Awaiting from catch block - state already set
+                // Suspension from catch block - just propagate
+                throw;
+            } catch(const ReturnException& ret) {
+                // Return from catch body - run finally then re-throw
+                context.inCatchBlock = false;
                 if(finally_clause && !finally_clause->children.empty()) {
+                    context.inFinallyBlock = true;
+                    context.hasPendingReturn = true;
+                    context.pendingCompletionValue = ret.getValue();
                     evaluateBlock(finally_clause->children[0], env, engine, context);
+                    context.inFinallyBlock = false;
+                    context.hasPendingReturn = false;
                 }
                 throw;
             }
         } else {
             pending_exception_value = e.getValue();
         }
-    } catch(const ReturnException&) {
-        // Return exceptions should not be caught; run finally then rethrow
+    } catch(const ReturnException& e) {
+        // Return from try/catch body - run finally then re-throw
         if(finally_clause && !finally_clause->children.empty()) {
+            context.inFinallyBlock = true;
+            context.hasPendingReturn = true;
+            context.pendingCompletionValue = e.getValue();
             evaluateBlock(finally_clause->children[0], env, engine, context);
+            // If we get here, finally completed without suspending
+            context.inFinallyBlock = false;
+            context.hasPendingReturn = false;
         }
         throw;
     }
 
     // Run finally if present
     if(finally_clause && !finally_clause->children.empty()) {
+        context.inFinallyBlock = true;
+        if(!normal_completion && !pending_exception_value.isUndefined()) {
+            context.hasPendingException = true;
+            context.pendingCompletionValue = pending_exception_value;
+        } else {
+            context.pendingCompletionValue = result;
+        }
         evaluateBlock(finally_clause->children[0], env, engine, context);
+        // If we get here, finally completed without suspending
+        context.inFinallyBlock = false;
+        context.hasPendingException = false;
     }
 
     // If an exception was pending and no catch handled it, rethrow now
