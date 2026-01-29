@@ -789,7 +789,8 @@ Value ExpressionEvaluator::evaluateClassExpression(std::shared_ptr<ASTNode> node
 
         for(const auto& method : class_body->children) {
             if(method->type != ASTNodeType::MethodDefinition &&
-               method->type != ASTNodeType::GeneratorMethod) {
+               method->type != ASTNodeType::GeneratorMethod &&
+               method->type != ASTNodeType::AsyncMethod) {
                 continue;
             }
 
@@ -901,6 +902,7 @@ Value ExpressionEvaluator::evaluateClassExpression(std::shared_ptr<ASTNode> node
             std::string method_name = method->value;
             bool is_computed = (method->metadata.find("computed") != std::string::npos);
             bool is_generator = (method->type == ASTNodeType::GeneratorMethod);
+            bool is_async = (method->type == ASTNodeType::AsyncMethod);
 
             if(is_computed && method->children.size() > 2) {
                 Value key_value = engine->evaluate(method->children[2], class_env);
@@ -961,6 +963,58 @@ Value ExpressionEvaluator::evaluateClassExpression(std::shared_ptr<ASTNode> node
                             engine->getObjectFactory(), method_body, class_env, engine, param_names,
                             processed_args);
                         return Value(generator);
+                    });
+            } else if(is_async) {
+                method_func = factory->createJSFunction(
+                    [engine, method_param_info, method_body, class_env, class_prototype,
+                     parent_prototype](const rift::core::CallContext& call_context,
+                                       const std::vector<Value>& args) -> Value {
+                        auto* factory = engine->getObjectFactory();
+                        auto* promise_obj = builtins::Promise::createPromiseObject(factory);
+                        memory::GCProtector protect(promise_obj, factory->getObjectManager());
+
+                        auto func_env = std::make_shared<Environment>(class_env);
+                        func_env->define("this", call_context.thisValue);
+                        func_env->define("[[HomeObject]]", Value(class_prototype));
+                        if(parent_prototype) {
+                            func_env->define("[[SuperPrototype]]", Value(parent_prototype));
+                        }
+
+                        for(size_t i = 0; i < method_param_info.size(); ++i) {
+                            const auto& [param_name, default_ast, is_rest] = method_param_info[i];
+                            if(is_rest) {
+                                std::vector<Value> rest_args;
+                                for(size_t j = i; j < args.size(); ++j) {
+                                    rest_args.push_back(args[j]);
+                                }
+                                auto* rest_array = builtins::Array::createArrayObject(
+                                    engine->getObjectFactory(), rest_args);
+                                func_env->define(param_name, Value(rest_array));
+                            } else {
+                                Value arg_value;
+                                bool use_default = (i >= args.size()) || args[i].isUndefined();
+                                if(use_default && default_ast) {
+                                    arg_value = engine->evaluate(default_ast, func_env);
+                                } else if(i < args.size()) {
+                                    arg_value = args[i];
+                                } else {
+                                    arg_value = Value::undefined();
+                                }
+                                func_env->define(param_name, arg_value);
+                            }
+                        }
+
+                        auto* args_factory = engine->getObjectFactory();
+                        auto* arguments_obj = args_factory->createJSObject();
+                        for(size_t i = 0; i < args.size(); ++i) {
+                            arguments_obj->setProperty(std::to_string(i), args[i]);
+                        }
+                        arguments_obj->setProperty("length",
+                                                   Value(static_cast<double>(args.size())));
+                        func_env->define("arguments", Value(arguments_obj));
+
+                        AsyncExecutor::executeAsync(method_body, func_env, engine, promise_obj);
+                        return Value(promise_obj);
                     });
             } else {
                 method_func = factory->createJSFunction(
@@ -1017,6 +1071,7 @@ Value ExpressionEvaluator::evaluateClassExpression(std::shared_ptr<ASTNode> node
             std::string method_name = method->value;
             bool is_computed = (method->metadata.find("computed") != std::string::npos);
             bool is_generator = (method->type == ASTNodeType::GeneratorMethod);
+            bool is_async = (method->type == ASTNodeType::AsyncMethod);
 
             if(is_computed && method->children.size() > 2) {
                 Value key_value = engine->evaluate(method->children[2], class_env);
@@ -1077,6 +1132,54 @@ Value ExpressionEvaluator::evaluateClassExpression(std::shared_ptr<ASTNode> node
                             engine->getObjectFactory(), method_body, class_env, engine, param_names,
                             processed_args);
                         return Value(generator);
+                    });
+            } else if(is_async) {
+                method_func = factory->createJSFunction(
+                    [engine, method_param_info, method_body, class_env](
+                        const rift::core::CallContext& call_context,
+                        const std::vector<Value>& args) -> Value {
+                        auto* factory = engine->getObjectFactory();
+                        auto* promise_obj = builtins::Promise::createPromiseObject(factory);
+                        memory::GCProtector protect(promise_obj, factory->getObjectManager());
+
+                        auto func_env = std::make_shared<Environment>(class_env);
+                        func_env->define("this", call_context.thisValue);
+
+                        for(size_t i = 0; i < method_param_info.size(); ++i) {
+                            const auto& [param_name, default_ast, is_rest] = method_param_info[i];
+                            if(is_rest) {
+                                std::vector<Value> rest_args;
+                                for(size_t j = i; j < args.size(); ++j) {
+                                    rest_args.push_back(args[j]);
+                                }
+                                auto* rest_array = builtins::Array::createArrayObject(
+                                    engine->getObjectFactory(), rest_args);
+                                func_env->define(param_name, Value(rest_array));
+                            } else {
+                                Value arg_value;
+                                bool use_default = (i >= args.size()) || args[i].isUndefined();
+                                if(use_default && default_ast) {
+                                    arg_value = engine->evaluate(default_ast, func_env);
+                                } else if(i < args.size()) {
+                                    arg_value = args[i];
+                                } else {
+                                    arg_value = Value::undefined();
+                                }
+                                func_env->define(param_name, arg_value);
+                            }
+                        }
+
+                        auto* args_factory = engine->getObjectFactory();
+                        auto* arguments_obj = args_factory->createJSObject();
+                        for(size_t i = 0; i < args.size(); ++i) {
+                            arguments_obj->setProperty(std::to_string(i), args[i]);
+                        }
+                        arguments_obj->setProperty("length",
+                                                   Value(static_cast<double>(args.size())));
+                        func_env->define("arguments", Value(arguments_obj));
+
+                        AsyncExecutor::executeAsync(method_body, func_env, engine, promise_obj);
+                        return Value(promise_obj);
                     });
             } else {
                 method_func =

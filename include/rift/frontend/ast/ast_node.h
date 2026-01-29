@@ -65,6 +65,7 @@ enum class ASTNodeType {
     GeneratorFunctionDeclaration,  // function* name() {}
     GeneratorFunctionExpression,   // const g = function*() {}
     GeneratorMethod,               // { *method() {} }
+    AsyncMethod,                   // async method() {} in classes
     YieldExpression,               // yield value (metadata: "" or "delegate" for yield*)
     // Async-related nodes
     AsyncFunctionDeclaration,  // async function name() {}

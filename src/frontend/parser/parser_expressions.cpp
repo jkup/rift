@@ -527,8 +527,26 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
 
         // Parse property key (can be identifier or string literal)
         std::shared_ptr<ASTNode> key;
+        bool is_async_method = false;
 
-        if(current_token().type == TokenType::Identifier) {
+        // Check for async method shorthand: { async methodName() {} }
+        if(current_token().type == TokenType::Async && peek_token().type == TokenType::Identifier) {
+            // Lookahead: async IDENTIFIER ( means async method shorthand
+            size_t saved = current;
+            current++;  // skip 'async'
+            std::string method_name = current_token().value;
+            current++;  // skip method name
+            if(current_token().type == TokenType::LeftParen) {
+                // Confirmed async method shorthand
+                is_async_method = true;
+                key = ASTFactory::makeIdentifier(method_name);
+            } else {
+                // Not a method shorthand; backtrack, treat 'async' as property name
+                current = saved;
+                key = ASTFactory::makeIdentifier(current_token().value);
+                current++;  // consume 'async' as identifier
+            }
+        } else if(current_token().type == TokenType::Identifier) {
             // Property key as identifier: { name: value }
             key = ASTFactory::makeIdentifier(current_token().value);
             current++;  // consume identifier
@@ -542,14 +560,33 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
             throw std::runtime_error("Expected property name in object literal");
         }
 
-        // Expect colon
-        consume(TokenType::Colon);
+        // Check for method shorthand: { methodName() {} } or { async methodName() {} }
+        if(is_async_method || current_token().type == TokenType::LeftParen) {
+            // Method shorthand syntax
+            consume(TokenType::LeftParen);
+            auto parameters = parse_parameter_list();
+            consume(TokenType::RightParen);
 
-        // Parse property value
-        auto value = parse_expression();
+            bool was_in_async = in_async_context_;
+            if(is_async_method) {
+                in_async_context_ = true;
+            }
+            auto method_body = parse_block_statement();
+            in_async_context_ = was_in_async;
 
-        // Add property to object
-        ASTFactory::addObjectProperty(object, key, value);
+            std::shared_ptr<ASTNode> value;
+            if(is_async_method) {
+                value = ASTFactory::makeAsyncFunctionExpression(parameters, method_body, key->value);
+            } else {
+                value = ASTFactory::makeFunctionExpression(parameters, method_body);
+            }
+            ASTFactory::addObjectProperty(object, key, value);
+        } else {
+            // Standard key: value syntax
+            consume(TokenType::Colon);
+            auto value = parse_expression();
+            ASTFactory::addObjectProperty(object, key, value);
+        }
 
     } while(match(TokenType::Comma));
 

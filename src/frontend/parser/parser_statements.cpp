@@ -848,6 +848,7 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     bool isStatic = false;
     bool isComputed = false;
     bool isGenerator = false;
+    bool isAsync = false;
     std::string methodName;
     std::shared_ptr<ASTNode> computedKey = nullptr;
 
@@ -855,6 +856,12 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     if(current_token().type == TokenType::Static) {
         isStatic = true;
         current++;  // consume 'static'
+    }
+
+    // Check for 'async' keyword (must not be followed by '(' which would mean a method named "async")
+    if(current_token().type == TokenType::Async && peek_token().type != TokenType::LeftParen) {
+        isAsync = true;
+        current++;  // consume 'async'
     }
 
     // Check for generator method: *methodName() {}
@@ -889,18 +896,26 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     auto parameters = parse_parameter_list();
     consume(TokenType::RightParen);
 
-    // Parse method body (with generator context if this is a generator method)
+    // Parse method body (with appropriate context flags)
     bool was_in_generator = in_generator_context_;
+    bool was_in_async = in_async_context_;
     if(isGenerator) {
         in_generator_context_ = true;
     }
+    if(isAsync) {
+        in_async_context_ = true;
+    }
     auto methodBody = parse_block_statement();
     in_generator_context_ = was_in_generator;
+    in_async_context_ = was_in_async;
 
     std::shared_ptr<ASTNode> node;
     if(isGenerator) {
         node = ASTFactory::makeGeneratorMethod(methodName, parameters, methodBody, isStatic,
                                                isComputed, computedKey);
+    } else if(isAsync) {
+        node = ASTFactory::makeAsyncMethod(methodName, parameters, methodBody, isStatic, isComputed,
+                                           computedKey);
     } else {
         node = ASTFactory::makeMethodDefinition(methodName, parameters, methodBody, isStatic,
                                                 isComputed, computedKey);

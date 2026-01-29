@@ -317,6 +317,35 @@ class ASTFactory {
         return node;
     }
 
+    // Async method in class: async method() {}
+    // Same structure as MethodDefinition but with AsyncMethod type
+    // value = method name
+    // metadata = "static" for static methods, "computed" for computed names
+    // children[0] = parameters (ParameterList)
+    // children[1] = body (BlockStatement)
+    // children[2] = computed key expression (optional)
+    static std::shared_ptr<ASTNode> makeAsyncMethod(
+        const std::string& name, std::shared_ptr<ASTNode> parameters, std::shared_ptr<ASTNode> body,
+        bool isStatic = false, bool isComputed = false,
+        std::shared_ptr<ASTNode> computedKey = nullptr) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::AsyncMethod, name);
+        node->children.push_back(std::move(parameters));
+        node->children.push_back(std::move(body));
+
+        std::string metadata;
+        if(isStatic) {
+            metadata = "static";
+        }
+        if(isComputed) {
+            metadata = metadata.empty() ? "computed" : metadata + ",computed";
+            if(computedKey) {
+                node->children.push_back(std::move(computedKey));
+            }
+        }
+        node->metadata = metadata;
+        return node;
+    }
+
     // Async function declaration: async function name() {}
     // value = function name
     // children[0] = parameters (ParameterList)
