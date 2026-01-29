@@ -66,6 +66,10 @@ enum class ASTNodeType {
     GeneratorFunctionExpression,   // const g = function*() {}
     GeneratorMethod,               // { *method() {} }
     YieldExpression,               // yield value (metadata: "" or "delegate" for yield*)
+    // Async-related nodes
+    AsyncFunctionDeclaration,   // async function name() {}
+    AsyncFunctionExpression,    // const f = async function() {}
+    AwaitExpression,            // await value
 };
 
 struct ASTNode {
