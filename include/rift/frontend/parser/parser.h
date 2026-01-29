@@ -17,6 +17,7 @@ class Parser {
     std::vector<Token> tokens;
     size_t current;
     bool in_generator_context_;  // Track if we're inside a generator function
+    bool in_async_context_;      // Track if we're inside an async function
     bool in_strict_mode_;        // Track if we're in strict mode
 
     Token& current_token();
@@ -68,6 +69,11 @@ class Parser {
     std::shared_ptr<ASTNode> parse_generator_function_declaration();
     std::shared_ptr<ASTNode> parse_generator_function_expression();
     std::shared_ptr<ASTNode> parse_yield_expression();
+
+    // Async-related parsing methods
+    std::shared_ptr<ASTNode> parse_async_function_declaration();
+    std::shared_ptr<ASTNode> parse_async_function_expression();
+    std::shared_ptr<ASTNode> parse_await_expression();
 
     // Destructuring pattern parsing
     std::shared_ptr<ASTNode> parse_array_pattern();

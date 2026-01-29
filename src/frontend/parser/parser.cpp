@@ -22,7 +22,11 @@ using ASTFactory = ast::ASTFactory;
 
 // Constructor
 Parser::Parser(const std::vector<Token>& tokens)
-    : tokens(tokens), current(0), in_generator_context_(false), in_strict_mode_(false) {
+    : tokens(tokens),
+      current(0),
+      in_generator_context_(false),
+      in_async_context_(false),
+      in_strict_mode_(false) {
 }
 
 // Check if a name is a strict mode reserved word
@@ -159,6 +163,13 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
 
     if(current_token().type == TokenType::Continue) {
         return parse_continue_statement();
+    }
+
+    if(current_token().type == TokenType::Async) {
+        // async function declaration: async function name() {}
+        if(peek_token().type == TokenType::Function) {
+            return parse_async_function_declaration();
+        }
     }
 
     if(current_token().type == TokenType::Function) {

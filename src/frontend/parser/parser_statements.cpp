@@ -976,4 +976,39 @@ std::shared_ptr<ASTNode> Parser::parse_generator_function_expression() {
     return node;
 }
 
+// Async function parsing
+
+std::shared_ptr<ASTNode> Parser::parse_async_function_declaration() {
+    Token& startToken = current_token();  // Save 'async' location
+    consume(TokenType::Async);            // consume 'async'
+    consume(TokenType::Function);         // consume 'function'
+
+    // Get function name (required for declarations)
+    if(current_token().type != TokenType::Identifier) {
+        throw std::runtime_error("Expected async function name");
+    }
+    std::string name = current_token().value;
+    size_t nameLine = current_token().line;
+    size_t nameColumn = current_token().column;
+    current++;  // consume function name
+
+    // Validate function name in strict mode
+    validateIdentifier(name, nameLine, nameColumn);
+
+    // Parse parameters
+    consume(TokenType::LeftParen);
+    auto parameters = parse_parameter_list();
+    consume(TokenType::RightParen);
+
+    // Parse function body with async context enabled
+    bool was_in_async = in_async_context_;
+    in_async_context_ = true;
+    auto body = parse_block_statement();
+    in_async_context_ = was_in_async;
+
+    auto node = ASTFactory::makeAsyncFunctionDeclaration(name, parameters, body);
+    node->setLocation(startToken.line, startToken.column);
+    return node;
+}
+
 }  // namespace rift::frontend

@@ -136,6 +136,21 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             // yield expression - must be inside a generator
             return parse_yield_expression();
         }
+        case TokenType::Async: {
+            // async function expression: async function() {}
+            if(peek_token().type == TokenType::Function) {
+                return parse_async_function_expression();
+            }
+            // Otherwise treat 'async' as an identifier (for property access, etc.)
+            auto node = ASTFactory::makeIdentifier(token.value);
+            node->setLocation(token.line, token.column);
+            current++;
+            return node;
+        }
+        case TokenType::Await: {
+            // await expression - must be inside an async function
+            return parse_await_expression();
+        }
         case TokenType::Class: {
             return parse_class_expression();
         }
@@ -405,7 +420,8 @@ std::shared_ptr<ASTNode> Parser::parse_member_expression(std::shared_ptr<ASTNode
          tok.type == TokenType::Class || tok.type == TokenType::Extends ||
          tok.type == TokenType::Super || tok.type == TokenType::Static ||
          tok.type == TokenType::Var || tok.type == TokenType::Let || tok.type == TokenType::Const ||
-         tok.type == TokenType::Yield);
+         tok.type == TokenType::Yield || tok.type == TokenType::Async ||
+         tok.type == TokenType::Await);
     if(!is_identifier_name) {
         throw std::runtime_error("Expected property name after '.'");
     }
@@ -799,6 +815,60 @@ std::shared_ptr<ASTNode> Parser::parse_yield_expression() {
     }
 
     auto node = ASTFactory::makeYieldExpression(argument, is_delegate);
+    node->setLocation(startToken.line, startToken.column);
+    return node;
+}
+
+// Parse async function expression: async function() {} or async function name() {}
+std::shared_ptr<ASTNode> Parser::parse_async_function_expression() {
+    Token& startToken = current_token();  // Save 'async' location
+    consume(TokenType::Async);            // consume 'async'
+    consume(TokenType::Function);         // consume 'function'
+
+    // Optional function name for named async function expressions
+    std::string name;
+    if(current_token().type == TokenType::Identifier) {
+        name = current_token().value;
+        size_t nameLine = current_token().line;
+        size_t nameColumn = current_token().column;
+        current++;  // consume function name
+        // Validate function name in strict mode
+        validateIdentifier(name, nameLine, nameColumn);
+    }
+
+    // Parse parameters
+    consume(TokenType::LeftParen);
+    auto parameters = parse_parameter_list();
+    consume(TokenType::RightParen);
+
+    // Parse function body with async context enabled
+    bool was_in_async = in_async_context_;
+    in_async_context_ = true;
+    auto body = parse_block_statement();
+    in_async_context_ = was_in_async;
+
+    auto node = ASTFactory::makeAsyncFunctionExpression(parameters, body, name);
+    node->setLocation(startToken.line, startToken.column);
+    return node;
+}
+
+// Parse await expression: await expr
+std::shared_ptr<ASTNode> Parser::parse_await_expression() {
+    Token& startToken = current_token();
+
+    // Validate we're inside an async function
+    if(!in_async_context_) {
+        throw std::runtime_error(
+            "SyntaxError: 'await' expression is only allowed inside async functions");
+    }
+
+    consume(TokenType::Await);  // consume 'await'
+
+    // Parse the operand expression
+    // await has high precedence, similar to yield
+    auto argument = parse_binary_expression(2);  // Parse with assignment precedence
+
+    auto node = ASTFactory::makeAwaitExpression(argument);
     node->setLocation(startToken.line, startToken.column);
     return node;
 }

@@ -317,6 +317,42 @@ class ASTFactory {
         return node;
     }
 
+    // Async function declaration: async function name() {}
+    // value = function name
+    // children[0] = parameters (ParameterList)
+    // children[1] = body (BlockStatement)
+    static std::shared_ptr<ASTNode> makeAsyncFunctionDeclaration(
+        const std::string& name, std::shared_ptr<ASTNode> parameters,
+        std::shared_ptr<ASTNode> body) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::AsyncFunctionDeclaration, name);
+        node->children.push_back(std::move(parameters));
+        node->children.push_back(std::move(body));
+        return node;
+    }
+
+    // Async function expression: async function() {} or async function name() {}
+    // value = optional function name (empty for anonymous)
+    // children[0] = parameters (ParameterList)
+    // children[1] = body (BlockStatement)
+    static std::shared_ptr<ASTNode> makeAsyncFunctionExpression(
+        std::shared_ptr<ASTNode> parameters, std::shared_ptr<ASTNode> body,
+        const std::string& name = "") {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::AsyncFunctionExpression, name);
+        node->children.push_back(std::move(parameters));
+        node->children.push_back(std::move(body));
+        return node;
+    }
+
+    // Await expression: await value
+    // children[0] = argument expression
+    static std::shared_ptr<ASTNode> makeAwaitExpression(std::shared_ptr<ASTNode> argument) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::AwaitExpression);
+        if(argument) {
+            node->children.push_back(std::move(argument));
+        }
+        return node;
+    }
+
     static std::shared_ptr<ASTNode> makeReturnStatement(std::shared_ptr<ASTNode> argument) {
         auto node = std::make_shared<ASTNode>(ASTNodeType::ReturnStatement);
         if(argument) {
