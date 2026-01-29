@@ -582,8 +582,9 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
     // Get function body (second child)
     auto body = node->children[1];
 
-    // Check if this is an expression body (implicit return)
+    // Check if this is an expression body (implicit return) or async
     bool is_expression_body = (node->metadata == "expression");
+    bool is_async = (node->metadata == "async");
 
     // CRITICAL: Capture current 'this' value from enclosing environment
     Value captured_this = Value::undefined();
@@ -601,7 +602,7 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
 
     // Create arrow function object with captured this
     auto* arrow_func = factory->createJSArrowFunction(
-        [engine, param_info, body, env, is_expression_body](
+        [engine, param_info, body, env, is_expression_body, is_async](
             const rift::core::CallContext& call_context, const std::vector<Value>& args) -> Value {
             // Create new environment for function execution
             // Note: Arrow functions get 'this' from captured_this via JSArrowFunction,
@@ -645,7 +646,17 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
             // Arrow functions do NOT have their own 'arguments' object per spec
             // (They inherit 'arguments' from enclosing scope if available)
 
-            // Execute function body
+            if(is_async) {
+                // Async arrow: return a Promise, execute body via AsyncExecutor
+                auto* promise_obj =
+                    builtins::Promise::createPromiseObject(engine->getObjectFactory());
+                memory::GCProtector protect(promise_obj,
+                                            engine->getObjectFactory()->getObjectManager());
+                AsyncExecutor::executeAsync(body, func_env, engine, promise_obj);
+                return Value(promise_obj);
+            }
+
+            // Execute function body (sync path)
             try {
                 Value result = engine->evaluate(body, func_env);
                 // If expression body, the result IS the return value (implicit return)

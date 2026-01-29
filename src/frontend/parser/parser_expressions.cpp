@@ -141,6 +141,33 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             if(peek_token().type == TokenType::Function) {
                 return parse_async_function_expression();
             }
+            // async arrow with parenthesized params: async () => {} or async (x) => {}
+            if(peek_token().type == TokenType::LeftParen) {
+                size_t saved_pos = current;
+                current++;  // skip 'async'
+                current++;  // skip '('
+                if(current_token().type == TokenType::RightParen) {
+                    // async () => ...
+                    size_t after_rparen = current + 1;
+                    if(after_rparen < tokens.size() &&
+                       tokens[after_rparen].type == TokenType::Arrow) {
+                        current = saved_pos;
+                        return parse_async_arrow_function();
+                    }
+                } else if(looks_like_arrow_params()) {
+                    current = saved_pos;
+                    return parse_async_arrow_function();
+                }
+                current = saved_pos;
+            }
+            // async arrow with single param: async x => ...
+            if(peek_token().type == TokenType::Identifier) {
+                size_t id_pos = current + 1;
+                size_t arrow_pos = id_pos + 1;
+                if(arrow_pos < tokens.size() && tokens[arrow_pos].type == TokenType::Arrow) {
+                    return parse_async_arrow_function();
+                }
+            }
             // Otherwise treat 'async' as an identifier (for property access, etc.)
             auto node = ASTFactory::makeIdentifier(token.value);
             node->setLocation(token.line, token.column);
@@ -869,6 +896,59 @@ std::shared_ptr<ASTNode> Parser::parse_await_expression() {
     auto argument = parse_binary_expression(2);  // Parse with assignment precedence
 
     auto node = ASTFactory::makeAwaitExpression(argument);
+    node->setLocation(startToken.line, startToken.column);
+    return node;
+}
+
+// Parse async arrow function: async () => {}, async (x) => {}, async x => expr
+std::shared_ptr<ASTNode> Parser::parse_async_arrow_function() {
+    Token& startToken = current_token();  // Save 'async' location
+    consume(TokenType::Async);            // consume 'async'
+
+    // Parse parameters
+    std::shared_ptr<ASTNode> parameters;
+
+    if(current_token().type == TokenType::Identifier) {
+        // Single param without parens: async x => ...
+        std::string paramValue = current_token().value;
+        size_t paramLine = current_token().line;
+        size_t paramColumn = current_token().column;
+        parameters = ASTFactory::makeParameterList();
+        ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(paramValue));
+        current++;  // consume identifier
+        validateIdentifier(paramValue, paramLine, paramColumn);
+    } else {
+        // Parenthesized params: async () => ... or async (x, y) => ...
+        consume(TokenType::LeftParen);
+        parameters = parse_parameter_list();
+        consume(TokenType::RightParen);
+    }
+
+    // Consume =>
+    consume(TokenType::Arrow);
+
+    // Parse body with async context enabled
+    bool was_in_async = in_async_context_;
+    in_async_context_ = true;
+
+    std::shared_ptr<ASTNode> body;
+
+    if(current_token().type == TokenType::LeftBrace) {
+        // Block body: async () => { statements }
+        body = parse_block_statement();
+    } else {
+        // Expression body: async x => expr
+        // Wrap in ReturnStatement + BlockStatement so AsyncExecutor can handle it
+        auto expr = parse_binary_expression(0);
+        auto return_stmt = ASTFactory::makeReturnStatement(expr);
+        body = ASTFactory::makeBlockStatement();
+        body->children.push_back(return_stmt);
+    }
+
+    in_async_context_ = was_in_async;
+
+    auto node = ASTFactory::makeArrowFunctionExpression(parameters, body, false);
+    node->metadata = "async";
     node->setLocation(startToken.line, startToken.column);
     return node;
 }

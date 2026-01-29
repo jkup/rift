@@ -73,6 +73,7 @@ class Parser {
     // Async-related parsing methods
     std::shared_ptr<ASTNode> parse_async_function_declaration();
     std::shared_ptr<ASTNode> parse_async_function_expression();
+    std::shared_ptr<ASTNode> parse_async_arrow_function();
     std::shared_ptr<ASTNode> parse_await_expression();
 
     // Destructuring pattern parsing
