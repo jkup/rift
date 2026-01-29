@@ -14,6 +14,8 @@
 
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/generator/generator_iterator.h"
+#include "rift/builtins/promise/promise.h"
+#include "rift/memory/gc_protector.h"
 #include "rift/builtins/symbol/symbol.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/engine.h"
@@ -1271,6 +1273,129 @@ Value ExpressionEvaluator::evaluateYieldExpression(std::shared_ptr<ASTNode> /*no
     // For now, yield expressions are parsed but not executed in this code path.
     // The actual yield handling will happen in the generator evaluator.
     throw JavaScriptException(Value("Error: yield expression not yet implemented (Phase 3)"));
+}
+
+Value ExpressionEvaluator::evaluateAsyncFunctionExpression(std::shared_ptr<ASTNode> node,
+                                                            std::shared_ptr<Environment> env,
+                                                            Rift* engine) {
+    if(node->children.size() < 2) {
+        return Value::undefined();
+    }
+
+    // Get parameters (first child should be parameter list)
+    auto param_list = node->children[0];
+    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> param_info;
+    size_t param_count = 0;
+
+    for(const auto& param : param_list->children) {
+        if(param->type == ASTNodeType::AssignmentExpression) {
+            param_info.emplace_back(param->children[0]->value, param->children[1], false);
+        } else if(param->metadata == "rest") {
+            param_info.emplace_back(param->value, nullptr, true);
+        } else {
+            param_info.emplace_back(param->value, nullptr, false);
+        }
+        param_count++;
+    }
+
+    // Get function body (second child)
+    auto body = node->children[1];
+
+    // Get optional function name
+    std::string func_name = node->value;
+
+    // Temporarily disable GC during function creation
+    auto* factory = engine->getObjectFactory();
+    auto* obj_manager = factory->getObjectManager();
+    bool was_gc_enabled = obj_manager->isGCEnabled();
+    obj_manager->setGCEnabled(false);
+
+    // Create async function - when called, returns a Promise
+    auto* func = factory->createJSFunction(
+        [engine, param_info, body, env](const rift::core::CallContext& call_context,
+                                        const std::vector<Value>& args) -> Value {
+            // Create a Promise object
+            auto* factory = engine->getObjectFactory();
+            auto* promise_obj = builtins::Promise::createPromiseObject(factory);
+            memory::GCProtector protect(promise_obj, factory->getObjectManager());
+
+            // Create new environment for function execution
+            auto func_env = std::make_shared<Environment>(env);
+
+            // Bind 'this' to the function environment
+            func_env->define("this", call_context.thisValue);
+
+            // Bind parameters to arguments
+            for(size_t i = 0; i < param_info.size(); ++i) {
+                const auto& [param_name, default_ast, is_rest] = param_info[i];
+
+                if(is_rest) {
+                    std::vector<Value> rest_args;
+                    for(size_t j = i; j < args.size(); ++j) {
+                        rest_args.push_back(args[j]);
+                    }
+                    auto* rest_array =
+                        builtins::Array::createArrayObject(engine->getObjectFactory(), rest_args);
+                    func_env->define(param_name, Value(rest_array));
+                } else {
+                    Value arg_value;
+                    bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                    if(use_default && default_ast) {
+                        arg_value = engine->evaluate(default_ast, func_env);
+                    } else if(i < args.size()) {
+                        arg_value = args[i];
+                    } else {
+                        arg_value = Value::undefined();
+                    }
+                    func_env->define(param_name, arg_value);
+                }
+            }
+
+            // Create 'arguments' object
+            auto* args_factory = engine->getObjectFactory();
+            auto* arguments_obj = args_factory->createJSObject();
+            for(size_t i = 0; i < args.size(); ++i) {
+                arguments_obj->setProperty(std::to_string(i), args[i]);
+            }
+            arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
+            func_env->define("arguments", Value(arguments_obj));
+
+            // Execute function body - resolve/reject the promise based on result
+            try {
+                Value result = engine->evaluate(body, func_env);
+                builtins::Promise::resolvePromise(promise_obj, result);
+            } catch(const ReturnException& e) {
+                builtins::Promise::resolvePromise(promise_obj, e.getValue());
+            } catch(const JavaScriptException& e) {
+                builtins::Promise::rejectPromise(promise_obj, e.getValue());
+            } catch(const std::exception& e) {
+                builtins::Promise::rejectPromise(promise_obj, Value(std::string(e.what())));
+            }
+
+            return Value(promise_obj);
+        });
+
+    // Set function name if provided
+    if(!func_name.empty()) {
+        func->setProperty("name", Value(func_name));
+    }
+
+    // Set length property
+    func->setProperty("length", Value(static_cast<double>(param_count)));
+
+    // Re-enable GC before returning
+    obj_manager->setGCEnabled(was_gc_enabled);
+    return Value(func);
+}
+
+Value ExpressionEvaluator::evaluateAwaitExpression(std::shared_ptr<ASTNode> /*node*/,
+                                                    std::shared_ptr<Environment> /*env*/,
+                                                    Rift* /*engine*/) {
+    // Phase 5.6 will implement actual await suspension/resumption via AsyncExecutor.
+    // For now, await expressions inside async functions are not yet supported.
+    throw JavaScriptException(
+        Value("Error: await suspension not yet implemented (Phase 5.6)"));
 }
 
 }  // namespace rift::core

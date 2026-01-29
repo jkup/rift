@@ -68,6 +68,10 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
             return evaluateGeneratorFunctionExpression(node, env, engine);
         case ASTNodeType::YieldExpression:
             return evaluateYieldExpression(node, env, engine);
+        case ASTNodeType::AsyncFunctionExpression:
+            return evaluateAsyncFunctionExpression(node, env, engine);
+        case ASTNodeType::AwaitExpression:
+            return evaluateAwaitExpression(node, env, engine);
         default:
             return Value::undefined();
     }

@@ -19,6 +19,8 @@
 
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/generator/generator_iterator.h"
+#include "rift/builtins/promise/promise.h"
+#include "rift/memory/gc_protector.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/runtime/values/object.h"
@@ -93,6 +95,8 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateFunctionDeclaration(node, env, engine);
         case ASTNodeType::GeneratorFunctionDeclaration:
             return evaluateGeneratorFunctionDeclaration(node, env, engine);
+        case ASTNodeType::AsyncFunctionDeclaration:
+            return evaluateAsyncFunctionDeclaration(node, env, engine);
         case ASTNodeType::ClassDeclaration:
             return evaluateClassDeclaration(node, env, engine);
         default:
@@ -576,6 +580,127 @@ Value StatementEvaluator::evaluateGeneratorFunctionDeclaration(std::shared_ptr<A
 
     // Set length property (number of parameters)
     func->setProperty("length", Value(static_cast<double>(param_names.size())));
+
+    // Define function in current environment
+    env->define(functionName, Value(func));
+
+    return Value(func);
+}
+
+// Async function declaration
+Value StatementEvaluator::evaluateAsyncFunctionDeclaration(std::shared_ptr<ASTNode> node,
+                                                            std::shared_ptr<Environment> env,
+                                                            Rift* engine) {
+    if(node->children.size() < 2) {
+        return Value::undefined();
+    }
+
+    // Get function name
+    std::string functionName = node->value;
+
+    // Get parameters (first child should be parameter list)
+    auto paramList = node->children[0];
+    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> param_info;
+    for(const auto& param : paramList->children) {
+        if(param->type == ASTNodeType::AssignmentExpression) {
+            param_info.emplace_back(param->children[0]->value, param->children[1], false);
+        } else if(param->metadata == "rest") {
+            param_info.emplace_back(param->value, nullptr, true);
+        } else {
+            param_info.emplace_back(param->value, nullptr, false);
+        }
+    }
+
+    // Get function body (second child)
+    auto body = node->children[1];
+
+    // Check if function body contains "use strict" directive
+    bool functionIsStrict = false;
+    if(body->type == ASTNodeType::BlockStatement) {
+        for(const auto& stmt : body->children) {
+            if(isUseStrictDirective(stmt)) {
+                functionIsStrict = true;
+            } else if(isStringDirective(stmt)) {
+                continue;
+            } else {
+                break;
+            }
+        }
+    }
+
+    // Create async function - when called, it returns a Promise
+    auto* func = engine->getObjectFactory()->createJSFunction(
+        [engine, param_info, body, env, functionIsStrict](
+            const rift::core::CallContext& callContext, const std::vector<Value>& args) -> Value {
+            // Create a Promise object
+            auto* factory = engine->getObjectFactory();
+            auto* promise_obj = builtins::Promise::createPromiseObject(factory);
+            memory::GCProtector protect(promise_obj, factory->getObjectManager());
+
+            // Create new environment for function execution
+            auto funcEnv = std::make_shared<Environment>(env);
+
+            if(functionIsStrict) {
+                funcEnv->setStrictMode(true);
+            }
+
+            // Bind 'this' to the function environment
+            funcEnv->define("this", callContext.thisValue);
+
+            // Bind parameters to arguments (with default value and rest support)
+            for(size_t i = 0; i < param_info.size(); ++i) {
+                const auto& [param_name, default_ast, is_rest] = param_info[i];
+
+                if(is_rest) {
+                    std::vector<Value> rest_args;
+                    for(size_t j = i; j < args.size(); ++j) {
+                        rest_args.push_back(args[j]);
+                    }
+                    auto* rest_array =
+                        builtins::Array::createArrayObject(engine->getObjectFactory(), rest_args);
+                    funcEnv->define(param_name, Value(rest_array));
+                } else {
+                    Value arg_value;
+                    bool use_default = (i >= args.size()) || args[i].isUndefined();
+
+                    if(use_default && default_ast) {
+                        arg_value = engine->evaluate(default_ast, funcEnv);
+                    } else if(i < args.size()) {
+                        arg_value = args[i];
+                    } else {
+                        arg_value = Value::undefined();
+                    }
+                    funcEnv->define(param_name, arg_value);
+                }
+            }
+
+            // Create 'arguments' object
+            auto* argsFactory = engine->getObjectFactory();
+            auto* argumentsObj = argsFactory->createJSObject();
+            for(size_t i = 0; i < args.size(); ++i) {
+                argumentsObj->setProperty(std::to_string(i), args[i]);
+            }
+            argumentsObj->setProperty("length", Value(static_cast<double>(args.size())));
+            funcEnv->define("arguments", Value(argumentsObj));
+
+            // Execute function body - resolve/reject the promise based on result
+            try {
+                Value result = engine->evaluate(body, funcEnv);
+                builtins::Promise::resolvePromise(promise_obj, result);
+            } catch(const ReturnException& e) {
+                builtins::Promise::resolvePromise(promise_obj, e.getValue());
+            } catch(const JavaScriptException& e) {
+                builtins::Promise::rejectPromise(promise_obj, e.getValue());
+            } catch(const std::exception& e) {
+                builtins::Promise::rejectPromise(promise_obj, Value(std::string(e.what())));
+            }
+
+            return Value(promise_obj);
+        });
+
+    // Set function name and length
+    func->setProperty("name", Value(functionName));
+    func->setProperty("length", Value(static_cast<double>(param_info.size())));
 
     // Define function in current environment
     env->define(functionName, Value(func));

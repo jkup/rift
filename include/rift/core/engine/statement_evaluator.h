@@ -78,6 +78,8 @@ class StatementEvaluator {
     static Value evaluateGeneratorFunctionDeclaration(std::shared_ptr<ASTNode> node,
                                                       std::shared_ptr<Environment> env,
                                                       Rift* engine);
+    static Value evaluateAsyncFunctionDeclaration(std::shared_ptr<ASTNode> node,
+                                                   std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateClassDeclaration(std::shared_ptr<ASTNode> node,
                                           std::shared_ptr<Environment> env, Rift* engine);
 };
