@@ -51,6 +51,8 @@ enum class TokenType {
     Super,
     Static,
     Yield,
+    Async,
+    Await,
 
     // Operators
     Plus,

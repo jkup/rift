@@ -524,6 +524,8 @@ Token Lexer::read_identifier() {
         {"super", TokenType::Super},
         {"static", TokenType::Static},
         {"yield", TokenType::Yield},
+        {"async", TokenType::Async},
+        {"await", TokenType::Await},
     };
 
     auto it = keywords.find(value);
