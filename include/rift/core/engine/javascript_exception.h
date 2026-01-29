@@ -131,4 +131,37 @@ class YieldException : public std::exception {
     }
 };
 
+/// Exception for handling await expressions in async functions
+/// This is thrown when an await is encountered and caught by the async executor
+class AwaitException : public std::exception {
+  private:
+    Value awaitedValue_;   // The value being awaited (typically a Promise)
+    int awaitPointId_;     // Unique ID of this await point
+    int statementIndex_;   // Index of statement in the block
+
+  public:
+    AwaitException(const Value& value, int awaitPointId, int statementIndex)
+        : awaitedValue_(value), awaitPointId_(awaitPointId), statementIndex_(statementIndex) {
+    }
+
+    /// Get the awaited value (typically a Promise)
+    const Value& getValue() const {
+        return awaitedValue_;
+    }
+
+    /// Get the await point ID for resumption
+    int getAwaitPointId() const {
+        return awaitPointId_;
+    }
+
+    /// Get the statement index for resumption
+    int getStatementIndex() const {
+        return statementIndex_;
+    }
+
+    const char* what() const noexcept override {
+        return "Await expression";
+    }
+};
+
 }  // namespace rift::core
