@@ -60,7 +60,7 @@ class ExpressionEvaluator {
     static Value evaluateYieldExpression(std::shared_ptr<ASTNode> node,
                                          std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateAsyncFunctionExpression(std::shared_ptr<ASTNode> node,
-                                                  std::shared_ptr<Environment> env, Rift* engine);
+                                                 std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateAwaitExpression(std::shared_ptr<ASTNode> node,
                                          std::shared_ptr<Environment> env, Rift* engine);
 };

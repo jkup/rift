@@ -20,9 +20,10 @@
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/generator/generator_iterator.h"
 #include "rift/builtins/promise/promise.h"
-#include "rift/memory/gc_protector.h"
+#include "rift/core/engine/async_executor.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/memory/gc_protector.h"
 #include "rift/runtime/values/object.h"
 
 namespace rift::core {
@@ -589,8 +590,8 @@ Value StatementEvaluator::evaluateGeneratorFunctionDeclaration(std::shared_ptr<A
 
 // Async function declaration
 Value StatementEvaluator::evaluateAsyncFunctionDeclaration(std::shared_ptr<ASTNode> node,
-                                                            std::shared_ptr<Environment> env,
-                                                            Rift* engine) {
+                                                           std::shared_ptr<Environment> env,
+                                                           Rift* engine) {
     if(node->children.size() < 2) {
         return Value::undefined();
     }
@@ -683,17 +684,8 @@ Value StatementEvaluator::evaluateAsyncFunctionDeclaration(std::shared_ptr<ASTNo
             argumentsObj->setProperty("length", Value(static_cast<double>(args.size())));
             funcEnv->define("arguments", Value(argumentsObj));
 
-            // Execute function body - resolve/reject the promise based on result
-            try {
-                Value result = engine->evaluate(body, funcEnv);
-                builtins::Promise::resolvePromise(promise_obj, result);
-            } catch(const ReturnException& e) {
-                builtins::Promise::resolvePromise(promise_obj, e.getValue());
-            } catch(const JavaScriptException& e) {
-                builtins::Promise::rejectPromise(promise_obj, e.getValue());
-            } catch(const std::exception& e) {
-                builtins::Promise::rejectPromise(promise_obj, Value(std::string(e.what())));
-            }
+            // Execute via AsyncExecutor for await support
+            AsyncExecutor::executeAsync(body, funcEnv, engine, promise_obj);
 
             return Value(promise_obj);
         });

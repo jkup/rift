@@ -15,13 +15,14 @@
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/generator/generator_iterator.h"
 #include "rift/builtins/promise/promise.h"
-#include "rift/memory/gc_protector.h"
 #include "rift/builtins/symbol/symbol.h"
+#include "rift/core/engine/async_executor.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/expression_evaluator.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/memory/gc_protector.h"
 #include "rift/runtime/values/object.h"
 
 namespace rift::core {
@@ -1276,8 +1277,8 @@ Value ExpressionEvaluator::evaluateYieldExpression(std::shared_ptr<ASTNode> /*no
 }
 
 Value ExpressionEvaluator::evaluateAsyncFunctionExpression(std::shared_ptr<ASTNode> node,
-                                                            std::shared_ptr<Environment> env,
-                                                            Rift* engine) {
+                                                           std::shared_ptr<Environment> env,
+                                                           Rift* engine) {
     if(node->children.size() < 2) {
         return Value::undefined();
     }
@@ -1361,17 +1362,8 @@ Value ExpressionEvaluator::evaluateAsyncFunctionExpression(std::shared_ptr<ASTNo
             arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
             func_env->define("arguments", Value(arguments_obj));
 
-            // Execute function body - resolve/reject the promise based on result
-            try {
-                Value result = engine->evaluate(body, func_env);
-                builtins::Promise::resolvePromise(promise_obj, result);
-            } catch(const ReturnException& e) {
-                builtins::Promise::resolvePromise(promise_obj, e.getValue());
-            } catch(const JavaScriptException& e) {
-                builtins::Promise::rejectPromise(promise_obj, e.getValue());
-            } catch(const std::exception& e) {
-                builtins::Promise::rejectPromise(promise_obj, Value(std::string(e.what())));
-            }
+            // Execute via AsyncExecutor for await support
+            AsyncExecutor::executeAsync(body, func_env, engine, promise_obj);
 
             return Value(promise_obj);
         });
@@ -1389,13 +1381,45 @@ Value ExpressionEvaluator::evaluateAsyncFunctionExpression(std::shared_ptr<ASTNo
     return Value(func);
 }
 
-Value ExpressionEvaluator::evaluateAwaitExpression(std::shared_ptr<ASTNode> /*node*/,
-                                                    std::shared_ptr<Environment> /*env*/,
-                                                    Rift* /*engine*/) {
-    // Phase 5.6 will implement actual await suspension/resumption via AsyncExecutor.
-    // For now, await expressions inside async functions are not yet supported.
-    throw JavaScriptException(
-        Value("Error: await suspension not yet implemented (Phase 5.6)"));
+Value ExpressionEvaluator::evaluateAwaitExpression(std::shared_ptr<ASTNode> node,
+                                                   std::shared_ptr<Environment> env, Rift* engine) {
+    // Extract await ID from metadata if assigned by AsyncExecutor::assignAwaitIds()
+    int await_id = -1;
+    size_t pos = node->metadata.find("awaitId:");
+    if(pos != std::string::npos) {
+        size_t start = pos + 8;
+        size_t end = node->metadata.find(',', start);
+        if(end == std::string::npos) {
+            end = node->metadata.length();
+        }
+        try {
+            await_id = std::stoi(node->metadata.substr(start, end - start));
+        } catch(const std::invalid_argument&) {
+            // Keep -1
+        } catch(const std::out_of_range&) {
+            // Keep -1
+        }
+    }
+
+    // Check if we're inside an AsyncExecutor and should return the sent value
+    // (resumption path for await nested in complex expressions)
+    auto* ctx = AsyncExecutor::getActiveContext();
+    if(ctx != nullptr && ctx->isResuming && ctx->currentAwaitId == await_id) {
+        ctx->isResuming = false;
+        if(ctx->throwOnResume) {
+            ctx->throwOnResume = false;
+            throw JavaScriptException(ctx->sentValue);
+        }
+        return ctx->sentValue;
+    }
+
+    // Not resuming - evaluate the operand and throw AwaitException to suspend
+    Value awaited_value = Value::undefined();
+    if(!node->children.empty()) {
+        awaited_value = engine->evaluate(node->children[0], env);
+    }
+
+    throw AwaitException(awaited_value, await_id, -1);
 }
 
 }  // namespace rift::core

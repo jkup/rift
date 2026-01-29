@@ -135,9 +135,9 @@ class YieldException : public std::exception {
 /// This is thrown when an await is encountered and caught by the async executor
 class AwaitException : public std::exception {
   private:
-    Value awaitedValue_;   // The value being awaited (typically a Promise)
-    int awaitPointId_;     // Unique ID of this await point
-    int statementIndex_;   // Index of statement in the block
+    Value awaitedValue_;  // The value being awaited (typically a Promise)
+    int awaitPointId_;    // Unique ID of this await point
+    int statementIndex_;  // Index of statement in the block
 
   public:
     AwaitException(const Value& value, int awaitPointId, int statementIndex)
