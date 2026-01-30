@@ -77,6 +77,10 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
 
         // Call parent constructor with current 'this'
         auto* ctor = dynamic_cast<JSFunction*>(super_ctor.getObject());
+        if(!ctor) {
+            throw JavaScriptException(
+                Value("TypeError: Super constructor is not a function"), node->line, node->column);
+        }
         rift::core::CallContext ctx(rift::core::CallType::Constructor, this_value);
         return ctor->call(ctx, args);
     }
@@ -147,6 +151,10 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
 
         // Call method with current 'this'
         auto* func = dynamic_cast<JSFunction*>(method.getObject());
+        if(!func) {
+            throw JavaScriptException(
+                Value("TypeError: Super method is not a function"), node->line, node->column);
+        }
         rift::core::CallContext ctx(rift::core::CallType::Function, this_value);
         return func->call(ctx, args);
     }
