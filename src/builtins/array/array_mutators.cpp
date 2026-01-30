@@ -6,6 +6,7 @@
 #include <limits>
 
 #include "rift/builtins/array/array.h"
+#include "rift/core/engine/call_context.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/this_helpers.h"
 
@@ -217,24 +218,24 @@ Value Array::sort(const CallContext& ctx, const std::vector<Value>& args) {
         return Value(arrayObj);
     }
 
+    JSFunction* compareFn = nullptr;
+    if(!args.empty() && args[0].isFunction()) {
+        compareFn = dynamic_cast<JSFunction*>(args[0].getObject());
+    }
+
     std::vector<Value> elements;
     for(size_t i = 0; i < length; ++i) {
-        Value element = arrayObj->getProperty(std::to_string(i));
-        elements.push_back(element);
+        elements.push_back(arrayObj->getProperty(std::to_string(i)));
     }
 
-    for(size_t i = 0; i < length - 1; ++i) {
-        for(size_t j = 0; j < length - 1 - i; ++j) {
-            std::string a = elements[j].toString();
-            std::string b = elements[j + 1].toString();
-
-            if(a > b) {
-                Value temp = elements[j];
-                elements[j] = elements[j + 1];
-                elements[j + 1] = temp;
-            }
+    std::sort(elements.begin(), elements.end(), [compareFn](const Value& a, const Value& b) {
+        if(compareFn) {
+            rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+            Value result = compareFn->call(cbCtx, {a, b});
+            return result.toNumber() < 0;
         }
-    }
+        return a.toString() < b.toString();
+    });
 
     for(size_t i = 0; i < length; ++i) {
         arrayObj->setProperty(std::to_string(i), elements[i]);
