@@ -133,7 +133,8 @@ Value Array::reduce(const CallContext& ctx, const std::vector<Value>& args) {
 
     size_t length = getArrayLength(arrayObj);
     if(length == 0 && args.size() < 2) {
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Reduce of empty array with no initial value"));
     }
 
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
@@ -179,7 +180,8 @@ Value Array::reduceRight(const CallContext& ctx, const std::vector<Value>& args)
 
     size_t length = getArrayLength(arrayObj);
     if(length == 0 && args.size() < 2) {
-        return Value::undefined();
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Reduce of empty array with no initial value"));
     }
 
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
