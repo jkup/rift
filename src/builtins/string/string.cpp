@@ -155,8 +155,14 @@ Value String::lastIndexOf(const CallContext& ctx, const std::vector<Value>& args
 
     if(args.size() >= 2) {
         double fromIndexNum = args[1].toNumber();
-        if(!std::isnan(fromIndexNum) && fromIndexNum >= 0) {
-            fromIndex = std::min(static_cast<size_t>(fromIndexNum), str.length());
+        if(std::isnan(fromIndexNum)) {
+            fromIndex = str.length();
+        } else if(fromIndexNum < 0) {
+            fromIndex = 0;
+        } else if(fromIndexNum >= static_cast<double>(str.length())) {
+            fromIndex = str.length();
+        } else {
+            fromIndex = static_cast<size_t>(fromIndexNum);
         }
     }
 
