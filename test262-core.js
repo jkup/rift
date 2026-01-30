@@ -11,8 +11,6 @@ export const RUNTIME_EXECUTABLE = "./build/rift";
 
 // Pre-compile regex patterns once at module load (P1 optimization)
 const UNSUPPORTED_PATTERNS = [
-  /\basync\b/, // async functions
-  /\bawait\b/, // await keyword
   /\bwith\s*\(/, // with statements
 ];
 
@@ -21,7 +19,6 @@ const UNSUPPORTED_INCLUDES = new Set([
   "testAtomics.js",
   "testIntl.js",
   "testBigIntTypedArray.js",
-  "asyncHelpers.js",
   "atomicsHelper.js",
 ]);
 
@@ -34,7 +31,6 @@ const UNSUPPORTED_HARNESS = new Set([
   "compareIterator.js",
   "isConstructor.js",
   "nativeFunctionMatcher.js",
-  "asyncHelpers.js",
   "atomicsHelper.js",
   "temporalHelpers.js",
   "testAtomics.js",
@@ -53,11 +49,10 @@ const UNSUPPORTED_HARNESS = new Set([
 //   - generators, class, arrow-function, template, for-of, let, const
 //   - destructuring-binding, destructuring-assignment, spread, rest-parameters
 //   - object-spread, object-rest, default-parameters, computed-property-names
-//   - shorthand-properties, Symbol.iterator
+//   - shorthand-properties, Symbol.iterator, async-functions, async-iteration
+//   - Symbol.asyncIterator
 const UNSUPPORTED_FEATURES = new Set([
   // Async features
-  "async-functions",
-  "async-iteration",
   "top-level-await",
 
   // Class features (basic class IS supported, but not these advanced features)
@@ -194,7 +189,6 @@ const UNSUPPORTED_FEATURES = new Set([
   "string-trimming",
 
   // Symbol features (partial support)
-  "Symbol.asyncIterator",
   "Symbol.hasInstance",
   "Symbol.isConcatSpreadable",
   "Symbol.matchAll",
@@ -586,12 +580,12 @@ export function runSingleTest(testFile, tempFile = "/tmp/test262_temp.js") {
   const hasRaw = flags.includes("raw");
   const hasAsync = flags.includes("async");
 
-  // Skip async tests - they require special handling with $DONE callback
-  // and timeout-based completion detection that we don't support yet
+  // Skip tests with the 'async' flag - they use $DONE() callback for
+  // asynchronous completion signaling which requires special harness support
   if (hasAsync) {
     return {
       status: "skipped",
-      reason: "Async tests not supported (requires $DONE callback handling)",
+      reason: "Test uses async flag (requires $DONE callback handling)",
     };
   }
 
