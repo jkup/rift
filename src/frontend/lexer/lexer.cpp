@@ -180,12 +180,45 @@ Token Lexer::read_number() {
         advance();
         char next = current_char();
         // 0x/0X = hex, 0o/0O = modern octal, 0b/0B = binary — not legacy octal
-        if(next == 'x' || next == 'X' || next == 'o' || next == 'O' || next == 'b' || next == 'B') {
+        if(next == 'x' || next == 'X') {
             value += current_char();
             advance();
+            if(!std::isxdigit(current_char())) {
+                throw std::runtime_error("Invalid or unexpected token");
+            }
             while(std::isxdigit(current_char())) {
                 value += current_char();
                 advance();
+            }
+            return Token(TokenType::Number, value, line, column);
+        }
+        if(next == 'o' || next == 'O') {
+            value += current_char();
+            advance();
+            if(current_char() < '0' || current_char() > '7') {
+                throw std::runtime_error("Invalid or unexpected token");
+            }
+            while(current_char() >= '0' && current_char() <= '7') {
+                value += current_char();
+                advance();
+            }
+            if(std::isdigit(current_char())) {
+                throw std::runtime_error("Invalid or unexpected token");
+            }
+            return Token(TokenType::Number, value, line, column);
+        }
+        if(next == 'b' || next == 'B') {
+            value += current_char();
+            advance();
+            if(current_char() != '0' && current_char() != '1') {
+                throw std::runtime_error("Invalid or unexpected token");
+            }
+            while(current_char() == '0' || current_char() == '1') {
+                value += current_char();
+                advance();
+            }
+            if(std::isdigit(current_char())) {
+                throw std::runtime_error("Invalid or unexpected token");
             }
             return Token(TokenType::Number, value, line, column);
         }
