@@ -20,6 +20,7 @@ uint64_t Symbol::has_instance_id_ = 0;
 uint64_t Symbol::to_primitive_id_ = 0;
 uint64_t Symbol::unscopables_id_ = 0;
 uint64_t Symbol::is_concat_spreadable_id_ = 0;
+uint64_t Symbol::async_iterator_id_ = 0;
 
 uint64_t Symbol::generateSymbolId() {
     return next_symbol_id_.fetch_add(1, std::memory_order_relaxed);
@@ -175,6 +176,20 @@ uint64_t Symbol::getToStringTagId() {
     return to_string_tag_id_;
 }
 
+Value Symbol::getAsyncIterator() {
+    if(async_iterator_id_ == 0) {
+        async_iterator_id_ = generateSymbolId();
+    }
+    return Value::symbol(async_iterator_id_, "Symbol.asyncIterator");
+}
+
+uint64_t Symbol::getAsyncIteratorId() {
+    if(async_iterator_id_ == 0) {
+        async_iterator_id_ = generateSymbolId();
+    }
+    return async_iterator_id_;
+}
+
 void Symbol::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Static methods
     RIFT_STATIC_METHOD(constructor, "for", Symbol::symbolFor);
@@ -198,6 +213,9 @@ void Symbol::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
 
     PropertyDescriptor isConcatSpreadableDesc(getIsConcatSpreadable(), false, false, false);
     constructor->defineProperty("isConcatSpreadable", isConcatSpreadableDesc);
+
+    PropertyDescriptor asyncIteratorDesc(getAsyncIterator(), false, false, false);
+    constructor->defineProperty("asyncIterator", asyncIteratorDesc);
 }
 
 void Symbol::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {

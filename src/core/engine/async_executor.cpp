@@ -14,8 +14,10 @@
 #include <string>
 
 #include "rift/builtins/promise/promise.h"
+#include "rift/builtins/symbol/symbol.h"
 #include "rift/core/engine/call_context.h"
 #include "rift/core/engine/engine.h"
+#include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/frontend/ast/ast_node.h"
 #include "rift/memory/gc_protector.h"
@@ -207,6 +209,11 @@ Value AsyncExecutor::evaluateStatement(std::shared_ptr<ASTNode> stmt,
 
     if(stmt->type == ASTNodeType::ForStatement) {
         return evaluateFor(stmt, env, engine, context, statementIndex);
+    }
+
+    // For-await-of loops
+    if(stmt->type == ASTNodeType::ForAwaitOfStatement) {
+        return evaluateForAwaitOf(stmt, env, engine, context, statementIndex);
     }
 
     // Try/catch/finally with possible awaits
@@ -411,6 +418,11 @@ Value AsyncExecutor::evaluateLoopBodyStatement(std::shared_ptr<ASTNode> stmt,
         return evaluateFor(stmt, env, engine, context, statementIndex);
     }
 
+    // Handle nested for-await-of loops
+    if(stmt->type == ASTNodeType::ForAwaitOfStatement) {
+        return evaluateForAwaitOf(stmt, env, engine, context, statementIndex);
+    }
+
     // Default: use engine evaluation
     return engine->evaluate(stmt, env);
 }
@@ -420,7 +432,8 @@ bool AsyncExecutor::containsAwaitPoint(std::shared_ptr<ASTNode> node, int target
         return false;
     }
 
-    if(node->type == ASTNodeType::AwaitExpression) {
+    if(node->type == ASTNodeType::AwaitExpression ||
+       node->type == ASTNodeType::ForAwaitOfStatement) {
         int id = getAwaitId(node);
         if(id == targetAwaitId) {
             return true;
@@ -453,6 +466,17 @@ int AsyncExecutor::assignAwaitIds(std::shared_ptr<ASTNode> node, int startId) {
         next_id++;
     }
 
+    // ForAwaitOfStatement gets its own await ID for the implicit .next() await point
+    if(node->type == ASTNodeType::ForAwaitOfStatement) {
+        std::string id_str = "awaitId:" + std::to_string(next_id);
+        if(node->metadata.empty()) {
+            node->metadata = id_str;
+        } else if(node->metadata.find("awaitId:") == std::string::npos) {
+            node->metadata += "," + id_str;
+        }
+        next_id++;
+    }
+
     for(auto& child : node->children) {
         next_id = assignAwaitIds(child, next_id);
     }
@@ -461,7 +485,8 @@ int AsyncExecutor::assignAwaitIds(std::shared_ptr<ASTNode> node, int startId) {
 }
 
 int AsyncExecutor::getAwaitId(std::shared_ptr<ASTNode> node) {
-    if(!node || node->type != ASTNodeType::AwaitExpression) {
+    if(!node || (node->type != ASTNodeType::AwaitExpression &&
+                 node->type != ASTNodeType::ForAwaitOfStatement)) {
         return -1;
     }
 
@@ -484,6 +509,222 @@ int AsyncExecutor::getAwaitId(std::shared_ptr<ASTNode> node) {
     } catch(const std::out_of_range&) {
         return -1;
     }
+}
+
+Value AsyncExecutor::evaluateForAwaitOf(std::shared_ptr<ASTNode> node,
+                                        std::shared_ptr<Environment> env, Rift* engine,
+                                        AsyncExecutionContext& context, int statementIndex) {
+    if(node->children.size() < 3) {
+        return Value::undefined();
+    }
+
+    auto left_node = node->children[0];   // Variable declaration or identifier
+    auto right_node = node->children[1];  // Iterable expression
+    auto body_node = node->children[2];   // Loop body
+
+    int for_await_id = getAwaitId(node);
+
+    // Get the variable name and declaration type
+    std::string var_name;
+    ASTNodeType decl_type = left_node->type;
+    if(decl_type == ASTNodeType::VariableDeclaration || decl_type == ASTNodeType::LetDeclaration ||
+       decl_type == ASTNodeType::ConstDeclaration) {
+        var_name = left_node->value;
+    } else if(decl_type == ASTNodeType::Identifier) {
+        var_name = left_node->value;
+    } else {
+        return Value::undefined();
+    }
+
+    // Hidden variable names for storing state across resumptions
+    std::string iter_var = "__forAwaitIter_" + std::to_string(for_await_id) + "__";
+
+    Value result = Value::undefined();
+
+    // Case 1: Resuming at this node's own await ID (the awaited value resolved)
+    if(context.isResuming && context.currentAwaitId == for_await_id) {
+        context.isResuming = false;
+
+        if(context.throwOnResume) {
+            context.throwOnResume = false;
+            throw JavaScriptException(context.sentValue);
+        }
+
+        // sentValue is the resolved value from the current element
+        Value value = context.sentValue;
+
+        // Assign resolved value to loop variable
+        env->set(var_name, value);
+
+        // Execute loop body
+        try {
+            result = evaluateLoopBody(body_node, env, engine, context, statementIndex);
+        } catch(const BreakException&) {
+            return result;
+        } catch(const ContinueException&) {
+            // Fall through to next iteration
+        }
+
+        // Continue the loop: get the iterator and call .next() again
+        Value iterator = env->get(iter_var);
+        if(!iterator.isObject()) {
+            return result;
+        }
+        auto* iterator_obj = iterator.getObject();
+        Value next_method = iterator_obj->getProperty("next");
+        if(!next_method.isFunction()) {
+            return result;
+        }
+        auto* next_func = dynamic_cast<JSFunction*>(next_method.getObject());
+        if(!next_func) {
+            return result;
+        }
+        CallContext next_ctx(CallType::Function, iterator);
+        Value next_result = next_func->call(next_ctx, {});
+
+        // For sync iterators, next_result is {done, value} directly
+        // Extract done and value, then await the value
+        if(next_result.isObject()) {
+            auto* result_obj = next_result.getObject();
+            Value done_val = result_obj->getProperty("done");
+            if(done_val.toBool()) {
+                return result;
+            }
+            Value next_value = result_obj->getProperty("value");
+            // Await the value (per spec, for-await-of awaits each value)
+            throw AwaitException(next_value, for_await_id, statementIndex);
+        }
+
+        return result;
+    }
+
+    // Case 2: Resuming with target await inside the loop body
+    if(context.isResuming) {
+        if(containsAwaitPoint(body_node, context.currentAwaitId)) {
+            try {
+                result = evaluateLoopBody(body_node, env, engine, context, statementIndex);
+            } catch(const BreakException&) {
+                return result;
+            } catch(const ContinueException&) {
+                // Fall through to next iteration
+            }
+
+            // After body completes, call .next() for next iteration
+            Value iterator = env->get(iter_var);
+            if(!iterator.isObject()) {
+                return result;
+            }
+            auto* iterator_obj = iterator.getObject();
+            Value next_method = iterator_obj->getProperty("next");
+            if(!next_method.isFunction()) {
+                return result;
+            }
+            auto* next_func = dynamic_cast<JSFunction*>(next_method.getObject());
+            if(!next_func) {
+                return result;
+            }
+            CallContext next_ctx(CallType::Function, iterator);
+            Value next_result = next_func->call(next_ctx, {});
+
+            if(next_result.isObject()) {
+                auto* result_obj = next_result.getObject();
+                Value done_val = result_obj->getProperty("done");
+                if(done_val.toBool()) {
+                    return result;
+                }
+                Value next_value = result_obj->getProperty("value");
+                throw AwaitException(next_value, for_await_id, statementIndex);
+            }
+
+            return result;
+        }
+        return Value::undefined();
+    }
+
+    // Case 3: First entry - evaluate iterable, get iterator, start loop
+
+    Value iterable = engine->evaluate(right_node, env);
+
+    // Declare the loop variable (use let semantics for const to allow re-assignment per iteration)
+    if(decl_type == ASTNodeType::LetDeclaration) {
+        env->define(var_name, Value::undefined(), VariableType::Let);
+    } else if(decl_type == ASTNodeType::ConstDeclaration) {
+        env->define(var_name, Value::undefined(), VariableType::Let);
+    } else if(decl_type == ASTNodeType::VariableDeclaration) {
+        env->define(var_name, Value::undefined());
+    }
+
+    // Get the iterator object
+    JSObject* iterable_obj = nullptr;
+    if(iterable.isObject() || iterable.isFunction()) {
+        iterable_obj = iterable.getObject();
+    }
+
+    Value iterator = Value::undefined();
+    if(iterable_obj) {
+        // Try Symbol.asyncIterator first
+        std::string async_iter_key =
+            EvaluationUtils::symbolToPropertyKey(builtins::Symbol::getAsyncIteratorId());
+        Value async_iter_method = iterable_obj->getProperty(async_iter_key);
+
+        if(!async_iter_method.isUndefined() && async_iter_method.isFunction()) {
+            auto* async_iter_func = dynamic_cast<JSFunction*>(async_iter_method.getObject());
+            if(async_iter_func) {
+                CallContext iter_ctx(CallType::Function, iterable);
+                iterator = async_iter_func->call(iter_ctx, {});
+            }
+        }
+
+        // Fallback to Symbol.iterator
+        if(iterator.isUndefined() || !iterator.isObject()) {
+            std::string iter_key =
+                EvaluationUtils::symbolToPropertyKey(builtins::Symbol::getIteratorId());
+            Value iter_method = iterable_obj->getProperty(iter_key);
+
+            if(!iter_method.isUndefined() && iter_method.isFunction()) {
+                auto* iter_func = dynamic_cast<JSFunction*>(iter_method.getObject());
+                if(iter_func) {
+                    CallContext iter_ctx(CallType::Function, iterable);
+                    iterator = iter_func->call(iter_ctx, {});
+                }
+            }
+        }
+    }
+
+    if(!iterator.isObject()) {
+        throw JavaScriptException(Value("TypeError: object is not iterable"));
+    }
+
+    // Store the iterator for resumption
+    env->define(iter_var, iterator);
+
+    // Call .next() to get first element
+    auto* iterator_obj = iterator.getObject();
+    Value next_method = iterator_obj->getProperty("next");
+    if(!next_method.isFunction()) {
+        throw JavaScriptException(Value("TypeError: iterator.next is not a function"));
+    }
+    auto* next_func = dynamic_cast<JSFunction*>(next_method.getObject());
+    if(!next_func) {
+        throw JavaScriptException(Value("TypeError: iterator.next is not a function"));
+    }
+
+    CallContext next_ctx(CallType::Function, iterator);
+    Value next_result = next_func->call(next_ctx, {});
+
+    // Extract value from {done, value} result
+    if(next_result.isObject()) {
+        auto* result_obj = next_result.getObject();
+        Value done_val = result_obj->getProperty("done");
+        if(done_val.toBool()) {
+            return Value::undefined();  // Empty iterable
+        }
+        Value first_value = result_obj->getProperty("value");
+        // Await the value (this handles both Promise and non-Promise values)
+        throw AwaitException(first_value, for_await_id, statementIndex);
+    }
+
+    return Value::undefined();
 }
 
 Value AsyncExecutor::evaluateTryStatement(std::shared_ptr<ASTNode> node,

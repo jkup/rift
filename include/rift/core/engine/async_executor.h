@@ -146,6 +146,13 @@ class AsyncExecutor {
                              Rift* engine, AsyncExecutionContext& context, int statementIndex);
 
     /**
+     * Evaluate a for-await-of loop that iterates over async iterables.
+     */
+    static Value evaluateForAwaitOf(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
+                                    Rift* engine, AsyncExecutionContext& context,
+                                    int statementIndex);
+
+    /**
      * Evaluate the body of a loop (block or single statement).
      */
     static Value evaluateLoopBody(std::shared_ptr<ASTNode> body, std::shared_ptr<Environment> env,

@@ -60,6 +60,8 @@ class StatementEvaluator {
                                         std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateForOfStatement(std::shared_ptr<ASTNode> node,
                                         std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateForAwaitOfStatement(std::shared_ptr<ASTNode> node,
+                                             std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
                                          std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateBreakStatement(std::shared_ptr<ASTNode> node,

@@ -185,6 +185,20 @@ class ASTFactory {
         return node;
     }
 
+    // For-await-of statement: for await (left of right) body
+    // children[0] = left (variable declaration or identifier)
+    // children[1] = right (async iterable to iterate)
+    // children[2] = body
+    static std::shared_ptr<ASTNode> makeForAwaitOfStatement(std::shared_ptr<ASTNode> left,
+                                                            std::shared_ptr<ASTNode> right,
+                                                            std::shared_ptr<ASTNode> body) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::ForAwaitOfStatement);
+        node->children.push_back(std::move(left));
+        node->children.push_back(std::move(right));
+        node->children.push_back(std::move(body));
+        return node;
+    }
+
     // Declaration factories
     static std::shared_ptr<ASTNode> makeVariableDeclaration(
         const std::string& name, std::shared_ptr<ASTNode> initializer = nullptr) {

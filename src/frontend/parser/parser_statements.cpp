@@ -353,6 +353,17 @@ static bool isContextualOf(const Token& tok) {
 std::shared_ptr<ASTNode> Parser::parse_for_statement() {
     consume(TokenType::For);  // consume 'for'
 
+    // Check for 'for await' syntax
+    bool is_for_await = false;
+    if(current_token().type == TokenType::Await) {
+        if(!in_async_context_) {
+            throw std::runtime_error(
+                "SyntaxError: for-await-of is only valid in async functions and async generators");
+        }
+        is_for_await = true;
+        current++;  // consume 'await'
+    }
+
     consume(TokenType::LeftParen);  // consume '('
 
     // Check for for-in: for (var x in obj) or for (x in obj)
@@ -374,6 +385,12 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             if(current_token().type == TokenType::In || isContextualOf(current_token())) {
                 bool is_for_of = isContextualOf(current_token());
                 is_for_in = !is_for_of;
+
+                if(is_for_await && !is_for_of) {
+                    throw std::runtime_error(
+                        "SyntaxError: for-await is only valid with for-of loops");
+                }
+
                 if(decl_type == TokenType::Var) {
                     left = ASTFactory::makeVariableDeclaration(var_name, nullptr);
                 } else if(decl_type == TokenType::Let) {
@@ -392,10 +409,17 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
                 auto body = parse_statement();
 
                 if(is_for_of) {
+                    if(is_for_await) {
+                        return ASTFactory::makeForAwaitOfStatement(left, right, body);
+                    }
                     return ASTFactory::makeForOfStatement(left, right, body);
                 }
                 return ASTFactory::makeForInStatement(left, right, body);
             } else {
+                if(is_for_await) {
+                    throw std::runtime_error(
+                        "SyntaxError: for-await is only valid with for-of loops");
+                }
                 // Not for-in, backtrack and parse as regular for loop
                 // We need to re-parse the variable declaration properly
                 current -= 2;  // go back to var/let/const
@@ -416,6 +440,11 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             // This is for-in or for-of: for (x in obj) or for (x of arr)
             bool is_for_of = isContextualOf(current_token());
             is_for_in = !is_for_of;
+
+            if(is_for_await && !is_for_of) {
+                throw std::runtime_error("SyntaxError: for-await is only valid with for-of loops");
+            }
+
             left = ASTFactory::makeIdentifier(var_name);
             current++;  // consume 'in' or 'of'
 
@@ -428,10 +457,16 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             auto body = parse_statement();
 
             if(is_for_of) {
+                if(is_for_await) {
+                    return ASTFactory::makeForAwaitOfStatement(left, right, body);
+                }
                 return ASTFactory::makeForOfStatement(left, right, body);
             }
             return ASTFactory::makeForInStatement(left, right, body);
         } else {
+            if(is_for_await) {
+                throw std::runtime_error("SyntaxError: for-await is only valid with for-of loops");
+            }
             // Not for-in, backtrack and parse as regular for loop expression
             current--;  // go back to identifier
             left = parse_expression();
@@ -858,7 +893,8 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
         current++;  // consume 'static'
     }
 
-    // Check for 'async' keyword (must not be followed by '(' which would mean a method named "async")
+    // Check for 'async' keyword (must not be followed by '(' which would mean a method named
+    // "async")
     if(current_token().type == TokenType::Async && peek_token().type != TokenType::LeftParen) {
         isAsync = true;
         current++;  // consume 'async'

@@ -54,10 +54,12 @@ class Symbol : public BuiltinBase<Symbol> {
     static Value getToPrimitive();
     static Value getUnscopables();
     static Value getIsConcatSpreadable();
+    static Value getAsyncIterator();
 
     /// Get the symbol ID for a well-known symbol (for use in property access)
     static uint64_t getIteratorId();
     static uint64_t getToStringTagId();
+    static uint64_t getAsyncIteratorId();
 
   private:
     static JSObject* getGlobalPrototype();
@@ -76,6 +78,7 @@ class Symbol : public BuiltinBase<Symbol> {
     static uint64_t to_primitive_id_;
     static uint64_t unscopables_id_;
     static uint64_t is_concat_spreadable_id_;
+    static uint64_t async_iterator_id_;
 };
 
 }  // namespace rift::builtins

@@ -166,8 +166,7 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
             if(callee_node->metadata == "computed") {
                 Value property_value = engine->evaluate(callee_node->children[1], env);
                 if(property_value.isSymbol()) {
-                    property =
-                        EvaluationUtils::symbolToPropertyKey(property_value.getSymbol().id);
+                    property = EvaluationUtils::symbolToPropertyKey(property_value.getSymbol().id);
                 } else {
                     property = EvaluationUtils::toPropertyKeyString(property_value);
                 }
@@ -1163,10 +1162,10 @@ Value ExpressionEvaluator::evaluateClassExpression(std::shared_ptr<ASTNode> node
                         return Value(generator);
                     });
             } else if(is_async) {
-                method_func = factory->createJSFunction(
-                    [engine, method_param_info, method_body, class_env](
-                        const rift::core::CallContext& call_context,
-                        const std::vector<Value>& args) -> Value {
+                method_func =
+                    factory->createJSFunction([engine, method_param_info, method_body, class_env](
+                                                  const rift::core::CallContext& call_context,
+                                                  const std::vector<Value>& args) -> Value {
                         auto* factory = engine->getObjectFactory();
                         auto* promise_obj = builtins::Promise::createPromiseObject(factory);
                         memory::GCProtector protect(promise_obj, factory->getObjectManager());

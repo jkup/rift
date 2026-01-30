@@ -461,4 +461,12 @@ Value StatementEvaluator::evaluateReturnStatement(std::shared_ptr<ASTNode> node,
     throw ReturnException(returnValue);
 }
 
+Value StatementEvaluator::evaluateForAwaitOfStatement(std::shared_ptr<ASTNode> node,
+                                                      std::shared_ptr<Environment> env,
+                                                      Rift* engine) {
+    // This is a fallback when for-await-of appears outside an AsyncExecutor context.
+    // In practice, AsyncExecutor intercepts this node type first.
+    throw JavaScriptException(Value("TypeError: for-await-of is only valid in async functions"));
+}
+
 }  // namespace rift::core

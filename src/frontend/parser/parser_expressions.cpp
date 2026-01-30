@@ -576,7 +576,8 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
 
             std::shared_ptr<ASTNode> value;
             if(is_async_method) {
-                value = ASTFactory::makeAsyncFunctionExpression(parameters, method_body, key->value);
+                value =
+                    ASTFactory::makeAsyncFunctionExpression(parameters, method_body, key->value);
             } else {
                 value = ASTFactory::makeFunctionExpression(parameters, method_body);
             }

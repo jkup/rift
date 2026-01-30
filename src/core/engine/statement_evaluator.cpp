@@ -72,6 +72,8 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateForInStatement(node, env, engine);
         case ASTNodeType::ForOfStatement:
             return evaluateForOfStatement(node, env, engine);
+        case ASTNodeType::ForAwaitOfStatement:
+            return evaluateForAwaitOfStatement(node, env, engine);
         case ASTNodeType::SwitchStatement:
             return evaluateSwitchStatement(node, env, engine);
         case ASTNodeType::BreakStatement:
@@ -1108,10 +1110,10 @@ Value StatementEvaluator::evaluateClassDeclaration(std::shared_ptr<ASTNode> node
                         return Value(generator);
                     });
             } else if(is_async) {
-                method_func = factory->createJSFunction(
-                    [engine, method_param_info, method_body, class_env](
-                        const rift::core::CallContext& call_context,
-                        const std::vector<Value>& args) -> Value {
+                method_func =
+                    factory->createJSFunction([engine, method_param_info, method_body, class_env](
+                                                  const rift::core::CallContext& call_context,
+                                                  const std::vector<Value>& args) -> Value {
                         auto* factory = engine->getObjectFactory();
                         auto* promise_obj = builtins::Promise::createPromiseObject(factory);
                         memory::GCProtector protect(promise_obj, factory->getObjectManager());
