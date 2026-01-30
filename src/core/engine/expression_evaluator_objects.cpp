@@ -22,6 +22,7 @@
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/expression_evaluator.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/memory/gc_disabler.h"
 #include "rift/memory/gc_protector.h"
 #include "rift/runtime/values/object.h"
 
@@ -413,58 +414,48 @@ Value ExpressionEvaluator::evaluateObjectLiteral(std::shared_ptr<ASTNode> node,
 
     // Temporarily disable GC to prevent collection of the object being constructed
     // The object is not yet reachable from GC roots until it's returned and assigned
-    auto* obj_manager = factory->getObjectManager();
-    bool was_gc_enabled = obj_manager->isGCEnabled();
-    obj_manager->setGCEnabled(false);
+    memory::GCDisabler disabler(factory->getObjectManager()->getGC());
 
     auto* obj = factory->createJSObject(object_prototype);
 
     // Process key-value pairs from the AST
     // Children are stored in pairs: key, value, key, value, ...
-    try {
-        for(size_t i = 0; i < node->children.size(); i += 2) {
-            if(i + 1 >= node->children.size()) {
-                // Odd number of children - this should not happen with proper parsing
-                break;
-            }
-
-            auto key_node = node->children[i];
-            auto value_node = node->children[i + 1];
-
-            // Get the property key
-            std::string key;
-            if(key_node->type == ASTNodeType::Identifier) {
-                // Identifier keys are used as-is: { name: value }
-                key = key_node->value;
-            } else if(key_node->type == ASTNodeType::Literal) {
-                // String literal keys need to be processed: { "name": value }
-                std::string str = key_node->value;
-                if(str.length() >= 2 && str[0] == '"' && str.back() == '"') {
-                    key = str.substr(1, str.length() - 2);  // Remove quotes
-                } else {
-                    key = str;
-                }
-            } else {
-                // Other key types (computed keys) - evaluate as expression
-                Value key_value = engine->evaluate(key_node, env);
-                key = key_value.toString();
-            }
-
-            // Evaluate the property value
-            Value value = engine->evaluate(value_node, env);
-
-            // Set the property on the object
-            obj->setProperty(key, value);
+    for(size_t i = 0; i < node->children.size(); i += 2) {
+        if(i + 1 >= node->children.size()) {
+            // Odd number of children - this should not happen with proper parsing
+            break;
         }
 
-        // Re-enable GC before returning
-        obj_manager->setGCEnabled(was_gc_enabled);
-        return Value(obj);
-    } catch(...) {
-        // Re-enable GC in case of exception
-        obj_manager->setGCEnabled(was_gc_enabled);
-        throw;
+        auto key_node = node->children[i];
+        auto value_node = node->children[i + 1];
+
+        // Get the property key
+        std::string key;
+        if(key_node->type == ASTNodeType::Identifier) {
+            // Identifier keys are used as-is: { name: value }
+            key = key_node->value;
+        } else if(key_node->type == ASTNodeType::Literal) {
+            // String literal keys need to be processed: { "name": value }
+            std::string str = key_node->value;
+            if(str.length() >= 2 && str[0] == '"' && str.back() == '"') {
+                key = str.substr(1, str.length() - 2);  // Remove quotes
+            } else {
+                key = str;
+            }
+        } else {
+            // Other key types (computed keys) - evaluate as expression
+            Value key_value = engine->evaluate(key_node, env);
+            key = key_value.toString();
+        }
+
+        // Evaluate the property value
+        Value value = engine->evaluate(value_node, env);
+
+        // Set the property on the object
+        obj->setProperty(key, value);
     }
+
+    return Value(obj);
 }
 
 Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> node,
@@ -811,11 +802,9 @@ Value ExpressionEvaluator::evaluateClassExpression(std::shared_ptr<ASTNode> node
 
     // Create prototype object
     auto* factory = engine->getObjectFactory();
-    auto* obj_manager = factory->getObjectManager();
-    bool was_gc_enabled = obj_manager->isGCEnabled();
-    obj_manager->setGCEnabled(false);
+    memory::GCDisabler disabler(factory->getObjectManager()->getGC());
 
-    try {
+    {
         auto* class_prototype = factory->createJSObject(parent_prototype);
 
         // Process class body
@@ -1262,12 +1251,7 @@ Value ExpressionEvaluator::evaluateClassExpression(std::shared_ptr<ASTNode> node
             constructor->setProperty(method_name, Value(method_func));
         }
 
-        obj_manager->setGCEnabled(was_gc_enabled);
         return Value(constructor);
-
-    } catch(...) {
-        obj_manager->setGCEnabled(was_gc_enabled);
-        throw;
     }
 }
 

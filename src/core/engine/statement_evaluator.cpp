@@ -22,6 +22,7 @@
 #include "rift/core/engine/async_executor.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/memory/gc_disabler.h"
 #include "rift/memory/gc_protector.h"
 #include "rift/runtime/values/object.h"
 
@@ -741,11 +742,9 @@ Value StatementEvaluator::evaluateClassDeclaration(std::shared_ptr<ASTNode> node
 
     // Create prototype object for this class
     auto* factory = engine->getObjectFactory();
-    auto* obj_manager = factory->getObjectManager();
-    bool was_gc_enabled = obj_manager->isGCEnabled();
-    obj_manager->setGCEnabled(false);
+    memory::GCDisabler disabler(factory->getObjectManager()->getGC());
 
-    try {
+    {
         // Create prototype with parent prototype as its prototype
         auto* class_prototype = factory->createJSObject(parent_prototype);
 
@@ -1206,12 +1205,7 @@ Value StatementEvaluator::evaluateClassDeclaration(std::shared_ptr<ASTNode> node
         // Define class in outer environment (declarations are visible outside)
         env->define(class_name, Value(constructor));
 
-        obj_manager->setGCEnabled(was_gc_enabled);
         return Value(constructor);
-
-    } catch(...) {
-        obj_manager->setGCEnabled(was_gc_enabled);
-        throw;
     }
 }
 

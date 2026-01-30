@@ -171,7 +171,9 @@ Value Number::parseFloat(const CallContext& ctx, const std::vector<Value>& args)
         size_t pos;
         double result = std::stod(str.substr(start), &pos);
         return Value(result);
-    } catch(...) {
+    } catch(const std::invalid_argument&) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    } catch(const std::out_of_range&) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 }
@@ -220,7 +222,9 @@ Value Number::parseInt(const CallContext& ctx, const std::vector<Value>& args) {
         size_t pos;
         long long result = std::stoll(str.substr(start), &pos, radix);
         return Value(static_cast<double>(sign * result));
-    } catch(...) {
+    } catch(const std::invalid_argument&) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    } catch(const std::out_of_range&) {
         return Value(std::numeric_limits<double>::quiet_NaN());
     }
 }

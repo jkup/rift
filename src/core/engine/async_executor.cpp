@@ -108,7 +108,7 @@ Value AsyncExecutor::execute(std::shared_ptr<ASTNode> body, std::shared_ptr<Envi
     } catch(const ReturnException& e) {
         active_context_ = prev_context;
         return e.getValue();
-    } catch(...) {
+    } catch(const std::exception&) {
         active_context_ = prev_context;
         throw;
     }
