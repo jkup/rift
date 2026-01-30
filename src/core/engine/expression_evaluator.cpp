@@ -25,6 +25,19 @@
 
 namespace rift::core {
 
+static double parseNumericLiteral(const std::string& value) {
+    if(value.size() > 2 && value[0] == '0') {
+        char prefix = value[1];
+        if(prefix == 'o' || prefix == 'O') {
+            return static_cast<double>(std::stol(value.substr(2), nullptr, 8));
+        }
+        if(prefix == 'b' || prefix == 'B') {
+            return static_cast<double>(std::stol(value.substr(2), nullptr, 2));
+        }
+    }
+    return std::stod(value);
+}
+
 Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
                                     Rift* engine) {
     if(!node) {
@@ -100,7 +113,7 @@ Value ExpressionEvaluator::evaluateLiteral(std::shared_ptr<ASTNode> node,
             return Value(node->value);
         } else if(node->metadata == "number") {
             try {
-                double num = std::stod(node->value);
+                double num = parseNumericLiteral(node->value);
                 return Value(num);
             } catch(const std::invalid_argument& e) {
                 std::cerr << "Warning: Invalid number literal '" << node->value << "': " << e.what()
@@ -132,7 +145,7 @@ Value ExpressionEvaluator::evaluateLiteral(std::shared_ptr<ASTNode> node,
 
     // Try to parse as number
     try {
-        double num = std::stod(node->value);
+        double num = parseNumericLiteral(node->value);
         return Value(num);
     } catch(const std::invalid_argument&) {
         // Not a number - must be a string - remove quotes if present
