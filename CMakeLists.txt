@@ -127,6 +127,7 @@ set(CORE_SOURCES
     src/core/engine/operation_handler.cpp
     src/core/engine/generator_evaluator.cpp
     src/core/engine/async_executor.cpp
+    src/core/engine/class_builder.cpp
     src/core/engine/microtask_queue.cpp
 )
 
