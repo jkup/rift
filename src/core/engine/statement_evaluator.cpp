@@ -18,10 +18,13 @@
 
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/generator/generator_iterator.h"
+#include "rift/builtins/symbol/symbol.h"
 #include "rift/builtins/promise/promise.h"
 #include "rift/core/engine/async_executor.h"
+#include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/class_builder.h"
 #include "rift/core/engine/engine.h"
+#include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/memory/gc_disabler.h"
 #include "rift/memory/gc_protector.h"
@@ -217,52 +220,168 @@ void StatementEvaluator::applyPatternBinding(std::shared_ptr<ASTNode> pattern, c
 
     } else if(pattern->type == ASTNodeType::ArrayPattern) {
         // Array destructuring: [x, y, ...rest]
-        std::vector<Value> elements = extractArrayElements(value);
+        // Per ECMAScript spec, array destructuring uses the iterator protocol
 
+        // TypeError for null/undefined
+        if(value.isNull() || value.isUndefined()) {
+            auto* factory = engine->getObjectFactory();
+            auto* error_obj = factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
+            memory::GCProtector protect(error_obj, factory->getObjectManager());
+            error_obj->setProperty("name", Value("TypeError"));
+            error_obj->setProperty("message",
+                Value(value.toString() +
+                      " is not iterable (cannot read property Symbol(Symbol.iterator))"));
+            throw JavaScriptException(Value(error_obj));
+        }
+
+        // Try to get iterator via Symbol.iterator protocol
+        bool use_iterator = false;
+        JSObject* iterator_obj = nullptr;
+        bool iterator_done = false;
+
+        if(value.isObject() || value.isFunction()) {
+            auto* obj = value.getObject();
+            if(obj) {
+                std::string iterator_key =
+                    EvaluationUtils::symbolToPropertyKey(builtins::Symbol::getIteratorId());
+                Value iterator_method = obj->getProperty(iterator_key);
+                if(iterator_method.isFunction()) {
+                    auto* iter_func = dynamic_cast<rift::runtime::JSFunction*>(
+                        iterator_method.getObject());
+                    if(iter_func) {
+                        CallContext ctx(CallType::Function, value);
+                        Value iterator_val = iter_func->call(ctx, {});
+                        if(iterator_val.isObject()) {
+                            iterator_obj = iterator_val.getObject();
+                            use_iterator = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Lambda to step the iterator lazily (one element at a time)
+        auto iteratorNext = [&]() -> Value {
+            if(iterator_done) {
+                return Value::undefined();
+            }
+            Value next_method = iterator_obj->getProperty("next");
+            if(!next_method.isFunction()) {
+                iterator_done = true;
+                return Value::undefined();
+            }
+
+            auto* next_func =
+                dynamic_cast<rift::runtime::JSFunction*>(next_method.getObject());
+            if(!next_func) {
+                iterator_done = true;
+                return Value::undefined();
+            }
+
+            CallContext next_ctx(CallType::Function, Value(iterator_obj));
+            Value result = next_func->call(next_ctx, {});
+
+            if(!result.isObject()) {
+                iterator_done = true;
+                return Value::undefined();
+            }
+
+            auto* result_obj = result.getObject();
+            Value done = result_obj->getProperty("done");
+            if(done.toBool()) {
+                iterator_done = true;
+                return Value::undefined();
+            }
+
+            return result_obj->getProperty("value");
+        };
+
+        // For index-based fallback (strings, objects without Symbol.iterator)
+        std::vector<Value> elements;
         size_t elem_idx = 0;
+        if(!use_iterator) {
+            elements = extractArrayElements(value);
+        }
+
         for(size_t i = 0; i < pattern->children.size(); ++i) {
             auto& elem_pattern = pattern->children[i];
 
             if(!elem_pattern) {
-                // Hole: [x, , z] - skip this element
-                elem_idx++;
+                // Hole: [x, , z] - advance iterator/index, discard value
+                if(use_iterator) {
+                    iteratorNext();
+                } else {
+                    elem_idx++;
+                }
                 continue;
             }
 
             if(elem_pattern->type == ASTNodeType::RestElement) {
                 // Rest element: collect remaining elements into array
                 std::vector<Value> rest_elements;
-                while(elem_idx < elements.size()) {
-                    rest_elements.push_back(elements[elem_idx++]);
+                if(use_iterator) {
+                    while(!iterator_done) {
+                        Value val = iteratorNext();
+                        if(!iterator_done) {
+                            rest_elements.push_back(val);
+                        }
+                    }
+                } else {
+                    while(elem_idx < elements.size()) {
+                        rest_elements.push_back(elements[elem_idx++]);
+                    }
                 }
                 auto* rest_array =
                     builtins::Array::createArrayObject(engine->getObjectFactory(), rest_elements);
-                env->define(elem_pattern->children[0]->value, Value(rest_array), var_type);
+                applyPatternBinding(elem_pattern->children[0], Value(rest_array), env, engine,
+                                    var_type);
 
             } else if(elem_pattern->type == ASTNodeType::AssignmentPattern) {
                 // Element with default: [x = 10]
-                Value elem_value =
-                    elem_idx < elements.size() ? elements[elem_idx] : Value::undefined();
+                Value elem_value;
+                if(use_iterator) {
+                    elem_value = iteratorNext();
+                } else {
+                    elem_value =
+                        elem_idx < elements.size() ? elements[elem_idx] : Value::undefined();
+                    elem_idx++;
+                }
 
                 if(elem_value.isUndefined() && elem_pattern->children.size() > 1) {
-                    // Use default value
                     elem_value = engine->evaluate(elem_pattern->children[1], env);
                 }
 
                 applyPatternBinding(elem_pattern->children[0], elem_value, env, engine, var_type);
-                elem_idx++;
 
             } else {
                 // Nested pattern or identifier
-                Value elem_value =
-                    elem_idx < elements.size() ? elements[elem_idx] : Value::undefined();
+                Value elem_value;
+                if(use_iterator) {
+                    elem_value = iteratorNext();
+                } else {
+                    elem_value =
+                        elem_idx < elements.size() ? elements[elem_idx] : Value::undefined();
+                    elem_idx++;
+                }
                 applyPatternBinding(elem_pattern, elem_value, env, engine, var_type);
-                elem_idx++;
             }
         }
 
     } else if(pattern->type == ASTNodeType::ObjectPattern) {
         // Object destructuring: {a, b: renamed, ...rest}
+
+        // TypeError for null/undefined
+        if(value.isNull() || value.isUndefined()) {
+            auto* factory = engine->getObjectFactory();
+            auto* error_obj = factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
+            memory::GCProtector protect(error_obj, factory->getObjectManager());
+            error_obj->setProperty("name", Value("TypeError"));
+            error_obj->setProperty("message",
+                Value("Cannot destructure '" + value.toString() + "' as it is " +
+                      value.toString() + "."));
+            throw JavaScriptException(Value(error_obj));
+        }
+
         JSObject* obj = nullptr;
         if(value.isObject()) {
             obj = value.getObject();
