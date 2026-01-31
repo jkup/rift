@@ -12,6 +12,7 @@
 
 #include <cmath>
 
+#include "rift/builtins/array/array.h"
 #include "rift/builtins/symbol/symbol.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/evaluation_utils.h"
@@ -160,42 +161,67 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
     // Evaluate the object to iterate over
     Value obj_value = engine->evaluate(right_node, env);
 
-    // Get the variable name
-    std::string var_name;
-    bool is_declaration = false;
+    // Detect destructuring pattern
+    bool is_destructuring = false;
+    std::shared_ptr<ASTNode> pattern;
+    VariableType var_type = VariableType::Var;
 
-    if(left_node->type == ASTNodeType::VariableDeclaration ||
-       left_node->type == ASTNodeType::LetDeclaration ||
-       left_node->type == ASTNodeType::ConstDeclaration) {
-        var_name = left_node->value;
-        is_declaration = true;
-        // Declare the variable in the current scope
+    if((left_node->type == ASTNodeType::VariableDeclaration ||
+        left_node->type == ASTNodeType::LetDeclaration ||
+        left_node->type == ASTNodeType::ConstDeclaration) &&
+       left_node->metadata == "destructuring" && !left_node->children.empty()) {
+        is_destructuring = true;
+        pattern = left_node->children[0];
         if(left_node->type == ASTNodeType::LetDeclaration) {
-            env->define(var_name, Value::undefined(), VariableType::Let);
+            var_type = VariableType::Let;
         } else if(left_node->type == ASTNodeType::ConstDeclaration) {
-            // Note: const in for-in is allowed but reassigned each iteration
-            env->define(var_name, Value::undefined(), VariableType::Let);  // Use let semantics
-        } else {
-            env->define(var_name, Value::undefined());
+            var_type = VariableType::Const;
         }
-    } else if(left_node->type == ASTNodeType::Identifier) {
-        var_name = left_node->value;
-    } else {
-        return Value::undefined();  // Invalid left side
+    } else if(left_node->type == ASTNodeType::ArrayPattern ||
+              left_node->type == ASTNodeType::ObjectPattern) {
+        is_destructuring = true;
+        pattern = left_node;
     }
 
-    // Handle different types
-    if(obj_value.isObject() || obj_value.isFunction()) {
-        auto* obj = obj_value.getObject();
-        if(obj) {
-            // Get all enumerable property names
-            auto keys = obj->getOwnPropertyNames();
+    if(!is_destructuring) {
+        // Simple variable path (existing behavior)
+        std::string var_name;
+        if(left_node->type == ASTNodeType::VariableDeclaration ||
+           left_node->type == ASTNodeType::LetDeclaration ||
+           left_node->type == ASTNodeType::ConstDeclaration) {
+            var_name = left_node->value;
+            if(left_node->type == ASTNodeType::LetDeclaration) {
+                env->define(var_name, Value::undefined(), VariableType::Let);
+            } else if(left_node->type == ASTNodeType::ConstDeclaration) {
+                env->define(var_name, Value::undefined(), VariableType::Let);
+            } else {
+                env->define(var_name, Value::undefined());
+            }
+        } else if(left_node->type == ASTNodeType::Identifier) {
+            var_name = left_node->value;
+        } else {
+            return Value::undefined();
+        }
 
-            for(const auto& key : keys) {
-                // Assign the key to the loop variable
-                env->set(var_name, Value(key));
-
-                // Execute the body
+        if(obj_value.isObject() || obj_value.isFunction()) {
+            auto* obj = obj_value.getObject();
+            if(obj) {
+                auto keys = obj->getOwnPropertyNames();
+                for(const auto& key : keys) {
+                    env->set(var_name, Value(key));
+                    try {
+                        result = engine->evaluate(body_node, env);
+                    } catch(const BreakException&) {
+                        break;
+                    } catch(const ContinueException&) {
+                        continue;
+                    }
+                }
+            }
+        } else if(obj_value.isString()) {
+            std::string str = obj_value.toString();
+            for(size_t i = 0; i < str.length(); i++) {
+                env->set(var_name, Value(std::to_string(i)));
                 try {
                     result = engine->evaluate(body_node, env);
                 } catch(const BreakException&) {
@@ -205,24 +231,52 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
                 }
             }
         }
-    } else if(obj_value.isString()) {
-        // Iterate over string indices
-        std::string str = obj_value.toString();
-        for(size_t i = 0; i < str.length(); i++) {
-            // Assign the index (as string) to the loop variable
-            env->set(var_name, Value(std::to_string(i)));
+    } else {
+        // Destructuring path
+        // For var: bind into outer env; for let/const: per-iteration child env
+        auto bindAndExecute = [&](const Value& key_value) -> bool {
+            if(var_type == VariableType::Var) {
+                applyPatternBinding(pattern, key_value, env, engine, var_type);
+                try {
+                    result = engine->evaluate(body_node, env);
+                } catch(const BreakException&) {
+                    return true;  // signal break
+                } catch(const ContinueException&) {
+                    // continue
+                }
+            } else {
+                auto iter_env = std::make_shared<Environment>(env);
+                applyPatternBinding(pattern, key_value, iter_env, engine, var_type);
+                try {
+                    result = engine->evaluate(body_node, iter_env);
+                } catch(const BreakException&) {
+                    return true;
+                } catch(const ContinueException&) {
+                    // continue
+                }
+            }
+            return false;
+        };
 
-            // Execute the body
-            try {
-                result = engine->evaluate(body_node, env);
-            } catch(const BreakException&) {
-                break;
-            } catch(const ContinueException&) {
-                continue;
+        if(obj_value.isObject() || obj_value.isFunction()) {
+            auto* obj = obj_value.getObject();
+            if(obj) {
+                auto keys = obj->getOwnPropertyNames();
+                for(const auto& key : keys) {
+                    if(bindAndExecute(Value(key))) {
+                        break;
+                    }
+                }
+            }
+        } else if(obj_value.isString()) {
+            std::string str = obj_value.toString();
+            for(size_t i = 0; i < str.length(); i++) {
+                if(bindAndExecute(Value(std::to_string(i)))) {
+                    break;
+                }
             }
         }
     }
-    // For null, undefined, numbers, booleans - the loop body never executes
 
     return result;
 }
@@ -335,42 +389,88 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
     // Evaluate the iterable
     Value iterable = engine->evaluate(right_node, env);
 
-    // Get the variable name and handle declaration
-    std::string var_name;
-    if(left_node->type == ASTNodeType::VariableDeclaration ||
-       left_node->type == ASTNodeType::LetDeclaration ||
-       left_node->type == ASTNodeType::ConstDeclaration) {
-        var_name = left_node->value;
-        // Declare variable in current scope
+    // Detect destructuring pattern
+    bool is_destructuring = false;
+    std::shared_ptr<ASTNode> pattern;
+    VariableType var_type = VariableType::Var;
+
+    if((left_node->type == ASTNodeType::VariableDeclaration ||
+        left_node->type == ASTNodeType::LetDeclaration ||
+        left_node->type == ASTNodeType::ConstDeclaration) &&
+       left_node->metadata == "destructuring" && !left_node->children.empty()) {
+        is_destructuring = true;
+        pattern = left_node->children[0];
         if(left_node->type == ASTNodeType::LetDeclaration) {
-            env->define(var_name, Value::undefined(), VariableType::Let);
+            var_type = VariableType::Let;
         } else if(left_node->type == ASTNodeType::ConstDeclaration) {
-            // Note: const in for-of is allowed but reassigned each iteration
-            env->define(var_name, Value::undefined(), VariableType::Let);  // Use let semantics
-        } else {
-            env->define(var_name, Value::undefined());
+            var_type = VariableType::Const;
         }
-    } else if(left_node->type == ASTNodeType::Identifier) {
-        var_name = left_node->value;
-    } else {
-        return Value::undefined();  // Invalid left side
+    } else if(left_node->type == ASTNodeType::ArrayPattern ||
+              left_node->type == ASTNodeType::ObjectPattern) {
+        // Bare pattern: for ([a,b] of arr) without declaration keyword
+        is_destructuring = true;
+        pattern = left_node;
     }
 
-    // Get all values from the iterable using iterator protocol
-    auto values = getIterableValues(iterable);
+    if(!is_destructuring) {
+        // Simple variable path (existing behavior)
+        std::string var_name;
+        if(left_node->type == ASTNodeType::VariableDeclaration ||
+           left_node->type == ASTNodeType::LetDeclaration ||
+           left_node->type == ASTNodeType::ConstDeclaration) {
+            var_name = left_node->value;
+            if(left_node->type == ASTNodeType::LetDeclaration) {
+                env->define(var_name, Value::undefined(), VariableType::Let);
+            } else if(left_node->type == ASTNodeType::ConstDeclaration) {
+                env->define(var_name, Value::undefined(), VariableType::Let);
+            } else {
+                env->define(var_name, Value::undefined());
+            }
+        } else if(left_node->type == ASTNodeType::Identifier) {
+            var_name = left_node->value;
+        } else {
+            return Value::undefined();
+        }
 
-    // Iterate over values
-    for(const auto& value : values) {
-        // Assign the value to the loop variable
-        env->set(var_name, value);
-
-        // Execute the body
-        try {
-            result = engine->evaluate(body_node, env);
-        } catch(const BreakException&) {
-            break;
-        } catch(const ContinueException&) {
-            continue;
+        auto values = getIterableValues(iterable);
+        for(const auto& value : values) {
+            env->set(var_name, value);
+            try {
+                result = engine->evaluate(body_node, env);
+            } catch(const BreakException&) {
+                break;
+            } catch(const ContinueException&) {
+                continue;
+            }
+        }
+    } else {
+        // Destructuring path
+        auto values = getIterableValues(iterable);
+        if(var_type == VariableType::Var) {
+            // var: bind into outer env (no per-iteration scope needed, var allows redeclaration)
+            for(const auto& value : values) {
+                applyPatternBinding(pattern, value, env, engine, var_type);
+                try {
+                    result = engine->evaluate(body_node, env);
+                } catch(const BreakException&) {
+                    break;
+                } catch(const ContinueException&) {
+                    continue;
+                }
+            }
+        } else {
+            // let/const: create a child environment per iteration to avoid redeclaration errors
+            for(const auto& value : values) {
+                auto iter_env = std::make_shared<Environment>(env);
+                applyPatternBinding(pattern, value, iter_env, engine, var_type);
+                try {
+                    result = engine->evaluate(body_node, iter_env);
+                } catch(const BreakException&) {
+                    break;
+                } catch(const ContinueException&) {
+                    continue;
+                }
+            }
         }
     }
 

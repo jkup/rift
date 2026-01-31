@@ -425,6 +425,60 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
                 current -= 2;  // go back to var/let/const
                 left = parse_variable_declaration();
             }
+        } else if(current_token().type == TokenType::LeftBracket ||
+                  current_token().type == TokenType::LeftBrace) {
+            // Destructuring pattern: could be for-in/for-of or regular for with destructuring init
+            auto pattern = parse_binding_pattern();
+
+            if(current_token().type == TokenType::In || isContextualOf(current_token())) {
+                // for (let [a,b] of arr) or for (let {x} in obj)
+                bool is_for_of = isContextualOf(current_token());
+                is_for_in = !is_for_of;
+                if(is_for_await && !is_for_of) {
+                    throw std::runtime_error(
+                        "SyntaxError: for-await is only valid with for-of loops");
+                }
+
+                // Build declaration node with metadata="destructuring", pattern as children[0]
+                auto decl_node = std::make_shared<ASTNode>(
+                    decl_type == TokenType::Var     ? ASTNodeType::VariableDeclaration
+                    : decl_type == TokenType::Let   ? ASTNodeType::LetDeclaration
+                                                    : ASTNodeType::ConstDeclaration);
+                decl_node->metadata = "destructuring";
+                decl_node->children.push_back(pattern);
+                left = decl_node;
+
+                current++;  // consume 'in' or 'of'
+                auto right = parse_expression();
+                consume(TokenType::RightParen);
+                auto body = parse_statement();
+
+                if(is_for_of) {
+                    if(is_for_await) {
+                        return ASTFactory::makeForAwaitOfStatement(left, right, body);
+                    }
+                    return ASTFactory::makeForOfStatement(left, right, body);
+                }
+                return ASTFactory::makeForInStatement(left, right, body);
+            } else {
+                // Regular for with destructuring init: for (let [a,b] = expr; ...; ...)
+                if(is_for_await) {
+                    throw std::runtime_error(
+                        "SyntaxError: for-await is only valid with for-of loops");
+                }
+                if(!match(TokenType::Assign)) {
+                    throw std::runtime_error("Destructuring declaration requires initializer");
+                }
+                auto initializer = parse_expression();
+                auto decl_node = std::make_shared<ASTNode>(
+                    decl_type == TokenType::Var     ? ASTNodeType::VariableDeclaration
+                    : decl_type == TokenType::Let   ? ASTNodeType::LetDeclaration
+                                                    : ASTNodeType::ConstDeclaration);
+                decl_node->metadata = "destructuring";
+                decl_node->children.push_back(pattern);
+                decl_node->children.push_back(initializer);
+                left = decl_node;
+            }
         } else {
             // No identifier after var/let/const - syntax error or edge case
             current--;  // go back

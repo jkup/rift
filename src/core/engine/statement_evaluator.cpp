@@ -180,7 +180,7 @@ Value StatementEvaluator::evaluateExpressionStatement(std::shared_ptr<ASTNode> n
 }
 
 // Helper to extract array elements from a value
-static std::vector<Value> extractArrayElements(const Value& value) {
+std::vector<Value> StatementEvaluator::extractArrayElements(const Value& value) {
     std::vector<Value> elements;
 
     if(value.isObject()) {
@@ -204,9 +204,9 @@ static std::vector<Value> extractArrayElements(const Value& value) {
 }
 
 // Helper to apply destructuring pattern binding
-static void applyPatternBinding(std::shared_ptr<ASTNode> pattern, const Value& value,
-                                std::shared_ptr<Environment> env, Rift* engine,
-                                VariableType var_type) {
+void StatementEvaluator::applyPatternBinding(std::shared_ptr<ASTNode> pattern, const Value& value,
+                                             std::shared_ptr<Environment> env, Rift* engine,
+                                             VariableType var_type) {
     if(!pattern) {
         return;
     }

@@ -36,6 +36,12 @@ class StatementEvaluator {
     static Value evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment> env,
                           Rift* engine);
 
+    // Pattern binding utilities (used by variable declarations and for-in/for-of loops)
+    static void applyPatternBinding(std::shared_ptr<ASTNode> pattern, const Value& value,
+                                    std::shared_ptr<Environment> env, Rift* engine,
+                                    VariableType var_type);
+    static std::vector<Value> extractArrayElements(const Value& value);
+
   private:
     // Statement evaluation methods
     static Value evaluateBlockStatement(std::shared_ptr<ASTNode> node,
