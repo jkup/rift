@@ -174,8 +174,7 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                     for(size_t i = 0; i < args.size(); ++i) {
                         arguments_obj->setProperty(std::to_string(i), args[i]);
                     }
-                    arguments_obj->setProperty("length",
-                                               Value(static_cast<double>(args.size())));
+                    arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
                     func_env->define("arguments", Value(arguments_obj));
 
                     AsyncExecutor::executeAsync(method_body, func_env, engine, promise_obj);
@@ -222,8 +221,7 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                     for(size_t i = 0; i < args.size(); ++i) {
                         arguments_obj->setProperty(std::to_string(i), args[i]);
                     }
-                    arguments_obj->setProperty("length",
-                                               Value(static_cast<double>(args.size())));
+                    arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
                     func_env->define("arguments", Value(arguments_obj));
 
                     AsyncExecutor::executeAsync(method_body, func_env, engine, promise_obj);
@@ -340,8 +338,7 @@ JSFunction* ClassBuilder::buildClass(const std::string& class_name,
         }
         parent_constructor = dynamic_cast<rift::runtime::JSFunction*>(super_value.getObject());
         if(!parent_constructor) {
-            throw JavaScriptException(
-                Value("TypeError: Class extends value is not a constructor"));
+            throw JavaScriptException(Value("TypeError: Class extends value is not a constructor"));
         }
         Value proto_value = parent_constructor->getProperty("prototype");
         if(proto_value.isObject()) {
@@ -375,8 +372,7 @@ JSFunction* ClassBuilder::buildClass(const std::string& class_name,
     // Create constructor function
     auto* constructor = factory->createJSFunction(
         [engine, ctor_param_info, ctor_body, class_env, parent_constructor, class_prototype](
-            const rift::core::CallContext& call_context,
-            const std::vector<Value>& args) -> Value {
+            const rift::core::CallContext& call_context, const std::vector<Value>& args) -> Value {
             if(call_context.type != rift::core::CallType::Constructor) {
                 throw JavaScriptException(
                     Value("TypeError: Class constructor cannot be invoked without 'new'"));
@@ -397,8 +393,8 @@ JSFunction* ClassBuilder::buildClass(const std::string& class_name,
                     for(size_t j = i; j < args.size(); ++j) {
                         rest_args.push_back(args[j]);
                     }
-                    auto* rest_array = builtins::Array::createArrayObject(
-                        engine->getObjectFactory(), rest_args);
+                    auto* rest_array =
+                        builtins::Array::createArrayObject(engine->getObjectFactory(), rest_args);
                     func_env->define(param_name, Value(rest_array));
                 } else {
                     Value arg_value;
@@ -445,8 +441,8 @@ JSFunction* ClassBuilder::buildClass(const std::string& class_name,
                parent_prototype, engine, true);
 
     // Add static methods to constructor
-    addMethods(classified.static_methods, constructor, class_env, class_prototype,
-               parent_prototype, engine, false);
+    addMethods(classified.static_methods, constructor, class_env, class_prototype, parent_prototype,
+               engine, false);
 
     return constructor;
 }

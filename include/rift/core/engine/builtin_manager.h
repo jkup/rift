@@ -66,7 +66,7 @@ class BuiltinManager {
 
     // Individual builtin setup methods - now accept ObjectFactory
     static void setupGlobalFunctions(std::shared_ptr<Environment> globalEnv,
-                                     rift::memory::ObjectFactory* factory);
+                                     rift::memory::ObjectFactory* factory, Rift* engine);
     static void setupConsole(std::shared_ptr<Environment> globalEnv,
                              rift::memory::ObjectFactory* factory);
     static void setupMath(std::shared_ptr<Environment> globalEnv,

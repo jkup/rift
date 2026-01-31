@@ -18,8 +18,8 @@
 
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/generator/generator_iterator.h"
-#include "rift/builtins/symbol/symbol.h"
 #include "rift/builtins/promise/promise.h"
+#include "rift/builtins/symbol/symbol.h"
 #include "rift/core/engine/async_executor.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/class_builder.h"
@@ -228,7 +228,8 @@ void StatementEvaluator::applyPatternBinding(std::shared_ptr<ASTNode> pattern, c
             auto* error_obj = factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
             memory::GCProtector protect(error_obj, factory->getObjectManager());
             error_obj->setProperty("name", Value("TypeError"));
-            error_obj->setProperty("message",
+            error_obj->setProperty(
+                "message",
                 Value(value.toString() +
                       " is not iterable (cannot read property Symbol(Symbol.iterator))"));
             throw JavaScriptException(Value(error_obj));
@@ -246,8 +247,8 @@ void StatementEvaluator::applyPatternBinding(std::shared_ptr<ASTNode> pattern, c
                     EvaluationUtils::symbolToPropertyKey(builtins::Symbol::getIteratorId());
                 Value iterator_method = obj->getProperty(iterator_key);
                 if(iterator_method.isFunction()) {
-                    auto* iter_func = dynamic_cast<rift::runtime::JSFunction*>(
-                        iterator_method.getObject());
+                    auto* iter_func =
+                        dynamic_cast<rift::runtime::JSFunction*>(iterator_method.getObject());
                     if(iter_func) {
                         CallContext ctx(CallType::Function, value);
                         Value iterator_val = iter_func->call(ctx, {});
@@ -271,8 +272,7 @@ void StatementEvaluator::applyPatternBinding(std::shared_ptr<ASTNode> pattern, c
                 return Value::undefined();
             }
 
-            auto* next_func =
-                dynamic_cast<rift::runtime::JSFunction*>(next_method.getObject());
+            auto* next_func = dynamic_cast<rift::runtime::JSFunction*>(next_method.getObject());
             if(!next_func) {
                 iterator_done = true;
                 return Value::undefined();
@@ -376,9 +376,8 @@ void StatementEvaluator::applyPatternBinding(std::shared_ptr<ASTNode> pattern, c
             auto* error_obj = factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
             memory::GCProtector protect(error_obj, factory->getObjectManager());
             error_obj->setProperty("name", Value("TypeError"));
-            error_obj->setProperty("message",
-                Value("Cannot destructure '" + value.toString() + "' as it is " +
-                      value.toString() + "."));
+            error_obj->setProperty("message", Value("Cannot destructure '" + value.toString() +
+                                                    "' as it is " + value.toString() + "."));
             throw JavaScriptException(Value(error_obj));
         }
 

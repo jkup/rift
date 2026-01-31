@@ -29,6 +29,9 @@
 #include "rift/builtins/weakmap/weakmap.h"
 #include "rift/builtins/weakset/weakset.h"
 #include "rift/core/engine/engine.h"
+#include "rift/core/engine/javascript_exception.h"
+#include "rift/frontend/lexer/lexer.h"
+#include "rift/frontend/parser/parser.h"
 #include "rift/runtime/values/value.h"
 
 namespace rift::core {
@@ -96,7 +99,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     builtins::GeneratorIterator::setupPrototype(factory, iteratorPrototype_);
 
     // Now setup builtins with factory - these will create their own prototypes
-    setupGlobalFunctions(globalEnv, factory);
+    setupGlobalFunctions(globalEnv, factory, engine);
     setupConsole(globalEnv, factory);
     setupMath(globalEnv, factory);
     setupString(globalEnv, factory);
@@ -297,9 +300,48 @@ JSObject* BuiltinManager::getFunctionPrototype() {
 }
 
 void BuiltinManager::setupGlobalFunctions(std::shared_ptr<Environment> globalEnv,
-                                          rift::memory::ObjectFactory* factory) {
+                                          rift::memory::ObjectFactory* factory, Rift* engine) {
     // Setup global functions (parseInt, parseFloat, isNaN, isFinite, etc.)
-    builtins::Global::setupGlobalFunctions(globalEnv, factory);  // Pass factory parameter
+    builtins::Global::setupGlobalFunctions(globalEnv, factory);
+
+    // Register eval() - needs engine for parsing and execution
+    if(engine) {
+        auto* evalFunc =
+            factory->createJSFunction([engine](const rift::core::CallContext& /*ctx*/,
+                                               const std::vector<Value>& args) -> Value {
+                if(args.empty()) {
+                    return Value::undefined();
+                }
+
+                // Per spec: if the argument is not a string, return it as-is
+                if(!args[0].isString()) {
+                    return args[0];
+                }
+
+                std::string code = args[0].toString();
+
+                try {
+                    // Parse the code using the existing lexer/parser pipeline
+                    rift::frontend::Lexer lexer(code);
+                    auto tokens = lexer.tokenize();
+                    rift::frontend::Parser parser(tokens);
+                    auto ast = parser.parse();
+
+                    // Phase 1: execute in global environment (indirect eval behavior)
+                    return engine->evaluate(ast, engine->getGlobalEnvironment());
+                } catch(const JavaScriptException&) {
+                    throw;  // Re-throw JavaScript exceptions as-is
+                } catch(const ReturnException& e) {
+                    // A top-level return in eval'd code returns the value
+                    return e.getValue();
+                } catch(const std::exception& e) {
+                    // Convert parse/runtime errors to SyntaxError
+                    throw JavaScriptException(Value(std::string(e.what())));
+                }
+            });
+        evalFunc->setProperty("length", Value(1.0));
+        globalEnv->define("eval", Value(evalFunc));
+    }
 }
 
 void BuiltinManager::setupConsole(std::shared_ptr<Environment> globalEnv,

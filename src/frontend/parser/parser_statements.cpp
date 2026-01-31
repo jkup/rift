@@ -441,9 +441,9 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
 
                 // Build declaration node with metadata="destructuring", pattern as children[0]
                 auto decl_node = std::make_shared<ASTNode>(
-                    decl_type == TokenType::Var     ? ASTNodeType::VariableDeclaration
-                    : decl_type == TokenType::Let   ? ASTNodeType::LetDeclaration
-                                                    : ASTNodeType::ConstDeclaration);
+                    decl_type == TokenType::Var   ? ASTNodeType::VariableDeclaration
+                    : decl_type == TokenType::Let ? ASTNodeType::LetDeclaration
+                                                  : ASTNodeType::ConstDeclaration);
                 decl_node->metadata = "destructuring";
                 decl_node->children.push_back(pattern);
                 left = decl_node;
@@ -471,9 +471,9 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
                 }
                 auto initializer = parse_expression();
                 auto decl_node = std::make_shared<ASTNode>(
-                    decl_type == TokenType::Var     ? ASTNodeType::VariableDeclaration
-                    : decl_type == TokenType::Let   ? ASTNodeType::LetDeclaration
-                                                    : ASTNodeType::ConstDeclaration);
+                    decl_type == TokenType::Var   ? ASTNodeType::VariableDeclaration
+                    : decl_type == TokenType::Let ? ASTNodeType::LetDeclaration
+                                                  : ASTNodeType::ConstDeclaration);
                 decl_node->metadata = "destructuring";
                 decl_node->children.push_back(pattern);
                 decl_node->children.push_back(initializer);

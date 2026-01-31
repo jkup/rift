@@ -74,10 +74,9 @@ class ClassBuilder {
      * @param engine The Rift engine
      * @param is_instance If true, bind HomeObject/SuperPrototype and setHomeObject
      */
-    static void addMethods(const std::vector<std::shared_ptr<ASTNode>>& methods,
-                           JSObject* target, std::shared_ptr<Environment> class_env,
-                           JSObject* class_prototype, JSObject* parent_prototype, Rift* engine,
-                           bool is_instance);
+    static void addMethods(const std::vector<std::shared_ptr<ASTNode>>& methods, JSObject* target,
+                           std::shared_ptr<Environment> class_env, JSObject* class_prototype,
+                           JSObject* parent_prototype, Rift* engine, bool is_instance);
 };
 
 }  // namespace rift::core
