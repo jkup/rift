@@ -168,6 +168,7 @@ void Promise::addReaction(JSObject* promise, const std::string& reaction_type, J
     // Create reaction record object
     auto* factory = getFactory();
     auto* reaction = factory->createJSObject();
+    rift::memory::GCProtector protect(reaction, factory->getObjectManager());
 
     // Store handler (can be null/undefined for pass-through)
     if(handler != nullptr) {
