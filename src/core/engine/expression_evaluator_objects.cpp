@@ -23,6 +23,8 @@
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/expression_evaluator.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/frontend/lexer/lexer.h"
+#include "rift/frontend/parser/parser.h"
 #include "rift/memory/gc_disabler.h"
 #include "rift/memory/gc_protector.h"
 #include "rift/runtime/values/object.h"
@@ -205,6 +207,73 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
     } else {
         // Regular function call
         callee = engine->evaluate(callee_node, env);
+    }
+
+    // Direct eval detection: bare `eval(...)` where eval resolves to the built-in
+    if(callee_node->type == ASTNodeType::Identifier && callee_node->value == "eval" &&
+       callee.isFunction()) {
+        auto* callee_func = dynamic_cast<JSFunction*>(callee.getObject());
+        if(callee_func != nullptr && callee_func == BuiltinManager::getEvalFunction()) {
+            // Direct eval: execute in caller's scope
+            // Evaluate arguments first
+            std::vector<Value> eval_args;
+            for(size_t i = 1; i < node->children.size(); ++i) {
+                eval_args.push_back(engine->evaluate(node->children[i], env));
+            }
+
+            if(eval_args.empty()) {
+                return Value::undefined();
+            }
+            if(!eval_args[0].isString()) {
+                return eval_args[0];
+            }
+
+            std::string code = eval_args[0].toString();
+
+            try {
+                rift::frontend::Lexer lexer(code);
+                auto tokens = lexer.tokenize();
+                rift::frontend::Parser parser(tokens);
+                auto ast = parser.parse();
+
+                // Determine strict mode: inherit from caller or detect "use strict" in eval code
+                bool caller_strict = env->inheritsStrictMode();
+                bool eval_code_strict = false;
+                if(ast && ast->type == ASTNodeType::Program) {
+                    for(const auto& stmt : ast->children) {
+                        if(stmt->type == ASTNodeType::ExpressionStatement &&
+                           !stmt->children.empty()) {
+                            const auto& expr = stmt->children[0];
+                            if(expr->type == ASTNodeType::Literal &&
+                               expr->metadata == "string" && expr->value == "use strict") {
+                                eval_code_strict = true;
+                            }
+                            continue;
+                        }
+                        break;
+                    }
+                }
+
+                bool is_strict = caller_strict || eval_code_strict;
+                std::shared_ptr<Environment> eval_env;
+                if(is_strict) {
+                    // Strict mode: create child environment so var declarations don't leak
+                    eval_env = std::make_shared<Environment>(env);
+                    eval_env->setStrictMode(true);
+                } else {
+                    // Sloppy mode: use caller's environment directly (vars leak)
+                    eval_env = env;
+                }
+
+                return engine->evaluate(ast, eval_env);
+            } catch(const JavaScriptException&) {
+                throw;
+            } catch(const ReturnException& e) {
+                return e.getValue();
+            } catch(const std::exception& e) {
+                throw JavaScriptException(Value(std::string(e.what())));
+            }
+        }
     }
 
     // Evaluate arguments, expanding spread elements

@@ -57,6 +57,7 @@ JSObject* BuiltinManager::weakMapPrototype_ = nullptr;
 JSObject* BuiltinManager::weakSetPrototype_ = nullptr;
 JSObject* BuiltinManager::promisePrototype_ = nullptr;
 JSObject* BuiltinManager::functionPrototype_ = nullptr;
+JSFunction* BuiltinManager::evalFunction_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Get the object factory from the engine
@@ -320,6 +321,10 @@ JSObject* BuiltinManager::getFunctionPrototype() {
     return functionPrototype_;
 }
 
+JSFunction* BuiltinManager::getEvalFunction() {
+    return evalFunction_;
+}
+
 void BuiltinManager::setupGlobalFunctions(std::shared_ptr<Environment> globalEnv,
                                           rift::memory::ObjectFactory* factory, Rift* engine) {
     // Setup global functions (parseInt, parseFloat, isNaN, isFinite, etc.)
@@ -361,6 +366,7 @@ void BuiltinManager::setupGlobalFunctions(std::shared_ptr<Environment> globalEnv
                 }
             });
         evalFunc->setProperty("length", Value(1.0));
+        evalFunction_ = evalFunc;
         globalEnv->define("eval", Value(evalFunc));
     }
 }
@@ -496,6 +502,7 @@ void BuiltinManager::clearStaticPrototypes() {
     weakSetPrototype_ = nullptr;
     promisePrototype_ = nullptr;
     functionPrototype_ = nullptr;
+    evalFunction_ = nullptr;
 }
 
 void BuiltinManager::setupRegExp(std::shared_ptr<Environment> globalEnv,

@@ -39,6 +39,9 @@ class BuiltinManager {
     static JSObject* getPromisePrototype();
     static JSObject* getFunctionPrototype();
 
+    // Get the built-in eval function (for direct eval detection)
+    static JSFunction* getEvalFunction();
+
     // Cleanup method for shutdown
     static void clearStaticPrototypes();
 
@@ -63,6 +66,7 @@ class BuiltinManager {
     static JSObject* weakSetPrototype_;
     static JSObject* promisePrototype_;
     static JSObject* functionPrototype_;
+    static JSFunction* evalFunction_;
 
     // Individual builtin setup methods - now accept ObjectFactory
     static void setupGlobalFunctions(std::shared_ptr<Environment> globalEnv,
