@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/runtime/values/object.h"
 
 namespace rift::runtime {
 
@@ -16,6 +17,9 @@ void Environment::define(const std::string& name, const Value& value, VariableTy
         if(type == VariableType::Var && it->second.type == VariableType::Var) {
             it->second.value = value;
             it->second.initialized = true;
+            if(binding_object_) {
+                binding_object_->setProperty(name, value);
+            }
             return;
         }
         // let/const cannot be redeclared in same scope
@@ -24,6 +28,9 @@ void Environment::define(const std::string& name, const Value& value, VariableTy
     }
 
     variables_[name] = VariableEntry(value, type);
+    if(binding_object_) {
+        binding_object_->setProperty(name, value);
+    }
 }
 
 void Environment::declare(const std::string& name, VariableType type) {
@@ -74,6 +81,9 @@ void Environment::set(const std::string& name, const Value& value) {
                 Value("TypeError: Assignment to constant variable '" + name + "'"));
         }
         it->second.value = value;
+        if(binding_object_) {
+            binding_object_->setProperty(name, value);
+        }
         return;
     }
 

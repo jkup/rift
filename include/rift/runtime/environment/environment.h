@@ -41,6 +41,7 @@ class Environment : public std::enable_shared_from_this<Environment> {
     std::shared_ptr<Environment> parent_;
     bool is_block_scope_;  // true for let/const block scopes
     bool is_strict_mode_;  // true when running in strict mode
+    JSObject* binding_object_ = nullptr;  // Global object backing (for globalThis)
 
   public:
     Environment(std::shared_ptr<Environment> parent = nullptr, bool is_block_scope = false)
@@ -87,6 +88,14 @@ class Environment : public std::enable_shared_from_this<Environment> {
 
     // Get all variable names in this scope
     std::vector<std::string> getVariableNames() const;
+
+    // Global object binding (for globalThis support)
+    void setBindingObject(JSObject* obj) {
+        binding_object_ = obj;
+    }
+    JSObject* getBindingObject() const {
+        return binding_object_;
+    }
 };
 
 }  // namespace rift::runtime

@@ -30,6 +30,7 @@
 #include "rift/builtins/weakset/weakset.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/memory/gc_protector.h"
 #include "rift/frontend/lexer/lexer.h"
 #include "rift/frontend/parser/parser.h"
 #include "rift/runtime/values/value.h"
@@ -219,6 +220,26 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     // Setup GC functions if engine is provided
     if(engine) {
         setupGCFunctions(globalEnv, engine);
+    }
+
+    // Create globalThis - the global object that mirrors the global environment
+    if(factory) {
+        auto* globalObject = factory->createJSObject();
+        rift::memory::GCProtector protect(globalObject, factory->getObjectManager());
+
+        // Populate globalThis with all current global variables
+        for(const auto& name : globalEnv->getVariableNames()) {
+            globalObject->setProperty(name, globalEnv->get(name));
+        }
+
+        // Self-referential: globalThis.globalThis === globalThis
+        globalObject->setProperty("globalThis", Value(globalObject));
+
+        // Link the global environment to this object so future define/set calls sync
+        globalEnv->setBindingObject(globalObject);
+
+        // Register globalThis in the global environment
+        globalEnv->define("globalThis", Value(globalObject));
     }
 }
 
