@@ -90,6 +90,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     // any JSFunction objects, so all functions get the correct prototype chain.
     setupFunction(globalEnv, factory);
 
+    // Store engine reference for Function constructor (parsing function bodies)
+    builtins::Function::setEngine(engine);
+
     // Setup iterator prototype FIRST - other iterators inherit from this
     setupIteratorPrototype(factory);
 

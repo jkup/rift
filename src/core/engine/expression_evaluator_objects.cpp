@@ -265,6 +265,14 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
                     eval_env = env;
                 }
 
+                // In sloppy mode, hoist function declarations
+                if(!is_strict && ast->type == ASTNodeType::Program) {
+                    for(auto& child : ast->children) {
+                        if(child->type == ASTNodeType::FunctionDeclaration) {
+                            engine->evaluate(child, eval_env);
+                        }
+                    }
+                }
                 return engine->evaluate(ast, eval_env);
             } catch(const JavaScriptException&) {
                 throw;

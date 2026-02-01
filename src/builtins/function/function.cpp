@@ -4,7 +4,10 @@
 
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/call_context.h"
+#include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/frontend/lexer/lexer.h"
+#include "rift/frontend/parser/parser.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
@@ -12,6 +15,8 @@ namespace rift::builtins {
 using rift::core::CallContext;
 using rift::core::CallType;
 using rift::core::JavaScriptException;
+
+rift::core::Rift* Function::engine_ = nullptr;
 
 void Function::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // Function has no static methods in standard ECMAScript
@@ -25,9 +30,63 @@ void Function::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFa
 }
 
 Value Function::constructor(const CallContext& ctx, const std::vector<Value>& args) {
-    // Creating functions from strings is complex - requires parsing
-    // For now, throw an error
-    throw JavaScriptException(Value("TypeError: Function constructor is not yet implemented"));
+    if(!engine_) {
+        throw JavaScriptException(Value("TypeError: Function constructor engine not initialized"));
+    }
+
+    // Per ECMAScript spec:
+    // - Zero args: function anonymous() {}
+    // - One arg: it's the body, no params
+    // - Multiple args: all except last are param names, last is body
+    std::string params_str;
+    std::string body_str;
+
+    if(args.empty()) {
+        // No arguments: empty function
+        params_str = "";
+        body_str = "";
+    } else if(args.size() == 1) {
+        // Single argument is the body
+        body_str = args[0].toString();
+    } else {
+        // All but last are parameter names, last is body
+        for(size_t i = 0; i < args.size() - 1; ++i) {
+            if(i > 0) {
+                params_str += ",";
+            }
+            params_str += args[i].toString();
+        }
+        body_str = args[args.size() - 1].toString();
+    }
+
+    // Wrap into a function expression and parse it
+    std::string source = "function anonymous(" + params_str + ") { " + body_str + " }";
+
+    try {
+        rift::frontend::Lexer lexer(source);
+        auto tokens = lexer.tokenize();
+        rift::frontend::Parser parser(tokens);
+        auto ast = parser.parse();
+
+        // Evaluate the parsed function in the global environment
+        // (Function constructor always creates functions in global scope)
+        auto global_env = engine_->getGlobalEnvironment();
+        Value result = engine_->evaluate(ast, global_env);
+
+        // The parsed program contains a FunctionDeclaration for "anonymous"
+        // Retrieve it from the environment
+        if(global_env->has("anonymous")) {
+            Value func_val = global_env->get("anonymous");
+            // Clean up the global binding
+            return func_val;
+        }
+
+        return result;
+    } catch(const JavaScriptException&) {
+        throw;
+    } catch(const std::exception& e) {
+        throw JavaScriptException(Value(std::string("SyntaxError: ") + e.what()));
+    }
 }
 
 Value Function::call(const CallContext& ctx, const std::vector<Value>& args) {

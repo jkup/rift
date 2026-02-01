@@ -6,6 +6,11 @@
 #include "../../runtime/values/value.h"
 #include "../builtin_base.h"
 
+// Forward declaration
+namespace rift::core {
+class Rift;
+}
+
 namespace rift::builtins {
 
 using namespace rift::runtime;
@@ -23,8 +28,17 @@ class Function : public BuiltinBase<Function> {
     static Value bind(const CallContext& ctx, const std::vector<Value>& args);
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
+    // Engine access for parsing function bodies
+    static void setEngine(rift::core::Rift* engine) {
+        engine_ = engine;
+    }
+    static rift::core::Rift* getEngine() {
+        return engine_;
+    }
+
   private:
     static JSObject* getGlobalPrototype();
+    static rift::core::Rift* engine_;
 };
 
 }  // namespace rift::builtins
