@@ -408,6 +408,10 @@ std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> 
     // Parse arguments
     if(current_token().type != TokenType::RightParen) {
         do {
+            // Allow trailing comma before ')'
+            if(current_token().type == TokenType::RightParen) {
+                break;
+            }
             // Check for spread argument (...expr)
             if(current_token().type == TokenType::Spread) {
                 current++;                                     // consume '...'

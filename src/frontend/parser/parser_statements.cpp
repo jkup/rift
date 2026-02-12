@@ -716,6 +716,10 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
         if(has_rest_param) {
             throw std::runtime_error("Rest parameter must be last formal parameter");
         }
+        // Allow trailing comma before ')'
+        if(current_token().type == TokenType::RightParen) {
+            break;
+        }
         ASTFactory::addParameter(parameters, parse_single_parameter());
     }
 
