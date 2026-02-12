@@ -560,6 +560,10 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
                 (current_token().type == TokenType::String) ? "string" : "number";
             key = ASTFactory::makeLiteral(current_token().value, keyLiteralType);
             current++;  // consume string
+        } else if(current_token().type == TokenType::Number) {
+            // Property key as number: { 0: value, 1: value }
+            key = ASTFactory::makeLiteral(current_token().value, "number");
+            current++;  // consume number
         } else {
             throw std::runtime_error("Expected property name in object literal");
         }
