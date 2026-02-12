@@ -564,6 +564,15 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
             // Property key as number: { 0: value, 1: value }
             key = ASTFactory::makeLiteral(current_token().value, "number");
             current++;  // consume number
+        } else if(current_token().type == TokenType::LeftBracket) {
+            // Computed property key: { [expression]: value }
+            current++;  // consume '['
+            auto expr = parse_expression();
+            consume(TokenType::RightBracket);
+            // Wrap in a marker node so the evaluator knows to evaluate the expression
+            key = std::make_shared<ASTNode>(ASTNodeType::ExpressionStatement);
+            key->metadata = "computed_key";
+            key->children.push_back(expr);
         } else {
             throw std::runtime_error("Expected property name in object literal");
         }

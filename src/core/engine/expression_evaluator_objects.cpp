@@ -509,7 +509,11 @@ Value ExpressionEvaluator::evaluateObjectLiteral(std::shared_ptr<ASTNode> node,
 
         // Get the property key
         std::string key;
-        if(key_node->type == ASTNodeType::Identifier) {
+        if(key_node->metadata == "computed_key" && !key_node->children.empty()) {
+            // Computed property key: { [expression]: value }
+            Value key_value = engine->evaluate(key_node->children[0], env);
+            key = key_value.toString();
+        } else if(key_node->type == ASTNodeType::Identifier) {
             // Identifier keys are used as-is: { name: value }
             key = key_node->value;
         } else if(key_node->type == ASTNodeType::Literal) {
