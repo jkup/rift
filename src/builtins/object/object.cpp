@@ -111,7 +111,7 @@ Value Object::keys(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     Value obj = args[0];
-    if(!obj.isObject()) {
+    if(!obj.isObject() && !obj.isFunction()) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
@@ -136,7 +136,7 @@ Value Object::values(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     Value obj = args[0];
-    if(!obj.isObject()) {
+    if(!obj.isObject() && !obj.isFunction()) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
@@ -161,7 +161,7 @@ Value Object::entries(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     Value obj = args[0];
-    if(!obj.isObject()) {
+    if(!obj.isObject() && !obj.isFunction()) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
@@ -230,7 +230,7 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         // Should throw TypeError
         return Value::undefined();
     }
@@ -303,7 +303,7 @@ Value Object::defineProperties(const CallContext& ctx, const std::vector<Value>&
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Object.defineProperties called on non-object"));
     }
@@ -381,7 +381,7 @@ Value Object::getOwnPropertyDescriptor(const CallContext& ctx, const std::vector
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         // Should throw TypeError
         return Value::undefined();
     }
@@ -486,7 +486,7 @@ Value Object::getPrototypeOf(const CallContext& ctx, const std::vector<Value>& a
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         // ECMAScript 6+: coerce to object first, but for primitives return their prototype
         // For simplicity, return undefined for non-objects
         return Value::undefined();
@@ -511,7 +511,7 @@ Value Object::setPrototypeOf(const CallContext& ctx, const std::vector<Value>& a
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         // TypeError for non-objects in strict mode
         return objVal;  // Return the value as-is per spec for non-objects
     }
@@ -550,7 +550,7 @@ Value Object::getOwnPropertyNames(const CallContext& ctx, const std::vector<Valu
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
@@ -575,7 +575,7 @@ Value Object::getOwnPropertySymbols(const CallContext& ctx, const std::vector<Va
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         return Value(Array::createArrayObject(getObjectFactory(), {}));
     }
 
@@ -601,7 +601,7 @@ Value Object::assign(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     Value targetVal = args[0];
-    if(!targetVal.isObject()) {
+    if(!targetVal.isObject() && !targetVal.isFunction()) {
         // Should coerce to object, but for simplicity return undefined for non-objects
         return Value::undefined();
     }
@@ -617,7 +617,7 @@ Value Object::assign(const CallContext& ctx, const std::vector<Value>& args) {
         if(sourceVal.isNull() || sourceVal.isUndefined()) {
             continue;  // Skip null/undefined sources
         }
-        if(!sourceVal.isObject()) {
+        if(!sourceVal.isObject() && !sourceVal.isFunction()) {
             continue;  // Skip non-objects
         }
 
@@ -653,7 +653,7 @@ Value Object::preventExtensions(const CallContext& ctx, const std::vector<Value>
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         // Return the value as-is for non-objects (ES6 behavior)
         return objVal;
     }
@@ -673,7 +673,7 @@ Value Object::isExtensible(const CallContext& ctx, const std::vector<Value>& arg
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         // Non-objects are considered non-extensible (ES6 behavior)
         return Value(false);
     }
@@ -694,7 +694,7 @@ Value Object::seal(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         return objVal;
     }
 
@@ -733,7 +733,7 @@ Value Object::isSealed(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         return Value(true);  // Non-objects are considered sealed (ES6)
     }
 
@@ -776,7 +776,7 @@ Value Object::freeze(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         return objVal;
     }
 
@@ -816,7 +816,7 @@ Value Object::isFrozen(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     Value objVal = args[0];
-    if(!objVal.isObject()) {
+    if(!objVal.isObject() && !objVal.isFunction()) {
         return Value(true);  // Non-objects are considered frozen (ES6)
     }
 
@@ -1012,7 +1012,7 @@ Value Object::getOwnPropertyDescriptors(const CallContext& ctx, const std::vecto
     }
 
     Value obj_val = args[0];
-    if(!obj_val.isObject()) {
+    if(!obj_val.isObject() && !obj_val.isFunction()) {
         // Return empty object for non-objects
         return Value(getObjectFactory()->createJSObject());
     }
