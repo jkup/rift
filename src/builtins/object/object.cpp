@@ -5,6 +5,7 @@
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/builtins/string/string.h"
+#include "rift/builtins/symbol/symbol.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/call_context.h"
 #include "rift/core/engine/evaluation_utils.h"
@@ -33,6 +34,10 @@ void Object::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
     RIFT_STATIC_METHOD(constructor, "isSealed", Object::isSealed);
     RIFT_STATIC_METHOD(constructor, "freeze", Object::freeze);
     RIFT_STATIC_METHOD(constructor, "isFrozen", Object::isFrozen);
+    RIFT_STATIC_METHOD(constructor, "is", Object::is);
+    RIFT_STATIC_METHOD(constructor, "hasOwn", Object::hasOwn);
+    RIFT_STATIC_METHOD(constructor, "fromEntries", Object::fromEntries);
+    RIFT_STATIC_METHOD(constructor, "getOwnPropertyDescriptors", Object::getOwnPropertyDescriptors);
 }
 
 void Object::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
@@ -764,6 +769,227 @@ Value Object::isFrozen(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     return Value(true);
+}
+
+Value Object::is(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.is(value1, value2) - SameValue comparison
+    Value x = args.size() > 0 ? args[0] : Value::undefined();
+    Value y = args.size() > 1 ? args[1] : Value::undefined();
+
+    // Handle undefined
+    if(x.isUndefined() && y.isUndefined()) {
+        return Value(true);
+    }
+    // Handle null
+    if(x.isNull() && y.isNull()) {
+        return Value(true);
+    }
+    // Handle numbers (differs from === for NaN and -0/+0)
+    if(x.isNumber() && y.isNumber()) {
+        double xn = x.toNumber();
+        double yn = y.toNumber();
+        // NaN === NaN should be true for SameValue
+        if(std::isnan(xn) && std::isnan(yn)) {
+            return Value(true);
+        }
+        // +0 and -0 should be false for SameValue
+        if(xn == 0.0 && yn == 0.0) {
+            return Value(std::signbit(xn) == std::signbit(yn));
+        }
+        return Value(xn == yn);
+    }
+    // Handle strings
+    if(x.isString() && y.isString()) {
+        return Value(x.getString() == y.getString());
+    }
+    // Handle booleans
+    if(x.isBoolean() && y.isBoolean()) {
+        return Value(x.toBool() == y.toBool());
+    }
+    // Handle objects/functions - reference equality
+    if((x.isObject() || x.isFunction()) && (y.isObject() || y.isFunction())) {
+        return Value(x.getObject() == y.getObject());
+    }
+    // Different types
+    return Value(false);
+}
+
+Value Object::hasOwn(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.hasOwn(obj, prop)
+    if(args.size() < 2) {
+        if(args.empty()) {
+            throw rift::core::JavaScriptException(
+                Value("TypeError: Cannot convert undefined or null to object"));
+        }
+        return Value(false);
+    }
+
+    Value obj_val = args[0];
+    if(!obj_val.isObject() && !obj_val.isFunction()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Cannot convert undefined or null to object"));
+    }
+
+    auto* obj = obj_val.getObject();
+    if(!obj) {
+        return Value(false);
+    }
+
+    std::string prop_name = args[1].toString();
+    return Value(obj->hasOwnProperty(prop_name));
+}
+
+Value Object::fromEntries(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.fromEntries(iterable)
+    if(args.empty() || args[0].isUndefined() || args[0].isNull()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Cannot convert undefined or null to object"));
+    }
+
+    Value iterable = args[0];
+    if(!iterable.isObject()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: iterable.@@iterator is not a function"));
+    }
+
+    auto* result_obj = getObjectFactory()->createJSObject();
+    rift::memory::GCProtector protect(result_obj, getObjectFactory()->getObjectManager());
+
+    auto* iter_obj = iterable.getObject();
+
+    // Get Symbol.iterator
+    std::string iterator_key =
+        rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
+    Value iterator_method = iter_obj->getProperty(iterator_key);
+
+    if(!iterator_method.isFunction()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: iterable.@@iterator is not a function"));
+    }
+
+    auto* iterator_func = dynamic_cast<JSFunction*>(iterator_method.getObject());
+    if(!iterator_func) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: iterable.@@iterator is not a function"));
+    }
+
+    rift::core::CallContext iter_ctx(rift::core::CallType::Function, iterable);
+    Value iterator = iterator_func->call(iter_ctx, {});
+
+    if(!iterator.isObject()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Result of the Symbol.iterator method is not an object"));
+    }
+
+    auto* iterator_object = iterator.getObject();
+
+    // Iterate through entries
+    while(true) {
+        Value next_method = iterator_object->getProperty("next");
+        if(!next_method.isFunction()) {
+            break;
+        }
+
+        auto* next_func = dynamic_cast<JSFunction*>(next_method.getObject());
+        if(!next_func) {
+            break;
+        }
+
+        rift::core::CallContext next_ctx(rift::core::CallType::Function, iterator);
+        Value iter_result = next_func->call(next_ctx, {});
+
+        if(!iter_result.isObject()) {
+            break;
+        }
+
+        auto* result_object = iter_result.getObject();
+        Value done = result_object->getProperty("done");
+        if(done.toBool()) {
+            break;
+        }
+
+        Value entry = result_object->getProperty("value");
+        if(!entry.isObject()) {
+            throw rift::core::JavaScriptException(
+                Value("TypeError: Iterator value is not an entry object"));
+        }
+
+        auto* entry_obj = entry.getObject();
+        Value key = entry_obj->getProperty("0");
+        Value value = entry_obj->getProperty("1");
+
+        result_obj->setProperty(key.toString(), value);
+    }
+
+    return Value(result_obj);
+}
+
+Value Object::getOwnPropertyDescriptors(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.getOwnPropertyDescriptors(obj)
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Cannot convert undefined or null to object"));
+    }
+
+    Value obj_val = args[0];
+    if(!obj_val.isObject()) {
+        // Return empty object for non-objects
+        return Value(getObjectFactory()->createJSObject());
+    }
+
+    auto* obj = obj_val.getObject();
+    if(!obj) {
+        return Value(getObjectFactory()->createJSObject());
+    }
+
+    auto* result = getObjectFactory()->createJSObject();
+    rift::memory::GCProtector protect(result, getObjectFactory()->getObjectManager());
+
+    // Process string-keyed own properties
+    auto prop_names = obj->getOwnPropertyNames();
+    for(const auto& prop_name : prop_names) {
+        rift::runtime::PropertyDescriptor desc = obj->getOwnPropertyDescriptor(prop_name);
+
+        auto* descriptor_obj = getObjectFactory()->createJSObject();
+        rift::memory::GCProtector desc_protect(descriptor_obj,
+                                               getObjectFactory()->getObjectManager());
+
+        if(desc.is_accessor) {
+            descriptor_obj->setProperty("get", desc.getter);
+            descriptor_obj->setProperty("set", desc.setter);
+        } else {
+            descriptor_obj->setProperty("value", desc.value);
+            descriptor_obj->setProperty("writable", Value(desc.writable));
+        }
+        descriptor_obj->setProperty("enumerable", Value(desc.enumerable));
+        descriptor_obj->setProperty("configurable", Value(desc.configurable));
+
+        result->setProperty(prop_name, Value(descriptor_obj));
+    }
+
+    // Process symbol-keyed own properties
+    auto symbol_keys = obj->getOwnPropertySymbols();
+    for(const auto& symbol_key : symbol_keys) {
+        rift::runtime::PropertyDescriptor desc = obj->getOwnPropertyDescriptor(symbol_key);
+
+        auto* descriptor_obj = getObjectFactory()->createJSObject();
+        rift::memory::GCProtector desc_protect(descriptor_obj,
+                                               getObjectFactory()->getObjectManager());
+
+        if(desc.is_accessor) {
+            descriptor_obj->setProperty("get", desc.getter);
+            descriptor_obj->setProperty("set", desc.setter);
+        } else {
+            descriptor_obj->setProperty("value", desc.value);
+            descriptor_obj->setProperty("writable", Value(desc.writable));
+        }
+        descriptor_obj->setProperty("enumerable", Value(desc.enumerable));
+        descriptor_obj->setProperty("configurable", Value(desc.configurable));
+
+        result->setProperty(symbol_key, Value(descriptor_obj));
+    }
+
+    return Value(result);
 }
 
 }  // namespace rift::builtins

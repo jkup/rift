@@ -41,6 +41,10 @@ class Object : public BuiltinBase<Object> {
     static Value isSealed(const CallContext& ctx, const std::vector<Value>& args);
     static Value freeze(const CallContext& ctx, const std::vector<Value>& args);
     static Value isFrozen(const CallContext& ctx, const std::vector<Value>& args);
+    static Value is(const CallContext& ctx, const std::vector<Value>& args);
+    static Value hasOwn(const CallContext& ctx, const std::vector<Value>& args);
+    static Value fromEntries(const CallContext& ctx, const std::vector<Value>& args);
+    static Value getOwnPropertyDescriptors(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Prototype methods
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
