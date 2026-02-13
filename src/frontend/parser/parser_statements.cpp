@@ -964,6 +964,24 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
         current++;  // consume '*'
     }
 
+    // Check for getter/setter syntax: get x() {} / set x(v) {}
+    // Disambiguate from method named "get"/"set" (next token would be '(')
+    bool isGetter = false;
+    bool isSetter = false;
+    if(!isGenerator && !isAsync && current_token().type == TokenType::Identifier &&
+       (current_token().value == "get" || current_token().value == "set")) {
+        TokenType next = peek_token().type;
+        if(next == TokenType::Identifier || next == TokenType::String ||
+           next == TokenType::Number || next == TokenType::LeftBracket) {
+            if(current_token().value == "get") {
+                isGetter = true;
+            } else {
+                isSetter = true;
+            }
+            current++;  // consume 'get'/'set'
+        }
+    }
+
     // Get method name
     if(current_token().type == TokenType::LeftBracket) {
         // Computed property name: [expression]
@@ -1014,6 +1032,14 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
         node = ASTFactory::makeMethodDefinition(methodName, parameters, methodBody, isStatic,
                                                 isComputed, computedKey);
     }
+
+    // Append getter/setter to metadata
+    if(isGetter) {
+        node->metadata = node->metadata.empty() ? "getter" : node->metadata + ",getter";
+    } else if(isSetter) {
+        node->metadata = node->metadata.empty() ? "setter" : node->metadata + ",setter";
+    }
+
     node->setLocation(startToken.line, startToken.column);
     return node;
 }

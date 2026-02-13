@@ -73,6 +73,8 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
         bool is_computed = (method->metadata.find("computed") != std::string::npos);
         bool is_generator = (method->type == ASTNodeType::GeneratorMethod);
         bool is_async = (method->type == ASTNodeType::AsyncMethod);
+        bool is_getter = (method->metadata.find("getter") != std::string::npos);
+        bool is_setter = (method->metadata.find("setter") != std::string::npos);
 
         if(is_computed && method->children.size() > 2) {
             Value key_value = engine->evaluate(method->children[2], class_env);
@@ -317,7 +319,27 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
         if(is_instance) {
             method_func->setHomeObject(class_prototype);
         }
-        target->setProperty(method_name, Value(method_func));
+
+        if(is_getter || is_setter) {
+            // Install as accessor descriptor, merging with existing if present (get+set pair)
+            auto [found, existing_desc] = target->findPropertyDescriptor(method_name);
+            rift::runtime::PropertyDescriptor desc;
+            if(found && existing_desc.is_accessor) {
+                desc = existing_desc;
+            } else {
+                desc.is_accessor = true;
+                desc.enumerable = false;  // Class methods are non-enumerable per spec
+                desc.configurable = true;
+            }
+            if(is_getter) {
+                desc.getter = Value(method_func);
+            } else {
+                desc.setter = Value(method_func);
+            }
+            target->defineProperty(method_name, desc);
+        } else {
+            target->setProperty(method_name, Value(method_func));
+        }
     }
 }
 
