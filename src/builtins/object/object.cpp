@@ -21,6 +21,7 @@ void Object::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
     RIFT_STATIC_METHOD(constructor, "values", Object::values);
     RIFT_STATIC_METHOD(constructor, "entries", Object::entries);
     RIFT_STATIC_METHOD(constructor, "defineProperty", Object::defineProperty);
+    RIFT_STATIC_METHOD(constructor, "defineProperties", Object::defineProperties);
     RIFT_STATIC_METHOD(constructor, "getOwnPropertyDescriptor", Object::getOwnPropertyDescriptor);
     RIFT_STATIC_METHOD(constructor, "create", Object::jsCreate);
     RIFT_STATIC_METHOD(constructor, "getPrototypeOf", Object::getPrototypeOf);
@@ -291,6 +292,85 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
     obj->defineProperty(propertyKey, desc);
 
     // Return the object
+    return objVal;
+}
+
+Value Object::defineProperties(const CallContext& ctx, const std::vector<Value>& args) {
+    // Object.defineProperties(obj, props) — ECMAScript §20.1.2.3
+    if(args.size() < 2) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Object.defineProperties requires two arguments"));
+    }
+
+    Value objVal = args[0];
+    if(!objVal.isObject()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Object.defineProperties called on non-object"));
+    }
+
+    auto* obj = objVal.getObject();
+    if(!obj) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Object.defineProperties called on non-object"));
+    }
+
+    Value propsVal = args[1];
+    if(!propsVal.isObject()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Property description must be an object"));
+    }
+
+    auto* propsObj = propsVal.getObject();
+    if(!propsObj) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Property description must be an object"));
+    }
+
+    auto propNames = propsObj->getOwnPropertyNames();
+    for(const auto& propName : propNames) {
+        Value descriptorVal = propsObj->getProperty(propName);
+        if(!descriptorVal.isObject()) {
+            throw rift::core::JavaScriptException(
+                Value("TypeError: Property description must be an object: " + propName));
+        }
+
+        auto* descriptorObj = descriptorVal.getObject();
+        if(!descriptorObj) {
+            throw rift::core::JavaScriptException(
+                Value("TypeError: Property description must be an object: " + propName));
+        }
+
+        // Build property descriptor (same logic as defineProperty)
+        rift::runtime::PropertyDescriptor desc;
+
+        Value getVal = descriptorObj->getProperty("get");
+        Value setVal = descriptorObj->getProperty("set");
+
+        if(!getVal.isUndefined() || !setVal.isUndefined()) {
+            desc.is_accessor = true;
+            desc.getter = getVal.isUndefined() ? Value::undefined() : getVal;
+            desc.setter = setVal.isUndefined() ? Value::undefined() : setVal;
+        } else {
+            Value valueVal = descriptorObj->getProperty("value");
+            if(!valueVal.isUndefined()) {
+                desc.value = valueVal;
+            } else {
+                desc.value = Value::undefined();
+            }
+
+            Value writableVal = descriptorObj->getProperty("writable");
+            desc.writable = !writableVal.isUndefined() && writableVal.toBool();
+        }
+
+        Value enumerableVal = descriptorObj->getProperty("enumerable");
+        desc.enumerable = !enumerableVal.isUndefined() && enumerableVal.toBool();
+
+        Value configurableVal = descriptorObj->getProperty("configurable");
+        desc.configurable = !configurableVal.isUndefined() && configurableVal.toBool();
+
+        obj->defineProperty(propName, desc);
+    }
+
     return objVal;
 }
 

@@ -28,6 +28,7 @@ class Object : public BuiltinBase<Object> {
     static Value values(const CallContext& ctx, const std::vector<Value>& args);
     static Value entries(const CallContext& ctx, const std::vector<Value>& args);
     static Value defineProperty(const CallContext& ctx, const std::vector<Value>& args);
+    static Value defineProperties(const CallContext& ctx, const std::vector<Value>& args);
     static Value getOwnPropertyDescriptor(const CallContext& ctx, const std::vector<Value>& args);
     static Value jsCreate(const CallContext& ctx, const std::vector<Value>& args);
     static Value getPrototypeOf(const CallContext& ctx, const std::vector<Value>& args);
