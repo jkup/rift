@@ -251,17 +251,28 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
     // Build property descriptor from descriptor object
     rift::runtime::PropertyDescriptor desc;
 
-    // Get value (if present)
-    Value valueVal = descriptorObj->getProperty("value");
-    if(!valueVal.isUndefined()) {
-        desc.value = valueVal;
-    } else {
-        desc.value = Value::undefined();
-    }
+    // Check for accessor descriptor (get/set)
+    Value getVal = descriptorObj->getProperty("get");
+    Value setVal = descriptorObj->getProperty("set");
 
-    // Get writable (default: false for defineProperty, unlike regular assignment)
-    Value writableVal = descriptorObj->getProperty("writable");
-    desc.writable = !writableVal.isUndefined() && writableVal.toBool();
+    if(!getVal.isUndefined() || !setVal.isUndefined()) {
+        // Accessor descriptor
+        desc.is_accessor = true;
+        desc.getter = getVal.isUndefined() ? Value::undefined() : getVal;
+        desc.setter = setVal.isUndefined() ? Value::undefined() : setVal;
+    } else {
+        // Data descriptor
+        Value valueVal = descriptorObj->getProperty("value");
+        if(!valueVal.isUndefined()) {
+            desc.value = valueVal;
+        } else {
+            desc.value = Value::undefined();
+        }
+
+        // Get writable (default: false for defineProperty, unlike regular assignment)
+        Value writableVal = descriptorObj->getProperty("writable");
+        desc.writable = !writableVal.isUndefined() && writableVal.toBool();
+    }
 
     // Get enumerable (default: false for defineProperty)
     Value enumerableVal = descriptorObj->getProperty("enumerable");
@@ -311,8 +322,13 @@ Value Object::getOwnPropertyDescriptor(const CallContext& ctx, const std::vector
     // Protect from GC
     rift::memory::GCProtector protect(descriptorObj, getObjectFactory()->getObjectManager());
 
-    descriptorObj->setProperty("value", desc.value);
-    descriptorObj->setProperty("writable", Value(desc.writable));
+    if(desc.is_accessor) {
+        descriptorObj->setProperty("get", desc.getter);
+        descriptorObj->setProperty("set", desc.setter);
+    } else {
+        descriptorObj->setProperty("value", desc.value);
+        descriptorObj->setProperty("writable", Value(desc.writable));
+    }
     descriptorObj->setProperty("enumerable", Value(desc.enumerable));
     descriptorObj->setProperty("configurable", Value(desc.configurable));
 

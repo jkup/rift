@@ -186,11 +186,22 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
                 property = callee_node->children[1]->value;
             }
 
-            // Look up the method on the already-evaluated object
+            // Look up the method on the already-evaluated object (getter-aware)
             if(this_value.isObject() || this_value.isFunction()) {
                 auto* obj = this_value.getObject();
                 if(obj) {
-                    callee = obj->getProperty(property);
+                    auto [found, desc] = obj->findPropertyDescriptor(property);
+                    if(found && desc.is_accessor && desc.getter.isFunction()) {
+                        auto* getter_func =
+                            dynamic_cast<JSFunction*>(desc.getter.getObject());
+                        if(getter_func) {
+                            rift::core::CallContext getter_ctx(rift::core::CallType::Function,
+                                                               this_value);
+                            callee = getter_func->call(getter_ctx, {});
+                        }
+                    } else {
+                        callee = obj->getProperty(property);
+                    }
                 }
             } else if(this_value.isString()) {
                 auto* string_prototype = BuiltinManager::getStringPrototype();
@@ -366,10 +377,21 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
         property = node->children[1]->value;
     }
 
-    // If it's an object, get the property
+    // If it's an object, get the property (with getter support)
     if(object.isObject() || object.isFunction()) {
         auto* obj = object.getObject();
         if(obj) {
+            auto [found, desc] = obj->findPropertyDescriptor(property);
+            if(found && desc.is_accessor) {
+                if(desc.getter.isFunction()) {
+                    auto* getter_func = dynamic_cast<JSFunction*>(desc.getter.getObject());
+                    if(getter_func) {
+                        rift::core::CallContext ctx(rift::core::CallType::Function, object);
+                        return getter_func->call(ctx, {});
+                    }
+                }
+                return Value::undefined();
+            }
             return obj->getProperty(property);
         }
     }
@@ -530,11 +552,34 @@ Value ExpressionEvaluator::evaluateObjectLiteral(std::shared_ptr<ASTNode> node,
             key = key_value.toString();
         }
 
-        // Evaluate the property value
-        Value value = engine->evaluate(value_node, env);
+        // Check for getter/setter accessor properties
+        if(value_node->metadata == "getter" || value_node->metadata == "setter") {
+            Value func_value = engine->evaluate(value_node, env);
 
-        // Set the property on the object
-        obj->setProperty(key, value);
+            // Get or create existing accessor descriptor for this key
+            auto [found, existing_desc] = obj->findPropertyDescriptor(key);
+            rift::runtime::PropertyDescriptor desc;
+            if(found && existing_desc.is_accessor) {
+                desc = existing_desc;
+            } else {
+                desc.is_accessor = true;
+            }
+
+            if(value_node->metadata == "getter") {
+                desc.getter = func_value;
+            } else {
+                desc.setter = func_value;
+            }
+            desc.enumerable = true;
+            desc.configurable = true;
+            obj->defineProperty(key, desc);
+        } else {
+            // Evaluate the property value
+            Value value = engine->evaluate(value_node, env);
+
+            // Set the property on the object
+            obj->setProperty(key, value);
+        }
     }
 
     return Value(obj);

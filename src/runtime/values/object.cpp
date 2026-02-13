@@ -64,6 +64,18 @@ PropertyDescriptor JSObject::getOwnPropertyDescriptor(const std::string& key) co
     return PropertyDescriptor(Value::undefined(), false, false, false);
 }
 
+std::pair<bool, PropertyDescriptor> JSObject::findPropertyDescriptor(const std::string& key) const {
+    for(const auto& prop : properties_) {
+        if(prop.first == key) {
+            return {true, prop.second};
+        }
+    }
+    if(prototype_) {
+        return prototype_->findPropertyDescriptor(key);
+    }
+    return {false, PropertyDescriptor()};
+}
+
 void JSObject::setProperty(const std::string& key, const Value& value) {
     // Look for existing property to update
     for(auto& prop : properties_) {
@@ -230,6 +242,19 @@ std::vector<rift::memory::GCObject*> JSObject::getReferences() const {
             JSObject* obj = descriptor.value.getObject();  // getObject() now returns raw pointer
             if(obj) {
                 refs.push_back(obj);
+            }
+        }
+        // Traverse getter/setter function references for accessor properties
+        if(descriptor.getter.isObject() || descriptor.getter.isFunction()) {
+            JSObject* getter_obj = descriptor.getter.getObject();
+            if(getter_obj) {
+                refs.push_back(getter_obj);
+            }
+        }
+        if(descriptor.setter.isObject() || descriptor.setter.isFunction()) {
+            JSObject* setter_obj = descriptor.setter.getObject();
+            if(setter_obj) {
+                refs.push_back(setter_obj);
             }
         }
     }

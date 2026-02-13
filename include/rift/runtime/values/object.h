@@ -23,6 +23,11 @@ struct PropertyDescriptor {
     bool enumerable = true;
     bool configurable = true;
 
+    // Accessor property support
+    bool is_accessor = false;
+    Value getter;  // [[Get]] function or undefined
+    Value setter;  // [[Set]] function or undefined
+
     // Constructor for default descriptor (all true)
     PropertyDescriptor() = default;
 
@@ -34,6 +39,18 @@ struct PropertyDescriptor {
     // Constructor with all attributes
     PropertyDescriptor(const Value& val, bool w, bool e, bool c)
         : value(val), writable(w), enumerable(e), configurable(c) {
+    }
+
+    // Static factory for accessor descriptors
+    static PropertyDescriptor accessor(const Value& get, const Value& set, bool e = true,
+                                       bool c = true) {
+        PropertyDescriptor desc;
+        desc.is_accessor = true;
+        desc.getter = get;
+        desc.setter = set;
+        desc.enumerable = e;
+        desc.configurable = c;
+        return desc;
     }
 };
 
@@ -69,6 +86,7 @@ class JSObject : public rift::memory::GCObject {
     bool hasOwnProperty(const std::string& key) const;
     PropertyDescriptor getOwnPropertyDescriptor(const std::string& key) const;
     void defineProperty(const std::string& key, const PropertyDescriptor& descriptor);
+    std::pair<bool, PropertyDescriptor> findPropertyDescriptor(const std::string& key) const;
 
     // Prototype chain
     JSObject* getPrototype() const {

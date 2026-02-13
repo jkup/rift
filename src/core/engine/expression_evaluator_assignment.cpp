@@ -14,6 +14,7 @@
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/expression_evaluator.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/runtime/values/object.h"
 
 namespace rift::core {
 
@@ -119,12 +120,39 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
                     // Simple assignment
                     newValue = rightValue;
                 } else {
-                    // Compound assignment - need current value
-                    Value currentValue = obj->getProperty(property);
+                    // Compound assignment - need current value (getter-aware)
+                    auto [found, desc] = obj->findPropertyDescriptor(property);
+                    Value currentValue;
+                    if(found && desc.is_accessor && desc.getter.isFunction()) {
+                        auto* getter_func =
+                            dynamic_cast<JSFunction*>(desc.getter.getObject());
+                        if(getter_func) {
+                            rift::core::CallContext getter_ctx(rift::core::CallType::Function,
+                                                               object);
+                            currentValue = getter_func->call(getter_ctx, {});
+                        }
+                    } else {
+                        currentValue = obj->getProperty(property);
+                    }
                     newValue = applyCompoundOperation(operator_, currentValue, rightValue);
                 }
 
-                obj->setProperty(property, newValue);
+                // Check for setter on accessor property
+                auto [found, desc] = obj->findPropertyDescriptor(property);
+                if(found && desc.is_accessor) {
+                    if(desc.setter.isFunction()) {
+                        auto* setter_func =
+                            dynamic_cast<JSFunction*>(desc.setter.getObject());
+                        if(setter_func) {
+                            rift::core::CallContext setter_ctx(rift::core::CallType::Function,
+                                                               object);
+                            setter_func->call(setter_ctx, {newValue});
+                        }
+                    }
+                    // Accessor without setter: silently fail
+                } else {
+                    obj->setProperty(property, newValue);
+                }
 
                 // Special handling for arrays: update length if necessary
                 if(property != "length") {
@@ -256,12 +284,21 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
             property = operandNode->children[1]->value;
         }
 
-        // Get current property value
+        // Get current property value (getter-aware)
         Value currentValue = Value::undefined();
         if(object.isObject() || object.isFunction()) {
             auto* obj = object.getObject();
             if(obj) {
-                currentValue = obj->getProperty(property);
+                auto [found, desc] = obj->findPropertyDescriptor(property);
+                if(found && desc.is_accessor && desc.getter.isFunction()) {
+                    auto* getter_func = dynamic_cast<JSFunction*>(desc.getter.getObject());
+                    if(getter_func) {
+                        rift::core::CallContext getter_ctx(rift::core::CallType::Function, object);
+                        currentValue = getter_func->call(getter_ctx, {});
+                    }
+                } else {
+                    currentValue = obj->getProperty(property);
+                }
             }
         }
 
@@ -280,30 +317,42 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
             return Value::undefined();
         }
 
-        // Update the property
+        // Update the property (setter-aware)
         if(object.isObject() || object.isFunction()) {
             auto* obj = object.getObject();
             if(obj) {
-                obj->setProperty(property, newValue);
+                auto [found_w, desc_w] = obj->findPropertyDescriptor(property);
+                if(found_w && desc_w.is_accessor) {
+                    if(desc_w.setter.isFunction()) {
+                        auto* setter_func =
+                            dynamic_cast<JSFunction*>(desc_w.setter.getObject());
+                        if(setter_func) {
+                            rift::core::CallContext setter_ctx(rift::core::CallType::Function,
+                                                               object);
+                            setter_func->call(setter_ctx, {newValue});
+                        }
+                    }
+                } else {
+                    obj->setProperty(property, newValue);
 
-                // Special handling for arrays: update length if necessary
-                if(property != "length") {
-                    // Check if this is a numeric index using safe validation
-                    size_t index;
-                    if(EvaluationUtils::isValidArrayIndex(property, index)) {
-                        Value lengthVal = obj->getProperty("length");
-                        if(lengthVal.isNumber()) {
-                            size_t currentLength;
-                            if(EvaluationUtils::toSafeArrayLength(lengthVal.toNumber(),
-                                                                  currentLength)) {
-                                if(index >= currentLength) {
-                                    size_t newLength;
-                                    if(EvaluationUtils::safeIncrementIndex(index, newLength)) {
-                                        obj->setProperty("length",
-                                                         Value(static_cast<double>(newLength)));
+                    // Special handling for arrays: update length if necessary
+                    if(property != "length") {
+                        // Check if this is a numeric index using safe validation
+                        size_t index;
+                        if(EvaluationUtils::isValidArrayIndex(property, index)) {
+                            Value lengthVal = obj->getProperty("length");
+                            if(lengthVal.isNumber()) {
+                                size_t currentLength;
+                                if(EvaluationUtils::toSafeArrayLength(lengthVal.toNumber(),
+                                                                      currentLength)) {
+                                    if(index >= currentLength) {
+                                        size_t newLength;
+                                        if(EvaluationUtils::safeIncrementIndex(index, newLength)) {
+                                            obj->setProperty(
+                                                "length",
+                                                Value(static_cast<double>(newLength)));
+                                        }
                                     }
-                                    // If overflow would occur, don't update length (silent failure
-                                    // per spec)
                                 }
                             }
                         }

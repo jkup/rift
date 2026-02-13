@@ -532,9 +532,29 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
         // Parse property key (can be identifier or string literal)
         std::shared_ptr<ASTNode> key;
         bool is_async_method = false;
+        bool is_getter = false;
+        bool is_setter = false;
+
+        // Check for getter/setter syntax: { get x() {}, set x(v) {} }
+        // Disambiguate from: { get: 1 } (data property) and { get() {} } (method shorthand)
+        if(current_token().type == TokenType::Identifier &&
+           (current_token().value == "get" || current_token().value == "set")) {
+            TokenType next = peek_token().type;
+            // If next token is a property name (not '(' or ':'), it's a getter/setter
+            if(next == TokenType::Identifier || next == TokenType::String ||
+               next == TokenType::Number || next == TokenType::LeftBracket) {
+                if(current_token().value == "get") {
+                    is_getter = true;
+                } else {
+                    is_setter = true;
+                }
+                current++;  // consume 'get'/'set'
+            }
+        }
 
         // Check for async method shorthand: { async methodName() {} }
-        if(current_token().type == TokenType::Async && peek_token().type == TokenType::Identifier) {
+        if(!is_getter && !is_setter && current_token().type == TokenType::Async &&
+           peek_token().type == TokenType::Identifier) {
             // Lookahead: async IDENTIFIER ( means async method shorthand
             size_t saved = current;
             current++;  // skip 'async'
@@ -577,8 +597,16 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
             throw std::runtime_error("Expected property name in object literal");
         }
 
-        // Check for method shorthand: { methodName() {} } or { async methodName() {} }
-        if(is_async_method || current_token().type == TokenType::LeftParen) {
+        // Check for getter/setter method body
+        if(is_getter || is_setter) {
+            consume(TokenType::LeftParen);
+            auto parameters = parse_parameter_list();
+            consume(TokenType::RightParen);
+            auto body = parse_block_statement();
+            auto value = ASTFactory::makeFunctionExpression(parameters, body);
+            value->metadata = is_getter ? "getter" : "setter";
+            ASTFactory::addObjectProperty(object, key, value);
+        } else if(is_async_method || current_token().type == TokenType::LeftParen) {
             // Method shorthand syntax
             consume(TokenType::LeftParen);
             auto parameters = parse_parameter_list();
