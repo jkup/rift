@@ -184,6 +184,29 @@ class String : public BuiltinBase<String> {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim
     static Value trim(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// The `match()` method retrieves the result of matching a string against a regular expression.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.match
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
+    static Value match(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// The `search()` method executes a search for a match between a regular expression and this
+    /// String object.
+    ///
+    /// More information:
+    ///  - [ECMAScript reference][spec]
+    ///  - [MDN documentation][mdn]
+    ///
+    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.search
+    /// [mdn]:
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/search
+    static Value search(const CallContext& ctx, const std::vector<Value>& args);
+
     /// The `replace()` method returns a new string with one, some, or all matches of a pattern
     /// replaced by a replacement.
     ///

@@ -1,5 +1,7 @@
 #include "rift/builtins/string/string.h"
 
+#include <absl/strings/string_view.h>
+
 #include <algorithm>
 #include <cctype>
 #include <cmath>
@@ -7,11 +9,13 @@
 #include <sstream>
 
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/regexp/regexp.h"
 #include "rift/builtins/string/string_iterator.h"
 #include "rift/builtins/symbol/symbol.h"
 #include "rift/core/engine/call_context.h"
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/this_helpers.h"
+#include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
 
@@ -35,6 +39,9 @@ void String::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFact
     RIFT_METHOD(prototype, "toString", String::toString);
     RIFT_METHOD(prototype, "trim", String::trim);
     RIFT_METHOD(prototype, "valueOf", String::valueOf);
+    RIFT_METHOD(prototype, "match", String::match);
+    RIFT_METHOD(prototype, "search", String::search);
+    RIFT_METHOD(prototype, "replace", String::replace);
 
     // Symbol.iterator - for for-of loop support
     std::string iterator_key = core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
@@ -336,6 +343,468 @@ size_t String::validateStringIndex(const std::string& str, double index) {
     }
 
     return static_cast<size_t>(index);
+}
+
+// ===== String.prototype.search =====
+
+Value String::search(const CallContext& ctx, const std::vector<Value>& args) {
+    std::string str = extractThisString(ctx);
+
+    if(args.empty() || args[0].isUndefined()) {
+        // search(undefined) matches the empty string at position 0
+        return Value(0.0);
+    }
+
+    // Check if argument is a RegExp
+    RegExpData* data = nullptr;
+    std::unique_ptr<RE2> temp_regex;
+
+    if(args[0].isObject()) {
+        data = RegExpRegistry::get(args[0].getObject());
+    }
+
+    RE2* regex_ptr = nullptr;
+    if(data) {
+        regex_ptr = data->regex.get();
+    } else {
+        // Convert to string and create a temporary regex
+        std::string pattern = args[0].toString();
+        RE2::Options opts;
+        opts.set_log_errors(false);
+        temp_regex = std::make_unique<RE2>(pattern, opts);
+        regex_ptr = temp_regex.get();
+    }
+
+    if(!regex_ptr || !regex_ptr->ok()) {
+        return Value(-1.0);
+    }
+
+    absl::string_view text(str);
+    absl::string_view submatch;
+    if(regex_ptr->Match(text, 0, static_cast<int>(str.size()), RE2::UNANCHORED, &submatch, 1)) {
+        size_t index = submatch.data() - str.data();
+        return Value(static_cast<double>(index));
+    }
+
+    return Value(-1.0);
+}
+
+// ===== String.prototype.match =====
+
+Value String::match(const CallContext& ctx, const std::vector<Value>& args) {
+    std::string str = extractThisString(ctx);
+
+    if(args.empty() || args[0].isUndefined()) {
+        // match(undefined) returns [""]
+        std::vector<Value> elements;
+        elements.emplace_back(std::string(""));
+        auto* result = Array::createArrayObject(getObjectFactory(), std::move(elements));
+        result->setProperty("index", Value(0.0));
+        result->setProperty("input", Value(str));
+        return Value(result);
+    }
+
+    // Check if argument is a RegExp
+    RegExpData* data = nullptr;
+    std::unique_ptr<RE2> temp_regex;
+    bool is_global = false;
+
+    if(args[0].isObject()) {
+        data = RegExpRegistry::get(args[0].getObject());
+    }
+
+    RE2* regex_ptr = nullptr;
+    if(data) {
+        regex_ptr = data->regex.get();
+        is_global = data->global;
+    } else {
+        // Convert to string and create a temporary regex
+        std::string pattern = args[0].toString();
+        RE2::Options opts;
+        opts.set_log_errors(false);
+        temp_regex = std::make_unique<RE2>(pattern, opts);
+        regex_ptr = temp_regex.get();
+    }
+
+    if(!regex_ptr || !regex_ptr->ok()) {
+        return Value::null();
+    }
+
+    absl::string_view text(str);
+
+    if(!is_global) {
+        // Non-global: return single match with groups, index, input (like exec)
+        int num_groups = regex_ptr->NumberOfCapturingGroups();
+        int num_submatch = 1 + num_groups;
+        std::vector<absl::string_view> submatch(num_submatch);
+
+        if(!regex_ptr->Match(text, 0, static_cast<int>(str.size()), RE2::UNANCHORED,
+                             submatch.data(), num_submatch)) {
+            return Value::null();
+        }
+
+        size_t match_index = submatch[0].data() - str.data();
+
+        std::vector<Value> elements;
+        elements.emplace_back(std::string(submatch[0]));
+        for(int i = 1; i < num_submatch; ++i) {
+            if(submatch[i].data() == nullptr) {
+                elements.push_back(Value::undefined());
+            } else {
+                elements.emplace_back(std::string(submatch[i]));
+            }
+        }
+
+        auto* result = Array::createArrayObject(getObjectFactory(), std::move(elements));
+        result->setProperty("index", Value(static_cast<double>(match_index)));
+        result->setProperty("input", Value(str));
+        return Value(result);
+    }
+
+    // Global: return array of all matched strings
+    std::vector<Value> matches;
+    absl::string_view submatch;
+    size_t start_pos = 0;
+
+    while(start_pos <= str.size()) {
+        if(!regex_ptr->Match(text, static_cast<int>(start_pos), static_cast<int>(str.size()),
+                             RE2::UNANCHORED, &submatch, 1)) {
+            break;
+        }
+
+        matches.emplace_back(std::string(submatch));
+
+        size_t match_end = (submatch.data() - str.data()) + submatch.size();
+        if(match_end == start_pos) {
+            // Avoid infinite loop on zero-length match
+            start_pos++;
+        } else {
+            start_pos = match_end;
+        }
+    }
+
+    if(matches.empty()) {
+        return Value::null();
+    }
+
+    // Reset lastIndex for global regexp
+    if(data) {
+        data->lastIndex = 0;
+        if(args[0].isObject()) {
+            args[0].getObject()->setProperty("lastIndex", Value(0.0));
+        }
+    }
+
+    return Value(Array::createArrayObject(getObjectFactory(), std::move(matches)));
+}
+
+// ===== String.prototype.replace =====
+
+// Helper: convert JS replacement pattern ($1, $&, etc.) to RE2 format (\1, \0, etc.)
+static std::string convertReplacementPattern(const std::string& js_replacement,
+                                             const std::string& full_match) {
+    std::string result;
+    result.reserve(js_replacement.size());
+
+    for(size_t i = 0; i < js_replacement.size(); ++i) {
+        if(js_replacement[i] == '$' && i + 1 < js_replacement.size()) {
+            char next = js_replacement[i + 1];
+            if(next == '&') {
+                // $& -> full match
+                result += full_match;
+                ++i;
+            } else if(next == '$') {
+                // $$ -> literal $
+                result += '$';
+                ++i;
+            } else if(next == '`') {
+                // $` -> not supported yet, skip
+                ++i;
+            } else if(next == '\'') {
+                // $' -> not supported yet, skip
+                ++i;
+            } else if(next >= '0' && next <= '9') {
+                // $1-$9 -> \1-\9 (RE2 backreference)
+                result += '\\';
+                result += next;
+                ++i;
+                // Handle $10-$99
+                if(i + 1 < js_replacement.size() && js_replacement[i + 1] >= '0' &&
+                   js_replacement[i + 1] <= '9') {
+                    result += js_replacement[i + 1];
+                    ++i;
+                }
+            } else {
+                result += '$';
+            }
+        } else {
+            result += js_replacement[i];
+        }
+    }
+
+    return result;
+}
+
+Value String::replace(const CallContext& ctx, const std::vector<Value>& args) {
+    std::string str = extractThisString(ctx);
+
+    if(args.empty()) {
+        return Value(std::move(str));
+    }
+
+    Value search_value = args[0];
+    Value replace_value = args.size() > 1 ? args[1] : Value::undefined();
+
+    // Check if searchValue is a RegExp
+    RegExpData* data = nullptr;
+    if(search_value.isObject()) {
+        data = RegExpRegistry::get(search_value.getObject());
+    }
+
+    if(data) {
+        // RegExp replacement
+        bool is_function = replace_value.isFunction();
+        std::string replace_str = is_function ? "" : replace_value.toString();
+
+        if(!is_function) {
+            // String replacement with regex
+            std::string result = str;
+
+            if(data->global) {
+                // Global replace: find all matches manually to support $& properly
+                std::string output;
+                absl::string_view text(str);
+                size_t start_pos = 0;
+
+                int num_groups = data->regex->NumberOfCapturingGroups();
+                int num_submatch = 1 + num_groups;
+                std::vector<absl::string_view> submatch(num_submatch);
+
+                while(start_pos <= str.size()) {
+                    if(!data->regex->Match(text, static_cast<int>(start_pos),
+                                           static_cast<int>(str.size()), RE2::UNANCHORED,
+                                           submatch.data(), num_submatch)) {
+                        break;
+                    }
+
+                    size_t match_start = submatch[0].data() - str.data();
+                    output += str.substr(start_pos, match_start - start_pos);
+
+                    // Build replacement string with backreference support
+                    std::string replacement =
+                        convertReplacementPattern(replace_str, std::string(submatch[0]));
+                    // Resolve \1, \2 etc. backreferences manually
+                    std::string resolved;
+                    for(size_t i = 0; i < replacement.size(); ++i) {
+                        if(replacement[i] == '\\' && i + 1 < replacement.size() &&
+                           replacement[i + 1] >= '0' && replacement[i + 1] <= '9') {
+                            int group = replacement[i + 1] - '0';
+                            // Check for two-digit group
+                            if(i + 2 < replacement.size() && replacement[i + 2] >= '0' &&
+                               replacement[i + 2] <= '9') {
+                                int two_digit = group * 10 + (replacement[i + 2] - '0');
+                                if(two_digit < num_submatch) {
+                                    group = two_digit;
+                                    ++i;  // skip extra digit
+                                }
+                            }
+                            if(group < num_submatch && submatch[group].data() != nullptr) {
+                                resolved += std::string(submatch[group]);
+                            }
+                            ++i;  // skip the digit
+                        } else {
+                            resolved += replacement[i];
+                        }
+                    }
+                    output += resolved;
+
+                    size_t match_end = match_start + submatch[0].size();
+                    if(match_end == start_pos) {
+                        if(start_pos < str.size()) {
+                            output += str[start_pos];
+                        }
+                        start_pos++;
+                    } else {
+                        start_pos = match_end;
+                    }
+                }
+
+                output += str.substr(start_pos);
+                return Value(std::move(output));
+            }
+
+            // Non-global: replace first match only
+            int num_groups = data->regex->NumberOfCapturingGroups();
+            int num_submatch = 1 + num_groups;
+            std::vector<absl::string_view> submatch(num_submatch);
+            absl::string_view text(str);
+
+            if(data->regex->Match(text, 0, static_cast<int>(str.size()), RE2::UNANCHORED,
+                                  submatch.data(), num_submatch)) {
+                size_t match_start = submatch[0].data() - str.data();
+                std::string replacement =
+                    convertReplacementPattern(replace_str, std::string(submatch[0]));
+                // Resolve backreferences
+                std::string resolved;
+                for(size_t i = 0; i < replacement.size(); ++i) {
+                    if(replacement[i] == '\\' && i + 1 < replacement.size() &&
+                       replacement[i + 1] >= '0' && replacement[i + 1] <= '9') {
+                        int group = replacement[i + 1] - '0';
+                        if(i + 2 < replacement.size() && replacement[i + 2] >= '0' &&
+                           replacement[i + 2] <= '9') {
+                            int two_digit = group * 10 + (replacement[i + 2] - '0');
+                            if(two_digit < num_submatch) {
+                                group = two_digit;
+                                ++i;
+                            }
+                        }
+                        if(group < num_submatch && submatch[group].data() != nullptr) {
+                            resolved += std::string(submatch[group]);
+                        }
+                        ++i;
+                    } else {
+                        resolved += replacement[i];
+                    }
+                }
+                result = str.substr(0, match_start) + resolved +
+                         str.substr(match_start + submatch[0].size());
+            }
+
+            return Value(std::move(result));
+        }
+
+        // Function replacement with regex
+        auto* func = dynamic_cast<JSFunction*>(replace_value.getObject());
+        if(!func) {
+            return Value(std::move(str));
+        }
+
+        int num_groups = data->regex->NumberOfCapturingGroups();
+        int num_submatch = 1 + num_groups;
+        std::vector<absl::string_view> submatch(num_submatch);
+        absl::string_view text(str);
+
+        if(!data->global) {
+            // Non-global function replacement: replace first match
+            if(data->regex->Match(text, 0, static_cast<int>(str.size()), RE2::UNANCHORED,
+                                  submatch.data(), num_submatch)) {
+                size_t match_start = submatch[0].data() - str.data();
+
+                // Call function with (match, group1, ..., index, str)
+                std::vector<Value> call_args;
+                call_args.emplace_back(std::string(submatch[0]));
+                for(int i = 1; i < num_submatch; ++i) {
+                    if(submatch[i].data() == nullptr) {
+                        call_args.push_back(Value::undefined());
+                    } else {
+                        call_args.emplace_back(std::string(submatch[i]));
+                    }
+                }
+                call_args.emplace_back(static_cast<double>(match_start));
+                call_args.emplace_back(str);
+
+                rift::core::CallContext cb_ctx(rift::core::CallType::Function,
+                                              Value::undefined());
+                Value replacement = func->call(cb_ctx, call_args);
+
+                return Value(str.substr(0, match_start) + replacement.toString() +
+                             str.substr(match_start + submatch[0].size()));
+            }
+            return Value(std::move(str));
+        }
+
+        // Global function replacement
+        std::string output;
+        size_t start_pos = 0;
+
+        while(start_pos <= str.size()) {
+            if(!data->regex->Match(text, static_cast<int>(start_pos),
+                                   static_cast<int>(str.size()), RE2::UNANCHORED, submatch.data(),
+                                   num_submatch)) {
+                break;
+            }
+
+            size_t match_start = submatch[0].data() - str.data();
+            output += str.substr(start_pos, match_start - start_pos);
+
+            std::vector<Value> call_args;
+            call_args.emplace_back(std::string(submatch[0]));
+            for(int i = 1; i < num_submatch; ++i) {
+                if(submatch[i].data() == nullptr) {
+                    call_args.push_back(Value::undefined());
+                } else {
+                    call_args.emplace_back(std::string(submatch[i]));
+                }
+            }
+            call_args.emplace_back(static_cast<double>(match_start));
+            call_args.emplace_back(str);
+
+            rift::core::CallContext cb_ctx(rift::core::CallType::Function, Value::undefined());
+            Value replacement = func->call(cb_ctx, call_args);
+            output += replacement.toString();
+
+            size_t match_end = match_start + submatch[0].size();
+            if(match_end == start_pos) {
+                if(start_pos < str.size()) {
+                    output += str[start_pos];
+                }
+                start_pos++;
+            } else {
+                start_pos = match_end;
+            }
+        }
+
+        output += str.substr(start_pos);
+        return Value(std::move(output));
+    }
+
+    // String search (not RegExp)
+    std::string search_str = search_value.toString();
+    size_t pos = str.find(search_str);
+
+    if(pos == std::string::npos) {
+        return Value(std::move(str));
+    }
+
+    if(replace_value.isFunction()) {
+        auto* func = dynamic_cast<JSFunction*>(replace_value.getObject());
+        if(!func) {
+            return Value(std::move(str));
+        }
+
+        std::vector<Value> call_args;
+        call_args.emplace_back(search_str);
+        call_args.emplace_back(static_cast<double>(pos));
+        call_args.emplace_back(str);
+
+        rift::core::CallContext cb_ctx(rift::core::CallType::Function, Value::undefined());
+        Value replacement = func->call(cb_ctx, call_args);
+
+        return Value(str.substr(0, pos) + replacement.toString() +
+                     str.substr(pos + search_str.size()));
+    }
+
+    // Simple string replacement (first occurrence only)
+    // Process $$ -> $ and $& -> matched substring
+    std::string raw_replace = replace_value.toString();
+    std::string replace_str;
+    replace_str.reserve(raw_replace.size());
+    for(size_t i = 0; i < raw_replace.size(); ++i) {
+        if(raw_replace[i] == '$' && i + 1 < raw_replace.size()) {
+            if(raw_replace[i + 1] == '$') {
+                replace_str += '$';
+                ++i;
+            } else if(raw_replace[i + 1] == '&') {
+                replace_str += search_str;
+                ++i;
+            } else {
+                replace_str += '$';
+            }
+        } else {
+            replace_str += raw_replace[i];
+        }
+    }
+    return Value(str.substr(0, pos) + replace_str + str.substr(pos + search_str.size()));
 }
 
 Value String::symbolIterator(const CallContext& ctx, const std::vector<Value>& /* args */) {

@@ -1,5 +1,8 @@
 #include "rift/builtins/regexp/regexp.h"
 
+#include <absl/strings/string_view.h>
+
+#include "rift/builtins/array/array.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/call_context.h"
 #include "rift/core/engine/this_helpers.h"
@@ -150,17 +153,67 @@ Value RegExp::exec(const CallContext& ctx, const std::vector<Value>& args) {
         return Value::null();
     }
 
-    // Get string to test
     std::string str = !args.empty() ? args[0].toString() : "";
 
-    // Check if pattern matches
-    if(!RE2::PartialMatch(str, *data->regex)) {
+    int num_groups = data->regex->NumberOfCapturingGroups();
+    int num_submatch = 1 + num_groups;
+    std::vector<absl::string_view> submatch(num_submatch);
+
+    // For global regexps, start from lastIndex
+    size_t start_pos = 0;
+    if(data->global) {
+        start_pos = static_cast<size_t>(std::max(0, data->lastIndex));
+        if(start_pos > str.size()) {
+            data->lastIndex = 0;
+            auto* obj = extractThisObject(ctx);
+            if(obj) {
+                obj->setProperty("lastIndex", Value(0.0));
+            }
+            return Value::null();
+        }
+    }
+
+    absl::string_view text(str);
+    if(!data->regex->Match(text, static_cast<int>(start_pos), static_cast<int>(str.size()),
+                           RE2::UNANCHORED, submatch.data(), num_submatch)) {
+        if(data->global) {
+            data->lastIndex = 0;
+            auto* obj = extractThisObject(ctx);
+            if(obj) {
+                obj->setProperty("lastIndex", Value(0.0));
+            }
+        }
         return Value::null();
     }
 
-    // For now, return null even on match
-    // TODO: Return proper match array with captured groups
-    return Value::null();
+    // Calculate match index
+    size_t match_index = submatch[0].data() - str.data();
+
+    // Update lastIndex for global
+    if(data->global) {
+        data->lastIndex = static_cast<int>(match_index + submatch[0].size());
+        auto* obj = extractThisObject(ctx);
+        if(obj) {
+            obj->setProperty("lastIndex", Value(static_cast<double>(data->lastIndex)));
+        }
+    }
+
+    // Build result array: [fullMatch, group1, group2, ...]
+    std::vector<Value> elements;
+    elements.push_back(Value(std::string(submatch[0])));
+    for(int i = 1; i < num_submatch; ++i) {
+        if(submatch[i].data() == nullptr) {
+            elements.push_back(Value::undefined());
+        } else {
+            elements.push_back(Value(std::string(submatch[i])));
+        }
+    }
+
+    auto* result = Array::createArrayObject(getObjectFactory(), std::move(elements));
+    result->setProperty("index", Value(static_cast<double>(match_index)));
+    result->setProperty("input", Value(str));
+
+    return Value(result);
 }
 
 // ===== RegExp.prototype.toString =====
