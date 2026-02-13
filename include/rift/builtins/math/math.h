@@ -225,6 +225,35 @@ class Math {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tan
     static Value tan(const CallContext& ctx, const std::vector<Value>& args);
 
+    // Inverse trigonometric methods
+    static Value acos(const CallContext& ctx, const std::vector<Value>& args);
+    static Value asin(const CallContext& ctx, const std::vector<Value>& args);
+    static Value atan(const CallContext& ctx, const std::vector<Value>& args);
+    static Value atan2(const CallContext& ctx, const std::vector<Value>& args);
+
+    // Hyperbolic methods
+    static Value cosh(const CallContext& ctx, const std::vector<Value>& args);
+    static Value sinh(const CallContext& ctx, const std::vector<Value>& args);
+    static Value tanh(const CallContext& ctx, const std::vector<Value>& args);
+    static Value acosh(const CallContext& ctx, const std::vector<Value>& args);
+    static Value asinh(const CallContext& ctx, const std::vector<Value>& args);
+    static Value atanh(const CallContext& ctx, const std::vector<Value>& args);
+
+    // Exponential and logarithmic methods
+    static Value exp(const CallContext& ctx, const std::vector<Value>& args);
+    static Value expm1(const CallContext& ctx, const std::vector<Value>& args);
+    static Value log(const CallContext& ctx, const std::vector<Value>& args);
+    static Value log1p(const CallContext& ctx, const std::vector<Value>& args);
+    static Value log2(const CallContext& ctx, const std::vector<Value>& args);
+    static Value log10(const CallContext& ctx, const std::vector<Value>& args);
+
+    // Other methods
+    static Value cbrt(const CallContext& ctx, const std::vector<Value>& args);
+    static Value clz32(const CallContext& ctx, const std::vector<Value>& args);
+    static Value fround(const CallContext& ctx, const std::vector<Value>& args);
+    static Value hypot(const CallContext& ctx, const std::vector<Value>& args);
+    static Value imul(const CallContext& ctx, const std::vector<Value>& args);
+
     // Helper methods
     /// Helper to validate arguments and extract a number, returning NaN for invalid cases
     static double validateAndGetNumber(const std::vector<Value>& args, size_t index = 0);

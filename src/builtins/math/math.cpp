@@ -50,6 +50,35 @@ JSObject* Math::create(rift::memory::ObjectFactory* factory) {
     RIFT_METHOD(math, "cos", cos);
     RIFT_METHOD(math, "tan", tan);
 
+    // Inverse trigonometric methods
+    RIFT_METHOD(math, "acos", acos);
+    RIFT_METHOD(math, "asin", asin);
+    RIFT_METHOD(math, "atan", atan);
+    RIFT_METHOD(math, "atan2", atan2);
+
+    // Hyperbolic methods
+    RIFT_METHOD(math, "cosh", cosh);
+    RIFT_METHOD(math, "sinh", sinh);
+    RIFT_METHOD(math, "tanh", tanh);
+    RIFT_METHOD(math, "acosh", acosh);
+    RIFT_METHOD(math, "asinh", asinh);
+    RIFT_METHOD(math, "atanh", atanh);
+
+    // Exponential and logarithmic methods
+    RIFT_METHOD(math, "exp", exp);
+    RIFT_METHOD(math, "expm1", expm1);
+    RIFT_METHOD(math, "log", log);
+    RIFT_METHOD(math, "log1p", log1p);
+    RIFT_METHOD(math, "log2", log2);
+    RIFT_METHOD(math, "log10", log10);
+
+    // Other methods
+    RIFT_METHOD(math, "cbrt", cbrt);
+    RIFT_METHOD(math, "clz32", clz32);
+    RIFT_METHOD(math, "fround", fround);
+    RIFT_METHOD(math, "hypot", hypot);
+    RIFT_METHOD(math, "imul", imul);
+
     return math;
 }
 
@@ -247,6 +276,178 @@ Value Math::tan(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     return Value(std::tan(num));
+}
+
+// --- Inverse trigonometric methods ---
+
+Value Math::acos(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::acos(x));
+}
+
+Value Math::asin(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::asin(x));
+}
+
+Value Math::atan(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::atan(x));
+}
+
+Value Math::atan2(const CallContext& ctx, const std::vector<Value>& args) {
+    double y = validateAndGetNumber(args, 0);
+    double x = validateAndGetNumber(args, 1);
+    return Value(std::atan2(y, x));
+}
+
+// --- Hyperbolic methods ---
+
+Value Math::cosh(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::cosh(x));
+}
+
+Value Math::sinh(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::sinh(x));
+}
+
+Value Math::tanh(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::tanh(x));
+}
+
+Value Math::acosh(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::acosh(x));
+}
+
+Value Math::asinh(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::asinh(x));
+}
+
+Value Math::atanh(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::atanh(x));
+}
+
+// --- Exponential and logarithmic methods ---
+
+Value Math::exp(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::exp(x));
+}
+
+Value Math::expm1(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::expm1(x));
+}
+
+Value Math::log(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::log(x));
+}
+
+Value Math::log1p(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::log1p(x));
+}
+
+Value Math::log2(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::log2(x));
+}
+
+Value Math::log10(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::log10(x));
+}
+
+// --- Other methods ---
+
+Value Math::cbrt(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(std::cbrt(x));
+}
+
+Value Math::clz32(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+
+    if(std::isnan(x) || std::isinf(x)) {
+        // ToUint32(NaN) = 0, ToUint32(Infinity) = 0, clz32(0) = 32
+        return Value(32.0);
+    }
+
+    // Convert to uint32_t per ECMAScript ToUint32
+    auto n = static_cast<uint32_t>(static_cast<int64_t>(x));
+
+    if(n == 0) {
+        return Value(32.0);
+    }
+
+    return Value(static_cast<double>(__builtin_clz(n)));
+}
+
+Value Math::fround(const CallContext& ctx, const std::vector<Value>& args) {
+    double x = validateAndGetNumber(args, 0);
+    return Value(static_cast<double>(static_cast<float>(x)));
+}
+
+Value Math::hypot(const CallContext& ctx, const std::vector<Value>& args) {
+    if(args.empty()) {
+        return Value(0.0);
+    }
+
+    // Check for Infinity first (spec: if any arg is ±Infinity, return +Infinity)
+    bool has_nan = false;
+    for(size_t i = 0; i < args.size(); ++i) {
+        double val = args[i].toNumber();
+        if(std::isinf(val)) {
+            return Value(std::numeric_limits<double>::infinity());
+        }
+        if(std::isnan(val)) {
+            has_nan = true;
+        }
+    }
+
+    if(has_nan) {
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+
+    if(args.size() == 1) {
+        return Value(std::fabs(args[0].toNumber()));
+    }
+
+    if(args.size() == 2) {
+        return Value(std::hypot(args[0].toNumber(), args[1].toNumber()));
+    }
+
+    // For 3+ args, compute manually to avoid overflow
+    double sum = 0.0;
+    for(size_t i = 0; i < args.size(); ++i) {
+        double val = args[i].toNumber();
+        sum += val * val;
+    }
+    return Value(std::sqrt(sum));
+}
+
+Value Math::imul(const CallContext& ctx, const std::vector<Value>& args) {
+    double a_val = validateAndGetNumber(args, 0);
+    double b_val = validateAndGetNumber(args, 1);
+
+    if(std::isnan(a_val) || std::isnan(b_val)) {
+        return Value(0.0);
+    }
+
+    // Convert to int32_t per ECMAScript ToInt32
+    auto a = static_cast<int32_t>(static_cast<int64_t>(a_val));
+    auto b = static_cast<int32_t>(static_cast<int64_t>(b_val));
+
+    // Multiply and return lower 32 bits as a signed int32
+    auto result = static_cast<int32_t>(static_cast<uint32_t>(a) * static_cast<uint32_t>(b));
+    return Value(static_cast<double>(result));
 }
 
 }  // namespace rift::builtins
