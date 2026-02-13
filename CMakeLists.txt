@@ -57,6 +57,17 @@ if(NOT re2_POPULATED)
     set(CMAKE_SKIP_INSTALL_RULES OFF)
 endif()
 message(STATUS "RE2 is ready")
+
+# ===== Fetch Corrosion for Rust integration =====
+message(STATUS "Fetching Corrosion (Rust-CMake integration)...")
+FetchContent_Declare(
+    Corrosion
+    GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
+    GIT_TAG        v0.5.1  # Latest stable release compatible with CMake 3.22
+    GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(Corrosion)
+message(STATUS "Corrosion is ready")
 # ====================================================
 
 # Define source files organized by module
