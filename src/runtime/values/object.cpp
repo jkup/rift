@@ -106,8 +106,11 @@ void JSObject::defineProperty(const std::string& key, const PropertyDescriptor& 
         if(prop.first == key) {
             // Check if property is configurable
             if(!prop.second.configurable) {
-                // Cannot redefine non-configurable property
-                // In strict mode, should throw TypeError
+                // Non-configurable but writable: allow value-only update per spec
+                if(prop.second.writable && !descriptor.is_accessor && !prop.second.is_accessor) {
+                    prop.second.value = descriptor.value;
+                }
+                // Cannot change other attributes of non-configurable property
                 return;
             }
             // Update the descriptor

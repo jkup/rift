@@ -16,9 +16,11 @@ void Error::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactor
 }
 
 void Error::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    // Set default properties
-    RIFT_PROPERTY(prototype, "name", Value("Error"));
-    RIFT_PROPERTY(prototype, "message", Value(""));
+    // Set default properties (writable, non-enumerable, configurable per spec)
+    prototype->defineProperty("name",
+        rift::runtime::PropertyDescriptor(Value("Error"), true, false, true));
+    prototype->defineProperty("message",
+        rift::runtime::PropertyDescriptor(Value(""), true, false, true));
 
     // Add Error.prototype methods
     RIFT_METHOD(prototype, "toString", Error::toString);

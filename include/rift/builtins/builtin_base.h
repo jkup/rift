@@ -27,16 +27,19 @@ using namespace rift::runtime;
 //   RIFT_PROPERTY(constructor, "PI", Value(3.14159));
 //
 
-/// Register an instance method on a prototype object
+/// Register an instance method on a prototype object (non-enumerable per spec)
 #define RIFT_METHOD(obj, name, func) \
-    (obj)->setProperty(name, rift::runtime::Value(factory->createJSFunction(func)))
+    (obj)->defineProperty(name, rift::runtime::PropertyDescriptor( \
+        rift::runtime::Value(factory->createJSFunction(func)), true, false, true))
 
-/// Register a static method on a constructor object
+/// Register a static method on a constructor object (non-enumerable per spec)
 #define RIFT_STATIC_METHOD(obj, name, func) \
-    (obj)->setProperty(name, rift::runtime::Value(factory->createJSFunction(func)))
+    (obj)->defineProperty(name, rift::runtime::PropertyDescriptor( \
+        rift::runtime::Value(factory->createJSFunction(func)), true, false, true))
 
-/// Register a static property (constant value) on an object
-#define RIFT_PROPERTY(obj, name, value) (obj)->setProperty(name, value)
+/// Register a static property (constant, non-enumerable, non-configurable per spec)
+#define RIFT_PROPERTY(obj, name, value) \
+    (obj)->defineProperty(name, rift::runtime::PropertyDescriptor(value, false, false, false))
 
 /**
  * Base class template for all JavaScript builtin objects.
@@ -97,8 +100,9 @@ class BuiltinBase {
         // Create and set prototype
         auto* prototype = createPrototype(factory);
         constructor->setProperty("prototype", Value(prototype));
-        // Set constructor property on prototype (prototype.constructor = Constructor)
-        prototype->setProperty("constructor", Value(constructor));
+        // Set constructor property on prototype (non-enumerable per spec)
+        prototype->defineProperty("constructor",
+            PropertyDescriptor(Value(constructor), true, false, true));
 
         return constructor;
     }
@@ -143,7 +147,8 @@ class BuiltinBase {
      */
     static void registerMethod(JSObject* obj, const char* name, MethodFunc func,
                                rift::memory::ObjectFactory* factory) {
-        obj->setProperty(name, Value(factory->createJSFunction(func)));
+        obj->defineProperty(name, PropertyDescriptor(
+            Value(factory->createJSFunction(func)), true, false, true));
     }
 
     /**
@@ -153,7 +158,7 @@ class BuiltinBase {
      * @param value The value to set
      */
     static void registerProperty(JSObject* obj, const char* name, const Value& value) {
-        obj->setProperty(name, value);
+        obj->defineProperty(name, PropertyDescriptor(value, false, false, false));
     }
 
   private:

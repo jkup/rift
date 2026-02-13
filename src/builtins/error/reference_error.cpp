@@ -14,8 +14,11 @@ void ReferenceError::setupStaticMethods(JSObject* constructor,
 
 void ReferenceError::setupPrototypeMethods(JSObject* prototype,
                                            rift::memory::ObjectFactory* factory) {
-    RIFT_PROPERTY(prototype, "name", Value("ReferenceError"));
-    RIFT_PROPERTY(prototype, "message", Value(""));
+    // Error prototype properties: writable, non-enumerable, configurable per spec
+    prototype->defineProperty("name",
+        rift::runtime::PropertyDescriptor(Value("ReferenceError"), true, false, true));
+    prototype->defineProperty("message",
+        rift::runtime::PropertyDescriptor(Value(""), true, false, true));
     RIFT_METHOD(prototype, "toString", ReferenceError::toString);
 }
 

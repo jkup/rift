@@ -12,8 +12,11 @@ void SyntaxError::setupStaticMethods(JSObject* constructor, rift::memory::Object
 }
 
 void SyntaxError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    RIFT_PROPERTY(prototype, "name", Value("SyntaxError"));
-    RIFT_PROPERTY(prototype, "message", Value(""));
+    // Error prototype properties: writable, non-enumerable, configurable per spec
+    prototype->defineProperty("name",
+        rift::runtime::PropertyDescriptor(Value("SyntaxError"), true, false, true));
+    prototype->defineProperty("message",
+        rift::runtime::PropertyDescriptor(Value(""), true, false, true));
     RIFT_METHOD(prototype, "toString", SyntaxError::toString);
 }
 

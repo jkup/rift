@@ -72,10 +72,11 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     RIFT_METHOD(prototype, "values", Array::values);
     RIFT_METHOD(prototype, "entries", Array::entries);
 
-    // Symbol.iterator - alias for values() per ECMAScript spec
+    // Symbol.iterator - alias for values() per ECMAScript spec (non-enumerable)
     std::string iterator_key = core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
     auto* iterator_func = factory->createJSFunction(Array::values);
-    prototype->setProperty(iterator_key, Value(iterator_func));
+    prototype->defineProperty(iterator_key,
+        rift::runtime::PropertyDescriptor(Value(iterator_func), true, false, true));
 }
 
 // ============================================================================
@@ -138,7 +139,10 @@ size_t Array::getArrayLength(JSObject* obj) {
 
 void Array::setArrayLength(JSObject* obj, size_t length) {
     if(obj) {
-        obj->setProperty("length", Value(static_cast<double>(length)));
+        // Array length: writable, non-enumerable, non-configurable per spec
+        obj->defineProperty("length",
+            rift::runtime::PropertyDescriptor(
+                Value(static_cast<double>(length)), true, false, false));
     }
 }
 
