@@ -68,6 +68,36 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Corrosion)
 message(STATUS "Corrosion is ready")
+
+# ===== Fetch temporal_rs for Temporal support =====
+message(STATUS "Fetching temporal_rs for Temporal support...")
+FetchContent_Declare(
+    temporal
+    GIT_REPOSITORY https://github.com/boa-dev/temporal.git
+    GIT_TAG        v0.1.2  # Latest stable release
+    GIT_SHALLOW    TRUE
+)
+# Only populate (download source); corrosion handles the Rust build
+FetchContent_GetProperties(temporal)
+if(NOT temporal_POPULATED)
+    FetchContent_Populate(temporal)
+endif()
+
+# Patch temporal_capi to build as staticlib (needed for C++ linking)
+file(READ ${temporal_SOURCE_DIR}/temporal_capi/Cargo.toml TEMPORAL_CAPI_CARGO)
+if(NOT "${TEMPORAL_CAPI_CARGO}" MATCHES "crate-type")
+    file(APPEND ${temporal_SOURCE_DIR}/temporal_capi/Cargo.toml
+        "\n[lib]\ncrate-type = [\"staticlib\"]\n"
+    )
+endif()
+
+# Import temporal_capi Rust crate as a static library
+corrosion_import_crate(
+    MANIFEST_PATH ${temporal_SOURCE_DIR}/Cargo.toml
+    CRATES temporal_capi
+)
+corrosion_set_features(temporal_capi FEATURES compiled_data)
+message(STATUS "temporal_rs is ready")
 # ====================================================
 
 # Define source files organized by module
@@ -158,10 +188,14 @@ add_executable(rift
     ${LEGACY_SOURCES}
 )
 
-target_include_directories(rift PRIVATE include src)
+target_include_directories(rift PRIVATE
+    include
+    src
+    ${temporal_SOURCE_DIR}/temporal_capi/bindings/cpp
+)
 
-# Link RE2 library for RegExp support
-target_link_libraries(rift PRIVATE re2)
+# Link RE2 (RegExp) and temporal_capi (Temporal) libraries
+target_link_libraries(rift PRIVATE re2 temporal_capi)
 
 # Enable debug symbols and warnings
 target_compile_options(rift PRIVATE
