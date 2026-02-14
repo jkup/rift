@@ -30,8 +30,11 @@
 #include "rift/builtins/temporal/instant.h"
 #include "rift/builtins/temporal/plain_date.h"
 #include "rift/builtins/temporal/plain_date_time.h"
+#include "rift/builtins/temporal/plain_month_day.h"
 #include "rift/builtins/temporal/plain_time.h"
+#include "rift/builtins/temporal/plain_year_month.h"
 #include "rift/builtins/temporal/temporal.h"
+#include "rift/builtins/temporal/zoned_date_time.h"
 #include "rift/builtins/weakmap/weakmap.h"
 #include "rift/builtins/weakset/weakset.h"
 #include "rift/core/engine/engine.h"
@@ -68,6 +71,9 @@ JSObject* BuiltinManager::durationPrototype_ = nullptr;
 JSObject* BuiltinManager::plainDatePrototype_ = nullptr;
 JSObject* BuiltinManager::plainTimePrototype_ = nullptr;
 JSObject* BuiltinManager::plainDateTimePrototype_ = nullptr;
+JSObject* BuiltinManager::plainYearMonthPrototype_ = nullptr;
+JSObject* BuiltinManager::plainMonthDayPrototype_ = nullptr;
+JSObject* BuiltinManager::zonedDateTimePrototype_ = nullptr;
 JSFunction* BuiltinManager::evalFunction_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
@@ -99,6 +105,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::TemporalPlainDate::setObjectFactory(factory);
         builtins::TemporalPlainTime::setObjectFactory(factory);
         builtins::TemporalPlainDateTime::setObjectFactory(factory);
+        builtins::TemporalPlainYearMonth::setObjectFactory(factory);
+        builtins::TemporalPlainMonthDay::setObjectFactory(factory);
+        builtins::TemporalZonedDateTime::setObjectFactory(factory);
     }
 
     // Setup Function FIRST so other functions can inherit from Function.prototype.
@@ -252,6 +261,15 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     if(objectPrototype_ && plainDateTimePrototype_) {
         plainDateTimePrototype_->setPrototype(objectPrototype_);
     }
+    if(objectPrototype_ && plainYearMonthPrototype_) {
+        plainYearMonthPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && plainMonthDayPrototype_) {
+        plainMonthDayPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && zonedDateTimePrototype_) {
+        zonedDateTimePrototype_->setPrototype(objectPrototype_);
+    }
 
     // Setup GC functions if engine is provided
     if(engine) {
@@ -374,6 +392,18 @@ JSObject* BuiltinManager::getPlainTimePrototype() {
 
 JSObject* BuiltinManager::getPlainDateTimePrototype() {
     return plainDateTimePrototype_;
+}
+
+JSObject* BuiltinManager::getPlainYearMonthPrototype() {
+    return plainYearMonthPrototype_;
+}
+
+JSObject* BuiltinManager::getPlainMonthDayPrototype() {
+    return plainMonthDayPrototype_;
+}
+
+JSObject* BuiltinManager::getZonedDateTimePrototype() {
+    return zonedDateTimePrototype_;
 }
 
 JSFunction* BuiltinManager::getEvalFunction() {
@@ -562,6 +592,9 @@ void BuiltinManager::clearStaticPrototypes() {
     plainDatePrototype_ = nullptr;
     plainTimePrototype_ = nullptr;
     plainDateTimePrototype_ = nullptr;
+    plainYearMonthPrototype_ = nullptr;
+    plainMonthDayPrototype_ = nullptr;
+    zonedDateTimePrototype_ = nullptr;
     evalFunction_ = nullptr;
 }
 
@@ -693,6 +726,33 @@ void BuiltinManager::setupTemporal(std::shared_ptr<Environment> globalEnv,
         auto protoVal = plainDateTimeCtorVal.getObject()->getProperty("prototype");
         if(protoVal.isObject() || protoVal.isFunction()) {
             plainDateTimePrototype_ = protoVal.getObject();
+        }
+    }
+
+    // Extract PlainYearMonth prototype from the Temporal.PlainYearMonth constructor
+    auto plainYearMonthCtorVal = temporal->getProperty("PlainYearMonth");
+    if(plainYearMonthCtorVal.isObject() || plainYearMonthCtorVal.isFunction()) {
+        auto protoVal = plainYearMonthCtorVal.getObject()->getProperty("prototype");
+        if(protoVal.isObject() || protoVal.isFunction()) {
+            plainYearMonthPrototype_ = protoVal.getObject();
+        }
+    }
+
+    // Extract PlainMonthDay prototype from the Temporal.PlainMonthDay constructor
+    auto plainMonthDayCtorVal = temporal->getProperty("PlainMonthDay");
+    if(plainMonthDayCtorVal.isObject() || plainMonthDayCtorVal.isFunction()) {
+        auto protoVal = plainMonthDayCtorVal.getObject()->getProperty("prototype");
+        if(protoVal.isObject() || protoVal.isFunction()) {
+            plainMonthDayPrototype_ = protoVal.getObject();
+        }
+    }
+
+    // Extract ZonedDateTime prototype from the Temporal.ZonedDateTime constructor
+    auto zonedDateTimeCtorVal = temporal->getProperty("ZonedDateTime");
+    if(zonedDateTimeCtorVal.isObject() || zonedDateTimeCtorVal.isFunction()) {
+        auto protoVal = zonedDateTimeCtorVal.getObject()->getProperty("prototype");
+        if(protoVal.isObject() || protoVal.isFunction()) {
+            zonedDateTimePrototype_ = protoVal.getObject();
         }
     }
 }

@@ -161,6 +161,9 @@ set(BUILTINS_SOURCES
     src/builtins/temporal/plain_date.cpp
     src/builtins/temporal/plain_time.cpp
     src/builtins/temporal/plain_date_time.cpp
+    src/builtins/temporal/plain_year_month.cpp
+    src/builtins/temporal/plain_month_day.cpp
+    src/builtins/temporal/zoned_date_time.cpp
 )
 
 set(CORE_SOURCES
