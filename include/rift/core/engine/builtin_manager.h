@@ -39,6 +39,8 @@ class BuiltinManager {
     static JSObject* getPromisePrototype();
     static JSObject* getFunctionPrototype();
     static JSObject* getInstantPrototype();
+    static JSObject* getDurationPrototype();
+    static JSObject* getPlainDatePrototype();
 
     // Get the built-in eval function (for direct eval detection)
     static JSFunction* getEvalFunction();
@@ -68,6 +70,8 @@ class BuiltinManager {
     static JSObject* promisePrototype_;
     static JSObject* functionPrototype_;
     static JSObject* instantPrototype_;
+    static JSObject* durationPrototype_;
+    static JSObject* plainDatePrototype_;
     static JSFunction* evalFunction_;
 
     // Individual builtin setup methods - now accept ObjectFactory

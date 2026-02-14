@@ -26,7 +26,9 @@
 #include "rift/builtins/string/string.h"
 #include "rift/builtins/string/string_iterator.h"
 #include "rift/builtins/symbol/symbol.h"
+#include "rift/builtins/temporal/duration.h"
 #include "rift/builtins/temporal/instant.h"
+#include "rift/builtins/temporal/plain_date.h"
 #include "rift/builtins/temporal/temporal.h"
 #include "rift/builtins/weakmap/weakmap.h"
 #include "rift/builtins/weakset/weakset.h"
@@ -60,6 +62,8 @@ JSObject* BuiltinManager::weakSetPrototype_ = nullptr;
 JSObject* BuiltinManager::promisePrototype_ = nullptr;
 JSObject* BuiltinManager::functionPrototype_ = nullptr;
 JSObject* BuiltinManager::instantPrototype_ = nullptr;
+JSObject* BuiltinManager::durationPrototype_ = nullptr;
+JSObject* BuiltinManager::plainDatePrototype_ = nullptr;
 JSFunction* BuiltinManager::evalFunction_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
@@ -87,6 +91,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::Promise::setObjectFactory(factory);
         builtins::Function::setObjectFactory(factory);
         builtins::TemporalInstant::setObjectFactory(factory);
+        builtins::TemporalDuration::setObjectFactory(factory);
+        builtins::TemporalPlainDate::setObjectFactory(factory);
     }
 
     // Setup Function FIRST so other functions can inherit from Function.prototype.
@@ -228,6 +234,12 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     if(objectPrototype_ && instantPrototype_) {
         instantPrototype_->setPrototype(objectPrototype_);
     }
+    if(objectPrototype_ && durationPrototype_) {
+        durationPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && plainDatePrototype_) {
+        plainDatePrototype_->setPrototype(objectPrototype_);
+    }
 
     // Setup GC functions if engine is provided
     if(engine) {
@@ -334,6 +346,14 @@ JSObject* BuiltinManager::getFunctionPrototype() {
 
 JSObject* BuiltinManager::getInstantPrototype() {
     return instantPrototype_;
+}
+
+JSObject* BuiltinManager::getDurationPrototype() {
+    return durationPrototype_;
+}
+
+JSObject* BuiltinManager::getPlainDatePrototype() {
+    return plainDatePrototype_;
 }
 
 JSFunction* BuiltinManager::getEvalFunction() {
@@ -518,6 +538,8 @@ void BuiltinManager::clearStaticPrototypes() {
     promisePrototype_ = nullptr;
     functionPrototype_ = nullptr;
     instantPrototype_ = nullptr;
+    durationPrototype_ = nullptr;
+    plainDatePrototype_ = nullptr;
     evalFunction_ = nullptr;
 }
 
@@ -613,6 +635,24 @@ void BuiltinManager::setupTemporal(std::shared_ptr<Environment> globalEnv,
         auto protoVal = instantCtorVal.getObject()->getProperty("prototype");
         if(protoVal.isObject() || protoVal.isFunction()) {
             instantPrototype_ = protoVal.getObject();
+        }
+    }
+
+    // Extract Duration prototype from the Temporal.Duration constructor
+    auto durationCtorVal = temporal->getProperty("Duration");
+    if(durationCtorVal.isObject() || durationCtorVal.isFunction()) {
+        auto protoVal = durationCtorVal.getObject()->getProperty("prototype");
+        if(protoVal.isObject() || protoVal.isFunction()) {
+            durationPrototype_ = protoVal.getObject();
+        }
+    }
+
+    // Extract PlainDate prototype from the Temporal.PlainDate constructor
+    auto plainDateCtorVal = temporal->getProperty("PlainDate");
+    if(plainDateCtorVal.isObject() || plainDateCtorVal.isFunction()) {
+        auto protoVal = plainDateCtorVal.getObject()->getProperty("prototype");
+        if(protoVal.isObject() || protoVal.isFunction()) {
+            plainDatePrototype_ = protoVal.getObject();
         }
     }
 }

@@ -1,8 +1,10 @@
 #include "rift/builtins/temporal/temporal.h"
 
 #include "rift/builtins/builtin_base.h"
+#include "rift/builtins/temporal/duration.h"
 #include "rift/builtins/temporal/instant.h"
 #include "rift/builtins/temporal/now.h"
+#include "rift/builtins/temporal/plain_date.h"
 
 namespace rift::builtins {
 
@@ -12,6 +14,14 @@ JSObject* Temporal::create(rift::memory::ObjectFactory* factory) {
     // Attach Temporal.Instant constructor
     auto* instant_ctor = TemporalInstant::create(factory);
     RIFT_PROPERTY(temporal, "Instant", Value(instant_ctor));
+
+    // Attach Temporal.Duration constructor
+    auto* duration_ctor = TemporalDuration::create(factory);
+    RIFT_PROPERTY(temporal, "Duration", Value(duration_ctor));
+
+    // Attach Temporal.PlainDate constructor
+    auto* plain_date_ctor = TemporalPlainDate::create(factory);
+    RIFT_PROPERTY(temporal, "PlainDate", Value(plain_date_ctor));
 
     // Attach Temporal.Now namespace
     auto* now = TemporalNow::create(factory);

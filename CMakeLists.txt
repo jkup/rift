@@ -157,6 +157,8 @@ set(BUILTINS_SOURCES
     src/builtins/temporal/temporal.cpp
     src/builtins/temporal/instant.cpp
     src/builtins/temporal/now.cpp
+    src/builtins/temporal/duration.cpp
+    src/builtins/temporal/plain_date.cpp
 )
 
 set(CORE_SOURCES

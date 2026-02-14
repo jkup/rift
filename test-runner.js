@@ -165,7 +165,7 @@ function gc() {
           if (file !== 'skipped') {
             walk(fullPath);
           }
-        } else if (file.endsWith('.js') && !file.includes('temp')) {
+        } else if (file.endsWith('.js') && !file.startsWith('temp_')) {
           testFiles.push(fullPath);
         }
       }
