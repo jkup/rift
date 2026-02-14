@@ -188,12 +188,12 @@ void TemporalPlainTime::setupStaticMethods(JSObject* constructor,
 void TemporalPlainTime::setupPrototypeMethods(JSObject* prototype,
                                                rift::memory::ObjectFactory* factory) {
     // Getters
-    RIFT_METHOD(prototype, "hour", TemporalPlainTime::hour);
-    RIFT_METHOD(prototype, "minute", TemporalPlainTime::minute);
-    RIFT_METHOD(prototype, "second", TemporalPlainTime::second);
-    RIFT_METHOD(prototype, "millisecond", TemporalPlainTime::millisecond);
-    RIFT_METHOD(prototype, "microsecond", TemporalPlainTime::microsecond);
-    RIFT_METHOD(prototype, "nanosecond", TemporalPlainTime::nanosecond);
+    RIFT_GETTER(prototype, "hour", TemporalPlainTime::hour);
+    RIFT_GETTER(prototype, "minute", TemporalPlainTime::minute);
+    RIFT_GETTER(prototype, "second", TemporalPlainTime::second);
+    RIFT_GETTER(prototype, "millisecond", TemporalPlainTime::millisecond);
+    RIFT_GETTER(prototype, "microsecond", TemporalPlainTime::microsecond);
+    RIFT_GETTER(prototype, "nanosecond", TemporalPlainTime::nanosecond);
 
     // Mutation
     RIFT_METHOD(prototype, "with", TemporalPlainTime::with);

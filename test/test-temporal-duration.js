@@ -26,109 +26,109 @@ assert(typeof Temporal.Duration === "function", "Temporal.Duration is a function
 
 // === Constructor with all 10 args ===
 var d = Temporal.Duration(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-assert(d.years() === 1, "years() returns 1");
-assert(d.months() === 2, "months() returns 2");
-assert(d.weeks() === 3, "weeks() returns 3");
-assert(d.days() === 4, "days() returns 4");
-assert(d.hours() === 5, "hours() returns 5");
-assert(d.minutes() === 6, "minutes() returns 6");
-assert(d.seconds() === 7, "seconds() returns 7");
-assert(d.milliseconds() === 8, "milliseconds() returns 8");
-assert(d.microseconds() === 9, "microseconds() returns 9");
-assert(d.nanoseconds() === 10, "nanoseconds() returns 10");
+assert(d.years === 1, "years returns 1");
+assert(d.months === 2, "months returns 2");
+assert(d.weeks === 3, "weeks returns 3");
+assert(d.days === 4, "days returns 4");
+assert(d.hours === 5, "hours returns 5");
+assert(d.minutes === 6, "minutes returns 6");
+assert(d.seconds === 7, "seconds returns 7");
+assert(d.milliseconds === 8, "milliseconds returns 8");
+assert(d.microseconds === 9, "microseconds returns 9");
+assert(d.nanoseconds === 10, "nanoseconds returns 10");
 
 // === Default args (all zero) ===
 var zero = Temporal.Duration();
-assert(zero.years() === 0, "default years is 0");
-assert(zero.months() === 0, "default months is 0");
-assert(zero.weeks() === 0, "default weeks is 0");
-assert(zero.days() === 0, "default days is 0");
-assert(zero.hours() === 0, "default hours is 0");
-assert(zero.minutes() === 0, "default minutes is 0");
-assert(zero.seconds() === 0, "default seconds is 0");
-assert(zero.milliseconds() === 0, "default milliseconds is 0");
-assert(zero.microseconds() === 0, "default microseconds is 0");
-assert(zero.nanoseconds() === 0, "default nanoseconds is 0");
+assert(zero.years === 0, "default years is 0");
+assert(zero.months === 0, "default months is 0");
+assert(zero.weeks === 0, "default weeks is 0");
+assert(zero.days === 0, "default days is 0");
+assert(zero.hours === 0, "default hours is 0");
+assert(zero.minutes === 0, "default minutes is 0");
+assert(zero.seconds === 0, "default seconds is 0");
+assert(zero.milliseconds === 0, "default milliseconds is 0");
+assert(zero.microseconds === 0, "default microseconds is 0");
+assert(zero.nanoseconds === 0, "default nanoseconds is 0");
 
-// === sign() ===
+// === sign ===
 var pos = Temporal.Duration(1);
-assert(pos.sign() === 1, "positive duration sign is 1");
+assert(pos.sign === 1, "positive duration sign is 1");
 
 var neg = Temporal.Duration(-1);
-assert(neg.sign() === -1, "negative duration sign is -1");
+assert(neg.sign === -1, "negative duration sign is -1");
 
-assert(zero.sign() === 0, "zero duration sign is 0");
+assert(zero.sign === 0, "zero duration sign is 0");
 
-// === blank() ===
-assert(zero.blank() === true, "zero duration is blank");
-assert(pos.blank() === false, "positive duration is not blank");
-assert(neg.blank() === false, "negative duration is not blank");
+// === blank ===
+assert(zero.blank === true, "zero duration is blank");
+assert(pos.blank === false, "positive duration is not blank");
+assert(neg.blank === false, "negative duration is not blank");
 
 // === from() with string ===
 var fromStr = Temporal.Duration.from("PT1H30M");
-assert(fromStr.hours() === 1, "from('PT1H30M') hours is 1");
-assert(fromStr.minutes() === 30, "from('PT1H30M') minutes is 30");
+assert(fromStr.hours === 1, "from('PT1H30M') hours is 1");
+assert(fromStr.minutes === 30, "from('PT1H30M') minutes is 30");
 
 var fromStr2 = Temporal.Duration.from("P1Y2M3DT4H5M6S");
-assert(fromStr2.years() === 1, "from string: years 1");
-assert(fromStr2.months() === 2, "from string: months 2");
-assert(fromStr2.days() === 3, "from string: days 3");
-assert(fromStr2.hours() === 4, "from string: hours 4");
-assert(fromStr2.minutes() === 5, "from string: minutes 5");
-assert(fromStr2.seconds() === 6, "from string: seconds 6");
+assert(fromStr2.years === 1, "from string: years 1");
+assert(fromStr2.months === 2, "from string: months 2");
+assert(fromStr2.days === 3, "from string: days 3");
+assert(fromStr2.hours === 4, "from string: hours 4");
+assert(fromStr2.minutes === 5, "from string: minutes 5");
+assert(fromStr2.seconds === 6, "from string: seconds 6");
 
 // === from() with property bag ===
 var fromBag = Temporal.Duration.from({hours: 2, minutes: 45});
-assert(fromBag.hours() === 2, "from({hours:2}) hours is 2");
-assert(fromBag.minutes() === 45, "from({minutes:45}) minutes is 45");
-assert(fromBag.years() === 0, "from bag: unset years is 0");
+assert(fromBag.hours === 2, "from({hours:2}) hours is 2");
+assert(fromBag.minutes === 45, "from({minutes:45}) minutes is 45");
+assert(fromBag.years === 0, "from bag: unset years is 0");
 
 // === from() with existing Duration (clone) ===
 var original = Temporal.Duration(5, 0, 0, 0, 10);
 var cloned = Temporal.Duration.from(original);
-assert(cloned.years() === 5, "from(duration) clones years");
-assert(cloned.hours() === 10, "from(duration) clones hours");
+assert(cloned.years === 5, "from(duration) clones years");
+assert(cloned.hours === 10, "from(duration) clones hours");
 
 // === abs() ===
 var negative = Temporal.Duration(-1, -2, -3, -4, -5, -6, -7, -8);
 var absolute = negative.abs();
-assert(absolute.years() === 1, "abs() years");
-assert(absolute.months() === 2, "abs() months");
-assert(absolute.hours() === 5, "abs() hours");
-assert(absolute.sign() === 1, "abs() sign is positive");
+assert(absolute.years === 1, "abs() years");
+assert(absolute.months === 2, "abs() months");
+assert(absolute.hours === 5, "abs() hours");
+assert(absolute.sign === 1, "abs() sign is positive");
 
 // === negated() ===
 var positive = Temporal.Duration(1, 2, 3);
 var negated = positive.negated();
-assert(negated.years() === -1, "negated() years");
-assert(negated.months() === -2, "negated() months");
-assert(negated.weeks() === -3, "negated() weeks");
-assert(negated.sign() === -1, "negated() sign is negative");
+assert(negated.years === -1, "negated() years");
+assert(negated.months === -2, "negated() months");
+assert(negated.weeks === -3, "negated() weeks");
+assert(negated.sign === -1, "negated() sign is negative");
 
 // Double negation returns to original
 var doubleNeg = negated.negated();
-assert(doubleNeg.years() === 1, "double negated returns to original");
+assert(doubleNeg.years === 1, "double negated returns to original");
 
 // === add() ===
 var d1 = Temporal.Duration(0, 0, 0, 0, 1, 30);
 var d2 = Temporal.Duration(0, 0, 0, 0, 2, 15);
 var sum = d1.add(d2);
-assert(sum.hours() === 3, "add: hours 1+2=3");
-assert(sum.minutes() === 45, "add: minutes 30+15=45");
+assert(sum.hours === 3, "add: hours 1+2=3");
+assert(sum.minutes === 45, "add: minutes 30+15=45");
 
 // Add with property bag
 var addBag = d1.add({hours: 1});
-assert(addBag.hours() === 2, "add with property bag");
+assert(addBag.hours === 2, "add with property bag");
 
 // Add with string
 var addStr = d1.add("PT30M");
-assert(addStr.hours() === 2, "add with string: 1h30m + 30m = 2h");
-assert(addStr.minutes() === 0, "add with string: balanced to 0 minutes");
+assert(addStr.hours === 2, "add with string: 1h30m + 30m = 2h");
+assert(addStr.minutes === 0, "add with string: balanced to 0 minutes");
 
 // === subtract() ===
 var sub = d2.subtract(d1);
-assert(sub.hours() === 0, "subtract: 2h15m - 1h30m = 0h45m hours");
-assert(sub.minutes() === 45, "subtract: 2h15m - 1h30m = 0h45m minutes");
+assert(sub.hours === 0, "subtract: 2h15m - 1h30m = 0h45m hours");
+assert(sub.minutes === 45, "subtract: 2h15m - 1h30m = 0h45m minutes");
 
 // === toString() ===
 var ts1 = Temporal.Duration(1, 2, 3, 4, 5, 6, 7);

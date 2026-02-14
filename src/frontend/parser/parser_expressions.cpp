@@ -641,8 +641,19 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
 }
 
 std::shared_ptr<ASTNode> Parser::parse_new_expression() {
-    // Parse the constructor (should be an identifier or member expression, not a call)
+    // Parse the constructor - can be an identifier or member expression (e.g., new Temporal.Duration)
     auto constructor = parse_primary();
+
+    // Allow member access (dot and bracket) on the constructor expression
+    while(current_token().type == TokenType::Dot ||
+          current_token().type == TokenType::LeftBracket) {
+        if(current_token().type == TokenType::Dot) {
+            constructor = parse_member_expression(constructor);
+        } else {
+            constructor = parse_computed_member_expression(constructor);
+        }
+    }
+
     auto newExpr = ASTFactory::makeNewExpression(constructor);
 
     // Check if there are arguments (parentheses)

@@ -227,26 +227,26 @@ void TemporalPlainDateTime::setupStaticMethods(JSObject* constructor,
 void TemporalPlainDateTime::setupPrototypeMethods(JSObject* prototype,
                                                     rift::memory::ObjectFactory* factory) {
     // Date getters
-    RIFT_METHOD(prototype, "year", TemporalPlainDateTime::year);
-    RIFT_METHOD(prototype, "month", TemporalPlainDateTime::month);
-    RIFT_METHOD(prototype, "monthCode", TemporalPlainDateTime::monthCode);
-    RIFT_METHOD(prototype, "day", TemporalPlainDateTime::day);
-    RIFT_METHOD(prototype, "dayOfWeek", TemporalPlainDateTime::dayOfWeek);
-    RIFT_METHOD(prototype, "dayOfYear", TemporalPlainDateTime::dayOfYear);
-    RIFT_METHOD(prototype, "weekOfYear", TemporalPlainDateTime::weekOfYear);
-    RIFT_METHOD(prototype, "daysInMonth", TemporalPlainDateTime::daysInMonth);
-    RIFT_METHOD(prototype, "daysInYear", TemporalPlainDateTime::daysInYear);
-    RIFT_METHOD(prototype, "monthsInYear", TemporalPlainDateTime::monthsInYear);
-    RIFT_METHOD(prototype, "inLeapYear", TemporalPlainDateTime::inLeapYear);
-    RIFT_METHOD(prototype, "calendarId", TemporalPlainDateTime::calendarId);
+    RIFT_GETTER(prototype, "year", TemporalPlainDateTime::year);
+    RIFT_GETTER(prototype, "month", TemporalPlainDateTime::month);
+    RIFT_GETTER(prototype, "monthCode", TemporalPlainDateTime::monthCode);
+    RIFT_GETTER(prototype, "day", TemporalPlainDateTime::day);
+    RIFT_GETTER(prototype, "dayOfWeek", TemporalPlainDateTime::dayOfWeek);
+    RIFT_GETTER(prototype, "dayOfYear", TemporalPlainDateTime::dayOfYear);
+    RIFT_GETTER(prototype, "weekOfYear", TemporalPlainDateTime::weekOfYear);
+    RIFT_GETTER(prototype, "daysInMonth", TemporalPlainDateTime::daysInMonth);
+    RIFT_GETTER(prototype, "daysInYear", TemporalPlainDateTime::daysInYear);
+    RIFT_GETTER(prototype, "monthsInYear", TemporalPlainDateTime::monthsInYear);
+    RIFT_GETTER(prototype, "inLeapYear", TemporalPlainDateTime::inLeapYear);
+    RIFT_GETTER(prototype, "calendarId", TemporalPlainDateTime::calendarId);
 
     // Time getters
-    RIFT_METHOD(prototype, "hour", TemporalPlainDateTime::hour);
-    RIFT_METHOD(prototype, "minute", TemporalPlainDateTime::minute);
-    RIFT_METHOD(prototype, "second", TemporalPlainDateTime::second);
-    RIFT_METHOD(prototype, "millisecond", TemporalPlainDateTime::millisecond);
-    RIFT_METHOD(prototype, "microsecond", TemporalPlainDateTime::microsecond);
-    RIFT_METHOD(prototype, "nanosecond", TemporalPlainDateTime::nanosecond);
+    RIFT_GETTER(prototype, "hour", TemporalPlainDateTime::hour);
+    RIFT_GETTER(prototype, "minute", TemporalPlainDateTime::minute);
+    RIFT_GETTER(prototype, "second", TemporalPlainDateTime::second);
+    RIFT_GETTER(prototype, "millisecond", TemporalPlainDateTime::millisecond);
+    RIFT_GETTER(prototype, "microsecond", TemporalPlainDateTime::microsecond);
+    RIFT_GETTER(prototype, "nanosecond", TemporalPlainDateTime::nanosecond);
 
     // Mutation
     RIFT_METHOD(prototype, "with", TemporalPlainDateTime::with);

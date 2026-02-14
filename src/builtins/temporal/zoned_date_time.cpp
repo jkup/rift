@@ -243,33 +243,33 @@ void TemporalZonedDateTime::setupStaticMethods(JSObject* constructor,
 void TemporalZonedDateTime::setupPrototypeMethods(JSObject* prototype,
                                                     rift::memory::ObjectFactory* factory) {
     // Date getters
-    RIFT_METHOD(prototype, "year", TemporalZonedDateTime::year);
-    RIFT_METHOD(prototype, "month", TemporalZonedDateTime::month);
-    RIFT_METHOD(prototype, "monthCode", TemporalZonedDateTime::monthCode);
-    RIFT_METHOD(prototype, "day", TemporalZonedDateTime::day);
-    RIFT_METHOD(prototype, "dayOfWeek", TemporalZonedDateTime::dayOfWeek);
-    RIFT_METHOD(prototype, "dayOfYear", TemporalZonedDateTime::dayOfYear);
-    RIFT_METHOD(prototype, "weekOfYear", TemporalZonedDateTime::weekOfYear);
-    RIFT_METHOD(prototype, "daysInMonth", TemporalZonedDateTime::daysInMonth);
-    RIFT_METHOD(prototype, "daysInYear", TemporalZonedDateTime::daysInYear);
-    RIFT_METHOD(prototype, "monthsInYear", TemporalZonedDateTime::monthsInYear);
-    RIFT_METHOD(prototype, "inLeapYear", TemporalZonedDateTime::inLeapYear);
-    RIFT_METHOD(prototype, "calendarId", TemporalZonedDateTime::calendarId);
+    RIFT_GETTER(prototype, "year", TemporalZonedDateTime::year);
+    RIFT_GETTER(prototype, "month", TemporalZonedDateTime::month);
+    RIFT_GETTER(prototype, "monthCode", TemporalZonedDateTime::monthCode);
+    RIFT_GETTER(prototype, "day", TemporalZonedDateTime::day);
+    RIFT_GETTER(prototype, "dayOfWeek", TemporalZonedDateTime::dayOfWeek);
+    RIFT_GETTER(prototype, "dayOfYear", TemporalZonedDateTime::dayOfYear);
+    RIFT_GETTER(prototype, "weekOfYear", TemporalZonedDateTime::weekOfYear);
+    RIFT_GETTER(prototype, "daysInMonth", TemporalZonedDateTime::daysInMonth);
+    RIFT_GETTER(prototype, "daysInYear", TemporalZonedDateTime::daysInYear);
+    RIFT_GETTER(prototype, "monthsInYear", TemporalZonedDateTime::monthsInYear);
+    RIFT_GETTER(prototype, "inLeapYear", TemporalZonedDateTime::inLeapYear);
+    RIFT_GETTER(prototype, "calendarId", TemporalZonedDateTime::calendarId);
 
     // Time getters
-    RIFT_METHOD(prototype, "hour", TemporalZonedDateTime::hour);
-    RIFT_METHOD(prototype, "minute", TemporalZonedDateTime::minute);
-    RIFT_METHOD(prototype, "second", TemporalZonedDateTime::second);
-    RIFT_METHOD(prototype, "millisecond", TemporalZonedDateTime::millisecond);
-    RIFT_METHOD(prototype, "microsecond", TemporalZonedDateTime::microsecond);
-    RIFT_METHOD(prototype, "nanosecond", TemporalZonedDateTime::nanosecond);
+    RIFT_GETTER(prototype, "hour", TemporalZonedDateTime::hour);
+    RIFT_GETTER(prototype, "minute", TemporalZonedDateTime::minute);
+    RIFT_GETTER(prototype, "second", TemporalZonedDateTime::second);
+    RIFT_GETTER(prototype, "millisecond", TemporalZonedDateTime::millisecond);
+    RIFT_GETTER(prototype, "microsecond", TemporalZonedDateTime::microsecond);
+    RIFT_GETTER(prototype, "nanosecond", TemporalZonedDateTime::nanosecond);
 
     // Timezone getters
-    RIFT_METHOD(prototype, "timeZoneId", TemporalZonedDateTime::timeZoneId);
-    RIFT_METHOD(prototype, "offset", TemporalZonedDateTime::offset);
-    RIFT_METHOD(prototype, "offsetNanoseconds", TemporalZonedDateTime::offsetNanoseconds);
-    RIFT_METHOD(prototype, "epochMilliseconds", TemporalZonedDateTime::epochMilliseconds);
-    RIFT_METHOD(prototype, "epochNanoseconds", TemporalZonedDateTime::epochNanoseconds);
+    RIFT_GETTER(prototype, "timeZoneId", TemporalZonedDateTime::timeZoneId);
+    RIFT_GETTER(prototype, "offset", TemporalZonedDateTime::offset);
+    RIFT_GETTER(prototype, "offsetNanoseconds", TemporalZonedDateTime::offsetNanoseconds);
+    RIFT_GETTER(prototype, "epochMilliseconds", TemporalZonedDateTime::epochMilliseconds);
+    RIFT_GETTER(prototype, "epochNanoseconds", TemporalZonedDateTime::epochNanoseconds);
 
     // Mutation
     RIFT_METHOD(prototype, "with", TemporalZonedDateTime::with);

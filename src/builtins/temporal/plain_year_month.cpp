@@ -204,14 +204,14 @@ void TemporalPlainYearMonth::setupStaticMethods(JSObject* constructor,
 void TemporalPlainYearMonth::setupPrototypeMethods(JSObject* prototype,
                                                      rift::memory::ObjectFactory* factory) {
     // Getters
-    RIFT_METHOD(prototype, "year", TemporalPlainYearMonth::year);
-    RIFT_METHOD(prototype, "month", TemporalPlainYearMonth::month);
-    RIFT_METHOD(prototype, "monthCode", TemporalPlainYearMonth::monthCode);
-    RIFT_METHOD(prototype, "daysInMonth", TemporalPlainYearMonth::daysInMonth);
-    RIFT_METHOD(prototype, "daysInYear", TemporalPlainYearMonth::daysInYear);
-    RIFT_METHOD(prototype, "monthsInYear", TemporalPlainYearMonth::monthsInYear);
-    RIFT_METHOD(prototype, "inLeapYear", TemporalPlainYearMonth::inLeapYear);
-    RIFT_METHOD(prototype, "calendarId", TemporalPlainYearMonth::calendarId);
+    RIFT_GETTER(prototype, "year", TemporalPlainYearMonth::year);
+    RIFT_GETTER(prototype, "month", TemporalPlainYearMonth::month);
+    RIFT_GETTER(prototype, "monthCode", TemporalPlainYearMonth::monthCode);
+    RIFT_GETTER(prototype, "daysInMonth", TemporalPlainYearMonth::daysInMonth);
+    RIFT_GETTER(prototype, "daysInYear", TemporalPlainYearMonth::daysInYear);
+    RIFT_GETTER(prototype, "monthsInYear", TemporalPlainYearMonth::monthsInYear);
+    RIFT_GETTER(prototype, "inLeapYear", TemporalPlainYearMonth::inLeapYear);
+    RIFT_GETTER(prototype, "calendarId", TemporalPlainYearMonth::calendarId);
 
     // Mutation
     RIFT_METHOD(prototype, "with", TemporalPlainYearMonth::with);

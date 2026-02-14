@@ -147,9 +147,9 @@ void TemporalPlainMonthDay::setupStaticMethods(JSObject* constructor,
 void TemporalPlainMonthDay::setupPrototypeMethods(JSObject* prototype,
                                                     rift::memory::ObjectFactory* factory) {
     // Getters
-    RIFT_METHOD(prototype, "day", TemporalPlainMonthDay::day);
-    RIFT_METHOD(prototype, "monthCode", TemporalPlainMonthDay::monthCode);
-    RIFT_METHOD(prototype, "calendarId", TemporalPlainMonthDay::calendarId);
+    RIFT_GETTER(prototype, "day", TemporalPlainMonthDay::day);
+    RIFT_GETTER(prototype, "monthCode", TemporalPlainMonthDay::monthCode);
+    RIFT_GETTER(prototype, "calendarId", TemporalPlainMonthDay::calendarId);
 
     // Mutation
     RIFT_METHOD(prototype, "with", TemporalPlainMonthDay::with);

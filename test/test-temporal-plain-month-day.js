@@ -26,50 +26,50 @@ assert(typeof Temporal.PlainMonthDay === "function", "Temporal.PlainMonthDay is 
 
 // === Constructor ===
 var md = Temporal.PlainMonthDay(12, 25);
-assert(md.day() === 25, "day() returns 25");
-assert(md.monthCode() === "M12", "December monthCode is M12");
-assert(md.calendarId() === "iso8601", "default calendar is iso8601");
+assert(md.day === 25, "day returns 25");
+assert(md.monthCode === "M12", "December monthCode is M12");
+assert(md.calendarId === "iso8601", "default calendar is iso8601");
 
 // Different months
 var jan1 = Temporal.PlainMonthDay(1, 1);
-assert(jan1.day() === 1, "Jan 1 day");
-assert(jan1.monthCode() === "M01", "Jan monthCode M01");
+assert(jan1.day === 1, "Jan 1 day");
+assert(jan1.monthCode === "M01", "Jan monthCode M01");
 
 var feb14 = Temporal.PlainMonthDay(2, 14);
-assert(feb14.day() === 14, "Feb 14 day");
-assert(feb14.monthCode() === "M02", "Feb monthCode M02");
+assert(feb14.day === 14, "Feb 14 day");
+assert(feb14.monthCode === "M02", "Feb monthCode M02");
 
 var oct31 = Temporal.PlainMonthDay(10, 31);
-assert(oct31.day() === 31, "Oct 31 day");
-assert(oct31.monthCode() === "M10", "Oct monthCode M10");
+assert(oct31.day === 31, "Oct 31 day");
+assert(oct31.monthCode === "M10", "Oct monthCode M10");
 
 // === from() with string ===
 var fromStr = Temporal.PlainMonthDay.from("--12-25");
-assert(fromStr.day() === 25, "from string: day 25");
-assert(fromStr.monthCode() === "M12", "from string: monthCode M12");
+assert(fromStr.day === 25, "from string: day 25");
+assert(fromStr.monthCode === "M12", "from string: monthCode M12");
 
 // === from() with property bag ===
 var fromBag = Temporal.PlainMonthDay.from({monthCode: "M06", day: 15});
-assert(fromBag.day() === 15, "from bag: day 15");
-assert(fromBag.monthCode() === "M06", "from bag: monthCode M06");
+assert(fromBag.day === 15, "from bag: day 15");
+assert(fromBag.monthCode === "M06", "from bag: monthCode M06");
 
 // from() with month/day numbers
 var fromBag2 = Temporal.PlainMonthDay.from({month: 3, day: 10});
-assert(fromBag2.day() === 10, "from bag (month): day 10");
-assert(fromBag2.monthCode() === "M03", "from bag (month): monthCode M03");
+assert(fromBag2.day === 10, "from bag (month): day 10");
+assert(fromBag2.monthCode === "M03", "from bag (month): monthCode M03");
 
 // === from() with existing PlainMonthDay (clone) ===
 var originalMd = Temporal.PlainMonthDay(7, 4);
 var clonedMd = Temporal.PlainMonthDay.from(originalMd);
-assert(clonedMd.day() === 4, "from(md) clones day");
-assert(clonedMd.monthCode() === "M07", "from(md) clones monthCode");
+assert(clonedMd.day === 4, "from(md) clones day");
+assert(clonedMd.monthCode === "M07", "from(md) clones monthCode");
 assert(clonedMd.equals(originalMd), "cloned md equals original");
 
 // === with() ===
 var md1 = Temporal.PlainMonthDay(6, 15);
 var md2 = md1.with({day: 20});
-assert(md2.day() === 20, "with: day changed to 20");
-assert(md2.monthCode() === "M06", "with: monthCode unchanged");
+assert(md2.day === 20, "with: day changed to 20");
+assert(md2.monthCode === "M06", "with: monthCode unchanged");
 
 // === equals() ===
 var eqMd1 = Temporal.PlainMonthDay(12, 25);
@@ -85,15 +85,15 @@ assert(!eqMd1.equals(neqMonth), "equals: different month");
 // === toPlainDate() ===
 var mdDate = Temporal.PlainMonthDay(6, 15);
 var date = mdDate.toPlainDate({year: 2024});
-assert(date.year() === 2024, "toPlainDate: year");
-assert(date.month() === 6, "toPlainDate: month");
-assert(date.day() === 15, "toPlainDate: day");
+assert(date.year === 2024, "toPlainDate: year");
+assert(date.month === 6, "toPlainDate: month");
+assert(date.day === 15, "toPlainDate: day");
 
 // toPlainDate with different year
 var date2 = mdDate.toPlainDate({year: 2023});
-assert(date2.year() === 2023, "toPlainDate: year 2023");
-assert(date2.month() === 6, "toPlainDate: month 6");
-assert(date2.day() === 15, "toPlainDate: day 15");
+assert(date2.year === 2023, "toPlainDate: year 2023");
+assert(date2.month === 6, "toPlainDate: month 6");
+assert(date2.day === 15, "toPlainDate: day 15");
 
 // === toString() ===
 var mdStr = Temporal.PlainMonthDay(12, 25);
@@ -112,7 +112,7 @@ assertThrows(function() { mdStr.valueOf(); }, "valueOf throws TypeError");
 // === Edge cases ===
 // Feb 29 (leap day)
 var leapDay = Temporal.PlainMonthDay(2, 29);
-assert(leapDay.day() === 29, "leap day: day 29");
-assert(leapDay.monthCode() === "M02", "leap day: monthCode M02");
+assert(leapDay.day === 29, "leap day: day 29");
+assert(leapDay.monthCode === "M02", "leap day: monthCode M02");
 
 console.log("Temporal.PlainMonthDay tests: " + passed + " passed, " + failed + " failed");

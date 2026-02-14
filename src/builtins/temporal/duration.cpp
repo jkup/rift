@@ -146,18 +146,18 @@ void TemporalDuration::setupStaticMethods(JSObject* constructor,
 void TemporalDuration::setupPrototypeMethods(JSObject* prototype,
                                               rift::memory::ObjectFactory* factory) {
     // Getters
-    RIFT_METHOD(prototype, "years", TemporalDuration::years);
-    RIFT_METHOD(prototype, "months", TemporalDuration::months);
-    RIFT_METHOD(prototype, "weeks", TemporalDuration::weeks);
-    RIFT_METHOD(prototype, "days", TemporalDuration::days);
-    RIFT_METHOD(prototype, "hours", TemporalDuration::hours);
-    RIFT_METHOD(prototype, "minutes", TemporalDuration::minutes);
-    RIFT_METHOD(prototype, "seconds", TemporalDuration::seconds);
-    RIFT_METHOD(prototype, "milliseconds", TemporalDuration::milliseconds);
-    RIFT_METHOD(prototype, "microseconds", TemporalDuration::microseconds);
-    RIFT_METHOD(prototype, "nanoseconds", TemporalDuration::nanoseconds);
-    RIFT_METHOD(prototype, "sign", TemporalDuration::sign);
-    RIFT_METHOD(prototype, "blank", TemporalDuration::blank);
+    RIFT_GETTER(prototype, "years", TemporalDuration::years);
+    RIFT_GETTER(prototype, "months", TemporalDuration::months);
+    RIFT_GETTER(prototype, "weeks", TemporalDuration::weeks);
+    RIFT_GETTER(prototype, "days", TemporalDuration::days);
+    RIFT_GETTER(prototype, "hours", TemporalDuration::hours);
+    RIFT_GETTER(prototype, "minutes", TemporalDuration::minutes);
+    RIFT_GETTER(prototype, "seconds", TemporalDuration::seconds);
+    RIFT_GETTER(prototype, "milliseconds", TemporalDuration::milliseconds);
+    RIFT_GETTER(prototype, "microseconds", TemporalDuration::microseconds);
+    RIFT_GETTER(prototype, "nanoseconds", TemporalDuration::nanoseconds);
+    RIFT_GETTER(prototype, "sign", TemporalDuration::sign);
+    RIFT_GETTER(prototype, "blank", TemporalDuration::blank);
 
     // Arithmetic
     RIFT_METHOD(prototype, "abs", TemporalDuration::abs);

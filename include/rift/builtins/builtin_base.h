@@ -37,6 +37,12 @@ using namespace rift::runtime;
     (obj)->defineProperty(name, rift::runtime::PropertyDescriptor( \
         rift::runtime::Value(factory->createJSFunction(func)), true, false, true))
 
+/// Register a getter property (non-enumerable, configurable per spec)
+#define RIFT_GETTER(obj, name, func) \
+    (obj)->defineProperty(name, rift::runtime::PropertyDescriptor::accessor( \
+        rift::runtime::Value(factory->createJSFunction(func)), \
+        rift::runtime::Value::undefined(), false, true))
+
 /// Register a static property (constant, non-enumerable, non-configurable per spec)
 #define RIFT_PROPERTY(obj, name, value) \
     (obj)->defineProperty(name, rift::runtime::PropertyDescriptor(value, false, false, false))

@@ -94,8 +94,8 @@ void TemporalInstant::setupStaticMethods(JSObject* constructor,
 
 void TemporalInstant::setupPrototypeMethods(JSObject* prototype,
                                             rift::memory::ObjectFactory* factory) {
-    RIFT_METHOD(prototype, "epochMilliseconds", TemporalInstant::epochMilliseconds);
-    RIFT_METHOD(prototype, "epochNanoseconds", TemporalInstant::epochNanoseconds);
+    RIFT_GETTER(prototype, "epochMilliseconds", TemporalInstant::epochMilliseconds);
+    RIFT_GETTER(prototype, "epochNanoseconds", TemporalInstant::epochNanoseconds);
     RIFT_METHOD(prototype, "add", TemporalInstant::add);
     RIFT_METHOD(prototype, "subtract", TemporalInstant::subtract);
     RIFT_METHOD(prototype, "equals", TemporalInstant::equals);

@@ -26,50 +26,50 @@ assert(typeof Temporal.PlainDate === "function", "Temporal.PlainDate is a functi
 
 // === Constructor ===
 var d = Temporal.PlainDate(2024, 1, 15);
-assert(d.year() === 2024, "year() returns 2024");
-assert(d.month() === 1, "month() returns 1");
-assert(d.day() === 15, "day() returns 15");
+assert(d.year === 2024, "year returns 2024");
+assert(d.month === 1, "month returns 1");
+assert(d.day === 15, "day returns 15");
 
 // === Getters ===
-assert(d.dayOfWeek() === 1, "2024-01-15 is Monday (dayOfWeek=1)");
-assert(d.dayOfYear() === 15, "2024-01-15 is day 15 of year");
-assert(d.inLeapYear() === true, "2024 is a leap year");
-assert(d.daysInMonth() === 31, "January has 31 days");
-assert(d.daysInYear() === 366, "2024 has 366 days (leap year)");
-assert(d.monthsInYear() === 12, "12 months in year");
-assert(d.monthCode() === "M01", "January monthCode is M01");
-assert(typeof d.weekOfYear() === "number", "weekOfYear returns a number");
-assert(d.calendarId() === "iso8601", "default calendar is iso8601");
+assert(d.dayOfWeek === 1, "2024-01-15 is Monday (dayOfWeek=1)");
+assert(d.dayOfYear === 15, "2024-01-15 is day 15 of year");
+assert(d.inLeapYear === true, "2024 is a leap year");
+assert(d.daysInMonth === 31, "January has 31 days");
+assert(d.daysInYear === 366, "2024 has 366 days (leap year)");
+assert(d.monthsInYear === 12, "12 months in year");
+assert(d.monthCode === "M01", "January monthCode is M01");
+assert(typeof d.weekOfYear === "number", "weekOfYear returns a number");
+assert(d.calendarId === "iso8601", "default calendar is iso8601");
 
 // Non-leap year
 var d2023 = Temporal.PlainDate(2023, 3, 1);
-assert(d2023.inLeapYear() === false, "2023 is not a leap year");
-assert(d2023.daysInYear() === 365, "2023 has 365 days");
+assert(d2023.inLeapYear === false, "2023 is not a leap year");
+assert(d2023.daysInYear === 365, "2023 has 365 days");
 
 // February days
 var feb2024 = Temporal.PlainDate(2024, 2, 1);
-assert(feb2024.daysInMonth() === 29, "Feb 2024 (leap) has 29 days");
+assert(feb2024.daysInMonth === 29, "Feb 2024 (leap) has 29 days");
 var feb2023 = Temporal.PlainDate(2023, 2, 1);
-assert(feb2023.daysInMonth() === 28, "Feb 2023 (non-leap) has 28 days");
+assert(feb2023.daysInMonth === 28, "Feb 2023 (non-leap) has 28 days");
 
 // === from() with string ===
 var fromStr = Temporal.PlainDate.from("2024-06-20");
-assert(fromStr.year() === 2024, "from string: year 2024");
-assert(fromStr.month() === 6, "from string: month 6");
-assert(fromStr.day() === 20, "from string: day 20");
+assert(fromStr.year === 2024, "from string: year 2024");
+assert(fromStr.month === 6, "from string: month 6");
+assert(fromStr.day === 20, "from string: day 20");
 
 // === from() with property bag ===
 var fromBag = Temporal.PlainDate.from({year: 2024, month: 3, day: 10});
-assert(fromBag.year() === 2024, "from bag: year 2024");
-assert(fromBag.month() === 3, "from bag: month 3");
-assert(fromBag.day() === 10, "from bag: day 10");
+assert(fromBag.year === 2024, "from bag: year 2024");
+assert(fromBag.month === 3, "from bag: month 3");
+assert(fromBag.day === 10, "from bag: day 10");
 
 // === from() with existing PlainDate (clone) ===
 var original = Temporal.PlainDate(2024, 7, 4);
 var cloned = Temporal.PlainDate.from(original);
-assert(cloned.year() === 2024, "from(date) clones year");
-assert(cloned.month() === 7, "from(date) clones month");
-assert(cloned.day() === 4, "from(date) clones day");
+assert(cloned.year === 2024, "from(date) clones year");
+assert(cloned.month === 7, "from(date) clones month");
+assert(cloned.day === 4, "from(date) clones day");
 assert(cloned.equals(original), "cloned date equals original");
 
 // === compare() ===
@@ -120,8 +120,8 @@ assert(addBag.toString() === "2024-03-20", "add {months:2, days:5}");
 
 // Add across month boundary
 var addCross = Temporal.PlainDate(2024, 1, 30).add(Temporal.Duration(0, 1));
-assert(addCross.month() === 2, "add month from Jan 30 goes to Feb");
-assert(addCross.day() === 29, "Jan 30 + 1 month = Feb 29 in leap year");
+assert(addCross.month === 2, "add month from Jan 30 goes to Feb");
+assert(addCross.day === 29, "Jan 30 + 1 month = Feb 29 in leap year");
 
 // === subtract() ===
 var subBase = Temporal.PlainDate(2024, 6, 15);
@@ -142,19 +142,19 @@ assert(subDays.toString() === "2024-06-10", "subtract 5 days");
 var start = Temporal.PlainDate(2024, 1, 1);
 var end = Temporal.PlainDate(2024, 1, 31);
 var dur = start.until(end);
-assert(dur.days() === 30, "until: Jan 1 to Jan 31 = 30 days");
+assert(dur.days === 30, "until: Jan 1 to Jan 31 = 30 days");
 
 var start2 = Temporal.PlainDate(2024, 1, 15);
 var end2 = Temporal.PlainDate(2024, 6, 20);
 var dur2 = start2.until(end2);
-assert(dur2.days() === 157, "until: Jan 15 to Jun 20 = 157 days");
+assert(dur2.days === 157, "until: Jan 15 to Jun 20 = 157 days");
 
 // === since() ===
 var since_dur = end.since(start);
-assert(since_dur.days() === 30, "since: Jan 31 since Jan 1 = 30 days");
+assert(since_dur.days === 30, "since: Jan 31 since Jan 1 = 30 days");
 
 var since_dur2 = end2.since(start2);
-assert(since_dur2.days() === 157, "since: Jun 20 since Jan 15 = 157 days");
+assert(since_dur2.days === 157, "since: Jun 20 since Jan 15 = 157 days");
 
 // === equals() ===
 var eq1 = Temporal.PlainDate(2024, 6, 15);
@@ -184,8 +184,8 @@ assert(Object.getPrototypeOf(inst) === Temporal.PlainDate.prototype, "prototype 
 var dateDur = Temporal.Duration(0, 3, 0, 10);
 var dateBase = Temporal.PlainDate(2024, 1, 1);
 var dateResult = dateBase.add(dateDur);
-assert(dateResult.month() === 4, "cross-type: add 3 months gives April");
-assert(dateResult.day() === 11, "cross-type: add 10 days gives 11th");
+assert(dateResult.month === 4, "cross-type: add 3 months gives April");
+assert(dateResult.day === 11, "cross-type: add 10 days gives 11th");
 
 // === Error cases ===
 assertThrows(function() {

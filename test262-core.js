@@ -15,7 +15,6 @@ const UNSUPPORTED_PATTERNS = [
 ];
 
 const UNSUPPORTED_INCLUDES = new Set([
-  "temporalHelpers.js",
   "testAtomics.js",
   "testIntl.js",
   "testBigIntTypedArray.js",
@@ -32,7 +31,6 @@ const UNSUPPORTED_HARNESS = new Set([
   "isConstructor.js",
   "nativeFunctionMatcher.js",
   "atomicsHelper.js",
-  "temporalHelpers.js",
   "testAtomics.js",
   "testBigIntTypedArray.js",
   "testIntl.js",
@@ -66,9 +64,6 @@ const UNSUPPORTED_FEATURES = new Set([
 
   // BigInt
   "BigInt",
-
-  // Temporal
-  "Temporal",
 
   // Import/Export features
   "dynamic-import",
