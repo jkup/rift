@@ -186,10 +186,11 @@ Token Lexer::read_number() {
             if(!std::isxdigit(current_char())) {
                 throw std::runtime_error("Invalid or unexpected token");
             }
-            while(std::isxdigit(current_char())) {
-                value += current_char();
+            while(std::isxdigit(current_char()) || current_char() == '_') {
+                if(current_char() != '_') value += current_char();
                 advance();
             }
+            if(current_char() == 'n') advance();  // BigInt suffix (treat as number)
             return Token(TokenType::Number, value, line, column);
         }
         if(next == 'o' || next == 'O') {
@@ -198,13 +199,14 @@ Token Lexer::read_number() {
             if(current_char() < '0' || current_char() > '7') {
                 throw std::runtime_error("Invalid or unexpected token");
             }
-            while(current_char() >= '0' && current_char() <= '7') {
-                value += current_char();
+            while((current_char() >= '0' && current_char() <= '7') || current_char() == '_') {
+                if(current_char() != '_') value += current_char();
                 advance();
             }
             if(std::isdigit(current_char())) {
                 throw std::runtime_error("Invalid or unexpected token");
             }
+            if(current_char() == 'n') advance();  // BigInt suffix
             return Token(TokenType::Number, value, line, column);
         }
         if(next == 'b' || next == 'B') {
@@ -213,13 +215,14 @@ Token Lexer::read_number() {
             if(current_char() != '0' && current_char() != '1') {
                 throw std::runtime_error("Invalid or unexpected token");
             }
-            while(current_char() == '0' || current_char() == '1') {
-                value += current_char();
+            while(current_char() == '0' || current_char() == '1' || current_char() == '_') {
+                if(current_char() != '_') value += current_char();
                 advance();
             }
             if(std::isdigit(current_char())) {
                 throw std::runtime_error("Invalid or unexpected token");
             }
+            if(current_char() == 'n') advance();  // BigInt suffix
             return Token(TokenType::Number, value, line, column);
         }
         // 0 followed by octal digits (0-7) = legacy octal
@@ -235,8 +238,8 @@ Token Lexer::read_number() {
         // Otherwise fall through to normal decimal parsing (e.g., 0.5, just 0)
     }
 
-    while(std::isdigit(current_char()) || current_char() == '.') {
-        value += current_char();
+    while(std::isdigit(current_char()) || current_char() == '.' || current_char() == '_') {
+        if(current_char() != '_') value += current_char();
         advance();
     }
 
@@ -248,11 +251,14 @@ Token Lexer::read_number() {
             value += current_char();
             advance();
         }
-        while(std::isdigit(current_char())) {
-            value += current_char();
+        while(std::isdigit(current_char()) || current_char() == '_') {
+            if(current_char() != '_') value += current_char();
             advance();
         }
     }
+
+    // BigInt suffix (treat as regular number since we don't have BigInt support)
+    if(current_char() == 'n') advance();
 
     return Token(TokenType::Number, value, line, column);
 }
