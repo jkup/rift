@@ -5,6 +5,8 @@
 #include "rift/builtins/temporal/instant.h"
 #include "rift/builtins/temporal/now.h"
 #include "rift/builtins/temporal/plain_date.h"
+#include "rift/builtins/temporal/plain_date_time.h"
+#include "rift/builtins/temporal/plain_time.h"
 
 namespace rift::builtins {
 
@@ -22,6 +24,14 @@ JSObject* Temporal::create(rift::memory::ObjectFactory* factory) {
     // Attach Temporal.PlainDate constructor
     auto* plain_date_ctor = TemporalPlainDate::create(factory);
     RIFT_PROPERTY(temporal, "PlainDate", Value(plain_date_ctor));
+
+    // Attach Temporal.PlainTime constructor
+    auto* plain_time_ctor = TemporalPlainTime::create(factory);
+    RIFT_PROPERTY(temporal, "PlainTime", Value(plain_time_ctor));
+
+    // Attach Temporal.PlainDateTime constructor
+    auto* plain_date_time_ctor = TemporalPlainDateTime::create(factory);
+    RIFT_PROPERTY(temporal, "PlainDateTime", Value(plain_date_time_ctor));
 
     // Attach Temporal.Now namespace
     auto* now = TemporalNow::create(factory);
