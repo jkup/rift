@@ -53,6 +53,8 @@ class TemporalInstant : public BuiltinBase<TemporalInstant> {
     static Value add(const CallContext& ctx, const std::vector<Value>& args);
     static Value subtract(const CallContext& ctx, const std::vector<Value>& args);
     static Value equals(const CallContext& ctx, const std::vector<Value>& args);
+    static Value since(const CallContext& ctx, const std::vector<Value>& args);
+    static Value until(const CallContext& ctx, const std::vector<Value>& args);
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
     static Value toJSON(const CallContext& ctx, const std::vector<Value>& args);
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);

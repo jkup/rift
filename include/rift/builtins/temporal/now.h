@@ -22,6 +22,15 @@ class TemporalNow {
     /// Temporal.Now.timeZoneId() - returns system timezone string
     static Value timeZoneId(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// Temporal.Now.plainDateISO() - returns current PlainDate in ISO calendar
+    static Value plainDateISO(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// Temporal.Now.plainTimeISO() - returns current PlainTime in ISO calendar
+    static Value plainTimeISO(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// Temporal.Now.plainDateTimeISO() - returns current PlainDateTime in ISO calendar
+    static Value plainDateTimeISO(const CallContext& ctx, const std::vector<Value>& args);
+
   private:
     static rift::memory::ObjectFactory* factory_;
 };

@@ -8,7 +8,13 @@
 #include "temporal_rs/PartialDate.hpp"
 #include "temporal_rs/PlainDate.hpp"
 
+#include "temporal_rs/PlainTime.hpp"
+#include "temporal_rs/TimeZone.hpp"
+
 #include "rift/builtins/temporal/duration.h"
+#include "rift/builtins/temporal/plain_date_time.h"
+#include "rift/builtins/temporal/plain_time.h"
+#include "rift/builtins/temporal/zoned_date_time.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/core/engine/this_helpers.h"
@@ -228,6 +234,10 @@ void TemporalPlainDate::setupPrototypeMethods(JSObject* prototype,
 
     // Comparison
     RIFT_METHOD(prototype, "equals", TemporalPlainDate::equals);
+
+    // Conversion
+    RIFT_METHOD(prototype, "toPlainDateTime", TemporalPlainDate::toPlainDateTime);
+    RIFT_METHOD(prototype, "toZonedDateTime", TemporalPlainDate::toZonedDateTime);
 
     // String
     RIFT_METHOD(prototype, "toString", TemporalPlainDate::toString);
@@ -556,6 +566,82 @@ Value TemporalPlainDate::equals(const CallContext& ctx, const std::vector<Value>
     }
 
     return Value(data->equals(*other));
+}
+
+// ===== Conversion =====
+
+Value TemporalPlainDate::toPlainDateTime(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainDateData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: toPlainDateTime called on non-PlainDate"));
+    }
+
+    // Optional PlainTime argument (defaults to midnight if not provided)
+    temporal_rs::PlainTime* time_ptr = nullptr;
+    if(!args.empty() && (args[0].isObject() || args[0].isFunction())) {
+        time_ptr = PlainTimeRegistry::get(args[0].getObject());
+    }
+
+    auto result = data->to_plain_date_time(time_ptr);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return TemporalPlainDateTime::wrapPlainDateTime(std::move(result).ok().value());
+}
+
+Value TemporalPlainDate::toZonedDateTime(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainDateData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: toZonedDateTime called on non-PlainDate"));
+    }
+
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: toZonedDateTime requires a timezone argument"));
+    }
+
+    // Parse timezone string from the argument
+    std::string tz_str;
+    temporal_rs::PlainTime* time_ptr = nullptr;
+
+    if(args[0].isString()) {
+        // Simple string: timezone identifier
+        tz_str = args[0].getString();
+    } else if(args[0].isObject() || args[0].isFunction()) {
+        // Object with timeZone property and optional plainTime
+        auto* obj = args[0].getObject();
+        Value tz_val = obj->getProperty("timeZone");
+        if(!tz_val.isUndefined()) {
+            tz_str = tz_val.toString();
+        } else {
+            throw rift::core::JavaScriptException(
+                Value("TypeError: toZonedDateTime requires a timeZone property"));
+        }
+
+        Value time_val = obj->getProperty("plainTime");
+        if(!time_val.isUndefined() && (time_val.isObject() || time_val.isFunction())) {
+            time_ptr = PlainTimeRegistry::get(time_val.getObject());
+        }
+    } else {
+        tz_str = args[0].toString();
+    }
+
+    auto tz_result = temporal_rs::TimeZone::try_from_str(tz_str);
+    if(!tz_result.is_ok()) {
+        throw rift::core::JavaScriptException(
+            Value("RangeError: Invalid timezone: " + tz_str));
+    }
+    auto tz = std::move(tz_result).ok().value();
+
+    auto result = data->to_zoned_date_time(tz, time_ptr);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return TemporalZonedDateTime::wrapZonedDateTime(std::move(result).ok().value());
 }
 
 // ===== String =====

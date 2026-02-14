@@ -73,6 +73,10 @@ class TemporalPlainDate : public BuiltinBase<TemporalPlainDate> {
     /// Comparison
     static Value equals(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// Conversion
+    static Value toPlainDateTime(const CallContext& ctx, const std::vector<Value>& args);
+    static Value toZonedDateTime(const CallContext& ctx, const std::vector<Value>& args);
+
     /// String
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
     static Value toJSON(const CallContext& ctx, const std::vector<Value>& args);

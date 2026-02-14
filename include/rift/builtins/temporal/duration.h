@@ -65,6 +65,10 @@ class TemporalDuration : public BuiltinBase<TemporalDuration> {
     static Value add(const CallContext& ctx, const std::vector<Value>& args);
     static Value subtract(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// Rounding
+    static Value round(const CallContext& ctx, const std::vector<Value>& args);
+    static Value total(const CallContext& ctx, const std::vector<Value>& args);
+
     /// String
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
     static Value toJSON(const CallContext& ctx, const std::vector<Value>& args);

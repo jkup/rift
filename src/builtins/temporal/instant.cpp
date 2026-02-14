@@ -1,8 +1,10 @@
 #include "rift/builtins/temporal/instant.h"
 
+#include "temporal_rs/DifferenceSettings.hpp"
 #include "temporal_rs/Duration.hpp"
 #include "temporal_rs/Instant.hpp"
 
+#include "rift/builtins/temporal/duration.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/core/engine/this_helpers.h"
@@ -97,6 +99,8 @@ void TemporalInstant::setupPrototypeMethods(JSObject* prototype,
     RIFT_METHOD(prototype, "add", TemporalInstant::add);
     RIFT_METHOD(prototype, "subtract", TemporalInstant::subtract);
     RIFT_METHOD(prototype, "equals", TemporalInstant::equals);
+    RIFT_METHOD(prototype, "since", TemporalInstant::since);
+    RIFT_METHOD(prototype, "until", TemporalInstant::until);
     RIFT_METHOD(prototype, "toString", TemporalInstant::toString);
     RIFT_METHOD(prototype, "toJSON", TemporalInstant::toJSON);
     RIFT_METHOD(prototype, "valueOf", TemporalInstant::valueOf);
@@ -364,6 +368,62 @@ Value TemporalInstant::equals(const CallContext& ctx, const std::vector<Value>& 
     }
 
     return Value(data->equals(*other));
+}
+
+Value TemporalInstant::since(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getInstantData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(Value("TypeError: since called on non-Instant"));
+    }
+
+    if(args.empty() || !args[0].isObject()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.Instant.prototype.since requires an Instant argument"));
+    }
+
+    auto* other = InstantRegistry::get(args[0].getObject());
+    if(!other) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.Instant.prototype.since requires an Instant argument"));
+    }
+
+    temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
+                                              std::nullopt};
+
+    auto result = data->since(*other, settings);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return TemporalDuration::wrapDuration(std::move(result).ok().value());
+}
+
+Value TemporalInstant::until(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getInstantData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(Value("TypeError: until called on non-Instant"));
+    }
+
+    if(args.empty() || !args[0].isObject()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.Instant.prototype.until requires an Instant argument"));
+    }
+
+    auto* other = InstantRegistry::get(args[0].getObject());
+    if(!other) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.Instant.prototype.until requires an Instant argument"));
+    }
+
+    temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
+                                              std::nullopt};
+
+    auto result = data->until(*other, settings);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return TemporalDuration::wrapDuration(std::move(result).ok().value());
 }
 
 Value TemporalInstant::toString(const CallContext& ctx, const std::vector<Value>& args) {

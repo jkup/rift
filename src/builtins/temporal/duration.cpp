@@ -3,8 +3,10 @@
 #include "temporal_rs/Duration.hpp"
 #include "temporal_rs/PartialDuration.hpp"
 #include "temporal_rs/RelativeTo.hpp"
+#include "temporal_rs/RoundingOptions.hpp"
 #include "temporal_rs/Sign.hpp"
 #include "temporal_rs/ToStringRoundingOptions.hpp"
+#include "temporal_rs/Unit.hpp"
 
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/javascript_exception.h"
@@ -162,6 +164,10 @@ void TemporalDuration::setupPrototypeMethods(JSObject* prototype,
     RIFT_METHOD(prototype, "negated", TemporalDuration::negated);
     RIFT_METHOD(prototype, "add", TemporalDuration::add);
     RIFT_METHOD(prototype, "subtract", TemporalDuration::subtract);
+
+    // Rounding
+    RIFT_METHOD(prototype, "round", TemporalDuration::round);
+    RIFT_METHOD(prototype, "total", TemporalDuration::total);
 
     // String
     RIFT_METHOD(prototype, "toString", TemporalDuration::toString);
@@ -388,6 +394,93 @@ Value TemporalDuration::subtract(const CallContext& ctx, const std::vector<Value
     }
 
     return wrapDuration(std::move(result).ok().value());
+}
+
+// ===== Helper: Parse a Unit string =====
+
+static temporal_rs::Unit parseUnit(const std::string& str) {
+    if(str == "year" || str == "years") return temporal_rs::Unit::Year;
+    if(str == "month" || str == "months") return temporal_rs::Unit::Month;
+    if(str == "week" || str == "weeks") return temporal_rs::Unit::Week;
+    if(str == "day" || str == "days") return temporal_rs::Unit::Day;
+    if(str == "hour" || str == "hours") return temporal_rs::Unit::Hour;
+    if(str == "minute" || str == "minutes") return temporal_rs::Unit::Minute;
+    if(str == "second" || str == "seconds") return temporal_rs::Unit::Second;
+    if(str == "millisecond" || str == "milliseconds") return temporal_rs::Unit::Millisecond;
+    if(str == "microsecond" || str == "microseconds") return temporal_rs::Unit::Microsecond;
+    if(str == "nanosecond" || str == "nanoseconds") return temporal_rs::Unit::Nanosecond;
+    throw rift::core::JavaScriptException(Value("RangeError: Invalid unit: " + str));
+}
+
+// ===== Rounding =====
+
+Value TemporalDuration::round(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getDurationData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(Value("TypeError: round called on non-Duration"));
+    }
+
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.Duration.prototype.round requires an argument"));
+    }
+
+    temporal_rs::RoundingOptions options{std::nullopt, std::nullopt, std::nullopt, std::nullopt};
+
+    if(args[0].isString()) {
+        // String shorthand: the argument is the smallestUnit
+        options.smallest_unit = parseUnit(args[0].getString());
+    } else if(args[0].isObject() || args[0].isFunction()) {
+        auto* obj = args[0].getObject();
+        Value smallest = obj->getProperty("smallestUnit");
+        Value largest = obj->getProperty("largestUnit");
+        Value mode = obj->getProperty("roundingMode");
+        Value inc = obj->getProperty("roundingIncrement");
+
+        if(!smallest.isUndefined()) options.smallest_unit = parseUnit(smallest.toString());
+        if(!largest.isUndefined()) options.largest_unit = parseUnit(largest.toString());
+        if(!inc.isUndefined()) options.increment = static_cast<uint32_t>(inc.toNumber());
+    }
+
+    temporal_rs::RelativeTo relative_to{nullptr, nullptr};
+    auto result = data->round(options, relative_to);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return wrapDuration(std::move(result).ok().value());
+}
+
+Value TemporalDuration::total(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getDurationData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(Value("TypeError: total called on non-Duration"));
+    }
+
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.Duration.prototype.total requires an argument"));
+    }
+
+    temporal_rs::Unit unit = temporal_rs::Unit::Nanosecond;
+
+    if(args[0].isString()) {
+        unit = parseUnit(args[0].getString());
+    } else if(args[0].isObject() || args[0].isFunction()) {
+        auto* obj = args[0].getObject();
+        Value unit_val = obj->getProperty("unit");
+        if(!unit_val.isUndefined()) {
+            unit = parseUnit(unit_val.toString());
+        }
+    }
+
+    temporal_rs::RelativeTo relative_to{nullptr, nullptr};
+    auto result = data->total(unit, relative_to);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return Value(std::move(result).ok().value());
 }
 
 // ===== String =====
