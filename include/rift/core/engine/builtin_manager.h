@@ -38,6 +38,7 @@ class BuiltinManager {
     static JSObject* getWeakSetPrototype();
     static JSObject* getPromisePrototype();
     static JSObject* getFunctionPrototype();
+    static JSObject* getInstantPrototype();
 
     // Get the built-in eval function (for direct eval detection)
     static JSFunction* getEvalFunction();
@@ -66,6 +67,7 @@ class BuiltinManager {
     static JSObject* weakSetPrototype_;
     static JSObject* promisePrototype_;
     static JSObject* functionPrototype_;
+    static JSObject* instantPrototype_;
     static JSFunction* evalFunction_;
 
     // Individual builtin setup methods - now accept ObjectFactory
@@ -113,6 +115,8 @@ class BuiltinManager {
     static void setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine);
     static void setupIteratorPrototype(rift::memory::ObjectFactory* factory);
     static void setupFunction(std::shared_ptr<Environment> globalEnv,
+                              rift::memory::ObjectFactory* factory);
+    static void setupTemporal(std::shared_ptr<Environment> globalEnv,
                               rift::memory::ObjectFactory* factory);
 };
 

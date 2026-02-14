@@ -26,6 +26,8 @@
 #include "rift/builtins/string/string.h"
 #include "rift/builtins/string/string_iterator.h"
 #include "rift/builtins/symbol/symbol.h"
+#include "rift/builtins/temporal/instant.h"
+#include "rift/builtins/temporal/temporal.h"
 #include "rift/builtins/weakmap/weakmap.h"
 #include "rift/builtins/weakset/weakset.h"
 #include "rift/core/engine/engine.h"
@@ -57,6 +59,7 @@ JSObject* BuiltinManager::weakMapPrototype_ = nullptr;
 JSObject* BuiltinManager::weakSetPrototype_ = nullptr;
 JSObject* BuiltinManager::promisePrototype_ = nullptr;
 JSObject* BuiltinManager::functionPrototype_ = nullptr;
+JSObject* BuiltinManager::instantPrototype_ = nullptr;
 JSFunction* BuiltinManager::evalFunction_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
@@ -83,6 +86,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::WeakSet::setObjectFactory(factory);
         builtins::Promise::setObjectFactory(factory);
         builtins::Function::setObjectFactory(factory);
+        builtins::TemporalInstant::setObjectFactory(factory);
     }
 
     // Setup Function FIRST so other functions can inherit from Function.prototype.
@@ -125,6 +129,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupWeakMap(globalEnv, factory);
     setupWeakSet(globalEnv, factory);
     setupPromise(globalEnv, factory, engine);
+    setupTemporal(globalEnv, factory);
 
     // After all builtins are created, get their prototypes from the constructors
     auto* objectConstructor = globalEnv->get("Object").getObject();
@@ -219,6 +224,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     }
     if(objectPrototype_ && functionPrototype_) {
         functionPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && instantPrototype_) {
+        instantPrototype_->setPrototype(objectPrototype_);
     }
 
     // Setup GC functions if engine is provided
@@ -322,6 +330,10 @@ JSObject* BuiltinManager::getRangeErrorPrototype() {
 
 JSObject* BuiltinManager::getFunctionPrototype() {
     return functionPrototype_;
+}
+
+JSObject* BuiltinManager::getInstantPrototype() {
+    return instantPrototype_;
 }
 
 JSFunction* BuiltinManager::getEvalFunction() {
@@ -505,6 +517,7 @@ void BuiltinManager::clearStaticPrototypes() {
     weakSetPrototype_ = nullptr;
     promisePrototype_ = nullptr;
     functionPrototype_ = nullptr;
+    instantPrototype_ = nullptr;
     evalFunction_ = nullptr;
 }
 
@@ -587,6 +600,21 @@ void BuiltinManager::setupFunction(std::shared_ptr<Environment> globalEnv,
     prototype->setProperty("constructor", Value(constructor));
 
     globalEnv->define("Function", Value(constructor));
+}
+
+void BuiltinManager::setupTemporal(std::shared_ptr<Environment> globalEnv,
+                                   rift::memory::ObjectFactory* factory) {
+    auto* temporal = builtins::Temporal::create(factory);
+    globalEnv->define("Temporal", Value(temporal));
+
+    // Extract Instant prototype directly from the Temporal.Instant constructor
+    auto instantCtorVal = temporal->getProperty("Instant");
+    if(instantCtorVal.isObject() || instantCtorVal.isFunction()) {
+        auto protoVal = instantCtorVal.getObject()->getProperty("prototype");
+        if(protoVal.isObject() || protoVal.isFunction()) {
+            instantPrototype_ = protoVal.getObject();
+        }
+    }
 }
 
 }  // namespace rift::core

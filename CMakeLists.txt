@@ -154,6 +154,9 @@ set(BUILTINS_SOURCES
     src/builtins/generator/generator_iterator.cpp
     src/builtins/promise/promise.cpp
     src/builtins/function/function.cpp
+    src/builtins/temporal/temporal.cpp
+    src/builtins/temporal/instant.cpp
+    src/builtins/temporal/now.cpp
 )
 
 set(CORE_SOURCES
