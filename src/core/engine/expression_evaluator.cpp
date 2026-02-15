@@ -89,6 +89,8 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
             return evaluateAwaitExpression(node, env, engine);
         case ASTNodeType::RegExpLiteral:
             return evaluateRegExpLiteral(node, env, engine);
+        case ASTNodeType::ConditionalExpression:
+            return evaluateConditionalExpression(node, env, engine);
         default:
             return Value::undefined();
     }
@@ -188,6 +190,15 @@ Value ExpressionEvaluator::evaluateBinaryExpression(std::shared_ptr<ASTNode> nod
         return engine->evaluate(node->children[1], env);  // Evaluate right only if left is truthy
     }
 
+    // Handle nullish coalescing operator (??)
+    if(node->value == "??") {
+        Value left = engine->evaluate(node->children[0], env);
+        if(!left.isNull() && !left.isUndefined()) {
+            return left;  // Return left if not null/undefined
+        }
+        return engine->evaluate(node->children[1], env);
+    }
+
     // Handle 'in' operator: check if property exists in object
     if(node->value == "in") {
         Value left = engine->evaluate(node->children[0], env);
@@ -207,6 +218,52 @@ Value ExpressionEvaluator::evaluateBinaryExpression(std::shared_ptr<ASTNode> nod
                 return Value(true);
             }
             obj = obj->getPrototype();
+        }
+        return Value(false);
+    }
+
+    // Handle 'instanceof' operator: check prototype chain
+    if(node->value == "instanceof") {
+        Value left = engine->evaluate(node->children[0], env);
+        Value right = engine->evaluate(node->children[1], env);
+
+        // Right operand must be a callable (function/constructor)
+        if(!right.isFunction() && !right.isObject()) {
+            throw JavaScriptException(
+                Value("TypeError: Right-hand side of instanceof is not callable"));
+        }
+
+        // Get the prototype property of the constructor
+        JSObject* right_obj = right.getObject();
+        if(!right_obj) {
+            throw JavaScriptException(
+                Value("TypeError: Right-hand side of instanceof is not callable"));
+        }
+
+        Value proto_val = right_obj->getProperty("prototype");
+        if(!proto_val.isObject()) {
+            throw JavaScriptException(
+                Value("TypeError: Function has non-object prototype in instanceof check"));
+        }
+        JSObject* constructor_proto = proto_val.getObject();
+
+        // Left operand must be an object to have a prototype chain
+        if(!left.isObject() && !left.isFunction()) {
+            return Value(false);
+        }
+
+        // Walk the prototype chain of the left operand
+        JSObject* obj = left.getObject();
+        if(!obj) {
+            return Value(false);
+        }
+
+        JSObject* current = obj->getPrototype();
+        while(current != nullptr) {
+            if(current == constructor_proto) {
+                return Value(true);
+            }
+            current = current->getPrototype();
         }
         return Value(false);
     }
@@ -332,6 +389,20 @@ Value ExpressionEvaluator::evaluateRegExpLiteral(std::shared_ptr<ASTNode> node,
     CallContext ctx(CallType::Constructor);
     std::vector<Value> args = {Value(pattern), Value(flags)};
     return rift::builtins::RegExp::constructor(ctx, args);
+}
+
+Value ExpressionEvaluator::evaluateConditionalExpression(std::shared_ptr<ASTNode> node,
+                                                         std::shared_ptr<Environment> env,
+                                                         Rift* engine) {
+    if(node->children.size() != 3) {
+        return Value::undefined();
+    }
+
+    Value condition = engine->evaluate(node->children[0], env);
+    if(condition.toBool()) {
+        return engine->evaluate(node->children[1], env);
+    }
+    return engine->evaluate(node->children[2], env);
 }
 
 }  // namespace rift::core

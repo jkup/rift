@@ -550,6 +550,7 @@ Token Lexer::read_identifier() {
         {"new", TokenType::New},
         {"this", TokenType::This},
         {"in", TokenType::In},
+        {"instanceof", TokenType::Instanceof},
         // Note: "of" is a contextual keyword, handled in parser (not here)
         {"true", TokenType::Boolean},
         {"false", TokenType::Boolean},
@@ -946,6 +947,24 @@ Token Lexer::next_token() {
                 return make_token(TokenType::BitwiseXorAssign, "^=", line, column);
             }
             return make_token(TokenType::BitwiseXor, "^", line, column);
+        case '?':
+            advance();
+            if(current_char() == '?') {
+                advance();
+                if(current_char() == '=') {
+                    advance();
+                    return make_token(TokenType::NullishCoalescingAssign, "??=", line, column);
+                }
+                return make_token(TokenType::NullishCoalescing, "??", line, column);
+            }
+            if(current_char() == '.') {
+                // Optional chaining: ?. but NOT ?.digits (that would be ? .5)
+                if(peek_char() < '0' || peek_char() > '9') {
+                    advance();
+                    return make_token(TokenType::OptionalChain, "?.", line, column);
+                }
+            }
+            return make_token(TokenType::QuestionMark, "?", line, column);
         default:
             advance();
             return make_token(TokenType::Invalid, std::string(1, ch), line, column);

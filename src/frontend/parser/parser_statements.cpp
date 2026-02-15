@@ -66,37 +66,85 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
         return node;
     }
 
-    // Simple identifier declaration (existing behavior)
-    if(current_token().type != TokenType::Identifier) {
-        throw std::runtime_error("Expected identifier after variable declaration keyword");
+    // Helper lambda to parse a single declarator and create the appropriate node
+    auto parse_single_declarator = [&]() -> std::shared_ptr<ASTNode> {
+        // Check for destructuring in subsequent declarators
+        if(current_token().type == TokenType::LeftBracket ||
+           current_token().type == TokenType::LeftBrace) {
+            auto pattern = parse_binding_pattern();
+            if(!match(TokenType::Assign)) {
+                throw std::runtime_error("Destructuring declaration requires initializer");
+            }
+            auto init = parse_expression();
+            std::shared_ptr<ASTNode> node;
+            switch(declType) {
+                case TokenType::Var:
+                    node = std::make_shared<ASTNode>(ASTNodeType::VariableDeclaration);
+                    break;
+                case TokenType::Let:
+                    node = std::make_shared<ASTNode>(ASTNodeType::LetDeclaration);
+                    break;
+                case TokenType::Const:
+                    node = std::make_shared<ASTNode>(ASTNodeType::ConstDeclaration);
+                    break;
+                default:
+                    throw std::runtime_error("Invalid declaration type");
+            }
+            node->metadata = "destructuring";
+            node->children.push_back(pattern);
+            node->children.push_back(init);
+            return node;
+        }
+
+        if(current_token().type != TokenType::Identifier) {
+            throw std::runtime_error("Expected identifier in variable declaration");
+        }
+
+        std::string name = current_token().value;
+        size_t line = current_token().line;
+        size_t column = current_token().column;
+        current++;
+
+        validateIdentifier(name, line, column);
+
+        std::shared_ptr<ASTNode> initializer = nullptr;
+        if(match(TokenType::Assign)) {
+            initializer = parse_expression();
+        } else if(declType == TokenType::Const) {
+            throw std::runtime_error("Missing initializer in const declaration");
+        }
+
+        switch(declType) {
+            case TokenType::Var:
+                return ASTFactory::makeVariableDeclaration(name, initializer);
+            case TokenType::Let:
+                return ASTFactory::makeLetDeclaration(name, initializer);
+            case TokenType::Const:
+                return ASTFactory::makeConstDeclaration(name, initializer);
+            default:
+                throw std::runtime_error("Invalid declaration type");
+        }
+    };
+
+    // Parse first declarator
+    auto first = parse_single_declarator();
+
+    // Check for comma-separated additional declarators: var a, b = 1, c;
+    if(current_token().type != TokenType::Comma) {
+        return first;  // Single declarator - return directly
     }
 
-    std::string name = current_token().value;
-    size_t line = current_token().line;
-    size_t column = current_token().column;
-    current++;
+    // Multiple declarators - wrap in a declaration-list block
+    auto block = ASTFactory::makeBlockStatement();
+    block->metadata = "declaration-list";
+    ASTFactory::addStatement(block, first);
 
-    // Validate identifier in strict mode
-    validateIdentifier(name, line, column);
-
-    std::shared_ptr<ASTNode> initializer = nullptr;
-    if(match(TokenType::Assign)) {
-        initializer = parse_expression();
-    } else if(declType == TokenType::Const) {
-        throw std::runtime_error("Missing initializer in const declaration");
+    while(match(TokenType::Comma)) {
+        auto next = parse_single_declarator();
+        ASTFactory::addStatement(block, next);
     }
 
-    // Create appropriate AST node based on declaration type
-    switch(declType) {
-        case TokenType::Var:
-            return ASTFactory::makeVariableDeclaration(name, initializer);
-        case TokenType::Let:
-            return ASTFactory::makeLetDeclaration(name, initializer);
-        case TokenType::Const:
-            return ASTFactory::makeConstDeclaration(name, initializer);
-        default:
-            throw std::runtime_error("Invalid declaration type");
-    }
+    return block;
 }
 
 std::shared_ptr<ASTNode> Parser::parse_binding_pattern() {

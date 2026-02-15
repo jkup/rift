@@ -69,6 +69,11 @@ static Value applyCompoundOperation(const std::string& operator_, Value currentV
         return Value(static_cast<double>(leftUint >> shiftAmount));
     }
 
+    // Logical assignment operators
+    if(operator_ == "??=") {
+        return (currentValue.isNull() || currentValue.isUndefined()) ? rightValue : currentValue;
+    }
+
     // Fallback for unknown operator
     return rightValue;
 }

@@ -48,6 +48,7 @@ enum class TokenType {
     New,
     This,
     In,
+    Instanceof,
     Of,
     Class,
     Extends,
@@ -102,6 +103,10 @@ enum class TokenType {
     Delete,
     Void,
     With,
+    QuestionMark,           // ?
+    OptionalChain,          // ?.
+    NullishCoalescing,      // ??
+    NullishCoalescingAssign,  // ??=
 
     // Punctuation
     LeftParen,

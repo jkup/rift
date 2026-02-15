@@ -71,6 +71,7 @@ Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment>
         case ASTNodeType::AsyncFunctionExpression:
         case ASTNodeType::AwaitExpression:
         case ASTNodeType::RegExpLiteral:
+        case ASTNodeType::ConditionalExpression:
             return ExpressionEvaluator::evaluate(node, env, this);
 
         // Statement types

@@ -137,13 +137,18 @@ static bool isStringDirective(const std::shared_ptr<ASTNode>& stmt) {
 // Block and expression statements
 Value StatementEvaluator::evaluateBlockStatement(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
+    // Declaration-list blocks (from comma-separated var/let/const) should not create a new scope
+    bool isDeclarationList = (node->metadata == "declaration-list");
+
     // Check if we need to create a block scope
     bool needsBlockScope = false;
-    for(auto& child : node->children) {
-        if(child->type == ASTNodeType::LetDeclaration ||
-           child->type == ASTNodeType::ConstDeclaration) {
-            needsBlockScope = true;
-            break;
+    if(!isDeclarationList) {
+        for(auto& child : node->children) {
+            if(child->type == ASTNodeType::LetDeclaration ||
+               child->type == ASTNodeType::ConstDeclaration) {
+                needsBlockScope = true;
+                break;
+            }
         }
     }
 

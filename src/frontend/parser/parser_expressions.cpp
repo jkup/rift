@@ -314,6 +314,7 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::Greater:
             case TokenType::GreaterEqual:
             case TokenType::In:
+            case TokenType::Instanceof:
                 op_precedence = 9;  // Relational operators
                 break;
             case TokenType::BitwiseAnd:
@@ -331,6 +332,13 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::LogicalOr:
                 op_precedence = 3;  // Logical OR (lower than equality!)
                 break;
+            case TokenType::NullishCoalescing:
+                op_precedence = 3;  // Nullish coalescing (same level as logical OR)
+                break;
+            case TokenType::QuestionMark:
+                op_precedence = 2;           // Ternary conditional
+                is_right_associative = true;  // a ? b : c ? d : e == a ? b : (c ? d : e)
+                break;
             case TokenType::Assign:
             case TokenType::PlusAssign:
             case TokenType::MinusAssign:
@@ -344,6 +352,7 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::LeftShiftAssign:
             case TokenType::RightShiftAssign:
             case TokenType::UnsignedRightShiftAssign:
+            case TokenType::NullishCoalescingAssign:
                 op_precedence = 0;  // Assignment lowest precedence
                 is_assignment = true;
                 break;
@@ -357,6 +366,22 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
         }
 
         current++;  // consume operator
+
+        // Special handling for ternary conditional: condition ? consequent : alternate
+        if(op.type == TokenType::QuestionMark) {
+            // Parse consequent (allow assignment-level expressions)
+            auto consequent = parse_binary_expression(0);
+            consume(TokenType::Colon);
+            // Parse alternate (right-associative: parse at ternary precedence)
+            auto alternate = parse_binary_expression(op_precedence);
+            auto node = std::make_shared<ASTNode>(ASTNodeType::ConditionalExpression);
+            node->children.push_back(left);
+            node->children.push_back(consequent);
+            node->children.push_back(alternate);
+            left = node;
+            continue;
+        }
+
         // Right-associative operators use op_precedence, left-associative use op_precedence + 1
         int next_precedence = is_right_associative ? op_precedence : op_precedence + 1;
         auto right = parse_binary_expression(next_precedence);
@@ -458,7 +483,7 @@ std::shared_ptr<ASTNode> Parser::parse_member_expression(std::shared_ptr<ASTNode
          tok.type == TokenType::Super || tok.type == TokenType::Static ||
          tok.type == TokenType::Var || tok.type == TokenType::Let || tok.type == TokenType::Const ||
          tok.type == TokenType::Yield || tok.type == TokenType::Async ||
-         tok.type == TokenType::Await);
+         tok.type == TokenType::Await || tok.type == TokenType::Instanceof);
     if(!is_identifier_name) {
         throw std::runtime_error("Expected property name after '.'");
     }
