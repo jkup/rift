@@ -48,6 +48,7 @@ enum class ASTNodeType {
     NewExpression,
     TemplateLiteral,
     TemplateElement,
+    RegExpLiteral,
     TemplateExpression,
     SpreadElement,
     // Destructuring patterns

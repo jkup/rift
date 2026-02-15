@@ -18,6 +18,8 @@
 #include <iostream>
 #include <limits>
 
+#include "rift/builtins/regexp/regexp.h"
+#include "rift/core/engine/call_context.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/core/engine/operation_handler.h"
@@ -85,6 +87,8 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
             return evaluateAsyncFunctionExpression(node, env, engine);
         case ASTNodeType::AwaitExpression:
             return evaluateAwaitExpression(node, env, engine);
+        case ASTNodeType::RegExpLiteral:
+            return evaluateRegExpLiteral(node, env, engine);
         default:
             return Value::undefined();
     }
@@ -311,6 +315,23 @@ Value ExpressionEvaluator::evaluateTemplateLiteral(std::shared_ptr<ASTNode> node
     }
 
     return Value(std::move(result));
+}
+
+Value ExpressionEvaluator::evaluateRegExpLiteral(std::shared_ptr<ASTNode> node,
+                                                  std::shared_ptr<Environment> env, Rift* engine) {
+    // Token value is "/<pattern>/<flags>" — parse it
+    const std::string& raw = node->value;
+
+    // Find the last '/' to split pattern and flags
+    size_t last_slash = raw.rfind('/');
+    // raw starts with '/', so pattern is between first and last '/'
+    std::string pattern = raw.substr(1, last_slash - 1);
+    std::string flags = raw.substr(last_slash + 1);
+
+    // Reuse the RegExp constructor to create the object
+    CallContext ctx(CallType::Constructor);
+    std::vector<Value> args = {Value(pattern), Value(flags)};
+    return rift::builtins::RegExp::constructor(ctx, args);
 }
 
 }  // namespace rift::core

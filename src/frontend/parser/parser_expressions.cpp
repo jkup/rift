@@ -119,6 +119,12 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             current++;
             return templateLiteral;
         }
+        case TokenType::RegExpLiteral: {
+            auto node = std::make_shared<ASTNode>(ASTNodeType::RegExpLiteral, token.value);
+            node->setLocation(token.line, token.column);
+            current++;
+            return node;
+        }
         case TokenType::TemplateStart:
         case TokenType::TemplateMiddle:
         case TokenType::TemplateEnd: {

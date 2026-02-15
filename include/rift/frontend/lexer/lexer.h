@@ -43,6 +43,11 @@ class Lexer {
     Token read_template_string();
     Token read_template_part();  // New: read template string part
     Token read_identifier();
+    Token read_regex();
+    bool slash_starts_regex();
+
+    // Track last emitted token type for regex/division disambiguation
+    TokenType last_token_type_;
 
     // Helper functions for escape sequences
     int parse_hex_digit(char c);

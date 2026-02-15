@@ -19,6 +19,9 @@ enum class TokenType {
     TemplateMiddle,
     TemplateEnd,
 
+    // Regex literal
+    RegExpLiteral,
+
     // Identifiers
     Identifier,
 

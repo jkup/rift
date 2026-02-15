@@ -16,7 +16,8 @@ Lexer::Lexer(const std::string& source)
       column(1),
       template_state(TemplateLiteralState::None),
       brace_depth(0),
-      template_started(false) {
+      template_started(false),
+      last_token_type_(TokenType::Invalid) {
 }
 
 char Lexer::current_char() {
@@ -575,11 +576,108 @@ Token Lexer::read_identifier() {
     return Token(TokenType::Identifier, value, line, column);
 }
 
+bool Lexer::slash_starts_regex() {
+    switch(last_token_type_) {
+        // Division context: after tokens that can end an expression
+        case TokenType::Number:
+        case TokenType::String:
+        case TokenType::Boolean:
+        case TokenType::Null:
+        case TokenType::Undefined:
+        case TokenType::Identifier:
+        case TokenType::This:
+        case TokenType::RightParen:
+        case TokenType::RightBracket:
+        case TokenType::RightBrace:
+        case TokenType::Increment:
+        case TokenType::Decrement:
+        case TokenType::TemplateEnd:
+        case TokenType::TemplateString:
+        case TokenType::RegExpLiteral:
+            return false;
+
+        // Everything else is regex context (operators, keywords, punctuation, start of file)
+        default:
+            return true;
+    }
+}
+
+Token Lexer::read_regex() {
+    size_t start_line = line;
+    size_t start_column = column;
+
+    advance();  // consume opening '/'
+
+    std::string pattern;
+    // Read pattern until unescaped '/'
+    while(current_char() != '\0' && current_char() != '\n') {
+        if(current_char() == '\\') {
+            // Escape sequence - include both backslash and next char
+            pattern += current_char();
+            advance();
+            if(current_char() == '\0' || current_char() == '\n') {
+                throw std::runtime_error("Unterminated regular expression literal");
+            }
+            pattern += current_char();
+            advance();
+        } else if(current_char() == '[') {
+            // Character class - read until unescaped ']'
+            pattern += current_char();
+            advance();
+            while(current_char() != '\0' && current_char() != '\n' && current_char() != ']') {
+                if(current_char() == '\\') {
+                    pattern += current_char();
+                    advance();
+                    if(current_char() == '\0' || current_char() == '\n') {
+                        throw std::runtime_error("Unterminated regular expression literal");
+                    }
+                    pattern += current_char();
+                    advance();
+                } else {
+                    pattern += current_char();
+                    advance();
+                }
+            }
+            if(current_char() != ']') {
+                throw std::runtime_error("Unterminated character class in regular expression");
+            }
+            pattern += current_char();
+            advance();
+        } else if(current_char() == '/') {
+            break;  // End of pattern
+        } else {
+            pattern += current_char();
+            advance();
+        }
+    }
+
+    if(current_char() != '/') {
+        throw std::runtime_error("Unterminated regular expression literal");
+    }
+    advance();  // consume closing '/'
+
+    // Read flags: consecutive flag characters
+    std::string flags;
+    while(current_char() != '\0' &&
+          (current_char() == 'g' || current_char() == 'i' || current_char() == 'm' ||
+           current_char() == 's' || current_char() == 'u' || current_char() == 'd' ||
+           current_char() == 'v' || current_char() == 'y')) {
+        flags += current_char();
+        advance();
+    }
+
+    // Store as /<pattern>/<flags>
+    std::string value = "/" + pattern + "/" + flags;
+    return Token(TokenType::RegExpLiteral, value, start_line, start_column);
+}
+
 Token Lexer::next_token() {
     // Handle template literal state transitions
     if(template_state == TemplateLiteralState::InTemplate) {
         // We're inside a template, continue reading template part
-        return read_template_part();
+        auto token = read_template_part();
+        last_token_type_ = token.type;
+        return token;
     }
 
     skip_whitespace();
@@ -591,67 +689,80 @@ Token Lexer::next_token() {
     }
 
     if(std::isdigit(ch)) {
-        return read_number();
+        auto token = read_number();
+        last_token_type_ = token.type;
+        return token;
     }
 
     if(ch == '"' || ch == '\'') {
-        return read_string();
+        auto token = read_string();
+        last_token_type_ = token.type;
+        return token;
     }
 
     if(ch == '`') {
-        return read_template_string();
+        auto token = read_template_string();
+        last_token_type_ = token.type;
+        return token;
     }
 
     if(std::isalpha(ch) || ch == '_' || ch == '$') {
-        return read_identifier();
+        auto token = read_identifier();
+        last_token_type_ = token.type;
+        return token;
     }
 
-    // Single character tokens
+    // Single character tokens - use lambda to track last_token_type_ for all return paths
+    auto make_token = [this](TokenType type, const std::string& val, size_t l, size_t c) {
+        last_token_type_ = type;
+        return Token(type, val, l, c);
+    };
+
     switch(ch) {
         case '+':
             advance();
             if(current_char() == '+') {
                 advance();
-                return Token(TokenType::Increment, "++", line, column);
+                return make_token(TokenType::Increment, "++", line, column);
             }
             if(current_char() == '=') {
                 advance();
-                return Token(TokenType::PlusAssign, "+=", line, column);
+                return make_token(TokenType::PlusAssign, "+=", line, column);
             }
-            return Token(TokenType::Plus, "+", line, column);
+            return make_token(TokenType::Plus, "+", line, column);
         case '-':
             advance();
             if(current_char() == '-') {
                 advance();
-                return Token(TokenType::Decrement, "--", line, column);
+                return make_token(TokenType::Decrement, "--", line, column);
             }
             if(current_char() == '=') {
                 advance();
-                return Token(TokenType::MinusAssign, "-=", line, column);
+                return make_token(TokenType::MinusAssign, "-=", line, column);
             }
-            return Token(TokenType::Minus, "-", line, column);
+            return make_token(TokenType::Minus, "-", line, column);
         case '*':
             advance();
             if(current_char() == '*') {
                 advance();
                 if(current_char() == '=') {
                     advance();
-                    return Token(TokenType::ExponentAssign, "**=", line, column);
+                    return make_token(TokenType::ExponentAssign, "**=", line, column);
                 }
-                return Token(TokenType::Exponent, "**", line, column);
+                return make_token(TokenType::Exponent, "**", line, column);
             }
             if(current_char() == '=') {
                 advance();
-                return Token(TokenType::MultiplyAssign, "*=", line, column);
+                return make_token(TokenType::MultiplyAssign, "*=", line, column);
             }
-            return Token(TokenType::Multiply, "*", line, column);
+            return make_token(TokenType::Multiply, "*", line, column);
         case '%':
             advance();
             if(current_char() == '=') {
                 advance();
-                return Token(TokenType::ModuloAssign, "%=", line, column);
+                return make_token(TokenType::ModuloAssign, "%=", line, column);
             }
-            return Token(TokenType::Modulo, "%", line, column);
+            return make_token(TokenType::Modulo, "%", line, column);
         case '/':
             if(peek_char() == '/') {
                 // Skip single-line comment
@@ -674,24 +785,30 @@ Token Lexer::next_token() {
                 }
                 return next_token();  // Recursively get the next token after the comment
             }
+            // Check if '/' starts a regex literal or is division
+            if(slash_starts_regex()) {
+                auto regex_token = read_regex();
+                last_token_type_ = regex_token.type;
+                return regex_token;
+            }
             advance();
             if(current_char() == '=') {
                 advance();
-                return Token(TokenType::DivideAssign, "/=", line, column);
+                return make_token(TokenType::DivideAssign, "/=", line, column);
             }
-            return Token(TokenType::Divide, "/", line, column);
+            return make_token(TokenType::Divide, "/", line, column);
         case '(':
             advance();
-            return Token(TokenType::LeftParen, "(", line, column);
+            return make_token(TokenType::LeftParen, "(", line, column);
         case ')':
             advance();
-            return Token(TokenType::RightParen, ")", line, column);
+            return make_token(TokenType::RightParen, ")", line, column);
         case '{':
             advance();
             if(template_state == TemplateLiteralState::InExpression) {
                 brace_depth++;
             }
-            return Token(TokenType::LeftBrace, "{", line, column);
+            return make_token(TokenType::LeftBrace, "{", line, column);
         case '}':
             advance();
             if(template_state == TemplateLiteralState::InExpression) {
@@ -699,40 +816,42 @@ Token Lexer::next_token() {
                 if(brace_depth == 0) {
                     // End of template expression, return to template parsing
                     template_state = TemplateLiteralState::InTemplate;
-                    return read_template_part();
+                    auto token = read_template_part();
+                    last_token_type_ = token.type;
+                    return token;
                 }
             }
-            return Token(TokenType::RightBrace, "}", line, column);
+            return make_token(TokenType::RightBrace, "}", line, column);
         case '[':
             advance();
-            return Token(TokenType::LeftBracket, "[", line, column);
+            return make_token(TokenType::LeftBracket, "[", line, column);
         case ']':
             advance();
-            return Token(TokenType::RightBracket, "]", line, column);
+            return make_token(TokenType::RightBracket, "]", line, column);
         case ';':
             advance();
-            return Token(TokenType::Semicolon, ";", line, column);
+            return make_token(TokenType::Semicolon, ";", line, column);
         case ',':
             advance();
-            return Token(TokenType::Comma, ",", line, column);
+            return make_token(TokenType::Comma, ",", line, column);
         case '.':
             advance();
             // Check for spread operator ...
             if(current_char() == '.' && peek_char() == '.') {
                 advance();  // consume second dot
                 advance();  // consume third dot
-                return Token(TokenType::Spread, "...", line, column);
+                return make_token(TokenType::Spread, "...", line, column);
             }
-            return Token(TokenType::Dot, ".", line, column);
+            return make_token(TokenType::Dot, ".", line, column);
         case ':':
             advance();
-            return Token(TokenType::Colon, ":", line, column);
+            return make_token(TokenType::Colon, ":", line, column);
         case '=':
             advance();
             // Arrow function =>
             if(current_char() == '>') {
                 advance();
-                return Token(TokenType::Arrow, "=>", line, column);
+                return make_token(TokenType::Arrow, "=>", line, column);
             }
             // Double equals
             if(current_char() == '=') {
@@ -740,11 +859,11 @@ Token Lexer::next_token() {
                 // Strict equals
                 if(current_char() == '=') {
                     advance();
-                    return Token(TokenType::EqualStrict, "===", line, column);
+                    return make_token(TokenType::EqualStrict, "===", line, column);
                 }
-                return Token(TokenType::Equal, "==", line, column);
+                return make_token(TokenType::Equal, "==", line, column);
             }
-            return Token(TokenType::Assign, "=", line, column);
+            return make_token(TokenType::Assign, "=", line, column);
         case '!':
             advance();
             if(current_char() == '=') {
@@ -752,26 +871,26 @@ Token Lexer::next_token() {
                 // Strict not equals
                 if(current_char() == '=') {
                     advance();
-                    return Token(TokenType::NotEqualStrict, "!==", line, column);
+                    return make_token(TokenType::NotEqualStrict, "!==", line, column);
                 }
-                return Token(TokenType::NotEqual, "!=", line, column);
+                return make_token(TokenType::NotEqual, "!=", line, column);
             }
-            return Token(TokenType::LogicalNot, "!", line, column);
+            return make_token(TokenType::LogicalNot, "!", line, column);
         case '<':
             advance();
             if(current_char() == '<') {
                 advance();
                 if(current_char() == '=') {
                     advance();
-                    return Token(TokenType::LeftShiftAssign, "<<=", line, column);
+                    return make_token(TokenType::LeftShiftAssign, "<<=", line, column);
                 }
-                return Token(TokenType::LeftShift, "<<", line, column);
+                return make_token(TokenType::LeftShift, "<<", line, column);
             }
             if(current_char() == '=') {
                 advance();
-                return Token(TokenType::LessEqual, "<=", line, column);
+                return make_token(TokenType::LessEqual, "<=", line, column);
             }
-            return Token(TokenType::Less, "<", line, column);
+            return make_token(TokenType::Less, "<", line, column);
         case '>':
             advance();
             if(current_char() == '>') {
@@ -780,56 +899,56 @@ Token Lexer::next_token() {
                     advance();
                     if(current_char() == '=') {
                         advance();
-                        return Token(TokenType::UnsignedRightShiftAssign, ">>>=", line, column);
+                        return make_token(TokenType::UnsignedRightShiftAssign, ">>>=", line, column);
                     }
-                    return Token(TokenType::UnsignedRightShift, ">>>", line, column);
+                    return make_token(TokenType::UnsignedRightShift, ">>>", line, column);
                 }
                 if(current_char() == '=') {
                     advance();
-                    return Token(TokenType::RightShiftAssign, ">>=", line, column);
+                    return make_token(TokenType::RightShiftAssign, ">>=", line, column);
                 }
-                return Token(TokenType::RightShift, ">>", line, column);
+                return make_token(TokenType::RightShift, ">>", line, column);
             }
             if(current_char() == '=') {
                 advance();
-                return Token(TokenType::GreaterEqual, ">=", line, column);
+                return make_token(TokenType::GreaterEqual, ">=", line, column);
             }
-            return Token(TokenType::Greater, ">", line, column);
+            return make_token(TokenType::Greater, ">", line, column);
         case '~':
             advance();
-            return Token(TokenType::BitwiseNot, "~", line, column);
+            return make_token(TokenType::BitwiseNot, "~", line, column);
         case '|':
             advance();
             if(current_char() == '|') {
                 advance();
-                return Token(TokenType::LogicalOr, "||", line, column);
+                return make_token(TokenType::LogicalOr, "||", line, column);
             }
             if(current_char() == '=') {
                 advance();
-                return Token(TokenType::BitwiseOrAssign, "|=", line, column);
+                return make_token(TokenType::BitwiseOrAssign, "|=", line, column);
             }
-            return Token(TokenType::BitwiseOr, "|", line, column);
+            return make_token(TokenType::BitwiseOr, "|", line, column);
         case '&':
             advance();
             if(current_char() == '&') {
                 advance();
-                return Token(TokenType::LogicalAnd, "&&", line, column);
+                return make_token(TokenType::LogicalAnd, "&&", line, column);
             }
             if(current_char() == '=') {
                 advance();
-                return Token(TokenType::BitwiseAndAssign, "&=", line, column);
+                return make_token(TokenType::BitwiseAndAssign, "&=", line, column);
             }
-            return Token(TokenType::BitwiseAnd, "&", line, column);
+            return make_token(TokenType::BitwiseAnd, "&", line, column);
         case '^':
             advance();
             if(current_char() == '=') {
                 advance();
-                return Token(TokenType::BitwiseXorAssign, "^=", line, column);
+                return make_token(TokenType::BitwiseXorAssign, "^=", line, column);
             }
-            return Token(TokenType::BitwiseXor, "^", line, column);
+            return make_token(TokenType::BitwiseXor, "^", line, column);
         default:
             advance();
-            return Token(TokenType::Invalid, std::string(1, ch), line, column);
+            return make_token(TokenType::Invalid, std::string(1, ch), line, column);
     }
 }
 
