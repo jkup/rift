@@ -1,422 +1,255 @@
-# CLAUDE.md - Essential Guide for Working on Rift JavaScript Runtime
+# CLAUDE.md - Rift JavaScript Runtime
 
-## Quick Reference
+## Commands
 
-| Task                       | Command / Location                                                      |
-| -------------------------- | ----------------------------------------------------------------------- |
-| Build (recommended)        | `./build.sh`                                                            |
-| Manual build               | `mkdir -p build && cd build && cmake .. && make -j$(sysctl -n hw.ncpu)` |
-| Run JS file                | `./build/rift path/to/script.js`                                        |
-| Run JS code (inline)       | `./build/rift -e "console.log('hi')"`                                   |
-| Run custom tests           | `npm test` or `node test-runner.js`                                     |
-| Run Test262 suite          | `npm run test262`                                                       |
-| Run Test262 group          | `npm run test262:group -- <group-name>`                                 |
-| List Test262 groups        | `npm run test262:groups`                                                |
-| Analyze Test262 impact     | `npm run test262:analyze`                                               |
-| Find Test262 regressions   | `npm run test262:diff`                                                  |
-| Run specific Test262 test  | `npm run test262 -- path/to/test.js`                                    |
-| Format code                | `cd build && make format`                                               |
-| Check formatting           | `cd build && make format-check`                                         |
-| Static analysis            | `cd build && make cppcheck`                                             |
-| All code quality checks    | `cd build && make quality`                                              |
+| Task | Command |
+|------|---------|
+| Build | `./build.sh` |
+| Incremental build | `cd build && make -j$(sysctl -n hw.ncpu)` |
+| Run JS file | `./build/rift path/to/script.js` |
+| Run inline JS | `./build/rift -e "console.log('hi')"` |
+| Custom tests | `npm test` |
+| Test262 (full) | `npm run test262` |
+| Test262 (filtered) | `npm run test262 -- --include="built-ins/Temporal"` |
+| Test262 (single file) | `npm run test262 -- test/built-ins/Array/from/Array.from-descriptor.js` |
+| Test262 regressions | `npm run test262:diff` |
+| Format code | `cd build && make format` |
 
----
+After any C++ change: `cd build && make -j$(sysctl -n hw.ncpu)` (fast incremental, ~2-5s). Use `./build.sh` only for clean builds.
 
-## Project Overview
+Build requires: C++23 compiler, CMake 3.22+, Node.js 14+, Rust 1.83+ (for Temporal).
 
-**Rift** is a JavaScript runtime written in C++ with garbage collection and comprehensive JavaScript language support. Key features:
+## What This Project Is
 
-- Mark-sweep garbage collection with memory-safe execution
-- Comprehensive JavaScript language support including closures, prototypes, exception handling
-- Rich built-in object library (Array, String, Math, Object, Console, Boolean, Number, Error, JSON, RegExp, Promise)
-- Test262 integration for ECMAScript compliance testing
-- Modern C++23 architecture
+Rift is a JavaScript runtime written in C++23. It has a hand-written lexer and recursive descent parser, a tree-walking evaluator, mark-sweep garbage collection, and built-in objects (Array, String, Object, Map, Set, RegExp, Promise, Temporal, etc.). It targets ECMAScript compliance measured via the test262 suite.
 
----
+Current status: 196/196 custom tests pass. ~11,300/50,594 test262 tests pass (~36%). ~1,950/4,165 Temporal tests pass (~52%).
 
-## Project Structure
+## Project Layout
 
 ```
-rift/
-├── src/                          # Core C++ implementation
-│   ├── main.cpp                  # Entry point
-│   ├── api/                      # Public JavaScript API
-│   ├── core/engine/              # Main execution engine
-│   │   ├── engine.cpp            # Core Rift engine
-│   │   ├── expression_evaluator.cpp
-│   │   ├── statement_evaluator.cpp
-│   │   ├── operation_handler.cpp
-│   │   └── builtin_manager.cpp   # Built-in object setup
-│   ├── frontend/                 # Lexer & Parser
-│   │   ├── lexer/
-│   │   └── parser/
-│   ├── runtime/                  # Runtime value system
-│   │   ├── values/               # Value & JSObject implementation
-│   │   └── environment/          # Variable scoping
-│   ├── memory/                   # Garbage collection system
-│   │   ├── mark_sweep_gc.cpp     # GC implementation
-│   │   ├── object_manager.cpp    # Object lifecycle
-│   │   ├── gc_environment.cpp    # GC root for environments
-│   │   ├── gc_protector.cpp      # RAII GC protection
-│   │   └── gc_disabler.cpp       # Temporary GC disable
-│   └── builtins/                 # JavaScript built-in objects
-│       ├── console/, math/, global/, array/
-│       ├── string/, object/, boolean/, number/
-│       ├── json/, regexp/
-│       └── error/                # Error, TypeError, ReferenceError, etc.
-├── include/rift/                 # Header files (mirrors src/)
-├── test/                         # Custom test suite (~145 test files)
-├── test262/                      # Official ECMAScript test suite
-├── build/                        # Build output directory
-├── cmake/                        # CMake modules (CodeQuality.cmake)
-├── docs/                         # Documentation
-├── build.sh                      # Main build script
-├── CMakeLists.txt                # Build configuration
-├── package.json                  # Node.js dependencies for test runners
-├── test-runner.js                # Custom test runner
-└── scripts/test262/              # Test262 compliance tools (runner, diff, groups, etc.)
+src/frontend/lexer/lexer.cpp          # Tokenizer (lexer.h has TokenType enum)
+src/frontend/parser/                   # Recursive descent parser
+    parser_expressions.cpp             # Expression parsing (operators, calls, members)
+    parser_statements.cpp              # Statement parsing (var/let/const, if, for, etc.)
+src/core/engine/
+    engine.cpp                         # Main evaluate() dispatcher — routes AST nodes
+    expression_evaluator.cpp           # Expression dispatch switch
+    expression_evaluator_objects.cpp   # Call, member access, new, array/object literals
+    expression_evaluator_assignment.cpp # Assignment operators (=, +=, ??=, etc.)
+    statement_evaluator.cpp            # Statements: function decl, var decl, control flow
+    statement_evaluator_control_flow.cpp # if/for/while/switch/try-catch
+    operation_handler.cpp              # Arithmetic and comparison ops
+    builtin_manager.cpp                # Wires up all built-in prototypes
+src/builtins/                          # Built-in JS objects (one folder per type)
+src/runtime/values/
+    value.h                            # Value type (number, string, bool, null, undefined, object, function)
+    object.h                           # JSObject, JSFunction, JSArrowFunction classes
+src/runtime/environment/               # Variable scoping (Environment class)
+src/memory/                            # GC: ObjectFactory, ObjectManager, GCProtector
+include/rift/                          # Headers (mirrors src/ structure)
+test/                                  # Custom test files (*.js)
+test262/                               # ECMAScript test suite
+scripts/test262/                       # Test runner infrastructure
+    core.js                            # UNSUPPORTED_FEATURES list, harness loading
+    runner.js                          # Main test runner
+notes/                                 # Working notes (RESUME.md, TODO.md, TEMPORAL.md)
 ```
 
----
+## How the Pipeline Works
+
+**JS source** -> **Lexer** (tokens) -> **Parser** (AST) -> **Engine evaluate()** -> **Value**
+
+### Lexer (`src/frontend/lexer/lexer.cpp`)
+- `next_token()` returns one token at a time. Tracks `last_token_type_` for regex-vs-division disambiguation.
+- Token types defined in `include/rift/frontend/lexer/token.h`. New keywords/operators need a `TokenType` enum entry.
+
+### Parser (`src/frontend/parser/`)
+- Recursive descent. `parse_expression()` calls `parse_binary_expression(0)` which calls `parse_unary_expression()` -> `parse_postfix_expression()` -> `parse_primary()`.
+- `parse_postfix_expression()` is the main access/call loop: handles `.`, `[]`, `()`, `?.` in a while-true chain.
+- `parse_binary_expression(min_precedence)` handles all binary operators via precedence climbing.
+- AST nodes created via `ASTFactory::make*()` static methods. Each node has `type`, `value`, `metadata`, `children`, `line`, `column`.
+
+### Engine Dispatcher (`src/core/engine/engine.cpp`)
+- `engine.cpp evaluate()` has a switch on `ASTNodeType` routing to either `ExpressionEvaluator::evaluate()` or `StatementEvaluator::evaluate()`.
+- **If you add a new AST node type**, you must add it to this switch or it silently returns `undefined`.
+
+### Evaluators
+- `expression_evaluator.cpp` has a switch routing to specialized methods (most in `expression_evaluator_objects.cpp`).
+- `statement_evaluator.cpp` similarly routes to specialized methods (some in `statement_evaluator_control_flow.cpp`).
+
+## AST Node Metadata Conventions
+
+The `ASTNode::metadata` string field carries semantic flags:
+
+| Metadata | Node Type | Meaning |
+|----------|-----------|---------|
+| `"computed"` | MemberExpression | Bracket notation: `obj[key]` |
+| `"optional"` | MemberExpression, CallExpression | Optional chaining: `obj?.prop`, `func?.()` |
+| `"computed-optional"` | MemberExpression | Optional computed: `obj?.[key]` |
+| `"declaration-list"` | BlockStatement | Wrapper for `var a, b = 1, c` (skip scope creation) |
+| `"destructuring"` | VariableDeclaration | Has destructuring pattern |
+| `"rest"` | Parameter (Identifier) | Rest parameter: `...args` |
+| `"expression"` | ArrowFunctionExpression | Expression body (implicit return) |
+| `"async"` | ArrowFunctionExpression | Async arrow |
+| `"delegate"` | YieldExpression | `yield*` delegation |
+| `"getter"` / `"setter"` | MethodDefinition | Accessor method |
+| `"computed_key"` | Property in ObjectLiteral | Computed property key |
+| `"string"` / `"number"` / `"boolean"` / `"null"` / `"regex"` | Literal | Literal subtype |
+
+## Adding a New Operator or Syntax
+
+Example: adding a new binary operator.
+
+1. **Lexer**: Add `TokenType` enum in `token.h`. Add tokenization in `lexer.cpp` `next_token()`.
+2. **Parser**: Handle in `parse_binary_expression()` (for binary ops) or `parse_postfix_expression()` (for member/call-like ops). Return appropriate AST node.
+3. **Engine dispatcher**: If new `ASTNodeType`, add case in `engine.cpp` evaluate switch.
+4. **Evaluator**: Implement evaluation in the appropriate evaluator file.
+5. **Build**: `cd build && make -j$(sysctl -n hw.ncpu)` (only changed files recompile).
+6. **Test**: `./build/rift -e "..."` to verify, then `npm test` for regressions.
+
+## Adding a New Built-in Method
+
+To add a method to an existing built-in (e.g., `Array.prototype.flat`):
+
+1. Add declaration in header: `static Value flat(const CallContext& ctx, const std::vector<Value>& args);`
+2. Register in `setupPrototypeMethods`: `RIFT_METHOD(prototype, "flat", Array::flat);`
+3. Implement the method. Access `this` via `ctx.thisValue`. Return a `Value`.
+
+The `RIFT_METHOD` macro creates a JSFunction with `name` and `length` properties set automatically.
+
+## Adding a New Built-in Object
+
+Follow the `BuiltinBase<T>` CRTP pattern (see any existing builtin like `src/builtins/map/map.cpp`):
+
+1. Create header in `include/rift/builtins/<name>/<name>.h` extending `BuiltinBase<YourType>`
+2. Create implementation in `src/builtins/<name>/<name>.cpp`
+3. Register prototype methods with `RIFT_METHOD()` / `RIFT_STATIC_METHOD()` / `RIFT_GETTER()`
+4. Wire up in `builtin_manager.cpp`: add `setup<Name>()`, call from `setupBuiltins()`, add prototype accessor
+5. Add `.cpp` to `BUILTINS_SOURCES` in `CMakeLists.txt`
+
+Macros available:
+- `RIFT_METHOD(prototype, "name", Class::method)` — instance method (non-enumerable)
+- `RIFT_STATIC_METHOD(constructor, "name", Class::method)` — static method
+- `RIFT_GETTER(prototype, "name", Class::getter)` — getter property
+- `RIFT_PROPERTY(obj, "name", value)` — constant property
+
+## Critical Patterns
+
+### GC Safety
+
+**Always use ObjectFactory** to create JS objects (never raw `new`):
+```cpp
+auto* obj = engine->getObjectFactory()->createJSObject(prototype);
+```
+
+**Use GCProtector** when initializing an object with multiple property sets:
+```cpp
+GCProtector protect(obj, getObjectFactory()->getObjectManager());
+obj->setProperty("x", Value(1.0));  // Safe — obj is a GC root
+obj->setProperty("y", Value(2.0));
+return Value(obj);  // GCProtector destructor un-roots it
+```
+
+**Disable GC** when creating many objects in a loop:
+```cpp
+auto* om = factory->getObjectManager();
+bool was = om->isGCEnabled();
+om->setGCEnabled(false);
+// ... create objects ...
+om->setGCEnabled(was);
+```
+
+### Exception Handling
+
+- **Never `catch(...)`** — swallows system exceptions. Always catch specific types.
+- JS exceptions: `throw JavaScriptException(Value("TypeError: ..."), line, col);`
+- Return from function: `throw ReturnException(value);`
+- Always check `dynamic_cast` results for nullptr before use.
+
+### Namespace Prefixes in Builtins
+
+Inside `rift::builtins` code, use fully-qualified names for engine types:
+```cpp
+rift::core::BuiltinManager::getArrayPrototype()
+rift::core::EvaluationUtils::symbolToPropertyKey(id)
+```
+
+### Property Descriptors
+
+```cpp
+// Data property: PropertyDescriptor(value, writable, enumerable, configurable)
+obj->defineProperty("name", PropertyDescriptor(Value("hello"), true, false, true));
+
+// Accessor property:
+PropertyDescriptor::accessor(getter_value, setter_value, enumerable, configurable)
+```
 
 ## Working Preferences
 
-### TODO List Management
-When completing tasks from TODO.md, **remove finished items entirely** rather than marking them as "DONE", crossing them out with strikethrough, or adding checkmarks. Keep the TODO list clean and focused on remaining work.
+- When completing TODO items, **remove finished items entirely** (don't mark as done or strikethrough).
+- Working notes go in `notes/` (RESUME.md tracks session state, TODO.md tracks planned work).
 
----
+## Code Style
 
-## Code Style & Best Practices
-
-### Naming Conventions
-- Classes: `PascalCase`
-- Functions: `camelCase`
-- Variables: `snake_case`
-- Constants: `UPPER_CASE`
-- Private members: `trailing_underscore_`
-
-### Structure Guidelines
-- Max 100 lines per function, 50 statements per function
-- Clear separation of concerns
-- Use `auto` where appropriate, prefer `constexpr`
-- Use range-based for loops
-- Avoid raw pointers unless GC-managed
-
-### ECMAScript Compliance
-All features must follow ECMAScript specification. Reference https://262.ecma-international.org/16.0/ for official behavior.
-
-### Exception Handling
-- **NEVER use `catch(...)`** - it swallows ALL exceptions including system errors
-- Always catch specific exception types: `catch(const std::exception& e)` or `catch(const std::invalid_argument&)`
-- For `std::stod()`, `std::stoi()`, etc., catch `std::invalid_argument` and `std::out_of_range`
-- Include `#include <iostream>` when using `std::cerr`
-- Include `#include <limits>` when using `std::numeric_limits`
-
-### Type Safety with dynamic_cast
-**ALWAYS check `dynamic_cast` results for nullptr before use:**
-
-```cpp
-auto* funcPtr = dynamic_cast<JSFunction*>(value.getObject());
-if (!funcPtr) {
-    throw JavaScriptException(Value("TypeError: expected function"));
-}
-// Now safe to use funcPtr
-```
-
-For ECMAScript compliance, throw `TypeError` when type check fails. Include `#include "rift/core/engine/javascript_exception.h"`.
-
-### Memory Management & GC
-
-**NEVER use raw `new` for JavaScript objects - always use `ObjectFactory`:**
-
-```cpp
-// CORRECT:
-auto* obj = factory->createJSObject();
-// or
-engine->getObjectFactory()->createJSObject();
-
-// WRONG (not tracked by GC, will leak):
-auto* obj = new JSObject();
-```
-
-**GC Protection During Initialization - use `GCProtector` for complex constructors:**
-
-```cpp
-#include "rift/memory/gc_protector.h"
-
-auto* obj = getObjectFactory()->createJSObject(prototype);
-GCProtector protect(obj, getObjectFactory()->getObjectManager());
-
-// Safe to initialize properties
-obj->setProperty("length", Value(0.0));
-// ... more initialization ...
-
-return Value(obj);  // GCProtector destructor removes temporary root
-```
-
-**When creating many objects in a loop, temporarily disable GC:**
-
-```cpp
-auto* objManager = factory->getObjectManager();
-bool wasGCEnabled = objManager->isGCEnabled();
-objManager->setGCEnabled(false);
-try {
-    // Create many objects safely
-    objManager->setGCEnabled(wasGCEnabled);
-} catch(const std::exception& e) {
-    objManager->setGCEnabled(wasGCEnabled);
-    throw;
-}
-```
-
-### Formatting
-- Use `make format` before committing
+- Classes: `PascalCase`, Functions: `camelCase`, Variables: `snake_case`, Constants: `UPPER_CASE`, Private members: `trailing_underscore_`
 - 4-space indent, 100-char line limit
-- Address all `clang-tidy` and `cppcheck` warnings
+- ECMAScript spec compliance: reference https://262.ecma-international.org/16.0/
+- `make format` before committing
 
----
+## Debugging Test262 Failures
 
-## Build System
+### Analyzing failure patterns
+After running `npm run test262`, results are saved to `test262-results.json`:
+```js
+// Analyze top failure causes:
+node -e "
+const data = JSON.parse(require('fs').readFileSync('test262-results.json', 'utf8'));
+const failed = data.tests.filter(t => t.status === 'failed');
+const errors = {};
+failed.forEach(r => {
+  let msg = (r.reason || '').replace(/^\[non-strict\] /, '').substring(0, 100);
+  errors[msg] = (errors[msg] || 0) + 1;
+});
+Object.entries(errors).sort((a,b) => b[1]-a[1]).slice(0,20).forEach(([m,c]) => console.log(c,m));
+"
+```
 
-### Requirements
-- **C++23** compatible compiler (GCC/Clang)
-- **CMake 3.16+**
-- **Node.js 14+** (for test runners)
-
-### Build Commands
-
+### Running a single test with harness
+The runner combines harness files + test code. To reproduce manually:
 ```bash
-# Recommended
-./build.sh
-
-# Manual
-mkdir -p build && cd build
-cmake ..
-make -j$(sysctl -n hw.ncpu)  # macOS
-make -j$(nproc)              # Linux
+cat scripts/test262/harness-compat.js \
+    test262/harness/assert.js \
+    test262/harness/sta.js \
+    test262/harness/propertyHelper.js \
+    test262/test/path/to/test.js > /tmp/combined.js
+./build/rift /tmp/combined.js
 ```
 
-### Sanitizers
+### Binary search for harness parse failures
+When a harness file (like `temporalHelpers.js`) fails to load, binary search at method boundaries:
 ```bash
-cmake .. -DENABLE_SANITIZERS=ON
+# Find method boundaries
+grep -n '^  },' test262/harness/temporalHelpers.js
+# Test up to a boundary
+head -N test262/harness/temporalHelpers.js > /tmp/test.js
+echo "};" >> /tmp/test.js
+echo "console.log('OK at N');" >> /tmp/test.js
+./build/rift /tmp/test.js
 ```
 
-### GC Debug Output
-Uncomment in CMakeLists.txt:
-```cmake
-target_compile_definitions(rift PRIVATE DEBUG_GC)
-```
+### Test262 feature skipping
+Tests are skipped based on `UNSUPPORTED_FEATURES` in `scripts/test262/core.js`. When you implement a feature, **remove it from this set** to unskip those tests.
 
----
+### Common root causes for bulk failures
+- **Harness parse failure**: One syntax gap in a harness file (assert.js, propertyHelper.js, temporalHelpers.js) cascades to hundreds/thousands of tests. Fix the parse gap and hundreds of tests pass at once.
+- **Missing prototype method**: A missing method like `propertyIsEnumerable` causes every test using `propertyHelper.js` to fail.
+- **Silent parse recovery**: `parse_program()` catches parser exceptions and skips to the next semicolon. This means parse failures inside object literals or function bodies are silently swallowed — the variable just ends up `undefined` at runtime. If you see `X is not defined` errors, consider that X's definition may have failed to parse.
 
-## Testing
+## Current Known Limitations
 
-### Custom Test Suite
-```bash
-npm test
-# or
-node test-runner.js
-```
+**Not yet implemented:** BigInt, Date, Proxy, Reflect, ArrayBuffer/TypedArray, Intl, WeakRef, FinalizationRegistry, private class fields, top-level await, numeric property names in class getters/setters.
 
-### Test262 Compliance
-```bash
-npm run test262                    # Full suite
-npm run test262                    # Same as above
+**Parser gaps:** Strict mode SyntaxError enforcement (too permissive), numeric/string literal method names in classes (`get 0b10() {}`), some destructuring edge cases in arrow params.
 
-# Run specific patterns
-npm run test262 -- --include="language/expressions/addition"
-
-# Run single test
-npm run test262 -- test/language/expressions/addition/S11.6.1_A3.1_T2.1.js
-```
-
-### Test262 Groups
-```bash
-npm run test262:groups             # List available groups
-npm run test262:group -- <name>    # Run specific group
-npm run test262:analyze            # Analyze impact
-```
-
-### Finding Test262 Regressions
-When CI shows a regression (tests that used to pass now fail), use the diff tool to find which specific tests changed:
-```bash
-npm run test262:diff               # Compare current results to main branch
-npm run test262:diff -- --verbose  # Show all changed tests (not truncated)
-npm run test262:diff -- --json     # JSON output for CI integration
-
-# Compare two specific result files
-npm run test262:diff -- --baseline old-results.json --current new-results.json
-```
-
-**Note:** For the diff tool to work automatically, `test262-results.json` must be committed to the main branch. Otherwise, use `--baseline` to specify a baseline file.
-
----
-
-## Architecture
-
-### Core Engine (`src/core/engine/`)
-- **Engine**: Main coordinator class
-- **ExpressionEvaluator**: Handles expressions (literals, operators, calls)
-- **StatementEvaluator**: Handles statements (control flow, declarations)
-- **OperationHandler**: Arithmetic and comparison operations
-- **BuiltinManager**: Sets up built-in objects and prototypes
-
-### Memory Management (`src/memory/`)
-Single-ownership GC model:
-- **ObjectManager**: Central object lifecycle management
-- **ObjectFactory**: GC-aware object creation
-- **MarkSweepGC**: Garbage collection implementation
-- **GCEnvironment**: GC root for variable environments
-- **GCProtector**: RAII temporary root protection
-- **GCDisabler**: Scoped GC disable utility
-
-### Built-in System (`src/builtins/`)
-Each built-in module follows this pattern:
-- Static factory methods using `ObjectFactory*`
-- Raw pointer returns (GC-managed)
-- Prototype chain setup via `BuiltinManager`
-
-Current built-ins: Array, Boolean, Console, Error (TypeError, ReferenceError, SyntaxError, RangeError), Generator, Global, JSON, Map, Math, Number, Object, Promise, RegExp, Set, String, Symbol, WeakMap, WeakSet, Iterator prototypes (Array/String/Set/Map/Generator iterators)
-
-### Dependencies
-- **RE2** (Google): Regular expression support via FetchContent
-- **Abseil**: Required by RE2
-
----
-
-## Adding a New Feature
-
-1. **Plan**: Identify where the feature fits (built-in, parser, runtime)
-2. **Implement**: Add code in the appropriate `src/` subfolder
-3. **Update CMakeLists.txt**: Add new `.cpp` files to the appropriate `*_SOURCES` section (e.g., `BUILTINS_SOURCES`, `CORE_SOURCES`)
-4. **Test**: Add tests in `test/` or relevant Test262 files
-5. **Build**: Run `./build.sh` and ensure no errors
-6. **Run tests**: `npm test` and/or `npm run test262 -- --include="<feature>"`
-7. **Check quality**: `cd build && make quality`
-8. **Commit**: Format code with `make format`, then commit
-
----
-
-## Adding New Builtins
-
-New built-in objects follow the `BuiltinBase<T>` CRTP pattern. Here's the complete process:
-
-### 1. Create Header (`include/rift/builtins/<name>/<name>.h`)
-
-```cpp
-#pragma once
-#include "rift/builtins/builtin_base.h"
-
-namespace rift::builtins {
-
-class MyBuiltin : public BuiltinBase<MyBuiltin> {
-public:
-    static JSObject* create(rift::memory::ObjectFactory* factory);
-    static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
-
-    // Prototype methods
-    static Value myMethod(const CallContext& ctx, const std::vector<Value>& args);
-};
-
-}
-```
-
-### 2. Create Implementation (`src/builtins/<name>/<name>.cpp`)
-
-Use the `RIFT_METHOD` and `RIFT_STATIC_METHOD` macros to register methods:
-
-```cpp
-#include "rift/builtins/<name>/<name>.h"
-
-namespace rift::builtins {
-
-void MyBuiltin::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    RIFT_METHOD(prototype, "myMethod", MyBuiltin::myMethod);
-    // For static methods on the constructor:
-    // RIFT_STATIC_METHOD(constructor, "staticMethod", MyBuiltin::staticMethod);
-}
-
-Value MyBuiltin::myMethod(const CallContext& ctx, const std::vector<Value>& args) {
-    // Implementation
-}
-
-}
-```
-
-### 3. Register in BuiltinManager
-
-In `src/core/engine/builtin_manager.cpp`:
-- Add `#include` for your header
-- Add `setup<Name>()` method
-- Call it from `setupBuiltins()` (order matters if your builtin depends on others)
-- If it has a prototype, add static pointer and accessor like other builtins
-
-### 4. Symbol-keyed Properties
-
-For well-known symbols like `[Symbol.iterator]`:
-
-```cpp
-#include "rift/builtins/symbol/symbol.h"
-#include "rift/core/engine/evaluation_utils.h"
-
-// In setupPrototypeMethods:
-std::string key = core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
-auto* func = factory->createJSFunction(MyBuiltin::symbolIterator);
-prototype->setProperty(key, Value(func));
-```
-
-### 5. Iterator Types
-
-Iterator builtins should:
-- Have a static `prototype_` member initialized via `setupPrototype(factory, iteratorPrototype)`
-- Inherit from `%IteratorPrototype%` (passed from BuiltinManager)
-- Store iteration state as internal properties (e.g., `[[IteratedArray]]`, `[[NextIndex]]`)
-- Implement `next()` returning `{done: bool, value: any}`
-
----
-
-## Debugging & Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| Build fails | Ensure C++23 support, clean build: `rm -rf build && ./build.sh` |
-| Segfaults | Often GC-related during shutdown; runtime usually works |
-| Test262 failures | Many expected; focus on specific features |
-| Memory issues | Use sanitizers: `cmake .. -DENABLE_SANITIZERS=ON` |
-| Formatting issues | Run `make format`, then `make format-check` |
-| Node/npm issues | Use Node.js 14+; run `npm install` after cloning |
-| Computed property syntax | `{[Symbol.iterator]: fn}` not supported; use `obj[Symbol.iterator] = fn` instead |
-
----
-
-## Documentation
-
-- `docs/CODE_QUALITY.md` - Development tools and workflow
-- `docs/CI_TEST262_GUIDE.md` - Test262 CI system usage
-- `docs/TEST262_GROUPS_GUIDE.md` - Test262 group testing
-- `docs/TEST262_IMPACT_ANALYSIS.md` - Impact analysis guide
-- `docs/TEST262_IMPROVEMENT_IDEAS.md` - Future improvements
-- `docs/PROPERTY_STORAGE.md` - Property storage implementation
-- `docs/TECH_DEBT.md` - Known technical debt
-
----
-
-## Getting Started
-
-```bash
-# Clone and build
-git clone <repo-url>
-cd rift
-./build.sh
-npm install
-
-# Verify installation
-./build/rift -e "console.log('Rift is working!');"
-npm test
-
-# Explore
-# Entry point: src/main.cpp
-# Public API: src/api/api.cpp
-# Core engine: src/core/engine/engine.cpp
-# Built-ins: src/builtins/
-```
+**See `notes/TODO.md`** for the prioritized improvement plan with estimated test262 impact per task.
