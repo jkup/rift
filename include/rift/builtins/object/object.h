@@ -51,6 +51,8 @@ class Object : public BuiltinBase<Object> {
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
     static Value hasOwnProperty(const CallContext& ctx, const std::vector<Value>& args);
+    static Value propertyIsEnumerable(const CallContext& ctx, const std::vector<Value>& args);
+    static Value isPrototypeOf(const CallContext& ctx, const std::vector<Value>& args);
 
   private:
     // Static factory storage is now handled by BuiltinBase template

@@ -45,6 +45,8 @@ void Object::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFact
     RIFT_METHOD(prototype, "toString", Object::toString);
     RIFT_METHOD(prototype, "valueOf", Object::valueOf);
     RIFT_METHOD(prototype, "hasOwnProperty", Object::hasOwnProperty);
+    RIFT_METHOD(prototype, "propertyIsEnumerable", Object::propertyIsEnumerable);
+    RIFT_METHOD(prototype, "isPrototypeOf", Object::isPrototypeOf);
 }
 
 Value Object::constructor(const CallContext& ctx, const std::vector<Value>& args) {
@@ -292,6 +294,67 @@ Value Object::hasOwnProperty(const CallContext& ctx, const std::vector<Value>& a
                   ownPropertyNames.end();
 
     return Value(hasOwn);
+}
+
+Value Object::propertyIsEnumerable(const CallContext& ctx, const std::vector<Value>& args) {
+    if(args.empty()) {
+        return Value(false);
+    }
+
+    const Value& thisValue = ctx.thisValue;
+    if(!thisValue.isObject() && !thisValue.isFunction()) {
+        return Value(false);
+    }
+
+    auto* obj = thisValue.getObject();
+    if(!obj) {
+        return Value(false);
+    }
+
+    std::string propName = args[0].toString();
+
+    // Check own properties only, and check if enumerable
+    auto own_names = obj->getOwnPropertyNames();
+    bool is_own =
+        std::find(own_names.begin(), own_names.end(), propName) != own_names.end();
+    if(!is_own) {
+        return Value(false);
+    }
+
+    // Check the property descriptor for enumerability
+    auto [found, desc] = obj->findPropertyDescriptor(propName);
+    if(found && !desc.enumerable) {
+        return Value(false);
+    }
+
+    return Value(true);
+}
+
+Value Object::isPrototypeOf(const CallContext& ctx, const std::vector<Value>& args) {
+    if(args.empty()) {
+        return Value(false);
+    }
+
+    const Value& thisValue = ctx.thisValue;
+    if(!thisValue.isObject() && !thisValue.isFunction()) {
+        return Value(false);
+    }
+
+    Value arg = args[0];
+    if(!arg.isObject() && !arg.isFunction()) {
+        return Value(false);
+    }
+
+    auto* this_obj = thisValue.getObject();
+    auto* proto = arg.getObject()->getPrototype();
+    while(proto) {
+        if(proto == this_obj) {
+            return Value(true);
+        }
+        proto = proto->getPrototype();
+    }
+
+    return Value(false);
 }
 
 Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& args) {
