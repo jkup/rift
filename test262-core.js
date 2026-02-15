@@ -77,7 +77,6 @@ const UNSUPPORTED_FEATURES = new Set([
   "optional-chaining",
   "nullish-coalescing",
   "logical-assignment-operators",
-  "numeric-separator-literal",
 
   // Realms and cross-realm
   "ShadowRealm",

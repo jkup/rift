@@ -156,6 +156,16 @@ class Test262Runner {
     this.force = options.force || false;
     this.cache = new Test262Cache();
     this.runtimeChanged = false;
+    this.includePattern = null;
+  }
+
+  getResultsFilename() {
+    if (this.includePattern) {
+      // Sanitize pattern for use as filename
+      const safe = this.includePattern.replace(/[^a-zA-Z0-9_-]/g, "-").replace(/-+/g, "-");
+      return `test262-results-${safe}.json`;
+    }
+    return "test262-results.json";
   }
 
   displayStatus(currentTest = "", totalTests = 0, currentIndex = 0) {
@@ -369,10 +379,21 @@ class Test262Runner {
   }
 
   async run(includePattern = null) {
+    this.includePattern = includePattern;
     await this.setupTest262();
     await this.buildRuntime();
 
     const testFiles = findTestFiles(includePattern);
+
+    if (includePattern) {
+      console.log(chalk.cyan(`Filter: "${includePattern}" → ${testFiles.length} tests found`));
+      if (testFiles.length === 0) {
+        console.error(chalk.red(`No tests matched pattern "${includePattern}"`));
+        console.error(chalk.dim("Pattern is matched as a substring of the test file path (relative to test262/test/)"));
+        return;
+      }
+      console.log();
+    }
 
     // Initialize incremental cache if enabled
     let testsToRun = testFiles;
@@ -484,7 +505,7 @@ class Test262Runner {
       console.log(`Pass Rate (all): ${overallPassRate}%`);
       console.log(`Runtime: ${runtime}s`);
 
-      const resultsFile = this.tracker.saveResults("test262-results.json");
+      const resultsFile = this.tracker.saveResults(this.getResultsFilename());
       console.log(`Results saved to: ${resultsFile}`);
       return;
     }
@@ -527,7 +548,7 @@ class Test262Runner {
     console.log(`Pass Rate (run): ${runPassRate}%`);
     console.log(`Pass Rate (all): ${overallPassRate}%`);
 
-    const resultsFile = this.tracker.saveResults("test262-results.json");
+    const resultsFile = this.tracker.saveResults(this.getResultsFilename());
     console.log();
     console.log(chalk.green(`Detailed results saved to: ${resultsFile}`));
 
@@ -593,10 +614,23 @@ function parseArgs() {
     clearCache: false,
   };
 
+  // Helper to extract value from --flag=value syntax
+  function extractEqualValue(arg, flag) {
+    if (arg.startsWith(flag + "=")) {
+      return arg.slice(flag.length + 1);
+    }
+    return null;
+  }
+
   for (let i = 0; i < args.length; i++) {
+    const eqInclude = extractEqualValue(args[i], "--include");
+    const eqWorkers = extractEqualValue(args[i], "--workers");
+
     if (args[i] === "--include" && i + 1 < args.length) {
       options.includePattern = args[i + 1];
       i++;
+    } else if (eqInclude !== null) {
+      options.includePattern = eqInclude;
     } else if (args[i] === "--workers" && i + 1 < args.length) {
       options.workers = parseInt(args[i + 1], 10);
       if (isNaN(options.workers) || options.workers < 1) {
@@ -604,6 +638,12 @@ function parseArgs() {
         options.workers = DEFAULT_WORKER_COUNT;
       }
       i++;
+    } else if (eqWorkers !== null) {
+      options.workers = parseInt(eqWorkers, 10);
+      if (isNaN(options.workers) || options.workers < 1) {
+        console.error(chalk.red("Invalid worker count, using default"));
+        options.workers = DEFAULT_WORKER_COUNT;
+      }
     } else if (args[i] === "--sequential" || args[i] === "-s") {
       options.sequential = true;
     } else if (args[i] === "--incremental" || args[i] === "-i") {
@@ -616,10 +656,10 @@ function parseArgs() {
       console.log(`
 Test262 Runner for Rift
 
-Usage: node test262-runner.js [options] [single-test]
+Usage: node test262-runner.js [options] [single-test-or-directory]
 
 Options:
-  --include <pattern>   Only run tests matching pattern
+  --include <pattern>   Only run tests matching pattern (substring match on path)
   --workers <count>     Number of parallel workers (default: ${DEFAULT_WORKER_COUNT})
   --sequential, -s      Run tests sequentially (no parallelism)
   --incremental, -i     Skip unchanged tests (uses cached results)
@@ -628,16 +668,23 @@ Options:
   --help, -h            Show this help message
 
 Examples:
-  node test262-runner.js                           # Run all tests in parallel
-  node test262-runner.js --workers 4               # Run with 4 workers
-  node test262-runner.js --sequential              # Run sequentially
-  node test262-runner.js --incremental             # Skip unchanged tests
-  node test262-runner.js -i --force                # Re-run all and update cache
-  node test262-runner.js --include "Array"         # Run only Array tests
-  node test262-runner.js test/language/expressions/addition/test.js  # Run single test
+  node test262-runner.js                                            # Run all tests
+  node test262-runner.js --workers 4                                # Run with 4 workers
+  node test262-runner.js --sequential                               # Run sequentially
+  node test262-runner.js --incremental                              # Skip unchanged tests
+  node test262-runner.js -i --force                                 # Re-run all, update cache
+  node test262-runner.js --include "Array"                          # Only Array tests
+  node test262-runner.js --include="built-ins/Temporal"             # Only Temporal tests
+  node test262-runner.js --include "built-ins/Temporal/Instant"     # Only Instant tests
+  node test262-runner.js test/built-ins/Temporal/                   # Run directory of tests
+  node test262-runner.js test/language/expressions/addition/test.js # Run single test
 `);
       process.exit(0);
-    } else if (!args[i].startsWith("--")) {
+    } else if (args[i].startsWith("--")) {
+      console.error(chalk.red(`Unknown option: ${args[i]}`));
+      console.error(chalk.dim("Run with --help to see available options"));
+      process.exit(1);
+    } else {
       options.singleTest = args[i];
     }
   }
@@ -662,11 +709,46 @@ const runner = new Test262Runner({
 });
 
 if (options.singleTest) {
-  try {
-    const result = runSingleTest(`${TEST262_DIR}/${options.singleTest}`);
-    console.log(result);
-  } catch (error) {
-    console.error(error);
+  const fullPath = path.resolve(`${TEST262_DIR}/${options.singleTest}`);
+
+  // Check if path exists
+  if (!fs.existsSync(fullPath)) {
+    // Maybe they passed a path relative to test262/test/ instead of test262/
+    const altPath = path.resolve(`${TEST262_DIR}/test/${options.singleTest}`);
+    if (fs.existsSync(altPath)) {
+      options.singleTest = `test/${options.singleTest}`;
+    } else {
+      console.error(chalk.red(`Error: Path not found: ${fullPath}`));
+      process.exit(1);
+    }
+  }
+
+  const resolvedPath = path.resolve(`${TEST262_DIR}/${options.singleTest}`);
+
+  if (fs.statSync(resolvedPath).isDirectory()) {
+    // Convert directory argument to an --include pattern run
+    // Strip leading "test/" prefix if present for the include pattern
+    let pattern = options.singleTest;
+    if (pattern.startsWith("test/")) {
+      pattern = pattern.slice(5);
+    }
+    // Strip trailing slash
+    if (pattern.endsWith("/")) {
+      pattern = pattern.slice(0, -1);
+    }
+    console.log(chalk.cyan(`Running all tests in directory: ${pattern}`));
+    try {
+      await runner.run(pattern);
+    } catch (error) {
+      console.error(error);
+    }
+  } else {
+    try {
+      const result = runSingleTest(resolvedPath);
+      console.log(result);
+    } catch (error) {
+      console.error(error);
+    }
   }
 } else {
   try {
