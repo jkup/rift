@@ -182,7 +182,79 @@ Value Object::entries(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Object::toString(const CallContext& ctx, const std::vector<Value>& args) {
-    // Default toString implementation
+    const Value& thisValue = ctx.thisValue;
+
+    // Handle undefined and null
+    if(thisValue.isUndefined()) {
+        return Value("[object Undefined]");
+    }
+    if(thisValue.isNull()) {
+        return Value("[object Null]");
+    }
+
+    // Handle primitive types
+    if(thisValue.isBoolean()) {
+        return Value("[object Boolean]");
+    }
+    if(thisValue.isNumber()) {
+        return Value("[object Number]");
+    }
+    if(thisValue.isString()) {
+        return Value("[object String]");
+    }
+    if(thisValue.isSymbol()) {
+        return Value("[object Symbol]");
+    }
+
+    // Handle function type
+    if(thisValue.isFunction()) {
+        return Value("[object Function]");
+    }
+
+    // Handle object types - check prototype chain for known built-in prototypes
+    if(thisValue.isObject()) {
+        auto* obj = thisValue.getObject();
+        if(obj) {
+            // Check for Symbol.toStringTag property first
+            auto* symbol_prototype = rift::core::BuiltinManager::getSymbolPrototype();
+            if(symbol_prototype) {
+                std::string tag_key =
+                    rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getToStringTagId());
+                Value tag = obj->getProperty(tag_key);
+                if(tag.isString()) {
+                    return Value("[object " + tag.getString() + "]");
+                }
+            }
+
+            // Check against known prototypes by walking the prototype chain
+            auto* proto = obj->getPrototype();
+            auto* array_proto = rift::core::BuiltinManager::getArrayPrototype();
+            auto* regexp_proto = rift::core::BuiltinManager::getRegExpPrototype();
+            auto* error_proto = rift::core::BuiltinManager::getErrorPrototype();
+            auto* boolean_proto = rift::core::BuiltinManager::getBooleanPrototype();
+            auto* number_proto = rift::core::BuiltinManager::getNumberPrototype();
+
+            while(proto) {
+                if(array_proto && proto == array_proto) {
+                    return Value("[object Array]");
+                }
+                if(regexp_proto && proto == regexp_proto) {
+                    return Value("[object RegExp]");
+                }
+                if(error_proto && proto == error_proto) {
+                    return Value("[object Error]");
+                }
+                if(boolean_proto && proto == boolean_proto) {
+                    return Value("[object Boolean]");
+                }
+                if(number_proto && proto == number_proto) {
+                    return Value("[object Number]");
+                }
+                proto = proto->getPrototype();
+            }
+        }
+    }
+
     return Value("[object Object]");
 }
 
