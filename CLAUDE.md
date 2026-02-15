@@ -9,12 +9,12 @@
 | Run JS file                | `./build/rift path/to/script.js`                                        |
 | Run JS code (inline)       | `./build/rift -e "console.log('hi')"`                                   |
 | Run custom tests           | `npm test` or `node test-runner.js`                                     |
-| Run Test262 suite          | `npm run test262` or `node test262-runner.js`                           |
+| Run Test262 suite          | `npm run test262`                                                       |
 | Run Test262 group          | `npm run test262:group -- <group-name>`                                 |
 | List Test262 groups        | `npm run test262:groups`                                                |
 | Analyze Test262 impact     | `npm run test262:analyze`                                               |
-| Find Test262 regressions   | `npm run test262:diff` or `node test262-diff.js`                        |
-| Run specific Test262 test  | `node test262-runner.js path/to/test.js`                                |
+| Find Test262 regressions   | `npm run test262:diff`                                                  |
+| Run specific Test262 test  | `npm run test262 -- path/to/test.js`                                    |
 | Format code                | `cd build && make format`                                               |
 | Check formatting           | `cd build && make format-check`                                         |
 | Static analysis            | `cd build && make cppcheck`                                             |
@@ -74,7 +74,7 @@ rift/
 ├── CMakeLists.txt                # Build configuration
 ├── package.json                  # Node.js dependencies for test runners
 ├── test-runner.js                # Custom test runner
-└── test262-runner.js             # Test262 compliance runner
+└── scripts/test262/              # Test262 compliance tools (runner, diff, groups, etc.)
 ```
 
 ---
@@ -221,13 +221,13 @@ node test-runner.js
 ### Test262 Compliance
 ```bash
 npm run test262                    # Full suite
-node test262-runner.js             # Same as above
+npm run test262                    # Same as above
 
 # Run specific patterns
-node test262-runner.js --include="language/expressions/addition"
+npm run test262 -- --include="language/expressions/addition"
 
 # Run single test
-node test262-runner.js test/language/expressions/addition/S11.6.1_A3.1_T2.1.js
+npm run test262 -- test/language/expressions/addition/S11.6.1_A3.1_T2.1.js
 ```
 
 ### Test262 Groups
@@ -241,11 +241,11 @@ npm run test262:analyze            # Analyze impact
 When CI shows a regression (tests that used to pass now fail), use the diff tool to find which specific tests changed:
 ```bash
 npm run test262:diff               # Compare current results to main branch
-node test262-diff.js --verbose     # Show all changed tests (not truncated)
-node test262-diff.js --json        # JSON output for CI integration
+npm run test262:diff -- --verbose  # Show all changed tests (not truncated)
+npm run test262:diff -- --json     # JSON output for CI integration
 
 # Compare two specific result files
-node test262-diff.js --baseline old-results.json --current new-results.json
+npm run test262:diff -- --baseline old-results.json --current new-results.json
 ```
 
 **Note:** For the diff tool to work automatically, `test262-results.json` must be committed to the main branch. Otherwise, use `--baseline` to specify a baseline file.
@@ -291,7 +291,7 @@ Current built-ins: Array, Boolean, Console, Error (TypeError, ReferenceError, Sy
 3. **Update CMakeLists.txt**: Add new `.cpp` files to the appropriate `*_SOURCES` section (e.g., `BUILTINS_SOURCES`, `CORE_SOURCES`)
 4. **Test**: Add tests in `test/` or relevant Test262 files
 5. **Build**: Run `./build.sh` and ensure no errors
-6. **Run tests**: `npm test` and/or `node test262-runner.js --include="<feature>"`
+6. **Run tests**: `npm test` and/or `npm run test262 -- --include="<feature>"`
 7. **Check quality**: `cd build && make quality`
 8. **Commit**: Format code with `make format`, then commit
 

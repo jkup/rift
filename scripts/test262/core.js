@@ -5,9 +5,13 @@ import path from "path";
 import { execSync } from "child_process";
 import YAML from "yaml";
 
+// Resolve paths relative to project root (npm scripts always run from there)
+const __scriptDir = path.dirname(new URL(import.meta.url).pathname);
+const PROJECT_ROOT = path.resolve(__scriptDir, "../..");
+
 // Configuration
-export const TEST262_DIR = "./test262";
-export const RUNTIME_EXECUTABLE = "./build/rift";
+export const TEST262_DIR = path.join(PROJECT_ROOT, "test262");
+export const RUNTIME_EXECUTABLE = path.join(PROJECT_ROOT, "build/rift");
 
 // Pre-compile regex patterns once at module load (P1 optimization)
 const UNSUPPORTED_PATTERNS = [
@@ -202,11 +206,11 @@ let cachedHarnessContent = null;
  */
 export function getHarnessContent() {
   if (cachedHarnessContent === null) {
-    const compatHarnessPath = "./test262-harness-compat.js";
+    const compatHarnessPath = path.join(__scriptDir, "harness-compat.js");
     if (fs.existsSync(compatHarnessPath)) {
       cachedHarnessContent = fs.readFileSync(compatHarnessPath, "utf8");
     } else {
-      console.error("Warning: test262-harness-compat.js not found");
+      console.error("Warning: scripts/test262/harness-compat.js not found");
       cachedHarnessContent = "";
     }
   }

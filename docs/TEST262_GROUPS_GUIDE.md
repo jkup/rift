@@ -158,7 +158,7 @@ npm run test262:group -- built-in-array
 
 ## Customizing Test Groups
 
-Edit `test262-groups.json` to:
+Edit `scripts/test262/groups.json` to:
 - Add new groups
 - Modify existing groups
 - Add more patterns to groups
@@ -205,10 +205,10 @@ Check the JSON results file to see:
 
 The new system consists of:
 
-1. **test262-groups.json** - Configuration defining test groups
-2. **test262-results-tracker.js** - Module for categorizing and tracking results
-3. **test262-group-runner.js** - Script for running groups
-4. **test262-runner.js** - Enhanced with category tracking
+1. **scripts/test262/groups.json** - Configuration defining test groups
+2. **scripts/test262/results-tracker.js** - Module for categorizing and tracking results
+3. **scripts/test262/group-runner.js** - Script for running groups
+4. **scripts/test262/runner.js** - Enhanced with category tracking
 
 All test runners now produce structured JSON output with detailed category breakdowns, making it easy to understand progress and identify regressions.
 

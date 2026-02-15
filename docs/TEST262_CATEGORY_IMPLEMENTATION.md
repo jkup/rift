@@ -6,24 +6,24 @@ We successfully implemented a comprehensive category-based testing system for Ri
 
 ## 🎯 New Features
 
-### 1. Test Groups Configuration (`test262-groups.json`)
+### 1. Test Groups Configuration (`scripts/test262/groups.json`)
 - Defined 14 logical test groups covering all major JavaScript features
 - Groups include: core-language, basic-types, all built-ins, error-handling, etc.
 - Easy to customize and extend
 
-### 2. Results Tracker Module (`test262-results-tracker.js`)
+### 2. Results Tracker Module (`scripts/test262/results-tracker.js`)
 - Automatically categorizes tests by feature area
 - Generates detailed JSON reports with pass/fail breakdown by category
 - Provides summary statistics showing strongest/weakest areas
 - Includes comparison functionality for regression detection
 
-### 3. Group Runner Script (`test262-group-runner.js`)
+### 3. Group Runner Script (`scripts/test262/group-runner.js`)
 - Run specific test groups: `npm run test262:group -- <group-name>`
 - List all groups: `npm run test262:groups`
 - Run all groups with summary: `npm run test262:all-groups`
 - Beautiful progress indicators and colored output
 
-### 4. Enhanced Main Runner (`test262-runner.js`)
+### 4. Enhanced Main Runner (`scripts/test262/runner.js`)
 - Integrated with results tracker
 - Now outputs detailed category breakdowns
 - Saves comprehensive JSON reports
@@ -81,14 +81,14 @@ npm run test262
 ## 📦 Files Created/Modified
 
 ### New Files
-- ✨ `test262-groups.json` - Test group definitions
-- ✨ `test262-results-tracker.js` - Results tracking module
-- ✨ `test262-group-runner.js` - Group runner CLI
+- ✨ `scripts/test262/groups.json` - Test group definitions
+- ✨ `scripts/test262/results-tracker.js` - Results tracking module
+- ✨ `scripts/test262/group-runner.js` - Group runner CLI
 - ✨ `TEST262_GROUPS_GUIDE.md` - Usage documentation
 - ✨ `IDEAS.md` - Comprehensive improvement ideas
 
 ### Modified Files
-- 📝 `test262-runner.js` - Added tracker integration
+- 📝 `scripts/test262/runner.js` - Added tracker integration
 - 📝 `package.json` - Added new npm scripts
 
 ### Generated Files (runtime)

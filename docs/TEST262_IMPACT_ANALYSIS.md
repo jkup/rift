@@ -239,4 +239,4 @@ Impact: 25.9 | 12 failures | 3/10 complexity
 
 - `docs/TEST262_GROUPS_GUIDE.md` - How to use test groups
 - `docs/TEST262_IMPROVEMENT_IDEAS.md` - All improvement ideas
-- `test262-groups.json` - Test group definitions
+- `scripts/test262/groups.json` - Test group definitions

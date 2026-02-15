@@ -32,7 +32,7 @@ This document contains comprehensive ideas for improving how we track, visualize
 **Implementation:**
 
 ```javascript
-// test262-results-tracker.js
+// scripts/test262/results-tracker.js
 class Test262ResultsTracker {
   constructor() {
     this.results = {
@@ -131,7 +131,7 @@ class Test262ResultsTracker {
 **Concept:** Define logical test groups that represent meaningful feature areas.
 
 ```javascript
-// test262-groups.json
+// scripts/test262/groups.json
 {
   "core-language": {
     "description": "Core language features - expressions, operators, control flow",
@@ -342,7 +342,7 @@ jobs:
       # ... build steps ...
       
       - name: Run Test262 with detailed tracking
-        run: node test262-runner.js --output-format=json > pr-results.json
+        run: node scripts/test262/runner.js --output-format=json > pr-results.json
       
       - name: Download baseline results
         run: |
@@ -482,7 +482,7 @@ function selectTestsForChangedFiles(changedFiles) {
   run: |
     TEST_PATTERNS=$(node scripts/smart-test-selector.js "${{ steps.changes.outputs.files }}")
     for pattern in $TEST_PATTERNS; do
-      node test262-runner.js --include="$pattern"
+      node scripts/test262/runner.js --include="$pattern"
     done
 ```
 
@@ -784,7 +784,7 @@ function generatePriorityList(results) {
 ### Phase 1: Foundation (Week 1-2)
 - [x] Implement category-based result tracking
 - [x] Create test groups configuration
-- [x] Modify test262-runner.js to output structured JSON
+- [x] Modify scripts/test262/runner.js to output structured JSON
 - [x] Create baseline storage system
 
 ### Phase 2: Visualization (Week 3-4)
@@ -817,7 +817,7 @@ function generatePriorityList(results) {
 
 ### 1. Category-Based Results (1-2 hours)
 **Why:** Immediately shows where you're strong vs weak  
-**How:** Modify test262-runner.js to categorize results
+**How:** Modify scripts/test262/runner.js to categorize results
 
 ### 2. Regression Detection (2-3 hours)
 **Why:** Stop breaking tests you've already fixed  
@@ -825,7 +825,7 @@ function generatePriorityList(results) {
 
 ### 3. Test Groups (1 hour)
 **Why:** Run only relevant tests during development  
-**How:** Create test262-groups.json, add npm script
+**How:** Create scripts/test262/groups.json, add npm script
 
 ### 4. Better CI Comments (2 hours)
 **Why:** See exactly what changed, not just a %  

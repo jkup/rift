@@ -6,17 +6,17 @@
  * Compares test262 results between branches to identify regressions and improvements.
  *
  * Usage:
- *   node test262-diff.js                    # Compare current results to main branch
- *   node test262-diff.js --baseline <file>  # Compare current to specific baseline file
- *   node test262-diff.js --current <file>   # Specify current results file
- *   node test262-diff.js --verbose          # Show all changed tests (not just first 50)
- *   node test262-diff.js --json             # Output as JSON
+ *   npm run test262:diff --                    # Compare current results to main branch
+ *   npm run test262:diff -- --baseline <file>  # Compare current to specific baseline file
+ *   npm run test262:diff -- --current <file>   # Specify current results file
+ *   npm run test262:diff -- --verbose          # Show all changed tests (not just first 50)
+ *   npm run test262:diff -- --json             # Output as JSON
  */
 
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import Test262ResultsTracker from './test262-results-tracker.js';
+import Test262ResultsTracker from './results-tracker.js';
 
 // Parse command line arguments
 function parseArgs() {
@@ -66,7 +66,7 @@ function printUsage() {
 Test262 Diff Tool - Find which tests changed between branches/commits
 
 Usage:
-  node test262-diff.js [options]
+  npm run test262:diff -- [options]
 
 Options:
   --baseline, -b <file>   Baseline results file (default: fetches from main branch)
@@ -78,19 +78,19 @@ Options:
 
 Examples:
   # Compare current branch to main
-  node test262-diff.js
+  npm run test262:diff --
 
   # Compare against a specific commit
-  node test262-diff.js --commit 9413b53299e53367ed7d32efde272fa8bc1aa2fd
+  npm run test262:diff -- --commit 9413b53299e53367ed7d32efde272fa8bc1aa2fd
 
   # Compare two specific result files
-  node test262-diff.js --baseline old-results.json --current new-results.json
+  npm run test262:diff -- --baseline old-results.json --current new-results.json
 
   # Get JSON output for CI integration
-  node test262-diff.js --json
+  npm run test262:diff -- --json
 
   # Show all regressions (not truncated)
-  node test262-diff.js --verbose
+  npm run test262:diff -- --verbose
 `);
 }
 

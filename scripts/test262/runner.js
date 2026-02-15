@@ -6,14 +6,14 @@ import { execSync } from "child_process";
 import { Worker } from "worker_threads";
 import { cpus } from "os";
 import chalk from "chalk";
-import { Test262ResultsTracker } from "./test262-results-tracker.js";
-import { Test262Cache } from "./test262-cache.js";
+import { Test262ResultsTracker } from "./results-tracker.js";
+import { Test262Cache } from "./cache.js";
 import {
   TEST262_DIR,
   RUNTIME_EXECUTABLE,
   findTestFiles,
   runSingleTest,
-} from "./test262-core.js";
+} from "./core.js";
 
 // Default number of workers based on CPU cores
 const DEFAULT_WORKER_COUNT = Math.max(1, cpus().length - 1);
@@ -34,7 +34,7 @@ class WorkerPool {
   }
 
   async initialize() {
-    const workerPath = new URL("./test262-worker.js", import.meta.url).pathname;
+    const workerPath = new URL("./worker.js", import.meta.url).pathname;
 
     const readyPromises = [];
 
@@ -656,7 +656,7 @@ function parseArgs() {
       console.log(`
 Test262 Runner for Rift
 
-Usage: node test262-runner.js [options] [single-test-or-directory]
+Usage: npm run test262 [-- options] [single-test-or-directory]
 
 Options:
   --include <pattern>   Only run tests matching pattern (substring match on path)
@@ -668,16 +668,16 @@ Options:
   --help, -h            Show this help message
 
 Examples:
-  node test262-runner.js                                            # Run all tests
-  node test262-runner.js --workers 4                                # Run with 4 workers
-  node test262-runner.js --sequential                               # Run sequentially
-  node test262-runner.js --incremental                              # Skip unchanged tests
-  node test262-runner.js -i --force                                 # Re-run all, update cache
-  node test262-runner.js --include "Array"                          # Only Array tests
-  node test262-runner.js --include="built-ins/Temporal"             # Only Temporal tests
-  node test262-runner.js --include "built-ins/Temporal/Instant"     # Only Instant tests
-  node test262-runner.js test/built-ins/Temporal/                   # Run directory of tests
-  node test262-runner.js test/language/expressions/addition/test.js # Run single test
+  npm run test262                                                     # Run all tests
+  npm run test262 -- --workers 4                                      # Run with 4 workers
+  npm run test262 -- --sequential                                     # Run sequentially
+  npm run test262 -- --incremental                                    # Skip unchanged tests
+  npm run test262 -- -i --force                                       # Re-run all, update cache
+  npm run test262 -- --include "Array"                                # Only Array tests
+  npm run test262 -- --include="built-ins/Temporal"                   # Only Temporal tests
+  npm run test262 -- --include "built-ins/Temporal/Instant"           # Only Instant tests
+  npm run test262 -- test/built-ins/Temporal/                         # Run directory of tests
+  npm run test262 -- test/language/expressions/addition/test.js       # Run single test
 `);
       process.exit(0);
     } else if (args[i].startsWith("--")) {

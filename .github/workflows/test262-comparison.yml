@@ -7,7 +7,7 @@ on:
       - 'src/**'
       - 'include/**'
       - 'CMakeLists.txt'
-      - 'test262-runner.js'
+      - 'scripts/test262/**'
       - 'package.json'
   push:
     branches: [ main ]
@@ -15,7 +15,7 @@ on:
       - 'src/**'
       - 'include/**'
       - 'CMakeLists.txt'
-      - 'test262-runner.js'
+      - 'scripts/test262/**'
       - 'package.json'
   workflow_dispatch:
 

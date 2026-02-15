@@ -3,17 +3,17 @@
 import fs from "fs";
 import path from "path";
 import chalk from "chalk";
-import { Test262ResultsTracker } from "./test262-results-tracker.js";
-// Import shared functions from test262-core to avoid duplication
+import { Test262ResultsTracker } from "./results-tracker.js";
 import {
   TEST262_DIR,
   RUNTIME_EXECUTABLE,
   parseTestFile,
   testUsesUnsupportedFeatures,
   runSingleTest as coreRunSingleTest,
-} from "./test262-core.js";
+} from "./core.js";
 
-const GROUPS_CONFIG = "./test262-groups.json";
+const __scriptDir = path.dirname(new URL(import.meta.url).pathname);
+const GROUPS_CONFIG = path.join(__scriptDir, "groups.json");
 
 /**
  * Test262GroupRunner - Run specific groups of Test262 tests
@@ -104,7 +104,7 @@ class Test262GroupRunner {
    * Wraps coreRunSingleTest to integrate with tracker and counters
    */
   async runSingleTest(testFile) {
-    // Use the shared runSingleTest from test262-core.js
+    // Use the shared runSingleTest from core.js
     // This ensures consistent behavior: proper YAML parsing, feature checking,
     // negative test validation, and strict mode dual execution
     const result = coreRunSingleTest(testFile, this.tempFile);
@@ -433,7 +433,7 @@ function parseArgs(args) {
 function printUsage() {
   console.log(chalk.bold.cyan("\n📋 Test262 Group Runner\n"));
   console.log("Usage:");
-  console.log("  node test262-group-runner.js [options] [group-name]");
+  console.log("  npm run test262:group -- [options] [group-name]");
   console.log("\nOptions:");
   console.log("  --list, -l              List available groups");
   console.log("  --all                   Run all groups");

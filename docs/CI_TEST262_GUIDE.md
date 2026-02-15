@@ -72,13 +72,13 @@ You can also run filtered tests locally:
 
 ```bash
 # Run specific test pattern
-node test262-runner.js --include="language/expressions/addition"
+npm run test262 -- --include="language/expressions/addition"
 
 # Run single test
-node test262-runner.js test/language/expressions/addition/S11.6.1_A3.1_T2.1.js
+npm run test262 -- test/language/expressions/addition/S11.6.1_A3.1_T2.1.js
 
-# Run full suite (same as npm run test262)
-node test262-runner.js
+# Run full suite
+npm run test262
 ```
 
 ## 📋 Reading the Results
@@ -167,7 +167,7 @@ This is normal when working on areas that aren't covered by the default test pat
 
 ### If Full Comparison Shows Regressions
 1. Download the artifacts to see which specific tests broke
-2. Run those tests locally: `node test262-runner.js path/to/failing/test.js`
+2. Run those tests locally: `npm run test262 -- path/to/failing/test.js`
 3. Debug the specific failures
 
 ### If Workflows Don't Trigger
@@ -175,7 +175,7 @@ Check that your changes touch the right paths:
 - `src/**` (runtime source code)
 - `include/**` (headers)  
 - `CMakeLists.txt` (build configuration)
-- `test262-runner.js` (test runner)
+- `scripts/test262/runner.js` (test runner)
 - `package.json` (dependencies)
 
 ## 🎉 Success Stories

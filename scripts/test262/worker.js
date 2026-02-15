@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { parentPort, workerData } from "worker_threads";
-import { runSingleTest, getHarnessContent } from "./test262-core.js";
+import { runSingleTest, getHarnessContent } from "./core.js";
 
 // Pre-warm the harness cache when worker starts
 getHarnessContent();

@@ -38,10 +38,13 @@ build/
 test262/
 
 # Test262 results (ephemeral, generated files)
-test262-results.json
+test262-results*.json
 test262-group-*-results.json
 test262-impact-report.json
 .test262-cache.json
+
+# LLM working notes (local only)
+notes/
 
 # Node.js dependencies (if any)
 node_modules/
