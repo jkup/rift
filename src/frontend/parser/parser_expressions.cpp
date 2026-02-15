@@ -417,6 +417,25 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
             expr = parse_computed_member_expression(expr);
         } else if(current_token().type == TokenType::LeftParen) {
             expr = parse_call_expression(expr);
+        } else if(current_token().type == TokenType::OptionalChain) {
+            current++;  // consume '?.'
+            if(current_token().type == TokenType::LeftBracket) {
+                // obj?.[expr] - optional computed member access
+                expr = parse_computed_member_expression(expr);
+                expr->metadata = "computed-optional";
+            } else if(current_token().type == TokenType::LeftParen) {
+                // obj?.(args) - optional call
+                expr = parse_call_expression(expr);
+                expr->metadata = "optional";
+            } else {
+                // obj?.prop - optional member access
+                Token& tok = current_token();
+                auto property = std::make_shared<ASTNode>(ASTNodeType::Identifier, tok.value,
+                                                          tok.line, tok.column);
+                current++;  // consume property name
+                expr = ASTFactory::makeMemberExpression(expr, property);
+                expr->metadata = "optional";
+            }
         } else if(current_token().type == TokenType::Increment ||
                   current_token().type == TokenType::Decrement) {
             // Handle postfix increment/decrement

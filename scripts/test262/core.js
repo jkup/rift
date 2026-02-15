@@ -77,11 +77,6 @@ const UNSUPPORTED_FEATURES = new Set([
   "source-phase-imports",
   "source-phase-imports-module-source",
 
-  // Modern syntax (not yet implemented)
-  "optional-chaining",
-  "nullish-coalescing",
-  "logical-assignment-operators",
-
   // Realms and cross-realm
   "ShadowRealm",
   "cross-realm",

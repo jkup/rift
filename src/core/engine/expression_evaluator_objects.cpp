@@ -163,6 +163,14 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
         return func->call(ctx, args);
     }
 
+    // Handle optional call: func?.(args) - if callee is null/undefined, return undefined
+    if(node->metadata == "optional") {
+        Value callee_val = engine->evaluate(callee_node, env);
+        if(callee_val.isUndefined() || callee_val.isNull()) {
+            return Value::undefined();
+        }
+    }
+
     // Check if this is a method call (member expression)
     Value this_value = Value::undefined();
     Value callee;
@@ -173,9 +181,18 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
             // Get the object (this value) - evaluate ONCE
             this_value = engine->evaluate(callee_node->children[0], env);
 
+            // Handle optional chaining on method call: obj?.method()
+            bool callee_optional = (callee_node->metadata == "optional" ||
+                                    callee_node->metadata == "computed-optional");
+            if(callee_optional &&
+               (this_value.isUndefined() || this_value.isNull())) {
+                return Value::undefined();
+            }
+
             // Get property name from the member expression
             std::string property;
-            if(callee_node->metadata == "computed") {
+            if(callee_node->metadata == "computed" ||
+               callee_node->metadata == "computed-optional") {
                 Value property_value = engine->evaluate(callee_node->children[1], env);
                 if(property_value.isSymbol()) {
                     property = EvaluationUtils::symbolToPropertyKey(property_value.getSymbol().id);
@@ -357,12 +374,19 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
     // Evaluate the object
     Value object = engine->evaluate(node->children[0], env);
 
+    // Handle optional chaining (?.) - return undefined if object is null/undefined
+    bool is_optional =
+        (node->metadata == "optional" || node->metadata == "computed-optional");
+    if(is_optional && (object.isUndefined() || object.isNull())) {
+        return Value::undefined();
+    }
+
     // Get the property name - could be static (dot notation) or computed (bracket notation)
     std::string property;
 
     // Check if this is computed member access (bracket notation)
     // Use metadata to determine if this should be computed
-    if(node->metadata == "computed") {
+    if(node->metadata == "computed" || node->metadata == "computed-optional") {
         // This is bracket notation - evaluate the property expression and convert carefully
         Value property_value = engine->evaluate(node->children[1], env);
 
