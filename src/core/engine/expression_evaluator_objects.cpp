@@ -873,7 +873,22 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
     // Collect real arguments (skip first child which is the constructor)
     std::vector<Value> args;
     for(size_t i = 1; i < node->children.size(); ++i) {
-        args.push_back(engine->evaluate(node->children[i], env));
+        auto& arg_node = node->children[i];
+        if(arg_node->type == ASTNodeType::SpreadElement) {
+            Value spread_value = engine->evaluate(arg_node->children[0], env);
+            if(spread_value.isObject()) {
+                auto* obj = spread_value.getObject();
+                Value length_val = obj->getProperty("length");
+                if(length_val.isNumber()) {
+                    size_t length = static_cast<size_t>(length_val.getNumber());
+                    for(size_t j = 0; j < length; ++j) {
+                        args.push_back(obj->getProperty(std::to_string(j)));
+                    }
+                }
+            }
+        } else {
+            args.push_back(engine->evaluate(arg_node, env));
+        }
     }
 
     // Call constructor function - built-in constructors like Array and Object

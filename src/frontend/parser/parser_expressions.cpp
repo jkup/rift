@@ -694,8 +694,20 @@ std::shared_ptr<ASTNode> Parser::parse_new_expression() {
         // Parse arguments
         if(current_token().type != TokenType::RightParen) {
             do {
-                auto arg = parse_expression();
-                ASTFactory::addNewArgument(newExpr, arg);
+                // Allow trailing comma before ')'
+                if(current_token().type == TokenType::RightParen) {
+                    break;
+                }
+                // Check for spread argument (...expr)
+                if(current_token().type == TokenType::Spread) {
+                    current++;  // consume '...'
+                    auto spread_arg = parse_binary_expression(1);
+                    auto spread_element = ASTFactory::makeSpreadElement(spread_arg);
+                    ASTFactory::addNewArgument(newExpr, spread_element);
+                } else {
+                    auto arg = parse_expression();
+                    ASTFactory::addNewArgument(newExpr, arg);
+                }
             } while(match(TokenType::Comma));
         }
 
