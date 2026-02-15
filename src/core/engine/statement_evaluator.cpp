@@ -617,6 +617,21 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
             }
         });
 
+    // Set function name and length per ECMAScript spec
+    func->defineProperty("name", runtime::PropertyDescriptor(Value(functionName), false, false, true));
+    // Length = number of non-rest, non-default parameters
+    size_t formal_params = 0;
+    for(const auto& pi : param_info) {
+        if(std::get<2>(pi))
+            break;                   // rest param
+        if(std::get<1>(pi) != nullptr)
+            break;                   // default param
+        formal_params++;
+    }
+    func->defineProperty(
+        "length",
+        runtime::PropertyDescriptor(Value(static_cast<double>(formal_params)), false, false, true));
+
     // Define function in current environment
     env->define(functionName, Value(func));
 

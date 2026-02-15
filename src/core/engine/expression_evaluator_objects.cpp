@@ -728,6 +728,22 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
             }
         });
 
+    // Set function name and length per ECMAScript spec
+    std::string func_name = node->value;  // May be empty for anonymous functions
+    func->defineProperty(
+        "name", runtime::PropertyDescriptor(Value(func_name), false, false, true));
+    size_t formal_params = 0;
+    for(const auto& pi : param_info) {
+        if(std::get<2>(pi))
+            break;
+        if(std::get<1>(pi) != nullptr)
+            break;
+        formal_params++;
+    }
+    func->defineProperty(
+        "length",
+        runtime::PropertyDescriptor(Value(static_cast<double>(formal_params)), false, false, true));
+
     // Re-enable GC before returning
     obj_manager->setGCEnabled(was_gc_enabled);
     return Value(func);
@@ -848,6 +864,22 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
             }
         },
         captured_this);
+
+    // Set function name and length per ECMAScript spec
+    std::string arrow_name = node->value;  // Usually empty for arrows
+    arrow_func->defineProperty(
+        "name", runtime::PropertyDescriptor(Value(arrow_name), false, false, true));
+    size_t arrow_formal = 0;
+    for(const auto& pi : param_info) {
+        if(std::get<2>(pi))
+            break;
+        if(std::get<1>(pi) != nullptr)
+            break;
+        arrow_formal++;
+    }
+    arrow_func->defineProperty(
+        "length",
+        runtime::PropertyDescriptor(Value(static_cast<double>(arrow_formal)), false, false, true));
 
     // Re-enable GC before returning
     obj_manager->setGCEnabled(was_gc_enabled);

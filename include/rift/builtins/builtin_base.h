@@ -29,13 +29,27 @@ using namespace rift::runtime;
 
 /// Register an instance method on a prototype object (non-enumerable per spec)
 #define RIFT_METHOD(obj, name, func) \
-    (obj)->defineProperty(name, rift::runtime::PropertyDescriptor( \
-        rift::runtime::Value(factory->createJSFunction(func)), true, false, true))
+    do { \
+        auto* _fn = factory->createJSFunction(func); \
+        _fn->defineProperty("name", rift::runtime::PropertyDescriptor( \
+            rift::runtime::Value(std::string(name)), false, false, true)); \
+        _fn->defineProperty("length", rift::runtime::PropertyDescriptor( \
+            rift::runtime::Value(0.0), false, false, true)); \
+        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor( \
+            rift::runtime::Value(_fn), true, false, true)); \
+    } while(0)
 
 /// Register a static method on a constructor object (non-enumerable per spec)
 #define RIFT_STATIC_METHOD(obj, name, func) \
-    (obj)->defineProperty(name, rift::runtime::PropertyDescriptor( \
-        rift::runtime::Value(factory->createJSFunction(func)), true, false, true))
+    do { \
+        auto* _fn = factory->createJSFunction(func); \
+        _fn->defineProperty("name", rift::runtime::PropertyDescriptor( \
+            rift::runtime::Value(std::string(name)), false, false, true)); \
+        _fn->defineProperty("length", rift::runtime::PropertyDescriptor( \
+            rift::runtime::Value(0.0), false, false, true)); \
+        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor( \
+            rift::runtime::Value(_fn), true, false, true)); \
+    } while(0)
 
 /// Register a getter property (non-enumerable, configurable per spec)
 #define RIFT_GETTER(obj, name, func) \
