@@ -189,6 +189,7 @@ PropertyDescriptor::accessor(getter_value, setter_value, enumerable, configurabl
 
 - When completing TODO items, **remove finished items entirely** (don't mark as done or strikethrough).
 - Working notes go in `notes/` (RESUME.md tracks session state, TODO.md tracks planned work).
+- **Spec comment maintenance:** When modifying an annotated method (e.g., fixing a test262 failure or adding missing spec steps), update the `@spec` step comments to match the new implementation. Remove INCOMPLETE tags when steps are added; update SIMPLIFIED/DEVIATION tags when behavior changes. See `notes/SPEC_COMMENTS.md` for the full style guide.
 
 ## Code Style
 
