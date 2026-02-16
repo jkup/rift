@@ -1,14 +1,22 @@
-/**
- * Statement Evaluator - Control Flow Methods
- *
- * This file contains control flow statement evaluation methods:
- * - if/else statements
- * - while, do-while, for loops (including for-in and for-of)
- * - switch statements
- * - break and return statements
- *
- * Split from statement_evaluator.cpp for better maintainability.
- */
+// ============================================================================
+// ECMA-262 -- Control Flow Statement Evaluation (Chapter 14)
+// Implements Runtime Semantics: Evaluation for control flow statements:
+//   - Conditional: if (14.6)
+//   - Iteration: while, do-while, for, for-in, for-of (14.7)
+//   - Selection: switch (14.12)
+//   - Jump: break, continue, return (14.8-14.10)
+//   - for-await-of (14.7.5, async iteration)
+// @spec https://tc39.es/ecma262/#sec-ecmascript-language-statements-and-declarations
+//
+// SIMPLIFIED: The spec uses Completion Records (with [[Type]], [[Value]], [[Target]])
+// to represent normal vs abrupt completions (break, continue, return, throw).
+// Rift uses C++ exceptions (BreakException, ContinueException, ReturnException,
+// JavaScriptException) to model abrupt completions. This is functionally equivalent
+// but means the "catch" sites differ from where the spec checks completion types.
+//
+// See also: statement_evaluator.cpp (declarations, blocks, destructuring)
+//           statement_evaluator_exceptions.cpp (throw, try-catch-finally)
+// ============================================================================
 
 #include <cmath>
 
@@ -22,48 +30,89 @@
 
 namespace rift::core {
 
+// 14.6 The if Statement — Runtime Semantics: Evaluation
+// @spec https://tc39.es/ecma262/#sec-if-statement-runtime-semantics-evaluation
+//
+// IfStatement : if ( Expression ) Statement else Statement
+//   1. Let exprRef be ? Evaluation of Expression.
+//   2. Let exprValue be ToBoolean(? GetValue(exprRef)).
+//   3. If exprValue is true, then
+//      a. Let stmtCompletion be Completion(Evaluation of the first Statement).
+//   4. Else,
+//      a. Let stmtCompletion be Completion(Evaluation of the second Statement).
+//   5. Return ? UpdateEmpty(stmtCompletion, undefined).
+//
+// IfStatement : if ( Expression ) Statement
+//   1. Let exprRef be ? Evaluation of Expression.
+//   2. Let exprValue be ToBoolean(? GetValue(exprRef)).
+//   3. If exprValue is false, then
+//      a. Return undefined.
+//   4. Else,
+//      a. Let stmtCompletion be Completion(Evaluation of Statement).
+//      b. Return ? UpdateEmpty(stmtCompletion, undefined).
 Value StatementEvaluator::evaluateIfStatement(std::shared_ptr<ASTNode> node,
                                               std::shared_ptr<Environment> env, Rift* engine) {
     if(node->children.size() < 2) {
         return Value::undefined();
     }
 
-    // Evaluate the condition
+    // Step 1-2: Let exprValue be ToBoolean(? GetValue(? Evaluation of Expression)).
     Value condition = engine->evaluate(node->children[0], env);
 
-    // If condition is truthy, evaluate the then branch
+    // Step 3: If exprValue is true, evaluate the then branch
     if(condition.toBool()) {
         return engine->evaluate(node->children[1], env);
     }
 
-    // If there's an else clause and condition is falsy, evaluate the else branch
+    // Step 4: Else, evaluate the else branch (if present)
     if(node->children.size() > 2) {
         return engine->evaluate(node->children[2], env);
     }
 
+    // Step 3a (no-else form): Return undefined.
     return Value::undefined();
 }
 
+// 14.7.2 The while Statement — Runtime Semantics: WhileLoopEvaluation
+// @spec https://tc39.es/ecma262/#sec-while-statement-runtime-semantics-labelledevaluation
+//
+// WhileStatement : while ( Expression ) Statement
+//   1. Let V be undefined.
+//   2. Repeat,
+//      a. Let exprRef be ? Evaluation of Expression.
+//      b. Let exprValue be ToBoolean(? GetValue(exprRef)).
+//      c. If exprValue is false, return V.
+//      d. Let stmtResult be Completion(Evaluation of Statement).
+//      e. If LoopContinues(stmtResult, labelSet) is false, return ? UpdateEmpty(stmtResult, V).
+//      f. If stmtResult.[[Value]] is not empty, set V to stmtResult.[[Value]].
+//
+// SIMPLIFIED: Rift uses BreakException/ContinueException instead of Completion Records
+// to handle break/continue. The spec's LoopContinues check is implicit in the catch blocks.
 Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
     if(node->children.size() < 2) {
         return Value::undefined();
     }
 
+    // Step 1: Let V be undefined.
     Value result = Value::undefined();
 
-    // Keep looping while condition is truthy
+    // Step 2: Repeat,
     while(true) {
+        // Step 2a-b: Let exprValue be ToBoolean(? GetValue(? Evaluation of Expression)).
         Value condition = engine->evaluate(node->children[0], env);
+        // Step 2c: If exprValue is false, return V.
         if(!condition.toBool()) {
             break;
         }
+        // Step 2d: Let stmtResult be Completion(Evaluation of Statement).
         try {
             result = engine->evaluate(node->children[1], env);
         } catch(const BreakException&) {
+            // Step 2e: If stmtResult is break, return V.
             break;
         } catch(const ContinueException&) {
-            // Skip to next iteration
+            // Step 2e: If stmtResult is continue, skip to next iteration.
             continue;
         }
     }
@@ -71,26 +120,45 @@ Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
     return result;
 }
 
+// 14.7.1 The do-while Statement — Runtime Semantics: DoWhileLoopEvaluation
+// @spec https://tc39.es/ecma262/#sec-do-while-statement-runtime-semantics-labelledevaluation
+//
+// DoWhileStatement : do Statement while ( Expression ) ;
+//   1. Let V be undefined.
+//   2. Repeat,
+//      a. Let stmtResult be Completion(Evaluation of Statement).
+//      b. If LoopContinues(stmtResult, labelSet) is false,
+//         return ? UpdateEmpty(stmtResult, V).
+//      c. If stmtResult.[[Value]] is not empty, set V to stmtResult.[[Value]].
+//      d. Let exprRef be ? Evaluation of Expression.
+//      e. Let exprValue be ToBoolean(? GetValue(exprRef)).
+//      f. If exprValue is false, return V.
+//
+// SIMPLIFIED: Rift uses BreakException/ContinueException instead of Completion Records.
 Value StatementEvaluator::evaluateDoWhileStatement(std::shared_ptr<ASTNode> node,
                                                    std::shared_ptr<Environment> env, Rift* engine) {
     if(node->children.size() < 2) {
         return Value::undefined();
     }
 
+    // Step 1: Let V be undefined.
     Value result = Value::undefined();
 
-    // Execute body at least once, then check condition
+    // Step 2: Repeat,
     do {
+        // Step 2a: Let stmtResult be Completion(Evaluation of Statement).
         try {
             result = engine->evaluate(node->children[0], env);  // body is first child
         } catch(const BreakException&) {
+            // Step 2b: If stmtResult is break, return V.
             break;
         } catch(const ContinueException&) {
-            // Skip to condition check
+            // Step 2b: If stmtResult is continue, skip to condition check.
         }
 
-        // Check condition after body execution
+        // Step 2d-e: Let exprValue be ToBoolean(? GetValue(? Evaluation of Expression)).
         Value condition = engine->evaluate(node->children[1], env);  // condition is second child
+        // Step 2f: If exprValue is false, return V.
         if(!condition.toBool()) {
             break;
         }
@@ -99,45 +167,73 @@ Value StatementEvaluator::evaluateDoWhileStatement(std::shared_ptr<ASTNode> node
     return result;
 }
 
+// 14.7.4.2 Runtime Semantics: ForLoopEvaluation
+// @spec https://tc39.es/ecma262/#sec-for-statement-runtime-semantics-labelledevaluation
+//
+// ForStatement : for ( Expression_opt ; Expression_opt ; Expression_opt ) Statement
+//   1. If the first Expression is present, then
+//      a. Let exprRef be ? Evaluation of the first Expression.
+//      b. Perform ? GetValue(exprRef).
+//   2. Let V be undefined.
+//   3. Repeat,
+//      a. If the second Expression is present, then
+//         i. Let exprRef be ? Evaluation of the second Expression.
+//         ii. Let exprValue be ToBoolean(? GetValue(exprRef)).
+//         iii. If exprValue is false, return V.
+//      b. Let stmtResult be Completion(Evaluation of Statement).
+//      c. If LoopContinues(stmtResult, labelSet) is false,
+//         return ? UpdateEmpty(stmtResult, V).
+//      d. If stmtResult.[[Value]] is not empty, set V to stmtResult.[[Value]].
+//      e. If the third Expression is present, then
+//         i. Let incRef be ? Evaluation of the third Expression.
+//         ii. Perform ? GetValue(incRef).
+//
+// SIMPLIFIED: Rift evaluates init directly rather than through ForDeclaration.
+// The spec has a separate path for `for (var/let/const ...)` with per-iteration
+// environment creation for let/const. Rift does not create per-iteration scopes
+// for for-loops (only for for-of/for-in).
 Value StatementEvaluator::evaluateForStatement(std::shared_ptr<ASTNode> node,
                                                std::shared_ptr<Environment> env, Rift* engine) {
     if(node->children.size() < 4) {
         return Value::undefined();
     }
 
+    // Step 2: Let V be undefined.
     Value result = Value::undefined();
 
-    // Execute initialization (can be null for empty initialization)
+    // Step 1: Evaluate initialization (can be null for empty initialization)
     if(node->children[0] != nullptr) {
         engine->evaluate(node->children[0], env);
     }
 
-    // Keep looping while condition is truthy (or infinitely if no condition)
+    // Step 3: Repeat,
     while(true) {
-        // Check condition (if present)
+        // Step 3a: Check condition (if present)
         if(node->children[1] != nullptr) {
             Value condition = engine->evaluate(node->children[1], env);
+            // Step 3a.iii: If exprValue is false, return V.
             if(!condition.toBool()) {
                 break;
             }
         }
         // If no condition, loop infinitely (unless break/return is encountered)
 
-        // Execute body
+        // Step 3b: Let stmtResult be Completion(Evaluation of Statement).
         try {
             result = engine->evaluate(node->children[3], env);
         } catch(const BreakException&) {
+            // Step 3c: If stmtResult is break, return V.
             break;
         } catch(const ContinueException&) {
-            // On continue in a for-loop, run the update expression (if any), then go to next
-            // iteration
+            // Step 3c: If stmtResult is continue, run update then next iteration.
+            // Step 3e: Execute update expression
             if(node->children[2] != nullptr) {
                 engine->evaluate(node->children[2], env);
             }
             continue;
         }
 
-        // Execute update expression (if present)
+        // Step 3e: Execute update expression (if present)
         if(node->children[2] != nullptr) {
             engine->evaluate(node->children[2], env);
         }
@@ -146,22 +242,48 @@ Value StatementEvaluator::evaluateForStatement(std::shared_ptr<ASTNode> node,
     return result;
 }
 
+// 14.7.5 The for-in Statement — Runtime Semantics: ForIn/OfBodyEvaluation
+// @spec https://tc39.es/ecma262/#sec-runtime-semantics-forin-div-ofbodyevaluation
+//
+// ForInOfStatement : for ( LeftHandSideExpression in AssignmentExpression ) Statement
+//   ForIn/OfHeadEvaluation:
+//     1. Let exprRef be ? Evaluation of AssignmentExpression.
+//     2. Let exprValue be ? GetValue(exprRef).
+//     3. If exprValue is undefined or null, return Completion Record { break }.
+//     4. Let obj be ! ToObject(exprValue).
+//     5. Let iterator be EnumerateObjectProperties(obj).
+//   ForIn/OfBodyEvaluation:
+//     1. Let V be undefined.
+//     2. Repeat,
+//        a. Let nextResult be ? Call(iterator.next).
+//        b. If nextResult.done is true, return V.
+//        c. Let nextValue be nextResult.value.
+//        d. Perform lhsRef assignment with nextValue.
+//        e. Let stmtResult be Completion(Evaluation of Statement).
+//        f. If LoopContinues(stmtResult, labelSet) is false, return.
+//        g. If stmtResult.[[Value]] is not empty, set V to stmtResult.[[Value]].
+//
+// SIMPLIFIED: Rift uses getOwnPropertyNames() instead of the spec's
+// EnumerateObjectProperties which includes inherited enumerable string properties.
+// The spec also filters out non-enumerable properties; Rift iterates all own properties.
+// INCOMPLETE: Prototype chain enumeration not implemented (only own properties).
 Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
     if(node->children.size() < 3) {
         return Value::undefined();
     }
 
-    auto left_node = node->children[0];   // Variable declaration or identifier
-    auto right_node = node->children[1];  // Object to iterate
+    auto left_node = node->children[0];   // Variable declaration or identifier (LHS)
+    auto right_node = node->children[1];  // Object to iterate (RHS)
     auto body_node = node->children[2];   // Loop body
 
+    // Step 1 (ForIn/OfBodyEvaluation): Let V be undefined.
     Value result = Value::undefined();
 
-    // Evaluate the object to iterate over
+    // ForIn/OfHeadEvaluation step 1-2: Evaluate the expression
     Value obj_value = engine->evaluate(right_node, env);
 
-    // Detect destructuring pattern
+    // Detect destructuring pattern for LHS
     bool is_destructuring = false;
     std::shared_ptr<ASTNode> pattern;
     VariableType var_type = VariableType::Var;
@@ -184,12 +306,15 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
     }
 
     if(!is_destructuring) {
-        // Simple variable path (existing behavior)
+        // Simple variable binding path
+        // ForIn/OfBodyEvaluation step 2d: Perform lhsRef assignment with key
         std::string var_name;
         if(left_node->type == ASTNodeType::VariableDeclaration ||
            left_node->type == ASTNodeType::LetDeclaration ||
            left_node->type == ASTNodeType::ConstDeclaration) {
             var_name = left_node->value;
+            // DEVIATION: const in for-in should create a new binding per iteration.
+            // Rift defines it once as Let to allow reassignment across iterations.
             if(left_node->type == ASTNodeType::LetDeclaration) {
                 env->define(var_name, Value::undefined(), VariableType::Let);
             } else if(left_node->type == ASTNodeType::ConstDeclaration) {
@@ -203,12 +328,16 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
             return Value::undefined();
         }
 
+        // ForIn/OfHeadEvaluation step 5: Let iterator be EnumerateObjectProperties(obj).
+        // Step 2: Repeat (iterate over enumerable property keys)
         if(obj_value.isObject() || obj_value.isFunction()) {
             auto* obj = obj_value.getObject();
             if(obj) {
                 auto keys = obj->getOwnPropertyNames();
                 for(const auto& key : keys) {
+                    // Step 2d: Assign key to loop variable
                     env->set(var_name, Value(key));
+                    // Step 2e: Let stmtResult be Completion(Evaluation of Statement).
                     try {
                         result = engine->evaluate(body_node, env);
                     } catch(const BreakException&) {
@@ -219,6 +348,7 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
                 }
             }
         } else if(obj_value.isString()) {
+            // String enumeration: iterate over character indices
             std::string str = obj_value.toString();
             for(size_t i = 0; i < str.length(); i++) {
                 env->set(var_name, Value(std::to_string(i)));
@@ -232,8 +362,9 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
             }
         }
     } else {
-        // Destructuring path
+        // Destructuring path — ForIn/OfBodyEvaluation with DestructuringAssignmentTarget
         // For var: bind into outer env; for let/const: per-iteration child env
+        // (spec step 2d uses BindingInitialization for destructuring patterns)
         auto bindAndExecute = [&](const Value& key_value) -> bool {
             if(var_type == VariableType::Var) {
                 applyPatternBinding(pattern, key_value, env, engine, var_type);
@@ -281,11 +412,27 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
     return result;
 }
 
-// Helper to get all values from an iterable using Symbol.iterator protocol
+// 7.4.1 GetIterator ( obj, kind ) / 7.4.2 IteratorNext ( iteratorRecord )
+// @spec https://tc39.es/ecma262/#sec-getiterator
+// @spec https://tc39.es/ecma262/#sec-iteratornext
+//
+// Collects all values from an iterable into a vector.
+// Used by for-of to eagerly consume the iterable before entering the loop body.
+//
+// DEVIATION: The spec lazily consumes the iterator one value at a time during
+// each loop iteration. Rift eagerly collects all values into a vector first.
+// This means iterator side effects happen before the first loop body execution.
+//
+// DEVIATION: Rift tries array-like indexing first (objects with a numeric "length"
+// property) before falling back to the Symbol.iterator protocol. The spec always
+// uses the iterator protocol for for-of. This optimization handles the common
+// case of plain arrays without requiring Symbol.iterator setup.
 static std::vector<Value> getIterableValues(const Value& iterable) {
     std::vector<Value> values;
 
-    // Handle string iteration (each character)
+    // String iteration: each code unit becomes a separate value
+    // 22.1.5.1 CreateStringIterator ( string )
+    // @spec https://tc39.es/ecma262/#sec-createstringiterator
     if(iterable.isString()) {
         std::string str = iterable.getString();
         for(char c : str) {
@@ -304,8 +451,8 @@ static std::vector<Value> getIterableValues(const Value& iterable) {
         return values;
     }
 
-    // First, try array-like iteration (objects with numeric length property)
-    // This is more reliable than the iterator protocol for basic arrays
+    // DEVIATION: Try array-like iteration first (objects with numeric length property).
+    // The spec does not have this shortcut — it always uses Symbol.iterator.
     Value length_val = obj->getProperty("length");
     if(length_val.isNumber()) {
         double len = length_val.getNumber();
@@ -318,16 +465,17 @@ static std::vector<Value> getIterableValues(const Value& iterable) {
         }
     }
 
-    // Fall back to Symbol.iterator protocol for custom iterables
+    // 7.4.1 GetIterator step 1: Let method be ? GetMethod(obj, %Symbol.iterator%).
     std::string iterator_key =
         EvaluationUtils::symbolToPropertyKey(builtins::Symbol::getIteratorId());
     Value iterator_method = obj->getProperty(iterator_key);
 
+    // Step 2: If method is undefined, throw a TypeError. (Rift returns empty instead.)
     if(iterator_method.isUndefined() || !iterator_method.isFunction()) {
         return values;  // Not iterable
     }
 
-    // Call [Symbol.iterator]() to get iterator object
+    // Step 3: Let iterator be ? Call(method, obj).
     auto* iterator_func = dynamic_cast<rift::runtime::JSFunction*>(iterator_method.getObject());
     if(!iterator_func) {
         return values;
@@ -342,8 +490,9 @@ static std::vector<Value> getIterableValues(const Value& iterable) {
 
     auto* iterator_obj = iterator.getObject();
 
-    // Repeatedly call next() until done
+    // 7.4.2 IteratorNext: Repeatedly call next() until done
     while(true) {
+        // 1. Let result be ? Call(iteratorRecord.[[NextMethod]], iteratorRecord.[[Iterator]]).
         Value next_method = iterator_obj->getProperty("next");
         if(!next_method.isFunction()) {
             break;
@@ -357,16 +506,19 @@ static std::vector<Value> getIterableValues(const Value& iterable) {
         CallContext next_ctx(CallType::Function, iterator);
         Value result = next_func->call(next_ctx, {});
 
+        // 2. If result is not an Object, throw a TypeError. (Rift breaks instead.)
         if(!result.isObject()) {
             break;
         }
 
+        // 7.4.4 IteratorComplete: Let done be ? ToBoolean(? Get(iterResult, "done")).
         auto* result_obj = result.getObject();
         Value done = result_obj->getProperty("done");
         if(done.toBool()) {
             break;
         }
 
+        // 7.4.5 IteratorValue: Let value be ? Get(iterResult, "value").
         Value value = result_obj->getProperty("value");
         values.push_back(value);
     }
@@ -374,22 +526,50 @@ static std::vector<Value> getIterableValues(const Value& iterable) {
     return values;
 }
 
+// 14.7.5 The for-of Statement — Runtime Semantics: ForIn/OfBodyEvaluation
+// @spec https://tc39.es/ecma262/#sec-runtime-semantics-forin-div-ofbodyevaluation
+//
+// ForInOfStatement : for ( ForDeclaration of AssignmentExpression ) Statement
+//   ForIn/OfHeadEvaluation:
+//     1. Let exprRef be ? Evaluation of AssignmentExpression.
+//     2. Let exprValue be ? GetValue(exprRef).
+//     3. Let iteratorRecord be ? GetIterator(exprValue, SYNC).
+//   ForIn/OfBodyEvaluation:
+//     1. Let V be undefined.
+//     2. Repeat,
+//        a. Let nextResult be ? Call(iteratorRecord.[[NextMethod]], ...).
+//        b. If nextResult.done is true, return V.
+//        c. Let nextValue be ? IteratorValue(nextResult).
+//        d. If iterationKind is ENUMERATE or ITERATE, then
+//           i. Perform lhsRef assignment / BindingInitialization with nextValue.
+//        e. Let stmtResult be Completion(Evaluation of Statement).
+//        f. If LoopContinues(stmtResult, labelSet) is false, then
+//           i. Set status to ? UpdateEmpty(stmtResult, V).
+//           ii. If iteratorKind is ASYNC, return ? AsyncIteratorClose(iteratorRecord, status).
+//           iii. Return ? IteratorClose(iteratorRecord, status).
+//        g. If stmtResult.[[Value]] is not empty, set V to stmtResult.[[Value]].
+//
+// DEVIATION: Rift eagerly collects all iterable values via getIterableValues()
+// before entering the loop, rather than lazily consuming the iterator per-iteration.
+// This means break does not call IteratorClose, and iterator side effects happen
+// before the first loop body runs.
 Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
     if(node->children.size() < 3) {
         return Value::undefined();
     }
 
-    auto left_node = node->children[0];   // Variable declaration or identifier
-    auto right_node = node->children[1];  // Iterable
-    auto body_node = node->children[2];   // Loop body
+    auto left_node = node->children[0];   // ForDeclaration or LeftHandSideExpression
+    auto right_node = node->children[1];  // AssignmentExpression (iterable)
+    auto body_node = node->children[2];   // Loop body (Statement)
 
+    // Step 1 (ForIn/OfBodyEvaluation): Let V be undefined.
     Value result = Value::undefined();
 
-    // Evaluate the iterable
+    // ForIn/OfHeadEvaluation step 1-2: Evaluate the iterable expression.
     Value iterable = engine->evaluate(right_node, env);
 
-    // Detect destructuring pattern
+    // Detect destructuring pattern for LHS
     bool is_destructuring = false;
     std::shared_ptr<ASTNode> pattern;
     VariableType var_type = VariableType::Var;
@@ -413,12 +593,14 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
     }
 
     if(!is_destructuring) {
-        // Simple variable path (existing behavior)
+        // Simple variable binding — ForIn/OfBodyEvaluation step 2d
         std::string var_name;
         if(left_node->type == ASTNodeType::VariableDeclaration ||
            left_node->type == ASTNodeType::LetDeclaration ||
            left_node->type == ASTNodeType::ConstDeclaration) {
             var_name = left_node->value;
+            // DEVIATION: const in for-of should create a new binding per iteration.
+            // Rift defines it once as Let to allow reassignment across iterations.
             if(left_node->type == ASTNodeType::LetDeclaration) {
                 env->define(var_name, Value::undefined(), VariableType::Let);
             } else if(left_node->type == ASTNodeType::ConstDeclaration) {
@@ -432,19 +614,25 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
             return Value::undefined();
         }
 
+        // ForIn/OfHeadEvaluation step 3: GetIterator(exprValue, SYNC)
         auto values = getIterableValues(iterable);
+        // Step 2: Repeat (iterate over values)
         for(const auto& value : values) {
+            // Step 2d: Assign nextValue to loop variable
             env->set(var_name, value);
+            // Step 2e: Let stmtResult be Completion(Evaluation of Statement).
             try {
                 result = engine->evaluate(body_node, env);
             } catch(const BreakException&) {
+                // Step 2f: INCOMPLETE: Should call IteratorClose on break.
                 break;
             } catch(const ContinueException&) {
                 continue;
             }
         }
     } else {
-        // Destructuring path
+        // Destructuring path — ForIn/OfBodyEvaluation with BindingPattern
+        // Step 2d: Perform BindingInitialization of ForBinding with nextValue
         auto values = getIterableValues(iterable);
         if(var_type == VariableType::Var) {
             // var: bind into outer env (no per-iteration scope needed, var allows redeclaration)
@@ -459,7 +647,10 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
                 }
             }
         } else {
-            // let/const: create a child environment per iteration to avoid redeclaration errors
+            // let/const: create a child environment per iteration
+            // This implements the spec's per-iteration scope behavior:
+            // ForIn/OfBodyEvaluation step 2: creates a new declarative environment
+            // for each iteration to give each loop body its own let/const bindings.
             for(const auto& value : values) {
                 auto iter_env = std::make_shared<Environment>(env);
                 applyPatternBinding(pattern, value, iter_env, engine, var_type);
@@ -477,30 +668,55 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
     return result;
 }
 
+// 14.12 The switch Statement — Runtime Semantics: Evaluation
+// @spec https://tc39.es/ecma262/#sec-switch-statement-runtime-semantics-evaluation
+//
+// SwitchStatement : switch ( Expression ) CaseBlock
+//   1. Let exprRef be ? Evaluation of Expression.
+//   2. Let switchValue be ? GetValue(exprRef).
+//   3. Let oldEnv be the running execution context's LexicalEnvironment.
+//   4. Let blockEnv be NewDeclarativeEnvironment(oldEnv).
+//   5. Perform BlockDeclarationInstantiation(CaseBlock, blockEnv).
+//   6. Set the running execution context's LexicalEnvironment to blockEnv.
+//   7. Let R be Completion(CaseBlockEvaluation of CaseBlock with argument switchValue).
+//   8. Set the running execution context's LexicalEnvironment to oldEnv.
+//   9. Return R.
+//
+// 14.12.4 CaseBlockEvaluation:
+//   Uses strict equality (===) to compare discriminant against each case value.
+//   Once a match is found, all subsequent case/default statements execute (fall-through)
+//   until a break is encountered.
+//
+// INCOMPLETE: Rift does not create a block scope for the switch body (steps 4-6).
+// Let/const declarations inside case clauses may not be properly scoped.
 Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
                                                   std::shared_ptr<Environment> env, Rift* engine) {
     if(node->children.empty()) {
         return Value::undefined();
     }
 
-    // First child is the discriminant expression
+    // Step 1-2: Let switchValue be ? GetValue(? Evaluation of Expression).
     Value discriminant = engine->evaluate(node->children[0], env);
 
     bool foundMatch = false;
     bool executeRemaining = false;
     Value result = Value::undefined();
 
+    // Step 7: CaseBlockEvaluation
+    // 14.12.4 Runtime Semantics: CaseBlockEvaluation
+    // @spec https://tc39.es/ecma262/#sec-runtime-semantics-caseblockevaluation
     // Iterate through all case/default clauses
     for(size_t i = 1; i < node->children.size(); ++i) {
         auto clause = node->children[i];
 
         if(clause->type == ASTNodeType::CaseClause) {
             if(!foundMatch && !executeRemaining) {
-                // Check if this case matches
+                // CaseBlockEvaluation step: If input is clauseSelector, then set found to true.
                 if(!clause->children.empty()) {
                     Value testValue = engine->evaluate(clause->children[0], env);
 
-                    // JavaScript switch uses strict equality (===)
+                    // 14.12.3 CaseClauseIsSelected: uses IsStrictlyEqual (===)
+                    // @spec https://tc39.es/ecma262/#sec-runtime-semantics-caseclauseisselected
                     if(discriminant.strictEquals(testValue)) {
                         foundMatch = true;
                         executeRemaining = true;
@@ -509,17 +725,20 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
             }
 
             if(executeRemaining) {
-                // Execute all statements in this case (starting from index 1, since 0 is the test)
+                // Execute all statements in this case (fall-through behavior)
+                // CaseBlockEvaluation: evaluate StatementList of matching/subsequent clauses
                 for(size_t j = 1; j < clause->children.size(); ++j) {
                     try {
                         result = engine->evaluate(clause->children[j], env);
                     } catch(const BreakException&) {
+                        // Break terminates the switch
                         return result;
                     }
                 }
             }
 
         } else if(clause->type == ASTNodeType::DefaultClause) {
+            // CaseBlockEvaluation: If no case matched, execute default
             if(!foundMatch) {
                 foundMatch = true;
                 executeRemaining = true;
@@ -541,31 +760,72 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
     return result;
 }
 
+// 14.9 The break Statement — Runtime Semantics: Evaluation
+// @spec https://tc39.es/ecma262/#sec-break-statement-runtime-semantics-evaluation
+//
+// BreakStatement : break ;
+//   1. Return Completion Record { [[Type]]: break, [[Value]]: empty, [[Target]]: empty }.
+//
+// BreakStatement : break LabelIdentifier ;
+//   1. Let label be the StringValue of LabelIdentifier.
+//   2. Return Completion Record { [[Type]]: break, [[Value]]: empty, [[Target]]: label }.
+//
+// SIMPLIFIED: Rift uses a C++ BreakException to signal break completions.
+// INCOMPLETE: Labelled break (break <label>) is not supported.
 Value StatementEvaluator::evaluateBreakStatement(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
-    // Throw a special exception to break out of loops/switch statements
+    // Step 1: Return Completion Record { [[Type]]: break }.
     throw BreakException();
 }
 
+// 14.10 The return Statement — Runtime Semantics: Evaluation
+// @spec https://tc39.es/ecma262/#sec-return-statement-runtime-semantics-evaluation
+//
+// ReturnStatement : return ;
+//   1. Return Completion Record { [[Type]]: return, [[Value]]: undefined }.
+//
+// ReturnStatement : return Expression ;
+//   1. Let exprRef be ? Evaluation of Expression.
+//   2. Let exprValue be ? GetValue(exprRef).
+//   3. If GetGeneratorKind() is ASYNC, set exprValue to ? Await(exprValue).
+//   4. Return Completion Record { [[Type]]: return, [[Value]]: exprValue }.
+//
+// SIMPLIFIED: Rift uses a C++ ReturnException to signal return completions.
+// The spec uses Completion Records. Step 3 (async Await) is handled separately
+// by the AsyncExecutor, not here.
 Value StatementEvaluator::evaluateReturnStatement(std::shared_ptr<ASTNode> node,
                                                   std::shared_ptr<Environment> env, Rift* engine) {
+    // Step 1 (no expression): Return undefined.
     Value returnValue = Value::undefined();
 
-    // If there's a return expression, evaluate it
+    // Step 1-2 (with expression): Let exprValue be ? GetValue(? Evaluation of Expression).
     if(!node->children.empty()) {
         returnValue = engine->evaluate(node->children[0], env);
     }
 
-    // Throw a special exception to unwind the call stack
-    // This is a simple way to implement return without proper exception handling
+    // Step 4: Return Completion Record { [[Type]]: return, [[Value]]: exprValue }.
     throw ReturnException(returnValue);
 }
 
+// 14.7.5 The for-await-of Statement — Runtime Semantics: ForIn/OfBodyEvaluation (ASYNC)
+// @spec https://tc39.es/ecma262/#sec-runtime-semantics-forin-div-ofbodyevaluation
+//
+// ForInOfStatement : for await ( ForDeclaration of AssignmentExpression ) Statement
+//   ForIn/OfHeadEvaluation with iteratorKind = ASYNC:
+//     1. Let exprRef be ? Evaluation of AssignmentExpression.
+//     2. Let exprValue be ? GetValue(exprRef).
+//     3. Let iteratorRecord be ? GetIterator(exprValue, ASYNC).
+//   ForIn/OfBodyEvaluation with iteratorKind = ASYNC:
+//     Each iteration awaits the result of next().
+//
+// SIMPLIFIED: This method is a fallback that throws when for-await-of is used outside
+// an async context. The actual async iteration is handled by AsyncExecutor, which
+// intercepts ForAwaitOfStatement nodes before they reach this evaluator.
 Value StatementEvaluator::evaluateForAwaitOfStatement(std::shared_ptr<ASTNode> node,
                                                       std::shared_ptr<Environment> env,
                                                       Rift* engine) {
-    // This is a fallback when for-await-of appears outside an AsyncExecutor context.
-    // In practice, AsyncExecutor intercepts this node type first.
+    // for-await-of requires an async execution context (AsyncExecutor).
+    // If we reach here, the code is not running inside an async function.
     throw JavaScriptException(Value("TypeError: for-await-of is only valid in async functions"));
 }
 
