@@ -17,253 +17,94 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/// The `String` builtin object and constructor.
-///
-/// The String object is used to represent and manipulate a sequence of characters.
-/// It provides methods for working with strings and serves as the constructor for string objects.
-///
-/// More information:
-///  - [ECMAScript reference][spec]
-///  - [MDN documentation][mdn]
-///
-/// [spec]: https://tc39.es/ecma262/#sec-string-objects
-/// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
+/// 22.1 String Objects
+/// @spec https://tc39.es/ecma262/#sec-string-objects
 class String : public BuiltinBase<String> {
   public:
     /// Setup methods required by BuiltinBase template
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
-    /// The `String()` constructor creates String objects or primitive strings.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string-constructor
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/String
+    /// 22.1.1.1 String ( value )
+    /// @spec https://tc39.es/ecma262/#sec-string-constructor-string-value
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `String.fromCharCode()` static method returns a string created from the specified
-    /// sequence of UTF-16 code units.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.fromcharcode
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
+    /// 22.1.2.1 String.fromCharCode ( ...codeUnits )
+    /// @spec https://tc39.es/ecma262/#sec-string.fromcharcode
     static Value fromCharCode(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// String prototype methods
+    // String prototype methods
 
-    /// The `charAt()` method returns a new string consisting of the single UTF-16 code unit
-    /// located at the specified offset into the string.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.charat
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
+    /// 22.1.3.2 String.prototype.charAt ( pos )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.charat
     static Value charAt(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `charCodeAt()` method returns an integer between 0 and 65535 representing the UTF-16
-    /// code unit at the given index.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.charcodeat
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
+    /// 22.1.3.3 String.prototype.charCodeAt ( pos )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.charcodeat
     static Value charCodeAt(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `concat()` method concatenates the string arguments to the calling string and returns a
-    /// new string.
+    /// 22.1.3.5 String.prototype.concat ( ...args )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.concat
     static Value concat(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `indexOf()` method, given one argument: a substring to search for, searches the entire
-    /// calling string, and returns the index of the first occurrence of the specified substring.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.indexof
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf
+    /// 22.1.3.9 String.prototype.indexOf ( searchString [ , position ] )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.indexof
     static Value indexOf(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `lastIndexOf()` method, given one argument: a substring to search for, searches the
-    /// entire calling string, and returns the index of the last occurrence of the specified
-    /// substring.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.lastindexof
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/lastIndexOf
+    /// 22.1.3.11 String.prototype.lastIndexOf ( searchString [ , position ] )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.lastindexof
     static Value lastIndexOf(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `slice()` method extracts a section of a string and returns it as a new string, without
-    /// modifying the original string.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.slice
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
+    /// 22.1.3.22 String.prototype.slice ( start, end )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.slice
     static Value slice(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `substring()` method returns the part of the string from the start index up to and
-    /// excluding the end index, or to the end of the string if no end index is supplied.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.substring
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring
+    /// 22.1.3.25 String.prototype.substring ( start, end )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.substring
     static Value substring(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `substr()` method returns a portion of the string, starting at the specified index and
-    /// extending for a given number of characters afterwards.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.substr
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr
+    /// NON-STANDARD: Legacy Annex B method (not implemented)
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.substr
     static Value substr(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `toUpperCase()` method returns the calling string value converted to uppercase (the
-    /// value will be converted to a string if it isn't one).
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.touppercase
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase
+    /// 22.1.3.30 String.prototype.toUpperCase ( )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.touppercase
     static Value toUpperCase(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `toLowerCase()` method returns the calling string value converted to lower case (the
-    /// value will be converted to a string if it isn't one).
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.tolowercase
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLowerCase
+    /// 22.1.3.28 String.prototype.toLowerCase ( )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.tolowercase
     static Value toLowerCase(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `trim()` method removes whitespace from both ends of a string and returns a new string,
-    /// without modifying the original string.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.trim
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim
+    /// 22.1.3.32 String.prototype.trim ( )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.trim
     static Value trim(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `match()` method retrieves the result of matching a string against a regular expression.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.match
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
+    /// 22.1.3.13 String.prototype.match ( regexp )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.match
     static Value match(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `search()` method executes a search for a match between a regular expression and this
-    /// String object.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.search
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/search
+    /// 22.1.3.21 String.prototype.search ( regexp )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.search
     static Value search(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `replace()` method returns a new string with one, some, or all matches of a pattern
-    /// replaced by a replacement.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.replace
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    /// 22.1.3.19 String.prototype.replace ( searchValue, replaceValue )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.replace
     static Value replace(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `split()` method takes a pattern and divides a String into an ordered list of
-    /// substrings by searching for the pattern, puts these substrings into an array, and returns
-    /// the array.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.split
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+    /// 22.1.3.23 String.prototype.split ( separator, limit )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.split
     static Value split(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `toString()` method returns a string representing the specified object.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.tostring
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toString
+    /// 22.1.3.29 String.prototype.toString ( )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.tostring
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `valueOf()` method returns the primitive value of a String object.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype.valueof
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/valueOf
+    /// 22.1.3.35 String.prototype.valueOf ( )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `[Symbol.iterator]()` method returns a new iterator object that iterates over the
-    /// code points of a String value.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-string.prototype-@@iterator
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/@@iterator
+    /// 22.1.3.36 String.prototype [ @@iterator ] ( )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype-%symbol.iterator%
     static Value symbolIterator(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Get the object factory (needed by StringIterator)
@@ -272,10 +113,10 @@ class String : public BuiltinBase<String> {
     }
 
   private:
-    /// Helper for index validation
+    /// NON-STANDARD: Helper for index validation
     static size_t validateStringIndex(const std::string& str, double index);
 
-    /// Helper to get the global String prototype (for proper prototype chain)
+    /// NON-STANDARD: Helper to get the global String prototype
     static JSObject* getGlobalPrototype();
 };
 

@@ -18,63 +18,50 @@ namespace rift::builtins {
 
 using namespace rift::runtime;
 
-/// JSON object implementation
-/// Provides JSON.parse() and JSON.stringify() methods for serialization
+/// 25.5 The JSON Object
+/// @spec https://tc39.es/ecma262/#sec-json-object
 class JSON {
   public:
     /// Setup JSON object in global environment
-    /// Creates the JSON global object with parse and stringify methods
     static void setup(std::shared_ptr<Environment> env, rift::core::Rift* engine);
 
-    /// JSON.parse(text[, reviver])
-    /// Parses a JSON string and returns the JavaScript value
-    /// @param args[0] - String to parse as JSON
-    /// @param args[1] - Optional reviver function (not implemented)
-    /// @param factory - ObjectFactory for GC-managed object creation
-    /// @returns Parsed JavaScript value
-    /// @throws SyntaxError for invalid JSON
+    /// 25.5.1 JSON.parse ( text [ , reviver ] )
+    /// @spec https://tc39.es/ecma262/#sec-json.parse
     static Value parse(const std::vector<Value>& args, rift::memory::ObjectFactory* factory);
 
-    /// JSON.stringify(value[, replacer[, space]])
-    /// Converts a JavaScript value to a JSON string
-    /// @param args[0] - Value to stringify
-    /// @param args[1] - Optional replacer function/array (not implemented)
-    /// @param args[2] - Optional space parameter for formatting (not implemented)
-    /// @returns JSON string representation
+    /// 25.5.2 JSON.stringify ( value [ , replacer [ , space ] ] )
+    /// @spec https://tc39.es/ecma262/#sec-json.stringify
     static Value stringify(const std::vector<Value>& args);
 
   private:
-    /// Parse JSON string recursively
-    /// @param json JSON string to parse
-    /// @param pos Current position in string (modified during parsing)
-    /// @param factory ObjectFactory for GC-managed object creation
-    /// @returns Parsed JavaScript value
+    /// 25.5.1.1 ParseJSON ( text ) — internal recursive parser
+    /// @spec https://tc39.es/ecma262/#sec-parsejson
     static Value parseValue(const std::string& json, size_t& pos,
                             rift::memory::ObjectFactory* factory);
 
-    /// Parse JSON object
+    /// NON-STANDARD: Internal helper for parsing JSON object literals
     static Value parseObject(const std::string& json, size_t& pos,
                              rift::memory::ObjectFactory* factory);
 
-    /// Parse JSON array
+    /// NON-STANDARD: Internal helper for parsing JSON array literals
     static Value parseArray(const std::string& json, size_t& pos,
                             rift::memory::ObjectFactory* factory);
 
-    /// Parse JSON string literal
+    /// NON-STANDARD: Internal helper for parsing JSON string literals
     static Value parseString(const std::string& json, size_t& pos);
 
-    /// Parse JSON number
+    /// NON-STANDARD: Internal helper for parsing JSON number literals
     static Value parseNumber(const std::string& json, size_t& pos);
 
-    /// Skip whitespace in JSON string
+    /// NON-STANDARD: Internal helper to skip whitespace in JSON input
     static void skipWhitespace(const std::string& json, size_t& pos);
 
-    /// Stringify JavaScript value recursively
-    /// @param value Value to stringify
-    /// @returns JSON string representation
+    /// 25.5.2.1 SerializeJSONProperty ( state, key, holder )
+    /// @spec https://tc39.es/ecma262/#sec-serializejsonproperty
     static std::string stringifyValue(const Value& value);
 
-    /// Escape string for JSON output
+    /// 25.5.2.2 QuoteJSONString ( value )
+    /// @spec https://tc39.es/ecma262/#sec-quotejsonstring
     static std::string escapeString(const std::string& str);
 };
 

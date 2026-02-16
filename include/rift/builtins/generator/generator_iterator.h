@@ -23,10 +23,8 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/**
- * Generator state enumeration.
- * Tracks the current execution state of a generator.
- */
+/// Generator state enumeration.
+/// Tracks the current execution state of a generator.
 enum class GeneratorState {
     SuspendedStart,  // Created but next() never called
     SuspendedYield,  // Paused at a yield point
@@ -34,84 +32,56 @@ enum class GeneratorState {
     Completed        // Finished (returned or threw)
 };
 
-/**
- * GeneratorIterator
- *
- * Implements the Generator prototype from ECMAScript spec (section 27.5).
- * Generators are special functions that can suspend execution at yield points
- * and resume later.
- *
- * Internal slots stored as properties:
- * - [[GeneratorState]] - Current state (SuspendedStart, SuspendedYield, Executing, Completed)
- * - [[GeneratorBody]] - The AST node for the generator function body
- * - [[GeneratorEnvironment]] - The captured closure environment
- * - [[GeneratorContext]] - Execution context for resume (yield point, loop states)
- * - [[GeneratorEngine]] - Reference to the Rift engine for evaluation
- * - [[GeneratorSentValue]] - Value passed to next()
- */
+/// 27.5 Generator Objects
+/// @spec https://tc39.es/ecma262/#sec-generator-objects
+///
+/// Generators are special functions that can suspend execution at yield points
+/// and resume later.
+///
+/// Internal slots (stored as properties):
+/// - [[GeneratorState]] - Current state (SuspendedStart, SuspendedYield, Executing, Completed)
+/// - [[GeneratorBody]] - The AST node for the generator function body
+/// - [[GeneratorEnvironment]] - The captured closure environment
+/// - [[GeneratorContext]] - Execution context for resume (yield point, loop states)
+/// - [[GeneratorEngine]] - Reference to the Rift engine for evaluation
+/// - [[GeneratorSentValue]] - Value passed to next()
 class GeneratorIterator {
   public:
-    /**
-     * Create a GeneratorIterator for the given generator function.
-     * This is called when a generator function is invoked - it returns
-     * the iterator object rather than executing the body.
-     *
-     * @param factory Object factory for GC-managed creation
-     * @param body The generator function body AST
-     * @param env The captured closure environment
-     * @param engine The Rift engine for later evaluation
-     * @param paramNames Parameter names for binding
-     * @param args Arguments passed to the generator function
-     * @return A new GeneratorIterator object
-     */
+    /// 27.5.3.1 GeneratorStart ( generator, generatorBody )
+    /// @spec https://tc39.es/ecma262/#sec-generatorstart
+    ///
+    /// Create a GeneratorIterator for the given generator function.
+    /// This is called when a generator function is invoked - it returns
+    /// the iterator object rather than executing the body.
     static JSObject* create(rift::memory::ObjectFactory* factory,
                             std::shared_ptr<rift::ast::ASTNode> body,
                             std::shared_ptr<Environment> env, rift::core::Rift* engine,
                             const std::vector<std::string>& paramNames,
                             const std::vector<Value>& args);
 
-    /**
-     * The next(value?) method implementation.
-     * Resumes generator execution until next yield or completion.
-     * Returns {done: boolean, value: any}.
-     */
+    /// 27.5.1.2 %GeneratorPrototype%.next ( value )
+    /// @spec https://tc39.es/ecma262/#sec-generator.prototype.next
     static Value next(const CallContext& ctx, const std::vector<Value>& args);
 
-    /**
-     * The return(value?) method implementation.
-     * Forces the generator to complete with the given value.
-     * Returns {done: true, value: value}.
-     */
+    /// 27.5.1.3 %GeneratorPrototype%.return ( value )
+    /// @spec https://tc39.es/ecma262/#sec-generator.prototype.return
     static Value returnMethod(const CallContext& ctx, const std::vector<Value>& args);
 
-    /**
-     * The throw(exception) method implementation.
-     * Throws an exception at the current yield point.
-     * Returns {done: boolean, value: any} or throws if not caught.
-     */
+    /// 27.5.1.4 %GeneratorPrototype%.throw ( exception )
+    /// @spec https://tc39.es/ecma262/#sec-generator.prototype.throw
     static Value throwMethod(const CallContext& ctx, const std::vector<Value>& args);
 
-    /**
-     * Set up the %GeneratorPrototype% object.
-     * Should be called once during builtin initialization.
-     * @param factory Object factory for GC-managed creation
-     * @param iterator_prototype The %IteratorPrototype% to inherit from
-     */
+    /// 27.5.1 Properties of the %GeneratorPrototype% Object
+    /// @spec https://tc39.es/ecma262/#sec-properties-of-generator-prototype
     static void setupPrototype(rift::memory::ObjectFactory* factory, JSObject* iterator_prototype);
 
-    /**
-     * Get the %GeneratorPrototype% object.
-     */
+    /// NON-STANDARD: Get the %GeneratorPrototype% object.
     static JSObject* getPrototype();
 
-    /**
-     * Set the object factory for static access.
-     */
+    /// NON-STANDARD: Set the object factory for static access.
     static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
-    /**
-     * Get the object factory.
-     */
+    /// NON-STANDARD: Get the object factory.
     static rift::memory::ObjectFactory* getObjectFactory();
 
   private:

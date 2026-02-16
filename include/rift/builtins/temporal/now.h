@@ -10,25 +10,31 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/// The `Temporal.Now` namespace object.
+/// 2.3 Temporal.Now Object
+/// @spec https://tc39.es/proposal-temporal/#sec-temporal-now-object
 class TemporalNow {
   public:
     /// Creates the Temporal.Now namespace object.
     static JSObject* create(rift::memory::ObjectFactory* factory);
 
-    /// Temporal.Now.instant() - returns current Instant
+    /// 2.3.2 Temporal.Now.instant ( )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.now.instant
     static Value instant(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Temporal.Now.timeZoneId() - returns system timezone string
+    /// 2.3.1 Temporal.Now.timeZoneId ( )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.now.timezoneid
     static Value timeZoneId(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Temporal.Now.plainDateISO() - returns current PlainDate in ISO calendar
+    /// 2.3.4 Temporal.Now.plainDateISO ( [ temporalTimeZoneLike ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.now.plaindateiso
     static Value plainDateISO(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Temporal.Now.plainTimeISO() - returns current PlainTime in ISO calendar
+    /// 2.3.5 Temporal.Now.plainTimeISO ( [ temporalTimeZoneLike ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.now.plaintimeiso
     static Value plainTimeISO(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Temporal.Now.plainDateTimeISO() - returns current PlainDateTime in ISO calendar
+    /// 2.3.3 Temporal.Now.plainDateTimeISO ( [ temporalTimeZoneLike ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.now.plaindatetimeiso
     static Value plainDateTimeISO(const CallContext& ctx, const std::vector<Value>& args);
 
   private:

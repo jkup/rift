@@ -13,24 +13,20 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/// The `Boolean` builtin object and constructor.
-///
-/// The Boolean object is a wrapper around the boolean primitive. The Boolean constructor
-/// can be used to explicitly convert values to boolean primitives.
-///
-/// More information:
-///  - [ECMAScript reference][spec]
-///  - [MDN documentation][mdn]
-///
-/// [spec]: https://tc39.es/ecma262/#sec-boolean-objects
-/// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+/// 20.3 Boolean Objects
+/// @spec https://tc39.es/ecma262/#sec-boolean-objects
 class Boolean : public BuiltinBase<Boolean> {
   public:
-    /// Boolean constructor with call context to distinguish function vs constructor calls
+    /// 20.3.1.1 Boolean ( value )
+    /// @spec https://tc39.es/ecma262/#sec-boolean-constructor-boolean-value
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Boolean prototype methods
+    /// 20.3.3.2 Boolean.prototype.toString ( )
+    /// @spec https://tc39.es/ecma262/#sec-boolean.prototype.tostring
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 20.3.3.3 Boolean.prototype.valueOf ( )
+    /// @spec https://tc39.es/ecma262/#sec-boolean.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Setup methods required by BuiltinBase template

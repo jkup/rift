@@ -19,7 +19,7 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/// Registry mapping JSObject* to temporal_rs::PlainMonthDay ownership.
+/// NON-STANDARD: Registry mapping JSObject* to temporal_rs::PlainMonthDay ownership.
 class PlainMonthDayRegistry {
   private:
     static std::unordered_map<JSObject*, std::unique_ptr<temporal_rs::PlainMonthDay>> registry_;
@@ -31,39 +31,63 @@ class PlainMonthDayRegistry {
     static void clear();
 };
 
-/// The `Temporal.PlainMonthDay` builtin constructor and prototype methods.
+/// 10 Temporal.PlainMonthDay Objects
+/// @spec https://tc39.es/proposal-temporal/#sec-temporal-plainmonthday-objects
 class TemporalPlainMonthDay : public BuiltinBase<TemporalPlainMonthDay> {
   public:
-    /// Constructor: new Temporal.PlainMonthDay(month, day [, calendar [, referenceYear]])
+    /// 10.1.1 Temporal.PlainMonthDay ( isoMonth, isoDay [ , calendar [ , referenceISOYear ] ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Setup methods required by BuiltinBase
+    /// 10.2 Properties of the Temporal.PlainMonthDay Constructor
+    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-constructor
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
+
+    /// 10.3 Properties of the Temporal.PlainMonthDay Prototype Object
+    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-prototype-object
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
-    /// Static methods
+    /// 10.2.2 Temporal.PlainMonthDay.from ( item [ , options ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.from
     static Value from(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Prototype getters
+    /// 10.3.5 get Temporal.PlainMonthDay.prototype.day
+    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainmonthday.prototype.day
     static Value day(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 10.3.4 get Temporal.PlainMonthDay.prototype.monthCode
+    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainmonthday.prototype.monthcode
     static Value monthCode(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 10.3.3 get Temporal.PlainMonthDay.prototype.calendarId
+    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainmonthday.prototype.calendarid
     static Value calendarId(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Mutation
+    /// 10.3.6 Temporal.PlainMonthDay.prototype.with ( temporalMonthDayLike [ , options ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.with
     static Value with(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Comparison
+    /// 10.3.7 Temporal.PlainMonthDay.prototype.equals ( other )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.equals
     static Value equals(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Conversion
+    /// 10.3.8 Temporal.PlainMonthDay.prototype.toPlainDate ( item )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.toplaindate
     static Value toPlainDate(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// String
+    /// 10.3.9 Temporal.PlainMonthDay.prototype.toString ( [ options ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.tostring
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 10.3.10 Temporal.PlainMonthDay.prototype.toJSON ( )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.tojson
     static Value toJSON(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 10.3.11 Temporal.PlainMonthDay.prototype.valueOf ( )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Helper to create a JS PlainMonthDay object from a temporal_rs::PlainMonthDay
+    /// NON-STANDARD: Helper to create a JS PlainMonthDay object from a temporal_rs::PlainMonthDay.
     static Value wrapPlainMonthDay(std::unique_ptr<temporal_rs::PlainMonthDay> md);
 
   private:

@@ -17,9 +17,8 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/**
- * Internal class to store regex state
- */
+/// NON-STANDARD: Internal class to store regex state. Rift's equivalent of the spec's
+/// [[OriginalSource]], [[OriginalFlags]], and [[RegExpMatcher]] internal slots.
 class RegExpData {
   public:
     std::string pattern;
@@ -33,15 +32,8 @@ class RegExpData {
     RegExpData(const std::string& p, const std::string& f);
 };
 
-/**
- * Registry to manage RegExpData lifecycle
- * Maps JSObject* to RegExpData to avoid unsafe pointer casting
- *
- * NOTE: This registry currently does not automatically clean up entries
- * when RegExp objects are garbage collected. This is acceptable for now
- * because RegExp objects are typically long-lived, but a future improvement
- * would be to integrate with GC finalization or use weak references.
- */
+/// NON-STANDARD: Registry to manage RegExpData lifecycle. Maps JSObject* to RegExpData
+/// to avoid unsafe pointer casting. Not part of ECMA-262 (the spec uses internal slots).
 class RegExpRegistry {
   private:
     static std::unordered_map<JSObject*, std::unique_ptr<RegExpData>> registry_;
@@ -53,39 +45,34 @@ class RegExpRegistry {
     static void clear();
 };
 
-/**
- * RegExp built-in object implementation using Google RE2
- *
- * Note: RE2 is a safe, fast regex library that guarantees linear time execution.
- * It does not support some JavaScript regex features (backreferences, lookahead/lookbehind)
- * but covers the most common use cases and prevents catastrophic backtracking.
- *
- * More information:
- *  - [ECMAScript reference][spec]
- *  - [MDN documentation][mdn]
- *  - [RE2 syntax][re2]
- *
- * [spec]: https://tc39.es/ecma262/#sec-regexp-regular-expression-objects
- * [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
- * [re2]: https://github.com/google/re2/wiki/Syntax
- */
+/// 22.2 RegExp (Regular Expression) Objects
+/// @spec https://tc39.es/ecma262/#sec-regexp-regular-expression-objects
 class RegExp : public BuiltinBase<RegExp> {
   public:
-    /// RegExp constructor (required by BuiltinBase)
+    /// 22.2.3.1 RegExp ( pattern, flags )
+    /// @spec https://tc39.es/ecma262/#sec-regexp-pattern-flags
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// RegExp prototype methods
+    /// 22.2.6.14 RegExp.prototype.test ( S )
+    /// @spec https://tc39.es/ecma262/#sec-regexp.prototype.test
     static Value test(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.2.6.2 RegExp.prototype.exec ( string )
+    /// @spec https://tc39.es/ecma262/#sec-regexp.prototype.exec
     static Value exec(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.2.6.16 RegExp.prototype.toString ( )
+    /// @spec https://tc39.es/ecma262/#sec-regexp.prototype.tostring
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Setup methods required by BuiltinBase template
+    /// NON-STANDARD: BuiltinBase setup hooks for constructor and prototype registration.
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
   private:
-    /// Helper methods
+    /// NON-STANDARD: Internal helper to retrieve the RegExp prototype from BuiltinManager.
     static JSObject* getGlobalPrototype();
+    /// NON-STANDARD: Internal helper to extract RegExpData from the registry for `this`.
     static RegExpData* getRegExpData(const CallContext& ctx);
 };
 

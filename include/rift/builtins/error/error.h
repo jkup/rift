@@ -13,30 +13,24 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/// The `Error` builtin object and constructor.
-///
-/// The Error object represents an error when trying to execute a statement or accessing a property.
-/// User-defined exceptions can also use the Error constructor.
-///
-/// More information:
-///  - [ECMAScript reference][spec]
-///  - [MDN documentation][mdn]
-///
-/// [spec]: https://tc39.es/ecma262/#sec-error-objects
-/// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+/// 20.5 Error Objects
+/// @spec https://tc39.es/ecma262/#sec-error-objects
 class Error : public BuiltinBase<Error> {
   public:
-    /// Setup methods required by BuiltinBase template
+    /// NON-STANDARD: BuiltinBase setup hooks for constructor and prototype registration.
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
-    /// Error constructor
+    /// 20.5.1.1 Error ( message [ , options ] )
+    /// @spec https://tc39.es/ecma262/#sec-error-message
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Error prototype methods
+    /// 20.5.3.4 Error.prototype.toString ( )
+    /// @spec https://tc39.es/ecma262/#sec-error.prototype.tostring
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
   private:
+    /// NON-STANDARD: Internal helper to retrieve the Error prototype from BuiltinManager.
     static JSObject* getGlobalPrototype();
 };
 

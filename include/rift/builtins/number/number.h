@@ -13,149 +13,60 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/// The `Number` builtin object and constructor.
-///
-/// The Number object is a wrapper around the number primitive. The Number constructor
-/// can be used to explicitly convert values to number primitives.
-///
-/// More information:
-///  - [ECMAScript reference][spec]
-///  - [MDN documentation][mdn]
-///
-/// [spec]: https://tc39.es/ecma262/#sec-number-objects
-/// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
+/// 21.1 Number Objects
+/// @spec https://tc39.es/ecma262/#sec-number-objects
 class Number : public BuiltinBase<Number> {
   public:
-    /// Number constructor with call context to distinguish function vs constructor calls
+    /// 21.1.1.1 Number ( value )
+    /// @spec https://tc39.es/ecma262/#sec-number-constructor-number-value
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
-    // ===== Static Methods (Number.isNaN, Number.isFinite, etc.) =====
+    // ===== Static Methods (21.1.2 Properties of the Number Constructor) =====
 
-    /// The `Number.isNaN()` method determines whether the passed value is NaN and its type is
-    /// Number.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-number.isnan
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
+    /// 21.1.2.4 Number.isNaN ( number )
+    /// @spec https://tc39.es/ecma262/#sec-number.isnan
     static Value isNaN(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `Number.isFinite()` method determines whether the passed value is a finite number.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-number.isfinite
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite
+    /// 21.1.2.2 Number.isFinite ( number )
+    /// @spec https://tc39.es/ecma262/#sec-number.isfinite
     static Value isFinite(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `Number.isInteger()` method determines whether the passed value is an integer.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-number.isinteger
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+    /// 21.1.2.3 Number.isInteger ( number )
+    /// @spec https://tc39.es/ecma262/#sec-number.isinteger
     static Value isInteger(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `Number.isSafeInteger()` method determines whether the passed value is a safe integer.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-number.issafeinteger
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger
+    /// 21.1.2.5 Number.isSafeInteger ( number )
+    /// @spec https://tc39.es/ecma262/#sec-number.issafeinteger
     static Value isSafeInteger(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `Number.parseFloat()` method parses an argument and returns a floating point number.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-number.parsefloat
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseFloat
+    /// 21.1.2.12 Number.parseFloat ( string )
+    /// @spec https://tc39.es/ecma262/#sec-number.parsefloat
     static Value parseFloat(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `Number.parseInt()` method parses a string argument and returns an integer of the
-    /// specified radix.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-number.parseint
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseInt
+    /// 21.1.2.13 Number.parseInt ( string, radix )
+    /// @spec https://tc39.es/ecma262/#sec-number.parseint
     static Value parseInt(const CallContext& ctx, const std::vector<Value>& args);
 
-    // ===== Prototype Methods (Number.prototype.toString, etc.) =====
+    // ===== Prototype Methods (21.1.3 Properties of the Number Prototype Object) =====
 
-    /// The `toString()` method returns a string representing the specified Number object.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-number.prototype.tostring
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString
+    /// 21.1.3.6 Number.prototype.toString ( [ radix ] )
+    /// @spec https://tc39.es/ecma262/#sec-number.prototype.tostring
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `valueOf()` method returns the wrapped primitive value of a Number object.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-number.prototype.valueof
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/valueOf
+    /// 21.1.3.7 Number.prototype.valueOf ( )
+    /// @spec https://tc39.es/ecma262/#sec-number.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `toFixed()` method formats a number using fixed-point notation.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-number.prototype.tofixed
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed
+    /// 21.1.3.3 Number.prototype.toFixed ( fractionDigits )
+    /// @spec https://tc39.es/ecma262/#sec-number.prototype.tofixed
     static Value toFixed(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `toExponential()` method returns a string representing the Number object in exponential
-    /// notation.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-number.prototype.toexponential
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential
+    /// 21.1.3.2 Number.prototype.toExponential ( fractionDigits )
+    /// @spec https://tc39.es/ecma262/#sec-number.prototype.toexponential
     static Value toExponential(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `toPrecision()` method returns a string representing the Number object to the specified
-    /// precision.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-number.prototype.toprecision
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
+    /// 21.1.3.5 Number.prototype.toPrecision ( precision )
+    /// @spec https://tc39.es/ecma262/#sec-number.prototype.toprecision
     static Value toPrecision(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Setup methods required by BuiltinBase template

@@ -16,443 +16,169 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/// The `Array` builtin object and constructor.
-///
-/// The Array object is used to represent and manipulate ordered collections of values.
-/// It provides methods for working with arrays and serves as the constructor for array objects.
-///
-/// More information:
-///  - [ECMAScript reference][spec]
-///  - [MDN documentation][mdn]
-///
-/// [spec]: https://tc39.es/ecma262/#sec-array-objects
-/// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+/// 23.1 Array Objects
+/// @spec https://tc39.es/ecma262/#sec-array-objects
 class Array : public BuiltinBase<Array> {
   public:
     /// Setup methods required by BuiltinBase template
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
-    /// The `Array()` constructor creates Array objects.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array-constructor
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Array
+    /// 23.1.1.1 Array ( ...values )
+    /// @spec https://tc39.es/ecma262/#sec-array-constructor
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// Helper to create a new array object with the given elements
+    /// NON-STANDARD: Helper to create a new array object with the given elements
     static JSObject* createArrayObject(rift::memory::ObjectFactory* factory,
                                        std::vector<Value> elements);
 
-    /// Helper to get the global Array prototype (for proper prototype chain)
+    /// NON-STANDARD: Helper to get the global Array prototype (for proper prototype chain)
     static JSObject* getGlobalPrototype();
 
-    /// The `push()` method adds one or more elements to the end of an array and returns the new
-    /// length.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.push
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
+    /// 23.1.3.21 Array.prototype.push ( ...items )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.push
     static Value push(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `pop()` method removes the last element from an array and returns that element.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.pop
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop
+    /// 23.1.3.20 Array.prototype.pop ( )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.pop
     static Value pop(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `shift()` method removes the first element from an array and returns that element.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.shift
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
+    /// 23.1.3.24 Array.prototype.shift ( )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.shift
     static Value shift(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `unshift()` method adds one or more elements to the beginning of an array and returns
-    /// the new length.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.unshift
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift
+    /// 23.1.3.33 Array.prototype.unshift ( ...items )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.unshift
     static Value unshift(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `join()` method creates and returns a new string by concatenating all elements in an
-    /// array.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.join
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join
+    /// 23.1.3.16 Array.prototype.join ( separator )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.join
     static Value join(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `splice()` method changes the contents of an array by removing or replacing existing
-    /// elements and/or adding new elements in place.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.splice
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+    /// 23.1.3.28 Array.prototype.splice ( start, deleteCount, ...items )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.splice
     static Value splice(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `reverse()` method reverses an array in place and returns the reference to the same
-    /// array.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.reverse
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse
+    /// 23.1.3.22 Array.prototype.reverse ( )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.reverse
     static Value reverse(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `sort()` method sorts the elements of an array in place and returns the reference to the
-    /// same array.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.sort
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    /// 23.1.3.27 Array.prototype.sort ( comparefn )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.sort
     static Value sort(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `find()` method returns the first element in the array that satisfies the provided
-    /// testing function.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.find
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+    /// 23.1.3.9 Array.prototype.find ( predicate [ , thisArg ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.find
     static Value find(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `findIndex()` method returns the index of the first element in the array that satisfies
-    /// the provided testing function.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.findindex
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+    /// 23.1.3.10 Array.prototype.findIndex ( predicate [ , thisArg ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.findindex
     static Value findIndex(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `every()` method tests whether all elements in the array pass the test implemented by
-    /// the provided function.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.every
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every
+    /// 23.1.3.6 Array.prototype.every ( callbackfn [ , thisArg ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.every
     static Value every(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `some()` method tests whether at least one element in the array passes the test
-    /// implemented by the provided function.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.some
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+    /// 23.1.3.29 Array.prototype.some ( callbackfn [ , thisArg ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.some
     static Value some(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `lastIndexOf()` method returns the last index at which a given element can be found in
-    /// the array.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.lastindexof
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
+    /// 23.1.3.17 Array.prototype.lastIndexOf ( searchElement [ , fromIndex ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.lastindexof
     static Value lastIndexOf(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `reduceRight()` method applies a function against an accumulator and each value of the
-    /// array (from right-to-left) to reduce it to a single value.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.reduceright
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight
+    /// 23.1.3.25 Array.prototype.reduceRight ( callbackfn [ , initialValue ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.reduceright
     static Value reduceRight(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `flatMap()` method returns a new array formed by applying a given callback function to
-    /// each element of the array, and then flattening the result by one level.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.flatmap
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap
+    /// 23.1.3.14 Array.prototype.flatMap ( mapperFunction [ , thisArg ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.flatmap
     static Value flatMap(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `flat()` method creates a new array with all sub-array elements concatenated into it
-    /// recursively up to the specified depth.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.flat
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat
+    /// 23.1.3.13 Array.prototype.flat ( [ depth ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.flat
     static Value flat(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `findLast()` method returns the last element in the array that satisfies the provided
-    /// testing function.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.findlast
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast
+    /// 23.1.3.11 Array.prototype.findLast ( predicate [ , thisArg ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.findlast
     static Value findLast(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `findLastIndex()` method returns the index of the last element in the array that
-    /// satisfies the provided testing function.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.findlastindex
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex
+    /// 23.1.3.12 Array.prototype.findLastIndex ( predicate [ , thisArg ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.findlastindex
     static Value findLastIndex(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `length` property of an Array instance is an integer with a positive sign and a
-    /// magnitude less than 2^32 that specifies the number of elements in the array.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-properties-of-array-instances-length
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
+    /// NON-STANDARD: Internal helper for the "length" data property (23.1.4.1)
+    /// @spec https://tc39.es/ecma262/#sec-properties-of-array-instances-length
     static Value getLength(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `forEach()` method executes a provided function once for each array element.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.foreach
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+    /// 23.1.3.15 Array.prototype.forEach ( callbackfn [ , thisArg ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.foreach
     static Value forEach(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `map()` method creates a new array populated with the results of calling a provided
-    /// function on every element.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.map
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+    /// 23.1.3.21 Array.prototype.map ( callbackfn [ , thisArg ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.map
     static Value map(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `filter()` method creates a shallow copy of a portion of a given array, filtered down to
-    /// just the elements from the given array that pass the test implemented by the provided
-    /// function.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.filter
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+    /// 23.1.3.8 Array.prototype.filter ( callbackfn [ , thisArg ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.filter
     static Value filter(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `reduce()` method executes a user-supplied "reducer" callback function on each element
-    /// of the array, in order, passing in the return value from the calculation on the preceding
-    /// element.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.reduce
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
+    /// 23.1.3.24 Array.prototype.reduce ( callbackfn [ , initialValue ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.reduce
     static Value reduce(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `indexOf()` method returns the first index at which a given element can be found in the
-    /// array, or -1 if it is not present.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.indexof
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+    /// 23.1.3.14 Array.prototype.indexOf ( searchElement [ , fromIndex ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.indexof
     static Value indexOf(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `includes()` method determines whether an array includes a certain value among its
-    /// entries.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.includes
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
+    /// 23.1.3.15 Array.prototype.includes ( searchElement [ , fromIndex ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.includes
     static Value includes(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `slice()` method returns a shallow copy of a portion of an array into a new array
-    /// object.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.slice
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+    /// 23.1.3.25 Array.prototype.slice ( start, end )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.slice
     static Value slice(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `concat()` method is used to merge two or more arrays.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.concat
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat
+    /// 23.1.3.1 Array.prototype.concat ( ...items )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.concat
     static Value concat(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `toString()` method returns a string representing the array.
+    /// 23.1.3.30 Array.prototype.toString ( )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.tostring
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `keys()` method returns a new Array Iterator object that contains the keys for each
-    /// index in the array.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.keys
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys
+    /// 23.1.3.16 Array.prototype.keys ( )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.keys
     static Value keys(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `values()` method returns a new Array Iterator object that contains the values for each
-    /// index in the array.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.values
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values
+    /// 23.1.3.32 Array.prototype.values ( )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.values
     static Value values(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `entries()` method returns a new Array Iterator object that contains the key/value pairs
-    /// for each index in the array.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.prototype.entries
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries
+    /// 23.1.3.5 Array.prototype.entries ( )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.entries
     static Value entries(const CallContext& ctx, const std::vector<Value>& args);
 
     // Helper methods
-    /// Helper to get the length of an array-like object
+
+    /// NON-STANDARD: Helper to get the length of an array-like object
     static size_t getArrayLength(JSObject* obj);
 
-    /// Helper to set the length of an array-like object
+    /// NON-STANDARD: Helper to set the length of an array-like object
     static void setArrayLength(JSObject* obj, size_t length);
 
     // Array static methods
 
-    /// The `Array.isArray()` static method determines whether the passed value is an Array.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.isarray
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
+    /// 23.1.2.2 Array.isArray ( arg )
+    /// @spec https://tc39.es/ecma262/#sec-array.isarray
     static Value isArray(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `Array.from()` method creates a new, shallow-copied Array instance from an iterable or
-    /// array-like object.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.from
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from
+    /// 23.1.2.1 Array.from ( items [ , mapfn [ , thisArg ] ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.from
     static Value from(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// The `Array.of()` method creates a new Array instance from a variable number of arguments.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-array.of
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    /// 23.1.2.5 Array.of ( ...items )
+    /// @spec https://tc39.es/ecma262/#sec-array.of
     static Value of(const CallContext& ctx, const std::vector<Value>& args);
 
     /// Get the object factory (needed by ArrayIterator)

@@ -12,61 +12,42 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/**
- * Iteration kind for Set iterators.
- * Determines what values are returned by next().
- */
+/// Iteration kind for Set iterators.
+/// Determines what values are returned by next().
 enum class SetIterationKind {
     Value,    // values() / keys() / [Symbol.iterator] - iterate values
     KeyValue  // entries() - iterate [value, value] pairs
 };
 
-/**
- * SetIterator
- *
- * Implements %SetIteratorPrototype% from ECMAScript spec.
- * Set iterators are used by for-of loops, spread operators, and explicit
- * calls to keys(), values(), and entries().
- *
- * Internal slots:
- * - [[IteratedSet]] - the Set being iterated (undefined when exhausted)
- * - [[SetNextIndex]] - the current index in [[SetEntries]]
- * - [[SetIterationKind]] - Value or KeyValue
- */
+/// 24.2.5 Set Iterator Objects
+/// @spec https://tc39.es/ecma262/#sec-set-iterator-objects
+///
+/// Set iterators are used by for-of loops, spread operators, and explicit
+/// calls to keys(), values(), and entries().
+///
+/// Internal slots:
+/// - [[IteratedSet]] - the Set being iterated (undefined when exhausted)
+/// - [[SetNextIndex]] - the current index in [[SetEntries]]
+/// - [[SetIterationKind]] - Value or KeyValue
 class SetIterator {
   public:
-    /**
-     * Create a SetIterator for the given Set with specified kind.
-     * @param factory Object factory for GC-managed creation
-     * @param set The Set object to iterate over
-     * @param kind What values to yield (Value or KeyValue)
-     * @return A new SetIterator object
-     */
+    /// 24.2.5.1 CreateSetIterator ( set, kind )
+    /// @spec https://tc39.es/ecma262/#sec-createsetiterator
     static JSObject* create(rift::memory::ObjectFactory* factory, JSObject* set,
                             SetIterationKind kind);
 
-    /**
-     * The next() method implementation.
-     * Returns {done: boolean, value: any}.
-     */
+    /// 24.2.5.2 The %SetIteratorPrototype% Object - next ( )
+    /// @spec https://tc39.es/ecma262/#sec-%setiteratorprototype%.next
     static Value next(const CallContext& ctx, const std::vector<Value>& args);
 
-    /**
-     * Set up the %SetIteratorPrototype% object.
-     * Should be called once during builtin initialization.
-     * @param factory Object factory for GC-managed creation
-     * @param iterator_prototype The %IteratorPrototype% to inherit from
-     */
+    /// 24.2.5.2 The %SetIteratorPrototype% Object
+    /// @spec https://tc39.es/ecma262/#sec-%setiteratorprototype%-object
     static void setupPrototype(rift::memory::ObjectFactory* factory, JSObject* iterator_prototype);
 
-    /**
-     * Get the %SetIteratorPrototype% object.
-     */
+    /// NON-STANDARD: Get the %SetIteratorPrototype% object.
     static JSObject* getPrototype();
 
-    /**
-     * Set the object factory for iterator creation.
-     */
+    /// NON-STANDARD: Set the object factory for iterator creation.
     static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
   private:

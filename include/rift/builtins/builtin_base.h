@@ -61,34 +61,20 @@ using namespace rift::runtime;
 #define RIFT_PROPERTY(obj, name, value) \
     (obj)->defineProperty(name, rift::runtime::PropertyDescriptor(value, false, false, false))
 
-/**
- * Base class template for all JavaScript builtin objects.
- *
- * This class uses the Curiously Recurring Template Pattern (CRTP) to eliminate
- * the massive code duplication that existed across all builtin implementations.
- *
- * Each builtin class should inherit from this template and provide:
- * - constructor: static Value function for the builtin constructor
- * - setupStaticMethods: method to add static methods to constructor
- * - setupPrototypeMethods: method to add methods to prototype
- *
- * @tparam Derived The derived builtin class (CRTP pattern)
- */
+/// CRTP base class for Rift builtins. Provides common setup infrastructure
+/// for constructor, prototype, and method registration.
+/// NON-STANDARD: Internal Rift implementation detail, not part of ECMA-262.
 template <typename Derived>
 class BuiltinBase {
   public:
-    /**
-     * Set the object factory for this builtin type.
-     * This is called once during engine initialization.
-     */
+    /// NON-STANDARD: Set the object factory for this builtin type.
+    /// Called once during engine initialization.
     static void setObjectFactory(rift::memory::ObjectFactory* factory) {
         object_factory_ = factory;
     }
 
-    /**
-     * Create the builtin constructor object with all static methods and prototype.
-     * This replaces the duplicated create() method in all builtins.
-     */
+    /// NON-STANDARD: Create the builtin constructor object with all static methods and prototype.
+    /// Replaces the duplicated create() method in all builtins.
     static JSObject* create(rift::memory::ObjectFactory* factory) {
         // Store factory for use in other methods
         setObjectFactory(factory);
@@ -127,10 +113,8 @@ class BuiltinBase {
         return constructor;
     }
 
-    /**
-     * Create the builtin prototype object with all instance methods.
-     * This replaces the duplicated createPrototype() method in all builtins.
-     */
+    /// NON-STANDARD: Create the builtin prototype object with all instance methods.
+    /// Replaces the duplicated createPrototype() method in all builtins.
     static JSObject* createPrototype(rift::memory::ObjectFactory* factory) {
         // Create prototype object using GC-managed creation
         auto* prototype = factory->createJSObject();
@@ -142,10 +126,8 @@ class BuiltinBase {
     }
 
   protected:
-    /**
-     * Get the stored object factory.
-     * Used by derived classes in their constructor and method implementations.
-     */
+    /// NON-STANDARD: Get the stored object factory.
+    /// Used by derived classes in their constructor and method implementations.
     static rift::memory::ObjectFactory* getObjectFactory() {
         return object_factory_;
     }
@@ -158,34 +140,20 @@ class BuiltinBase {
     /// Type alias for builtin method signature
     using MethodFunc = Value (*)(const rift::core::CallContext&, const std::vector<Value>&);
 
-    /**
-     * Register a method on an object (prototype or constructor).
-     * @param obj The object to add the method to
-     * @param name The JavaScript property name for the method
-     * @param func The C++ function implementing the method
-     * @param factory The object factory for creating the JSFunction
-     */
+    /// NON-STANDARD: Register a method on an object (prototype or constructor).
     static void registerMethod(JSObject* obj, const char* name, MethodFunc func,
                                rift::memory::ObjectFactory* factory) {
         obj->defineProperty(name, PropertyDescriptor(
             Value(factory->createJSFunction(func)), true, false, true));
     }
 
-    /**
-     * Register a static property (constant value) on an object.
-     * @param obj The object to add the property to
-     * @param name The JavaScript property name
-     * @param value The value to set
-     */
+    /// NON-STANDARD: Register a static property (constant value) on an object.
     static void registerProperty(JSObject* obj, const char* name, const Value& value) {
         obj->defineProperty(name, PropertyDescriptor(value, false, false, false));
     }
 
   private:
-    /**
-     * CRTP method implementations - these call the derived class methods.
-     * This ensures derived classes MUST implement these methods.
-     */
+    /// NON-STANDARD: CRTP dispatch to derived class setup methods.
     static void callSetupStaticMethods(JSObject* constructor,
                                        rift::memory::ObjectFactory* factory) {
         Derived::setupStaticMethods(constructor, factory);

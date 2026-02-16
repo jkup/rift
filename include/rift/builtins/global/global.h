@@ -10,72 +10,35 @@ namespace rift::builtins {
 
 using namespace rift::runtime;
 
-/// Global builtin functions and utilities.
-///
-/// These are functions that exist in the global scope and don't belong to any particular object.
-///
-/// More information:
-///  - [ECMAScript reference][spec]
-///  - [MDN documentation][mdn]
-///
-/// [spec]: https://tc39.es/ecma262/#sec-global-object
-/// [mdn]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
+/// 19 The Global Object
+/// @spec https://tc39.es/ecma262/#sec-global-object
 class Global {
   public:
-    /// Setup global builtin functions in the provided environment.
-    /// No longer needs separate factory storage since factory is passed directly.
+    /// NON-STANDARD: Registers global functions (parseInt, parseFloat, etc.) into the environment.
     static void setupGlobalFunctions(std::shared_ptr<Environment> global_env,
                                      rift::memory::ObjectFactory* factory);
 
   private:
-    /// The `parseInt()` function parses a string argument and returns an integer.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-parseint-string-radix
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt
+    /// 19.2.5 parseInt ( string, radix )
+    /// @spec https://tc39.es/ecma262/#sec-parseint-string-radix
     static Value parseInt(const std::vector<Value>& args);
 
-    /// The `parseFloat()` function parses an argument and returns a floating point number.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-parsefloat-string
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
+    /// 19.2.4 parseFloat ( string )
+    /// @spec https://tc39.es/ecma262/#sec-parsefloat-string
     static Value parseFloat(const std::vector<Value>& args);
 
-    /// The `isNaN()` function determines whether a value is NaN or not.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-isnan-number
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isNaN
+    /// 19.2.3 isNaN ( number )
+    /// @spec https://tc39.es/ecma262/#sec-isnan-number
     static Value isNaN(const std::vector<Value>& args);
 
-    /// The `isFinite()` function determines whether the passed value is a finite number.
-    ///
-    /// More information:
-    ///  - [ECMAScript reference][spec]
-    ///  - [MDN documentation][mdn]
-    ///
-    /// [spec]: https://tc39.es/ecma262/#sec-isfinite-number
-    /// [mdn]:
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite
+    /// 19.2.2 isFinite ( number )
+    /// @spec https://tc39.es/ecma262/#sec-isfinite-number
     static Value isFinite(const std::vector<Value>& args);
 
-    /// Helper function to create array objects in the current runtime
+    /// NON-STANDARD: Internal helper to create array objects in the current runtime.
     static Value createArray(const std::vector<Value>& args);
 
-    // Helper functions
+    /// NON-STANDARD: Internal helpers for parseInt digit parsing.
     static bool isValidDigit(char c, int radix);
     static int getDigitValue(char c);
 };

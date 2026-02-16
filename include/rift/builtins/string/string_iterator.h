@@ -13,48 +13,25 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/**
- * StringIterator
- *
- * Implements %StringIteratorPrototype% from ECMAScript spec (section 22.1.5.1).
- * String iterators iterate over Unicode code points of a string.
- *
- * Internal slots:
- * - [[IteratedString]] - the string being iterated (or undefined if exhausted)
- * - [[StringIteratorNextIndex]] - the current position in the string
- */
+/// 22.1.5 String Iterator Objects
+/// @spec https://tc39.es/ecma262/#sec-string-iterator-objects
 class StringIterator {
   public:
-    /**
-     * Create a StringIterator for the given string.
-     * @param factory Object factory for GC-managed creation
-     * @param str The string to iterate over
-     * @return A new StringIterator object
-     */
+    /// 22.1.5.1 CreateStringIterator ( string )
+    /// @spec https://tc39.es/ecma262/#sec-createstringiterator
     static JSObject* create(rift::memory::ObjectFactory* factory, const std::string& str);
 
-    /**
-     * The next() method implementation.
-     * Returns {done: boolean, value: string} where value is a single character.
-     */
+    /// 22.1.5.2.1 %StringIteratorPrototype%.next ( )
+    /// @spec https://tc39.es/ecma262/#sec-%stringiteratorprototype%.next
     static Value next(const CallContext& ctx, const std::vector<Value>& args);
 
-    /**
-     * Set up the %StringIteratorPrototype% object.
-     * Should be called once during builtin initialization.
-     * @param factory Object factory for GC-managed creation
-     * @param iterator_prototype The %IteratorPrototype% to inherit from
-     */
+    /// Setup the %StringIteratorPrototype% object.
     static void setupPrototype(rift::memory::ObjectFactory* factory, JSObject* iterator_prototype);
 
-    /**
-     * Get the %StringIteratorPrototype% object.
-     */
+    /// Get the %StringIteratorPrototype% object.
     static JSObject* getPrototype();
 
-    /**
-     * Set the object factory for creating result objects in next().
-     */
+    /// Set the object factory for creating result objects in next().
     static void setObjectFactory(rift::memory::ObjectFactory* factory);
 
   private:

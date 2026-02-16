@@ -12,27 +12,15 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-/**
- * %IteratorPrototype%
- *
- * The hidden prototype that all iterators inherit from.
- * According to ECMAScript spec (section 27.1.2), this provides:
- * - [Symbol.iterator]() { return this; }
- *
- * This makes all iterators themselves iterable.
- */
+/// 27.1.2 The %IteratorPrototype% Object
+/// @spec https://tc39.es/ecma262/#sec-%iteratorprototype%-object
 class IteratorPrototype {
   public:
-    /**
-     * Create the %IteratorPrototype% object.
-     * This should be called once during builtin initialization.
-     */
+    /// NON-STANDARD: Creates the %IteratorPrototype% intrinsic and installs @@iterator.
     static JSObject* create(rift::memory::ObjectFactory* factory);
 
-    /**
-     * [Symbol.iterator]() implementation - returns this.
-     * Makes iterators iterable.
-     */
+    /// 27.1.2.1 %IteratorPrototype% [ @@iterator ] ( )
+    /// @spec https://tc39.es/ecma262/#sec-%iteratorprototype%-@@iterator
     static Value symbolIterator(const CallContext& ctx, const std::vector<Value>& args);
 };
 

@@ -13,20 +13,31 @@ namespace rift::builtins {
 using namespace rift::runtime;
 using rift::core::CallContext;
 
-// Console built-in
+/// Console API (NOT part of ECMA-262; defined by WHATWG)
+/// @spec https://console.spec.whatwg.org/
 class Console {
   public:
-    // Updated to return raw pointer for GC-managed creation
+    /// NON-STANDARD: Creates the console object and registers all methods.
     static JSObject* create(rift::memory::ObjectFactory* factory);
 
-    // Console methods
+    /// 1.3.3 log ( ...data )
+    /// @spec https://console.spec.whatwg.org/#log
     static Value log(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 1.3.1 error ( ...data )
+    /// @spec https://console.spec.whatwg.org/#error
     static Value error(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 1.3.8 warn ( ...data )
+    /// @spec https://console.spec.whatwg.org/#warn
     static Value warn(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 1.3.4 info ( ...data )
+    /// @spec https://console.spec.whatwg.org/#info
     static Value info(const CallContext& ctx, const std::vector<Value>& args);
 
   private:
-    // Helper for output
+    /// NON-STANDARD: Internal helper for formatted output to a stream.
     static void printValues(const std::vector<Value>& args, std::ostream& stream);
 };
 

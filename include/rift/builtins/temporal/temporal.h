@@ -8,7 +8,8 @@ namespace rift::builtins {
 
 using namespace rift::runtime;
 
-/// The `Temporal` namespace object.
+/// 1.1 The Temporal Object
+/// @spec https://tc39.es/proposal-temporal/#sec-temporal-objects
 ///
 /// Unlike most builtins, Temporal is a namespace (like Math), not a constructor.
 /// It holds sub-constructors (Temporal.Instant, Temporal.Duration, etc.)
