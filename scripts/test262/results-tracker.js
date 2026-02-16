@@ -148,7 +148,7 @@ export class Test262ResultsTracker {
           total: c.total,
         })),
       weakestCategories: byPassRate
-        .filter((c) => c.total >= 5) // Only categories with enough tests
+        .filter((c) => c.total >= 5 && !c.name.startsWith("staging/")) // Skip staging tests
         .slice(-10)
         .reverse()
         .map((c) => ({
