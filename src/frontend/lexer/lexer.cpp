@@ -1,3 +1,37 @@
+// ============================================================================
+// ECMA-262 -- Lexical Grammar (Chapter 12)
+// Implements the tokenizer for ECMAScript source text, converting a stream of
+// Unicode code points into a sequence of input elements (tokens).
+// @spec https://tc39.es/ecma262/#sec-ecmascript-language-lexical-grammar
+//
+// Key grammar productions implemented:
+//   - WhiteSpace (12.2)
+//   - LineTerminator (12.3)
+//   - SingleLineComment, MultiLineComment (12.4)
+//   - IdentifierName, ReservedWord (12.6)
+//   - Punctuator, DivPunctuator (12.7)
+//   - NullLiteral, BooleanLiteral (12.8.1, 12.8.2)
+//   - NumericLiteral (12.8.3)
+//   - StringLiteral (12.8.4)
+//   - RegularExpressionLiteral (12.8.5)
+//   - Template, TemplateHead, TemplateMiddle, TemplateTail (12.8.6)
+//
+// 12.5 Tokens
+// InputElementDiv :: WhiteSpace | LineTerminator | Comment | CommonToken | DivPunctuator
+// InputElementRegExp :: WhiteSpace | LineTerminator | Comment | CommonToken |
+//                       RegularExpressionLiteral
+// InputElementTemplateTail :: WhiteSpace | LineTerminator | Comment | CommonToken |
+//                             TemplateSubstitutionTail
+// SIMPLIFIED: The spec uses multiple goal symbols (InputElementDiv, InputElementRegExp,
+// InputElementRegExpOrTemplateTail, InputElementTemplateTail) selected by the parser.
+// Rift uses a last_token_type_ heuristic to disambiguate `/` as division vs regex,
+// and tracks template_state to handle template literal re-scanning.
+// @spec https://tc39.es/ecma262/#sec-ecmascript-language-lexical-grammar
+//
+// INCOMPLETE: 12.1 Unicode Format-Control Characters (U+200C ZWNJ, U+200D ZWJ,
+// U+FEFF BOM) are not handled. Only ASCII whitespace and identifiers are supported.
+// ============================================================================
+
 #include "rift/frontend/lexer/lexer.h"
 
 #include <cctype>
@@ -8,7 +42,13 @@
 
 namespace rift::frontend {
 
-// Lexer implementation
+// Constructor -- initializes the lexer state for scanning source text.
+// The spec describes source text as a sequence of Unicode code points (10.1).
+// SIMPLIFIED: Rift operates on std::string (UTF-8 bytes) rather than
+// decoded Unicode code points. ASCII characters are handled correctly;
+// multi-byte UTF-8 sequences are passed through but not decoded for
+// identifier/whitespace classification.
+// @spec https://tc39.es/ecma262/#sec-source-text
 Lexer::Lexer(const std::string& source)
     : source(source),
       position(0),
@@ -20,6 +60,7 @@ Lexer::Lexer(const std::string& source)
       last_token_type_(TokenType::Invalid) {
 }
 
+// Returns the current source character, or '\0' at end of input.
 char Lexer::current_char() {
     if(position >= source.length()) {
         return '\0';
@@ -27,6 +68,7 @@ char Lexer::current_char() {
     return source[position];
 }
 
+// Returns the next source character (lookahead by 1), or '\0' at end of input.
 char Lexer::peek_char() {
     if(position + 1 >= source.length()) {
         return '\0';
@@ -34,6 +76,13 @@ char Lexer::peek_char() {
     return source[position + 1];
 }
 
+// Advances the position by one character, tracking line/column for
+// error reporting. Recognizes '\n' as a line terminator.
+// 12.3 Line Terminators
+// LineTerminator :: <LF> | <CR> | <LS> | <PS>
+// INCOMPLETE: Only LF (\n) is tracked for line counting. CR (\r), LS (U+2028),
+// and PS (U+2029) are not recognized as line terminators by advance().
+// @spec https://tc39.es/ecma262/#sec-line-terminators
 void Lexer::advance() {
     if(position < source.length() && source[position] == '\n') {
         line++;
@@ -44,13 +93,25 @@ void Lexer::advance() {
     position++;
 }
 
+// 12.2 White Space
+// WhiteSpace :: <TAB> | <VT> | <FF> | <SP> | <NBSP> | <ZWNBSP> | <USP>
+// Consumes all whitespace characters before the next meaningful token.
+// SIMPLIFIED: Uses C++ std::isspace() which covers TAB, VT, FF, SP, CR, LF
+// but not NBSP (U+00A0), ZWNBSP (U+FEFF), or other Unicode space separators (USP).
+// Note: std::isspace() also matches CR and LF, which the spec classifies as
+// LineTerminators (12.3) rather than WhiteSpace, but skipping them here is
+// harmless since Rift does not implement automatic semicolon insertion in the lexer.
+// @spec https://tc39.es/ecma262/#sec-white-space
 void Lexer::skip_whitespace() {
     while(std::isspace(current_char())) {
         advance();
     }
 }
 
-// Helper function to parse hex digit
+// Helper: converts a single hex character to its numeric value (0-15).
+// Used by HexEscapeSequence and UnicodeEscapeSequence parsing.
+// HexDigit :: one of 0 1 2 3 4 5 6 7 8 9 a b c d e f A B C D E F
+// @spec https://tc39.es/ecma262/#prod-HexDigit
 int Lexer::parse_hex_digit(char c) {
     if(c >= '0' && c <= '9')
         return c - '0';
@@ -61,7 +122,10 @@ int Lexer::parse_hex_digit(char c) {
     return -1;  // Invalid hex digit
 }
 
-// Helper function to parse 2-digit hex escape (\xHH)
+// 12.8.4 String Literals -- HexEscapeSequence
+// HexEscapeSequence :: x HexDigit HexDigit
+// Parses the two hex digits after \x and returns the corresponding character.
+// @spec https://tc39.es/ecma262/#prod-HexEscapeSequence
 char Lexer::parse_hex_escape() {
     // Current char should be first hex digit after \x
     int digit1 = parse_hex_digit(current_char());
@@ -78,7 +142,14 @@ char Lexer::parse_hex_escape() {
     return static_cast<char>((digit1 << 4) | digit2);
 }
 
-// Helper function to parse 4-digit unicode escape (\uHHHH)
+// 12.8.4 String Literals -- UnicodeEscapeSequence (4-digit form)
+// UnicodeEscapeSequence :: u Hex4Digits
+// Hex4Digits :: HexDigit HexDigit HexDigit HexDigit
+// Parses exactly 4 hex digits after \u and converts the code point to UTF-8.
+// INCOMPLETE: Does not handle surrogate pairs. A \uD800\uDC00 sequence should
+// be combined into a single supplementary code point, but each \uHHHH is decoded
+// independently, producing potentially invalid surrogate code points in the output.
+// @spec https://tc39.es/ecma262/#prod-UnicodeEscapeSequence
 std::string Lexer::parse_unicode_escape() {
     // Parse 4 hex digits
     int codepoint = 0;
@@ -114,7 +185,13 @@ std::string Lexer::parse_unicode_escape() {
     return result;
 }
 
-// Helper function to parse unicode code point escape (\u{H...})
+// 12.8.4 String Literals -- UnicodeEscapeSequence (code point form)
+// UnicodeEscapeSequence :: u{ CodePoint }
+// CodePoint :: HexDigits[~Sep] but only if MV of HexDigits <= 0x10FFFF
+// Parses a variable-length hex sequence inside \u{...} and converts to UTF-8.
+// This form supports the full Unicode range (U+0000 to U+10FFFF), including
+// supplementary characters above the BMP which require 4-byte UTF-8 sequences.
+// @spec https://tc39.es/ecma262/#prod-UnicodeEscapeSequence
 std::string Lexer::parse_unicode_codepoint_escape() {
     // Current char should be '{' after \u
     if(current_char() != '{') {
@@ -143,7 +220,7 @@ std::string Lexer::parse_unicode_codepoint_escape() {
         throw std::runtime_error("Invalid unicode code point escape: expected '}'");
     }
 
-    // Validate code point range
+    // Validate code point range (must be <= 0x10FFFF per spec)
     if(codepoint > 0x10FFFF) {
         throw std::runtime_error("Invalid unicode code point escape: code point out of range");
     }
@@ -173,33 +250,49 @@ std::string Lexer::parse_unicode_codepoint_escape() {
     return result;
 }
 
+// 12.8.3 Numeric Literals
+// NumericLiteral :: DecimalLiteral | DecimalBigIntegerLiteral |
+//                   NonDecimalIntegerLiteral | NonDecimalIntegerLiteral BigIntLiteralSuffix |
+//                   LegacyOctalIntegerLiteral
+// @spec https://tc39.es/ecma262/#sec-literals-numeric-literals
 Token Lexer::read_number() {
     std::string value;
-    // Check for legacy octal: starts with 0 followed by octal digits
+    // Check for leading zero: dispatches to non-decimal integer literals or legacy octal.
     if(current_char() == '0') {
         value += current_char();
         advance();
         char next = current_char();
-        // 0x/0X = hex, 0o/0O = modern octal, 0b/0B = binary — not legacy octal
+
+        // HexIntegerLiteral :: 0x HexDigits | 0X HexDigits
+        // @spec https://tc39.es/ecma262/#prod-HexIntegerLiteral
         if(next == 'x' || next == 'X') {
             value += current_char();
             advance();
             if(!std::isxdigit(current_char())) {
                 throw std::runtime_error("Invalid or unexpected token");
             }
+            // HexDigits :: HexDigit | HexDigits NumericLiteralSeparator HexDigit
+            // NumericLiteralSeparator :: _
             while(std::isxdigit(current_char()) || current_char() == '_') {
                 if(current_char() != '_') value += current_char();
                 advance();
             }
-            if(current_char() == 'n') advance();  // BigInt suffix (treat as number)
+            // BigIntLiteralSuffix :: n
+            // SIMPLIFIED: BigInt suffix is consumed but the value is treated as a
+            // regular Number since Rift does not implement BigInt.
+            if(current_char() == 'n') advance();
             return Token(TokenType::Number, value, line, column);
         }
+
+        // OctalIntegerLiteral :: 0o OctalDigits | 0O OctalDigits
+        // @spec https://tc39.es/ecma262/#prod-OctalIntegerLiteral
         if(next == 'o' || next == 'O') {
             value += current_char();
             advance();
             if(current_char() < '0' || current_char() > '7') {
                 throw std::runtime_error("Invalid or unexpected token");
             }
+            // OctalDigits :: OctalDigit | OctalDigits NumericLiteralSeparator OctalDigit
             while((current_char() >= '0' && current_char() <= '7') || current_char() == '_') {
                 if(current_char() != '_') value += current_char();
                 advance();
@@ -210,12 +303,16 @@ Token Lexer::read_number() {
             if(current_char() == 'n') advance();  // BigInt suffix
             return Token(TokenType::Number, value, line, column);
         }
+
+        // BinaryIntegerLiteral :: 0b BinaryDigits | 0B BinaryDigits
+        // @spec https://tc39.es/ecma262/#prod-BinaryIntegerLiteral
         if(next == 'b' || next == 'B') {
             value += current_char();
             advance();
             if(current_char() != '0' && current_char() != '1') {
                 throw std::runtime_error("Invalid or unexpected token");
             }
+            // BinaryDigits :: BinaryDigit | BinaryDigits NumericLiteralSeparator BinaryDigit
             while(current_char() == '0' || current_char() == '1' || current_char() == '_') {
                 if(current_char() != '_') value += current_char();
                 advance();
@@ -226,7 +323,10 @@ Token Lexer::read_number() {
             if(current_char() == 'n') advance();  // BigInt suffix
             return Token(TokenType::Number, value, line, column);
         }
-        // 0 followed by octal digits (0-7) = legacy octal
+
+        // LegacyOctalIntegerLiteral :: 0 OctalDigit | LegacyOctalIntegerLiteral OctalDigit
+        // This is Annex B (B.1.1) legacy syntax, forbidden in strict mode.
+        // @spec https://tc39.es/ecma262/#prod-LegacyOctalIntegerLiteral
         if(next >= '0' && next <= '7') {
             while(current_char() >= '0' && current_char() <= '7') {
                 value += current_char();
@@ -239,12 +339,20 @@ Token Lexer::read_number() {
         // Otherwise fall through to normal decimal parsing (e.g., 0.5, just 0)
     }
 
+    // DecimalLiteral :: DecimalIntegerLiteral . DecimalDigits? ExponentPart?
+    //                 | . DecimalDigits ExponentPart?
+    //                 | DecimalIntegerLiteral ExponentPart?
+    // DecimalDigits :: DecimalDigit | DecimalDigits NumericLiteralSeparator DecimalDigit
+    // @spec https://tc39.es/ecma262/#prod-DecimalLiteral
     while(std::isdigit(current_char()) || current_char() == '.' || current_char() == '_') {
         if(current_char() != '_') value += current_char();
         advance();
     }
 
-    // Support exponential notation (e.g., 1e10, 2.5E-3)
+    // ExponentPart :: ExponentIndicator SignedInteger
+    // ExponentIndicator :: one of e E
+    // SignedInteger :: DecimalDigits | + DecimalDigits | - DecimalDigits
+    // @spec https://tc39.es/ecma262/#prod-ExponentPart
     if(current_char() == 'e' || current_char() == 'E') {
         value += current_char();
         advance();
@@ -258,12 +366,21 @@ Token Lexer::read_number() {
         }
     }
 
-    // BigInt suffix (treat as regular number since we don't have BigInt support)
+    // DecimalBigIntegerLiteral :: ... BigIntLiteralSuffix
+    // SIMPLIFIED: BigInt suffix 'n' is consumed but the literal is treated as a
+    // regular Number since Rift does not implement BigInt.
     if(current_char() == 'n') advance();
 
     return Token(TokenType::Number, value, line, column);
 }
 
+// 12.8.4 String Literals
+// StringLiteral :: " DoubleStringCharacters? " | ' SingleStringCharacters? '
+// DoubleStringCharacter :: SourceCharacter but not one of " or \ or LineTerminator
+//                        | <LS> | <PS> | \ EscapeSequence | LineContinuation
+// SingleStringCharacter :: SourceCharacter but not one of ' or \ or LineTerminator
+//                        | <LS> | <PS> | \ EscapeSequence | LineContinuation
+// @spec https://tc39.es/ecma262/#sec-literals-string-literals
 Token Lexer::read_string() {
     char quote = current_char();
     advance();  // Skip opening quote
@@ -272,6 +389,11 @@ Token Lexer::read_string() {
     value.reserve(256);  // Reserve some space to reduce allocations
     bool has_octal_escape = false;
 
+    // Scan DoubleStringCharacters / SingleStringCharacters until closing quote.
+    // A string literal may not contain an unescaped LineTerminator (LF, CR).
+    // INCOMPLETE: LS (U+2028) and PS (U+2029) are allowed unescaped in string
+    // literals since ES2019, but are not specifically handled here (they would
+    // pass through as raw bytes in the UTF-8 stream).
     while(current_char() != quote && current_char() != '\0' && current_char() != '\n' &&
           current_char() != '\r') {
         // Check string length limit (prevent DoS via huge strings)
@@ -289,7 +411,17 @@ Token Lexer::read_string() {
                 throw std::runtime_error("Unterminated escape sequence in string literal");
             }
 
+            // EscapeSequence :: CharacterEscapeSequence
+            //                 | 0 [lookahead not in DecimalDigit]
+            //                 | LegacyOctalEscapeSequence  (Annex B)
+            //                 | NonOctalDecimalEscapeSequence  (Annex B)
+            //                 | HexEscapeSequence
+            //                 | UnicodeEscapeSequence
+            // CharacterEscapeSequence :: SingleEscapeCharacter | NonEscapeCharacter
+            // SingleEscapeCharacter :: one of ' " \ b f n r t v
+            // @spec https://tc39.es/ecma262/#prod-EscapeSequence
             switch(current_char()) {
+                // SingleEscapeCharacter mappings:
                 case 'n':
                     value += '\n';
                     break;
@@ -308,13 +440,24 @@ Token Lexer::read_string() {
                 case '\'':
                     value += '\'';
                     break;
+
+                // EscapeSequence :: 0 [lookahead not in DecimalDigit]
+                // When followed by another digit, falls into LegacyOctalEscapeSequence (Annex B).
                 case '0':
-                    // \0 followed by another digit is a legacy octal escape
                     if(peek_char() >= '0' && peek_char() <= '9') {
                         has_octal_escape = true;
                     }
                     value += '\0';
                     break;
+
+                // LegacyOctalEscapeSequence (Annex B, B.1.4)
+                // LegacyOctalEscapeSequence :: 0 [lookahead in {8,9}]
+                //     | NonZeroOctalDigit [lookahead not in OctalDigit]
+                //     | ZeroToThree OctalDigit [lookahead not in OctalDigit]
+                //     | FourToSeven OctalDigit
+                //     | ZeroToThree OctalDigit OctalDigit
+                // These are forbidden in strict mode but allowed in sloppy mode.
+                // @spec https://tc39.es/ecma262/#prod-LegacyOctalEscapeSequence
                 case '1':
                 case '2':
                 case '3':
@@ -322,7 +465,6 @@ Token Lexer::read_string() {
                 case '5':
                 case '6':
                 case '7':
-                    // Legacy octal escape sequences \1-\7
                     has_octal_escape = true;
                     {
                         int octal_val = current_char() - '0';
@@ -337,6 +479,8 @@ Token Lexer::read_string() {
                         value += static_cast<char>(octal_val);
                     }
                     break;
+
+                // More SingleEscapeCharacter mappings:
                 case 'b':
                     value += '\b';
                     break;
@@ -346,13 +490,15 @@ Token Lexer::read_string() {
                 case 'v':
                     value += '\v';
                     break;
+
+                // HexEscapeSequence :: x HexDigit HexDigit
                 case 'x':
-                    // Hex escape: \xHH
                     advance();
                     value += parse_hex_escape();
                     break;
+
+                // UnicodeEscapeSequence :: u Hex4Digits | u{ CodePoint }
                 case 'u':
-                    // Unicode escape: \uHHHH or \u{H...}
                     advance();
                     if(current_char() == '{') {
                         value += parse_unicode_codepoint_escape();
@@ -360,16 +506,22 @@ Token Lexer::read_string() {
                         value += parse_unicode_escape();
                     }
                     break;
+
+                // LineContinuation :: \ LineTerminatorSequence
+                // The SV of LineContinuation is the empty String.
+                // @spec https://tc39.es/ecma262/#prod-LineContinuation
                 case '\n':
                 case '\r':
-                    // Line continuation: backslash followed by newline
-                    // Just skip the newline, don't add anything to the string
                     if(current_char() == '\r' && peek_char() == '\n') {
-                        advance();  // Skip \r\n
+                        advance();  // Skip \r\n as a single LineTerminatorSequence
                     }
                     break;
-                // For unrecognized escape sequences, include the backslash
-                // (ECMAScript behavior for non-standard escapes)
+
+                // NonEscapeCharacter :: SourceCharacter but not one of EscapeCharacter or LineTerminator
+                // DEVIATION: The spec says unrecognized single-character escapes like \a
+                // should produce just the character (e.g., \a -> "a"). Rift instead
+                // preserves the backslash (\a -> "\a"), which differs from spec behavior.
+                // In practice this only affects non-standard escape sequences.
                 default:
                     value += '\\';
                     value += current_char();
@@ -381,7 +533,7 @@ Token Lexer::read_string() {
         advance();
     }
 
-    // Check for unterminated string
+    // Check for unterminated string (hit EOF, LF, or CR before closing quote)
     if(current_char() != quote) {
         throw std::runtime_error("Unterminated string literal");
     }
@@ -395,6 +547,14 @@ Token Lexer::read_string() {
     return tok;
 }
 
+// 12.8.6 Template Literal Lexical Components
+// Template :: NoSubstitutionTemplate | TemplateHead
+// NoSubstitutionTemplate :: ` TemplateCharacters? `
+// TemplateHead :: ` TemplateCharacters? ${
+// Initiates scanning of a template literal upon encountering a backtick.
+// Handles nested template literals by saving/restoring outer template state
+// on a stack (e.g., `outer ${`inner`} outer`).
+// @spec https://tc39.es/ecma262/#sec-template-literal-lexical-components
 Token Lexer::read_template_string() {
     // If we're inside a template expression, save the outer state before nesting
     if(template_state == TemplateLiteralState::InExpression) {
@@ -408,6 +568,25 @@ Token Lexer::read_template_string() {
     return read_template_part();
 }
 
+// 12.8.6 Template Literal Lexical Components (continued)
+// Scans template character sequences, producing one of:
+//   - TemplateStart (TemplateHead):   text before first ${
+//   - TemplateMiddle (TemplateMiddle): text between }...${
+//   - TemplateEnd (TemplateTail or NoSubstitutionTemplate): text before closing `
+//
+// TemplateCharacter :: $ [lookahead != {] | \ TemplateEscapeSequence | \ NotEscapeSequence
+//                    | LineContinuation | LineTerminatorSequence
+//                    | SourceCharacter but not one of ` or \ or $ or LineTerminator
+//
+// TemplateHead :: ` TemplateCharacters? ${
+// TemplateMiddle :: } TemplateCharacters? ${
+// TemplateTail :: } TemplateCharacters? `
+// NoSubstitutionTemplate :: ` TemplateCharacters? `
+//
+// SIMPLIFIED: The spec uses separate goal symbols (InputElementTemplateTail) for
+// rescanning } as the start of a TemplateMiddle/TemplateTail. Rift tracks
+// template_state and brace_depth to achieve the same effect without goal switching.
+// @spec https://tc39.es/ecma262/#prod-Template
 Token Lexer::read_template_part() {
     std::string value;
     value.reserve(256);  // Reserve some space
@@ -420,7 +599,9 @@ Token Lexer::read_template_part() {
                                      " characters)");
         }
 
-        // Check for ${ - start of expression
+        // ${ starts a TemplateExpression substitution
+        // TemplateHead :: ` TemplateCharacters? ${
+        // TemplateMiddle :: } TemplateCharacters? ${
         if(current_char() == '$' && peek_char() == '{') {
             // Always advance past ${ and switch to expression mode
             advance();  // skip $
@@ -432,13 +613,15 @@ Token Lexer::read_template_part() {
             TokenType type;
             if(!template_started) {
                 template_started = true;
-                type = TokenType::TemplateStart;
+                type = TokenType::TemplateStart;  // TemplateHead
             } else {
-                type = TokenType::TemplateMiddle;
+                type = TokenType::TemplateMiddle;  // TemplateMiddle
             }
             return Token(type, value, line, column);
         }
-        // Check for end of template
+        // Closing backtick ends the template
+        // TemplateTail :: } TemplateCharacters? `
+        // NoSubstitutionTemplate :: ` TemplateCharacters? `
         else if(current_char() == '`') {
             advance();  // Skip closing backtick
 
@@ -454,14 +637,22 @@ Token Lexer::read_template_part() {
                 template_started = false;
             }
 
-            // Return final part
+            // Return final part (TemplateTail or NoSubstitutionTemplate)
             TokenType type = TokenType::TemplateEnd;
             return Token(type, value, line, column);
         }
-        // Handle escape sequences
+        // TemplateEscapeSequence handling
+        // TemplateCharacter :: \ TemplateEscapeSequence | \ NotEscapeSequence
+        //                    | LineContinuation
+        // TemplateEscapeSequence :: CharacterEscapeSequence | 0 [lookahead not in DecimalDigit]
+        //                         | HexEscapeSequence | UnicodeEscapeSequence
+        // INCOMPLETE: Tagged templates should return undefined for illegal escape sequences
+        // (ES2018+), but Rift throws an error instead of returning the raw text.
+        // @spec https://tc39.es/ecma262/#prod-TemplateEscapeSequence
         else if(current_char() == '\\') {
             advance();
             switch(current_char()) {
+                // SingleEscapeCharacter mappings (same as string literals)
                 case 'n':
                     value += '\n';
                     break;
@@ -480,13 +671,15 @@ Token Lexer::read_template_part() {
                 case '$':
                     value += '$';
                     break;  // Allow escaping $
+
+                // HexEscapeSequence :: x HexDigit HexDigit
                 case 'x':
-                    // Hex escape: \xHH
                     advance();
                     value += parse_hex_escape();
                     break;
+
+                // UnicodeEscapeSequence :: u Hex4Digits | u{ CodePoint }
                 case 'u':
-                    // Unicode escape: \uHHHH or \u{H...}
                     advance();
                     if(current_char() == '{') {
                         value += parse_unicode_codepoint_escape();
@@ -494,18 +687,25 @@ Token Lexer::read_template_part() {
                         value += parse_unicode_escape();
                     }
                     break;
+
+                // LineContinuation :: \ LineTerminatorSequence
                 case '\n':
                 case '\r':
-                    // Line continuation in template literals
                     if(current_char() == '\r' && peek_char() == '\n') {
                         advance();  // Skip \r\n
                     }
                     break;
+
+                // NotEscapeSequence fallthrough -- in templates, unrecognized escapes
+                // produce just the escaped character (no backslash preservation).
                 default:
                     value += current_char();
                     break;
             }
         } else {
+            // TemplateCharacter :: SourceCharacter but not one of ` or \ or $ or LineTerminator
+            // Note: LineTerminatorSequence is also a TemplateCharacter (unlike string literals,
+            // template literals CAN span multiple lines).
             value += current_char();
         }
         advance();
@@ -519,6 +719,16 @@ Token Lexer::read_template_part() {
     throw std::runtime_error("Unterminated template literal");
 }
 
+// 12.6 Names and Keywords
+// IdentifierName :: IdentifierStart | IdentifierName IdentifierPart
+// IdentifierStart :: UnicodeIDStart | $ | _ | \ UnicodeEscapeSequence
+// IdentifierPart :: UnicodeIDContinue | $ | \ UnicodeEscapeSequence | <ZWNJ> | <ZWJ>
+//
+// SIMPLIFIED: The spec allows any Unicode ID_Start/ID_Continue characters and
+// UnicodeEscapeSequences in identifiers. Rift only supports ASCII alphanumeric
+// characters, underscore (_), and dollar sign ($). Unicode identifiers like
+// "caf\u00e9" or identifiers with non-ASCII Unicode letters are not supported.
+// @spec https://tc39.es/ecma262/#sec-names-and-keywords
 Token Lexer::read_identifier() {
     std::string value;
     while(std::isalnum(current_char()) || current_char() == '_' || current_char() == '$') {
@@ -526,7 +736,29 @@ Token Lexer::read_identifier() {
         advance();
     }
 
-    // Check for keywords
+    // 12.6.2 Keywords and Reserved Words
+    // ReservedWord :: one of
+    //   await break case catch class const continue debugger default delete
+    //   do else enum export extends false finally for function if import in
+    //   instanceof new null return super switch this throw true try typeof
+    //   var void while with yield
+    //
+    // The following are also matched here as keyword tokens:
+    //   - true/false -> BooleanLiteral (12.8.2)
+    //   - null -> NullLiteral (12.8.1)
+    //   - undefined -> not a reserved word in spec (it's a global property),
+    //     but Rift tokenizes it as a keyword for convenience
+    //
+    // INCOMPLETE: The following reserved words are not yet tokenized:
+    //   debugger, enum, export, import
+    // DEVIATION: 'undefined' is tokenized as a keyword (TokenType::Undefined).
+    // In the spec, undefined is simply a property of the global object, not a
+    // reserved word or literal. This means `let undefined = 5` would be rejected
+    // by Rift but is valid (though ill-advised) in sloppy mode per the spec.
+    // DEVIATION: 'async' and 'await' are tokenized as unconditional keywords.
+    // In the spec, 'await' is only a reserved word inside async functions/modules,
+    // and 'async' is a contextual keyword, not a reserved word.
+    // @spec https://tc39.es/ecma262/#sec-keywords-and-reserved-words
     static std::unordered_map<std::string, TokenType> keywords = {
         {"var", TokenType::Var},
         {"let", TokenType::Let},
@@ -552,10 +784,10 @@ Token Lexer::read_identifier() {
         {"in", TokenType::In},
         {"instanceof", TokenType::Instanceof},
         // Note: "of" is a contextual keyword, handled in parser (not here)
-        {"true", TokenType::Boolean},
-        {"false", TokenType::Boolean},
-        {"null", TokenType::Null},
-        {"undefined", TokenType::Undefined},
+        {"true", TokenType::Boolean},     // 12.8.2 BooleanLiteral :: true
+        {"false", TokenType::Boolean},    // 12.8.2 BooleanLiteral :: false
+        {"null", TokenType::Null},        // 12.8.1 NullLiteral :: null
+        {"undefined", TokenType::Undefined},  // DEVIATION: not a spec keyword
         {"typeof", TokenType::Typeof},
         {"delete", TokenType::Delete},
         {"void", TokenType::Void},
@@ -577,6 +809,23 @@ Token Lexer::read_identifier() {
     return Token(TokenType::Identifier, value, line, column);
 }
 
+// 12.5 Tokens -- Regex vs Division Disambiguation
+// InputElementDiv :: ... DivPunctuator ...
+// InputElementRegExp :: ... RegularExpressionLiteral ...
+// InputElementRegExpOrTemplateTail :: ... RegularExpressionLiteral ...
+//
+// The spec uses multiple lexical goal symbols to disambiguate `/` and `/=` as
+// either division operators (DivPunctuator) or the start of a RegularExpressionLiteral.
+// The syntactic grammar selects the appropriate goal symbol based on parsing context.
+//
+// SIMPLIFIED: Instead of goal-symbol switching driven by the parser, Rift uses a
+// heuristic based on the last emitted token type. If the previous token could end
+// an expression (literal, identifier, closing bracket/paren/brace, postfix operator),
+// then `/` is treated as division. Otherwise it starts a regex literal.
+// This heuristic covers the vast majority of real-world cases but can be fooled by
+// pathological inputs (e.g., a regex after a closing brace of a block statement
+// vs an object literal).
+// @spec https://tc39.es/ecma262/#sec-ecmascript-language-lexical-grammar
 bool Lexer::slash_starts_regex() {
     switch(last_token_type_) {
         // Division context: after tokens that can end an expression
@@ -603,6 +852,21 @@ bool Lexer::slash_starts_regex() {
     }
 }
 
+// 12.8.5 Regular Expression Literals
+// RegularExpressionLiteral :: / RegularExpressionBody / RegularExpressionFlags
+// RegularExpressionBody :: RegularExpressionFirstChar RegularExpressionChars
+// RegularExpressionChars :: [empty] | RegularExpressionChars RegularExpressionChar
+// RegularExpressionFirstChar :: RegularExpressionNonTerminator but not one of * or \ or / or [
+//                             | RegularExpressionBackslashSequence
+//                             | RegularExpressionClass
+// RegularExpressionChar :: RegularExpressionNonTerminator but not one of \ or / or [
+//                        | RegularExpressionBackslashSequence
+//                        | RegularExpressionClass
+// RegularExpressionNonTerminator :: SourceCharacter but not LineTerminator
+// RegularExpressionBackslashSequence :: \ RegularExpressionNonTerminator
+// RegularExpressionClass :: [ RegularExpressionClassChars ]
+// RegularExpressionFlags :: [empty] | RegularExpressionFlags IdentifierPartChar
+// @spec https://tc39.es/ecma262/#sec-literals-regular-expression-literals
 Token Lexer::read_regex() {
     size_t start_line = line;
     size_t start_column = column;
@@ -610,10 +874,15 @@ Token Lexer::read_regex() {
     advance();  // consume opening '/'
 
     std::string pattern;
-    // Read pattern until unescaped '/'
+    // RegularExpressionBody: read pattern characters until unescaped '/'
+    // A RegularExpressionNonTerminator is any SourceCharacter except LineTerminator,
+    // so we stop at '\0' (EOF) or '\n' (LF).
+    // INCOMPLETE: CR (\r), LS (U+2028), and PS (U+2029) should also terminate
+    // regex scanning per the RegularExpressionNonTerminator production.
     while(current_char() != '\0' && current_char() != '\n') {
         if(current_char() == '\\') {
-            // Escape sequence - include both backslash and next char
+            // RegularExpressionBackslashSequence :: \ RegularExpressionNonTerminator
+            // Escape sequence - include both backslash and next char verbatim
             pattern += current_char();
             advance();
             if(current_char() == '\0' || current_char() == '\n') {
@@ -622,11 +891,16 @@ Token Lexer::read_regex() {
             pattern += current_char();
             advance();
         } else if(current_char() == '[') {
-            // Character class - read until unescaped ']'
+            // RegularExpressionClass :: [ RegularExpressionClassChars ]
+            // RegularExpressionClassChars :: [empty]
+            //     | RegularExpressionClassChars RegularExpressionClassChar
+            // RegularExpressionClassChar :: RegularExpressionNonTerminator but not ] or \
+            //     | RegularExpressionBackslashSequence
             pattern += current_char();
             advance();
             while(current_char() != '\0' && current_char() != '\n' && current_char() != ']') {
                 if(current_char() == '\\') {
+                    // RegularExpressionBackslashSequence inside class
                     pattern += current_char();
                     advance();
                     if(current_char() == '\0' || current_char() == '\n') {
@@ -645,8 +919,9 @@ Token Lexer::read_regex() {
             pattern += current_char();
             advance();
         } else if(current_char() == '/') {
-            break;  // End of pattern
+            break;  // End of RegularExpressionBody
         } else {
+            // RegularExpressionChar :: RegularExpressionNonTerminator but not \ or / or [
             pattern += current_char();
             advance();
         }
@@ -657,7 +932,12 @@ Token Lexer::read_regex() {
     }
     advance();  // consume closing '/'
 
-    // Read flags: consecutive flag characters
+    // RegularExpressionFlags :: [empty] | RegularExpressionFlags IdentifierPartChar
+    // Valid flags per 22.2.2.1: d (hasIndices), g (global), i (ignoreCase),
+    // m (multiline), s (dotAll), u (unicode), v (unicodeSets), y (sticky)
+    // SIMPLIFIED: The spec says RegularExpressionFlags can contain any IdentifierPartChar.
+    // Rift only accepts the known flag characters listed above. Invalid flags would
+    // be caught at runtime by the RegExp constructor anyway.
     std::string flags;
     while(current_char() != '\0' &&
           (current_char() == 'g' || current_char() == 'i' || current_char() == 'm' ||
@@ -667,13 +947,29 @@ Token Lexer::read_regex() {
         advance();
     }
 
-    // Store as /<pattern>/<flags>
+    // Store as /<pattern>/<flags> for later parsing by the RegExp constructor
     std::string value = "/" + pattern + "/" + flags;
     return Token(TokenType::RegExpLiteral, value, start_line, start_column);
 }
 
+// 12.5 Tokens -- Main tokenization entry point
+// This is the core lexer dispatch function that identifies the next input element
+// from the source text. It implements the top-level lexical grammar:
+//
+// InputElementDiv :: WhiteSpace | LineTerminator | Comment | CommonToken | DivPunctuator |
+//                    RightBracePunctuator
+// CommonToken :: IdentifierName | PrivateIdentifier | Punctuator | NumericLiteral |
+//                StringLiteral | Template
+//
+// The function first skips whitespace and comments, then dispatches based on the
+// current character to the appropriate sub-scanner (read_number, read_string,
+// read_identifier, read_regex, read_template_string, or inline punctuator matching).
+// @spec https://tc39.es/ecma262/#sec-tokens
 Token Lexer::next_token() {
-    // Handle template literal state transitions
+    // Handle template literal state transitions.
+    // When template_state is InTemplate, we are between ` or }...and need to
+    // continue scanning TemplateCharacters until we hit ${ or closing `.
+    // This corresponds to the InputElementTemplateTail goal symbol in the spec.
     if(template_state == TemplateLiteralState::InTemplate) {
         // We're inside a template, continue reading template part
         auto token = read_template_part();
@@ -681,6 +977,7 @@ Token Lexer::next_token() {
         return token;
     }
 
+    // 12.2 White Space -- skip whitespace before the next token
     skip_whitespace();
 
     char ch = current_char();
@@ -689,24 +986,43 @@ Token Lexer::next_token() {
         return Token(TokenType::EndOfFile, "", line, column);
     }
 
+    // 12.8.3 Numeric Literals
+    // NumericLiteral :: DecimalLiteral | ...
+    // DecimalLiteral starts with a DecimalDigit (0-9).
+    // Note: `.5` (leading dot) is handled in the '.' punctuator case below,
+    // not here -- it falls through to decimal parsing after the dot.
+    // INCOMPLETE: The spec production `. DecimalDigits ExponentPart?` is not
+    // handled; `.5` is tokenized as Dot + Number(5) rather than Number(0.5).
     if(std::isdigit(ch)) {
         auto token = read_number();
         last_token_type_ = token.type;
         return token;
     }
 
+    // 12.8.4 String Literals
+    // StringLiteral :: " DoubleStringCharacters? " | ' SingleStringCharacters? '
     if(ch == '"' || ch == '\'') {
         auto token = read_string();
         last_token_type_ = token.type;
         return token;
     }
 
+    // 12.8.6 Template Literal Lexical Components
+    // Template :: NoSubstitutionTemplate | TemplateHead
+    // NoSubstitutionTemplate :: ` TemplateCharacters? `
+    // TemplateHead :: ` TemplateCharacters? ${
     if(ch == '`') {
         auto token = read_template_string();
         last_token_type_ = token.type;
         return token;
     }
 
+    // 12.6 Names and Keywords
+    // IdentifierName :: IdentifierStart IdentifierPart*
+    // IdentifierStart :: UnicodeIDStart | $ | _
+    // SIMPLIFIED: Only ASCII alpha, underscore, and dollar sign are recognized as
+    // IdentifierStart. Unicode ID_Start characters and \UnicodeEscapeSequence in
+    // identifier starts are not supported.
     if(std::isalpha(ch) || ch == '_' || ch == '$') {
         auto token = read_identifier();
         last_token_type_ = token.type;
@@ -719,7 +1035,14 @@ Token Lexer::next_token() {
         return Token(type, val, l, c);
     };
 
+    // 12.7 Punctuators
+    // Punctuator :: OptionalChainingPunctuator | OtherPunctuator
+    // OtherPunctuator :: one of { ( ) [ ] . ... ; , < > <= >= == != === !== + - * % **
+    //   ++ -- << >> >>> & | ^ ! ~ && || ?? ? : = += -= *= %= **= <<= >>= >>>= &= |= ^= &&= ||= ??= =>
+    // DivPunctuator :: / | /=
+    // @spec https://tc39.es/ecma262/#sec-punctuators
     switch(ch) {
+        // + ++ +=
         case '+':
             advance();
             if(current_char() == '+') {
@@ -731,6 +1054,8 @@ Token Lexer::next_token() {
                 return make_token(TokenType::PlusAssign, "+=", line, column);
             }
             return make_token(TokenType::Plus, "+", line, column);
+
+        // - -- -=
         case '-':
             advance();
             if(current_char() == '-') {
@@ -742,6 +1067,8 @@ Token Lexer::next_token() {
                 return make_token(TokenType::MinusAssign, "-=", line, column);
             }
             return make_token(TokenType::Minus, "-", line, column);
+
+        // * ** *= **=
         case '*':
             advance();
             if(current_char() == '*') {
@@ -757,6 +1084,8 @@ Token Lexer::next_token() {
                 return make_token(TokenType::MultiplyAssign, "*=", line, column);
             }
             return make_token(TokenType::Multiply, "*", line, column);
+
+        // % %=
         case '%':
             advance();
             if(current_char() == '=') {
@@ -764,16 +1093,24 @@ Token Lexer::next_token() {
                 return make_token(TokenType::ModuloAssign, "%=", line, column);
             }
             return make_token(TokenType::Modulo, "%", line, column);
+
+        // / /= // /* RegularExpressionLiteral
+        // 12.4 Comments
+        // SingleLineComment :: // SingleLineCommentChars?
+        // MultiLineComment :: /* MultiLineCommentChars? */
+        // DivPunctuator :: / | /=
+        // @spec https://tc39.es/ecma262/#sec-comments
         case '/':
             if(peek_char() == '/') {
-                // Skip single-line comment
+                // SingleLineComment :: // SingleLineCommentChars?
+                // SingleLineCommentChar :: SourceCharacter but not LineTerminator
                 while(current_char() != '\n' && current_char() != '\0') {
                     advance();
                 }
                 return next_token();  // Recursively get the next token after the comment
             }
             if(peek_char() == '*') {
-                // Skip multi-line comment /* ... */
+                // MultiLineComment :: /* MultiLineCommentChars? */
                 advance();  // skip /
                 advance();  // skip *
                 while(current_char() != '\0') {
@@ -786,24 +1123,32 @@ Token Lexer::next_token() {
                 }
                 return next_token();  // Recursively get the next token after the comment
             }
-            // Check if '/' starts a regex literal or is division
+            // Disambiguation: RegularExpressionLiteral (12.8.5) vs DivPunctuator (12.7)
             if(slash_starts_regex()) {
                 auto regex_token = read_regex();
                 last_token_type_ = regex_token.type;
                 return regex_token;
             }
+            // DivPunctuator :: / | /=
             advance();
             if(current_char() == '=') {
                 advance();
                 return make_token(TokenType::DivideAssign, "/=", line, column);
             }
             return make_token(TokenType::Divide, "/", line, column);
+
+        // ( )
         case '(':
             advance();
             return make_token(TokenType::LeftParen, "(", line, column);
         case ')':
             advance();
             return make_token(TokenType::RightParen, ")", line, column);
+
+        // { } -- also handles template expression brace tracking
+        // When inside a template expression (${...}), braces must be tracked so
+        // that the closing } of the expression is distinguished from nested braces
+        // in object literals or blocks.
         case '{':
             advance();
             if(template_state == TemplateLiteralState::InExpression) {
@@ -815,7 +1160,8 @@ Token Lexer::next_token() {
             if(template_state == TemplateLiteralState::InExpression) {
                 brace_depth--;
                 if(brace_depth == 0) {
-                    // End of template expression, return to template parsing
+                    // End of template expression -- rescan as TemplateMiddle or TemplateTail
+                    // This corresponds to the spec's InputElementTemplateTail goal symbol.
                     template_state = TemplateLiteralState::InTemplate;
                     auto token = read_template_part();
                     last_token_type_ = token.type;
@@ -823,41 +1169,52 @@ Token Lexer::next_token() {
                 }
             }
             return make_token(TokenType::RightBrace, "}", line, column);
+
+        // [ ]
         case '[':
             advance();
             return make_token(TokenType::LeftBracket, "[", line, column);
         case ']':
             advance();
             return make_token(TokenType::RightBracket, "]", line, column);
+
+        // ;
         case ';':
             advance();
             return make_token(TokenType::Semicolon, ";", line, column);
+
+        // ,
         case ',':
             advance();
             return make_token(TokenType::Comma, ",", line, column);
+
+        // . ...
         case '.':
             advance();
-            // Check for spread operator ...
+            // ... (spread/rest operator)
             if(current_char() == '.' && peek_char() == '.') {
                 advance();  // consume second dot
                 advance();  // consume third dot
                 return make_token(TokenType::Spread, "...", line, column);
             }
             return make_token(TokenType::Dot, ".", line, column);
+
+        // :
         case ':':
             advance();
             return make_token(TokenType::Colon, ":", line, column);
+
+        // = == === =>
         case '=':
             advance();
-            // Arrow function =>
+            // Arrow function: =>
             if(current_char() == '>') {
                 advance();
                 return make_token(TokenType::Arrow, "=>", line, column);
             }
-            // Double equals
+            // == ===
             if(current_char() == '=') {
                 advance();
-                // Strict equals
                 if(current_char() == '=') {
                     advance();
                     return make_token(TokenType::EqualStrict, "===", line, column);
@@ -865,11 +1222,12 @@ Token Lexer::next_token() {
                 return make_token(TokenType::Equal, "==", line, column);
             }
             return make_token(TokenType::Assign, "=", line, column);
+
+        // ! != !==
         case '!':
             advance();
             if(current_char() == '=') {
                 advance();
-                // Strict not equals
                 if(current_char() == '=') {
                     advance();
                     return make_token(TokenType::NotEqualStrict, "!==", line, column);
@@ -877,6 +1235,8 @@ Token Lexer::next_token() {
                 return make_token(TokenType::NotEqual, "!=", line, column);
             }
             return make_token(TokenType::LogicalNot, "!", line, column);
+
+        // < << <= <<=
         case '<':
             advance();
             if(current_char() == '<') {
@@ -892,6 +1252,8 @@ Token Lexer::next_token() {
                 return make_token(TokenType::LessEqual, "<=", line, column);
             }
             return make_token(TokenType::Less, "<", line, column);
+
+        // > >> >>> >= >>= >>>=
         case '>':
             advance();
             if(current_char() == '>') {
@@ -915,9 +1277,14 @@ Token Lexer::next_token() {
                 return make_token(TokenType::GreaterEqual, ">=", line, column);
             }
             return make_token(TokenType::Greater, ">", line, column);
+
+        // ~
         case '~':
             advance();
             return make_token(TokenType::BitwiseNot, "~", line, column);
+
+        // | || |=
+        // INCOMPLETE: ||= (LogicalOrAssign) is not implemented.
         case '|':
             advance();
             if(current_char() == '|') {
@@ -929,6 +1296,9 @@ Token Lexer::next_token() {
                 return make_token(TokenType::BitwiseOrAssign, "|=", line, column);
             }
             return make_token(TokenType::BitwiseOr, "|", line, column);
+
+        // & && &=
+        // INCOMPLETE: &&= (LogicalAndAssign) is not implemented.
         case '&':
             advance();
             if(current_char() == '&') {
@@ -940,6 +1310,8 @@ Token Lexer::next_token() {
                 return make_token(TokenType::BitwiseAndAssign, "&=", line, column);
             }
             return make_token(TokenType::BitwiseAnd, "&", line, column);
+
+        // ^ ^=
         case '^':
             advance();
             if(current_char() == '=') {
@@ -947,6 +1319,10 @@ Token Lexer::next_token() {
                 return make_token(TokenType::BitwiseXorAssign, "^=", line, column);
             }
             return make_token(TokenType::BitwiseXor, "^", line, column);
+
+        // ? ?? ??= ?.
+        // OptionalChainingPunctuator :: ?. [lookahead not in DecimalDigit]
+        // @spec https://tc39.es/ecma262/#prod-OptionalChainingPunctuator
         case '?':
             advance();
             if(current_char() == '?') {
@@ -958,19 +1334,28 @@ Token Lexer::next_token() {
                 return make_token(TokenType::NullishCoalescing, "??", line, column);
             }
             if(current_char() == '.') {
-                // Optional chaining: ?. but NOT ?.digits (that would be ? .5)
+                // OptionalChainingPunctuator :: ?. [lookahead not in DecimalDigit]
+                // Must not match `?.5` which should be `?` then `.5` (numeric literal)
                 if(peek_char() < '0' || peek_char() > '9') {
                     advance();
                     return make_token(TokenType::OptionalChain, "?.", line, column);
                 }
             }
             return make_token(TokenType::QuestionMark, "?", line, column);
+
+        // INCOMPLETE: The following punctuators from the spec are not handled:
+        // # (PrivateIdentifier prefix), @ (decorators proposal).
+        // Also, the HashbangComment production (#!/...) for script preambles
+        // is not recognized.
         default:
             advance();
             return make_token(TokenType::Invalid, std::string(1, ch), line, column);
     }
 }
 
+// Convenience method: tokenizes the entire source text into a vector of tokens.
+// Repeatedly calls next_token() until EndOfFile is reached.
+// The EndOfFile token is included as the last element of the returned vector.
 std::vector<Token> Lexer::tokenize() {
     std::vector<Token> tokens;
     Token token = next_token();

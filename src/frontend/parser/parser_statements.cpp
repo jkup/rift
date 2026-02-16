@@ -1,9 +1,19 @@
-/**
- * Parser Statement Methods
- *
- * This file contains all statement parsing methods for the Parser class.
- * Split from parser.cpp for better maintainability.
- */
+// ============================================================================
+// ECMA-262 — Statement and Declaration Parsing (Chapters 14-15)
+// Implements syntactic grammar productions for statements and declarations:
+//   - Variable declarations: var, let, const (14.3)
+//   - Control flow: if, for, while, do-while, switch (14.6-14.12)
+//   - Jump: break, continue, return, throw (14.8-14.10, 14.14)
+//   - Exception: try-catch-finally (14.15)
+//   - Function/generator/async/class declarations (15.2, 15.5, 15.7, 15.8)
+//   - Destructuring patterns (14.3.3)
+//   - Import/export declarations (16.2) — not yet implemented
+// @spec https://tc39.es/ecma262/#sec-ecmascript-language-statements-and-declarations
+// @spec https://tc39.es/ecma262/#sec-ecmascript-language-functions-and-classes
+//
+// See also: parser.cpp (core utilities, statement dispatch)
+//           parser_expressions.cpp (expression parsing, Chapter 13)
+// ============================================================================
 
 #include <iostream>
 #include <stdexcept>
@@ -16,8 +26,21 @@ namespace rift::frontend {
 using namespace rift::ast;
 using ASTFactory = ast::ASTFactory;
 
+// 14.3.2 Variable Statement / 14.3.1 Let and Const Declarations
+// VariableStatement :: var VariableDeclarationList ;
+// VariableDeclarationList :: VariableDeclaration | VariableDeclarationList , VariableDeclaration
+// VariableDeclaration :: BindingIdentifier Initializer? | BindingPattern Initializer
+// LexicalDeclaration :: LetOrConst BindingList ;
+// BindingList :: LexicalBinding | BindingList , LexicalBinding
+// LexicalBinding :: BindingIdentifier Initializer? | BindingPattern Initializer
+// @spec https://tc39.es/ecma262/#sec-variable-statement
+// @spec https://tc39.es/ecma262/#sec-let-and-const-declarations
+//
+// DEVIATION: Multiple declarators (e.g., var a, b = 1, c) are wrapped in a
+// BlockStatement with metadata="declaration-list" rather than producing a single
+// VariableDeclarationList AST node. The evaluator handles this specially to avoid
+// creating a new scope.
 std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
-    // Support var/let/const with proper distinction
     TokenType declType = current_token().type;
 
     if(declType == TokenType::Var) {
@@ -30,7 +53,9 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
         throw std::runtime_error("Expected variable declaration keyword");
     }
 
-    // Check for destructuring pattern: [ or {
+    // BindingPattern :: ObjectBindingPattern | ArrayBindingPattern
+    // When the next token is '[' or '{', this is a destructuring declaration:
+    // VariableDeclaration :: BindingPattern Initializer
     bool is_destructuring = (current_token().type == TokenType::LeftBracket ||
                              current_token().type == TokenType::LeftBrace);
 
@@ -66,7 +91,8 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
         return node;
     }
 
-    // Helper lambda to parse a single declarator and create the appropriate node
+    // Parses a single VariableDeclaration / LexicalBinding production:
+    // VariableDeclaration :: BindingIdentifier Initializer? | BindingPattern Initializer
     auto parse_single_declarator = [&]() -> std::shared_ptr<ASTNode> {
         // Check for destructuring in subsequent declarators
         if(current_token().type == TokenType::LeftBracket ||
@@ -129,12 +155,13 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
     // Parse first declarator
     auto first = parse_single_declarator();
 
+    // VariableDeclarationList :: VariableDeclaration | VariableDeclarationList , VariableDeclaration
     // Check for comma-separated additional declarators: var a, b = 1, c;
     if(current_token().type != TokenType::Comma) {
         return first;  // Single declarator - return directly
     }
 
-    // Multiple declarators - wrap in a declaration-list block
+    // Multiple declarators — wrapped in a "declaration-list" block (see DEVIATION above)
     auto block = ASTFactory::makeBlockStatement();
     block->metadata = "declaration-list";
     ASTFactory::addStatement(block, first);
@@ -147,6 +174,9 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
     return block;
 }
 
+// 14.3.3 Destructuring Binding Patterns
+// BindingPattern :: ObjectBindingPattern | ArrayBindingPattern
+// @spec https://tc39.es/ecma262/#sec-destructuring-binding-patterns
 std::shared_ptr<ASTNode> Parser::parse_binding_pattern() {
     if(current_token().type == TokenType::LeftBracket) {
         return parse_array_pattern();
@@ -157,18 +187,32 @@ std::shared_ptr<ASTNode> Parser::parse_binding_pattern() {
     }
 }
 
+// 14.3.3 Destructuring Binding Patterns — ArrayBindingPattern
+// ArrayBindingPattern :: [ Elision? BindingRestElement? ]
+//                      | [ BindingElementList ]
+//                      | [ BindingElementList , Elision? BindingRestElement? ]
+// BindingElementList :: BindingElisionElement | BindingElementList , BindingElisionElement
+// BindingElisionElement :: Elision? BindingElement
+// BindingElement :: SingleNameBinding | BindingPattern Initializer?
+// SingleNameBinding :: BindingIdentifier Initializer?
+// BindingRestElement :: ... BindingIdentifier | ... BindingPattern
+// @spec https://tc39.es/ecma262/#sec-destructuring-binding-patterns
+//
+// INCOMPLETE: BindingRestElement with nested BindingPattern (e.g., ...[a, b]) is
+// not supported — only ...identifier form is handled.
 std::shared_ptr<ASTNode> Parser::parse_array_pattern() {
     consume(TokenType::LeftBracket);  // consume '['
     auto pattern = ASTFactory::makeArrayPattern();
 
-    // Handle empty pattern []
+    // Handle empty pattern: [ ]
     if(current_token().type == TokenType::RightBracket) {
         current++;
         return pattern;
     }
 
     while(true) {
-        // Check for hole (elision): [x, , z]
+        // Elision :: , | Elision ,
+        // Holes (elisions) in the pattern: [x, , z]
         if(current_token().type == TokenType::Comma) {
             ASTFactory::addArrayPatternElement(pattern, nullptr);
             current++;  // consume ','
@@ -180,7 +224,7 @@ std::shared_ptr<ASTNode> Parser::parse_array_pattern() {
             break;
         }
 
-        // Check for rest element: [...rest]
+        // BindingRestElement :: ... BindingIdentifier
         if(current_token().type == TokenType::Spread) {
             current++;  // consume '...'
             if(current_token().type != TokenType::Identifier) {
@@ -191,26 +235,29 @@ std::shared_ptr<ASTNode> Parser::parse_array_pattern() {
             auto rest_elem = ASTFactory::makeRestElement(rest_id);
             ASTFactory::addArrayPatternElement(pattern, rest_elem);
 
-            // Rest element must be last
+            // BindingRestElement must be the last element in ArrayBindingPattern
             if(current_token().type != TokenType::RightBracket) {
                 throw std::runtime_error("Rest element must be last in array pattern");
             }
             break;
         }
 
-        // Check for nested pattern
+        // BindingElement :: BindingPattern Initializer? | SingleNameBinding
         std::shared_ptr<ASTNode> element;
         if(current_token().type == TokenType::LeftBracket ||
            current_token().type == TokenType::LeftBrace) {
+            // Nested BindingPattern (recursive destructuring)
             element = parse_binding_pattern();
         } else if(current_token().type == TokenType::Identifier) {
+            // SingleNameBinding :: BindingIdentifier Initializer?
             element = ASTFactory::makeIdentifier(current_token().value);
             current++;  // consume identifier
         } else {
             throw std::runtime_error("Expected identifier or pattern in array destructuring");
         }
 
-        // Check for default value: [x = 10]
+        // Initializer :: = AssignmentExpression
+        // Default value: [x = 10]
         if(current_token().type == TokenType::Assign) {
             current++;                                      // consume '='
             auto default_val = parse_binary_expression(1);  // Stop before comma
@@ -219,7 +266,7 @@ std::shared_ptr<ASTNode> Parser::parse_array_pattern() {
 
         ASTFactory::addArrayPatternElement(pattern, element);
 
-        // Check for comma or end
+        // Comma separator between elements
         if(current_token().type == TokenType::Comma) {
             current++;  // consume ','
         } else if(current_token().type != TokenType::RightBracket) {
@@ -231,11 +278,23 @@ std::shared_ptr<ASTNode> Parser::parse_array_pattern() {
     return pattern;
 }
 
+// 14.3.3 Destructuring Binding Patterns — ObjectBindingPattern
+// ObjectBindingPattern :: { } | { BindingRestProperty } | { BindingPropertyList }
+//                       | { BindingPropertyList , BindingRestProperty? }
+// BindingPropertyList :: BindingProperty | BindingPropertyList , BindingProperty
+// BindingProperty :: SingleNameBinding | PropertyName : BindingElement
+// BindingRestProperty :: ... BindingIdentifier
+// SingleNameBinding :: BindingIdentifier Initializer?
+// @spec https://tc39.es/ecma262/#sec-destructuring-binding-patterns
+//
+// INCOMPLETE: Computed property names in object patterns ([expr]: pattern) are not
+// supported. Number literal keys are not supported. Only Identifier and String
+// property names are recognized.
 std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
     consume(TokenType::LeftBrace);  // consume '{'
     auto pattern = ASTFactory::makeObjectPattern();
 
-    // Handle empty pattern {}
+    // Handle empty pattern: { }
     if(current_token().type == TokenType::RightBrace) {
         current++;
         return pattern;
@@ -247,7 +306,7 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
             break;
         }
 
-        // Check for rest element: {...rest}
+        // BindingRestProperty :: ... BindingIdentifier
         if(current_token().type == TokenType::Spread) {
             current++;  // consume '...'
             if(current_token().type != TokenType::Identifier) {
@@ -258,14 +317,16 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
             auto rest_elem = ASTFactory::makeRestElement(rest_id);
             ASTFactory::addObjectPatternProperty(pattern, rest_elem, nullptr);
 
-            // Rest element must be last
+            // BindingRestProperty must be the last element
             if(current_token().type != TokenType::RightBrace) {
                 throw std::runtime_error("Rest element must be last in object pattern");
             }
             break;
         }
 
-        // Expect property name (identifier or string)
+        // PropertyName :: LiteralPropertyName | ComputedPropertyName
+        // LiteralPropertyName :: IdentifierName | StringLiteral | NumericLiteral
+        // INCOMPLETE: Only IdentifierName and StringLiteral are supported here.
         if(current_token().type != TokenType::Identifier &&
            current_token().type != TokenType::String) {
             throw std::runtime_error("Expected property name in object pattern");
@@ -282,14 +343,16 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
         std::shared_ptr<ASTNode> value_pattern;
 
         if(current_token().type == TokenType::Colon) {
-            // {key: pattern} or {key: renamed} or {key: [nested]}
+            // BindingProperty :: PropertyName : BindingElement
+            // Handles {key: pattern}, {key: renamed}, {key: [nested]}
             current++;  // consume ':'
 
             if(current_token().type == TokenType::LeftBracket ||
                current_token().type == TokenType::LeftBrace) {
-                // Nested destructuring
+                // BindingElement :: BindingPattern Initializer?
                 value_pattern = parse_binding_pattern();
             } else if(current_token().type == TokenType::Identifier) {
+                // BindingElement :: SingleNameBinding
                 value_pattern = ASTFactory::makeIdentifier(current_token().value);
                 current++;  // consume identifier
             } else {
@@ -297,26 +360,29 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
                     "Expected identifier or pattern after ':' in object pattern");
             }
 
-            // Check for default value after renaming: {key: renamed = 10}
+            // Initializer :: = AssignmentExpression
+            // Default value after renaming: {key: renamed = 10}
             if(current_token().type == TokenType::Assign) {
                 current++;  // consume '='
                 auto default_val = parse_binary_expression(1);
                 value_pattern = ASTFactory::makeAssignmentPattern(value_pattern, default_val);
             }
         } else if(current_token().type == TokenType::Assign) {
+            // SingleNameBinding :: BindingIdentifier Initializer
             // Shorthand with default: {key = 10}
             current++;  // consume '='
             auto default_val = parse_binary_expression(1);
             value_pattern = ASTFactory::makeAssignmentPattern(ASTFactory::makeIdentifier(key_name),
                                                               default_val);
         } else {
-            // Shorthand: {key} - key and variable name are the same
+            // SingleNameBinding :: BindingIdentifier (shorthand, no initializer)
+            // Shorthand: {key} — key and variable name are the same
             value_pattern = ASTFactory::makeIdentifier(key_name);
         }
 
         ASTFactory::addObjectPatternProperty(pattern, key, value_pattern);
 
-        // Check for comma or end
+        // Comma separator between properties
         if(current_token().type == TokenType::Comma) {
             current++;  // consume ','
         } else if(current_token().type != TokenType::RightBrace) {
@@ -328,80 +394,107 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
     return pattern;
 }
 
+// 14.6 The if Statement
+// IfStatement :: if ( Expression ) Statement else Statement
+//              | if ( Expression ) Statement
+// @spec https://tc39.es/ecma262/#sec-if-statement
 std::shared_ptr<ASTNode> Parser::parse_if_statement() {
-    consume(TokenType::If);
+    consume(TokenType::If);          // if
+    consume(TokenType::LeftParen);   // (
 
-    consume(TokenType::LeftParen);
-
-    // Parse the condition expression
+    // Expression — the condition
     auto condition = parse_expression();
 
-    // Expect and consume ')'
-    consume(TokenType::RightParen);
+    consume(TokenType::RightParen);  // )
 
-    // Parse the 'then' statement (what happens if condition is true)
+    // Statement — the consequent (then branch)
     auto then_statement = parse_statement();
 
-    // Check for optional 'else' clause
+    // Optional: else Statement
     std::shared_ptr<ASTNode> else_statement = nullptr;
     if(current_token().type == TokenType::Else) {
-        current++;  // consume 'else' token
+        current++;  // consume 'else'
         else_statement = parse_statement();
     }
 
     return ASTFactory::makeIfStatement(condition, then_statement, else_statement);
 }
 
+// 14.7.2 The while Statement
+// IterationStatement :: while ( Expression ) Statement
+// @spec https://tc39.es/ecma262/#sec-while-statement
 std::shared_ptr<ASTNode> Parser::parse_while_statement() {
-    consume(TokenType::While);
+    consume(TokenType::While);       // while
+    consume(TokenType::LeftParen);   // (
 
-    consume(TokenType::LeftParen);
-
-    // Parse the condition expression
+    // Expression — loop condition
     auto condition = parse_expression();
 
-    // Expect and consume ')'
-    consume(TokenType::RightParen);
+    consume(TokenType::RightParen);  // )
 
-    // Parse the body statement
+    // Statement — loop body
     auto body = parse_statement();
 
     return ASTFactory::makeWhileStatement(condition, body);
 }
 
+// 14.7.1 The do-while Statement
+// IterationStatement :: do Statement while ( Expression ) ;
+// @spec https://tc39.es/ecma262/#sec-do-while-statement
 std::shared_ptr<ASTNode> Parser::parse_do_while_statement() {
-    consume(TokenType::Do);  // consume 'do'
+    consume(TokenType::Do);          // do
 
-    // Parse the body statement first
+    // Statement — loop body (executed at least once)
     auto body = parse_statement();
 
-    // Expect 'while' keyword
-    consume(TokenType::While);
+    consume(TokenType::While);       // while
+    consume(TokenType::LeftParen);   // (
 
-    // Expect '('
-    consume(TokenType::LeftParen);
-
-    // Parse the condition expression
+    // Expression — loop condition
     auto condition = parse_expression();
 
-    // Expect ')'
-    consume(TokenType::RightParen);
+    consume(TokenType::RightParen);  // )
 
-    // Expect semicolon (do-while requires semicolon at end)
-    consume(TokenType::Semicolon);
+    // The spec requires a semicolon after do-while (unlike other iteration statements)
+    consume(TokenType::Semicolon);   // ;
 
     return ASTFactory::makeDoWhileStatement(body, condition);
 }
 
-// Helper to check for contextual keyword "of" (which is lexed as an identifier)
+// Helper to check for the contextual keyword "of" — used in for-of statements.
+// "of" is not a reserved word; it is lexed as an Identifier and recognized
+// contextually per 14.7.5 (ForInOfStatement).
 static bool isContextualOf(const Token& tok) {
     return tok.type == TokenType::Identifier && tok.value == "of";
 }
 
+// 14.7.4 The for Statement / 14.7.5 The for-in and for-of Statements
+// IterationStatement ::
+//     for ( [lookahead != let [] Expression? ; Expression? ; Expression? ) Statement
+//     for ( var VariableDeclarationList ; Expression? ; Expression? ) Statement
+//     for ( LexicalDeclaration Expression? ; Expression? ) Statement
+//     for ( [lookahead != let] LeftHandSideExpression in Expression ) Statement
+//     for ( var ForBinding in Expression ) Statement
+//     for ( ForDeclaration in Expression ) Statement
+//     for ( [lookahead != let] LeftHandSideExpression of AssignmentExpression ) Statement
+//     for ( var ForBinding of AssignmentExpression ) Statement
+//     for ( ForDeclaration of AssignmentExpression ) Statement
+//     for await ( [lookahead != let] LeftHandSideExpression of AssignmentExpression ) Statement
+//     for await ( var ForBinding of AssignmentExpression ) Statement
+//     for await ( ForDeclaration of AssignmentExpression ) Statement
+// ForDeclaration :: LetOrConst ForBinding
+// ForBinding :: BindingIdentifier | BindingPattern
+// @spec https://tc39.es/ecma262/#sec-for-statement
+// @spec https://tc39.es/ecma262/#sec-for-in-and-for-of-statements
+//
+// This method handles all for-loop variants (for, for-in, for-of, for-await-of)
+// by attempting to parse the initializer and then checking for 'in' or 'of' to
+// determine which variant is being used. This requires occasional backtracking.
 std::shared_ptr<ASTNode> Parser::parse_for_statement() {
-    consume(TokenType::For);  // consume 'for'
+    consume(TokenType::For);  // for
 
-    // Check for 'for await' syntax
+    // for-await-of: only valid in async context
+    // for await ( ForDeclaration of AssignmentExpression ) Statement
     bool is_for_await = false;
     if(current_token().type == TokenType::Await) {
         if(!in_async_context_) {
@@ -412,15 +505,17 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
         current++;  // consume 'await'
     }
 
-    consume(TokenType::LeftParen);  // consume '('
+    consume(TokenType::LeftParen);  // (
 
-    // Check for for-in: for (var x in obj) or for (x in obj)
+    // Disambiguate for-in/for-of from regular for by parsing the initializer
+    // and then checking if the next token is 'in' or 'of'.
     std::shared_ptr<ASTNode> left = nullptr;
     bool is_for_in = false;
 
+    // Case 1: for ( var/let/const ForBinding in/of Expression )
+    //    or:  for ( var/let/const VariableDeclarationList ; ... )
     if(current_token().type == TokenType::Var || current_token().type == TokenType::Let ||
        current_token().type == TokenType::Const) {
-        // Save position to potentially backtrack
         TokenType decl_type = current_token().type;
         current++;  // consume var/let/const
 
@@ -428,8 +523,8 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             std::string var_name = current_token().value;
             current++;  // consume identifier
 
-            // Check if this is for-in or for-of (no initializer, followed by 'in' or 'of')
-            // Note: "of" is a contextual keyword, lexed as identifier
+            // ForBinding :: BindingIdentifier
+            // Check if followed by 'in' (for-in) or 'of' (for-of)
             if(current_token().type == TokenType::In || isContextualOf(current_token())) {
                 bool is_for_of = isContextualOf(current_token());
                 is_for_in = !is_for_of;
@@ -475,7 +570,9 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             }
         } else if(current_token().type == TokenType::LeftBracket ||
                   current_token().type == TokenType::LeftBrace) {
-            // Destructuring pattern: could be for-in/for-of or regular for with destructuring init
+            // ForBinding :: BindingPattern
+            // ForDeclaration :: LetOrConst ForBinding
+            // Could be for-in/for-of with destructuring or regular for with destructuring init
             auto pattern = parse_binding_pattern();
 
             if(current_token().type == TokenType::In || isContextualOf(current_token())) {
@@ -533,13 +630,14 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             left = parse_variable_declaration();
         }
     } else if(current_token().type == TokenType::Identifier) {
-        // Could be for (x in obj), for (x of arr), or for (x = 0; ...)
+        // Case 2: for ( LeftHandSideExpression in/of Expression )
+        //    or:  for ( Expression ; ... )
+        // Try to detect for-in/for-of with bare identifier: for (x in obj), for (x of arr)
         std::string var_name = current_token().value;
         current++;  // consume identifier
 
-        // Note: "of" is a contextual keyword, lexed as identifier
         if(current_token().type == TokenType::In || isContextualOf(current_token())) {
-            // This is for-in or for-of: for (x in obj) or for (x of arr)
+            // for ( LeftHandSideExpression in Expression ) or for ( ... of AssignmentExpression )
             bool is_for_of = isContextualOf(current_token());
             is_for_in = !is_for_of;
 
@@ -574,59 +672,68 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             left = parse_expression();
         }
     } else if(current_token().type != TokenType::Semicolon) {
-        // Some other expression
+        // Case 3: for ( Expression ; ... ) — expression initializer
         left = parse_expression();
     }
-    // else: empty initialization: for (; ...)
+    // else: for ( ; ... ) — empty initialization
 
-    // Regular for loop
-    consume(TokenType::Semicolon);  // consume first ';'
+    // Regular for statement:
+    // for ( Expression? ; Expression? ; Expression? ) Statement
+    consume(TokenType::Semicolon);  // first ';'
 
-    // Parse the condition (optional)
+    // Condition expression (optional)
     std::shared_ptr<ASTNode> condition = nullptr;
     if(current_token().type != TokenType::Semicolon) {
         condition = parse_expression();
     }
 
-    consume(TokenType::Semicolon);  // consume second ';'
+    consume(TokenType::Semicolon);  // second ';'
 
-    // Parse the update expression (optional)
+    // Update expression (optional)
     std::shared_ptr<ASTNode> update = nullptr;
     if(current_token().type != TokenType::RightParen) {
         update = parse_expression();
     }
 
-    consume(TokenType::RightParen);  // consume ')'
+    consume(TokenType::RightParen);  // )
 
-    // Parse the body statement
+    // Statement — loop body
     auto body = parse_statement();
 
     return ASTFactory::makeForStatement(left, condition, update, body);
 }
 
+// 14.12 The switch Statement
+// SwitchStatement :: switch ( Expression ) CaseBlock
+// CaseBlock :: { CaseClauses? DefaultClause? CaseClauses? }
+// CaseClauses :: CaseClause | CaseClauses CaseClause
+// CaseClause :: case Expression : StatementList?
+// DefaultClause :: default : StatementList?
+// @spec https://tc39.es/ecma262/#sec-switch-statement
 std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
-    consume(TokenType::Switch);     // consume 'switch'
-    consume(TokenType::LeftParen);  // consume '('
+    consume(TokenType::Switch);      // switch
+    consume(TokenType::LeftParen);   // (
 
-    // Parse discriminant expression
+    // Expression — the discriminant to match against
     auto discriminant = parse_expression();
 
-    consume(TokenType::RightParen);  // consume ')'
-    consume(TokenType::LeftBrace);   // consume '{'
+    consume(TokenType::RightParen);  // )
+    consume(TokenType::LeftBrace);   // { (beginning of CaseBlock)
 
     auto switchNode = ASTFactory::makeSwitchStatement(discriminant);
 
-    // Parse case clauses
+    // CaseBlock :: { CaseClauses? DefaultClause? CaseClauses? }
     while(current_token().type != TokenType::RightBrace &&
           current_token().type != TokenType::EndOfFile) {
         if(current_token().type == TokenType::Case) {
+            // CaseClause :: case Expression : StatementList?
             current++;  // consume 'case'
             auto test = parse_expression();
-            consume(TokenType::Colon);  // consume ':'
+            consume(TokenType::Colon);  // :
 
             auto caseClause = ASTFactory::makeCaseClause(test);
 
-            // Parse statements until next case/default/}
+            // StatementList? — parse until next case/default/}
             while(current_token().type != TokenType::Case &&
                   current_token().type != TokenType::Default &&
                   current_token().type != TokenType::RightBrace &&
@@ -638,12 +745,13 @@ std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
             ASTFactory::addSwitchCase(switchNode, caseClause);
 
         } else if(current_token().type == TokenType::Default) {
+            // DefaultClause :: default : StatementList?
             current++;                  // consume 'default'
-            consume(TokenType::Colon);  // consume ':'
+            consume(TokenType::Colon);  // :
 
             auto defaultClause = ASTFactory::makeDefaultClause();
 
-            // Parse statements until next case/}
+            // StatementList? — parse until next case/}
             while(current_token().type != TokenType::Case &&
                   current_token().type != TokenType::RightBrace &&
                   current_token().type != TokenType::EndOfFile) {
@@ -658,15 +766,20 @@ std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
         }
     }
 
-    consume(TokenType::RightBrace);  // consume '}'
+    consume(TokenType::RightBrace);  // } (end of CaseBlock)
     return switchNode;
 }
 
+// 15.2 Function Definitions
+// FunctionDeclaration :: function BindingIdentifier ( FormalParameters ) { FunctionBody }
+// FunctionBody :: FunctionStatementList
+// FunctionStatementList :: StatementList?
+// @spec https://tc39.es/ecma262/#sec-function-definitions
 std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
-    Token& startToken = current_token();  // Save 'function' location
-    consume(TokenType::Function);         // consume 'function'
+    Token& startToken = current_token();
+    consume(TokenType::Function);         // function
 
-    // Get function name
+    // BindingIdentifier — function name (required for declarations)
     if(current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected function name");
     }
@@ -675,15 +788,15 @@ std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
     size_t nameColumn = current_token().column;
     current++;  // consume function name
 
-    // Validate function name in strict mode
+    // Static Semantics: Early Errors — BindingIdentifier must not be a strict reserved word
     validateIdentifier(name, nameLine, nameColumn);
 
-    // Parse parameters
+    // ( FormalParameters )
     consume(TokenType::LeftParen);
     auto parameters = parse_parameter_list();
     consume(TokenType::RightParen);
 
-    // Parse function body
+    // { FunctionBody }
     auto body = parse_block_statement();
 
     auto node = ASTFactory::makeFunctionDeclaration(name, parameters, body);
@@ -691,20 +804,34 @@ std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
     return node;
 }
 
+// 15.1 Parameter Lists
+// FormalParameters :: [empty] | FunctionRestParameter | FormalParameterList
+//                   | FormalParameterList , | FormalParameterList , FunctionRestParameter
+// FormalParameterList :: FormalParameter | FormalParameterList , FormalParameter
+// FunctionRestParameter :: BindingRestElement
+// FormalParameter :: BindingElement
+// BindingElement :: SingleNameBinding | BindingPattern Initializer?
+// SingleNameBinding :: BindingIdentifier Initializer?
+// BindingRestElement :: ... BindingIdentifier | ... BindingPattern
+// @spec https://tc39.es/ecma262/#sec-parameter-lists
+//
+// INCOMPLETE: BindingPattern parameters (destructuring in parameter position,
+// e.g., function f({a, b}) {}) are not supported. Only BindingIdentifier
+// parameters are handled.
 std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
     auto parameters = ASTFactory::makeParameterList();
     bool has_rest_param = false;
     std::unordered_set<std::string> seen_params;
 
-    // Handle empty parameter list
+    // FormalParameters :: [empty]
     if(current_token().type == TokenType::RightParen) {
         return parameters;
     }
 
-    // Helper lambda to parse a single parameter (with optional default value or rest)
+    // Parses a single FormalParameter or FunctionRestParameter
     auto parse_single_parameter = [this, &has_rest_param,
                                    &seen_params]() -> std::shared_ptr<ASTNode> {
-        // Check for rest parameter (...name)
+        // FunctionRestParameter :: BindingRestElement :: ... BindingIdentifier
         bool is_rest = false;
         if(current_token().type == TokenType::Spread) {
             if(has_rest_param) {
@@ -715,6 +842,7 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
             current++;  // consume '...'
         }
 
+        // SingleNameBinding :: BindingIdentifier Initializer?
         if(current_token().type != TokenType::Identifier) {
             throw std::runtime_error("Expected parameter name");
         }
@@ -724,10 +852,11 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
         auto param_name = ASTFactory::makeIdentifier(paramValue);
         current++;  // consume parameter name
 
-        // Validate parameter name in strict mode
+        // Static Semantics: Early Errors — BindingIdentifier must not be strict reserved word
         validateIdentifier(paramValue, paramLine, paramColumn);
 
-        // Check for duplicate parameter names in strict mode
+        // Static Semantics: Early Errors — It is a Syntax Error if FormalParameters
+        // contains any duplicate parameter names in strict mode code.
         if(in_strict_mode_) {
             if(seen_params.count(paramValue)) {
                 throw std::runtime_error(
@@ -737,34 +866,33 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
             seen_params.insert(paramValue);
         }
 
-        // Rest parameters cannot have default values
+        // BindingRestElement cannot have an Initializer
         if(is_rest) {
             param_name->metadata = "rest";  // Mark as rest parameter
             return param_name;
         }
 
-        // Check for default value (= expression)
+        // Initializer :: = AssignmentExpression
+        // Default parameter values
         if(current_token().type == TokenType::Assign) {
             current++;  // consume '='
-            // Parse default value expression (but stop at comma or right paren)
-            // Use parse_binary_expression with assignment precedence
-            auto default_value = parse_binary_expression(1);  // precedence 1 to stop before commas
-            // Create an AssignmentExpression to represent param = defaultValue
+            // Parse default value — use precedence 1 to stop before comma
+            auto default_value = parse_binary_expression(1);
             return ASTFactory::makeAssignmentExpression(param_name, default_value);
         }
 
         return param_name;
     };
 
-    // Parse first parameter
+    // FormalParameterList :: FormalParameter | FormalParameterList , FormalParameter
     ASTFactory::addParameter(parameters, parse_single_parameter());
 
-    // Parse remaining parameters
     while(match(TokenType::Comma)) {
+        // FunctionRestParameter must be last
         if(has_rest_param) {
             throw std::runtime_error("Rest parameter must be last formal parameter");
         }
-        // Allow trailing comma before ')'
+        // Trailing comma: FormalParameterList ,
         if(current_token().type == TokenType::RightParen) {
             break;
         }
@@ -774,53 +902,80 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
     return parameters;
 }
 
+// 14.10 The return Statement
+// ReturnStatement :: return ; | return [no LineTerminator here] Expression ;
+// @spec https://tc39.es/ecma262/#sec-return-statement
+//
+// INCOMPLETE: The spec requires [no LineTerminator here] between 'return' and the
+// expression (ASI should insert a semicolon if there is a newline). Rift does not
+// currently enforce this restriction — a newline after 'return' will not trigger ASI.
 std::shared_ptr<ASTNode> Parser::parse_return_statement() {
-    consume(TokenType::Return);  // consume 'return'
+    consume(TokenType::Return);  // return
 
+    // Expression (optional — bare 'return;' returns undefined)
     std::shared_ptr<ASTNode> argument = nullptr;
     if(current_token().type != TokenType::Semicolon) {
         argument = parse_expression();
     }
 
-    match(TokenType::Semicolon);  // optional semicolon
+    match(TokenType::Semicolon);  // optional ;
     return ASTFactory::makeReturnStatement(argument);
 }
 
+// 14.14 The throw Statement
+// ThrowStatement :: throw [no LineTerminator here] Expression ;
+// @spec https://tc39.es/ecma262/#sec-throw-statement
+//
+// Unlike ReturnStatement, the Expression is mandatory — 'throw;' alone is a
+// SyntaxError per the spec.
+//
+// INCOMPLETE: The [no LineTerminator here] restriction is not enforced. A newline
+// between 'throw' and the expression should trigger ASI, making it 'throw;' which
+// is a SyntaxError. Rift does not currently detect this case.
 std::shared_ptr<ASTNode> Parser::parse_throw_statement() {
-    consume(TokenType::Throw);  // consume 'throw'
+    consume(TokenType::Throw);  // throw
 
-    // throw requires an expression (unlike return which is optional)
+    // Expression is required (unlike return)
     if(current_token().type == TokenType::Semicolon ||
        current_token().type == TokenType::EndOfFile) {
         throw std::runtime_error("Missing throw expression");
     }
 
     auto argument = parse_expression();
-    match(TokenType::Semicolon);  // optional semicolon
+    match(TokenType::Semicolon);  // optional ;
     return ASTFactory::makeThrowStatement(argument);
 }
 
+// 14.15 The try Statement
+// TryStatement :: try Block Catch
+//              | try Block Finally
+//              | try Block Catch Finally
+// Catch :: catch ( CatchParameter ) Block
+//        | catch Block
+// Finally :: finally Block
+// CatchParameter :: BindingIdentifier | BindingPattern
+// @spec https://tc39.es/ecma262/#sec-try-statement
 std::shared_ptr<ASTNode> Parser::parse_try_statement() {
-    consume(TokenType::Try);  // consume 'try'
+    consume(TokenType::Try);  // try
 
-    // Parse the try block
+    // Block — the try block
     auto tryBlock = parse_block_statement();
 
-    // Parse optional catch clause
+    // Catch (optional if Finally present)
     std::shared_ptr<ASTNode> catchClause = nullptr;
     if(current_token().type == TokenType::Catch) {
         catchClause = parse_catch_clause();
     }
 
-    // Parse optional finally clause
+    // Finally (optional if Catch present)
+    // Finally :: finally Block
     std::shared_ptr<ASTNode> finallyClause = nullptr;
     if(current_token().type == TokenType::Finally) {
         current++;  // consume 'finally'
-        // finally must be followed by a block
         finallyClause = ASTFactory::makeFinallyClause(parse_block_statement());
     }
 
-    // Require at least catch or finally
+    // TryStatement requires at least one of Catch or Finally
     if(!catchClause && !finallyClause) {
         throw std::runtime_error("Missing catch or finally clause after try block");
     }
@@ -828,12 +983,20 @@ std::shared_ptr<ASTNode> Parser::parse_try_statement() {
     return ASTFactory::makeTryStatement(tryBlock, catchClause, finallyClause);
 }
 
+// 14.15 The try Statement — Catch clause
+// Catch :: catch ( CatchParameter ) Block | catch Block
+// CatchParameter :: BindingIdentifier | BindingPattern
+// @spec https://tc39.es/ecma262/#sec-try-statement
+//
+// INCOMPLETE: The optional catch binding (catch without parameter, e.g., catch {})
+// introduced in ES2019 is not supported. A CatchParameter is always required.
+// Also, BindingPattern in CatchParameter (e.g., catch ({message}) {}) is not
+// supported — only BindingIdentifier is handled.
 std::shared_ptr<ASTNode> Parser::parse_catch_clause() {
-    consume(TokenType::Catch);  // consume 'catch'
+    consume(TokenType::Catch);      // catch
+    consume(TokenType::LeftParen);  // (
 
-    consume(TokenType::LeftParen);  // consume '('
-
-    // Parse catch parameter (the variable that will hold the exception)
+    // CatchParameter :: BindingIdentifier
     if(current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected identifier in catch clause");
     }
@@ -842,70 +1005,108 @@ std::shared_ptr<ASTNode> Parser::parse_catch_clause() {
     size_t paramColumn = current_token().column;
     current++;  // consume parameter name
 
-    // Validate catch parameter in strict mode
+    // Static Semantics: Early Errors — CatchParameter must not be a strict reserved word
     validateIdentifier(parameter, paramLine, paramColumn);
 
-    consume(TokenType::RightParen);  // consume ')'
+    consume(TokenType::RightParen);  // )
 
-    // Parse catch body
+    // Block — the catch body
     auto body = parse_block_statement();
 
     return ASTFactory::makeCatchClause(parameter, body);
 }
 
+// 14.2 Block Statement
+// Block :: { StatementList? }
+// StatementList :: StatementListItem | StatementList StatementListItem
+// StatementListItem :: Statement | Declaration
+// @spec https://tc39.es/ecma262/#sec-block
 std::shared_ptr<ASTNode> Parser::parse_block_statement() {
-    consume(TokenType::LeftBrace);  // consume '{'
+    consume(TokenType::LeftBrace);  // {
     auto block = ASTFactory::makeBlockStatement();
 
+    // StatementList — parse StatementListItems until '}'
     while(current_token().type != TokenType::RightBrace &&
           current_token().type != TokenType::EndOfFile) {
         auto stmt = parse_statement();
         ASTFactory::addStatement(block, stmt);
     }
 
-    consume(TokenType::RightBrace);  // consume '}'
+    consume(TokenType::RightBrace);  // }
     return block;
 }
 
+// 14.11 The with Statement
+// WithStatement :: with ( Expression ) Statement
+// @spec https://tc39.es/ecma262/#sec-with-statement
+//
+// Static Semantics: Early Errors — It is a Syntax Error if the code matched by
+// this production is contained in strict mode code.
+//
+// INCOMPLETE: The with statement is parsed for syntax validation but not evaluated.
+// In non-strict mode, parsing succeeds but evaluation throws a runtime error.
+// The spec defines with-statement evaluation in terms of creating an object
+// environment record, which is not implemented.
 std::shared_ptr<ASTNode> Parser::parse_with_statement() {
     size_t with_line = current_token().line;
     size_t with_column = current_token().column;
-    consume(TokenType::With);  // consume 'with'
+    consume(TokenType::With);  // with
 
+    // Early Error: with statement is forbidden in strict mode
     if(in_strict_mode_) {
         throw std::runtime_error(
             "SyntaxError: Strict mode code may not include a with statement at line " +
             std::to_string(with_line) + ":" + std::to_string(with_column));
     }
 
-    // Non-strict mode: parse but throw not-implemented
-    consume(TokenType::LeftParen);
-    parse_expression();
-    consume(TokenType::RightParen);
-    auto body = parse_statement();
-    // with is not implemented in non-strict mode, but we parse it to avoid syntax errors
+    // Non-strict mode: parse the syntax but throw not-implemented at the end
+    consume(TokenType::LeftParen);   // (
+    parse_expression();              // Expression
+    consume(TokenType::RightParen);  // )
+    auto body = parse_statement();   // Statement
     throw std::runtime_error("'with' statement is not supported");
 }
 
+// 14.9 The break Statement
+// BreakStatement :: break ; | break [no LineTerminator here] LabelIdentifier ;
+// @spec https://tc39.es/ecma262/#sec-break-statement
+//
+// INCOMPLETE: Labelled break (break label;) is not supported. Only the unlabelled
+// form is parsed. The [no LineTerminator here] restriction is also not enforced.
 std::shared_ptr<ASTNode> Parser::parse_break_statement() {
-    consume(TokenType::Break);    // consume 'break'
-    match(TokenType::Semicolon);  // optional semicolon
+    consume(TokenType::Break);    // break
+    match(TokenType::Semicolon);  // optional ;
     return ASTFactory::makeBreakStatement();
 }
 
+// 14.8 The continue Statement
+// ContinueStatement :: continue ; | continue [no LineTerminator here] LabelIdentifier ;
+// @spec https://tc39.es/ecma262/#sec-continue-statement
+//
+// INCOMPLETE: Labelled continue (continue label;) is not supported. Only the
+// unlabelled form is parsed. The [no LineTerminator here] restriction is also
+// not enforced.
 std::shared_ptr<ASTNode> Parser::parse_continue_statement() {
-    consume(TokenType::Continue);  // consume 'continue'
-    match(TokenType::Semicolon);   // optional semicolon
+    consume(TokenType::Continue);  // continue
+    match(TokenType::Semicolon);   // optional ;
     return ASTFactory::makeContinueStatement();
 }
 
-// Class parsing methods
+// ============================================================================
+// 15.7 Class Definitions
+// @spec https://tc39.es/ecma262/#sec-class-definitions
+// ============================================================================
 
+// 15.7 Class Definitions — ClassDeclaration
+// ClassDeclaration :: class BindingIdentifier ClassTail
+// ClassTail :: ClassHeritage? { ClassBody? }
+// ClassHeritage :: extends LeftHandSideExpression
+// @spec https://tc39.es/ecma262/#sec-class-definitions
 std::shared_ptr<ASTNode> Parser::parse_class_declaration() {
     Token& startToken = current_token();
-    consume(TokenType::Class);  // consume 'class'
+    consume(TokenType::Class);  // class
 
-    // Get class name (required for declarations)
+    // BindingIdentifier — class name (required for declarations)
     if(current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected class name");
     }
@@ -914,18 +1115,17 @@ std::shared_ptr<ASTNode> Parser::parse_class_declaration() {
     size_t nameColumn = current_token().column;
     current++;  // consume class name
 
-    // Validate class name in strict mode
+    // Static Semantics: Early Errors — BindingIdentifier must not be strict reserved word
     validateIdentifier(name, nameLine, nameColumn);
 
-    // Check for extends clause
+    // ClassHeritage :: extends LeftHandSideExpression (optional)
     std::shared_ptr<ASTNode> superClass = nullptr;
     if(current_token().type == TokenType::Extends) {
         current++;  // consume 'extends'
-        // Parse superclass expression (can be complex expression like Foo.Bar)
         superClass = parse_expression();
     }
 
-    // Parse class body
+    // { ClassBody? }
     auto body = parse_class_body();
 
     auto node = ASTFactory::makeClassDeclaration(name, superClass, body);
@@ -933,29 +1133,32 @@ std::shared_ptr<ASTNode> Parser::parse_class_declaration() {
     return node;
 }
 
+// 15.7 Class Definitions — ClassExpression
+// ClassExpression :: class BindingIdentifier? ClassTail
+// ClassTail :: ClassHeritage? { ClassBody? }
+// @spec https://tc39.es/ecma262/#sec-class-definitions
 std::shared_ptr<ASTNode> Parser::parse_class_expression() {
     Token& startToken = current_token();
-    consume(TokenType::Class);  // consume 'class'
+    consume(TokenType::Class);  // class
 
-    // Optional class name
+    // BindingIdentifier (optional for expressions — anonymous classes allowed)
     std::string name;
     if(current_token().type == TokenType::Identifier) {
         name = current_token().value;
         size_t nameLine = current_token().line;
         size_t nameColumn = current_token().column;
         current++;  // consume class name
-        // Validate class name in strict mode
         validateIdentifier(name, nameLine, nameColumn);
     }
 
-    // Check for extends clause
+    // ClassHeritage :: extends LeftHandSideExpression (optional)
     std::shared_ptr<ASTNode> superClass = nullptr;
     if(current_token().type == TokenType::Extends) {
         current++;  // consume 'extends'
         superClass = parse_expression();
     }
 
-    // Parse class body
+    // { ClassBody? }
     auto body = parse_class_body();
 
     auto node = ASTFactory::makeClassExpression(name, superClass, body);
@@ -963,14 +1166,24 @@ std::shared_ptr<ASTNode> Parser::parse_class_expression() {
     return node;
 }
 
+// 15.7 Class Definitions — ClassBody
+// ClassBody :: ClassElementList
+// ClassElementList :: ClassElement | ClassElementList ClassElement
+// ClassElement :: MethodDefinition | static MethodDefinition | FieldDefinition ;
+//              | static FieldDefinition ; | ClassStaticBlock | ;
+// @spec https://tc39.es/ecma262/#sec-class-definitions
+//
+// INCOMPLETE: FieldDefinition (class fields) and ClassStaticBlock (static { })
+// are not supported. Only MethodDefinition and static MethodDefinition are parsed.
 std::shared_ptr<ASTNode> Parser::parse_class_body() {
-    consume(TokenType::LeftBrace);  // consume '{'
+    consume(TokenType::LeftBrace);  // {
 
     auto body = ASTFactory::makeClassBody();
 
+    // ClassElementList — parse ClassElements until '}'
     while(current_token().type != TokenType::RightBrace &&
           current_token().type != TokenType::EndOfFile) {
-        // Skip any semicolons in class body (empty statements)
+        // ClassElement :: ; (empty class element, skip)
         if(current_token().type == TokenType::Semicolon) {
             current++;
             continue;
@@ -980,10 +1193,32 @@ std::shared_ptr<ASTNode> Parser::parse_class_body() {
         ASTFactory::addMethodToClassBody(body, method);
     }
 
-    consume(TokenType::RightBrace);  // consume '}'
+    consume(TokenType::RightBrace);  // }
     return body;
 }
 
+// 15.4 Method Definitions
+// MethodDefinition :: ClassElementName ( UniqueFormalParameters ) { FunctionBody }
+//                   | GeneratorMethod | AsyncMethod | AsyncGeneratorMethod
+//                   | get ClassElementName ( ) { FunctionBody }
+//                   | set ClassElementName ( PropertySetParameterList ) { FunctionBody }
+// ClassElementName :: PropertyName | PrivateIdentifier
+// PropertyName :: LiteralPropertyName | ComputedPropertyName
+// LiteralPropertyName :: IdentifierName | StringLiteral | NumericLiteral
+// ComputedPropertyName :: [ AssignmentExpression ]
+// @spec https://tc39.es/ecma262/#sec-method-definitions
+//
+// This method handles all MethodDefinition variants including:
+// - Regular methods
+// - Static methods (static keyword prefix)
+// - Generator methods (15.5 — * prefix)
+// - Async methods (15.8 — async prefix)
+// - Getter/setter accessors (get/set prefix)
+// - Computed property names ([expr])
+//
+// INCOMPLETE: PrivateIdentifier (#name) is not supported. NumericLiteral property
+// names (e.g., get 0() {}) are not supported. AsyncGeneratorMethod (async * name())
+// is not supported as a distinct AST node type.
 std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     Token& startToken = current_token();
     bool isStatic = false;
@@ -993,27 +1228,30 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     std::string methodName;
     std::shared_ptr<ASTNode> computedKey = nullptr;
 
-    // Check for 'static' keyword
+    // ClassElement :: static MethodDefinition
     if(current_token().type == TokenType::Static) {
         isStatic = true;
         current++;  // consume 'static'
     }
 
-    // Check for 'async' keyword (must not be followed by '(' which would mean a method named
-    // "async")
+    // AsyncMethod :: async [no LineTerminator here] ClassElementName (...)
+    // Disambiguate: if followed by '(' then 'async' is the method name itself
     if(current_token().type == TokenType::Async && peek_token().type != TokenType::LeftParen) {
         isAsync = true;
         current++;  // consume 'async'
     }
 
-    // Check for generator method: *methodName() {}
+    // GeneratorMethod :: * ClassElementName ( UniqueFormalParameters ) { GeneratorBody }
     if(current_token().type == TokenType::Multiply) {
         isGenerator = true;
         current++;  // consume '*'
     }
 
-    // Check for getter/setter syntax: get x() {} / set x(v) {}
-    // Disambiguate from method named "get"/"set" (next token would be '(')
+    // get/set accessor methods:
+    // MethodDefinition :: get ClassElementName ( ) { FunctionBody }
+    //                   | set ClassElementName ( PropertySetParameterList ) { FunctionBody }
+    // Disambiguate from a method literally named "get"/"set" by checking if
+    // the next token is a valid ClassElementName start (not '(')
     bool isGetter = false;
     bool isSetter = false;
     if(!isGenerator && !isAsync && current_token().type == TokenType::Identifier &&
@@ -1030,33 +1268,35 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
         }
     }
 
-    // Get method name
+    // ClassElementName :: PropertyName
+    // PropertyName :: ComputedPropertyName | LiteralPropertyName
     if(current_token().type == TokenType::LeftBracket) {
-        // Computed property name: [expression]
+        // ComputedPropertyName :: [ AssignmentExpression ]
         isComputed = true;
         current++;  // consume '['
         computedKey = parse_expression();
         consume(TokenType::RightBracket);
     } else if(current_token().type == TokenType::Identifier) {
+        // LiteralPropertyName :: IdentifierName
         methodName = current_token().value;
         size_t methodLine = current_token().line;
         size_t methodColumn = current_token().column;
         current++;  // consume identifier
-        // Validate method name in strict mode
         validateIdentifier(methodName, methodLine, methodColumn);
     } else if(current_token().type == TokenType::String) {
+        // LiteralPropertyName :: StringLiteral
         methodName = current_token().value;
         current++;  // consume string
     } else {
         throw std::runtime_error("Expected method name in class body");
     }
 
-    // Parse parameters
+    // ( FormalParameters ) or ( UniqueFormalParameters )
     consume(TokenType::LeftParen);
     auto parameters = parse_parameter_list();
     consume(TokenType::RightParen);
 
-    // Parse method body (with appropriate context flags)
+    // { FunctionBody } — parse with appropriate context flags for yield/await
     bool was_in_generator = in_generator_context_;
     bool was_in_async = in_async_context_;
     if(isGenerator) {
@@ -1081,7 +1321,7 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
                                                 isComputed, computedKey);
     }
 
-    // Append getter/setter to metadata
+    // Mark getter/setter in metadata for the evaluator
     if(isGetter) {
         node->metadata = node->metadata.empty() ? "getter" : node->metadata + ",getter";
     } else if(isSetter) {
@@ -1092,14 +1332,21 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     return node;
 }
 
-// Generator function parsing
+// ============================================================================
+// 15.5 Generator Function Definitions
+// @spec https://tc39.es/ecma262/#sec-generator-function-definitions
+// ============================================================================
 
+// 15.5 Generator Function Definitions — GeneratorDeclaration
+// GeneratorDeclaration :: function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
+// GeneratorBody :: FunctionBody
+// @spec https://tc39.es/ecma262/#sec-generator-function-definitions
 std::shared_ptr<ASTNode> Parser::parse_generator_function_declaration() {
-    Token& startToken = current_token();  // Save 'function' location
-    consume(TokenType::Function);         // consume 'function'
-    consume(TokenType::Multiply);         // consume '*'
+    Token& startToken = current_token();
+    consume(TokenType::Function);  // function
+    consume(TokenType::Multiply);  // *
 
-    // Get function name (required for declarations)
+    // BindingIdentifier — generator name (required for declarations)
     if(current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected generator function name");
     }
@@ -1108,15 +1355,15 @@ std::shared_ptr<ASTNode> Parser::parse_generator_function_declaration() {
     size_t nameColumn = current_token().column;
     current++;  // consume function name
 
-    // Validate generator function name in strict mode
+    // Static Semantics: Early Errors
     validateIdentifier(name, nameLine, nameColumn);
 
-    // Parse parameters
+    // ( FormalParameters )
     consume(TokenType::LeftParen);
     auto parameters = parse_parameter_list();
     consume(TokenType::RightParen);
 
-    // Parse function body with generator context enabled
+    // { GeneratorBody } — enable generator context so yield is recognized
     bool was_in_generator = in_generator_context_;
     in_generator_context_ = true;
     auto body = parse_block_statement();
@@ -1127,28 +1374,30 @@ std::shared_ptr<ASTNode> Parser::parse_generator_function_declaration() {
     return node;
 }
 
+// 15.5 Generator Function Definitions — GeneratorExpression
+// GeneratorExpression :: function * BindingIdentifier? ( FormalParameters ) { GeneratorBody }
+// @spec https://tc39.es/ecma262/#sec-generator-function-definitions
 std::shared_ptr<ASTNode> Parser::parse_generator_function_expression() {
-    Token& startToken = current_token();  // Save 'function' location
-    consume(TokenType::Function);         // consume 'function'
-    consume(TokenType::Multiply);         // consume '*'
+    Token& startToken = current_token();
+    consume(TokenType::Function);  // function
+    consume(TokenType::Multiply);  // *
 
-    // Optional function name for named generator expressions
+    // BindingIdentifier (optional — anonymous generator expressions allowed)
     std::string name;
     if(current_token().type == TokenType::Identifier) {
         name = current_token().value;
         size_t nameLine = current_token().line;
         size_t nameColumn = current_token().column;
         current++;  // consume function name
-        // Validate generator function name in strict mode
         validateIdentifier(name, nameLine, nameColumn);
     }
 
-    // Parse parameters
+    // ( FormalParameters )
     consume(TokenType::LeftParen);
     auto parameters = parse_parameter_list();
     consume(TokenType::RightParen);
 
-    // Parse function body with generator context enabled
+    // { GeneratorBody } — enable generator context so yield is recognized
     bool was_in_generator = in_generator_context_;
     in_generator_context_ = true;
     auto body = parse_block_statement();
@@ -1159,14 +1408,26 @@ std::shared_ptr<ASTNode> Parser::parse_generator_function_expression() {
     return node;
 }
 
-// Async function parsing
+// ============================================================================
+// 15.8 Async Function Definitions
+// @spec https://tc39.es/ecma262/#sec-async-function-definitions
+// ============================================================================
 
+// 15.8 Async Function Definitions — AsyncFunctionDeclaration
+// AsyncFunctionDeclaration :: async [no LineTerminator here] function BindingIdentifier
+//                             ( FormalParameters ) { AsyncFunctionBody }
+// AsyncFunctionBody :: FunctionBody
+// @spec https://tc39.es/ecma262/#sec-async-function-definitions
+//
+// INCOMPLETE: The [no LineTerminator here] restriction between 'async' and 'function'
+// is not enforced. A newline between them should cause 'async' to be parsed as an
+// identifier expression statement, not as the start of an async function.
 std::shared_ptr<ASTNode> Parser::parse_async_function_declaration() {
-    Token& startToken = current_token();  // Save 'async' location
-    consume(TokenType::Async);            // consume 'async'
-    consume(TokenType::Function);         // consume 'function'
+    Token& startToken = current_token();
+    consume(TokenType::Async);     // async
+    consume(TokenType::Function);  // function
 
-    // Get function name (required for declarations)
+    // BindingIdentifier — async function name (required for declarations)
     if(current_token().type != TokenType::Identifier) {
         throw std::runtime_error("Expected async function name");
     }
@@ -1175,15 +1436,15 @@ std::shared_ptr<ASTNode> Parser::parse_async_function_declaration() {
     size_t nameColumn = current_token().column;
     current++;  // consume function name
 
-    // Validate function name in strict mode
+    // Static Semantics: Early Errors
     validateIdentifier(name, nameLine, nameColumn);
 
-    // Parse parameters
+    // ( FormalParameters )
     consume(TokenType::LeftParen);
     auto parameters = parse_parameter_list();
     consume(TokenType::RightParen);
 
-    // Parse function body with async context enabled
+    // { AsyncFunctionBody } — enable async context so await is recognized
     bool was_in_async = in_async_context_;
     in_async_context_ = true;
     auto body = parse_block_statement();

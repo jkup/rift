@@ -1,9 +1,20 @@
-/**
- * Parser Expression Methods
- *
- * This file contains all expression parsing methods for the Parser class.
- * Split from parser.cpp for better maintainability.
- */
+// ============================================================================
+// ECMA-262 -- Expression Parsing (Chapter 13)
+// Implements syntactic grammar productions for expressions:
+//   - Primary expressions: literals, identifiers, this, arrays, objects (13.2)
+//   - Left-hand-side: member access, calls, new, optional chaining (13.3)
+//   - Update and unary operators (13.4-13.5)
+//   - Binary operators via precedence climbing (13.6-13.13)
+//   - Conditional, assignment, comma (13.14-13.16)
+//   - Arrow function expressions (15.3)
+//   - Async function / async arrow expressions (15.8)
+//   - Template literals (13.2.8)
+//   - Spread element, yield, await
+// @spec https://tc39.es/ecma262/#sec-ecmascript-language-expressions-and-operators
+//
+// See also: parser.cpp (core utilities, parameter lists, statement dispatch)
+//           parser_statements.cpp (statements, class expressions, generator expressions)
+// ============================================================================
 
 #include <iostream>
 #include <stdexcept>
@@ -15,10 +26,30 @@ namespace rift::frontend {
 using namespace rift::ast;
 using ASTFactory = ast::ASTFactory;
 
+// 13.2 Primary Expression
+// PrimaryExpression :: this | IdentifierReference | Literal | ArrayLiteral |
+//                      ObjectLiteral | FunctionExpression | ClassExpression |
+//                      GeneratorExpression | AsyncFunctionExpression |
+//                      RegularExpressionLiteral | TemplateLiteral |
+//                      CoverParenthesizedExpressionAndArrowParameterList
+// @spec https://tc39.es/ecma262/#sec-primary-expression
+//
+// Also handles productions that appear in primary position but are defined
+// elsewhere in the spec:
+//   - 15.3 ArrowFunction (via CoverParenthesizedExpressionAndArrowParameterList)
+//   - 15.8 AsyncFunctionExpression / AsyncArrowFunction
+//   - 14.4 YieldExpression (parsed here when encountered in primary position)
+//   - 15.8.1 AwaitExpression
+//   - 13.3.7 SuperProperty / SuperCall
 std::shared_ptr<ASTNode> Parser::parse_primary() {
     Token& token = current_token();
 
     switch(token.type) {
+        // 13.2.1 Literals
+        // Literal :: NullLiteral | BooleanLiteral | NumericLiteral | StringLiteral
+        // @spec https://tc39.es/ecma262/#sec-literals
+        // DEVIATION: 'undefined' is parsed as a literal here; in the spec it is
+        // an IdentifierReference that resolves to the global undefined value.
         case TokenType::Number:
         case TokenType::String:
         case TokenType::Boolean:
@@ -45,6 +76,8 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
                     break;
             }
             // Check for legacy octal in strict mode
+            // @spec https://tc39.es/ecma262/#sec-additional-syntax-numeric-literals
+            // B.1.1: LegacyOctalIntegerLiteral is not allowed in strict mode code.
             if(in_strict_mode_ && token.has_legacy_octal) {
                 if(token.type == TokenType::Number) {
                     throw std::runtime_error(
@@ -62,18 +95,32 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             current++;
             return node;
         }
+        // 13.1 Identifiers
+        // IdentifierReference :: Identifier | [~Yield] yield | [~Await] await
+        // @spec https://tc39.es/ecma262/#sec-identifiers
         case TokenType::Identifier: {
             auto node = ASTFactory::makeIdentifier(token.value);
             node->setLocation(token.line, token.column);
             current++;
             return node;
         }
+        // 13.2.1 The this Keyword
+        // PrimaryExpression :: this
+        // @spec https://tc39.es/ecma262/#sec-this-keyword
         case TokenType::This: {
             auto node = ASTFactory::makeIdentifier("this");
             node->setLocation(token.line, token.column);
             current++;
             return node;
         }
+        // 13.2.2 CoverParenthesizedExpressionAndArrowParameterList
+        // Handles both parenthesized expressions and arrow function parameters.
+        // The spec uses a "cover grammar" where ( ... ) is parsed as one production
+        // and then refined. Rift uses lookahead to disambiguate eagerly.
+        // @spec https://tc39.es/ecma262/#sec-grouping-operator
+        // DEVIATION: The spec parses CoverParenthesizedExpressionAndArrowParameterList
+        // as a single cover grammar and refines it post-parse. Rift uses
+        // looks_like_arrow_params() to eagerly disambiguate at parse time.
         case TokenType::LeftParen: {
             // Could be: grouped expression (x), arrow params () =>, (x) =>, or (x, y) =>
             // Save position for potential backtrack
@@ -99,38 +146,61 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
                 return parse_arrow_function();
             }
 
+            // ParenthesizedExpression :: ( Expression )
             // Not arrow function - parse as grouped expression
             // current is already past '(' so just parse expression
             auto expr = parse_expression();
             consume(TokenType::RightParen);
             return expr;
         }
+        // 13.2.4 Array Initializer
+        // ArrayLiteral :: [ Elision? ] | [ ElementList ] | [ ElementList , Elision? ]
+        // @spec https://tc39.es/ecma262/#sec-array-initializer
         case TokenType::LeftBracket: {
             return parse_array_literal();
         }
+        // 13.2.5 Object Initializer
+        // ObjectLiteral :: { } | { PropertyDefinitionList } | { PropertyDefinitionList , }
+        // @spec https://tc39.es/ecma262/#sec-object-initializer
         case TokenType::LeftBrace: {
             return parse_object_literal();
         }
+        // 13.2.8 Template Literals
+        // TemplateLiteral :: NoSubstitutionTemplate | SubstitutionTemplate
+        // NoSubstitutionTemplate :: ` TemplateCharacters? `
+        // @spec https://tc39.es/ecma262/#sec-template-literals
         case TokenType::TemplateString: {
-            // Basic template string without expressions
+            // Basic template string without expressions (NoSubstitutionTemplate)
             auto templateLiteral = ASTFactory::makeTemplateLiteral();
             auto element = ASTFactory::makeTemplateElement(token.value);
             ASTFactory::addTemplateElement(templateLiteral, element);
             current++;
             return templateLiteral;
         }
+        // 13.2.7 Regular Expression Literals
+        // RegularExpressionLiteral :: / RegularExpressionBody / RegularExpressionFlags
+        // @spec https://tc39.es/ecma262/#sec-literals-regular-expression-literals
         case TokenType::RegExpLiteral: {
             auto node = std::make_shared<ASTNode>(ASTNodeType::RegExpLiteral, token.value);
             node->setLocation(token.line, token.column);
             current++;
             return node;
         }
+        // 13.2.8 Template Literals (with substitutions)
+        // SubstitutionTemplate :: TemplateHead Expression TemplateSpans
+        // TemplateSpans :: TemplateTail | TemplateMiddleList TemplateTail
+        // @spec https://tc39.es/ecma262/#sec-template-literals
         case TokenType::TemplateStart:
         case TokenType::TemplateMiddle:
         case TokenType::TemplateEnd: {
             // Template literal with interpolation
             return parse_template_literal();
         }
+        // 15.2 Function Definitions / 15.5 Generator Function Definitions
+        // FunctionExpression :: function BindingIdentifier? ( FormalParameters ) { FunctionBody }
+        // GeneratorExpression :: function * BindingIdentifier? ( FormalParameters ) { GeneratorBody }
+        // @spec https://tc39.es/ecma262/#sec-function-definitions
+        // @spec https://tc39.es/ecma262/#sec-generator-function-definitions
         case TokenType::Function: {
             // Check for generator function expression: function*() {}
             if(peek_token().type == TokenType::Multiply) {
@@ -138,10 +208,24 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             }
             return parse_function_expression();
         }
+        // 14.4 Yield
+        // YieldExpression :: yield | yield [no LineTerminator here] AssignmentExpression
+        //                  | yield [no LineTerminator here] * AssignmentExpression
+        // @spec https://tc39.es/ecma262/#sec-yield
         case TokenType::Yield: {
             // yield expression - must be inside a generator
             return parse_yield_expression();
         }
+        // 15.8 Async Function Definitions / 15.9 Async Arrow Function Definitions
+        // AsyncFunctionExpression :: async function BindingIdentifier? ( FormalParameters )
+        //                           { AsyncFunctionBody }
+        // AsyncArrowFunction :: async AsyncArrowBindingIdentifier => AsyncConciseBody
+        //                     | CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
+        // @spec https://tc39.es/ecma262/#sec-async-function-definitions
+        // @spec https://tc39.es/ecma262/#sec-async-arrow-function-definitions
+        // DEVIATION: The spec uses CoverCallExpressionAndAsyncArrowHead as a cover
+        // grammar. Rift uses eager lookahead to distinguish async function expressions,
+        // async arrow functions, and plain 'async' used as an identifier.
         case TokenType::Async: {
             // async function expression: async function() {}
             if(peek_token().type == TokenType::Function) {
@@ -167,6 +251,7 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
                 current = saved_pos;
             }
             // async arrow with single param: async x => ...
+            // AsyncArrowFunction :: async AsyncArrowBindingIdentifier => AsyncConciseBody
             if(peek_token().type == TokenType::Identifier) {
                 size_t id_pos = current + 1;
                 size_t arrow_pos = id_pos + 1;
@@ -180,20 +265,30 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
             current++;
             return node;
         }
+        // 15.8.1 Await
+        // AwaitExpression :: await UnaryExpression
+        // @spec https://tc39.es/ecma262/#sec-async-function-definitions
         case TokenType::Await: {
             // await expression - must be inside an async function
             return parse_await_expression();
         }
+        // 15.7 Class Definitions
+        // ClassExpression :: class BindingIdentifier? ClassTail
+        // @spec https://tc39.es/ecma262/#sec-class-definitions
         case TokenType::Class: {
             return parse_class_expression();
         }
+        // 13.3.7 The super Keyword
+        // SuperProperty :: super [ Expression ] | super . IdentifierName
+        // SuperCall :: super Arguments
+        // @spec https://tc39.es/ecma262/#sec-super-keyword
         case TokenType::Super: {
             // super or super.method or super[expr]
             Token& startToken = current_token();
             current++;  // consume 'super'
 
             if(current_token().type == TokenType::Dot) {
-                // super.property
+                // SuperProperty :: super . IdentifierName
                 current++;  // consume '.'
                 if(current_token().type != TokenType::Identifier) {
                     throw std::runtime_error("Expected property name after 'super.'");
@@ -204,7 +299,7 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
                 node->setLocation(startToken.line, startToken.column);
                 return node;
             } else if(current_token().type == TokenType::LeftBracket) {
-                // super[expr]
+                // SuperProperty :: super [ Expression ]
                 current++;  // consume '['
                 auto property = parse_expression();
                 consume(TokenType::RightBracket);
@@ -212,7 +307,8 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
                 node->setLocation(startToken.line, startToken.column);
                 return node;
             } else {
-                // Just 'super' (for super() call)
+                // SuperCall :: super Arguments (the Arguments are parsed by
+                // parse_call_expression in the postfix loop)
                 auto node = ASTFactory::makeSuperExpression();
                 node->setLocation(startToken.line, startToken.column);
                 return node;
@@ -223,10 +319,26 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
     }
 }
 
+// 13.4 Update Expressions + 13.5 Unary Operators + 13.3.5 The new Operator
+// UpdateExpression :: ++ UnaryExpression | -- UnaryExpression  (prefix forms)
+// UnaryExpression :: delete UnaryExpression | void UnaryExpression |
+//                    typeof UnaryExpression | + UnaryExpression |
+//                    - UnaryExpression | ~ UnaryExpression |
+//                    ! UnaryExpression | AwaitExpression | UpdateExpression
+// @spec https://tc39.es/ecma262/#sec-update-expressions
+// @spec https://tc39.es/ecma262/#sec-unary-operators
+//
+// SIMPLIFIED: The spec defines UpdateExpression and UnaryExpression as separate
+// productions with specific precedence. Rift combines prefix update, unary
+// operators, and the new operator into a single method. Postfix update (x++,
+// x--) is handled in parse_postfix_expression instead.
 std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
     Token& token = current_token();
 
-    // Check for increment/decrement operators (prefix)
+    // 13.4.1 Prefix Increment / Prefix Decrement
+    // UpdateExpression :: ++ UnaryExpression | -- UnaryExpression
+    // @spec https://tc39.es/ecma262/#sec-prefix-increment-operator
+    // @spec https://tc39.es/ecma262/#sec-prefix-decrement-operator
     if(token.type == TokenType::Increment || token.type == TokenType::Decrement) {
         std::string operator_ = token.value;
         current++;  // consume the operator
@@ -234,19 +346,24 @@ std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
         return ASTFactory::makeUpdateExpression(operator_, operand, true);  // prefix = true
     }
 
-    // Check for void operator
+    // 13.5.3 The void Operator
+    // UnaryExpression :: void UnaryExpression
+    // @spec https://tc39.es/ecma262/#sec-void-operator
     if(token.type == TokenType::Void) {
         current++;  // consume 'void'
         auto operand = parse_postfix_expression();
         return ASTFactory::makeUnaryExpression("void", operand);
     }
 
-    // Check for delete operator
+    // 13.5.2 The delete Operator
+    // UnaryExpression :: delete UnaryExpression
+    // @spec https://tc39.es/ecma262/#sec-delete-operator
     if(token.type == TokenType::Delete) {
         current++;  // consume 'delete'
         auto operand = parse_postfix_expression();
 
         // In strict mode, delete on an unqualified identifier is a SyntaxError
+        // per 13.5.2.1 Static Semantics: Early Errors
         if(in_strict_mode_ && operand->type == ASTNodeType::Identifier) {
             throw std::runtime_error(
                 "SyntaxError: Delete of an unqualified identifier in strict mode");
@@ -255,7 +372,16 @@ std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
         return ASTFactory::makeUnaryExpression("delete", operand);
     }
 
-    // Check for unary operators
+    // 13.5.4 The typeof Operator: typeof UnaryExpression
+    // 13.5.5 Unary + Operator: + UnaryExpression
+    // 13.5.6 Unary - Operator: - UnaryExpression
+    // 13.5.7 Bitwise NOT Operator: ~ UnaryExpression
+    // 13.5.8 Logical NOT Operator: ! UnaryExpression
+    // @spec https://tc39.es/ecma262/#sec-typeof-operator
+    // @spec https://tc39.es/ecma262/#sec-unary-plus-operator
+    // @spec https://tc39.es/ecma262/#sec-unary-minus-operator
+    // @spec https://tc39.es/ecma262/#sec-bitwise-not-operator
+    // @spec https://tc39.es/ecma262/#sec-logical-not-operator
     if(token.type == TokenType::Plus || token.type == TokenType::Minus ||
        token.type == TokenType::LogicalNot || token.type == TokenType::Typeof ||
        token.type == TokenType::BitwiseNot) {
@@ -265,16 +391,52 @@ std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
         return ASTFactory::makeUnaryExpression(operator_, operand);
     }
 
-    // Check for new operator
+    // 13.3.5 The new Operator
+    // NewExpression :: MemberExpression | new NewExpression
+    // MemberExpression :: new MemberExpression Arguments
+    // @spec https://tc39.es/ecma262/#sec-new-operator
     if(token.type == TokenType::New) {
         current++;  // consume 'new'
         return parse_new_expression();
     }
 
     // Not a unary expression, continue with postfix parsing
+    // (falls through to LeftHandSideExpression -> MemberExpression -> PrimaryExpression)
     return parse_postfix_expression();
 }
 
+// 13.6-13.16 Binary Operators, Conditional, Assignment, Comma (Precedence Climbing)
+// Uses precedence climbing to handle all binary operator grammar productions:
+//   - 13.6  ExponentiationExpression :: UnaryExpression ** ExponentiationExpression
+//   - 13.7  MultiplicativeExpression :: MultiplicativeExpression * / % UnaryExpression
+//   - 13.8  AdditiveExpression :: AdditiveExpression + - MultiplicativeExpression
+//   - 13.9  ShiftExpression :: ShiftExpression << >> >>> AdditiveExpression
+//   - 13.10 RelationalExpression :: RelationalExpression < > <= >= instanceof in ShiftExpression
+//   - 13.11 EqualityExpression :: EqualityExpression == != === !== RelationalExpression
+//   - 13.12 BitwiseANDExpression / BitwiseXORExpression / BitwiseORExpression
+//   - 13.13 LogicalANDExpression :: LogicalANDExpression && BitwiseORExpression
+//           LogicalORExpression :: LogicalORExpression || LogicalANDExpression
+//           CoalesceExpression :: CoalesceExpressionHead ?? BitwiseORExpression
+//   - 13.14 ConditionalExpression :: ShortCircuitExpression ? AssignmentExpression
+//                                    : AssignmentExpression
+//   - 13.15 AssignmentExpression :: LeftHandSideExpression = AssignmentExpression
+//           (and compound assignment: +=, -=, *=, /=, %=, **=, <<=, >>=, >>>=,
+//            &=, |=, ^=, ??=)
+// SIMPLIFIED: The spec defines each binary precedence level as a separate left-recursive
+// grammar production (e.g., AdditiveExpression :: AdditiveExpression + MultiplicativeExpression).
+// Rift collapses all of these into a single precedence-climbing loop, including the
+// conditional operator and assignment operators which the spec treats as separate
+// productions (ConditionalExpression, AssignmentExpression).
+// @spec https://tc39.es/ecma262/#sec-exp-operator
+// @spec https://tc39.es/ecma262/#sec-multiplicative-operators
+// @spec https://tc39.es/ecma262/#sec-additive-operators
+// @spec https://tc39.es/ecma262/#sec-bitwise-shift-operators
+// @spec https://tc39.es/ecma262/#sec-relational-operators
+// @spec https://tc39.es/ecma262/#sec-equality-operators
+// @spec https://tc39.es/ecma262/#sec-binary-bitwise-operators
+// @spec https://tc39.es/ecma262/#sec-binary-logical-operators
+// @spec https://tc39.es/ecma262/#sec-conditional-operator
+// @spec https://tc39.es/ecma262/#sec-assignment-operators
 std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
     auto left = parse_unary_expression();
 
@@ -285,30 +447,38 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
         bool is_right_associative = false;
 
         switch(op.type) {
+            // 13.8 Additive Operators (+, -)
             case TokenType::Plus:
             case TokenType::Minus:
                 op_precedence = 11;  // Additive operators
                 break;
+            // 13.7 Multiplicative Operators (*, /, %)
             case TokenType::Multiply:
             case TokenType::Divide:
             case TokenType::Modulo:
                 op_precedence = 12;  // Multiplicative operators
                 break;
+            // 13.6 Exponentiation Operator (**)
+            // ExponentiationExpression :: UnaryExpression ** ExponentiationExpression
+            // Right-associative per spec: 2 ** 3 ** 2 === 2 ** (3 ** 2) === 512
             case TokenType::Exponent:
                 op_precedence = 13;           // Exponentiation (higher than multiply)
                 is_right_associative = true;  // ** is right-associative
                 break;
+            // 13.9 Bitwise Shift Operators (<<, >>, >>>)
             case TokenType::LeftShift:
             case TokenType::RightShift:
             case TokenType::UnsignedRightShift:
                 op_precedence = 10;  // Shift operators (between additive and relational)
                 break;
+            // 13.11 Equality Operators (==, ===, !=, !==)
             case TokenType::Equal:
             case TokenType::EqualStrict:
             case TokenType::NotEqual:
             case TokenType::NotEqualStrict:
                 op_precedence = 8;  // Equality operators
                 break;
+            // 13.10 Relational Operators (<, >, <=, >=, instanceof, in)
             case TokenType::Less:
             case TokenType::LessEqual:
             case TokenType::Greater:
@@ -317,28 +487,51 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::Instanceof:
                 op_precedence = 9;  // Relational operators
                 break;
+            // 13.12 Binary Bitwise Operators (&, ^, |)
+            // BitwiseANDExpression :: BitwiseANDExpression & EqualityExpression
             case TokenType::BitwiseAnd:
                 op_precedence = 7;  // Bitwise AND (between equality and bitwise XOR)
                 break;
+            // BitwiseXORExpression :: BitwiseXORExpression ^ BitwiseANDExpression
             case TokenType::BitwiseXor:
                 op_precedence = 6;  // Bitwise XOR (between bitwise AND and bitwise OR)
                 break;
+            // BitwiseORExpression :: BitwiseORExpression | BitwiseXORExpression
             case TokenType::BitwiseOr:
                 op_precedence = 5;  // Bitwise OR (between bitwise XOR and logical AND)
                 break;
+            // 13.13 Binary Logical Operators (&&, ||, ??)
+            // LogicalANDExpression :: LogicalANDExpression && BitwiseORExpression
             case TokenType::LogicalAnd:
                 op_precedence = 4;  // Logical AND
                 break;
+            // LogicalORExpression :: LogicalORExpression || LogicalANDExpression
             case TokenType::LogicalOr:
                 op_precedence = 3;  // Logical OR (lower than equality!)
                 break;
+            // CoalesceExpression :: CoalesceExpressionHead ?? BitwiseORExpression
+            // INCOMPLETE: Per spec, ?? cannot be mixed with && or || without
+            // parentheses (13.13.1 Static Semantics: Early Errors). Rift does
+            // not enforce this restriction.
             case TokenType::NullishCoalescing:
                 op_precedence = 3;  // Nullish coalescing (same level as logical OR)
                 break;
+            // 13.14 Conditional Operator (?:)
+            // ConditionalExpression :: ShortCircuitExpression ?
+            //                          AssignmentExpression : AssignmentExpression
             case TokenType::QuestionMark:
                 op_precedence = 2;           // Ternary conditional
                 is_right_associative = true;  // a ? b : c ? d : e == a ? b : (c ? d : e)
                 break;
+            // 13.15 Assignment Operators
+            // AssignmentExpression :: LeftHandSideExpression = AssignmentExpression
+            //                       | LeftHandSideExpression AssignmentOperator AssignmentExpression
+            //                       | LeftHandSideExpression &&= AssignmentExpression
+            //                       | LeftHandSideExpression ||= AssignmentExpression
+            //                       | LeftHandSideExpression ??= AssignmentExpression
+            // @spec https://tc39.es/ecma262/#sec-assignment-operators
+            // INCOMPLETE: Logical assignment operators (&&=, ||=) are not yet
+            // handled. Only ??= is present.
             case TokenType::Assign:
             case TokenType::PlusAssign:
             case TokenType::MinusAssign:
@@ -367,7 +560,10 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
 
         current++;  // consume operator
 
-        // Special handling for ternary conditional: condition ? consequent : alternate
+        // 13.14 Conditional Operator (?:)
+        // ConditionalExpression :: ShortCircuitExpression ?
+        //                          AssignmentExpression : AssignmentExpression
+        // @spec https://tc39.es/ecma262/#sec-conditional-operator
         if(op.type == TokenType::QuestionMark) {
             // Parse consequent (allow assignment-level expressions)
             auto consequent = parse_binary_expression(0);
@@ -383,11 +579,15 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
         }
 
         // Right-associative operators use op_precedence, left-associative use op_precedence + 1
+        // This implements the spec's left-recursive grammar via precedence climbing:
+        // left-associative: parse RHS at (current + 1) so same-precedence binds left
+        // right-associative: parse RHS at (current) so same-precedence binds right
         int next_precedence = is_right_associative ? op_precedence : op_precedence + 1;
         auto right = parse_binary_expression(next_precedence);
 
         if(is_assignment) {
-            // In strict mode, validate the assignment target is not a reserved word
+            // 13.15.1 Static Semantics: Early Errors
+            // In strict mode, assignment to eval or arguments is a SyntaxError
             if(in_strict_mode_ && left->type == ASTNodeType::Identifier) {
                 validateIdentifier(left->value, op.line, op.column);
             }
@@ -398,13 +598,52 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
     }
 }
 
+// 13.16 Comma Operator / Expression
+// Expression :: AssignmentExpression | Expression , AssignmentExpression
+// @spec https://tc39.es/ecma262/#sec-comma-operator
+//
+// SIMPLIFIED: The spec's comma operator creates a sequence. Rift delegates to
+// parse_binary_expression(0) which starts at the lowest precedence (assignment).
+// The comma operator itself is not handled here as a binary operator; instead,
+// comma-separated expressions are handled by the caller context (e.g., argument
+// lists, variable declarations, for-loop headers).
 std::shared_ptr<ASTNode> Parser::parse_expression() {
     return parse_binary_expression(0);
 }
 
+// 13.3 Left-Hand-Side Expressions + 13.4 Postfix Update Expressions
+// Combines several spec productions into one postfix/access loop:
+//   13.3.1 Property Accessors:
+//     MemberExpression :: MemberExpression . IdentifierName
+//                       | MemberExpression [ Expression ]
+//   13.3.2 Function Calls:
+//     CallExpression :: CoverCallExpressionAndAsyncArrowHead
+//                     | CallExpression Arguments
+//                     | CallExpression [ Expression ]
+//                     | CallExpression . IdentifierName
+//   13.3.5 The new Operator (handled in parse_unary_expression)
+//   13.3.8 Optional Chains:
+//     OptionalExpression :: MemberExpression OptionalChain
+//                         | CallExpression OptionalChain
+//     OptionalChain :: ?. Arguments | ?. [ Expression ] | ?. IdentifierName
+//                    | OptionalChain Arguments | OptionalChain [ Expression ]
+//                    | OptionalChain . IdentifierName
+//   13.4.2 Postfix Increment / 13.4.3 Postfix Decrement:
+//     UpdateExpression :: LeftHandSideExpression [no LineTerminator here] ++
+//                       | LeftHandSideExpression [no LineTerminator here] --
+//   15.3 Arrow Function (single-param form: Identifier => ...)
+// @spec https://tc39.es/ecma262/#sec-left-hand-side-expressions
+// @spec https://tc39.es/ecma262/#sec-update-expressions
+//
+// SIMPLIFIED: The spec defines MemberExpression, CallExpression, and
+// OptionalExpression as separate recursive productions. Rift merges them into
+// a single while-true loop that checks for '.', '[', '(', '?.', '++', '--'.
 std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
     auto expr = parse_primary();
 
+    // 15.3 Arrow Function Definitions
+    // ArrowFunction :: ArrowParameters => ConciseBody
+    // ArrowParameters :: BindingIdentifier (single-param shorthand, no parens)
     // Check for single-param arrow function: x => ...
     if(expr->type == ASTNodeType::Identifier && current_token().type == TokenType::Arrow) {
         return parse_arrow_function_from_identifier(expr);
@@ -412,23 +651,29 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
 
     while(true) {
         if(current_token().type == TokenType::Dot) {
+            // 13.3.1 MemberExpression :: MemberExpression . IdentifierName
             expr = parse_member_expression(expr);
         } else if(current_token().type == TokenType::LeftBracket) {
+            // 13.3.1 MemberExpression :: MemberExpression [ Expression ]
             expr = parse_computed_member_expression(expr);
         } else if(current_token().type == TokenType::LeftParen) {
+            // 13.3.2 CallExpression :: MemberExpression Arguments
             expr = parse_call_expression(expr);
         } else if(current_token().type == TokenType::OptionalChain) {
+            // 13.3.8 Optional Chaining
+            // OptionalChain :: ?. Arguments | ?. [ Expression ] | ?. IdentifierName
+            // @spec https://tc39.es/ecma262/#sec-optional-chains
             current++;  // consume '?.'
             if(current_token().type == TokenType::LeftBracket) {
-                // obj?.[expr] - optional computed member access
+                // OptionalChain :: ?. [ Expression ] -- optional computed member access
                 expr = parse_computed_member_expression(expr);
                 expr->metadata = "computed-optional";
             } else if(current_token().type == TokenType::LeftParen) {
-                // obj?.(args) - optional call
+                // OptionalChain :: ?. Arguments -- optional call
                 expr = parse_call_expression(expr);
                 expr->metadata = "optional";
             } else {
-                // obj?.prop - optional member access
+                // OptionalChain :: ?. IdentifierName -- optional member access
                 Token& tok = current_token();
                 auto property = std::make_shared<ASTNode>(ASTNodeType::Identifier, tok.value,
                                                           tok.line, tok.column);
@@ -438,7 +683,14 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
             }
         } else if(current_token().type == TokenType::Increment ||
                   current_token().type == TokenType::Decrement) {
-            // Handle postfix increment/decrement
+            // 13.4.2 Postfix Increment Operator
+            // 13.4.3 Postfix Decrement Operator
+            // UpdateExpression :: LeftHandSideExpression [no LineTerminator here] ++
+            //                   | LeftHandSideExpression [no LineTerminator here] --
+            // @spec https://tc39.es/ecma262/#sec-postfix-increment-operator
+            // INCOMPLETE: The spec requires [no LineTerminator here] between the
+            // operand and ++/--. Rift does not check for an intervening newline,
+            // so `x\n++` would be incorrectly parsed as postfix increment.
             std::string operator_ = current_token().value;
             current++;  // consume the operator
             expr = ASTFactory::makeUpdateExpression(operator_, expr, false);  // prefix = false
@@ -450,25 +702,36 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
     return expr;
 }
 
+// 13.3.6 Function Calls
+// CallExpression :: CoverCallExpressionAndAsyncArrowHead
+//                 | CallExpression Arguments
+// Arguments :: ( ) | ( ArgumentList ) | ( ArgumentList , )
+// ArgumentList :: AssignmentExpression | ... AssignmentExpression
+//              | ArgumentList , AssignmentExpression
+//              | ArgumentList , ... AssignmentExpression
+// @spec https://tc39.es/ecma262/#sec-function-calls
+// @spec https://tc39.es/ecma262/#sec-argument-lists
 std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> callee) {
     consume(TokenType::LeftParen);  // consume '('
 
     auto call = ASTFactory::makeCallExpression(callee);
 
-    // Parse arguments
+    // Parse Arguments production
     if(current_token().type != TokenType::RightParen) {
         do {
-            // Allow trailing comma before ')'
+            // Allow trailing comma before ')' per Arguments :: ( ArgumentList , )
             if(current_token().type == TokenType::RightParen) {
                 break;
             }
-            // Check for spread argument (...expr)
+            // ArgumentList :: ... AssignmentExpression (SpreadElement in arguments)
+            // @spec https://tc39.es/ecma262/#sec-argument-lists
             if(current_token().type == TokenType::Spread) {
                 current++;                                     // consume '...'
                 auto spread_arg = parse_binary_expression(1);  // Parse at assignment precedence
                 auto spread_element = ASTFactory::makeSpreadElement(spread_arg);
                 ASTFactory::addArgument(call, spread_element);
             } else {
+                // ArgumentList :: AssignmentExpression
                 auto arg = parse_expression();
                 ASTFactory::addArgument(call, arg);
             }
@@ -480,9 +743,17 @@ std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> 
     return call;
 }
 
+// 13.3.1 Property Accessors (dot notation)
+// MemberExpression :: MemberExpression . IdentifierName
+// @spec https://tc39.es/ecma262/#sec-property-accessors
+//
+// Per the spec, IdentifierName includes all reserved words. The dot notation
+// allows any keyword as a property name (e.g., obj.delete, obj.class).
+// @spec https://tc39.es/ecma262/#prod-IdentifierName
 std::shared_ptr<ASTNode> Parser::parse_member_expression(std::shared_ptr<ASTNode> object) {
     consume(TokenType::Dot);  // consume '.'
 
+    // IdentifierName :: IdentifierStart IdentifierPart* | ReservedWord
     // Allow keywords as property names (e.g., obj.delete, obj.class, obj.return)
     // In JavaScript, any IdentifierName (including reserved words) can follow a dot
     Token& tok = current_token();
@@ -513,6 +784,9 @@ std::shared_ptr<ASTNode> Parser::parse_member_expression(std::shared_ptr<ASTNode
     return ASTFactory::makeMemberExpression(object, property);
 }
 
+// 13.3.1 Property Accessors (bracket notation)
+// MemberExpression :: MemberExpression [ Expression ]
+// @spec https://tc39.es/ecma262/#sec-property-accessors
 std::shared_ptr<ASTNode> Parser::parse_computed_member_expression(std::shared_ptr<ASTNode> object) {
     consume(TokenType::LeftBracket);  // consume '['
 
@@ -523,6 +797,17 @@ std::shared_ptr<ASTNode> Parser::parse_computed_member_expression(std::shared_pt
     return ASTFactory::makeMemberExpression(object, index, true);  // Mark as computed
 }
 
+// 13.2.4 Array Initializer
+// ArrayLiteral :: [ Elision? ] | [ ElementList ] | [ ElementList , Elision? ]
+// ElementList :: Elision? AssignmentExpression
+//             | Elision? SpreadElement
+//             | ElementList , Elision? AssignmentExpression
+//             | ElementList , Elision? SpreadElement
+// SpreadElement :: ... AssignmentExpression
+// @spec https://tc39.es/ecma262/#sec-array-initializer
+//
+// INCOMPLETE: Elision (holes) like [1,,3] is not fully handled; a trailing comma
+// is allowed but consecutive commas for sparse arrays are not parsed as elisions.
 std::shared_ptr<ASTNode> Parser::parse_array_literal() {
     Token& startToken = current_token();  // Save location before consuming
     consume(TokenType::LeftBracket);      // consume '['
@@ -530,26 +815,27 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
     auto array = ASTFactory::makeArrayLiteral();
     array->setLocation(startToken.line, startToken.column);
 
-    // Handle empty array []
+    // ArrayLiteral :: [ ] (empty array)
     if(current_token().type == TokenType::RightBracket) {
         current++;  // consume ']'
         return array;
     }
 
-    // Parse array elements
+    // Parse ElementList
     do {
-        // Check for trailing comma (closing bracket after comma)
+        // ArrayLiteral :: [ ElementList , ] (trailing comma allowed)
         if(current_token().type == TokenType::RightBracket) {
             break;  // Trailing comma is allowed, stop parsing elements
         }
 
-        // Check for spread element (...expr)
+        // SpreadElement :: ... AssignmentExpression
         if(current_token().type == TokenType::Spread) {
             current++;                                     // consume '...'
             auto spread_arg = parse_binary_expression(1);  // Parse at assignment precedence
             auto spread_element = ASTFactory::makeSpreadElement(spread_arg);
             ASTFactory::addArrayElement(array, spread_element);
         } else {
+            // ElementList :: AssignmentExpression
             auto element = parse_expression();
             ASTFactory::addArrayElement(array, element);
         }
@@ -559,6 +845,26 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
     return array;
 }
 
+// 13.2.5 Object Initializer
+// ObjectLiteral :: { } | { PropertyDefinitionList } | { PropertyDefinitionList , }
+// PropertyDefinitionList :: PropertyDefinition | PropertyDefinitionList , PropertyDefinition
+// PropertyDefinition :: IdentifierReference
+//                     | CoverInitializedName
+//                     | PropertyName : AssignmentExpression
+//                     | MethodDefinition
+//                     | ... AssignmentExpression
+// PropertyName :: LiteralPropertyName | ComputedPropertyName
+// LiteralPropertyName :: IdentifierName | StringLiteral | NumericLiteral
+// ComputedPropertyName :: [ AssignmentExpression ]
+// MethodDefinition :: PropertyName ( UniqueFormalParameters ) { FunctionBody }
+//                   | get PropertyName ( ) { FunctionBody }
+//                   | set PropertyName ( PropertySetParameterList ) { FunctionBody }
+//                   | GeneratorMethod | AsyncMethod | AsyncGeneratorMethod
+// @spec https://tc39.es/ecma262/#sec-object-initializer
+//
+// INCOMPLETE: Shorthand property syntax (e.g., { x } equivalent to { x: x }) is
+// not handled here. Spread properties ({ ...obj }) are also not handled.
+// Generator methods (e.g., { *gen() {} }) are not yet supported.
 std::shared_ptr<ASTNode> Parser::parse_object_literal() {
     Token& startToken = current_token();  // Save location before consuming
     consume(TokenType::LeftBrace);        // consume '{'
@@ -566,26 +872,27 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
     auto object = ASTFactory::makeObjectLiteral();
     object->setLocation(startToken.line, startToken.column);
 
-    // Handle empty object {}
+    // ObjectLiteral :: { } (empty object)
     if(current_token().type == TokenType::RightBrace) {
         current++;  // consume '}'
         return object;
     }
 
-    // Parse object properties
+    // Parse PropertyDefinitionList
     do {
-        // Check for trailing comma (closing brace after comma)
+        // ObjectLiteral :: { PropertyDefinitionList , } (trailing comma allowed)
         if(current_token().type == TokenType::RightBrace) {
             break;  // Trailing comma is allowed, stop parsing properties
         }
 
-        // Parse property key (can be identifier or string literal)
+        // Parse PropertyName (can be identifier, string, number, or computed)
         std::shared_ptr<ASTNode> key;
         bool is_async_method = false;
         bool is_getter = false;
         bool is_setter = false;
 
-        // Check for getter/setter syntax: { get x() {}, set x(v) {} }
+        // MethodDefinition :: get PropertyName ( ) { FunctionBody }
+        //                   | set PropertyName ( PropertySetParameterList ) { FunctionBody }
         // Disambiguate from: { get: 1 } (data property) and { get() {} } (method shorthand)
         if(current_token().type == TokenType::Identifier &&
            (current_token().value == "get" || current_token().value == "set")) {
@@ -602,7 +909,8 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
             }
         }
 
-        // Check for async method shorthand: { async methodName() {} }
+        // MethodDefinition :: async PropertyName ( UniqueFormalParameters ) { AsyncFunctionBody }
+        // @spec https://tc39.es/ecma262/#sec-async-function-definitions
         if(!is_getter && !is_setter && current_token().type == TokenType::Async &&
            peek_token().type == TokenType::Identifier) {
             // Lookahead: async IDENTIFIER ( means async method shorthand
@@ -621,21 +929,22 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
                 current++;  // consume 'async' as identifier
             }
         } else if(current_token().type == TokenType::Identifier) {
-            // Property key as identifier: { name: value }
+            // LiteralPropertyName :: IdentifierName
             key = ASTFactory::makeIdentifier(current_token().value);
             current++;  // consume identifier
         } else if(current_token().type == TokenType::String) {
-            // Property key as string: { "name": value }
+            // LiteralPropertyName :: StringLiteral
             std::string keyLiteralType =
                 (current_token().type == TokenType::String) ? "string" : "number";
             key = ASTFactory::makeLiteral(current_token().value, keyLiteralType);
             current++;  // consume string
         } else if(current_token().type == TokenType::Number) {
-            // Property key as number: { 0: value, 1: value }
+            // LiteralPropertyName :: NumericLiteral
             key = ASTFactory::makeLiteral(current_token().value, "number");
             current++;  // consume number
         } else if(current_token().type == TokenType::LeftBracket) {
-            // Computed property key: { [expression]: value }
+            // ComputedPropertyName :: [ AssignmentExpression ]
+            // @spec https://tc39.es/ecma262/#sec-object-initializer
             current++;  // consume '['
             auto expr = parse_expression();
             consume(TokenType::RightBracket);
@@ -647,7 +956,8 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
             throw std::runtime_error("Expected property name in object literal");
         }
 
-        // Check for getter/setter method body
+        // MethodDefinition :: get PropertyName ( ) { FunctionBody }
+        //                   | set PropertyName ( PropertySetParameterList ) { FunctionBody }
         if(is_getter || is_setter) {
             consume(TokenType::LeftParen);
             auto parameters = parse_parameter_list();
@@ -657,7 +967,8 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
             value->metadata = is_getter ? "getter" : "setter";
             ASTFactory::addObjectProperty(object, key, value);
         } else if(is_async_method || current_token().type == TokenType::LeftParen) {
-            // Method shorthand syntax
+            // MethodDefinition :: PropertyName ( UniqueFormalParameters ) { FunctionBody }
+            // (or async variant)
             consume(TokenType::LeftParen);
             auto parameters = parse_parameter_list();
             consume(TokenType::RightParen);
@@ -678,7 +989,7 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
             }
             ASTFactory::addObjectProperty(object, key, value);
         } else {
-            // Standard key: value syntax
+            // PropertyDefinition :: PropertyName : AssignmentExpression
             consume(TokenType::Colon);
             auto value = parse_expression();
             ASTFactory::addObjectProperty(object, key, value);
@@ -690,11 +1001,21 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
     return object;
 }
 
+// 13.3.5 The new Operator
+// NewExpression :: MemberExpression | new NewExpression
+// MemberExpression :: new MemberExpression Arguments
+// @spec https://tc39.es/ecma262/#sec-new-operator
+//
+// The spec distinguishes NewExpression (no arguments: `new Foo`) from
+// MemberExpression with Arguments (`new Foo(arg)`). Both are handled here.
+// The constructor can include member access (e.g., `new a.b.C()`).
 std::shared_ptr<ASTNode> Parser::parse_new_expression() {
+    // MemberExpression :: new MemberExpression Arguments
     // Parse the constructor - can be an identifier or member expression (e.g., new Temporal.Duration)
     auto constructor = parse_primary();
 
     // Allow member access (dot and bracket) on the constructor expression
+    // This handles cases like: new Temporal.Duration(), new a.b.C()
     while(current_token().type == TokenType::Dot ||
           current_token().type == TokenType::LeftBracket) {
         if(current_token().type == TokenType::Dot) {
@@ -706,18 +1027,20 @@ std::shared_ptr<ASTNode> Parser::parse_new_expression() {
 
     auto newExpr = ASTFactory::makeNewExpression(constructor);
 
-    // Check if there are arguments (parentheses)
+    // MemberExpression :: new MemberExpression Arguments
+    // Arguments :: ( ) | ( ArgumentList ) | ( ArgumentList , )
+    // If no parentheses, this is NewExpression :: new NewExpression (no args)
     if(current_token().type == TokenType::LeftParen) {
         consume(TokenType::LeftParen);  // consume '('
 
-        // Parse arguments
+        // Parse Arguments (same production as in function calls)
         if(current_token().type != TokenType::RightParen) {
             do {
                 // Allow trailing comma before ')'
                 if(current_token().type == TokenType::RightParen) {
                     break;
                 }
-                // Check for spread argument (...expr)
+                // ArgumentList :: ... AssignmentExpression
                 if(current_token().type == TokenType::Spread) {
                     current++;  // consume '...'
                     auto spread_arg = parse_binary_expression(1);
@@ -736,29 +1059,43 @@ std::shared_ptr<ASTNode> Parser::parse_new_expression() {
     return newExpr;
 }
 
+// 13.2.8 Template Literals (with substitutions)
+// SubstitutionTemplate :: TemplateHead Expression TemplateSpans
+// TemplateSpans :: TemplateTail | TemplateMiddleList TemplateTail
+// TemplateMiddleList :: TemplateMiddle Expression
+//                     | TemplateMiddleList TemplateMiddle Expression
+// @spec https://tc39.es/ecma262/#sec-template-literals
+//
+// The lexer produces TemplateStart, TemplateMiddle, and TemplateEnd tokens
+// that correspond to TemplateHead, TemplateMiddle, and TemplateTail in the spec.
+// Each ${...} expression boundary is a token boundary from the lexer.
+// INCOMPLETE: Tagged templates (tag`string`) are not yet supported.
 std::shared_ptr<ASTNode> Parser::parse_template_literal() {
     auto templateLiteral = ASTFactory::makeTemplateLiteral();
 
-    // Handle TemplateStart
+    // SubstitutionTemplate :: TemplateHead Expression TemplateSpans
     if(current_token().type == TokenType::TemplateStart) {
+        // TemplateHead (the text before the first ${...})
         auto startElement = ASTFactory::makeTemplateElement(current_token().value);
         ASTFactory::addTemplateElement(templateLiteral, startElement);
         current++;
 
+        // TemplateSpans :: TemplateMiddleList? TemplateTail
         // Parse expressions and template parts until TemplateEnd
         while(current_token().type != TokenType::TemplateEnd &&
               current_token().type != TokenType::EndOfFile) {
-            // Parse the expression inside ${}
+            // Parse the Expression inside ${...}
             auto expression = parse_expression();
             auto templateExpr = ASTFactory::makeTemplateExpression(expression);
             ASTFactory::addTemplateElement(templateLiteral, templateExpr);
 
-            // Next should be TemplateMiddle or TemplateEnd
+            // TemplateMiddle (text between }...${) or TemplateTail (text after last })
             if(current_token().type == TokenType::TemplateMiddle) {
                 auto middleElement = ASTFactory::makeTemplateElement(current_token().value);
                 ASTFactory::addTemplateElement(templateLiteral, middleElement);
                 current++;
             } else if(current_token().type == TokenType::TemplateEnd) {
+                // TemplateTail (the text after the last ${...} up to closing backtick)
                 auto endElement = ASTFactory::makeTemplateElement(current_token().value);
                 ASTFactory::addTemplateElement(templateLiteral, endElement);
                 current++;
@@ -779,16 +1116,23 @@ std::shared_ptr<ASTNode> Parser::parse_template_literal() {
     return templateLiteral;
 }
 
+// 15.2 Function Definitions
+// FunctionExpression :: function BindingIdentifier? ( FormalParameters ) { FunctionBody }
+// @spec https://tc39.es/ecma262/#sec-function-definitions
+//
+// INCOMPLETE: Named function expressions (function name() {}) are not handled;
+// the BindingIdentifier is not parsed. Only anonymous function expressions are
+// supported (function() {}).
 std::shared_ptr<ASTNode> Parser::parse_function_expression() {
     Token& startToken = current_token();  // Save 'function' location
     consume(TokenType::Function);         // consume 'function'
 
-    // Parse parameters (anonymous function)
+    // FormalParameters :: (see parse_parameter_list in parser.cpp)
     consume(TokenType::LeftParen);
     auto parameters = parse_parameter_list();
     consume(TokenType::RightParen);
 
-    // Parse function body
+    // FunctionBody :: FunctionStatementList
     auto body = parse_block_statement();
 
     auto node = ASTFactory::makeFunctionExpression(parameters, body);
@@ -796,7 +1140,17 @@ std::shared_ptr<ASTNode> Parser::parse_function_expression() {
     return node;
 }
 
-// Helper to check if current position looks like arrow function parameters
+// Helper for 15.3 Arrow Function Definitions
+// Used to disambiguate CoverParenthesizedExpressionAndArrowParameterList.
+// The spec resolves this ambiguity by parsing the cover grammar and then
+// applying supplemental syntax (Static Semantics: CoveredFormalsList).
+// Rift uses a lookahead heuristic instead: scan for (id, id, ...) followed by ) =>.
+// @spec https://tc39.es/ecma262/#sec-arrow-function-definitions
+//
+// DEVIATION: The spec uses cover grammar refinement after parsing the full
+// parenthesized expression. Rift scans ahead to check if the token pattern
+// matches arrow parameters before parsing. This means some edge cases with
+// complex default values or destructuring patterns may not be recognized.
 // Called when current position is AFTER the opening '('
 bool Parser::looks_like_arrow_params() {
     // Save position
@@ -872,7 +1226,17 @@ bool Parser::looks_like_arrow_params() {
     return false;
 }
 
-// Parse arrow function: () => expr, (x) => expr, (x, y) => expr
+// 15.3 Arrow Function Definitions
+// ArrowFunction :: ArrowParameters => ConciseBody
+// ArrowParameters :: BindingIdentifier
+//                  | CoverParenthesizedExpressionAndArrowParameterList
+// ConciseBody :: [lookahead != {] ExpressionBody
+//              | { FunctionBody }
+// ExpressionBody :: AssignmentExpression
+// @spec https://tc39.es/ecma262/#sec-arrow-function-definitions
+//
+// Handles both parenthesized and single-identifier parameter forms.
+// The expression body form produces an implicit return.
 std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
     Token& startToken = current_token();
 
@@ -880,34 +1244,36 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
     std::shared_ptr<ASTNode> parameters;
 
     if(current_token().type == TokenType::Identifier) {
-        // Single param without parens: x => ...
+        // ArrowParameters :: BindingIdentifier (single param without parens: x => ...)
         std::string paramValue = current_token().value;
         size_t paramLine = current_token().line;
         size_t paramColumn = current_token().column;
         parameters = ASTFactory::makeParameterList();
         ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(paramValue));
         current++;  // consume identifier
-        // Validate parameter in strict mode
+        // 15.3.1 Static Semantics: Early Errors -- validate parameter in strict mode
         validateIdentifier(paramValue, paramLine, paramColumn);
     } else {
+        // ArrowParameters :: CoverParenthesizedExpressionAndArrowParameterList
         // Parenthesized params: () => ... or (x) => ... or (x, y) => ...
         consume(TokenType::LeftParen);
         parameters = parse_parameter_list();
         consume(TokenType::RightParen);
     }
 
-    // Consume =>
+    // ArrowFunction :: ArrowParameters => ConciseBody
     consume(TokenType::Arrow);
 
-    // Parse body - either block or expression
+    // ConciseBody :: [lookahead != {] ExpressionBody | { FunctionBody }
     std::shared_ptr<ASTNode> body;
     bool isExpressionBody = false;
 
     if(current_token().type == TokenType::LeftBrace) {
-        // Block body: x => { statements }
+        // ConciseBody :: { FunctionBody }
         body = parse_block_statement();
     } else {
-        // Expression body: x => expression
+        // ConciseBody :: [lookahead != {] ExpressionBody
+        // ExpressionBody :: AssignmentExpression
         // For expression bodies, we parse using parse_binary_expression to handle
         // operator precedence correctly (arrow has very low precedence)
         body = parse_binary_expression(0);
@@ -919,32 +1285,38 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
     return node;
 }
 
-// Parse arrow function when we already have the single identifier param
+// 15.3 Arrow Function Definitions (single-identifier parameter variant)
+// ArrowFunction :: ArrowParameters => ConciseBody
+// ArrowParameters :: BindingIdentifier
+// @spec https://tc39.es/ecma262/#sec-arrow-function-definitions
+//
+// Called from parse_postfix_expression when we've already parsed the identifier
+// as a primary expression and then see '=>'. This avoids backtracking.
 std::shared_ptr<ASTNode> Parser::parse_arrow_function_from_identifier(
     std::shared_ptr<ASTNode> param) {
     // param is the identifier node, we're positioned at '=>'
     size_t line = param->line;
     size_t column = param->column;
 
-    // Validate parameter in strict mode
+    // 15.3.1 Static Semantics: Early Errors -- validate parameter in strict mode
     validateIdentifier(param->value, line, column);
 
-    // Create parameter list from the identifier
+    // ArrowParameters :: BindingIdentifier
     auto parameters = ASTFactory::makeParameterList();
     ASTFactory::addParameter(parameters, param);
 
-    // Consume =>
+    // ArrowFunction :: ArrowParameters => ConciseBody
     consume(TokenType::Arrow);
 
-    // Parse body - either block or expression
+    // ConciseBody :: [lookahead != {] ExpressionBody | { FunctionBody }
     std::shared_ptr<ASTNode> body;
     bool isExpressionBody = false;
 
     if(current_token().type == TokenType::LeftBrace) {
-        // Block body: x => { statements }
+        // ConciseBody :: { FunctionBody }
         body = parse_block_statement();
     } else {
-        // Expression body: x => expression
+        // ConciseBody :: [lookahead != {] ExpressionBody
         body = parse_binary_expression(0);
         isExpressionBody = true;
     }
@@ -954,32 +1326,42 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function_from_identifier(
     return node;
 }
 
-// Parse yield expression: yield, yield expr, yield* expr
+// 14.4 Yield
+// YieldExpression :: yield
+//                  | yield [no LineTerminator here] AssignmentExpression
+//                  | yield [no LineTerminator here] * AssignmentExpression
+// @spec https://tc39.es/ecma262/#sec-yield
+//
+// INCOMPLETE: The [no LineTerminator here] restriction is not enforced. Rift
+// uses a heuristic to determine if the next token starts an expression rather
+// than checking for an intervening line terminator.
 std::shared_ptr<ASTNode> Parser::parse_yield_expression() {
     Token& startToken = current_token();
 
-    // Validate we're inside a generator
+    // 14.4 Static Semantics: Early Errors
+    // It is a Syntax Error if this production is not nested within a GeneratorBody.
     if(!in_generator_context_) {
         throw std::runtime_error("'yield' expression is only allowed inside generator functions");
     }
 
     consume(TokenType::Yield);  // consume 'yield'
 
-    // Check for yield* (delegate)
+    // YieldExpression :: yield [no LineTerminator here] * AssignmentExpression
     bool is_delegate = false;
     if(current_token().type == TokenType::Multiply) {
         is_delegate = true;
         current++;  // consume '*'
     }
 
-    // Parse optional argument
-    // yield without argument is valid (yields undefined)
-    // yield* requires an argument (the iterable to delegate to)
+    // Determine if there's an AssignmentExpression following yield.
+    // YieldExpression :: yield (no argument -- yields undefined)
+    // YieldExpression :: yield [no LineTerminator here] AssignmentExpression
+    // yield* always requires an argument (the iterable to delegate to)
     std::shared_ptr<ASTNode> argument = nullptr;
 
-    // Check if there's an expression following yield
-    // We need to be careful about ASI (automatic semicolon insertion)
-    // If the next token could start an expression and is on the same line, parse it
+    // SIMPLIFIED: Instead of checking for [no LineTerminator here], we check if
+    // the next token could start an expression. Tokens like ';', ')', '}' etc.
+    // indicate no argument follows.
     TokenType next = current_token().type;
     bool has_argument =
         (next != TokenType::Semicolon && next != TokenType::RightParen &&
@@ -987,13 +1369,13 @@ std::shared_ptr<ASTNode> Parser::parse_yield_expression() {
          next != TokenType::Comma && next != TokenType::Colon && next != TokenType::EndOfFile);
 
     if(is_delegate) {
-        // yield* requires an argument
+        // yield* requires an argument (the iterable to delegate to)
         if(!has_argument) {
             throw std::runtime_error("'yield*' requires an iterable expression");
         }
         argument = parse_binary_expression(2);  // Parse with assignment precedence
     } else if(has_argument) {
-        // yield with optional argument
+        // yield with optional AssignmentExpression argument
         argument = parse_binary_expression(2);  // Parse with assignment precedence
     }
 
@@ -1002,12 +1384,17 @@ std::shared_ptr<ASTNode> Parser::parse_yield_expression() {
     return node;
 }
 
-// Parse async function expression: async function() {} or async function name() {}
+// 15.8 Async Function Definitions
+// AsyncFunctionExpression :: async function BindingIdentifier? ( FormalParameters )
+//                           { AsyncFunctionBody }
+// AsyncFunctionBody :: FunctionBody
+// @spec https://tc39.es/ecma262/#sec-async-function-definitions
 std::shared_ptr<ASTNode> Parser::parse_async_function_expression() {
     Token& startToken = current_token();  // Save 'async' location
     consume(TokenType::Async);            // consume 'async'
     consume(TokenType::Function);         // consume 'function'
 
+    // AsyncFunctionExpression :: async function BindingIdentifier? ...
     // Optional function name for named async function expressions
     std::string name;
     if(current_token().type == TokenType::Identifier) {
@@ -1015,16 +1402,17 @@ std::shared_ptr<ASTNode> Parser::parse_async_function_expression() {
         size_t nameLine = current_token().line;
         size_t nameColumn = current_token().column;
         current++;  // consume function name
-        // Validate function name in strict mode
+        // 15.8.1 Static Semantics: Early Errors -- validate name in strict mode
         validateIdentifier(name, nameLine, nameColumn);
     }
 
-    // Parse parameters
+    // FormalParameters :: (see parse_parameter_list in parser.cpp)
     consume(TokenType::LeftParen);
     auto parameters = parse_parameter_list();
     consume(TokenType::RightParen);
 
-    // Parse function body with async context enabled
+    // AsyncFunctionBody :: FunctionBody
+    // Set async context so 'await' expressions are allowed inside the body
     bool was_in_async = in_async_context_;
     in_async_context_ = true;
     auto body = parse_block_statement();
@@ -1035,11 +1423,20 @@ std::shared_ptr<ASTNode> Parser::parse_async_function_expression() {
     return node;
 }
 
-// Parse await expression: await expr
+// 15.8.1 AwaitExpression
+// AwaitExpression :: await UnaryExpression
+// @spec https://tc39.es/ecma262/#sec-async-function-definitions
+//
+// INCOMPLETE: The spec defines await as taking a UnaryExpression operand.
+// Rift parses the operand with parse_binary_expression(2) which corresponds
+// to assignment-level precedence, not unary. This is slightly different from
+// the spec's grammar but works in practice for common usage patterns.
 std::shared_ptr<ASTNode> Parser::parse_await_expression() {
     Token& startToken = current_token();
 
-    // Validate we're inside an async function
+    // 15.8.1 Static Semantics: Early Errors
+    // It is a Syntax Error if this production is not nested within an AsyncFunctionBody
+    // or an AsyncGeneratorBody.
     if(!in_async_context_) {
         throw std::runtime_error(
             "SyntaxError: 'await' expression is only allowed inside async functions");
@@ -1047,8 +1444,7 @@ std::shared_ptr<ASTNode> Parser::parse_await_expression() {
 
     consume(TokenType::Await);  // consume 'await'
 
-    // Parse the operand expression
-    // await has high precedence, similar to yield
+    // AwaitExpression :: await UnaryExpression
     auto argument = parse_binary_expression(2);  // Parse with assignment precedence
 
     auto node = ASTFactory::makeAwaitExpression(argument);
@@ -1056,15 +1452,26 @@ std::shared_ptr<ASTNode> Parser::parse_await_expression() {
     return node;
 }
 
-// Parse async arrow function: async () => {}, async (x) => {}, async x => expr
+// 15.9 Async Arrow Function Definitions
+// AsyncArrowFunction :: async AsyncArrowBindingIdentifier => AsyncConciseBody
+//                     | CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
+// AsyncArrowBindingIdentifier :: BindingIdentifier
+// AsyncConciseBody :: [lookahead != {] ExpressionBody
+//                   | { AsyncFunctionBody }
+// @spec https://tc39.es/ecma262/#sec-async-arrow-function-definitions
+//
+// DEVIATION: For expression body (async x => expr), Rift wraps the expression
+// in a synthetic ReturnStatement + BlockStatement so the async executor can
+// handle it uniformly. The non-async arrow uses isExpressionBody=true instead.
 std::shared_ptr<ASTNode> Parser::parse_async_arrow_function() {
     Token& startToken = current_token();  // Save 'async' location
     consume(TokenType::Async);            // consume 'async'
 
-    // Parse parameters
+    // Parse AsyncArrowBindingIdentifier or parenthesized parameters
     std::shared_ptr<ASTNode> parameters;
 
     if(current_token().type == TokenType::Identifier) {
+        // AsyncArrowBindingIdentifier :: BindingIdentifier
         // Single param without parens: async x => ...
         std::string paramValue = current_token().value;
         size_t paramLine = current_token().line;
@@ -1074,27 +1481,31 @@ std::shared_ptr<ASTNode> Parser::parse_async_arrow_function() {
         current++;  // consume identifier
         validateIdentifier(paramValue, paramLine, paramColumn);
     } else {
+        // CoverCallExpressionAndAsyncArrowHead (parenthesized params)
         // Parenthesized params: async () => ... or async (x, y) => ...
         consume(TokenType::LeftParen);
         parameters = parse_parameter_list();
         consume(TokenType::RightParen);
     }
 
-    // Consume =>
+    // AsyncArrowFunction :: ... => AsyncConciseBody
     consume(TokenType::Arrow);
 
-    // Parse body with async context enabled
+    // AsyncConciseBody :: [lookahead != {] ExpressionBody | { AsyncFunctionBody }
+    // Set async context so 'await' expressions are allowed inside the body
     bool was_in_async = in_async_context_;
     in_async_context_ = true;
 
     std::shared_ptr<ASTNode> body;
 
     if(current_token().type == TokenType::LeftBrace) {
-        // Block body: async () => { statements }
+        // AsyncConciseBody :: { AsyncFunctionBody }
         body = parse_block_statement();
     } else {
-        // Expression body: async x => expr
-        // Wrap in ReturnStatement + BlockStatement so AsyncExecutor can handle it
+        // AsyncConciseBody :: [lookahead != {] ExpressionBody
+        // DEVIATION: Wraps expression in ReturnStatement + BlockStatement so the
+        // async executor can handle it uniformly (unlike non-async arrow which uses
+        // isExpressionBody=true).
         auto expr = parse_binary_expression(0);
         auto return_stmt = ASTFactory::makeReturnStatement(expr);
         body = ASTFactory::makeBlockStatement();
