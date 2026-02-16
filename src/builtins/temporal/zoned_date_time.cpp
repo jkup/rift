@@ -31,11 +31,36 @@
 #include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
+// ============================================================================
+// Temporal Proposal -- Temporal.ZonedDateTime Objects (Sections 6.1-6.5)
+// @spec https://tc39.es/proposal-temporal/#sec-temporal-zoneddatetime-objects
+//
+// Temporal.ZonedDateTime represents an exact date and time in a particular
+// time zone. It combines an Instant (exact time), a TimeZone, and a
+// Calendar, making it the most comprehensive Temporal type for
+// representing a moment in time as humans experience it.
+//
+// DEVIATION: The spec uses [[EpochNanoseconds]], [[TimeZone]], and
+// [[Calendar]] internal slots. Rift delegates computation to the
+// temporal_rs Rust library via FFI and stores internal data in a static
+// registry (ZonedDateTimeRegistry) instead of internal slots. The
+// registry maps JSObject* -> unique_ptr<ZonedDateTime>.
+//
+// DEVIATION: Without BigInt support, epochNanoseconds is approximated
+// from epochMilliseconds * 1e6 rather than stored as an exact value.
+// ============================================================================
+
 namespace rift::builtins {
 
 using rift::core::extractThisObject;
 
-// ===== ZonedDateTimeRegistry =====
+// ============================================================================
+// ZonedDateTimeRegistry
+// NON-STANDARD: Static registry for ZonedDateTime internal data.
+// The spec stores data in [[EpochNanoseconds]], [[TimeZone]], and
+// [[Calendar]] internal slots. Rift uses a global
+// unordered_map<JSObject*, unique_ptr<ZonedDateTime>> as a substitute.
+// ============================================================================
 
 std::unordered_map<JSObject*, std::unique_ptr<temporal_rs::ZonedDateTime>>
     ZonedDateTimeRegistry::registry_;
@@ -61,8 +86,8 @@ void ZonedDateTimeRegistry::clear() {
     registry_.clear();
 }
 
-// ===== Helper: Get ZonedDateTime data from this =====
-
+// NON-STANDARD: Internal helper to extract ZonedDateTime data from the
+// receiver (this value) by looking up the JSObject in the registry.
 static temporal_rs::ZonedDateTime* getZonedDateTimeData(const CallContext& ctx) {
     auto* obj = extractThisObject(ctx);
     if(obj) {
@@ -71,8 +96,8 @@ static temporal_rs::ZonedDateTime* getZonedDateTimeData(const CallContext& ctx) 
     return nullptr;
 }
 
-// ===== Helper: Throw TemporalError as JavaScriptException =====
-
+// NON-STANDARD: Internal helper to convert temporal_rs::TemporalError
+// into the appropriate JavaScript exception type.
 static void throwTemporalError(const temporal_rs::TemporalError& err) {
     std::string msg = "Temporal error";
     if(err.msg.has_value()) {
@@ -91,16 +116,33 @@ static void throwTemporalError(const temporal_rs::TemporalError& err) {
     }
 }
 
-// ===== Helper: Parse a ZonedDateTime from a JS Value =====
-
+// ----------------------------------------------------------------------------
+// NON-STANDARD: Internal helper to parse a ZonedDateTime from a JS Value.
+// Handles three cases:
+//   1. Value is already a Temporal.ZonedDateTime object (clone it)
+//   2. Value is a property bag object (extract date/time/timezone fields)
+//   3. Value is a string (parse as IXDTF string with timezone annotation)
+//
+// This implements parts of:
+//   6.5.2 ToTemporalZonedDateTime ( item [ , options ] )
+//   @spec https://tc39.es/proposal-temporal/#sec-temporal-totemporalzoneddatetime
+//
+// SIMPLIFIED: Option bag parsing (disambiguation, offset, overflow) is
+// not fully handled.
+// SIMPLIFIED: Calendar reconciliation is not implemented — defaults to
+// ISO calendar.
+// SIMPLIFIED: String parsing uses fixed Disambiguation::Compatible and
+// OffsetDisambiguation::Reject rather than reading from options.
+// ----------------------------------------------------------------------------
 static std::unique_ptr<temporal_rs::ZonedDateTime> parseZonedDateTimeFromValue(const Value& val) {
     if(val.isObject() || val.isFunction()) {
+        // Step: If item has [[EpochNanoseconds]] internal slot, return a copy.
         auto* data = ZonedDateTimeRegistry::get(val.getObject());
         if(data) {
             return data->clone();
         }
 
-        // Property bag
+        // Step: Otherwise, treat as a property bag.
         auto* obj = val.getObject();
         temporal_rs::PartialDate date_partial{};
         temporal_rs::PartialTime time_partial{};
@@ -157,7 +199,7 @@ static std::unique_ptr<temporal_rs::ZonedDateTime> parseZonedDateTimeFromValue(c
         return std::move(result).ok().value();
     }
 
-    // String
+    // Step: If item is a string, parse it.
     std::string str = val.toString();
     auto result = temporal_rs::ZonedDateTime::from_utf8(
         str, temporal_rs::Disambiguation::Compatible,
@@ -168,8 +210,14 @@ static std::unique_ptr<temporal_rs::ZonedDateTime> parseZonedDateTimeFromValue(c
     return std::move(result).ok().value();
 }
 
-// ===== Helper: Parse a Duration for arithmetic =====
-
+// ----------------------------------------------------------------------------
+// NON-STANDARD: Internal helper to parse a Duration from a JS Value for
+// ZonedDateTime arithmetic (add/subtract).
+//
+// Implements parts of:
+//   7.5.15 ToTemporalDuration ( item )
+//   @spec https://tc39.es/proposal-temporal/#sec-temporal-totemporalduration
+// ----------------------------------------------------------------------------
 static std::unique_ptr<temporal_rs::Duration> parseDurationForZonedDateTime(const Value& val) {
     if(val.isObject() || val.isFunction()) {
         auto* data = DurationRegistry::get(val.getObject());
@@ -219,8 +267,8 @@ static std::unique_ptr<temporal_rs::Duration> parseDurationForZonedDateTime(cons
     return std::move(result).ok().value();
 }
 
-// ===== Helper: Wrap a temporal_rs::ZonedDateTime into a JS object =====
-
+// NON-STANDARD: Internal helper to wrap a temporal_rs::ZonedDateTime into
+// a JS object with the ZonedDateTime prototype and register it.
 Value TemporalZonedDateTime::wrapZonedDateTime(
     std::unique_ptr<temporal_rs::ZonedDateTime> zdt) {
     auto* proto = getGlobalPrototype();
@@ -232,17 +280,29 @@ Value TemporalZonedDateTime::wrapZonedDateTime(
     return Value(js_obj);
 }
 
-// ===== Setup =====
+// ============================================================================
+// Setup Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 6.2 Properties of the Temporal.ZonedDateTime Constructor
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-constructor
+// ----------------------------------------------------------------------------
 void TemporalZonedDateTime::setupStaticMethods(JSObject* constructor,
                                                 rift::memory::ObjectFactory* factory) {
+    // 6.2.2 Temporal.ZonedDateTime.from ( item [ , options ] )
     RIFT_STATIC_METHOD(constructor, "from", TemporalZonedDateTime::from);
+    // 6.2.3 Temporal.ZonedDateTime.compare ( one, two )
     RIFT_STATIC_METHOD(constructor, "compare", TemporalZonedDateTime::compare);
 }
 
+// ----------------------------------------------------------------------------
+// 6.3 Properties of the Temporal.ZonedDateTime Prototype Object
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-prototype-object
+// ----------------------------------------------------------------------------
 void TemporalZonedDateTime::setupPrototypeMethods(JSObject* prototype,
                                                     rift::memory::ObjectFactory* factory) {
-    // Date getters
+    // 6.3.3-6.3.14 Date getters
     RIFT_GETTER(prototype, "year", TemporalZonedDateTime::year);
     RIFT_GETTER(prototype, "month", TemporalZonedDateTime::month);
     RIFT_GETTER(prototype, "monthCode", TemporalZonedDateTime::monthCode);
@@ -256,7 +316,7 @@ void TemporalZonedDateTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "inLeapYear", TemporalZonedDateTime::inLeapYear);
     RIFT_GETTER(prototype, "calendarId", TemporalZonedDateTime::calendarId);
 
-    // Time getters
+    // 6.3.15-6.3.20 Time getters
     RIFT_GETTER(prototype, "hour", TemporalZonedDateTime::hour);
     RIFT_GETTER(prototype, "minute", TemporalZonedDateTime::minute);
     RIFT_GETTER(prototype, "second", TemporalZonedDateTime::second);
@@ -264,60 +324,90 @@ void TemporalZonedDateTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "microsecond", TemporalZonedDateTime::microsecond);
     RIFT_GETTER(prototype, "nanosecond", TemporalZonedDateTime::nanosecond);
 
-    // Timezone getters
+    // 6.3.4 get Temporal.ZonedDateTime.prototype.timeZoneId
     RIFT_GETTER(prototype, "timeZoneId", TemporalZonedDateTime::timeZoneId);
+    // 6.3.23 get Temporal.ZonedDateTime.prototype.offset
     RIFT_GETTER(prototype, "offset", TemporalZonedDateTime::offset);
+    // 6.3.22 get Temporal.ZonedDateTime.prototype.offsetNanoseconds
     RIFT_GETTER(prototype, "offsetNanoseconds", TemporalZonedDateTime::offsetNanoseconds);
+    // 6.3.20 get Temporal.ZonedDateTime.prototype.epochMilliseconds
     RIFT_GETTER(prototype, "epochMilliseconds", TemporalZonedDateTime::epochMilliseconds);
+    // 6.3.21 get Temporal.ZonedDateTime.prototype.epochNanoseconds
     RIFT_GETTER(prototype, "epochNanoseconds", TemporalZonedDateTime::epochNanoseconds);
 
-    // Mutation
+    // 6.3.24 Temporal.ZonedDateTime.prototype.with ( temporalZonedDateTimeLike [ , options ] )
     RIFT_METHOD(prototype, "with", TemporalZonedDateTime::with);
+    // 6.3.26 Temporal.ZonedDateTime.prototype.withTimeZone ( timeZoneLike )
     RIFT_METHOD(prototype, "withTimeZone", TemporalZonedDateTime::withTimeZone);
+    // 6.3.25 Temporal.ZonedDateTime.prototype.withCalendar ( calendarLike )
     RIFT_METHOD(prototype, "withCalendar", TemporalZonedDateTime::withCalendar);
+    // 6.3.27 Temporal.ZonedDateTime.prototype.withPlainTime ( [ plainTimeLike ] )
     RIFT_METHOD(prototype, "withPlainTime", TemporalZonedDateTime::withPlainTime);
 
-    // Arithmetic
+    // 6.3.28 Temporal.ZonedDateTime.prototype.add ( temporalDurationLike [ , options ] )
     RIFT_METHOD(prototype, "add", TemporalZonedDateTime::add);
+    // 6.3.29 Temporal.ZonedDateTime.prototype.subtract ( temporalDurationLike [ , options ] )
     RIFT_METHOD(prototype, "subtract", TemporalZonedDateTime::subtract);
 
-    // Difference
+    // 6.3.30 Temporal.ZonedDateTime.prototype.until ( other [ , options ] )
     RIFT_METHOD(prototype, "until", TemporalZonedDateTime::until);
+    // 6.3.31 Temporal.ZonedDateTime.prototype.since ( other [ , options ] )
     RIFT_METHOD(prototype, "since", TemporalZonedDateTime::since);
 
-    // Comparison
+    // 6.3.33 Temporal.ZonedDateTime.prototype.equals ( other )
     RIFT_METHOD(prototype, "equals", TemporalZonedDateTime::equals);
 
-    // Conversion
+    // 6.3.36 Temporal.ZonedDateTime.prototype.toInstant ( )
     RIFT_METHOD(prototype, "toInstant", TemporalZonedDateTime::toInstant);
+    // 6.3.37 Temporal.ZonedDateTime.prototype.toPlainDate ( )
     RIFT_METHOD(prototype, "toPlainDate", TemporalZonedDateTime::toPlainDate);
+    // 6.3.38 Temporal.ZonedDateTime.prototype.toPlainTime ( )
     RIFT_METHOD(prototype, "toPlainTime", TemporalZonedDateTime::toPlainTime);
+    // 6.3.39 Temporal.ZonedDateTime.prototype.toPlainDateTime ( )
     RIFT_METHOD(prototype, "toPlainDateTime", TemporalZonedDateTime::toPlainDateTime);
 
-    // Special
+    // 6.3.34 Temporal.ZonedDateTime.prototype.startOfDay ( )
     RIFT_METHOD(prototype, "startOfDay", TemporalZonedDateTime::startOfDay);
+    // 6.3.19 get Temporal.ZonedDateTime.prototype.hoursInDay
     RIFT_METHOD(prototype, "hoursInDay", TemporalZonedDateTime::hoursInDay);
 
-    // String
+    // 6.3.35 Temporal.ZonedDateTime.prototype.toString ( [ options ] )
     RIFT_METHOD(prototype, "toString", TemporalZonedDateTime::toString);
+    // 6.3.40 Temporal.ZonedDateTime.prototype.toJSON ( )
     RIFT_METHOD(prototype, "toJSON", TemporalZonedDateTime::toJSON);
+    // 6.3.41 Temporal.ZonedDateTime.prototype.valueOf ( )
     RIFT_METHOD(prototype, "valueOf", TemporalZonedDateTime::valueOf);
 }
 
-// ===== Constructor =====
+// ============================================================================
+// Constructor
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 6.1.1 Temporal.ZonedDateTime ( epochNanoseconds, timeZoneLike [ , calendarLike ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime
+//
+// INCOMPLETE: Step 1 (NewTarget check) not enforced.
+// DEVIATION: The spec takes epochNanoseconds as a BigInt. Rift takes it
+// as a Number and converts nanoseconds to milliseconds (dividing by 1e6)
+// since BigInt is not yet supported. This loses sub-millisecond precision.
+// SIMPLIFIED: Calendar argument is accepted as a string only.
+// DEVIATION: Uses from_epoch_milliseconds instead of storing the raw
+// epochNanoseconds BigInt, then applies calendar separately if non-ISO.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::constructor(const CallContext& ctx, const std::vector<Value>& args) {
+    // Step 1: If NewTarget is undefined, throw a TypeError. (INCOMPLETE)
+    // Step 2: Set epochNanoseconds to ? ToBigInt(epochNanoseconds).
     if(args.size() < 2) {
         throw rift::core::JavaScriptException(Value(
             "TypeError: Temporal.ZonedDateTime requires epochNanoseconds and timeZone"));
     }
 
-    // First arg: epoch nanoseconds (as a number, ms precision without BigInt)
-    // Convert nanoseconds to milliseconds since we use from_epoch_milliseconds
+    // DEVIATION: Convert nanoseconds Number to milliseconds (no BigInt).
     double epoch_ns_value = args[0].toNumber();
     int64_t epoch_ms = static_cast<int64_t>(epoch_ns_value / 1e6);
 
-    // Second arg: timezone string
+    // Step 3: Let timeZone be ? ToTemporalTimeZoneIdentifier(timeZoneLike).
     std::string tz_str = args[1].toString();
     auto tz_result = temporal_rs::TimeZone::try_from_str(tz_str);
     if(!tz_result.is_ok()) {
@@ -325,7 +415,8 @@ Value TemporalZonedDateTime::constructor(const CallContext& ctx, const std::vect
     }
     auto timezone = std::move(tz_result).ok().value();
 
-    // Third arg: optional calendar
+    // Step 4: If calendarLike is not undefined, let calendar be
+    // ? ToTemporalCalendarIdentifier(calendarLike).
     temporal_rs::AnyCalendarKind calendar = temporal_rs::AnyCalendarKind::Iso;
     if(args.size() > 2 && args[2].isString()) {
         auto cal = temporal_rs::AnyCalendarKind::get_for_str(args[2].getString());
@@ -337,6 +428,7 @@ Value TemporalZonedDateTime::constructor(const CallContext& ctx, const std::vect
         }
     }
 
+    // Step 5: Return ? CreateTemporalZonedDateTime(epochNanoseconds, timeZone, calendar).
     auto result = temporal_rs::ZonedDateTime::from_epoch_milliseconds(epoch_ms, timezone);
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
@@ -352,8 +444,17 @@ Value TemporalZonedDateTime::constructor(const CallContext& ctx, const std::vect
     return wrapZonedDateTime(std::move(result).ok().value());
 }
 
-// ===== Static Methods =====
+// ============================================================================
+// Static Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 6.2.2 Temporal.ZonedDateTime.from ( item [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.from
+//
+// SIMPLIFIED: The options argument (disambiguation, offset, overflow)
+// is not parsed.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::from(const CallContext& ctx, const std::vector<Value>& args) {
     if(args.empty()) {
         throw rift::core::JavaScriptException(
@@ -364,21 +465,51 @@ Value TemporalZonedDateTime::from(const CallContext& ctx, const std::vector<Valu
     return wrapZonedDateTime(std::move(zdt));
 }
 
+// ----------------------------------------------------------------------------
+// 6.2.3 Temporal.ZonedDateTime.compare ( one, two )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.compare
+//
+// Compares the exact instants (epochNanoseconds) of two ZonedDateTimes.
+// Does not consider time zone or calendar differences.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::compare(const CallContext& ctx, const std::vector<Value>& args) {
     if(args.size() < 2) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Temporal.ZonedDateTime.compare requires two arguments"));
     }
 
+    // Step 1: Set one to ? ToTemporalZonedDateTime(one).
     auto zdt_one = parseZonedDateTimeFromValue(args[0]);
+    // Step 2: Set two to ? ToTemporalZonedDateTime(two).
     auto zdt_two = parseZonedDateTimeFromValue(args[1]);
 
+    // Step 3: Return CompareEpochNanoseconds(one.[[EpochNanoseconds]], two.[[EpochNanoseconds]]).
     int8_t cmp = zdt_one->compare_instant(*zdt_two);
     return Value(static_cast<double>(cmp));
 }
 
-// ===== Date Getters =====
+// ============================================================================
+// Prototype Getters -- Date Fields
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-prototype-object
+//
+// Each date getter first computes the wall-clock PlainDateTime from the
+// instant + timezone, then calls the corresponding calendar operation.
+// DEVIATION: Rift delegates all computation to temporal_rs via FFI.
+// ============================================================================
 
+// 6.3.5 get Temporal.ZonedDateTime.prototype.calendarId
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.calendarid
+Value TemporalZonedDateTime::calendarId(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getZonedDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: calendarId called on non-ZonedDateTime"));
+    }
+    return Value(std::string(data->calendar().identifier()));
+}
+
+// 6.3.6 get Temporal.ZonedDateTime.prototype.year
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.year
 Value TemporalZonedDateTime::year(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -388,6 +519,8 @@ Value TemporalZonedDateTime::year(const CallContext& ctx, const std::vector<Valu
     return Value(static_cast<double>(data->year()));
 }
 
+// 6.3.7 get Temporal.ZonedDateTime.prototype.month
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.month
 Value TemporalZonedDateTime::month(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -397,6 +530,8 @@ Value TemporalZonedDateTime::month(const CallContext& ctx, const std::vector<Val
     return Value(static_cast<double>(data->month()));
 }
 
+// 6.3.8 get Temporal.ZonedDateTime.prototype.monthCode
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.monthcode
 Value TemporalZonedDateTime::monthCode(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -406,6 +541,8 @@ Value TemporalZonedDateTime::monthCode(const CallContext& ctx, const std::vector
     return Value(data->month_code());
 }
 
+// 6.3.9 get Temporal.ZonedDateTime.prototype.day
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.day
 Value TemporalZonedDateTime::day(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -415,6 +552,8 @@ Value TemporalZonedDateTime::day(const CallContext& ctx, const std::vector<Value
     return Value(static_cast<double>(data->day()));
 }
 
+// 6.3.10 get Temporal.ZonedDateTime.prototype.dayOfWeek
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.dayofweek
 Value TemporalZonedDateTime::dayOfWeek(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -424,6 +563,8 @@ Value TemporalZonedDateTime::dayOfWeek(const CallContext& ctx, const std::vector
     return Value(static_cast<double>(data->day_of_week()));
 }
 
+// 6.3.11 get Temporal.ZonedDateTime.prototype.dayOfYear
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.dayofyear
 Value TemporalZonedDateTime::dayOfYear(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -433,6 +574,8 @@ Value TemporalZonedDateTime::dayOfYear(const CallContext& ctx, const std::vector
     return Value(static_cast<double>(data->day_of_year()));
 }
 
+// 6.3.12 get Temporal.ZonedDateTime.prototype.weekOfYear
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.weekofyear
 Value TemporalZonedDateTime::weekOfYear(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -446,6 +589,8 @@ Value TemporalZonedDateTime::weekOfYear(const CallContext& ctx, const std::vecto
     return Value::undefined();
 }
 
+// 6.3.15 get Temporal.ZonedDateTime.prototype.daysInMonth
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.daysinmonth
 Value TemporalZonedDateTime::daysInMonth(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -455,6 +600,8 @@ Value TemporalZonedDateTime::daysInMonth(const CallContext& ctx, const std::vect
     return Value(static_cast<double>(data->days_in_month()));
 }
 
+// 6.3.16 get Temporal.ZonedDateTime.prototype.daysInYear
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.daysinyear
 Value TemporalZonedDateTime::daysInYear(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -464,6 +611,8 @@ Value TemporalZonedDateTime::daysInYear(const CallContext& ctx, const std::vecto
     return Value(static_cast<double>(data->days_in_year()));
 }
 
+// 6.3.17 get Temporal.ZonedDateTime.prototype.monthsInYear
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.monthsinyear
 Value TemporalZonedDateTime::monthsInYear(const CallContext& ctx,
                                            const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
@@ -474,6 +623,8 @@ Value TemporalZonedDateTime::monthsInYear(const CallContext& ctx,
     return Value(static_cast<double>(data->months_in_year()));
 }
 
+// 6.3.18 get Temporal.ZonedDateTime.prototype.inLeapYear
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.inleapyear
 Value TemporalZonedDateTime::inLeapYear(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -483,17 +634,15 @@ Value TemporalZonedDateTime::inLeapYear(const CallContext& ctx, const std::vecto
     return Value(data->in_leap_year());
 }
 
-Value TemporalZonedDateTime::calendarId(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* data = getZonedDateTimeData(ctx);
-    if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: calendarId called on non-ZonedDateTime"));
-    }
-    return Value(std::string(data->calendar().identifier()));
-}
+// ============================================================================
+// Prototype Getters -- Time Fields
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-prototype-object
+//
+// Each time getter computes the wall-clock time from the instant + timezone.
+// ============================================================================
 
-// ===== Time Getters =====
-
+// 6.3.15 get Temporal.ZonedDateTime.prototype.hour
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.hour
 Value TemporalZonedDateTime::hour(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -503,6 +652,8 @@ Value TemporalZonedDateTime::hour(const CallContext& ctx, const std::vector<Valu
     return Value(static_cast<double>(data->hour()));
 }
 
+// 6.3.16 get Temporal.ZonedDateTime.prototype.minute
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.minute
 Value TemporalZonedDateTime::minute(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -512,6 +663,8 @@ Value TemporalZonedDateTime::minute(const CallContext& ctx, const std::vector<Va
     return Value(static_cast<double>(data->minute()));
 }
 
+// 6.3.17 get Temporal.ZonedDateTime.prototype.second
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.second
 Value TemporalZonedDateTime::second(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -521,6 +674,8 @@ Value TemporalZonedDateTime::second(const CallContext& ctx, const std::vector<Va
     return Value(static_cast<double>(data->second()));
 }
 
+// 6.3.18 get Temporal.ZonedDateTime.prototype.millisecond
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.millisecond
 Value TemporalZonedDateTime::millisecond(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -530,6 +685,8 @@ Value TemporalZonedDateTime::millisecond(const CallContext& ctx, const std::vect
     return Value(static_cast<double>(data->millisecond()));
 }
 
+// 6.3.19 get Temporal.ZonedDateTime.prototype.microsecond
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.microsecond
 Value TemporalZonedDateTime::microsecond(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -539,6 +696,8 @@ Value TemporalZonedDateTime::microsecond(const CallContext& ctx, const std::vect
     return Value(static_cast<double>(data->microsecond()));
 }
 
+// 6.3.20 get Temporal.ZonedDateTime.prototype.nanosecond
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.nanosecond
 Value TemporalZonedDateTime::nanosecond(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -548,8 +707,12 @@ Value TemporalZonedDateTime::nanosecond(const CallContext& ctx, const std::vecto
     return Value(static_cast<double>(data->nanosecond()));
 }
 
-// ===== Timezone Getters =====
+// ============================================================================
+// Prototype Getters -- Timezone and Epoch Fields
+// ============================================================================
 
+// 6.3.4 get Temporal.ZonedDateTime.prototype.timeZoneId
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.timezoneid
 Value TemporalZonedDateTime::timeZoneId(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -559,6 +722,11 @@ Value TemporalZonedDateTime::timeZoneId(const CallContext& ctx, const std::vecto
     return Value(data->timezone().identifier());
 }
 
+// 6.3.23 get Temporal.ZonedDateTime.prototype.offset
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.offset
+//
+// Returns the UTC offset string (e.g., "+05:30", "-08:00") for this
+// ZonedDateTime's instant and timezone.
 Value TemporalZonedDateTime::offset(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -572,6 +740,10 @@ Value TemporalZonedDateTime::offset(const CallContext& ctx, const std::vector<Va
     return Value(std::move(result).ok().value());
 }
 
+// 6.3.22 get Temporal.ZonedDateTime.prototype.offsetNanoseconds
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.offsetnanoseconds
+//
+// Returns the UTC offset as a number of nanoseconds.
 Value TemporalZonedDateTime::offsetNanoseconds(const CallContext& ctx,
                                                 const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
@@ -582,6 +754,10 @@ Value TemporalZonedDateTime::offsetNanoseconds(const CallContext& ctx,
     return Value(static_cast<double>(data->offset_nanoseconds()));
 }
 
+// 6.3.20 get Temporal.ZonedDateTime.prototype.epochMilliseconds
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.epochmilliseconds
+//
+// Returns the number of milliseconds since Unix epoch (1970-01-01T00:00Z).
 Value TemporalZonedDateTime::epochMilliseconds(const CallContext& ctx,
                                                 const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
@@ -592,6 +768,13 @@ Value TemporalZonedDateTime::epochMilliseconds(const CallContext& ctx,
     return Value(static_cast<double>(data->epoch_milliseconds()));
 }
 
+// 6.3.21 get Temporal.ZonedDateTime.prototype.epochNanoseconds
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.epochnanoseconds
+//
+// Returns the number of nanoseconds since Unix epoch as a BigInt.
+// DEVIATION: Without BigInt support, Rift approximates this by
+// multiplying epochMilliseconds by 1e6. This loses sub-millisecond
+// precision and returns a Number instead of BigInt.
 Value TemporalZonedDateTime::epochNanoseconds(const CallContext& ctx,
                                                const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
@@ -603,8 +786,24 @@ Value TemporalZonedDateTime::epochNanoseconds(const CallContext& ctx,
     return Value(static_cast<double>(data->epoch_milliseconds()) * 1e6);
 }
 
-// ===== Mutation =====
+// ============================================================================
+// Mutation Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 6.3.24 Temporal.ZonedDateTime.prototype.with ( temporalZonedDateTimeLike [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.with
+//
+// Returns a new ZonedDateTime with the fields from temporalZonedDateTimeLike
+// merged into this ZonedDateTime, interpreting the result in the same
+// time zone.
+//
+// SIMPLIFIED: The options argument (disambiguation, offset, overflow) is
+// not parsed.
+// SIMPLIFIED: The spec performs PrepareCalendarFields, CalendarMergeFields,
+// and InterpretTemporalDateTimeFields steps; Rift extracts fields directly
+// and delegates to temporal_rs.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::with(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -663,6 +862,13 @@ Value TemporalZonedDateTime::with(const CallContext& ctx, const std::vector<Valu
     return wrapZonedDateTime(std::move(result).ok().value());
 }
 
+// ----------------------------------------------------------------------------
+// 6.3.26 Temporal.ZonedDateTime.prototype.withTimeZone ( timeZoneLike )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.withtimezone
+//
+// Returns a new ZonedDateTime with the same instant but in a different
+// time zone. The wall-clock time will differ but the exact moment is preserved.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::withTimeZone(const CallContext& ctx,
                                            const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
@@ -676,12 +882,14 @@ Value TemporalZonedDateTime::withTimeZone(const CallContext& ctx,
             "TypeError: Temporal.ZonedDateTime.prototype.withTimeZone requires an argument"));
     }
 
+    // Step 1: Let timeZone be ? ToTemporalTimeZoneIdentifier(timeZoneLike).
     std::string tz_str = args[0].toString();
     auto tz_result = temporal_rs::TimeZone::try_from_str(tz_str);
     if(!tz_result.is_ok()) {
         throwTemporalError(std::move(tz_result).err().value());
     }
 
+    // Step 2: Return ! CreateTemporalZonedDateTime(this.[[EpochNanoseconds]], timeZone, this.[[Calendar]]).
     auto result = data->with_timezone(std::move(tz_result).ok().value());
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
@@ -690,6 +898,13 @@ Value TemporalZonedDateTime::withTimeZone(const CallContext& ctx,
     return wrapZonedDateTime(std::move(result).ok().value());
 }
 
+// ----------------------------------------------------------------------------
+// 6.3.25 Temporal.ZonedDateTime.prototype.withCalendar ( calendarLike )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.withcalendar
+//
+// Returns a new ZonedDateTime with the same instant and time zone but
+// a different calendar. The wall-clock date fields may differ.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::withCalendar(const CallContext& ctx,
                                            const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
@@ -703,16 +918,25 @@ Value TemporalZonedDateTime::withCalendar(const CallContext& ctx,
             "TypeError: Temporal.ZonedDateTime.prototype.withCalendar requires a string"));
     }
 
+    // Step 1: Let calendar be ? ToTemporalCalendarIdentifier(calendarLike).
     auto cal = temporal_rs::AnyCalendarKind::get_for_str(args[0].getString());
     if(!cal.has_value()) {
         throw rift::core::JavaScriptException(
             Value("RangeError: Invalid calendar: " + args[0].getString()));
     }
 
+    // Step 2: Return ! CreateTemporalZonedDateTime(this.[[EpochNanoseconds]], this.[[TimeZone]], calendar).
     auto zdt = data->with_calendar(cal.value());
     return wrapZonedDateTime(std::move(zdt));
 }
 
+// ----------------------------------------------------------------------------
+// 6.3.27 Temporal.ZonedDateTime.prototype.withPlainTime ( [ plainTimeLike ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.withplaintime
+//
+// Returns a new ZonedDateTime with the time portion replaced. If no
+// argument is provided, the time is set to midnight (00:00:00).
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::withPlainTime(const CallContext& ctx,
                                             const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
@@ -734,8 +958,16 @@ Value TemporalZonedDateTime::withPlainTime(const CallContext& ctx,
     return wrapZonedDateTime(std::move(result).ok().value());
 }
 
-// ===== Arithmetic =====
+// ============================================================================
+// Arithmetic Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 6.3.28 Temporal.ZonedDateTime.prototype.add ( temporalDurationLike [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.add
+//
+// SIMPLIFIED: The options argument (overflow handling) is not parsed.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::add(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -748,7 +980,9 @@ Value TemporalZonedDateTime::add(const CallContext& ctx, const std::vector<Value
             Value("TypeError: Temporal.ZonedDateTime.prototype.add requires an argument"));
     }
 
+    // Step 1: Let duration be ? ToTemporalDuration(temporalDurationLike).
     auto dur = parseDurationForZonedDateTime(args[0]);
+    // Steps 2-3: Perform AddDurationToZonedDateTime and return the result.
     auto result = data->add(*dur, std::nullopt);
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
@@ -757,6 +991,12 @@ Value TemporalZonedDateTime::add(const CallContext& ctx, const std::vector<Value
     return wrapZonedDateTime(std::move(result).ok().value());
 }
 
+// ----------------------------------------------------------------------------
+// 6.3.29 Temporal.ZonedDateTime.prototype.subtract ( temporalDurationLike [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.subtract
+//
+// SIMPLIFIED: The options argument is not parsed.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::subtract(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -769,7 +1009,9 @@ Value TemporalZonedDateTime::subtract(const CallContext& ctx, const std::vector<
             Value("TypeError: Temporal.ZonedDateTime.prototype.subtract requires an argument"));
     }
 
+    // Step 1: Let duration be ? ToTemporalDuration(temporalDurationLike).
     auto dur = parseDurationForZonedDateTime(args[0]);
+    // Steps 2-3: Negate and perform AddDurationToZonedDateTime, return the result.
     auto result = data->subtract(*dur, std::nullopt);
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
@@ -778,8 +1020,18 @@ Value TemporalZonedDateTime::subtract(const CallContext& ctx, const std::vector<
     return wrapZonedDateTime(std::move(result).ok().value());
 }
 
-// ===== Difference =====
+// ============================================================================
+// Difference Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 6.3.30 Temporal.ZonedDateTime.prototype.until ( other [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.until
+//
+// Returns a Duration representing the time from this to other.
+// SIMPLIFIED: The options argument (smallestUnit, largestUnit,
+// roundingIncrement, roundingMode) is not parsed — uses defaults.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::until(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -792,6 +1044,7 @@ Value TemporalZonedDateTime::until(const CallContext& ctx, const std::vector<Val
             Value("TypeError: Temporal.ZonedDateTime.prototype.until requires an argument"));
     }
 
+    // Step 1: Set other to ? ToTemporalZonedDateTime(other).
     auto other = parseZonedDateTimeFromValue(args[0]);
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
                                               std::nullopt};
@@ -804,6 +1057,13 @@ Value TemporalZonedDateTime::until(const CallContext& ctx, const std::vector<Val
     return TemporalDuration::wrapDuration(std::move(result).ok().value());
 }
 
+// ----------------------------------------------------------------------------
+// 6.3.31 Temporal.ZonedDateTime.prototype.since ( other [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.since
+//
+// Returns a Duration representing the time from other to this.
+// SIMPLIFIED: The options argument is not parsed — uses defaults.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::since(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -816,6 +1076,7 @@ Value TemporalZonedDateTime::since(const CallContext& ctx, const std::vector<Val
             Value("TypeError: Temporal.ZonedDateTime.prototype.since requires an argument"));
     }
 
+    // Step 1: Set other to ? ToTemporalZonedDateTime(other).
     auto other = parseZonedDateTimeFromValue(args[0]);
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
                                               std::nullopt};
@@ -828,8 +1089,17 @@ Value TemporalZonedDateTime::since(const CallContext& ctx, const std::vector<Val
     return TemporalDuration::wrapDuration(std::move(result).ok().value());
 }
 
-// ===== Comparison =====
+// ============================================================================
+// Comparison Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 6.3.33 Temporal.ZonedDateTime.prototype.equals ( other )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.equals
+//
+// Returns true if this and other have the same epochNanoseconds, timezone,
+// and calendar.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::equals(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -849,8 +1119,16 @@ Value TemporalZonedDateTime::equals(const CallContext& ctx, const std::vector<Va
     return Value(data->equals(*other));
 }
 
-// ===== Conversion =====
+// ============================================================================
+// Conversion Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 6.3.36 Temporal.ZonedDateTime.prototype.toInstant ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.toinstant
+//
+// Returns a Temporal.Instant representing the same exact moment.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::toInstant(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -861,6 +1139,12 @@ Value TemporalZonedDateTime::toInstant(const CallContext& ctx, const std::vector
     return TemporalInstant::wrapInstant(data->to_instant());
 }
 
+// ----------------------------------------------------------------------------
+// 6.3.37 Temporal.ZonedDateTime.prototype.toPlainDate ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.toplaindate
+//
+// Returns a PlainDate with the same date fields and calendar.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::toPlainDate(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -871,6 +1155,12 @@ Value TemporalZonedDateTime::toPlainDate(const CallContext& ctx, const std::vect
     return TemporalPlainDate::wrapPlainDate(data->to_plain_date());
 }
 
+// ----------------------------------------------------------------------------
+// 6.3.38 Temporal.ZonedDateTime.prototype.toPlainTime ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.toplaintime
+//
+// Returns a PlainTime with the same time fields.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::toPlainTime(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -881,6 +1171,13 @@ Value TemporalZonedDateTime::toPlainTime(const CallContext& ctx, const std::vect
     return TemporalPlainTime::wrapPlainTime(data->to_plain_time());
 }
 
+// ----------------------------------------------------------------------------
+// 6.3.39 Temporal.ZonedDateTime.prototype.toPlainDateTime ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.toplaindatetime
+//
+// Returns a PlainDateTime with the same date/time fields and calendar.
+// The time zone information is discarded.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::toPlainDateTime(const CallContext& ctx,
                                               const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
@@ -892,8 +1189,17 @@ Value TemporalZonedDateTime::toPlainDateTime(const CallContext& ctx,
     return TemporalPlainDateTime::wrapPlainDateTime(data->to_plain_datetime());
 }
 
-// ===== Special =====
+// ============================================================================
+// Special Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 6.3.34 Temporal.ZonedDateTime.prototype.startOfDay ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.startofday
+//
+// Returns a ZonedDateTime representing the start of the day (which may
+// not be midnight in timezones with DST transitions at midnight).
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::startOfDay(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -909,6 +1215,14 @@ Value TemporalZonedDateTime::startOfDay(const CallContext& ctx, const std::vecto
     return wrapZonedDateTime(std::move(result).ok().value());
 }
 
+// ----------------------------------------------------------------------------
+// 6.3.19 get Temporal.ZonedDateTime.prototype.hoursInDay
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.hoursinday
+//
+// Returns the number of real-world hours in this ZonedDateTime's day,
+// accounting for DST transitions (e.g., 23 or 25 hours on DST change days).
+// DEVIATION: Registered as a method rather than a getter.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::hoursInDay(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -924,8 +1238,20 @@ Value TemporalZonedDateTime::hoursInDay(const CallContext& ctx, const std::vecto
     return Value(std::move(result).ok().value());
 }
 
-// ===== String =====
+// ============================================================================
+// String Conversion Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 6.3.35 Temporal.ZonedDateTime.prototype.toString ( [ options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.tostring
+//
+// Returns an IXDTF string representation including timezone annotation
+// (e.g., "2024-03-15T10:30:00+05:30[Asia/Kolkata]").
+// SIMPLIFIED: The options argument (fractionalSecondDigits, smallestUnit,
+// roundingMode, calendarName, timeZoneName, offset) is not parsed —
+// uses auto display for all components.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::toString(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
@@ -946,16 +1272,30 @@ Value TemporalZonedDateTime::toString(const CallContext& ctx, const std::vector<
     return Value(std::move(result).ok().value());
 }
 
+// ----------------------------------------------------------------------------
+// 6.3.40 Temporal.ZonedDateTime.prototype.toJSON ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.tojson
+//
+// Equivalent to toString with no options.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::toJSON(const CallContext& ctx, const std::vector<Value>& args) {
     return toString(ctx, args);
 }
 
+// ----------------------------------------------------------------------------
+// 6.3.41 Temporal.ZonedDateTime.prototype.valueOf ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.valueof
+//
+// Always throws TypeError — Temporal types are not comparable with < or >.
+// ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     throw rift::core::JavaScriptException(
         Value("TypeError: Cannot convert a Temporal.ZonedDateTime to a primitive value"));
 }
 
-// ===== Private =====
+// ============================================================================
+// Private
+// ============================================================================
 
 JSObject* TemporalZonedDateTime::getGlobalPrototype() {
     return rift::core::BuiltinManager::getZonedDateTimePrototype();

@@ -13,11 +13,30 @@
 #include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
+// ============================================================================
+// Temporal Proposal -- Temporal.PlainTime Objects (Sections 4.1-4.5)
+// @spec https://tc39.es/proposal-temporal/#sec-temporal-plaintime-objects
+//
+// A Temporal.PlainTime represents a wall-clock time without a date or time
+// zone. The spec uses a [[Time]] internal slot (a Time Record with fields
+// hour, minute, second, millisecond, microsecond, nanosecond).
+//
+// DEVIATION: Instead of a [[Time]] internal slot, this implementation stores
+// data in a static PlainTimeRegistry (a map from JSObject* to a
+// temporal_rs::PlainTime struct). The temporal_rs library handles validation
+// and time arithmetic via FFI.
+// ============================================================================
+
 namespace rift::builtins {
 
 using rift::core::extractThisObject;
 
-// ===== PlainTimeRegistry =====
+// ============================================================================
+// PlainTimeRegistry -- Internal Storage
+// NON-STANDARD: The spec uses a [[Time]] internal slot (a Time Record).
+// This implementation uses a static registry mapping JSObject pointers to
+// temporal_rs::PlainTime values.
+// ============================================================================
 
 std::unordered_map<JSObject*, std::unique_ptr<temporal_rs::PlainTime>> PlainTimeRegistry::registry_;
 
@@ -41,7 +60,8 @@ void PlainTimeRegistry::clear() {
     registry_.clear();
 }
 
-// ===== Helper: Get PlainTime data from this =====
+// NON-STANDARD: Internal helper to retrieve the PlainTime data for a `this` value.
+// The spec would access the [[Time]] internal slot directly.
 
 static temporal_rs::PlainTime* getPlainTimeData(const CallContext& ctx) {
     auto* obj = extractThisObject(ctx);
@@ -51,7 +71,8 @@ static temporal_rs::PlainTime* getPlainTimeData(const CallContext& ctx) {
     return nullptr;
 }
 
-// ===== Helper: Throw TemporalError as JavaScriptException =====
+// NON-STANDARD: Internal helper to convert temporal_rs error codes to
+// JavaScript exception types (TypeError, RangeError, SyntaxError).
 
 static void throwTemporalError(const temporal_rs::TemporalError& err) {
     std::string msg = "Temporal error";
@@ -71,7 +92,11 @@ static void throwTemporalError(const temporal_rs::TemporalError& err) {
     }
 }
 
-// ===== Helper: Parse a PlainTime from a JS Value =====
+// NON-STANDARD: Parse a PlainTime from a JS Value.
+// Loosely implements ToTemporalTime (spec section 4.5.3).
+// Handles: (1) existing PlainTime objects (clone), (2) plain objects with
+// time component properties, (3) ISO 8601 strings.
+// @spec https://tc39.es/proposal-temporal/#sec-temporal-totemporaltime
 
 static std::unique_ptr<temporal_rs::PlainTime> parsePlainTimeFromValue(const Value& val) {
     if(val.isObject() || val.isFunction()) {
@@ -114,7 +139,9 @@ static std::unique_ptr<temporal_rs::PlainTime> parsePlainTimeFromValue(const Val
     return std::move(result).ok().value();
 }
 
-// ===== Helper: Parse a Duration for PlainTime arithmetic =====
+// NON-STANDARD: Internal helper to parse a Duration from a JS Value for
+// PlainTime arithmetic (add/subtract). Handles Duration objects, property
+// bags, and ISO 8601 duration strings.
 
 static std::unique_ptr<temporal_rs::Duration> parseDurationForTime(const Value& val) {
     if(val.isObject() || val.isFunction()) {
@@ -165,7 +192,9 @@ static std::unique_ptr<temporal_rs::Duration> parseDurationForTime(const Value& 
     return std::move(result).ok().value();
 }
 
-// ===== Helper: Wrap a temporal_rs::PlainTime into a JS object =====
+// NON-STANDARD: Wraps a temporal_rs::PlainTime into a JS object.
+// Corresponds to CreateTemporalTime in the spec.
+// @spec https://tc39.es/proposal-temporal/#sec-temporal-createtemporaltime
 
 Value TemporalPlainTime::wrapPlainTime(std::unique_ptr<temporal_rs::PlainTime> time) {
     auto* proto = getGlobalPrototype();
@@ -177,45 +206,76 @@ Value TemporalPlainTime::wrapPlainTime(std::unique_ptr<temporal_rs::PlainTime> t
     return Value(js_obj);
 }
 
-// ===== Setup =====
+// ============================================================================
+// 4.2 Properties of the Temporal.PlainTime Constructor
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plaintime-constructor
+// ============================================================================
 
 void TemporalPlainTime::setupStaticMethods(JSObject* constructor,
                                             rift::memory::ObjectFactory* factory) {
+    // 4.2.2 Temporal.PlainTime.from ( item [ , options ] )
     RIFT_STATIC_METHOD(constructor, "from", TemporalPlainTime::from);
+    // 4.2.3 Temporal.PlainTime.compare ( one, two )
     RIFT_STATIC_METHOD(constructor, "compare", TemporalPlainTime::compare);
 }
 
+// ----------------------------------------------------------------------------
+// 4.3 Properties of the Temporal.PlainTime Prototype Object
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plaintime-prototype-object
+// ----------------------------------------------------------------------------
+
 void TemporalPlainTime::setupPrototypeMethods(JSObject* prototype,
                                                rift::memory::ObjectFactory* factory) {
-    // Getters
-    RIFT_GETTER(prototype, "hour", TemporalPlainTime::hour);
-    RIFT_GETTER(prototype, "minute", TemporalPlainTime::minute);
-    RIFT_GETTER(prototype, "second", TemporalPlainTime::second);
-    RIFT_GETTER(prototype, "millisecond", TemporalPlainTime::millisecond);
-    RIFT_GETTER(prototype, "microsecond", TemporalPlainTime::microsecond);
-    RIFT_GETTER(prototype, "nanosecond", TemporalPlainTime::nanosecond);
+    // 4.3.4-4.3.9: Time component getters
+    RIFT_GETTER(prototype, "hour", TemporalPlainTime::hour);         // 4.3.4
+    RIFT_GETTER(prototype, "minute", TemporalPlainTime::minute);     // 4.3.5
+    RIFT_GETTER(prototype, "second", TemporalPlainTime::second);     // 4.3.6
+    RIFT_GETTER(prototype, "millisecond", TemporalPlainTime::millisecond);  // 4.3.7
+    RIFT_GETTER(prototype, "microsecond", TemporalPlainTime::microsecond);  // 4.3.8
+    RIFT_GETTER(prototype, "nanosecond", TemporalPlainTime::nanosecond);    // 4.3.9
 
-    // Mutation
+    // 4.3.10 Temporal.PlainTime.prototype.with ( temporalTimeLike [ , options ] )
     RIFT_METHOD(prototype, "with", TemporalPlainTime::with);
 
-    // Arithmetic
+    // 4.3.11 Temporal.PlainTime.prototype.add ( temporalDurationLike )
     RIFT_METHOD(prototype, "add", TemporalPlainTime::add);
+    // 4.3.12 Temporal.PlainTime.prototype.subtract ( temporalDurationLike )
     RIFT_METHOD(prototype, "subtract", TemporalPlainTime::subtract);
 
-    // Difference
+    // 4.3.13 Temporal.PlainTime.prototype.until ( other [ , options ] )
     RIFT_METHOD(prototype, "until", TemporalPlainTime::until);
+    // 4.3.14 Temporal.PlainTime.prototype.since ( other [ , options ] )
     RIFT_METHOD(prototype, "since", TemporalPlainTime::since);
 
-    // Comparison
+    // 4.3.15 Temporal.PlainTime.prototype.round ( roundTo )
+    // INCOMPLETE: round() is not implemented.
+
+    // 4.3.16 Temporal.PlainTime.prototype.equals ( other )
     RIFT_METHOD(prototype, "equals", TemporalPlainTime::equals);
 
-    // String
+    // 4.3.17 Temporal.PlainTime.prototype.toString ( [ options ] )
     RIFT_METHOD(prototype, "toString", TemporalPlainTime::toString);
+    // 4.3.18 Temporal.PlainTime.prototype.toLocaleString ( [ locales [ , options ] ] )
+    // INCOMPLETE: toLocaleString is not implemented.
+    // 4.3.19 Temporal.PlainTime.prototype.toJSON ( )
     RIFT_METHOD(prototype, "toJSON", TemporalPlainTime::toJSON);
+    // 4.3.20 Temporal.PlainTime.prototype.valueOf ( )
     RIFT_METHOD(prototype, "valueOf", TemporalPlainTime::valueOf);
+
+    // 4.3.21 Temporal.PlainTime.prototype.toPlainDateTime ( temporalDate )
+    // INCOMPLETE: toPlainDateTime is not implemented.
+    // 4.3.22 Temporal.PlainTime.prototype.toZonedDateTime ( item )
+    // INCOMPLETE: toZonedDateTime is not implemented.
 }
 
-// ===== Constructor =====
+// ============================================================================
+// 4.1.1 Temporal.PlainTime ( [ hour [ , minute [ , second [ , millisecond
+//        [ , microsecond [ , nanosecond ] ] ] ] ] ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime
+//
+// All parameters default to 0 if not provided.
+// DEVIATION: Validation delegated to temporal_rs::PlainTime::try_new.
+// ============================================================================
 
 Value TemporalPlainTime::constructor(const CallContext& ctx, const std::vector<Value>& args) {
     uint8_t hour_val = args.size() > 0 ? static_cast<uint8_t>(args[0].toNumber()) : 0;
@@ -234,8 +294,14 @@ Value TemporalPlainTime::constructor(const CallContext& ctx, const std::vector<V
     return wrapPlainTime(std::move(result).ok().value());
 }
 
-// ===== Static Methods =====
+// ============================================================================
+// Static Methods
+// ============================================================================
 
+// 4.2.2 Temporal.PlainTime.from ( item [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.from
+//
+// INCOMPLETE: The options parameter (overflow) is not processed.
 Value TemporalPlainTime::from(const CallContext& ctx, const std::vector<Value>& args) {
     if(args.empty()) {
         throw rift::core::JavaScriptException(
@@ -246,6 +312,8 @@ Value TemporalPlainTime::from(const CallContext& ctx, const std::vector<Value>& 
     return wrapPlainTime(std::move(time));
 }
 
+// 4.2.3 Temporal.PlainTime.compare ( one, two )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.compare
 Value TemporalPlainTime::compare(const CallContext& ctx, const std::vector<Value>& args) {
     if(args.size() < 2) {
         throw rift::core::JavaScriptException(
@@ -259,8 +327,15 @@ Value TemporalPlainTime::compare(const CallContext& ctx, const std::vector<Value
     return Value(static_cast<double>(cmp));
 }
 
-// ===== Prototype Getters =====
+// ============================================================================
+// 4.3.4-4.3.9 Temporal.PlainTime Prototype Getters
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaintime.prototype.hour
+//
+// Each getter retrieves the corresponding component from the [[Time]] record.
+// DEVIATION: Uses PlainTimeRegistry lookup instead of [[Time]] internal slot.
+// ============================================================================
 
+// 4.3.4 get Temporal.PlainTime.prototype.hour
 Value TemporalPlainTime::hour(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -269,6 +344,7 @@ Value TemporalPlainTime::hour(const CallContext& ctx, const std::vector<Value>& 
     return Value(static_cast<double>(data->hour()));
 }
 
+// 4.3.5 get Temporal.PlainTime.prototype.minute
 Value TemporalPlainTime::minute(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -277,6 +353,7 @@ Value TemporalPlainTime::minute(const CallContext& ctx, const std::vector<Value>
     return Value(static_cast<double>(data->minute()));
 }
 
+// 4.3.6 get Temporal.PlainTime.prototype.second
 Value TemporalPlainTime::second(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -285,6 +362,7 @@ Value TemporalPlainTime::second(const CallContext& ctx, const std::vector<Value>
     return Value(static_cast<double>(data->second()));
 }
 
+// 4.3.7 get Temporal.PlainTime.prototype.millisecond
 Value TemporalPlainTime::millisecond(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -294,6 +372,7 @@ Value TemporalPlainTime::millisecond(const CallContext& ctx, const std::vector<V
     return Value(static_cast<double>(data->millisecond()));
 }
 
+// 4.3.8 get Temporal.PlainTime.prototype.microsecond
 Value TemporalPlainTime::microsecond(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -303,6 +382,7 @@ Value TemporalPlainTime::microsecond(const CallContext& ctx, const std::vector<V
     return Value(static_cast<double>(data->microsecond()));
 }
 
+// 4.3.9 get Temporal.PlainTime.prototype.nanosecond
 Value TemporalPlainTime::nanosecond(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -312,7 +392,12 @@ Value TemporalPlainTime::nanosecond(const CallContext& ctx, const std::vector<Va
     return Value(static_cast<double>(data->nanosecond()));
 }
 
-// ===== Mutation =====
+// ============================================================================
+// 4.3.10 Temporal.PlainTime.prototype.with ( temporalTimeLike [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.with
+//
+// INCOMPLETE: The options parameter (overflow) is not processed.
+// ============================================================================
 
 Value TemporalPlainTime::with(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
@@ -350,8 +435,14 @@ Value TemporalPlainTime::with(const CallContext& ctx, const std::vector<Value>& 
     return wrapPlainTime(std::move(result).ok().value());
 }
 
-// ===== Arithmetic =====
+// ============================================================================
+// Arithmetic Methods
+// ============================================================================
 
+// 4.3.11 Temporal.PlainTime.prototype.add ( temporalDurationLike )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.add
+//
+// DEVIATION: Delegated to temporal_rs::PlainTime::add. Wraps around midnight.
 Value TemporalPlainTime::add(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -372,6 +463,8 @@ Value TemporalPlainTime::add(const CallContext& ctx, const std::vector<Value>& a
     return wrapPlainTime(std::move(result).ok().value());
 }
 
+// 4.3.12 Temporal.PlainTime.prototype.subtract ( temporalDurationLike )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.subtract
 Value TemporalPlainTime::subtract(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -393,8 +486,15 @@ Value TemporalPlainTime::subtract(const CallContext& ctx, const std::vector<Valu
     return wrapPlainTime(std::move(result).ok().value());
 }
 
-// ===== Difference =====
+// ============================================================================
+// Difference Methods
+// ============================================================================
 
+// 4.3.13 Temporal.PlainTime.prototype.until ( other [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.until
+//
+// INCOMPLETE: The options parameter (smallestUnit, largestUnit, roundingMode,
+// roundingIncrement) is not processed.
 Value TemporalPlainTime::until(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -419,6 +519,10 @@ Value TemporalPlainTime::until(const CallContext& ctx, const std::vector<Value>&
     return TemporalDuration::wrapDuration(std::move(result).ok().value());
 }
 
+// 4.3.14 Temporal.PlainTime.prototype.since ( other [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.since
+//
+// INCOMPLETE: The options parameter is not processed.
 Value TemporalPlainTime::since(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -443,8 +547,8 @@ Value TemporalPlainTime::since(const CallContext& ctx, const std::vector<Value>&
     return TemporalDuration::wrapDuration(std::move(result).ok().value());
 }
 
-// ===== Comparison =====
-
+// 4.3.16 Temporal.PlainTime.prototype.equals ( other )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.equals
 Value TemporalPlainTime::equals(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -464,8 +568,15 @@ Value TemporalPlainTime::equals(const CallContext& ctx, const std::vector<Value>
     return Value(data->equals(*other));
 }
 
-// ===== String =====
+// ============================================================================
+// String Conversion Methods
+// ============================================================================
 
+// 4.3.17 Temporal.PlainTime.prototype.toString ( [ options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.tostring
+//
+// INCOMPLETE: The options parameter (fractionalSecondDigits, smallestUnit,
+// roundingMode) is not processed.
 Value TemporalPlainTime::toString(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
@@ -484,16 +595,24 @@ Value TemporalPlainTime::toString(const CallContext& ctx, const std::vector<Valu
     return Value(std::move(result).ok().value());
 }
 
+// 4.3.19 Temporal.PlainTime.prototype.toJSON ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.tojson
 Value TemporalPlainTime::toJSON(const CallContext& ctx, const std::vector<Value>& args) {
     return toString(ctx, args);
 }
 
+// 4.3.20 Temporal.PlainTime.prototype.valueOf ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.valueof
+//
+// Always throws TypeError. Temporal types do not support implicit conversion.
 Value TemporalPlainTime::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     throw rift::core::JavaScriptException(
         Value("TypeError: Cannot convert a Temporal.PlainTime to a primitive value"));
 }
 
-// ===== Private =====
+// ============================================================================
+// Private
+// ============================================================================
 
 JSObject* TemporalPlainTime::getGlobalPrototype() {
     return rift::core::BuiltinManager::getPlainTimePrototype();

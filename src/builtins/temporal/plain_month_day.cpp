@@ -13,11 +13,29 @@
 #include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
+// ============================================================================
+// Temporal Proposal -- Temporal.PlainMonthDay Objects (Sections 10.1-10.5)
+// @spec https://tc39.es/proposal-temporal/#sec-temporal-plainmonthday-objects
+//
+// Temporal.PlainMonthDay represents a recurring month-day combination
+// (e.g. December 25th), independent of any particular year.
+//
+// DEVIATION: The spec uses [[ISODate]] and [[Calendar]] internal slots.
+// Rift delegates to temporal_rs (Rust FFI) and stores internal data in a
+// static registry (PlainMonthDayRegistry) mapping JSObject* ->
+// unique_ptr<PlainMonthDay>.
+// ============================================================================
+
 namespace rift::builtins {
 
 using rift::core::extractThisObject;
 
-// ===== PlainMonthDayRegistry =====
+// ============================================================================
+// PlainMonthDayRegistry
+// NON-STANDARD: Static registry for PlainMonthDay internal data.
+// The spec stores data in [[ISODate]] and [[Calendar]] internal slots.
+// Rift uses a global unordered_map<JSObject*, unique_ptr<PlainMonthDay>>.
+// ============================================================================
 
 std::unordered_map<JSObject*, std::unique_ptr<temporal_rs::PlainMonthDay>>
     PlainMonthDayRegistry::registry_;
@@ -43,8 +61,7 @@ void PlainMonthDayRegistry::clear() {
     registry_.clear();
 }
 
-// ===== Helper: Get PlainMonthDay data from this =====
-
+// NON-STANDARD: Internal helper to extract PlainMonthDay data from the receiver.
 static temporal_rs::PlainMonthDay* getPlainMonthDayData(const CallContext& ctx) {
     auto* obj = extractThisObject(ctx);
     if(obj) {
@@ -53,8 +70,8 @@ static temporal_rs::PlainMonthDay* getPlainMonthDayData(const CallContext& ctx) 
     return nullptr;
 }
 
-// ===== Helper: Throw TemporalError as JavaScriptException =====
-
+// NON-STANDARD: Internal helper to convert temporal_rs::TemporalError
+// into the appropriate JavaScript exception type.
 static void throwTemporalError(const temporal_rs::TemporalError& err) {
     std::string msg = "Temporal error";
     if(err.msg.has_value()) {
@@ -73,8 +90,9 @@ static void throwTemporalError(const temporal_rs::TemporalError& err) {
     }
 }
 
-// ===== Helper: Parse a PlainMonthDay from a JS Value =====
-
+// NON-STANDARD: Parses a PlainMonthDay from a JS value.
+// Loosely corresponds to ToTemporalMonthDay (10.5.3).
+// @spec https://tc39.es/proposal-temporal/#sec-temporal-totemporalmonthday
 static std::unique_ptr<temporal_rs::PlainMonthDay> parsePlainMonthDayFromValue(const Value& val) {
     if(val.isObject() || val.isFunction()) {
         auto* data = PlainMonthDayRegistry::get(val.getObject());
@@ -125,8 +143,9 @@ static std::unique_ptr<temporal_rs::PlainMonthDay> parsePlainMonthDayFromValue(c
     return std::move(result).ok().value();
 }
 
-// ===== Helper: Wrap a temporal_rs::PlainMonthDay into a JS object =====
-
+// NON-STANDARD: Wraps a temporal_rs::PlainMonthDay in a JS object with prototype chain.
+// Corresponds to CreateTemporalMonthDay in the spec.
+// @spec https://tc39.es/proposal-temporal/#sec-temporal-createtemporalmonthday
 Value TemporalPlainMonthDay::wrapPlainMonthDay(std::unique_ptr<temporal_rs::PlainMonthDay> md) {
     auto* proto = getGlobalPrototype();
     auto* js_obj = getObjectFactory()->createJSObject(proto);
@@ -137,13 +156,15 @@ Value TemporalPlainMonthDay::wrapPlainMonthDay(std::unique_ptr<temporal_rs::Plai
     return Value(js_obj);
 }
 
-// ===== Setup =====
-
+// 10.2 Properties of the Temporal.PlainMonthDay Constructor
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-constructor
 void TemporalPlainMonthDay::setupStaticMethods(JSObject* constructor,
                                                 rift::memory::ObjectFactory* factory) {
     RIFT_STATIC_METHOD(constructor, "from", TemporalPlainMonthDay::from);
 }
 
+// 10.3 Properties of the Temporal.PlainMonthDay Prototype Object
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-prototype-object
 void TemporalPlainMonthDay::setupPrototypeMethods(JSObject* prototype,
                                                     rift::memory::ObjectFactory* factory) {
     // Getters
@@ -166,8 +187,8 @@ void TemporalPlainMonthDay::setupPrototypeMethods(JSObject* prototype,
     RIFT_METHOD(prototype, "valueOf", TemporalPlainMonthDay::valueOf);
 }
 
-// ===== Constructor =====
-
+// 10.1.1 Temporal.PlainMonthDay ( isoMonth, isoDay [ , calendar [ , referenceISOYear ] ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday
 Value TemporalPlainMonthDay::constructor(const CallContext& ctx, const std::vector<Value>& args) {
     if(args.size() < 2) {
         throw rift::core::JavaScriptException(
@@ -203,8 +224,8 @@ Value TemporalPlainMonthDay::constructor(const CallContext& ctx, const std::vect
     return wrapPlainMonthDay(std::move(result).ok().value());
 }
 
-// ===== Static Methods =====
-
+// 10.2.2 Temporal.PlainMonthDay.from ( item [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.from
 Value TemporalPlainMonthDay::from(const CallContext& ctx, const std::vector<Value>& args) {
     if(args.empty()) {
         throw rift::core::JavaScriptException(
@@ -215,8 +236,8 @@ Value TemporalPlainMonthDay::from(const CallContext& ctx, const std::vector<Valu
     return wrapPlainMonthDay(std::move(md));
 }
 
-// ===== Prototype Getters =====
-
+// 10.3.5 get Temporal.PlainMonthDay.prototype.day
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainmonthday.prototype.day
 Value TemporalPlainMonthDay::day(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainMonthDayData(ctx);
     if(!data) {
@@ -226,6 +247,8 @@ Value TemporalPlainMonthDay::day(const CallContext& ctx, const std::vector<Value
     return Value(static_cast<double>(data->day()));
 }
 
+// 10.3.4 get Temporal.PlainMonthDay.prototype.monthCode
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainmonthday.prototype.monthcode
 Value TemporalPlainMonthDay::monthCode(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainMonthDayData(ctx);
     if(!data) {
@@ -235,6 +258,8 @@ Value TemporalPlainMonthDay::monthCode(const CallContext& ctx, const std::vector
     return Value(data->month_code());
 }
 
+// 10.3.3 get Temporal.PlainMonthDay.prototype.calendarId
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainmonthday.prototype.calendarid
 Value TemporalPlainMonthDay::calendarId(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainMonthDayData(ctx);
     if(!data) {
@@ -244,8 +269,8 @@ Value TemporalPlainMonthDay::calendarId(const CallContext& ctx, const std::vecto
     return Value(std::string(data->calendar().identifier()));
 }
 
-// ===== Mutation =====
-
+// 10.3.6 Temporal.PlainMonthDay.prototype.with ( temporalMonthDayLike [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.with
 Value TemporalPlainMonthDay::with(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainMonthDayData(ctx);
     if(!data) {
@@ -282,8 +307,8 @@ Value TemporalPlainMonthDay::with(const CallContext& ctx, const std::vector<Valu
     return wrapPlainMonthDay(std::move(result).ok().value());
 }
 
-// ===== Comparison =====
-
+// 10.3.7 Temporal.PlainMonthDay.prototype.equals ( other )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.equals
 Value TemporalPlainMonthDay::equals(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainMonthDayData(ctx);
     if(!data) {
@@ -303,8 +328,8 @@ Value TemporalPlainMonthDay::equals(const CallContext& ctx, const std::vector<Va
     return Value(data->equals(*other));
 }
 
-// ===== Conversion =====
-
+// 10.3.8 Temporal.PlainMonthDay.prototype.toPlainDate ( item )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.toplaindate
 Value TemporalPlainMonthDay::toPlainDate(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainMonthDayData(ctx);
     if(!data) {
@@ -336,8 +361,8 @@ Value TemporalPlainMonthDay::toPlainDate(const CallContext& ctx, const std::vect
     return TemporalPlainDate::wrapPlainDate(std::move(result).ok().value());
 }
 
-// ===== String =====
-
+// 10.3.9 Temporal.PlainMonthDay.prototype.toString ( [ options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.tostring
 Value TemporalPlainMonthDay::toString(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainMonthDayData(ctx);
     if(!data) {
@@ -348,16 +373,19 @@ Value TemporalPlainMonthDay::toString(const CallContext& ctx, const std::vector<
     return Value(data->to_ixdtf_string(temporal_rs::DisplayCalendar::Auto));
 }
 
+// 10.3.10 Temporal.PlainMonthDay.prototype.toJSON ()
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.tojson
 Value TemporalPlainMonthDay::toJSON(const CallContext& ctx, const std::vector<Value>& args) {
     return toString(ctx, args);
 }
 
+// 10.3.11 Temporal.PlainMonthDay.prototype.valueOf ()
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.valueof
+// Always throws TypeError — Temporal types are not convertible to primitives.
 Value TemporalPlainMonthDay::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     throw rift::core::JavaScriptException(
         Value("TypeError: Cannot convert a Temporal.PlainMonthDay to a primitive value"));
 }
-
-// ===== Private =====
 
 JSObject* TemporalPlainMonthDay::getGlobalPrototype() {
     return rift::core::BuiltinManager::getPlainMonthDayPrototype();

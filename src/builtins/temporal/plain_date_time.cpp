@@ -20,11 +20,31 @@
 #include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
+// ============================================================================
+// Temporal Proposal -- Temporal.PlainDateTime Objects (Sections 5.1-5.5)
+// @spec https://tc39.es/proposal-temporal/#sec-temporal-plaindatetime-objects
+//
+// Temporal.PlainDateTime represents a calendar date and wall-clock time
+// without a time zone. It combines the functionality of PlainDate and
+// PlainTime into a single object.
+//
+// DEVIATION: The spec uses [[ISODateTime]] and [[Calendar]] internal slots.
+// Rift delegates computation to the temporal_rs Rust library via FFI and
+// stores internal data in a static registry (PlainDateTimeRegistry) instead
+// of internal slots. The registry maps JSObject* -> unique_ptr<PlainDateTime>.
+// ============================================================================
+
 namespace rift::builtins {
 
 using rift::core::extractThisObject;
 
-// ===== PlainDateTimeRegistry =====
+// ============================================================================
+// PlainDateTimeRegistry
+// NON-STANDARD: Static registry for PlainDateTime internal data.
+// The spec stores data in [[ISODateTime]] and [[Calendar]] internal slots.
+// Rift uses a global unordered_map<JSObject*, unique_ptr<PlainDateTime>>
+// as a substitute for internal slots.
+// ============================================================================
 
 std::unordered_map<JSObject*, std::unique_ptr<temporal_rs::PlainDateTime>>
     PlainDateTimeRegistry::registry_;
@@ -50,8 +70,8 @@ void PlainDateTimeRegistry::clear() {
     registry_.clear();
 }
 
-// ===== Helper: Get PlainDateTime data from this =====
-
+// NON-STANDARD: Internal helper to extract PlainDateTime data from the
+// receiver (this value) by looking up the JSObject in the registry.
 static temporal_rs::PlainDateTime* getPlainDateTimeData(const CallContext& ctx) {
     auto* obj = extractThisObject(ctx);
     if(obj) {
@@ -60,8 +80,9 @@ static temporal_rs::PlainDateTime* getPlainDateTimeData(const CallContext& ctx) 
     return nullptr;
 }
 
-// ===== Helper: Throw TemporalError as JavaScriptException =====
-
+// NON-STANDARD: Internal helper to convert temporal_rs::TemporalError
+// into the appropriate JavaScript exception type (TypeError, RangeError,
+// or SyntaxError) based on the error kind.
 static void throwTemporalError(const temporal_rs::TemporalError& err) {
     std::string msg = "Temporal error";
     if(err.msg.has_value()) {
@@ -80,16 +101,30 @@ static void throwTemporalError(const temporal_rs::TemporalError& err) {
     }
 }
 
-// ===== Helper: Parse a PlainDateTime from a JS Value =====
-
+// ----------------------------------------------------------------------------
+// NON-STANDARD: Internal helper to parse a PlainDateTime from a JS Value.
+// Handles three cases:
+//   1. Value is already a Temporal.PlainDateTime object (clone it)
+//   2. Value is a property bag object (extract date/time fields)
+//   3. Value is a string (parse as ISO 8601)
+//
+// This implements parts of:
+//   5.5.3 ToTemporalDateTime ( item [ , options ] )
+//   @spec https://tc39.es/proposal-temporal/#sec-temporal-totemporaldatetime
+//
+// SIMPLIFIED: Option bag parsing (overflow, calendar) is not fully handled.
+// SIMPLIFIED: Calendar reconciliation between input and property bag is
+// not implemented — defaults to ISO calendar.
+// ----------------------------------------------------------------------------
 static std::unique_ptr<temporal_rs::PlainDateTime> parsePlainDateTimeFromValue(const Value& val) {
     if(val.isObject() || val.isFunction()) {
+        // Step: If item has [[ISODateTime]] internal slot, return a copy.
         auto* data = PlainDateTimeRegistry::get(val.getObject());
         if(data) {
             return data->clone();
         }
 
-        // Property bag
+        // Step: Otherwise, treat as a property bag.
         auto* obj = val.getObject();
         temporal_rs::PartialDate partial_date{};
         temporal_rs::PartialTime partial_time{};
@@ -144,7 +179,7 @@ static std::unique_ptr<temporal_rs::PlainDateTime> parsePlainDateTimeFromValue(c
         return std::move(result).ok().value();
     }
 
-    // String
+    // Step: If item is a string, parse it.
     std::string str = val.toString();
     auto result = temporal_rs::PlainDateTime::from_utf8(str);
     if(!result.is_ok()) {
@@ -153,8 +188,17 @@ static std::unique_ptr<temporal_rs::PlainDateTime> parsePlainDateTimeFromValue(c
     return std::move(result).ok().value();
 }
 
-// ===== Helper: Parse a Duration for PlainDateTime arithmetic =====
-
+// ----------------------------------------------------------------------------
+// NON-STANDARD: Internal helper to parse a Duration from a JS Value for
+// PlainDateTime arithmetic (add/subtract). Handles Duration objects,
+// property bags, and ISO 8601 duration strings.
+//
+// Implements parts of:
+//   7.5.15 ToTemporalDuration ( item )
+//   @spec https://tc39.es/proposal-temporal/#sec-temporal-totemporalduration
+//
+// SIMPLIFIED: Does not perform full ToTemporalDuration validation steps.
+// ----------------------------------------------------------------------------
 static std::unique_ptr<temporal_rs::Duration> parseDurationForDateTime(const Value& val) {
     if(val.isObject() || val.isFunction()) {
         auto* data = DurationRegistry::get(val.getObject());
@@ -204,8 +248,8 @@ static std::unique_ptr<temporal_rs::Duration> parseDurationForDateTime(const Val
     return std::move(result).ok().value();
 }
 
-// ===== Helper: Wrap a temporal_rs::PlainDateTime into a JS object =====
-
+// NON-STANDARD: Internal helper to wrap a temporal_rs::PlainDateTime into
+// a JS object with the PlainDateTime prototype and register it.
 Value TemporalPlainDateTime::wrapPlainDateTime(std::unique_ptr<temporal_rs::PlainDateTime> dt) {
     auto* proto = getGlobalPrototype();
     auto* js_obj = getObjectFactory()->createJSObject(proto);
@@ -216,17 +260,29 @@ Value TemporalPlainDateTime::wrapPlainDateTime(std::unique_ptr<temporal_rs::Plai
     return Value(js_obj);
 }
 
-// ===== Setup =====
+// ============================================================================
+// Setup Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 5.2 Properties of the Temporal.PlainDateTime Constructor
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-constructor
+// ----------------------------------------------------------------------------
 void TemporalPlainDateTime::setupStaticMethods(JSObject* constructor,
                                                 rift::memory::ObjectFactory* factory) {
+    // 5.2.2 Temporal.PlainDateTime.from ( item [ , options ] )
     RIFT_STATIC_METHOD(constructor, "from", TemporalPlainDateTime::from);
+    // 5.2.3 Temporal.PlainDateTime.compare ( one, two )
     RIFT_STATIC_METHOD(constructor, "compare", TemporalPlainDateTime::compare);
 }
 
+// ----------------------------------------------------------------------------
+// 5.3 Properties of the Temporal.PlainDateTime Prototype Object
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-prototype-object
+// ----------------------------------------------------------------------------
 void TemporalPlainDateTime::setupPrototypeMethods(JSObject* prototype,
                                                     rift::memory::ObjectFactory* factory) {
-    // Date getters
+    // 5.3.3-5.3.14 Date getters
     RIFT_GETTER(prototype, "year", TemporalPlainDateTime::year);
     RIFT_GETTER(prototype, "month", TemporalPlainDateTime::month);
     RIFT_GETTER(prototype, "monthCode", TemporalPlainDateTime::monthCode);
@@ -240,7 +296,7 @@ void TemporalPlainDateTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "inLeapYear", TemporalPlainDateTime::inLeapYear);
     RIFT_GETTER(prototype, "calendarId", TemporalPlainDateTime::calendarId);
 
-    // Time getters
+    // 5.3.15-5.3.20 Time getters
     RIFT_GETTER(prototype, "hour", TemporalPlainDateTime::hour);
     RIFT_GETTER(prototype, "minute", TemporalPlainDateTime::minute);
     RIFT_GETTER(prototype, "second", TemporalPlainDateTime::second);
@@ -248,39 +304,61 @@ void TemporalPlainDateTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "microsecond", TemporalPlainDateTime::microsecond);
     RIFT_GETTER(prototype, "nanosecond", TemporalPlainDateTime::nanosecond);
 
-    // Mutation
+    // 5.3.21 Temporal.PlainDateTime.prototype.with ( temporalDateTimeLike [ , options ] )
     RIFT_METHOD(prototype, "with", TemporalPlainDateTime::with);
+    // 5.3.23 Temporal.PlainDateTime.prototype.withPlainTime ( [ plainTimeLike ] )
     RIFT_METHOD(prototype, "withTime", TemporalPlainDateTime::withTime);
 
-    // Arithmetic
+    // 5.3.24 Temporal.PlainDateTime.prototype.add ( temporalDurationLike [ , options ] )
     RIFT_METHOD(prototype, "add", TemporalPlainDateTime::add);
+    // 5.3.25 Temporal.PlainDateTime.prototype.subtract ( temporalDurationLike [ , options ] )
     RIFT_METHOD(prototype, "subtract", TemporalPlainDateTime::subtract);
 
-    // Difference
+    // 5.3.26 Temporal.PlainDateTime.prototype.until ( other [ , options ] )
     RIFT_METHOD(prototype, "until", TemporalPlainDateTime::until);
+    // 5.3.27 Temporal.PlainDateTime.prototype.since ( other [ , options ] )
     RIFT_METHOD(prototype, "since", TemporalPlainDateTime::since);
 
-    // Comparison
+    // 5.3.29 Temporal.PlainDateTime.prototype.equals ( other )
     RIFT_METHOD(prototype, "equals", TemporalPlainDateTime::equals);
 
-    // Conversion
+    // 5.3.31 Temporal.PlainDateTime.prototype.toPlainDate ( )
     RIFT_METHOD(prototype, "toPlainDate", TemporalPlainDateTime::toPlainDate);
+    // 5.3.32 Temporal.PlainDateTime.prototype.toPlainTime ( )
     RIFT_METHOD(prototype, "toPlainTime", TemporalPlainDateTime::toPlainTime);
 
-    // String
+    // 5.3.30 Temporal.PlainDateTime.prototype.toString ( [ options ] )
     RIFT_METHOD(prototype, "toString", TemporalPlainDateTime::toString);
+    // 5.3.33 Temporal.PlainDateTime.prototype.toJSON ( )
     RIFT_METHOD(prototype, "toJSON", TemporalPlainDateTime::toJSON);
+    // 5.3.34 Temporal.PlainDateTime.prototype.valueOf ( )
     RIFT_METHOD(prototype, "valueOf", TemporalPlainDateTime::valueOf);
 }
 
-// ===== Constructor =====
+// ============================================================================
+// Constructor
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 5.1.1 Temporal.PlainDateTime ( isoYear, isoMonth, isoDay
+//          [ , hour [ , minute [ , second [ , millisecond
+//          [ , microsecond [ , nanosecond [ , calendar ] ] ] ] ] ] ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime
+//
+// INCOMPLETE: Step 1 (NewTarget check) not enforced — Rift does not yet
+// distinguish [[Construct]] from [[Call]] for built-in constructors.
+// SIMPLIFIED: Calendar argument is accepted as a string only, not as a
+// calendar object.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::constructor(const CallContext& ctx, const std::vector<Value>& args) {
+    // Step 1: If NewTarget is undefined, throw a TypeError. (INCOMPLETE)
+    // Step 2: If isoYear, isoMonth, or isoDay is not provided, throw a TypeError.
     if(args.size() < 3) {
         throw rift::core::JavaScriptException(Value(
             "TypeError: Temporal.PlainDateTime requires at least year, month, and day"));
     }
 
+    // Steps 3-11: Convert arguments to integer values, defaulting optional ones to 0.
     int32_t year_val = static_cast<int32_t>(args[0].toNumber());
     uint8_t month_val = static_cast<uint8_t>(args[1].toNumber());
     uint8_t day_val = static_cast<uint8_t>(args[2].toNumber());
@@ -291,6 +369,8 @@ Value TemporalPlainDateTime::constructor(const CallContext& ctx, const std::vect
     uint16_t us_val = args.size() > 7 ? static_cast<uint16_t>(args[7].toNumber()) : 0;
     uint16_t ns_val = args.size() > 8 ? static_cast<uint16_t>(args[8].toNumber()) : 0;
 
+    // Step 12: If calendar is not undefined, set calendar to
+    // ? ToTemporalCalendarIdentifier(calendar).
     temporal_rs::AnyCalendarKind calendar = temporal_rs::AnyCalendarKind::Iso;
     if(args.size() > 9 && args[9].isString()) {
         auto cal = temporal_rs::AnyCalendarKind::get_for_str(args[9].getString());
@@ -302,6 +382,10 @@ Value TemporalPlainDateTime::constructor(const CallContext& ctx, const std::vect
         }
     }
 
+    // Step 13: Return ? CreateTemporalDateTime(isoYear, isoMonth, isoDay,
+    //          hour, minute, second, millisecond, microsecond, nanosecond,
+    //          calendar, NewTarget).
+    // DEVIATION: Delegates to temporal_rs::PlainDateTime::try_new via FFI.
     auto result = temporal_rs::PlainDateTime::try_new(year_val, month_val, day_val,
                                                        hour_val, minute_val, second_val,
                                                        ms_val, us_val, ns_val, calendar);
@@ -312,8 +396,18 @@ Value TemporalPlainDateTime::constructor(const CallContext& ctx, const std::vect
     return wrapPlainDateTime(std::move(result).ok().value());
 }
 
-// ===== Static Methods =====
+// ============================================================================
+// Static Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 5.2.2 Temporal.PlainDateTime.from ( item [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.from
+//
+// SIMPLIFIED: The options argument (overflow handling) is not parsed.
+// Delegates to parsePlainDateTimeFromValue which implements
+// ToTemporalDateTime (5.5.3).
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::from(const CallContext& ctx, const std::vector<Value>& args) {
     if(args.empty()) {
         throw rift::core::JavaScriptException(
@@ -324,21 +418,52 @@ Value TemporalPlainDateTime::from(const CallContext& ctx, const std::vector<Valu
     return wrapPlainDateTime(std::move(dt));
 }
 
+// ----------------------------------------------------------------------------
+// 5.2.3 Temporal.PlainDateTime.compare ( one, two )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.compare
+//
+// Returns -1, 0, or 1 by comparing the ISO date-time fields of the
+// two PlainDateTime arguments.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::compare(const CallContext& ctx, const std::vector<Value>& args) {
     if(args.size() < 2) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Temporal.PlainDateTime.compare requires two arguments"));
     }
 
+    // Step 1: Set one to ? ToTemporalDateTime(one).
     auto dt_one = parsePlainDateTimeFromValue(args[0]);
+    // Step 2: Set two to ? ToTemporalDateTime(two).
     auto dt_two = parsePlainDateTimeFromValue(args[1]);
 
+    // Step 3: Return CompareISODateTime(one.[[ISODateTime]], two.[[ISODateTime]]).
     int8_t cmp = temporal_rs::PlainDateTime::compare(*dt_one, *dt_two);
     return Value(static_cast<double>(cmp));
 }
 
-// ===== Date Getters =====
+// ============================================================================
+// Prototype Getters -- Date Fields
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-prototype-object
+//
+// Each date getter calls the corresponding calendar operation on the
+// PlainDateTime's [[ISODateTime]] and [[Calendar]] internal slots.
+// DEVIATION: Rift delegates all calendar computation to temporal_rs via FFI
+// rather than implementing the calendar protocol in C++.
+// ============================================================================
 
+// 5.3.3 get Temporal.PlainDateTime.prototype.calendarId
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.calendarid
+Value TemporalPlainDateTime::calendarId(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: calendarId called on non-PlainDateTime"));
+    }
+    return Value(std::string(data->calendar().identifier()));
+}
+
+// 5.3.4 get Temporal.PlainDateTime.prototype.year
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.year
 Value TemporalPlainDateTime::year(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -348,6 +473,8 @@ Value TemporalPlainDateTime::year(const CallContext& ctx, const std::vector<Valu
     return Value(static_cast<double>(data->year()));
 }
 
+// 5.3.5 get Temporal.PlainDateTime.prototype.month
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.month
 Value TemporalPlainDateTime::month(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -357,6 +484,8 @@ Value TemporalPlainDateTime::month(const CallContext& ctx, const std::vector<Val
     return Value(static_cast<double>(data->month()));
 }
 
+// 5.3.6 get Temporal.PlainDateTime.prototype.monthCode
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.monthcode
 Value TemporalPlainDateTime::monthCode(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -366,6 +495,8 @@ Value TemporalPlainDateTime::monthCode(const CallContext& ctx, const std::vector
     return Value(data->month_code());
 }
 
+// 5.3.7 get Temporal.PlainDateTime.prototype.day
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.day
 Value TemporalPlainDateTime::day(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -375,6 +506,8 @@ Value TemporalPlainDateTime::day(const CallContext& ctx, const std::vector<Value
     return Value(static_cast<double>(data->day()));
 }
 
+// 5.3.8 get Temporal.PlainDateTime.prototype.dayOfWeek
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.dayofweek
 Value TemporalPlainDateTime::dayOfWeek(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -384,6 +517,8 @@ Value TemporalPlainDateTime::dayOfWeek(const CallContext& ctx, const std::vector
     return Value(static_cast<double>(data->day_of_week()));
 }
 
+// 5.3.9 get Temporal.PlainDateTime.prototype.dayOfYear
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.dayofyear
 Value TemporalPlainDateTime::dayOfYear(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -393,6 +528,8 @@ Value TemporalPlainDateTime::dayOfYear(const CallContext& ctx, const std::vector
     return Value(static_cast<double>(data->day_of_year()));
 }
 
+// 5.3.10 get Temporal.PlainDateTime.prototype.weekOfYear
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.weekofyear
 Value TemporalPlainDateTime::weekOfYear(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -406,6 +543,8 @@ Value TemporalPlainDateTime::weekOfYear(const CallContext& ctx, const std::vecto
     return Value::undefined();
 }
 
+// 5.3.12 get Temporal.PlainDateTime.prototype.daysInMonth
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.daysinmonth
 Value TemporalPlainDateTime::daysInMonth(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -415,6 +554,8 @@ Value TemporalPlainDateTime::daysInMonth(const CallContext& ctx, const std::vect
     return Value(static_cast<double>(data->days_in_month()));
 }
 
+// 5.3.13 get Temporal.PlainDateTime.prototype.daysInYear
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.daysinyear
 Value TemporalPlainDateTime::daysInYear(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -424,6 +565,8 @@ Value TemporalPlainDateTime::daysInYear(const CallContext& ctx, const std::vecto
     return Value(static_cast<double>(data->days_in_year()));
 }
 
+// 5.3.14 get Temporal.PlainDateTime.prototype.monthsInYear
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.monthsinyear
 Value TemporalPlainDateTime::monthsInYear(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -433,6 +576,8 @@ Value TemporalPlainDateTime::monthsInYear(const CallContext& ctx, const std::vec
     return Value(static_cast<double>(data->months_in_year()));
 }
 
+// 5.3.15 get Temporal.PlainDateTime.prototype.inLeapYear
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.inleapyear
 Value TemporalPlainDateTime::inLeapYear(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -442,17 +587,16 @@ Value TemporalPlainDateTime::inLeapYear(const CallContext& ctx, const std::vecto
     return Value(data->in_leap_year());
 }
 
-Value TemporalPlainDateTime::calendarId(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* data = getPlainDateTimeData(ctx);
-    if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: calendarId called on non-PlainDateTime"));
-    }
-    return Value(std::string(data->calendar().identifier()));
-}
+// ============================================================================
+// Prototype Getters -- Time Fields
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-prototype-object
+//
+// Each time getter returns the corresponding component from the
+// PlainDateTime's [[ISODateTime]] internal slot.
+// ============================================================================
 
-// ===== Time Getters =====
-
+// 5.3.16 get Temporal.PlainDateTime.prototype.hour
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.hour
 Value TemporalPlainDateTime::hour(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -462,6 +606,8 @@ Value TemporalPlainDateTime::hour(const CallContext& ctx, const std::vector<Valu
     return Value(static_cast<double>(data->hour()));
 }
 
+// 5.3.17 get Temporal.PlainDateTime.prototype.minute
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.minute
 Value TemporalPlainDateTime::minute(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -471,6 +617,8 @@ Value TemporalPlainDateTime::minute(const CallContext& ctx, const std::vector<Va
     return Value(static_cast<double>(data->minute()));
 }
 
+// 5.3.18 get Temporal.PlainDateTime.prototype.second
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.second
 Value TemporalPlainDateTime::second(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -480,6 +628,8 @@ Value TemporalPlainDateTime::second(const CallContext& ctx, const std::vector<Va
     return Value(static_cast<double>(data->second()));
 }
 
+// 5.3.19 get Temporal.PlainDateTime.prototype.millisecond
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.millisecond
 Value TemporalPlainDateTime::millisecond(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -489,6 +639,8 @@ Value TemporalPlainDateTime::millisecond(const CallContext& ctx, const std::vect
     return Value(static_cast<double>(data->millisecond()));
 }
 
+// 5.3.20 get Temporal.PlainDateTime.prototype.microsecond
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.microsecond
 Value TemporalPlainDateTime::microsecond(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -498,6 +650,8 @@ Value TemporalPlainDateTime::microsecond(const CallContext& ctx, const std::vect
     return Value(static_cast<double>(data->microsecond()));
 }
 
+// 5.3.21 get Temporal.PlainDateTime.prototype.nanosecond
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.nanosecond
 Value TemporalPlainDateTime::nanosecond(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -507,8 +661,22 @@ Value TemporalPlainDateTime::nanosecond(const CallContext& ctx, const std::vecto
     return Value(static_cast<double>(data->nanosecond()));
 }
 
-// ===== Mutation =====
+// ============================================================================
+// Mutation Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 5.3.22 Temporal.PlainDateTime.prototype.with ( temporalDateTimeLike [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.with
+//
+// Returns a new PlainDateTime with the fields from temporalDateTimeLike
+// merged into this PlainDateTime.
+//
+// SIMPLIFIED: The options argument (overflow handling) is not parsed.
+// SIMPLIFIED: The spec performs PrepareCalendarFields and
+// CalendarMergeFields steps; Rift extracts fields directly from the
+// property bag and delegates merging to temporal_rs.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::with(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -569,6 +737,17 @@ Value TemporalPlainDateTime::with(const CallContext& ctx, const std::vector<Valu
     return wrapPlainDateTime(std::move(result).ok().value());
 }
 
+// ----------------------------------------------------------------------------
+// 5.3.23 Temporal.PlainDateTime.prototype.withPlainTime ( [ plainTimeLike ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.withplaintime
+//
+// Returns a new PlainDateTime with the time portion replaced. If no
+// argument is provided, the time is set to midnight (00:00:00).
+// DEVIATION: Rift names this method "withTime" instead of "withPlainTime"
+// in the C++ implementation, but it is registered as "withPlainTime" on
+// the prototype... actually registered as "withTime" — this may be a
+// naming mismatch vs the spec.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::withTime(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -599,8 +778,17 @@ Value TemporalPlainDateTime::withTime(const CallContext& ctx, const std::vector<
     return wrapPlainDateTime(std::move(result).ok().value());
 }
 
-// ===== Arithmetic =====
+// ============================================================================
+// Arithmetic Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 5.3.24 Temporal.PlainDateTime.prototype.add ( temporalDurationLike [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.add
+//
+// SIMPLIFIED: The options argument (overflow handling) is not parsed —
+// defaults to "constrain" via temporal_rs.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::add(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -613,7 +801,9 @@ Value TemporalPlainDateTime::add(const CallContext& ctx, const std::vector<Value
             Value("TypeError: Temporal.PlainDateTime.prototype.add requires an argument"));
     }
 
+    // Step 1: Let duration be ? ToTemporalDuration(temporalDurationLike).
     auto dur = parseDurationForDateTime(args[0]);
+    // Step 2-3: Perform AddDateTime and return the result.
     auto result = data->add(*dur, std::nullopt);
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
@@ -622,6 +812,12 @@ Value TemporalPlainDateTime::add(const CallContext& ctx, const std::vector<Value
     return wrapPlainDateTime(std::move(result).ok().value());
 }
 
+// ----------------------------------------------------------------------------
+// 5.3.25 Temporal.PlainDateTime.prototype.subtract ( temporalDurationLike [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.subtract
+//
+// SIMPLIFIED: The options argument (overflow handling) is not parsed.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::subtract(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -634,7 +830,9 @@ Value TemporalPlainDateTime::subtract(const CallContext& ctx, const std::vector<
             Value("TypeError: Temporal.PlainDateTime.prototype.subtract requires an argument"));
     }
 
+    // Step 1: Let duration be ? ToTemporalDuration(temporalDurationLike).
     auto dur = parseDurationForDateTime(args[0]);
+    // Step 2-3: Negate and perform AddDateTime, return the result.
     auto result = data->subtract(*dur, std::nullopt);
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
@@ -643,8 +841,18 @@ Value TemporalPlainDateTime::subtract(const CallContext& ctx, const std::vector<
     return wrapPlainDateTime(std::move(result).ok().value());
 }
 
-// ===== Difference =====
+// ============================================================================
+// Difference Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 5.3.26 Temporal.PlainDateTime.prototype.until ( other [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.until
+//
+// Returns a Duration representing the time from this to other.
+// SIMPLIFIED: The options argument (smallestUnit, largestUnit,
+// roundingIncrement, roundingMode) is not parsed — uses defaults.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::until(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -657,7 +865,9 @@ Value TemporalPlainDateTime::until(const CallContext& ctx, const std::vector<Val
             Value("TypeError: Temporal.PlainDateTime.prototype.until requires an argument"));
     }
 
+    // Step 1: Set other to ? ToTemporalDateTime(other).
     auto other = parsePlainDateTimeFromValue(args[0]);
+    // Step 2-5: Get options and perform DifferenceTemporalPlainDateTime.
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
                                               std::nullopt};
 
@@ -669,6 +879,14 @@ Value TemporalPlainDateTime::until(const CallContext& ctx, const std::vector<Val
     return TemporalDuration::wrapDuration(std::move(result).ok().value());
 }
 
+// ----------------------------------------------------------------------------
+// 5.3.27 Temporal.PlainDateTime.prototype.since ( other [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.since
+//
+// Returns a Duration representing the time from other to this (opposite
+// direction of until).
+// SIMPLIFIED: The options argument is not parsed — uses defaults.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::since(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -681,7 +899,9 @@ Value TemporalPlainDateTime::since(const CallContext& ctx, const std::vector<Val
             Value("TypeError: Temporal.PlainDateTime.prototype.since requires an argument"));
     }
 
+    // Step 1: Set other to ? ToTemporalDateTime(other).
     auto other = parsePlainDateTimeFromValue(args[0]);
+    // Step 2-5: Get options and perform DifferenceTemporalPlainDateTime (negated).
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
                                               std::nullopt};
 
@@ -693,8 +913,16 @@ Value TemporalPlainDateTime::since(const CallContext& ctx, const std::vector<Val
     return TemporalDuration::wrapDuration(std::move(result).ok().value());
 }
 
-// ===== Comparison =====
+// ============================================================================
+// Comparison Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 5.3.29 Temporal.PlainDateTime.prototype.equals ( other )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.equals
+//
+// Returns true if this and other represent the same date-time and calendar.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::equals(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -714,8 +942,16 @@ Value TemporalPlainDateTime::equals(const CallContext& ctx, const std::vector<Va
     return Value(data->equals(*other));
 }
 
-// ===== Conversion =====
+// ============================================================================
+// Conversion Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 5.3.31 Temporal.PlainDateTime.prototype.toPlainDate ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.toplaindate
+//
+// Returns a PlainDate with the same date fields and calendar.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::toPlainDate(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -726,6 +962,12 @@ Value TemporalPlainDateTime::toPlainDate(const CallContext& ctx, const std::vect
     return TemporalPlainDate::wrapPlainDate(data->to_plain_date());
 }
 
+// ----------------------------------------------------------------------------
+// 5.3.32 Temporal.PlainDateTime.prototype.toPlainTime ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.toplaintime
+//
+// Returns a PlainTime with the same time fields.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::toPlainTime(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -736,8 +978,19 @@ Value TemporalPlainDateTime::toPlainTime(const CallContext& ctx, const std::vect
     return TemporalPlainTime::wrapPlainTime(data->to_plain_time());
 }
 
-// ===== String =====
+// ============================================================================
+// String Conversion Methods
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// 5.3.30 Temporal.PlainDateTime.prototype.toString ( [ options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.tostring
+//
+// Returns an ISO 8601 / IXDTF string representation of the PlainDateTime.
+// SIMPLIFIED: The options argument (fractionalSecondDigits, smallestUnit,
+// roundingMode, calendarName) is not parsed — uses auto precision and
+// auto calendar display.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::toString(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
@@ -756,16 +1009,30 @@ Value TemporalPlainDateTime::toString(const CallContext& ctx, const std::vector<
     return Value(std::move(result).ok().value());
 }
 
+// ----------------------------------------------------------------------------
+// 5.3.33 Temporal.PlainDateTime.prototype.toJSON ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.tojson
+//
+// Equivalent to toString with no options.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::toJSON(const CallContext& ctx, const std::vector<Value>& args) {
     return toString(ctx, args);
 }
 
+// ----------------------------------------------------------------------------
+// 5.3.34 Temporal.PlainDateTime.prototype.valueOf ( )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.valueof
+//
+// Always throws TypeError — Temporal types are not comparable with < or >.
+// ----------------------------------------------------------------------------
 Value TemporalPlainDateTime::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     throw rift::core::JavaScriptException(
         Value("TypeError: Cannot convert a Temporal.PlainDateTime to a primitive value"));
 }
 
-// ===== Private =====
+// ============================================================================
+// Private
+// ============================================================================
 
 JSObject* TemporalPlainDateTime::getGlobalPrototype() {
     return rift::core::BuiltinManager::getPlainDateTimePrototype();

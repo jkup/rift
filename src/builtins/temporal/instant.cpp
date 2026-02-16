@@ -10,11 +10,29 @@
 #include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
+// ============================================================================
+// Temporal Proposal -- Temporal.Instant Objects (Section 8)
+// @spec https://tc39.es/proposal-temporal/#sec-temporal-instant-objects
+//
+// Temporal.Instant represents a fixed point in time with nanosecond
+// precision, independent of calendar or time zone.
+//
+// DEVIATION: The spec stores [[EpochNanoseconds]] as a BigInt internal slot.
+// Rift delegates to temporal_rs (Rust FFI) and stores internal data in a
+// static registry (InstantRegistry) mapping JSObject* -> unique_ptr<Instant>.
+// Without BigInt, nanosecond precision is approximated via milliseconds.
+// ============================================================================
+
 namespace rift::builtins {
 
 using rift::core::extractThisObject;
 
-// ===== InstantRegistry =====
+// ============================================================================
+// InstantRegistry
+// NON-STANDARD: Static registry for Instant internal data.
+// The spec stores data in the [[EpochNanoseconds]] internal slot.
+// Rift uses a global unordered_map<JSObject*, unique_ptr<Instant>>.
+// ============================================================================
 
 std::unordered_map<JSObject*, std::unique_ptr<temporal_rs::Instant>> InstantRegistry::registry_;
 
@@ -38,8 +56,8 @@ void InstantRegistry::clear() {
     registry_.clear();
 }
 
-// ===== Helper: Get Instant data from this =====
-
+// NON-STANDARD: Internal helper to extract Instant data from the receiver
+// (this value) by looking up the JSObject in the registry.
 static temporal_rs::Instant* getInstantData(const CallContext& ctx) {
     auto* obj = extractThisObject(ctx);
     if(obj) {
@@ -48,8 +66,8 @@ static temporal_rs::Instant* getInstantData(const CallContext& ctx) {
     return nullptr;
 }
 
-// ===== Helper: Throw TemporalError as JavaScriptException =====
-
+// NON-STANDARD: Internal helper to convert temporal_rs::TemporalError
+// into the appropriate JavaScript exception type.
 static void throwTemporalError(const temporal_rs::TemporalError& err) {
     std::string msg = "Temporal error";
     if(err.msg.has_value()) {
@@ -68,8 +86,9 @@ static void throwTemporalError(const temporal_rs::TemporalError& err) {
     }
 }
 
-// ===== Helper: Wrap a temporal_rs::Instant into a JS object =====
-
+// NON-STANDARD: Wraps a temporal_rs::Instant in a JS object with prototype chain.
+// Corresponds to CreateTemporalInstant in the spec.
+// @spec https://tc39.es/proposal-temporal/#sec-temporal-createtemporalinstant
 Value TemporalInstant::wrapInstant(std::unique_ptr<temporal_rs::Instant> instant) {
     auto* proto = getGlobalPrototype();
     auto* js_obj = getObjectFactory()->createJSObject(proto);
@@ -80,8 +99,10 @@ Value TemporalInstant::wrapInstant(std::unique_ptr<temporal_rs::Instant> instant
     return Value(js_obj);
 }
 
-// ===== Setup =====
-
+// ============================================================================
+// 8.2 Properties of the Temporal.Instant Constructor
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-instant-constructor
+// ============================================================================
 void TemporalInstant::setupStaticMethods(JSObject* constructor,
                                          rift::memory::ObjectFactory* factory) {
     RIFT_STATIC_METHOD(constructor, "from", TemporalInstant::from);
@@ -92,6 +113,8 @@ void TemporalInstant::setupStaticMethods(JSObject* constructor,
     RIFT_STATIC_METHOD(constructor, "compare", TemporalInstant::compare);
 }
 
+// 8.3 Properties of the Temporal.Instant Prototype Object
+// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-instant-prototype-object
 void TemporalInstant::setupPrototypeMethods(JSObject* prototype,
                                             rift::memory::ObjectFactory* factory) {
     RIFT_GETTER(prototype, "epochMilliseconds", TemporalInstant::epochMilliseconds);
@@ -106,8 +129,12 @@ void TemporalInstant::setupPrototypeMethods(JSObject* prototype,
     RIFT_METHOD(prototype, "valueOf", TemporalInstant::valueOf);
 }
 
-// ===== Constructor =====
-
+// ============================================================================
+// 8.1.1 Temporal.Instant ( epochNanoseconds )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant
+// DEVIATION: Accepts a number instead of BigInt. Converts nanoseconds
+// to milliseconds for internal storage.
+// ============================================================================
 Value TemporalInstant::constructor(const CallContext& ctx, const std::vector<Value>& args) {
     // new Temporal.Instant(epochNanoseconds)
     // epochNanoseconds should be a BigInt, but since rift doesn't have BigInt,
@@ -129,8 +156,8 @@ Value TemporalInstant::constructor(const CallContext& ctx, const std::vector<Val
     return wrapInstant(std::move(result).ok().value());
 }
 
-// ===== Static Methods =====
-
+// 8.2.2 Temporal.Instant.from ( item )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.from
 Value TemporalInstant::from(const CallContext& ctx, const std::vector<Value>& args) {
     if(args.empty()) {
         throw rift::core::JavaScriptException(
@@ -156,6 +183,8 @@ Value TemporalInstant::from(const CallContext& ctx, const std::vector<Value>& ar
     return wrapInstant(std::move(result).ok().value());
 }
 
+// 8.2.3 Temporal.Instant.fromEpochMilliseconds ( epochMilliseconds )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.fromepochmilliseconds
 Value TemporalInstant::fromEpochMilliseconds(const CallContext& ctx,
                                              const std::vector<Value>& args) {
     if(args.empty()) {
@@ -173,6 +202,9 @@ Value TemporalInstant::fromEpochMilliseconds(const CallContext& ctx,
     return wrapInstant(std::move(result).ok().value());
 }
 
+// 8.2.4 Temporal.Instant.fromEpochNanoseconds ( epochNanoseconds )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.fromepochnanoseconds
+// DEVIATION: Converts nanoseconds to milliseconds since no BigInt support.
 Value TemporalInstant::fromEpochNanoseconds(const CallContext& ctx,
                                             const std::vector<Value>& args) {
     // Without BigInt, accept a number (limited precision)
@@ -193,6 +225,8 @@ Value TemporalInstant::fromEpochNanoseconds(const CallContext& ctx,
     return wrapInstant(std::move(result).ok().value());
 }
 
+// 8.2.5 Temporal.Instant.compare ( one, two )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.compare
 Value TemporalInstant::compare(const CallContext& ctx, const std::vector<Value>& args) {
     if(args.size() < 2) {
         throw rift::core::JavaScriptException(
@@ -218,8 +252,12 @@ Value TemporalInstant::compare(const CallContext& ctx, const std::vector<Value>&
     return Value(static_cast<double>(cmp));
 }
 
-// ===== Prototype Methods =====
+// ============================================================================
+// Prototype Getters and Methods
+// ============================================================================
 
+// 8.3.3 get Temporal.Instant.prototype.epochMilliseconds
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.instant.prototype.epochmilliseconds
 Value TemporalInstant::epochMilliseconds(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getInstantData(ctx);
     if(!data) {
@@ -230,6 +268,9 @@ Value TemporalInstant::epochMilliseconds(const CallContext& ctx, const std::vect
     return Value(static_cast<double>(data->epoch_milliseconds()));
 }
 
+// 8.3.4 get Temporal.Instant.prototype.epochNanoseconds
+// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.instant.prototype.epochnanoseconds
+// DEVIATION: Returns ms * 1e6 approximation; spec returns a BigInt.
 Value TemporalInstant::epochNanoseconds(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getInstantData(ctx);
     if(!data) {
@@ -242,6 +283,10 @@ Value TemporalInstant::epochNanoseconds(const CallContext& ctx, const std::vecto
     return Value(static_cast<double>(data->epoch_milliseconds()) * 1e6);
 }
 
+// 8.3.5 Temporal.Instant.prototype.add ( temporalDurationLike )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.add
+// SIMPLIFIED: Reads duration properties directly from the argument instead
+// of calling ToTemporalDurationRecord. Only time-based fields supported.
 Value TemporalInstant::add(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getInstantData(ctx);
     if(!data) {
@@ -297,6 +342,9 @@ Value TemporalInstant::add(const CallContext& ctx, const std::vector<Value>& arg
     return wrapInstant(std::move(result).ok().value());
 }
 
+// 8.3.6 Temporal.Instant.prototype.subtract ( temporalDurationLike )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.subtract
+// SIMPLIFIED: Same approach as add — reads properties directly.
 Value TemporalInstant::subtract(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getInstantData(ctx);
     if(!data) {
@@ -351,6 +399,8 @@ Value TemporalInstant::subtract(const CallContext& ctx, const std::vector<Value>
     return wrapInstant(std::move(result).ok().value());
 }
 
+// 8.3.11 Temporal.Instant.prototype.equals ( other )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.equals
 Value TemporalInstant::equals(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getInstantData(ctx);
     if(!data) {
@@ -370,6 +420,9 @@ Value TemporalInstant::equals(const CallContext& ctx, const std::vector<Value>& 
     return Value(data->equals(*other));
 }
 
+// 8.3.10 Temporal.Instant.prototype.since ( other [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.since
+// INCOMPLETE: options parameter not processed.
 Value TemporalInstant::since(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getInstantData(ctx);
     if(!data) {
@@ -398,6 +451,9 @@ Value TemporalInstant::since(const CallContext& ctx, const std::vector<Value>& a
     return TemporalDuration::wrapDuration(std::move(result).ok().value());
 }
 
+// 8.3.9 Temporal.Instant.prototype.until ( other [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.until
+// INCOMPLETE: options parameter not processed.
 Value TemporalInstant::until(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getInstantData(ctx);
     if(!data) {
@@ -426,6 +482,8 @@ Value TemporalInstant::until(const CallContext& ctx, const std::vector<Value>& a
     return TemporalDuration::wrapDuration(std::move(result).ok().value());
 }
 
+// 8.3.12 Temporal.Instant.prototype.toString ( [ options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.tostring
 Value TemporalInstant::toString(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getInstantData(ctx);
     if(!data) {
@@ -449,11 +507,16 @@ Value TemporalInstant::toString(const CallContext& ctx, const std::vector<Value>
     return Value(std::move(result).ok().value());
 }
 
+// 8.3.13 Temporal.Instant.prototype.toJSON ()
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.tojson
 Value TemporalInstant::toJSON(const CallContext& ctx, const std::vector<Value>& args) {
     // toJSON() returns the same as toString()
     return toString(ctx, args);
 }
 
+// 8.3.14 Temporal.Instant.prototype.valueOf ()
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.valueof
+// Always throws TypeError — Temporal types are not convertible to primitives.
 Value TemporalInstant::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     // Per spec, Temporal.Instant.prototype.valueOf always throws TypeError
     throw rift::core::JavaScriptException(
