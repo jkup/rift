@@ -9,25 +9,50 @@
 #include "rift/memory/gc_protector.h"
 #include "rift/runtime/values/object.h"
 
+// ============================================================================
+// ECMA-262 -- WeakMap Objects (24.3)
+// @spec https://tc39.es/ecma262/#sec-weakmap-objects
+//
+// WeakMap is a collection of key/value pairs where keys must be objects
+// (or registered symbols). Keys are held weakly -- if no other references
+// exist, they can be garbage collected. WeakMap is NOT iterable and has
+// no size property.
+//
+// Constructor (24.3.1): WeakMap ( [ iterable ] )
+// Prototype methods (24.3.3): delete, get, has, set
+//
+// See also: weakset/weakset.cpp (24.4), map/map.cpp (24.1)
+// ============================================================================
+
 namespace rift::builtins {
 
 // ============================================================================
 // Setup Methods
 // ============================================================================
 
+// 24.3.2 Properties of the WeakMap Constructor
+// @spec https://tc39.es/ecma262/#sec-properties-of-the-weakmap-constructor
 void WeakMap::setupStaticMethods(JSObject* /*constructor*/,
                                  rift::memory::ObjectFactory* /*factory*/) {
-    // WeakMap has no static methods in ES2024
+    // WeakMap has no static methods in ES2025
 }
 
+// 24.3.3 Properties of the WeakMap Prototype Object
+// @spec https://tc39.es/ecma262/#sec-properties-of-the-weakmap-prototype-object
 void WeakMap::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
+    // 24.3.3.3 WeakMap.prototype.get ( key )
     RIFT_METHOD(prototype, "get", WeakMap::get);
+    // 24.3.3.5 WeakMap.prototype.set ( key, value )
     RIFT_METHOD(prototype, "set", WeakMap::set);
+    // 24.3.3.4 WeakMap.prototype.has ( key )
     RIFT_METHOD(prototype, "has", WeakMap::has);
+    // 24.3.3.2 WeakMap.prototype.delete ( key )
     RIFT_METHOD(prototype, "delete", WeakMap::deleteMethod);
 
     // WeakMap is NOT iterable - no Symbol.iterator, no keys/values/entries/forEach
     // No size property either
+    // INCOMPLETE: 24.3.3.6 WeakMap.prototype [ @@toStringTag ] not yet set.
+    // Should be a string-valued property with value "WeakMap".
 }
 
 // ============================================================================
@@ -36,7 +61,12 @@ void WeakMap::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFac
 
 /**
  * Check if a value is a valid WeakMap key.
- * Per ECMAScript, only objects (including functions) can be WeakMap keys.
+ * Corresponds to the CanBeHeldWeakly abstract operation (7.2.16).
+ * @spec https://tc39.es/ecma262/#sec-canbeheldweakly
+ *
+ * Per spec, an object or a non-registered symbol can be held weakly.
+ * SIMPLIFIED: Rift only accepts objects/functions as weak keys;
+ * registered symbols as weak keys are not yet supported.
  */
 bool WeakMap::isValidWeakKey(const Value& key) {
     return key.getType() == ValueType::Object || key.getType() == ValueType::Function;
@@ -44,6 +74,9 @@ bool WeakMap::isValidWeakKey(const Value& key) {
 
 /**
  * Convert an object pointer to a unique string key for internal lookup.
+ * NON-STANDARD: This is a Rift implementation detail. The spec uses a List
+ * of Records { [[Key]], [[Value]] } searched by identity; Rift uses pointer-
+ * based string keys for O(1) lookup instead of linear scanning.
  */
 std::string WeakMap::objectToWeakKey(JSObject* obj) {
     std::ostringstream oss;
@@ -53,6 +86,10 @@ std::string WeakMap::objectToWeakKey(JSObject* obj) {
 
 /**
  * Create an empty WeakMap object with internal slots initialized.
+ * Sets up the [[WeakMapData]] internal slot required by the spec.
+ * DEVIATION: The spec defines [[WeakMapData]] as a List of Records
+ * { [[Key]], [[Value]] }. Rift stores entries in a JSObject keyed
+ * by pointer-based string identifiers for O(1) lookup.
  */
 JSObject* WeakMap::createWeakMapObject(rift::memory::ObjectFactory* factory) {
     auto* weakMapObj = factory->createJSObject(getGlobalPrototype());
@@ -71,24 +108,31 @@ JSObject* WeakMap::createWeakMapObject(rift::memory::ObjectFactory* factory) {
 // Constructor
 // ============================================================================
 
-/**
- * WeakMap constructor.
- * new WeakMap() - creates empty WeakMap
- * new WeakMap(iterable) - creates WeakMap from iterable of [key, value] pairs
- */
+// 24.3.1.1 WeakMap ( [ iterable ] )
+// @spec https://tc39.es/ecma262/#sec-weakmap-iterable
 Value WeakMap::constructor(const CallContext& ctx, const std::vector<Value>& args) {
     auto* factory = getObjectFactory();
 
-    // Create the WeakMap object
+    // 1. If NewTarget is undefined, throw a TypeError exception.
+    // SIMPLIFIED: Rift does not distinguish NewTarget; always creates a new object.
+
+    // 2. Let map be ? OrdinaryCreateFromConstructor(NewTarget, "%WeakMap.prototype%",
+    //    << [[WeakMapData]] >>).
+    // 3. Set map.[[WeakMapData]] to a new empty List.
     auto* weakMapObj = createWeakMapObject(factory);
     rift::memory::GCProtector protect(weakMapObj, factory->getObjectManager());
 
-    // If no arguments or undefined/null, return empty WeakMap
+    // 4. If iterable is either undefined or null, return map.
     if(args.empty() || args[0].isUndefined() || args[0].isNull()) {
         return Value(weakMapObj);
     }
 
     const Value& iterable = args[0];
+
+    // 5. Let adder be ? Get(map, "set").
+    // 6. If IsCallable(adder) is false, throw a TypeError exception.
+    // SIMPLIFIED: Rift calls the internal set logic directly rather than
+    // looking up the "set" method on the new WeakMap object.
 
     // Get internal storage
     Value entriesVal = weakMapObj->getProperty("[[WeakMapData]]");
@@ -98,7 +142,7 @@ Value WeakMap::constructor(const CallContext& ctx, const std::vector<Value>& arg
 
     auto* entries = entriesVal.getObject();
 
-    // Check if iterable has Symbol.iterator
+    // 7. Let iteratorRecord be ? GetIterator(iterable, sync).
     std::string iteratorKey =
         rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
 
@@ -138,8 +182,9 @@ Value WeakMap::constructor(const CallContext& ctx, const std::vector<Value>& arg
                     Value("TypeError: Iterator next is not a function"));
             }
 
-            // Iterate
+            // 8. Repeat,
             while(true) {
+                // a. Let next be ? IteratorStepValue(iteratorRecord).
                 CallContext nextCtx = ctx;
                 nextCtx.thisValue = iterator;
                 Value result = nextFunc->call(nextCtx, {});
@@ -152,23 +197,30 @@ Value WeakMap::constructor(const CallContext& ctx, const std::vector<Value>& arg
                 auto* resultObj = result.getObject();
                 Value done = resultObj->getProperty("done");
 
+                // b. If next is done, return map.
                 if(done.toBool()) {
                     break;
                 }
 
                 Value pair = resultObj->getProperty("value");
 
-                // Each item must be an array-like with [key, value]
+                // c. Let nextItem be next.
+                // d. If nextItem is not an Object, then
+                //    i. Let error be ThrowCompletion(a newly created TypeError object).
+                //    ii. Return ? IteratorClose(iteratorRecord, error).
                 if(pair.getType() != ValueType::Object) {
                     throw rift::core::JavaScriptException(
                         Value("TypeError: Iterator value is not an object"));
                 }
 
+                // e. Let k be ? Get(nextItem, "0").
+                // f. Let v be ? Get(nextItem, "1").
                 auto* pairObj = pair.getObject();
                 Value key = pairObj->getProperty("0");
                 Value value = pairObj->getProperty("1");
 
-                // Validate key is an object
+                // g. Let status be Completion(Call(adder, map, << k, v >>)).
+                // SIMPLIFIED: Rift validates and inserts directly instead of calling adder.
                 if(!isValidWeakKey(key)) {
                     throw rift::core::JavaScriptException(
                         Value("TypeError: Invalid value used as weak map key"));
@@ -186,7 +238,8 @@ Value WeakMap::constructor(const CallContext& ctx, const std::vector<Value>& arg
                 entries->setProperty(keyStr, Value(entry));
             }
         } else {
-            // Try array-like access (fallback for arrays without Symbol.iterator)
+            // DEVIATION: Fallback array-like access for iterables without Symbol.iterator.
+            // The spec requires Symbol.iterator; this is a Rift convenience fallback.
             Value lengthVal = iterableObj->getProperty("length");
             if(lengthVal.getType() == ValueType::Number) {
                 int length = static_cast<int>(lengthVal.toNumber());
@@ -232,12 +285,11 @@ Value WeakMap::constructor(const CallContext& ctx, const std::vector<Value>& arg
 // Instance Methods
 // ============================================================================
 
-/**
- * WeakMap.prototype.get(key)
- * Returns the value associated with key, or undefined if not found.
- * Also performs lazy cleanup of collected keys.
- */
+// 24.3.3.3 WeakMap.prototype.get ( key )
+// @spec https://tc39.es/ecma262/#sec-weakmap.prototype.get
 Value WeakMap::get(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let M be the this value.
+    // 2. Perform ? RequireInternalSlot(M, [[WeakMapData]]).
     if(ctx.thisValue.getType() != ValueType::Object) {
         throw rift::core::JavaScriptException(
             Value("TypeError: WeakMap.prototype.get called on non-object"));
@@ -253,9 +305,16 @@ Value WeakMap::get(const CallContext& ctx, const std::vector<Value>& args) {
 
     Value key = args.empty() ? Value() : args[0];
 
-    // WeakMap keys must be objects
+    // 3. For each Record { [[Key]], [[Value]] } p of M.[[WeakMapData]], do
+    //    a. If p.[[Key]] is not empty and SameValue(p.[[Key]], key) is true,
+    //       return p.[[Value]].
+    // SIMPLIFIED: Rift uses pointer-based O(1) lookup via objectToWeakKey
+    // instead of the spec's linear scan through [[WeakMapData]].
+
+    // Non-object keys can never be in a WeakMap — return undefined.
     if(!isValidWeakKey(key)) {
-        return Value();  // Return undefined for invalid keys (per spec)
+        // 4. Return undefined.
+        return Value();
     }
 
     auto* keyObj = key.getObject();
@@ -265,27 +324,31 @@ Value WeakMap::get(const CallContext& ctx, const std::vector<Value>& args) {
     Value entryVal = entries->getProperty(keyStr);
 
     if(entryVal.isUndefined() || entryVal.getType() != ValueType::Object) {
-        return Value();  // undefined
+        // 4. Return undefined.
+        return Value();
     }
 
     auto* entry = entryVal.getObject();
 
-    // Check if the key object still exists (lazy cleanup)
+    // Check if the key object still exists (lazy cleanup).
+    // DEVIATION: The spec models collected keys as "empty" entries that are
+    // skipped during the step-3 scan. Rift proactively deletes entries when
+    // it detects the key has been garbage collected.
     auto* factory = getObjectFactory();
     if(!factory->getObjectManager()->objectExists(keyObj)) {
-        // Key was garbage collected - remove the entry
         entries->deleteProperty(keyStr);
         return Value();
     }
 
+    // Step 3a: Key found — return p.[[Value]].
     return entry->getProperty("value");
 }
 
-/**
- * WeakMap.prototype.set(key, value)
- * Adds or updates an entry. Returns the WeakMap for chaining.
- */
+// 24.3.3.5 WeakMap.prototype.set ( key, value )
+// @spec https://tc39.es/ecma262/#sec-weakmap.prototype.set
 Value WeakMap::set(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let M be the this value.
+    // 2. Perform ? RequireInternalSlot(M, [[WeakMapData]]).
     if(ctx.thisValue.getType() != ValueType::Object) {
         throw rift::core::JavaScriptException(
             Value("TypeError: WeakMap.prototype.set called on non-object"));
@@ -302,23 +365,30 @@ Value WeakMap::set(const CallContext& ctx, const std::vector<Value>& args) {
     Value key = args.empty() ? Value() : args[0];
     Value value = args.size() > 1 ? args[1] : Value();
 
-    // WeakMap keys must be objects
+    // 3. If CanBeHeldWeakly(key) is false, throw a TypeError exception.
     if(!isValidWeakKey(key)) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Invalid value used as weak map key"));
     }
 
+    // 4. For each Record { [[Key]], [[Value]] } p of M.[[WeakMapData]], do
+    //    a. If p.[[Key]] is not empty and SameValue(p.[[Key]], key) is true, then
+    //       i. Set p.[[Value]] to value.
+    //       ii. Return M.
+    // SIMPLIFIED: Rift uses pointer-based O(1) lookup via objectToWeakKey
+    // instead of the spec's linear scan through [[WeakMapData]].
     auto* entries = entriesVal.getObject();
     auto* keyObj = key.getObject();
     std::string keyStr = objectToWeakKey(keyObj);
 
     Value existingEntry = entries->getProperty(keyStr);
     if(!existingEntry.isUndefined() && existingEntry.getType() == ValueType::Object) {
-        // Update existing entry's value
+        // Step 4a: Key exists — update p.[[Value]] to value.
         auto* entry = existingEntry.getObject();
         entry->setProperty("value", value);
     } else {
-        // Add new entry
+        // 5. Let p be the Record { [[Key]]: key, [[Value]]: value }.
+        // 6. Append p to M.[[WeakMapData]].
         auto* factory = getObjectFactory();
         auto* entry = factory->createJSObject();
         entry->setWeakProperty("key", key);  // Weak reference to key
@@ -327,15 +397,15 @@ Value WeakMap::set(const CallContext& ctx, const std::vector<Value>& args) {
         entries->setProperty(keyStr, Value(entry));
     }
 
-    // Return the WeakMap for chaining
+    // 7. Return M.
     return ctx.thisValue;
 }
 
-/**
- * WeakMap.prototype.has(key)
- * Returns true if key exists in the WeakMap and key object is still alive.
- */
+// 24.3.3.4 WeakMap.prototype.has ( key )
+// @spec https://tc39.es/ecma262/#sec-weakmap.prototype.has
 Value WeakMap::has(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let M be the this value.
+    // 2. Perform ? RequireInternalSlot(M, [[WeakMapData]]).
     if(ctx.thisValue.getType() != ValueType::Object) {
         throw rift::core::JavaScriptException(
             Value("TypeError: WeakMap.prototype.has called on non-object"));
@@ -351,9 +421,16 @@ Value WeakMap::has(const CallContext& ctx, const std::vector<Value>& args) {
 
     Value key = args.empty() ? Value() : args[0];
 
-    // WeakMap keys must be objects
+    // 3. For each Record { [[Key]], [[Value]] } p of M.[[WeakMapData]], do
+    //    a. If p.[[Key]] is not empty and SameValue(p.[[Key]], key) is true,
+    //       return true.
+    // SIMPLIFIED: Rift uses pointer-based O(1) lookup via objectToWeakKey
+    // instead of the spec's linear scan through [[WeakMapData]].
+
+    // Non-object keys can never be in a WeakMap.
     if(!isValidWeakKey(key)) {
-        return Value(false);  // Non-objects are never in WeakMap
+        // 4. Return false.
+        return Value(false);
     }
 
     auto* keyObj = key.getObject();
@@ -363,25 +440,29 @@ Value WeakMap::has(const CallContext& ctx, const std::vector<Value>& args) {
     Value entryVal = entries->getProperty(keyStr);
 
     if(entryVal.isUndefined()) {
+        // 4. Return false.
         return Value(false);
     }
 
-    // Check if the key object still exists (lazy cleanup)
+    // Check if the key object still exists (lazy cleanup).
+    // DEVIATION: The spec models collected keys as "empty" entries that are
+    // skipped during the step-3 scan. Rift proactively deletes entries when
+    // it detects the key has been garbage collected.
     auto* factory = getObjectFactory();
     if(!factory->getObjectManager()->objectExists(keyObj)) {
-        // Key was garbage collected - remove the entry
         entries->deleteProperty(keyStr);
         return Value(false);
     }
 
+    // Step 3a: Key found — return true.
     return Value(true);
 }
 
-/**
- * WeakMap.prototype.delete(key)
- * Removes an entry. Returns true if entry existed, false otherwise.
- */
+// 24.3.3.2 WeakMap.prototype.delete ( key )
+// @spec https://tc39.es/ecma262/#sec-weakmap.prototype.delete
 Value WeakMap::deleteMethod(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let M be the this value.
+    // 2. Perform ? RequireInternalSlot(M, [[WeakMapData]]).
     if(ctx.thisValue.getType() != ValueType::Object) {
         throw rift::core::JavaScriptException(
             Value("TypeError: WeakMap.prototype.delete called on non-object"));
@@ -397,9 +478,18 @@ Value WeakMap::deleteMethod(const CallContext& ctx, const std::vector<Value>& ar
 
     Value key = args.empty() ? Value() : args[0];
 
-    // WeakMap keys must be objects
+    // 3. For each Record { [[Key]], [[Value]] } p of M.[[WeakMapData]], do
+    //    a. If p.[[Key]] is not empty and SameValue(p.[[Key]], key) is true, then
+    //       i. Set p.[[Key]] to empty.
+    //       ii. Set p.[[Value]] to empty.
+    //       iii. Return true.
+    // SIMPLIFIED: Rift uses pointer-based O(1) lookup via objectToWeakKey
+    // instead of the spec's linear scan through [[WeakMapData]].
+
+    // Non-object keys can never be in a WeakMap.
     if(!isValidWeakKey(key)) {
-        return Value(false);  // Non-objects are never in WeakMap
+        // 4. Return false.
+        return Value(false);
     }
 
     auto* keyObj = key.getObject();
@@ -409,10 +499,14 @@ Value WeakMap::deleteMethod(const CallContext& ctx, const std::vector<Value>& ar
     Value entryVal = entries->getProperty(keyStr);
 
     if(entryVal.isUndefined()) {
+        // 4. Return false.
         return Value(false);
     }
 
-    // Remove the entry
+    // Step 3a: Key found — remove the entry and return true.
+    // DEVIATION: The spec sets p.[[Key]] and p.[[Value]] to empty (leaving a
+    // tombstone in the List). Rift deletes the property entirely, which is
+    // functionally equivalent since WeakMap is not iterable.
     entries->deleteProperty(keyStr);
 
     return Value(true);
