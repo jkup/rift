@@ -142,6 +142,8 @@ set(BUILTINS_SOURCES
     src/builtins/error/reference_error.cpp
     src/builtins/error/syntax_error.cpp
     src/builtins/error/range_error.cpp
+    src/builtins/error/eval_error.cpp
+    src/builtins/error/uri_error.cpp
     src/builtins/regexp/regexp.cpp
     src/builtins/symbol/symbol.cpp
     src/builtins/iterator/iterator_prototype.cpp

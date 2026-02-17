@@ -30,6 +30,8 @@ class BuiltinManager {
     static JSObject* getReferenceErrorPrototype();
     static JSObject* getSyntaxErrorPrototype();
     static JSObject* getRangeErrorPrototype();
+    static JSObject* getEvalErrorPrototype();
+    static JSObject* getURIErrorPrototype();
     static JSObject* getRegExpPrototype();
     static JSObject* getIteratorPrototype();
     static JSObject* getSetPrototype();
@@ -66,6 +68,8 @@ class BuiltinManager {
     static JSObject* referenceErrorPrototype_;
     static JSObject* syntaxErrorPrototype_;
     static JSObject* rangeErrorPrototype_;
+    static JSObject* evalErrorPrototype_;
+    static JSObject* uriErrorPrototype_;
     static JSObject* regexpPrototype_;
     static JSObject* iteratorPrototype_;
     static JSObject* setPrototype_;
@@ -112,6 +116,10 @@ class BuiltinManager {
                                  rift::memory::ObjectFactory* factory);
     static void setupRangeError(std::shared_ptr<Environment> globalEnv,
                                 rift::memory::ObjectFactory* factory);
+    static void setupEvalError(std::shared_ptr<Environment> globalEnv,
+                               rift::memory::ObjectFactory* factory);
+    static void setupURIError(std::shared_ptr<Environment> globalEnv,
+                              rift::memory::ObjectFactory* factory);
     static void setupRegExp(std::shared_ptr<Environment> globalEnv,
                             rift::memory::ObjectFactory* factory);
     static void setupSymbol(std::shared_ptr<Environment> globalEnv,
