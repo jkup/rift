@@ -103,6 +103,54 @@ class String : public BuiltinBase<String> {
     /// @spec https://tc39.es/ecma262/#sec-string.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 22.1.3.24 String.prototype.startsWith ( searchString [ , position ] )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.startswith
+    static Value startsWith(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.7 String.prototype.endsWith ( searchString [ , endPosition ] )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.endswith
+    static Value endsWith(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.8 String.prototype.includes ( searchString [ , position ] )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.includes
+    static Value includes(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.18 String.prototype.repeat ( count )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.repeat
+    static Value repeat(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.16 String.prototype.padStart ( maxLength [ , fillString ] )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.padstart
+    static Value padStart(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.15 String.prototype.padEnd ( maxLength [ , fillString ] )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.padend
+    static Value padEnd(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.33 String.prototype.trimStart ( )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.trimstart
+    static Value trimStart(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.34 String.prototype.trimEnd ( )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.trimend
+    static Value trimEnd(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.1 String.prototype.at ( index )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.at
+    static Value at(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.20 String.prototype.replaceAll ( searchValue, replaceValue )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.replaceall
+    static Value replaceAll(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.14 String.prototype.matchAll ( regexp )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.matchall
+    static Value matchAll(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.15 String.prototype.normalize ( [ form ] )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.normalize
+    static Value normalize(const CallContext& ctx, const std::vector<Value>& args);
+
     /// 22.1.3.36 String.prototype [ @@iterator ] ( )
     /// @spec https://tc39.es/ecma262/#sec-string.prototype-%symbol.iterator%
     static Value symbolIterator(const CallContext& ctx, const std::vector<Value>& args);
