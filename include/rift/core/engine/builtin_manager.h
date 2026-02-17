@@ -40,6 +40,7 @@ class BuiltinManager {
     static JSObject* getWeakSetPrototype();
     static JSObject* getPromisePrototype();
     static JSObject* getFunctionPrototype();
+    static JSObject* getDatePrototype();
     static JSObject* getInstantPrototype();
     static JSObject* getDurationPrototype();
     static JSObject* getPlainDatePrototype();
@@ -78,6 +79,7 @@ class BuiltinManager {
     static JSObject* weakSetPrototype_;
     static JSObject* promisePrototype_;
     static JSObject* functionPrototype_;
+    static JSObject* datePrototype_;
     static JSObject* instantPrototype_;
     static JSObject* durationPrototype_;
     static JSObject* plainDatePrototype_;
@@ -138,6 +140,8 @@ class BuiltinManager {
     static void setupIteratorPrototype(rift::memory::ObjectFactory* factory);
     static void setupFunction(std::shared_ptr<Environment> globalEnv,
                               rift::memory::ObjectFactory* factory);
+    static void setupDate(std::shared_ptr<Environment> globalEnv,
+                          rift::memory::ObjectFactory* factory);
     static void setupTemporal(std::shared_ptr<Environment> globalEnv,
                               rift::memory::ObjectFactory* factory);
 };

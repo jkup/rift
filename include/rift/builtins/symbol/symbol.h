@@ -89,6 +89,7 @@ class Symbol : public BuiltinBase<Symbol> {
     static uint64_t getIteratorId();
     static uint64_t getToStringTagId();
     static uint64_t getAsyncIteratorId();
+    static uint64_t getToPrimitiveId();
 
   private:
     static JSObject* getGlobalPrototype();

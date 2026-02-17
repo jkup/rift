@@ -4,6 +4,7 @@
 #include "rift/builtins/array/array_iterator.h"
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/builtins/console/console.h"
+#include "rift/builtins/date/date.h"
 #include "rift/builtins/error/error.h"
 #include "rift/builtins/error/eval_error.h"
 #include "rift/builtins/error/range_error.h"
@@ -70,6 +71,7 @@ JSObject* BuiltinManager::weakMapPrototype_ = nullptr;
 JSObject* BuiltinManager::weakSetPrototype_ = nullptr;
 JSObject* BuiltinManager::promisePrototype_ = nullptr;
 JSObject* BuiltinManager::functionPrototype_ = nullptr;
+JSObject* BuiltinManager::datePrototype_ = nullptr;
 JSObject* BuiltinManager::instantPrototype_ = nullptr;
 JSObject* BuiltinManager::durationPrototype_ = nullptr;
 JSObject* BuiltinManager::plainDatePrototype_ = nullptr;
@@ -105,6 +107,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::WeakMap::setObjectFactory(factory);
         builtins::WeakSet::setObjectFactory(factory);
         builtins::Promise::setObjectFactory(factory);
+        builtins::Date::setObjectFactory(factory);
         builtins::Function::setObjectFactory(factory);
         builtins::TemporalInstant::setObjectFactory(factory);
         builtins::TemporalDuration::setObjectFactory(factory);
@@ -157,6 +160,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupMap(globalEnv, factory);
     setupWeakMap(globalEnv, factory);
     setupWeakSet(globalEnv, factory);
+    setupDate(globalEnv, factory);
     setupPromise(globalEnv, factory, engine);
     setupTemporal(globalEnv, factory);
 
@@ -180,6 +184,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     auto* weakMapConstructor = globalEnv->get("WeakMap").getObject();
     auto* weakSetConstructor = globalEnv->get("WeakSet").getObject();
     auto* promiseConstructor = globalEnv->get("Promise").getObject();
+    auto* dateConstructor = globalEnv->get("Date").getObject();
 
     if(objectConstructor)
         objectPrototype_ = objectConstructor->getProperty("prototype").getObject();
@@ -219,6 +224,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         weakSetPrototype_ = weakSetConstructor->getProperty("prototype").getObject();
     if(promiseConstructor)
         promisePrototype_ = promiseConstructor->getProperty("prototype").getObject();
+    if(dateConstructor)
+        datePrototype_ = dateConstructor->getProperty("prototype").getObject();
 
     // Set up prototype chain: All prototypes -> Object.prototype (except Object itself)
     if(objectPrototype_ && arrayPrototype_) {
@@ -259,6 +266,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     }
     if(objectPrototype_ && functionPrototype_) {
         functionPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && datePrototype_) {
+        datePrototype_->setPrototype(objectPrototype_);
     }
     if(objectPrototype_ && instantPrototype_) {
         instantPrototype_->setPrototype(objectPrototype_);
@@ -394,6 +404,10 @@ JSObject* BuiltinManager::getURIErrorPrototype() {
 
 JSObject* BuiltinManager::getFunctionPrototype() {
     return functionPrototype_;
+}
+
+JSObject* BuiltinManager::getDatePrototype() {
+    return datePrototype_;
 }
 
 JSObject* BuiltinManager::getInstantPrototype() {
@@ -621,6 +635,7 @@ void BuiltinManager::clearStaticPrototypes() {
     weakSetPrototype_ = nullptr;
     promisePrototype_ = nullptr;
     functionPrototype_ = nullptr;
+    datePrototype_ = nullptr;
     instantPrototype_ = nullptr;
     durationPrototype_ = nullptr;
     plainDatePrototype_ = nullptr;
@@ -637,6 +652,12 @@ void BuiltinManager::setupRegExp(std::shared_ptr<Environment> globalEnv,
     // Setup RegExp object using GC-managed creation
     auto* regexp = builtins::RegExp::create(factory);
     globalEnv->define("RegExp", Value(regexp));
+}
+
+void BuiltinManager::setupDate(std::shared_ptr<Environment> globalEnv,
+                               rift::memory::ObjectFactory* factory) {
+    auto* date = builtins::Date::create(factory);
+    globalEnv->define("Date", Value(date));
 }
 
 void BuiltinManager::setupSymbol(std::shared_ptr<Environment> globalEnv,

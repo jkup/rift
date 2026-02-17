@@ -250,7 +250,7 @@ Tests are skipped based on `UNSUPPORTED_FEATURES` in `scripts/test262/core.js`. 
 
 ## Current Known Limitations
 
-**Not yet implemented:** BigInt, Date, Proxy, Reflect, ArrayBuffer/TypedArray, Intl, WeakRef, FinalizationRegistry, private class fields, top-level await, numeric property names in class getters/setters.
+**Not yet implemented:** BigInt, Proxy, Reflect, ArrayBuffer/TypedArray, Intl, WeakRef, FinalizationRegistry, private class fields, top-level await, numeric property names in class getters/setters.
 
 **Parser gaps:** Strict mode SyntaxError enforcement (too permissive), numeric/string literal method names in classes (`get 0b10() {}`), some destructuring edge cases in arrow params.
 

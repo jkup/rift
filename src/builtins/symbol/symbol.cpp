@@ -313,6 +313,15 @@ uint64_t Symbol::getAsyncIteratorId() {
     return async_iterator_id_;
 }
 
+// Internal helper: returns the raw ID for @@toPrimitive.
+// Used by Date.prototype[@@toPrimitive] registration.
+uint64_t Symbol::getToPrimitiveId() {
+    if(to_primitive_id_ == 0) {
+        to_primitive_id_ = generateSymbolId();
+    }
+    return to_primitive_id_;
+}
+
 // ----------------------------------------------------------------------------
 // 20.4.2 Properties of the Symbol Constructor
 // @spec https://tc39.es/ecma262/#sec-properties-of-the-symbol-constructor

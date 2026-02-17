@@ -137,6 +137,7 @@ set(BUILTINS_SOURCES
     src/builtins/object/object.cpp
     src/builtins/boolean/boolean.cpp
     src/builtins/number/number.cpp
+    src/builtins/date/date.cpp
     src/builtins/error/error.cpp
     src/builtins/error/type_error.cpp
     src/builtins/error/reference_error.cpp
