@@ -20,29 +20,29 @@ function test(name, condition) {
 
 var s1 = new Set();
 test("Empty Set creation", s1 !== undefined);
-test("Empty Set size is 0", s1.size() === 0);
+test("Empty Set size is 0", s1.size === 0);
 
 // ============================================================================
 // add() and size
 // ============================================================================
 
 s1.add(1);
-test("After add(1), size is 1", s1.size() === 1);
+test("After add(1), size is 1", s1.size === 1);
 
 s1.add(2);
 s1.add(3);
-test("After add(2), add(3), size is 3", s1.size() === 3);
+test("After add(2), add(3), size is 3", s1.size === 3);
 
 // add() returns the Set for chaining
 var returnVal = s1.add(4);
 test("add() returns the Set", returnVal === s1);
 
 s1.add(5).add(6);
-test("Chained add() works", s1.size() === 6);
+test("Chained add() works", s1.size === 6);
 
 // No duplicates
 s1.add(1);
-test("Adding duplicate does not change size", s1.size() === 6);
+test("Adding duplicate does not change size", s1.size === 6);
 
 // ============================================================================
 // has()
@@ -59,7 +59,7 @@ test("has(99) returns false", s1.has(99) === false);
 var deleted = s1.delete(3);
 test("delete(3) returns true", deleted === true);
 test("After delete(3), has(3) is false", s1.has(3) === false);
-test("After delete(3), size is 5", s1.size() === 5);
+test("After delete(3), size is 5", s1.size === 5);
 
 var deletedAgain = s1.delete(3);
 test("delete(3) again returns false", deletedAgain === false);
@@ -74,7 +74,7 @@ test("delete(99) returns false", deletedNonExistent === false);
 var s2 = new Set();
 s2.add(1).add(2).add(3);
 s2.clear();
-test("After clear(), size is 0", s2.size() === 0);
+test("After clear(), size is 0", s2.size === 0);
 test("After clear(), has(1) is false", s2.has(1) === false);
 
 // ============================================================================
@@ -83,17 +83,17 @@ test("After clear(), has(1) is false", s2.has(1) === false);
 
 var s3 = new Set();
 s3.add(NaN);
-test("NaN can be added to Set", s3.size() === 1);
+test("NaN can be added to Set", s3.size === 1);
 test("has(NaN) returns true", s3.has(NaN) === true);
 
 // Adding NaN again should not create duplicate
 s3.add(NaN);
-test("NaN is not duplicated", s3.size() === 1);
+test("NaN is not duplicated", s3.size === 1);
 
 // +0 and -0 are considered equal
 s3.add(0);
 s3.add(-0);
-test("+0 and -0 are treated as equal", s3.size() === 2); // NaN and 0
+test("+0 and -0 are treated as equal", s3.size === 2); // NaN and 0
 
 // ============================================================================
 // Different value types
@@ -105,7 +105,7 @@ s4.add("1");
 s4.add(true);
 s4.add(null);
 s4.add(undefined);
-test("Different types are distinct", s4.size() === 5);
+test("Different types are distinct", s4.size === 5);
 test("has(1) number", s4.has(1) === true);
 test("has('1') string", s4.has("1") === true);
 test("has(true)", s4.has(true) === true);
@@ -121,7 +121,7 @@ var obj2 = {a: 1};
 var s5 = new Set();
 s5.add(obj1);
 s5.add(obj2);
-test("Different objects are distinct", s5.size() === 2);
+test("Different objects are distinct", s5.size === 2);
 test("has(obj1)", s5.has(obj1) === true);
 test("has(obj2)", s5.has(obj2) === true);
 test("has({a:1}) new object", s5.has({a: 1}) === false);
@@ -193,7 +193,7 @@ test("entries() second value[1]", entry2.value[1] === "y");
 // ============================================================================
 
 var s10 = new Set([1, 2, 3, 2, 1]);
-test("Set from array removes duplicates", s10.size() === 3);
+test("Set from array removes duplicates", s10.size === 3);
 test("Set from array has 1", s10.has(1) === true);
 test("Set from array has 2", s10.has(2) === true);
 test("Set from array has 3", s10.has(3) === true);

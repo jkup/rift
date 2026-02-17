@@ -71,10 +71,8 @@ void Set::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory
     RIFT_METHOD(prototype, "entries", Set::entries);
 
     // 24.2.3.9 get Set.prototype.size
-    // DEVIATION: Registered as a regular method rather than an accessor property.
-    // The spec defines size as a getter (get Set.prototype.size), but Rift
-    // exposes it as a method that acts as a getter.
-    RIFT_METHOD(prototype, "size", Set::sizeGetter);
+    // @spec https://tc39.es/ecma262/#sec-get-set.prototype.size
+    RIFT_GETTER(prototype, "size", Set::sizeGetter);
 
     // 24.2.3.11 Set.prototype [ @@iterator ] ( )
     // @spec https://tc39.es/ecma262/#sec-set.prototype-@@iterator

@@ -75,10 +75,7 @@ void Map::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory
 
     // 24.1.3.10 get Map.prototype.size
     // @spec https://tc39.es/ecma262/#sec-get-map.prototype.size
-    // DEVIATION: Registered as a regular method rather than an accessor property.
-    // The spec defines size as a getter (get Map.prototype.size), but Rift
-    // exposes it as a method that acts as a getter.
-    RIFT_METHOD(prototype, "size", Map::sizeGetter);
+    RIFT_GETTER(prototype, "size", Map::sizeGetter);
 
     // 24.1.3.12 Map.prototype [ @@iterator ] ( )
     // @spec https://tc39.es/ecma262/#sec-map.prototype-@@iterator
@@ -985,9 +982,6 @@ Value Map::entries(const CallContext& ctx, const std::vector<Value>& /*args*/) {
 //      a. If p.[[Key]] is not empty, set count to count + 1.
 //   5. Return count.
 //
-// DEVIATION: Registered as a regular method rather than an accessor property.
-// The spec defines size as a getter (get Map.prototype.size), but Rift
-// exposes it as a method that acts as a getter.
 // SIMPLIFIED: Instead of counting non-empty entries (steps 3-4), Rift reads
 // the pre-computed [[MapSize]] counter, which is maintained by set/delete/clear.
 /**
