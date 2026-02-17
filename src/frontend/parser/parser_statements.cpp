@@ -842,7 +842,31 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
             current++;  // consume '...'
         }
 
+        // BindingElement :: SingleNameBinding | BindingPattern Initializer?
         // SingleNameBinding :: BindingIdentifier Initializer?
+        // BindingPattern :: ObjectBindingPattern | ArrayBindingPattern
+
+        // Destructuring pattern parameter: { ... } or [ ... ]
+        if(current_token().type == TokenType::LeftBrace ||
+           current_token().type == TokenType::LeftBracket) {
+            auto pattern = parse_binding_pattern();
+
+            // BindingRestElement cannot have an Initializer
+            if(is_rest) {
+                auto rest_node = ASTFactory::makeRestElement(pattern);
+                return rest_node;
+            }
+
+            // Initializer :: = AssignmentExpression
+            if(current_token().type == TokenType::Assign) {
+                current++;  // consume '='
+                auto default_value = parse_binary_expression(1);
+                return ASTFactory::makeAssignmentPattern(pattern, default_value);
+            }
+
+            return pattern;
+        }
+
         if(current_token().type != TokenType::Identifier) {
             throw std::runtime_error("Expected parameter name");
         }
@@ -1179,6 +1203,7 @@ std::shared_ptr<ASTNode> Parser::parse_class_body() {
     consume(TokenType::LeftBrace);  // {
 
     auto body = ASTFactory::makeClassBody();
+    bool has_constructor = false;
 
     // ClassElementList — parse ClassElements until '}'
     while(current_token().type != TokenType::RightBrace &&
@@ -1190,6 +1215,21 @@ std::shared_ptr<ASTNode> Parser::parse_class_body() {
         }
 
         auto method = parse_method_definition();
+
+        // 15.7.1 Static Semantics: Early Errors
+        // It is a Syntax Error if PrototypePropertyNameList of ClassElementList
+        // contains more than one occurrence of "constructor".
+        bool is_static_method = (method->metadata.find("static") != std::string::npos);
+        bool is_getter_or_setter = (method->metadata.find("getter") != std::string::npos ||
+                                    method->metadata.find("setter") != std::string::npos);
+        if(!is_static_method && !is_getter_or_setter && method->value == "constructor") {
+            if(has_constructor) {
+                throw std::runtime_error(
+                    "SyntaxError: A class may only have one constructor");
+            }
+            has_constructor = true;
+        }
+
         ASTFactory::addMethodToClassBody(body, method);
     }
 
@@ -1216,9 +1256,8 @@ std::shared_ptr<ASTNode> Parser::parse_class_body() {
 // - Getter/setter accessors (get/set prefix)
 // - Computed property names ([expr])
 //
-// INCOMPLETE: PrivateIdentifier (#name) is not supported. NumericLiteral property
-// names (e.g., get 0() {}) are not supported. AsyncGeneratorMethod (async * name())
-// is not supported as a distinct AST node type.
+// INCOMPLETE: PrivateIdentifier (#name) is not supported. AsyncGeneratorMethod
+// (async * name()) is not supported as a distinct AST node type.
 std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     Token& startToken = current_token();
     bool isStatic = false;
@@ -1287,6 +1326,10 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
         // LiteralPropertyName :: StringLiteral
         methodName = current_token().value;
         current++;  // consume string
+    } else if(current_token().type == TokenType::Number) {
+        // LiteralPropertyName :: NumericLiteral
+        methodName = current_token().value;
+        current++;  // consume number
     } else {
         throw std::runtime_error("Expected method name in class body");
     }
@@ -1295,6 +1338,17 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     consume(TokenType::LeftParen);
     auto parameters = parse_parameter_list();
     consume(TokenType::RightParen);
+
+    // 15.4.1 Static Semantics: Early Errors
+    // Getter must have exactly 0 parameters, setter must have exactly 1 parameter.
+    if(isGetter && !parameters->children.empty()) {
+        throw std::runtime_error(
+            "SyntaxError: Getter must not have any formal parameters");
+    }
+    if(isSetter && parameters->children.size() != 1) {
+        throw std::runtime_error(
+            "SyntaxError: Setter must have exactly one formal parameter");
+    }
 
     // { FunctionBody } — parse with appropriate context flags for yield/await
     bool was_in_generator = in_generator_context_;

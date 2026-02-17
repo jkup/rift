@@ -49,7 +49,8 @@ class ClassBuilder {
                                   bool is_declaration);
 
   private:
-    using ParamInfo = std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>>;
+    using ParamInfo =
+        std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool, std::shared_ptr<ASTNode>>>;
 
     struct ClassifiedMethods {
         std::shared_ptr<ASTNode> constructor_method;

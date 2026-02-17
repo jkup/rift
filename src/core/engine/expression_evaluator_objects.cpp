@@ -29,6 +29,7 @@
 #include "rift/core/engine/evaluation_utils.h"
 #include "rift/core/engine/expression_evaluator.h"
 #include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/statement_evaluator.h"
 #include "rift/frontend/lexer/lexer.h"
 #include "rift/frontend/parser/parser.h"
 #include "rift/memory/gc_disabler.h"
@@ -876,17 +877,26 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
     // FunctionDeclarationInstantiation (10.2.11) at call time.
     // Each parameter can be: Identifier, AssignmentExpression (default), or rest (...name)
     auto param_list = node->children[0];
-    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> param_info;
+    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool, std::shared_ptr<ASTNode>>>
+        param_info;
     for(const auto& param : param_list->children) {
-        if(param->type == ASTNodeType::AssignmentExpression) {
+        if(param->type == ASTNodeType::ObjectPattern ||
+           param->type == ASTNodeType::ArrayPattern) {
+            param_info.emplace_back("", nullptr, false, param);
+        } else if(param->type == ASTNodeType::AssignmentPattern &&
+                  param->children.size() >= 2 &&
+                  (param->children[0]->type == ASTNodeType::ObjectPattern ||
+                   param->children[0]->type == ASTNodeType::ArrayPattern)) {
+            param_info.emplace_back("", param->children[1], false, param->children[0]);
+        } else if(param->type == ASTNodeType::AssignmentExpression) {
             // SingleNameBinding : BindingIdentifier Initializer
-            param_info.emplace_back(param->children[0]->value, param->children[1], false);
+            param_info.emplace_back(param->children[0]->value, param->children[1], false, nullptr);
         } else if(param->metadata == "rest") {
             // BindingRestElement : ... BindingIdentifier
-            param_info.emplace_back(param->value, nullptr, true);
+            param_info.emplace_back(param->value, nullptr, true, nullptr);
         } else {
             // SingleNameBinding : BindingIdentifier (no default)
-            param_info.emplace_back(param->value, nullptr, false);
+            param_info.emplace_back(param->value, nullptr, false, nullptr);
         }
     }
 
@@ -945,7 +955,7 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
             // Bind parameters to arguments — 10.2.11 steps 21-28
             // (IteratorBindingInitialization of FormalParameters)
             for(size_t i = 0; i < param_info.size(); ++i) {
-                const auto& [param_name, default_ast, is_rest] = param_info[i];
+                const auto& [param_name, default_ast, is_rest, pattern] = param_info[i];
 
                 if(is_rest) {
                     // BindingRestElement : ... BindingIdentifier
@@ -957,6 +967,19 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
                     auto* rest_array =
                         builtins::Array::createArrayObject(engine->getObjectFactory(), rest_args);
                     func_env->define(param_name, Value(rest_array));
+                } else if(pattern) {
+                    // Destructuring parameter: apply pattern binding
+                    Value arg_value;
+                    bool use_default = (i >= args.size()) || args[i].isUndefined();
+                    if(use_default && default_ast) {
+                        arg_value = engine->evaluate(default_ast, func_env);
+                    } else if(i < args.size()) {
+                        arg_value = args[i];
+                    } else {
+                        arg_value = Value::undefined();
+                    }
+                    StatementEvaluator::applyPatternBinding(
+                        pattern, arg_value, func_env, engine, VariableType::Var);
                 } else {
                     Value arg_value;
 
@@ -1077,14 +1100,23 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
 
     // Extract ArrowParameters — same format as FormalParameters
     auto param_list = node->children[0];
-    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> param_info;
+    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool, std::shared_ptr<ASTNode>>>
+        param_info;
     for(const auto& param : param_list->children) {
-        if(param->type == ASTNodeType::AssignmentExpression) {
-            param_info.emplace_back(param->children[0]->value, param->children[1], false);
+        if(param->type == ASTNodeType::ObjectPattern ||
+           param->type == ASTNodeType::ArrayPattern) {
+            param_info.emplace_back("", nullptr, false, param);
+        } else if(param->type == ASTNodeType::AssignmentPattern &&
+                  param->children.size() >= 2 &&
+                  (param->children[0]->type == ASTNodeType::ObjectPattern ||
+                   param->children[0]->type == ASTNodeType::ArrayPattern)) {
+            param_info.emplace_back("", param->children[1], false, param->children[0]);
+        } else if(param->type == ASTNodeType::AssignmentExpression) {
+            param_info.emplace_back(param->children[0]->value, param->children[1], false, nullptr);
         } else if(param->metadata == "rest") {
-            param_info.emplace_back(param->value, nullptr, true);
+            param_info.emplace_back(param->value, nullptr, true, nullptr);
         } else {
-            param_info.emplace_back(param->value, nullptr, false);
+            param_info.emplace_back(param->value, nullptr, false, nullptr);
         }
     }
 
@@ -1126,7 +1158,7 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
 
             // Bind parameters — same as FunctionExpression
             for(size_t i = 0; i < param_info.size(); ++i) {
-                const auto& [param_name, default_ast, is_rest] = param_info[i];
+                const auto& [param_name, default_ast, is_rest, pattern] = param_info[i];
 
                 if(is_rest) {
                     std::vector<Value> rest_args;
@@ -1136,6 +1168,18 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
                     auto* rest_array =
                         builtins::Array::createArrayObject(engine->getObjectFactory(), rest_args);
                     func_env->define(param_name, Value(rest_array));
+                } else if(pattern) {
+                    Value arg_value;
+                    bool use_default = (i >= args.size()) || args[i].isUndefined();
+                    if(use_default && default_ast) {
+                        arg_value = engine->evaluate(default_ast, func_env);
+                    } else if(i < args.size()) {
+                        arg_value = args[i];
+                    } else {
+                        arg_value = Value::undefined();
+                    }
+                    StatementEvaluator::applyPatternBinding(
+                        pattern, arg_value, func_env, engine, VariableType::Var);
                 } else {
                     Value arg_value;
 
@@ -1489,17 +1533,28 @@ Value ExpressionEvaluator::evaluateGeneratorFunctionExpression(std::shared_ptr<A
     // Extract FormalParameters
     auto param_list = node->children[0];
     std::vector<std::string> param_names;
-    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> param_info;
+    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool, std::shared_ptr<ASTNode>>>
+        param_info;
 
     for(const auto& param : param_list->children) {
-        if(param->type == ASTNodeType::AssignmentExpression) {
-            param_info.emplace_back(param->children[0]->value, param->children[1], false);
+        if(param->type == ASTNodeType::ObjectPattern ||
+           param->type == ASTNodeType::ArrayPattern) {
+            param_info.emplace_back("", nullptr, false, param);
+            param_names.push_back("");
+        } else if(param->type == ASTNodeType::AssignmentPattern &&
+                  param->children.size() >= 2 &&
+                  (param->children[0]->type == ASTNodeType::ObjectPattern ||
+                   param->children[0]->type == ASTNodeType::ArrayPattern)) {
+            param_info.emplace_back("", param->children[1], false, param->children[0]);
+            param_names.push_back("");
+        } else if(param->type == ASTNodeType::AssignmentExpression) {
+            param_info.emplace_back(param->children[0]->value, param->children[1], false, nullptr);
             param_names.push_back(param->children[0]->value);
         } else if(param->metadata == "rest") {
-            param_info.emplace_back(param->value, nullptr, true);
+            param_info.emplace_back(param->value, nullptr, true, nullptr);
             param_names.push_back(param->value);
         } else {
-            param_info.emplace_back(param->value, nullptr, false);
+            param_info.emplace_back(param->value, nullptr, false, nullptr);
             param_names.push_back(param->value);
         }
     }
@@ -1534,7 +1589,7 @@ Value ExpressionEvaluator::evaluateGeneratorFunctionExpression(std::shared_ptr<A
             auto func_env = std::make_shared<Environment>(env);
 
             for(size_t i = 0; i < param_info.size(); ++i) {
-                const auto& [param_name, default_ast, is_rest] = param_info[i];
+                const auto& [param_name, default_ast, is_rest, pattern] = param_info[i];
 
                 if(is_rest) {
                     std::vector<Value> rest_args;
@@ -1544,6 +1599,20 @@ Value ExpressionEvaluator::evaluateGeneratorFunctionExpression(std::shared_ptr<A
                     auto* rest_array =
                         builtins::Array::createArrayObject(engine->getObjectFactory(), rest_args);
                     processed_args.push_back(Value(rest_array));
+                } else if(pattern) {
+                    // Destructuring parameter — resolve the arg value, then
+                    // the actual binding happens in GeneratorIterator when it
+                    // sets up its environment. Pass the raw arg through.
+                    Value arg_value;
+                    bool use_default = (i >= args.size()) || args[i].isUndefined();
+                    if(use_default && default_ast) {
+                        arg_value = engine->evaluate(default_ast, func_env);
+                    } else if(i < args.size()) {
+                        arg_value = args[i];
+                    } else {
+                        arg_value = Value::undefined();
+                    }
+                    processed_args.push_back(arg_value);
                 } else {
                     Value arg_value;
                     bool use_default = (i >= args.size()) || args[i].isUndefined();
@@ -1652,16 +1721,25 @@ Value ExpressionEvaluator::evaluateAsyncFunctionExpression(std::shared_ptr<ASTNo
 
     // Extract FormalParameters
     auto param_list = node->children[0];
-    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool>> param_info;
+    std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool, std::shared_ptr<ASTNode>>>
+        param_info;
     size_t param_count = 0;
 
     for(const auto& param : param_list->children) {
-        if(param->type == ASTNodeType::AssignmentExpression) {
-            param_info.emplace_back(param->children[0]->value, param->children[1], false);
+        if(param->type == ASTNodeType::ObjectPattern ||
+           param->type == ASTNodeType::ArrayPattern) {
+            param_info.emplace_back("", nullptr, false, param);
+        } else if(param->type == ASTNodeType::AssignmentPattern &&
+                  param->children.size() >= 2 &&
+                  (param->children[0]->type == ASTNodeType::ObjectPattern ||
+                   param->children[0]->type == ASTNodeType::ArrayPattern)) {
+            param_info.emplace_back("", param->children[1], false, param->children[0]);
+        } else if(param->type == ASTNodeType::AssignmentExpression) {
+            param_info.emplace_back(param->children[0]->value, param->children[1], false, nullptr);
         } else if(param->metadata == "rest") {
-            param_info.emplace_back(param->value, nullptr, true);
+            param_info.emplace_back(param->value, nullptr, true, nullptr);
         } else {
-            param_info.emplace_back(param->value, nullptr, false);
+            param_info.emplace_back(param->value, nullptr, false, nullptr);
         }
         param_count++;
     }
@@ -1700,7 +1778,7 @@ Value ExpressionEvaluator::evaluateAsyncFunctionExpression(std::shared_ptr<ASTNo
 
             // Bind parameters (IteratorBindingInitialization)
             for(size_t i = 0; i < param_info.size(); ++i) {
-                const auto& [param_name, default_ast, is_rest] = param_info[i];
+                const auto& [param_name, default_ast, is_rest, pattern] = param_info[i];
 
                 if(is_rest) {
                     std::vector<Value> rest_args;
@@ -1710,6 +1788,18 @@ Value ExpressionEvaluator::evaluateAsyncFunctionExpression(std::shared_ptr<ASTNo
                     auto* rest_array =
                         builtins::Array::createArrayObject(engine->getObjectFactory(), rest_args);
                     func_env->define(param_name, Value(rest_array));
+                } else if(pattern) {
+                    Value arg_value;
+                    bool use_default = (i >= args.size()) || args[i].isUndefined();
+                    if(use_default && default_ast) {
+                        arg_value = engine->evaluate(default_ast, func_env);
+                    } else if(i < args.size()) {
+                        arg_value = args[i];
+                    } else {
+                        arg_value = Value::undefined();
+                    }
+                    StatementEvaluator::applyPatternBinding(
+                        pattern, arg_value, func_env, engine, VariableType::Var);
                 } else {
                     Value arg_value;
                     bool use_default = (i >= args.size()) || args[i].isUndefined();

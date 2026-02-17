@@ -343,6 +343,14 @@ std::shared_ptr<ASTNode> Parser::parse_unary_expression() {
         std::string operator_ = token.value;
         current++;  // consume the operator
         auto operand = parse_postfix_expression();
+        // 13.4.1 Static Semantics: Early Errors
+        // It is an early Syntax Error if IsValidSimpleAssignmentTarget of
+        // UnaryExpression is false.
+        if(operand->type != ASTNodeType::Identifier &&
+           operand->type != ASTNodeType::MemberExpression) {
+            throw std::runtime_error(
+                "SyntaxError: Invalid left-hand side expression in prefix operation");
+        }
         return ASTFactory::makeUpdateExpression(operator_, operand, true);  // prefix = true
     }
 
@@ -587,6 +595,28 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
 
         if(is_assignment) {
             // 13.15.1 Static Semantics: Early Errors
+            // AssignmentExpression : LeftHandSideExpression = AssignmentExpression
+            // It is an early Reference Error if LeftHandSideExpression is neither an
+            // ObjectLiteral, ArrayLiteral (destructuring) nor IsValidSimpleAssignmentTarget.
+            // IsValidSimpleAssignmentTarget returns true only for IdentifierReference
+            // and MemberExpression (non-optional-chaining).
+            if(left->type != ASTNodeType::Identifier &&
+               left->type != ASTNodeType::MemberExpression &&
+               left->type != ASTNodeType::ObjectPattern &&
+               left->type != ASTNodeType::ArrayPattern &&
+               left->type != ASTNodeType::ObjectLiteral &&
+               left->type != ASTNodeType::ArrayLiteral) {
+                throw std::runtime_error(
+                    "SyntaxError: Invalid left-hand side in assignment at line " +
+                    std::to_string(op.line) + ":" + std::to_string(op.column));
+            }
+            // Optional chaining is not a valid assignment target
+            if(left->type == ASTNodeType::MemberExpression &&
+               (left->metadata.find("optional") != std::string::npos)) {
+                throw std::runtime_error(
+                    "SyntaxError: Invalid left-hand side in assignment at line " +
+                    std::to_string(op.line) + ":" + std::to_string(op.column));
+            }
             // In strict mode, assignment to eval or arguments is a SyntaxError
             if(in_strict_mode_ && left->type == ASTNodeType::Identifier) {
                 validateIdentifier(left->value, op.line, op.column);
@@ -691,6 +721,14 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
             // INCOMPLETE: The spec requires [no LineTerminator here] between the
             // operand and ++/--. Rift does not check for an intervening newline,
             // so `x\n++` would be incorrectly parsed as postfix increment.
+            // 13.4.2/13.4.3 Static Semantics: Early Errors
+            // It is an early Syntax Error if IsValidSimpleAssignmentTarget of
+            // LeftHandSideExpression is false.
+            if(expr->type != ASTNodeType::Identifier &&
+               expr->type != ASTNodeType::MemberExpression) {
+                throw std::runtime_error(
+                    "SyntaxError: Invalid left-hand side expression in postfix operation");
+            }
             std::string operator_ = current_token().value;
             current++;  // consume the operator
             expr = ASTFactory::makeUpdateExpression(operator_, expr, false);  // prefix = false
@@ -1170,6 +1208,73 @@ bool Parser::looks_like_arrow_params() {
             }
             current++;  // skip identifier
             // Rest param must be last, so check for ) =>
+            if(current_token().type == TokenType::RightParen) {
+                current++;
+                bool is_arrow = (current_token().type == TokenType::Arrow);
+                current = saved;
+                return is_arrow;
+            }
+            current = saved;
+            return false;
+        }
+
+        // Destructuring pattern parameter: { ... } or [ ... ]
+        if(current_token().type == TokenType::LeftBrace ||
+           current_token().type == TokenType::LeftBracket) {
+            TokenType open_token = current_token().type;
+            TokenType close_token = (open_token == TokenType::LeftBrace) ? TokenType::RightBrace
+                                                                         : TokenType::RightBracket;
+            int depth = 1;
+            current++;  // skip '{' or '['
+            // Skip to matching close bracket/brace
+            while(current < tokens.size() && depth > 0) {
+                if(current_token().type == open_token) {
+                    depth++;
+                } else if(current_token().type == close_token) {
+                    depth--;
+                } else if(current_token().type == TokenType::EndOfFile) {
+                    break;
+                }
+                current++;
+            }
+
+            // Check for default value: pattern = expr
+            if(current_token().type == TokenType::Assign) {
+                current++;  // skip '='
+                paren_depth = 0;
+                int brace_depth = 0;
+                int bracket_depth = 0;
+                while(current < tokens.size()) {
+                    TokenType tok = current_token().type;
+                    if(tok == TokenType::LeftParen) {
+                        paren_depth++;
+                    } else if(tok == TokenType::LeftBrace) {
+                        brace_depth++;
+                    } else if(tok == TokenType::LeftBracket) {
+                        bracket_depth++;
+                    } else if(tok == TokenType::RightParen && paren_depth == 0 &&
+                              brace_depth == 0 && bracket_depth == 0) {
+                        break;
+                    } else if(tok == TokenType::RightParen) {
+                        paren_depth--;
+                    } else if(tok == TokenType::RightBrace) {
+                        brace_depth--;
+                    } else if(tok == TokenType::RightBracket) {
+                        bracket_depth--;
+                    } else if(tok == TokenType::Comma && paren_depth == 0 &&
+                              brace_depth == 0 && bracket_depth == 0) {
+                        break;
+                    } else if(tok == TokenType::EndOfFile) {
+                        break;
+                    }
+                    current++;
+                }
+            }
+
+            if(current_token().type == TokenType::Comma) {
+                current++;
+                continue;
+            }
             if(current_token().type == TokenType::RightParen) {
                 current++;
                 bool is_arrow = (current_token().type == TokenType::Arrow);

@@ -935,15 +935,20 @@ Token Lexer::read_regex() {
     // RegularExpressionFlags :: [empty] | RegularExpressionFlags IdentifierPartChar
     // Valid flags per 22.2.2.1: d (hasIndices), g (global), i (ignoreCase),
     // m (multiline), s (dotAll), u (unicode), v (unicodeSets), y (sticky)
-    // SIMPLIFIED: The spec says RegularExpressionFlags can contain any IdentifierPartChar.
-    // Rift only accepts the known flag characters listed above. Invalid flags would
-    // be caught at runtime by the RegExp constructor anyway.
+    // 12.9.5.1 Static Semantics: Early Errors — duplicate or invalid flags are SyntaxErrors.
     std::string flags;
-    while(current_char() != '\0' &&
-          (current_char() == 'g' || current_char() == 'i' || current_char() == 'm' ||
-           current_char() == 's' || current_char() == 'u' || current_char() == 'd' ||
-           current_char() == 'v' || current_char() == 'y')) {
-        flags += current_char();
+    while(current_char() != '\0' && std::isalpha(static_cast<unsigned char>(current_char()))) {
+        char c = current_char();
+        if(c != 'g' && c != 'i' && c != 'm' && c != 's' && c != 'u' && c != 'd' && c != 'v' &&
+           c != 'y') {
+            throw std::runtime_error(
+                std::string("SyntaxError: Invalid regular expression flag '") + c + "'");
+        }
+        if(flags.find(c) != std::string::npos) {
+            throw std::runtime_error(
+                std::string("SyntaxError: Duplicate regular expression flag '") + c + "'");
+        }
+        flags += c;
         advance();
     }
 
