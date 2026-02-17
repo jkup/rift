@@ -435,4 +435,173 @@ Value Array::sort(const CallContext& ctx, const std::vector<Value>& args) {
     return Value(arrayObj);
 }
 
+// 23.1.3.7 Array.prototype.fill ( value [ , start [ , end ] ] )
+// @spec https://tc39.es/ecma262/#sec-array.prototype.fill
+Value Array::fill(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let O be ? ToObject(this value).
+    auto* arrayObj = extractThisObject(ctx);
+    if(!arrayObj) {
+        return Value::undefined();
+    }
+
+    // 2. Let len be ? LengthOfArrayLike(O).
+    size_t length = getArrayLength(arrayObj);
+
+    // 3. Let value be the first argument (or undefined if not provided).
+    Value value = args.empty() ? Value::undefined() : args[0];
+
+    // 4. Let relativeStart be ? ToIntegerOrInfinity(start).
+    // 5. If relativeStart = -inf, let k be 0.
+    // 6. Else if relativeStart < 0, let k be max(len + relativeStart, 0).
+    // 7. Else, let k be min(relativeStart, len).
+    size_t k = 0;
+    if(args.size() >= 2 && !args[1].isUndefined()) {
+        double start_num = args[1].toNumber();
+        if(std::isnan(start_num)) {
+            k = 0;
+        } else if(start_num < 0) {
+            double resolved = static_cast<double>(length) + start_num;
+            k = resolved < 0 ? 0 : static_cast<size_t>(resolved);
+        } else {
+            k = static_cast<size_t>(std::min(start_num, static_cast<double>(length)));
+        }
+    }
+
+    // 8. If end is undefined, let relativeEnd be len; else let relativeEnd be
+    //    ? ToIntegerOrInfinity(end).
+    // 9. If relativeEnd = -inf, let final be 0.
+    // 10. Else if relativeEnd < 0, let final be max(len + relativeEnd, 0).
+    // 11. Else, let final be min(relativeEnd, len).
+    size_t final_idx = length;
+    if(args.size() >= 3 && !args[2].isUndefined()) {
+        double end_num = args[2].toNumber();
+        if(std::isnan(end_num)) {
+            final_idx = 0;
+        } else if(end_num < 0) {
+            double resolved = static_cast<double>(length) + end_num;
+            final_idx = resolved < 0 ? 0 : static_cast<size_t>(resolved);
+        } else {
+            final_idx = static_cast<size_t>(std::min(end_num, static_cast<double>(length)));
+        }
+    }
+
+    // 12. Repeat, while k < final,
+    while(k < final_idx) {
+        //   a. Let Pk be ! ToString(𝔽(k)).
+        //   b. Perform ? Set(O, Pk, value, true).
+        arrayObj->setProperty(std::to_string(k), value);
+        //   c. Set k to k + 1.
+        k++;
+    }
+
+    // 13. Return O.
+    return Value(arrayObj);
+}
+
+// 23.1.3.4 Array.prototype.copyWithin ( target, start [ , end ] )
+// @spec https://tc39.es/ecma262/#sec-array.prototype.copywithin
+Value Array::copyWithin(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let O be ? ToObject(this value).
+    auto* arrayObj = extractThisObject(ctx);
+    if(!arrayObj) {
+        return Value::undefined();
+    }
+
+    // 2. Let len be ? LengthOfArrayLike(O).
+    size_t length = getArrayLength(arrayObj);
+
+    // 3. Let relativeTarget be ? ToIntegerOrInfinity(target).
+    // 4-6. Resolve to based on sign.
+    double target_num = args.empty() ? 0.0 : args[0].toNumber();
+    size_t to;
+    if(std::isnan(target_num)) {
+        to = 0;
+    } else if(target_num < 0) {
+        double resolved = static_cast<double>(length) + target_num;
+        to = resolved < 0 ? 0 : static_cast<size_t>(resolved);
+    } else {
+        to = static_cast<size_t>(std::min(target_num, static_cast<double>(length)));
+    }
+
+    // 7. Let relativeStart be ? ToIntegerOrInfinity(start).
+    // 8-10. Resolve from based on sign.
+    double start_num = args.size() >= 2 ? args[1].toNumber() : 0.0;
+    size_t from;
+    if(std::isnan(start_num)) {
+        from = 0;
+    } else if(start_num < 0) {
+        double resolved = static_cast<double>(length) + start_num;
+        from = resolved < 0 ? 0 : static_cast<size_t>(resolved);
+    } else {
+        from = static_cast<size_t>(std::min(start_num, static_cast<double>(length)));
+    }
+
+    // 11. If end is undefined, let relativeEnd be len; else let relativeEnd be
+    //     ? ToIntegerOrInfinity(end).
+    // 12-14. Resolve final based on sign.
+    size_t final_idx = length;
+    if(args.size() >= 3 && !args[2].isUndefined()) {
+        double end_num = args[2].toNumber();
+        if(std::isnan(end_num)) {
+            final_idx = 0;
+        } else if(end_num < 0) {
+            double resolved = static_cast<double>(length) + end_num;
+            final_idx = resolved < 0 ? 0 : static_cast<size_t>(resolved);
+        } else {
+            final_idx = static_cast<size_t>(std::min(end_num, static_cast<double>(length)));
+        }
+    }
+
+    // 15. Let count be min(final - from, len - to).
+    size_t count = 0;
+    if(final_idx > from && length > to) {
+        count = std::min(final_idx - from, length - to);
+    }
+
+    // 16. If from < to and to < from + count, then
+    //   a. Let direction be -1.
+    //   b. Set from to from + count - 1.
+    //   c. Set to to to + count - 1.
+    // 17. Else,
+    //   a. Let direction be 1.
+    int direction;
+    if(from < to && to < from + count) {
+        // Copy backwards to handle overlapping ranges
+        direction = -1;
+        from = from + count - 1;
+        to = to + count - 1;
+    } else {
+        direction = 1;
+    }
+
+    // 18. Repeat, while count > 0,
+    while(count > 0) {
+        //   a. Let fromKey be ! ToString(𝔽(from)).
+        //   b. Let toKey be ! ToString(𝔽(to)).
+        //   c. Let fromPresent be ? HasProperty(O, fromKey).
+        //   d. If fromPresent is true, then
+        //     i. Let fromVal be ? Get(O, fromKey).
+        //     ii. Perform ? Set(O, toKey, fromVal, true).
+        Value val = arrayObj->getProperty(std::to_string(from));
+        arrayObj->setProperty(std::to_string(to), val);
+        //   e. Else, (fromPresent is false)
+        //     i. Perform ? DeletePropertyOrThrow(O, toKey).
+        //   INCOMPLETE: Does not handle holes (missing properties).
+        //   f. Set from to from + direction.
+        //   g. Set to to to + direction.
+        if(direction == 1) {
+            from++;
+            to++;
+        } else {
+            from--;
+            to--;
+        }
+        //   h. Set count to count - 1.
+        count--;
+    }
+
+    // 19. Return O.
+    return Value(arrayObj);
+}
+
 }  // namespace rift::builtins

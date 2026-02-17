@@ -67,6 +67,14 @@ class Array : public BuiltinBase<Array> {
     /// @spec https://tc39.es/ecma262/#sec-array.prototype.sort
     static Value sort(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 23.1.3.7 Array.prototype.fill ( value [ , start [ , end ] ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.fill
+    static Value fill(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 23.1.3.4 Array.prototype.copyWithin ( target, start [ , end ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.copywithin
+    static Value copyWithin(const CallContext& ctx, const std::vector<Value>& args);
+
     /// 23.1.3.9 Array.prototype.find ( predicate [ , thisArg ] )
     /// @spec https://tc39.es/ecma262/#sec-array.prototype.find
     static Value find(const CallContext& ctx, const std::vector<Value>& args);

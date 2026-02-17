@@ -59,6 +59,8 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     RIFT_METHOD(prototype, "splice", Array::splice);
     RIFT_METHOD(prototype, "reverse", Array::reverse);
     RIFT_METHOD(prototype, "sort", Array::sort);
+    RIFT_METHOD(prototype, "fill", Array::fill);
+    RIFT_METHOD(prototype, "copyWithin", Array::copyWithin);
 
     // Callback-based iteration methods (array_iterators.cpp)
     // Spec comments with @spec URLs are on the implementations in array_iterators.cpp.
