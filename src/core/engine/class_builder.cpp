@@ -312,6 +312,14 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                         }
                     }
 
+                    auto* args_factory = engine->getObjectFactory();
+                    auto* arguments_obj = args_factory->createJSObject();
+                    for(size_t i = 0; i < args.size(); ++i) {
+                        arguments_obj->setProperty(std::to_string(i), args[i]);
+                    }
+                    arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
+                    func_env->define("arguments", Value(arguments_obj));
+
                     try {
                         return engine->evaluate(method_body, func_env);
                     } catch(const ReturnException& e) {
@@ -364,6 +372,14 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                             func_env->define(param_name, arg_value);
                         }
                     }
+
+                    auto* args_factory = engine->getObjectFactory();
+                    auto* arguments_obj = args_factory->createJSObject();
+                    for(size_t i = 0; i < args.size(); ++i) {
+                        arguments_obj->setProperty(std::to_string(i), args[i]);
+                    }
+                    arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
+                    func_env->define("arguments", Value(arguments_obj));
 
                     try {
                         return engine->evaluate(method_body, func_env);
@@ -501,6 +517,14 @@ JSFunction* ClassBuilder::buildClass(const std::string& class_name,
                     func_env->define(param_name, arg_value);
                 }
             }
+
+            auto* args_factory = engine->getObjectFactory();
+            auto* arguments_obj = args_factory->createJSObject();
+            for(size_t i = 0; i < args.size(); ++i) {
+                arguments_obj->setProperty(std::to_string(i), args[i]);
+            }
+            arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
+            func_env->define("arguments", Value(arguments_obj));
 
             if(ctor_body) {
                 try {
