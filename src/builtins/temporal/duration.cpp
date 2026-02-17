@@ -1,5 +1,9 @@
 #include "rift/builtins/temporal/duration.h"
 
+#include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/this_helpers.h"
+#include "rift/memory/gc_protector.h"
 #include "temporal_rs/Duration.hpp"
 #include "temporal_rs/PartialDuration.hpp"
 #include "temporal_rs/RelativeTo.hpp"
@@ -7,11 +11,6 @@
 #include "temporal_rs/Sign.hpp"
 #include "temporal_rs/ToStringRoundingOptions.hpp"
 #include "temporal_rs/Unit.hpp"
-
-#include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/javascript_exception.h"
-#include "rift/core/engine/this_helpers.h"
-#include "rift/memory/gc_protector.h"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.Duration Objects (Sections 7.1-7.5)
@@ -132,16 +131,26 @@ static std::unique_ptr<temporal_rs::Duration> parseDurationFromValue(const Value
         Value us = obj->getProperty("microseconds");
         Value ns = obj->getProperty("nanoseconds");
 
-        if(!y.isUndefined()) partial.years = static_cast<int64_t>(y.toNumber());
-        if(!mo.isUndefined()) partial.months = static_cast<int64_t>(mo.toNumber());
-        if(!w.isUndefined()) partial.weeks = static_cast<int64_t>(w.toNumber());
-        if(!d.isUndefined()) partial.days = static_cast<int64_t>(d.toNumber());
-        if(!h.isUndefined()) partial.hours = static_cast<int64_t>(h.toNumber());
-        if(!mi.isUndefined()) partial.minutes = static_cast<int64_t>(mi.toNumber());
-        if(!s.isUndefined()) partial.seconds = static_cast<int64_t>(s.toNumber());
-        if(!ms.isUndefined()) partial.milliseconds = static_cast<int64_t>(ms.toNumber());
-        if(!us.isUndefined()) partial.microseconds = us.toNumber();
-        if(!ns.isUndefined()) partial.nanoseconds = ns.toNumber();
+        if(!y.isUndefined())
+            partial.years = static_cast<int64_t>(y.toNumber());
+        if(!mo.isUndefined())
+            partial.months = static_cast<int64_t>(mo.toNumber());
+        if(!w.isUndefined())
+            partial.weeks = static_cast<int64_t>(w.toNumber());
+        if(!d.isUndefined())
+            partial.days = static_cast<int64_t>(d.toNumber());
+        if(!h.isUndefined())
+            partial.hours = static_cast<int64_t>(h.toNumber());
+        if(!mi.isUndefined())
+            partial.minutes = static_cast<int64_t>(mi.toNumber());
+        if(!s.isUndefined())
+            partial.seconds = static_cast<int64_t>(s.toNumber());
+        if(!ms.isUndefined())
+            partial.milliseconds = static_cast<int64_t>(ms.toNumber());
+        if(!us.isUndefined())
+            partial.microseconds = us.toNumber();
+        if(!ns.isUndefined())
+            partial.nanoseconds = ns.toNumber();
 
         auto result = temporal_rs::Duration::from_partial_duration(partial);
         if(!result.is_ok()) {
@@ -180,7 +189,7 @@ Value TemporalDuration::wrapDuration(std::unique_ptr<temporal_rs::Duration> dur)
 // @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-duration-constructor
 // ----------------------------------------------------------------------------
 void TemporalDuration::setupStaticMethods(JSObject* constructor,
-                                           rift::memory::ObjectFactory* factory) {
+                                          rift::memory::ObjectFactory* factory) {
     // 7.2.2 Temporal.Duration.from ( item )
     RIFT_STATIC_METHOD(constructor, "from", TemporalDuration::from);
     // 7.2.3 Temporal.Duration.compare ( one, two [ , options ] )
@@ -192,7 +201,7 @@ void TemporalDuration::setupStaticMethods(JSObject* constructor,
 // @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-duration-prototype-object
 // ----------------------------------------------------------------------------
 void TemporalDuration::setupPrototypeMethods(JSObject* prototype,
-                                              rift::memory::ObjectFactory* factory) {
+                                             rift::memory::ObjectFactory* factory) {
     // 7.3.3-7.3.14 Getters
     RIFT_GETTER(prototype, "years", TemporalDuration::years);
     RIFT_GETTER(prototype, "months", TemporalDuration::months);
@@ -261,10 +270,9 @@ Value TemporalDuration::constructor(const CallContext& ctx, const std::vector<Va
 
     // Step 12: Return ? CreateTemporalDuration(years, months, weeks, days,
     //          hours, minutes, seconds, milliseconds, microseconds, nanoseconds, NewTarget).
-    auto result = temporal_rs::Duration::create(years_val, months_val, weeks_val, days_val,
-                                                hours_val, minutes_val, seconds_val,
-                                                milliseconds_val, microseconds_val,
-                                                nanoseconds_val);
+    auto result = temporal_rs::Duration::create(
+        years_val, months_val, weeks_val, days_val, hours_val, minutes_val, seconds_val,
+        milliseconds_val, microseconds_val, nanoseconds_val);
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
     }
@@ -389,8 +397,7 @@ Value TemporalDuration::hours(const CallContext& ctx, const std::vector<Value>& 
 Value TemporalDuration::minutes(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getDurationData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: minutes called on non-Duration"));
+        throw rift::core::JavaScriptException(Value("TypeError: minutes called on non-Duration"));
     }
     return Value(static_cast<double>(data->minutes()));
 }
@@ -400,8 +407,7 @@ Value TemporalDuration::minutes(const CallContext& ctx, const std::vector<Value>
 Value TemporalDuration::seconds(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getDurationData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: seconds called on non-Duration"));
+        throw rift::core::JavaScriptException(Value("TypeError: seconds called on non-Duration"));
     }
     return Value(static_cast<double>(data->seconds()));
 }
@@ -490,8 +496,7 @@ Value TemporalDuration::abs(const CallContext& ctx, const std::vector<Value>& ar
 Value TemporalDuration::negated(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getDurationData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: negated called on non-Duration"));
+        throw rift::core::JavaScriptException(Value("TypeError: negated called on non-Duration"));
     }
     return wrapDuration(data->negated());
 }
@@ -536,8 +541,7 @@ Value TemporalDuration::add(const CallContext& ctx, const std::vector<Value>& ar
 Value TemporalDuration::subtract(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getDurationData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: subtract called on non-Duration"));
+        throw rift::core::JavaScriptException(Value("TypeError: subtract called on non-Duration"));
     }
 
     if(args.empty()) {
@@ -567,16 +571,26 @@ Value TemporalDuration::subtract(const CallContext& ctx, const std::vector<Value
 // ============================================================================
 
 static temporal_rs::Unit parseUnit(const std::string& str) {
-    if(str == "year" || str == "years") return temporal_rs::Unit::Year;
-    if(str == "month" || str == "months") return temporal_rs::Unit::Month;
-    if(str == "week" || str == "weeks") return temporal_rs::Unit::Week;
-    if(str == "day" || str == "days") return temporal_rs::Unit::Day;
-    if(str == "hour" || str == "hours") return temporal_rs::Unit::Hour;
-    if(str == "minute" || str == "minutes") return temporal_rs::Unit::Minute;
-    if(str == "second" || str == "seconds") return temporal_rs::Unit::Second;
-    if(str == "millisecond" || str == "milliseconds") return temporal_rs::Unit::Millisecond;
-    if(str == "microsecond" || str == "microseconds") return temporal_rs::Unit::Microsecond;
-    if(str == "nanosecond" || str == "nanoseconds") return temporal_rs::Unit::Nanosecond;
+    if(str == "year" || str == "years")
+        return temporal_rs::Unit::Year;
+    if(str == "month" || str == "months")
+        return temporal_rs::Unit::Month;
+    if(str == "week" || str == "weeks")
+        return temporal_rs::Unit::Week;
+    if(str == "day" || str == "days")
+        return temporal_rs::Unit::Day;
+    if(str == "hour" || str == "hours")
+        return temporal_rs::Unit::Hour;
+    if(str == "minute" || str == "minutes")
+        return temporal_rs::Unit::Minute;
+    if(str == "second" || str == "seconds")
+        return temporal_rs::Unit::Second;
+    if(str == "millisecond" || str == "milliseconds")
+        return temporal_rs::Unit::Millisecond;
+    if(str == "microsecond" || str == "microseconds")
+        return temporal_rs::Unit::Microsecond;
+    if(str == "nanosecond" || str == "nanoseconds")
+        return temporal_rs::Unit::Nanosecond;
     throw rift::core::JavaScriptException(Value("RangeError: Invalid unit: " + str));
 }
 
@@ -621,9 +635,12 @@ Value TemporalDuration::round(const CallContext& ctx, const std::vector<Value>& 
         Value mode = obj->getProperty("roundingMode");
         Value inc = obj->getProperty("roundingIncrement");
 
-        if(!smallest.isUndefined()) options.smallest_unit = parseUnit(smallest.toString());
-        if(!largest.isUndefined()) options.largest_unit = parseUnit(largest.toString());
-        if(!inc.isUndefined()) options.increment = static_cast<uint32_t>(inc.toNumber());
+        if(!smallest.isUndefined())
+            options.smallest_unit = parseUnit(smallest.toString());
+        if(!largest.isUndefined())
+            options.largest_unit = parseUnit(largest.toString());
+        if(!inc.isUndefined())
+            options.increment = static_cast<uint32_t>(inc.toNumber());
     }
 
     temporal_rs::RelativeTo relative_to{nullptr, nullptr};
@@ -694,14 +711,13 @@ Value TemporalDuration::total(const CallContext& ctx, const std::vector<Value>& 
 Value TemporalDuration::toString(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getDurationData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: toString called on non-Duration"));
+        throw rift::core::JavaScriptException(Value("TypeError: toString called on non-Duration"));
     }
 
     temporal_rs::ToStringRoundingOptions options{
         temporal_rs::Precision{false, std::nullopt},  // auto precision
-        std::nullopt,                                  // no smallest_unit
-        std::nullopt                                   // no rounding_mode
+        std::nullopt,                                 // no smallest_unit
+        std::nullopt                                  // no rounding_mode
     };
 
     auto result = data->to_string(options);

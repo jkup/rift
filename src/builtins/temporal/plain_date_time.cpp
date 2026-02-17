@@ -1,5 +1,12 @@
 #include "rift/builtins/temporal/plain_date_time.h"
 
+#include "rift/builtins/temporal/duration.h"
+#include "rift/builtins/temporal/plain_date.h"
+#include "rift/builtins/temporal/plain_time.h"
+#include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/this_helpers.h"
+#include "rift/memory/gc_protector.h"
 #include "temporal_rs/AnyCalendarKind.hpp"
 #include "temporal_rs/Calendar.hpp"
 #include "temporal_rs/DifferenceSettings.hpp"
@@ -11,14 +18,6 @@
 #include "temporal_rs/PlainDateTime.hpp"
 #include "temporal_rs/Precision.hpp"
 #include "temporal_rs/ToStringRoundingOptions.hpp"
-
-#include "rift/builtins/temporal/duration.h"
-#include "rift/builtins/temporal/plain_date.h"
-#include "rift/builtins/temporal/plain_time.h"
-#include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/javascript_exception.h"
-#include "rift/core/engine/this_helpers.h"
-#include "rift/memory/gc_protector.h"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.PlainDateTime Objects (Sections 5.1-5.5)
@@ -49,8 +48,7 @@ using rift::core::extractThisObject;
 std::unordered_map<JSObject*, std::unique_ptr<temporal_rs::PlainDateTime>>
     PlainDateTimeRegistry::registry_;
 
-void PlainDateTimeRegistry::store(JSObject* obj,
-                                   std::unique_ptr<temporal_rs::PlainDateTime> data) {
+void PlainDateTimeRegistry::store(JSObject* obj, std::unique_ptr<temporal_rs::PlainDateTime> data) {
     registry_[obj] = std::move(data);
 }
 
@@ -137,10 +135,14 @@ static std::unique_ptr<temporal_rs::PlainDateTime> parsePlainDateTimeFromValue(c
         Value e = obj->getProperty("era");
         Value ey = obj->getProperty("eraYear");
 
-        if(!y.isUndefined()) partial_date.year = static_cast<int32_t>(y.toNumber());
-        if(!mo.isUndefined()) partial_date.month = static_cast<uint8_t>(mo.toNumber());
-        if(!d.isUndefined()) partial_date.day = static_cast<uint8_t>(d.toNumber());
-        if(!ey.isUndefined()) partial_date.era_year = static_cast<int32_t>(ey.toNumber());
+        if(!y.isUndefined())
+            partial_date.year = static_cast<int32_t>(y.toNumber());
+        if(!mo.isUndefined())
+            partial_date.month = static_cast<uint8_t>(mo.toNumber());
+        if(!d.isUndefined())
+            partial_date.day = static_cast<uint8_t>(d.toNumber());
+        if(!ey.isUndefined())
+            partial_date.era_year = static_cast<int32_t>(ey.toNumber());
 
         std::string month_code_str;
         std::string era_str;
@@ -163,12 +165,18 @@ static std::unique_ptr<temporal_rs::PlainDateTime> parsePlainDateTimeFromValue(c
         Value us = obj->getProperty("microsecond");
         Value ns = obj->getProperty("nanosecond");
 
-        if(!h.isUndefined()) partial_time.hour = static_cast<uint8_t>(h.toNumber());
-        if(!mi.isUndefined()) partial_time.minute = static_cast<uint8_t>(mi.toNumber());
-        if(!s.isUndefined()) partial_time.second = static_cast<uint8_t>(s.toNumber());
-        if(!ms.isUndefined()) partial_time.millisecond = static_cast<uint16_t>(ms.toNumber());
-        if(!us.isUndefined()) partial_time.microsecond = static_cast<uint16_t>(us.toNumber());
-        if(!ns.isUndefined()) partial_time.nanosecond = static_cast<uint16_t>(ns.toNumber());
+        if(!h.isUndefined())
+            partial_time.hour = static_cast<uint8_t>(h.toNumber());
+        if(!mi.isUndefined())
+            partial_time.minute = static_cast<uint8_t>(mi.toNumber());
+        if(!s.isUndefined())
+            partial_time.second = static_cast<uint8_t>(s.toNumber());
+        if(!ms.isUndefined())
+            partial_time.millisecond = static_cast<uint16_t>(ms.toNumber());
+        if(!us.isUndefined())
+            partial_time.microsecond = static_cast<uint16_t>(us.toNumber());
+        if(!ns.isUndefined())
+            partial_time.nanosecond = static_cast<uint16_t>(ns.toNumber());
 
         temporal_rs::PartialDateTime partial{partial_date, partial_time};
 
@@ -221,16 +229,26 @@ static std::unique_ptr<temporal_rs::Duration> parseDurationForDateTime(const Val
         Value us = obj->getProperty("microseconds");
         Value ns = obj->getProperty("nanoseconds");
 
-        if(!y.isUndefined()) partial.years = static_cast<int64_t>(y.toNumber());
-        if(!mo.isUndefined()) partial.months = static_cast<int64_t>(mo.toNumber());
-        if(!w.isUndefined()) partial.weeks = static_cast<int64_t>(w.toNumber());
-        if(!d.isUndefined()) partial.days = static_cast<int64_t>(d.toNumber());
-        if(!h.isUndefined()) partial.hours = static_cast<int64_t>(h.toNumber());
-        if(!mi.isUndefined()) partial.minutes = static_cast<int64_t>(mi.toNumber());
-        if(!s.isUndefined()) partial.seconds = static_cast<int64_t>(s.toNumber());
-        if(!ms.isUndefined()) partial.milliseconds = static_cast<int64_t>(ms.toNumber());
-        if(!us.isUndefined()) partial.microseconds = us.toNumber();
-        if(!ns.isUndefined()) partial.nanoseconds = ns.toNumber();
+        if(!y.isUndefined())
+            partial.years = static_cast<int64_t>(y.toNumber());
+        if(!mo.isUndefined())
+            partial.months = static_cast<int64_t>(mo.toNumber());
+        if(!w.isUndefined())
+            partial.weeks = static_cast<int64_t>(w.toNumber());
+        if(!d.isUndefined())
+            partial.days = static_cast<int64_t>(d.toNumber());
+        if(!h.isUndefined())
+            partial.hours = static_cast<int64_t>(h.toNumber());
+        if(!mi.isUndefined())
+            partial.minutes = static_cast<int64_t>(mi.toNumber());
+        if(!s.isUndefined())
+            partial.seconds = static_cast<int64_t>(s.toNumber());
+        if(!ms.isUndefined())
+            partial.milliseconds = static_cast<int64_t>(ms.toNumber());
+        if(!us.isUndefined())
+            partial.microseconds = us.toNumber();
+        if(!ns.isUndefined())
+            partial.nanoseconds = ns.toNumber();
 
         auto result = temporal_rs::Duration::from_partial_duration(partial);
         if(!result.is_ok()) {
@@ -269,7 +287,7 @@ Value TemporalPlainDateTime::wrapPlainDateTime(std::unique_ptr<temporal_rs::Plai
 // @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-constructor
 // ----------------------------------------------------------------------------
 void TemporalPlainDateTime::setupStaticMethods(JSObject* constructor,
-                                                rift::memory::ObjectFactory* factory) {
+                                               rift::memory::ObjectFactory* factory) {
     // 5.2.2 Temporal.PlainDateTime.from ( item [ , options ] )
     RIFT_STATIC_METHOD(constructor, "from", TemporalPlainDateTime::from);
     // 5.2.3 Temporal.PlainDateTime.compare ( one, two )
@@ -278,10 +296,11 @@ void TemporalPlainDateTime::setupStaticMethods(JSObject* constructor,
 
 // ----------------------------------------------------------------------------
 // 5.3 Properties of the Temporal.PlainDateTime Prototype Object
-// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-prototype-object
+// @spec
+// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-prototype-object
 // ----------------------------------------------------------------------------
 void TemporalPlainDateTime::setupPrototypeMethods(JSObject* prototype,
-                                                    rift::memory::ObjectFactory* factory) {
+                                                  rift::memory::ObjectFactory* factory) {
     // 5.3.3-5.3.14 Date getters
     RIFT_GETTER(prototype, "year", TemporalPlainDateTime::year);
     RIFT_GETTER(prototype, "month", TemporalPlainDateTime::month);
@@ -354,8 +373,8 @@ Value TemporalPlainDateTime::constructor(const CallContext& ctx, const std::vect
     // Step 1: If NewTarget is undefined, throw a TypeError. (INCOMPLETE)
     // Step 2: If isoYear, isoMonth, or isoDay is not provided, throw a TypeError.
     if(args.size() < 3) {
-        throw rift::core::JavaScriptException(Value(
-            "TypeError: Temporal.PlainDateTime requires at least year, month, and day"));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.PlainDateTime requires at least year, month, and day"));
     }
 
     // Steps 3-11: Convert arguments to integer values, defaulting optional ones to 0.
@@ -386,9 +405,9 @@ Value TemporalPlainDateTime::constructor(const CallContext& ctx, const std::vect
     //          hour, minute, second, millisecond, microsecond, nanosecond,
     //          calendar, NewTarget).
     // DEVIATION: Delegates to temporal_rs::PlainDateTime::try_new via FFI.
-    auto result = temporal_rs::PlainDateTime::try_new(year_val, month_val, day_val,
-                                                       hour_val, minute_val, second_val,
-                                                       ms_val, us_val, ns_val, calendar);
+    auto result =
+        temporal_rs::PlainDateTime::try_new(year_val, month_val, day_val, hour_val, minute_val,
+                                            second_val, ms_val, us_val, ns_val, calendar);
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
     }
@@ -443,7 +462,8 @@ Value TemporalPlainDateTime::compare(const CallContext& ctx, const std::vector<V
 
 // ============================================================================
 // Prototype Getters -- Date Fields
-// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-prototype-object
+// @spec
+// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-prototype-object
 //
 // Each date getter calls the corresponding calendar operation on the
 // PlainDateTime's [[ISODateTime]] and [[Calendar]] internal slots.
@@ -467,8 +487,7 @@ Value TemporalPlainDateTime::calendarId(const CallContext& ctx, const std::vecto
 Value TemporalPlainDateTime::year(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: year called on non-PlainDateTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: year called on non-PlainDateTime"));
     }
     return Value(static_cast<double>(data->year()));
 }
@@ -500,8 +519,7 @@ Value TemporalPlainDateTime::monthCode(const CallContext& ctx, const std::vector
 Value TemporalPlainDateTime::day(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: day called on non-PlainDateTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: day called on non-PlainDateTime"));
     }
     return Value(static_cast<double>(data->day()));
 }
@@ -589,7 +607,8 @@ Value TemporalPlainDateTime::inLeapYear(const CallContext& ctx, const std::vecto
 
 // ============================================================================
 // Prototype Getters -- Time Fields
-// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-prototype-object
+// @spec
+// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-prototype-object
 //
 // Each time getter returns the corresponding component from the
 // PlainDateTime's [[ISODateTime]] internal slot.
@@ -600,8 +619,7 @@ Value TemporalPlainDateTime::inLeapYear(const CallContext& ctx, const std::vecto
 Value TemporalPlainDateTime::hour(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: hour called on non-PlainDateTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: hour called on non-PlainDateTime"));
     }
     return Value(static_cast<double>(data->hour()));
 }
@@ -680,13 +698,12 @@ Value TemporalPlainDateTime::nanosecond(const CallContext& ctx, const std::vecto
 Value TemporalPlainDateTime::with(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: with called on non-PlainDateTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: with called on non-PlainDateTime"));
     }
 
     if(args.empty() || (!args[0].isObject() && !args[0].isFunction())) {
-        throw rift::core::JavaScriptException(Value(
-            "TypeError: Temporal.PlainDateTime.prototype.with requires an object argument"));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.PlainDateTime.prototype.with requires an object argument"));
     }
 
     auto* obj = args[0].getObject();
@@ -700,9 +717,12 @@ Value TemporalPlainDateTime::with(const CallContext& ctx, const std::vector<Valu
     Value mc = obj->getProperty("monthCode");
     Value d = obj->getProperty("day");
 
-    if(!y.isUndefined()) partial_date.year = static_cast<int32_t>(y.toNumber());
-    if(!mo.isUndefined()) partial_date.month = static_cast<uint8_t>(mo.toNumber());
-    if(!d.isUndefined()) partial_date.day = static_cast<uint8_t>(d.toNumber());
+    if(!y.isUndefined())
+        partial_date.year = static_cast<int32_t>(y.toNumber());
+    if(!mo.isUndefined())
+        partial_date.month = static_cast<uint8_t>(mo.toNumber());
+    if(!d.isUndefined())
+        partial_date.day = static_cast<uint8_t>(d.toNumber());
 
     std::string month_code_str;
     if(!mc.isUndefined()) {
@@ -720,12 +740,18 @@ Value TemporalPlainDateTime::with(const CallContext& ctx, const std::vector<Valu
     Value us = obj->getProperty("microsecond");
     Value ns = obj->getProperty("nanosecond");
 
-    if(!h.isUndefined()) partial_time.hour = static_cast<uint8_t>(h.toNumber());
-    if(!mi.isUndefined()) partial_time.minute = static_cast<uint8_t>(mi.toNumber());
-    if(!s.isUndefined()) partial_time.second = static_cast<uint8_t>(s.toNumber());
-    if(!ms.isUndefined()) partial_time.millisecond = static_cast<uint16_t>(ms.toNumber());
-    if(!us.isUndefined()) partial_time.microsecond = static_cast<uint16_t>(us.toNumber());
-    if(!ns.isUndefined()) partial_time.nanosecond = static_cast<uint16_t>(ns.toNumber());
+    if(!h.isUndefined())
+        partial_time.hour = static_cast<uint8_t>(h.toNumber());
+    if(!mi.isUndefined())
+        partial_time.minute = static_cast<uint8_t>(mi.toNumber());
+    if(!s.isUndefined())
+        partial_time.second = static_cast<uint8_t>(s.toNumber());
+    if(!ms.isUndefined())
+        partial_time.millisecond = static_cast<uint16_t>(ms.toNumber());
+    if(!us.isUndefined())
+        partial_time.microsecond = static_cast<uint16_t>(us.toNumber());
+    if(!ns.isUndefined())
+        partial_time.nanosecond = static_cast<uint16_t>(ns.toNumber());
 
     temporal_rs::PartialDateTime partial{partial_date, partial_time};
 
@@ -792,8 +818,7 @@ Value TemporalPlainDateTime::withTime(const CallContext& ctx, const std::vector<
 Value TemporalPlainDateTime::add(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: add called on non-PlainDateTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: add called on non-PlainDateTime"));
     }
 
     if(args.empty()) {
@@ -869,7 +894,7 @@ Value TemporalPlainDateTime::until(const CallContext& ctx, const std::vector<Val
     auto other = parsePlainDateTimeFromValue(args[0]);
     // Step 2-5: Get options and perform DifferenceTemporalPlainDateTime.
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->until(*other, settings);
     if(!result.is_ok()) {
@@ -903,7 +928,7 @@ Value TemporalPlainDateTime::since(const CallContext& ctx, const std::vector<Val
     auto other = parsePlainDateTimeFromValue(args[0]);
     // Step 2-5: Get options and perform DifferenceTemporalPlainDateTime (negated).
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->since(*other, settings);
     if(!result.is_ok()) {
@@ -998,8 +1023,8 @@ Value TemporalPlainDateTime::toString(const CallContext& ctx, const std::vector<
             Value("TypeError: toString called on non-PlainDateTime"));
     }
 
-    temporal_rs::ToStringRoundingOptions options{
-        temporal_rs::Precision{false, std::nullopt}, std::nullopt, std::nullopt};
+    temporal_rs::ToStringRoundingOptions options{temporal_rs::Precision{false, std::nullopt},
+                                                 std::nullopt, std::nullopt};
 
     auto result = data->to_ixdtf_string(options, temporal_rs::DisplayCalendar::Auto);
     if(!result.is_ok()) {

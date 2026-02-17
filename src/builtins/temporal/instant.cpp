@@ -1,14 +1,13 @@
 #include "rift/builtins/temporal/instant.h"
 
-#include "temporal_rs/DifferenceSettings.hpp"
-#include "temporal_rs/Duration.hpp"
-#include "temporal_rs/Instant.hpp"
-
 #include "rift/builtins/temporal/duration.h"
 #include "rift/core/engine/builtin_manager.h"
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
+#include "temporal_rs/DifferenceSettings.hpp"
+#include "temporal_rs/Duration.hpp"
+#include "temporal_rs/Instant.hpp"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.Instant Objects (Section 8)
@@ -108,8 +107,7 @@ void TemporalInstant::setupStaticMethods(JSObject* constructor,
     RIFT_STATIC_METHOD(constructor, "from", TemporalInstant::from);
     RIFT_STATIC_METHOD(constructor, "fromEpochMilliseconds",
                        TemporalInstant::fromEpochMilliseconds);
-    RIFT_STATIC_METHOD(constructor, "fromEpochNanoseconds",
-                       TemporalInstant::fromEpochNanoseconds);
+    RIFT_STATIC_METHOD(constructor, "fromEpochNanoseconds", TemporalInstant::fromEpochNanoseconds);
     RIFT_STATIC_METHOD(constructor, "compare", TemporalInstant::compare);
 }
 
@@ -316,12 +314,18 @@ Value TemporalInstant::add(const CallContext& ctx, const std::vector<Value>& arg
     Value us = obj->getProperty("microseconds");
     Value ns_val = obj->getProperty("nanoseconds");
 
-    if(!h.isUndefined()) hours = h.toNumber();
-    if(!m.isUndefined()) minutes = m.toNumber();
-    if(!s.isUndefined()) seconds = s.toNumber();
-    if(!ms_val.isUndefined()) milliseconds = ms_val.toNumber();
-    if(!us.isUndefined()) microseconds = us.toNumber();
-    if(!ns_val.isUndefined()) nanoseconds = ns_val.toNumber();
+    if(!h.isUndefined())
+        hours = h.toNumber();
+    if(!m.isUndefined())
+        minutes = m.toNumber();
+    if(!s.isUndefined())
+        seconds = s.toNumber();
+    if(!ms_val.isUndefined())
+        milliseconds = ms_val.toNumber();
+    if(!us.isUndefined())
+        microseconds = us.toNumber();
+    if(!ns_val.isUndefined())
+        nanoseconds = ns_val.toNumber();
 
     auto dur_result = temporal_rs::Duration::create(
         0, 0, 0, 0, static_cast<int64_t>(hours), static_cast<int64_t>(minutes),
@@ -348,8 +352,7 @@ Value TemporalInstant::add(const CallContext& ctx, const std::vector<Value>& arg
 Value TemporalInstant::subtract(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getInstantData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: subtract called on non-Instant"));
+        throw rift::core::JavaScriptException(Value("TypeError: subtract called on non-Instant"));
     }
 
     if(args.empty() || !args[0].isObject()) {
@@ -373,12 +376,18 @@ Value TemporalInstant::subtract(const CallContext& ctx, const std::vector<Value>
     Value us = obj->getProperty("microseconds");
     Value ns_val = obj->getProperty("nanoseconds");
 
-    if(!h.isUndefined()) hours = h.toNumber();
-    if(!m.isUndefined()) minutes = m.toNumber();
-    if(!s.isUndefined()) seconds = s.toNumber();
-    if(!ms_val.isUndefined()) milliseconds = ms_val.toNumber();
-    if(!us.isUndefined()) microseconds = us.toNumber();
-    if(!ns_val.isUndefined()) nanoseconds = ns_val.toNumber();
+    if(!h.isUndefined())
+        hours = h.toNumber();
+    if(!m.isUndefined())
+        minutes = m.toNumber();
+    if(!s.isUndefined())
+        seconds = s.toNumber();
+    if(!ms_val.isUndefined())
+        milliseconds = ms_val.toNumber();
+    if(!us.isUndefined())
+        microseconds = us.toNumber();
+    if(!ns_val.isUndefined())
+        nanoseconds = ns_val.toNumber();
 
     auto dur_result = temporal_rs::Duration::create(
         0, 0, 0, 0, static_cast<int64_t>(hours), static_cast<int64_t>(minutes),
@@ -404,8 +413,7 @@ Value TemporalInstant::subtract(const CallContext& ctx, const std::vector<Value>
 Value TemporalInstant::equals(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getInstantData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: equals called on non-Instant"));
+        throw rift::core::JavaScriptException(Value("TypeError: equals called on non-Instant"));
     }
 
     if(args.empty() || !args[0].isObject()) {
@@ -441,7 +449,7 @@ Value TemporalInstant::since(const CallContext& ctx, const std::vector<Value>& a
     }
 
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->since(*other, settings);
     if(!result.is_ok()) {
@@ -472,7 +480,7 @@ Value TemporalInstant::until(const CallContext& ctx, const std::vector<Value>& a
     }
 
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->until(*other, settings);
     if(!result.is_ok()) {
@@ -487,15 +495,14 @@ Value TemporalInstant::until(const CallContext& ctx, const std::vector<Value>& a
 Value TemporalInstant::toString(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getInstantData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: toString called on non-Instant"));
+        throw rift::core::JavaScriptException(Value("TypeError: toString called on non-Instant"));
     }
 
     // Default options: auto precision, no specific smallest unit or rounding
     temporal_rs::ToStringRoundingOptions options{
         temporal_rs::Precision{false, std::nullopt},  // auto precision
-        std::nullopt,                                  // no smallest_unit
-        std::nullopt                                   // no rounding_mode
+        std::nullopt,                                 // no smallest_unit
+        std::nullopt                                  // no rounding_mode
     };
 
     auto result = data->to_ixdtf_string_with_compiled_data(std::nullopt, options);

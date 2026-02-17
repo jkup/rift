@@ -283,13 +283,15 @@ std::vector<Value> StatementEvaluator::extractArrayElements(const Value& value) 
 }
 
 // 14.3.3 Destructuring Binding Patterns — Runtime Semantics: BindingInitialization
-// @spec https://tc39.es/ecma262/#sec-destructuring-binding-patterns-runtime-semantics-bindinginitialization
+// @spec
+// https://tc39.es/ecma262/#sec-destructuring-binding-patterns-runtime-semantics-bindinginitialization
 //
 // Implements:
 //   8.6.2 Runtime Semantics: BindingInitialization
 //   @spec https://tc39.es/ecma262/#sec-runtime-semantics-bindinginitialization
 //   14.3.3.1 Runtime Semantics: PropertyBindingInitialization (ObjectPattern)
-//   @spec https://tc39.es/ecma262/#sec-destructuring-binding-patterns-runtime-semantics-propertybindinginitialization
+//   @spec
+//   https://tc39.es/ecma262/#sec-destructuring-binding-patterns-runtime-semantics-propertybindinginitialization
 //   14.3.3.3 Runtime Semantics: IteratorBindingInitialization (ArrayPattern)
 //   @spec https://tc39.es/ecma262/#sec-runtime-semantics-iteratorbindinginitialization
 //
@@ -477,7 +479,8 @@ void StatementEvaluator::applyPatternBinding(std::shared_ptr<ASTNode> pattern, c
 
     } else if(pattern->type == ASTNodeType::ObjectPattern) {
         // 14.3.3.1 Runtime Semantics: PropertyBindingInitialization
-        // @spec https://tc39.es/ecma262/#sec-destructuring-binding-patterns-runtime-semantics-propertybindinginitialization
+        // @spec
+        // https://tc39.es/ecma262/#sec-destructuring-binding-patterns-runtime-semantics-propertybindinginitialization
         // ObjectBindingPattern : { BindingPropertyList , BindingRestProperty }
         // 1. Perform ? PropertyBindingInitialization of BindingPropertyList with value
         //    and environment.
@@ -717,12 +720,10 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
     std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool, std::shared_ptr<ASTNode>>>
         param_info;
     for(const auto& param : paramList->children) {
-        if(param->type == ASTNodeType::ObjectPattern ||
-           param->type == ASTNodeType::ArrayPattern) {
+        if(param->type == ASTNodeType::ObjectPattern || param->type == ASTNodeType::ArrayPattern) {
             // Destructuring parameter (no default)
             param_info.emplace_back("", nullptr, false, param);
-        } else if(param->type == ASTNodeType::AssignmentPattern &&
-                  param->children.size() >= 2 &&
+        } else if(param->type == ASTNodeType::AssignmentPattern && param->children.size() >= 2 &&
                   (param->children[0]->type == ASTNodeType::ObjectPattern ||
                    param->children[0]->type == ASTNodeType::ArrayPattern)) {
             // Destructuring parameter with default: ({x, y} = {})
@@ -767,7 +768,8 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
         [engine, param_info, body, env, functionIsStrict](
             const rift::core::CallContext& callContext, const std::vector<Value>& args) -> Value {
             // 10.2.1 [[Call]] ( thisArgument, argumentsList )
-            // @spec https://tc39.es/ecma262/#sec-ecmascript-function-objects-call-thisargument-argumentslist
+            // @spec
+            // https://tc39.es/ecma262/#sec-ecmascript-function-objects-call-thisargument-argumentslist
             // 1. Let callerContext be the running execution context.
             // 2. Let calleeContext be PrepareForOrdinaryCall(F, undefined).
             // 3. Perform OrdinaryCallBindThis(F, calleeContext, thisArgument).
@@ -810,8 +812,8 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
                     } else {
                         arg_value = Value::undefined();
                     }
-                    StatementEvaluator::applyPatternBinding(
-                        pattern, arg_value, funcEnv, engine, VariableType::Var);
+                    StatementEvaluator::applyPatternBinding(pattern, arg_value, funcEnv, engine,
+                                                            VariableType::Var);
                 } else {
                     Value arg_value;
 
@@ -846,8 +848,10 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
 
             // 10.2.1 step 4: Let result be Completion(OrdinaryCallEvaluateBody(F, argumentsList)).
             // 15.2.3 Runtime Semantics: EvaluateBody
-            // @spec https://tc39.es/ecma262/#sec-function-definitions-runtime-semantics-evaluatebody
-            //   1. Return ? EvaluateBody of FunctionBody with arguments functionObject, argumentsList.
+            // @spec
+            // https://tc39.es/ecma262/#sec-function-definitions-runtime-semantics-evaluatebody
+            //   1. Return ? EvaluateBody of FunctionBody with arguments functionObject,
+            //   argumentsList.
             // SIMPLIFIED: Rift evaluates the body AST directly, catching ReturnException
             // to handle return statements (the spec uses Completion Records).
             try {
@@ -864,7 +868,8 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
     // Step 4 (InstantiateOrdinaryFunctionObject): Perform SetFunctionName(F, name).
     // 10.2.9 SetFunctionName ( F, name [ , prefix ] )
     // @spec https://tc39.es/ecma262/#sec-setfunctionname
-    func->defineProperty("name", runtime::PropertyDescriptor(Value(functionName), false, false, true));
+    func->defineProperty("name",
+                         runtime::PropertyDescriptor(Value(functionName), false, false, true));
 
     // 10.2.8 SetFunctionLength ( F, length )
     // @spec https://tc39.es/ecma262/#sec-setfunctionlength
@@ -873,9 +878,9 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
     size_t formal_params = 0;
     for(const auto& pi : param_info) {
         if(std::get<2>(pi))
-            break;                   // rest param
+            break;  // rest param
         if(std::get<1>(pi) != nullptr)
-            break;                   // default param
+            break;  // default param
         formal_params++;
     }
     func->defineProperty(
@@ -930,12 +935,10 @@ Value StatementEvaluator::evaluateGeneratorFunctionDeclaration(std::shared_ptr<A
         param_info;
 
     for(const auto& param : paramList->children) {
-        if(param->type == ASTNodeType::ObjectPattern ||
-           param->type == ASTNodeType::ArrayPattern) {
+        if(param->type == ASTNodeType::ObjectPattern || param->type == ASTNodeType::ArrayPattern) {
             param_info.emplace_back("", nullptr, false, param);
             param_names.push_back("");
-        } else if(param->type == ASTNodeType::AssignmentPattern &&
-                  param->children.size() >= 2 &&
+        } else if(param->type == ASTNodeType::AssignmentPattern && param->children.size() >= 2 &&
                   (param->children[0]->type == ASTNodeType::ObjectPattern ||
                    param->children[0]->type == ASTNodeType::ArrayPattern)) {
             param_info.emplace_back("", param->children[1], false, param->children[0]);
@@ -1056,11 +1059,9 @@ Value StatementEvaluator::evaluateAsyncFunctionDeclaration(std::shared_ptr<ASTNo
     std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool, std::shared_ptr<ASTNode>>>
         param_info;
     for(const auto& param : paramList->children) {
-        if(param->type == ASTNodeType::ObjectPattern ||
-           param->type == ASTNodeType::ArrayPattern) {
+        if(param->type == ASTNodeType::ObjectPattern || param->type == ASTNodeType::ArrayPattern) {
             param_info.emplace_back("", nullptr, false, param);
-        } else if(param->type == ASTNodeType::AssignmentPattern &&
-                  param->children.size() >= 2 &&
+        } else if(param->type == ASTNodeType::AssignmentPattern && param->children.size() >= 2 &&
                   (param->children[0]->type == ASTNodeType::ObjectPattern ||
                    param->children[0]->type == ASTNodeType::ArrayPattern)) {
             param_info.emplace_back("", param->children[1], false, param->children[0]);
@@ -1094,7 +1095,8 @@ Value StatementEvaluator::evaluateAsyncFunctionDeclaration(std::shared_ptr<ASTNo
     // 15.8.3 Runtime Semantics: EvaluateAsyncFunctionBody
     // @spec https://tc39.es/ecma262/#sec-runtime-semantics-evaluateasyncfunctionbody
     //   1. Let promiseCapability be ! NewPromiseCapability(%Promise%).
-    //   2. Let declResult be Completion(FunctionDeclarationInstantiation(functionObject, argumentsList)).
+    //   2. Let declResult be Completion(FunctionDeclarationInstantiation(functionObject,
+    //   argumentsList)).
     //   3. If declResult is an abrupt completion, then
     //      a. Perform ! Call(promiseCapability.[[Reject]], undefined, << declResult.[[Value]] >>).
     //   4. Else,
@@ -1169,7 +1171,8 @@ Value StatementEvaluator::evaluateAsyncFunctionDeclaration(std::shared_ptr<ASTNo
             funcEnv->define("arguments", Value(argumentsObj));
 
             // Step 4a: Perform AsyncFunctionStart(promiseCapability, FunctionBody).
-            // @spec https://tc39.es/ecma262/#sec-async-functions-abstract-operations-async-function-start
+            // @spec
+            // https://tc39.es/ecma262/#sec-async-functions-abstract-operations-async-function-start
             // SIMPLIFIED: Rift delegates to AsyncExecutor which evaluates the body,
             // resolving/rejecting the promise based on completion, and supporting
             // await expressions by pausing/resuming evaluation.

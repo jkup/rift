@@ -52,11 +52,9 @@ ClassBuilder::ParamInfo ClassBuilder::extractParamInfo(
     const std::shared_ptr<ASTNode>& params_node) {
     ParamInfo info;
     for(const auto& param : params_node->children) {
-        if(param->type == ASTNodeType::ObjectPattern ||
-           param->type == ASTNodeType::ArrayPattern) {
+        if(param->type == ASTNodeType::ObjectPattern || param->type == ASTNodeType::ArrayPattern) {
             info.emplace_back("", nullptr, false, param);
-        } else if(param->type == ASTNodeType::AssignmentPattern &&
-                  param->children.size() >= 2 &&
+        } else if(param->type == ASTNodeType::AssignmentPattern && param->children.size() >= 2 &&
                   (param->children[0]->type == ASTNodeType::ObjectPattern ||
                    param->children[0]->type == ASTNodeType::ArrayPattern)) {
             info.emplace_back("", param->children[1], false, param->children[0]);
@@ -113,7 +111,8 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                     std::vector<Value> processed_args;
                     auto func_env = std::make_shared<Environment>(class_env);
                     for(size_t i = 0; i < method_param_info.size(); ++i) {
-                        const auto& [param_name, default_ast, is_rest, pattern] = method_param_info[i];
+                        const auto& [param_name, default_ast, is_rest, pattern] =
+                            method_param_info[i];
                         if(is_rest) {
                             std::vector<Value> rest_args;
                             for(size_t j = i; j < args.size(); ++j) {
@@ -141,68 +140,68 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                     return Value(generator);
                 });
         } else if(is_async && is_instance) {
-            method_func = factory->createJSFunction(
-                [engine, method_param_info, method_body, class_env, class_prototype,
-                 parent_prototype](const rift::core::CallContext& call_context,
-                                   const std::vector<Value>& args) -> Value {
-                    auto* factory = engine->getObjectFactory();
-                    auto* promise_obj = builtins::Promise::createPromiseObject(factory);
-                    memory::GCProtector protect(promise_obj, factory->getObjectManager());
+            method_func = factory->createJSFunction([engine, method_param_info, method_body,
+                                                     class_env, class_prototype, parent_prototype](
+                                                        const rift::core::CallContext& call_context,
+                                                        const std::vector<Value>& args) -> Value {
+                auto* factory = engine->getObjectFactory();
+                auto* promise_obj = builtins::Promise::createPromiseObject(factory);
+                memory::GCProtector protect(promise_obj, factory->getObjectManager());
 
-                    auto func_env = std::make_shared<Environment>(class_env);
-                    func_env->define("this", call_context.thisValue);
-                    func_env->define("[[HomeObject]]", Value(class_prototype));
-                    if(parent_prototype) {
-                        func_env->define("[[SuperPrototype]]", Value(parent_prototype));
-                    }
+                auto func_env = std::make_shared<Environment>(class_env);
+                func_env->define("this", call_context.thisValue);
+                func_env->define("[[HomeObject]]", Value(class_prototype));
+                if(parent_prototype) {
+                    func_env->define("[[SuperPrototype]]", Value(parent_prototype));
+                }
 
-                    for(size_t i = 0; i < method_param_info.size(); ++i) {
-                        const auto& [param_name, default_ast, is_rest, pattern] = method_param_info[i];
-                        if(is_rest) {
-                            std::vector<Value> rest_args;
-                            for(size_t j = i; j < args.size(); ++j) {
-                                rest_args.push_back(args[j]);
-                            }
-                            auto* rest_array = builtins::Array::createArrayObject(
-                                engine->getObjectFactory(), rest_args);
-                            func_env->define(param_name, Value(rest_array));
-                        } else if(pattern) {
-                            Value arg_value;
-                            bool use_default = (i >= args.size()) || args[i].isUndefined();
-                            if(use_default && default_ast) {
-                                arg_value = engine->evaluate(default_ast, func_env);
-                            } else if(i < args.size()) {
-                                arg_value = args[i];
-                            } else {
-                                arg_value = Value::undefined();
-                            }
-                            StatementEvaluator::applyPatternBinding(
-                                pattern, arg_value, func_env, engine, VariableType::Var);
-                        } else {
-                            Value arg_value;
-                            bool use_default = (i >= args.size()) || args[i].isUndefined();
-                            if(use_default && default_ast) {
-                                arg_value = engine->evaluate(default_ast, func_env);
-                            } else if(i < args.size()) {
-                                arg_value = args[i];
-                            } else {
-                                arg_value = Value::undefined();
-                            }
-                            func_env->define(param_name, arg_value);
+                for(size_t i = 0; i < method_param_info.size(); ++i) {
+                    const auto& [param_name, default_ast, is_rest, pattern] = method_param_info[i];
+                    if(is_rest) {
+                        std::vector<Value> rest_args;
+                        for(size_t j = i; j < args.size(); ++j) {
+                            rest_args.push_back(args[j]);
                         }
+                        auto* rest_array = builtins::Array::createArrayObject(
+                            engine->getObjectFactory(), rest_args);
+                        func_env->define(param_name, Value(rest_array));
+                    } else if(pattern) {
+                        Value arg_value;
+                        bool use_default = (i >= args.size()) || args[i].isUndefined();
+                        if(use_default && default_ast) {
+                            arg_value = engine->evaluate(default_ast, func_env);
+                        } else if(i < args.size()) {
+                            arg_value = args[i];
+                        } else {
+                            arg_value = Value::undefined();
+                        }
+                        StatementEvaluator::applyPatternBinding(pattern, arg_value, func_env,
+                                                                engine, VariableType::Var);
+                    } else {
+                        Value arg_value;
+                        bool use_default = (i >= args.size()) || args[i].isUndefined();
+                        if(use_default && default_ast) {
+                            arg_value = engine->evaluate(default_ast, func_env);
+                        } else if(i < args.size()) {
+                            arg_value = args[i];
+                        } else {
+                            arg_value = Value::undefined();
+                        }
+                        func_env->define(param_name, arg_value);
                     }
+                }
 
-                    auto* args_factory = engine->getObjectFactory();
-                    auto* arguments_obj = args_factory->createJSObject();
-                    for(size_t i = 0; i < args.size(); ++i) {
-                        arguments_obj->setProperty(std::to_string(i), args[i]);
-                    }
-                    arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
-                    func_env->define("arguments", Value(arguments_obj));
+                auto* args_factory = engine->getObjectFactory();
+                auto* arguments_obj = args_factory->createJSObject();
+                for(size_t i = 0; i < args.size(); ++i) {
+                    arguments_obj->setProperty(std::to_string(i), args[i]);
+                }
+                arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
+                func_env->define("arguments", Value(arguments_obj));
 
-                    AsyncExecutor::executeAsync(method_body, func_env, engine, promise_obj);
-                    return Value(promise_obj);
-                });
+                AsyncExecutor::executeAsync(method_body, func_env, engine, promise_obj);
+                return Value(promise_obj);
+            });
         } else if(is_async && !is_instance) {
             method_func =
                 factory->createJSFunction([engine, method_param_info, method_body, class_env](
@@ -216,7 +215,8 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                     func_env->define("this", call_context.thisValue);
 
                     for(size_t i = 0; i < method_param_info.size(); ++i) {
-                        const auto& [param_name, default_ast, is_rest, pattern] = method_param_info[i];
+                        const auto& [param_name, default_ast, is_rest, pattern] =
+                            method_param_info[i];
                         if(is_rest) {
                             std::vector<Value> rest_args;
                             for(size_t j = i; j < args.size(); ++j) {
@@ -235,8 +235,8 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                             } else {
                                 arg_value = Value::undefined();
                             }
-                            StatementEvaluator::applyPatternBinding(
-                                pattern, arg_value, func_env, engine, VariableType::Var);
+                            StatementEvaluator::applyPatternBinding(pattern, arg_value, func_env,
+                                                                    engine, VariableType::Var);
                         } else {
                             Value arg_value;
                             bool use_default = (i >= args.size()) || args[i].isUndefined();
@@ -263,69 +263,69 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                     return Value(promise_obj);
                 });
         } else if(is_instance) {
-            method_func = factory->createJSFunction(
-                [engine, method_param_info, method_body, class_env, class_prototype,
-                 parent_prototype](const rift::core::CallContext& call_context,
-                                   const std::vector<Value>& args) -> Value {
-                    auto func_env = std::make_shared<Environment>(class_env);
-                    func_env->define("this", call_context.thisValue);
-                    func_env->define("[[HomeObject]]", Value(class_prototype));
-                    if(parent_prototype) {
-                        func_env->define("[[SuperPrototype]]", Value(parent_prototype));
-                    }
+            method_func = factory->createJSFunction([engine, method_param_info, method_body,
+                                                     class_env, class_prototype, parent_prototype](
+                                                        const rift::core::CallContext& call_context,
+                                                        const std::vector<Value>& args) -> Value {
+                auto func_env = std::make_shared<Environment>(class_env);
+                func_env->define("this", call_context.thisValue);
+                func_env->define("[[HomeObject]]", Value(class_prototype));
+                if(parent_prototype) {
+                    func_env->define("[[SuperPrototype]]", Value(parent_prototype));
+                }
 
-                    for(size_t i = 0; i < method_param_info.size(); ++i) {
-                        const auto& [param_name, default_ast, is_rest, pattern] = method_param_info[i];
+                for(size_t i = 0; i < method_param_info.size(); ++i) {
+                    const auto& [param_name, default_ast, is_rest, pattern] = method_param_info[i];
 
-                        if(is_rest) {
-                            std::vector<Value> rest_args;
-                            for(size_t j = i; j < args.size(); ++j) {
-                                rest_args.push_back(args[j]);
-                            }
-                            auto* rest_array = builtins::Array::createArrayObject(
-                                engine->getObjectFactory(), rest_args);
-                            func_env->define(param_name, Value(rest_array));
-                        } else if(pattern) {
-                            Value arg_value;
-                            bool use_default = (i >= args.size()) || args[i].isUndefined();
-                            if(use_default && default_ast) {
-                                arg_value = engine->evaluate(default_ast, func_env);
-                            } else if(i < args.size()) {
-                                arg_value = args[i];
-                            } else {
-                                arg_value = Value::undefined();
-                            }
-                            StatementEvaluator::applyPatternBinding(
-                                pattern, arg_value, func_env, engine, VariableType::Var);
-                        } else {
-                            Value arg_value;
-                            bool use_default = (i >= args.size()) || args[i].isUndefined();
-
-                            if(use_default && default_ast) {
-                                arg_value = engine->evaluate(default_ast, func_env);
-                            } else if(i < args.size()) {
-                                arg_value = args[i];
-                            } else {
-                                arg_value = Value::undefined();
-                            }
-                            func_env->define(param_name, arg_value);
+                    if(is_rest) {
+                        std::vector<Value> rest_args;
+                        for(size_t j = i; j < args.size(); ++j) {
+                            rest_args.push_back(args[j]);
                         }
-                    }
+                        auto* rest_array = builtins::Array::createArrayObject(
+                            engine->getObjectFactory(), rest_args);
+                        func_env->define(param_name, Value(rest_array));
+                    } else if(pattern) {
+                        Value arg_value;
+                        bool use_default = (i >= args.size()) || args[i].isUndefined();
+                        if(use_default && default_ast) {
+                            arg_value = engine->evaluate(default_ast, func_env);
+                        } else if(i < args.size()) {
+                            arg_value = args[i];
+                        } else {
+                            arg_value = Value::undefined();
+                        }
+                        StatementEvaluator::applyPatternBinding(pattern, arg_value, func_env,
+                                                                engine, VariableType::Var);
+                    } else {
+                        Value arg_value;
+                        bool use_default = (i >= args.size()) || args[i].isUndefined();
 
-                    auto* args_factory = engine->getObjectFactory();
-                    auto* arguments_obj = args_factory->createJSObject();
-                    for(size_t i = 0; i < args.size(); ++i) {
-                        arguments_obj->setProperty(std::to_string(i), args[i]);
+                        if(use_default && default_ast) {
+                            arg_value = engine->evaluate(default_ast, func_env);
+                        } else if(i < args.size()) {
+                            arg_value = args[i];
+                        } else {
+                            arg_value = Value::undefined();
+                        }
+                        func_env->define(param_name, arg_value);
                     }
-                    arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
-                    func_env->define("arguments", Value(arguments_obj));
+                }
 
-                    try {
-                        return engine->evaluate(method_body, func_env);
-                    } catch(const ReturnException& e) {
-                        return e.getValue();
-                    }
-                });
+                auto* args_factory = engine->getObjectFactory();
+                auto* arguments_obj = args_factory->createJSObject();
+                for(size_t i = 0; i < args.size(); ++i) {
+                    arguments_obj->setProperty(std::to_string(i), args[i]);
+                }
+                arguments_obj->setProperty("length", Value(static_cast<double>(args.size())));
+                func_env->define("arguments", Value(arguments_obj));
+
+                try {
+                    return engine->evaluate(method_body, func_env);
+                } catch(const ReturnException& e) {
+                    return e.getValue();
+                }
+            });
         } else {
             // Static regular method
             method_func =
@@ -336,7 +336,8 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                     func_env->define("this", call_context.thisValue);
 
                     for(size_t i = 0; i < method_param_info.size(); ++i) {
-                        const auto& [param_name, default_ast, is_rest, pattern] = method_param_info[i];
+                        const auto& [param_name, default_ast, is_rest, pattern] =
+                            method_param_info[i];
 
                         if(is_rest) {
                             std::vector<Value> rest_args;
@@ -356,8 +357,8 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                             } else {
                                 arg_value = Value::undefined();
                             }
-                            StatementEvaluator::applyPatternBinding(
-                                pattern, arg_value, func_env, engine, VariableType::Var);
+                            StatementEvaluator::applyPatternBinding(pattern, arg_value, func_env,
+                                                                    engine, VariableType::Var);
                         } else {
                             Value arg_value;
                             bool use_default = (i >= args.size()) || args[i].isUndefined();
@@ -501,8 +502,8 @@ JSFunction* ClassBuilder::buildClass(const std::string& class_name,
                     } else {
                         arg_value = Value::undefined();
                     }
-                    StatementEvaluator::applyPatternBinding(
-                        pattern, arg_value, func_env, engine, VariableType::Var);
+                    StatementEvaluator::applyPatternBinding(pattern, arg_value, func_env, engine,
+                                                            VariableType::Var);
                 } else {
                     Value arg_value;
                     bool use_default = (i >= args.size()) || args[i].isUndefined();

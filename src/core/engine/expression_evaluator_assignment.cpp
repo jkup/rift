@@ -65,7 +65,7 @@ static Value applyCompoundOperation(const std::string& operator_, Value currentV
             return Value(currentValue.toString() + rightValue.toString());
         }
         return Value(left + right);
-    // Multiplicative/Additive operators (steps 2-5, Table 32)
+        // Multiplicative/Additive operators (steps 2-5, Table 32)
     } else if(operator_ == "-=") {
         return Value(left - right);
     } else if(operator_ == "*=") {
@@ -94,8 +94,8 @@ static Value applyCompoundOperation(const std::string& operator_, Value currentV
         return Value(static_cast<double>(leftInt | rightInt));
     } else if(operator_ == "^=") {
         return Value(static_cast<double>(leftInt ^ rightInt));
-    // 13.9 Bitwise Shift Operators
-    // Shift amount masked to 5 bits (& 0x1F) per spec
+        // 13.9 Bitwise Shift Operators
+        // Shift amount masked to 5 bits (& 0x1F) per spec
     } else if(operator_ == "<<=") {
         uint32_t shiftAmount = static_cast<uint32_t>(rightInt) & 0x1F;
         return Value(static_cast<double>(leftInt << shiftAmount));
@@ -210,8 +210,7 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
                     auto [found, desc] = obj->findPropertyDescriptor(property);
                     Value currentValue;
                     if(found && desc.is_accessor && desc.getter.isFunction()) {
-                        auto* getter_func =
-                            dynamic_cast<JSFunction*>(desc.getter.getObject());
+                        auto* getter_func = dynamic_cast<JSFunction*>(desc.getter.getObject());
                         if(getter_func) {
                             rift::core::CallContext getter_ctx(rift::core::CallType::Function,
                                                                object);
@@ -230,8 +229,7 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
                 auto [found, desc] = obj->findPropertyDescriptor(property);
                 if(found && desc.is_accessor) {
                     if(desc.setter.isFunction()) {
-                        auto* setter_func =
-                            dynamic_cast<JSFunction*>(desc.setter.getObject());
+                        auto* setter_func = dynamic_cast<JSFunction*>(desc.setter.getObject());
                         if(setter_func) {
                             rift::core::CallContext setter_ctx(rift::core::CallType::Function,
                                                                object);
@@ -458,8 +456,7 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
                 auto [found_w, desc_w] = obj->findPropertyDescriptor(property);
                 if(found_w && desc_w.is_accessor) {
                     if(desc_w.setter.isFunction()) {
-                        auto* setter_func =
-                            dynamic_cast<JSFunction*>(desc_w.setter.getObject());
+                        auto* setter_func = dynamic_cast<JSFunction*>(desc_w.setter.getObject());
                         if(setter_func) {
                             rift::core::CallContext setter_ctx(rift::core::CallType::Function,
                                                                object);
@@ -470,7 +467,8 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
                     obj->setProperty(property, newValue);
 
                     // Array exotic object: update length for numeric index assignments
-                    // @spec https://tc39.es/ecma262/#sec-array-exotic-objects-defineownproperty-p-desc
+                    // @spec
+                    // https://tc39.es/ecma262/#sec-array-exotic-objects-defineownproperty-p-desc
                     if(property != "length") {
                         size_t index;
                         if(EvaluationUtils::isValidArrayIndex(property, index)) {
@@ -482,9 +480,8 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
                                     if(index >= currentLength) {
                                         size_t newLength;
                                         if(EvaluationUtils::safeIncrementIndex(index, newLength)) {
-                                            obj->setProperty(
-                                                "length",
-                                                Value(static_cast<double>(newLength)));
+                                            obj->setProperty("length",
+                                                             Value(static_cast<double>(newLength)));
                                         }
                                     }
                                 }

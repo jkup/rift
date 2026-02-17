@@ -1,16 +1,5 @@
 #include "rift/builtins/temporal/plain_date.h"
 
-#include "temporal_rs/AnyCalendarKind.hpp"
-#include "temporal_rs/Calendar.hpp"
-#include "temporal_rs/DifferenceSettings.hpp"
-#include "temporal_rs/DisplayCalendar.hpp"
-#include "temporal_rs/Duration.hpp"
-#include "temporal_rs/PartialDate.hpp"
-#include "temporal_rs/PlainDate.hpp"
-
-#include "temporal_rs/PlainTime.hpp"
-#include "temporal_rs/TimeZone.hpp"
-
 #include "rift/builtins/temporal/duration.h"
 #include "rift/builtins/temporal/plain_date_time.h"
 #include "rift/builtins/temporal/plain_time.h"
@@ -19,6 +8,15 @@
 #include "rift/core/engine/javascript_exception.h"
 #include "rift/core/engine/this_helpers.h"
 #include "rift/memory/gc_protector.h"
+#include "temporal_rs/AnyCalendarKind.hpp"
+#include "temporal_rs/Calendar.hpp"
+#include "temporal_rs/DifferenceSettings.hpp"
+#include "temporal_rs/DisplayCalendar.hpp"
+#include "temporal_rs/Duration.hpp"
+#include "temporal_rs/PartialDate.hpp"
+#include "temporal_rs/PlainDate.hpp"
+#include "temporal_rs/PlainTime.hpp"
+#include "temporal_rs/TimeZone.hpp"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.PlainDate Objects (Sections 3.1-3.5)
@@ -44,8 +42,7 @@ using rift::core::extractThisObject;
 // Rift uses a global unordered_map<JSObject*, unique_ptr<PlainDate>>.
 // ============================================================================
 
-std::unordered_map<JSObject*, std::unique_ptr<temporal_rs::PlainDate>>
-    PlainDateRegistry::registry_;
+std::unordered_map<JSObject*, std::unique_ptr<temporal_rs::PlainDate>> PlainDateRegistry::registry_;
 
 void PlainDateRegistry::store(JSObject* obj, std::unique_ptr<temporal_rs::PlainDate> data) {
     registry_[obj] = std::move(data);
@@ -118,10 +115,14 @@ static std::unique_ptr<temporal_rs::PlainDate> parsePlainDateFromValue(const Val
         Value e = obj->getProperty("era");
         Value ey = obj->getProperty("eraYear");
 
-        if(!y.isUndefined()) partial.year = static_cast<int32_t>(y.toNumber());
-        if(!mo.isUndefined()) partial.month = static_cast<uint8_t>(mo.toNumber());
-        if(!d.isUndefined()) partial.day = static_cast<uint8_t>(d.toNumber());
-        if(!ey.isUndefined()) partial.era_year = static_cast<int32_t>(ey.toNumber());
+        if(!y.isUndefined())
+            partial.year = static_cast<int32_t>(y.toNumber());
+        if(!mo.isUndefined())
+            partial.month = static_cast<uint8_t>(mo.toNumber());
+        if(!d.isUndefined())
+            partial.day = static_cast<uint8_t>(d.toNumber());
+        if(!ey.isUndefined())
+            partial.era_year = static_cast<int32_t>(ey.toNumber());
 
         // month_code and era are string_view — keep backing strings alive
         std::string month_code_str;
@@ -177,16 +178,26 @@ static std::unique_ptr<temporal_rs::Duration> parseDurationForDate(const Value& 
         Value us = obj->getProperty("microseconds");
         Value ns = obj->getProperty("nanoseconds");
 
-        if(!y.isUndefined()) partial.years = static_cast<int64_t>(y.toNumber());
-        if(!mo.isUndefined()) partial.months = static_cast<int64_t>(mo.toNumber());
-        if(!w.isUndefined()) partial.weeks = static_cast<int64_t>(w.toNumber());
-        if(!d.isUndefined()) partial.days = static_cast<int64_t>(d.toNumber());
-        if(!h.isUndefined()) partial.hours = static_cast<int64_t>(h.toNumber());
-        if(!mi.isUndefined()) partial.minutes = static_cast<int64_t>(mi.toNumber());
-        if(!s.isUndefined()) partial.seconds = static_cast<int64_t>(s.toNumber());
-        if(!ms.isUndefined()) partial.milliseconds = static_cast<int64_t>(ms.toNumber());
-        if(!us.isUndefined()) partial.microseconds = us.toNumber();
-        if(!ns.isUndefined()) partial.nanoseconds = ns.toNumber();
+        if(!y.isUndefined())
+            partial.years = static_cast<int64_t>(y.toNumber());
+        if(!mo.isUndefined())
+            partial.months = static_cast<int64_t>(mo.toNumber());
+        if(!w.isUndefined())
+            partial.weeks = static_cast<int64_t>(w.toNumber());
+        if(!d.isUndefined())
+            partial.days = static_cast<int64_t>(d.toNumber());
+        if(!h.isUndefined())
+            partial.hours = static_cast<int64_t>(h.toNumber());
+        if(!mi.isUndefined())
+            partial.minutes = static_cast<int64_t>(mi.toNumber());
+        if(!s.isUndefined())
+            partial.seconds = static_cast<int64_t>(s.toNumber());
+        if(!ms.isUndefined())
+            partial.milliseconds = static_cast<int64_t>(ms.toNumber());
+        if(!us.isUndefined())
+            partial.microseconds = us.toNumber();
+        if(!ns.isUndefined())
+            partial.nanoseconds = ns.toNumber();
 
         auto result = temporal_rs::Duration::from_partial_duration(partial);
         if(!result.is_ok()) {
@@ -220,7 +231,7 @@ Value TemporalPlainDate::wrapPlainDate(std::unique_ptr<temporal_rs::PlainDate> d
 // 3.2 Properties of the Temporal.PlainDate Constructor
 // @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plaindate-constructor
 void TemporalPlainDate::setupStaticMethods(JSObject* constructor,
-                                            rift::memory::ObjectFactory* factory) {
+                                           rift::memory::ObjectFactory* factory) {
     RIFT_STATIC_METHOD(constructor, "from", TemporalPlainDate::from);
     RIFT_STATIC_METHOD(constructor, "compare", TemporalPlainDate::compare);
 }
@@ -228,7 +239,7 @@ void TemporalPlainDate::setupStaticMethods(JSObject* constructor,
 // 3.3 Properties of the Temporal.PlainDate Prototype Object
 // @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plaindate-prototype-object
 void TemporalPlainDate::setupPrototypeMethods(JSObject* prototype,
-                                               rift::memory::ObjectFactory* factory) {
+                                              rift::memory::ObjectFactory* factory) {
     // Getters
     RIFT_GETTER(prototype, "year", TemporalPlainDate::year);
     RIFT_GETTER(prototype, "month", TemporalPlainDate::month);
@@ -345,8 +356,7 @@ Value TemporalPlainDate::year(const CallContext& ctx, const std::vector<Value>& 
 Value TemporalPlainDate::month(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: month called on non-PlainDate"));
+        throw rift::core::JavaScriptException(Value("TypeError: month called on non-PlainDate"));
     }
     return Value(static_cast<double>(data->month()));
 }
@@ -485,9 +495,12 @@ Value TemporalPlainDate::with(const CallContext& ctx, const std::vector<Value>& 
     Value mc = obj->getProperty("monthCode");
     Value d = obj->getProperty("day");
 
-    if(!y.isUndefined()) partial.year = static_cast<int32_t>(y.toNumber());
-    if(!mo.isUndefined()) partial.month = static_cast<uint8_t>(mo.toNumber());
-    if(!d.isUndefined()) partial.day = static_cast<uint8_t>(d.toNumber());
+    if(!y.isUndefined())
+        partial.year = static_cast<int32_t>(y.toNumber());
+    if(!mo.isUndefined())
+        partial.month = static_cast<uint8_t>(mo.toNumber());
+    if(!d.isUndefined())
+        partial.day = static_cast<uint8_t>(d.toNumber());
 
     std::string month_code_str;
     if(!mc.isUndefined()) {
@@ -532,8 +545,7 @@ Value TemporalPlainDate::add(const CallContext& ctx, const std::vector<Value>& a
 Value TemporalPlainDate::subtract(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: subtract called on non-PlainDate"));
+        throw rift::core::JavaScriptException(Value("TypeError: subtract called on non-PlainDate"));
     }
 
     if(args.empty()) {
@@ -556,8 +568,7 @@ Value TemporalPlainDate::subtract(const CallContext& ctx, const std::vector<Valu
 Value TemporalPlainDate::until(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: until called on non-PlainDate"));
+        throw rift::core::JavaScriptException(Value("TypeError: until called on non-PlainDate"));
     }
 
     if(args.empty()) {
@@ -567,7 +578,7 @@ Value TemporalPlainDate::until(const CallContext& ctx, const std::vector<Value>&
 
     auto other = parsePlainDateFromValue(args[0]);
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->until(*other, settings);
     if(!result.is_ok()) {
@@ -583,8 +594,7 @@ Value TemporalPlainDate::until(const CallContext& ctx, const std::vector<Value>&
 Value TemporalPlainDate::since(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: since called on non-PlainDate"));
+        throw rift::core::JavaScriptException(Value("TypeError: since called on non-PlainDate"));
     }
 
     if(args.empty()) {
@@ -594,7 +604,7 @@ Value TemporalPlainDate::since(const CallContext& ctx, const std::vector<Value>&
 
     auto other = parsePlainDateFromValue(args[0]);
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->since(*other, settings);
     if(!result.is_ok()) {
@@ -609,8 +619,7 @@ Value TemporalPlainDate::since(const CallContext& ctx, const std::vector<Value>&
 Value TemporalPlainDate::equals(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: equals called on non-PlainDate"));
+        throw rift::core::JavaScriptException(Value("TypeError: equals called on non-PlainDate"));
     }
 
     if(args.empty() || (!args[0].isObject() && !args[0].isFunction())) {
@@ -691,8 +700,7 @@ Value TemporalPlainDate::toZonedDateTime(const CallContext& ctx, const std::vect
 
     auto tz_result = temporal_rs::TimeZone::try_from_str(tz_str);
     if(!tz_result.is_ok()) {
-        throw rift::core::JavaScriptException(
-            Value("RangeError: Invalid timezone: " + tz_str));
+        throw rift::core::JavaScriptException(Value("RangeError: Invalid timezone: " + tz_str));
     }
     auto tz = std::move(tz_result).ok().value();
 
@@ -709,8 +717,7 @@ Value TemporalPlainDate::toZonedDateTime(const CallContext& ctx, const std::vect
 Value TemporalPlainDate::toString(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainDateData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: toString called on non-PlainDate"));
+        throw rift::core::JavaScriptException(Value("TypeError: toString called on non-PlainDate"));
     }
 
     return Value(data->to_ixdtf_string(temporal_rs::DisplayCalendar::Auto));

@@ -24,8 +24,8 @@ void EvalError::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFa
 void EvalError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     prototype->defineProperty(
         "name", rift::runtime::PropertyDescriptor(Value("EvalError"), true, false, true));
-    prototype->defineProperty(
-        "message", rift::runtime::PropertyDescriptor(Value(""), true, false, true));
+    prototype->defineProperty("message",
+                              rift::runtime::PropertyDescriptor(Value(""), true, false, true));
     RIFT_METHOD(prototype, "toString", EvalError::toString);
 }
 

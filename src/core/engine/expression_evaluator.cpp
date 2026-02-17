@@ -186,7 +186,7 @@ Value ExpressionEvaluator::evaluateLiteral(std::shared_ptr<ASTNode> node,
         // StringLiteral: Return the SV of StringLiteral.
         if(node->metadata == "string") {
             return Value(node->value);
-        // NumericLiteral: Return the NumericValue of NumericLiteral.
+            // NumericLiteral: Return the NumericValue of NumericLiteral.
         } else if(node->metadata == "number") {
             try {
                 double num = parseNumericLiteral(node->value);
@@ -200,14 +200,14 @@ Value ExpressionEvaluator::evaluateLiteral(std::shared_ptr<ASTNode> node,
                           << "': " << e.what() << std::endl;
                 return Value(std::numeric_limits<double>::infinity());  // fallback to infinity
             }
-        // BooleanLiteral: true => Return true. false => Return false.
+            // BooleanLiteral: true => Return true. false => Return false.
         } else if(node->metadata == "boolean") {
             return Value(node->value == "true");
-        // NullLiteral: Return null.
+            // NullLiteral: Return null.
         } else if(node->metadata == "null") {
             return Value::null();
-        // UndefinedLiteral (not in spec grammar — undefined is an identifier, not a literal)
-        // DEVIATION: Rift treats 'undefined' as a literal when the parser tags it as such.
+            // UndefinedLiteral (not in spec grammar — undefined is an identifier, not a literal)
+            // DEVIATION: Rift treats 'undefined' as a literal when the parser tags it as such.
         } else if(node->metadata == "undefined") {
             return Value::undefined();
         }
@@ -477,7 +477,7 @@ Value ExpressionEvaluator::evaluateUnaryExpression(std::shared_ptr<ASTNode> node
     // -----------------------------------------------------------------------
     if(node->value == "void") {
         engine->evaluate(node->children[0], env);  // Steps 1-2: evaluate for side effects
-        return Value::undefined();                  // Step 3: return undefined
+        return Value::undefined();                 // Step 3: return undefined
     }
 
     // -----------------------------------------------------------------------
@@ -640,7 +640,7 @@ Value ExpressionEvaluator::evaluateTemplateLiteral(std::shared_ptr<ASTNode> node
 // SIMPLIFIED: Rift parses the /<pattern>/<flags> format from the raw token string,
 // then delegates to the RegExp constructor rather than calling RegExpCreate directly.
 Value ExpressionEvaluator::evaluateRegExpLiteral(std::shared_ptr<ASTNode> node,
-                                                  std::shared_ptr<Environment> env, Rift* engine) {
+                                                 std::shared_ptr<Environment> env, Rift* engine) {
     const std::string& raw = node->value;
 
     // Steps 1-2: Extract pattern and flags from the raw "/<pattern>/<flags>" string

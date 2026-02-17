@@ -1,17 +1,16 @@
 #include "rift/builtins/temporal/plain_time.h"
 
+#include "rift/builtins/temporal/duration.h"
+#include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/this_helpers.h"
+#include "rift/memory/gc_protector.h"
 #include "temporal_rs/DifferenceSettings.hpp"
 #include "temporal_rs/Duration.hpp"
 #include "temporal_rs/PartialTime.hpp"
 #include "temporal_rs/PlainTime.hpp"
 #include "temporal_rs/Precision.hpp"
 #include "temporal_rs/ToStringRoundingOptions.hpp"
-
-#include "rift/builtins/temporal/duration.h"
-#include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/javascript_exception.h"
-#include "rift/core/engine/this_helpers.h"
-#include "rift/memory/gc_protector.h"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.PlainTime Objects (Sections 4.1-4.5)
@@ -116,12 +115,18 @@ static std::unique_ptr<temporal_rs::PlainTime> parsePlainTimeFromValue(const Val
         Value us = obj->getProperty("microsecond");
         Value ns = obj->getProperty("nanosecond");
 
-        if(!h.isUndefined()) partial.hour = static_cast<uint8_t>(h.toNumber());
-        if(!mi.isUndefined()) partial.minute = static_cast<uint8_t>(mi.toNumber());
-        if(!s.isUndefined()) partial.second = static_cast<uint8_t>(s.toNumber());
-        if(!ms.isUndefined()) partial.millisecond = static_cast<uint16_t>(ms.toNumber());
-        if(!us.isUndefined()) partial.microsecond = static_cast<uint16_t>(us.toNumber());
-        if(!ns.isUndefined()) partial.nanosecond = static_cast<uint16_t>(ns.toNumber());
+        if(!h.isUndefined())
+            partial.hour = static_cast<uint8_t>(h.toNumber());
+        if(!mi.isUndefined())
+            partial.minute = static_cast<uint8_t>(mi.toNumber());
+        if(!s.isUndefined())
+            partial.second = static_cast<uint8_t>(s.toNumber());
+        if(!ms.isUndefined())
+            partial.millisecond = static_cast<uint16_t>(ms.toNumber());
+        if(!us.isUndefined())
+            partial.microsecond = static_cast<uint16_t>(us.toNumber());
+        if(!ns.isUndefined())
+            partial.nanosecond = static_cast<uint16_t>(ns.toNumber());
 
         auto result = temporal_rs::PlainTime::from_partial(partial, std::nullopt);
         if(!result.is_ok()) {
@@ -165,16 +170,26 @@ static std::unique_ptr<temporal_rs::Duration> parseDurationForTime(const Value& 
         Value us = obj->getProperty("microseconds");
         Value ns = obj->getProperty("nanoseconds");
 
-        if(!y.isUndefined()) partial.years = static_cast<int64_t>(y.toNumber());
-        if(!mo.isUndefined()) partial.months = static_cast<int64_t>(mo.toNumber());
-        if(!w.isUndefined()) partial.weeks = static_cast<int64_t>(w.toNumber());
-        if(!d.isUndefined()) partial.days = static_cast<int64_t>(d.toNumber());
-        if(!h.isUndefined()) partial.hours = static_cast<int64_t>(h.toNumber());
-        if(!mi.isUndefined()) partial.minutes = static_cast<int64_t>(mi.toNumber());
-        if(!s.isUndefined()) partial.seconds = static_cast<int64_t>(s.toNumber());
-        if(!ms.isUndefined()) partial.milliseconds = static_cast<int64_t>(ms.toNumber());
-        if(!us.isUndefined()) partial.microseconds = us.toNumber();
-        if(!ns.isUndefined()) partial.nanoseconds = ns.toNumber();
+        if(!y.isUndefined())
+            partial.years = static_cast<int64_t>(y.toNumber());
+        if(!mo.isUndefined())
+            partial.months = static_cast<int64_t>(mo.toNumber());
+        if(!w.isUndefined())
+            partial.weeks = static_cast<int64_t>(w.toNumber());
+        if(!d.isUndefined())
+            partial.days = static_cast<int64_t>(d.toNumber());
+        if(!h.isUndefined())
+            partial.hours = static_cast<int64_t>(h.toNumber());
+        if(!mi.isUndefined())
+            partial.minutes = static_cast<int64_t>(mi.toNumber());
+        if(!s.isUndefined())
+            partial.seconds = static_cast<int64_t>(s.toNumber());
+        if(!ms.isUndefined())
+            partial.milliseconds = static_cast<int64_t>(ms.toNumber());
+        if(!us.isUndefined())
+            partial.microseconds = us.toNumber();
+        if(!ns.isUndefined())
+            partial.nanoseconds = ns.toNumber();
 
         auto result = temporal_rs::Duration::from_partial_duration(partial);
         if(!result.is_ok()) {
@@ -212,7 +227,7 @@ Value TemporalPlainTime::wrapPlainTime(std::unique_ptr<temporal_rs::PlainTime> t
 // ============================================================================
 
 void TemporalPlainTime::setupStaticMethods(JSObject* constructor,
-                                            rift::memory::ObjectFactory* factory) {
+                                           rift::memory::ObjectFactory* factory) {
     // 4.2.2 Temporal.PlainTime.from ( item [ , options ] )
     RIFT_STATIC_METHOD(constructor, "from", TemporalPlainTime::from);
     // 4.2.3 Temporal.PlainTime.compare ( one, two )
@@ -225,11 +240,11 @@ void TemporalPlainTime::setupStaticMethods(JSObject* constructor,
 // ----------------------------------------------------------------------------
 
 void TemporalPlainTime::setupPrototypeMethods(JSObject* prototype,
-                                               rift::memory::ObjectFactory* factory) {
+                                              rift::memory::ObjectFactory* factory) {
     // 4.3.4-4.3.9: Time component getters
-    RIFT_GETTER(prototype, "hour", TemporalPlainTime::hour);         // 4.3.4
-    RIFT_GETTER(prototype, "minute", TemporalPlainTime::minute);     // 4.3.5
-    RIFT_GETTER(prototype, "second", TemporalPlainTime::second);     // 4.3.6
+    RIFT_GETTER(prototype, "hour", TemporalPlainTime::hour);                // 4.3.4
+    RIFT_GETTER(prototype, "minute", TemporalPlainTime::minute);            // 4.3.5
+    RIFT_GETTER(prototype, "second", TemporalPlainTime::second);            // 4.3.6
     RIFT_GETTER(prototype, "millisecond", TemporalPlainTime::millisecond);  // 4.3.7
     RIFT_GETTER(prototype, "microsecond", TemporalPlainTime::microsecond);  // 4.3.8
     RIFT_GETTER(prototype, "nanosecond", TemporalPlainTime::nanosecond);    // 4.3.9
@@ -285,8 +300,8 @@ Value TemporalPlainTime::constructor(const CallContext& ctx, const std::vector<V
     uint16_t us_val = args.size() > 4 ? static_cast<uint16_t>(args[4].toNumber()) : 0;
     uint16_t ns_val = args.size() > 5 ? static_cast<uint16_t>(args[5].toNumber()) : 0;
 
-    auto result = temporal_rs::PlainTime::try_new(hour_val, minute_val, second_val,
-                                                   ms_val, us_val, ns_val);
+    auto result =
+        temporal_rs::PlainTime::try_new(hour_val, minute_val, second_val, ms_val, us_val, ns_val);
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
     }
@@ -420,12 +435,18 @@ Value TemporalPlainTime::with(const CallContext& ctx, const std::vector<Value>& 
     Value us = obj->getProperty("microsecond");
     Value ns = obj->getProperty("nanosecond");
 
-    if(!h.isUndefined()) partial.hour = static_cast<uint8_t>(h.toNumber());
-    if(!mi.isUndefined()) partial.minute = static_cast<uint8_t>(mi.toNumber());
-    if(!s.isUndefined()) partial.second = static_cast<uint8_t>(s.toNumber());
-    if(!ms.isUndefined()) partial.millisecond = static_cast<uint16_t>(ms.toNumber());
-    if(!us.isUndefined()) partial.microsecond = static_cast<uint16_t>(us.toNumber());
-    if(!ns.isUndefined()) partial.nanosecond = static_cast<uint16_t>(ns.toNumber());
+    if(!h.isUndefined())
+        partial.hour = static_cast<uint8_t>(h.toNumber());
+    if(!mi.isUndefined())
+        partial.minute = static_cast<uint8_t>(mi.toNumber());
+    if(!s.isUndefined())
+        partial.second = static_cast<uint8_t>(s.toNumber());
+    if(!ms.isUndefined())
+        partial.millisecond = static_cast<uint16_t>(ms.toNumber());
+    if(!us.isUndefined())
+        partial.microsecond = static_cast<uint16_t>(us.toNumber());
+    if(!ns.isUndefined())
+        partial.nanosecond = static_cast<uint16_t>(ns.toNumber());
 
     auto result = data->with(partial, std::nullopt);
     if(!result.is_ok()) {
@@ -468,8 +489,7 @@ Value TemporalPlainTime::add(const CallContext& ctx, const std::vector<Value>& a
 Value TemporalPlainTime::subtract(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: subtract called on non-PlainTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: subtract called on non-PlainTime"));
     }
 
     if(args.empty()) {
@@ -498,8 +518,7 @@ Value TemporalPlainTime::subtract(const CallContext& ctx, const std::vector<Valu
 Value TemporalPlainTime::until(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: until called on non-PlainTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: until called on non-PlainTime"));
     }
 
     if(args.empty()) {
@@ -509,7 +528,7 @@ Value TemporalPlainTime::until(const CallContext& ctx, const std::vector<Value>&
 
     auto other = parsePlainTimeFromValue(args[0]);
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->until(*other, settings);
     if(!result.is_ok()) {
@@ -526,8 +545,7 @@ Value TemporalPlainTime::until(const CallContext& ctx, const std::vector<Value>&
 Value TemporalPlainTime::since(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: since called on non-PlainTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: since called on non-PlainTime"));
     }
 
     if(args.empty()) {
@@ -537,7 +555,7 @@ Value TemporalPlainTime::since(const CallContext& ctx, const std::vector<Value>&
 
     auto other = parsePlainTimeFromValue(args[0]);
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->since(*other, settings);
     if(!result.is_ok()) {
@@ -552,8 +570,7 @@ Value TemporalPlainTime::since(const CallContext& ctx, const std::vector<Value>&
 Value TemporalPlainTime::equals(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: equals called on non-PlainTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: equals called on non-PlainTime"));
     }
 
     if(args.empty() || (!args[0].isObject() && !args[0].isFunction())) {
@@ -580,12 +597,11 @@ Value TemporalPlainTime::equals(const CallContext& ctx, const std::vector<Value>
 Value TemporalPlainTime::toString(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: toString called on non-PlainTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: toString called on non-PlainTime"));
     }
 
-    temporal_rs::ToStringRoundingOptions options{
-        temporal_rs::Precision{false, std::nullopt}, std::nullopt, std::nullopt};
+    temporal_rs::ToStringRoundingOptions options{temporal_rs::Precision{false, std::nullopt},
+                                                 std::nullopt, std::nullopt};
 
     auto result = data->to_ixdtf_string(options);
     if(!result.is_ok()) {

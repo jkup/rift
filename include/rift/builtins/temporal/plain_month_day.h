@@ -40,11 +40,13 @@ class TemporalPlainMonthDay : public BuiltinBase<TemporalPlainMonthDay> {
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 10.2 Properties of the Temporal.PlainMonthDay Constructor
-    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-constructor
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-constructor
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
 
     /// 10.3 Properties of the Temporal.PlainMonthDay Prototype Object
-    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-prototype-object
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-prototype-object
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
     /// 10.2.2 Temporal.PlainMonthDay.from ( item [ , options ] )

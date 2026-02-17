@@ -94,7 +94,8 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
         Value this_value = env->get("this");
 
         // Step 4. Let argList be ? ArgumentListEvaluation of Arguments.
-        // @spec https://tc39.es/ecma262/#sec-argument-lists-runtime-semantics-argumentlistevaluation
+        // @spec
+        // https://tc39.es/ecma262/#sec-argument-lists-runtime-semantics-argumentlistevaluation
         std::vector<Value> args;
         for(size_t i = 1; i < node->children.size(); ++i) {
             auto& arg_node = node->children[i];
@@ -257,8 +258,7 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
             // Handle optional chaining on method call: obj?.method()
             bool callee_optional = (callee_node->metadata == "optional" ||
                                     callee_node->metadata == "computed-optional");
-            if(callee_optional &&
-               (this_value.isUndefined() || this_value.isNull())) {
+            if(callee_optional && (this_value.isUndefined() || this_value.isNull())) {
                 return Value::undefined();
             }
 
@@ -287,8 +287,7 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
                 if(obj) {
                     auto [found, desc] = obj->findPropertyDescriptor(property);
                     if(found && desc.is_accessor && desc.getter.isFunction()) {
-                        auto* getter_func =
-                            dynamic_cast<JSFunction*>(desc.getter.getObject());
+                        auto* getter_func = dynamic_cast<JSFunction*>(desc.getter.getObject());
                         if(getter_func) {
                             rift::core::CallContext getter_ctx(rift::core::CallType::Function,
                                                                this_value);
@@ -366,8 +365,8 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
                         if(stmt->type == ASTNodeType::ExpressionStatement &&
                            !stmt->children.empty()) {
                             const auto& expr = stmt->children[0];
-                            if(expr->type == ASTNodeType::Literal &&
-                               expr->metadata == "string" && expr->value == "use strict") {
+                            if(expr->type == ASTNodeType::Literal && expr->metadata == "string" &&
+                               expr->value == "use strict") {
                                 eval_code_strict = true;
                             }
                             continue;
@@ -513,8 +512,7 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
 
     // Optional chaining (?.) — 13.3.8.1 step 5:
     // If baseValue is undefined or null, return undefined (short-circuit).
-    bool is_optional =
-        (node->metadata == "optional" || node->metadata == "computed-optional");
+    bool is_optional = (node->metadata == "optional" || node->metadata == "computed-optional");
     if(is_optional && (object.isUndefined() || object.isNull())) {
         return Value::undefined();
     }
@@ -680,7 +678,8 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
                                     break;
                                 }
 
-                                // Step 4c. Perform CreateDataPropertyOrThrow(array, nextIndex, next).
+                                // Step 4c. Perform CreateDataPropertyOrThrow(array, nextIndex,
+                                // next).
                                 Value value = result_obj->getProperty("value");
                                 elements.push_back(value);
                             }
@@ -736,11 +735,13 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
 // 7. Perform ! CreateDataPropertyOrThrow(obj, propKey, propValue).
 //
 // PropertyDefinitionEvaluation for MethodDefinition (get/set):
-// @spec https://tc39.es/ecma262/#sec-method-definitions-runtime-semantics-propertydefinitionevaluation
+// @spec
+// https://tc39.es/ecma262/#sec-method-definitions-runtime-semantics-propertydefinitionevaluation
 // 1. Let propKey be ? Evaluation of PropertyName.
 // 2. ... (create closure)
 // 3. Perform SetFunctionName / MakeMethod
-// 4. Let desc be PropertyDescriptor { [[Get]]/[[Set]], [[Enumerable]]: true, [[Configurable]]: true }.
+// 4. Let desc be PropertyDescriptor { [[Get]]/[[Set]], [[Enumerable]]: true, [[Configurable]]: true
+// }.
 // 5. Perform ? DefinePropertyOrThrow(obj, propKey, desc).
 //
 // SIMPLIFIED: Rift stores children as key-value pairs (key, value, key, value, ...)
@@ -770,7 +771,8 @@ Value ExpressionEvaluator::evaluateObjectLiteral(std::shared_ptr<ASTNode> node,
         auto value_node = node->children[i + 1];
 
         // PropertyDefinitionEvaluation step 1: Let propKey be ? Evaluation of PropertyName.
-        // @spec https://tc39.es/ecma262/#sec-object-initializer-runtime-semantics-propertydefinitionevaluation
+        // @spec
+        // https://tc39.es/ecma262/#sec-object-initializer-runtime-semantics-propertydefinitionevaluation
         std::string key;
         if(key_node->metadata == "computed_key" && !key_node->children.empty()) {
             // ComputedPropertyName : [ AssignmentExpression ]
@@ -801,7 +803,8 @@ Value ExpressionEvaluator::evaluateObjectLiteral(std::shared_ptr<ASTNode> node,
         if(value_node->metadata == "getter" || value_node->metadata == "setter") {
             // MethodDefinition : get PropertyName ( ) { FunctionBody }
             // MethodDefinition : set PropertyName ( PropertySetParameterList ) { FunctionBody }
-            // @spec https://tc39.es/ecma262/#sec-method-definitions-runtime-semantics-propertydefinitionevaluation
+            // @spec
+            // https://tc39.es/ecma262/#sec-method-definitions-runtime-semantics-propertydefinitionevaluation
             Value func_value = engine->evaluate(value_node, env);
 
             // Step 4-5. Build/merge the accessor PropertyDescriptor.
@@ -880,11 +883,9 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
     std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool, std::shared_ptr<ASTNode>>>
         param_info;
     for(const auto& param : param_list->children) {
-        if(param->type == ASTNodeType::ObjectPattern ||
-           param->type == ASTNodeType::ArrayPattern) {
+        if(param->type == ASTNodeType::ObjectPattern || param->type == ASTNodeType::ArrayPattern) {
             param_info.emplace_back("", nullptr, false, param);
-        } else if(param->type == ASTNodeType::AssignmentPattern &&
-                  param->children.size() >= 2 &&
+        } else if(param->type == ASTNodeType::AssignmentPattern && param->children.size() >= 2 &&
                   (param->children[0]->type == ASTNodeType::ObjectPattern ||
                    param->children[0]->type == ASTNodeType::ArrayPattern)) {
             param_info.emplace_back("", param->children[1], false, param->children[0]);
@@ -978,8 +979,8 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
                     } else {
                         arg_value = Value::undefined();
                     }
-                    StatementEvaluator::applyPatternBinding(
-                        pattern, arg_value, func_env, engine, VariableType::Var);
+                    StatementEvaluator::applyPatternBinding(pattern, arg_value, func_env, engine,
+                                                            VariableType::Var);
                 } else {
                     Value arg_value;
 
@@ -1031,8 +1032,7 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
     // @spec https://tc39.es/ecma262/#sec-setfunctionname
     // "name" property: configurable, not writable, not enumerable
     std::string func_name = node->value;  // May be empty for anonymous functions
-    func->defineProperty(
-        "name", runtime::PropertyDescriptor(Value(func_name), false, false, true));
+    func->defineProperty("name", runtime::PropertyDescriptor(Value(func_name), false, false, true));
 
     // SetFunctionLength: number of formal params before first with default or rest
     // @spec https://tc39.es/ecma262/#sec-setfunctionlength
@@ -1103,11 +1103,9 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
     std::vector<std::tuple<std::string, std::shared_ptr<ASTNode>, bool, std::shared_ptr<ASTNode>>>
         param_info;
     for(const auto& param : param_list->children) {
-        if(param->type == ASTNodeType::ObjectPattern ||
-           param->type == ASTNodeType::ArrayPattern) {
+        if(param->type == ASTNodeType::ObjectPattern || param->type == ASTNodeType::ArrayPattern) {
             param_info.emplace_back("", nullptr, false, param);
-        } else if(param->type == ASTNodeType::AssignmentPattern &&
-                  param->children.size() >= 2 &&
+        } else if(param->type == ASTNodeType::AssignmentPattern && param->children.size() >= 2 &&
                   (param->children[0]->type == ASTNodeType::ObjectPattern ||
                    param->children[0]->type == ASTNodeType::ArrayPattern)) {
             param_info.emplace_back("", param->children[1], false, param->children[0]);
@@ -1178,8 +1176,8 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
                     } else {
                         arg_value = Value::undefined();
                     }
-                    StatementEvaluator::applyPatternBinding(
-                        pattern, arg_value, func_env, engine, VariableType::Var);
+                    StatementEvaluator::applyPatternBinding(pattern, arg_value, func_env, engine,
+                                                            VariableType::Var);
                 } else {
                     Value arg_value;
 
@@ -1231,8 +1229,8 @@ Value ExpressionEvaluator::evaluateArrowFunctionExpression(std::shared_ptr<ASTNo
     // Step 5. Perform SetFunctionName(closure, "").
     // @spec https://tc39.es/ecma262/#sec-setfunctionname
     std::string arrow_name = node->value;  // Usually empty for arrows
-    arrow_func->defineProperty(
-        "name", runtime::PropertyDescriptor(Value(arrow_name), false, false, true));
+    arrow_func->defineProperty("name",
+                               runtime::PropertyDescriptor(Value(arrow_name), false, false, true));
 
     // SetFunctionLength — ExpectedArgumentCount of ArrowParameters
     // @spec https://tc39.es/ecma262/#sec-setfunctionlength
@@ -1378,9 +1376,8 @@ Value ExpressionEvaluator::evaluateNewExpression(std::shared_ptr<ASTNode> node,
 // Spec algorithm:
 // 1. If BindingIdentifier is present:
 //    a. Let className be StringValue of BindingIdentifier.
-//    b. Let value be ? ClassDefinitionEvaluation of ClassTail with arguments className and className.
-//    c. ... (set function name)
-//    d. Return value.
+//    b. Let value be ? ClassDefinitionEvaluation of ClassTail with arguments className and
+//    className. c. ... (set function name) d. Return value.
 // 2. Else (no BindingIdentifier):
 //    a. Let value be ? ClassDefinitionEvaluation of ClassTail with arguments undefined and "".
 //    b. Return value.
@@ -1537,12 +1534,10 @@ Value ExpressionEvaluator::evaluateGeneratorFunctionExpression(std::shared_ptr<A
         param_info;
 
     for(const auto& param : param_list->children) {
-        if(param->type == ASTNodeType::ObjectPattern ||
-           param->type == ASTNodeType::ArrayPattern) {
+        if(param->type == ASTNodeType::ObjectPattern || param->type == ASTNodeType::ArrayPattern) {
             param_info.emplace_back("", nullptr, false, param);
             param_names.push_back("");
-        } else if(param->type == ASTNodeType::AssignmentPattern &&
-                  param->children.size() >= 2 &&
+        } else if(param->type == ASTNodeType::AssignmentPattern && param->children.size() >= 2 &&
                   (param->children[0]->type == ASTNodeType::ObjectPattern ||
                    param->children[0]->type == ASTNodeType::ArrayPattern)) {
             param_info.emplace_back("", param->children[1], false, param->children[0]);
@@ -1683,7 +1678,8 @@ Value ExpressionEvaluator::evaluateYieldExpression(std::shared_ptr<ASTNode> /*no
 }
 
 // 15.8.5 Runtime Semantics: Evaluation — AsyncFunctionExpression
-// AsyncFunctionExpression : async function BindingIdentifier? ( FormalParameters ) { AsyncFunctionBody }
+// AsyncFunctionExpression : async function BindingIdentifier? ( FormalParameters ) {
+// AsyncFunctionBody }
 // @spec https://tc39.es/ecma262/#sec-async-function-definitions-runtime-semantics-evaluation
 //
 // Spec algorithm:
@@ -1726,11 +1722,9 @@ Value ExpressionEvaluator::evaluateAsyncFunctionExpression(std::shared_ptr<ASTNo
     size_t param_count = 0;
 
     for(const auto& param : param_list->children) {
-        if(param->type == ASTNodeType::ObjectPattern ||
-           param->type == ASTNodeType::ArrayPattern) {
+        if(param->type == ASTNodeType::ObjectPattern || param->type == ASTNodeType::ArrayPattern) {
             param_info.emplace_back("", nullptr, false, param);
-        } else if(param->type == ASTNodeType::AssignmentPattern &&
-                  param->children.size() >= 2 &&
+        } else if(param->type == ASTNodeType::AssignmentPattern && param->children.size() >= 2 &&
                   (param->children[0]->type == ASTNodeType::ObjectPattern ||
                    param->children[0]->type == ASTNodeType::ArrayPattern)) {
             param_info.emplace_back("", param->children[1], false, param->children[0]);
@@ -1798,8 +1792,8 @@ Value ExpressionEvaluator::evaluateAsyncFunctionExpression(std::shared_ptr<ASTNo
                     } else {
                         arg_value = Value::undefined();
                     }
-                    StatementEvaluator::applyPatternBinding(
-                        pattern, arg_value, func_env, engine, VariableType::Var);
+                    StatementEvaluator::applyPatternBinding(pattern, arg_value, func_env, engine,
+                                                            VariableType::Var);
                 } else {
                     Value arg_value;
                     bool use_default = (i >= args.size()) || args[i].isUndefined();

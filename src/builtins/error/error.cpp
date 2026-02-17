@@ -33,13 +33,13 @@ void Error::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     // @spec https://tc39.es/ecma262/#sec-error.prototype.name
     // The initial value is "Error" (writable, non-enumerable, configurable per spec).
     prototype->defineProperty("name",
-        rift::runtime::PropertyDescriptor(Value("Error"), true, false, true));
+                              rift::runtime::PropertyDescriptor(Value("Error"), true, false, true));
 
     // 20.5.3.2 Error.prototype.message
     // @spec https://tc39.es/ecma262/#sec-error.prototype.message
     // The initial value is "" (writable, non-enumerable, configurable per spec).
     prototype->defineProperty("message",
-        rift::runtime::PropertyDescriptor(Value(""), true, false, true));
+                              rift::runtime::PropertyDescriptor(Value(""), true, false, true));
 
     // 20.5.3.4 Error.prototype.toString ( )
     // @spec https://tc39.es/ecma262/#sec-error.prototype.tostring

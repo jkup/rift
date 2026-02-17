@@ -35,7 +35,8 @@ class PlainTimeRegistry {
 /// @spec https://tc39.es/proposal-temporal/#sec-temporal-plaintime-objects
 class TemporalPlainTime : public BuiltinBase<TemporalPlainTime> {
   public:
-    /// 4.1.1 Temporal.PlainTime ( [ hour [ , minute [ , second [ , millisecond [ , microsecond [ , nanosecond ] ] ] ] ] ] )
+    /// 4.1.1 Temporal.PlainTime ( [ hour [ , minute [ , second [ , millisecond [ , microsecond [ ,
+    /// nanosecond ] ] ] ] ] ] )
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
@@ -44,7 +45,8 @@ class TemporalPlainTime : public BuiltinBase<TemporalPlainTime> {
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
 
     /// 4.3 Properties of the Temporal.PlainTime Prototype Object
-    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plaintime-prototype-object
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plaintime-prototype-object
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
     /// 4.2.2 Temporal.PlainTime.from ( item [ , options ] )

@@ -113,7 +113,7 @@ Value String::fromCharCode(const CallContext& ctx, const std::vector<Value>& arg
             int charCode = static_cast<int>(num) & 0xFFFF;  // Take lower 16 bits
             // SIMPLIFIED: Only ASCII range (0-127) is supported; non-ASCII code units
             // are replaced with '?'. Full UTF-16 support is not yet implemented.
-            if(charCode >= 0 && charCode <= 127) {          // Basic ASCII range
+            if(charCode >= 0 && charCode <= 127) {  // Basic ASCII range
                 result += static_cast<char>(charCode);
             } else {
                 result += '?';  // Placeholder for non-ASCII characters
@@ -967,8 +967,7 @@ Value String::replace(const CallContext& ctx, const std::vector<Value>& args) {
                 call_args.emplace_back(static_cast<double>(match_start));
                 call_args.emplace_back(str);
 
-                rift::core::CallContext cb_ctx(rift::core::CallType::Function,
-                                              Value::undefined());
+                rift::core::CallContext cb_ctx(rift::core::CallType::Function, Value::undefined());
                 Value replacement = func->call(cb_ctx, call_args);
 
                 // 15. Return the string-concatenation of preceding, replacement, and following.
@@ -983,9 +982,8 @@ Value String::replace(const CallContext& ctx, const std::vector<Value>& args) {
         size_t start_pos = 0;
 
         while(start_pos <= str.size()) {
-            if(!data->regex->Match(text, static_cast<int>(start_pos),
-                                   static_cast<int>(str.size()), RE2::UNANCHORED, submatch.data(),
-                                   num_submatch)) {
+            if(!data->regex->Match(text, static_cast<int>(start_pos), static_cast<int>(str.size()),
+                                   RE2::UNANCHORED, submatch.data(), num_submatch)) {
                 break;
             }
 
@@ -1267,8 +1265,7 @@ Value String::repeat(const CallContext& ctx, const std::vector<Value>& args) {
 
     // Guard against excessive memory allocation
     if(count > 0 && str.length() > 1000000 / count) {
-        throw rift::core::JavaScriptException(
-            Value("RangeError: Invalid string length"), 0, 0);
+        throw rift::core::JavaScriptException(Value("RangeError: Invalid string length"), 0, 0);
     }
 
     // 7. Return the String value that is made from n copies of S appended together.
@@ -1523,7 +1520,7 @@ Value String::replaceAll(const CallContext& ctx, const std::vector<Value>& args)
                     call_args.emplace_back(static_cast<double>(i));
                     call_args.emplace_back(str);
                     rift::core::CallContext cb_ctx(rift::core::CallType::Function,
-                                                  Value::undefined());
+                                                   Value::undefined());
                     Value repl = func->call(cb_ctx, call_args);
                     result += repl.toString();
                 }
@@ -1650,9 +1647,8 @@ Value String::matchAll(const CallContext& ctx, const std::vector<Value>& args) {
 
         while(start_pos <= str.size()) {
             absl::string_view text(str);
-            if(!regex_ptr->Match(text, static_cast<int>(start_pos),
-                                 static_cast<int>(str.size()), RE2::UNANCHORED, submatch.data(),
-                                 num_submatch)) {
+            if(!regex_ptr->Match(text, static_cast<int>(start_pos), static_cast<int>(str.size()),
+                                 RE2::UNANCHORED, submatch.data(), num_submatch)) {
                 break;
             }
 
@@ -1668,8 +1664,7 @@ Value String::matchAll(const CallContext& ctx, const std::vector<Value>& args) {
                 }
             }
 
-            auto* match_result =
-                Array::createArrayObject(getObjectFactory(), std::move(elements));
+            auto* match_result = Array::createArrayObject(getObjectFactory(), std::move(elements));
             match_result->setProperty("index", Value(static_cast<double>(match_index)));
             match_result->setProperty("input", Value(str));
             all_matches.push_back(Value(match_result));
@@ -1684,21 +1679,18 @@ Value String::matchAll(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     // Return an array with an iterator
-    auto* result_array =
-        Array::createArrayObject(getObjectFactory(), std::move(all_matches));
+    auto* result_array = Array::createArrayObject(getObjectFactory(), std::move(all_matches));
 
     // Create an iterator for the result array using Symbol.iterator
     // The array already has Symbol.iterator from its prototype, so matchAll
     // should return an iterator (not the array itself).
     // We need to call the array's @@iterator method.
-    std::string iterator_key =
-        core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
+    std::string iterator_key = core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
     Value iter_func = result_array->getProperty(iterator_key);
     if(iter_func.isFunction()) {
         auto* func = dynamic_cast<JSFunction*>(iter_func.getObject());
         if(func) {
-            rift::core::CallContext iter_ctx(rift::core::CallType::Function,
-                                            Value(result_array));
+            rift::core::CallContext iter_ctx(rift::core::CallType::Function, Value(result_array));
             std::vector<Value> no_args;
             return func->call(iter_ctx, no_args);
         }
@@ -1725,8 +1717,8 @@ Value String::normalize(const CallContext& ctx, const std::vector<Value>& args) 
     // 6. If f is not one of "NFC", "NFD", "NFKC", or "NFKD", throw a RangeError exception.
     if(form != "NFC" && form != "NFD" && form != "NFKC" && form != "NFKD") {
         throw rift::core::JavaScriptException(
-            Value("RangeError: The normalization form should be one of NFC, NFD, NFKC, NFKD"),
-            0, 0);
+            Value("RangeError: The normalization form should be one of NFC, NFD, NFKC, NFKD"), 0,
+            0);
     }
 
     // 7. Let ns be the String value that is the result of normalizing S into

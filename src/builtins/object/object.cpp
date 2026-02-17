@@ -386,8 +386,7 @@ Value Object::propertyIsEnumerable(const CallContext& ctx, const std::vector<Val
 
     // 3. Let desc be ? O.[[GetOwnProperty]](P).
     auto own_names = obj->getOwnPropertyNames();
-    bool is_own =
-        std::find(own_names.begin(), own_names.end(), propName) != own_names.end();
+    bool is_own = std::find(own_names.begin(), own_names.end(), propName) != own_names.end();
 
     // 4. If desc is undefined, return false.
     if(!is_own) {
@@ -1117,7 +1116,8 @@ Value Object::freeze(const CallContext& ctx, const std::vector<Value>& args) {
     //          1. Perform ? DefinePropertyOrThrow(O, k,
     //              { [[Configurable]]: false, [[Writable]]: false }).
     // DEVIATION: Rift sets writable=false on all properties including accessor descriptors.
-    // Spec only sets writable=false on data descriptors (accessor descriptors have no [[Writable]]).
+    // Spec only sets writable=false on data descriptors (accessor descriptors have no
+    // [[Writable]]).
     auto propNames = obj->getOwnPropertyNames();
     for(const auto& propName : propNames) {
         auto desc = obj->getOwnPropertyDescriptor(propName);

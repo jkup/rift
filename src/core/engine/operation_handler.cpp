@@ -213,15 +213,15 @@ Value OperationHandler::performBinaryOperation(const std::string& op, const Valu
         //   a. Return Number::equal(x, y).
         if(left.isNumber()) {
             return Value(left.toNumber() == right.toNumber());
-        // 3. Return SameValueNonNumeric(x, y).
-        // 7.2.12 SameValueNonNumeric ( x, y )
-        // @spec https://tc39.es/ecma262/#sec-samevaluenonnumeric
-        // Requires Type(x) is Type(y) and x is not a Number or BigInt.
-        //   1. If x is either null or undefined, return true.
-        //   2. If x is a String, return true if x and y are the same sequence of code units.
-        //   3. If x is a Boolean, return true if x and y are both true or both false.
-        //   4. If x is a Symbol, return true if x and y are the same Symbol value.
-        //   5. If x is an Object, return true if x and y are the same Object value.
+            // 3. Return SameValueNonNumeric(x, y).
+            // 7.2.12 SameValueNonNumeric ( x, y )
+            // @spec https://tc39.es/ecma262/#sec-samevaluenonnumeric
+            // Requires Type(x) is Type(y) and x is not a Number or BigInt.
+            //   1. If x is either null or undefined, return true.
+            //   2. If x is a String, return true if x and y are the same sequence of code units.
+            //   3. If x is a Boolean, return true if x and y are both true or both false.
+            //   4. If x is a Symbol, return true if x and y are the same Symbol value.
+            //   5. If x is an Object, return true if x and y are the same Object value.
         } else if(left.isString()) {
             return Value(left.toString() == right.toString());
         } else if(left.isBoolean()) {
@@ -279,7 +279,8 @@ Value OperationHandler::performBinaryOperation(const std::string& op, const Valu
     // @spec https://tc39.es/ecma262/#sec-islessthan
     //
     // IsLessThan algorithm:
-    //   1. If LeftFirst is true, let px be ? ToPrimitive(x, number). Let py be ? ToPrimitive(y, number).
+    //   1. If LeftFirst is true, let px be ? ToPrimitive(x, number). Let py be ? ToPrimitive(y,
+    //   number).
     //      Otherwise let py first, then px.
     //   2. If px is a String and py is a String, then
     //     a. Compare code unit sequences (lexicographic string comparison).

@@ -44,7 +44,8 @@ class TemporalPlainDate : public BuiltinBase<TemporalPlainDate> {
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
 
     /// 3.3 Properties of the Temporal.PlainDate Prototype Object
-    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plaindate-prototype-object
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plaindate-prototype-object
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
     /// 3.2.2 Temporal.PlainDate.from ( item [ , options ] )

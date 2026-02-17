@@ -41,9 +41,9 @@
 #include "rift/builtins/weakset/weakset.h"
 #include "rift/core/engine/engine.h"
 #include "rift/core/engine/javascript_exception.h"
-#include "rift/memory/gc_protector.h"
 #include "rift/frontend/lexer/lexer.h"
 #include "rift/frontend/parser/parser.h"
+#include "rift/memory/gc_protector.h"
 #include "rift/runtime/values/value.h"
 
 namespace rift::core {

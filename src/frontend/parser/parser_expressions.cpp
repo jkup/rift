@@ -198,7 +198,8 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
         }
         // 15.2 Function Definitions / 15.5 Generator Function Definitions
         // FunctionExpression :: function BindingIdentifier? ( FormalParameters ) { FunctionBody }
-        // GeneratorExpression :: function * BindingIdentifier? ( FormalParameters ) { GeneratorBody }
+        // GeneratorExpression :: function * BindingIdentifier? ( FormalParameters ) { GeneratorBody
+        // }
         // @spec https://tc39.es/ecma262/#sec-function-definitions
         // @spec https://tc39.es/ecma262/#sec-generator-function-definitions
         case TokenType::Function: {
@@ -528,15 +529,16 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             // ConditionalExpression :: ShortCircuitExpression ?
             //                          AssignmentExpression : AssignmentExpression
             case TokenType::QuestionMark:
-                op_precedence = 2;           // Ternary conditional
+                op_precedence = 2;            // Ternary conditional
                 is_right_associative = true;  // a ? b : c ? d : e == a ? b : (c ? d : e)
                 break;
             // 13.15 Assignment Operators
             // AssignmentExpression :: LeftHandSideExpression = AssignmentExpression
-            //                       | LeftHandSideExpression AssignmentOperator AssignmentExpression
-            //                       | LeftHandSideExpression &&= AssignmentExpression
-            //                       | LeftHandSideExpression ||= AssignmentExpression
-            //                       | LeftHandSideExpression ??= AssignmentExpression
+            //                       | LeftHandSideExpression AssignmentOperator
+            //                       AssignmentExpression | LeftHandSideExpression &&=
+            //                       AssignmentExpression | LeftHandSideExpression ||=
+            //                       AssignmentExpression | LeftHandSideExpression ??=
+            //                       AssignmentExpression
             // @spec https://tc39.es/ecma262/#sec-assignment-operators
             // INCOMPLETE: Logical assignment operators (&&=, ||=) are not yet
             // handled. Only ??= is present.
@@ -1072,7 +1074,8 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
 // The constructor can include member access (e.g., `new a.b.C()`).
 std::shared_ptr<ASTNode> Parser::parse_new_expression() {
     // MemberExpression :: new MemberExpression Arguments
-    // Parse the constructor - can be an identifier or member expression (e.g., new Temporal.Duration)
+    // Parse the constructor - can be an identifier or member expression (e.g., new
+    // Temporal.Duration)
     auto constructor = parse_primary();
 
     // Allow member access (dot and bracket) on the constructor expression
@@ -1284,8 +1287,8 @@ bool Parser::looks_like_arrow_params() {
                         brace_depth--;
                     } else if(tok == TokenType::RightBracket) {
                         bracket_depth--;
-                    } else if(tok == TokenType::Comma && paren_depth == 0 &&
-                              brace_depth == 0 && bracket_depth == 0) {
+                    } else if(tok == TokenType::Comma && paren_depth == 0 && brace_depth == 0 &&
+                              bracket_depth == 0) {
                         break;
                     } else if(tok == TokenType::EndOfFile) {
                         break;

@@ -64,7 +64,8 @@ class TemporalInstant : public BuiltinBase<TemporalInstant> {
     static Value compare(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 8.3.3 get Temporal.Instant.prototype.epochMilliseconds
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.instant.prototype.epochmilliseconds
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.instant.prototype.epochmilliseconds
     static Value epochMilliseconds(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 8.3.4 get Temporal.Instant.prototype.epochNanoseconds

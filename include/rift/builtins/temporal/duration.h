@@ -35,7 +35,8 @@ class DurationRegistry {
 /// @spec https://tc39.es/proposal-temporal/#sec-temporal-duration-objects
 class TemporalDuration : public BuiltinBase<TemporalDuration> {
   public:
-    /// 7.1.1 Temporal.Duration ( [ years [ , months [ , weeks [ , days [ , hours [ , minutes [ , seconds [ , milliseconds [ , microseconds [ , nanoseconds ] ] ] ] ] ] ] ] ] ] )
+    /// 7.1.1 Temporal.Duration ( [ years [ , months [ , weeks [ , days [ , hours [ , minutes [ ,
+    /// seconds [ , milliseconds [ , microseconds [ , nanoseconds ] ] ] ] ] ] ] ] ] ] )
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.duration
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
@@ -44,7 +45,8 @@ class TemporalDuration : public BuiltinBase<TemporalDuration> {
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
 
     /// 7.3 Properties of the Temporal.Duration Prototype Object
-    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-duration-prototype-object
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-duration-prototype-object
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
     /// 7.2.2 Temporal.Duration.from ( item )

@@ -6,9 +6,9 @@
 #include "rift/core/engine/javascript_exception.h"
 
 // Temporal verification (temporal_capi Rust FFI)
+#include "temporal_rs/Duration.hpp"
 #include "temporal_rs/Instant.hpp"
 #include "temporal_rs/PlainDate.hpp"
-#include "temporal_rs/Duration.hpp"
 
 void print_usage(const char* program_name) {
     std::cout << "Usage: " << program_name << " [options] [file]\n";
@@ -47,8 +47,8 @@ int verify_temporal() {
     }
 
     // Test 2: Create PlainDate
-    auto date_result = temporal_rs::PlainDate::try_new(
-        2025, 1, 15, temporal_rs::AnyCalendarKind::Iso);
+    auto date_result =
+        temporal_rs::PlainDate::try_new(2025, 1, 15, temporal_rs::AnyCalendarKind::Iso);
     if(!date_result.is_ok()) {
         std::cerr << "FAIL: Could not create PlainDate(2025, 1, 15)\n";
         return 1;

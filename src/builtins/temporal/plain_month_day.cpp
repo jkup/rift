@@ -1,17 +1,16 @@
 #include "rift/builtins/temporal/plain_month_day.h"
 
+#include "rift/builtins/temporal/plain_date.h"
+#include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/this_helpers.h"
+#include "rift/memory/gc_protector.h"
 #include "temporal_rs/AnyCalendarKind.hpp"
 #include "temporal_rs/ArithmeticOverflow.hpp"
 #include "temporal_rs/DisplayCalendar.hpp"
 #include "temporal_rs/PartialDate.hpp"
 #include "temporal_rs/PlainDate.hpp"
 #include "temporal_rs/PlainMonthDay.hpp"
-
-#include "rift/builtins/temporal/plain_date.h"
-#include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/javascript_exception.h"
-#include "rift/core/engine/this_helpers.h"
-#include "rift/memory/gc_protector.h"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.PlainMonthDay Objects (Sections 10.1-10.5)
@@ -40,8 +39,7 @@ using rift::core::extractThisObject;
 std::unordered_map<JSObject*, std::unique_ptr<temporal_rs::PlainMonthDay>>
     PlainMonthDayRegistry::registry_;
 
-void PlainMonthDayRegistry::store(JSObject* obj,
-                                  std::unique_ptr<temporal_rs::PlainMonthDay> data) {
+void PlainMonthDayRegistry::store(JSObject* obj, std::unique_ptr<temporal_rs::PlainMonthDay> data) {
     registry_[obj] = std::move(data);
 }
 
@@ -110,9 +108,12 @@ static std::unique_ptr<temporal_rs::PlainMonthDay> parsePlainMonthDayFromValue(c
         Value e = obj->getProperty("era");
         Value ey = obj->getProperty("eraYear");
 
-        if(!mo.isUndefined()) partial.month = static_cast<uint8_t>(mo.toNumber());
-        if(!d.isUndefined()) partial.day = static_cast<uint8_t>(d.toNumber());
-        if(!ey.isUndefined()) partial.era_year = static_cast<int32_t>(ey.toNumber());
+        if(!mo.isUndefined())
+            partial.month = static_cast<uint8_t>(mo.toNumber());
+        if(!d.isUndefined())
+            partial.day = static_cast<uint8_t>(d.toNumber());
+        if(!ey.isUndefined())
+            partial.era_year = static_cast<int32_t>(ey.toNumber());
 
         std::string month_code_str;
         std::string era_str;
@@ -159,14 +160,15 @@ Value TemporalPlainMonthDay::wrapPlainMonthDay(std::unique_ptr<temporal_rs::Plai
 // 10.2 Properties of the Temporal.PlainMonthDay Constructor
 // @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-constructor
 void TemporalPlainMonthDay::setupStaticMethods(JSObject* constructor,
-                                                rift::memory::ObjectFactory* factory) {
+                                               rift::memory::ObjectFactory* factory) {
     RIFT_STATIC_METHOD(constructor, "from", TemporalPlainMonthDay::from);
 }
 
 // 10.3 Properties of the Temporal.PlainMonthDay Prototype Object
-// @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-prototype-object
+// @spec
+// https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-prototype-object
 void TemporalPlainMonthDay::setupPrototypeMethods(JSObject* prototype,
-                                                    rift::memory::ObjectFactory* factory) {
+                                                  rift::memory::ObjectFactory* factory) {
     // Getters
     RIFT_GETTER(prototype, "day", TemporalPlainMonthDay::day);
     RIFT_GETTER(prototype, "monthCode", TemporalPlainMonthDay::monthCode);
@@ -241,8 +243,7 @@ Value TemporalPlainMonthDay::from(const CallContext& ctx, const std::vector<Valu
 Value TemporalPlainMonthDay::day(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainMonthDayData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: day called on non-PlainMonthDay"));
+        throw rift::core::JavaScriptException(Value("TypeError: day called on non-PlainMonthDay"));
     }
     return Value(static_cast<double>(data->day()));
 }
@@ -274,13 +275,12 @@ Value TemporalPlainMonthDay::calendarId(const CallContext& ctx, const std::vecto
 Value TemporalPlainMonthDay::with(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainMonthDayData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: with called on non-PlainMonthDay"));
+        throw rift::core::JavaScriptException(Value("TypeError: with called on non-PlainMonthDay"));
     }
 
     if(args.empty() || (!args[0].isObject() && !args[0].isFunction())) {
-        throw rift::core::JavaScriptException(Value(
-            "TypeError: Temporal.PlainMonthDay.prototype.with requires an object argument"));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.PlainMonthDay.prototype.with requires an object argument"));
     }
 
     auto* obj = args[0].getObject();
@@ -289,7 +289,8 @@ Value TemporalPlainMonthDay::with(const CallContext& ctx, const std::vector<Valu
     Value mc = obj->getProperty("monthCode");
     Value d = obj->getProperty("day");
 
-    if(!d.isUndefined()) partial.day = static_cast<uint8_t>(d.toNumber());
+    if(!d.isUndefined())
+        partial.day = static_cast<uint8_t>(d.toNumber());
 
     std::string month_code_str;
     if(!mc.isUndefined()) {

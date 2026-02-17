@@ -28,34 +28,36 @@ using namespace rift::runtime;
 //
 
 /// Register an instance method on a prototype object (non-enumerable per spec)
-#define RIFT_METHOD(obj, name, func) \
-    do { \
-        auto* _fn = factory->createJSFunction(func); \
-        _fn->defineProperty("name", rift::runtime::PropertyDescriptor( \
-            rift::runtime::Value(std::string(name)), false, false, true)); \
-        _fn->defineProperty("length", rift::runtime::PropertyDescriptor( \
-            rift::runtime::Value(0.0), false, false, true)); \
-        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor( \
-            rift::runtime::Value(_fn), true, false, true)); \
+#define RIFT_METHOD(obj, name, func)                                                               \
+    do {                                                                                           \
+        auto* _fn = factory->createJSFunction(func);                                               \
+        _fn->defineProperty(                                                                       \
+            "name", rift::runtime::PropertyDescriptor(rift::runtime::Value(std::string(name)),     \
+                                                      false, false, true));                        \
+        _fn->defineProperty("length", rift::runtime::PropertyDescriptor(rift::runtime::Value(0.0), \
+                                                                        false, false, true));      \
+        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor(rift::runtime::Value(_fn),   \
+                                                                      true, false, true));         \
     } while(0)
 
 /// Register a static method on a constructor object (non-enumerable per spec)
-#define RIFT_STATIC_METHOD(obj, name, func) \
-    do { \
-        auto* _fn = factory->createJSFunction(func); \
-        _fn->defineProperty("name", rift::runtime::PropertyDescriptor( \
-            rift::runtime::Value(std::string(name)), false, false, true)); \
-        _fn->defineProperty("length", rift::runtime::PropertyDescriptor( \
-            rift::runtime::Value(0.0), false, false, true)); \
-        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor( \
-            rift::runtime::Value(_fn), true, false, true)); \
+#define RIFT_STATIC_METHOD(obj, name, func)                                                        \
+    do {                                                                                           \
+        auto* _fn = factory->createJSFunction(func);                                               \
+        _fn->defineProperty(                                                                       \
+            "name", rift::runtime::PropertyDescriptor(rift::runtime::Value(std::string(name)),     \
+                                                      false, false, true));                        \
+        _fn->defineProperty("length", rift::runtime::PropertyDescriptor(rift::runtime::Value(0.0), \
+                                                                        false, false, true));      \
+        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor(rift::runtime::Value(_fn),   \
+                                                                      true, false, true));         \
     } while(0)
 
 /// Register a getter property (non-enumerable, configurable per spec)
-#define RIFT_GETTER(obj, name, func) \
-    (obj)->defineProperty(name, rift::runtime::PropertyDescriptor::accessor( \
-        rift::runtime::Value(factory->createJSFunction(func)), \
-        rift::runtime::Value::undefined(), false, true))
+#define RIFT_GETTER(obj, name, func)                                                       \
+    (obj)->defineProperty(name, rift::runtime::PropertyDescriptor::accessor(               \
+                                    rift::runtime::Value(factory->createJSFunction(func)), \
+                                    rift::runtime::Value::undefined(), false, true))
 
 /// Register a static property (constant, non-enumerable, non-configurable per spec)
 #define RIFT_PROPERTY(obj, name, value) \
@@ -108,7 +110,7 @@ class BuiltinBase {
         constructor->setProperty("prototype", Value(prototype));
         // Set constructor property on prototype (non-enumerable per spec)
         prototype->defineProperty("constructor",
-            PropertyDescriptor(Value(constructor), true, false, true));
+                                  PropertyDescriptor(Value(constructor), true, false, true));
 
         return constructor;
     }
@@ -143,8 +145,8 @@ class BuiltinBase {
     /// NON-STANDARD: Register a method on an object (prototype or constructor).
     static void registerMethod(JSObject* obj, const char* name, MethodFunc func,
                                rift::memory::ObjectFactory* factory) {
-        obj->defineProperty(name, PropertyDescriptor(
-            Value(factory->createJSFunction(func)), true, false, true));
+        obj->defineProperty(
+            name, PropertyDescriptor(Value(factory->createJSFunction(func)), true, false, true));
     }
 
     /// NON-STANDARD: Register a static property (constant value) on an object.

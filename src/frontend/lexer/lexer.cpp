@@ -274,13 +274,15 @@ Token Lexer::read_number() {
             // HexDigits :: HexDigit | HexDigits NumericLiteralSeparator HexDigit
             // NumericLiteralSeparator :: _
             while(std::isxdigit(current_char()) || current_char() == '_') {
-                if(current_char() != '_') value += current_char();
+                if(current_char() != '_')
+                    value += current_char();
                 advance();
             }
             // BigIntLiteralSuffix :: n
             // SIMPLIFIED: BigInt suffix is consumed but the value is treated as a
             // regular Number since Rift does not implement BigInt.
-            if(current_char() == 'n') advance();
+            if(current_char() == 'n')
+                advance();
             return Token(TokenType::Number, value, line, column);
         }
 
@@ -294,13 +296,15 @@ Token Lexer::read_number() {
             }
             // OctalDigits :: OctalDigit | OctalDigits NumericLiteralSeparator OctalDigit
             while((current_char() >= '0' && current_char() <= '7') || current_char() == '_') {
-                if(current_char() != '_') value += current_char();
+                if(current_char() != '_')
+                    value += current_char();
                 advance();
             }
             if(std::isdigit(current_char())) {
                 throw std::runtime_error("Invalid or unexpected token");
             }
-            if(current_char() == 'n') advance();  // BigInt suffix
+            if(current_char() == 'n')
+                advance();  // BigInt suffix
             return Token(TokenType::Number, value, line, column);
         }
 
@@ -314,13 +318,15 @@ Token Lexer::read_number() {
             }
             // BinaryDigits :: BinaryDigit | BinaryDigits NumericLiteralSeparator BinaryDigit
             while(current_char() == '0' || current_char() == '1' || current_char() == '_') {
-                if(current_char() != '_') value += current_char();
+                if(current_char() != '_')
+                    value += current_char();
                 advance();
             }
             if(std::isdigit(current_char())) {
                 throw std::runtime_error("Invalid or unexpected token");
             }
-            if(current_char() == 'n') advance();  // BigInt suffix
+            if(current_char() == 'n')
+                advance();  // BigInt suffix
             return Token(TokenType::Number, value, line, column);
         }
 
@@ -345,7 +351,8 @@ Token Lexer::read_number() {
     // DecimalDigits :: DecimalDigit | DecimalDigits NumericLiteralSeparator DecimalDigit
     // @spec https://tc39.es/ecma262/#prod-DecimalLiteral
     while(std::isdigit(current_char()) || current_char() == '.' || current_char() == '_') {
-        if(current_char() != '_') value += current_char();
+        if(current_char() != '_')
+            value += current_char();
         advance();
     }
 
@@ -361,7 +368,8 @@ Token Lexer::read_number() {
             advance();
         }
         while(std::isdigit(current_char()) || current_char() == '_') {
-            if(current_char() != '_') value += current_char();
+            if(current_char() != '_')
+                value += current_char();
             advance();
         }
     }
@@ -369,7 +377,8 @@ Token Lexer::read_number() {
     // DecimalBigIntegerLiteral :: ... BigIntLiteralSuffix
     // SIMPLIFIED: BigInt suffix 'n' is consumed but the literal is treated as a
     // regular Number since Rift does not implement BigInt.
-    if(current_char() == 'n') advance();
+    if(current_char() == 'n')
+        advance();
 
     return Token(TokenType::Number, value, line, column);
 }
@@ -517,9 +526,9 @@ Token Lexer::read_string() {
                     }
                     break;
 
-                // NonEscapeCharacter :: SourceCharacter but not one of EscapeCharacter or LineTerminator
-                // DEVIATION: The spec says unrecognized single-character escapes like \a
-                // should produce just the character (e.g., \a -> "a"). Rift instead
+                // NonEscapeCharacter :: SourceCharacter but not one of EscapeCharacter or
+                // LineTerminator DEVIATION: The spec says unrecognized single-character escapes
+                // like \a should produce just the character (e.g., \a -> "a"). Rift instead
                 // preserves the backslash (\a -> "\a"), which differs from spec behavior.
                 // In practice this only affects non-standard escape sequences.
                 default:
@@ -784,9 +793,9 @@ Token Lexer::read_identifier() {
         {"in", TokenType::In},
         {"instanceof", TokenType::Instanceof},
         // Note: "of" is a contextual keyword, handled in parser (not here)
-        {"true", TokenType::Boolean},     // 12.8.2 BooleanLiteral :: true
-        {"false", TokenType::Boolean},    // 12.8.2 BooleanLiteral :: false
-        {"null", TokenType::Null},        // 12.8.1 NullLiteral :: null
+        {"true", TokenType::Boolean},         // 12.8.2 BooleanLiteral :: true
+        {"false", TokenType::Boolean},        // 12.8.2 BooleanLiteral :: false
+        {"null", TokenType::Null},            // 12.8.1 NullLiteral :: null
         {"undefined", TokenType::Undefined},  // DEVIATION: not a spec keyword
         {"typeof", TokenType::Typeof},
         {"delete", TokenType::Delete},
@@ -941,8 +950,8 @@ Token Lexer::read_regex() {
         char c = current_char();
         if(c != 'g' && c != 'i' && c != 'm' && c != 's' && c != 'u' && c != 'd' && c != 'v' &&
            c != 'y') {
-            throw std::runtime_error(
-                std::string("SyntaxError: Invalid regular expression flag '") + c + "'");
+            throw std::runtime_error(std::string("SyntaxError: Invalid regular expression flag '") +
+                                     c + "'");
         }
         if(flags.find(c) != std::string::npos) {
             throw std::runtime_error(
@@ -1043,7 +1052,8 @@ Token Lexer::next_token() {
     // 12.7 Punctuators
     // Punctuator :: OptionalChainingPunctuator | OtherPunctuator
     // OtherPunctuator :: one of { ( ) [ ] . ... ; , < > <= >= == != === !== + - * % **
-    //   ++ -- << >> >>> & | ^ ! ~ && || ?? ? : = += -= *= %= **= <<= >>= >>>= &= |= ^= &&= ||= ??= =>
+    //   ++ -- << >> >>> & | ^ ! ~ && || ?? ? : = += -= *= %= **= <<= >>= >>>= &= |= ^= &&= ||= ??=
+    //   =>
     // DivPunctuator :: / | /=
     // @spec https://tc39.es/ecma262/#sec-punctuators
     switch(ch) {
@@ -1267,7 +1277,8 @@ Token Lexer::next_token() {
                     advance();
                     if(current_char() == '=') {
                         advance();
-                        return make_token(TokenType::UnsignedRightShiftAssign, ">>>=", line, column);
+                        return make_token(TokenType::UnsignedRightShiftAssign, ">>>=", line,
+                                          column);
                     }
                     return make_token(TokenType::UnsignedRightShift, ">>>", line, column);
                 }

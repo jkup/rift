@@ -39,8 +39,8 @@ class Environment : public std::enable_shared_from_this<Environment> {
   private:
     std::unordered_map<std::string, VariableEntry> variables_;
     std::shared_ptr<Environment> parent_;
-    bool is_block_scope_;  // true for let/const block scopes
-    bool is_strict_mode_;  // true when running in strict mode
+    bool is_block_scope_;                 // true for let/const block scopes
+    bool is_strict_mode_;                 // true when running in strict mode
     JSObject* binding_object_ = nullptr;  // Global object backing (for globalThis)
 
   public:

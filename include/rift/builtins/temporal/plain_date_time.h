@@ -35,16 +35,19 @@ class PlainDateTimeRegistry {
 /// @spec https://tc39.es/proposal-temporal/#sec-temporal-plaindatetime-objects
 class TemporalPlainDateTime : public BuiltinBase<TemporalPlainDateTime> {
   public:
-    /// 5.1.1 Temporal.PlainDateTime ( isoYear, isoMonth, isoDay [ , hour [ , minute [ , second [ , millisecond [ , microsecond [ , nanosecond [ , calendar ] ] ] ] ] ] ] )
+    /// 5.1.1 Temporal.PlainDateTime ( isoYear, isoMonth, isoDay [ , hour [ , minute [ , second [ ,
+    /// millisecond [ , microsecond [ , nanosecond [ , calendar ] ] ] ] ] ] ] )
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 5.2 Properties of the Temporal.PlainDateTime Constructor
-    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-constructor
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-constructor
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
 
     /// 5.3 Properties of the Temporal.PlainDateTime Prototype Object
-    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-prototype-object
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plaindatetime-prototype-object
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
     /// 5.2.2 Temporal.PlainDateTime.from ( item [ , options ] )
@@ -84,7 +87,8 @@ class TemporalPlainDateTime : public BuiltinBase<TemporalPlainDateTime> {
     static Value weekOfYear(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 5.3.12 get Temporal.PlainDateTime.prototype.daysInMonth
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.daysinmonth
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.daysinmonth
     static Value daysInMonth(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 5.3.13 get Temporal.PlainDateTime.prototype.daysInYear
@@ -92,7 +96,8 @@ class TemporalPlainDateTime : public BuiltinBase<TemporalPlainDateTime> {
     static Value daysInYear(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 5.3.14 get Temporal.PlainDateTime.prototype.monthsInYear
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.monthsinyear
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.monthsinyear
     static Value monthsInYear(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 5.3.15 get Temporal.PlainDateTime.prototype.inLeapYear
@@ -116,11 +121,13 @@ class TemporalPlainDateTime : public BuiltinBase<TemporalPlainDateTime> {
     static Value second(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 5.3.19 get Temporal.PlainDateTime.prototype.millisecond
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.millisecond
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.millisecond
     static Value millisecond(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 5.3.20 get Temporal.PlainDateTime.prototype.microsecond
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.microsecond
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.plaindatetime.prototype.microsecond
     static Value microsecond(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 5.3.21 get Temporal.PlainDateTime.prototype.nanosecond

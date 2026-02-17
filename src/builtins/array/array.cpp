@@ -98,8 +98,8 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     // The initial value of the @@iterator property is %Array.prototype.values%.
     std::string iterator_key = core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
     auto* iterator_func = factory->createJSFunction(Array::values);
-    prototype->defineProperty(iterator_key,
-        rift::runtime::PropertyDescriptor(Value(iterator_func), true, false, true));
+    prototype->defineProperty(
+        iterator_key, rift::runtime::PropertyDescriptor(Value(iterator_func), true, false, true));
 }
 
 // ============================================================================
@@ -214,9 +214,8 @@ size_t Array::getArrayLength(JSObject* obj) {
 void Array::setArrayLength(JSObject* obj, size_t length) {
     if(obj) {
         // Per spec, Array "length" is { writable: true, enumerable: false, configurable: false }.
-        obj->defineProperty("length",
-            rift::runtime::PropertyDescriptor(
-                Value(static_cast<double>(length)), true, false, false));
+        obj->defineProperty("length", rift::runtime::PropertyDescriptor(
+                                          Value(static_cast<double>(length)), true, false, false));
     }
 }
 

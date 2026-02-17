@@ -311,7 +311,8 @@ void Promise::addReaction(JSObject* promise, const std::string& reaction_type, J
 //      a. If type is "Fulfill", let handlerResult be NormalCompletion(argument).
 //      b. Else (type is "Reject"),
 //         i. Let handlerResult be ThrowCompletion(argument).
-//   5. Else, let handlerResult be Completion(HostCallJobCallback(handler, undefined, << argument >>)).
+//   5. Else, let handlerResult be Completion(HostCallJobCallback(handler, undefined, << argument
+//   >>)).
 //   6. If promiseCapability is undefined, then
 //      a. Assert: handlerResult is not an abrupt completion.
 //      b. Return empty.
@@ -341,18 +342,21 @@ void Promise::executeReaction(JSFunction* handler, JSObject* result_promise, con
         return;
     }
 
-    // Step 5: Else, let handlerResult be Completion(HostCallJobCallback(handler, undefined, << argument >>)).
+    // Step 5: Else, let handlerResult be Completion(HostCallJobCallback(handler, undefined, <<
+    // argument >>)).
     try {
         CallContext ctx(rift::core::CallType::Function, Value::undefined());
         Value result = handler->call(ctx, {argument});
 
-        // Step 8: Return ? Call(promiseCapability.[[Resolve]], undefined, << handlerResult.[[Value]] >>).
-        // SIMPLIFIED: Calls resolvePromise directly instead of going through
+        // Step 8: Return ? Call(promiseCapability.[[Resolve]], undefined, <<
+        // handlerResult.[[Value]] >>). SIMPLIFIED: Calls resolvePromise directly instead of going
+        // through
         // [[Capability]].[[Resolve]]. resolvePromise handles thenable adoption.
         resolvePromise(result_promise, result);
     } catch(const rift::core::JavaScriptException& e) {
         // Step 7: If handlerResult is an abrupt completion, then
-        // Step 7a: Return ? Call(promiseCapability.[[Reject]], undefined, << handlerResult.[[Value]] >>).
+        // Step 7a: Return ? Call(promiseCapability.[[Reject]], undefined, <<
+        // handlerResult.[[Value]] >>).
         rejectPromise(result_promise, e.getValue());
     } catch(const std::exception& e) {
         // NON-STANDARD: C++ exception fallback -- reject with error message.
@@ -482,7 +486,8 @@ Value Promise::constructor(const CallContext& /*ctx*/, const std::vector<Value>&
         executor_func->call(executor_ctx, {Value(resolve_func), Value(reject_func)});
     } catch(const rift::core::JavaScriptException& e) {
         // Step 10: If completion is an abrupt completion, then
-        // Step 10a: Perform ? Call(resolvingFunctions.[[Reject]], undefined, << completion.[[Value]] >>).
+        // Step 10a: Perform ? Call(resolvingFunctions.[[Reject]], undefined, <<
+        // completion.[[Value]] >>).
         std::string state = getState(promise_obj);
         if(state == STATE_PENDING) {
             rejectPromise(promise_obj, e.getValue());
@@ -638,7 +643,8 @@ void Promise::resolvePromise(JSObject* promise, const Value& value) {
     //   b. Let thenCallResult be Completion(HostCallJobCallback(then, thenable,
     //      << resolvingFunctions.[[Resolve]], resolvingFunctions.[[Reject]] >>)).
     //   c. If thenCallResult is an abrupt completion, then
-    //      i. Return ? Call(resolvingFunctions.[[Reject]], undefined, << thenCallResult.[[Value]] >>).
+    //      i. Return ? Call(resolvingFunctions.[[Reject]], undefined, << thenCallResult.[[Value]]
+    //      >>).
     //   d. Return ? Completion(thenCallResult).
     auto* factory = getFactory();
     auto* engine = getEngine();
@@ -681,7 +687,8 @@ void Promise::resolvePromise(JSObject* promise, const Value& value) {
             [then_method, thenable_obj, resolve_func, reject_func](
                 const CallContext& /*mt_ctx*/, const std::vector<Value>& /*mt_args*/) -> Value {
                 try {
-                    // Step b: Let thenCallResult be Completion(HostCallJobCallback(then, thenable, ...)).
+                    // Step b: Let thenCallResult be Completion(HostCallJobCallback(then, thenable,
+                    // ...)).
                     CallContext then_ctx(rift::core::CallType::Function, Value(thenable_obj));
                     then_method->call(then_ctx, {Value(resolve_func), Value(reject_func)});
                 } catch(const rift::core::JavaScriptException& e) {
@@ -1231,7 +1238,8 @@ Value Promise::reject(const CallContext& /*ctx*/, const std::vector<Value>& args
 // 27.2.4.1 Promise.all ( iterable )
 // @spec https://tc39.es/ecma262/#sec-promise.all
 //
-// Calls 27.2.4.1.2 PerformPromiseAll ( iteratorRecord, constructor, resultCapability, promiseResolve )
+// Calls 27.2.4.1.2 PerformPromiseAll ( iteratorRecord, constructor, resultCapability,
+// promiseResolve )
 //
 // Spec algorithm (PerformPromiseAll):
 //   1. Let values be a new empty List.
@@ -1354,7 +1362,8 @@ Value Promise::all(const CallContext& /*ctx*/, const std::vector<Value>& args) {
 
                 // Step 11: If remainingElementsCount.[[Value]] is 0, then
                 //   11a: Let valuesArray be CreateArrayFromList(values).
-                //   11b: Perform ? Call(resultCapability.[[Resolve]], undefined, << valuesArray >>).
+                //   11b: Perform ? Call(resultCapability.[[Resolve]], undefined, << valuesArray
+                //   >>).
                 if(remaining == 0) {
                     fulfillPromise(result_promise, Value(results));
                 }
@@ -1380,7 +1389,8 @@ Value Promise::all(const CallContext& /*ctx*/, const std::vector<Value>& args) {
                 return Value::undefined();
             });
 
-        // Step 4h: Perform ? Invoke(nextPromise, "then", << resolveElement, resultCapability.[[Reject]] >>).
+        // Step 4h: Perform ? Invoke(nextPromise, "then", << resolveElement,
+        // resultCapability.[[Reject]] >>).
         CallContext then_ctx(rift::core::CallType::Function, Value(element_promise));
         then(then_ctx, {Value(on_fulfilled), Value(on_rejected)});
     }
@@ -1391,7 +1401,8 @@ Value Promise::all(const CallContext& /*ctx*/, const std::vector<Value>& args) {
 // 27.2.4.5 Promise.race ( iterable )
 // @spec https://tc39.es/ecma262/#sec-promise.race
 //
-// Calls 27.2.4.5.1 PerformPromiseRace ( iteratorRecord, constructor, resultCapability, promiseResolve )
+// Calls 27.2.4.5.1 PerformPromiseRace ( iteratorRecord, constructor, resultCapability,
+// promiseResolve )
 //
 // Spec algorithm (PerformPromiseRace):
 //   1. Repeat,
@@ -1399,7 +1410,8 @@ Value Promise::all(const CallContext& /*ctx*/, const std::vector<Value>& args) {
 //      b. If next is done, then
 //         i. Return resultCapability.[[Promise]].
 //      c. Let nextPromise be ? Call(promiseResolve, constructor, << next >>).
-//      d. Perform ? Invoke(nextPromise, "then", << resultCapability.[[Resolve]], resultCapability.[[Reject]] >>).
+//      d. Perform ? Invoke(nextPromise, "then", << resultCapability.[[Resolve]],
+//      resultCapability.[[Reject]] >>).
 //
 // DEVIATION: Uses array-like indexed access instead of the Iterator protocol.
 // DEVIATION: Uses a shared "settled" state flag to guard against multiple
@@ -1506,7 +1518,8 @@ Value Promise::race(const CallContext& /*ctx*/, const std::vector<Value>& args) 
 // 27.2.4.2 Promise.allSettled ( iterable )
 // @spec https://tc39.es/ecma262/#sec-promise.allsettled
 //
-// Calls 27.2.4.2.1 PerformPromiseAllSettled ( iteratorRecord, constructor, resultCapability, promiseResolve )
+// Calls 27.2.4.2.1 PerformPromiseAllSettled ( iteratorRecord, constructor, resultCapability,
+// promiseResolve )
 //
 // Similar structure to PerformPromiseAll, but:
 //   - The resolve element function creates { status: "fulfilled", value: x }
@@ -1612,7 +1625,8 @@ Value Promise::allSettled(const CallContext& /*ctx*/, const std::vector<Value>& 
 
                 // Step 14: If remainingElementsCount.[[Value]] is 0, then
                 //   14a: Let valuesArray be CreateArrayFromList(values).
-                //   14b: Perform ? Call(resultCapability.[[Resolve]], undefined, << valuesArray >>).
+                //   14b: Perform ? Call(resultCapability.[[Resolve]], undefined, << valuesArray
+                //   >>).
                 if(remaining == 0) {
                     fulfillPromise(result_promise, Value(results));
                 }
@@ -1660,7 +1674,8 @@ Value Promise::allSettled(const CallContext& /*ctx*/, const std::vector<Value>& 
 // 27.2.4.3 Promise.any ( iterable )
 // @spec https://tc39.es/ecma262/#sec-promise.any
 //
-// Calls 27.2.4.3.1 PerformPromiseAny ( iteratorRecord, constructor, resultCapability, promiseResolve )
+// Calls 27.2.4.3.1 PerformPromiseAny ( iteratorRecord, constructor, resultCapability,
+// promiseResolve )
 //
 // Spec algorithm (PerformPromiseAny):
 //   1. Let errors be a new empty List.
@@ -1810,7 +1825,8 @@ Value Promise::any(const CallContext& /*ctx*/, const std::vector<Value>& args) {
                 return Value::undefined();
             });
 
-        // Step 4h: Perform ? Invoke(nextPromise, "then", << resultCapability.[[Resolve]], rejectElement >>).
+        // Step 4h: Perform ? Invoke(nextPromise, "then", << resultCapability.[[Resolve]],
+        // rejectElement >>).
         CallContext then_ctx(rift::core::CallType::Function, Value(element_promise));
         then(then_ctx, {Value(on_fulfilled), Value(on_rejected)});
     }

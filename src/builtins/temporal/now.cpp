@@ -8,7 +8,6 @@
 #include "rift/builtins/temporal/plain_date_time.h"
 #include "rift/builtins/temporal/plain_time.h"
 #include "rift/core/engine/javascript_exception.h"
-
 #include "temporal_rs/Instant.hpp"
 #include "temporal_rs/PlainDate.hpp"
 #include "temporal_rs/PlainDateTime.hpp"
@@ -88,10 +87,10 @@ Value TemporalNow::plainDateISO(const CallContext& ctx, const std::vector<Value>
         std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 
     auto tz = temporal_rs::TimeZone::utc();
-    auto result = temporal_rs::PlainDate::from_epoch_milliseconds(static_cast<int64_t>(epoch_ms), tz);
+    auto result =
+        temporal_rs::PlainDate::from_epoch_milliseconds(static_cast<int64_t>(epoch_ms), tz);
     if(!result.is_ok()) {
-        throw rift::core::JavaScriptException(
-            Value("Error: Failed to create current PlainDate"));
+        throw rift::core::JavaScriptException(Value("Error: Failed to create current PlainDate"));
     }
 
     return TemporalPlainDate::wrapPlainDate(std::move(result).ok().value());
@@ -106,10 +105,10 @@ Value TemporalNow::plainTimeISO(const CallContext& ctx, const std::vector<Value>
         std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 
     auto tz = temporal_rs::TimeZone::utc();
-    auto result = temporal_rs::PlainTime::from_epoch_milliseconds(static_cast<int64_t>(epoch_ms), tz);
+    auto result =
+        temporal_rs::PlainTime::from_epoch_milliseconds(static_cast<int64_t>(epoch_ms), tz);
     if(!result.is_ok()) {
-        throw rift::core::JavaScriptException(
-            Value("Error: Failed to create current PlainTime"));
+        throw rift::core::JavaScriptException(Value("Error: Failed to create current PlainTime"));
     }
 
     return TemporalPlainTime::wrapPlainTime(std::move(result).ok().value());

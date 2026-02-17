@@ -1,5 +1,14 @@
 #include "rift/builtins/temporal/zoned_date_time.h"
 
+#include "rift/builtins/temporal/duration.h"
+#include "rift/builtins/temporal/instant.h"
+#include "rift/builtins/temporal/plain_date.h"
+#include "rift/builtins/temporal/plain_date_time.h"
+#include "rift/builtins/temporal/plain_time.h"
+#include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/this_helpers.h"
+#include "rift/memory/gc_protector.h"
 #include "temporal_rs/AnyCalendarKind.hpp"
 #include "temporal_rs/ArithmeticOverflow.hpp"
 #include "temporal_rs/DifferenceSettings.hpp"
@@ -20,16 +29,6 @@
 #include "temporal_rs/TimeZone.hpp"
 #include "temporal_rs/ToStringRoundingOptions.hpp"
 #include "temporal_rs/ZonedDateTime.hpp"
-
-#include "rift/builtins/temporal/duration.h"
-#include "rift/builtins/temporal/instant.h"
-#include "rift/builtins/temporal/plain_date.h"
-#include "rift/builtins/temporal/plain_date_time.h"
-#include "rift/builtins/temporal/plain_time.h"
-#include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/javascript_exception.h"
-#include "rift/core/engine/this_helpers.h"
-#include "rift/memory/gc_protector.h"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.ZonedDateTime Objects (Sections 6.1-6.5)
@@ -65,8 +64,7 @@ using rift::core::extractThisObject;
 std::unordered_map<JSObject*, std::unique_ptr<temporal_rs::ZonedDateTime>>
     ZonedDateTimeRegistry::registry_;
 
-void ZonedDateTimeRegistry::store(JSObject* obj,
-                                  std::unique_ptr<temporal_rs::ZonedDateTime> data) {
+void ZonedDateTimeRegistry::store(JSObject* obj, std::unique_ptr<temporal_rs::ZonedDateTime> data) {
     registry_[obj] = std::move(data);
 }
 
@@ -152,9 +150,12 @@ static std::unique_ptr<temporal_rs::ZonedDateTime> parseZonedDateTimeFromValue(c
         Value mc = obj->getProperty("monthCode");
         Value d = obj->getProperty("day");
 
-        if(!y.isUndefined()) date_partial.year = static_cast<int32_t>(y.toNumber());
-        if(!mo.isUndefined()) date_partial.month = static_cast<uint8_t>(mo.toNumber());
-        if(!d.isUndefined()) date_partial.day = static_cast<uint8_t>(d.toNumber());
+        if(!y.isUndefined())
+            date_partial.year = static_cast<int32_t>(y.toNumber());
+        if(!mo.isUndefined())
+            date_partial.month = static_cast<uint8_t>(mo.toNumber());
+        if(!d.isUndefined())
+            date_partial.day = static_cast<uint8_t>(d.toNumber());
 
         std::string month_code_str;
         if(!mc.isUndefined()) {
@@ -171,12 +172,18 @@ static std::unique_ptr<temporal_rs::ZonedDateTime> parseZonedDateTimeFromValue(c
         Value us = obj->getProperty("microsecond");
         Value ns = obj->getProperty("nanosecond");
 
-        if(!h.isUndefined()) time_partial.hour = static_cast<uint8_t>(h.toNumber());
-        if(!mi.isUndefined()) time_partial.minute = static_cast<uint8_t>(mi.toNumber());
-        if(!s.isUndefined()) time_partial.second = static_cast<uint8_t>(s.toNumber());
-        if(!ms.isUndefined()) time_partial.millisecond = static_cast<uint16_t>(ms.toNumber());
-        if(!us.isUndefined()) time_partial.microsecond = static_cast<uint16_t>(us.toNumber());
-        if(!ns.isUndefined()) time_partial.nanosecond = static_cast<uint16_t>(ns.toNumber());
+        if(!h.isUndefined())
+            time_partial.hour = static_cast<uint8_t>(h.toNumber());
+        if(!mi.isUndefined())
+            time_partial.minute = static_cast<uint8_t>(mi.toNumber());
+        if(!s.isUndefined())
+            time_partial.second = static_cast<uint8_t>(s.toNumber());
+        if(!ms.isUndefined())
+            time_partial.millisecond = static_cast<uint16_t>(ms.toNumber());
+        if(!us.isUndefined())
+            time_partial.microsecond = static_cast<uint16_t>(us.toNumber());
+        if(!ns.isUndefined())
+            time_partial.nanosecond = static_cast<uint16_t>(ns.toNumber());
 
         Value tz_val = obj->getProperty("timeZone");
         std::optional<temporal_rs::TimeZone> timezone = std::nullopt;
@@ -189,10 +196,10 @@ static std::unique_ptr<temporal_rs::ZonedDateTime> parseZonedDateTimeFromValue(c
         }
 
         temporal_rs::PartialZonedDateTime partial{date_partial, time_partial, std::nullopt,
-                                                   timezone};
+                                                  timezone};
 
-        auto result = temporal_rs::ZonedDateTime::from_partial(partial, std::nullopt,
-                                                                std::nullopt, std::nullopt);
+        auto result = temporal_rs::ZonedDateTime::from_partial(partial, std::nullopt, std::nullopt,
+                                                               std::nullopt);
         if(!result.is_ok()) {
             throwTemporalError(std::move(result).err().value());
         }
@@ -202,8 +209,7 @@ static std::unique_ptr<temporal_rs::ZonedDateTime> parseZonedDateTimeFromValue(c
     // Step: If item is a string, parse it.
     std::string str = val.toString();
     auto result = temporal_rs::ZonedDateTime::from_utf8(
-        str, temporal_rs::Disambiguation::Compatible,
-        temporal_rs::OffsetDisambiguation::Reject);
+        str, temporal_rs::Disambiguation::Compatible, temporal_rs::OffsetDisambiguation::Reject);
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
     }
@@ -240,16 +246,26 @@ static std::unique_ptr<temporal_rs::Duration> parseDurationForZonedDateTime(cons
         Value us = obj->getProperty("microseconds");
         Value ns = obj->getProperty("nanoseconds");
 
-        if(!y.isUndefined()) partial.years = static_cast<int64_t>(y.toNumber());
-        if(!mo.isUndefined()) partial.months = static_cast<int64_t>(mo.toNumber());
-        if(!w.isUndefined()) partial.weeks = static_cast<int64_t>(w.toNumber());
-        if(!d.isUndefined()) partial.days = static_cast<int64_t>(d.toNumber());
-        if(!h.isUndefined()) partial.hours = static_cast<int64_t>(h.toNumber());
-        if(!mi.isUndefined()) partial.minutes = static_cast<int64_t>(mi.toNumber());
-        if(!s.isUndefined()) partial.seconds = static_cast<int64_t>(s.toNumber());
-        if(!ms.isUndefined()) partial.milliseconds = static_cast<int64_t>(ms.toNumber());
-        if(!us.isUndefined()) partial.microseconds = us.toNumber();
-        if(!ns.isUndefined()) partial.nanoseconds = ns.toNumber();
+        if(!y.isUndefined())
+            partial.years = static_cast<int64_t>(y.toNumber());
+        if(!mo.isUndefined())
+            partial.months = static_cast<int64_t>(mo.toNumber());
+        if(!w.isUndefined())
+            partial.weeks = static_cast<int64_t>(w.toNumber());
+        if(!d.isUndefined())
+            partial.days = static_cast<int64_t>(d.toNumber());
+        if(!h.isUndefined())
+            partial.hours = static_cast<int64_t>(h.toNumber());
+        if(!mi.isUndefined())
+            partial.minutes = static_cast<int64_t>(mi.toNumber());
+        if(!s.isUndefined())
+            partial.seconds = static_cast<int64_t>(s.toNumber());
+        if(!ms.isUndefined())
+            partial.milliseconds = static_cast<int64_t>(ms.toNumber());
+        if(!us.isUndefined())
+            partial.microseconds = us.toNumber();
+        if(!ns.isUndefined())
+            partial.nanoseconds = ns.toNumber();
 
         auto result = temporal_rs::Duration::from_partial_duration(partial);
         if(!result.is_ok()) {
@@ -269,8 +285,7 @@ static std::unique_ptr<temporal_rs::Duration> parseDurationForZonedDateTime(cons
 
 // NON-STANDARD: Internal helper to wrap a temporal_rs::ZonedDateTime into
 // a JS object with the ZonedDateTime prototype and register it.
-Value TemporalZonedDateTime::wrapZonedDateTime(
-    std::unique_ptr<temporal_rs::ZonedDateTime> zdt) {
+Value TemporalZonedDateTime::wrapZonedDateTime(std::unique_ptr<temporal_rs::ZonedDateTime> zdt) {
     auto* proto = getGlobalPrototype();
     auto* js_obj = getObjectFactory()->createJSObject(proto);
     rift::memory::GCProtector protect(js_obj, getObjectFactory()->getObjectManager());
@@ -289,7 +304,7 @@ Value TemporalZonedDateTime::wrapZonedDateTime(
 // @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-constructor
 // ----------------------------------------------------------------------------
 void TemporalZonedDateTime::setupStaticMethods(JSObject* constructor,
-                                                rift::memory::ObjectFactory* factory) {
+                                               rift::memory::ObjectFactory* factory) {
     // 6.2.2 Temporal.ZonedDateTime.from ( item [ , options ] )
     RIFT_STATIC_METHOD(constructor, "from", TemporalZonedDateTime::from);
     // 6.2.3 Temporal.ZonedDateTime.compare ( one, two )
@@ -298,10 +313,11 @@ void TemporalZonedDateTime::setupStaticMethods(JSObject* constructor,
 
 // ----------------------------------------------------------------------------
 // 6.3 Properties of the Temporal.ZonedDateTime Prototype Object
-// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-prototype-object
+// @spec
+// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-prototype-object
 // ----------------------------------------------------------------------------
 void TemporalZonedDateTime::setupPrototypeMethods(JSObject* prototype,
-                                                    rift::memory::ObjectFactory* factory) {
+                                                  rift::memory::ObjectFactory* factory) {
     // 6.3.3-6.3.14 Date getters
     RIFT_GETTER(prototype, "year", TemporalZonedDateTime::year);
     RIFT_GETTER(prototype, "month", TemporalZonedDateTime::month);
@@ -399,8 +415,8 @@ Value TemporalZonedDateTime::constructor(const CallContext& ctx, const std::vect
     // Step 1: If NewTarget is undefined, throw a TypeError. (INCOMPLETE)
     // Step 2: Set epochNanoseconds to ? ToBigInt(epochNanoseconds).
     if(args.size() < 2) {
-        throw rift::core::JavaScriptException(Value(
-            "TypeError: Temporal.ZonedDateTime requires epochNanoseconds and timeZone"));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.ZonedDateTime requires epochNanoseconds and timeZone"));
     }
 
     // DEVIATION: Convert nanoseconds Number to milliseconds (no BigInt).
@@ -490,7 +506,8 @@ Value TemporalZonedDateTime::compare(const CallContext& ctx, const std::vector<V
 
 // ============================================================================
 // Prototype Getters -- Date Fields
-// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-prototype-object
+// @spec
+// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-prototype-object
 //
 // Each date getter first computes the wall-clock PlainDateTime from the
 // instant + timezone, then calls the corresponding calendar operation.
@@ -513,8 +530,7 @@ Value TemporalZonedDateTime::calendarId(const CallContext& ctx, const std::vecto
 Value TemporalZonedDateTime::year(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: year called on non-ZonedDateTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: year called on non-ZonedDateTime"));
     }
     return Value(static_cast<double>(data->year()));
 }
@@ -546,8 +562,7 @@ Value TemporalZonedDateTime::monthCode(const CallContext& ctx, const std::vector
 Value TemporalZonedDateTime::day(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: day called on non-ZonedDateTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: day called on non-ZonedDateTime"));
     }
     return Value(static_cast<double>(data->day()));
 }
@@ -613,8 +628,7 @@ Value TemporalZonedDateTime::daysInYear(const CallContext& ctx, const std::vecto
 
 // 6.3.17 get Temporal.ZonedDateTime.prototype.monthsInYear
 // @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.monthsinyear
-Value TemporalZonedDateTime::monthsInYear(const CallContext& ctx,
-                                           const std::vector<Value>& args) {
+Value TemporalZonedDateTime::monthsInYear(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
         throw rift::core::JavaScriptException(
@@ -636,7 +650,8 @@ Value TemporalZonedDateTime::inLeapYear(const CallContext& ctx, const std::vecto
 
 // ============================================================================
 // Prototype Getters -- Time Fields
-// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-prototype-object
+// @spec
+// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-prototype-object
 //
 // Each time getter computes the wall-clock time from the instant + timezone.
 // ============================================================================
@@ -646,8 +661,7 @@ Value TemporalZonedDateTime::inLeapYear(const CallContext& ctx, const std::vecto
 Value TemporalZonedDateTime::hour(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: hour called on non-ZonedDateTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: hour called on non-ZonedDateTime"));
     }
     return Value(static_cast<double>(data->hour()));
 }
@@ -741,11 +755,12 @@ Value TemporalZonedDateTime::offset(const CallContext& ctx, const std::vector<Va
 }
 
 // 6.3.22 get Temporal.ZonedDateTime.prototype.offsetNanoseconds
-// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.offsetnanoseconds
+// @spec
+// https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.offsetnanoseconds
 //
 // Returns the UTC offset as a number of nanoseconds.
 Value TemporalZonedDateTime::offsetNanoseconds(const CallContext& ctx,
-                                                const std::vector<Value>& args) {
+                                               const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
         throw rift::core::JavaScriptException(
@@ -755,11 +770,12 @@ Value TemporalZonedDateTime::offsetNanoseconds(const CallContext& ctx,
 }
 
 // 6.3.20 get Temporal.ZonedDateTime.prototype.epochMilliseconds
-// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.epochmilliseconds
+// @spec
+// https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.epochmilliseconds
 //
 // Returns the number of milliseconds since Unix epoch (1970-01-01T00:00Z).
 Value TemporalZonedDateTime::epochMilliseconds(const CallContext& ctx,
-                                                const std::vector<Value>& args) {
+                                               const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
         throw rift::core::JavaScriptException(
@@ -769,14 +785,15 @@ Value TemporalZonedDateTime::epochMilliseconds(const CallContext& ctx,
 }
 
 // 6.3.21 get Temporal.ZonedDateTime.prototype.epochNanoseconds
-// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.epochnanoseconds
+// @spec
+// https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.epochnanoseconds
 //
 // Returns the number of nanoseconds since Unix epoch as a BigInt.
 // DEVIATION: Without BigInt support, Rift approximates this by
 // multiplying epochMilliseconds by 1e6. This loses sub-millisecond
 // precision and returns a Number instead of BigInt.
 Value TemporalZonedDateTime::epochNanoseconds(const CallContext& ctx,
-                                               const std::vector<Value>& args) {
+                                              const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
         throw rift::core::JavaScriptException(
@@ -807,13 +824,12 @@ Value TemporalZonedDateTime::epochNanoseconds(const CallContext& ctx,
 Value TemporalZonedDateTime::with(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: with called on non-ZonedDateTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: with called on non-ZonedDateTime"));
     }
 
     if(args.empty() || (!args[0].isObject() && !args[0].isFunction())) {
-        throw rift::core::JavaScriptException(Value(
-            "TypeError: Temporal.ZonedDateTime.prototype.with requires an object argument"));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.ZonedDateTime.prototype.with requires an object argument"));
     }
 
     auto* obj = args[0].getObject();
@@ -825,9 +841,12 @@ Value TemporalZonedDateTime::with(const CallContext& ctx, const std::vector<Valu
     Value mc = obj->getProperty("monthCode");
     Value d = obj->getProperty("day");
 
-    if(!y.isUndefined()) date_partial.year = static_cast<int32_t>(y.toNumber());
-    if(!mo.isUndefined()) date_partial.month = static_cast<uint8_t>(mo.toNumber());
-    if(!d.isUndefined()) date_partial.day = static_cast<uint8_t>(d.toNumber());
+    if(!y.isUndefined())
+        date_partial.year = static_cast<int32_t>(y.toNumber());
+    if(!mo.isUndefined())
+        date_partial.month = static_cast<uint8_t>(mo.toNumber());
+    if(!d.isUndefined())
+        date_partial.day = static_cast<uint8_t>(d.toNumber());
 
     std::string month_code_str;
     if(!mc.isUndefined()) {
@@ -844,15 +863,21 @@ Value TemporalZonedDateTime::with(const CallContext& ctx, const std::vector<Valu
     Value us = obj->getProperty("microsecond");
     Value ns = obj->getProperty("nanosecond");
 
-    if(!h.isUndefined()) time_partial.hour = static_cast<uint8_t>(h.toNumber());
-    if(!mi.isUndefined()) time_partial.minute = static_cast<uint8_t>(mi.toNumber());
-    if(!s.isUndefined()) time_partial.second = static_cast<uint8_t>(s.toNumber());
-    if(!ms.isUndefined()) time_partial.millisecond = static_cast<uint16_t>(ms.toNumber());
-    if(!us.isUndefined()) time_partial.microsecond = static_cast<uint16_t>(us.toNumber());
-    if(!ns.isUndefined()) time_partial.nanosecond = static_cast<uint16_t>(ns.toNumber());
+    if(!h.isUndefined())
+        time_partial.hour = static_cast<uint8_t>(h.toNumber());
+    if(!mi.isUndefined())
+        time_partial.minute = static_cast<uint8_t>(mi.toNumber());
+    if(!s.isUndefined())
+        time_partial.second = static_cast<uint8_t>(s.toNumber());
+    if(!ms.isUndefined())
+        time_partial.millisecond = static_cast<uint16_t>(ms.toNumber());
+    if(!us.isUndefined())
+        time_partial.microsecond = static_cast<uint16_t>(us.toNumber());
+    if(!ns.isUndefined())
+        time_partial.nanosecond = static_cast<uint16_t>(ns.toNumber());
 
     temporal_rs::PartialZonedDateTime partial{date_partial, time_partial, std::nullopt,
-                                               std::nullopt};
+                                              std::nullopt};
 
     auto result = data->with(partial, std::nullopt, std::nullopt, std::nullopt);
     if(!result.is_ok()) {
@@ -869,8 +894,7 @@ Value TemporalZonedDateTime::with(const CallContext& ctx, const std::vector<Valu
 // Returns a new ZonedDateTime with the same instant but in a different
 // time zone. The wall-clock time will differ but the exact moment is preserved.
 // ----------------------------------------------------------------------------
-Value TemporalZonedDateTime::withTimeZone(const CallContext& ctx,
-                                           const std::vector<Value>& args) {
+Value TemporalZonedDateTime::withTimeZone(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
         throw rift::core::JavaScriptException(
@@ -878,8 +902,8 @@ Value TemporalZonedDateTime::withTimeZone(const CallContext& ctx,
     }
 
     if(args.empty()) {
-        throw rift::core::JavaScriptException(Value(
-            "TypeError: Temporal.ZonedDateTime.prototype.withTimeZone requires an argument"));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.ZonedDateTime.prototype.withTimeZone requires an argument"));
     }
 
     // Step 1: Let timeZone be ? ToTemporalTimeZoneIdentifier(timeZoneLike).
@@ -889,7 +913,8 @@ Value TemporalZonedDateTime::withTimeZone(const CallContext& ctx,
         throwTemporalError(std::move(tz_result).err().value());
     }
 
-    // Step 2: Return ! CreateTemporalZonedDateTime(this.[[EpochNanoseconds]], timeZone, this.[[Calendar]]).
+    // Step 2: Return ! CreateTemporalZonedDateTime(this.[[EpochNanoseconds]], timeZone,
+    // this.[[Calendar]]).
     auto result = data->with_timezone(std::move(tz_result).ok().value());
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
@@ -905,8 +930,7 @@ Value TemporalZonedDateTime::withTimeZone(const CallContext& ctx,
 // Returns a new ZonedDateTime with the same instant and time zone but
 // a different calendar. The wall-clock date fields may differ.
 // ----------------------------------------------------------------------------
-Value TemporalZonedDateTime::withCalendar(const CallContext& ctx,
-                                           const std::vector<Value>& args) {
+Value TemporalZonedDateTime::withCalendar(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
         throw rift::core::JavaScriptException(
@@ -914,8 +938,8 @@ Value TemporalZonedDateTime::withCalendar(const CallContext& ctx,
     }
 
     if(args.empty() || !args[0].isString()) {
-        throw rift::core::JavaScriptException(Value(
-            "TypeError: Temporal.ZonedDateTime.prototype.withCalendar requires a string"));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.ZonedDateTime.prototype.withCalendar requires a string"));
     }
 
     // Step 1: Let calendar be ? ToTemporalCalendarIdentifier(calendarLike).
@@ -925,7 +949,8 @@ Value TemporalZonedDateTime::withCalendar(const CallContext& ctx,
             Value("RangeError: Invalid calendar: " + args[0].getString()));
     }
 
-    // Step 2: Return ! CreateTemporalZonedDateTime(this.[[EpochNanoseconds]], this.[[TimeZone]], calendar).
+    // Step 2: Return ! CreateTemporalZonedDateTime(this.[[EpochNanoseconds]], this.[[TimeZone]],
+    // calendar).
     auto zdt = data->with_calendar(cal.value());
     return wrapZonedDateTime(std::move(zdt));
 }
@@ -937,8 +962,7 @@ Value TemporalZonedDateTime::withCalendar(const CallContext& ctx,
 // Returns a new ZonedDateTime with the time portion replaced. If no
 // argument is provided, the time is set to midnight (00:00:00).
 // ----------------------------------------------------------------------------
-Value TemporalZonedDateTime::withPlainTime(const CallContext& ctx,
-                                            const std::vector<Value>& args) {
+Value TemporalZonedDateTime::withPlainTime(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
         throw rift::core::JavaScriptException(
@@ -971,8 +995,7 @@ Value TemporalZonedDateTime::withPlainTime(const CallContext& ctx,
 Value TemporalZonedDateTime::add(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: add called on non-ZonedDateTime"));
+        throw rift::core::JavaScriptException(Value("TypeError: add called on non-ZonedDateTime"));
     }
 
     if(args.empty()) {
@@ -1047,7 +1070,7 @@ Value TemporalZonedDateTime::until(const CallContext& ctx, const std::vector<Val
     // Step 1: Set other to ? ToTemporalZonedDateTime(other).
     auto other = parseZonedDateTimeFromValue(args[0]);
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->until(*other, settings);
     if(!result.is_ok()) {
@@ -1079,7 +1102,7 @@ Value TemporalZonedDateTime::since(const CallContext& ctx, const std::vector<Val
     // Step 1: Set other to ? ToTemporalZonedDateTime(other).
     auto other = parseZonedDateTimeFromValue(args[0]);
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->since(*other, settings);
     if(!result.is_ok()) {
@@ -1179,7 +1202,7 @@ Value TemporalZonedDateTime::toPlainTime(const CallContext& ctx, const std::vect
 // The time zone information is discarded.
 // ----------------------------------------------------------------------------
 Value TemporalZonedDateTime::toPlainDateTime(const CallContext& ctx,
-                                              const std::vector<Value>& args) {
+                                             const std::vector<Value>& args) {
     auto* data = getZonedDateTimeData(ctx);
     if(!data) {
         throw rift::core::JavaScriptException(
@@ -1262,9 +1285,9 @@ Value TemporalZonedDateTime::toString(const CallContext& ctx, const std::vector<
     temporal_rs::Precision precision{false, std::nullopt};
     temporal_rs::ToStringRoundingOptions rounding_opts{precision, std::nullopt, std::nullopt};
 
-    auto result = data->to_ixdtf_string(
-        temporal_rs::DisplayOffset::Auto, temporal_rs::DisplayTimeZone::Auto,
-        temporal_rs::DisplayCalendar::Auto, rounding_opts);
+    auto result =
+        data->to_ixdtf_string(temporal_rs::DisplayOffset::Auto, temporal_rs::DisplayTimeZone::Auto,
+                              temporal_rs::DisplayCalendar::Auto, rounding_opts);
     if(!result.is_ok()) {
         throwTemporalError(std::move(result).err().value());
     }

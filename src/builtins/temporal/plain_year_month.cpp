@@ -1,5 +1,11 @@
 #include "rift/builtins/temporal/plain_year_month.h"
 
+#include "rift/builtins/temporal/duration.h"
+#include "rift/builtins/temporal/plain_date.h"
+#include "rift/core/engine/builtin_manager.h"
+#include "rift/core/engine/javascript_exception.h"
+#include "rift/core/engine/this_helpers.h"
+#include "rift/memory/gc_protector.h"
 #include "temporal_rs/AnyCalendarKind.hpp"
 #include "temporal_rs/ArithmeticOverflow.hpp"
 #include "temporal_rs/DifferenceSettings.hpp"
@@ -8,13 +14,6 @@
 #include "temporal_rs/PartialDate.hpp"
 #include "temporal_rs/PlainDate.hpp"
 #include "temporal_rs/PlainYearMonth.hpp"
-
-#include "rift/builtins/temporal/duration.h"
-#include "rift/builtins/temporal/plain_date.h"
-#include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/javascript_exception.h"
-#include "rift/core/engine/this_helpers.h"
-#include "rift/memory/gc_protector.h"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.PlainYearMonth Objects (Sections 9.1-9.5)
@@ -111,8 +110,7 @@ static void throwTemporalError(const temporal_rs::TemporalError& err) {
 // SIMPLIFIED: Option bag parsing (overflow) is not fully handled.
 // SIMPLIFIED: Calendar reconciliation is not implemented.
 // ----------------------------------------------------------------------------
-static std::unique_ptr<temporal_rs::PlainYearMonth> parsePlainYearMonthFromValue(
-    const Value& val) {
+static std::unique_ptr<temporal_rs::PlainYearMonth> parsePlainYearMonthFromValue(const Value& val) {
     if(val.isObject() || val.isFunction()) {
         // Step: If item has [[ISODate]] internal slot, return a copy.
         auto* data = PlainYearMonthRegistry::get(val.getObject());
@@ -130,9 +128,12 @@ static std::unique_ptr<temporal_rs::PlainYearMonth> parsePlainYearMonthFromValue
         Value e = obj->getProperty("era");
         Value ey = obj->getProperty("eraYear");
 
-        if(!y.isUndefined()) partial.year = static_cast<int32_t>(y.toNumber());
-        if(!mo.isUndefined()) partial.month = static_cast<uint8_t>(mo.toNumber());
-        if(!ey.isUndefined()) partial.era_year = static_cast<int32_t>(ey.toNumber());
+        if(!y.isUndefined())
+            partial.year = static_cast<int32_t>(y.toNumber());
+        if(!mo.isUndefined())
+            partial.month = static_cast<uint8_t>(mo.toNumber());
+        if(!ey.isUndefined())
+            partial.era_year = static_cast<int32_t>(ey.toNumber());
 
         std::string month_code_str;
         std::string era_str;
@@ -193,16 +194,26 @@ static std::unique_ptr<temporal_rs::Duration> parseDurationForYearMonth(const Va
         Value us = obj->getProperty("microseconds");
         Value ns = obj->getProperty("nanoseconds");
 
-        if(!y.isUndefined()) partial.years = static_cast<int64_t>(y.toNumber());
-        if(!mo.isUndefined()) partial.months = static_cast<int64_t>(mo.toNumber());
-        if(!w.isUndefined()) partial.weeks = static_cast<int64_t>(w.toNumber());
-        if(!d.isUndefined()) partial.days = static_cast<int64_t>(d.toNumber());
-        if(!h.isUndefined()) partial.hours = static_cast<int64_t>(h.toNumber());
-        if(!mi.isUndefined()) partial.minutes = static_cast<int64_t>(mi.toNumber());
-        if(!s.isUndefined()) partial.seconds = static_cast<int64_t>(s.toNumber());
-        if(!ms.isUndefined()) partial.milliseconds = static_cast<int64_t>(ms.toNumber());
-        if(!us.isUndefined()) partial.microseconds = us.toNumber();
-        if(!ns.isUndefined()) partial.nanoseconds = ns.toNumber();
+        if(!y.isUndefined())
+            partial.years = static_cast<int64_t>(y.toNumber());
+        if(!mo.isUndefined())
+            partial.months = static_cast<int64_t>(mo.toNumber());
+        if(!w.isUndefined())
+            partial.weeks = static_cast<int64_t>(w.toNumber());
+        if(!d.isUndefined())
+            partial.days = static_cast<int64_t>(d.toNumber());
+        if(!h.isUndefined())
+            partial.hours = static_cast<int64_t>(h.toNumber());
+        if(!mi.isUndefined())
+            partial.minutes = static_cast<int64_t>(mi.toNumber());
+        if(!s.isUndefined())
+            partial.seconds = static_cast<int64_t>(s.toNumber());
+        if(!ms.isUndefined())
+            partial.milliseconds = static_cast<int64_t>(ms.toNumber());
+        if(!us.isUndefined())
+            partial.microseconds = us.toNumber();
+        if(!ns.isUndefined())
+            partial.nanoseconds = ns.toNumber();
 
         auto result = temporal_rs::Duration::from_partial_duration(partial);
         if(!result.is_ok()) {
@@ -222,8 +233,7 @@ static std::unique_ptr<temporal_rs::Duration> parseDurationForYearMonth(const Va
 
 // NON-STANDARD: Internal helper to wrap a temporal_rs::PlainYearMonth into
 // a JS object with the PlainYearMonth prototype and register it.
-Value TemporalPlainYearMonth::wrapPlainYearMonth(
-    std::unique_ptr<temporal_rs::PlainYearMonth> ym) {
+Value TemporalPlainYearMonth::wrapPlainYearMonth(std::unique_ptr<temporal_rs::PlainYearMonth> ym) {
     auto* proto = getGlobalPrototype();
     auto* js_obj = getObjectFactory()->createJSObject(proto);
     rift::memory::GCProtector protect(js_obj, getObjectFactory()->getObjectManager());
@@ -239,10 +249,11 @@ Value TemporalPlainYearMonth::wrapPlainYearMonth(
 
 // ----------------------------------------------------------------------------
 // 9.2 Properties of the Temporal.PlainYearMonth Constructor
-// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plainyearmonth-constructor
+// @spec
+// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plainyearmonth-constructor
 // ----------------------------------------------------------------------------
 void TemporalPlainYearMonth::setupStaticMethods(JSObject* constructor,
-                                                  rift::memory::ObjectFactory* factory) {
+                                                rift::memory::ObjectFactory* factory) {
     // 9.2.2 Temporal.PlainYearMonth.from ( item [ , options ] )
     RIFT_STATIC_METHOD(constructor, "from", TemporalPlainYearMonth::from);
     // 9.2.3 Temporal.PlainYearMonth.compare ( one, two )
@@ -251,10 +262,11 @@ void TemporalPlainYearMonth::setupStaticMethods(JSObject* constructor,
 
 // ----------------------------------------------------------------------------
 // 9.3 Properties of the Temporal.PlainYearMonth Prototype Object
-// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plainyearmonth-prototype-object
+// @spec
+// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plainyearmonth-prototype-object
 // ----------------------------------------------------------------------------
 void TemporalPlainYearMonth::setupPrototypeMethods(JSObject* prototype,
-                                                     rift::memory::ObjectFactory* factory) {
+                                                   rift::memory::ObjectFactory* factory) {
     // 9.3.3-9.3.10 Getters
     RIFT_GETTER(prototype, "year", TemporalPlainYearMonth::year);
     RIFT_GETTER(prototype, "month", TemporalPlainYearMonth::month);
@@ -313,11 +325,13 @@ Value TemporalPlainYearMonth::constructor(const CallContext& ctx, const std::vec
             Value("TypeError: Temporal.PlainYearMonth requires at least year and month"));
     }
 
-    // Steps 3-4: Let y be ? ToIntegerWithTruncation(isoYear), m be ? ToIntegerWithTruncation(isoMonth).
+    // Steps 3-4: Let y be ? ToIntegerWithTruncation(isoYear), m be ?
+    // ToIntegerWithTruncation(isoMonth).
     int32_t year_val = static_cast<int32_t>(args[0].toNumber());
     uint8_t month_val = static_cast<uint8_t>(args[1].toNumber());
 
-    // Step 5: If calendar is not undefined, set calendar to ? ToTemporalCalendarIdentifier(calendar).
+    // Step 5: If calendar is not undefined, set calendar to ?
+    // ToTemporalCalendarIdentifier(calendar).
     temporal_rs::AnyCalendarKind calendar = temporal_rs::AnyCalendarKind::Iso;
     std::optional<uint8_t> ref_day = std::nullopt;
 
@@ -331,7 +345,8 @@ Value TemporalPlainYearMonth::constructor(const CallContext& ctx, const std::vec
         }
     }
 
-    // Step 6: If referenceISODay is not undefined, let ref be ? ToIntegerWithTruncation(referenceISODay).
+    // Step 6: If referenceISODay is not undefined, let ref be ?
+    // ToIntegerWithTruncation(referenceISODay).
     if(args.size() > 3 && !args[3].isUndefined()) {
         ref_day = static_cast<uint8_t>(args[3].toNumber());
     }
@@ -391,7 +406,8 @@ Value TemporalPlainYearMonth::compare(const CallContext& ctx, const std::vector<
 
 // ============================================================================
 // Prototype Getters
-// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plainyearmonth-prototype-object
+// @spec
+// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plainyearmonth-prototype-object
 //
 // Each getter calls the corresponding calendar operation on the
 // PlainYearMonth's [[ISODate]] and [[Calendar]] internal slots.
@@ -466,8 +482,7 @@ Value TemporalPlainYearMonth::daysInYear(const CallContext& ctx, const std::vect
 
 // 9.3.9 get Temporal.PlainYearMonth.prototype.monthsInYear
 // @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.monthsinyear
-Value TemporalPlainYearMonth::monthsInYear(const CallContext& ctx,
-                                            const std::vector<Value>& args) {
+Value TemporalPlainYearMonth::monthsInYear(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainYearMonthData(ctx);
     if(!data) {
         throw rift::core::JavaScriptException(
@@ -511,8 +526,8 @@ Value TemporalPlainYearMonth::with(const CallContext& ctx, const std::vector<Val
     }
 
     if(args.empty() || (!args[0].isObject() && !args[0].isFunction())) {
-        throw rift::core::JavaScriptException(Value(
-            "TypeError: Temporal.PlainYearMonth.prototype.with requires an object argument"));
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.PlainYearMonth.prototype.with requires an object argument"));
     }
 
     auto* obj = args[0].getObject();
@@ -522,8 +537,10 @@ Value TemporalPlainYearMonth::with(const CallContext& ctx, const std::vector<Val
     Value mo = obj->getProperty("month");
     Value mc = obj->getProperty("monthCode");
 
-    if(!y.isUndefined()) partial.year = static_cast<int32_t>(y.toNumber());
-    if(!mo.isUndefined()) partial.month = static_cast<uint8_t>(mo.toNumber());
+    if(!y.isUndefined())
+        partial.year = static_cast<int32_t>(y.toNumber());
+    if(!mo.isUndefined())
+        partial.month = static_cast<uint8_t>(mo.toNumber());
 
     std::string month_code_str;
     if(!mc.isUndefined()) {
@@ -555,8 +572,7 @@ Value TemporalPlainYearMonth::with(const CallContext& ctx, const std::vector<Val
 Value TemporalPlainYearMonth::add(const CallContext& ctx, const std::vector<Value>& args) {
     auto* data = getPlainYearMonthData(ctx);
     if(!data) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: add called on non-PlainYearMonth"));
+        throw rift::core::JavaScriptException(Value("TypeError: add called on non-PlainYearMonth"));
     }
 
     if(args.empty()) {
@@ -631,7 +647,7 @@ Value TemporalPlainYearMonth::until(const CallContext& ctx, const std::vector<Va
     // Step 1: Set other to ? ToTemporalYearMonth(other).
     auto other = parsePlainYearMonthFromValue(args[0]);
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->until(*other, settings);
     if(!result.is_ok()) {
@@ -663,7 +679,7 @@ Value TemporalPlainYearMonth::since(const CallContext& ctx, const std::vector<Va
     // Step 1: Set other to ? ToTemporalYearMonth(other).
     auto other = parsePlainYearMonthFromValue(args[0]);
     temporal_rs::DifferenceSettings settings{std::nullopt, std::nullopt, std::nullopt,
-                                              std::nullopt};
+                                             std::nullopt};
 
     auto result = data->since(*other, settings);
     if(!result.is_ok()) {

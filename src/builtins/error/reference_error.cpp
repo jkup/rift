@@ -30,14 +30,14 @@ void ReferenceError::setupPrototypeMethods(JSObject* prototype,
     // 20.5.5.3.3 NativeError.prototype.name
     // @spec https://tc39.es/ecma262/#sec-nativeerror.prototype.name
     // The initial value is "ReferenceError" (writable, non-enumerable, configurable per spec).
-    prototype->defineProperty("name",
-        rift::runtime::PropertyDescriptor(Value("ReferenceError"), true, false, true));
+    prototype->defineProperty(
+        "name", rift::runtime::PropertyDescriptor(Value("ReferenceError"), true, false, true));
 
     // 20.5.5.3.2 NativeError.prototype.message
     // @spec https://tc39.es/ecma262/#sec-nativeerror.prototype.message
     // The initial value is "" (writable, non-enumerable, configurable per spec).
     prototype->defineProperty("message",
-        rift::runtime::PropertyDescriptor(Value(""), true, false, true));
+                              rift::runtime::PropertyDescriptor(Value(""), true, false, true));
 
     // DEVIATION: NativeError prototypes inherit toString from Error.prototype per spec.
     // Rift defines a separate toString on each NativeError prototype.

@@ -427,7 +427,9 @@ struct IteratorRecord {
     JSObject* iterator_obj;  // Raw pointer for property access
     Value next_method;       // Cached next() method
 
-    bool valid() const { return iterator_obj != nullptr; }
+    bool valid() const {
+        return iterator_obj != nullptr;
+    }
 };
 
 // 7.4.8 IteratorClose ( iteratorRecord, completion )
@@ -435,7 +437,8 @@ struct IteratorRecord {
 //
 // Calls the iterator's return() method if it exists, to signal early termination.
 static void iteratorClose(const IteratorRecord& record) {
-    if(!record.valid()) return;
+    if(!record.valid())
+        return;
 
     Value return_method = record.iterator_obj->getProperty("return");
     if(return_method.isUndefined() || return_method.isNull() || !return_method.isFunction()) {
@@ -443,7 +446,8 @@ static void iteratorClose(const IteratorRecord& record) {
     }
 
     auto* return_func = dynamic_cast<JSFunction*>(return_method.getObject());
-    if(!return_func) return;
+    if(!return_func)
+        return;
 
     CallContext ctx(CallType::Function, record.iterator);
     return_func->call(ctx, {});
@@ -491,7 +495,8 @@ static IteratorRecord getIterator(const Value& iterable) {
     }
 
     auto* obj = iterable.getObject();
-    if(!obj) return record;
+    if(!obj)
+        return record;
 
     std::string iterator_key =
         EvaluationUtils::symbolToPropertyKey(builtins::Symbol::getIteratorId());
@@ -502,12 +507,14 @@ static IteratorRecord getIterator(const Value& iterable) {
     }
 
     auto* iterator_func = dynamic_cast<JSFunction*>(iterator_method.getObject());
-    if(!iterator_func) return record;
+    if(!iterator_func)
+        return record;
 
     CallContext ctx(CallType::Function, iterable);
     Value iterator = iterator_func->call(ctx, {});
 
-    if(!iterator.isObject()) return record;
+    if(!iterator.isObject())
+        return record;
 
     record.iterator = iterator;
     record.iterator_obj = iterator.getObject();
@@ -679,7 +686,8 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
     while(true) {
         // Step 2a-2b: IteratorNext, check done
         auto [done, value] = iteratorNext(record);
-        if(done) break;
+        if(done)
+            break;
 
         // Step 2d: Assign nextValue to loop variable
         std::shared_ptr<Environment> body_env = env;

@@ -40,11 +40,13 @@ class TemporalZonedDateTime : public BuiltinBase<TemporalZonedDateTime> {
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.2 Properties of the Temporal.ZonedDateTime Constructor
-    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-constructor
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-constructor
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
 
     /// 6.3 Properties of the Temporal.ZonedDateTime Prototype Object
-    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-prototype-object
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-zoneddatetime-prototype-object
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
     /// 6.2.2 Temporal.ZonedDateTime.from ( item [ , options ] )
@@ -84,7 +86,8 @@ class TemporalZonedDateTime : public BuiltinBase<TemporalZonedDateTime> {
     static Value weekOfYear(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.15 get Temporal.ZonedDateTime.prototype.daysInMonth
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.daysinmonth
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.daysinmonth
     static Value daysInMonth(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.16 get Temporal.ZonedDateTime.prototype.daysInYear
@@ -92,7 +95,8 @@ class TemporalZonedDateTime : public BuiltinBase<TemporalZonedDateTime> {
     static Value daysInYear(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.17 get Temporal.ZonedDateTime.prototype.monthsInYear
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.monthsinyear
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.monthsinyear
     static Value monthsInYear(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.18 get Temporal.ZonedDateTime.prototype.inLeapYear
@@ -116,11 +120,13 @@ class TemporalZonedDateTime : public BuiltinBase<TemporalZonedDateTime> {
     static Value second(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.18 get Temporal.ZonedDateTime.prototype.millisecond
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.millisecond
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.millisecond
     static Value millisecond(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.19 get Temporal.ZonedDateTime.prototype.microsecond
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.microsecond
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.microsecond
     static Value microsecond(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.20 get Temporal.ZonedDateTime.prototype.nanosecond
@@ -136,15 +142,18 @@ class TemporalZonedDateTime : public BuiltinBase<TemporalZonedDateTime> {
     static Value offset(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.22 get Temporal.ZonedDateTime.prototype.offsetNanoseconds
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.offsetnanoseconds
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.offsetnanoseconds
     static Value offsetNanoseconds(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.20 get Temporal.ZonedDateTime.prototype.epochMilliseconds
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.epochmilliseconds
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.epochmilliseconds
     static Value epochMilliseconds(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.21 get Temporal.ZonedDateTime.prototype.epochNanoseconds
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.epochnanoseconds
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.epochnanoseconds
     static Value epochNanoseconds(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.24 Temporal.ZonedDateTime.prototype.with ( temporalZonedDateTimeLike [ , options ] )
@@ -196,7 +205,8 @@ class TemporalZonedDateTime : public BuiltinBase<TemporalZonedDateTime> {
     static Value toPlainTime(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.39 Temporal.ZonedDateTime.prototype.toPlainDateTime ( )
-    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.toplaindatetime
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.toplaindatetime
     static Value toPlainDateTime(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 6.3.34 Temporal.ZonedDateTime.prototype.startOfDay ( )

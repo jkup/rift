@@ -40,11 +40,13 @@ class TemporalPlainYearMonth : public BuiltinBase<TemporalPlainYearMonth> {
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 9.2 Properties of the Temporal.PlainYearMonth Constructor
-    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plainyearmonth-constructor
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plainyearmonth-constructor
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
 
     /// 9.3 Properties of the Temporal.PlainYearMonth Prototype Object
-    /// @spec https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plainyearmonth-prototype-object
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-properties-of-the-temporal-plainyearmonth-prototype-object
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 
     /// 9.2.2 Temporal.PlainYearMonth.from ( item [ , options ] )
@@ -68,23 +70,28 @@ class TemporalPlainYearMonth : public BuiltinBase<TemporalPlainYearMonth> {
     static Value monthCode(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 9.3.7 get Temporal.PlainYearMonth.prototype.daysInMonth
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.daysinmonth
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.daysinmonth
     static Value daysInMonth(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 9.3.8 get Temporal.PlainYearMonth.prototype.daysInYear
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.daysinyear
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.daysinyear
     static Value daysInYear(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 9.3.9 get Temporal.PlainYearMonth.prototype.monthsInYear
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.monthsinyear
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.monthsinyear
     static Value monthsInYear(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 9.3.10 get Temporal.PlainYearMonth.prototype.inLeapYear
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.inleapyear
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.inleapyear
     static Value inLeapYear(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 9.3.3 get Temporal.PlainYearMonth.prototype.calendarId
-    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.calendarid
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.calendarid
     static Value calendarId(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 9.3.11 Temporal.PlainYearMonth.prototype.with ( temporalYearMonthLike [ , options ] )
@@ -127,7 +134,8 @@ class TemporalPlainYearMonth : public BuiltinBase<TemporalPlainYearMonth> {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainyearmonth.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// NON-STANDARD: Helper to create a JS PlainYearMonth object from a temporal_rs::PlainYearMonth.
+    /// NON-STANDARD: Helper to create a JS PlainYearMonth object from a
+    /// temporal_rs::PlainYearMonth.
     static Value wrapPlainYearMonth(std::unique_ptr<temporal_rs::PlainYearMonth> ym);
 
   private:

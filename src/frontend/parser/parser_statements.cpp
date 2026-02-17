@@ -155,8 +155,8 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
     // Parse first declarator
     auto first = parse_single_declarator();
 
-    // VariableDeclarationList :: VariableDeclaration | VariableDeclarationList , VariableDeclaration
-    // Check for comma-separated additional declarators: var a, b = 1, c;
+    // VariableDeclarationList :: VariableDeclaration | VariableDeclarationList ,
+    // VariableDeclaration Check for comma-separated additional declarators: var a, b = 1, c;
     if(current_token().type != TokenType::Comma) {
         return first;  // Single declarator - return directly
     }
@@ -399,8 +399,8 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
 //              | if ( Expression ) Statement
 // @spec https://tc39.es/ecma262/#sec-if-statement
 std::shared_ptr<ASTNode> Parser::parse_if_statement() {
-    consume(TokenType::If);          // if
-    consume(TokenType::LeftParen);   // (
+    consume(TokenType::If);         // if
+    consume(TokenType::LeftParen);  // (
 
     // Expression — the condition
     auto condition = parse_expression();
@@ -424,8 +424,8 @@ std::shared_ptr<ASTNode> Parser::parse_if_statement() {
 // IterationStatement :: while ( Expression ) Statement
 // @spec https://tc39.es/ecma262/#sec-while-statement
 std::shared_ptr<ASTNode> Parser::parse_while_statement() {
-    consume(TokenType::While);       // while
-    consume(TokenType::LeftParen);   // (
+    consume(TokenType::While);      // while
+    consume(TokenType::LeftParen);  // (
 
     // Expression — loop condition
     auto condition = parse_expression();
@@ -442,13 +442,13 @@ std::shared_ptr<ASTNode> Parser::parse_while_statement() {
 // IterationStatement :: do Statement while ( Expression ) ;
 // @spec https://tc39.es/ecma262/#sec-do-while-statement
 std::shared_ptr<ASTNode> Parser::parse_do_while_statement() {
-    consume(TokenType::Do);          // do
+    consume(TokenType::Do);  // do
 
     // Statement — loop body (executed at least once)
     auto body = parse_statement();
 
-    consume(TokenType::While);       // while
-    consume(TokenType::LeftParen);   // (
+    consume(TokenType::While);      // while
+    consume(TokenType::LeftParen);  // (
 
     // Expression — loop condition
     auto condition = parse_expression();
@@ -456,7 +456,7 @@ std::shared_ptr<ASTNode> Parser::parse_do_while_statement() {
     consume(TokenType::RightParen);  // )
 
     // The spec requires a semicolon after do-while (unlike other iteration statements)
-    consume(TokenType::Semicolon);   // ;
+    consume(TokenType::Semicolon);  // ;
 
     return ASTFactory::makeDoWhileStatement(body, condition);
 }
@@ -711,8 +711,8 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
 // DefaultClause :: default : StatementList?
 // @spec https://tc39.es/ecma262/#sec-switch-statement
 std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
-    consume(TokenType::Switch);      // switch
-    consume(TokenType::LeftParen);   // (
+    consume(TokenType::Switch);     // switch
+    consume(TokenType::LeftParen);  // (
 
     // Expression — the discriminant to match against
     auto discriminant = parse_expression();
@@ -777,7 +777,7 @@ std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
 // @spec https://tc39.es/ecma262/#sec-function-definitions
 std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
     Token& startToken = current_token();
-    consume(TokenType::Function);         // function
+    consume(TokenType::Function);  // function
 
     // BindingIdentifier — function name (required for declarations)
     if(current_token().type != TokenType::Identifier) {
@@ -1224,8 +1224,7 @@ std::shared_ptr<ASTNode> Parser::parse_class_body() {
                                     method->metadata.find("setter") != std::string::npos);
         if(!is_static_method && !is_getter_or_setter && method->value == "constructor") {
             if(has_constructor) {
-                throw std::runtime_error(
-                    "SyntaxError: A class may only have one constructor");
+                throw std::runtime_error("SyntaxError: A class may only have one constructor");
             }
             has_constructor = true;
         }
@@ -1342,12 +1341,10 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     // 15.4.1 Static Semantics: Early Errors
     // Getter must have exactly 0 parameters, setter must have exactly 1 parameter.
     if(isGetter && !parameters->children.empty()) {
-        throw std::runtime_error(
-            "SyntaxError: Getter must not have any formal parameters");
+        throw std::runtime_error("SyntaxError: Getter must not have any formal parameters");
     }
     if(isSetter && parameters->children.size() != 1) {
-        throw std::runtime_error(
-            "SyntaxError: Setter must have exactly one formal parameter");
+        throw std::runtime_error("SyntaxError: Setter must have exactly one formal parameter");
     }
 
     // { FunctionBody } — parse with appropriate context flags for yield/await

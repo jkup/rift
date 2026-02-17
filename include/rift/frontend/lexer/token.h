@@ -103,9 +103,9 @@ enum class TokenType {
     Delete,
     Void,
     With,
-    QuestionMark,           // ?
-    OptionalChain,          // ?.
-    NullishCoalescing,      // ??
+    QuestionMark,             // ?
+    OptionalChain,            // ?.
+    NullishCoalescing,        // ??
     NullishCoalescingAssign,  // ??=
 
     // Punctuation

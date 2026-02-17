@@ -224,7 +224,8 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
     }
 
     // 15.8 Async Function Definitions
-    // AsyncFunctionDeclaration :: async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
+    // AsyncFunctionDeclaration :: async function BindingIdentifier ( FormalParameters ) {
+    // AsyncFunctionBody }
     if(current_token().type == TokenType::Async) {
         if(peek_token().type == TokenType::Function) {
             return parse_async_function_declaration();
@@ -273,8 +274,8 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
     }
 
     // 14.5 Expression Statement
-    // ExpressionStatement :: [lookahead not in { {, function, async function, class, let [ }] Expression ;
-    // DEVIATION: The spec requires lookahead restrictions to disambiguate from
+    // ExpressionStatement :: [lookahead not in { {, function, async function, class, let [ }]
+    // Expression ; DEVIATION: The spec requires lookahead restrictions to disambiguate from
     // BlockStatement, FunctionDeclaration, etc. These are handled above by checking
     // specific token types first, so the fallthrough here is the expression case.
     auto expr = parse_expression();
