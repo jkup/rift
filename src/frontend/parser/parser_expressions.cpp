@@ -991,7 +991,30 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
             key->metadata = "computed_key";
             key->children.push_back(expr);
         } else {
-            throw std::runtime_error("Expected property name in object literal");
+            // 12.2.6 IdentifierName includes reserved words as property names
+            // @spec https://tc39.es/ecma262/#prod-PropertyName
+            // PropertyName :: LiteralPropertyName | ComputedPropertyName
+            // LiteralPropertyName :: IdentifierName | StringLiteral | NumericLiteral
+            // IdentifierName includes reserved words (return, if, for, class, etc.)
+            TokenType tt = current_token().type;
+            if(tt == TokenType::Return || tt == TokenType::If || tt == TokenType::Else ||
+               tt == TokenType::For || tt == TokenType::While || tt == TokenType::Do ||
+               tt == TokenType::Switch || tt == TokenType::Case || tt == TokenType::Default ||
+               tt == TokenType::Break || tt == TokenType::Continue || tt == TokenType::Throw ||
+               tt == TokenType::Try || tt == TokenType::Catch || tt == TokenType::Finally ||
+               tt == TokenType::New || tt == TokenType::This || tt == TokenType::In ||
+               tt == TokenType::Instanceof || tt == TokenType::Of || tt == TokenType::Class ||
+               tt == TokenType::Extends || tt == TokenType::Super || tt == TokenType::Static ||
+               tt == TokenType::Var || tt == TokenType::Let || tt == TokenType::Const ||
+               tt == TokenType::Function || tt == TokenType::Typeof || tt == TokenType::Delete ||
+               tt == TokenType::Void || tt == TokenType::Yield || tt == TokenType::Async ||
+               tt == TokenType::Await || tt == TokenType::Boolean || tt == TokenType::Null ||
+               tt == TokenType::Undefined || tt == TokenType::With) {
+                key = ASTFactory::makeIdentifier(current_token().value);
+                current++;
+            } else {
+                throw std::runtime_error("Expected property name in object literal");
+            }
         }
 
         // MethodDefinition :: get PropertyName ( ) { FunctionBody }

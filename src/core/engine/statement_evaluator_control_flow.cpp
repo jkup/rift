@@ -417,112 +417,112 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
 // @spec https://tc39.es/ecma262/#sec-iteratornext
 //
 // Collects all values from an iterable into a vector.
-// Used by for-of to eagerly consume the iterable before entering the loop body.
+// 7.4.1 GetIterator ( obj, kind )
+// @spec https://tc39.es/ecma262/#sec-getiterator
 //
-// DEVIATION: The spec lazily consumes the iterator one value at a time during
-// each loop iteration. Rift eagerly collects all values into a vector first.
-// This means iterator side effects happen before the first loop body execution.
-//
-// DEVIATION: Rift tries array-like indexing first (objects with a numeric "length"
-// property) before falling back to the Symbol.iterator protocol. The spec always
-// uses the iterator protocol for for-of. This optimization handles the common
-// case of plain arrays without requiring Symbol.iterator setup.
-static std::vector<Value> getIterableValues(const Value& iterable) {
-    std::vector<Value> values;
+// Holds the iterator object and its next method for lazy iteration.
+// Used by for-of to consume one value at a time per loop iteration.
+struct IteratorRecord {
+    Value iterator;          // The iterator object
+    JSObject* iterator_obj;  // Raw pointer for property access
+    Value next_method;       // Cached next() method
 
-    // String iteration: each code unit becomes a separate value
-    // 22.1.5.1 CreateStringIterator ( string )
-    // @spec https://tc39.es/ecma262/#sec-createstringiterator
-    if(iterable.isString()) {
-        std::string str = iterable.getString();
-        for(char c : str) {
-            values.push_back(Value(std::string(1, c)));
-        }
-        return values;
+    bool valid() const { return iterator_obj != nullptr; }
+};
+
+// 7.4.8 IteratorClose ( iteratorRecord, completion )
+// @spec https://tc39.es/ecma262/#sec-iteratorclose
+//
+// Calls the iterator's return() method if it exists, to signal early termination.
+static void iteratorClose(const IteratorRecord& record) {
+    if(!record.valid()) return;
+
+    Value return_method = record.iterator_obj->getProperty("return");
+    if(return_method.isUndefined() || return_method.isNull() || !return_method.isFunction()) {
+        return;
     }
 
-    // Handle object/array iteration via Symbol.iterator
+    auto* return_func = dynamic_cast<JSFunction*>(return_method.getObject());
+    if(!return_func) return;
+
+    CallContext ctx(CallType::Function, record.iterator);
+    return_func->call(ctx, {});
+}
+
+// 7.4.2 IteratorNext ( iteratorRecord [ , value ] )
+// @spec https://tc39.es/ecma262/#sec-iteratornext
+//
+// Calls next() on the iterator. Returns {done, value} as a pair.
+// Returns {true, undefined} when iteration is complete.
+static std::pair<bool, Value> iteratorNext(const IteratorRecord& record) {
+    if(!record.next_method.isFunction()) {
+        return {true, Value::undefined()};
+    }
+
+    auto* next_func = dynamic_cast<JSFunction*>(record.next_method.getObject());
+    if(!next_func) {
+        return {true, Value::undefined()};
+    }
+
+    CallContext next_ctx(CallType::Function, record.iterator);
+    Value result = next_func->call(next_ctx, {});
+
+    if(!result.isObject()) {
+        return {true, Value::undefined()};
+    }
+
+    auto* result_obj = result.getObject();
+    Value done = result_obj->getProperty("done");
+    if(done.toBool()) {
+        return {true, Value::undefined()};
+    }
+
+    Value value = result_obj->getProperty("value");
+    return {false, value};
+}
+
+// Gets an IteratorRecord from an iterable value via Symbol.iterator protocol.
+// Returns an invalid record if the value is not iterable via Symbol.iterator.
+static IteratorRecord getIterator(const Value& iterable) {
+    IteratorRecord record{Value::undefined(), nullptr, Value::undefined()};
+
     if(!iterable.isObject() && !iterable.isFunction()) {
-        return values;  // Not iterable
+        return record;
     }
 
     auto* obj = iterable.getObject();
-    if(!obj) {
-        return values;
-    }
+    if(!obj) return record;
 
-    // DEVIATION: Try array-like iteration first (objects with numeric length property).
-    // The spec does not have this shortcut — it always uses Symbol.iterator.
-    Value length_val = obj->getProperty("length");
-    if(length_val.isNumber()) {
-        double len = length_val.getNumber();
-        if(len >= 0 && !std::isnan(len) && !std::isinf(len)) {
-            size_t length = static_cast<size_t>(len);
-            for(size_t i = 0; i < length; ++i) {
-                values.push_back(obj->getProperty(std::to_string(i)));
-            }
-            return values;
-        }
-    }
-
-    // 7.4.1 GetIterator step 1: Let method be ? GetMethod(obj, %Symbol.iterator%).
     std::string iterator_key =
         EvaluationUtils::symbolToPropertyKey(builtins::Symbol::getIteratorId());
     Value iterator_method = obj->getProperty(iterator_key);
 
-    // Step 2: If method is undefined, throw a TypeError. (Rift returns empty instead.)
     if(iterator_method.isUndefined() || !iterator_method.isFunction()) {
-        return values;  // Not iterable
+        return record;
     }
 
-    // Step 3: Let iterator be ? Call(method, obj).
-    auto* iterator_func = dynamic_cast<rift::runtime::JSFunction*>(iterator_method.getObject());
-    if(!iterator_func) {
-        return values;
-    }
+    auto* iterator_func = dynamic_cast<JSFunction*>(iterator_method.getObject());
+    if(!iterator_func) return record;
 
     CallContext ctx(CallType::Function, iterable);
     Value iterator = iterator_func->call(ctx, {});
 
-    if(!iterator.isObject()) {
-        return values;
+    if(!iterator.isObject()) return record;
+
+    record.iterator = iterator;
+    record.iterator_obj = iterator.getObject();
+    record.next_method = record.iterator_obj->getProperty("next");
+    return record;
+}
+
+// Eagerly collects string characters for for-of iteration.
+// Strings don't use the iterator protocol in Rift (DEVIATION from spec).
+static std::vector<Value> getStringValues(const Value& iterable) {
+    std::vector<Value> values;
+    std::string str = iterable.getString();
+    for(char c : str) {
+        values.push_back(Value(std::string(1, c)));
     }
-
-    auto* iterator_obj = iterator.getObject();
-
-    // 7.4.2 IteratorNext: Repeatedly call next() until done
-    while(true) {
-        // 1. Let result be ? Call(iteratorRecord.[[NextMethod]], iteratorRecord.[[Iterator]]).
-        Value next_method = iterator_obj->getProperty("next");
-        if(!next_method.isFunction()) {
-            break;
-        }
-
-        auto* next_func = dynamic_cast<rift::runtime::JSFunction*>(next_method.getObject());
-        if(!next_func) {
-            break;
-        }
-
-        CallContext next_ctx(CallType::Function, iterator);
-        Value result = next_func->call(next_ctx, {});
-
-        // 2. If result is not an Object, throw a TypeError. (Rift breaks instead.)
-        if(!result.isObject()) {
-            break;
-        }
-
-        // 7.4.4 IteratorComplete: Let done be ? ToBoolean(? Get(iterResult, "done")).
-        auto* result_obj = result.getObject();
-        Value done = result_obj->getProperty("done");
-        if(done.toBool()) {
-            break;
-        }
-
-        // 7.4.5 IteratorValue: Let value be ? Get(iterResult, "value").
-        Value value = result_obj->getProperty("value");
-        values.push_back(value);
-    }
-
     return values;
 }
 
@@ -549,10 +549,9 @@ static std::vector<Value> getIterableValues(const Value& iterable) {
 //           iii. Return ? IteratorClose(iteratorRecord, status).
 //        g. If stmtResult.[[Value]] is not empty, set V to stmtResult.[[Value]].
 //
-// DEVIATION: Rift eagerly collects all iterable values via getIterableValues()
-// before entering the loop, rather than lazily consuming the iterator per-iteration.
-// This means break does not call IteratorClose, and iterator side effects happen
-// before the first loop body runs.
+// DEVIATION: For strings, Rift eagerly collects characters into a vector rather
+// than using a StringIterator object. For objects, Rift uses lazy iteration via
+// the Symbol.iterator protocol, with IteratorClose on early exit (break/throw/return).
 Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
     if(node->children.size() < 3) {
@@ -587,20 +586,17 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
         }
     } else if(left_node->type == ASTNodeType::ArrayPattern ||
               left_node->type == ASTNodeType::ObjectPattern) {
-        // Bare pattern: for ([a,b] of arr) without declaration keyword
         is_destructuring = true;
         pattern = left_node;
     }
 
+    // Determine variable name for simple (non-destructuring) binding
+    std::string var_name;
     if(!is_destructuring) {
-        // Simple variable binding — ForIn/OfBodyEvaluation step 2d
-        std::string var_name;
         if(left_node->type == ASTNodeType::VariableDeclaration ||
            left_node->type == ASTNodeType::LetDeclaration ||
            left_node->type == ASTNodeType::ConstDeclaration) {
             var_name = left_node->value;
-            // DEVIATION: const in for-of should create a new binding per iteration.
-            // Rift defines it once as Let to allow reassignment across iterations.
             if(left_node->type == ASTNodeType::LetDeclaration) {
                 env->define(var_name, Value::undefined(), VariableType::Let);
             } else if(left_node->type == ASTNodeType::ConstDeclaration) {
@@ -613,55 +609,103 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
         } else {
             return Value::undefined();
         }
+    }
 
-        // ForIn/OfHeadEvaluation step 3: GetIterator(exprValue, SYNC)
-        auto values = getIterableValues(iterable);
-        // Step 2: Repeat (iterate over values)
+    // String fast path: eagerly collect characters (no iterator close needed)
+    if(iterable.isString()) {
+        auto values = getStringValues(iterable);
         for(const auto& value : values) {
-            // Step 2d: Assign nextValue to loop variable
-            env->set(var_name, value);
-            // Step 2e: Let stmtResult be Completion(Evaluation of Statement).
+            std::shared_ptr<Environment> body_env = env;
+            if(!is_destructuring) {
+                env->set(var_name, value);
+            } else if(var_type == VariableType::Var) {
+                applyPatternBinding(pattern, value, env, engine, var_type);
+            } else {
+                body_env = std::make_shared<Environment>(env);
+                applyPatternBinding(pattern, value, body_env, engine, var_type);
+            }
             try {
-                result = engine->evaluate(body_node, env);
+                result = engine->evaluate(body_node, body_env);
             } catch(const BreakException&) {
-                // Step 2f: INCOMPLETE: Should call IteratorClose on break.
                 break;
             } catch(const ContinueException&) {
                 continue;
             }
         }
-    } else {
-        // Destructuring path — ForIn/OfBodyEvaluation with BindingPattern
-        // Step 2d: Perform BindingInitialization of ForBinding with nextValue
-        auto values = getIterableValues(iterable);
-        if(var_type == VariableType::Var) {
-            // var: bind into outer env (no per-iteration scope needed, var allows redeclaration)
-            for(const auto& value : values) {
-                applyPatternBinding(pattern, value, env, engine, var_type);
-                try {
-                    result = engine->evaluate(body_node, env);
-                } catch(const BreakException&) {
-                    break;
-                } catch(const ContinueException&) {
-                    continue;
+        return result;
+    }
+
+    // ForIn/OfHeadEvaluation step 3: GetIterator(exprValue, SYNC)
+    IteratorRecord record = getIterator(iterable);
+
+    if(!record.valid()) {
+        // Not iterable via Symbol.iterator — try array-like fallback
+        // DEVIATION: The spec always uses Symbol.iterator. This fallback handles
+        // plain objects with a numeric length property that lack Symbol.iterator.
+        if(iterable.isObject()) {
+            auto* obj = iterable.getObject();
+            Value length_val = obj ? obj->getProperty("length") : Value::undefined();
+            if(length_val.isNumber()) {
+                double len = length_val.getNumber();
+                if(len >= 0 && !std::isnan(len) && !std::isinf(len)) {
+                    size_t length = static_cast<size_t>(len);
+                    for(size_t i = 0; i < length; ++i) {
+                        Value value = obj->getProperty(std::to_string(i));
+                        std::shared_ptr<Environment> body_env = env;
+                        if(!is_destructuring) {
+                            env->set(var_name, value);
+                        } else if(var_type == VariableType::Var) {
+                            applyPatternBinding(pattern, value, env, engine, var_type);
+                        } else {
+                            body_env = std::make_shared<Environment>(env);
+                            applyPatternBinding(pattern, value, body_env, engine, var_type);
+                        }
+                        try {
+                            result = engine->evaluate(body_node, body_env);
+                        } catch(const BreakException&) {
+                            break;
+                        } catch(const ContinueException&) {
+                            continue;
+                        }
+                    }
                 }
             }
+        }
+        return result;
+    }
+
+    // Lazy iteration with IteratorClose support
+    // Step 2: Repeat
+    while(true) {
+        // Step 2a-2b: IteratorNext, check done
+        auto [done, value] = iteratorNext(record);
+        if(done) break;
+
+        // Step 2d: Assign nextValue to loop variable
+        std::shared_ptr<Environment> body_env = env;
+        if(!is_destructuring) {
+            env->set(var_name, value);
+        } else if(var_type == VariableType::Var) {
+            applyPatternBinding(pattern, value, env, engine, var_type);
         } else {
-            // let/const: create a child environment per iteration
-            // This implements the spec's per-iteration scope behavior:
-            // ForIn/OfBodyEvaluation step 2: creates a new declarative environment
-            // for each iteration to give each loop body its own let/const bindings.
-            for(const auto& value : values) {
-                auto iter_env = std::make_shared<Environment>(env);
-                applyPatternBinding(pattern, value, iter_env, engine, var_type);
-                try {
-                    result = engine->evaluate(body_node, iter_env);
-                } catch(const BreakException&) {
-                    break;
-                } catch(const ContinueException&) {
-                    continue;
-                }
-            }
+            body_env = std::make_shared<Environment>(env);
+            applyPatternBinding(pattern, value, body_env, engine, var_type);
+        }
+
+        // Step 2e: Let stmtResult be Completion(Evaluation of Statement).
+        try {
+            result = engine->evaluate(body_node, body_env);
+        } catch(const BreakException&) {
+            // Step 2f: IteratorClose on break
+            iteratorClose(record);
+            break;
+        } catch(const ContinueException&) {
+            // Continue does not close the iterator — iteration continues normally
+            continue;
+        } catch(...) {
+            // Step 2f: IteratorClose on throw/return (any abrupt completion)
+            iteratorClose(record);
+            throw;
         }
     }
 
