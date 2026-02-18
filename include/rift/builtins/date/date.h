@@ -108,6 +108,15 @@ class Date : public BuiltinBase<Date> {
     /// 21.4.4.34 Date.prototype.setUTCSeconds ( sec [ , ms ] )
     static Value setUTCSeconds(const CallContext& ctx, const std::vector<Value>& args);
 
+    // ===== Annex B Methods =====
+
+    /// B.2.4.1 Date.prototype.getYear ( )
+    /// @spec https://tc39.es/ecma262/#sec-date.prototype.getyear
+    static Value getYear(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.4.2 Date.prototype.setYear ( year )
+    /// @spec https://tc39.es/ecma262/#sec-date.prototype.setyear
+    static Value setYear(const CallContext& ctx, const std::vector<Value>& args);
+
     // ===== Conversion Methods =====
 
     /// 21.4.4.35 Date.prototype.toDateString ( )

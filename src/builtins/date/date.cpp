@@ -776,8 +776,18 @@ Value Date::getUTCSeconds(const CallContext& ctx, const std::vector<Value>& /*ar
 // ============================================================================
 
 Value Date::setDate(const CallContext& ctx, const std::vector<Value>& args) {
-    double t = LocalTime(extractThisDateValue(ctx));
+    // 1. Let t be ? thisTimeValue(this value).
+    double t = extractThisDateValue(ctx);
+    // 2. Let dt be ? ToNumber(date).
     double dt = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
+    // 3. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+    // 4. Set t to LocalTime(t).
+    t = LocalTime(t);
     double new_date = MakeDate(MakeDay(YearFromTime(t), MonthFromTime(t), dt), TimeWithinDay(t));
     double u = TimeClip(UTCTime(new_date));
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(u));
@@ -785,11 +795,16 @@ Value Date::setDate(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Date::setFullYear(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let t be ? thisTimeValue(this value).
     double t = extractThisDateValue(ctx);
+    // 2. Let y be ? ToNumber(year).
+    double y = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
+    // 3. If t is NaN, set t to +0.
     if(std::isnan(t))
         t = 0.0;
+    // 4. Set t to LocalTime(t).
     t = LocalTime(t);
-    double y = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
+    // 5-6. Let m and dt be from args or current components.
     double m = args.size() > 1 ? args[1].toNumber() : MonthFromTime(t);
     double dt = args.size() > 2 ? args[2].toNumber() : DateFromTime(t);
     double new_date = MakeDate(MakeDay(y, m, dt), TimeWithinDay(t));
@@ -799,11 +814,29 @@ Value Date::setFullYear(const CallContext& ctx, const std::vector<Value>& args) 
 }
 
 Value Date::setHours(const CallContext& ctx, const std::vector<Value>& args) {
-    double t = LocalTime(extractThisDateValue(ctx));
+    // 1. Let t be ? thisTimeValue(this value).
+    double t = extractThisDateValue(ctx);
+    // 2. Let h be ? ToNumber(hour).
     double h = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
-    double m = args.size() > 1 ? args[1].toNumber() : MinFromTime(t);
-    double s = args.size() > 2 ? args[2].toNumber() : SecFromTime(t);
-    double ms = args.size() > 3 ? args[3].toNumber() : msFromTime(t);
+    // 3-5. Let m, s, ms from args.
+    double m = args.size() > 1 ? args[1].toNumber() : 0.0;   // placeholder
+    double s = args.size() > 2 ? args[2].toNumber() : 0.0;   // placeholder
+    double ms = args.size() > 3 ? args[3].toNumber() : 0.0;  // placeholder
+    // 6. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+    // 7. Set t to LocalTime(t).
+    t = LocalTime(t);
+    // Fill in defaults from t for args not provided.
+    if(args.size() <= 1)
+        m = MinFromTime(t);
+    if(args.size() <= 2)
+        s = SecFromTime(t);
+    if(args.size() <= 3)
+        ms = msFromTime(t);
     double new_date = MakeDate(Day(t), MakeTime(h, m, s, ms));
     double u = TimeClip(UTCTime(new_date));
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(u));
@@ -811,8 +844,18 @@ Value Date::setHours(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Date::setMilliseconds(const CallContext& ctx, const std::vector<Value>& args) {
-    double t = LocalTime(extractThisDateValue(ctx));
+    // 1. Let t be ? thisTimeValue(this value).
+    double t = extractThisDateValue(ctx);
+    // 2. Let ms be ? ToNumber(ms).
     double ms = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
+    // 3. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+    // 4. Set t to LocalTime(t).
+    t = LocalTime(t);
     double time = MakeTime(HourFromTime(t), MinFromTime(t), SecFromTime(t), ms);
     double u = TimeClip(UTCTime(MakeDate(Day(t), time)));
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(u));
@@ -820,10 +863,26 @@ Value Date::setMilliseconds(const CallContext& ctx, const std::vector<Value>& ar
 }
 
 Value Date::setMinutes(const CallContext& ctx, const std::vector<Value>& args) {
-    double t = LocalTime(extractThisDateValue(ctx));
+    // 1. Let t be ? thisTimeValue(this value).
+    double t = extractThisDateValue(ctx);
+    // 2. Let m be ? ToNumber(min).
     double m = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
-    double s = args.size() > 1 ? args[1].toNumber() : SecFromTime(t);
-    double ms = args.size() > 2 ? args[2].toNumber() : msFromTime(t);
+    // 3-4. Let s, ms from args.
+    double s = args.size() > 1 ? args[1].toNumber() : 0.0;   // placeholder
+    double ms = args.size() > 2 ? args[2].toNumber() : 0.0;  // placeholder
+    // 5. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+    // 6. Set t to LocalTime(t).
+    t = LocalTime(t);
+    // Fill in defaults from t for args not provided.
+    if(args.size() <= 1)
+        s = SecFromTime(t);
+    if(args.size() <= 2)
+        ms = msFromTime(t);
     double time = MakeTime(HourFromTime(t), m, s, ms);
     double u = TimeClip(UTCTime(MakeDate(Day(t), time)));
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(u));
@@ -831,9 +890,23 @@ Value Date::setMinutes(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Date::setMonth(const CallContext& ctx, const std::vector<Value>& args) {
-    double t = LocalTime(extractThisDateValue(ctx));
+    // 1. Let t be ? thisTimeValue(this value).
+    double t = extractThisDateValue(ctx);
+    // 2. Let m be ? ToNumber(month).
     double m = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
-    double dt = args.size() > 1 ? args[1].toNumber() : DateFromTime(t);
+    // 3. Let dt from args.
+    double dt = args.size() > 1 ? args[1].toNumber() : 0.0;  // placeholder
+    // 4. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+    // 5. Set t to LocalTime(t).
+    t = LocalTime(t);
+    // Fill in default for dt if not provided.
+    if(args.size() <= 1)
+        dt = DateFromTime(t);
     double new_date = MakeDate(MakeDay(YearFromTime(t), m, dt), TimeWithinDay(t));
     double u = TimeClip(UTCTime(new_date));
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(u));
@@ -841,9 +914,23 @@ Value Date::setMonth(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Date::setSeconds(const CallContext& ctx, const std::vector<Value>& args) {
-    double t = LocalTime(extractThisDateValue(ctx));
+    // 1. Let t be ? thisTimeValue(this value).
+    double t = extractThisDateValue(ctx);
+    // 2. Let s be ? ToNumber(sec).
     double s = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
-    double ms = args.size() > 1 ? args[1].toNumber() : msFromTime(t);
+    // 3. Let ms from args.
+    double ms = args.size() > 1 ? args[1].toNumber() : 0.0;  // placeholder
+    // 4. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+    // 5. Set t to LocalTime(t).
+    t = LocalTime(t);
+    // Fill in default for ms if not provided.
+    if(args.size() <= 1)
+        ms = msFromTime(t);
     double time = MakeTime(HourFromTime(t), MinFromTime(t), s, ms);
     double u = TimeClip(UTCTime(MakeDate(Day(t), time)));
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(u));
@@ -860,8 +947,16 @@ Value Date::setTime(const CallContext& ctx, const std::vector<Value>& args) {
 
 // UTC setters
 Value Date::setUTCDate(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let t be ? thisTimeValue(this value).
     double t = extractThisDateValue(ctx);
+    // 2. Let dt be ? ToNumber(date).
     double dt = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
+    // 3. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
     double new_date = MakeDate(MakeDay(YearFromTime(t), MonthFromTime(t), dt), TimeWithinDay(t));
     double v = TimeClip(new_date);
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(v));
@@ -869,10 +964,14 @@ Value Date::setUTCDate(const CallContext& ctx, const std::vector<Value>& args) {
 }
 
 Value Date::setUTCFullYear(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let t be ? thisTimeValue(this value).
     double t = extractThisDateValue(ctx);
+    // 2. Let y be ? ToNumber(year).
+    double y = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
+    // 3. If t is NaN, set t to +0.
     if(std::isnan(t))
         t = 0.0;
-    double y = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
+    // 4-5. Let m, dt from args or current components.
     double m = args.size() > 1 ? args[1].toNumber() : MonthFromTime(t);
     double dt = args.size() > 2 ? args[2].toNumber() : DateFromTime(t);
     double new_date = MakeDate(MakeDay(y, m, dt), TimeWithinDay(t));
@@ -882,11 +981,27 @@ Value Date::setUTCFullYear(const CallContext& ctx, const std::vector<Value>& arg
 }
 
 Value Date::setUTCHours(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let t be ? thisTimeValue(this value).
     double t = extractThisDateValue(ctx);
+    // 2. Let h be ? ToNumber(hour).
     double h = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
-    double m = args.size() > 1 ? args[1].toNumber() : MinFromTime(t);
-    double s = args.size() > 2 ? args[2].toNumber() : SecFromTime(t);
-    double ms = args.size() > 3 ? args[3].toNumber() : msFromTime(t);
+    // 3-5. Let m, s, ms from args.
+    double m = args.size() > 1 ? args[1].toNumber() : 0.0;   // placeholder
+    double s = args.size() > 2 ? args[2].toNumber() : 0.0;   // placeholder
+    double ms = args.size() > 3 ? args[3].toNumber() : 0.0;  // placeholder
+    // 6. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+    // Fill in defaults from t for args not provided.
+    if(args.size() <= 1)
+        m = MinFromTime(t);
+    if(args.size() <= 2)
+        s = SecFromTime(t);
+    if(args.size() <= 3)
+        ms = msFromTime(t);
     double new_date = MakeDate(Day(t), MakeTime(h, m, s, ms));
     double v = TimeClip(new_date);
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(v));
@@ -894,8 +1009,16 @@ Value Date::setUTCHours(const CallContext& ctx, const std::vector<Value>& args) 
 }
 
 Value Date::setUTCMilliseconds(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let t be ? thisTimeValue(this value).
     double t = extractThisDateValue(ctx);
+    // 2. Let ms be ? ToNumber(ms).
     double ms = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
+    // 3. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
     double time = MakeTime(HourFromTime(t), MinFromTime(t), SecFromTime(t), ms);
     double v = TimeClip(MakeDate(Day(t), time));
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(v));
@@ -903,10 +1026,24 @@ Value Date::setUTCMilliseconds(const CallContext& ctx, const std::vector<Value>&
 }
 
 Value Date::setUTCMinutes(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let t be ? thisTimeValue(this value).
     double t = extractThisDateValue(ctx);
+    // 2. Let m be ? ToNumber(min).
     double m = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
-    double s = args.size() > 1 ? args[1].toNumber() : SecFromTime(t);
-    double ms = args.size() > 2 ? args[2].toNumber() : msFromTime(t);
+    // 3-4. Let s, ms from args.
+    double s = args.size() > 1 ? args[1].toNumber() : 0.0;   // placeholder
+    double ms = args.size() > 2 ? args[2].toNumber() : 0.0;  // placeholder
+    // 5. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+    // Fill in defaults from t for args not provided.
+    if(args.size() <= 1)
+        s = SecFromTime(t);
+    if(args.size() <= 2)
+        ms = msFromTime(t);
     double time = MakeTime(HourFromTime(t), m, s, ms);
     double v = TimeClip(MakeDate(Day(t), time));
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(v));
@@ -914,9 +1051,21 @@ Value Date::setUTCMinutes(const CallContext& ctx, const std::vector<Value>& args
 }
 
 Value Date::setUTCMonth(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let t be ? thisTimeValue(this value).
     double t = extractThisDateValue(ctx);
+    // 2. Let m be ? ToNumber(month).
     double m = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
-    double dt = args.size() > 1 ? args[1].toNumber() : DateFromTime(t);
+    // 3. Let dt from args.
+    double dt = args.size() > 1 ? args[1].toNumber() : 0.0;  // placeholder
+    // 4. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+    // Fill in default for dt if not provided.
+    if(args.size() <= 1)
+        dt = DateFromTime(t);
     double new_date = MakeDate(MakeDay(YearFromTime(t), m, dt), TimeWithinDay(t));
     double v = TimeClip(new_date);
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(v));
@@ -924,13 +1073,64 @@ Value Date::setUTCMonth(const CallContext& ctx, const std::vector<Value>& args) 
 }
 
 Value Date::setUTCSeconds(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let t be ? thisTimeValue(this value).
     double t = extractThisDateValue(ctx);
+    // 2. Let s be ? ToNumber(sec).
     double s = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
-    double ms = args.size() > 1 ? args[1].toNumber() : msFromTime(t);
+    // 3. Let ms from args.
+    double ms = args.size() > 1 ? args[1].toNumber() : 0.0;  // placeholder
+    // 4. If t is NaN, return NaN.
+    if(std::isnan(t)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+    // Fill in default for ms if not provided.
+    if(args.size() <= 1)
+        ms = msFromTime(t);
     double time = MakeTime(HourFromTime(t), MinFromTime(t), s, ms);
     double v = TimeClip(MakeDate(Day(t), time));
     ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(v));
     return Value(v);
+}
+
+// ============================================================================
+// Annex B Methods
+// ============================================================================
+
+// B.2.4.1 Date.prototype.getYear ( )
+Value Date::getYear(const CallContext& ctx, const std::vector<Value>& /*args*/) {
+    double t = extractThisDateValue(ctx);
+    if(std::isnan(t))
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    return Value(YearFromTime(LocalTime(t)) - 1900.0);
+}
+
+// B.2.4.2 Date.prototype.setYear ( year )
+Value Date::setYear(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let t be ? thisTimeValue(this value).
+    double t = extractThisDateValue(ctx);
+    // 2. Let y be ? ToNumber(year).
+    double y = args.empty() ? std::numeric_limits<double>::quiet_NaN() : args[0].toNumber();
+    // 3. If y is NaN, set [[DateValue]] to NaN and return NaN.
+    if(std::isnan(y)) {
+        ctx.thisValue.getObject()->setProperty("[[TimeValue]]",
+                                               Value(std::numeric_limits<double>::quiet_NaN()));
+        return Value(std::numeric_limits<double>::quiet_NaN());
+    }
+    // 4. Let yi be ! ToIntegerOrInfinity(y).
+    double yi = std::trunc(y);
+    // 5. If 0 <= yi <= 99, let yyyy be yi + 1900. Otherwise let yyyy be y.
+    double yyyy = (yi >= 0.0 && yi <= 99.0) ? yi + 1900.0 : y;
+    // 6. If t is NaN, set t to +0.
+    if(std::isnan(t))
+        t = 0.0;
+    // 7. Set t to LocalTime(t).
+    t = LocalTime(t);
+    double new_date = MakeDate(MakeDay(yyyy, MonthFromTime(t), DateFromTime(t)), TimeWithinDay(t));
+    double u = TimeClip(UTCTime(new_date));
+    ctx.thisValue.getObject()->setProperty("[[TimeValue]]", Value(u));
+    return Value(u);
 }
 
 // ============================================================================
@@ -1066,6 +1266,14 @@ void Date::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory
     RIFT_STATIC_METHOD(constructor, "now", Date::now);
     RIFT_STATIC_METHOD(constructor, "parse", Date::parse);
     RIFT_STATIC_METHOD(constructor, "UTC", Date::UTC);
+
+    // Fix method lengths per spec
+    auto setStaticLen = [&](const char* name, double len) {
+        constructor->getProperty(name).getObject()->defineProperty(
+            "length", PropertyDescriptor(Value(len), false, false, true));
+    };
+    setStaticLen("parse", 1.0);
+    setStaticLen("UTC", 7.0);
 }
 
 void Date::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
@@ -1106,6 +1314,12 @@ void Date::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactor
     RIFT_METHOD(prototype, "setUTCMonth", Date::setUTCMonth);
     RIFT_METHOD(prototype, "setUTCSeconds", Date::setUTCSeconds);
 
+    // Annex B methods
+    RIFT_METHOD(prototype, "getYear", Date::getYear);
+    RIFT_METHOD(prototype, "setYear", Date::setYear);
+    // toGMTString is the same function object as toUTCString
+    RIFT_METHOD(prototype, "toGMTString", Date::toUTCString);
+
     // Conversion
     RIFT_METHOD(prototype, "toDateString", Date::toDateString);
     RIFT_METHOD(prototype, "toISOString", Date::toISOString);
@@ -1118,6 +1332,31 @@ void Date::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactor
     RIFT_METHOD(prototype, "toUTCString", Date::toUTCString);
     RIFT_METHOD(prototype, "valueOf", Date::valueOf);
 
+    // Fix method lengths per spec (RIFT_METHOD defaults to 0)
+    auto setLen = [&](const char* name, double len) {
+        prototype->getProperty(name).getObject()->defineProperty(
+            "length", PropertyDescriptor(Value(len), false, false, true));
+    };
+    // Setters with length > 0
+    setLen("setDate", 1.0);
+    setLen("setFullYear", 3.0);
+    setLen("setHours", 4.0);
+    setLen("setMilliseconds", 1.0);
+    setLen("setMinutes", 3.0);
+    setLen("setMonth", 2.0);
+    setLen("setSeconds", 2.0);
+    setLen("setTime", 1.0);
+    setLen("setUTCDate", 1.0);
+    setLen("setUTCFullYear", 3.0);
+    setLen("setUTCHours", 4.0);
+    setLen("setUTCMilliseconds", 1.0);
+    setLen("setUTCMinutes", 3.0);
+    setLen("setUTCMonth", 2.0);
+    setLen("setUTCSeconds", 2.0);
+    setLen("setYear", 1.0);
+    // toJSON has length 1
+    setLen("toJSON", 1.0);
+
     // @@toPrimitive: non-enumerable, non-writable, configurable
     auto* tp_fn = factory->createJSFunction(Date::toPrimitive);
     tp_fn->defineProperty(
@@ -1126,6 +1365,12 @@ void Date::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactor
     std::string to_prim_key =
         rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getToPrimitiveId());
     prototype->defineProperty(to_prim_key, PropertyDescriptor(Value(tp_fn), false, false, true));
+
+    // @@toStringTag: "Date" (non-writable, non-enumerable, configurable)
+    std::string tag_key =
+        rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getToStringTagId());
+    prototype->defineProperty(tag_key,
+                              PropertyDescriptor(Value(std::string("Date")), false, false, true));
 }
 
 JSObject* Date::getGlobalPrototype() {
