@@ -3,8 +3,8 @@
 #include <memory>
 #include <vector>
 
-#include "rift/runtime/environment/environment.h"
-#include "rift/runtime/values/value.h"
+#include "rift/execution/environment.h"
+#include "rift/types/value.h"
 
 namespace rift::core {
 class Rift;

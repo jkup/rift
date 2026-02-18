@@ -5,10 +5,10 @@
 #include <limits>
 #include <sstream>
 
-#include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/call_context.h"
-#include "rift/core/engine/javascript_exception.h"
-#include "rift/core/engine/this_helpers.h"
+#include "rift/builtins/builtin_manager.h"
+#include "rift/interpreter/call_context.h"
+#include "rift/interpreter/javascript_exception.h"
+#include "rift/interpreter/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
 // ============================================================================

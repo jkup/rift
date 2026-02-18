@@ -38,7 +38,7 @@
 #include <stdexcept>
 #include <unordered_map>
 
-#include "rift/core/runtime_limits.h"
+#include "rift/runtime_limits.h"
 
 namespace rift::frontend {
 

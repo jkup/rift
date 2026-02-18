@@ -9,7 +9,7 @@
 #include <cmath>
 
 #include "rift/builtins/array/array.h"
-#include "rift/core/engine/this_helpers.h"
+#include "rift/interpreter/this_helpers.h"
 
 namespace rift::builtins {
 

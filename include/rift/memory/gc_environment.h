@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../runtime/environment/environment.h"
 #include "gc.h"
+#include "rift/execution/environment.h"
 
 namespace rift::memory {
 

@@ -108,10 +108,15 @@ set(FRONTEND_SOURCES
     src/frontend/parser/parser_statements.cpp
 )
 
-set(RUNTIME_SOURCES
-    src/runtime/values/value.cpp
-    src/runtime/values/object.cpp
-    src/runtime/environment/environment.cpp
+set(TYPES_SOURCES
+    src/types/value.cpp
+    src/types/object.cpp
+    src/types/operations.cpp
+)
+
+set(EXECUTION_SOURCES
+    src/execution/environment.cpp
+    src/execution/microtask_queue.cpp
 )
 
 set(MEMORY_SOURCES
@@ -122,8 +127,12 @@ set(MEMORY_SOURCES
     src/memory/gc_disabler.cpp
 )
 
+set(HOST_SOURCES
+    src/host/console/console.cpp
+)
+
 set(BUILTINS_SOURCES
-    src/builtins/console/console.cpp
+    src/builtins/builtin_manager.cpp
     src/builtins/math/math.cpp
     src/builtins/json/json.cpp
     src/builtins/global/global.cpp
@@ -169,20 +178,17 @@ set(BUILTINS_SOURCES
     src/builtins/temporal/zoned_date_time.cpp
 )
 
-set(CORE_SOURCES
-    src/core/engine/engine.cpp
-    src/core/engine/builtin_manager.cpp
-    src/core/engine/statement_evaluator.cpp
-    src/core/engine/statement_evaluator_control_flow.cpp
-    src/core/engine/statement_evaluator_exceptions.cpp
-    src/core/engine/expression_evaluator.cpp
-    src/core/engine/expression_evaluator_assignment.cpp
-    src/core/engine/expression_evaluator_objects.cpp
-    src/core/engine/operation_handler.cpp
-    src/core/engine/generator_evaluator.cpp
-    src/core/engine/async_executor.cpp
-    src/core/engine/class_builder.cpp
-    src/core/engine/microtask_queue.cpp
+set(INTERPRETER_SOURCES
+    src/interpreter/engine.cpp
+    src/interpreter/statement_evaluator.cpp
+    src/interpreter/statement_evaluator_control_flow.cpp
+    src/interpreter/statement_evaluator_exceptions.cpp
+    src/interpreter/expression_evaluator.cpp
+    src/interpreter/expression_evaluator_assignment.cpp
+    src/interpreter/expression_evaluator_objects.cpp
+    src/interpreter/generator_evaluator.cpp
+    src/interpreter/async_executor.cpp
+    src/interpreter/class_builder.cpp
 )
 
 set(API_SOURCES
@@ -193,10 +199,12 @@ set(API_SOURCES
 add_executable(rift
     src/main.cpp
     ${FRONTEND_SOURCES}
-    ${RUNTIME_SOURCES}
+    ${TYPES_SOURCES}
+    ${EXECUTION_SOURCES}
     ${MEMORY_SOURCES}
     ${BUILTINS_SOURCES}
-    ${CORE_SOURCES}
+    ${HOST_SOURCES}
+    ${INTERPRETER_SOURCES}
     ${API_SOURCES}
     ${LEGACY_SOURCES}
 )

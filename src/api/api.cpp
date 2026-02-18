@@ -1,6 +1,6 @@
 #include "rift/api/api.h"
 
-#include "rift/core/engine/javascript_exception.h"
+#include "rift/interpreter/javascript_exception.h"
 
 namespace rift {
 

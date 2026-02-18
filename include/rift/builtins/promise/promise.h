@@ -3,11 +3,11 @@
 #include <string>
 #include <vector>
 
-#include "../../core/engine/call_context.h"
 #include "../../memory/object_factory.h"
-#include "../../runtime/values/object.h"
-#include "../../runtime/values/value.h"
 #include "../builtin_base.h"
+#include "rift/interpreter/call_context.h"
+#include "rift/types/object.h"
+#include "rift/types/value.h"
 
 // Forward declaration
 namespace rift::core {

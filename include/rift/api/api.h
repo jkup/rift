@@ -2,9 +2,9 @@
 
 #include <string>
 
-#include "../core/engine/engine.h"
 #include "../frontend/lexer/lexer.h"
 #include "../frontend/parser/parser.h"
+#include "rift/interpreter/engine.h"
 
 namespace rift {
 
