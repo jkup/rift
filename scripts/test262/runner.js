@@ -141,6 +141,37 @@ class WorkerPool {
   }
 }
 
+// ─── Display Helpers ──────────────────────────────────────────────────────────
+
+function fmt(n) {
+  return n.toLocaleString("en-US");
+}
+
+function makeBar(fraction, width, filledChar = "\u2588", emptyChar = "\u2591") {
+  const filled = Math.round(width * Math.min(1, Math.max(0, fraction)));
+  const empty = width - filled;
+  return filledChar.repeat(filled) + emptyChar.repeat(empty);
+}
+
+/** Color a percentage string based on its value */
+function colorPct(pctNum, bold = false) {
+  const str = (typeof pctNum === "number" ? pctNum.toFixed(1) : pctNum) + "%";
+  if (pctNum >= 70) return bold ? chalk.bold.green(str) : chalk.green(str);
+  if (pctNum >= 40) return bold ? chalk.bold.yellow(str) : chalk.yellow(str);
+  return bold ? chalk.bold.red(str) : chalk.red(str);
+}
+
+/** Color a bar based on pass rate */
+function colorBar(fraction, width) {
+  const filled = Math.round(width * Math.min(1, Math.max(0, fraction)));
+  const empty = width - filled;
+  const filledStr = "\u2588".repeat(filled);
+  const emptyStr = "\u2591".repeat(empty);
+  if (fraction >= 0.7) return chalk.green(filledStr) + chalk.dim(emptyStr);
+  if (fraction >= 0.4) return chalk.yellow(filledStr) + chalk.dim(emptyStr);
+  return chalk.red(filledStr) + chalk.dim(emptyStr);
+}
+
 class Test262Runner {
   constructor(options = {}) {
     this.passed = 0;
@@ -157,6 +188,7 @@ class Test262Runner {
     this.cache = new Test262Cache();
     this.runtimeChanged = false;
     this.includePattern = null;
+    this.totalTestCount = 0;
   }
 
   getResultsFilename() {
@@ -173,47 +205,40 @@ class Test262Runner {
       return;
     }
 
-    const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(1);
-    const progress =
-      totalTests > 0 ? ((currentIndex / totalTests) * 100).toFixed(1) : 0;
+    const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(0);
+    const pct = totalTests > 0 ? (currentIndex / totalTests) : 0;
+    const pctStr = (pct * 100).toFixed(1);
 
-    const passedBox = chalk.green(
-      `[P ${this.passed.toString().padStart(4)}]`
-    );
-    const failedBox = chalk.red(`[F ${this.failed.toString().padStart(4)}]`);
-    const skippedBox = chalk.yellow(
-      `[S ${this.skipped.toString().padStart(4)}]`
-    );
-    const cachedBox = this.incremental
-      ? chalk.cyan(`[C ${this.cached.toString().padStart(4)}]`)
-      : "";
+    // Multi-color bar: filled portion = pass(green) + fail(red) + skip(gray), rest = not yet run
+    const barW = 30;
+    const done = this.passed + this.failed + this.skipped;
+    const doneChars = Math.round(barW * (totalTests > 0 ? done / totalTests : 0));
+    const todoChars = barW - doneChars;
+    // Split the filled portion proportionally by pass/fail/skip
+    const passFrac = done > 0 ? this.passed / done : 0;
+    const failFrac = done > 0 ? this.failed / done : 0;
+    const passChars = Math.round(doneChars * passFrac);
+    const failChars = Math.round(doneChars * failFrac);
+    const skipChars = Math.max(0, doneChars - passChars - failChars);
+    const bar = chalk.green("\u2588".repeat(passChars)) +
+                chalk.red("\u2588".repeat(failChars)) +
+                chalk.dim("\u2588".repeat(skipChars)) +
+                chalk.dim("\u2591".repeat(Math.max(0, todoChars)));
 
-    const progressBar = this.createProgressBar(currentIndex, totalTests, 20);
+    const p = chalk.green(`\u2713${fmt(this.passed)}`);
+    const f = chalk.red(`\u2717${fmt(this.failed)}`);
+    const s = chalk.dim(`\u25CB${fmt(this.skipped)}`);
 
-    let currentTestDisplay = "";
+    let line = `  ${bar}  ${chalk.bold.cyan(pctStr + "%")}  ${p} ${f} ${s}  ${chalk.dim(elapsed + "s")}`;
+
     if (currentTest) {
-      const relativePath = path.relative(TEST262_DIR, currentTest);
-      const maxLength = 40;
-      currentTestDisplay =
-        relativePath.length > maxLength
-          ? "..." + relativePath.slice(-maxLength + 3)
-          : relativePath;
+      const rel = path.relative(TEST262_DIR, currentTest);
+      const maxLen = 35;
+      const display = rel.length > maxLen ? "\u2026" + rel.slice(-maxLen + 1) : rel;
+      line += "  " + chalk.dim(display);
     }
 
-    const statusLine = [
-      passedBox,
-      failedBox,
-      skippedBox,
-      cachedBox,
-      progressBar,
-      chalk.dim(`${progress}%`),
-      chalk.dim(`${elapsed}s`),
-      currentTestDisplay ? chalk.dim(currentTestDisplay) : "",
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    process.stdout.write("\r" + statusLine + "\x1b[K");
+    process.stdout.write("\r\x1b[K" + line);
   }
 
   showHeader(totalTests) {
@@ -222,101 +247,75 @@ class Test262Runner {
       return;
     }
 
-    console.log(chalk.bold.cyan("Test262 Runner for Rift"));
-    console.log(chalk.cyan("=".repeat(50)));
     console.log();
-    console.log(chalk.bold.green(`Found ${totalTests} test files to run`));
+    console.log(
+      "  " + chalk.yellow("\u26A1") + " " + chalk.bold.cyan("RIFT") +
+      chalk.dim("  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500  ") +
+      chalk.white("ECMAScript Test262")
+    );
+    console.log("  " + chalk.dim("\u2500".repeat(60)));
+    console.log();
 
+    const info = [
+      chalk.bold.white(fmt(totalTests) + " tests"),
+    ];
     if (!this.sequential) {
-      console.log(
-        chalk.dim(`Running in parallel with ${this.workerCount} workers`)
-      );
+      info.push(chalk.cyan(this.workerCount + " workers"));
     } else {
-      console.log(chalk.dim("Running in sequential mode"));
+      info.push(chalk.cyan("sequential"));
     }
-
     if (this.incremental) {
       const stats = this.cache.getStats();
-      console.log(
-        chalk.cyan(
-          `Incremental mode: ${stats.totalCached} cached results available`
-        )
-      );
+      info.push(chalk.magenta(fmt(stats.totalCached) + " cached"));
       if (this.runtimeChanged) {
-        console.log(chalk.yellow("Runtime changed - all tests will re-run"));
+        info.push(chalk.yellow("runtime changed"));
       }
     }
 
-    console.log(chalk.dim("Press Ctrl+C to stop at any time"));
+    console.log("  " + info.join(chalk.dim("  \u00B7  ")));
     console.log();
-    console.log(chalk.bold("Legend:"));
-    console.log(
-      `${chalk.green("[P ####]")} Passed  ${chalk.red(
-        "[F ####]"
-      )} Failed  ${chalk.yellow("[S ####]")} Skipped`
-    );
-    console.log();
-  }
-
-  createProgressBar(current, total, width = 40) {
-    const percentage = total > 0 ? current / total : 0;
-    const filled = Math.round(width * percentage);
-    const empty = width - filled;
-
-    const filledBar = chalk.green("#".repeat(filled));
-    const emptyBar = chalk.gray("-".repeat(empty));
-
-    return `[${filledBar}${emptyBar}]`;
   }
 
   async setupTest262() {
-    if (!process.env.CI) {
-      console.log(chalk.bold.cyan("Test262 Runner for Rift"));
-      console.log(chalk.cyan("=".repeat(50)));
-      console.log();
-      console.log(chalk.yellow("Setting up test262..."));
-    }
-
     if (!fs.existsSync(TEST262_DIR)) {
       if (!process.env.CI) {
-        console.log(chalk.blue("Cloning test262 repository..."));
+        process.stdout.write("  " + chalk.dim("Cloning test262... "));
       }
       try {
         execSync(
           `git clone --depth 1 https://github.com/tc39/test262.git ${TEST262_DIR}`,
-          { stdio: process.env.CI ? "pipe" : "inherit" }
+          { stdio: "pipe" }
         );
         if (!process.env.CI) {
-          console.log(chalk.green("Successfully cloned test262"));
+          console.log(chalk.green("\u2713"));
         }
       } catch (error) {
-        console.error(chalk.red("Failed to clone test262:"), error.message);
+        console.error(chalk.red("\u2717 Failed to clone test262:"), error.message);
         process.exit(1);
-      }
-    } else {
-      if (!process.env.CI) {
-        console.log(chalk.green("test262 directory already exists"));
       }
     }
   }
 
   async buildRuntime() {
-    if (!process.env.CI) {
-      console.log(chalk.yellow("Building runtime..."));
-    }
-
     if (!fs.existsSync("./build.sh")) {
       console.error(chalk.red("build.sh not found"));
       process.exit(1);
     }
 
+    if (!process.env.CI) {
+      process.stdout.write("  " + chalk.dim("Building... "));
+    }
+
     try {
-      execSync("./build.sh", { stdio: process.env.CI ? "pipe" : "inherit" });
+      execSync("./build.sh", { stdio: "pipe" });
       if (!process.env.CI) {
-        console.log(chalk.green("Runtime built successfully"));
+        console.log(chalk.green("\u2713"));
       }
     } catch (error) {
-      console.error(chalk.red("Failed to build runtime:"), error.message);
+      if (!process.env.CI) {
+        console.log(chalk.red("\u2717"));
+      }
+      console.error(chalk.red("Build failed:"), error.message);
       process.exit(1);
     }
 
@@ -380,19 +379,24 @@ class Test262Runner {
 
   async run(includePattern = null) {
     this.includePattern = includePattern;
+    if (!process.env.CI) {
+      console.log();
+    }
     await this.setupTest262();
     await this.buildRuntime();
 
     const testFiles = findTestFiles(includePattern);
+    this.totalTestCount = testFiles.length;
 
     if (includePattern) {
-      console.log(chalk.cyan(`Filter: "${includePattern}" → ${testFiles.length} tests found`));
+      if (!process.env.CI) {
+        console.log("  " + chalk.cyan(`Filter: "${includePattern}" \u2192 ${testFiles.length} tests`));
+      }
       if (testFiles.length === 0) {
         console.error(chalk.red(`No tests matched pattern "${includePattern}"`));
         console.error(chalk.dim("Pattern is matched as a substring of the test file path (relative to test262/test/)"));
         return;
       }
-      console.log();
     }
 
     // Initialize incremental cache if enabled
@@ -443,10 +447,10 @@ class Test262Runner {
 
     this.showHeader(testFiles.length);
 
-    if (this.incremental && !this.force) {
+    if (this.incremental && !this.force && !process.env.CI) {
       console.log(
-        chalk.cyan(
-          `Running ${testsToRun.length} tests (${this.cached} cached)`
+        "  " + chalk.cyan(
+          `Running ${fmt(testsToRun.length)} tests (${fmt(this.cached)} cached)`
         )
       );
       console.log();
@@ -463,35 +467,27 @@ class Test262Runner {
       }
     }
 
-    // Add a newline to finish the status line
-    console.log();
+    // Clear the progress line
+    if (!process.env.CI) {
+      process.stdout.write("\r\x1b[K");
+    }
 
     // Save cache if incremental mode is enabled
     if (this.incremental) {
       this.cache.save();
     }
 
-    // Wait a moment before showing summary
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
     this.printSummary();
   }
 
   printSummary() {
-    console.log();
-
     const total = this.passed + this.failed + this.skipped;
     const runTests = this.passed + this.failed;
-    const runPassRate =
-      runTests > 0
-        ? ((this.passed / runTests) * 100).toFixed(1)
-        : 0;
-    const overallPassRate =
-      total > 0
-        ? ((this.passed / total) * 100).toFixed(1)
-        : 0;
+    const runPassRate = runTests > 0 ? ((this.passed / runTests) * 100).toFixed(1) : "0.0";
+    const overallPassRate = total > 0 ? ((this.passed / total) * 100).toFixed(1) : "0.0";
     const runtime = ((Date.now() - this.startTime) / 1000).toFixed(1);
 
+    // ─── CI mode: machine-readable output (parsed by GitHub Actions) ─────
     if (process.env.CI) {
       console.log(`\nTest Results:`);
       console.log(`Passed: ${this.passed}`);
@@ -510,95 +506,125 @@ class Test262Runner {
       return;
     }
 
-    console.log(chalk.bold.cyan("Final Results"));
-    console.log(chalk.cyan("=".repeat(50)));
+    // ─── Interactive mode: visual output ─────────────────────────────────
+
+    const W = 60; // box width
+    const runPctNum = parseFloat(runPassRate);
+    const allPctNum = parseFloat(overallPassRate);
+
+    // Header
+    console.log();
+    console.log(
+      "  " + chalk.yellow("\u26A1") + " " + chalk.bold.cyan("RIFT") +
+      chalk.dim("  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500  ") +
+      chalk.white("ECMAScript Test262")
+    );
+    console.log("  " + chalk.dim("\u2500".repeat(W)));
+
+    // Big pass count + rate
+    const runFraction = runTests > 0 ? this.passed / runTests : 0;
+    console.log();
+    console.log(
+      "  " + chalk.bold.cyan(fmt(this.passed)) +
+      chalk.dim(" / " + fmt(runTests) + " tests passing") +
+      "    " + colorPct(runPctNum, true)
+    );
     console.log();
 
-    console.log(
-      chalk.green(`Passed:   ${this.passed.toString().padStart(6)}`)
-    );
-    console.log(
-      chalk.red(`Failed:   ${this.failed.toString().padStart(6)}`)
-    );
-    console.log(
-      chalk.yellow(`Skipped:  ${this.skipped.toString().padStart(6)}`)
-    );
-    console.log(chalk.dim("-".repeat(20)));
-    console.log(chalk.bold(`Total:    ${total.toString().padStart(6)}`));
-    console.log(chalk.bold(`Pass Rate (run tests): ${runPassRate}%`));
-    console.log(chalk.bold(`Pass Rate (all tests): ${overallPassRate}%`));
-    console.log(chalk.dim(`Runtime:  ${runtime}s`));
-
-    if (!this.sequential) {
-      console.log(chalk.dim(`Workers:  ${this.workerCount}`));
-    }
-
-    if (this.incremental && this.cached > 0) {
-      console.log(chalk.cyan(`Cached:   ${this.cached.toString().padStart(6)}`));
-    }
-
+    // Main progress bar — green for pass, red for fail, dim for skipped
+    const barWidth = 44;
+    const passCols = Math.round(barWidth * (runTests > 0 ? this.passed / total : 0));
+    const failCols = Math.round(barWidth * (runTests > 0 ? this.failed / total : 0));
+    const skipCols = barWidth - passCols - failCols;
+    const mainBar = chalk.green("\u2588".repeat(passCols)) +
+                    chalk.red("\u2588".repeat(failCols)) +
+                    chalk.dim("\u2591".repeat(Math.max(0, skipCols)));
+    console.log("  " + mainBar);
     console.log();
-    console.log(`Passed: ${this.passed}`);
-    console.log(`Failed: ${this.failed}`);
-    console.log(`Skipped: ${this.skipped}`);
-    if (this.incremental && this.cached > 0) {
-      console.log(`Cached: ${this.cached}`);
-    }
-    console.log(`Total: ${total}`);
-    console.log(`Pass Rate (run): ${runPassRate}%`);
-    console.log(`Pass Rate (all): ${overallPassRate}%`);
 
+    // Stats line
+    console.log(
+      "  " +
+      chalk.bold.green("\u2713 " + fmt(this.passed) + " passed") + "    " +
+      chalk.bold.red("\u2717 " + fmt(this.failed) + " failed") + "    " +
+      chalk.dim("\u25CB " + fmt(this.skipped) + " skipped")
+    );
+    console.log();
+
+    // Info box with cyan borders
+    const bdr = chalk.cyan;
+    console.log("  " + bdr("\u250C" + "\u2500".repeat(W - 2) + "\u2510"));
+
+    const runLine = "  Pass Rate (run)  ";
+    const runVal = runPassRate.padStart(6) + "%";
+    const runDetail = "    " + fmt(this.passed) + " / " + fmt(runTests);
+    const runPad = Math.max(0, W - 2 - runLine.length - runVal.length - runDetail.length);
+    console.log("  " + bdr("\u2502") + chalk.white(runLine) +
+      colorPct(runPctNum, true) + chalk.dim(runDetail) +
+      " ".repeat(runPad) + bdr("\u2502"));
+
+    const allLine = "  Pass Rate (all)  ";
+    const allVal = overallPassRate.padStart(6) + "%";
+    const allDetail = "    " + fmt(this.passed) + " / " + fmt(total);
+    const allPad = Math.max(0, W - 2 - allLine.length - allVal.length - allDetail.length);
+    console.log("  " + bdr("\u2502") + chalk.white(allLine) +
+      colorPct(allPctNum, false) + chalk.dim(allDetail) +
+      " ".repeat(allPad) + bdr("\u2502"));
+
+    const rtLine = `  Runtime            ${runtime.padStart(5)}s    ${this.workerCount} workers`;
+    console.log("  " + bdr("\u2502") + chalk.dim(rtLine) +
+      " ".repeat(Math.max(0, W - 2 - rtLine.length)) + bdr("\u2502"));
+
+    if (this.incremental && this.cached > 0) {
+      const cacheInfo = `  Cached             ${fmt(this.cached).padStart(6)}`;
+      console.log("  " + bdr("\u2502") + chalk.magenta(cacheInfo) +
+        " ".repeat(Math.max(0, W - 2 - cacheInfo.length)) + bdr("\u2502"));
+    }
+    console.log("  " + bdr("\u2514" + "\u2500".repeat(W - 2) + "\u2518"));
+
+    // Category breakdowns from tracker
+    const report = this.tracker.generateReport();
+    const { summary } = report;
+
+    // Strongest categories
+    if (summary.strongestCategories && summary.strongestCategories.length > 0) {
+      console.log();
+      console.log("  " + chalk.bold.green("\u2605") + " " + chalk.bold.white("Strongest") + chalk.dim("  (\u226570% pass rate)"));
+      console.log("  " + chalk.dim("\u2500".repeat(W)));
+      summary.strongestCategories.slice(0, 8).forEach((cat) => {
+        const rate = cat.passRate / 100;
+        const nameStr = cat.name.length > 30 ? cat.name.slice(0, 29) + "\u2026" : cat.name;
+        console.log(
+          "  " + chalk.white(nameStr.padEnd(31)) +
+          colorBar(rate, 12) + " " +
+          colorPct(cat.passRate, true) +
+          chalk.dim("  " + cat.passed + "/" + cat.total)
+        );
+      });
+    }
+
+    // Largest categories
+    if (summary.largestCategories && summary.largestCategories.length > 0) {
+      console.log();
+      console.log("  " + chalk.bold.yellow("\u25C6") + " " + chalk.bold.white("Largest Suites"));
+      console.log("  " + chalk.dim("\u2500".repeat(W)));
+      summary.largestCategories.slice(0, 5).forEach((cat) => {
+        const rate = cat.passRate / 100;
+        const nameStr = cat.name.length > 26 ? cat.name.slice(0, 25) + "\u2026" : cat.name;
+        console.log(
+          "  " + chalk.white(nameStr.padEnd(27)) +
+          chalk.cyan(cat.total.toString().padStart(5)) + "  " +
+          colorBar(rate, 12) + " " +
+          colorPct(cat.passRate, false)
+        );
+      });
+    }
+
+    // Save results
     const resultsFile = this.tracker.saveResults(this.getResultsFilename());
     console.log();
-    console.log(chalk.green(`Detailed results saved to: ${resultsFile}`));
-
-    this.tracker.printSummary();
-
-    if (this.failed > 0) {
-      console.log();
-      console.log(chalk.bold.red("Failed Tests (sample):"));
-      console.log(chalk.red("-".repeat(50)));
-
-      this.results
-        .filter((r) => r.status === "failed")
-        .slice(0, 15)
-        .forEach((r, index) => {
-          console.log(
-            chalk.red(`${(index + 1).toString().padStart(2)}. ${r.file}`)
-          );
-          if (r.reason) {
-            console.log(
-              chalk.dim(
-                `    ${r.reason.substring(0, 80)}${
-                  r.reason.length > 80 ? "..." : ""
-                }`
-              )
-            );
-          }
-          if (r.stderr) {
-            console.log(
-              chalk.dim(
-                `    stderr: ${r.stderr.substring(0, 60)}${
-                  r.stderr.length > 60 ? "..." : ""
-                }`
-              )
-            );
-          }
-          console.log();
-        });
-
-      if (this.failed > 15) {
-        console.log(chalk.dim(`... and ${this.failed - 15} more failures`));
-      }
-    } else if (this.passed > 0) {
-      console.log();
-      console.log(chalk.bold.green("All tests passed! Great job!"));
-    }
-
+    console.log("  " + chalk.dim("Saved to " + resultsFile));
     console.log();
-    console.log(
-      chalk.dim("Run with more test directories to expand coverage.")
-    );
   }
 }
 
