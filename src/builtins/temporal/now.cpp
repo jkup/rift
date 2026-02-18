@@ -7,7 +7,7 @@
 #include "rift/builtins/temporal/plain_date.h"
 #include "rift/builtins/temporal/plain_date_time.h"
 #include "rift/builtins/temporal/plain_time.h"
-#include "rift/core/engine/javascript_exception.h"
+#include "rift/interpreter/javascript_exception.h"
 #include "temporal_rs/Instant.hpp"
 #include "temporal_rs/PlainDate.hpp"
 #include "temporal_rs/PlainDateTime.hpp"

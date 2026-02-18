@@ -28,24 +28,31 @@ Current status: 196/196 custom tests pass. ~11,300/50,594 test262 tests pass (~3
 ## Project Layout
 
 ```
-src/frontend/lexer/lexer.cpp          # Tokenizer (lexer.h has TokenType enum)
+src/frontend/lexer/lexer.cpp           # Tokenizer (lexer.h has TokenType enum)
 src/frontend/parser/                   # Recursive descent parser
     parser_expressions.cpp             # Expression parsing (operators, calls, members)
     parser_statements.cpp              # Statement parsing (var/let/const, if, for, etc.)
-src/core/engine/
+src/types/                             # Foundation layer — Value and Object types
+    value.cpp                          # Value type (number, string, bool, null, undefined, object, function)
+    object.cpp                         # JSObject, JSFunction, JSArrowFunction classes
+    operations.cpp                     # Type coercion, arithmetic, comparisons (spec §7)
+src/execution/                         # Execution context machinery
+    environment.cpp                    # Variable scoping (Environment class)
+    microtask_queue.cpp                # Promise microtask queue
+src/interpreter/                       # Tree-walking evaluator (future: replaced by compiler + VM)
     engine.cpp                         # Main evaluate() dispatcher — routes AST nodes
     expression_evaluator.cpp           # Expression dispatch switch
     expression_evaluator_objects.cpp   # Call, member access, new, array/object literals
     expression_evaluator_assignment.cpp # Assignment operators (=, +=, ??=, etc.)
     statement_evaluator.cpp            # Statements: function decl, var decl, control flow
     statement_evaluator_control_flow.cpp # if/for/while/switch/try-catch
-    operation_handler.cpp              # Arithmetic and comparison ops
+    class_builder.cpp                  # Class definition and inheritance
+    generator_evaluator.cpp            # Generator yield/resume
+    async_executor.cpp                 # Async/await execution
+src/builtins/                          # ECMA-262 built-in JS objects (one folder per type)
     builtin_manager.cpp                # Wires up all built-in prototypes
-src/builtins/                          # Built-in JS objects (one folder per type)
-src/runtime/values/
-    value.h                            # Value type (number, string, bool, null, undefined, object, function)
-    object.h                           # JSObject, JSFunction, JSArrowFunction classes
-src/runtime/environment/               # Variable scoping (Environment class)
+src/host/                              # Non-spec host APIs (not ECMA-262)
+    console/console.cpp                # console.log, console.error, etc.
 src/memory/                            # GC: ObjectFactory, ObjectManager, GCProtector
 include/rift/                          # Headers (mirrors src/ structure)
 test/                                  # Custom test files (*.js)
@@ -70,7 +77,7 @@ notes/                                 # Working notes (RESUME.md, TODO.md, TEMP
 - `parse_binary_expression(min_precedence)` handles all binary operators via precedence climbing.
 - AST nodes created via `ASTFactory::make*()` static methods. Each node has `type`, `value`, `metadata`, `children`, `line`, `column`.
 
-### Engine Dispatcher (`src/core/engine/engine.cpp`)
+### Engine Dispatcher (`src/interpreter/engine.cpp`)
 - `engine.cpp evaluate()` has a switch on `ASTNodeType` routing to either `ExpressionEvaluator::evaluate()` or `StatementEvaluator::evaluate()`.
 - **If you add a new AST node type**, you must add it to this switch or it silently returns `undefined`.
 
@@ -169,7 +176,7 @@ om->setGCEnabled(was);
 
 ### Namespace Prefixes in Builtins
 
-Inside `rift::builtins` code, use fully-qualified names for engine types:
+Inside `rift::builtins` code, use fully-qualified names for interpreter types:
 ```cpp
 rift::core::BuiltinManager::getArrayPrototype()
 rift::core::EvaluationUtils::symbolToPropertyKey(id)

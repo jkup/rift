@@ -1,7 +1,7 @@
 #include "rift/builtins/iterator/iterator_prototype.h"
 
 #include "rift/builtins/symbol/symbol.h"
-#include "rift/core/engine/evaluation_utils.h"
+#include "rift/interpreter/evaluation_utils.h"
 
 // ============================================================================
 // ECMA-262 -- The %IteratorPrototype% Object (27.1.2)

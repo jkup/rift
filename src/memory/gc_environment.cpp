@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-#include "rift/runtime/values/object.h"
-#include "rift/runtime/values/value.h"
+#include "rift/types/object.h"
+#include "rift/types/value.h"
 
 namespace rift::memory {
 

@@ -3,11 +3,11 @@
 #include <memory>
 #include <unordered_map>
 
-#include "../../core/engine/call_context.h"
 #include "../../memory/object_factory.h"
-#include "../../runtime/values/object.h"
-#include "../../runtime/values/value.h"
 #include "../builtin_base.h"
+#include "rift/interpreter/call_context.h"
+#include "rift/types/object.h"
+#include "rift/types/value.h"
 
 // Forward declare temporal_rs types to avoid including heavy headers everywhere
 namespace temporal_rs {

@@ -22,12 +22,12 @@
 #include <limits>
 
 #include "rift/builtins/array/array_iterator.h"
+#include "rift/builtins/builtin_manager.h"
 #include "rift/builtins/symbol/symbol.h"
-#include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/call_context.h"
-#include "rift/core/engine/evaluation_utils.h"
-#include "rift/core/engine/javascript_exception.h"
-#include "rift/core/engine/this_helpers.h"
+#include "rift/interpreter/call_context.h"
+#include "rift/interpreter/evaluation_utils.h"
+#include "rift/interpreter/javascript_exception.h"
+#include "rift/interpreter/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {

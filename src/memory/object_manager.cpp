@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-#include "rift/core/engine/builtin_manager.h"
+#include "rift/builtins/builtin_manager.h"
 #include "rift/memory/gc_disabler.h"
-#include "rift/runtime/values/object.h"
+#include "rift/types/object.h"
 
 namespace rift::memory {
 

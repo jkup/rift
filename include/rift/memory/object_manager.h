@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "../runtime/values/object.h"
 #include "gc.h"
+#include "rift/types/object.h"
 
 namespace rift::memory {
 

@@ -6,12 +6,12 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "rift/core/engine/engine.h"
-#include "rift/core/engine/javascript_exception.h"
-#include "rift/core/runtime_limits.h"
+#include "rift/execution/environment.h"
+#include "rift/interpreter/engine.h"
+#include "rift/interpreter/javascript_exception.h"
 #include "rift/memory/object_factory.h"
-#include "rift/runtime/environment/environment.h"
-#include "rift/runtime/values/object.h"
+#include "rift/runtime_limits.h"
+#include "rift/types/object.h"
 
 // ============================================================================
 // ECMA-262 -- The JSON Object

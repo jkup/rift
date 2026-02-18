@@ -2,12 +2,12 @@
 
 #include <algorithm>
 
-#include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/call_context.h"
-#include "rift/core/engine/engine.h"
-#include "rift/core/engine/javascript_exception.h"
+#include "rift/builtins/builtin_manager.h"
 #include "rift/frontend/lexer/lexer.h"
 #include "rift/frontend/parser/parser.h"
+#include "rift/interpreter/call_context.h"
+#include "rift/interpreter/engine.h"
+#include "rift/interpreter/javascript_exception.h"
 #include "rift/memory/gc_protector.h"
 
 // ============================================================================

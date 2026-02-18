@@ -3,11 +3,11 @@
 #include <vector>
 
 #include "rift/builtins/symbol/symbol.h"
-#include "rift/core/engine/engine.h"
-#include "rift/core/engine/evaluation_utils.h"
-#include "rift/core/engine/generator_evaluator.h"
-#include "rift/core/engine/javascript_exception.h"
 #include "rift/frontend/ast/ast_node.h"
+#include "rift/interpreter/engine.h"
+#include "rift/interpreter/evaluation_utils.h"
+#include "rift/interpreter/generator_evaluator.h"
+#include "rift/interpreter/javascript_exception.h"
 #include "rift/memory/gc_protector.h"
 
 // ============================================================================

@@ -14,9 +14,9 @@
 #include <limits>
 
 #include "rift/builtins/array/array.h"
-#include "rift/core/engine/call_context.h"
-#include "rift/core/engine/evaluation_utils.h"
-#include "rift/core/engine/this_helpers.h"
+#include "rift/interpreter/call_context.h"
+#include "rift/interpreter/evaluation_utils.h"
+#include "rift/interpreter/this_helpers.h"
 
 namespace rift::builtins {
 

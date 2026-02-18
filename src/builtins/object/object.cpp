@@ -4,12 +4,12 @@
 
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/boolean/boolean.h"
+#include "rift/builtins/builtin_manager.h"
 #include "rift/builtins/string/string.h"
 #include "rift/builtins/symbol/symbol.h"
-#include "rift/core/engine/builtin_manager.h"
-#include "rift/core/engine/call_context.h"
-#include "rift/core/engine/evaluation_utils.h"
-#include "rift/core/engine/javascript_exception.h"
+#include "rift/interpreter/call_context.h"
+#include "rift/interpreter/evaluation_utils.h"
+#include "rift/interpreter/javascript_exception.h"
 #include "rift/memory/gc_protector.h"
 
 // ============================================================================

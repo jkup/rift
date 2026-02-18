@@ -3,9 +3,9 @@
 #include <functional>
 #include <memory>
 
-#include "../runtime/values/object.h"
-#include "../runtime/values/value.h"
 #include "object_manager.h"
+#include "rift/types/object.h"
+#include "rift/types/value.h"
 
 namespace rift::memory {
 

@@ -3,10 +3,10 @@
 #include <string>
 
 #include "rift/builtins/symbol/symbol.h"
-#include "rift/core/engine/evaluation_utils.h"
-#include "rift/core/engine/javascript_exception.h"
+#include "rift/interpreter/evaluation_utils.h"
+#include "rift/interpreter/javascript_exception.h"
 #include "rift/memory/gc_protector.h"
-#include "rift/runtime/values/object.h"
+#include "rift/types/object.h"
 
 namespace rift::builtins {
 

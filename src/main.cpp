@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include "rift/api/api.h"
-#include "rift/core/engine/javascript_exception.h"
+#include "rift/interpreter/javascript_exception.h"
 
 // Temporal verification (temporal_capi Rust FFI)
 #include "temporal_rs/Duration.hpp"

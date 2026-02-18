@@ -3,8 +3,8 @@
 #include <string>
 
 #include "../../memory/object_factory.h"
-#include "../../runtime/environment/environment.h"
-#include "../../runtime/values/value.h"
+#include "rift/execution/environment.h"
+#include "rift/types/value.h"
 
 namespace rift::builtins {
 

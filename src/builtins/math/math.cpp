@@ -5,7 +5,7 @@
 #include <random>
 
 #include "rift/builtins/builtin_base.h"  // For RIFT_METHOD and RIFT_PROPERTY macros
-#include "rift/core/engine/call_context.h"
+#include "rift/interpreter/call_context.h"
 
 // ============================================================================
 // ECMA-262 — The Math Object

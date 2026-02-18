@@ -4,8 +4,8 @@
 #include <cmath>
 #include <limits>
 
-#include "rift/runtime/environment/environment.h"
-#include "rift/runtime/values/object.h"
+#include "rift/execution/environment.h"
+#include "rift/types/object.h"
 
 namespace rift::builtins {
 
