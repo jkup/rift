@@ -1023,9 +1023,9 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
         //                   | set PropertyName ( PropertySetParameterList ) { FunctionBody }
         if(is_getter || is_setter) {
             consume(TokenType::LeftParen);
-            auto parameters = parse_parameter_list();
+            auto parameters = parse_parameter_list(true);
             consume(TokenType::RightParen);
-            auto body = parse_block_statement();
+            auto body = parse_block_statement(true);
             auto value = ASTFactory::makeFunctionExpression(parameters, body);
             value->metadata = is_getter ? "getter" : "setter";
             ASTFactory::addObjectProperty(object, key, value);
@@ -1033,14 +1033,14 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
             // MethodDefinition :: PropertyName ( UniqueFormalParameters ) { FunctionBody }
             // (or async variant)
             consume(TokenType::LeftParen);
-            auto parameters = parse_parameter_list();
+            auto parameters = parse_parameter_list(true);
             consume(TokenType::RightParen);
 
             bool was_in_async = in_async_context_;
             if(is_async_method) {
                 in_async_context_ = true;
             }
-            auto method_body = parse_block_statement();
+            auto method_body = parse_block_statement(true);
             in_async_context_ = was_in_async;
 
             std::shared_ptr<ASTNode> value;
@@ -1197,7 +1197,7 @@ std::shared_ptr<ASTNode> Parser::parse_function_expression() {
     consume(TokenType::RightParen);
 
     // FunctionBody :: FunctionStatementList
-    auto body = parse_block_statement();
+    auto body = parse_block_statement(true);
 
     auto node = ASTFactory::makeFunctionExpression(parameters, body);
     node->setLocation(startToken.line, startToken.column);
@@ -1387,8 +1387,9 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
     } else {
         // ArrowParameters :: CoverParenthesizedExpressionAndArrowParameterList
         // Parenthesized params: () => ... or (x) => ... or (x, y) => ...
+        // Arrow functions use UniqueFormalParameters — duplicates always an error
         consume(TokenType::LeftParen);
-        parameters = parse_parameter_list();
+        parameters = parse_parameter_list(true);
         consume(TokenType::RightParen);
     }
 
@@ -1401,7 +1402,7 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
 
     if(current_token().type == TokenType::LeftBrace) {
         // ConciseBody :: { FunctionBody }
-        body = parse_block_statement();
+        body = parse_block_statement(true);
     } else {
         // ConciseBody :: [lookahead != {] ExpressionBody
         // ExpressionBody :: AssignmentExpression
@@ -1445,7 +1446,7 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function_from_identifier(
 
     if(current_token().type == TokenType::LeftBrace) {
         // ConciseBody :: { FunctionBody }
-        body = parse_block_statement();
+        body = parse_block_statement(true);
     } else {
         // ConciseBody :: [lookahead != {] ExpressionBody
         body = parse_binary_expression(0);
@@ -1515,15 +1516,24 @@ std::shared_ptr<ASTNode> Parser::parse_yield_expression() {
     return node;
 }
 
-// 15.8 Async Function Definitions
+// 15.8 Async Function Definitions / 15.6 Async Generator Function Definitions
 // AsyncFunctionExpression :: async function BindingIdentifier? ( FormalParameters )
 //                           { AsyncFunctionBody }
-// AsyncFunctionBody :: FunctionBody
+// AsyncGeneratorExpression :: async function * BindingIdentifier? ( FormalParameters )
+//                            { AsyncGeneratorBody }
 // @spec https://tc39.es/ecma262/#sec-async-function-definitions
+// @spec https://tc39.es/ecma262/#sec-async-generator-function-definitions
 std::shared_ptr<ASTNode> Parser::parse_async_function_expression() {
     Token& startToken = current_token();  // Save 'async' location
     consume(TokenType::Async);            // consume 'async'
     consume(TokenType::Function);         // consume 'function'
+
+    // Check for async generator: async function* () {}
+    bool is_async_generator = false;
+    if(current_token().type == TokenType::Multiply) {
+        is_async_generator = true;
+        current++;  // consume '*'
+    }
 
     // AsyncFunctionExpression :: async function BindingIdentifier? ...
     // Optional function name for named async function expressions
@@ -1537,17 +1547,29 @@ std::shared_ptr<ASTNode> Parser::parse_async_function_expression() {
         validateIdentifier(name, nameLine, nameColumn);
     }
 
-    // FormalParameters :: (see parse_parameter_list in parser.cpp)
+    // ( UniqueFormalParameters ) — async functions use UniqueFormalParameters
     consume(TokenType::LeftParen);
-    auto parameters = parse_parameter_list();
+    auto parameters = parse_parameter_list(true);
     consume(TokenType::RightParen);
 
-    // AsyncFunctionBody :: FunctionBody
-    // Set async context so 'await' expressions are allowed inside the body
+    // AsyncFunctionBody / AsyncGeneratorBody
+    // Set async (and generator) context so await/yield are recognized
     bool was_in_async = in_async_context_;
+    bool was_in_generator = in_generator_context_;
     in_async_context_ = true;
-    auto body = parse_block_statement();
+    if(is_async_generator) {
+        in_generator_context_ = true;
+    }
+    auto body = parse_block_statement(true);
     in_async_context_ = was_in_async;
+    in_generator_context_ = was_in_generator;
+
+    if(is_async_generator) {
+        auto node = ASTFactory::makeGeneratorFunctionExpression(parameters, body, name);
+        node->metadata = node->metadata.empty() ? "async" : node->metadata + ",async";
+        node->setLocation(startToken.line, startToken.column);
+        return node;
+    }
 
     auto node = ASTFactory::makeAsyncFunctionExpression(parameters, body, name);
     node->setLocation(startToken.line, startToken.column);
@@ -1614,8 +1636,9 @@ std::shared_ptr<ASTNode> Parser::parse_async_arrow_function() {
     } else {
         // CoverCallExpressionAndAsyncArrowHead (parenthesized params)
         // Parenthesized params: async () => ... or async (x, y) => ...
+        // Async arrow functions use UniqueFormalParameters — duplicates always an error
         consume(TokenType::LeftParen);
-        parameters = parse_parameter_list();
+        parameters = parse_parameter_list(true);
         consume(TokenType::RightParen);
     }
 
@@ -1631,7 +1654,7 @@ std::shared_ptr<ASTNode> Parser::parse_async_arrow_function() {
 
     if(current_token().type == TokenType::LeftBrace) {
         // AsyncConciseBody :: { AsyncFunctionBody }
-        body = parse_block_statement();
+        body = parse_block_statement(true);
     } else {
         // AsyncConciseBody :: [lookahead != {] ExpressionBody
         // DEVIATION: Wraps expression in ReturnStatement + BlockStatement so the

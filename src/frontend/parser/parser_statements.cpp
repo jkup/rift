@@ -26,6 +26,128 @@ namespace rift::frontend {
 using namespace rift::ast;
 using ASTFactory = ast::ASTFactory;
 
+// Scope tracking helpers for detecting redeclarations at parse time.
+// Per 14.2.1, it is a Syntax Error if the LexicallyDeclaredNames of a
+// StatementList contains any duplicate entries, or if any element of the
+// LexicallyDeclaredNames also occurs in the VarDeclaredNames.
+// @spec https://tc39.es/ecma262/#sec-block-static-semantics-early-errors
+void Parser::pushScope(ParserScope::Kind kind) {
+    scope_stack_.emplace_back(kind);
+}
+
+void Parser::popScope() {
+    if(!scope_stack_.empty()) {
+        scope_stack_.pop_back();
+    }
+}
+
+void Parser::declareLexicalName(const std::string& name, bool is_func_decl, size_t line,
+                                size_t column) {
+    if(scope_stack_.empty())
+        return;
+    auto& scope = scope_stack_.back();
+
+    // Check for duplicate lexical declaration
+    auto it = scope.lexical_names.find(name);
+    if(it != scope.lexical_names.end()) {
+        // Annex B.3.3: In sloppy mode, duplicate function declarations in blocks are allowed
+        if(!in_strict_mode_ && is_func_decl && it->second) {
+            return;
+        }
+        throw std::runtime_error("SyntaxError: Identifier '" + name +
+                                 "' has already been declared at line " + std::to_string(line) +
+                                 ":" + std::to_string(column));
+    }
+
+    // Check for var/lexical conflict in current scope
+    if(scope.var_names.count(name)) {
+        throw std::runtime_error("SyntaxError: Identifier '" + name +
+                                 "' has already been declared at line " + std::to_string(line) +
+                                 ":" + std::to_string(column));
+    }
+
+    scope.lexical_names[name] = is_func_decl;
+}
+
+void Parser::declareVarName(const std::string& name, size_t line, size_t column) {
+    // Walk up scope stack to nearest Function scope, checking for lexical conflicts
+    for(int i = static_cast<int>(scope_stack_.size()) - 1; i >= 0; i--) {
+        auto& scope = scope_stack_[i];
+
+        // var conflicts with lexical names at every scope level it passes through
+        if(scope.lexical_names.count(name)) {
+            // Annex B.3.4: In sloppy mode, var declarations of the same name as a
+            // catch parameter are allowed (they simply shadow the catch binding).
+            // In strict mode, this is always a SyntaxError.
+            if(!in_strict_mode_ && scope.catch_parameter == name) {
+                // Skip the conflict — Annex B.3.4 permits this in sloppy mode
+            } else {
+                throw std::runtime_error("SyntaxError: Identifier '" + name +
+                                         "' has already been declared at line " +
+                                         std::to_string(line) + ":" + std::to_string(column));
+            }
+        }
+
+        scope.var_names.insert(name);
+
+        // Stop at function boundary — var doesn't hoist past function scope
+        if(scope.kind == ParserScope::Kind::Function) {
+            break;
+        }
+    }
+}
+
+// Collect all bound identifier names from a destructuring pattern.
+// Used for duplicate parameter checking and destructuring let/const registration.
+void Parser::collectBoundNames(const std::shared_ptr<ASTNode>& node,
+                               std::vector<std::string>& names) {
+    if(!node)
+        return;
+
+    switch(node->type) {
+        case ASTNodeType::Identifier:
+            names.push_back(node->value);
+            break;
+        case ASTNodeType::ArrayPattern:
+            for(auto& child : node->children) {
+                collectBoundNames(child, names);
+            }
+            break;
+        case ASTNodeType::ObjectPattern: {
+            // Children are key-value pairs, with RestElement as single entries
+            size_t i = 0;
+            while(i < node->children.size()) {
+                auto& child = node->children[i];
+                if(child && child->type == ASTNodeType::RestElement) {
+                    collectBoundNames(child, names);
+                    i++;
+                } else {
+                    // Key-value pair: skip key, collect from value
+                    i++;  // skip key
+                    if(i < node->children.size()) {
+                        collectBoundNames(node->children[i], names);
+                        i++;  // skip value
+                    }
+                }
+            }
+            break;
+        }
+        case ASTNodeType::AssignmentPattern:
+            // Left side (children[0]) has the binding
+            if(!node->children.empty()) {
+                collectBoundNames(node->children[0], names);
+            }
+            break;
+        case ASTNodeType::RestElement:
+            if(!node->children.empty()) {
+                collectBoundNames(node->children[0], names);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
 // 14.3.2 Variable Statement / 14.3.1 Let and Const Declarations
 // VariableStatement :: var VariableDeclarationList ;
 // VariableDeclarationList :: VariableDeclaration | VariableDeclarationList , VariableDeclaration
@@ -63,6 +185,15 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
         // Parse destructuring pattern
         auto pattern = parse_binding_pattern();
 
+        // Register bound names for let/const destructuring
+        if(declType == TokenType::Let || declType == TokenType::Const) {
+            std::vector<std::string> bound_names;
+            collectBoundNames(pattern, bound_names);
+            for(const auto& bname : bound_names) {
+                declareLexicalName(bname, false, pattern->line, pattern->column);
+            }
+        }
+
         // Destructuring requires an initializer
         if(!match(TokenType::Assign)) {
             throw std::runtime_error("Destructuring declaration requires initializer");
@@ -97,7 +228,21 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
         // Check for destructuring in subsequent declarators
         if(current_token().type == TokenType::LeftBracket ||
            current_token().type == TokenType::LeftBrace) {
+            size_t d_line = current_token().line;
+            size_t d_column = current_token().column;
             auto pattern = parse_binding_pattern();
+
+            // Register bound names from destructuring pattern
+            std::vector<std::string> bound_names;
+            collectBoundNames(pattern, bound_names);
+            for(const auto& bname : bound_names) {
+                if(declType == TokenType::Let || declType == TokenType::Const) {
+                    declareLexicalName(bname, false, d_line, d_column);
+                } else if(declType == TokenType::Var) {
+                    declareVarName(bname, d_line, d_column);
+                }
+            }
+
             if(!match(TokenType::Assign)) {
                 throw std::runtime_error("Destructuring declaration requires initializer");
             }
@@ -132,6 +277,13 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
         current++;
 
         validateIdentifier(name, line, column);
+
+        // 14.2.1 / 14.3.1 Static Semantics: Early Errors — detect redeclarations
+        if(declType == TokenType::Let || declType == TokenType::Const) {
+            declareLexicalName(name, false, line, column);
+        } else if(declType == TokenType::Var) {
+            declareVarName(name, line, column);
+        }
 
         std::shared_ptr<ASTNode> initializer = nullptr;
         if(match(TokenType::Assign)) {
@@ -511,12 +663,19 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
     // and then checking if the next token is 'in' or 'of'.
     std::shared_ptr<ASTNode> left = nullptr;
     bool is_for_in = false;
+    bool has_for_scope = false;  // Track if we pushed a scope for let/const in for-init
 
     // Case 1: for ( var/let/const ForBinding in/of Expression )
     //    or:  for ( var/let/const VariableDeclarationList ; ... )
     if(current_token().type == TokenType::Var || current_token().type == TokenType::Let ||
        current_token().type == TokenType::Const) {
         TokenType decl_type = current_token().type;
+        // Push a Block scope for let/const in for-init so the loop variable
+        // doesn't conflict with names in the enclosing scope
+        if(decl_type == TokenType::Let || decl_type == TokenType::Const) {
+            pushScope(ParserScope::Kind::Block);
+            has_for_scope = true;
+        }
         current++;  // consume var/let/const
 
         if(current_token().type == TokenType::Identifier) {
@@ -553,13 +712,21 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
 
                 if(is_for_of) {
                     if(is_for_await) {
+                        if(has_for_scope)
+                            popScope();
                         return ASTFactory::makeForAwaitOfStatement(left, right, body);
                     }
+                    if(has_for_scope)
+                        popScope();
                     return ASTFactory::makeForOfStatement(left, right, body);
                 }
+                if(has_for_scope)
+                    popScope();
                 return ASTFactory::makeForInStatement(left, right, body);
             } else {
                 if(is_for_await) {
+                    if(has_for_scope)
+                        popScope();
                     throw std::runtime_error(
                         "SyntaxError: for-await is only valid with for-of loops");
                 }
@@ -600,14 +767,22 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
 
                 if(is_for_of) {
                     if(is_for_await) {
+                        if(has_for_scope)
+                            popScope();
                         return ASTFactory::makeForAwaitOfStatement(left, right, body);
                     }
+                    if(has_for_scope)
+                        popScope();
                     return ASTFactory::makeForOfStatement(left, right, body);
                 }
+                if(has_for_scope)
+                    popScope();
                 return ASTFactory::makeForInStatement(left, right, body);
             } else {
                 // Regular for with destructuring init: for (let [a,b] = expr; ...; ...)
                 if(is_for_await) {
+                    if(has_for_scope)
+                        popScope();
                     throw std::runtime_error(
                         "SyntaxError: for-await is only valid with for-of loops");
                 }
@@ -700,6 +875,8 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
     // Statement — loop body
     auto body = parse_statement();
 
+    if(has_for_scope)
+        popScope();
     return ASTFactory::makeForStatement(left, condition, update, body);
 }
 
@@ -791,13 +968,24 @@ std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
     // Static Semantics: Early Errors — BindingIdentifier must not be a strict reserved word
     validateIdentifier(name, nameLine, nameColumn);
 
+    // 14.2.1 Static Semantics: Early Errors — register function name in scope.
+    // In block scope: treated as lexical declaration (conflicts with let/const).
+    // In function/program scope: treated as var declaration (hoists, detects let/const conflicts).
+    if(!scope_stack_.empty()) {
+        if(scope_stack_.back().kind == ParserScope::Kind::Block) {
+            declareLexicalName(name, true, nameLine, nameColumn);
+        } else {
+            declareVarName(name, nameLine, nameColumn);
+        }
+    }
+
     // ( FormalParameters )
     consume(TokenType::LeftParen);
     auto parameters = parse_parameter_list();
     consume(TokenType::RightParen);
 
     // { FunctionBody }
-    auto body = parse_block_statement();
+    auto body = parse_block_statement(true);
 
     auto node = ASTFactory::makeFunctionDeclaration(name, parameters, body);
     node->setLocation(startToken.line, startToken.column);
@@ -818,7 +1006,7 @@ std::shared_ptr<ASTNode> Parser::parse_function_declaration() {
 // INCOMPLETE: BindingPattern parameters (destructuring in parameter position,
 // e.g., function f({a, b}) {}) are not supported. Only BindingIdentifier
 // parameters are handled.
-std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
+std::shared_ptr<ASTNode> Parser::parse_parameter_list(bool require_unique) {
     auto parameters = ASTFactory::makeParameterList();
     bool has_rest_param = false;
     std::unordered_set<std::string> seen_params;
@@ -829,8 +1017,8 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
     }
 
     // Parses a single FormalParameter or FunctionRestParameter
-    auto parse_single_parameter = [this, &has_rest_param,
-                                   &seen_params]() -> std::shared_ptr<ASTNode> {
+    auto parse_single_parameter = [this, &has_rest_param, &seen_params,
+                                   require_unique]() -> std::shared_ptr<ASTNode> {
         // FunctionRestParameter :: BindingRestElement :: ... BindingIdentifier
         bool is_rest = false;
         if(current_token().type == TokenType::Spread) {
@@ -849,7 +1037,24 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
         // Destructuring pattern parameter: { ... } or [ ... ]
         if(current_token().type == TokenType::LeftBrace ||
            current_token().type == TokenType::LeftBracket) {
+            size_t pat_line = current_token().line;
+            size_t pat_column = current_token().column;
             auto pattern = parse_binding_pattern();
+
+            // Check destructuring pattern for duplicate parameter names
+            if(in_strict_mode_ || require_unique) {
+                std::vector<std::string> bound_names;
+                collectBoundNames(pattern, bound_names);
+                for(const auto& bname : bound_names) {
+                    if(seen_params.count(bname)) {
+                        throw std::runtime_error(
+                            "SyntaxError: Duplicate parameter name not allowed in this "
+                            "context at line " +
+                            std::to_string(pat_line) + ":" + std::to_string(pat_column));
+                    }
+                    seen_params.insert(bname);
+                }
+            }
 
             // BindingRestElement cannot have an Initializer
             if(is_rest) {
@@ -880,15 +1085,18 @@ std::shared_ptr<ASTNode> Parser::parse_parameter_list() {
         validateIdentifier(paramValue, paramLine, paramColumn);
 
         // Static Semantics: Early Errors — It is a Syntax Error if FormalParameters
-        // contains any duplicate parameter names in strict mode code.
-        if(in_strict_mode_) {
-            if(seen_params.count(paramValue)) {
+        // contains any duplicate parameter names in strict mode code, or if the
+        // parameter list uses UniqueFormalParameters (arrow functions, generators,
+        // async functions, methods).
+        // @spec https://tc39.es/ecma262/#sec-parameter-lists-static-semantics-early-errors
+        if(seen_params.count(paramValue)) {
+            if(in_strict_mode_ || require_unique) {
                 throw std::runtime_error(
                     "SyntaxError: Duplicate parameter name not allowed in this context at line " +
                     std::to_string(paramLine) + ":" + std::to_string(paramColumn));
             }
-            seen_params.insert(paramValue);
         }
+        seen_params.insert(paramValue);
 
         // BindingRestElement cannot have an Initializer
         if(is_rest) {
@@ -1034,8 +1242,25 @@ std::shared_ptr<ASTNode> Parser::parse_catch_clause() {
 
     consume(TokenType::RightParen);  // )
 
-    // Block — the catch body
-    auto body = parse_block_statement();
+    // 14.15.1 Static Semantics: Early Errors — the CatchParameter is lexically scoped.
+    // It is a Syntax Error if any element of the BoundNames of CatchParameter also
+    // occurs in the LexicallyDeclaredNames of Block.
+    // We parse the block body inline so we can declare the catch parameter in the
+    // block's own scope. This way `let e` inside the body conflicts with catch(e).
+    // @spec https://tc39.es/ecma262/#sec-try-statement-static-semantics-early-errors
+    consume(TokenType::LeftBrace);  // {
+    pushScope(ParserScope::Kind::Block);
+    declareLexicalName(parameter, false, paramLine, paramColumn);
+    scope_stack_.back().catch_parameter = parameter;
+
+    auto body = ASTFactory::makeBlockStatement();
+    while(current_token().type != TokenType::RightBrace &&
+          current_token().type != TokenType::EndOfFile) {
+        auto stmt = parse_statement();
+        ASTFactory::addStatement(body, stmt);
+    }
+    consume(TokenType::RightBrace);  // }
+    popScope();
 
     return ASTFactory::makeCatchClause(parameter, body);
 }
@@ -1045,8 +1270,11 @@ std::shared_ptr<ASTNode> Parser::parse_catch_clause() {
 // StatementList :: StatementListItem | StatementList StatementListItem
 // StatementListItem :: Statement | Declaration
 // @spec https://tc39.es/ecma262/#sec-block
-std::shared_ptr<ASTNode> Parser::parse_block_statement() {
+std::shared_ptr<ASTNode> Parser::parse_block_statement(bool is_function_body) {
     consume(TokenType::LeftBrace);  // {
+    // Function bodies create a Function scope (var-hoisting boundary);
+    // all other blocks create a Block scope (lexical names only).
+    pushScope(is_function_body ? ParserScope::Kind::Function : ParserScope::Kind::Block);
     auto block = ASTFactory::makeBlockStatement();
 
     // StatementList — parse StatementListItems until '}'
@@ -1057,6 +1285,7 @@ std::shared_ptr<ASTNode> Parser::parse_block_statement() {
     }
 
     consume(TokenType::RightBrace);  // }
+    popScope();
     return block;
 }
 
@@ -1141,6 +1370,9 @@ std::shared_ptr<ASTNode> Parser::parse_class_declaration() {
 
     // Static Semantics: Early Errors — BindingIdentifier must not be strict reserved word
     validateIdentifier(name, nameLine, nameColumn);
+
+    // 14.2.1 Static Semantics: Early Errors — class names are always lexically scoped
+    declareLexicalName(name, false, nameLine, nameColumn);
 
     // ClassHeritage :: extends LeftHandSideExpression (optional)
     std::shared_ptr<ASTNode> superClass = nullptr;
@@ -1333,9 +1565,9 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
         throw std::runtime_error("Expected method name in class body");
     }
 
-    // ( FormalParameters ) or ( UniqueFormalParameters )
+    // ( UniqueFormalParameters ) — methods always use UniqueFormalParameters
     consume(TokenType::LeftParen);
-    auto parameters = parse_parameter_list();
+    auto parameters = parse_parameter_list(true);
     consume(TokenType::RightParen);
 
     // 15.4.1 Static Semantics: Early Errors
@@ -1356,7 +1588,7 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     if(isAsync) {
         in_async_context_ = true;
     }
-    auto methodBody = parse_block_statement();
+    auto methodBody = parse_block_statement(true);
     in_generator_context_ = was_in_generator;
     in_async_context_ = was_in_async;
 
@@ -1409,15 +1641,24 @@ std::shared_ptr<ASTNode> Parser::parse_generator_function_declaration() {
     // Static Semantics: Early Errors
     validateIdentifier(name, nameLine, nameColumn);
 
-    // ( FormalParameters )
+    // 14.2.1 Static Semantics: Early Errors — register generator name in scope
+    if(!scope_stack_.empty()) {
+        if(scope_stack_.back().kind == ParserScope::Kind::Block) {
+            declareLexicalName(name, false, nameLine, nameColumn);
+        } else {
+            declareVarName(name, nameLine, nameColumn);
+        }
+    }
+
+    // ( UniqueFormalParameters ) — generators use UniqueFormalParameters
     consume(TokenType::LeftParen);
-    auto parameters = parse_parameter_list();
+    auto parameters = parse_parameter_list(true);
     consume(TokenType::RightParen);
 
     // { GeneratorBody } — enable generator context so yield is recognized
     bool was_in_generator = in_generator_context_;
     in_generator_context_ = true;
-    auto body = parse_block_statement();
+    auto body = parse_block_statement(true);
     in_generator_context_ = was_in_generator;
 
     auto node = ASTFactory::makeGeneratorFunctionDeclaration(name, parameters, body);
@@ -1443,15 +1684,15 @@ std::shared_ptr<ASTNode> Parser::parse_generator_function_expression() {
         validateIdentifier(name, nameLine, nameColumn);
     }
 
-    // ( FormalParameters )
+    // ( UniqueFormalParameters ) — generators use UniqueFormalParameters
     consume(TokenType::LeftParen);
-    auto parameters = parse_parameter_list();
+    auto parameters = parse_parameter_list(true);
     consume(TokenType::RightParen);
 
     // { GeneratorBody } — enable generator context so yield is recognized
     bool was_in_generator = in_generator_context_;
     in_generator_context_ = true;
-    auto body = parse_block_statement();
+    auto body = parse_block_statement(true);
     in_generator_context_ = was_in_generator;
 
     auto node = ASTFactory::makeGeneratorFunctionExpression(parameters, body, name);
@@ -1470,6 +1711,11 @@ std::shared_ptr<ASTNode> Parser::parse_generator_function_expression() {
 // AsyncFunctionBody :: FunctionBody
 // @spec https://tc39.es/ecma262/#sec-async-function-definitions
 //
+// 15.6 Async Generator Function Definitions — AsyncGeneratorDeclaration
+// AsyncGeneratorDeclaration :: async [no LineTerminator here] function * BindingIdentifier
+//                              ( FormalParameters ) { AsyncGeneratorBody }
+// @spec https://tc39.es/ecma262/#sec-async-generator-function-definitions
+//
 // INCOMPLETE: The [no LineTerminator here] restriction between 'async' and 'function'
 // is not enforced. A newline between them should cause 'async' to be parsed as an
 // identifier expression statement, not as the start of an async function.
@@ -1478,9 +1724,16 @@ std::shared_ptr<ASTNode> Parser::parse_async_function_declaration() {
     consume(TokenType::Async);     // async
     consume(TokenType::Function);  // function
 
+    // Check for async generator: async function* name() {}
+    bool is_async_generator = false;
+    if(current_token().type == TokenType::Multiply) {
+        is_async_generator = true;
+        current++;  // consume '*'
+    }
+
     // BindingIdentifier — async function name (required for declarations)
     if(current_token().type != TokenType::Identifier) {
-        throw std::runtime_error("Expected async function name");
+        throw std::runtime_error("SyntaxError: Expected async function name");
     }
     std::string name = current_token().value;
     size_t nameLine = current_token().line;
@@ -1490,16 +1743,40 @@ std::shared_ptr<ASTNode> Parser::parse_async_function_declaration() {
     // Static Semantics: Early Errors
     validateIdentifier(name, nameLine, nameColumn);
 
-    // ( FormalParameters )
+    // 14.2.1 Static Semantics: Early Errors — register async function name in scope
+    // Note: is_func_decl=false because Annex B.3.3 only applies to regular function decls,
+    // not async functions or async generators.
+    if(!scope_stack_.empty()) {
+        if(scope_stack_.back().kind == ParserScope::Kind::Block) {
+            declareLexicalName(name, false, nameLine, nameColumn);
+        } else {
+            declareVarName(name, nameLine, nameColumn);
+        }
+    }
+
+    // ( UniqueFormalParameters ) — async functions use UniqueFormalParameters
     consume(TokenType::LeftParen);
-    auto parameters = parse_parameter_list();
+    auto parameters = parse_parameter_list(true);
     consume(TokenType::RightParen);
 
-    // { AsyncFunctionBody } — enable async context so await is recognized
+    // { AsyncFunctionBody / AsyncGeneratorBody } — enable async (and generator) context
     bool was_in_async = in_async_context_;
+    bool was_in_generator = in_generator_context_;
     in_async_context_ = true;
-    auto body = parse_block_statement();
+    if(is_async_generator) {
+        in_generator_context_ = true;
+    }
+    auto body = parse_block_statement(true);
     in_async_context_ = was_in_async;
+    in_generator_context_ = was_in_generator;
+
+    if(is_async_generator) {
+        // Create async generator declaration — reuse generator node with async metadata
+        auto node = ASTFactory::makeGeneratorFunctionDeclaration(name, parameters, body);
+        node->metadata = node->metadata.empty() ? "async" : node->metadata + ",async";
+        node->setLocation(startToken.line, startToken.column);
+        return node;
+    }
 
     auto node = ASTFactory::makeAsyncFunctionDeclaration(name, parameters, body);
     node->setLocation(startToken.line, startToken.column);

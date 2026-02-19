@@ -27,8 +27,13 @@ std::string JavaScript::execute(const std::string& source) {
         // treat them as errors
         return "Error: " + std::string(e.what());
     } catch(const std::exception& e) {
+        // Re-throw SyntaxErrors so the process exits with non-zero code
+        std::string msg = e.what();
+        if(msg.find("SyntaxError") != std::string::npos) {
+            throw;
+        }
         // Only catch other types of exceptions (parsing errors, etc.)
-        return "Error: " + std::string(e.what());
+        return "Error: " + std::string(msg);
     }
 }
 

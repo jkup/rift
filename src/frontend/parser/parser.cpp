@@ -113,6 +113,7 @@ void Parser::consume(TokenType type) {
 // can mask bugs (see CLAUDE.md "Silent parse recovery" section).
 std::shared_ptr<ASTNode> Parser::parse() {
     auto program = ASTFactory::makeProgram();
+    pushScope(ParserScope::Kind::Function);  // Program-level scope
 
     // Check for "use strict" directive at the start of the program
     // This must be done before parsing statements to correctly validate identifiers
@@ -153,6 +154,7 @@ std::shared_ptr<ASTNode> Parser::parse() {
         }
     }
 
+    popScope();  // End program-level scope
     return program;
 }
 
