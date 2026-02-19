@@ -887,6 +887,22 @@ Value StatementEvaluator::evaluateFunctionDeclaration(std::shared_ptr<ASTNode> n
         "length",
         runtime::PropertyDescriptor(Value(static_cast<double>(formal_params)), false, false, true));
 
+    // 10.2.5 MakeConstructor ( F [ , writablePrototype [ , prototype ] ] )
+    // @spec https://tc39.es/ecma262/#sec-makeconstructor
+    //   3. Let prototype be OrdinaryObjectCreate(%Object.prototype%).
+    //   4. Perform ! DefinePropertyOrThrow(prototype, "constructor",
+    //      PropertyDescriptor { [[Value]]: F, [[Writable]]: true,
+    //      [[Enumerable]]: false, [[Configurable]]: true }).
+    //   5. Perform ! DefinePropertyOrThrow(F, "prototype",
+    //      PropertyDescriptor { [[Value]]: prototype, [[Writable]]: true,
+    //      [[Enumerable]]: false, [[Configurable]]: false }).
+    auto* prototypeObj =
+        engine->getObjectFactory()->createJSObject(BuiltinManager::getObjectPrototype());
+    prototypeObj->defineProperty("constructor",
+                                 runtime::PropertyDescriptor(Value(func), true, false, true));
+    func->defineProperty("prototype",
+                         runtime::PropertyDescriptor(Value(prototypeObj), true, false, false));
+
     // Bind the function name in the enclosing environment.
     // SIMPLIFIED: The spec does this during declaration instantiation (hoisting),
     // not during FunctionDeclaration evaluation. In the spec, FunctionDeclaration

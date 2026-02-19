@@ -57,9 +57,10 @@ struct PropertyDescriptor {
 // Base JavaScript object
 class JSObject : public rift::memory::GCObject {
   private:
-    // Property storage using vector with descriptors
-    // This is similar to how real JS engines store properties (V8's property arrays)
+    // Property storage using vector with descriptors (preserves insertion order for enumeration)
+    // Parallel hash map provides O(1) name-to-index lookup
     std::vector<std::pair<std::string, PropertyDescriptor>> properties_;
+    std::unordered_map<std::string, size_t> property_index_;
     JSObject* prototype_;             // Now a raw pointer to GC-managed object
     mutable bool gc_marked_ = false;  // GC mark bit
 
@@ -74,6 +75,7 @@ class JSObject : public rift::memory::GCObject {
     JSObject(JSObject* prototype = nullptr) : prototype_(prototype) {
         // Pre-allocate space for properties to avoid frequent reallocations
         properties_.reserve(64);
+        property_index_.reserve(64);
     }
 
     // Property operations

@@ -12,11 +12,9 @@ static bool isSymbolKey(const std::string& key) {
 }
 
 bool JSObject::hasProperty(const std::string& key) const {
-    // Check own properties first (linear search through vector)
-    for(const auto& prop : properties_) {
-        if(prop.first == key) {
-            return true;
-        }
+    // O(1) lookup via hash map
+    if(property_index_.find(key) != property_index_.end()) {
+        return true;
     }
 
     // Check prototype chain
@@ -28,21 +26,14 @@ bool JSObject::hasProperty(const std::string& key) const {
 }
 
 bool JSObject::hasOwnProperty(const std::string& key) const {
-    // Check only own properties, not prototype
-    for(const auto& prop : properties_) {
-        if(prop.first == key) {
-            return true;
-        }
-    }
-    return false;
+    return property_index_.find(key) != property_index_.end();
 }
 
 Value JSObject::getProperty(const std::string& key) const {
-    // Check own properties first (linear search through vector)
-    for(const auto& prop : properties_) {
-        if(prop.first == key) {
-            return prop.second.value;  // Return the value from descriptor
-        }
+    // O(1) lookup via hash map
+    auto it = property_index_.find(key);
+    if(it != property_index_.end()) {
+        return properties_[it->second].second.value;
     }
 
     // Check prototype chain
@@ -54,21 +45,18 @@ Value JSObject::getProperty(const std::string& key) const {
 }
 
 PropertyDescriptor JSObject::getOwnPropertyDescriptor(const std::string& key) const {
-    // Check only own properties
-    for(const auto& prop : properties_) {
-        if(prop.first == key) {
-            return prop.second;
-        }
+    auto it = property_index_.find(key);
+    if(it != property_index_.end()) {
+        return properties_[it->second].second;
     }
     // Return undefined descriptor if not found
     return PropertyDescriptor(Value::undefined(), false, false, false);
 }
 
 std::pair<bool, PropertyDescriptor> JSObject::findPropertyDescriptor(const std::string& key) const {
-    for(const auto& prop : properties_) {
-        if(prop.first == key) {
-            return {true, prop.second};
-        }
+    auto it = property_index_.find(key);
+    if(it != property_index_.end()) {
+        return {true, properties_[it->second].second};
     }
     if(prototype_) {
         return prototype_->findPropertyDescriptor(key);
@@ -77,16 +65,16 @@ std::pair<bool, PropertyDescriptor> JSObject::findPropertyDescriptor(const std::
 }
 
 void JSObject::setProperty(const std::string& key, const Value& value) {
-    // Look for existing property to update
-    for(auto& prop : properties_) {
-        if(prop.first == key) {
-            // Check if property is writable
-            if(prop.second.writable) {
-                prop.second.value = value;
-            }
-            // If not writable, silently fail (or could throw TypeError in strict mode)
-            return;
+    // O(1) lookup for existing property
+    auto it = property_index_.find(key);
+    if(it != property_index_.end()) {
+        auto& desc = properties_[it->second].second;
+        // Check if property is writable
+        if(desc.writable) {
+            desc.value = value;
         }
+        // If not writable, silently fail (or could throw TypeError in strict mode)
+        return;
     }
 
     // Property doesn't exist - check if object is extensible
@@ -97,26 +85,35 @@ void JSObject::setProperty(const std::string& key, const Value& value) {
     }
 
     // Add new property with default descriptor (all true)
+    property_index_[key] = properties_.size();
     properties_.emplace_back(key, PropertyDescriptor(value));
 }
 
 void JSObject::defineProperty(const std::string& key, const PropertyDescriptor& descriptor) {
-    // Look for existing property
-    for(auto& prop : properties_) {
-        if(prop.first == key) {
-            // Check if property is configurable
-            if(!prop.second.configurable) {
-                // Non-configurable but writable: allow value-only update per spec
-                if(prop.second.writable && !descriptor.is_accessor && !prop.second.is_accessor) {
-                    prop.second.value = descriptor.value;
+    // O(1) lookup for existing property
+    auto it = property_index_.find(key);
+    if(it != property_index_.end()) {
+        auto& existing = properties_[it->second].second;
+        // Check if property is configurable
+        if(!existing.configurable) {
+            // §10.1.6.3 ValidateAndApplyPropertyDescriptor for non-configurable properties:
+            // - Cannot change from data to accessor or vice versa
+            // - Can change writable from true to false (but not false to true)
+            // - Can update value if writable is true
+            if(!existing.is_accessor && !descriptor.is_accessor) {
+                if(existing.writable) {
+                    // Allow changing writable true->false
+                    if(!descriptor.writable) {
+                        existing.writable = false;
+                    }
+                    existing.value = descriptor.value;
                 }
-                // Cannot change other attributes of non-configurable property
-                return;
             }
-            // Update the descriptor
-            prop.second = descriptor;
             return;
         }
+        // Update the descriptor
+        existing = descriptor;
+        return;
     }
 
     // Property doesn't exist - check if object is extensible
@@ -126,21 +123,27 @@ void JSObject::defineProperty(const std::string& key, const PropertyDescriptor& 
     }
 
     // Add new property
+    property_index_[key] = properties_.size();
     properties_.emplace_back(key, descriptor);
 }
 
 bool JSObject::deleteProperty(const std::string& key) {
-    // Find property and check if configurable
-    for(auto it = properties_.begin(); it != properties_.end(); ++it) {
-        if(it->first == key) {
-            // Check if property is configurable
-            if(!it->second.configurable) {
-                // Cannot delete non-configurable property
-                return false;
-            }
-            properties_.erase(it);
-            return true;
+    auto it = property_index_.find(key);
+    if(it != property_index_.end()) {
+        size_t idx = it->second;
+        // Check if property is configurable
+        if(!properties_[idx].second.configurable) {
+            // Cannot delete non-configurable property
+            return false;
         }
+        // Erase from vector
+        properties_.erase(properties_.begin() + static_cast<ptrdiff_t>(idx));
+        // Rebuild property_index_ (deletion is rare, so this is acceptable)
+        property_index_.clear();
+        for(size_t i = 0; i < properties_.size(); ++i) {
+            property_index_[properties_[i].first] = i;
+        }
+        return true;
     }
     return false;  // Property doesn't exist
 }

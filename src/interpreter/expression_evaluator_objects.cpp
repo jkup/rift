@@ -1052,10 +1052,21 @@ Value ExpressionEvaluator::evaluateFunctionExpression(std::shared_ptr<ASTNode> n
         runtime::PropertyDescriptor(Value(static_cast<double>(formal_params)), false, false, true));
 
     // Step 7. Perform MakeConstructor(closure).
-    // SIMPLIFIED: Rift's JSFunction is already constructable by default.
-    // The spec's MakeConstructor sets [[Construct]] and creates a .prototype property.
-    // INCOMPLETE: Rift does not automatically create a .prototype property on
-    // function expressions (the spec's MakeConstructor step 4 does).
+    // 10.2.5 MakeConstructor ( F [ , writablePrototype [ , prototype ] ] )
+    // @spec https://tc39.es/ecma262/#sec-makeconstructor
+    //   3. Let prototype be OrdinaryObjectCreate(%Object.prototype%).
+    //   4. Perform ! DefinePropertyOrThrow(prototype, "constructor",
+    //      PropertyDescriptor { [[Value]]: F, [[Writable]]: true,
+    //      [[Enumerable]]: false, [[Configurable]]: true }).
+    //   5. Perform ! DefinePropertyOrThrow(F, "prototype",
+    //      PropertyDescriptor { [[Value]]: prototype, [[Writable]]: true,
+    //      [[Enumerable]]: false, [[Configurable]]: false }).
+    auto* prototypeObj =
+        engine->getObjectFactory()->createJSObject(BuiltinManager::getObjectPrototype());
+    prototypeObj->defineProperty("constructor",
+                                 runtime::PropertyDescriptor(Value(func), true, false, true));
+    func->defineProperty("prototype",
+                         runtime::PropertyDescriptor(Value(prototypeObj), true, false, false));
 
     // Re-enable GC before returning
     obj_manager->setGCEnabled(was_gc_enabled);
