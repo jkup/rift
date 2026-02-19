@@ -71,21 +71,17 @@ void Parser::declareLexicalName(const std::string& name, bool is_func_decl, size
 
 void Parser::declareVarName(const std::string& name, size_t line, size_t column) {
     // Walk up scope stack to nearest Function scope, checking for lexical conflicts
-    for(int i = static_cast<int>(scope_stack_.size()) - 1; i >= 0; i--) {
+    for(size_t i = scope_stack_.size(); i-- > 0;) {
         auto& scope = scope_stack_[i];
 
-        // var conflicts with lexical names at every scope level it passes through
-        if(scope.lexical_names.count(name)) {
-            // Annex B.3.4: In sloppy mode, var declarations of the same name as a
-            // catch parameter are allowed (they simply shadow the catch binding).
-            // In strict mode, this is always a SyntaxError.
-            if(!in_strict_mode_ && scope.catch_parameter == name) {
-                // Skip the conflict — Annex B.3.4 permits this in sloppy mode
-            } else {
-                throw std::runtime_error("SyntaxError: Identifier '" + name +
-                                         "' has already been declared at line " +
-                                         std::to_string(line) + ":" + std::to_string(column));
-            }
+        // var conflicts with lexical names at every scope level it passes through.
+        // Annex B.3.4: In sloppy mode, var declarations of the same name as a
+        // catch parameter are allowed (they simply shadow the catch binding).
+        // In strict mode, this is always a SyntaxError.
+        if(scope.lexical_names.count(name) && (in_strict_mode_ || scope.catch_parameter != name)) {
+            throw std::runtime_error("SyntaxError: Identifier '" + name +
+                                     "' has already been declared at line " + std::to_string(line) +
+                                     ":" + std::to_string(column));
         }
 
         scope.var_names.insert(name);
@@ -185,12 +181,16 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
         // Parse destructuring pattern
         auto pattern = parse_binding_pattern();
 
-        // Register bound names for let/const destructuring
-        if(declType == TokenType::Let || declType == TokenType::Const) {
+        // Register bound names from destructuring pattern
+        {
             std::vector<std::string> bound_names;
             collectBoundNames(pattern, bound_names);
             for(const auto& bname : bound_names) {
-                declareLexicalName(bname, false, pattern->line, pattern->column);
+                if(declType == TokenType::Let || declType == TokenType::Const) {
+                    declareLexicalName(bname, false, pattern->line, pattern->column);
+                } else if(declType == TokenType::Var) {
+                    declareVarName(bname, pattern->line, pattern->column);
+                }
             }
         }
 
