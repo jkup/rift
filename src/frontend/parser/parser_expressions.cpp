@@ -315,8 +315,48 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
                 return node;
             }
         }
-        default:
-            throw std::runtime_error("Unexpected token in primary expression");
+        default: {
+            // Keywords and spread in expression position are always SyntaxErrors (not recoverable).
+            // Other unexpected tokens may be recoverable parser gaps, so use a non-SyntaxError
+            // message to allow error recovery in parse_program().
+            bool is_hard_error = false;
+            switch(token.type) {
+                case TokenType::Switch:
+                case TokenType::Case:
+                case TokenType::Break:
+                case TokenType::Continue:
+                case TokenType::Default:
+                case TokenType::If:
+                case TokenType::Else:
+                case TokenType::For:
+                case TokenType::While:
+                case TokenType::Do:
+                case TokenType::Try:
+                case TokenType::Catch:
+                case TokenType::Finally:
+                case TokenType::With:
+                case TokenType::Var:
+                case TokenType::Let:
+                case TokenType::Const:
+                case TokenType::Return:
+                case TokenType::Throw:
+                case TokenType::Static:
+                case TokenType::Extends:
+                case TokenType::In:
+                case TokenType::Instanceof:
+                case TokenType::Spread:
+                    is_hard_error = true;
+                    break;
+                default:
+                    break;
+            }
+            if(is_hard_error) {
+                throw std::runtime_error("SyntaxError: Unexpected token '" + token.value +
+                                         "' in expression");
+            }
+            throw std::runtime_error("Unexpected token '" + token.value +
+                                     "' in primary expression");
+        }
     }
 }
 
@@ -678,6 +718,10 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
     // ArrowParameters :: BindingIdentifier (single-param shorthand, no parens)
     // Check for single-param arrow function: x => ...
     if(expr->type == ASTNodeType::Identifier && current_token().type == TokenType::Arrow) {
+        // 15.3 ArrowFunction :: ArrowParameters [no LineTerminator here] => ConciseBody
+        if(current_token().line != expr->line) {
+            throw std::runtime_error("SyntaxError: Line terminator not permitted before '=>'");
+        }
         return parse_arrow_function_from_identifier(expr);
     }
 
@@ -1374,11 +1418,13 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
     // Parse parameters
     std::shared_ptr<ASTNode> parameters;
 
+    size_t params_end_line;
     if(current_token().type == TokenType::Identifier) {
         // ArrowParameters :: BindingIdentifier (single param without parens: x => ...)
         std::string paramValue = current_token().value;
         size_t paramLine = current_token().line;
         size_t paramColumn = current_token().column;
+        params_end_line = paramLine;
         parameters = ASTFactory::makeParameterList();
         ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(paramValue));
         current++;  // consume identifier
@@ -1390,7 +1436,13 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
         // Arrow functions use UniqueFormalParameters — duplicates always an error
         consume(TokenType::LeftParen);
         parameters = parse_parameter_list(true);
+        params_end_line = current_token().line;  // line of ')'
         consume(TokenType::RightParen);
+    }
+
+    // 15.3 ArrowFunction :: ArrowParameters [no LineTerminator here] => ConciseBody
+    if(current_token().type == TokenType::Arrow && current_token().line != params_end_line) {
+        throw std::runtime_error("SyntaxError: Line terminator not permitted before '=>'");
     }
 
     // ArrowFunction :: ArrowParameters => ConciseBody
@@ -1403,6 +1455,26 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
     if(current_token().type == TokenType::LeftBrace) {
         // ConciseBody :: { FunctionBody }
         body = parse_block_statement(true);
+
+        // 15.3.1 Static Semantics: Early Errors
+        // It is a Syntax Error if FunctionBodyContainsUseStrict of ConciseBody is
+        // true and IsSimpleParameterList of ArrowParameters is false.
+        if(!body->children.empty()) {
+            const auto& first = body->children[0];
+            if(first->type == ASTNodeType::ExpressionStatement && !first->children.empty()) {
+                const auto& expr = first->children[0];
+                if(expr->type == ASTNodeType::Literal && expr->metadata == "string" &&
+                   expr->value == "use strict") {
+                    for(const auto& p : parameters->children) {
+                        if(p->type != ASTNodeType::Identifier) {
+                            throw std::runtime_error(
+                                "SyntaxError: Illegal 'use strict' directive in function with "
+                                "non-simple parameter list");
+                        }
+                    }
+                }
+            }
+        }
     } else {
         // ConciseBody :: [lookahead != {] ExpressionBody
         // ExpressionBody :: AssignmentExpression
@@ -1473,7 +1545,11 @@ std::shared_ptr<ASTNode> Parser::parse_yield_expression() {
     // 14.4 Static Semantics: Early Errors
     // It is a Syntax Error if this production is not nested within a GeneratorBody.
     if(!in_generator_context_) {
-        throw std::runtime_error("'yield' expression is only allowed inside generator functions");
+        if(in_strict_mode_) {
+            throw std::runtime_error("SyntaxError: 'yield' is a reserved word in strict mode");
+        }
+        throw std::runtime_error(
+            "SyntaxError: 'yield' expression is only allowed inside generator functions");
     }
 
     consume(TokenType::Yield);  // consume 'yield'
@@ -1623,12 +1699,14 @@ std::shared_ptr<ASTNode> Parser::parse_async_arrow_function() {
     // Parse AsyncArrowBindingIdentifier or parenthesized parameters
     std::shared_ptr<ASTNode> parameters;
 
+    size_t params_end_line;
     if(current_token().type == TokenType::Identifier) {
         // AsyncArrowBindingIdentifier :: BindingIdentifier
         // Single param without parens: async x => ...
         std::string paramValue = current_token().value;
         size_t paramLine = current_token().line;
         size_t paramColumn = current_token().column;
+        params_end_line = paramLine;
         parameters = ASTFactory::makeParameterList();
         ASTFactory::addParameter(parameters, ASTFactory::makeIdentifier(paramValue));
         current++;  // consume identifier
@@ -1639,7 +1717,13 @@ std::shared_ptr<ASTNode> Parser::parse_async_arrow_function() {
         // Async arrow functions use UniqueFormalParameters — duplicates always an error
         consume(TokenType::LeftParen);
         parameters = parse_parameter_list(true);
+        params_end_line = current_token().line;  // line of ')'
         consume(TokenType::RightParen);
+    }
+
+    // 15.9 AsyncArrowFunction :: ... [no LineTerminator here] => AsyncConciseBody
+    if(current_token().type == TokenType::Arrow && current_token().line != params_end_line) {
+        throw std::runtime_error("SyntaxError: Line terminator not permitted before '=>'");
     }
 
     // AsyncArrowFunction :: ... => AsyncConciseBody
@@ -1655,6 +1739,26 @@ std::shared_ptr<ASTNode> Parser::parse_async_arrow_function() {
     if(current_token().type == TokenType::LeftBrace) {
         // AsyncConciseBody :: { AsyncFunctionBody }
         body = parse_block_statement(true);
+
+        // 15.9.1 Static Semantics: Early Errors
+        // It is a Syntax Error if AsyncConciseBody contains a "use strict" directive
+        // and IsSimpleParameterList of AsyncArrowBindingIdentifier is false.
+        if(!body->children.empty()) {
+            const auto& first = body->children[0];
+            if(first->type == ASTNodeType::ExpressionStatement && !first->children.empty()) {
+                const auto& expr = first->children[0];
+                if(expr->type == ASTNodeType::Literal && expr->metadata == "string" &&
+                   expr->value == "use strict") {
+                    for(const auto& p : parameters->children) {
+                        if(p->type != ASTNodeType::Identifier) {
+                            throw std::runtime_error(
+                                "SyntaxError: Illegal 'use strict' directive in function with "
+                                "non-simple parameter list");
+                        }
+                    }
+                }
+            }
+        }
     } else {
         // AsyncConciseBody :: [lookahead != {] ExpressionBody
         // DEVIATION: Wraps expression in ReturnStatement + BlockStatement so the

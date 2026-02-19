@@ -37,6 +37,7 @@
 #include <cctype>
 #include <stdexcept>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "rift/runtime_limits.h"
 
@@ -734,15 +735,50 @@ Token Lexer::read_template_part() {
 // IdentifierPart :: UnicodeIDContinue | $ | \ UnicodeEscapeSequence | <ZWNJ> | <ZWJ>
 //
 // SIMPLIFIED: The spec allows any Unicode ID_Start/ID_Continue characters and
-// UnicodeEscapeSequences in identifiers. Rift only supports ASCII alphanumeric
-// characters, underscore (_), and dollar sign ($). Unicode identifiers like
-// "caf\u00e9" or identifiers with non-ASCII Unicode letters are not supported.
+// UnicodeEscapeSequences in identifiers. Rift supports ASCII alphanumeric
+// characters, underscore (_), dollar sign ($), and \uHHHH escape sequences.
+// Non-ASCII Unicode letters (e.g., accented characters without escapes) and
+// \u{HHHH} brace-form escapes in identifiers are not supported.
 // @spec https://tc39.es/ecma262/#sec-names-and-keywords
 Token Lexer::read_identifier() {
     std::string value;
-    while(std::isalnum(current_char()) || current_char() == '_' || current_char() == '$') {
-        value += current_char();
-        advance();
+    bool has_escape = false;
+    while(std::isalnum(current_char()) || current_char() == '_' || current_char() == '$' ||
+          (current_char() == '\\' && peek_char() == 'u')) {
+        if(current_char() == '\\') {
+            has_escape = true;
+            advance();  // consume '\'
+            if(current_char() != 'u') {
+                throw std::runtime_error(
+                    "SyntaxError: Invalid Unicode escape sequence in identifier");
+            }
+            advance();  // consume 'u'
+            // Parse 4 hex digits inline (don't use parse_unicode_escape which backs up position)
+            int codepoint = 0;
+            for(int i = 0; i < 4; i++) {
+                int digit = parse_hex_digit(current_char());
+                if(digit == -1) {
+                    throw std::runtime_error(
+                        "SyntaxError: Invalid Unicode escape sequence: expected 4 hex digits");
+                }
+                codepoint = (codepoint << 4) | digit;
+                advance();
+            }
+            // Convert code point to UTF-8 and append to value
+            if(codepoint <= 0x7F) {
+                value += static_cast<char>(codepoint);
+            } else if(codepoint <= 0x7FF) {
+                value += static_cast<char>(0xC0 | (codepoint >> 6));
+                value += static_cast<char>(0x80 | (codepoint & 0x3F));
+            } else {
+                value += static_cast<char>(0xE0 | (codepoint >> 12));
+                value += static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F));
+                value += static_cast<char>(0x80 | (codepoint & 0x3F));
+            }
+        } else {
+            value += current_char();
+            advance();
+        }
     }
 
     // 12.6.2 Keywords and Reserved Words
@@ -758,8 +794,9 @@ Token Lexer::read_identifier() {
     //   - undefined -> not a reserved word in spec (it's a global property),
     //     but Rift tokenizes it as a keyword for convenience
     //
-    // INCOMPLETE: The following reserved words are not yet tokenized:
-    //   debugger, enum, export, import
+    // INCOMPLETE: The following reserved words are not yet tokenized as keyword
+    // TokenTypes: debugger, export, import. They are handled separately below
+    // (enum throws SyntaxError, the others are checked for escaped keywords).
     // DEVIATION: 'undefined' is tokenized as a keyword (TokenType::Undefined).
     // In the spec, undefined is simply a property of the global object, not a
     // reserved word or literal. This means `let undefined = 5` would be rejected
@@ -812,7 +849,45 @@ Token Lexer::read_identifier() {
 
     auto it = keywords.find(value);
     if(it != keywords.end()) {
+        if(has_escape) {
+            // 12.6.2 Keywords and Reserved Words
+            // A keyword written with Unicode escapes (e.g., bre\u0061k) is an
+            // IdentifierName that is a ReservedWord. It cannot be used as an
+            // identifier — the parser must reject it in binding positions.
+            // We return it as an Identifier token with the escaped_keyword flag.
+            Token token(TokenType::Identifier, value, line, column);
+            token.escaped_keyword = true;
+            return token;
+        }
         return Token(it->second, value, line, column);
+    }
+
+    // 12.6.2 Keywords and Reserved Words
+    // 'enum' is a reserved word per the spec (always reserved, not just in strict mode).
+    // It has no TokenType because it's not used by any production, but it must be
+    // rejected as an identifier.
+    if(value == "enum") {
+        if(has_escape) {
+            Token token(TokenType::Identifier, value, line, column);
+            token.escaped_keyword = true;
+            return token;
+        }
+        throw std::runtime_error("SyntaxError: 'enum' is a reserved word");
+    }
+
+    // Additional reserved words not in the keyword table (debugger, export, import)
+    // and strict mode FutureReservedWords (implements, interface, package, private,
+    // protected, public). When written with unicode escapes, they must be flagged
+    // so the parser can reject them in binding positions.
+    if(has_escape) {
+        static const std::unordered_set<std::string> additional_reserved = {
+            "debugger", "export",  "import",    "implements", "interface",
+            "package",  "private", "protected", "public"};
+        if(additional_reserved.count(value)) {
+            Token token(TokenType::Identifier, value, line, column);
+            token.escaped_keyword = true;
+            return token;
+        }
     }
 
     return Token(TokenType::Identifier, value, line, column);
@@ -1033,11 +1108,11 @@ Token Lexer::next_token() {
 
     // 12.6 Names and Keywords
     // IdentifierName :: IdentifierStart IdentifierPart*
-    // IdentifierStart :: UnicodeIDStart | $ | _
-    // SIMPLIFIED: Only ASCII alpha, underscore, and dollar sign are recognized as
-    // IdentifierStart. Unicode ID_Start characters and \UnicodeEscapeSequence in
-    // identifier starts are not supported.
-    if(std::isalpha(ch) || ch == '_' || ch == '$') {
+    // IdentifierStart :: UnicodeIDStart | $ | _ | \ UnicodeEscapeSequence
+    // SIMPLIFIED: Only ASCII alpha, underscore, dollar sign, and \u escape sequences
+    // are recognized as IdentifierStart. Non-ASCII Unicode ID_Start characters are
+    // not supported.
+    if(std::isalpha(ch) || ch == '_' || ch == '$' || (ch == '\\' && peek_char() == 'u')) {
         auto token = read_identifier();
         last_token_type_ = token.type;
         return token;

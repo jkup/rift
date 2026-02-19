@@ -485,6 +485,7 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
         }
 
         std::string key_name = current_token().value;
+        bool is_escaped_keyword = current_token().escaped_keyword;
         // Remove quotes from string keys
         if(current_token().type == TokenType::String && key_name.size() >= 2) {
             key_name = key_name.substr(1, key_name.size() - 2);
@@ -522,6 +523,12 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
         } else if(current_token().type == TokenType::Assign) {
             // SingleNameBinding :: BindingIdentifier Initializer
             // Shorthand with default: {key = 10}
+            // 12.6.2: Escaped keywords cannot be used as binding identifiers
+            if(is_escaped_keyword) {
+                throw std::runtime_error(
+                    "SyntaxError: '" + key_name +
+                    "' is a reserved word and cannot be used as an identifier");
+            }
             current++;  // consume '='
             auto default_val = parse_binary_expression(1);
             value_pattern = ASTFactory::makeAssignmentPattern(ASTFactory::makeIdentifier(key_name),
@@ -529,6 +536,12 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
         } else {
             // SingleNameBinding :: BindingIdentifier (shorthand, no initializer)
             // Shorthand: {key} — key and variable name are the same
+            // 12.6.2: Escaped keywords cannot be used as binding identifiers
+            if(is_escaped_keyword) {
+                throw std::runtime_error(
+                    "SyntaxError: '" + key_name +
+                    "' is a reserved word and cannot be used as an identifier");
+            }
             value_pattern = ASTFactory::makeIdentifier(key_name);
         }
 

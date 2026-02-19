@@ -132,6 +132,7 @@ struct Token {
     size_t line;
     size_t column;
     bool has_legacy_octal = false;
+    bool escaped_keyword = false;
 
     Token(TokenType t, const std::string& v, size_t l = 0, size_t c = 0)
         : type(t), value(v), line(l), column(c) {
