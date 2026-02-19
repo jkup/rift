@@ -1,107 +1,226 @@
 // JavaScript Runtime Benchmark
-// This file tests basic JavaScript operations across different runtimes
+// Compares Rift against Node, Deno, and Bun on real workloads.
+// Each benchmark is large enough to dominate startup time.
 
-// Fibonacci calculation (recursive) - tests function calls and recursion
+// ---------------------------------------------------------------------------
+// 1. Fibonacci (recursive) — function call overhead, recursion
+// ---------------------------------------------------------------------------
 function fibonacci(n) {
   if (n <= 1) return n;
   return fibonacci(n - 1) + fibonacci(n - 2);
 }
 
-// Prime number calculation - tests loops and arithmetic
-function isPrime(n) {
-  if (n <= 1) return false;
-  if (n <= 3) return true;
-  if (n % 2 === 0 || n % 3 === 0) return false;
-
-  for (let i = 5; i * i <= n; i += 6) {
-    if (n % i === 0 || n % (i + 2) === 0) return false;
+// ---------------------------------------------------------------------------
+// 2. Sieve of Eratosthenes — loops, array indexed access, conditionals
+// ---------------------------------------------------------------------------
+function sieve(limit) {
+  var flags = [];
+  for (var i = 0; i <= limit; i++) flags.push(true);
+  flags[0] = false;
+  flags[1] = false;
+  for (var p = 2; p * p <= limit; p++) {
+    if (flags[p]) {
+      for (var m = p * p; m <= limit; m += p) {
+        flags[m] = false;
+      }
+    }
   }
-  return true;
+  var count = 0;
+  for (var i = 0; i <= limit; i++) {
+    if (flags[i]) count++;
+  }
+  return count;
 }
 
-// Array operations - tests array manipulation
-function arrayOperations() {
-  const arr = [];
+// ---------------------------------------------------------------------------
+// 3. Array higher-order methods — filter, map, reduce at scale
+// ---------------------------------------------------------------------------
+function arrayWorkload(size) {
+  var arr = [];
+  for (var i = 0; i < size; i++) arr.push(i);
 
-  // Fill array
-  for (let i = 0; i < 1000; i++) {
-    arr.push(i * 2);
-  }
-
-  // Filter even numbers
-  const evens = arr.filter((x) => x % 2 === 0);
-
-  // Map to squares
-  const squares = evens.map((x) => x * x);
-
-  // Reduce to sum
-  const sum = squares.reduce((acc, val) => acc + val, 0);
-
+  var evens = arr.filter(function(x) { return x % 2 === 0; });
+  var squared = evens.map(function(x) { return x * x; });
+  var sum = squared.reduce(function(a, b) { return a + b; }, 0);
   return sum;
 }
 
-// String operations - tests string manipulation
-function stringOperations() {
-  let str = "Hello World";
-  let result = "";
-
-  for (let i = 0; i < 100; i++) {
-    result += str.toUpperCase().toLowerCase().repeat(2);
+// ---------------------------------------------------------------------------
+// 4. String building — concatenation, toUpperCase/toLowerCase, indexOf
+// ---------------------------------------------------------------------------
+function stringWorkload(iterations) {
+  var str = "";
+  for (var i = 0; i < iterations; i++) {
+    str += "abcdefghij";
   }
-
-  return result.length;
+  var upper = str.toUpperCase();
+  var lower = upper.toLowerCase();
+  var idx = lower.indexOf("abcdefghij");
+  return lower.length + idx;
 }
 
-// Object operations - tests object creation and property access
-function objectOperations() {
-  const objects = [];
-
-  for (let i = 0; i < 1000; i++) {
-    objects.push({
-      id: i,
-      name: "Object " + i,
-      value: i * i,
-      active: i % 2 === 0,
-    });
+// ---------------------------------------------------------------------------
+// 5. Object property access — creation, property read/write, hasOwnProperty
+// ---------------------------------------------------------------------------
+function objectWorkload(size) {
+  var objects = [];
+  for (var i = 0; i < size; i++) {
+    var obj = {};
+    obj.id = i;
+    obj.name = "item_" + i;
+    obj.value = i * 3.14;
+    obj.active = i % 2 === 0;
+    objects.push(obj);
   }
 
-  // Filter and transform
-  const activeObjects = objects
-    .filter((obj) => obj.active)
-    .map((obj) => ({ ...obj, doubled: obj.value * 2 }));
-
-  return activeObjects.length;
-}
-
-// Main benchmark execution
-function runBenchmark() {
-  console.log("Starting JavaScript Runtime Benchmark...");
-
-  // Fibonacci (smaller number to avoid too much recursion)
-  const fibResult = fibonacci(20);
-  console.log(`Fibonacci(20): ${fibResult}`);
-
-  // Prime checking
-  let primeCount = 0;
-  for (let i = 2; i < 100; i++) {
-    if (isPrime(i)) primeCount++;
+  var total = 0;
+  for (var i = 0; i < objects.length; i++) {
+    if (objects[i].hasOwnProperty("value") && objects[i].active) {
+      total += objects[i].value;
+    }
   }
-  console.log(`Primes up to 100: ${primeCount}`);
-
-  // Array operations
-  const arrayResult = arrayOperations();
-  console.log(`Array operations result: ${arrayResult}`);
-
-  // String operations
-  const stringResult = stringOperations();
-  console.log(`String operations result: ${stringResult}`);
-
-  // Object operations
-  const objectResult = objectOperations();
-  console.log(`Object operations result: ${objectResult}`);
-
-  console.log("Benchmark completed!");
+  return total;
 }
 
-// Run the benchmark
-runBenchmark();
+// ---------------------------------------------------------------------------
+// 6. Closure & scope chain — tests lexical capture in hot loops
+// ---------------------------------------------------------------------------
+function closureWorkload(iterations) {
+  function makeAdder(x) {
+    return function(y) { return x + y; };
+  }
+
+  var adders = [];
+  for (var i = 0; i < 100; i++) {
+    adders.push(makeAdder(i));
+  }
+
+  var sum = 0;
+  for (var round = 0; round < iterations; round++) {
+    for (var i = 0; i < adders.length; i++) {
+      sum += adders[i](round);
+    }
+  }
+  return sum;
+}
+
+// ---------------------------------------------------------------------------
+// 7. Prototype chain — method dispatch through inheritance
+// ---------------------------------------------------------------------------
+function prototypeWorkload(iterations) {
+  function Base() { this.x = 1; }
+  Base.prototype.getX = function() { return this.x; };
+  Base.prototype.add = function(n) { return this.x + n; };
+
+  function Child() { Base.call(this); this.y = 2; }
+  Child.prototype = Object.create(Base.prototype);
+  Child.prototype.constructor = Child;
+  Child.prototype.getY = function() { return this.y; };
+  Child.prototype.sum = function() { return this.getX() + this.getY(); };
+
+  var obj = new Child();
+  var total = 0;
+  for (var i = 0; i < iterations; i++) {
+    total += obj.sum() + obj.add(i);
+  }
+  return total;
+}
+
+// ---------------------------------------------------------------------------
+// 8. Map & Set — insertion, lookup, deletion
+// ---------------------------------------------------------------------------
+function mapSetWorkload(size) {
+  var map = new Map();
+  for (var i = 0; i < size; i++) {
+    map.set("key_" + i, i * i);
+  }
+  var sum = 0;
+  for (var i = 0; i < size; i++) {
+    if (map.has("key_" + i)) {
+      sum += map.get("key_" + i);
+    }
+  }
+  for (var i = 0; i < size; i += 2) {
+    map.delete("key_" + i);
+  }
+
+  var set = new Set();
+  for (var i = 0; i < size; i++) {
+    set.add(i);
+  }
+  var count = 0;
+  for (var i = 0; i < size; i++) {
+    if (set.has(i)) count++;
+  }
+  return sum + count + map.size;
+}
+
+// ---------------------------------------------------------------------------
+// 9. RegExp — repeated matching on a large string
+// ---------------------------------------------------------------------------
+function regexpWorkload(iterations) {
+  var text = "";
+  for (var i = 0; i < 200; i++) {
+    text += "The quick brown fox jumps over the lazy dog. ";
+  }
+  var pattern = /quick.*fox/g;
+  var count = 0;
+  for (var round = 0; round < iterations; round++) {
+    pattern.lastIndex = 0;
+    while (pattern.test(text)) {
+      count++;
+    }
+  }
+  return count;
+}
+
+// ---------------------------------------------------------------------------
+// 10. Sort — array sorting with comparator
+// ---------------------------------------------------------------------------
+function sortWorkload(size) {
+  var arr = [];
+  // Simple deterministic pseudo-random sequence
+  var seed = 42;
+  for (var i = 0; i < size; i++) {
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+    arr.push(seed);
+  }
+
+  arr.sort(function(a, b) { return a - b; });
+
+  // Verify sorted
+  var sorted = true;
+  for (var i = 1; i < arr.length; i++) {
+    if (arr[i] < arr[i - 1]) { sorted = false; break; }
+  }
+  return sorted ? arr.length : -1;
+}
+
+// ---------------------------------------------------------------------------
+// Runner
+// ---------------------------------------------------------------------------
+function run(name, fn) {
+  var start = Date.now();
+  var result = fn();
+  var elapsed = Date.now() - start;
+  console.log("  " + name + ": " + elapsed + "ms (result: " + result + ")");
+  return elapsed;
+}
+
+console.log("JavaScript Runtime Benchmark");
+console.log("============================");
+
+var total = 0;
+total += run("fibonacci(35)        ", function() { return fibonacci(35); });
+total += run("sieve(100000)        ", function() { return sieve(100000); });
+total += run("array ops (50k)      ", function() { return arrayWorkload(50000); });
+total += run("string build (5k)    ", function() { return stringWorkload(5000); });
+total += run("object ops (50k)     ", function() { return objectWorkload(50000); });
+total += run("closures (1k rounds) ", function() { return closureWorkload(1000); });
+total += run("prototype chain (50k)", function() { return prototypeWorkload(50000); });
+total += run("map & set (20k)      ", function() { return mapSetWorkload(20000); });
+total += run("regexp (100 rounds)  ", function() { return regexpWorkload(100); });
+total += run("sort (20k)           ", function() { return sortWorkload(20000); });
+
+console.log("----------------------------");
+console.log("  Total: " + total + "ms");
