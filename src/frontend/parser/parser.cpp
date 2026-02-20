@@ -33,7 +33,8 @@ Parser::Parser(const std::vector<Token>& tokens)
       current(0),
       in_generator_context_(false),
       in_async_context_(false),
-      in_strict_mode_(false) {
+      in_strict_mode_(false),
+      suppress_in_(false) {
 }
 
 // 13.1 Identifiers — Strict Mode Reserved Words

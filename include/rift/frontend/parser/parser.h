@@ -22,6 +22,7 @@ class Parser {
     bool in_generator_context_;  // Track if we're inside a generator function
     bool in_async_context_;      // Track if we're inside an async function
     bool in_strict_mode_;        // Track if we're in strict mode
+    bool suppress_in_;  // [~In] flag: suppress 'in' as binary operator (for-statement init)
 
     // Scope stack for detecting lexical redeclarations and var/lexical conflicts at parse time.
     // Block scopes track let/const/class/function-in-block declarations.

@@ -300,15 +300,21 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
             var_type = VariableType::Const;
         }
     } else if(left_node->type == ASTNodeType::ArrayPattern ||
-              left_node->type == ASTNodeType::ObjectPattern) {
+              left_node->type == ASTNodeType::ObjectPattern ||
+              left_node->type == ASTNodeType::ArrayLiteral ||
+              left_node->type == ASTNodeType::ObjectLiteral) {
+        // ArrayLiteral/ObjectLiteral in LHS position are cover grammar for
+        // destructuring assignment patterns (13.15.1 Static Semantics: Early Errors).
         is_destructuring = true;
         pattern = left_node;
     }
 
     if(!is_destructuring) {
-        // Simple variable binding path
+        // Simple variable/reference binding path
         // ForIn/OfBodyEvaluation step 2d: Perform lhsRef assignment with key
         std::string var_name;
+        bool is_member_lhs = false;
+
         if(left_node->type == ASTNodeType::VariableDeclaration ||
            left_node->type == ASTNodeType::LetDeclaration ||
            left_node->type == ASTNodeType::ConstDeclaration) {
@@ -324,9 +330,35 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
             }
         } else if(left_node->type == ASTNodeType::Identifier) {
             var_name = left_node->value;
+        } else if(left_node->type == ASTNodeType::MemberExpression) {
+            is_member_lhs = true;
         } else {
             return Value::undefined();
         }
+
+        // Helper to assign the iteration key to the LHS reference
+        auto assignKey = [&](const Value& key_value) {
+            if(is_member_lhs) {
+                // MemberExpression LHS: evaluate object and set property
+                Value object = engine->evaluate(left_node->children[0], env);
+                if(object.isObject() || object.isFunction()) {
+                    auto* target = object.getObject();
+                    if(target) {
+                        std::string prop;
+                        if(left_node->metadata == "computed" ||
+                           left_node->metadata == "computed-optional") {
+                            Value prop_val = engine->evaluate(left_node->children[1], env);
+                            prop = prop_val.toString();
+                        } else {
+                            prop = left_node->children[1]->value;
+                        }
+                        target->setProperty(prop, key_value);
+                    }
+                }
+            } else {
+                env->set(var_name, key_value);
+            }
+        };
 
         // ForIn/OfHeadEvaluation step 5: Let iterator be EnumerateObjectProperties(obj).
         // Step 2: Repeat (iterate over enumerable property keys)
@@ -336,7 +368,7 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
                 auto keys = obj->getOwnPropertyNames();
                 for(const auto& key : keys) {
                     // Step 2d: Assign key to loop variable
-                    env->set(var_name, Value(key));
+                    assignKey(Value(key));
                     // Step 2e: Let stmtResult be Completion(Evaluation of Statement).
                     try {
                         result = engine->evaluate(body_node, env);
@@ -351,7 +383,7 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
             // String enumeration: iterate over character indices
             std::string str = obj_value.toString();
             for(size_t i = 0; i < str.length(); i++) {
-                env->set(var_name, Value(std::to_string(i)));
+                assignKey(Value(std::to_string(i)));
                 try {
                     result = engine->evaluate(body_node, env);
                 } catch(const BreakException&) {
@@ -592,13 +624,18 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
             var_type = VariableType::Const;
         }
     } else if(left_node->type == ASTNodeType::ArrayPattern ||
-              left_node->type == ASTNodeType::ObjectPattern) {
+              left_node->type == ASTNodeType::ObjectPattern ||
+              left_node->type == ASTNodeType::ArrayLiteral ||
+              left_node->type == ASTNodeType::ObjectLiteral) {
+        // ArrayLiteral/ObjectLiteral in LHS position are cover grammar for
+        // destructuring assignment patterns (13.15.1 Static Semantics: Early Errors).
         is_destructuring = true;
         pattern = left_node;
     }
 
     // Determine variable name for simple (non-destructuring) binding
     std::string var_name;
+    bool is_member_lhs = false;
     if(!is_destructuring) {
         if(left_node->type == ASTNodeType::VariableDeclaration ||
            left_node->type == ASTNodeType::LetDeclaration ||
@@ -613,10 +650,35 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
             }
         } else if(left_node->type == ASTNodeType::Identifier) {
             var_name = left_node->value;
+        } else if(left_node->type == ASTNodeType::MemberExpression) {
+            is_member_lhs = true;
         } else {
             return Value::undefined();
         }
     }
+
+    // Helper to assign the iteration value to a MemberExpression or variable LHS
+    auto assignValue = [&](const Value& val) {
+        if(is_member_lhs) {
+            Value object = engine->evaluate(left_node->children[0], env);
+            if(object.isObject() || object.isFunction()) {
+                auto* target = object.getObject();
+                if(target) {
+                    std::string prop;
+                    if(left_node->metadata == "computed" ||
+                       left_node->metadata == "computed-optional") {
+                        Value prop_val = engine->evaluate(left_node->children[1], env);
+                        prop = prop_val.toString();
+                    } else {
+                        prop = left_node->children[1]->value;
+                    }
+                    target->setProperty(prop, val);
+                }
+            }
+        } else {
+            env->set(var_name, val);
+        }
+    };
 
     // String fast path: eagerly collect characters (no iterator close needed)
     if(iterable.isString()) {
@@ -624,7 +686,7 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
         for(const auto& value : values) {
             std::shared_ptr<Environment> body_env = env;
             if(!is_destructuring) {
-                env->set(var_name, value);
+                assignValue(value);
             } else if(var_type == VariableType::Var) {
                 applyPatternBinding(pattern, value, env, engine, var_type);
             } else {
@@ -660,7 +722,7 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
                         Value value = obj->getProperty(std::to_string(i));
                         std::shared_ptr<Environment> body_env = env;
                         if(!is_destructuring) {
-                            env->set(var_name, value);
+                            assignValue(value);
                         } else if(var_type == VariableType::Var) {
                             applyPatternBinding(pattern, value, env, engine, var_type);
                         } else {
@@ -692,7 +754,7 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
         // Step 2d: Assign nextValue to loop variable
         std::shared_ptr<Environment> body_env = env;
         if(!is_destructuring) {
-            env->set(var_name, value);
+            assignValue(value);
         } else if(var_type == VariableType::Var) {
             applyPatternBinding(pattern, value, env, engine, var_type);
         } else {

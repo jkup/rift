@@ -309,7 +309,17 @@ void StatementEvaluator::applyPatternBinding(std::shared_ptr<ASTNode> pattern, c
         // 8.6.2 BindingInitialization for SingleNameBinding
         // 1. Let bindingId be StringValue of BindingIdentifier.
         // 2. Perform ? InitializeBoundName(bindingId, value, environment).
-        env->define(pattern->value, value, var_type);
+        //
+        // For declaration patterns (ArrayPattern/ObjectPattern), define creates a new binding.
+        // For assignment patterns (ArrayLiteral/ObjectLiteral), if the variable already exists
+        // in the LOCAL scope, use set() which respects const immutability and TDZ.
+        // We only check the local scope so that declaration destructuring like `let [a] = [1]`
+        // correctly creates a new binding even when `a` exists in a parent scope.
+        if(env->hasLocal(pattern->value)) {
+            env->set(pattern->value, value);
+        } else {
+            env->define(pattern->value, value, var_type);
+        }
 
     } else if(pattern->type == ASTNodeType::ArrayPattern) {
         // 14.3.3.3 IteratorBindingInitialization
@@ -553,6 +563,254 @@ void StatementEvaluator::applyPatternBinding(std::shared_ptr<ASTNode> pattern, c
             applyPatternBinding(pattern->children[0], default_val, env, engine, var_type);
         } else {
             applyPatternBinding(pattern->children[0], value, env, engine, var_type);
+        }
+
+    } else if(pattern->type == ASTNodeType::ArrayLiteral) {
+        // 13.15.5.3 Runtime Semantics: DestructuringAssignmentEvaluation
+        // ArrayAssignmentPattern (cover grammar: ArrayLiteral reinterpreted as pattern)
+        // @spec https://tc39.es/ecma262/#sec-runtime-semantics-destructuringassignmentevaluation
+        //
+        // Each element of the ArrayLiteral is an AssignmentElement which is
+        // reinterpreted as a destructuring target. SpreadElement maps to rest.
+        // Unlike ArrayPattern (used in declarations), assignment targets use env->set()
+        // for identifiers, which correctly throws TypeError for const bindings.
+
+        // 13.15.5.3 step 1: Let iteratorRecord be ? GetIterator(value, SYNC).
+        // GetIterator throws TypeError for null, undefined, and non-iterable values.
+        if(value.isNull() || value.isUndefined()) {
+            auto* factory = engine->getObjectFactory();
+            auto* error_obj = factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
+            memory::GCProtector protect(error_obj, factory->getObjectManager());
+            error_obj->setProperty("name", Value("TypeError"));
+            error_obj->setProperty(
+                "message",
+                Value(value.toString() +
+                      " is not iterable (cannot read property Symbol(Symbol.iterator))"));
+            throw JavaScriptException(Value(error_obj));
+        }
+
+        // Get iterator via Symbol.iterator protocol
+        bool use_iterator = false;
+        JSObject* iterator_obj = nullptr;
+        bool iterator_done = false;
+
+        if(value.isObject() || value.isFunction()) {
+            auto* obj = value.getObject();
+            if(obj) {
+                std::string iterator_key =
+                    EvaluationUtils::symbolToPropertyKey(builtins::Symbol::getIteratorId());
+                Value iterator_method = obj->getProperty(iterator_key);
+                if(iterator_method.isFunction()) {
+                    auto* iter_func =
+                        dynamic_cast<rift::runtime::JSFunction*>(iterator_method.getObject());
+                    if(iter_func) {
+                        CallContext ctx(CallType::Function, value);
+                        Value iterator_val = iter_func->call(ctx, {});
+                        if(iterator_val.isObject()) {
+                            iterator_obj = iterator_val.getObject();
+                            use_iterator = true;
+                        }
+                    }
+                }
+            }
+        } else if(value.isString()) {
+            // Strings are iterable — use index-based access as fallback
+            // (handled below via extractArrayElements)
+        } else {
+            // Non-iterable primitive (boolean, number, symbol): throw TypeError
+            // @spec https://tc39.es/ecma262/#sec-getiterator step 3
+            auto* factory = engine->getObjectFactory();
+            auto* error_obj = factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
+            memory::GCProtector protect(error_obj, factory->getObjectManager());
+            error_obj->setProperty("name", Value("TypeError"));
+            error_obj->setProperty(
+                "message",
+                Value(value.toString() +
+                      " is not iterable (cannot read property Symbol(Symbol.iterator))"));
+            throw JavaScriptException(Value(error_obj));
+        }
+
+        auto iteratorNext = [&]() -> Value {
+            if(iterator_done) {
+                return Value::undefined();
+            }
+            Value next_method = iterator_obj->getProperty("next");
+            if(!next_method.isFunction()) {
+                iterator_done = true;
+                return Value::undefined();
+            }
+            auto* next_func = dynamic_cast<rift::runtime::JSFunction*>(next_method.getObject());
+            if(!next_func) {
+                iterator_done = true;
+                return Value::undefined();
+            }
+            CallContext next_ctx(CallType::Function, Value(iterator_obj));
+            Value result = next_func->call(next_ctx, {});
+            if(!result.isObject()) {
+                iterator_done = true;
+                return Value::undefined();
+            }
+            auto* result_obj = result.getObject();
+            Value done = result_obj->getProperty("done");
+            if(done.toBool()) {
+                iterator_done = true;
+                return Value::undefined();
+            }
+            return result_obj->getProperty("value");
+        };
+
+        std::vector<Value> elements;
+        size_t elem_idx = 0;
+        if(!use_iterator) {
+            elements = extractArrayElements(value);
+        }
+
+        for(size_t i = 0; i < pattern->children.size(); ++i) {
+            auto& elem = pattern->children[i];
+
+            if(!elem) {
+                // Elision (hole) — advance iterator/index
+                if(use_iterator) {
+                    iteratorNext();
+                } else {
+                    elem_idx++;
+                }
+                continue;
+            }
+
+            if(elem->type == ASTNodeType::SpreadElement) {
+                // RestElement: ...target — collect remaining values
+                std::vector<Value> rest_elements;
+                if(use_iterator) {
+                    while(!iterator_done) {
+                        Value val = iteratorNext();
+                        if(!iterator_done) {
+                            rest_elements.push_back(val);
+                        }
+                    }
+                } else {
+                    while(elem_idx < elements.size()) {
+                        rest_elements.push_back(elements[elem_idx++]);
+                    }
+                }
+                auto* rest_array =
+                    builtins::Array::createArrayObject(engine->getObjectFactory(), rest_elements);
+                // The child of SpreadElement is the target
+                applyPatternBinding(elem->children[0], Value(rest_array), env, engine, var_type);
+
+            } else if(elem->type == ASTNodeType::AssignmentExpression) {
+                // AssignmentElement with default: target = defaultValue
+                Value elem_value;
+                if(use_iterator) {
+                    elem_value = iteratorNext();
+                } else {
+                    elem_value =
+                        elem_idx < elements.size() ? elements[elem_idx] : Value::undefined();
+                    elem_idx++;
+                }
+                if(elem_value.isUndefined() && elem->children.size() > 1) {
+                    elem_value = engine->evaluate(elem->children[1], env);
+                }
+                applyPatternBinding(elem->children[0], elem_value, env, engine, var_type);
+
+            } else {
+                // Simple target (Identifier, MemberExpression, nested pattern)
+                Value elem_value;
+                if(use_iterator) {
+                    elem_value = iteratorNext();
+                } else {
+                    elem_value =
+                        elem_idx < elements.size() ? elements[elem_idx] : Value::undefined();
+                    elem_idx++;
+                }
+                applyPatternBinding(elem, elem_value, env, engine, var_type);
+            }
+        }
+
+    } else if(pattern->type == ASTNodeType::ObjectLiteral) {
+        // 13.15.5.4 Runtime Semantics: DestructuringAssignmentEvaluation
+        // ObjectAssignmentPattern (cover grammar: ObjectLiteral reinterpreted as pattern)
+        // @spec https://tc39.es/ecma262/#sec-runtime-semantics-destructuringassignmentevaluation
+        //
+        // ObjectLiteral children are interleaved key-value pairs: key, value, key, value...
+        // Each value is an AssignmentTarget (Identifier, MemberExpression, nested pattern).
+
+        if(value.isNull() || value.isUndefined()) {
+            auto* factory = engine->getObjectFactory();
+            auto* error_obj = factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
+            memory::GCProtector protect(error_obj, factory->getObjectManager());
+            error_obj->setProperty("name", Value("TypeError"));
+            error_obj->setProperty("message", Value("Cannot destructure '" + value.toString() +
+                                                    "' as it is " + value.toString() + "."));
+            throw JavaScriptException(Value(error_obj));
+        }
+
+        JSObject* obj = nullptr;
+        if(value.isObject()) {
+            obj = value.getObject();
+        }
+
+        for(size_t i = 0; i + 1 < pattern->children.size(); i += 2) {
+            auto& key_node = pattern->children[i];
+            auto& value_pattern = pattern->children[i + 1];
+
+            // Resolve property key — handles computed properties ([expr]: target)
+            std::string key;
+            if(key_node->metadata == "computed_key" && !key_node->children.empty()) {
+                // ComputedPropertyName: [expression]
+                Value computed = engine->evaluate(key_node->children[0], env);
+                key = computed.toString();
+            } else {
+                key = key_node->value;
+            }
+
+            Value prop_value = obj ? obj->getProperty(key) : Value::undefined();
+
+            // Handle default values: { key: target = defaultValue }
+            // The value_pattern may be an AssignmentExpression when a default is present
+            if(value_pattern->type == ASTNodeType::AssignmentExpression &&
+               value_pattern->children.size() >= 2) {
+                if(prop_value.isUndefined()) {
+                    prop_value = engine->evaluate(value_pattern->children[1], env);
+                }
+                applyPatternBinding(value_pattern->children[0], prop_value, env, engine, var_type);
+            } else {
+                applyPatternBinding(value_pattern, prop_value, env, engine, var_type);
+            }
+        }
+
+    } else if(pattern->type == ASTNodeType::MemberExpression) {
+        // DestructuringAssignmentTarget can be a MemberExpression
+        // @spec https://tc39.es/ecma262/#sec-assignment-operators-runtime-semantics-evaluation
+        // Evaluate the object and assign via setter if present, otherwise setProperty.
+        if(pattern->children.size() >= 2) {
+            Value object = engine->evaluate(pattern->children[0], env);
+            if(object.isObject() || object.isFunction()) {
+                auto* target = object.getObject();
+                if(target) {
+                    std::string prop;
+                    if(pattern->metadata == "computed" ||
+                       pattern->metadata == "computed-optional") {
+                        Value prop_val = engine->evaluate(pattern->children[1], env);
+                        prop = prop_val.toString();
+                    } else {
+                        prop = pattern->children[1]->value;
+                    }
+                    // Check for accessor property (setter) before using setProperty
+                    auto [found, desc] = target->findPropertyDescriptor(prop);
+                    if(found && desc.is_accessor) {
+                        if(desc.setter.isFunction()) {
+                            auto* setter_func = dynamic_cast<JSFunction*>(desc.setter.getObject());
+                            if(setter_func) {
+                                CallContext setter_ctx(CallType::Function, object);
+                                setter_func->call(setter_ctx, {value});
+                            }
+                        }
+                    } else {
+                        target->setProperty(prop, value);
+                    }
+                }
+            }
         }
     }
 }

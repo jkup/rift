@@ -146,10 +146,15 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
                 return parse_arrow_function();
             }
 
-            // ParenthesizedExpression :: ( Expression )
-            // Not arrow function - parse as grouped expression
+            // ParenthesizedExpression :: ( Expression[+In] )
+            // Not arrow function - parse as grouped expression.
+            // Per spec, parentheses reset the [In] parameter to [+In],
+            // allowing 'in' as a binary operator inside grouping.
             // current is already past '(' so just parse expression
+            bool old_suppress = suppress_in_;
+            suppress_in_ = false;
             auto expr = parse_expression();
+            suppress_in_ = old_suppress;
             consume(TokenType::RightParen);
             return expr;
         }
@@ -300,9 +305,12 @@ std::shared_ptr<ASTNode> Parser::parse_primary() {
                 node->setLocation(startToken.line, startToken.column);
                 return node;
             } else if(current_token().type == TokenType::LeftBracket) {
-                // SuperProperty :: super [ Expression ]
+                // SuperProperty :: super [ Expression[+In] ]
                 current++;  // consume '['
+                bool old_suppress_in = suppress_in_;
+                suppress_in_ = false;
                 auto property = parse_expression();
+                suppress_in_ = old_suppress_in;
                 consume(TokenType::RightBracket);
                 auto node = ASTFactory::makeSuperMemberExpression(property, true);
                 node->setLocation(startToken.line, startToken.column);
@@ -532,8 +540,15 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
             case TokenType::LessEqual:
             case TokenType::Greater:
             case TokenType::GreaterEqual:
-            case TokenType::In:
             case TokenType::Instanceof:
+                op_precedence = 9;  // Relational operators
+                break;
+            // 'in' operator: suppressed in for-statement initializers per spec
+            // [~In] parameter (14.7.4 ForStatement, 14.7.5 ForInOfStatement)
+            case TokenType::In:
+                if(suppress_in_) {
+                    return left;  // Don't consume 'in' as binary operator
+                }
                 op_precedence = 9;  // Relational operators
                 break;
             // 13.12 Binary Bitwise Operators (&, ^, |)
@@ -615,8 +630,11 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
         //                          AssignmentExpression : AssignmentExpression
         // @spec https://tc39.es/ecma262/#sec-conditional-operator
         if(op.type == TokenType::QuestionMark) {
-            // Parse consequent (allow assignment-level expressions)
+            // Parse consequent: AssignmentExpression[+In] — always allow 'in'
+            bool old_suppress_in = suppress_in_;
+            suppress_in_ = false;
             auto consequent = parse_binary_expression(0);
+            suppress_in_ = old_suppress_in;
             consume(TokenType::Colon);
             // Parse alternate (right-associative: parse at ternary precedence)
             auto alternate = parse_binary_expression(op_precedence);
@@ -797,6 +815,9 @@ std::shared_ptr<ASTNode> Parser::parse_postfix_expression() {
 // @spec https://tc39.es/ecma262/#sec-argument-lists
 std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> callee) {
     consume(TokenType::LeftParen);  // consume '('
+    // Per spec, Arguments uses AssignmentExpression[+In] — re-enable 'in' as binary operator
+    bool old_suppress_in = suppress_in_;
+    suppress_in_ = false;
 
     auto call = ASTFactory::makeCallExpression(callee);
 
@@ -823,6 +844,7 @@ std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> 
     }
 
     consume(TokenType::RightParen);  // consume ')'
+    suppress_in_ = old_suppress_in;
 
     return call;
 }
@@ -873,10 +895,14 @@ std::shared_ptr<ASTNode> Parser::parse_member_expression(std::shared_ptr<ASTNode
 // @spec https://tc39.es/ecma262/#sec-property-accessors
 std::shared_ptr<ASTNode> Parser::parse_computed_member_expression(std::shared_ptr<ASTNode> object) {
     consume(TokenType::LeftBracket);  // consume '['
+    // Per spec, MemberExpression[Expression[+In]] — re-enable 'in' inside brackets
+    bool old_suppress_in = suppress_in_;
+    suppress_in_ = false;
 
     auto index = parse_expression();
 
     consume(TokenType::RightBracket);  // consume ']'
+    suppress_in_ = old_suppress_in;
 
     return ASTFactory::makeMemberExpression(object, index, true);  // Mark as computed
 }
@@ -895,6 +921,9 @@ std::shared_ptr<ASTNode> Parser::parse_computed_member_expression(std::shared_pt
 std::shared_ptr<ASTNode> Parser::parse_array_literal() {
     Token& startToken = current_token();  // Save location before consuming
     consume(TokenType::LeftBracket);      // consume '['
+    // Per spec, ArrayLiteral elements use AssignmentExpression[+In]
+    bool old_suppress_in = suppress_in_;
+    suppress_in_ = false;
 
     auto array = ASTFactory::makeArrayLiteral();
     array->setLocation(startToken.line, startToken.column);
@@ -902,6 +931,7 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
     // ArrayLiteral :: [ ] (empty array)
     if(current_token().type == TokenType::RightBracket) {
         current++;  // consume ']'
+        suppress_in_ = old_suppress_in;
         return array;
     }
 
@@ -926,6 +956,7 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
     } while(match(TokenType::Comma));
 
     consume(TokenType::RightBracket);  // consume ']'
+    suppress_in_ = old_suppress_in;
     return array;
 }
 
@@ -952,6 +983,9 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
 std::shared_ptr<ASTNode> Parser::parse_object_literal() {
     Token& startToken = current_token();  // Save location before consuming
     consume(TokenType::LeftBrace);        // consume '{'
+    // Per spec, PropertyDefinition values use AssignmentExpression[+In]
+    bool old_suppress_in = suppress_in_;
+    suppress_in_ = false;
 
     auto object = ASTFactory::makeObjectLiteral();
     object->setLocation(startToken.line, startToken.column);
@@ -959,6 +993,7 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
     // ObjectLiteral :: { } (empty object)
     if(current_token().type == TokenType::RightBrace) {
         current++;  // consume '}'
+        suppress_in_ = old_suppress_in;
         return object;
     }
 
@@ -1105,6 +1140,7 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
     } while(match(TokenType::Comma));
 
     consume(TokenType::RightBrace);  // consume '}'
+    suppress_in_ = old_suppress_in;
     return object;
 }
 
@@ -1140,6 +1176,9 @@ std::shared_ptr<ASTNode> Parser::parse_new_expression() {
     // If no parentheses, this is NewExpression :: new NewExpression (no args)
     if(current_token().type == TokenType::LeftParen) {
         consume(TokenType::LeftParen);  // consume '('
+        // Per spec, Arguments uses AssignmentExpression[+In]
+        bool old_suppress_in = suppress_in_;
+        suppress_in_ = false;
 
         // Parse Arguments (same production as in function calls)
         if(current_token().type != TokenType::RightParen) {
@@ -1162,6 +1201,7 @@ std::shared_ptr<ASTNode> Parser::parse_new_expression() {
         }
 
         consume(TokenType::RightParen);  // consume ')'
+        suppress_in_ = old_suppress_in;
     }
 
     return newExpr;
@@ -1179,6 +1219,10 @@ std::shared_ptr<ASTNode> Parser::parse_new_expression() {
 // Each ${...} expression boundary is a token boundary from the lexer.
 // INCOMPLETE: Tagged templates (tag`string`) are not yet supported.
 std::shared_ptr<ASTNode> Parser::parse_template_literal() {
+    // Per spec, template expressions use Expression[+In]
+    bool old_suppress_in = suppress_in_;
+    suppress_in_ = false;
+
     auto templateLiteral = ASTFactory::makeTemplateLiteral();
 
     // SubstitutionTemplate :: TemplateHead Expression TemplateSpans
@@ -1221,6 +1265,7 @@ std::shared_ptr<ASTNode> Parser::parse_template_literal() {
         current++;
     }
 
+    suppress_in_ = old_suppress_in;
     return templateLiteral;
 }
 
@@ -1476,11 +1521,13 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function() {
             }
         }
     } else {
-        // ConciseBody :: [lookahead != {] ExpressionBody
-        // ExpressionBody :: AssignmentExpression
-        // For expression bodies, we parse using parse_binary_expression to handle
-        // operator precedence correctly (arrow has very low precedence)
+        // ConciseBody :: [lookahead != {] ExpressionBody[+In]
+        // ExpressionBody :: AssignmentExpression[+In]
+        // Per spec, arrow expression body always uses [+In]
+        bool old_suppress_in = suppress_in_;
+        suppress_in_ = false;
         body = parse_binary_expression(0);
+        suppress_in_ = old_suppress_in;
         isExpressionBody = true;
     }
 
@@ -1520,8 +1567,11 @@ std::shared_ptr<ASTNode> Parser::parse_arrow_function_from_identifier(
         // ConciseBody :: { FunctionBody }
         body = parse_block_statement(true);
     } else {
-        // ConciseBody :: [lookahead != {] ExpressionBody
+        // ConciseBody :: [lookahead != {] ExpressionBody[+In]
+        bool old_suppress_in = suppress_in_;
+        suppress_in_ = false;
         body = parse_binary_expression(0);
+        suppress_in_ = old_suppress_in;
         isExpressionBody = true;
     }
 
@@ -1760,11 +1810,14 @@ std::shared_ptr<ASTNode> Parser::parse_async_arrow_function() {
             }
         }
     } else {
-        // AsyncConciseBody :: [lookahead != {] ExpressionBody
+        // AsyncConciseBody :: [lookahead != {] ExpressionBody[+In]
         // DEVIATION: Wraps expression in ReturnStatement + BlockStatement so the
         // async executor can handle it uniformly (unlike non-async arrow which uses
         // isExpressionBody=true).
+        bool old_suppress_in = suppress_in_;
+        suppress_in_ = false;
         auto expr = parse_binary_expression(0);
+        suppress_in_ = old_suppress_in;
         auto return_stmt = ASTFactory::makeReturnStatement(expr);
         body = ASTFactory::makeBlockStatement();
         body->children.push_back(return_stmt);

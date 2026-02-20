@@ -817,31 +817,41 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
             current--;  // go back
             left = parse_variable_declaration();
         }
-    } else if(current_token().type == TokenType::Identifier) {
-        // Case 2: for ( LeftHandSideExpression in/of Expression )
-        //    or:  for ( Expression ; ... )
-        // Try to detect for-in/for-of with bare identifier: for (x in obj), for (x of arr)
-        std::string var_name = current_token().value;
-        current++;  // consume identifier
+    } else if(current_token().type != TokenType::Semicolon) {
+        // Case 2/3: for ( Expression[~In] ... )
+        // Parse expression with 'in' suppressed as binary operator per spec §14.7.4/14.7.5.
+        // This allows disambiguation: if 'in'/'of' follows the expression, it's for-in/for-of;
+        // if ';' follows, it's a regular for-loop initializer.
+        bool old_suppress_in = suppress_in_;
+        suppress_in_ = true;
+        left = parse_expression();
+        suppress_in_ = old_suppress_in;
 
         if(current_token().type == TokenType::In || isContextualOf(current_token())) {
-            // for ( LeftHandSideExpression in Expression ) or for ( ... of AssignmentExpression )
+            // for ( LeftHandSideExpression in/of Expression )
+            // 14.7.5.1 Static Semantics: Early Errors — AssignmentTargetType must be SIMPLE
             bool is_for_of = isContextualOf(current_token());
-            is_for_in = !is_for_of;
 
             if(is_for_await && !is_for_of) {
                 throw std::runtime_error("SyntaxError: for-await is only valid with for-of loops");
             }
 
-            left = ASTFactory::makeIdentifier(var_name);
+            // Validate LHS: must be a simple assignment target (Identifier, MemberExpression)
+            // or a destructuring pattern (ArrayLiteral/ObjectLiteral reinterpreted as
+            // AssignmentPattern per spec §13.15.1, or explicit ArrayPattern/ObjectPattern).
+            if(left->type != ASTNodeType::Identifier &&
+               left->type != ASTNodeType::MemberExpression &&
+               left->type != ASTNodeType::ArrayLiteral &&
+               left->type != ASTNodeType::ObjectLiteral &&
+               left->type != ASTNodeType::ArrayPattern &&
+               left->type != ASTNodeType::ObjectPattern) {
+                throw std::runtime_error("SyntaxError: Invalid left-hand side in for-" +
+                                         std::string(is_for_of ? "of" : "in") + " loop");
+            }
+
             current++;  // consume 'in' or 'of'
-
-            // Parse the object/iterable expression
             auto right = parse_expression();
-
-            consume(TokenType::RightParen);  // consume ')'
-
-            // Parse the body statement
+            consume(TokenType::RightParen);
             auto body = parse_statement();
 
             if(is_for_of) {
@@ -851,17 +861,11 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
                 return ASTFactory::makeForOfStatement(left, right, body);
             }
             return ASTFactory::makeForInStatement(left, right, body);
-        } else {
-            if(is_for_await) {
-                throw std::runtime_error("SyntaxError: for-await is only valid with for-of loops");
-            }
-            // Not for-in, backtrack and parse as regular for loop expression
-            current--;  // go back to identifier
-            left = parse_expression();
         }
-    } else if(current_token().type != TokenType::Semicolon) {
-        // Case 3: for ( Expression ; ... ) — expression initializer
-        left = parse_expression();
+
+        if(is_for_await) {
+            throw std::runtime_error("SyntaxError: for-await is only valid with for-of loops");
+        }
     }
     // else: for ( ; ... ) — empty initialization
 
