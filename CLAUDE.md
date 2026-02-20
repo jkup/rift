@@ -23,8 +23,6 @@ Build requires: C++23 compiler, CMake 3.22+, Node.js 14+, Rust 1.83+ (for Tempor
 
 Rift is a JavaScript runtime written in C++23. It has a hand-written lexer and recursive descent parser, a tree-walking evaluator, mark-sweep garbage collection, and built-in objects (Array, String, Object, Map, Set, RegExp, Promise, Temporal, etc.). It targets ECMAScript compliance measured via the test262 suite.
 
-Current status: 196/196 custom tests pass. ~11,300/50,594 test262 tests pass (~36%). ~1,950/4,165 Temporal tests pass (~52%).
-
 ## Project Layout
 
 ```

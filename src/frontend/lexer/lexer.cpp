@@ -270,14 +270,27 @@ Token Lexer::read_number() {
             value += current_char();
             advance();
             if(!std::isxdigit(current_char())) {
-                throw std::runtime_error("Invalid or unexpected token");
+                throw std::runtime_error("SyntaxError: Invalid or unexpected token");
             }
             // HexDigits :: HexDigit | HexDigits NumericLiteralSeparator HexDigit
             // NumericLiteralSeparator :: _
-            while(std::isxdigit(current_char()) || current_char() == '_') {
-                if(current_char() != '_')
-                    value += current_char();
-                advance();
+            {
+                bool last_was_separator = false;
+                while(std::isxdigit(current_char()) || current_char() == '_') {
+                    if(current_char() == '_') {
+                        if(last_was_separator) {
+                            throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+                        }
+                        last_was_separator = true;
+                    } else {
+                        last_was_separator = false;
+                        value += current_char();
+                    }
+                    advance();
+                }
+                if(last_was_separator) {
+                    throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+                }
             }
             // BigIntLiteralSuffix :: n
             // SIMPLIFIED: BigInt suffix is consumed but the value is treated as a
@@ -293,16 +306,29 @@ Token Lexer::read_number() {
             value += current_char();
             advance();
             if(current_char() < '0' || current_char() > '7') {
-                throw std::runtime_error("Invalid or unexpected token");
+                throw std::runtime_error("SyntaxError: Invalid or unexpected token");
             }
             // OctalDigits :: OctalDigit | OctalDigits NumericLiteralSeparator OctalDigit
-            while((current_char() >= '0' && current_char() <= '7') || current_char() == '_') {
-                if(current_char() != '_')
-                    value += current_char();
-                advance();
+            {
+                bool last_was_separator = false;
+                while((current_char() >= '0' && current_char() <= '7') || current_char() == '_') {
+                    if(current_char() == '_') {
+                        if(last_was_separator) {
+                            throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+                        }
+                        last_was_separator = true;
+                    } else {
+                        last_was_separator = false;
+                        value += current_char();
+                    }
+                    advance();
+                }
+                if(last_was_separator) {
+                    throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+                }
             }
             if(std::isdigit(current_char())) {
-                throw std::runtime_error("Invalid or unexpected token");
+                throw std::runtime_error("SyntaxError: Invalid or unexpected token");
             }
             if(current_char() == 'n')
                 advance();  // BigInt suffix
@@ -315,16 +341,29 @@ Token Lexer::read_number() {
             value += current_char();
             advance();
             if(current_char() != '0' && current_char() != '1') {
-                throw std::runtime_error("Invalid or unexpected token");
+                throw std::runtime_error("SyntaxError: Invalid or unexpected token");
             }
             // BinaryDigits :: BinaryDigit | BinaryDigits NumericLiteralSeparator BinaryDigit
-            while(current_char() == '0' || current_char() == '1' || current_char() == '_') {
-                if(current_char() != '_')
-                    value += current_char();
-                advance();
+            {
+                bool last_was_separator = false;
+                while(current_char() == '0' || current_char() == '1' || current_char() == '_') {
+                    if(current_char() == '_') {
+                        if(last_was_separator) {
+                            throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+                        }
+                        last_was_separator = true;
+                    } else {
+                        last_was_separator = false;
+                        value += current_char();
+                    }
+                    advance();
+                }
+                if(last_was_separator) {
+                    throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+                }
             }
             if(std::isdigit(current_char())) {
-                throw std::runtime_error("Invalid or unexpected token");
+                throw std::runtime_error("SyntaxError: Invalid or unexpected token");
             }
             if(current_char() == 'n')
                 advance();  // BigInt suffix
@@ -332,34 +371,98 @@ Token Lexer::read_number() {
         }
 
         // LegacyOctalIntegerLiteral :: 0 OctalDigit | LegacyOctalIntegerLiteral OctalDigit
-        // This is Annex B (B.1.1) legacy syntax, forbidden in strict mode.
+        // NonOctalDecimalIntegerLiteral :: 0 NonOctalDigit | ...
+        // Neither production allows NumericLiteralSeparator.
         // @spec https://tc39.es/ecma262/#prod-LegacyOctalIntegerLiteral
         if(next >= '0' && next <= '7') {
             while(current_char() >= '0' && current_char() <= '7') {
                 value += current_char();
                 advance();
             }
-            Token tok(TokenType::Number, value, line, column);
-            tok.has_legacy_octal = true;
-            return tok;
+            // NumericLiteralSeparator not allowed in legacy octal
+            if(current_char() == '_') {
+                throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+            }
+            // NonOctalDecimalIntegerLiteral extension (e.g., 08, 079)
+            if(current_char() >= '8' && current_char() <= '9') {
+                while(std::isdigit(current_char())) {
+                    value += current_char();
+                    advance();
+                }
+                // NumericLiteralSeparator not allowed in non-octal decimal
+                if(current_char() == '_') {
+                    throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+                }
+                // Fall through to decimal point / exponent handling
+            } else {
+                Token tok(TokenType::Number, value, line, column);
+                tok.has_legacy_octal = true;
+                return tok;
+            }
         }
-        // Otherwise fall through to normal decimal parsing (e.g., 0.5, just 0)
+
+        // NonOctalDecimalIntegerLiteral starting with 08 or 09 (no prior octal digits)
+        // NumericLiteralSeparator not allowed.
+        // @spec https://tc39.es/ecma262/#prod-NonOctalDecimalIntegerLiteral
+        if(next == '8' || next == '9') {
+            while(std::isdigit(current_char())) {
+                value += current_char();
+                advance();
+            }
+            if(current_char() == '_') {
+                throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+            }
+            // Fall through to decimal point / exponent handling
+        }
+
+        // NumericLiteralSeparator immediately after leading 0 is invalid
+        // (DecimalIntegerLiteral :: 0 has no separator production)
+        if(next == '_') {
+            throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+        }
+        // Otherwise fall through to normal decimal parsing (0., 0e, or just 0)
     }
 
     // DecimalLiteral :: DecimalIntegerLiteral . DecimalDigits? ExponentPart?
     //                 | . DecimalDigits ExponentPart?
     //                 | DecimalIntegerLiteral ExponentPart?
     // DecimalDigits :: DecimalDigit | DecimalDigits NumericLiteralSeparator DecimalDigit
+    // NumericLiteralSeparator may only appear between two DecimalDigits (not adjacent
+    // to '.' or at the start/end of a digit sequence).
     // @spec https://tc39.es/ecma262/#prod-DecimalLiteral
-    while(std::isdigit(current_char()) || current_char() == '.' || current_char() == '_') {
-        if(current_char() != '_')
-            value += current_char();
-        advance();
+    {
+        bool last_was_separator = false;
+        bool last_was_dot = false;
+        while(std::isdigit(current_char()) || current_char() == '.' || current_char() == '_') {
+            if(current_char() == '_') {
+                if(last_was_separator || last_was_dot) {
+                    throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+                }
+                last_was_separator = true;
+                last_was_dot = false;
+            } else if(current_char() == '.') {
+                if(last_was_separator) {
+                    throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+                }
+                last_was_dot = true;
+                last_was_separator = false;
+                value += current_char();
+            } else {
+                last_was_separator = false;
+                last_was_dot = false;
+                value += current_char();
+            }
+            advance();
+        }
+        if(last_was_separator) {
+            throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+        }
     }
 
     // ExponentPart :: ExponentIndicator SignedInteger
     // ExponentIndicator :: one of e E
     // SignedInteger :: DecimalDigits | + DecimalDigits | - DecimalDigits
+    // NumericLiteralSeparator not allowed adjacent to 'e'/'E'/'+'/'-'.
     // @spec https://tc39.es/ecma262/#prod-ExponentPart
     if(current_char() == 'e' || current_char() == 'E') {
         value += current_char();
@@ -368,10 +471,25 @@ Token Lexer::read_number() {
             value += current_char();
             advance();
         }
+        // First character of exponent digits must be a digit, not a separator
+        if(current_char() == '_') {
+            throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+        }
+        bool last_was_separator = false;
         while(std::isdigit(current_char()) || current_char() == '_') {
-            if(current_char() != '_')
+            if(current_char() == '_') {
+                if(last_was_separator) {
+                    throw std::runtime_error("SyntaxError: Invalid or unexpected token");
+                }
+                last_was_separator = true;
+            } else {
+                last_was_separator = false;
                 value += current_char();
+            }
             advance();
+        }
+        if(last_was_separator) {
+            throw std::runtime_error("SyntaxError: Invalid or unexpected token");
         }
     }
 
