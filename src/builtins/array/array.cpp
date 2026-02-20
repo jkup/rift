@@ -80,6 +80,7 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
 
     // Accessor methods (array_accessors.cpp)
     // Spec comments with @spec URLs are on the implementations in array_accessors.cpp.
+    RIFT_METHOD(prototype, "at", Array::at);
     RIFT_METHOD(prototype, "indexOf", Array::indexOf);
     RIFT_METHOD(prototype, "lastIndexOf", Array::lastIndexOf);
     RIFT_METHOD(prototype, "includes", Array::includes);

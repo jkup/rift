@@ -35,6 +35,10 @@ class Array : public BuiltinBase<Array> {
     /// NON-STANDARD: Helper to get the global Array prototype (for proper prototype chain)
     static JSObject* getGlobalPrototype();
 
+    /// 23.1.3.1 Array.prototype.at ( index )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.at
+    static Value at(const CallContext& ctx, const std::vector<Value>& args);
+
     /// 23.1.3.21 Array.prototype.push ( ...items )
     /// @spec https://tc39.es/ecma262/#sec-array.prototype.push
     static Value push(const CallContext& ctx, const std::vector<Value>& args);

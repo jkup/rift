@@ -15,6 +15,49 @@ namespace rift::builtins {
 
 using rift::core::extractThisObject;
 
+// 23.1.3.1 Array.prototype.at ( index )
+// @spec https://tc39.es/ecma262/#sec-array.prototype.at
+Value Array::at(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let O be ? ToObject(this value).
+    auto* arrayObj = extractThisObject(ctx);
+    if(!arrayObj) {
+        return Value();
+    }
+
+    // 2. Let len be ? LengthOfArrayLike(O).
+    int64_t len = static_cast<int64_t>(getArrayLength(arrayObj));
+
+    // 3. Let relativeIndex be ? ToIntegerOrInfinity(index).
+    double relative_index = args.empty() ? 0.0 : args[0].toNumber();
+    if(std::isnan(relative_index)) {
+        relative_index = 0.0;
+    }
+    // +/-Infinity always falls outside bounds → return undefined.
+    if(std::isinf(relative_index)) {
+        return Value();
+    }
+    int64_t idx = static_cast<int64_t>(relative_index);
+
+    // 4. If relativeIndex >= 0, then
+    //    a. Let k be relativeIndex.
+    // 5. Else,
+    //    a. Let k be len + relativeIndex.
+    int64_t k;
+    if(idx >= 0) {
+        k = idx;
+    } else {
+        k = len + idx;
+    }
+
+    // 6. If k < 0 or k >= len, return undefined.
+    if(k < 0 || k >= len) {
+        return Value();
+    }
+
+    // 7. Return ? Get(O, ! ToString(F(k))).
+    return arrayObj->getProperty(std::to_string(k));
+}
+
 // NON-STANDARD: getLength is an internal helper, not a spec method.
 // The spec defines "length" as a data property on Array instances (23.1.4.1),
 // not a prototype method.
