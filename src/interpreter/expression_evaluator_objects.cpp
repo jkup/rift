@@ -331,6 +331,18 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
                 if(symbol_prototype) {
                     callee = symbol_prototype->getProperty(property);
                 }
+            } else if(this_value.isNumber()) {
+                // Primitive boxing for numbers (7.1.18 ToObject)
+                auto* number_prototype = BuiltinManager::getNumberPrototype();
+                if(number_prototype) {
+                    callee = number_prototype->getProperty(property);
+                }
+            } else if(this_value.isBoolean()) {
+                // Primitive boxing for booleans (7.1.18 ToObject)
+                auto* boolean_prototype = BuiltinManager::getBooleanPrototype();
+                if(boolean_prototype) {
+                    callee = boolean_prototype->getProperty(property);
+                }
             }
         }
     } else {
@@ -624,8 +636,26 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
         }
     }
 
-    // INCOMPLETE: Number and Boolean primitive boxing not yet implemented.
-    // Accessing e.g. (42).toFixed(2) or true.toString() would return undefined.
+    // 7.1.18 ToObject — Number primitive boxing
+    // @spec https://tc39.es/ecma262/#sec-toobject
+    // Wrap the number in a temporary Number object and look up on Number.prototype.
+    if(object.isNumber()) {
+        auto* number_prototype = BuiltinManager::getNumberPrototype();
+        if(number_prototype) {
+            return number_prototype->getProperty(property);
+        }
+    }
+
+    // 7.1.18 ToObject — Boolean primitive boxing
+    // @spec https://tc39.es/ecma262/#sec-toobject
+    // Wrap the boolean in a temporary Boolean object and look up on Boolean.prototype.
+    if(object.isBoolean()) {
+        auto* boolean_prototype = BuiltinManager::getBooleanPrototype();
+        if(boolean_prototype) {
+            return boolean_prototype->getProperty(property);
+        }
+    }
+
     return Value::undefined();
 }
 
