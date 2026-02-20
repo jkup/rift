@@ -170,8 +170,6 @@ const UNSUPPORTED_FEATURES = new Set([
   "Array.prototype.flat",
   "Array.prototype.flatMap",
   "Array.prototype.includes",
-  "Array.prototype.at",
-  "change-array-by-copy",
 
   // Object features
   "Object.fromEntries",

@@ -89,6 +89,12 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     RIFT_METHOD(prototype, "join", Array::join);
     RIFT_METHOD(prototype, "toString", Array::toString);
 
+    // Change-array-by-copy methods (array_accessors.cpp)
+    RIFT_METHOD(prototype, "toReversed", Array::toReversed);
+    RIFT_METHOD(prototype, "toSorted", Array::toSorted);
+    RIFT_METHOD(prototype, "toSpliced", Array::toSpliced);
+    RIFT_METHOD(prototype, "with", Array::with);
+
     // Iterator creation methods (implemented below in this file)
     RIFT_METHOD(prototype, "keys", Array::keys);
     RIFT_METHOD(prototype, "values", Array::values);

@@ -1,14 +1,18 @@
 // ============================================================================
 // ECMA-262 -- Array Accessor Methods (indexOf, lastIndexOf, includes, slice,
-//   concat, join, toString)
+//   concat, join, toString) and Change-Array-by-Copy Methods (toReversed,
+//   toSorted, toSpliced, with)
 // @spec https://tc39.es/ecma262/#sec-array.prototype.indexof (and related sections)
 // See also: array.cpp (constructor/statics), array_mutators.cpp (push, pop, etc.),
 //           array_iterators.cpp (forEach, map, filter, etc.)
 // ============================================================================
 
+#include <algorithm>
 #include <cmath>
 
 #include "rift/builtins/array/array.h"
+#include "rift/interpreter/call_context.h"
+#include "rift/interpreter/javascript_exception.h"
 #include "rift/interpreter/this_helpers.h"
 
 namespace rift::builtins {
@@ -366,6 +370,264 @@ Value Array::toString(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     return Value(std::move(result));
+}
+
+// ============================================================================
+// Change-Array-by-Copy Methods (ES2023)
+// These methods return new arrays without mutating the original.
+// ============================================================================
+
+// 23.1.3.32 Array.prototype.toReversed ( )
+// @spec https://tc39.es/ecma262/#sec-array.prototype.toreversed
+Value Array::toReversed(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let O be ? ToObject(this value).
+    auto* arrayObj = extractThisObject(ctx);
+    if(!arrayObj) {
+        return Value(createArrayObject(getObjectFactory(), {}));
+    }
+
+    // 2. Let len be ? LengthOfArrayLike(O).
+    size_t len = getArrayLength(arrayObj);
+
+    // 3. Let A be ? ArrayCreate(len).
+    std::vector<Value> result;
+    result.reserve(len);
+
+    // 4. Let k be 0.
+    // 5. Repeat, while k < len,
+    for(size_t k = 0; k < len; ++k) {
+        //    a. Let from be ! ToString(F(len - k - 1)).
+        //    b. Let Pk be ! ToString(F(k)).
+        //    c. Let fromValue be ? Get(O, from).
+        Value from_value = arrayObj->getProperty(std::to_string(len - k - 1));
+        //    d. Perform ! CreateDataPropertyOrThrow(A, Pk, fromValue).
+        result.push_back(from_value);
+        //    e. Set k to k + 1.
+    }
+
+    // 6. Return A.
+    return Value(createArrayObject(getObjectFactory(), std::move(result)));
+}
+
+// 23.1.3.33 Array.prototype.toSorted ( comparefn )
+// @spec https://tc39.es/ecma262/#sec-array.prototype.tosorted
+Value Array::toSorted(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. If comparefn is not undefined and IsCallable(comparefn) is false,
+    //    throw a TypeError exception.
+    if(!args.empty() && !args[0].isUndefined() && !args[0].isFunction()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: comparefn must be a function or undefined"));
+    }
+
+    // 2. Let O be ? ToObject(this value).
+    auto* arrayObj = extractThisObject(ctx);
+    if(!arrayObj) {
+        return Value(createArrayObject(getObjectFactory(), {}));
+    }
+
+    // 3. Let len be ? LengthOfArrayLike(O).
+    size_t len = getArrayLength(arrayObj);
+
+    // 4. Let A be ? ArrayCreate(len).
+    // 5. Let SortCompare be a new Abstract Closure...
+    // 6. Let sortedList be ? SortIndexedProperties(O, len, SortCompare, read-through-holes).
+    std::vector<Value> elements;
+    elements.reserve(len);
+    for(size_t i = 0; i < len; ++i) {
+        elements.push_back(arrayObj->getProperty(std::to_string(i)));
+    }
+
+    JSFunction* compare_fn = nullptr;
+    if(!args.empty() && args[0].isFunction()) {
+        compare_fn = dynamic_cast<JSFunction*>(args[0].getObject());
+    }
+
+    std::sort(elements.begin(), elements.end(), [compare_fn](const Value& a, const Value& b) {
+        if(compare_fn) {
+            rift::core::CallContext cb_ctx(rift::core::CallType::Function, Value::undefined());
+            Value result = compare_fn->call(cb_ctx, {a, b});
+            return result.toNumber() < 0;
+        }
+        return a.toString() < b.toString();
+    });
+
+    // 7-8. Create A from sortedList.
+    // 9. Return A.
+    return Value(createArrayObject(getObjectFactory(), std::move(elements)));
+}
+
+// 23.1.3.34 Array.prototype.toSpliced ( start, skipCount, ...items )
+// @spec https://tc39.es/ecma262/#sec-array.prototype.tospliced
+Value Array::toSpliced(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let O be ? ToObject(this value).
+    auto* arrayObj = extractThisObject(ctx);
+    if(!arrayObj) {
+        return Value(createArrayObject(getObjectFactory(), {}));
+    }
+
+    // 2. Let len be ? LengthOfArrayLike(O).
+    int64_t len = static_cast<int64_t>(getArrayLength(arrayObj));
+
+    // 3. Let relativeStart be ? ToIntegerOrInfinity(start).
+    // 4. If relativeStart is -Infinity, let actualStart be 0.
+    // 5. Else if relativeStart < 0, let actualStart be max(len + relativeStart, 0).
+    // 6. Else, let actualStart be min(relativeStart, len).
+    int64_t actual_start = 0;
+    if(!args.empty()) {
+        double relative_start = args[0].toNumber();
+        if(std::isnan(relative_start) || relative_start == 0.0) {
+            actual_start = 0;
+        } else if(std::isinf(relative_start) && relative_start < 0) {
+            actual_start = 0;
+        } else if(std::isinf(relative_start) && relative_start > 0) {
+            actual_start = len;
+        } else {
+            int64_t s = static_cast<int64_t>(relative_start);
+            if(s < 0) {
+                actual_start = std::max(int64_t(0), len + s);
+            } else {
+                actual_start = std::min(s, len);
+            }
+        }
+    }
+
+    // 7. Let insertCount be the number of elements in items.
+    size_t insert_count = args.size() > 2 ? args.size() - 2 : 0;
+
+    // 8. If start is not present, then
+    //    a. Let actualSkipCount be 0.
+    // 9. Else if skipCount is not present, then
+    //    a. Let actualSkipCount be len - actualStart.
+    // 10. Else,
+    //    a. Let sc be ? ToIntegerOrInfinity(skipCount).
+    //    b. Let actualSkipCount be the result of clamping sc between 0 and len - actualStart.
+    int64_t actual_skip_count = 0;
+    if(args.empty()) {
+        actual_skip_count = 0;
+    } else if(args.size() == 1) {
+        actual_skip_count = len - actual_start;
+    } else {
+        double sc = args[1].toNumber();
+        if(std::isnan(sc) || sc < 0) {
+            actual_skip_count = 0;
+        } else if(std::isinf(sc)) {
+            actual_skip_count = len - actual_start;
+        } else {
+            int64_t sc_int = static_cast<int64_t>(sc);
+            actual_skip_count = std::max(int64_t(0), std::min(sc_int, len - actual_start));
+        }
+    }
+
+    // 11. Let newLen be len + insertCount - actualSkipCount.
+    int64_t new_len = len + static_cast<int64_t>(insert_count) - actual_skip_count;
+
+    // 12. If newLen > 2^53 - 1, throw a TypeError exception.
+    if(new_len < 0) {
+        new_len = 0;
+    }
+
+    // 13. Let A be ? ArrayCreate(newLen).
+    std::vector<Value> result;
+    result.reserve(static_cast<size_t>(new_len));
+
+    // 14. Let i be 0.
+    // 15. Let r be actualStart + actualSkipCount.
+    int64_t r = actual_start + actual_skip_count;
+
+    // 16. Repeat, while i < actualStart,
+    for(int64_t i = 0; i < actual_start; ++i) {
+        //    a. Let Pi be ! ToString(F(i)).
+        //    b. Let iValue be ? Get(O, Pi).
+        //    c. Perform ! CreateDataPropertyOrThrow(A, Pi, iValue).
+        result.push_back(arrayObj->getProperty(std::to_string(i)));
+    }
+
+    // 17. For each element E of items, do
+    for(size_t j = 0; j < insert_count; ++j) {
+        //    a. Let Pi be ! ToString(F(i)).
+        //    b. Perform ! CreateDataPropertyOrThrow(A, Pi, E).
+        result.push_back(args[j + 2]);
+    }
+
+    // 18. Repeat, while r < len,
+    while(r < len) {
+        //    a. Let Pi be ! ToString(F(i)).
+        //    b. Let from be ! ToString(F(r)).
+        //    c. Let fromValue be ? Get(O, from).
+        //    d. Perform ! CreateDataPropertyOrThrow(A, Pi, fromValue).
+        result.push_back(arrayObj->getProperty(std::to_string(r)));
+        //    e. Set i to i + 1.
+        //    f. Set r to r + 1.
+        r++;
+    }
+
+    // 19. Perform ? Set(A, "length", F(newLen), true).
+    // 20. Return A.
+    return Value(createArrayObject(getObjectFactory(), std::move(result)));
+}
+
+// 23.1.3.37 Array.prototype.with ( index, value )
+// @spec https://tc39.es/ecma262/#sec-array.prototype.with
+Value Array::with(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let O be ? ToObject(this value).
+    auto* arrayObj = extractThisObject(ctx);
+    if(!arrayObj) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Array.prototype.with called on null or undefined"));
+    }
+
+    // 2. Let len be ? LengthOfArrayLike(O).
+    int64_t len = static_cast<int64_t>(getArrayLength(arrayObj));
+
+    // 3. Let relativeIndex be ? ToIntegerOrInfinity(index).
+    double relative_index = args.empty() ? 0.0 : args[0].toNumber();
+    if(std::isnan(relative_index)) {
+        relative_index = 0.0;
+    }
+
+    // 4. If relativeIndex >= 0, let actualIndex be relativeIndex.
+    // 5. Else, let actualIndex be len + relativeIndex.
+    int64_t actual_index;
+    if(std::isinf(relative_index)) {
+        // Infinity or -Infinity will always be out of bounds.
+        throw rift::core::JavaScriptException(Value("RangeError: Invalid index"));
+    }
+    int64_t idx = static_cast<int64_t>(relative_index);
+    if(idx >= 0) {
+        actual_index = idx;
+    } else {
+        actual_index = len + idx;
+    }
+
+    // 6. If actualIndex >= len or actualIndex < 0, throw a RangeError exception.
+    if(actual_index >= len || actual_index < 0) {
+        throw rift::core::JavaScriptException(Value("RangeError: Invalid index"));
+    }
+
+    // Get the replacement value.
+    Value replacement = args.size() >= 2 ? args[1] : Value();
+
+    // 7. Let A be ? ArrayCreate(len).
+    std::vector<Value> result;
+    result.reserve(static_cast<size_t>(len));
+
+    // 8. Let k be 0.
+    // 9. Repeat, while k < len,
+    for(int64_t k = 0; k < len; ++k) {
+        //    a. Let Pk be ! ToString(F(k)).
+        //    b. If k is actualIndex, let fromValue be value.
+        //    c. Else, let fromValue be ? Get(O, Pk).
+        if(k == actual_index) {
+            result.push_back(replacement);
+        } else {
+            result.push_back(arrayObj->getProperty(std::to_string(k)));
+        }
+        //    d. Perform ! CreateDataPropertyOrThrow(A, Pk, fromValue).
+        //    e. Set k to k + 1.
+    }
+
+    // 10. Return A.
+    return Value(createArrayObject(getObjectFactory(), std::move(result)));
 }
 
 }  // namespace rift::builtins

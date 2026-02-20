@@ -119,6 +119,22 @@ class Array : public BuiltinBase<Array> {
     /// @spec https://tc39.es/ecma262/#sec-array.prototype.findlastindex
     static Value findLastIndex(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 23.1.3.32 Array.prototype.toReversed ( )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.toreversed
+    static Value toReversed(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 23.1.3.33 Array.prototype.toSorted ( comparefn )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.tosorted
+    static Value toSorted(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 23.1.3.34 Array.prototype.toSpliced ( start, skipCount, ...items )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.tospliced
+    static Value toSpliced(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 23.1.3.37 Array.prototype.with ( index, value )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.with
+    static Value with(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Internal helper for the "length" data property (23.1.4.1)
     /// @spec https://tc39.es/ecma262/#sec-properties-of-array-instances-length
     static Value getLength(const CallContext& ctx, const std::vector<Value>& args);
