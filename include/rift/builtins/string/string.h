@@ -155,6 +155,36 @@ class String : public BuiltinBase<String> {
     /// @spec https://tc39.es/ecma262/#sec-string.prototype-%symbol.iterator%
     static Value symbolIterator(const CallContext& ctx, const std::vector<Value>& args);
 
+    // Annex B HTML String methods (B.2.2)
+    // @spec https://tc39.es/ecma262/#sec-additional-properties-of-the-string.prototype-object
+
+    /// B.2.2.2 String.prototype.anchor ( name )
+    static Value anchor(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.3 String.prototype.big ( )
+    static Value big(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.4 String.prototype.blink ( )
+    static Value blink(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.5 String.prototype.bold ( )
+    static Value bold(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.6 String.prototype.fixed ( )
+    static Value fixed(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.7 String.prototype.fontcolor ( color )
+    static Value fontcolor(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.8 String.prototype.fontsize ( size )
+    static Value fontsize(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.9 String.prototype.italics ( )
+    static Value italics(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.10 String.prototype.link ( url )
+    static Value link(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.11 String.prototype.small ( )
+    static Value small(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.12 String.prototype.strike ( )
+    static Value strike(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.13 String.prototype.sub ( )
+    static Value sub(const CallContext& ctx, const std::vector<Value>& args);
+    /// B.2.2.14 String.prototype.sup ( )
+    static Value sup(const CallContext& ctx, const std::vector<Value>& args);
+
     /// Get the object factory (needed by StringIterator)
     static rift::memory::ObjectFactory* getObjectFactory() {
         return BuiltinBase<String>::getObjectFactory();
@@ -166,6 +196,11 @@ class String : public BuiltinBase<String> {
 
     /// NON-STANDARD: Helper to get the global String prototype
     static JSObject* getGlobalPrototype();
+
+    /// B.2.2.1 CreateHTML ( string, tag, attribute, value )
+    /// @spec https://tc39.es/ecma262/#sec-createhtml
+    static Value createHTML(const CallContext& ctx, const std::string& tag,
+                            const std::string& attribute, const std::vector<Value>& args);
 };
 
 }  // namespace rift::builtins

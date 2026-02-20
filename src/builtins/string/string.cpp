@@ -71,6 +71,21 @@ void String::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFact
     RIFT_METHOD(prototype, "trimLeft", String::trimStart);
     RIFT_METHOD(prototype, "trimRight", String::trimEnd);
 
+    // Annex B HTML methods (B.2.2)
+    RIFT_METHOD(prototype, "anchor", String::anchor);
+    RIFT_METHOD(prototype, "big", String::big);
+    RIFT_METHOD(prototype, "blink", String::blink);
+    RIFT_METHOD(prototype, "bold", String::bold);
+    RIFT_METHOD(prototype, "fixed", String::fixed);
+    RIFT_METHOD(prototype, "fontcolor", String::fontcolor);
+    RIFT_METHOD(prototype, "fontsize", String::fontsize);
+    RIFT_METHOD(prototype, "italics", String::italics);
+    RIFT_METHOD(prototype, "link", String::link);
+    RIFT_METHOD(prototype, "small", String::small);
+    RIFT_METHOD(prototype, "strike", String::strike);
+    RIFT_METHOD(prototype, "sub", String::sub);
+    RIFT_METHOD(prototype, "sup", String::sup);
+
     // 22.1.3.36 String.prototype [ @@iterator ] ( )
     // @spec https://tc39.es/ecma262/#sec-string.prototype-%symbol.iterator%
     std::string iterator_key = core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
@@ -1744,6 +1759,116 @@ Value String::symbolIterator(const CallContext& ctx, const std::vector<Value>& /
     // iterator creation. The iterator yields individual characters (code units)
     // rather than full Unicode code points.
     return Value(StringIterator::create(getObjectFactory(), str));
+}
+
+// ============================================================================
+// Annex B HTML String Methods (B.2.2)
+// @spec https://tc39.es/ecma262/#sec-additional-properties-of-the-string.prototype-object
+// All methods use the CreateHTML abstract operation (B.2.2.1).
+// ============================================================================
+
+// B.2.2.1 CreateHTML ( string, tag, attribute, value )
+// @spec https://tc39.es/ecma262/#sec-createhtml
+Value String::createHTML(const CallContext& ctx, const std::string& tag,
+                         const std::string& attribute, const std::vector<Value>& args) {
+    // 1. Let str be ? RequireObjectCoercible(this value).
+    // 2. Let S be ? ToString(str).
+    std::string s = extractThisString(ctx);
+
+    // 3. Let p1 be the string-concatenation of "<" and tag.
+    std::string p1 = "<" + tag;
+
+    // 4. If attribute is not the empty String, then
+    if(!attribute.empty()) {
+        //    a. Let V be ? ToString(value).
+        std::string v = args.empty() ? "undefined" : args[0].toString();
+        //    b. Let escapedV be the String value that is the same as V except that
+        //       each occurrence of the code unit 0x0022 (QUOTATION MARK) in V has
+        //       been replaced with the six code unit sequence "&quot;".
+        std::string escaped_v;
+        for(char c : v) {
+            if(c == '"') {
+                escaped_v += "&quot;";
+            } else {
+                escaped_v += c;
+            }
+        }
+        //    c. Set p1 to the string-concatenation of:
+        //       p1, the code unit 0x0020 (SPACE), attribute, the code unit 0x003D (=),
+        //       the code unit 0x0022 (QUOTATION MARK), escapedV, and 0x0022.
+        p1 += " " + attribute + "=\"" + escaped_v + "\"";
+    }
+
+    // 5. Let p2 be the string-concatenation of p1 and ">".
+    // 6. Let p3 be the string-concatenation of p2 and S.
+    // 7. Let p4 be the string-concatenation of p3, "</", tag, and ">".
+    // 8. Return p4.
+    return Value(p1 + ">" + s + "</" + tag + ">");
+}
+
+// B.2.2.2 String.prototype.anchor ( name )
+Value String::anchor(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "a", "name", args);
+}
+
+// B.2.2.3 String.prototype.big ( )
+Value String::big(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "big", "", args);
+}
+
+// B.2.2.4 String.prototype.blink ( )
+Value String::blink(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "blink", "", args);
+}
+
+// B.2.2.5 String.prototype.bold ( )
+Value String::bold(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "b", "", args);
+}
+
+// B.2.2.6 String.prototype.fixed ( )
+Value String::fixed(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "tt", "", args);
+}
+
+// B.2.2.7 String.prototype.fontcolor ( color )
+Value String::fontcolor(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "font", "color", args);
+}
+
+// B.2.2.8 String.prototype.fontsize ( size )
+Value String::fontsize(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "font", "size", args);
+}
+
+// B.2.2.9 String.prototype.italics ( )
+Value String::italics(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "i", "", args);
+}
+
+// B.2.2.10 String.prototype.link ( url )
+Value String::link(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "a", "href", args);
+}
+
+// B.2.2.11 String.prototype.small ( )
+Value String::small(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "small", "", args);
+}
+
+// B.2.2.12 String.prototype.strike ( )
+Value String::strike(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "strike", "", args);
+}
+
+// B.2.2.13 String.prototype.sub ( )
+Value String::sub(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "sub", "", args);
+}
+
+// B.2.2.14 String.prototype.sup ( )
+Value String::sup(const CallContext& ctx, const std::vector<Value>& args) {
+    return createHTML(ctx, "sup", "", args);
 }
 
 }  // namespace rift::builtins
