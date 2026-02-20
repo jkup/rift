@@ -262,6 +262,27 @@ Value ExpressionEvaluator::evaluateCallExpression(std::shared_ptr<ASTNode> node,
                 return Value::undefined();
             }
 
+            // RequireObjectCoercible: throw TypeError for null/undefined base
+            // @spec https://tc39.es/ecma262/#sec-requireobjectcoercible
+            if(this_value.isNull() || this_value.isUndefined()) {
+                std::string base_type = this_value.isNull() ? "null" : "undefined";
+                std::string prop_name;
+                if(callee_node->metadata == "computed" ||
+                   callee_node->metadata == "computed-optional") {
+                    Value prop_val = engine->evaluate(callee_node->children[1], env);
+                    prop_name = prop_val.toString();
+                } else {
+                    prop_name = callee_node->children[1]->value;
+                }
+                auto* factory = engine->getObjectFactory();
+                auto* error_obj = factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
+                memory::GCProtector protect(error_obj, factory->getObjectManager());
+                error_obj->setProperty("name", Value("TypeError"));
+                error_obj->setProperty("message", Value("Cannot read properties of " + base_type +
+                                                        " (reading '" + prop_name + "')"));
+                throw JavaScriptException(Value(error_obj), node->line, node->column);
+            }
+
             // Get property name from the member expression (static or computed)
             // SIMPLIFIED: The spec uses GetValue on a Reference whose [[ReferencedName]]
             // is the property key. Rift evaluates the property key inline.
@@ -515,6 +536,28 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
     bool is_optional = (node->metadata == "optional" || node->metadata == "computed-optional");
     if(is_optional && (object.isUndefined() || object.isNull())) {
         return Value::undefined();
+    }
+
+    // 13.3.2.1 step 3: If baseValue is undefined or null, throw a TypeError.
+    // @spec https://tc39.es/ecma262/#sec-getvalue
+    // RequireObjectCoercible(V) throws TypeError for null/undefined.
+    if(object.isNull() || object.isUndefined()) {
+        auto* factory = engine->getObjectFactory();
+        auto* error_obj = factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
+        memory::GCProtector protect(error_obj, factory->getObjectManager());
+        error_obj->setProperty("name", Value("TypeError"));
+        std::string base_type = object.isNull() ? "null" : "undefined";
+        // Determine the property name for the error message
+        std::string prop_name;
+        if(node->metadata == "computed") {
+            Value prop_val = engine->evaluate(node->children[1], env);
+            prop_name = prop_val.toString();
+        } else {
+            prop_name = node->children[1]->value;
+        }
+        error_obj->setProperty("message", Value("Cannot read properties of " + base_type +
+                                                " (reading '" + prop_name + "')"));
+        throw JavaScriptException(Value(error_obj), node->line, node->column);
     }
 
     // Step 4. Determine the property key.

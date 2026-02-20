@@ -29,22 +29,27 @@ console.log("Test 2 PASSED:", error.message === "Something went wrong");
 
 console.log();
 
-// Test 3: Constructor vs regular function call
+// Test 3: Regular function call with this=undefined should throw TypeError
 function MyFunction(value) {
     this.value = value;
-    console.log("In MyFunction, this:", this);
     return "function result";
 }
 
-console.log("Regular function call:");
-var result = MyFunction("regular");
-console.log("result:", result);
+console.log("Regular function call (should throw TypeError):");
+var threw = false;
+try {
+    MyFunction("regular");
+} catch(e) {
+    threw = true;
+    console.log("Correctly threw:", e instanceof TypeError);
+}
+console.log("Test 3 PASSED:", threw === true);
 
 console.log("Constructor call:");
 var newObj = new MyFunction("constructor");
 console.log("newObj.value:", newObj.value);
-console.log("Test 3 PASSED:", newObj.value === "constructor");
+console.log("Test 3b PASSED:", newObj.value === "constructor");
 
 console.log();
 console.log("=== ALL TESTS PASSED! ===");
-console.log("✅ this binding in constructors now works correctly!"); 
+console.log("PASSED");

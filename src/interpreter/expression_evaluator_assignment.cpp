@@ -17,10 +17,12 @@
 
 #include <cmath>
 
+#include "rift/builtins/builtin_manager.h"
 #include "rift/interpreter/engine.h"
 #include "rift/interpreter/evaluation_utils.h"
 #include "rift/interpreter/expression_evaluator.h"
 #include "rift/interpreter/javascript_exception.h"
+#include "rift/memory/gc_protector.h"
 #include "rift/types/object.h"
 
 namespace rift::core {
@@ -179,6 +181,26 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
         // SIMPLIFIED: Rift evaluates the object and property key separately
         // rather than producing a single Reference Record.
         Value object = engine->evaluate(leftSide->children[0], env);
+
+        // 13.15.2 step 1c: If baseValue is undefined or null, throw a TypeError.
+        // @spec https://tc39.es/ecma262/#sec-assignment-operators-runtime-semantics-evaluation
+        if(object.isNull() || object.isUndefined()) {
+            std::string base_type = object.isNull() ? "null" : "undefined";
+            std::string prop_name;
+            if(leftSide->metadata == "computed") {
+                Value prop_val = engine->evaluate(leftSide->children[1], env);
+                prop_name = prop_val.toString();
+            } else {
+                prop_name = leftSide->children[1]->value;
+            }
+            auto* factory = engine->getObjectFactory();
+            auto* error_obj = factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
+            memory::GCProtector protect(error_obj, factory->getObjectManager());
+            error_obj->setProperty("name", Value("TypeError"));
+            error_obj->setProperty("message", Value("Cannot set properties of " + base_type +
+                                                    " (setting '" + prop_name + "')"));
+            throw JavaScriptException(Value(error_obj), node->line, node->column);
+        }
 
         // Resolve property key — handles both dot notation and bracket notation
         // Spec: Let propertyKey be ? ToPropertyKey(...)
