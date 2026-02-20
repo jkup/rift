@@ -910,6 +910,15 @@ std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
     consume(TokenType::RightParen);  // )
     consume(TokenType::LeftBrace);   // { (beginning of CaseBlock)
 
+    // 14.12.1 Static Semantics: Early Errors
+    // The CaseBlock shares a single lexical scope across all clauses.
+    // Push a Block scope so that:
+    //   - LexicallyDeclaredNames (let, const, class, function, generator, async function)
+    //     are tracked across all case/default clauses for duplicate detection.
+    //   - VarDeclaredNames are checked against LexicallyDeclaredNames for conflicts.
+    // @spec https://tc39.es/ecma262/#sec-switch-statement-static-semantics-early-errors
+    pushScope(ParserScope::Kind::Block);
+
     auto switchNode = ASTFactory::makeSwitchStatement(discriminant);
 
     // CaseBlock :: { CaseClauses? DefaultClause? CaseClauses? }
@@ -956,6 +965,7 @@ std::shared_ptr<ASTNode> Parser::parse_switch_statement() {
         }
     }
 
+    popScope();
     consume(TokenType::RightBrace);  // } (end of CaseBlock)
     return switchNode;
 }

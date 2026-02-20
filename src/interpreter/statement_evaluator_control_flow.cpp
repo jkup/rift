@@ -739,8 +739,6 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
 //   Once a match is found, all subsequent case/default statements execute (fall-through)
 //   until a break is encountered.
 //
-// INCOMPLETE: Rift does not create a block scope for the switch body (steps 4-6).
-// Let/const declarations inside case clauses may not be properly scoped.
 Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
                                                   std::shared_ptr<Environment> env, Rift* engine) {
     if(node->children.empty()) {
@@ -749,6 +747,13 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
 
     // Step 1-2: Let switchValue be ? GetValue(? Evaluation of Expression).
     Value discriminant = engine->evaluate(node->children[0], env);
+
+    // Steps 3-6: Create a block scope for the CaseBlock.
+    // Let oldEnv be the running execution context's LexicalEnvironment.
+    // Let blockEnv be NewDeclarativeEnvironment(oldEnv).
+    // Set the running execution context's LexicalEnvironment to blockEnv.
+    // @spec https://tc39.es/ecma262/#sec-switch-statement-runtime-semantics-evaluation
+    auto blockEnv = std::make_shared<Environment>(env);
 
     bool foundMatch = false;
     bool executeRemaining = false;
@@ -765,7 +770,7 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
             if(!foundMatch && !executeRemaining) {
                 // CaseBlockEvaluation step: If input is clauseSelector, then set found to true.
                 if(!clause->children.empty()) {
-                    Value testValue = engine->evaluate(clause->children[0], env);
+                    Value testValue = engine->evaluate(clause->children[0], blockEnv);
 
                     // 14.12.3 CaseClauseIsSelected: uses IsStrictlyEqual (===)
                     // @spec https://tc39.es/ecma262/#sec-runtime-semantics-caseclauseisselected
@@ -781,7 +786,7 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
                 // CaseBlockEvaluation: evaluate StatementList of matching/subsequent clauses
                 for(size_t j = 1; j < clause->children.size(); ++j) {
                     try {
-                        result = engine->evaluate(clause->children[j], env);
+                        result = engine->evaluate(clause->children[j], blockEnv);
                     } catch(const BreakException&) {
                         // Break terminates the switch
                         return result;
@@ -800,7 +805,7 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
                 // Execute all statements in default clause
                 for(size_t j = 0; j < clause->children.size(); ++j) {
                     try {
-                        result = engine->evaluate(clause->children[j], env);
+                        result = engine->evaluate(clause->children[j], blockEnv);
                     } catch(const BreakException&) {
                         return result;
                     }
@@ -809,6 +814,8 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
         }
     }
 
+    // Step 8: Set the running execution context's LexicalEnvironment to oldEnv.
+    // (blockEnv goes out of scope automatically)
     return result;
 }
 
