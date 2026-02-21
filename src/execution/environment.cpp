@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 
+#include "rift/builtins/builtin_manager.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "rift/types/object.h"
 
@@ -54,8 +55,8 @@ Value Environment::get(const std::string& name) {
     if(it != variables_.end()) {
         // Check for TDZ access
         if(!it->second.initialized) {
-            throw JavaScriptException(
-                Value("ReferenceError: Cannot access '" + name + "' before initialization"));
+            throw JavaScriptException(rift::core::BuiltinManager::createReferenceError(
+                "Cannot access '" + name + "' before initialization"));
         }
         return it->second.value;
     }
@@ -64,7 +65,8 @@ Value Environment::get(const std::string& name) {
         return parent_->get(name);
     }
 
-    throw JavaScriptException(Value("ReferenceError: " + name + " is not defined"));
+    throw JavaScriptException(
+        rift::core::BuiltinManager::createReferenceError(name + " is not defined"));
 }
 
 void Environment::set(const std::string& name, const Value& value) {
@@ -72,8 +74,8 @@ void Environment::set(const std::string& name, const Value& value) {
     if(it != variables_.end()) {
         // Check for TDZ access
         if(!it->second.initialized) {
-            throw JavaScriptException(
-                Value("ReferenceError: Cannot access '" + name + "' before initialization"));
+            throw JavaScriptException(rift::core::BuiltinManager::createReferenceError(
+                "Cannot access '" + name + "' before initialization"));
         }
         // Check for const assignment
         if(it->second.type == VariableType::Const) {
@@ -99,7 +101,8 @@ void Environment::set(const std::string& name, const Value& value) {
     // Variable doesn't exist anywhere in the scope chain
     // In strict mode, this is an error
     if(inheritsStrictMode()) {
-        throw JavaScriptException(Value("ReferenceError: " + name + " is not defined"));
+        throw JavaScriptException(
+            rift::core::BuiltinManager::createReferenceError(name + " is not defined"));
     }
 
     // In non-strict mode, create as global (define in current scope for simplicity)

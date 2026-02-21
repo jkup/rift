@@ -55,10 +55,17 @@ class BuiltinManager {
     // Get the built-in eval function (for direct eval detection)
     static JSFunction* getEvalFunction();
 
+    // Factory accessor for creating error objects from non-engine code
+    static rift::memory::ObjectFactory* getFactory();
+
+    // Helper to create a proper ReferenceError object
+    static Value createReferenceError(const std::string& message);
+
     // Cleanup method for shutdown
     static void clearStaticPrototypes();
 
   private:
+    static rift::memory::ObjectFactory* factory_;
     // Store global prototypes - now raw pointers
     static JSObject* objectPrototype_;
     static JSObject* arrayPrototype_;

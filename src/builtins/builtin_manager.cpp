@@ -86,10 +86,12 @@ JSObject* BuiltinManager::plainYearMonthPrototype_ = nullptr;
 JSObject* BuiltinManager::plainMonthDayPrototype_ = nullptr;
 JSObject* BuiltinManager::zonedDateTimePrototype_ = nullptr;
 JSFunction* BuiltinManager::evalFunction_ = nullptr;
+rift::memory::ObjectFactory* BuiltinManager::factory_ = nullptr;
 
 void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Get the object factory from the engine
     rift::memory::ObjectFactory* factory = engine ? engine->getObjectFactory() : nullptr;
+    factory_ = factory;
 
     // Set up the static factories for use in static methods FIRST
     if(factory) {
@@ -478,6 +480,21 @@ JSObject* BuiltinManager::getZonedDateTimePrototype() {
 
 JSFunction* BuiltinManager::getEvalFunction() {
     return evalFunction_;
+}
+
+rift::memory::ObjectFactory* BuiltinManager::getFactory() {
+    return factory_;
+}
+
+Value BuiltinManager::createReferenceError(const std::string& message) {
+    if(factory_ && referenceErrorPrototype_) {
+        auto* error_obj = factory_->createJSObject(referenceErrorPrototype_);
+        error_obj->setProperty("name", Value("ReferenceError"));
+        error_obj->setProperty("message", Value(message));
+        return Value(error_obj);
+    }
+    // Fallback to string if builtins not yet initialized
+    return Value("ReferenceError: " + message);
 }
 
 void BuiltinManager::setupGlobalFunctions(std::shared_ptr<Environment> globalEnv,
