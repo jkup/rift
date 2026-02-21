@@ -35,6 +35,17 @@ using rift::core::extractThisString;
 
 void String::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     RIFT_STATIC_METHOD(constructor, "fromCharCode", String::fromCharCode);
+
+    // String.raw has length 1 per spec, so register manually instead of using
+    // RIFT_STATIC_METHOD which hardcodes length to 0.
+    auto* raw_fn = factory->createJSFunction(String::raw);
+    raw_fn->defineProperty(
+        "name", rift::runtime::PropertyDescriptor(rift::runtime::Value(std::string("raw")), false,
+                                                  false, true));
+    raw_fn->defineProperty(
+        "length", rift::runtime::PropertyDescriptor(rift::runtime::Value(1.0), false, false, true));
+    constructor->defineProperty(
+        "raw", rift::runtime::PropertyDescriptor(rift::runtime::Value(raw_fn), true, false, true));
 }
 
 void String::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
@@ -139,6 +150,84 @@ Value String::fromCharCode(const CallContext& ctx, const std::vector<Value>& arg
 
     // 3. Return result.
     return Value(std::move(result));
+}
+
+// 22.1.2.4 String.raw ( template, ...substitutions )
+// @spec https://tc39.es/ecma262/#sec-string.raw
+Value String::raw(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let substitutions be a List of the arguments passed after template.
+
+    // 2. Let cooked be ? ToObject(template).
+    if(args.empty() || args[0].isUndefined() || args[0].isNull()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Cannot convert undefined or null to object"), 0, 0);
+    }
+
+    Value template_val = args[0];
+
+    // 3. Let raw be ? ToObject(? Get(cooked, "raw")).
+    Value raw_val;
+    if(template_val.isObject()) {
+        raw_val = template_val.getObject()->getProperty("raw");
+    } else {
+        // Primitives (number, string, bool) don't have a "raw" property
+        raw_val = Value::undefined();
+    }
+
+    if(!raw_val.isObject()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Cannot convert undefined or null to object"), 0, 0);
+    }
+
+    JSObject* raw_obj = raw_val.getObject();
+
+    // 4. Let literalSegments be ? ToLength(? Get(raw, "length")).
+    //
+    // ToLength (7.1.20):
+    //   1. Let len be ? ToIntegerOrInfinity(argument).
+    //   2. If len <= +0, return +0.
+    //   3. Return min(len, 2^53 - 1).
+    Value length_val = raw_obj->getProperty("length");
+    double raw_length = length_val.toNumber();
+
+    // 5. If literalSegments <= 0, return the empty String.
+    if(std::isnan(raw_length) || raw_length <= 0) {
+        return Value(std::string(""));
+    }
+    size_t literal_segments =
+        static_cast<size_t>(std::min(std::trunc(raw_length), 9007199254740991.0));
+    if(literal_segments == 0) {
+        return Value(std::string(""));
+    }
+
+    // 6. Let R be the empty String.
+    std::string result;
+
+    // 7. Let nextIndex be 0.
+    // 8. Repeat,
+    for(size_t next_index = 0;; ++next_index) {
+        // a. Let nextKey be ! ToString(nextIndex).
+        // b. Let nextSeg be ? ToString(? Get(raw, nextKey)).
+        Value next_seg = raw_obj->getProperty(std::to_string(next_index));
+
+        // c. Set R to the string-concatenation of R and nextSeg.
+        result += next_seg.toString();
+
+        // d. If nextIndex + 1 = literalSegments, return R.
+        if(next_index + 1 == literal_segments) {
+            return Value(std::move(result));
+        }
+
+        // e. If nextIndex < the number of elements in substitutions, then
+        if(next_index + 1 < args.size()) {
+            //   i. Let nextSub be substitutions[nextIndex].
+            //   g. Set R to the string-concatenation of R and ? ToString(nextSub).
+            result += args[next_index + 1].toString();
+        }
+        // f. Else, let nextSub be the empty String. (nothing to append)
+
+        // h. Set nextIndex to nextIndex + 1.
+    }
 }
 
 // 22.1.3.2 String.prototype.charAt ( pos )

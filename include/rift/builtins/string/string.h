@@ -33,6 +33,10 @@ class String : public BuiltinBase<String> {
     /// @spec https://tc39.es/ecma262/#sec-string.fromcharcode
     static Value fromCharCode(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 22.1.2.4 String.raw ( template, ...substitutions )
+    /// @spec https://tc39.es/ecma262/#sec-string.raw
+    static Value raw(const CallContext& ctx, const std::vector<Value>& args);
+
     // String prototype methods
 
     /// 22.1.3.2 String.prototype.charAt ( pos )
