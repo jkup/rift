@@ -191,6 +191,9 @@ const UNSUPPORTED_FEATURES = new Set([
 // Cached harness content (P1 optimization - loaded once per process)
 let cachedHarnessContent = null;
 
+// Cache for test-specific harness include files (avoids re-reading from disk per test)
+const harnessIncludeCache = new Map();
+
 /**
  * Get the harness content, caching it for subsequent calls
  * @returns {string} The harness content
@@ -346,13 +349,21 @@ export function buildCombinedCode(test, useStrict = false) {
         continue;
       }
 
-      const harnessPath = path.join(TEST262_DIR, "harness", includeFile);
-      if (fs.existsSync(harnessPath)) {
+      if (!harnessIncludeCache.has(includeFile)) {
+        const harnessPath = path.join(TEST262_DIR, "harness", includeFile);
         try {
-          combinedCode += fs.readFileSync(harnessPath, "utf8") + "\n";
+          if (fs.existsSync(harnessPath)) {
+            harnessIncludeCache.set(includeFile, fs.readFileSync(harnessPath, "utf8"));
+          } else {
+            harnessIncludeCache.set(includeFile, null);
+          }
         } catch (e) {
-          // If we can't read it, skip it
+          harnessIncludeCache.set(includeFile, null);
         }
+      }
+      const harnessContent = harnessIncludeCache.get(includeFile);
+      if (harnessContent !== null) {
+        combinedCode += harnessContent + "\n";
       }
     }
   }
@@ -541,6 +552,36 @@ function executeTestRun(test, combinedCode, tempFile, mode) {
 }
 
 /**
+ * Quickly check if a test would be skipped without executing it.
+ * Used to pre-filter in the main thread to avoid worker round-trips.
+ * @param {string} testFile - Path to the test file
+ * @returns {Object|null} Skip result { status: "skipped", reason } or null if test should run
+ */
+export function preFilterTest(testFile) {
+  const test = parseTestFile(testFile);
+
+  const unsupportedFeature = testUsesUnsupportedFeatures(test);
+  if (unsupportedFeature) {
+    return {
+      status: "skipped",
+      reason: typeof unsupportedFeature === "string"
+        ? `Uses unsupported feature: ${unsupportedFeature}`
+        : "Uses unsupported language features",
+    };
+  }
+
+  const flags = test.flags || [];
+  if (flags.includes("async")) {
+    return {
+      status: "skipped",
+      reason: "Test uses async flag (requires $DONE callback handling)",
+    };
+  }
+
+  return null;
+}
+
+/**
  * Run a single test and return the result
  * Handles strict mode dual execution per test262 spec
  * @param {string} testFile - Path to the test file
@@ -643,15 +684,14 @@ export function findTestFiles(includePattern = null) {
   const testFiles = [];
 
   function walkDir(dir) {
-    const files = fs.readdirSync(dir);
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
 
-    for (const file of files) {
-      const filePath = path.join(dir, file);
-      const stat = fs.statSync(filePath);
+    for (const entry of entries) {
+      const filePath = path.join(dir, entry.name);
 
-      if (stat.isDirectory()) {
+      if (entry.isDirectory()) {
         walkDir(filePath);
-      } else if (file.endsWith(".js") && !file.includes("_FIXTURE")) {
+      } else if (entry.name.endsWith(".js") && !entry.name.includes("_FIXTURE")) {
         if (includePattern) {
           const relativePath = path.relative(testDir, filePath);
           if (!relativePath.includes(includePattern)) {
@@ -674,6 +714,7 @@ export default {
   parseTestFile,
   testUsesUnsupportedFeatures,
   buildCombinedCode,
+  preFilterTest,
   runSingleTest,
   findTestFiles,
 };

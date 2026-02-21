@@ -13,6 +13,7 @@ import {
   RUNTIME_EXECUTABLE,
   findTestFiles,
   runSingleTest,
+  preFilterTest,
 } from "./core.js";
 
 // Default number of workers based on CPU cores
@@ -86,6 +87,11 @@ class WorkerPool {
 
     // Send next test to this worker
     this.assignNextTest(worker);
+
+    // Resolve when all tests are done
+    if (this.completedCount >= this.totalTests && this.resolveAll) {
+      this.resolveAll();
+    }
   }
 
   assignNextTest(worker) {
@@ -100,28 +106,22 @@ class WorkerPool {
     this.totalTests = testFiles.length;
     this.completedCount = 0;
 
+    if (this.totalTests === 0) return;
+
     // Queue all tests
     this.pendingTests = testFiles.map((testFile, index) => ({
       testFile,
       index,
     }));
 
-    // Start initial batch of tests
-    for (const worker of this.workers) {
-      this.assignNextTest(worker);
-    }
-
     // Wait for all tests to complete
     return new Promise((resolve) => {
-      const checkComplete = setInterval(() => {
-        if (
-          this.completedCount >= this.totalTests &&
-          this.activeTests.size === 0
-        ) {
-          clearInterval(checkComplete);
-          resolve();
-        }
-      }, 100);
+      this.resolveAll = resolve;
+
+      // Start initial batch of tests
+      for (const worker of this.workers) {
+        this.assignNextTest(worker);
+      }
     });
   }
 
@@ -297,17 +297,22 @@ class Test262Runner {
   }
 
   async buildRuntime() {
-    if (!fs.existsSync("./build.sh")) {
-      console.error(chalk.red("build.sh not found"));
-      process.exit(1);
-    }
-
     if (!process.env.CI) {
       process.stdout.write("  " + chalk.dim("Building... "));
     }
 
     try {
-      execSync("./build.sh", { stdio: "pipe" });
+      // Use fast incremental build if build directory exists, otherwise do a full build
+      if (fs.existsSync("./build/Makefile")) {
+        const jobs = cpus().length;
+        execSync(`make -j${jobs}`, { stdio: "pipe", cwd: "./build" });
+      } else {
+        if (!fs.existsSync("./build.sh")) {
+          console.error(chalk.red("build.sh not found"));
+          process.exit(1);
+        }
+        execSync("./build.sh", { stdio: "pipe" });
+      }
       if (!process.env.CI) {
         console.log(chalk.green("\u2713"));
       }
@@ -445,6 +450,18 @@ class Test262Runner {
       }
     }
 
+    // Pre-filter: check skip conditions in main thread to avoid worker round-trips
+    const actualTestsToRun = [];
+    for (const testFile of testsToRun) {
+      const skipResult = preFilterTest(testFile);
+      if (skipResult) {
+        this.recordResult(testFile, skipResult);
+      } else {
+        actualTestsToRun.push(testFile);
+      }
+    }
+    testsToRun = actualTestsToRun;
+
     this.showHeader(testFiles.length);
 
     if (this.incremental && !this.force && !process.env.CI) {
@@ -455,9 +472,6 @@ class Test262Runner {
       );
       console.log();
     }
-
-    // Wait a moment before starting
-    await new Promise((resolve) => setTimeout(resolve, 500));
 
     if (testsToRun.length > 0) {
       if (this.sequential) {
