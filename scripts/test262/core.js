@@ -126,8 +126,6 @@ const UNSUPPORTED_FEATURES = new Set([
 
   // String/Array features we might not support
   "Array.fromAsync",
-  "String.prototype.isWellFormed",
-  "String.prototype.toWellFormed",
 
   // Regex features
   "regexp-lookbehind",

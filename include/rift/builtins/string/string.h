@@ -155,6 +155,14 @@ class String : public BuiltinBase<String> {
     /// @spec https://tc39.es/ecma262/#sec-string.prototype.normalize
     static Value normalize(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 22.1.3.9 String.prototype.isWellFormed ( )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.iswellformed
+    static Value isWellFormed(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.30 String.prototype.toWellFormed ( )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.towellformed
+    static Value toWellFormed(const CallContext& ctx, const std::vector<Value>& args);
+
     /// 22.1.3.36 String.prototype [ @@iterator ] ( )
     /// @spec https://tc39.es/ecma262/#sec-string.prototype-%symbol.iterator%
     static Value symbolIterator(const CallContext& ctx, const std::vector<Value>& args);

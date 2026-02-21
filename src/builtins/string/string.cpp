@@ -77,6 +77,8 @@ void String::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFact
     RIFT_METHOD(prototype, "replaceAll", String::replaceAll);
     RIFT_METHOD(prototype, "matchAll", String::matchAll);
     RIFT_METHOD(prototype, "normalize", String::normalize);
+    RIFT_METHOD(prototype, "isWellFormed", String::isWellFormed);
+    RIFT_METHOD(prototype, "toWellFormed", String::toWellFormed);
 
     // Annex B aliases
     RIFT_METHOD(prototype, "trimLeft", String::trimStart);
@@ -1832,6 +1834,152 @@ Value String::normalize(const CallContext& ctx, const std::vector<Value>& args) 
     // for ASCII-only content, which covers most test262 test cases.
     // 8. Return ns.
     return Value(std::move(str));
+}
+
+// NON-STANDARD: Helper to decode a UTF-8 code point from a string at the given byte offset.
+// Returns the code point value and advances pos past the encoded bytes.
+// Surrogates (U+D800-U+DFFF) may appear as 3-byte sequences (CESU-8 style)
+// because the lexer encodes each \uHHHH escape independently.
+static uint32_t decodeUtf8CodePoint(const std::string& str, size_t& pos) {
+    auto byte = static_cast<unsigned char>(str[pos]);
+    uint32_t cp;
+    size_t len;
+    if(byte < 0x80) {
+        cp = byte;
+        len = 1;
+    } else if((byte & 0xE0) == 0xC0) {
+        cp = byte & 0x1F;
+        len = 2;
+    } else if((byte & 0xF0) == 0xE0) {
+        cp = byte & 0x0F;
+        len = 3;
+    } else if((byte & 0xF8) == 0xF0) {
+        cp = byte & 0x07;
+        len = 4;
+    } else {
+        // Invalid UTF-8 lead byte — skip it
+        pos++;
+        return 0xFFFD;
+    }
+    for(size_t i = 1; i < len && pos + i < str.size(); i++) {
+        cp = (cp << 6) | (static_cast<unsigned char>(str[pos + i]) & 0x3F);
+    }
+    pos += len;
+    return cp;
+}
+
+// NON-STANDARD: Helper to encode a Unicode code point as UTF-8.
+static std::string encodeUtf8(uint32_t cp) {
+    std::string result;
+    if(cp <= 0x7F) {
+        result += static_cast<char>(cp);
+    } else if(cp <= 0x7FF) {
+        result += static_cast<char>(0xC0 | (cp >> 6));
+        result += static_cast<char>(0x80 | (cp & 0x3F));
+    } else if(cp <= 0xFFFF) {
+        result += static_cast<char>(0xE0 | (cp >> 12));
+        result += static_cast<char>(0x80 | ((cp >> 6) & 0x3F));
+        result += static_cast<char>(0x80 | (cp & 0x3F));
+    } else {
+        result += static_cast<char>(0xF0 | (cp >> 18));
+        result += static_cast<char>(0x80 | ((cp >> 12) & 0x3F));
+        result += static_cast<char>(0x80 | ((cp >> 6) & 0x3F));
+        result += static_cast<char>(0x80 | (cp & 0x3F));
+    }
+    return result;
+}
+
+// 22.1.3.9 String.prototype.isWellFormed ( )
+// @spec https://tc39.es/ecma262/#sec-string.prototype.iswellformed
+Value String::isWellFormed(const CallContext& ctx, const std::vector<Value>& /* args */) {
+    // 1. Let O be ? RequireObjectCoercible(this value).
+    if(ctx.thisValue.isUndefined() || ctx.thisValue.isNull()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: String.prototype.isWellFormed called on null or undefined"), 0, 0);
+    }
+
+    // 2. Let S be ? ToString(O).
+    std::string str = extractThisString(ctx);
+
+    // 3. Return IsStringWellFormedUnicode(S).
+    // Iterate through the UTF-8 encoded string, decode each code point,
+    // and check for unpaired surrogates. Surrogates are encoded as 3-byte
+    // sequences (CESU-8 style) because the lexer decodes each \uHHHH independently.
+    size_t pos = 0;
+    while(pos < str.size()) {
+        uint32_t cp = decodeUtf8CodePoint(str, pos);
+
+        // Check if this code point is a surrogate (U+D800-U+DFFF)
+        if(cp >= 0xD800 && cp <= 0xDFFF) {
+            if(cp >= 0xD800 && cp <= 0xDBFF) {
+                // High surrogate — check if followed by a low surrogate
+                if(pos < str.size()) {
+                    size_t next_pos = pos;
+                    uint32_t next_cp = decodeUtf8CodePoint(str, next_pos);
+                    if(next_cp >= 0xDC00 && next_cp <= 0xDFFF) {
+                        // Valid surrogate pair — skip the low surrogate too
+                        pos = next_pos;
+                        continue;
+                    }
+                }
+                // Lone high surrogate
+                return Value(false);
+            } else {
+                // Lone low surrogate (0xDC00-0xDFFF without preceding high)
+                return Value(false);
+            }
+        }
+    }
+    return Value(true);
+}
+
+// 22.1.3.30 String.prototype.toWellFormed ( )
+// @spec https://tc39.es/ecma262/#sec-string.prototype.towellformed
+Value String::toWellFormed(const CallContext& ctx, const std::vector<Value>& /* args */) {
+    // 1. Let O be ? RequireObjectCoercible(this value).
+    if(ctx.thisValue.isUndefined() || ctx.thisValue.isNull()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: String.prototype.toWellFormed called on null or undefined"), 0, 0);
+    }
+
+    // 2. Let S be ? ToString(O).
+    std::string str = extractThisString(ctx);
+
+    // 3-6. Iterate code points, replacing lone surrogates with U+FFFD.
+    std::string result;
+    result.reserve(str.size());
+    size_t pos = 0;
+    while(pos < str.size()) {
+        size_t saved = pos;
+        uint32_t cp = decodeUtf8CodePoint(str, pos);
+
+        if(cp >= 0xD800 && cp <= 0xDFFF) {
+            if(cp >= 0xD800 && cp <= 0xDBFF) {
+                // High surrogate — check if followed by low surrogate
+                if(pos < str.size()) {
+                    size_t next_pos = pos;
+                    uint32_t next_cp = decodeUtf8CodePoint(str, next_pos);
+                    if(next_cp >= 0xDC00 && next_cp <= 0xDFFF) {
+                        // Valid surrogate pair — keep both as-is
+                        result.append(str, saved, next_pos - saved);
+                        pos = next_pos;
+                        continue;
+                    }
+                }
+                // Lone high surrogate — replace with U+FFFD
+                result += encodeUtf8(0xFFFD);
+            } else {
+                // Lone low surrogate — replace with U+FFFD
+                result += encodeUtf8(0xFFFD);
+            }
+        } else {
+            // Non-surrogate code point — keep as-is
+            result.append(str, saved, pos - saved);
+        }
+    }
+
+    // 7. Return result.
+    return Value(std::move(result));
 }
 
 // 22.1.3.36 String.prototype [ @@iterator ] ( )
