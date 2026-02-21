@@ -2,17 +2,6 @@
 
 A JavaScript runtime written in C++23 with a hand-written lexer, recursive descent parser, tree-walking evaluator, mark-sweep garbage collection, and a growing standard library of built-in objects.
 
-## Features
-
-- **Fully functional garbage collection** with mark-sweep algorithm
-- **Memory-safe execution** with proper object lifecycle management
-- **Core JavaScript** including closures, prototypes, classes, async/await, generators, and exception handling
-- **Rich built-in library** with Array, String, Math, Object, Date, Symbol, RegExp, Promise, Temporal, Map, Set, and more
-- **Promise & async/await** with full microtask semantics
-- **Temporal API** with ~52% test262 compliance (~1,950/4,165 tests)
-- **RegExp support** via [Google RE2](https://github.com/google/re2) for safe, linear-time pattern matching
-- **Test262 integration** — ~11,300/50,594 tests passing (~36% overall)
-
 ## Building and Running
 
 ### Prerequisites
