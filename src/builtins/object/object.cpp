@@ -5,6 +5,7 @@
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/builtins/builtin_manager.h"
+#include "rift/builtins/error/range_error.h"
 #include "rift/builtins/string/string.h"
 #include "rift/builtins/symbol/symbol.h"
 #include "rift/interpreter/call_context.h"
@@ -509,6 +510,20 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
     // ToPropertyDescriptor step 6: If Obj has "configurable", set desc.[[Configurable]].
     Value configurableVal = descriptorObj->getProperty("configurable");
     desc.configurable = !configurableVal.isUndefined() && configurableVal.toBool();
+
+    // 10.4.2.4 ArraySetLength ( A, Desc )
+    // @spec https://tc39.es/ecma262/#sec-arraysetlength
+    // When defining "length" on an Array exotic object, validate the new value.
+    // Only applies to actual arrays (prototype is %Array.prototype%), not plain
+    // objects that happen to have a "length" property.
+    if(propertyKey == "length" && !desc.is_accessor && desc.value.isNumber() &&
+       obj->getPrototype() == rift::core::BuiltinManager::getArrayPrototype()) {
+        double len = desc.value.toNumber();
+        if(!rift::core::EvaluationUtils::isValidArrayLength(len)) {
+            Value err = RangeError::constructor({Value("Invalid array length")});
+            throw rift::core::JavaScriptException(err);
+        }
+    }
 
     // 4. Perform ? DefinePropertyOrThrow(O, key, desc).
     obj->defineProperty(propertyKey, desc);

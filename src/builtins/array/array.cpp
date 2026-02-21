@@ -23,6 +23,7 @@
 
 #include "rift/builtins/array/array_iterator.h"
 #include "rift/builtins/builtin_manager.h"
+#include "rift/builtins/error/range_error.h"
 #include "rift/builtins/symbol/symbol.h"
 #include "rift/interpreter/call_context.h"
 #include "rift/interpreter/evaluation_utils.h"
@@ -147,16 +148,13 @@ Value Array::constructor(const CallContext& ctx, const std::vector<Value>& args)
         //    c. If IsArray(len) is false, ...
         //    d. Let intLen be ! ToUint32(len).
         //    e. If intLen is not the same value as len, throw a RangeError.
-        // DEVIATION: Rift silently clamps invalid lengths to 0 instead of
-        // throwing RangeError as spec requires in step 5e.
         double length = args[0].toNumber();
-        size_t safeLength;
-        if(!core::EvaluationUtils::toSafeArrayLength(length, safeLength)) {
-            setArrayLength(arrayObj, 0);
-        } else {
-            //    f. Set the length of array to intLen.
-            setArrayLength(arrayObj, safeLength);
+        if(!core::EvaluationUtils::isValidArrayLength(length)) {
+            Value err = RangeError::constructor({Value("Invalid array length")});
+            throw rift::core::JavaScriptException(err);
         }
+        //    f. Set the length of array to intLen.
+        setArrayLength(arrayObj, static_cast<size_t>(length));
     } else {
         // 6. Else (numberOfArgs >= 2, or single non-number arg),
         //    a. Assert: numberOfArgs >= 2.
@@ -208,9 +206,26 @@ size_t Array::getArrayLength(JSObject* obj) {
         if(length >= 0 && !std::isnan(length) && !std::isinf(length)) {
             return static_cast<size_t>(length);
         }
+    } else if(lengthValue.isString()) {
+        // Handle string-typed length (e.g., "Infinity", "123")
+        double length = lengthValue.toNumber();
+        if(length >= 0 && !std::isnan(length) && !std::isinf(length)) {
+            return static_cast<size_t>(length);
+        }
     }
 
     return 0;
+}
+
+// NON-STANDARD: Get the raw numeric length for array-length validation.
+// Returns the numeric value of the "length" property without clamping,
+// used to detect invalid lengths (Infinity, > 2^32-1) that should throw RangeError.
+double Array::getRawLength(JSObject* obj) {
+    if(!obj) {
+        return 0.0;
+    }
+    Value lengthValue = obj->getProperty("length");
+    return lengthValue.toNumber();
 }
 
 // 10.4.2.4 ArraySetLength ( A, Desc )

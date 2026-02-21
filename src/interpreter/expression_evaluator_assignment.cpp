@@ -18,6 +18,7 @@
 #include <cmath>
 
 #include "rift/builtins/builtin_manager.h"
+#include "rift/builtins/error/range_error.h"
 #include "rift/interpreter/engine.h"
 #include "rift/interpreter/evaluation_utils.h"
 #include "rift/interpreter/expression_evaluator.h"
@@ -261,6 +262,21 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
                     // Accessor without setter: silently fail (in strict mode, spec
                     // requires TypeError — INCOMPLETE)
                 } else {
+                    // 10.4.2.4 ArraySetLength ( A, Desc )
+                    // @spec https://tc39.es/ecma262/#sec-arraysetlength
+                    // When setting "length" on an array exotic object, validate that
+                    // the new value is a valid array length (non-negative integer
+                    // <= 2^32 - 1). Only applies to Array exotic objects, not plain
+                    // objects that happen to have a "length" property.
+                    if(property == "length" && newValue.isNumber() &&
+                       obj->getPrototype() == rift::core::BuiltinManager::getArrayPrototype()) {
+                        double len = newValue.toNumber();
+                        if(!EvaluationUtils::isValidArrayLength(len)) {
+                            Value err = rift::builtins::RangeError::constructor(
+                                {Value("Invalid array length")});
+                            throw JavaScriptException(err);
+                        }
+                    }
                     obj->setProperty(property, newValue);
                 }
 
@@ -486,6 +502,16 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
                         }
                     }
                 } else {
+                    // Validate array length assignment (Array exotic objects only)
+                    if(property == "length" && newValue.isNumber() &&
+                       obj->getPrototype() == rift::core::BuiltinManager::getArrayPrototype()) {
+                        double len = newValue.toNumber();
+                        if(!EvaluationUtils::isValidArrayLength(len)) {
+                            Value err = rift::builtins::RangeError::constructor(
+                                {Value("Invalid array length")});
+                            throw JavaScriptException(err);
+                        }
+                    }
                     obj->setProperty(property, newValue);
 
                     // Array exotic object: update length for numeric index assignments

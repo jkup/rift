@@ -192,6 +192,9 @@ class Array : public BuiltinBase<Array> {
     /// NON-STANDARD: Helper to get the length of an array-like object
     static size_t getArrayLength(JSObject* obj);
 
+    /// NON-STANDARD: Get the raw numeric length for validation purposes
+    static double getRawLength(JSObject* obj);
+
     /// NON-STANDARD: Helper to set the length of an array-like object
     static void setArrayLength(JSObject* obj, size_t length);
 

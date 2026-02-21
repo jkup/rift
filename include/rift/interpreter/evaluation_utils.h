@@ -38,6 +38,25 @@ inline bool toSafeArrayLength(double value, size_t& result) {
 }
 
 /**
+ * Check if a double value is a valid array length per ECMAScript spec.
+ * A valid array length is a non-negative integer <= 2^32 - 1.
+ * ToUint32(len) must equal len (i.e., len must be a non-negative integer in range).
+ * @param value The double value to check
+ * @return true if value is a valid array length
+ */
+inline bool isValidArrayLength(double value) {
+    if(!std::isfinite(value) || value < 0.0 || value > static_cast<double>(MAX_ARRAY_LENGTH)) {
+        return false;
+    }
+    // Must be an integer (ToUint32(len) === len)
+    double intpart;
+    if(std::modf(value, &intpart) != 0.0) {
+        return false;
+    }
+    return true;
+}
+
+/**
  * Safely increment a size_t index, checking for overflow.
  * @param index The index to increment
  * @param result Output parameter for index + 1

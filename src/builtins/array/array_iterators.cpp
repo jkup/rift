@@ -26,7 +26,9 @@
 #include <functional>
 
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/error/range_error.h"
 #include "rift/interpreter/call_context.h"
+#include "rift/interpreter/evaluation_utils.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "rift/interpreter/this_helpers.h"
 
@@ -104,8 +106,14 @@ Value Array::map(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
-    size_t length = getArrayLength(arrayObj);
     // 4. Let A be ? ArraySpeciesCreate(O, len).
+    // ArraySpeciesCreate -> ArrayCreate: if length > 2^32 - 1, throw RangeError.
+    double raw_length = getRawLength(arrayObj);
+    if(!core::EvaluationUtils::isValidArrayLength(raw_length)) {
+        Value err = RangeError::constructor({Value("Invalid array length")});
+        throw rift::core::JavaScriptException(err);
+    }
+    size_t length = static_cast<size_t>(raw_length);
     // SIMPLIFIED: Rift creates a plain array instead of calling ArraySpeciesCreate,
     // so subclassed arrays will not produce instances of the subclass.
     std::vector<Value> results;

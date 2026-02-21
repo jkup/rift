@@ -14,8 +14,10 @@
 #include <limits>
 
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/error/range_error.h"
 #include "rift/interpreter/call_context.h"
 #include "rift/interpreter/evaluation_utils.h"
+#include "rift/interpreter/javascript_exception.h"
 #include "rift/interpreter/this_helpers.h"
 
 namespace rift::builtins {
@@ -36,17 +38,21 @@ Value Array::push(const CallContext& ctx, const std::vector<Value>& args) {
     size_t length = getArrayLength(arrayObj);
 
     // 3. Let argCount be the number of elements in items.
-    // 4. If len + argCount > 2^53 - 1, throw a TypeError exception.
-    // DEVIATION: Rift clamps at MAX_ARRAY_LENGTH instead of throwing TypeError.
     // 5. For each element E of items, do
     for(size_t i = 0; i < args.size(); ++i) {
-        if(length >= core::EvaluationUtils::MAX_ARRAY_LENGTH) {
-            break;
-        }
         //   a. Perform ? Set(O, ! ToString(𝔽(len)), E, true).
         arrayObj->setProperty(std::to_string(length), args[i]);
         //   b. Set len to len + 1𝔽.
         length++;
+    }
+
+    // 4. If len + argCount > 2^53 - 1, throw a TypeError exception.
+    // For arrays, throw RangeError when resulting length > MAX_ARRAY_LENGTH.
+    // DEVIATION: Properties are set above before this check (spec says check first).
+    // This matches V8's observable behavior where the property is set before the throw.
+    if(length > core::EvaluationUtils::MAX_ARRAY_LENGTH) {
+        Value err = RangeError::constructor({Value("Invalid array length")});
+        throw rift::core::JavaScriptException(err);
     }
 
     // 6. Perform ? Set(O, "length", 𝔽(len), true).
