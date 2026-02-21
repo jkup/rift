@@ -111,6 +111,10 @@ class Object : public BuiltinBase<Object> {
     /// @spec https://tc39.es/ecma262/#sec-object.fromentries
     static Value fromEntries(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// Object.groupBy ( items, callbackfn )
+    /// @spec https://tc39.es/ecma262/#sec-object.groupby
+    static Value groupBy(const CallContext& ctx, const std::vector<Value>& args);
+
     /// 20.1.2.9 Object.getOwnPropertyDescriptors ( O )
     /// @spec https://tc39.es/ecma262/#sec-object.getownpropertydescriptors
     static Value getOwnPropertyDescriptors(const CallContext& ctx, const std::vector<Value>& args);

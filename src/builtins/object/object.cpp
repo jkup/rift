@@ -52,6 +52,7 @@ void Object::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
     RIFT_STATIC_METHOD(constructor, "is", Object::is);
     RIFT_STATIC_METHOD(constructor, "hasOwn", Object::hasOwn);
     RIFT_STATIC_METHOD(constructor, "fromEntries", Object::fromEntries);
+    RIFT_STATIC_METHOD_N(constructor, "groupBy", 2, Object::groupBy);
     RIFT_STATIC_METHOD(constructor, "getOwnPropertyDescriptors", Object::getOwnPropertyDescriptors);
 }
 
@@ -1383,6 +1384,144 @@ Value Object::fromEntries(const CallContext& ctx, const std::vector<Value>& args
     }
 
     return Value(result_obj);
+}
+
+// Object.groupBy ( items, callbackfn )
+// @spec https://tc39.es/ecma262/#sec-object.groupby
+Value Object::groupBy(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let items be the first argument.
+    // 2. Let callbackfn be the second argument.
+    Value items = args.size() > 0 ? args[0] : Value::undefined();
+    Value callback = args.size() > 1 ? args[1] : Value::undefined();
+
+    // 3. If items is undefined or null, throw a TypeError.
+    if(items.isUndefined() || items.isNull()) {
+        throw rift::core::JavaScriptException(Value("TypeError: Cannot read properties of " +
+                                                    items.toString() +
+                                                    " (reading 'Symbol(Symbol.iterator)')"));
+    }
+
+    // 4. If IsCallable(callbackfn) is false, throw a TypeError.
+    if(!callback.isFunction()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: " + callback.toString() + " is not a function"));
+    }
+
+    auto* callback_func = dynamic_cast<JSFunction*>(callback.getObject());
+    if(!callback_func) {
+        throw rift::core::JavaScriptException(Value("TypeError: callbackfn is not a function"));
+    }
+
+    // 5. Let groups be a new empty Map (we use an ordered map of key -> array).
+    // 6. Let result be OrdinaryObjectCreate(null).
+    auto* result = getObjectFactory()->createJSObject(nullptr);
+    rift::memory::GCProtector protect(result, getObjectFactory()->getObjectManager());
+
+    // Helper lambda to process a single element
+    double index = 0;
+    auto processElement = [&](const Value& value) {
+        // Call callbackfn(value, index) with this = undefined
+        rift::core::CallContext cb_ctx(rift::core::CallType::Function, Value::undefined());
+        Value key_result = callback_func->call(cb_ctx, {value, Value(index)});
+
+        // Coerce result to property key (string)
+        std::string key = key_result.toString();
+
+        // If key doesn't exist on result, create a new empty array
+        if(!result->hasOwnProperty(key)) {
+            auto* group_array = Array::createArrayObject(getObjectFactory(), {});
+            result->setProperty(key, Value(group_array));
+        }
+
+        // Push value into that array
+        Value group = result->getProperty(key);
+        if(group.isObject()) {
+            auto* group_obj = group.getObject();
+            Value length_val = group_obj->getProperty("length");
+            double length = length_val.toNumber();
+            group_obj->setProperty(std::to_string(static_cast<int>(length)), value);
+            group_obj->setProperty("length", Value(length + 1));
+        }
+
+        index++;
+    };
+
+    // String fast path: iterate characters directly
+    // DEVIATION: Rift iterates bytes, not Unicode code points, matching for-of behavior.
+    if(items.isString()) {
+        std::string str = items.getString();
+        for(char c : str) {
+            processElement(Value(std::string(1, c)));
+        }
+        return Value(result);
+    }
+
+    // Get the iterator from items via Symbol.iterator protocol
+    if(!items.isObject() && !items.isFunction()) {
+        throw rift::core::JavaScriptException(Value("TypeError: items is not iterable"));
+    }
+
+    auto* items_obj = items.getObject();
+    std::string iterator_key =
+        rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
+    Value iterator_method = items_obj->getProperty(iterator_key);
+
+    if(!iterator_method.isFunction()) {
+        throw rift::core::JavaScriptException(Value(
+            "TypeError: items is not iterable (cannot read property Symbol(Symbol.iterator))"));
+    }
+
+    auto* iterator_func = dynamic_cast<JSFunction*>(iterator_method.getObject());
+    if(!iterator_func) {
+        throw rift::core::JavaScriptException(Value("TypeError: items is not iterable"));
+    }
+
+    // Call @@iterator to get the iterator object
+    rift::core::CallContext iter_ctx(rift::core::CallType::Function, items);
+    Value iterator = iterator_func->call(iter_ctx, {});
+
+    if(!iterator.isObject()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Result of the Symbol.iterator method is not an object"));
+    }
+
+    auto* iterator_object = iterator.getObject();
+
+    // IteratorStep + IteratorValue loop
+    while(true) {
+        // IteratorStep: Call iterator.next()
+        Value next_method = iterator_object->getProperty("next");
+        if(!next_method.isFunction()) {
+            break;
+        }
+
+        auto* next_func = dynamic_cast<JSFunction*>(next_method.getObject());
+        if(!next_func) {
+            break;
+        }
+
+        rift::core::CallContext next_ctx(rift::core::CallType::Function, iterator);
+        Value iter_result = next_func->call(next_ctx, {});
+
+        if(!iter_result.isObject()) {
+            break;
+        }
+
+        auto* result_object = iter_result.getObject();
+
+        // IteratorComplete: If result.done is true, break.
+        Value done = result_object->getProperty("done");
+        if(done.toBool()) {
+            break;
+        }
+
+        // IteratorValue: Get result.value
+        Value value = result_object->getProperty("value");
+
+        processElement(value);
+    }
+
+    return Value(result);
 }
 
 // 20.1.2.9 Object.getOwnPropertyDescriptors ( O )
