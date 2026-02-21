@@ -18,6 +18,7 @@
 
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/builtin_manager.h"
+#include "rift/builtins/generator/async_generator_iterator.h"
 #include "rift/builtins/generator/generator_iterator.h"
 #include "rift/builtins/promise/promise.h"
 #include "rift/builtins/symbol/symbol.h"
@@ -1238,12 +1239,16 @@ Value StatementEvaluator::evaluateGeneratorFunctionDeclaration(std::shared_ptr<A
     // GeneratorBody
     auto body = node->children[1];
 
+    // Check if this is an async generator function (async function*)
+    bool is_async_generator = node->metadata.find("async") != std::string::npos;
+
     // Step 3: Let F be OrdinaryFunctionCreate(...)
     // SIMPLIFIED: When called, the generator function creates a GeneratorIterator
-    // rather than using the spec's GeneratorStart / GeneratorResume abstract operations.
+    // (or AsyncGeneratorIterator for async generators) rather than using the spec's
+    // GeneratorStart / GeneratorResume abstract operations.
     auto* func = engine->getObjectFactory()->createJSFunction(
-        [engine, param_info, param_names, body, env](const rift::core::CallContext& call_context,
-                                                     const std::vector<Value>& args) -> Value {
+        [engine, param_info, param_names, body, env, is_async_generator](
+            const rift::core::CallContext& call_context, const std::vector<Value>& args) -> Value {
             // 27.5.3.2 GeneratorFunction [[Call]]
             // Generator functions cannot be used as constructors
             if(call_context.type == rift::core::CallType::Constructor) {
@@ -1279,6 +1284,13 @@ Value StatementEvaluator::evaluateGeneratorFunctionDeclaration(std::shared_ptr<A
                     }
                     processed_args.push_back(arg_value);
                 }
+            }
+
+            if(is_async_generator) {
+                // 27.6 AsyncGenerator Objects — create AsyncGeneratorIterator
+                auto* generator = builtins::AsyncGeneratorIterator::create(
+                    engine->getObjectFactory(), body, env, engine, param_names, processed_args);
+                return Value(generator);
             }
 
             // 27.5.3.2 step 7: Let genContext be a new execution context.

@@ -164,6 +164,7 @@ set(BUILTINS_SOURCES
     src/builtins/weakmap/weakmap.cpp
     src/builtins/weakset/weakset.cpp
     src/builtins/generator/generator_iterator.cpp
+    src/builtins/generator/async_generator_iterator.cpp
     src/builtins/promise/promise.cpp
     src/builtins/function/function.cpp
     src/builtins/temporal/temporal.cpp
@@ -188,6 +189,7 @@ set(INTERPRETER_SOURCES
     src/interpreter/expression_evaluator_objects.cpp
     src/interpreter/generator_evaluator.cpp
     src/interpreter/async_executor.cpp
+    src/interpreter/async_generator_evaluator.cpp
     src/interpreter/class_builder.cpp
 )
 

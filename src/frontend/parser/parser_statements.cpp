@@ -1653,6 +1653,10 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
     if(isGenerator) {
         node = ASTFactory::makeGeneratorMethod(methodName, parameters, methodBody, isStatic,
                                                isComputed, computedKey);
+        // For async generator methods (async function*), mark the metadata
+        if(isAsync) {
+            node->metadata = node->metadata.empty() ? "async" : node->metadata + ",async";
+        }
     } else if(isAsync) {
         node = ASTFactory::makeAsyncMethod(methodName, parameters, methodBody, isStatic, isComputed,
                                            computedKey);

@@ -20,6 +20,7 @@
 
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/builtin_manager.h"
+#include "rift/builtins/generator/async_generator_iterator.h"
 #include "rift/builtins/generator/generator_iterator.h"
 #include "rift/builtins/promise/promise.h"
 #include "rift/builtins/symbol/symbol.h"
@@ -1650,12 +1651,15 @@ Value ExpressionEvaluator::evaluateGeneratorFunctionExpression(std::shared_ptr<A
     bool was_gc_enabled = obj_manager->isGCEnabled();
     obj_manager->setGCEnabled(false);
 
+    // Check if this is an async generator expression (async function*)
+    bool is_async_generator = node->metadata.find("async") != std::string::npos;
+
     // Step 5. Let closure be OrdinaryFunctionCreate(...).
-    // When called, this function creates a GeneratorIterator instead of
-    // executing the body directly — matching the spec's GeneratorStart behavior.
+    // When called, this function creates a GeneratorIterator (or AsyncGeneratorIterator
+    // for async generators) instead of executing the body directly.
     auto* func = factory->createJSFunction(
-        [engine, param_info, param_names, body, env](const rift::core::CallContext& call_context,
-                                                     const std::vector<Value>& args) -> Value {
+        [engine, param_info, param_names, body, env, is_async_generator](
+            const rift::core::CallContext& call_context, const std::vector<Value>& args) -> Value {
             // Generator functions cannot be used as constructors per spec
             // (they do not have [[Construct]])
             if(call_context.type == rift::core::CallType::Constructor) {
@@ -1705,6 +1709,13 @@ Value ExpressionEvaluator::evaluateGeneratorFunctionExpression(std::shared_ptr<A
                     }
                     processed_args.push_back(arg_value);
                 }
+            }
+
+            if(is_async_generator) {
+                // 27.6 AsyncGenerator Objects — create AsyncGeneratorIterator
+                auto* generator = builtins::AsyncGeneratorIterator::create(
+                    engine->getObjectFactory(), body, env, engine, param_names, processed_args);
+                return Value(generator);
             }
 
             // 27.5.3.1 GeneratorStart ( generator, generatorBody )

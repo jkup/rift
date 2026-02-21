@@ -12,6 +12,7 @@
 #include "rift/builtins/error/type_error.h"
 #include "rift/builtins/error/uri_error.h"
 #include "rift/builtins/function/function.h"
+#include "rift/builtins/generator/async_generator_iterator.h"
 #include "rift/builtins/generator/generator_iterator.h"
 #include "rift/builtins/global/global.h"
 #include "rift/builtins/iterator/iterator_prototype.h"
@@ -136,6 +137,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     builtins::SetIterator::setupPrototype(factory, iteratorPrototype_);
     builtins::MapIterator::setupPrototype(factory, iteratorPrototype_);
     builtins::GeneratorIterator::setupPrototype(factory, iteratorPrototype_);
+    builtins::AsyncGeneratorIterator::setupPrototype(factory, iteratorPrototype_);
 
     // Now setup builtins with factory - these will create their own prototypes
     setupGlobalFunctions(globalEnv, factory, engine);

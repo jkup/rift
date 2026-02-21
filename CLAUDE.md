@@ -47,6 +47,7 @@ src/interpreter/                       # Tree-walking evaluator (future: replace
     class_builder.cpp                  # Class definition and inheritance
     generator_evaluator.cpp            # Generator yield/resume
     async_executor.cpp                 # Async/await execution
+    async_generator_evaluator.cpp      # Async generator yield+await
 src/builtins/                          # ECMA-262 built-in JS objects (one folder per type)
     builtin_manager.cpp                # Wires up all built-in prototypes
 src/host/                              # Non-spec host APIs (not ECMA-262)

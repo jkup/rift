@@ -140,7 +140,8 @@ Before submitting a PR:
   - Generators: `function* gen() { yield 1; }` with full iterator protocol support
   - Async functions: `async function f() { await promise; }` with proper microtask semantics
   - Async arrow functions: `async () => { await promise; }`
-  - `for-await-of`: async iteration over async iterables
+  - Async generators: `async function* gen() { yield await promise; }` with full async iterator protocol
+  - `for-await-of`: async iteration over async iterables and async generators
 
 - **Runtime semantics**
   - Closures: lexical capture of outer variables
@@ -277,7 +278,6 @@ Before submitting a PR:
 - **Language features**
   - Modules (`import`/`export`)
   - Private class fields/methods (`#field`)
-  - Async generators (`async function*`)
   - Decorators
 
 - **Built-in objects/APIs**

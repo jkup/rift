@@ -9,6 +9,7 @@
 #include "rift/interpreter/class_builder.h"
 
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/generator/async_generator_iterator.h"
 #include "rift/builtins/generator/generator_iterator.h"
 #include "rift/builtins/promise/promise.h"
 #include "rift/interpreter/async_executor.h"
@@ -104,8 +105,9 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
         rift::runtime::JSFunction* method_func = nullptr;
 
         if(is_generator) {
+            bool is_async_gen = method->metadata.find("async") != std::string::npos;
             method_func = factory->createJSFunction(
-                [engine, method_param_info, param_names, method_body, class_env](
+                [engine, method_param_info, param_names, method_body, class_env, is_async_gen](
                     const rift::core::CallContext& /*call_context*/,
                     const std::vector<Value>& args) -> Value {
                     std::vector<Value> processed_args;
@@ -133,6 +135,12 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                             }
                             processed_args.push_back(arg_value);
                         }
+                    }
+                    if(is_async_gen) {
+                        auto* generator = builtins::AsyncGeneratorIterator::create(
+                            engine->getObjectFactory(), method_body, class_env, engine, param_names,
+                            processed_args);
+                        return Value(generator);
                     }
                     auto* generator = builtins::GeneratorIterator::create(
                         engine->getObjectFactory(), method_body, class_env, engine, param_names,

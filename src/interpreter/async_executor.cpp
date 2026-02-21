@@ -562,6 +562,59 @@ Value AsyncExecutor::evaluateForAwaitOf(std::shared_ptr<ASTNode> node,
 
     // Hidden variable names for storing state across resumptions
     std::string iter_var = "__forAwaitIter_" + std::to_string(for_await_id) + "__";
+    std::string async_flag_var = "__forAwaitIsAsync_" + std::to_string(for_await_id) + "__";
+
+    // Helper lambda: call .next() on iterator and await accordingly
+    // For async iterators (.next() returns Promise), await the whole result.
+    // For sync iterators (.next() returns {value, done}), await just the value.
+    auto callNextAndAwait = [&](Value iterator, bool is_async_iter) {
+        auto* iterator_obj = iterator.getObject();
+        Value next_method = iterator_obj->getProperty("next");
+        if(!next_method.isFunction()) {
+            throw JavaScriptException(Value("TypeError: iterator.next is not a function"));
+        }
+        auto* next_func = dynamic_cast<JSFunction*>(next_method.getObject());
+        if(!next_func) {
+            throw JavaScriptException(Value("TypeError: iterator.next is not a function"));
+        }
+        CallContext next_ctx(CallType::Function, iterator);
+        Value next_result = next_func->call(next_ctx, {});
+
+        if(is_async_iter) {
+            // Async iterator: .next() returns a Promise<{value, done}>
+            // Await the entire result
+            throw AwaitException(next_result, for_await_id, statementIndex);
+        }
+
+        // Sync iterator: .next() returns {value, done} directly
+        if(next_result.isObject()) {
+            auto* result_obj = next_result.getObject();
+            Value done_val = result_obj->getProperty("done");
+            if(done_val.toBool()) {
+                return;  // Done - caller checks result
+            }
+            Value next_value = result_obj->getProperty("value");
+            throw AwaitException(next_value, for_await_id, statementIndex);
+        }
+    };
+
+    // Helper lambda: extract value from sentValue depending on iterator type
+    auto extractValue = [&](Value sent_value, bool is_async_iter) -> std::pair<Value, bool> {
+        if(is_async_iter) {
+            // sentValue is the resolved {value, done} object
+            if(sent_value.isObject()) {
+                auto* obj = sent_value.getObject();
+                Value done_val = obj->getProperty("done");
+                if(done_val.toBool()) {
+                    return {Value::undefined(), true};  // done
+                }
+                return {obj->getProperty("value"), false};  // not done
+            }
+            return {Value::undefined(), true};
+        }
+        // For sync iterators, sentValue is just the value
+        return {sent_value, false};
+    };
 
     Value result = Value::undefined();
 
@@ -574,8 +627,14 @@ Value AsyncExecutor::evaluateForAwaitOf(std::shared_ptr<ASTNode> node,
             throw JavaScriptException(context.sentValue);
         }
 
-        // sentValue is the resolved value from the current element
-        Value value = context.sentValue;
+        // Determine if this is an async iterator
+        Value async_flag = env->get(async_flag_var);
+        bool is_async_iter = async_flag.toBool();
+
+        auto [value, done] = extractValue(context.sentValue, is_async_iter);
+        if(done) {
+            return result;
+        }
 
         // Assign resolved value to loop variable
         env->set(var_name, value);
@@ -600,30 +659,8 @@ Value AsyncExecutor::evaluateForAwaitOf(std::shared_ptr<ASTNode> node,
         if(!iterator.isObject()) {
             return result;
         }
-        auto* iterator_obj = iterator.getObject();
-        Value next_method = iterator_obj->getProperty("next");
-        if(!next_method.isFunction()) {
-            return result;
-        }
-        auto* next_func = dynamic_cast<JSFunction*>(next_method.getObject());
-        if(!next_func) {
-            return result;
-        }
-        CallContext next_ctx(CallType::Function, iterator);
-        Value next_result = next_func->call(next_ctx, {});
 
-        // For sync iterators, next_result is {done, value} directly
-        // Extract done and value, then await the value
-        if(next_result.isObject()) {
-            auto* result_obj = next_result.getObject();
-            Value done_val = result_obj->getProperty("done");
-            if(done_val.toBool()) {
-                return result;
-            }
-            Value next_value = result_obj->getProperty("value");
-            // Await the value (per spec, for-await-of awaits each value)
-            throw AwaitException(next_value, for_await_id, statementIndex);
-        }
+        callNextAndAwait(iterator, is_async_iter);
 
         return result;
     }
@@ -650,26 +687,13 @@ Value AsyncExecutor::evaluateForAwaitOf(std::shared_ptr<ASTNode> node,
             if(!iterator.isObject()) {
                 return result;
             }
-            auto* iterator_obj = iterator.getObject();
-            Value next_method = iterator_obj->getProperty("next");
-            if(!next_method.isFunction()) {
-                return result;
-            }
-            auto* next_func = dynamic_cast<JSFunction*>(next_method.getObject());
-            if(!next_func) {
-                return result;
-            }
-            CallContext next_ctx(CallType::Function, iterator);
-            Value next_result = next_func->call(next_ctx, {});
+            Value async_flag = env->get(async_flag_var);
+            bool is_async_iter = async_flag.toBool();
 
-            if(next_result.isObject()) {
-                auto* result_obj = next_result.getObject();
-                Value done_val = result_obj->getProperty("done");
-                if(done_val.toBool()) {
-                    return result;
-                }
-                Value next_value = result_obj->getProperty("value");
-                throw AwaitException(next_value, for_await_id, statementIndex);
+            try {
+                callNextAndAwait(iterator, is_async_iter);
+            } catch(const AwaitException&) {
+                throw;
             }
 
             return result;
@@ -697,6 +721,7 @@ Value AsyncExecutor::evaluateForAwaitOf(std::shared_ptr<ASTNode> node,
     }
 
     Value iterator = Value::undefined();
+    bool is_async_iter = false;
     if(iterable_obj) {
         // Try Symbol.asyncIterator first
         std::string async_iter_key =
@@ -708,6 +733,7 @@ Value AsyncExecutor::evaluateForAwaitOf(std::shared_ptr<ASTNode> node,
             if(async_iter_func) {
                 CallContext iter_ctx(CallType::Function, iterable);
                 iterator = async_iter_func->call(iter_ctx, {});
+                is_async_iter = true;
             }
         }
 
@@ -722,6 +748,7 @@ Value AsyncExecutor::evaluateForAwaitOf(std::shared_ptr<ASTNode> node,
                 if(iter_func) {
                     CallContext iter_ctx(CallType::Function, iterable);
                     iterator = iter_func->call(iter_ctx, {});
+                    is_async_iter = false;
                 }
             }
         }
@@ -731,34 +758,12 @@ Value AsyncExecutor::evaluateForAwaitOf(std::shared_ptr<ASTNode> node,
         throw JavaScriptException(Value("TypeError: object is not iterable"));
     }
 
-    // Store the iterator for resumption
+    // Store the iterator and async flag for resumption
     env->define(iter_var, iterator);
+    env->define(async_flag_var, Value(is_async_iter));
 
     // Call .next() to get first element
-    auto* iterator_obj = iterator.getObject();
-    Value next_method = iterator_obj->getProperty("next");
-    if(!next_method.isFunction()) {
-        throw JavaScriptException(Value("TypeError: iterator.next is not a function"));
-    }
-    auto* next_func = dynamic_cast<JSFunction*>(next_method.getObject());
-    if(!next_func) {
-        throw JavaScriptException(Value("TypeError: iterator.next is not a function"));
-    }
-
-    CallContext next_ctx(CallType::Function, iterator);
-    Value next_result = next_func->call(next_ctx, {});
-
-    // Extract value from {done, value} result
-    if(next_result.isObject()) {
-        auto* result_obj = next_result.getObject();
-        Value done_val = result_obj->getProperty("done");
-        if(done_val.toBool()) {
-            return Value::undefined();  // Empty iterable
-        }
-        Value first_value = result_obj->getProperty("value");
-        // Await the value (this handles both Promise and non-Promise values)
-        throw AwaitException(first_value, for_await_id, statementIndex);
-    }
+    callNextAndAwait(iterator, is_async_iter);
 
     return Value::undefined();
 }
