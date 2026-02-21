@@ -24,6 +24,8 @@
 
 #include "rift/interpreter/expression_evaluator.h"
 
+#include <cerrno>
+#include <cstdlib>
 #include <iostream>
 #include <limits>
 
@@ -51,7 +53,16 @@ static double parseNumericLiteral(const std::string& value) {
             return static_cast<double>(std::stol(value.substr(2), nullptr, 2));
         }
     }
-    return std::stod(value);
+    // Use strtod instead of std::stod to correctly handle subnormal (denormalized)
+    // numbers. std::stod throws out_of_range for subnormals like 5e-324, but
+    // strtod correctly returns the denormalized value.
+    char* end = nullptr;
+    errno = 0;
+    double result = std::strtod(value.c_str(), &end);
+    if(end == value.c_str()) {
+        throw std::invalid_argument("no conversion");
+    }
+    return result;
 }
 
 // Expression dispatcher — routes AST node types to specialized evaluation methods.
