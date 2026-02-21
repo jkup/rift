@@ -102,6 +102,7 @@ Value Rift::evaluate(std::shared_ptr<ASTNode> node, std::shared_ptr<Environment>
         case ASTNodeType::GeneratorFunctionDeclaration:
         case ASTNodeType::AsyncFunctionDeclaration:
         case ASTNodeType::ClassDeclaration:
+        case ASTNodeType::LabeledStatement:
             return StatementEvaluator::evaluate(node, env, this);
 
         default:

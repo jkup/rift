@@ -30,6 +30,74 @@
 
 namespace rift::core {
 
+// Helper: extract the loop label from a node's metadata.
+// Metadata may contain "label:<name>" or "<other>,label:<name>".
+static std::string extractLoopLabel(const std::shared_ptr<ASTNode>& node) {
+    if(!node || node->metadata.empty())
+        return "";
+    auto pos = node->metadata.find("label:");
+    if(pos == std::string::npos)
+        return "";
+    auto start = pos + 6;
+    auto end = node->metadata.find(',', start);
+    return node->metadata.substr(start, end == std::string::npos ? std::string::npos : end - start);
+}
+
+// 14.13 Labelled Statements — Runtime Semantics: LabelledEvaluation
+// @spec https://tc39.es/ecma262/#sec-labelled-statements-runtime-semantics-labelledevaluation
+//
+// LabelledStatement : LabelIdentifier : LabelledItem
+//   1. Return ? LabelledEvaluation of LabelledItem with argument « label ».
+//
+// For iteration statements, the label is passed via metadata on the body node
+// so loop evaluators can match labeled break/continue exceptions.
+// For non-iteration bodies, the labeled statement catches BreakException with
+// a matching label directly.
+Value StatementEvaluator::evaluateLabeledStatement(std::shared_ptr<ASTNode> node,
+                                                   std::shared_ptr<Environment> env, Rift* engine) {
+    if(node->children.empty()) {
+        return Value::undefined();
+    }
+
+    std::string label = node->value;
+    auto& body = node->children[0];
+
+    // For loop/switch bodies, set label metadata so their catch sites can match it
+    std::string saved_metadata = body->metadata;
+    bool is_loop_or_switch =
+        (body->type == ASTNodeType::WhileStatement || body->type == ASTNodeType::DoWhileStatement ||
+         body->type == ASTNodeType::ForStatement || body->type == ASTNodeType::ForInStatement ||
+         body->type == ASTNodeType::ForOfStatement ||
+         body->type == ASTNodeType::ForAwaitOfStatement ||
+         body->type == ASTNodeType::SwitchStatement);
+    if(is_loop_or_switch) {
+        body->metadata =
+            saved_metadata.empty() ? "label:" + label : saved_metadata + ",label:" + label;
+    }
+
+    try {
+        Value result = engine->evaluate(body, env);
+        if(is_loop_or_switch) {
+            body->metadata = saved_metadata;
+        }
+        return result;
+    } catch(const BreakException& e) {
+        if(is_loop_or_switch) {
+            body->metadata = saved_metadata;
+        }
+        // Absorb break if label matches; re-throw otherwise
+        if(e.hasLabel() && e.getLabel() == label) {
+            return Value::undefined();
+        }
+        throw;
+    } catch(...) {
+        if(is_loop_or_switch) {
+            body->metadata = saved_metadata;
+        }
+        throw;
+    }
+}
+
 // 14.6 The if Statement — Runtime Semantics: Evaluation
 // @spec https://tc39.es/ecma262/#sec-if-statement-runtime-semantics-evaluation
 //
@@ -108,11 +176,17 @@ Value StatementEvaluator::evaluateWhileStatement(std::shared_ptr<ASTNode> node,
         // Step 2d: Let stmtResult be Completion(Evaluation of Statement).
         try {
             result = engine->evaluate(node->children[1], env);
-        } catch(const BreakException&) {
+        } catch(const BreakException& e) {
             // Step 2e: If stmtResult is break, return V.
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             break;
-        } catch(const ContinueException&) {
+        } catch(const ContinueException& e) {
             // Step 2e: If stmtResult is continue, skip to next iteration.
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             continue;
         }
     }
@@ -149,11 +223,17 @@ Value StatementEvaluator::evaluateDoWhileStatement(std::shared_ptr<ASTNode> node
         // Step 2a: Let stmtResult be Completion(Evaluation of Statement).
         try {
             result = engine->evaluate(node->children[0], env);  // body is first child
-        } catch(const BreakException&) {
+        } catch(const BreakException& e) {
             // Step 2b: If stmtResult is break, return V.
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             break;
-        } catch(const ContinueException&) {
+        } catch(const ContinueException& e) {
             // Step 2b: If stmtResult is continue, skip to condition check.
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
         }
 
         // Step 2d-e: Let exprValue be ToBoolean(? GetValue(? Evaluation of Expression)).
@@ -221,11 +301,17 @@ Value StatementEvaluator::evaluateForStatement(std::shared_ptr<ASTNode> node,
         // Step 3b: Let stmtResult be Completion(Evaluation of Statement).
         try {
             result = engine->evaluate(node->children[3], env);
-        } catch(const BreakException&) {
+        } catch(const BreakException& e) {
             // Step 3c: If stmtResult is break, return V.
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             break;
-        } catch(const ContinueException&) {
+        } catch(const ContinueException& e) {
             // Step 3c: If stmtResult is continue, run update then next iteration.
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             // Step 3e: Execute update expression
             if(node->children[2] != nullptr) {
                 engine->evaluate(node->children[2], env);
@@ -372,9 +458,15 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
                     // Step 2e: Let stmtResult be Completion(Evaluation of Statement).
                     try {
                         result = engine->evaluate(body_node, env);
-                    } catch(const BreakException&) {
+                    } catch(const BreakException& e) {
+                        if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                            throw;
+                        }
                         break;
-                    } catch(const ContinueException&) {
+                    } catch(const ContinueException& e) {
+                        if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                            throw;
+                        }
                         continue;
                     }
                 }
@@ -386,9 +478,15 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
                 assignKey(Value(std::to_string(i)));
                 try {
                     result = engine->evaluate(body_node, env);
-                } catch(const BreakException&) {
+                } catch(const BreakException& e) {
+                    if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                        throw;
+                    }
                     break;
-                } catch(const ContinueException&) {
+                } catch(const ContinueException& e) {
+                    if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                        throw;
+                    }
                     continue;
                 }
             }
@@ -402,9 +500,15 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
                 applyPatternBinding(pattern, key_value, env, engine, var_type);
                 try {
                     result = engine->evaluate(body_node, env);
-                } catch(const BreakException&) {
+                } catch(const BreakException& e) {
+                    if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                        throw;
+                    }
                     return true;  // signal break
-                } catch(const ContinueException&) {
+                } catch(const ContinueException& e) {
+                    if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                        throw;
+                    }
                     // continue
                 }
             } else {
@@ -412,9 +516,15 @@ Value StatementEvaluator::evaluateForInStatement(std::shared_ptr<ASTNode> node,
                 applyPatternBinding(pattern, key_value, iter_env, engine, var_type);
                 try {
                     result = engine->evaluate(body_node, iter_env);
-                } catch(const BreakException&) {
+                } catch(const BreakException& e) {
+                    if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                        throw;
+                    }
                     return true;
-                } catch(const ContinueException&) {
+                } catch(const ContinueException& e) {
+                    if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                        throw;
+                    }
                     // continue
                 }
             }
@@ -695,9 +805,15 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
             }
             try {
                 result = engine->evaluate(body_node, body_env);
-            } catch(const BreakException&) {
+            } catch(const BreakException& e) {
+                if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                    throw;
+                }
                 break;
-            } catch(const ContinueException&) {
+            } catch(const ContinueException& e) {
+                if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                    throw;
+                }
                 continue;
             }
         }
@@ -731,9 +847,15 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
                         }
                         try {
                             result = engine->evaluate(body_node, body_env);
-                        } catch(const BreakException&) {
+                        } catch(const BreakException& e) {
+                            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                                throw;
+                            }
                             break;
-                        } catch(const ContinueException&) {
+                        } catch(const ContinueException& e) {
+                            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                                throw;
+                            }
                             continue;
                         }
                     }
@@ -765,11 +887,18 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
         // Step 2e: Let stmtResult be Completion(Evaluation of Statement).
         try {
             result = engine->evaluate(body_node, body_env);
-        } catch(const BreakException&) {
+        } catch(const BreakException& e) {
             // Step 2f: IteratorClose on break
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                iteratorClose(record);
+                throw;
+            }
             iteratorClose(record);
             break;
-        } catch(const ContinueException&) {
+        } catch(const ContinueException& e) {
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             // Continue does not close the iterator — iteration continues normally
             continue;
         } catch(...) {
@@ -849,7 +978,10 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
                 for(size_t j = 1; j < clause->children.size(); ++j) {
                     try {
                         result = engine->evaluate(clause->children[j], blockEnv);
-                    } catch(const BreakException&) {
+                    } catch(const BreakException& e) {
+                        if(e.hasLabel()) {
+                            throw;
+                        }
                         // Break terminates the switch
                         return result;
                     }
@@ -868,7 +1000,10 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
                 for(size_t j = 0; j < clause->children.size(); ++j) {
                     try {
                         result = engine->evaluate(clause->children[j], blockEnv);
-                    } catch(const BreakException&) {
+                    } catch(const BreakException& e) {
+                        if(e.hasLabel()) {
+                            throw;
+                        }
                         return result;
                     }
                 }
@@ -892,10 +1027,12 @@ Value StatementEvaluator::evaluateSwitchStatement(std::shared_ptr<ASTNode> node,
 //   2. Return Completion Record { [[Type]]: break, [[Value]]: empty, [[Target]]: label }.
 //
 // SIMPLIFIED: Rift uses a C++ BreakException to signal break completions.
-// INCOMPLETE: Labelled break (break <label>) is not supported.
 Value StatementEvaluator::evaluateBreakStatement(std::shared_ptr<ASTNode> node,
                                                  std::shared_ptr<Environment> env, Rift* engine) {
-    // Step 1: Return Completion Record { [[Type]]: break }.
+    // Step 1-2: Return Completion Record { [[Type]]: break, [[Target]]: label }.
+    if(!node->value.empty()) {
+        throw BreakException(node->value);
+    }
     throw BreakException();
 }
 

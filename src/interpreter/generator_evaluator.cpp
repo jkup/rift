@@ -18,6 +18,18 @@
 
 namespace rift::core {
 
+// Helper: extract the loop label from a node's metadata.
+static std::string extractLoopLabel(const std::shared_ptr<ASTNode>& node) {
+    if(!node || node->metadata.empty())
+        return "";
+    auto pos = node->metadata.find("label:");
+    if(pos == std::string::npos)
+        return "";
+    auto start = pos + 6;
+    auto end = node->metadata.find(',', start);
+    return node->metadata.substr(start, end == std::string::npos ? std::string::npos : end - start);
+}
+
 Value GeneratorEvaluator::execute(std::shared_ptr<ASTNode> body, std::shared_ptr<Environment> env,
                                   Rift* engine, GeneratorExecutionContext& context) {
     // First, assign yield IDs if not done already
@@ -238,9 +250,15 @@ Value GeneratorEvaluator::evaluateWhile(std::shared_ptr<ASTNode> node,
         // Evaluate the body - may contain yields
         try {
             result = evaluateLoopBody(body, env, engine, context, statementIndex);
-        } catch(const BreakException&) {
+        } catch(const BreakException& e) {
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             break;
-        } catch(const ContinueException&) {
+        } catch(const ContinueException& e) {
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             continue;
         }
         // YieldException propagates up
@@ -298,9 +316,15 @@ Value GeneratorEvaluator::evaluateFor(std::shared_ptr<ASTNode> node,
         // Evaluate the body - may contain yields
         try {
             result = evaluateLoopBody(body, loop_env, engine, context, statementIndex);
-        } catch(const BreakException&) {
+        } catch(const BreakException& e) {
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             break;
-        } catch(const ContinueException&) {
+        } catch(const ContinueException& e) {
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             // Fall through to update
         }
         // YieldException propagates up

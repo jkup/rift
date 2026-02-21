@@ -1347,29 +1347,59 @@ std::shared_ptr<ASTNode> Parser::parse_with_statement() {
     throw std::runtime_error("'with' statement is not supported");
 }
 
+// 14.13 Labelled Statements
+// LabelledStatement :: LabelIdentifier : LabelledItem
+// LabelledItem :: Statement | FunctionDeclaration
+// @spec https://tc39.es/ecma262/#sec-labelled-statements
+std::shared_ptr<ASTNode> Parser::parse_labeled_statement() {
+    std::string label = current_token().value;
+    size_t label_line = current_token().line;
+    size_t label_column = current_token().column;
+    current++;                  // consume label identifier
+    consume(TokenType::Colon);  // consume ':'
+
+    // LabelledItem :: Statement | FunctionDeclaration
+    auto body = parse_statement();
+
+    auto node = ASTFactory::makeLabeledStatement(label, body);
+    node->setLocation(label_line, label_column);
+    return node;
+}
+
 // 14.9 The break Statement
 // BreakStatement :: break ; | break [no LineTerminator here] LabelIdentifier ;
 // @spec https://tc39.es/ecma262/#sec-break-statement
-//
-// INCOMPLETE: Labelled break (break label;) is not supported. Only the unlabelled
-// form is parsed. The [no LineTerminator here] restriction is also not enforced.
 std::shared_ptr<ASTNode> Parser::parse_break_statement() {
-    consume(TokenType::Break);    // break
+    size_t break_line = current_token().line;
+    consume(TokenType::Break);  // break
+
+    // Check for label on the same line (enforces [no LineTerminator here])
+    std::string label;
+    if(current_token().type == TokenType::Identifier && current_token().line == break_line) {
+        label = current_token().value;
+        current++;  // consume label
+    }
+
     match(TokenType::Semicolon);  // optional ;
-    return ASTFactory::makeBreakStatement();
+    return ASTFactory::makeBreakStatement(label);
 }
 
 // 14.8 The continue Statement
 // ContinueStatement :: continue ; | continue [no LineTerminator here] LabelIdentifier ;
 // @spec https://tc39.es/ecma262/#sec-continue-statement
-//
-// INCOMPLETE: Labelled continue (continue label;) is not supported. Only the
-// unlabelled form is parsed. The [no LineTerminator here] restriction is also
-// not enforced.
 std::shared_ptr<ASTNode> Parser::parse_continue_statement() {
+    size_t continue_line = current_token().line;
     consume(TokenType::Continue);  // continue
-    match(TokenType::Semicolon);   // optional ;
-    return ASTFactory::makeContinueStatement();
+
+    // Check for label on the same line (enforces [no LineTerminator here])
+    std::string label;
+    if(current_token().type == TokenType::Identifier && current_token().line == continue_line) {
+        label = current_token().value;
+        current++;  // consume label
+    }
+
+    match(TokenType::Semicolon);  // optional ;
+    return ASTFactory::makeContinueStatement(label);
 }
 
 // ============================================================================

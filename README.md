@@ -134,6 +134,7 @@ Before submitting a PR:
   - Control flow: `if`/`else`, `while`, `do-while`, C-style `for (init; cond; update)`, `for-in`, `for-of`
   - `switch`/`case`/`default` with `break`
   - `break` and `continue` in loops
+  - Labeled statements: `label: statement`, `break label`, `continue label`
   - Functions: declarations and expressions
   - `return`
   - Exceptions: `throw`, `try`/`catch`/`finally`
@@ -286,7 +287,6 @@ Before submitting a PR:
 
 - **Language features**
   - Modules (`import`/`export`)
-  - Labeled statements (`break label`, `continue label`)
   - Private class fields/methods (`#field`)
   - Async generators (`async function*`)
   - Decorators

@@ -101,6 +101,7 @@ The `ASTNode::metadata` string field carries semantic flags:
 | `"getter"` / `"setter"` | MethodDefinition | Accessor method |
 | `"computed_key"` | Property in ObjectLiteral | Computed property key |
 | `"string"` / `"number"` / `"boolean"` / `"null"` / `"regex"` | Literal | Literal subtype |
+| `"label:<name>"` | Loop/Switch statements | Labeled statement target (set by `evaluateLabeledStatement`) |
 
 ## Adding a New Operator or Syntax
 

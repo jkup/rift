@@ -25,6 +25,18 @@
 
 namespace rift::core {
 
+// Helper: extract the loop label from a node's metadata.
+static std::string extractLoopLabel(const std::shared_ptr<ASTNode>& node) {
+    if(!node || node->metadata.empty())
+        return "";
+    auto pos = node->metadata.find("label:");
+    if(pos == std::string::npos)
+        return "";
+    auto start = pos + 6;
+    auto end = node->metadata.find(',', start);
+    return node->metadata.substr(start, end == std::string::npos ? std::string::npos : end - start);
+}
+
 AsyncExecutionContext* AsyncExecutor::active_context_ = nullptr;
 
 AsyncExecutionContext* AsyncExecutor::getActiveContext() {
@@ -284,9 +296,15 @@ Value AsyncExecutor::evaluateWhile(std::shared_ptr<ASTNode> node, std::shared_pt
         // Evaluate the body - may contain awaits
         try {
             result = evaluateLoopBody(body, env, engine, context, statementIndex);
-        } catch(const BreakException&) {
+        } catch(const BreakException& e) {
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             break;
-        } catch(const ContinueException&) {
+        } catch(const ContinueException& e) {
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             continue;
         }
         // AwaitException propagates up
@@ -334,9 +352,15 @@ Value AsyncExecutor::evaluateFor(std::shared_ptr<ASTNode> node, std::shared_ptr<
         // Evaluate the body - may contain awaits
         try {
             result = evaluateLoopBody(body, loop_env, engine, context, statementIndex);
-        } catch(const BreakException&) {
+        } catch(const BreakException& e) {
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             break;
-        } catch(const ContinueException&) {
+        } catch(const ContinueException& e) {
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             // Fall through to update
         }
         // AwaitException propagates up
@@ -559,9 +583,15 @@ Value AsyncExecutor::evaluateForAwaitOf(std::shared_ptr<ASTNode> node,
         // Execute loop body
         try {
             result = evaluateLoopBody(body_node, env, engine, context, statementIndex);
-        } catch(const BreakException&) {
+        } catch(const BreakException& e) {
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             return result;
-        } catch(const ContinueException&) {
+        } catch(const ContinueException& e) {
+            if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                throw;
+            }
             // Fall through to next iteration
         }
 
@@ -603,9 +633,15 @@ Value AsyncExecutor::evaluateForAwaitOf(std::shared_ptr<ASTNode> node,
         if(containsAwaitPoint(body_node, context.currentAwaitId)) {
             try {
                 result = evaluateLoopBody(body_node, env, engine, context, statementIndex);
-            } catch(const BreakException&) {
+            } catch(const BreakException& e) {
+                if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                    throw;
+                }
                 return result;
-            } catch(const ContinueException&) {
+            } catch(const ContinueException& e) {
+                if(e.hasLabel() && e.getLabel() != extractLoopLabel(node)) {
+                    throw;
+                }
                 // Fall through to next iteration
             }
 

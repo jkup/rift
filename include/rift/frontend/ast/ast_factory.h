@@ -544,12 +544,22 @@ class ASTFactory {
         return std::make_shared<ASTNode>(ASTNodeType::DefaultClause);
     }
 
-    static std::shared_ptr<ASTNode> makeBreakStatement() {
-        return std::make_shared<ASTNode>(ASTNodeType::BreakStatement);
+    static std::shared_ptr<ASTNode> makeBreakStatement(const std::string& label = "") {
+        return std::make_shared<ASTNode>(ASTNodeType::BreakStatement, label);
     }
 
-    static std::shared_ptr<ASTNode> makeContinueStatement() {
-        return std::make_shared<ASTNode>(ASTNodeType::ContinueStatement);
+    static std::shared_ptr<ASTNode> makeContinueStatement(const std::string& label = "") {
+        return std::make_shared<ASTNode>(ASTNodeType::ContinueStatement, label);
+    }
+
+    // Labeled statement: label: statement
+    // value = label name
+    // children[0] = body statement
+    static std::shared_ptr<ASTNode> makeLabeledStatement(const std::string& label,
+                                                         std::shared_ptr<ASTNode> body) {
+        auto node = std::make_shared<ASTNode>(ASTNodeType::LabeledStatement, label);
+        node->children.push_back(std::move(body));
+        return node;
     }
 
     static void addSwitchCase(std::shared_ptr<ASTNode> switchNode,

@@ -84,7 +84,19 @@ class ReturnException : public std::exception {
 
 /// Exception for handling break statements
 class BreakException : public std::exception {
+  private:
+    std::string label_;
+
   public:
+    BreakException() = default;
+    explicit BreakException(const std::string& label) : label_(label) {
+    }
+    const std::string& getLabel() const {
+        return label_;
+    }
+    bool hasLabel() const {
+        return !label_.empty();
+    }
     const char* what() const noexcept override {
         return "Break statement";
     }
@@ -92,7 +104,19 @@ class BreakException : public std::exception {
 
 /// Exception for handling continue statements
 class ContinueException : public std::exception {
+  private:
+    std::string label_;
+
   public:
+    ContinueException() = default;
+    explicit ContinueException(const std::string& label) : label_(label) {
+    }
+    const std::string& getLabel() const {
+        return label_;
+    }
+    bool hasLabel() const {
+        return !label_.empty();
+    }
     const char* what() const noexcept override {
         return "Continue statement";
     }

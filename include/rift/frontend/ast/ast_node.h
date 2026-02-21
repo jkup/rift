@@ -74,6 +74,7 @@ enum class ASTNodeType {
     AsyncFunctionExpression,   // const f = async function() {}
     AwaitExpression,           // await value
     ForAwaitOfStatement,       // for await (x of iterable) {}
+    LabeledStatement,          // label: statement
 };
 
 struct ASTNode {

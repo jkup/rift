@@ -103,7 +103,10 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
             return evaluateBreakStatement(node, env, engine);
         // 14.8 The continue Statement
         case ASTNodeType::ContinueStatement:
-            // Signal a continue to loop evaluators
+            // Signal a continue to loop evaluators (with optional label)
+            if(!node->value.empty()) {
+                throw ContinueException(node->value);
+            }
             throw ContinueException();
         // 14.10 The return Statement
         case ASTNodeType::ReturnStatement:
@@ -132,6 +135,9 @@ Value StatementEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_pt
         // 15.7 Class Definitions — Runtime Semantics: Evaluation
         case ASTNodeType::ClassDeclaration:
             return evaluateClassDeclaration(node, env, engine);
+        // 14.13 Labelled Statements — Runtime Semantics: Evaluation
+        case ASTNodeType::LabeledStatement:
+            return evaluateLabeledStatement(node, env, engine);
         default:
             return Value::undefined();
     }

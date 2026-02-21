@@ -173,10 +173,9 @@ std::shared_ptr<ASTNode> Parser::parse() {
 // token. It implements the StatementListItem production which unions Statement
 // and Declaration.
 //
-// INCOMPLETE: LabelledStatement (14.13), EmptyStatement (14.4), and
-// DebuggerStatement (14.16) are not handled. Empty statements (lone semicolons)
-// will fall through to the expression statement path. Labelled statements are
-// not recognized and will be parsed as expression statements.
+// INCOMPLETE: EmptyStatement (14.4) and DebuggerStatement (14.16) are not
+// handled. Empty statements (lone semicolons) will fall through to the
+// expression statement path.
 std::shared_ptr<ASTNode> Parser::parse_statement() {
     // 14.3.2 Variable Statement: var VariableDeclarationList ;
     if(current_token().type == TokenType::Var) {
@@ -274,6 +273,11 @@ std::shared_ptr<ASTNode> Parser::parse_statement() {
     // 14.2 Block Statement: Block :: { StatementList? }
     if(current_token().type == TokenType::LeftBrace) {
         return parse_block_statement();
+    }
+
+    // 14.13 Labelled Statements: LabelledStatement :: LabelIdentifier : LabelledItem
+    if(current_token().type == TokenType::Identifier && peek_token().type == TokenType::Colon) {
+        return parse_labeled_statement();
     }
 
     // 14.5 Expression Statement
