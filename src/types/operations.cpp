@@ -289,13 +289,34 @@ Value OperationHandler::performBinaryOperation(const std::string& op, const Valu
     //     b. If Type(nx) is Type(ny), return Type(nx)::lessThan(nx, ny).
     //     c. (BigInt/Number cross-type comparison — not implemented)
     //
-    // SIMPLIFIED: Rift always converts both operands to numbers via toNumber(),
-    // skipping ToPrimitive and the string-vs-string lexicographic comparison path.
-    // This means string comparisons like "b" < "a" are compared numerically (NaN)
-    // instead of lexicographically. This is a known limitation.
-    //
-    // INCOMPLETE: String-to-string lexicographic comparison is not handled here.
-    // The spec says if both ToPrimitive results are strings, compare by code units.
+    // If both operands are strings, compare lexicographically by code units.
+    // Otherwise, convert both to numbers and compare numerically.
+    // DEVIATION: Full ToPrimitive coercion on objects is not yet implemented;
+    // this handles the common case where both operands are already strings.
+    if(left.isString() && right.isString()) {
+        const std::string& ls = left.getString();
+        const std::string& rs = right.getString();
+
+        // < operator: return IsLessThan(lval, rval, true).
+        if(op == "<")
+            return Value(ls < rs);
+
+        // > operator: return IsLessThan(rval, lval, false).
+        if(op == ">")
+            return Value(ls > rs);
+
+        // <= operator: Let r be IsLessThan(rval, lval, false).
+        //   If r is true or undefined, return false. Otherwise return true.
+        if(op == "<=")
+            return Value(ls <= rs);
+
+        // >= operator: Let r be IsLessThan(lval, rval, true).
+        //   If r is true or undefined, return false. Otherwise return true.
+        if(op == ">=")
+            return Value(ls >= rs);
+    }
+
+    // Numeric comparison path: convert both operands to numbers.
 
     // < operator: return IsLessThan(lval, rval, true).
     //   If result is undefined (NaN), return false.
