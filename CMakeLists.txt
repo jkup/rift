@@ -163,6 +163,8 @@ set(BUILTINS_SOURCES
     src/builtins/map/map_iterator.cpp
     src/builtins/weakmap/weakmap.cpp
     src/builtins/weakset/weakset.cpp
+    src/builtins/weakref/weakref.cpp
+    src/builtins/finalization_registry/finalization_registry.cpp
     src/builtins/generator/generator_iterator.cpp
     src/builtins/generator/async_generator_iterator.cpp
     src/builtins/promise/promise.cpp

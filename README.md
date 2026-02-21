@@ -273,6 +273,16 @@ Before submitting a PR:
 - `new WeakSet()` — `add`, `has`, `delete`
 - Object-only keys; weak references allow GC of keys
 
+#### WeakRef
+- `new WeakRef(target)` — creates a weak reference to `target`
+- `deref()` — returns the target if still alive, `undefined` if collected
+
+#### FinalizationRegistry
+- `new FinalizationRegistry(callback)` — creates a registry with cleanup callback
+- `register(target, heldValue [, unregisterToken])` — registers a target for cleanup notification
+- `unregister(unregisterToken)` — removes registrations matching the token
+- Note: cleanup callbacks are not proactively invoked (spec allows implementation-defined timing)
+
 ### Not Yet Implemented
 
 - **Language features**
@@ -286,7 +296,6 @@ Before submitting a PR:
   - TypedArray / ArrayBuffer / DataView
   - SharedArrayBuffer / Atomics
   - Intl (internationalization)
-  - WeakRef & FinalizationRegistry
 
 - **Host APIs** (not ECMA-262)
   - Timers (`setTimeout`, `setInterval`)

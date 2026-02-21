@@ -11,6 +11,7 @@
 #include "rift/builtins/error/syntax_error.h"
 #include "rift/builtins/error/type_error.h"
 #include "rift/builtins/error/uri_error.h"
+#include "rift/builtins/finalization_registry/finalization_registry.h"
 #include "rift/builtins/function/function.h"
 #include "rift/builtins/generator/async_generator_iterator.h"
 #include "rift/builtins/generator/generator_iterator.h"
@@ -39,6 +40,7 @@
 #include "rift/builtins/temporal/temporal.h"
 #include "rift/builtins/temporal/zoned_date_time.h"
 #include "rift/builtins/weakmap/weakmap.h"
+#include "rift/builtins/weakref/weakref.h"
 #include "rift/builtins/weakset/weakset.h"
 #include "rift/frontend/lexer/lexer.h"
 #include "rift/frontend/parser/parser.h"
@@ -70,6 +72,8 @@ JSObject* BuiltinManager::setPrototype_ = nullptr;
 JSObject* BuiltinManager::mapPrototype_ = nullptr;
 JSObject* BuiltinManager::weakMapPrototype_ = nullptr;
 JSObject* BuiltinManager::weakSetPrototype_ = nullptr;
+JSObject* BuiltinManager::weakRefPrototype_ = nullptr;
+JSObject* BuiltinManager::finalizationRegistryPrototype_ = nullptr;
 JSObject* BuiltinManager::promisePrototype_ = nullptr;
 JSObject* BuiltinManager::functionPrototype_ = nullptr;
 JSObject* BuiltinManager::datePrototype_ = nullptr;
@@ -107,6 +111,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::Map::setObjectFactory(factory);
         builtins::WeakMap::setObjectFactory(factory);
         builtins::WeakSet::setObjectFactory(factory);
+        builtins::WeakRef::setObjectFactory(factory);
+        builtins::FinalizationRegistry::setObjectFactory(factory);
         builtins::Promise::setObjectFactory(factory);
         builtins::Date::setObjectFactory(factory);
         builtins::Function::setObjectFactory(factory);
@@ -162,6 +168,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupMap(globalEnv, factory);
     setupWeakMap(globalEnv, factory);
     setupWeakSet(globalEnv, factory);
+    setupWeakRef(globalEnv, factory);
+    setupFinalizationRegistry(globalEnv, factory);
     setupDate(globalEnv, factory);
     setupPromise(globalEnv, factory, engine);
     setupTemporal(globalEnv, factory);
@@ -185,6 +193,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     auto* mapConstructor = globalEnv->get("Map").getObject();
     auto* weakMapConstructor = globalEnv->get("WeakMap").getObject();
     auto* weakSetConstructor = globalEnv->get("WeakSet").getObject();
+    auto* weakRefConstructor = globalEnv->get("WeakRef").getObject();
+    auto* finalizationRegistryConstructor = globalEnv->get("FinalizationRegistry").getObject();
     auto* promiseConstructor = globalEnv->get("Promise").getObject();
     auto* dateConstructor = globalEnv->get("Date").getObject();
 
@@ -224,6 +234,11 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         weakMapPrototype_ = weakMapConstructor->getProperty("prototype").getObject();
     if(weakSetConstructor)
         weakSetPrototype_ = weakSetConstructor->getProperty("prototype").getObject();
+    if(weakRefConstructor)
+        weakRefPrototype_ = weakRefConstructor->getProperty("prototype").getObject();
+    if(finalizationRegistryConstructor)
+        finalizationRegistryPrototype_ =
+            finalizationRegistryConstructor->getProperty("prototype").getObject();
     if(promiseConstructor)
         promisePrototype_ = promiseConstructor->getProperty("prototype").getObject();
     if(dateConstructor)
@@ -262,6 +277,12 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     }
     if(objectPrototype_ && weakSetPrototype_) {
         weakSetPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && weakRefPrototype_) {
+        weakRefPrototype_->setPrototype(objectPrototype_);
+    }
+    if(objectPrototype_ && finalizationRegistryPrototype_) {
+        finalizationRegistryPrototype_->setPrototype(objectPrototype_);
     }
     if(objectPrototype_ && promisePrototype_) {
         promisePrototype_->setPrototype(objectPrototype_);
@@ -374,6 +395,14 @@ JSObject* BuiltinManager::getWeakMapPrototype() {
 
 JSObject* BuiltinManager::getWeakSetPrototype() {
     return weakSetPrototype_;
+}
+
+JSObject* BuiltinManager::getWeakRefPrototype() {
+    return weakRefPrototype_;
+}
+
+JSObject* BuiltinManager::getFinalizationRegistryPrototype() {
+    return finalizationRegistryPrototype_;
 }
 
 JSObject* BuiltinManager::getPromisePrototype() {
@@ -635,6 +664,8 @@ void BuiltinManager::clearStaticPrototypes() {
     mapPrototype_ = nullptr;
     weakMapPrototype_ = nullptr;
     weakSetPrototype_ = nullptr;
+    weakRefPrototype_ = nullptr;
+    finalizationRegistryPrototype_ = nullptr;
     promisePrototype_ = nullptr;
     functionPrototype_ = nullptr;
     datePrototype_ = nullptr;
@@ -699,6 +730,20 @@ void BuiltinManager::setupWeakSet(std::shared_ptr<Environment> globalEnv,
     // Setup WeakSet object using GC-managed creation
     auto* weakSet = builtins::WeakSet::create(factory);
     globalEnv->define("WeakSet", Value(weakSet));
+}
+
+void BuiltinManager::setupWeakRef(std::shared_ptr<Environment> globalEnv,
+                                  rift::memory::ObjectFactory* factory) {
+    // Setup WeakRef object using GC-managed creation
+    auto* weakRef = builtins::WeakRef::create(factory);
+    globalEnv->define("WeakRef", Value(weakRef));
+}
+
+void BuiltinManager::setupFinalizationRegistry(std::shared_ptr<Environment> globalEnv,
+                                               rift::memory::ObjectFactory* factory) {
+    // Setup FinalizationRegistry object using GC-managed creation
+    auto* finalizationRegistry = builtins::FinalizationRegistry::create(factory);
+    globalEnv->define("FinalizationRegistry", Value(finalizationRegistry));
 }
 
 void BuiltinManager::setupPromise(std::shared_ptr<Environment> globalEnv,

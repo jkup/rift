@@ -38,6 +38,8 @@ class BuiltinManager {
     static JSObject* getMapPrototype();
     static JSObject* getWeakMapPrototype();
     static JSObject* getWeakSetPrototype();
+    static JSObject* getWeakRefPrototype();
+    static JSObject* getFinalizationRegistryPrototype();
     static JSObject* getPromisePrototype();
     static JSObject* getFunctionPrototype();
     static JSObject* getDatePrototype();
@@ -77,6 +79,8 @@ class BuiltinManager {
     static JSObject* mapPrototype_;
     static JSObject* weakMapPrototype_;
     static JSObject* weakSetPrototype_;
+    static JSObject* weakRefPrototype_;
+    static JSObject* finalizationRegistryPrototype_;
     static JSObject* promisePrototype_;
     static JSObject* functionPrototype_;
     static JSObject* datePrototype_;
@@ -134,6 +138,10 @@ class BuiltinManager {
                              rift::memory::ObjectFactory* factory);
     static void setupWeakSet(std::shared_ptr<Environment> globalEnv,
                              rift::memory::ObjectFactory* factory);
+    static void setupWeakRef(std::shared_ptr<Environment> globalEnv,
+                             rift::memory::ObjectFactory* factory);
+    static void setupFinalizationRegistry(std::shared_ptr<Environment> globalEnv,
+                                          rift::memory::ObjectFactory* factory);
     static void setupPromise(std::shared_ptr<Environment> globalEnv,
                              rift::memory::ObjectFactory* factory, Rift* engine);
     static void setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine);

@@ -85,9 +85,7 @@ const UNSUPPORTED_FEATURES = new Set([
   "Atomics",
   "SharedArrayBuffer",
 
-  // WeakRef and FinalizationRegistry
-  "WeakRef",
-  "FinalizationRegistry",
+  // Symbols as WeakMap keys
   "symbols-as-weakmap-keys",
 
   // Proxy and Reflect
