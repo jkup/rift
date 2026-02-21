@@ -139,7 +139,7 @@ export class Test262ResultsTracker {
       },
       totalCategories: categories.length,
       strongestCategories: byPassRate
-        .filter((c) => c.passRate >= 70 && c.total >= 5)
+        .filter((c) => c.passRate >= 70 && c.passRate < 100 && c.total >= 5)
         .slice(0, 10)
         .map((c) => ({
           name: c.name,

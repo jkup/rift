@@ -589,7 +589,7 @@ class Test262Runner {
     // Strongest categories
     if (summary.strongestCategories && summary.strongestCategories.length > 0) {
       console.log();
-      console.log("  " + chalk.bold.green("\u2605") + " " + chalk.bold.white("Strongest") + chalk.dim("  (\u226570% pass rate)"));
+      console.log("  " + chalk.bold.green("\u2605") + " " + chalk.bold.white("Almost There") + chalk.dim("  (70-99% pass rate)"));
       console.log("  " + chalk.dim("\u2500".repeat(W)));
       summary.strongestCategories.slice(0, 8).forEach((cat) => {
         const rate = cat.passRate / 100;
