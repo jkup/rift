@@ -53,6 +53,20 @@ using namespace rift::runtime;
                                                                       true, false, true));         \
     } while(0)
 
+/// Register a static method with explicit length (non-enumerable per spec)
+#define RIFT_STATIC_METHOD_N(obj, name, len, func)                                               \
+    do {                                                                                         \
+        auto* _fn = factory->createJSFunction(func);                                             \
+        _fn->defineProperty(                                                                     \
+            "name", rift::runtime::PropertyDescriptor(rift::runtime::Value(std::string(name)),   \
+                                                      false, false, true));                      \
+        _fn->defineProperty(                                                                     \
+            "length", rift::runtime::PropertyDescriptor(                                         \
+                          rift::runtime::Value(static_cast<double>(len)), false, false, true));  \
+        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor(rift::runtime::Value(_fn), \
+                                                                      true, false, true));       \
+    } while(0)
+
 /// Register a getter property (non-enumerable, configurable per spec)
 #define RIFT_GETTER(obj, name, func)                                                       \
     (obj)->defineProperty(name, rift::runtime::PropertyDescriptor::accessor(               \

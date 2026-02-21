@@ -46,7 +46,7 @@ void Object::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
     RIFT_STATIC_METHOD(constructor, "preventExtensions", Object::preventExtensions);
     RIFT_STATIC_METHOD(constructor, "isExtensible", Object::isExtensible);
     RIFT_STATIC_METHOD(constructor, "seal", Object::seal);
-    RIFT_STATIC_METHOD(constructor, "isSealed", Object::isSealed);
+    RIFT_STATIC_METHOD_N(constructor, "isSealed", 1, Object::isSealed);
     RIFT_STATIC_METHOD(constructor, "freeze", Object::freeze);
     RIFT_STATIC_METHOD(constructor, "isFrozen", Object::isFrozen);
     RIFT_STATIC_METHOD(constructor, "is", Object::is);

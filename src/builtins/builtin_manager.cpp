@@ -341,6 +341,9 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
 
         // Register globalThis in the global environment
         globalEnv->define("globalThis", Value(globalObject));
+
+        // In non-strict mode, 'this' at the top level refers to the global object
+        globalEnv->define("this", Value(globalObject));
     }
 }
 

@@ -24,7 +24,6 @@
 
 #include "rift/interpreter/expression_evaluator.h"
 
-#include <cerrno>
 #include <cstdlib>
 #include <iostream>
 #include <limits>
@@ -42,7 +41,7 @@ namespace rift::core {
 // @spec https://tc39.es/ecma262/#sec-literals-numeric-literals
 // Parses numeric literal strings including octal (0o) and binary (0b) prefixes.
 // SIMPLIFIED: The spec defines MV (mathematical value) of NumericLiteral via
-// grammar productions. Rift uses C++ std::stol/std::stod for conversion.
+// grammar productions. Rift uses C++ std::stol/std::strtod for conversion.
 static double parseNumericLiteral(const std::string& value) {
     if(value.size() > 2 && value[0] == '0') {
         char prefix = value[1];
@@ -57,7 +56,6 @@ static double parseNumericLiteral(const std::string& value) {
     // numbers. std::stod throws out_of_range for subnormals like 5e-324, but
     // strtod correctly returns the denormalized value.
     char* end = nullptr;
-    errno = 0;
     double result = std::strtod(value.c_str(), &end);
     if(end == value.c_str()) {
         throw std::invalid_argument("no conversion");
