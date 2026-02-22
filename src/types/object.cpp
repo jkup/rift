@@ -1,6 +1,7 @@
 #include "rift/types/object.h"
 
 #include <algorithm>
+#include <cmath>
 
 namespace rift::runtime {
 
@@ -64,7 +65,7 @@ std::pair<bool, PropertyDescriptor> JSObject::findPropertyDescriptor(const std::
     return {false, PropertyDescriptor()};
 }
 
-void JSObject::setProperty(const std::string& key, const Value& value) {
+bool JSObject::setProperty(const std::string& key, const Value& value) {
     // O(1) lookup for existing property
     auto it = property_index_.find(key);
     if(it != property_index_.end()) {
@@ -72,59 +73,136 @@ void JSObject::setProperty(const std::string& key, const Value& value) {
         // Check if property is writable
         if(desc.writable) {
             desc.value = value;
+            return true;
         }
-        // If not writable, silently fail (or could throw TypeError in strict mode)
-        return;
+        // Property is not writable — reject
+        return false;
     }
 
     // Property doesn't exist - check if object is extensible
     if(!extensible_) {
         // Cannot add new properties to non-extensible object
-        // Silently fail (or could throw TypeError in strict mode)
-        return;
+        return false;
     }
 
     // Add new property with default descriptor (all true)
     property_index_[key] = properties_.size();
     properties_.emplace_back(key, PropertyDescriptor(value));
+    return true;
 }
 
-void JSObject::defineProperty(const std::string& key, const PropertyDescriptor& descriptor) {
+bool JSObject::defineProperty(const std::string& key, const PropertyDescriptor& descriptor) {
+    // §10.1.6.3 ValidateAndApplyPropertyDescriptor ( O, P, extensible, Desc, current )
+    // @spec https://tc39.es/ecma262/#sec-validateandapplypropertydescriptor
+
     // O(1) lookup for existing property
     auto it = property_index_.find(key);
     if(it != property_index_.end()) {
         auto& existing = properties_[it->second].second;
-        // Check if property is configurable
+
+        // Step 4: If current.[[Configurable]] is false, then
         if(!existing.configurable) {
-            // §10.1.6.3 ValidateAndApplyPropertyDescriptor for non-configurable properties:
-            // - Cannot change from data to accessor or vice versa
-            // - Can change writable from true to false (but not false to true)
-            // - Can update value if writable is true
-            if(!existing.is_accessor && !descriptor.is_accessor) {
-                if(existing.writable) {
-                    // Allow changing writable true->false
-                    if(!descriptor.writable) {
-                        existing.writable = false;
-                    }
-                    existing.value = descriptor.value;
-                }
+            // Step 4.a: If Desc.[[Configurable]] is true, return false.
+            if(descriptor.configurable) {
+                return false;
             }
-            return;
+
+            // Step 4.b: If Desc.[[Enumerable]] differs from current, return false.
+            if(descriptor.enumerable != existing.enumerable) {
+                return false;
+            }
+
+            // Step 6: If current and Desc differ in accessor vs data type
+            if(existing.is_accessor != descriptor.is_accessor) {
+                // Non-configurable: cannot change between data and accessor
+                return false;
+            }
+
+            // Step 7: If both are accessor descriptors
+            if(existing.is_accessor) {
+                // Step 7.a: Cannot change getter when non-configurable
+                // Compare getter identity (both must be same function or both undefined)
+                if(existing.getter.isFunction() || descriptor.getter.isFunction()) {
+                    if(existing.getter.getType() != descriptor.getter.getType()) {
+                        return false;
+                    }
+                    if(existing.getter.isFunction() &&
+                       existing.getter.getObject() != descriptor.getter.getObject()) {
+                        return false;
+                    }
+                }
+                // Step 7.b: Cannot change setter when non-configurable
+                if(existing.setter.isFunction() || descriptor.setter.isFunction()) {
+                    if(existing.setter.getType() != descriptor.setter.getType()) {
+                        return false;
+                    }
+                    if(existing.setter.isFunction() &&
+                       existing.setter.getObject() != descriptor.setter.getObject()) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            // Step 8: Both are data descriptors, current is non-configurable
+            if(!existing.writable) {
+                // Step 8.a.i: Cannot change writable from false to true
+                if(descriptor.writable) {
+                    return false;
+                }
+                // Step 8.a.ii: Cannot change value if non-writable
+                // Use SameValue comparison (§7.2.11): NaN === NaN, +0 !== -0
+                if(descriptor.value.getType() != existing.value.getType()) {
+                    return false;
+                }
+                if(descriptor.value.isNumber()) {
+                    double a = descriptor.value.toNumber();
+                    double b = existing.value.toNumber();
+                    // SameValue: NaN equals NaN, +0 != -0
+                    if(std::isnan(a) && std::isnan(b)) {
+                        // Both NaN — same value
+                    } else if(a != b) {
+                        return false;
+                    }
+                } else if(descriptor.value.isString()) {
+                    if(descriptor.value.toString() != existing.value.toString()) {
+                        return false;
+                    }
+                } else if(descriptor.value.isBoolean()) {
+                    if(descriptor.value.toBool() != existing.value.toBool()) {
+                        return false;
+                    }
+                } else if(descriptor.value.isObject() || descriptor.value.isFunction()) {
+                    if(descriptor.value.getObject() != existing.value.getObject()) {
+                        return false;
+                    }
+                }
+                // null === null, undefined === undefined — same type is enough
+                return true;
+            }
+
+            // Writable is true: can change writable true->false, and can update value
+            if(!descriptor.writable) {
+                existing.writable = false;
+            }
+            existing.value = descriptor.value;
+            return true;
         }
-        // Update the descriptor
+        // Step 9: Property is configurable — update the descriptor freely
         existing = descriptor;
-        return;
+        return true;
     }
 
-    // Property doesn't exist - check if object is extensible
+    // Step 2: Property doesn't exist — check if object is extensible
     if(!extensible_) {
-        // Cannot add new properties to non-extensible object
-        return;
+        // Step 2.a: If extensible is false, return false.
+        return false;
     }
 
-    // Add new property
+    // Step 3: Add new property
     property_index_[key] = properties_.size();
     properties_.emplace_back(key, descriptor);
+    return true;
 }
 
 bool JSObject::deleteProperty(const std::string& key) {

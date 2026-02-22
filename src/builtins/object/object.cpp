@@ -477,39 +477,85 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
         return Value::undefined();
     }
 
+    // Get existing property descriptor to use as base for absent fields.
+    // Per spec, ToPropertyDescriptor only sets fields that are present in the
+    // JS descriptor object. Absent fields inherit from the existing property.
+    bool has_existing = obj->hasOwnProperty(propertyKey);
+    rift::runtime::PropertyDescriptor existing_desc;
+    if(has_existing) {
+        existing_desc = obj->getOwnPropertyDescriptor(propertyKey);
+    }
+
     rift::runtime::PropertyDescriptor desc;
+    bool has_get = descriptorObj->hasOwnProperty("get");
+    bool has_set = descriptorObj->hasOwnProperty("set");
 
     // ToPropertyDescriptor steps 3-4: Check for "get" and "set" (accessor descriptor).
-    Value getVal = descriptorObj->getProperty("get");
-    Value setVal = descriptorObj->getProperty("set");
-
-    if(!getVal.isUndefined() || !setVal.isUndefined()) {
+    if(has_get || has_set) {
         // Accessor descriptor
         desc.is_accessor = true;
-        desc.getter = getVal.isUndefined() ? Value::undefined() : getVal;
-        desc.setter = setVal.isUndefined() ? Value::undefined() : setVal;
+        // For absent getter/setter, inherit from existing accessor if available
+        if(has_get) {
+            desc.getter = descriptorObj->getProperty("get");
+        } else if(has_existing && existing_desc.is_accessor) {
+            desc.getter = existing_desc.getter;
+        } else {
+            desc.getter = Value::undefined();
+        }
+        if(has_set) {
+            desc.setter = descriptorObj->getProperty("set");
+        } else if(has_existing && existing_desc.is_accessor) {
+            desc.setter = existing_desc.setter;
+        } else {
+            desc.setter = Value::undefined();
+        }
+    } else if(has_existing && existing_desc.is_accessor &&
+              !descriptorObj->hasOwnProperty("value") &&
+              !descriptorObj->hasOwnProperty("writable")) {
+        // Existing is accessor and no data fields specified — stay accessor
+        desc.is_accessor = true;
+        desc.getter = existing_desc.getter;
+        desc.setter = existing_desc.setter;
     } else {
         // Data descriptor
+        desc.is_accessor = false;
+
         // ToPropertyDescriptor step 7: If Obj has a "value" property, set desc.[[Value]].
-        Value valueVal = descriptorObj->getProperty("value");
-        if(!valueVal.isUndefined()) {
-            desc.value = valueVal;
+        if(descriptorObj->hasOwnProperty("value")) {
+            desc.value = descriptorObj->getProperty("value");
+        } else if(has_existing && !existing_desc.is_accessor) {
+            desc.value = existing_desc.value;
         } else {
             desc.value = Value::undefined();
         }
 
         // ToPropertyDescriptor step 8: If Obj has a "writable" property, set desc.[[Writable]].
-        Value writableVal = descriptorObj->getProperty("writable");
-        desc.writable = !writableVal.isUndefined() && writableVal.toBool();
+        if(descriptorObj->hasOwnProperty("writable")) {
+            desc.writable = descriptorObj->getProperty("writable").toBool();
+        } else if(has_existing && !existing_desc.is_accessor) {
+            desc.writable = existing_desc.writable;
+        } else {
+            desc.writable = false;
+        }
     }
 
     // ToPropertyDescriptor step 5: If Obj has "enumerable", set desc.[[Enumerable]].
-    Value enumerableVal = descriptorObj->getProperty("enumerable");
-    desc.enumerable = !enumerableVal.isUndefined() && enumerableVal.toBool();
+    if(descriptorObj->hasOwnProperty("enumerable")) {
+        desc.enumerable = descriptorObj->getProperty("enumerable").toBool();
+    } else if(has_existing) {
+        desc.enumerable = existing_desc.enumerable;
+    } else {
+        desc.enumerable = false;
+    }
 
     // ToPropertyDescriptor step 6: If Obj has "configurable", set desc.[[Configurable]].
-    Value configurableVal = descriptorObj->getProperty("configurable");
-    desc.configurable = !configurableVal.isUndefined() && configurableVal.toBool();
+    if(descriptorObj->hasOwnProperty("configurable")) {
+        desc.configurable = descriptorObj->getProperty("configurable").toBool();
+    } else if(has_existing) {
+        desc.configurable = existing_desc.configurable;
+    } else {
+        desc.configurable = false;
+    }
 
     // 10.4.2.4 ArraySetLength ( A, Desc )
     // @spec https://tc39.es/ecma262/#sec-arraysetlength
@@ -526,7 +572,14 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
     }
 
     // 4. Perform ? DefinePropertyOrThrow(O, key, desc).
-    obj->defineProperty(propertyKey, desc);
+    // @spec https://tc39.es/ecma262/#sec-definepropertyorthrow
+    // If [[DefineOwnProperty]] returns false, throw a TypeError.
+    bool success = obj->defineProperty(propertyKey, desc);
+    if(!success) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Cannot define property '" + propertyKey +
+                  "', object is not extensible or property is non-configurable"));
+    }
 
     // 5. Return O.
     return objVal;
@@ -624,7 +677,12 @@ Value Object::defineProperties(const CallContext& ctx, const std::vector<Value>&
         //    a. Let P be pair.[[Key]].
         //    b. Let desc be pair.[[Descriptor]].
         //    c. Perform ? DefinePropertyOrThrow(O, P, desc).
-        obj->defineProperty(propName, desc);
+        bool success = obj->defineProperty(propName, desc);
+        if(!success) {
+            throw rift::core::JavaScriptException(
+                Value("TypeError: Cannot define property '" + propName +
+                      "', object is not extensible or property is non-configurable"));
+        }
     }
 
     // 6. Return O.

@@ -130,8 +130,8 @@ var desc8 = Object.getOwnPropertyDescriptor(obj8, "flexible");
 console.log("Now writable:", desc8.writable); // Should be false
 console.log("✓ Configurable property can be redefined\n");
 
-// Test 9: Attempting to redefine non-configurable property
-console.log("Test 9: Cannot redefine non-configurable property");
+// Test 9: Non-configurable but writable property can have value changed
+console.log("Test 9: Non-configurable writable property value change");
 var obj9 = {};
 Object.defineProperty(obj9, "fixed", {
   value: "original",
@@ -140,12 +140,21 @@ Object.defineProperty(obj9, "fixed", {
   configurable: false,
 });
 console.log("Initial value:", obj9.fixed);
-// Try to redefine (should fail silently)
+// Per spec, non-configurable but writable properties CAN have their value changed
 Object.defineProperty(obj9, "fixed", {
   value: "changed",
 });
-console.log("After redefine attempt:", obj9.fixed); // Should still be "original"
-console.log("✓ Non-configurable property cannot be redefined\n");
+console.log("After redefine:", obj9.fixed); // "changed" — writable allows value change
+// But non-configurable + non-writable rejects value changes
+Object.defineProperty(obj9, "fixed", { writable: false }); // writable true->false is OK
+var threw = false;
+try {
+  Object.defineProperty(obj9, "fixed", { value: "nope" });
+} catch (e) {
+  threw = true;
+}
+console.log("TypeError on non-writable change:", threw);
+console.log("✓ Non-configurable property correctly enforces spec rules\n");
 
 // Test 10: Property descriptor on undefined property
 console.log("Test 10: getOwnPropertyDescriptor on undefined property");

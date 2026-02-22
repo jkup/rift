@@ -81,13 +81,13 @@ class JSObject : public rift::memory::GCObject {
     // Property operations
     bool hasProperty(const std::string& key) const;
     Value getProperty(const std::string& key) const;
-    void setProperty(const std::string& key, const Value& value);
+    bool setProperty(const std::string& key, const Value& value);
     bool deleteProperty(const std::string& key);
 
     // Property descriptor operations
     bool hasOwnProperty(const std::string& key) const;
     PropertyDescriptor getOwnPropertyDescriptor(const std::string& key) const;
-    void defineProperty(const std::string& key, const PropertyDescriptor& descriptor);
+    bool defineProperty(const std::string& key, const PropertyDescriptor& descriptor);
     std::pair<bool, PropertyDescriptor> findPropertyDescriptor(const std::string& key) const;
 
     // Prototype chain

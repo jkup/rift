@@ -277,7 +277,20 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
                             throw JavaScriptException(err);
                         }
                     }
-                    obj->setProperty(property, newValue);
+                    bool success = obj->setProperty(property, newValue);
+                    if(!success && env->inheritsStrictMode()) {
+                        // §10.1.9.2 OrdinarySet: If [[Set]] returns false and
+                        // we're in strict mode, throw TypeError.
+                        auto* factory = engine->getObjectFactory();
+                        auto* error_obj =
+                            factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
+                        memory::GCProtector protect(error_obj, factory->getObjectManager());
+                        error_obj->setProperty("name", Value("TypeError"));
+                        error_obj->setProperty(
+                            "message",
+                            Value("Cannot assign to read only property '" + property + "'"));
+                        throw JavaScriptException(Value(error_obj), node->line, node->column);
+                    }
                 }
 
                 // 10.4.2.1 [[DefineOwnProperty]] for Array Exotic Objects
@@ -512,7 +525,18 @@ Value ExpressionEvaluator::evaluateUpdateExpression(std::shared_ptr<ASTNode> nod
                             throw JavaScriptException(err);
                         }
                     }
-                    obj->setProperty(property, newValue);
+                    bool success = obj->setProperty(property, newValue);
+                    if(!success && env->inheritsStrictMode()) {
+                        auto* factory = engine->getObjectFactory();
+                        auto* error_obj =
+                            factory->createJSObject(BuiltinManager::getTypeErrorPrototype());
+                        memory::GCProtector protect(error_obj, factory->getObjectManager());
+                        error_obj->setProperty("name", Value("TypeError"));
+                        error_obj->setProperty(
+                            "message",
+                            Value("Cannot assign to read only property '" + property + "'"));
+                        throw JavaScriptException(Value(error_obj), node->line, node->column);
+                    }
 
                     // Array exotic object: update length for numeric index assignments
                     // @spec
