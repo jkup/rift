@@ -36,11 +36,11 @@ JSObject* TemporalNow::create(rift::memory::ObjectFactory* factory) {
     factory_ = factory;
     auto* now = factory->createJSObject();
 
-    RIFT_METHOD(now, "instant", TemporalNow::instant);
-    RIFT_METHOD(now, "timeZoneId", TemporalNow::timeZoneId);
-    RIFT_METHOD(now, "plainDateISO", TemporalNow::plainDateISO);
-    RIFT_METHOD(now, "plainTimeISO", TemporalNow::plainTimeISO);
-    RIFT_METHOD(now, "plainDateTimeISO", TemporalNow::plainDateTimeISO);
+    RIFT_METHOD(now, "instant", 0, TemporalNow::instant);
+    RIFT_METHOD(now, "timeZoneId", 0, TemporalNow::timeZoneId);
+    RIFT_METHOD(now, "plainDateISO", 0, TemporalNow::plainDateISO);
+    RIFT_METHOD(now, "plainTimeISO", 0, TemporalNow::plainTimeISO);
+    RIFT_METHOD(now, "plainDateTimeISO", 0, TemporalNow::plainDateTimeISO);
 
     return now;
 }

@@ -34,70 +34,60 @@ namespace rift::builtins {
 using rift::core::extractThisString;
 
 void String::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    RIFT_STATIC_METHOD(constructor, "fromCharCode", String::fromCharCode);
-
-    // String.raw has length 1 per spec, so register manually instead of using
-    // RIFT_STATIC_METHOD which hardcodes length to 0.
-    auto* raw_fn = factory->createJSFunction(String::raw);
-    raw_fn->defineProperty(
-        "name", rift::runtime::PropertyDescriptor(rift::runtime::Value(std::string("raw")), false,
-                                                  false, true));
-    raw_fn->defineProperty(
-        "length", rift::runtime::PropertyDescriptor(rift::runtime::Value(1.0), false, false, true));
-    constructor->defineProperty(
-        "raw", rift::runtime::PropertyDescriptor(rift::runtime::Value(raw_fn), true, false, true));
+    RIFT_STATIC_METHOD(constructor, "fromCharCode", 1, String::fromCharCode);
+    RIFT_STATIC_METHOD(constructor, "raw", 1, String::raw);
 }
 
 void String::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    RIFT_METHOD(prototype, "charAt", String::charAt);
-    RIFT_METHOD(prototype, "charCodeAt", String::charCodeAt);
-    RIFT_METHOD(prototype, "concat", String::concat);
-    RIFT_METHOD(prototype, "indexOf", String::indexOf);
-    RIFT_METHOD(prototype, "lastIndexOf", String::lastIndexOf);
-    RIFT_METHOD(prototype, "slice", String::slice);
-    RIFT_METHOD(prototype, "split", String::split);
-    RIFT_METHOD(prototype, "substring", String::substring);
-    RIFT_METHOD(prototype, "toLowerCase", String::toLowerCase);
-    RIFT_METHOD(prototype, "toUpperCase", String::toUpperCase);
-    RIFT_METHOD(prototype, "toString", String::toString);
-    RIFT_METHOD(prototype, "trim", String::trim);
-    RIFT_METHOD(prototype, "valueOf", String::valueOf);
-    RIFT_METHOD(prototype, "match", String::match);
-    RIFT_METHOD(prototype, "search", String::search);
-    RIFT_METHOD(prototype, "replace", String::replace);
-    RIFT_METHOD(prototype, "startsWith", String::startsWith);
-    RIFT_METHOD(prototype, "endsWith", String::endsWith);
-    RIFT_METHOD(prototype, "includes", String::includes);
-    RIFT_METHOD(prototype, "repeat", String::repeat);
-    RIFT_METHOD(prototype, "padStart", String::padStart);
-    RIFT_METHOD(prototype, "padEnd", String::padEnd);
-    RIFT_METHOD(prototype, "trimStart", String::trimStart);
-    RIFT_METHOD(prototype, "trimEnd", String::trimEnd);
-    RIFT_METHOD(prototype, "at", String::at);
-    RIFT_METHOD(prototype, "replaceAll", String::replaceAll);
-    RIFT_METHOD(prototype, "matchAll", String::matchAll);
-    RIFT_METHOD(prototype, "normalize", String::normalize);
-    RIFT_METHOD(prototype, "isWellFormed", String::isWellFormed);
-    RIFT_METHOD(prototype, "toWellFormed", String::toWellFormed);
+    RIFT_METHOD(prototype, "charAt", 1, String::charAt);
+    RIFT_METHOD(prototype, "charCodeAt", 1, String::charCodeAt);
+    RIFT_METHOD(prototype, "concat", 1, String::concat);
+    RIFT_METHOD(prototype, "indexOf", 1, String::indexOf);
+    RIFT_METHOD(prototype, "lastIndexOf", 1, String::lastIndexOf);
+    RIFT_METHOD(prototype, "slice", 2, String::slice);
+    RIFT_METHOD(prototype, "split", 2, String::split);
+    RIFT_METHOD(prototype, "substring", 2, String::substring);
+    RIFT_METHOD(prototype, "toLowerCase", 0, String::toLowerCase);
+    RIFT_METHOD(prototype, "toUpperCase", 0, String::toUpperCase);
+    RIFT_METHOD(prototype, "toString", 0, String::toString);
+    RIFT_METHOD(prototype, "trim", 0, String::trim);
+    RIFT_METHOD(prototype, "valueOf", 0, String::valueOf);
+    RIFT_METHOD(prototype, "match", 1, String::match);
+    RIFT_METHOD(prototype, "search", 1, String::search);
+    RIFT_METHOD(prototype, "replace", 2, String::replace);
+    RIFT_METHOD(prototype, "startsWith", 1, String::startsWith);
+    RIFT_METHOD(prototype, "endsWith", 1, String::endsWith);
+    RIFT_METHOD(prototype, "includes", 1, String::includes);
+    RIFT_METHOD(prototype, "repeat", 1, String::repeat);
+    RIFT_METHOD(prototype, "padStart", 1, String::padStart);
+    RIFT_METHOD(prototype, "padEnd", 1, String::padEnd);
+    RIFT_METHOD(prototype, "trimStart", 0, String::trimStart);
+    RIFT_METHOD(prototype, "trimEnd", 0, String::trimEnd);
+    RIFT_METHOD(prototype, "at", 1, String::at);
+    RIFT_METHOD(prototype, "replaceAll", 2, String::replaceAll);
+    RIFT_METHOD(prototype, "matchAll", 1, String::matchAll);
+    RIFT_METHOD(prototype, "normalize", 0, String::normalize);
+    RIFT_METHOD(prototype, "isWellFormed", 0, String::isWellFormed);
+    RIFT_METHOD(prototype, "toWellFormed", 0, String::toWellFormed);
 
     // Annex B aliases
-    RIFT_METHOD(prototype, "trimLeft", String::trimStart);
-    RIFT_METHOD(prototype, "trimRight", String::trimEnd);
+    RIFT_METHOD(prototype, "trimLeft", 0, String::trimStart);
+    RIFT_METHOD(prototype, "trimRight", 0, String::trimEnd);
 
     // Annex B HTML methods (B.2.2)
-    RIFT_METHOD(prototype, "anchor", String::anchor);
-    RIFT_METHOD(prototype, "big", String::big);
-    RIFT_METHOD(prototype, "blink", String::blink);
-    RIFT_METHOD(prototype, "bold", String::bold);
-    RIFT_METHOD(prototype, "fixed", String::fixed);
-    RIFT_METHOD(prototype, "fontcolor", String::fontcolor);
-    RIFT_METHOD(prototype, "fontsize", String::fontsize);
-    RIFT_METHOD(prototype, "italics", String::italics);
-    RIFT_METHOD(prototype, "link", String::link);
-    RIFT_METHOD(prototype, "small", String::small);
-    RIFT_METHOD(prototype, "strike", String::strike);
-    RIFT_METHOD(prototype, "sub", String::sub);
-    RIFT_METHOD(prototype, "sup", String::sup);
+    RIFT_METHOD(prototype, "anchor", 1, String::anchor);
+    RIFT_METHOD(prototype, "big", 0, String::big);
+    RIFT_METHOD(prototype, "blink", 0, String::blink);
+    RIFT_METHOD(prototype, "bold", 0, String::bold);
+    RIFT_METHOD(prototype, "fixed", 0, String::fixed);
+    RIFT_METHOD(prototype, "fontcolor", 1, String::fontcolor);
+    RIFT_METHOD(prototype, "fontsize", 1, String::fontsize);
+    RIFT_METHOD(prototype, "italics", 0, String::italics);
+    RIFT_METHOD(prototype, "link", 1, String::link);
+    RIFT_METHOD(prototype, "small", 0, String::small);
+    RIFT_METHOD(prototype, "strike", 0, String::strike);
+    RIFT_METHOD(prototype, "sub", 0, String::sub);
+    RIFT_METHOD(prototype, "sup", 0, String::sup);
 
     // 22.1.3.36 String.prototype [ @@iterator ] ( )
     // @spec https://tc39.es/ecma262/#sec-string.prototype-%symbol.iterator%

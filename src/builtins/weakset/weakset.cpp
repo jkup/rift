@@ -33,9 +33,9 @@ void WeakSet::setupStaticMethods(JSObject* /*constructor*/,
 // 24.4.3 Properties of the WeakSet Prototype Object
 // @spec https://tc39.es/ecma262/#sec-properties-of-the-weakset-prototype-object
 void WeakSet::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    RIFT_METHOD(prototype, "add", WeakSet::add);              // 24.4.3.1
-    RIFT_METHOD(prototype, "has", WeakSet::has);              // 24.4.3.4
-    RIFT_METHOD(prototype, "delete", WeakSet::deleteMethod);  // 24.4.3.3
+    RIFT_METHOD(prototype, "add", 1, WeakSet::add);              // 24.4.3.1
+    RIFT_METHOD(prototype, "has", 1, WeakSet::has);              // 24.4.3.4
+    RIFT_METHOD(prototype, "delete", 1, WeakSet::deleteMethod);  // 24.4.3.3
 
     // WeakSet is NOT iterable - no Symbol.iterator, no keys/values/entries/forEach
     // No size property either

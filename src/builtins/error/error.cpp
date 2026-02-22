@@ -43,7 +43,7 @@ void Error::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
 
     // 20.5.3.4 Error.prototype.toString ( )
     // @spec https://tc39.es/ecma262/#sec-error.prototype.tostring
-    RIFT_METHOD(prototype, "toString", Error::toString);
+    RIFT_METHOD(prototype, "toString", 0, Error::toString);
 }
 
 // 20.5.1.1 Error ( message )

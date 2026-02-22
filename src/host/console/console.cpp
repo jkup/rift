@@ -7,10 +7,10 @@ namespace rift::builtins {
 JSObject* Console::create(rift::memory::ObjectFactory* factory) {
     auto* console = factory->createJSObject();
 
-    RIFT_METHOD(console, "log", log);
-    RIFT_METHOD(console, "error", error);
-    RIFT_METHOD(console, "warn", warn);
-    RIFT_METHOD(console, "info", info);
+    RIFT_METHOD(console, "log", 0, log);
+    RIFT_METHOD(console, "error", 0, error);
+    RIFT_METHOD(console, "warn", 0, warn);
+    RIFT_METHOD(console, "info", 0, info);
 
     return console;
 }

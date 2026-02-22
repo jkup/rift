@@ -39,8 +39,8 @@ void Boolean::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFact
 void Boolean::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // 20.3.3.1 Boolean.prototype.constructor — set up by BuiltinBase
     // @spec https://tc39.es/ecma262/#sec-boolean.prototype.constructor
-    RIFT_METHOD(prototype, "toString", Boolean::toString);
-    RIFT_METHOD(prototype, "valueOf", Boolean::valueOf);
+    RIFT_METHOD(prototype, "toString", 0, Boolean::toString);
+    RIFT_METHOD(prototype, "valueOf", 0, Boolean::valueOf);
 }
 
 // ----------------------------------------------------------------------------

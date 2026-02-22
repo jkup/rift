@@ -1227,99 +1227,66 @@ Value Date::toPrimitive(const CallContext& ctx, const std::vector<Value>& args) 
 // ============================================================================
 
 void Date::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    RIFT_STATIC_METHOD(constructor, "now", Date::now);
-    RIFT_STATIC_METHOD(constructor, "parse", Date::parse);
-    RIFT_STATIC_METHOD(constructor, "UTC", Date::UTC);
-
-    // Fix method lengths per spec
-    auto setStaticLen = [&](const char* name, double len) {
-        constructor->getProperty(name).getObject()->defineProperty(
-            "length", PropertyDescriptor(Value(len), false, false, true));
-    };
-    setStaticLen("parse", 1.0);
-    setStaticLen("UTC", 7.0);
+    RIFT_STATIC_METHOD(constructor, "now", 0, Date::now);
+    RIFT_STATIC_METHOD(constructor, "parse", 1, Date::parse);
+    RIFT_STATIC_METHOD(constructor, "UTC", 7, Date::UTC);
 }
 
 void Date::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // Getters
-    RIFT_METHOD(prototype, "getDate", Date::getDate);
-    RIFT_METHOD(prototype, "getDay", Date::getDay);
-    RIFT_METHOD(prototype, "getFullYear", Date::getFullYear);
-    RIFT_METHOD(prototype, "getHours", Date::getHours);
-    RIFT_METHOD(prototype, "getMilliseconds", Date::getMilliseconds);
-    RIFT_METHOD(prototype, "getMinutes", Date::getMinutes);
-    RIFT_METHOD(prototype, "getMonth", Date::getMonth);
-    RIFT_METHOD(prototype, "getSeconds", Date::getSeconds);
-    RIFT_METHOD(prototype, "getTime", Date::getTime);
-    RIFT_METHOD(prototype, "getTimezoneOffset", Date::getTimezoneOffset);
-    RIFT_METHOD(prototype, "getUTCDate", Date::getUTCDate);
-    RIFT_METHOD(prototype, "getUTCDay", Date::getUTCDay);
-    RIFT_METHOD(prototype, "getUTCFullYear", Date::getUTCFullYear);
-    RIFT_METHOD(prototype, "getUTCHours", Date::getUTCHours);
-    RIFT_METHOD(prototype, "getUTCMilliseconds", Date::getUTCMilliseconds);
-    RIFT_METHOD(prototype, "getUTCMinutes", Date::getUTCMinutes);
-    RIFT_METHOD(prototype, "getUTCMonth", Date::getUTCMonth);
-    RIFT_METHOD(prototype, "getUTCSeconds", Date::getUTCSeconds);
+    RIFT_METHOD(prototype, "getDate", 0, Date::getDate);
+    RIFT_METHOD(prototype, "getDay", 0, Date::getDay);
+    RIFT_METHOD(prototype, "getFullYear", 0, Date::getFullYear);
+    RIFT_METHOD(prototype, "getHours", 0, Date::getHours);
+    RIFT_METHOD(prototype, "getMilliseconds", 0, Date::getMilliseconds);
+    RIFT_METHOD(prototype, "getMinutes", 0, Date::getMinutes);
+    RIFT_METHOD(prototype, "getMonth", 0, Date::getMonth);
+    RIFT_METHOD(prototype, "getSeconds", 0, Date::getSeconds);
+    RIFT_METHOD(prototype, "getTime", 0, Date::getTime);
+    RIFT_METHOD(prototype, "getTimezoneOffset", 0, Date::getTimezoneOffset);
+    RIFT_METHOD(prototype, "getUTCDate", 0, Date::getUTCDate);
+    RIFT_METHOD(prototype, "getUTCDay", 0, Date::getUTCDay);
+    RIFT_METHOD(prototype, "getUTCFullYear", 0, Date::getUTCFullYear);
+    RIFT_METHOD(prototype, "getUTCHours", 0, Date::getUTCHours);
+    RIFT_METHOD(prototype, "getUTCMilliseconds", 0, Date::getUTCMilliseconds);
+    RIFT_METHOD(prototype, "getUTCMinutes", 0, Date::getUTCMinutes);
+    RIFT_METHOD(prototype, "getUTCMonth", 0, Date::getUTCMonth);
+    RIFT_METHOD(prototype, "getUTCSeconds", 0, Date::getUTCSeconds);
 
     // Setters
-    RIFT_METHOD(prototype, "setDate", Date::setDate);
-    RIFT_METHOD(prototype, "setFullYear", Date::setFullYear);
-    RIFT_METHOD(prototype, "setHours", Date::setHours);
-    RIFT_METHOD(prototype, "setMilliseconds", Date::setMilliseconds);
-    RIFT_METHOD(prototype, "setMinutes", Date::setMinutes);
-    RIFT_METHOD(prototype, "setMonth", Date::setMonth);
-    RIFT_METHOD(prototype, "setSeconds", Date::setSeconds);
-    RIFT_METHOD(prototype, "setTime", Date::setTime);
-    RIFT_METHOD(prototype, "setUTCDate", Date::setUTCDate);
-    RIFT_METHOD(prototype, "setUTCFullYear", Date::setUTCFullYear);
-    RIFT_METHOD(prototype, "setUTCHours", Date::setUTCHours);
-    RIFT_METHOD(prototype, "setUTCMilliseconds", Date::setUTCMilliseconds);
-    RIFT_METHOD(prototype, "setUTCMinutes", Date::setUTCMinutes);
-    RIFT_METHOD(prototype, "setUTCMonth", Date::setUTCMonth);
-    RIFT_METHOD(prototype, "setUTCSeconds", Date::setUTCSeconds);
+    RIFT_METHOD(prototype, "setDate", 1, Date::setDate);
+    RIFT_METHOD(prototype, "setFullYear", 3, Date::setFullYear);
+    RIFT_METHOD(prototype, "setHours", 4, Date::setHours);
+    RIFT_METHOD(prototype, "setMilliseconds", 1, Date::setMilliseconds);
+    RIFT_METHOD(prototype, "setMinutes", 3, Date::setMinutes);
+    RIFT_METHOD(prototype, "setMonth", 2, Date::setMonth);
+    RIFT_METHOD(prototype, "setSeconds", 2, Date::setSeconds);
+    RIFT_METHOD(prototype, "setTime", 1, Date::setTime);
+    RIFT_METHOD(prototype, "setUTCDate", 1, Date::setUTCDate);
+    RIFT_METHOD(prototype, "setUTCFullYear", 3, Date::setUTCFullYear);
+    RIFT_METHOD(prototype, "setUTCHours", 4, Date::setUTCHours);
+    RIFT_METHOD(prototype, "setUTCMilliseconds", 1, Date::setUTCMilliseconds);
+    RIFT_METHOD(prototype, "setUTCMinutes", 3, Date::setUTCMinutes);
+    RIFT_METHOD(prototype, "setUTCMonth", 2, Date::setUTCMonth);
+    RIFT_METHOD(prototype, "setUTCSeconds", 2, Date::setUTCSeconds);
 
     // Annex B methods
-    RIFT_METHOD(prototype, "getYear", Date::getYear);
-    RIFT_METHOD(prototype, "setYear", Date::setYear);
+    RIFT_METHOD(prototype, "getYear", 0, Date::getYear);
+    RIFT_METHOD(prototype, "setYear", 1, Date::setYear);
     // toGMTString is the same function object as toUTCString
-    RIFT_METHOD(prototype, "toGMTString", Date::toUTCString);
+    RIFT_METHOD(prototype, "toGMTString", 0, Date::toUTCString);
 
     // Conversion
-    RIFT_METHOD(prototype, "toDateString", Date::toDateString);
-    RIFT_METHOD(prototype, "toISOString", Date::toISOString);
-    RIFT_METHOD(prototype, "toJSON", Date::toJSON);
-    RIFT_METHOD(prototype, "toLocaleDateString", Date::toLocaleDateString);
-    RIFT_METHOD(prototype, "toLocaleString", Date::toLocaleString);
-    RIFT_METHOD(prototype, "toLocaleTimeString", Date::toLocaleTimeString);
-    RIFT_METHOD(prototype, "toString", Date::toString);
-    RIFT_METHOD(prototype, "toTimeString", Date::toTimeString);
-    RIFT_METHOD(prototype, "toUTCString", Date::toUTCString);
-    RIFT_METHOD(prototype, "valueOf", Date::valueOf);
-
-    // Fix method lengths per spec (RIFT_METHOD defaults to 0)
-    auto setLen = [&](const char* name, double len) {
-        prototype->getProperty(name).getObject()->defineProperty(
-            "length", PropertyDescriptor(Value(len), false, false, true));
-    };
-    // Setters with length > 0
-    setLen("setDate", 1.0);
-    setLen("setFullYear", 3.0);
-    setLen("setHours", 4.0);
-    setLen("setMilliseconds", 1.0);
-    setLen("setMinutes", 3.0);
-    setLen("setMonth", 2.0);
-    setLen("setSeconds", 2.0);
-    setLen("setTime", 1.0);
-    setLen("setUTCDate", 1.0);
-    setLen("setUTCFullYear", 3.0);
-    setLen("setUTCHours", 4.0);
-    setLen("setUTCMilliseconds", 1.0);
-    setLen("setUTCMinutes", 3.0);
-    setLen("setUTCMonth", 2.0);
-    setLen("setUTCSeconds", 2.0);
-    setLen("setYear", 1.0);
-    // toJSON has length 1
-    setLen("toJSON", 1.0);
+    RIFT_METHOD(prototype, "toDateString", 0, Date::toDateString);
+    RIFT_METHOD(prototype, "toISOString", 0, Date::toISOString);
+    RIFT_METHOD(prototype, "toJSON", 1, Date::toJSON);
+    RIFT_METHOD(prototype, "toLocaleDateString", 0, Date::toLocaleDateString);
+    RIFT_METHOD(prototype, "toLocaleString", 0, Date::toLocaleString);
+    RIFT_METHOD(prototype, "toLocaleTimeString", 0, Date::toLocaleTimeString);
+    RIFT_METHOD(prototype, "toString", 0, Date::toString);
+    RIFT_METHOD(prototype, "toTimeString", 0, Date::toTimeString);
+    RIFT_METHOD(prototype, "toUTCString", 0, Date::toUTCString);
+    RIFT_METHOD(prototype, "valueOf", 0, Date::valueOf);
 
     // @@toPrimitive: non-enumerable, non-writable, configurable
     auto* tp_fn = factory->createJSFunction(Date::toPrimitive);

@@ -39,7 +39,7 @@ void SyntaxError::setupPrototypeMethods(JSObject* prototype, rift::memory::Objec
 
     // DEVIATION: NativeError prototypes inherit toString from Error.prototype per spec.
     // Rift defines a separate toString on each NativeError prototype.
-    RIFT_METHOD(prototype, "toString", SyntaxError::toString);
+    RIFT_METHOD(prototype, "toString", 0, SyntaxError::toString);
 }
 
 // 20.5.5.1 NativeError ( message [, options ] )

@@ -191,9 +191,9 @@ Value TemporalDuration::wrapDuration(std::unique_ptr<temporal_rs::Duration> dur)
 void TemporalDuration::setupStaticMethods(JSObject* constructor,
                                           rift::memory::ObjectFactory* factory) {
     // 7.2.2 Temporal.Duration.from ( item )
-    RIFT_STATIC_METHOD(constructor, "from", TemporalDuration::from);
+    RIFT_STATIC_METHOD(constructor, "from", 1, TemporalDuration::from);
     // 7.2.3 Temporal.Duration.compare ( one, two [ , options ] )
-    RIFT_STATIC_METHOD(constructor, "compare", TemporalDuration::compare);
+    RIFT_STATIC_METHOD(constructor, "compare", 2, TemporalDuration::compare);
 }
 
 // ----------------------------------------------------------------------------
@@ -219,25 +219,25 @@ void TemporalDuration::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "blank", TemporalDuration::blank);
 
     // 7.3.17 Temporal.Duration.prototype.abs ( )
-    RIFT_METHOD(prototype, "abs", TemporalDuration::abs);
+    RIFT_METHOD(prototype, "abs", 0, TemporalDuration::abs);
     // 7.3.16 Temporal.Duration.prototype.negated ( )
-    RIFT_METHOD(prototype, "negated", TemporalDuration::negated);
+    RIFT_METHOD(prototype, "negated", 0, TemporalDuration::negated);
     // 7.3.18 Temporal.Duration.prototype.add ( other [ , options ] )
-    RIFT_METHOD(prototype, "add", TemporalDuration::add);
+    RIFT_METHOD(prototype, "add", 1, TemporalDuration::add);
     // 7.3.19 Temporal.Duration.prototype.subtract ( other [ , options ] )
-    RIFT_METHOD(prototype, "subtract", TemporalDuration::subtract);
+    RIFT_METHOD(prototype, "subtract", 1, TemporalDuration::subtract);
 
     // 7.3.20 Temporal.Duration.prototype.round ( roundTo )
-    RIFT_METHOD(prototype, "round", TemporalDuration::round);
+    RIFT_METHOD(prototype, "round", 1, TemporalDuration::round);
     // 7.3.21 Temporal.Duration.prototype.total ( totalOf )
-    RIFT_METHOD(prototype, "total", TemporalDuration::total);
+    RIFT_METHOD(prototype, "total", 1, TemporalDuration::total);
 
     // 7.3.22 Temporal.Duration.prototype.toString ( [ options ] )
-    RIFT_METHOD(prototype, "toString", TemporalDuration::toString);
+    RIFT_METHOD(prototype, "toString", 0, TemporalDuration::toString);
     // 7.3.23 Temporal.Duration.prototype.toJSON ( )
-    RIFT_METHOD(prototype, "toJSON", TemporalDuration::toJSON);
+    RIFT_METHOD(prototype, "toJSON", 0, TemporalDuration::toJSON);
     // 7.3.24 Temporal.Duration.prototype.valueOf ( )
-    RIFT_METHOD(prototype, "valueOf", TemporalDuration::valueOf);
+    RIFT_METHOD(prototype, "valueOf", 0, TemporalDuration::valueOf);
 }
 
 // ============================================================================

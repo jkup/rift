@@ -41,13 +41,13 @@ void WeakMap::setupStaticMethods(JSObject* /*constructor*/,
 // @spec https://tc39.es/ecma262/#sec-properties-of-the-weakmap-prototype-object
 void WeakMap::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // 24.3.3.3 WeakMap.prototype.get ( key )
-    RIFT_METHOD(prototype, "get", WeakMap::get);
+    RIFT_METHOD(prototype, "get", 1, WeakMap::get);
     // 24.3.3.5 WeakMap.prototype.set ( key, value )
-    RIFT_METHOD(prototype, "set", WeakMap::set);
+    RIFT_METHOD(prototype, "set", 2, WeakMap::set);
     // 24.3.3.4 WeakMap.prototype.has ( key )
-    RIFT_METHOD(prototype, "has", WeakMap::has);
+    RIFT_METHOD(prototype, "has", 1, WeakMap::has);
     // 24.3.3.2 WeakMap.prototype.delete ( key )
-    RIFT_METHOD(prototype, "delete", WeakMap::deleteMethod);
+    RIFT_METHOD(prototype, "delete", 1, WeakMap::deleteMethod);
 
     // WeakMap is NOT iterable - no Symbol.iterator, no keys/values/entries/forEach
     // No size property either

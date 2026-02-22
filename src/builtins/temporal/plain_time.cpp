@@ -229,9 +229,9 @@ Value TemporalPlainTime::wrapPlainTime(std::unique_ptr<temporal_rs::PlainTime> t
 void TemporalPlainTime::setupStaticMethods(JSObject* constructor,
                                            rift::memory::ObjectFactory* factory) {
     // 4.2.2 Temporal.PlainTime.from ( item [ , options ] )
-    RIFT_STATIC_METHOD(constructor, "from", TemporalPlainTime::from);
+    RIFT_STATIC_METHOD(constructor, "from", 1, TemporalPlainTime::from);
     // 4.2.3 Temporal.PlainTime.compare ( one, two )
-    RIFT_STATIC_METHOD(constructor, "compare", TemporalPlainTime::compare);
+    RIFT_STATIC_METHOD(constructor, "compare", 2, TemporalPlainTime::compare);
 }
 
 // ----------------------------------------------------------------------------
@@ -250,32 +250,32 @@ void TemporalPlainTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "nanosecond", TemporalPlainTime::nanosecond);    // 4.3.9
 
     // 4.3.10 Temporal.PlainTime.prototype.with ( temporalTimeLike [ , options ] )
-    RIFT_METHOD(prototype, "with", TemporalPlainTime::with);
+    RIFT_METHOD(prototype, "with", 1, TemporalPlainTime::with);
 
     // 4.3.11 Temporal.PlainTime.prototype.add ( temporalDurationLike )
-    RIFT_METHOD(prototype, "add", TemporalPlainTime::add);
+    RIFT_METHOD(prototype, "add", 1, TemporalPlainTime::add);
     // 4.3.12 Temporal.PlainTime.prototype.subtract ( temporalDurationLike )
-    RIFT_METHOD(prototype, "subtract", TemporalPlainTime::subtract);
+    RIFT_METHOD(prototype, "subtract", 1, TemporalPlainTime::subtract);
 
     // 4.3.13 Temporal.PlainTime.prototype.until ( other [ , options ] )
-    RIFT_METHOD(prototype, "until", TemporalPlainTime::until);
+    RIFT_METHOD(prototype, "until", 1, TemporalPlainTime::until);
     // 4.3.14 Temporal.PlainTime.prototype.since ( other [ , options ] )
-    RIFT_METHOD(prototype, "since", TemporalPlainTime::since);
+    RIFT_METHOD(prototype, "since", 1, TemporalPlainTime::since);
 
     // 4.3.15 Temporal.PlainTime.prototype.round ( roundTo )
     // INCOMPLETE: round() is not implemented.
 
     // 4.3.16 Temporal.PlainTime.prototype.equals ( other )
-    RIFT_METHOD(prototype, "equals", TemporalPlainTime::equals);
+    RIFT_METHOD(prototype, "equals", 1, TemporalPlainTime::equals);
 
     // 4.3.17 Temporal.PlainTime.prototype.toString ( [ options ] )
-    RIFT_METHOD(prototype, "toString", TemporalPlainTime::toString);
+    RIFT_METHOD(prototype, "toString", 0, TemporalPlainTime::toString);
     // 4.3.18 Temporal.PlainTime.prototype.toLocaleString ( [ locales [ , options ] ] )
     // INCOMPLETE: toLocaleString is not implemented.
     // 4.3.19 Temporal.PlainTime.prototype.toJSON ( )
-    RIFT_METHOD(prototype, "toJSON", TemporalPlainTime::toJSON);
+    RIFT_METHOD(prototype, "toJSON", 0, TemporalPlainTime::toJSON);
     // 4.3.20 Temporal.PlainTime.prototype.valueOf ( )
-    RIFT_METHOD(prototype, "valueOf", TemporalPlainTime::valueOf);
+    RIFT_METHOD(prototype, "valueOf", 0, TemporalPlainTime::valueOf);
 
     // 4.3.21 Temporal.PlainTime.prototype.toPlainDateTime ( temporalDate )
     // INCOMPLETE: toPlainDateTime is not implemented.

@@ -41,7 +41,7 @@ void ReferenceError::setupPrototypeMethods(JSObject* prototype,
 
     // DEVIATION: NativeError prototypes inherit toString from Error.prototype per spec.
     // Rift defines a separate toString on each NativeError prototype.
-    RIFT_METHOD(prototype, "toString", ReferenceError::toString);
+    RIFT_METHOD(prototype, "toString", 0, ReferenceError::toString);
 }
 
 // 20.5.5.1 NativeError ( message [, options ] )

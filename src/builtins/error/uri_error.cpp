@@ -26,7 +26,7 @@ void URIError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFa
         "name", rift::runtime::PropertyDescriptor(Value("URIError"), true, false, true));
     prototype->defineProperty("message",
                               rift::runtime::PropertyDescriptor(Value(""), true, false, true));
-    RIFT_METHOD(prototype, "toString", URIError::toString);
+    RIFT_METHOD(prototype, "toString", 0, URIError::toString);
 }
 
 // 20.5.5.1 NativeError ( message [, options ] )

@@ -60,22 +60,22 @@ void Number::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
     RIFT_PROPERTY(constructor, "EPSILON", Value(EPSILON));
 
     // Number static methods (21.1.2)
-    RIFT_STATIC_METHOD(constructor, "isNaN", Number::isNaN);
-    RIFT_STATIC_METHOD(constructor, "isFinite", Number::isFinite);
-    RIFT_STATIC_METHOD(constructor, "isInteger", Number::isInteger);
-    RIFT_STATIC_METHOD(constructor, "isSafeInteger", Number::isSafeInteger);
-    RIFT_STATIC_METHOD(constructor, "parseFloat", Number::parseFloat);
-    RIFT_STATIC_METHOD(constructor, "parseInt", Number::parseInt);
+    RIFT_STATIC_METHOD(constructor, "isNaN", 1, Number::isNaN);
+    RIFT_STATIC_METHOD(constructor, "isFinite", 1, Number::isFinite);
+    RIFT_STATIC_METHOD(constructor, "isInteger", 1, Number::isInteger);
+    RIFT_STATIC_METHOD(constructor, "isSafeInteger", 1, Number::isSafeInteger);
+    RIFT_STATIC_METHOD(constructor, "parseFloat", 1, Number::parseFloat);
+    RIFT_STATIC_METHOD(constructor, "parseInt", 2, Number::parseInt);
 }
 
 // 21.1.3 Properties of the Number Prototype Object
 // @spec https://tc39.es/ecma262/#sec-properties-of-the-number-prototype-object
 void Number::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    RIFT_METHOD(prototype, "toString", Number::toString);
-    RIFT_METHOD(prototype, "valueOf", Number::valueOf);
-    RIFT_METHOD(prototype, "toFixed", Number::toFixed);
-    RIFT_METHOD(prototype, "toExponential", Number::toExponential);
-    RIFT_METHOD(prototype, "toPrecision", Number::toPrecision);
+    RIFT_METHOD(prototype, "toString", 1, Number::toString);
+    RIFT_METHOD(prototype, "valueOf", 0, Number::valueOf);
+    RIFT_METHOD(prototype, "toFixed", 1, Number::toFixed);
+    RIFT_METHOD(prototype, "toExponential", 1, Number::toExponential);
+    RIFT_METHOD(prototype, "toPrecision", 1, Number::toPrecision);
 }
 
 // 21.1.1.1 Number ( value )

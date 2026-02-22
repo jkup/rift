@@ -32,37 +32,39 @@ namespace rift::builtins {
 using rift::core::CallContext;
 
 void Object::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    RIFT_STATIC_METHOD(constructor, "keys", Object::keys);
-    RIFT_STATIC_METHOD(constructor, "values", Object::values);
-    RIFT_STATIC_METHOD(constructor, "entries", Object::entries);
-    RIFT_STATIC_METHOD(constructor, "defineProperty", Object::defineProperty);
-    RIFT_STATIC_METHOD(constructor, "defineProperties", Object::defineProperties);
-    RIFT_STATIC_METHOD(constructor, "getOwnPropertyDescriptor", Object::getOwnPropertyDescriptor);
-    RIFT_STATIC_METHOD(constructor, "create", Object::jsCreate);
-    RIFT_STATIC_METHOD(constructor, "getPrototypeOf", Object::getPrototypeOf);
-    RIFT_STATIC_METHOD(constructor, "setPrototypeOf", Object::setPrototypeOf);
-    RIFT_STATIC_METHOD(constructor, "getOwnPropertyNames", Object::getOwnPropertyNames);
-    RIFT_STATIC_METHOD(constructor, "getOwnPropertySymbols", Object::getOwnPropertySymbols);
-    RIFT_STATIC_METHOD(constructor, "assign", Object::assign);
-    RIFT_STATIC_METHOD(constructor, "preventExtensions", Object::preventExtensions);
-    RIFT_STATIC_METHOD(constructor, "isExtensible", Object::isExtensible);
-    RIFT_STATIC_METHOD(constructor, "seal", Object::seal);
-    RIFT_STATIC_METHOD_N(constructor, "isSealed", 1, Object::isSealed);
-    RIFT_STATIC_METHOD(constructor, "freeze", Object::freeze);
-    RIFT_STATIC_METHOD(constructor, "isFrozen", Object::isFrozen);
-    RIFT_STATIC_METHOD(constructor, "is", Object::is);
-    RIFT_STATIC_METHOD(constructor, "hasOwn", Object::hasOwn);
-    RIFT_STATIC_METHOD(constructor, "fromEntries", Object::fromEntries);
-    RIFT_STATIC_METHOD_N(constructor, "groupBy", 2, Object::groupBy);
-    RIFT_STATIC_METHOD(constructor, "getOwnPropertyDescriptors", Object::getOwnPropertyDescriptors);
+    RIFT_STATIC_METHOD(constructor, "keys", 1, Object::keys);
+    RIFT_STATIC_METHOD(constructor, "values", 1, Object::values);
+    RIFT_STATIC_METHOD(constructor, "entries", 1, Object::entries);
+    RIFT_STATIC_METHOD(constructor, "defineProperty", 3, Object::defineProperty);
+    RIFT_STATIC_METHOD(constructor, "defineProperties", 2, Object::defineProperties);
+    RIFT_STATIC_METHOD(constructor, "getOwnPropertyDescriptor", 2,
+                       Object::getOwnPropertyDescriptor);
+    RIFT_STATIC_METHOD(constructor, "create", 2, Object::jsCreate);
+    RIFT_STATIC_METHOD(constructor, "getPrototypeOf", 1, Object::getPrototypeOf);
+    RIFT_STATIC_METHOD(constructor, "setPrototypeOf", 2, Object::setPrototypeOf);
+    RIFT_STATIC_METHOD(constructor, "getOwnPropertyNames", 1, Object::getOwnPropertyNames);
+    RIFT_STATIC_METHOD(constructor, "getOwnPropertySymbols", 1, Object::getOwnPropertySymbols);
+    RIFT_STATIC_METHOD(constructor, "assign", 2, Object::assign);
+    RIFT_STATIC_METHOD(constructor, "preventExtensions", 1, Object::preventExtensions);
+    RIFT_STATIC_METHOD(constructor, "isExtensible", 1, Object::isExtensible);
+    RIFT_STATIC_METHOD(constructor, "seal", 1, Object::seal);
+    RIFT_STATIC_METHOD(constructor, "isSealed", 1, Object::isSealed);
+    RIFT_STATIC_METHOD(constructor, "freeze", 1, Object::freeze);
+    RIFT_STATIC_METHOD(constructor, "isFrozen", 1, Object::isFrozen);
+    RIFT_STATIC_METHOD(constructor, "is", 2, Object::is);
+    RIFT_STATIC_METHOD(constructor, "hasOwn", 2, Object::hasOwn);
+    RIFT_STATIC_METHOD(constructor, "fromEntries", 1, Object::fromEntries);
+    RIFT_STATIC_METHOD(constructor, "groupBy", 2, Object::groupBy);
+    RIFT_STATIC_METHOD(constructor, "getOwnPropertyDescriptors", 1,
+                       Object::getOwnPropertyDescriptors);
 }
 
 void Object::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    RIFT_METHOD(prototype, "toString", Object::toString);
-    RIFT_METHOD(prototype, "valueOf", Object::valueOf);
-    RIFT_METHOD(prototype, "hasOwnProperty", Object::hasOwnProperty);
-    RIFT_METHOD(prototype, "propertyIsEnumerable", Object::propertyIsEnumerable);
-    RIFT_METHOD(prototype, "isPrototypeOf", Object::isPrototypeOf);
+    RIFT_METHOD(prototype, "toString", 0, Object::toString);
+    RIFT_METHOD(prototype, "valueOf", 0, Object::valueOf);
+    RIFT_METHOD(prototype, "hasOwnProperty", 1, Object::hasOwnProperty);
+    RIFT_METHOD(prototype, "propertyIsEnumerable", 1, Object::propertyIsEnumerable);
+    RIFT_METHOD(prototype, "isPrototypeOf", 1, Object::isPrototypeOf);
 }
 
 // 20.1.1.1 Object ( [ value ] )

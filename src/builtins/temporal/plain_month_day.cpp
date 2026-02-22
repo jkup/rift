@@ -161,7 +161,7 @@ Value TemporalPlainMonthDay::wrapPlainMonthDay(std::unique_ptr<temporal_rs::Plai
 // @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plainmonthday-constructor
 void TemporalPlainMonthDay::setupStaticMethods(JSObject* constructor,
                                                rift::memory::ObjectFactory* factory) {
-    RIFT_STATIC_METHOD(constructor, "from", TemporalPlainMonthDay::from);
+    RIFT_STATIC_METHOD(constructor, "from", 1, TemporalPlainMonthDay::from);
 }
 
 // 10.3 Properties of the Temporal.PlainMonthDay Prototype Object
@@ -175,18 +175,18 @@ void TemporalPlainMonthDay::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "calendarId", TemporalPlainMonthDay::calendarId);
 
     // Mutation
-    RIFT_METHOD(prototype, "with", TemporalPlainMonthDay::with);
+    RIFT_METHOD(prototype, "with", 1, TemporalPlainMonthDay::with);
 
     // Comparison
-    RIFT_METHOD(prototype, "equals", TemporalPlainMonthDay::equals);
+    RIFT_METHOD(prototype, "equals", 1, TemporalPlainMonthDay::equals);
 
     // Conversion
-    RIFT_METHOD(prototype, "toPlainDate", TemporalPlainMonthDay::toPlainDate);
+    RIFT_METHOD(prototype, "toPlainDate", 1, TemporalPlainMonthDay::toPlainDate);
 
     // String
-    RIFT_METHOD(prototype, "toString", TemporalPlainMonthDay::toString);
-    RIFT_METHOD(prototype, "toJSON", TemporalPlainMonthDay::toJSON);
-    RIFT_METHOD(prototype, "valueOf", TemporalPlainMonthDay::valueOf);
+    RIFT_METHOD(prototype, "toString", 0, TemporalPlainMonthDay::toString);
+    RIFT_METHOD(prototype, "toJSON", 0, TemporalPlainMonthDay::toJSON);
+    RIFT_METHOD(prototype, "valueOf", 0, TemporalPlainMonthDay::valueOf);
 }
 
 // 10.1.1 Temporal.PlainMonthDay ( isoMonth, isoDay [ , calendar [ , referenceISOYear ] ] )

@@ -39,7 +39,7 @@ void WeakRef::setupStaticMethods(JSObject* /*constructor*/,
 // @spec https://tc39.es/ecma262/#sec-properties-of-the-weak-ref-prototype-object
 void WeakRef::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // 26.1.3.2 WeakRef.prototype.deref ()
-    RIFT_METHOD(prototype, "deref", WeakRef::deref);
+    RIFT_METHOD(prototype, "deref", 0, WeakRef::deref);
 
     // 26.1.3.3 WeakRef.prototype [ @@toStringTag ]
     // @spec https://tc39.es/ecma262/#sec-weak-ref.prototype-@@tostringtag

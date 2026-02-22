@@ -34,10 +34,10 @@ void Function::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFac
 // 20.2.3 Properties of the Function Prototype Object
 // @spec https://tc39.es/ecma262/#sec-properties-of-the-function-prototype-object
 void Function::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
-    RIFT_METHOD(prototype, "call", Function::call);          // 20.2.3.3
-    RIFT_METHOD(prototype, "apply", Function::apply);        // 20.2.3.1
-    RIFT_METHOD(prototype, "bind", Function::bind);          // 20.2.3.2
-    RIFT_METHOD(prototype, "toString", Function::toString);  // 20.2.3.5
+    RIFT_METHOD(prototype, "call", 1, Function::call);          // 20.2.3.3
+    RIFT_METHOD(prototype, "apply", 2, Function::apply);        // 20.2.3.1
+    RIFT_METHOD(prototype, "bind", 1, Function::bind);          // 20.2.3.2
+    RIFT_METHOD(prototype, "toString", 0, Function::toString);  // 20.2.3.5
     // TODO: 20.2.3.6 Function.prototype[@@hasInstance] ( V )
     // @spec https://tc39.es/ecma262/#sec-function.prototype-@@hasinstance
     // Not yet implemented.

@@ -54,21 +54,21 @@ void Set::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory*
 // ----------------------------------------------------------------------------
 void Set::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // 24.2.3.1 Set.prototype.add ( value )
-    RIFT_METHOD(prototype, "add", Set::add);
+    RIFT_METHOD(prototype, "add", 1, Set::add);
     // 24.2.3.7 Set.prototype.has ( value )
-    RIFT_METHOD(prototype, "has", Set::has);
+    RIFT_METHOD(prototype, "has", 1, Set::has);
     // 24.2.3.4 Set.prototype.delete ( value )
-    RIFT_METHOD(prototype, "delete", Set::deleteMethod);
+    RIFT_METHOD(prototype, "delete", 1, Set::deleteMethod);
     // 24.2.3.2 Set.prototype.clear ( )
-    RIFT_METHOD(prototype, "clear", Set::clear);
+    RIFT_METHOD(prototype, "clear", 0, Set::clear);
     // 24.2.3.6 Set.prototype.forEach ( callbackfn [ , thisArg ] )
-    RIFT_METHOD(prototype, "forEach", Set::forEach);
+    RIFT_METHOD(prototype, "forEach", 1, Set::forEach);
     // 24.2.3.10 Set.prototype.values ( )
-    RIFT_METHOD(prototype, "values", Set::values);
+    RIFT_METHOD(prototype, "values", 0, Set::values);
     // 24.2.3.8 Set.prototype.keys ( )
-    RIFT_METHOD(prototype, "keys", Set::keys);
+    RIFT_METHOD(prototype, "keys", 0, Set::keys);
     // 24.2.3.5 Set.prototype.entries ( )
-    RIFT_METHOD(prototype, "entries", Set::entries);
+    RIFT_METHOD(prototype, "entries", 0, Set::entries);
 
     // 24.2.3.9 get Set.prototype.size
     // @spec https://tc39.es/ecma262/#sec-get-set.prototype.size

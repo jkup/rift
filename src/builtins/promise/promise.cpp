@@ -48,19 +48,19 @@ rift::core::Rift* Promise::engine_ = nullptr;
 // ----------------------------------------------------------------------------
 void Promise::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // 27.2.4.7 Promise.resolve ( x )
-    RIFT_STATIC_METHOD(constructor, "resolve", Promise::resolve);
+    RIFT_STATIC_METHOD(constructor, "resolve", 1, Promise::resolve);
     // 27.2.4.6 Promise.reject ( r )
-    RIFT_STATIC_METHOD(constructor, "reject", Promise::reject);
+    RIFT_STATIC_METHOD(constructor, "reject", 1, Promise::reject);
     // 27.2.4.1 Promise.all ( iterable )
-    RIFT_STATIC_METHOD(constructor, "all", Promise::all);
+    RIFT_STATIC_METHOD(constructor, "all", 1, Promise::all);
     // 27.2.4.5 Promise.race ( iterable )
-    RIFT_STATIC_METHOD(constructor, "race", Promise::race);
+    RIFT_STATIC_METHOD(constructor, "race", 1, Promise::race);
     // 27.2.4.2 Promise.allSettled ( iterable )
-    RIFT_STATIC_METHOD(constructor, "allSettled", Promise::allSettled);
+    RIFT_STATIC_METHOD(constructor, "allSettled", 1, Promise::allSettled);
     // 27.2.4.3 Promise.any ( iterable )
-    RIFT_STATIC_METHOD(constructor, "any", Promise::any);
+    RIFT_STATIC_METHOD(constructor, "any", 1, Promise::any);
     // 27.2.4.8 Promise.withResolvers ( )
-    RIFT_STATIC_METHOD(constructor, "withResolvers", Promise::withResolvers);
+    RIFT_STATIC_METHOD(constructor, "withResolvers", 0, Promise::withResolvers);
     // TODO: 27.2.4.4 get Promise [ @@species ] -- not yet implemented.
     // @spec https://tc39.es/ecma262/#sec-get-promise-@@species
 }
@@ -77,11 +77,11 @@ void Promise::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFact
 // ----------------------------------------------------------------------------
 void Promise::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // 27.2.5.4 Promise.prototype.then ( onFulfilled, onRejected )
-    RIFT_METHOD(prototype, "then", Promise::then);
+    RIFT_METHOD(prototype, "then", 2, Promise::then);
     // 27.2.5.1 Promise.prototype.catch ( onRejected )
-    RIFT_METHOD(prototype, "catch", Promise::catch_);
+    RIFT_METHOD(prototype, "catch", 1, Promise::catch_);
     // 27.2.5.3 Promise.prototype.finally ( onFinally )
-    RIFT_METHOD(prototype, "finally", Promise::finally_);
+    RIFT_METHOD(prototype, "finally", 1, Promise::finally_);
     // TODO: 27.2.5.2 Promise.prototype.constructor -- should point to %Promise%.
     // TODO: 27.2.5.5 Promise.prototype [ @@toStringTag ] -- "Promise"
 }

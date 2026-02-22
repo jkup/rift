@@ -104,11 +104,12 @@ Value TemporalInstant::wrapInstant(std::unique_ptr<temporal_rs::Instant> instant
 // ============================================================================
 void TemporalInstant::setupStaticMethods(JSObject* constructor,
                                          rift::memory::ObjectFactory* factory) {
-    RIFT_STATIC_METHOD(constructor, "from", TemporalInstant::from);
-    RIFT_STATIC_METHOD(constructor, "fromEpochMilliseconds",
+    RIFT_STATIC_METHOD(constructor, "from", 1, TemporalInstant::from);
+    RIFT_STATIC_METHOD(constructor, "fromEpochMilliseconds", 1,
                        TemporalInstant::fromEpochMilliseconds);
-    RIFT_STATIC_METHOD(constructor, "fromEpochNanoseconds", TemporalInstant::fromEpochNanoseconds);
-    RIFT_STATIC_METHOD(constructor, "compare", TemporalInstant::compare);
+    RIFT_STATIC_METHOD(constructor, "fromEpochNanoseconds", 1,
+                       TemporalInstant::fromEpochNanoseconds);
+    RIFT_STATIC_METHOD(constructor, "compare", 2, TemporalInstant::compare);
 }
 
 // 8.3 Properties of the Temporal.Instant Prototype Object
@@ -117,14 +118,14 @@ void TemporalInstant::setupPrototypeMethods(JSObject* prototype,
                                             rift::memory::ObjectFactory* factory) {
     RIFT_GETTER(prototype, "epochMilliseconds", TemporalInstant::epochMilliseconds);
     RIFT_GETTER(prototype, "epochNanoseconds", TemporalInstant::epochNanoseconds);
-    RIFT_METHOD(prototype, "add", TemporalInstant::add);
-    RIFT_METHOD(prototype, "subtract", TemporalInstant::subtract);
-    RIFT_METHOD(prototype, "equals", TemporalInstant::equals);
-    RIFT_METHOD(prototype, "since", TemporalInstant::since);
-    RIFT_METHOD(prototype, "until", TemporalInstant::until);
-    RIFT_METHOD(prototype, "toString", TemporalInstant::toString);
-    RIFT_METHOD(prototype, "toJSON", TemporalInstant::toJSON);
-    RIFT_METHOD(prototype, "valueOf", TemporalInstant::valueOf);
+    RIFT_METHOD(prototype, "add", 1, TemporalInstant::add);
+    RIFT_METHOD(prototype, "subtract", 1, TemporalInstant::subtract);
+    RIFT_METHOD(prototype, "equals", 1, TemporalInstant::equals);
+    RIFT_METHOD(prototype, "since", 1, TemporalInstant::since);
+    RIFT_METHOD(prototype, "until", 1, TemporalInstant::until);
+    RIFT_METHOD(prototype, "toString", 0, TemporalInstant::toString);
+    RIFT_METHOD(prototype, "toJSON", 0, TemporalInstant::toJSON);
+    RIFT_METHOD(prototype, "valueOf", 0, TemporalInstant::valueOf);
 }
 
 // ============================================================================

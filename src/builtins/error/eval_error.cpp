@@ -26,7 +26,7 @@ void EvalError::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectF
         "name", rift::runtime::PropertyDescriptor(Value("EvalError"), true, false, true));
     prototype->defineProperty("message",
                               rift::runtime::PropertyDescriptor(Value(""), true, false, true));
-    RIFT_METHOD(prototype, "toString", EvalError::toString);
+    RIFT_METHOD(prototype, "toString", 0, EvalError::toString);
 }
 
 // 20.5.5.1 NativeError ( message [, options ] )

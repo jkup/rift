@@ -39,7 +39,7 @@ void RangeError::setupPrototypeMethods(JSObject* prototype, rift::memory::Object
 
     // DEVIATION: NativeError prototypes inherit toString from Error.prototype per spec.
     // Rift defines a separate toString on each NativeError prototype.
-    RIFT_METHOD(prototype, "toString", RangeError::toString);
+    RIFT_METHOD(prototype, "toString", 0, RangeError::toString);
 }
 
 // 20.5.5.1 NativeError ( message [, options ] )

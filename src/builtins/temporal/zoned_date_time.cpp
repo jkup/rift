@@ -306,9 +306,9 @@ Value TemporalZonedDateTime::wrapZonedDateTime(std::unique_ptr<temporal_rs::Zone
 void TemporalZonedDateTime::setupStaticMethods(JSObject* constructor,
                                                rift::memory::ObjectFactory* factory) {
     // 6.2.2 Temporal.ZonedDateTime.from ( item [ , options ] )
-    RIFT_STATIC_METHOD(constructor, "from", TemporalZonedDateTime::from);
+    RIFT_STATIC_METHOD(constructor, "from", 1, TemporalZonedDateTime::from);
     // 6.2.3 Temporal.ZonedDateTime.compare ( one, two )
-    RIFT_STATIC_METHOD(constructor, "compare", TemporalZonedDateTime::compare);
+    RIFT_STATIC_METHOD(constructor, "compare", 2, TemporalZonedDateTime::compare);
 }
 
 // ----------------------------------------------------------------------------
@@ -352,47 +352,47 @@ void TemporalZonedDateTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "epochNanoseconds", TemporalZonedDateTime::epochNanoseconds);
 
     // 6.3.24 Temporal.ZonedDateTime.prototype.with ( temporalZonedDateTimeLike [ , options ] )
-    RIFT_METHOD(prototype, "with", TemporalZonedDateTime::with);
+    RIFT_METHOD(prototype, "with", 1, TemporalZonedDateTime::with);
     // 6.3.26 Temporal.ZonedDateTime.prototype.withTimeZone ( timeZoneLike )
-    RIFT_METHOD(prototype, "withTimeZone", TemporalZonedDateTime::withTimeZone);
+    RIFT_METHOD(prototype, "withTimeZone", 1, TemporalZonedDateTime::withTimeZone);
     // 6.3.25 Temporal.ZonedDateTime.prototype.withCalendar ( calendarLike )
-    RIFT_METHOD(prototype, "withCalendar", TemporalZonedDateTime::withCalendar);
+    RIFT_METHOD(prototype, "withCalendar", 1, TemporalZonedDateTime::withCalendar);
     // 6.3.27 Temporal.ZonedDateTime.prototype.withPlainTime ( [ plainTimeLike ] )
-    RIFT_METHOD(prototype, "withPlainTime", TemporalZonedDateTime::withPlainTime);
+    RIFT_METHOD(prototype, "withPlainTime", 0, TemporalZonedDateTime::withPlainTime);
 
     // 6.3.28 Temporal.ZonedDateTime.prototype.add ( temporalDurationLike [ , options ] )
-    RIFT_METHOD(prototype, "add", TemporalZonedDateTime::add);
+    RIFT_METHOD(prototype, "add", 1, TemporalZonedDateTime::add);
     // 6.3.29 Temporal.ZonedDateTime.prototype.subtract ( temporalDurationLike [ , options ] )
-    RIFT_METHOD(prototype, "subtract", TemporalZonedDateTime::subtract);
+    RIFT_METHOD(prototype, "subtract", 1, TemporalZonedDateTime::subtract);
 
     // 6.3.30 Temporal.ZonedDateTime.prototype.until ( other [ , options ] )
-    RIFT_METHOD(prototype, "until", TemporalZonedDateTime::until);
+    RIFT_METHOD(prototype, "until", 1, TemporalZonedDateTime::until);
     // 6.3.31 Temporal.ZonedDateTime.prototype.since ( other [ , options ] )
-    RIFT_METHOD(prototype, "since", TemporalZonedDateTime::since);
+    RIFT_METHOD(prototype, "since", 1, TemporalZonedDateTime::since);
 
     // 6.3.33 Temporal.ZonedDateTime.prototype.equals ( other )
-    RIFT_METHOD(prototype, "equals", TemporalZonedDateTime::equals);
+    RIFT_METHOD(prototype, "equals", 1, TemporalZonedDateTime::equals);
 
     // 6.3.36 Temporal.ZonedDateTime.prototype.toInstant ( )
-    RIFT_METHOD(prototype, "toInstant", TemporalZonedDateTime::toInstant);
+    RIFT_METHOD(prototype, "toInstant", 0, TemporalZonedDateTime::toInstant);
     // 6.3.37 Temporal.ZonedDateTime.prototype.toPlainDate ( )
-    RIFT_METHOD(prototype, "toPlainDate", TemporalZonedDateTime::toPlainDate);
+    RIFT_METHOD(prototype, "toPlainDate", 0, TemporalZonedDateTime::toPlainDate);
     // 6.3.38 Temporal.ZonedDateTime.prototype.toPlainTime ( )
-    RIFT_METHOD(prototype, "toPlainTime", TemporalZonedDateTime::toPlainTime);
+    RIFT_METHOD(prototype, "toPlainTime", 0, TemporalZonedDateTime::toPlainTime);
     // 6.3.39 Temporal.ZonedDateTime.prototype.toPlainDateTime ( )
-    RIFT_METHOD(prototype, "toPlainDateTime", TemporalZonedDateTime::toPlainDateTime);
+    RIFT_METHOD(prototype, "toPlainDateTime", 0, TemporalZonedDateTime::toPlainDateTime);
 
     // 6.3.34 Temporal.ZonedDateTime.prototype.startOfDay ( )
-    RIFT_METHOD(prototype, "startOfDay", TemporalZonedDateTime::startOfDay);
+    RIFT_METHOD(prototype, "startOfDay", 0, TemporalZonedDateTime::startOfDay);
     // 6.3.19 get Temporal.ZonedDateTime.prototype.hoursInDay
-    RIFT_METHOD(prototype, "hoursInDay", TemporalZonedDateTime::hoursInDay);
+    RIFT_METHOD(prototype, "hoursInDay", 0, TemporalZonedDateTime::hoursInDay);
 
     // 6.3.35 Temporal.ZonedDateTime.prototype.toString ( [ options ] )
-    RIFT_METHOD(prototype, "toString", TemporalZonedDateTime::toString);
+    RIFT_METHOD(prototype, "toString", 0, TemporalZonedDateTime::toString);
     // 6.3.40 Temporal.ZonedDateTime.prototype.toJSON ( )
-    RIFT_METHOD(prototype, "toJSON", TemporalZonedDateTime::toJSON);
+    RIFT_METHOD(prototype, "toJSON", 0, TemporalZonedDateTime::toJSON);
     // 6.3.41 Temporal.ZonedDateTime.prototype.valueOf ( )
-    RIFT_METHOD(prototype, "valueOf", TemporalZonedDateTime::valueOf);
+    RIFT_METHOD(prototype, "valueOf", 0, TemporalZonedDateTime::valueOf);
 }
 
 // ============================================================================

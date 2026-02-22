@@ -255,9 +255,9 @@ Value TemporalPlainYearMonth::wrapPlainYearMonth(std::unique_ptr<temporal_rs::Pl
 void TemporalPlainYearMonth::setupStaticMethods(JSObject* constructor,
                                                 rift::memory::ObjectFactory* factory) {
     // 9.2.2 Temporal.PlainYearMonth.from ( item [ , options ] )
-    RIFT_STATIC_METHOD(constructor, "from", TemporalPlainYearMonth::from);
+    RIFT_STATIC_METHOD(constructor, "from", 1, TemporalPlainYearMonth::from);
     // 9.2.3 Temporal.PlainYearMonth.compare ( one, two )
-    RIFT_STATIC_METHOD(constructor, "compare", TemporalPlainYearMonth::compare);
+    RIFT_STATIC_METHOD(constructor, "compare", 2, TemporalPlainYearMonth::compare);
 }
 
 // ----------------------------------------------------------------------------
@@ -278,30 +278,30 @@ void TemporalPlainYearMonth::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "calendarId", TemporalPlainYearMonth::calendarId);
 
     // 9.3.11 Temporal.PlainYearMonth.prototype.with ( temporalYearMonthLike [ , options ] )
-    RIFT_METHOD(prototype, "with", TemporalPlainYearMonth::with);
+    RIFT_METHOD(prototype, "with", 1, TemporalPlainYearMonth::with);
 
     // 9.3.12 Temporal.PlainYearMonth.prototype.add ( temporalDurationLike [ , options ] )
-    RIFT_METHOD(prototype, "add", TemporalPlainYearMonth::add);
+    RIFT_METHOD(prototype, "add", 1, TemporalPlainYearMonth::add);
     // 9.3.13 Temporal.PlainYearMonth.prototype.subtract ( temporalDurationLike [ , options ] )
-    RIFT_METHOD(prototype, "subtract", TemporalPlainYearMonth::subtract);
+    RIFT_METHOD(prototype, "subtract", 1, TemporalPlainYearMonth::subtract);
 
     // 9.3.14 Temporal.PlainYearMonth.prototype.until ( other [ , options ] )
-    RIFT_METHOD(prototype, "until", TemporalPlainYearMonth::until);
+    RIFT_METHOD(prototype, "until", 1, TemporalPlainYearMonth::until);
     // 9.3.15 Temporal.PlainYearMonth.prototype.since ( other [ , options ] )
-    RIFT_METHOD(prototype, "since", TemporalPlainYearMonth::since);
+    RIFT_METHOD(prototype, "since", 1, TemporalPlainYearMonth::since);
 
     // 9.3.16 Temporal.PlainYearMonth.prototype.equals ( other )
-    RIFT_METHOD(prototype, "equals", TemporalPlainYearMonth::equals);
+    RIFT_METHOD(prototype, "equals", 1, TemporalPlainYearMonth::equals);
 
     // 9.3.18 Temporal.PlainYearMonth.prototype.toPlainDate ( item )
-    RIFT_METHOD(prototype, "toPlainDate", TemporalPlainYearMonth::toPlainDate);
+    RIFT_METHOD(prototype, "toPlainDate", 1, TemporalPlainYearMonth::toPlainDate);
 
     // 9.3.17 Temporal.PlainYearMonth.prototype.toString ( [ options ] )
-    RIFT_METHOD(prototype, "toString", TemporalPlainYearMonth::toString);
+    RIFT_METHOD(prototype, "toString", 0, TemporalPlainYearMonth::toString);
     // 9.3.19 Temporal.PlainYearMonth.prototype.toJSON ( )
-    RIFT_METHOD(prototype, "toJSON", TemporalPlainYearMonth::toJSON);
+    RIFT_METHOD(prototype, "toJSON", 0, TemporalPlainYearMonth::toJSON);
     // 9.3.20 Temporal.PlainYearMonth.prototype.valueOf ( )
-    RIFT_METHOD(prototype, "valueOf", TemporalPlainYearMonth::valueOf);
+    RIFT_METHOD(prototype, "valueOf", 0, TemporalPlainYearMonth::valueOf);
 }
 
 // ============================================================================

@@ -120,7 +120,8 @@ Example: adding a new binary operator.
 To add a method to an existing built-in (e.g., `Array.prototype.flat`):
 
 1. Add declaration in header: `static Value flat(const CallContext& ctx, const std::vector<Value>& args);`
-2. Register in `setupPrototypeMethods`: `RIFT_METHOD(prototype, "flat", Array::flat);`
+2. Register in `setupPrototypeMethods`: `RIFT_METHOD(prototype, "flat", 0, Array::flat);`
+   The third argument is the spec-mandated `Function.length` value (expected argument count).
 3. Implement the method. Access `this` via `ctx.thisValue`. Return a `Value`.
 
 The `RIFT_METHOD` macro creates a JSFunction with `name` and `length` properties set automatically.
@@ -136,8 +137,8 @@ Follow the `BuiltinBase<T>` CRTP pattern (see any existing builtin like `src/bui
 5. Add `.cpp` to `BUILTINS_SOURCES` in `CMakeLists.txt`
 
 Macros available:
-- `RIFT_METHOD(prototype, "name", Class::method)` — instance method (non-enumerable)
-- `RIFT_STATIC_METHOD(constructor, "name", Class::method)` — static method
+- `RIFT_METHOD(prototype, "name", length, Class::method)` — instance method (non-enumerable), `length` is the spec-mandated argument count
+- `RIFT_STATIC_METHOD(constructor, "name", length, Class::method)` — static method, `length` is the spec-mandated argument count
 - `RIFT_GETTER(prototype, "name", Class::getter)` — getter property
 - `RIFT_PROPERTY(obj, "name", value)` — constant property
 

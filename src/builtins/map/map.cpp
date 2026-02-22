@@ -55,23 +55,23 @@ void Map::setupStaticMethods(JSObject* /*constructor*/, rift::memory::ObjectFact
 // ----------------------------------------------------------------------------
 void Map::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // 24.1.3.6 Map.prototype.get ( key )
-    RIFT_METHOD(prototype, "get", Map::get);
+    RIFT_METHOD(prototype, "get", 1, Map::get);
     // 24.1.3.9 Map.prototype.set ( key, value )
-    RIFT_METHOD(prototype, "set", Map::set);
+    RIFT_METHOD(prototype, "set", 2, Map::set);
     // 24.1.3.7 Map.prototype.has ( key )
-    RIFT_METHOD(prototype, "has", Map::has);
+    RIFT_METHOD(prototype, "has", 1, Map::has);
     // 24.1.3.3 Map.prototype.delete ( key )
-    RIFT_METHOD(prototype, "delete", Map::deleteMethod);
+    RIFT_METHOD(prototype, "delete", 1, Map::deleteMethod);
     // 24.1.3.1 Map.prototype.clear ( )
-    RIFT_METHOD(prototype, "clear", Map::clear);
+    RIFT_METHOD(prototype, "clear", 0, Map::clear);
     // 24.1.3.5 Map.prototype.forEach ( callbackfn [ , thisArg ] )
-    RIFT_METHOD(prototype, "forEach", Map::forEach);
+    RIFT_METHOD(prototype, "forEach", 1, Map::forEach);
     // 24.1.3.8 Map.prototype.keys ( )
-    RIFT_METHOD(prototype, "keys", Map::keys);
+    RIFT_METHOD(prototype, "keys", 0, Map::keys);
     // 24.1.3.11 Map.prototype.values ( )
-    RIFT_METHOD(prototype, "values", Map::values);
+    RIFT_METHOD(prototype, "values", 0, Map::values);
     // 24.1.3.4 Map.prototype.entries ( )
-    RIFT_METHOD(prototype, "entries", Map::entries);
+    RIFT_METHOD(prototype, "entries", 0, Map::entries);
 
     // 24.1.3.10 get Map.prototype.size
     // @spec https://tc39.es/ecma262/#sec-get-map.prototype.size

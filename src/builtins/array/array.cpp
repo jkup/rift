@@ -41,11 +41,11 @@ namespace rift::builtins {
 
 void Array::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // 23.1.2.2 Array.isArray ( arg )
-    RIFT_STATIC_METHOD(constructor, "isArray", Array::isArray);
+    RIFT_STATIC_METHOD(constructor, "isArray", 1, Array::isArray);
     // 23.1.2.1 Array.from ( items [ , mapfn [ , thisArg ] ] )
-    RIFT_STATIC_METHOD(constructor, "from", Array::from);
+    RIFT_STATIC_METHOD(constructor, "from", 1, Array::from);
     // 23.1.2.5 Array.of ( ...items )
-    RIFT_STATIC_METHOD(constructor, "of", Array::of);
+    RIFT_STATIC_METHOD(constructor, "of", 0, Array::of);
 }
 
 // 23.1.3 Properties of the Array Prototype Object
@@ -53,53 +53,53 @@ void Array::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactor
 void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // Mutator methods (array_mutators.cpp)
     // Spec comments with @spec URLs are on the implementations in array_mutators.cpp.
-    RIFT_METHOD(prototype, "push", Array::push);
-    RIFT_METHOD(prototype, "pop", Array::pop);
-    RIFT_METHOD(prototype, "shift", Array::shift);
-    RIFT_METHOD(prototype, "unshift", Array::unshift);
-    RIFT_METHOD(prototype, "splice", Array::splice);
-    RIFT_METHOD(prototype, "reverse", Array::reverse);
-    RIFT_METHOD(prototype, "sort", Array::sort);
-    RIFT_METHOD(prototype, "fill", Array::fill);
-    RIFT_METHOD(prototype, "copyWithin", Array::copyWithin);
+    RIFT_METHOD(prototype, "push", 1, Array::push);
+    RIFT_METHOD(prototype, "pop", 0, Array::pop);
+    RIFT_METHOD(prototype, "shift", 0, Array::shift);
+    RIFT_METHOD(prototype, "unshift", 1, Array::unshift);
+    RIFT_METHOD(prototype, "splice", 2, Array::splice);
+    RIFT_METHOD(prototype, "reverse", 0, Array::reverse);
+    RIFT_METHOD(prototype, "sort", 1, Array::sort);
+    RIFT_METHOD(prototype, "fill", 1, Array::fill);
+    RIFT_METHOD(prototype, "copyWithin", 2, Array::copyWithin);
 
     // Callback-based iteration methods (array_iterators.cpp)
     // Spec comments with @spec URLs are on the implementations in array_iterators.cpp.
-    RIFT_METHOD(prototype, "forEach", Array::forEach);
-    RIFT_METHOD(prototype, "map", Array::map);
-    RIFT_METHOD(prototype, "filter", Array::filter);
-    RIFT_METHOD(prototype, "reduce", Array::reduce);
-    RIFT_METHOD(prototype, "reduceRight", Array::reduceRight);
-    RIFT_METHOD(prototype, "find", Array::find);
-    RIFT_METHOD(prototype, "findIndex", Array::findIndex);
-    RIFT_METHOD(prototype, "findLast", Array::findLast);
-    RIFT_METHOD(prototype, "findLastIndex", Array::findLastIndex);
-    RIFT_METHOD(prototype, "every", Array::every);
-    RIFT_METHOD(prototype, "some", Array::some);
-    RIFT_METHOD(prototype, "flat", Array::flat);
-    RIFT_METHOD(prototype, "flatMap", Array::flatMap);
+    RIFT_METHOD(prototype, "forEach", 1, Array::forEach);
+    RIFT_METHOD(prototype, "map", 1, Array::map);
+    RIFT_METHOD(prototype, "filter", 1, Array::filter);
+    RIFT_METHOD(prototype, "reduce", 1, Array::reduce);
+    RIFT_METHOD(prototype, "reduceRight", 1, Array::reduceRight);
+    RIFT_METHOD(prototype, "find", 1, Array::find);
+    RIFT_METHOD(prototype, "findIndex", 1, Array::findIndex);
+    RIFT_METHOD(prototype, "findLast", 1, Array::findLast);
+    RIFT_METHOD(prototype, "findLastIndex", 1, Array::findLastIndex);
+    RIFT_METHOD(prototype, "every", 1, Array::every);
+    RIFT_METHOD(prototype, "some", 1, Array::some);
+    RIFT_METHOD(prototype, "flat", 0, Array::flat);
+    RIFT_METHOD(prototype, "flatMap", 1, Array::flatMap);
 
     // Accessor methods (array_accessors.cpp)
     // Spec comments with @spec URLs are on the implementations in array_accessors.cpp.
-    RIFT_METHOD(prototype, "at", Array::at);
-    RIFT_METHOD(prototype, "indexOf", Array::indexOf);
-    RIFT_METHOD(prototype, "lastIndexOf", Array::lastIndexOf);
-    RIFT_METHOD(prototype, "includes", Array::includes);
-    RIFT_METHOD(prototype, "slice", Array::slice);
-    RIFT_METHOD(prototype, "concat", Array::concat);
-    RIFT_METHOD(prototype, "join", Array::join);
-    RIFT_METHOD(prototype, "toString", Array::toString);
+    RIFT_METHOD(prototype, "at", 1, Array::at);
+    RIFT_METHOD(prototype, "indexOf", 1, Array::indexOf);
+    RIFT_METHOD(prototype, "lastIndexOf", 1, Array::lastIndexOf);
+    RIFT_METHOD(prototype, "includes", 1, Array::includes);
+    RIFT_METHOD(prototype, "slice", 2, Array::slice);
+    RIFT_METHOD(prototype, "concat", 1, Array::concat);
+    RIFT_METHOD(prototype, "join", 1, Array::join);
+    RIFT_METHOD(prototype, "toString", 0, Array::toString);
 
     // Change-array-by-copy methods (array_accessors.cpp)
-    RIFT_METHOD(prototype, "toReversed", Array::toReversed);
-    RIFT_METHOD(prototype, "toSorted", Array::toSorted);
-    RIFT_METHOD(prototype, "toSpliced", Array::toSpliced);
-    RIFT_METHOD(prototype, "with", Array::with);
+    RIFT_METHOD(prototype, "toReversed", 0, Array::toReversed);
+    RIFT_METHOD(prototype, "toSorted", 1, Array::toSorted);
+    RIFT_METHOD(prototype, "toSpliced", 2, Array::toSpliced);
+    RIFT_METHOD(prototype, "with", 2, Array::with);
 
     // Iterator creation methods (implemented below in this file)
-    RIFT_METHOD(prototype, "keys", Array::keys);
-    RIFT_METHOD(prototype, "values", Array::values);
-    RIFT_METHOD(prototype, "entries", Array::entries);
+    RIFT_METHOD(prototype, "keys", 0, Array::keys);
+    RIFT_METHOD(prototype, "values", 0, Array::values);
+    RIFT_METHOD(prototype, "entries", 0, Array::entries);
 
     // 23.1.3.34 Array.prototype [ @@iterator ] ( )
     // @spec https://tc39.es/ecma262/#sec-array.prototype-@@iterator

@@ -289,9 +289,9 @@ Value TemporalPlainDateTime::wrapPlainDateTime(std::unique_ptr<temporal_rs::Plai
 void TemporalPlainDateTime::setupStaticMethods(JSObject* constructor,
                                                rift::memory::ObjectFactory* factory) {
     // 5.2.2 Temporal.PlainDateTime.from ( item [ , options ] )
-    RIFT_STATIC_METHOD(constructor, "from", TemporalPlainDateTime::from);
+    RIFT_STATIC_METHOD(constructor, "from", 1, TemporalPlainDateTime::from);
     // 5.2.3 Temporal.PlainDateTime.compare ( one, two )
-    RIFT_STATIC_METHOD(constructor, "compare", TemporalPlainDateTime::compare);
+    RIFT_STATIC_METHOD(constructor, "compare", 2, TemporalPlainDateTime::compare);
 }
 
 // ----------------------------------------------------------------------------
@@ -324,34 +324,34 @@ void TemporalPlainDateTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "nanosecond", TemporalPlainDateTime::nanosecond);
 
     // 5.3.21 Temporal.PlainDateTime.prototype.with ( temporalDateTimeLike [ , options ] )
-    RIFT_METHOD(prototype, "with", TemporalPlainDateTime::with);
+    RIFT_METHOD(prototype, "with", 1, TemporalPlainDateTime::with);
     // 5.3.23 Temporal.PlainDateTime.prototype.withPlainTime ( [ plainTimeLike ] )
-    RIFT_METHOD(prototype, "withTime", TemporalPlainDateTime::withTime);
+    RIFT_METHOD(prototype, "withTime", 0, TemporalPlainDateTime::withTime);
 
     // 5.3.24 Temporal.PlainDateTime.prototype.add ( temporalDurationLike [ , options ] )
-    RIFT_METHOD(prototype, "add", TemporalPlainDateTime::add);
+    RIFT_METHOD(prototype, "add", 1, TemporalPlainDateTime::add);
     // 5.3.25 Temporal.PlainDateTime.prototype.subtract ( temporalDurationLike [ , options ] )
-    RIFT_METHOD(prototype, "subtract", TemporalPlainDateTime::subtract);
+    RIFT_METHOD(prototype, "subtract", 1, TemporalPlainDateTime::subtract);
 
     // 5.3.26 Temporal.PlainDateTime.prototype.until ( other [ , options ] )
-    RIFT_METHOD(prototype, "until", TemporalPlainDateTime::until);
+    RIFT_METHOD(prototype, "until", 1, TemporalPlainDateTime::until);
     // 5.3.27 Temporal.PlainDateTime.prototype.since ( other [ , options ] )
-    RIFT_METHOD(prototype, "since", TemporalPlainDateTime::since);
+    RIFT_METHOD(prototype, "since", 1, TemporalPlainDateTime::since);
 
     // 5.3.29 Temporal.PlainDateTime.prototype.equals ( other )
-    RIFT_METHOD(prototype, "equals", TemporalPlainDateTime::equals);
+    RIFT_METHOD(prototype, "equals", 1, TemporalPlainDateTime::equals);
 
     // 5.3.31 Temporal.PlainDateTime.prototype.toPlainDate ( )
-    RIFT_METHOD(prototype, "toPlainDate", TemporalPlainDateTime::toPlainDate);
+    RIFT_METHOD(prototype, "toPlainDate", 0, TemporalPlainDateTime::toPlainDate);
     // 5.3.32 Temporal.PlainDateTime.prototype.toPlainTime ( )
-    RIFT_METHOD(prototype, "toPlainTime", TemporalPlainDateTime::toPlainTime);
+    RIFT_METHOD(prototype, "toPlainTime", 0, TemporalPlainDateTime::toPlainTime);
 
     // 5.3.30 Temporal.PlainDateTime.prototype.toString ( [ options ] )
-    RIFT_METHOD(prototype, "toString", TemporalPlainDateTime::toString);
+    RIFT_METHOD(prototype, "toString", 0, TemporalPlainDateTime::toString);
     // 5.3.33 Temporal.PlainDateTime.prototype.toJSON ( )
-    RIFT_METHOD(prototype, "toJSON", TemporalPlainDateTime::toJSON);
+    RIFT_METHOD(prototype, "toJSON", 0, TemporalPlainDateTime::toJSON);
     // 5.3.34 Temporal.PlainDateTime.prototype.valueOf ( )
-    RIFT_METHOD(prototype, "valueOf", TemporalPlainDateTime::valueOf);
+    RIFT_METHOD(prototype, "valueOf", 0, TemporalPlainDateTime::valueOf);
 }
 
 // ============================================================================

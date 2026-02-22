@@ -384,13 +384,13 @@ void AsyncGeneratorIterator::setupPrototype(rift::memory::ObjectFactory* factory
     prototype_ = factory->createJSObject(async_iterator_prototype);
 
     // 27.6.1.2 %AsyncGeneratorPrototype%.next ( value )
-    RIFT_METHOD(prototype_, "next", AsyncGeneratorIterator::next);
+    RIFT_METHOD(prototype_, "next", 1, AsyncGeneratorIterator::next);
 
     // 27.6.1.3 %AsyncGeneratorPrototype%.return ( value )
-    RIFT_METHOD(prototype_, "return", AsyncGeneratorIterator::returnMethod);
+    RIFT_METHOD(prototype_, "return", 1, AsyncGeneratorIterator::returnMethod);
 
     // 27.6.1.4 %AsyncGeneratorPrototype%.throw ( exception )
-    RIFT_METHOD(prototype_, "throw", AsyncGeneratorIterator::throwMethod);
+    RIFT_METHOD(prototype_, "throw", 1, AsyncGeneratorIterator::throwMethod);
 
     // 27.6.1.5 %AsyncGeneratorPrototype% [ @@toStringTag ]
     std::string tag_key =

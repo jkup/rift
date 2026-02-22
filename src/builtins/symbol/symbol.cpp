@@ -330,9 +330,9 @@ uint64_t Symbol::getToPrimitiveId() {
 // ----------------------------------------------------------------------------
 void Symbol::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     // 20.4.2.2 Symbol.for ( key )
-    RIFT_STATIC_METHOD(constructor, "for", Symbol::symbolFor);
+    RIFT_STATIC_METHOD(constructor, "for", 1, Symbol::symbolFor);
     // 20.4.2.6 Symbol.keyFor ( sym )
-    RIFT_STATIC_METHOD(constructor, "keyFor", Symbol::keyFor);
+    RIFT_STATIC_METHOD(constructor, "keyFor", 1, Symbol::keyFor);
 
     // Well-known symbols as non-enumerable, non-writable, non-configurable properties.
     // Spec: each well-known symbol property has attributes { [[Writable]]: false,
@@ -382,14 +382,14 @@ void Symbol::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
 // ----------------------------------------------------------------------------
 void Symbol::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // 20.4.3.3 Symbol.prototype.toString ( )
-    RIFT_METHOD(prototype, "toString", Symbol::toString);
+    RIFT_METHOD(prototype, "toString", 0, Symbol::toString);
     // 20.4.3.4 Symbol.prototype.valueOf ( )
-    RIFT_METHOD(prototype, "valueOf", Symbol::valueOf);
+    RIFT_METHOD(prototype, "valueOf", 0, Symbol::valueOf);
     // 20.4.3.2 get Symbol.prototype.description
     // DEVIATION: Spec defines this as an accessor property (getter with no setter).
     // We register it as a regular method, which means `sym.description` works but
     // is technically a function property rather than a getter accessor.
-    RIFT_METHOD(prototype, "description", Symbol::descriptionGetter);
+    RIFT_METHOD(prototype, "description", 0, Symbol::descriptionGetter);
 
     // INCOMPLETE: Missing prototype properties:
     // 20.4.3.5 Symbol.prototype [ @@toPrimitive ] ( hint )

@@ -44,49 +44,49 @@ JSObject* Math::create(rift::memory::ObjectFactory* factory) {
 
     // 21.3.2 Function Properties of the Math Object
     // @spec https://tc39.es/ecma262/#sec-function-properties-of-the-math-object
-    RIFT_METHOD(math, "abs", abs);        // 21.3.2.1
-    RIFT_METHOD(math, "floor", floor);    // 21.3.2.16
-    RIFT_METHOD(math, "ceil", ceil);      // 21.3.2.10
-    RIFT_METHOD(math, "round", round);    // 21.3.2.29
-    RIFT_METHOD(math, "max", max);        // 21.3.2.25
-    RIFT_METHOD(math, "min", min);        // 21.3.2.26
-    RIFT_METHOD(math, "pow", pow);        // 21.3.2.27
-    RIFT_METHOD(math, "sqrt", sqrt);      // 21.3.2.33
-    RIFT_METHOD(math, "random", random);  // 21.3.2.28
-    RIFT_METHOD(math, "sign", sign);      // 21.3.2.30
-    RIFT_METHOD(math, "trunc", trunc);    // 21.3.2.36
-    RIFT_METHOD(math, "sin", sin);        // 21.3.2.31
-    RIFT_METHOD(math, "cos", cos);        // 21.3.2.12
-    RIFT_METHOD(math, "tan", tan);        // 21.3.2.34
+    RIFT_METHOD(math, "abs", 1, abs);        // 21.3.2.1
+    RIFT_METHOD(math, "floor", 1, floor);    // 21.3.2.16
+    RIFT_METHOD(math, "ceil", 1, ceil);      // 21.3.2.10
+    RIFT_METHOD(math, "round", 1, round);    // 21.3.2.29
+    RIFT_METHOD(math, "max", 2, max);        // 21.3.2.25
+    RIFT_METHOD(math, "min", 2, min);        // 21.3.2.26
+    RIFT_METHOD(math, "pow", 2, pow);        // 21.3.2.27
+    RIFT_METHOD(math, "sqrt", 1, sqrt);      // 21.3.2.33
+    RIFT_METHOD(math, "random", 0, random);  // 21.3.2.28
+    RIFT_METHOD(math, "sign", 1, sign);      // 21.3.2.30
+    RIFT_METHOD(math, "trunc", 1, trunc);    // 21.3.2.36
+    RIFT_METHOD(math, "sin", 1, sin);        // 21.3.2.31
+    RIFT_METHOD(math, "cos", 1, cos);        // 21.3.2.12
+    RIFT_METHOD(math, "tan", 1, tan);        // 21.3.2.34
 
     // Inverse trigonometric methods
-    RIFT_METHOD(math, "acos", acos);    // 21.3.2.2
-    RIFT_METHOD(math, "asin", asin);    // 21.3.2.4
-    RIFT_METHOD(math, "atan", atan);    // 21.3.2.6
-    RIFT_METHOD(math, "atan2", atan2);  // 21.3.2.8
+    RIFT_METHOD(math, "acos", 1, acos);    // 21.3.2.2
+    RIFT_METHOD(math, "asin", 1, asin);    // 21.3.2.4
+    RIFT_METHOD(math, "atan", 1, atan);    // 21.3.2.6
+    RIFT_METHOD(math, "atan2", 2, atan2);  // 21.3.2.8
 
     // Hyperbolic methods
-    RIFT_METHOD(math, "cosh", cosh);    // 21.3.2.13
-    RIFT_METHOD(math, "sinh", sinh);    // 21.3.2.32
-    RIFT_METHOD(math, "tanh", tanh);    // 21.3.2.35
-    RIFT_METHOD(math, "acosh", acosh);  // 21.3.2.3
-    RIFT_METHOD(math, "asinh", asinh);  // 21.3.2.5
-    RIFT_METHOD(math, "atanh", atanh);  // 21.3.2.7
+    RIFT_METHOD(math, "cosh", 1, cosh);    // 21.3.2.13
+    RIFT_METHOD(math, "sinh", 1, sinh);    // 21.3.2.32
+    RIFT_METHOD(math, "tanh", 1, tanh);    // 21.3.2.35
+    RIFT_METHOD(math, "acosh", 1, acosh);  // 21.3.2.3
+    RIFT_METHOD(math, "asinh", 1, asinh);  // 21.3.2.5
+    RIFT_METHOD(math, "atanh", 1, atanh);  // 21.3.2.7
 
     // Exponential and logarithmic methods
-    RIFT_METHOD(math, "exp", exp);      // 21.3.2.14
-    RIFT_METHOD(math, "expm1", expm1);  // 21.3.2.15
-    RIFT_METHOD(math, "log", log);      // 21.3.2.21
-    RIFT_METHOD(math, "log1p", log1p);  // 21.3.2.22
-    RIFT_METHOD(math, "log2", log2);    // 21.3.2.24
-    RIFT_METHOD(math, "log10", log10);  // 21.3.2.23
+    RIFT_METHOD(math, "exp", 1, exp);      // 21.3.2.14
+    RIFT_METHOD(math, "expm1", 1, expm1);  // 21.3.2.15
+    RIFT_METHOD(math, "log", 1, log);      // 21.3.2.21
+    RIFT_METHOD(math, "log1p", 1, log1p);  // 21.3.2.22
+    RIFT_METHOD(math, "log2", 1, log2);    // 21.3.2.24
+    RIFT_METHOD(math, "log10", 1, log10);  // 21.3.2.23
 
     // Other methods
-    RIFT_METHOD(math, "cbrt", cbrt);      // 21.3.2.9
-    RIFT_METHOD(math, "clz32", clz32);    // 21.3.2.11
-    RIFT_METHOD(math, "fround", fround);  // 21.3.2.17
-    RIFT_METHOD(math, "hypot", hypot);    // 21.3.2.19
-    RIFT_METHOD(math, "imul", imul);      // 21.3.2.20
+    RIFT_METHOD(math, "cbrt", 1, cbrt);      // 21.3.2.9
+    RIFT_METHOD(math, "clz32", 1, clz32);    // 21.3.2.11
+    RIFT_METHOD(math, "fround", 1, fround);  // 21.3.2.17
+    RIFT_METHOD(math, "hypot", 2, hypot);    // 21.3.2.19
+    RIFT_METHOD(math, "imul", 2, imul);      // 21.3.2.20
     // INCOMPLETE: Missing Math.f16round (21.3.2.18)
 
     return math;

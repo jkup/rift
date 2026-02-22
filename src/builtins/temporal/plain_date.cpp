@@ -232,8 +232,8 @@ Value TemporalPlainDate::wrapPlainDate(std::unique_ptr<temporal_rs::PlainDate> d
 // @spec https://tc39.es/proposal-temporal/#sec-properties-of-temporal-plaindate-constructor
 void TemporalPlainDate::setupStaticMethods(JSObject* constructor,
                                            rift::memory::ObjectFactory* factory) {
-    RIFT_STATIC_METHOD(constructor, "from", TemporalPlainDate::from);
-    RIFT_STATIC_METHOD(constructor, "compare", TemporalPlainDate::compare);
+    RIFT_STATIC_METHOD(constructor, "from", 1, TemporalPlainDate::from);
+    RIFT_STATIC_METHOD(constructor, "compare", 2, TemporalPlainDate::compare);
 }
 
 // 3.3 Properties of the Temporal.PlainDate Prototype Object
@@ -255,27 +255,27 @@ void TemporalPlainDate::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "calendarId", TemporalPlainDate::calendarId);
 
     // Mutation
-    RIFT_METHOD(prototype, "with", TemporalPlainDate::with);
+    RIFT_METHOD(prototype, "with", 1, TemporalPlainDate::with);
 
     // Arithmetic
-    RIFT_METHOD(prototype, "add", TemporalPlainDate::add);
-    RIFT_METHOD(prototype, "subtract", TemporalPlainDate::subtract);
+    RIFT_METHOD(prototype, "add", 1, TemporalPlainDate::add);
+    RIFT_METHOD(prototype, "subtract", 1, TemporalPlainDate::subtract);
 
     // Difference
-    RIFT_METHOD(prototype, "until", TemporalPlainDate::until);
-    RIFT_METHOD(prototype, "since", TemporalPlainDate::since);
+    RIFT_METHOD(prototype, "until", 1, TemporalPlainDate::until);
+    RIFT_METHOD(prototype, "since", 1, TemporalPlainDate::since);
 
     // Comparison
-    RIFT_METHOD(prototype, "equals", TemporalPlainDate::equals);
+    RIFT_METHOD(prototype, "equals", 1, TemporalPlainDate::equals);
 
     // Conversion
-    RIFT_METHOD(prototype, "toPlainDateTime", TemporalPlainDate::toPlainDateTime);
-    RIFT_METHOD(prototype, "toZonedDateTime", TemporalPlainDate::toZonedDateTime);
+    RIFT_METHOD(prototype, "toPlainDateTime", 0, TemporalPlainDate::toPlainDateTime);
+    RIFT_METHOD(prototype, "toZonedDateTime", 1, TemporalPlainDate::toZonedDateTime);
 
     // String
-    RIFT_METHOD(prototype, "toString", TemporalPlainDate::toString);
-    RIFT_METHOD(prototype, "toJSON", TemporalPlainDate::toJSON);
-    RIFT_METHOD(prototype, "valueOf", TemporalPlainDate::valueOf);
+    RIFT_METHOD(prototype, "toString", 0, TemporalPlainDate::toString);
+    RIFT_METHOD(prototype, "toJSON", 0, TemporalPlainDate::toJSON);
+    RIFT_METHOD(prototype, "valueOf", 0, TemporalPlainDate::valueOf);
 }
 
 // 3.1.1 Temporal.PlainDate ( isoYear, isoMonth, isoDay [ , calendar ] )

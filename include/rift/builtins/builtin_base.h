@@ -28,33 +28,23 @@ using namespace rift::runtime;
 //
 
 /// Register an instance method on a prototype object (non-enumerable per spec)
-#define RIFT_METHOD(obj, name, func)                                                               \
-    do {                                                                                           \
-        auto* _fn = factory->createJSFunction(func);                                               \
-        _fn->defineProperty(                                                                       \
-            "name", rift::runtime::PropertyDescriptor(rift::runtime::Value(std::string(name)),     \
-                                                      false, false, true));                        \
-        _fn->defineProperty("length", rift::runtime::PropertyDescriptor(rift::runtime::Value(0.0), \
-                                                                        false, false, true));      \
-        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor(rift::runtime::Value(_fn),   \
-                                                                      true, false, true));         \
+/// The `len` parameter is the spec-mandated Function.length value (expected argument count).
+#define RIFT_METHOD(obj, name, len, func)                                                        \
+    do {                                                                                         \
+        auto* _fn = factory->createJSFunction(func);                                             \
+        _fn->defineProperty(                                                                     \
+            "name", rift::runtime::PropertyDescriptor(rift::runtime::Value(std::string(name)),   \
+                                                      false, false, true));                      \
+        _fn->defineProperty(                                                                     \
+            "length", rift::runtime::PropertyDescriptor(                                         \
+                          rift::runtime::Value(static_cast<double>(len)), false, false, true));  \
+        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor(rift::runtime::Value(_fn), \
+                                                                      true, false, true));       \
     } while(0)
 
 /// Register a static method on a constructor object (non-enumerable per spec)
-#define RIFT_STATIC_METHOD(obj, name, func)                                                        \
-    do {                                                                                           \
-        auto* _fn = factory->createJSFunction(func);                                               \
-        _fn->defineProperty(                                                                       \
-            "name", rift::runtime::PropertyDescriptor(rift::runtime::Value(std::string(name)),     \
-                                                      false, false, true));                        \
-        _fn->defineProperty("length", rift::runtime::PropertyDescriptor(rift::runtime::Value(0.0), \
-                                                                        false, false, true));      \
-        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor(rift::runtime::Value(_fn),   \
-                                                                      true, false, true));         \
-    } while(0)
-
-/// Register a static method with explicit length (non-enumerable per spec)
-#define RIFT_STATIC_METHOD_N(obj, name, len, func)                                               \
+/// The `len` parameter is the spec-mandated Function.length value (expected argument count).
+#define RIFT_STATIC_METHOD(obj, name, len, func)                                                 \
     do {                                                                                         \
         auto* _fn = factory->createJSFunction(func);                                             \
         _fn->defineProperty(                                                                     \

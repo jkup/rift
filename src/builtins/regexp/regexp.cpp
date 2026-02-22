@@ -171,11 +171,11 @@ void RegExp::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
 // ----------------------------------------------------------------------------
 void RegExp::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     // 22.2.6.14 RegExp.prototype.test ( S )
-    RIFT_METHOD(prototype, "test", RegExp::test);
+    RIFT_METHOD(prototype, "test", 1, RegExp::test);
     // 22.2.6.2 RegExp.prototype.exec ( string )
-    RIFT_METHOD(prototype, "exec", RegExp::exec);
+    RIFT_METHOD(prototype, "exec", 1, RegExp::exec);
     // 22.2.6.16 RegExp.prototype.toString ( )
-    RIFT_METHOD(prototype, "toString", RegExp::toString);
+    RIFT_METHOD(prototype, "toString", 0, RegExp::toString);
 }
 
 // ============================================================================
