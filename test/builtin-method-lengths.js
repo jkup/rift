@@ -113,6 +113,63 @@ assert(d.setHours.length === 4, "setHours.length should be 4");
 assert(d.toJSON.length === 1, "toJSON.length should be 1");
 assert(d.getTime.length === 0, "getTime.length should be 0");
 
+// Map prototype methods
+var m = new Map();
+assert(m.get.length === 1, "Map.prototype.get.length should be 1");
+assert(m.set.length === 2, "Map.prototype.set.length should be 2");
+assert(m.has.length === 1, "Map.prototype.has.length should be 1");
+assert(m.delete.length === 1, "Map.prototype.delete.length should be 1");
+assert(m.forEach.length === 1, "Map.prototype.forEach.length should be 1");
+
+// Set prototype methods
+var s = new Set();
+assert(s.add.length === 1, "Set.prototype.add.length should be 1");
+assert(s.has.length === 1, "Set.prototype.has.length should be 1");
+assert(s.delete.length === 1, "Set.prototype.delete.length should be 1");
+assert(s.forEach.length === 1, "Set.prototype.forEach.length should be 1");
+
+// WeakMap prototype methods
+var wm = new WeakMap();
+assert(wm.get.length === 1, "WeakMap.prototype.get.length should be 1");
+assert(wm.set.length === 2, "WeakMap.prototype.set.length should be 2");
+assert(wm.has.length === 1, "WeakMap.prototype.has.length should be 1");
+assert(wm.delete.length === 1, "WeakMap.prototype.delete.length should be 1");
+
+// WeakSet prototype methods
+var ws = new WeakSet();
+assert(ws.add.length === 1, "WeakSet.prototype.add.length should be 1");
+assert(ws.has.length === 1, "WeakSet.prototype.has.length should be 1");
+assert(ws.delete.length === 1, "WeakSet.prototype.delete.length should be 1");
+
+// RegExp prototype methods
+var r = /a/;
+assert(r.test.length === 1, "RegExp.prototype.test.length should be 1");
+assert(r.exec.length === 1, "RegExp.prototype.exec.length should be 1");
+assert(r.toString.length === 0, "RegExp.prototype.toString.length should be 0");
+
+// Temporal.Now methods
+assert(Temporal.Now.instant.length === 0, "Temporal.Now.instant.length should be 0");
+assert(Temporal.Now.plainDateISO.length === 0, "Temporal.Now.plainDateISO.length should be 0");
+assert(Temporal.Now.plainTimeISO.length === 0, "Temporal.Now.plainTimeISO.length should be 0");
+assert(Temporal.Now.plainDateTimeISO.length === 0, "Temporal.Now.plainDateTimeISO.length should be 0");
+
+// Temporal.Instant prototype methods
+var inst = Temporal.Now.instant();
+assert(inst.toString.length === 0, "Temporal.Instant.prototype.toString.length should be 0");
+assert(inst.equals.length === 1, "Temporal.Instant.prototype.equals.length should be 1");
+assert(inst.add.length === 1, "Temporal.Instant.prototype.add.length should be 1");
+assert(inst.subtract.length === 1, "Temporal.Instant.prototype.subtract.length should be 1");
+
+// Temporal.PlainDate prototype methods
+var pd = Temporal.Now.plainDateISO();
+assert(pd.toString.length === 0, "Temporal.PlainDate.prototype.toString.length should be 0");
+assert(pd.equals.length === 1, "Temporal.PlainDate.prototype.equals.length should be 1");
+assert(pd.add.length === 1, "Temporal.PlainDate.prototype.add.length should be 1");
+
+// Temporal.Duration static & prototype methods
+assert(Temporal.Duration.from.length === 1, "Temporal.Duration.from.length should be 1");
+assert(Temporal.Duration.compare.length === 2, "Temporal.Duration.compare.length should be 2");
+
 // length descriptor properties
 var desc = Object.getOwnPropertyDescriptor([].push, "length");
 assert(desc.writable === false, "length should not be writable");

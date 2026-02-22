@@ -22,14 +22,16 @@ using namespace rift::runtime;
 // where 'factory' is available as a parameter.
 //
 // Usage:
-//   RIFT_METHOD(prototype, "push", Array::push);
-//   RIFT_STATIC_METHOD(constructor, "isArray", Array::isArray);
+//   RIFT_METHOD(prototype, "push", 1, Array::push);
+//   RIFT_STATIC_METHOD(constructor, "isArray", 1, Array::isArray);
 //   RIFT_PROPERTY(constructor, "PI", Value(3.14159));
 //
 
-/// Register an instance method on a prototype object (non-enumerable per spec)
+/// Register a method on an object (non-enumerable per spec).
+/// Works for both prototype (instance) and constructor (static) methods — the registration
+/// logic is identical; two names are kept for readability at call sites.
 /// The `len` parameter is the spec-mandated Function.length value (expected argument count).
-#define RIFT_METHOD(obj, name, len, func)                                                        \
+#define RIFT_REGISTER_METHOD(obj, name, len, func)                                               \
     do {                                                                                         \
         auto* _fn = factory->createJSFunction(func);                                             \
         _fn->defineProperty(                                                                     \
@@ -42,20 +44,11 @@ using namespace rift::runtime;
                                                                       true, false, true));       \
     } while(0)
 
-/// Register a static method on a constructor object (non-enumerable per spec)
-/// The `len` parameter is the spec-mandated Function.length value (expected argument count).
-#define RIFT_STATIC_METHOD(obj, name, len, func)                                                 \
-    do {                                                                                         \
-        auto* _fn = factory->createJSFunction(func);                                             \
-        _fn->defineProperty(                                                                     \
-            "name", rift::runtime::PropertyDescriptor(rift::runtime::Value(std::string(name)),   \
-                                                      false, false, true));                      \
-        _fn->defineProperty(                                                                     \
-            "length", rift::runtime::PropertyDescriptor(                                         \
-                          rift::runtime::Value(static_cast<double>(len)), false, false, true));  \
-        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor(rift::runtime::Value(_fn), \
-                                                                      true, false, true));       \
-    } while(0)
+/// Register an instance method on a prototype object
+#define RIFT_METHOD(obj, name, len, func) RIFT_REGISTER_METHOD(obj, name, len, func)
+
+/// Register a static method on a constructor object
+#define RIFT_STATIC_METHOD(obj, name, len, func) RIFT_REGISTER_METHOD(obj, name, len, func)
 
 /// Register a getter property (non-enumerable, configurable per spec)
 #define RIFT_GETTER(obj, name, func)                                                       \
