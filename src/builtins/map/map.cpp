@@ -11,6 +11,9 @@
 #include "rift/memory/gc_protector.h"
 #include "rift/types/object.h"
 
+// For Array::createArrayObject used by Map.groupBy
+#include "rift/builtins/array/array.h"
+
 // ============================================================================
 // ECMA-262 — Map Objects (ES2025 Section 24.1)
 // @spec https://tc39.es/ecma262/#sec-map-objects
@@ -39,8 +42,9 @@ namespace rift::builtins {
 // TODO: 24.1.2.2 get Map [ @@species ] — not yet implemented.
 // @spec https://tc39.es/ecma262/#sec-get-map-@@species
 // ----------------------------------------------------------------------------
-void Map::setupStaticMethods(JSObject* /*constructor*/, rift::memory::ObjectFactory* /*factory*/) {
-    // Map has no static methods in ES2024
+void Map::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
+    // 24.1.2.1 Map.groupBy ( items, callbackfn )
+    RIFT_STATIC_METHOD(constructor, "groupBy", 2, Map::groupBy);
 }
 
 // ----------------------------------------------------------------------------
@@ -1007,6 +1011,171 @@ Value Map::sizeGetter(const CallContext& ctx, const std::vector<Value>& /*args*/
     // Steps 3-5: Return count of non-empty entries.
     // SIMPLIFIED: Returns pre-computed [[MapSize]] instead of counting.
     return sizeVal;
+}
+
+// 24.1.2.1 Map.groupBy ( items, callbackfn )
+// @spec https://tc39.es/ecma262/#sec-map.groupby
+//
+// Spec algorithm:
+//   1. Let groups be ? GroupBy(items, callbackfn, collection).
+//   2. Let map be ! Construct(%Map%).
+//   3. For each Record { [[Key]], [[Elements]] } g of groups, do
+//      a. Let elements be CreateArrayFromList(g.[[Elements]]).
+//      b. Let entry be the Record { [[Key]]: g.[[Key]], [[Value]]: elements }.
+//      c. Append entry to map.[[MapData]].
+//   4. Return map.
+Value Map::groupBy(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let items be the first argument.
+    Value items = args.size() > 0 ? args[0] : Value();
+    Value callback = args.size() > 1 ? args[1] : Value();
+
+    // Validate items is not null/undefined
+    if(items.isUndefined() || items.isNull()) {
+        throw rift::core::JavaScriptException(Value("TypeError: Cannot read properties of " +
+                                                    items.toString() +
+                                                    " (reading 'Symbol(Symbol.iterator)')"));
+    }
+
+    // Validate callbackfn is callable
+    if(callback.getType() != ValueType::Function) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: " + callback.toString() + " is not a function"));
+    }
+
+    auto* callback_func = dynamic_cast<JSFunction*>(callback.getObject());
+    if(!callback_func) {
+        throw rift::core::JavaScriptException(Value("TypeError: callbackfn is not a function"));
+    }
+
+    auto* factory = getObjectFactory();
+
+    // 2. Let map be ! Construct(%Map%).
+    auto* mapObj = createMapObject(factory);
+    rift::memory::GCProtector protect(mapObj, factory->getObjectManager());
+
+    // We need to track group keys in insertion order, and for each key maintain an array.
+    // Unlike Object.groupBy, Map.groupBy uses SameValueZero for keys (not ToString).
+    // We collect groups inline: for each element, look up by key in the map,
+    // create array if new, push element.
+
+    auto* entries = mapObj->getProperty("[[MapEntries]]").getObject();
+    auto* keys = mapObj->getProperty("[[MapKeys]]").getObject();
+    double size = 0.0;
+    double nextIndex = 0.0;
+
+    double index = 0;
+    auto processElement = [&](const Value& value) {
+        // Call callbackfn(value, index)
+        rift::core::CallContext cb_ctx(rift::core::CallType::Function, Value());
+        Value key_result = callback_func->call(cb_ctx, {value, Value(index)});
+
+        // Normalize -0 to +0 for map keys
+        if(key_result.getType() == ValueType::Number && key_result.toNumber() == 0.0) {
+            key_result = Value(0.0);
+        }
+
+        std::string keyStr = valueToMapKey(key_result);
+
+        Value existingIdx = keys->getProperty(keyStr);
+        if(!existingIdx.isUndefined()) {
+            // Existing group — push element to its array
+            int idx = static_cast<int>(existingIdx.toNumber());
+            auto* entry = entries->getProperty(std::to_string(idx)).getObject();
+            Value arr_val = entry->getProperty("value");
+            auto* arr = arr_val.getObject();
+            Value length_val = arr->getProperty("length");
+            double length = length_val.toNumber();
+            arr->setProperty(std::to_string(static_cast<int>(length)), value);
+            arr->setProperty("length", Value(length + 1));
+        } else {
+            // New group — create array with this element, add entry to map
+            auto* group_array = Array::createArrayObject(factory, {value});
+
+            auto* entry = factory->createJSObject();
+            entry->setProperty("key", key_result);
+            entry->setProperty("value", Value(group_array));
+
+            entries->setProperty(std::to_string(static_cast<int>(nextIndex)), Value(entry));
+            keys->setProperty(keyStr, Value(nextIndex));
+            nextIndex++;
+            size++;
+        }
+
+        index++;
+    };
+
+    // String fast path
+    if(items.isString()) {
+        std::string str = items.getString();
+        for(char c : str) {
+            processElement(Value(std::string(1, c)));
+        }
+        mapObj->setProperty("[[MapSize]]", Value(size));
+        mapObj->setProperty("[[MapNextIndex]]", Value(nextIndex));
+        return Value(mapObj);
+    }
+
+    // Iterator protocol
+    if(!items.isObject() && !items.isFunction()) {
+        throw rift::core::JavaScriptException(Value("TypeError: items is not iterable"));
+    }
+
+    auto* items_obj = items.getObject();
+    std::string iterator_key =
+        rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getIteratorId());
+    Value iterator_method = items_obj->getProperty(iterator_key);
+
+    if(iterator_method.getType() != ValueType::Function) {
+        throw rift::core::JavaScriptException(Value(
+            "TypeError: items is not iterable (cannot read property Symbol(Symbol.iterator))"));
+    }
+
+    auto* iterator_func = dynamic_cast<JSFunction*>(iterator_method.getObject());
+    if(!iterator_func) {
+        throw rift::core::JavaScriptException(Value("TypeError: items is not iterable"));
+    }
+
+    rift::core::CallContext iter_ctx(rift::core::CallType::Function, items);
+    Value iterator = iterator_func->call(iter_ctx, {});
+
+    if(!iterator.isObject()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Result of the Symbol.iterator method is not an object"));
+    }
+
+    auto* iterator_object = iterator.getObject();
+
+    while(true) {
+        Value next_method = iterator_object->getProperty("next");
+        if(next_method.getType() != ValueType::Function) {
+            break;
+        }
+
+        auto* next_func = dynamic_cast<JSFunction*>(next_method.getObject());
+        if(!next_func) {
+            break;
+        }
+
+        rift::core::CallContext next_ctx(rift::core::CallType::Function, iterator);
+        Value iter_result = next_func->call(next_ctx, {});
+
+        if(!iter_result.isObject()) {
+            break;
+        }
+
+        auto* result_object = iter_result.getObject();
+        Value done = result_object->getProperty("done");
+        if(done.toBool()) {
+            break;
+        }
+
+        Value value = result_object->getProperty("value");
+        processElement(value);
+    }
+
+    mapObj->setProperty("[[MapSize]]", Value(size));
+    mapObj->setProperty("[[MapNextIndex]]", Value(nextIndex));
+    return Value(mapObj);
 }
 
 JSObject* Map::getGlobalPrototype() {

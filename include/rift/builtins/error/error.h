@@ -32,6 +32,10 @@ class Error : public BuiltinBase<Error> {
     /// @spec https://tc39.es/ecma262/#sec-error.prototype.tostring
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 20.5.2.2 Error.isError ( arg )
+    /// @spec https://tc39.es/ecma262/#sec-error.iserror
+    static Value isError(const CallContext& ctx, const std::vector<Value>& args);
+
   private:
     /// NON-STANDARD: Internal helper to retrieve the Error prototype from BuiltinManager.
     static JSObject* getGlobalPrototype();

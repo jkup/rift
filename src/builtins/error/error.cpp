@@ -22,7 +22,8 @@ using rift::core::extractThisObject;
 // 20.5.2 Properties of the Error Constructor
 // @spec https://tc39.es/ecma262/#sec-properties-of-the-error-constructor
 void Error::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    // name and length are set by BuiltinBase::create()
+    // 20.5.2.2 Error.isError ( arg )
+    RIFT_STATIC_METHOD(constructor, "isError", 1, Error::isError);
 }
 
 // 20.5.3 Properties of the Error Prototype Object
@@ -119,6 +120,55 @@ Value Error::toString(const CallContext& ctx, const std::vector<Value>& args) {
         //    the code unit 0x0020 (SPACE), and msg.
         return Value(name + ": " + message);
     }
+}
+
+// 20.5.2.2 Error.isError ( arg )
+// @spec https://tc39.es/ecma262/#sec-error.iserror
+//
+// Spec algorithm:
+//   1. If arg is not an Object, return false.
+//   2. If arg has an [[ErrorData]] internal slot, return true.
+//   3. Return false.
+//
+// DEVIATION: Rift does not store [[ErrorData]] as an explicit internal slot.
+// Instead, we check if any Error or NativeError prototype is in the object's
+// prototype chain.
+Value Error::isError(const CallContext& /*ctx*/, const std::vector<Value>& args) {
+    // 1. If arg is not an Object, return false.
+    if(args.empty()) {
+        return Value(false);
+    }
+
+    const Value& arg = args[0];
+    if(arg.getType() != ValueType::Object && arg.getType() != ValueType::Function) {
+        return Value(false);
+    }
+
+    // 2. Check if any Error prototype is in the prototype chain.
+    auto* obj = arg.getObject();
+    auto* proto = obj->getPrototype();
+
+    // Collect all known error prototypes
+    JSObject* error_protos[] = {
+        rift::core::BuiltinManager::getErrorPrototype(),
+        rift::core::BuiltinManager::getTypeErrorPrototype(),
+        rift::core::BuiltinManager::getReferenceErrorPrototype(),
+        rift::core::BuiltinManager::getSyntaxErrorPrototype(),
+        rift::core::BuiltinManager::getRangeErrorPrototype(),
+        rift::core::BuiltinManager::getEvalErrorPrototype(),
+        rift::core::BuiltinManager::getURIErrorPrototype(),
+    };
+
+    while(proto != nullptr) {
+        for(auto* error_proto : error_protos) {
+            if(proto == error_proto) {
+                return Value(true);
+            }
+        }
+        proto = proto->getPrototype();
+    }
+
+    return Value(false);
 }
 
 // NON-STANDARD: Internal helper to retrieve the Error prototype from BuiltinManager.

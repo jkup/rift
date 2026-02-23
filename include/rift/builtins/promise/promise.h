@@ -96,6 +96,10 @@ class Promise : public BuiltinBase<Promise> {
     /// @spec https://tc39.es/ecma262/#sec-promise.withResolvers
     static Value withResolvers(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 27.2.4.9 Promise.try ( callbackfn, ...args )
+    /// @spec https://tc39.es/ecma262/#sec-promise.try
+    static Value try_(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Global prototype access for internal use.
     static JSObject* getGlobalPrototype();
 

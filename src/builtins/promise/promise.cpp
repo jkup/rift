@@ -61,6 +61,8 @@ void Promise::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFact
     RIFT_STATIC_METHOD(constructor, "any", 1, Promise::any);
     // 27.2.4.8 Promise.withResolvers ( )
     RIFT_STATIC_METHOD(constructor, "withResolvers", 0, Promise::withResolvers);
+    // 27.2.4.9 Promise.try ( callbackfn, ...args )
+    RIFT_STATIC_METHOD(constructor, "try", 1, Promise::try_);
     // TODO: 27.2.4.4 get Promise [ @@species ] -- not yet implemented.
     // @spec https://tc39.es/ecma262/#sec-get-promise-@@species
 }
@@ -1908,6 +1910,62 @@ Value Promise::withResolvers(const CallContext& /*ctx*/, const std::vector<Value
 
     // Step 7: Return obj.
     return Value(result);
+}
+
+// 27.2.4.9 Promise.try ( callbackfn, ...args )
+// @spec https://tc39.es/ecma262/#sec-promise.try
+//
+// Spec algorithm:
+//   1. Let C be the this value.
+//   2. If C is not an Object, throw a TypeError exception.
+//   3. Let promiseCapability be ? NewPromiseCapability(C).
+//   4. Let status be Completion(Call(callbackfn, undefined, args)).
+//   5. If status is an abrupt completion, then
+//      a. Perform ? Call(promiseCapability.[[Reject]], undefined, << status.[[Value]] >>).
+//   6. Else,
+//      a. Perform ? Call(promiseCapability.[[Resolve]], undefined, << status.[[Value]] >>).
+//   7. Return promiseCapability.[[Promise]].
+//
+// SIMPLIFIED: Rift does not use NewPromiseCapability. Creates a promise directly.
+Value Promise::try_(const CallContext& /*ctx*/, const std::vector<Value>& args) {
+    auto* factory = getObjectFactory();
+
+    // Step 3: Create a new promise.
+    auto* promise_obj = createPromiseObject(factory);
+    rift::memory::GCProtector protect(promise_obj, factory->getObjectManager());
+
+    // Validate callbackfn
+    if(args.empty() || args[0].getType() != ValueType::Function) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Promise.try requires a function argument"));
+    }
+
+    auto* callback = dynamic_cast<JSFunction*>(args[0].getObject());
+    if(!callback) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Promise.try requires a function argument"));
+    }
+
+    // Collect remaining args (args[1], args[2], ...)
+    std::vector<Value> call_args;
+    for(size_t i = 1; i < args.size(); i++) {
+        call_args.push_back(args[i]);
+    }
+
+    // Step 4: Let status be Completion(Call(callbackfn, undefined, args)).
+    try {
+        rift::core::CallContext cb_ctx(rift::core::CallType::Function, Value());
+        Value result = callback->call(cb_ctx, call_args);
+
+        // Step 6: Resolve the promise with the result.
+        resolvePromise(promise_obj, result);
+    } catch(rift::core::JavaScriptException& e) {
+        // Step 5: If status is an abrupt completion, reject the promise.
+        rejectPromise(promise_obj, e.getValue());
+    }
+
+    // Step 7: Return promiseCapability.[[Promise]].
+    return Value(promise_obj);
 }
 
 }  // namespace rift::builtins

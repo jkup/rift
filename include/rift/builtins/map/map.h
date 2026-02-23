@@ -82,6 +82,10 @@ class Map : public BuiltinBase<Map> {
     /// @spec https://tc39.es/ecma262/#sec-get-map.prototype.size
     static Value sizeGetter(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 24.1.2.1 Map.groupBy ( items, callbackfn )
+    /// @spec https://tc39.es/ecma262/#sec-map.groupby
+    static Value groupBy(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Global prototype access for internal use.
     static JSObject* getGlobalPrototype();
 
