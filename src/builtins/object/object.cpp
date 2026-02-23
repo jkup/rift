@@ -724,7 +724,8 @@ Value Object::getOwnPropertyDescriptor(const CallContext& ctx, const std::vector
 
     // 4. Return FromPropertyDescriptor(desc).
     // FromPropertyDescriptor (6.2.6.4): creates a new object with descriptor fields.
-    auto* descriptorObj = getObjectFactory()->createJSObject();
+    auto* descriptorObj =
+        getObjectFactory()->createJSObject(rift::core::BuiltinManager::getObjectPrototype());
 
     rift::memory::GCProtector protect(descriptorObj, getObjectFactory()->getObjectManager());
 
@@ -1610,17 +1611,20 @@ Value Object::getOwnPropertyDescriptors(const CallContext& ctx, const std::vecto
 
     Value obj_val = args[0];
     if(!obj_val.isObject() && !obj_val.isFunction()) {
-        return Value(getObjectFactory()->createJSObject());
+        return Value(
+            getObjectFactory()->createJSObject(rift::core::BuiltinManager::getObjectPrototype()));
     }
 
     auto* obj = obj_val.getObject();
     if(!obj) {
-        return Value(getObjectFactory()->createJSObject());
+        return Value(
+            getObjectFactory()->createJSObject(rift::core::BuiltinManager::getObjectPrototype()));
     }
 
     // 2. Let ownKeys be ? obj.[[OwnPropertyKeys]]().
     // 3. Let descriptors be OrdinaryObjectCreate(%Object.prototype%).
-    auto* result = getObjectFactory()->createJSObject();
+    auto* result =
+        getObjectFactory()->createJSObject(rift::core::BuiltinManager::getObjectPrototype());
     rift::memory::GCProtector protect(result, getObjectFactory()->getObjectManager());
 
     // 4. For each element key of ownKeys, do
@@ -1635,7 +1639,8 @@ Value Object::getOwnPropertyDescriptors(const CallContext& ctx, const std::vecto
         rift::runtime::PropertyDescriptor desc = obj->getOwnPropertyDescriptor(prop_name);
 
         // FromPropertyDescriptor (6.2.6.4)
-        auto* descriptor_obj = getObjectFactory()->createJSObject();
+        auto* descriptor_obj =
+            getObjectFactory()->createJSObject(rift::core::BuiltinManager::getObjectPrototype());
         rift::memory::GCProtector desc_protect(descriptor_obj,
                                                getObjectFactory()->getObjectManager());
 
@@ -1658,7 +1663,8 @@ Value Object::getOwnPropertyDescriptors(const CallContext& ctx, const std::vecto
         rift::runtime::PropertyDescriptor desc = obj->getOwnPropertyDescriptor(symbol_key);
 
         // FromPropertyDescriptor (6.2.6.4)
-        auto* descriptor_obj = getObjectFactory()->createJSObject();
+        auto* descriptor_obj =
+            getObjectFactory()->createJSObject(rift::core::BuiltinManager::getObjectPrototype());
         rift::memory::GCProtector desc_protect(descriptor_obj,
                                                getObjectFactory()->getObjectManager());
 

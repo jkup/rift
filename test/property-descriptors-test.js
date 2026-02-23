@@ -163,4 +163,71 @@ var desc10 = Object.getOwnPropertyDescriptor(obj10, "nonexistent");
 console.log("Descriptor for nonexistent:", desc10); // Should be undefined
 console.log("✓ Returns undefined for nonexistent properties\n");
 
+// Test 11: Descriptor objects inherit from Object.prototype
+console.log("Test 11: Descriptor objects inherit from Object.prototype");
+var obj11 = { x: 42 };
+var desc11 = Object.getOwnPropertyDescriptor(obj11, "x");
+console.log("desc instanceof Object:", desc11 instanceof Object); // true
+console.log("desc has hasOwnProperty:", typeof desc11.hasOwnProperty === "function"); // true
+console.log("hasOwnProperty('value'):", desc11.hasOwnProperty("value")); // true
+console.log("hasOwnProperty('writable'):", desc11.hasOwnProperty("writable")); // true
+console.log("hasOwnProperty('enumerable'):", desc11.hasOwnProperty("enumerable")); // true
+console.log("hasOwnProperty('configurable'):", desc11.hasOwnProperty("configurable")); // true
+console.log("hasOwnProperty('get'):", desc11.hasOwnProperty("get")); // false (data descriptor)
+console.log("hasOwnProperty('set'):", desc11.hasOwnProperty("set")); // false (data descriptor)
+console.log("toString:", desc11.toString()); // [object Object]
+
+if (!(desc11 instanceof Object)) throw new Error("Descriptor should be instanceof Object");
+if (typeof desc11.hasOwnProperty !== "function")
+  throw new Error("Descriptor should have hasOwnProperty");
+if (!desc11.hasOwnProperty("value"))
+  throw new Error("Descriptor should hasOwnProperty('value')");
+if (desc11.hasOwnProperty("get"))
+  throw new Error("Data descriptor should not hasOwnProperty('get')");
+console.log("✓ Descriptor objects properly inherit from Object.prototype\n");
+
+// Test 12: Accessor descriptor objects also inherit from Object.prototype
+console.log("Test 12: Accessor descriptor inherits from Object.prototype");
+var obj12 = {};
+Object.defineProperty(obj12, "prop", {
+  get: function () {
+    return 99;
+  },
+  enumerable: true,
+  configurable: true,
+});
+var desc12 = Object.getOwnPropertyDescriptor(obj12, "prop");
+console.log("accessor desc instanceof Object:", desc12 instanceof Object); // true
+console.log("hasOwnProperty('get'):", desc12.hasOwnProperty("get")); // true
+console.log("hasOwnProperty('set'):", desc12.hasOwnProperty("set")); // true
+console.log("hasOwnProperty('value'):", desc12.hasOwnProperty("value")); // false
+
+if (!(desc12 instanceof Object))
+  throw new Error("Accessor descriptor should be instanceof Object");
+if (!desc12.hasOwnProperty("get"))
+  throw new Error("Accessor descriptor should hasOwnProperty('get')");
+if (desc12.hasOwnProperty("value"))
+  throw new Error("Accessor descriptor should not hasOwnProperty('value')");
+console.log("✓ Accessor descriptor objects properly inherit from Object.prototype\n");
+
+// Test 13: getOwnPropertyDescriptors returns descriptors with Object.prototype
+console.log("Test 13: getOwnPropertyDescriptors descriptor prototype");
+var obj13 = { a: 1, b: 2 };
+var descs13 = Object.getOwnPropertyDescriptors(obj13);
+console.log("descs.a instanceof Object:", descs13.a instanceof Object); // true
+console.log(
+  "descs.a.hasOwnProperty('value'):",
+  descs13.a.hasOwnProperty("value"),
+); // true
+console.log(
+  "descs.b.hasOwnProperty('writable'):",
+  descs13.b.hasOwnProperty("writable"),
+); // true
+
+if (!(descs13.a instanceof Object))
+  throw new Error("getOwnPropertyDescriptors result should be instanceof Object");
+if (!descs13.a.hasOwnProperty("value"))
+  throw new Error("Descriptor from getOwnPropertyDescriptors should hasOwnProperty('value')");
+console.log("✓ getOwnPropertyDescriptors returns proper descriptor objects\n");
+
 console.log("=== All property descriptor tests completed ===");
