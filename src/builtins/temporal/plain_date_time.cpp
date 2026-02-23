@@ -357,7 +357,7 @@ void TemporalPlainDateTime::setupPrototypeMethods(JSObject* prototype,
     // 5.3.21 Temporal.PlainDateTime.prototype.with ( temporalDateTimeLike [ , options ] )
     RIFT_METHOD(prototype, "with", 1, TemporalPlainDateTime::with);
     // 5.3.23 Temporal.PlainDateTime.prototype.withPlainTime ( [ plainTimeLike ] )
-    RIFT_METHOD(prototype, "withTime", 0, TemporalPlainDateTime::withTime);
+    RIFT_METHOD(prototype, "withPlainTime", 0, TemporalPlainDateTime::withTime);
     // 5.3.22 Temporal.PlainDateTime.prototype.withCalendar ( calendarLike )
     RIFT_METHOD(prototype, "withCalendar", 1, TemporalPlainDateTime::withCalendar);
 
