@@ -10,7 +10,9 @@
 #include "temporal_rs/PartialTime.hpp"
 #include "temporal_rs/PlainTime.hpp"
 #include "temporal_rs/Precision.hpp"
+#include "temporal_rs/RoundingOptions.hpp"
 #include "temporal_rs/ToStringRoundingOptions.hpp"
+#include "temporal_rs/Unit.hpp"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.PlainTime Objects (Sections 4.1-4.5)
@@ -89,6 +91,31 @@ static void throwTemporalError(const temporal_rs::TemporalError& err) {
         default:
             throw rift::core::JavaScriptException(Value("Error: " + msg));
     }
+}
+
+// NON-STANDARD: Helper to parse a string unit name to temporal_rs::Unit.
+static temporal_rs::Unit parseUnit(const std::string& str) {
+    if(str == "year" || str == "years")
+        return temporal_rs::Unit::Year;
+    if(str == "month" || str == "months")
+        return temporal_rs::Unit::Month;
+    if(str == "week" || str == "weeks")
+        return temporal_rs::Unit::Week;
+    if(str == "day" || str == "days")
+        return temporal_rs::Unit::Day;
+    if(str == "hour" || str == "hours")
+        return temporal_rs::Unit::Hour;
+    if(str == "minute" || str == "minutes")
+        return temporal_rs::Unit::Minute;
+    if(str == "second" || str == "seconds")
+        return temporal_rs::Unit::Second;
+    if(str == "millisecond" || str == "milliseconds")
+        return temporal_rs::Unit::Millisecond;
+    if(str == "microsecond" || str == "microseconds")
+        return temporal_rs::Unit::Microsecond;
+    if(str == "nanosecond" || str == "nanoseconds")
+        return temporal_rs::Unit::Nanosecond;
+    throw rift::core::JavaScriptException(Value("RangeError: Invalid unit: " + str));
 }
 
 // NON-STANDARD: Parse a PlainTime from a JS Value.
@@ -263,7 +290,7 @@ void TemporalPlainTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_METHOD(prototype, "since", 1, TemporalPlainTime::since);
 
     // 4.3.15 Temporal.PlainTime.prototype.round ( roundTo )
-    // INCOMPLETE: round() is not implemented.
+    RIFT_METHOD(prototype, "round", 1, TemporalPlainTime::round);
 
     // 4.3.16 Temporal.PlainTime.prototype.equals ( other )
     RIFT_METHOD(prototype, "equals", 1, TemporalPlainTime::equals);
@@ -271,7 +298,7 @@ void TemporalPlainTime::setupPrototypeMethods(JSObject* prototype,
     // 4.3.17 Temporal.PlainTime.prototype.toString ( [ options ] )
     RIFT_METHOD(prototype, "toString", 0, TemporalPlainTime::toString);
     // 4.3.18 Temporal.PlainTime.prototype.toLocaleString ( [ locales [ , options ] ] )
-    // INCOMPLETE: toLocaleString is not implemented.
+    RIFT_METHOD(prototype, "toLocaleString", 0, TemporalPlainTime::toLocaleString);
     // 4.3.19 Temporal.PlainTime.prototype.toJSON ( )
     RIFT_METHOD(prototype, "toJSON", 0, TemporalPlainTime::toJSON);
     // 4.3.20 Temporal.PlainTime.prototype.valueOf ( )
@@ -624,6 +651,60 @@ Value TemporalPlainTime::toJSON(const CallContext& ctx, const std::vector<Value>
 Value TemporalPlainTime::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     throw rift::core::JavaScriptException(
         Value("TypeError: Cannot convert a Temporal.PlainTime to a primitive value"));
+}
+
+// ----------------------------------------------------------------------------
+// 4.3.15 Temporal.PlainTime.prototype.round ( roundTo )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.round
+//
+// Rounds the time to the given smallest unit.
+// SIMPLIFIED: The roundingMode option is not parsed.
+// ----------------------------------------------------------------------------
+Value TemporalPlainTime::round(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(Value("TypeError: round called on non-PlainTime"));
+    }
+
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.PlainTime.prototype.round requires an argument"));
+    }
+
+    temporal_rs::RoundingOptions options{std::nullopt, std::nullopt, std::nullopt, std::nullopt};
+
+    if(args[0].isString()) {
+        options.smallest_unit = parseUnit(args[0].getString());
+    } else if(args[0].isObject() || args[0].isFunction()) {
+        auto* obj = args[0].getObject();
+        Value smallest = obj->getProperty("smallestUnit");
+        Value largest = obj->getProperty("largestUnit");
+        Value inc = obj->getProperty("roundingIncrement");
+
+        if(!smallest.isUndefined())
+            options.smallest_unit = parseUnit(smallest.toString());
+        if(!largest.isUndefined())
+            options.largest_unit = parseUnit(largest.toString());
+        if(!inc.isUndefined())
+            options.increment = static_cast<uint32_t>(inc.toNumber());
+    }
+
+    auto result = data->round(options);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return wrapPlainTime(std::move(result).ok().value());
+}
+
+// ----------------------------------------------------------------------------
+// 4.3.18 Temporal.PlainTime.prototype.toLocaleString ( [ locales [ , options ] ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.tolocalestring
+//
+// SIMPLIFIED: No Intl support — delegates to toString().
+// ----------------------------------------------------------------------------
+Value TemporalPlainTime::toLocaleString(const CallContext& ctx, const std::vector<Value>& args) {
+    return toString(ctx, args);
 }
 
 // ============================================================================

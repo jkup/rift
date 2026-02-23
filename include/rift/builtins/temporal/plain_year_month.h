@@ -137,6 +137,11 @@ class TemporalPlainYearMonth : public BuiltinBase<TemporalPlainYearMonth> {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainyearmonth.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 9.3.21 Temporal.PlainYearMonth.prototype.toLocaleString ( [ locales [ , options ] ] )
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-temporal.plainyearmonth.prototype.tolocalestring
+    static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Helper to create a JS PlainYearMonth object from a
     /// temporal_rs::PlainYearMonth.
     static Value wrapPlainYearMonth(std::unique_ptr<temporal_rs::PlainYearMonth> ym);

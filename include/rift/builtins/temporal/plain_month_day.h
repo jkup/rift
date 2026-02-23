@@ -92,6 +92,10 @@ class TemporalPlainMonthDay : public BuiltinBase<TemporalPlainMonthDay> {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 10.3.12 Temporal.PlainMonthDay.prototype.toLocaleString ( [ locales [ , options ] ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.tolocalestring
+    static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Helper to create a JS PlainMonthDay object from a temporal_rs::PlainMonthDay.
     static Value wrapPlainMonthDay(std::unique_ptr<temporal_rs::PlainMonthDay> md);
 

@@ -234,6 +234,8 @@ void TemporalDuration::setupPrototypeMethods(JSObject* prototype,
 
     // 7.3.22 Temporal.Duration.prototype.toString ( [ options ] )
     RIFT_METHOD(prototype, "toString", 0, TemporalDuration::toString);
+    // 7.3.25 Temporal.Duration.prototype.toLocaleString ( [ locales [ , options ] ] )
+    RIFT_METHOD(prototype, "toLocaleString", 0, TemporalDuration::toLocaleString);
     // 7.3.23 Temporal.Duration.prototype.toJSON ( )
     RIFT_METHOD(prototype, "toJSON", 0, TemporalDuration::toJSON);
     // 7.3.24 Temporal.Duration.prototype.valueOf ( )
@@ -755,6 +757,16 @@ Value TemporalDuration::valueOf(const CallContext& ctx, const std::vector<Value>
 
 JSObject* TemporalDuration::getGlobalPrototype() {
     return rift::core::BuiltinManager::getDurationPrototype();
+}
+
+// ----------------------------------------------------------------------------
+// 7.3.25 Temporal.Duration.prototype.toLocaleString ( [ locales [ , options ] ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.duration.prototype.tolocalestring
+//
+// SIMPLIFIED: No Intl support — delegates to toString().
+// ----------------------------------------------------------------------------
+Value TemporalDuration::toLocaleString(const CallContext& ctx, const std::vector<Value>& args) {
+    return toString(ctx, args);
 }
 
 }  // namespace rift::builtins

@@ -4,12 +4,14 @@
 #include "rift/builtins/temporal/duration.h"
 #include "rift/builtins/temporal/plain_date.h"
 #include "rift/builtins/temporal/plain_time.h"
+#include "rift/builtins/temporal/zoned_date_time.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "rift/interpreter/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 #include "temporal_rs/AnyCalendarKind.hpp"
 #include "temporal_rs/Calendar.hpp"
 #include "temporal_rs/DifferenceSettings.hpp"
+#include "temporal_rs/Disambiguation.hpp"
 #include "temporal_rs/DisplayCalendar.hpp"
 #include "temporal_rs/Duration.hpp"
 #include "temporal_rs/PartialDate.hpp"
@@ -17,7 +19,11 @@
 #include "temporal_rs/PartialTime.hpp"
 #include "temporal_rs/PlainDateTime.hpp"
 #include "temporal_rs/Precision.hpp"
+#include "temporal_rs/RoundingOptions.hpp"
+#include "temporal_rs/TimeZone.hpp"
 #include "temporal_rs/ToStringRoundingOptions.hpp"
+#include "temporal_rs/Unit.hpp"
+#include "temporal_rs/ZonedDateTime.hpp"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.PlainDateTime Objects (Sections 5.1-5.5)
@@ -97,6 +103,31 @@ static void throwTemporalError(const temporal_rs::TemporalError& err) {
         default:
             throw rift::core::JavaScriptException(Value("Error: " + msg));
     }
+}
+
+// NON-STANDARD: Helper to parse a string unit name to temporal_rs::Unit.
+static temporal_rs::Unit parseUnit(const std::string& str) {
+    if(str == "year" || str == "years")
+        return temporal_rs::Unit::Year;
+    if(str == "month" || str == "months")
+        return temporal_rs::Unit::Month;
+    if(str == "week" || str == "weeks")
+        return temporal_rs::Unit::Week;
+    if(str == "day" || str == "days")
+        return temporal_rs::Unit::Day;
+    if(str == "hour" || str == "hours")
+        return temporal_rs::Unit::Hour;
+    if(str == "minute" || str == "minutes")
+        return temporal_rs::Unit::Minute;
+    if(str == "second" || str == "seconds")
+        return temporal_rs::Unit::Second;
+    if(str == "millisecond" || str == "milliseconds")
+        return temporal_rs::Unit::Millisecond;
+    if(str == "microsecond" || str == "microseconds")
+        return temporal_rs::Unit::Microsecond;
+    if(str == "nanosecond" || str == "nanoseconds")
+        return temporal_rs::Unit::Nanosecond;
+    throw rift::core::JavaScriptException(Value("RangeError: Invalid unit: " + str));
 }
 
 // ----------------------------------------------------------------------------
@@ -327,6 +358,8 @@ void TemporalPlainDateTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_METHOD(prototype, "with", 1, TemporalPlainDateTime::with);
     // 5.3.23 Temporal.PlainDateTime.prototype.withPlainTime ( [ plainTimeLike ] )
     RIFT_METHOD(prototype, "withTime", 0, TemporalPlainDateTime::withTime);
+    // 5.3.22 Temporal.PlainDateTime.prototype.withCalendar ( calendarLike )
+    RIFT_METHOD(prototype, "withCalendar", 1, TemporalPlainDateTime::withCalendar);
 
     // 5.3.24 Temporal.PlainDateTime.prototype.add ( temporalDurationLike [ , options ] )
     RIFT_METHOD(prototype, "add", 1, TemporalPlainDateTime::add);
@@ -341,13 +374,21 @@ void TemporalPlainDateTime::setupPrototypeMethods(JSObject* prototype,
     // 5.3.29 Temporal.PlainDateTime.prototype.equals ( other )
     RIFT_METHOD(prototype, "equals", 1, TemporalPlainDateTime::equals);
 
+    // 5.3.28 Temporal.PlainDateTime.prototype.round ( roundTo )
+    RIFT_METHOD(prototype, "round", 1, TemporalPlainDateTime::round);
+
     // 5.3.31 Temporal.PlainDateTime.prototype.toPlainDate ( )
     RIFT_METHOD(prototype, "toPlainDate", 0, TemporalPlainDateTime::toPlainDate);
     // 5.3.32 Temporal.PlainDateTime.prototype.toPlainTime ( )
     RIFT_METHOD(prototype, "toPlainTime", 0, TemporalPlainDateTime::toPlainTime);
 
+    // 5.3.29 Temporal.PlainDateTime.prototype.toZonedDateTime ( timeZone [ , options ] )
+    RIFT_METHOD(prototype, "toZonedDateTime", 1, TemporalPlainDateTime::toZonedDateTime);
+
     // 5.3.30 Temporal.PlainDateTime.prototype.toString ( [ options ] )
     RIFT_METHOD(prototype, "toString", 0, TemporalPlainDateTime::toString);
+    // 5.3.35 Temporal.PlainDateTime.prototype.toLocaleString ( [ locales [ , options ] ] )
+    RIFT_METHOD(prototype, "toLocaleString", 0, TemporalPlainDateTime::toLocaleString);
     // 5.3.33 Temporal.PlainDateTime.prototype.toJSON ( )
     RIFT_METHOD(prototype, "toJSON", 0, TemporalPlainDateTime::toJSON);
     // 5.3.34 Temporal.PlainDateTime.prototype.valueOf ( )
@@ -1061,6 +1102,139 @@ Value TemporalPlainDateTime::valueOf(const CallContext& ctx, const std::vector<V
 
 JSObject* TemporalPlainDateTime::getGlobalPrototype() {
     return rift::core::BuiltinManager::getPlainDateTimePrototype();
+}
+
+// ----------------------------------------------------------------------------
+// 5.3.28 Temporal.PlainDateTime.prototype.round ( roundTo )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.round
+//
+// Rounds the date-time to the given smallest unit.
+// SIMPLIFIED: The roundingMode option is not parsed.
+// ----------------------------------------------------------------------------
+Value TemporalPlainDateTime::round(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: round called on non-PlainDateTime"));
+    }
+
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.PlainDateTime.prototype.round requires an argument"));
+    }
+
+    temporal_rs::RoundingOptions options{std::nullopt, std::nullopt, std::nullopt, std::nullopt};
+
+    if(args[0].isString()) {
+        options.smallest_unit = parseUnit(args[0].getString());
+    } else if(args[0].isObject() || args[0].isFunction()) {
+        auto* obj = args[0].getObject();
+        Value smallest = obj->getProperty("smallestUnit");
+        Value largest = obj->getProperty("largestUnit");
+        Value inc = obj->getProperty("roundingIncrement");
+
+        if(!smallest.isUndefined())
+            options.smallest_unit = parseUnit(smallest.toString());
+        if(!largest.isUndefined())
+            options.largest_unit = parseUnit(largest.toString());
+        if(!inc.isUndefined())
+            options.increment = static_cast<uint32_t>(inc.toNumber());
+    }
+
+    auto result = data->round(options);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return wrapPlainDateTime(std::move(result).ok().value());
+}
+
+// ----------------------------------------------------------------------------
+// 5.3.22 Temporal.PlainDateTime.prototype.withCalendar ( calendarLike )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.withcalendar
+//
+// Returns a new PlainDateTime with the same ISO date-time but a different calendar.
+// ----------------------------------------------------------------------------
+Value TemporalPlainDateTime::withCalendar(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: withCalendar called on non-PlainDateTime"));
+    }
+
+    if(args.empty() || !args[0].isString()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.PlainDateTime.prototype.withCalendar requires a string"));
+    }
+
+    auto cal = temporal_rs::AnyCalendarKind::get_for_str(args[0].getString());
+    if(!cal.has_value()) {
+        throw rift::core::JavaScriptException(
+            Value("RangeError: Invalid calendar: " + args[0].getString()));
+    }
+
+    auto pdt = data->with_calendar(cal.value());
+    return wrapPlainDateTime(std::move(pdt));
+}
+
+// ----------------------------------------------------------------------------
+// 5.3.29 Temporal.PlainDateTime.prototype.toZonedDateTime ( timeZone [ , options ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.tozoneddatetime
+//
+// Returns a ZonedDateTime for this date-time in the given time zone.
+// SIMPLIFIED: The options argument (disambiguation) defaults to "compatible".
+// ----------------------------------------------------------------------------
+Value TemporalPlainDateTime::toZonedDateTime(const CallContext& ctx,
+                                             const std::vector<Value>& args) {
+    auto* data = getPlainDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: toZonedDateTime called on non-PlainDateTime"));
+    }
+
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(Value(
+            "TypeError: Temporal.PlainDateTime.prototype.toZonedDateTime requires an argument"));
+    }
+
+    std::string tz_str = args[0].toString();
+    auto tz_result = temporal_rs::TimeZone::try_from_str(tz_str);
+    if(!tz_result.is_ok()) {
+        throwTemporalError(std::move(tz_result).err().value());
+    }
+
+    temporal_rs::Disambiguation disambiguation = temporal_rs::Disambiguation::Compatible;
+    if(args.size() > 1 && (args[1].isObject() || args[1].isFunction())) {
+        auto* opts = args[1].getObject();
+        Value dis_val = opts->getProperty("disambiguation");
+        if(!dis_val.isUndefined()) {
+            std::string dis_str = dis_val.toString();
+            if(dis_str == "earlier")
+                disambiguation = temporal_rs::Disambiguation::Earlier;
+            else if(dis_str == "later")
+                disambiguation = temporal_rs::Disambiguation::Later;
+            else if(dis_str == "reject")
+                disambiguation = temporal_rs::Disambiguation::Reject;
+        }
+    }
+
+    auto result = data->to_zoned_date_time(std::move(tz_result).ok().value(), disambiguation);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return TemporalZonedDateTime::wrapZonedDateTime(std::move(result).ok().value());
+}
+
+// ----------------------------------------------------------------------------
+// 5.3.35 Temporal.PlainDateTime.prototype.toLocaleString ( [ locales [ , options ] ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.tolocalestring
+//
+// SIMPLIFIED: No Intl support — delegates to toString().
+// ----------------------------------------------------------------------------
+Value TemporalPlainDateTime::toLocaleString(const CallContext& ctx,
+                                            const std::vector<Value>& args) {
+    return toString(ctx, args);
 }
 
 }  // namespace rift::builtins

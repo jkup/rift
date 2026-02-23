@@ -7,12 +7,14 @@
 #include "rift/builtins/temporal/plain_date.h"
 #include "rift/builtins/temporal/plain_date_time.h"
 #include "rift/builtins/temporal/plain_time.h"
+#include "rift/builtins/temporal/zoned_date_time.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "temporal_rs/Instant.hpp"
 #include "temporal_rs/PlainDate.hpp"
 #include "temporal_rs/PlainDateTime.hpp"
 #include "temporal_rs/PlainTime.hpp"
 #include "temporal_rs/TimeZone.hpp"
+#include "temporal_rs/ZonedDateTime.hpp"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.Now Object (Section 2)
@@ -41,6 +43,7 @@ JSObject* TemporalNow::create(rift::memory::ObjectFactory* factory) {
     RIFT_METHOD(now, "plainDateISO", 0, TemporalNow::plainDateISO);
     RIFT_METHOD(now, "plainTimeISO", 0, TemporalNow::plainTimeISO);
     RIFT_METHOD(now, "plainDateTimeISO", 0, TemporalNow::plainDateTimeISO);
+    RIFT_METHOD(now, "zonedDateTimeISO", 0, TemporalNow::zonedDateTimeISO);
 
     return now;
 }
@@ -148,6 +151,44 @@ Value TemporalNow::plainDateTimeISO(const CallContext& ctx, const std::vector<Va
     }
 
     return TemporalPlainDateTime::wrapPlainDateTime(std::move(dt_result).ok().value());
+}
+
+// 2.3.6 Temporal.Now.zonedDateTimeISO ( [ temporalTimeZoneLike ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.now.zoneddatetimeiso
+// SIMPLIFIED: Uses UTC by default; respects timezone argument if provided.
+Value TemporalNow::zonedDateTimeISO(const CallContext& ctx, const std::vector<Value>& args) {
+    auto now = std::chrono::system_clock::now();
+    auto epoch_ms =
+        std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+
+    // Parse timezone: use argument if provided, otherwise default to system tz or UTC
+    temporal_rs::TimeZone tz = temporal_rs::TimeZone::utc();
+    if(!args.empty() && !args[0].isUndefined()) {
+        std::string tz_str = args[0].toString();
+        auto tz_result = temporal_rs::TimeZone::try_from_str(tz_str);
+        if(!tz_result.is_ok()) {
+            throw rift::core::JavaScriptException(Value("RangeError: Invalid timezone: " + tz_str));
+        }
+        tz = std::move(tz_result).ok().value();
+    } else {
+        // Try to get system timezone from TZ env var
+        const char* tz_env = std::getenv("TZ");
+        if(tz_env && tz_env[0] != '\0') {
+            auto tz_result = temporal_rs::TimeZone::try_from_str(std::string(tz_env));
+            if(tz_result.is_ok()) {
+                tz = std::move(tz_result).ok().value();
+            }
+        }
+    }
+
+    auto result =
+        temporal_rs::ZonedDateTime::from_epoch_milliseconds(static_cast<int64_t>(epoch_ms), tz);
+    if(!result.is_ok()) {
+        throw rift::core::JavaScriptException(
+            Value("Error: Failed to create current ZonedDateTime"));
+    }
+
+    return TemporalZonedDateTime::wrapZonedDateTime(std::move(result).ok().value());
 }
 
 }  // namespace rift::builtins

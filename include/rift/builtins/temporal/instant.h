@@ -107,6 +107,18 @@ class TemporalInstant : public BuiltinBase<TemporalInstant> {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 8.3.7 Temporal.Instant.prototype.round ( roundTo )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.round
+    static Value round(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 8.3.8 Temporal.Instant.prototype.toZonedDateTimeISO ( timeZone )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.tozoneddatetimeiso
+    static Value toZonedDateTimeISO(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 8.3.15 Temporal.Instant.prototype.toLocaleString ( [ locales [ , options ] ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.tolocalestring
+    static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Helper to create a JS Instant object from a temporal_rs::Instant.
     static Value wrapInstant(std::unique_ptr<temporal_rs::Instant> instant);
 

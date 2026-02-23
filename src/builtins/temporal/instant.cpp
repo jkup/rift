@@ -2,12 +2,17 @@
 
 #include "rift/builtins/builtin_manager.h"
 #include "rift/builtins/temporal/duration.h"
+#include "rift/builtins/temporal/zoned_date_time.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "rift/interpreter/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 #include "temporal_rs/DifferenceSettings.hpp"
 #include "temporal_rs/Duration.hpp"
 #include "temporal_rs/Instant.hpp"
+#include "temporal_rs/RoundingOptions.hpp"
+#include "temporal_rs/TimeZone.hpp"
+#include "temporal_rs/Unit.hpp"
+#include "temporal_rs/ZonedDateTime.hpp"
 
 // ============================================================================
 // Temporal Proposal -- Temporal.Instant Objects (Section 8)
@@ -85,6 +90,31 @@ static void throwTemporalError(const temporal_rs::TemporalError& err) {
     }
 }
 
+// NON-STANDARD: Helper to parse a string unit name to temporal_rs::Unit.
+static temporal_rs::Unit parseUnit(const std::string& str) {
+    if(str == "year" || str == "years")
+        return temporal_rs::Unit::Year;
+    if(str == "month" || str == "months")
+        return temporal_rs::Unit::Month;
+    if(str == "week" || str == "weeks")
+        return temporal_rs::Unit::Week;
+    if(str == "day" || str == "days")
+        return temporal_rs::Unit::Day;
+    if(str == "hour" || str == "hours")
+        return temporal_rs::Unit::Hour;
+    if(str == "minute" || str == "minutes")
+        return temporal_rs::Unit::Minute;
+    if(str == "second" || str == "seconds")
+        return temporal_rs::Unit::Second;
+    if(str == "millisecond" || str == "milliseconds")
+        return temporal_rs::Unit::Millisecond;
+    if(str == "microsecond" || str == "microseconds")
+        return temporal_rs::Unit::Microsecond;
+    if(str == "nanosecond" || str == "nanoseconds")
+        return temporal_rs::Unit::Nanosecond;
+    throw rift::core::JavaScriptException(Value("RangeError: Invalid unit: " + str));
+}
+
 // NON-STANDARD: Wraps a temporal_rs::Instant in a JS object with prototype chain.
 // Corresponds to CreateTemporalInstant in the spec.
 // @spec https://tc39.es/proposal-temporal/#sec-temporal-createtemporalinstant
@@ -123,7 +153,10 @@ void TemporalInstant::setupPrototypeMethods(JSObject* prototype,
     RIFT_METHOD(prototype, "equals", 1, TemporalInstant::equals);
     RIFT_METHOD(prototype, "since", 1, TemporalInstant::since);
     RIFT_METHOD(prototype, "until", 1, TemporalInstant::until);
+    RIFT_METHOD(prototype, "round", 1, TemporalInstant::round);
+    RIFT_METHOD(prototype, "toZonedDateTimeISO", 1, TemporalInstant::toZonedDateTimeISO);
     RIFT_METHOD(prototype, "toString", 0, TemporalInstant::toString);
+    RIFT_METHOD(prototype, "toLocaleString", 0, TemporalInstant::toLocaleString);
     RIFT_METHOD(prototype, "toJSON", 0, TemporalInstant::toJSON);
     RIFT_METHOD(prototype, "valueOf", 0, TemporalInstant::valueOf);
 }
@@ -529,6 +562,94 @@ Value TemporalInstant::valueOf(const CallContext& ctx, const std::vector<Value>&
     // Per spec, Temporal.Instant.prototype.valueOf always throws TypeError
     throw rift::core::JavaScriptException(
         Value("TypeError: Cannot convert a Temporal.Instant to a primitive value"));
+}
+
+// ----------------------------------------------------------------------------
+// 8.3.7 Temporal.Instant.prototype.round ( roundTo )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.round
+//
+// Rounds the instant to the given smallest unit.
+// SIMPLIFIED: The roundingMode option is not parsed — defaults to
+// temporal_rs internal default.
+// ----------------------------------------------------------------------------
+Value TemporalInstant::round(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getInstantData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(Value("TypeError: round called on non-Instant"));
+    }
+
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.Instant.prototype.round requires an argument"));
+    }
+
+    temporal_rs::RoundingOptions options{std::nullopt, std::nullopt, std::nullopt, std::nullopt};
+
+    if(args[0].isString()) {
+        options.smallest_unit = parseUnit(args[0].getString());
+    } else if(args[0].isObject() || args[0].isFunction()) {
+        auto* obj = args[0].getObject();
+        Value smallest = obj->getProperty("smallestUnit");
+        Value largest = obj->getProperty("largestUnit");
+        Value inc = obj->getProperty("roundingIncrement");
+
+        if(!smallest.isUndefined())
+            options.smallest_unit = parseUnit(smallest.toString());
+        if(!largest.isUndefined())
+            options.largest_unit = parseUnit(largest.toString());
+        if(!inc.isUndefined())
+            options.increment = static_cast<uint32_t>(inc.toNumber());
+    }
+
+    auto result = data->round(options);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return wrapInstant(std::move(result).ok().value());
+}
+
+// ----------------------------------------------------------------------------
+// 8.3.8 Temporal.Instant.prototype.toZonedDateTimeISO ( timeZone )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.tozoneddatetimeiso
+//
+// Returns a ZonedDateTime for this instant in the given time zone
+// using the ISO 8601 calendar.
+// ----------------------------------------------------------------------------
+Value TemporalInstant::toZonedDateTimeISO(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getInstantData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: toZonedDateTimeISO called on non-Instant"));
+    }
+
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.Instant.prototype.toZonedDateTimeISO requires an argument"));
+    }
+
+    std::string tz_str = args[0].toString();
+    auto tz_result = temporal_rs::TimeZone::try_from_str(tz_str);
+    if(!tz_result.is_ok()) {
+        throwTemporalError(std::move(tz_result).err().value());
+    }
+
+    auto result = data->to_zoned_date_time_iso(std::move(tz_result).ok().value());
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return TemporalZonedDateTime::wrapZonedDateTime(std::move(result).ok().value());
+}
+
+// ----------------------------------------------------------------------------
+// 8.3.15 Temporal.Instant.prototype.toLocaleString ( [ locales [ , options ] ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant.prototype.tolocalestring
+//
+// SIMPLIFIED: No Intl support — delegates to toString().
+// ----------------------------------------------------------------------------
+Value TemporalInstant::toLocaleString(const CallContext& ctx, const std::vector<Value>& args) {
+    return toString(ctx, args);
 }
 
 // ===== Private =====

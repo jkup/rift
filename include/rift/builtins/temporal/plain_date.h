@@ -151,6 +151,14 @@ class TemporalPlainDate : public BuiltinBase<TemporalPlainDate> {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindate.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 3.3.17 Temporal.PlainDate.prototype.withCalendar ( calendarLike )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindate.prototype.withcalendar
+    static Value withCalendar(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 3.3.25 Temporal.PlainDate.prototype.toLocaleString ( [ locales [ , options ] ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindate.prototype.tolocalestring
+    static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Helper to create a JS PlainDate object from a temporal_rs::PlainDate.
     static Value wrapPlainDate(std::unique_ptr<temporal_rs::PlainDate> date);
 

@@ -298,6 +298,8 @@ void TemporalPlainYearMonth::setupPrototypeMethods(JSObject* prototype,
 
     // 9.3.17 Temporal.PlainYearMonth.prototype.toString ( [ options ] )
     RIFT_METHOD(prototype, "toString", 0, TemporalPlainYearMonth::toString);
+    // 9.3.21 Temporal.PlainYearMonth.prototype.toLocaleString ( [ locales [ , options ] ] )
+    RIFT_METHOD(prototype, "toLocaleString", 0, TemporalPlainYearMonth::toLocaleString);
     // 9.3.19 Temporal.PlainYearMonth.prototype.toJSON ( )
     RIFT_METHOD(prototype, "toJSON", 0, TemporalPlainYearMonth::toJSON);
     // 9.3.20 Temporal.PlainYearMonth.prototype.valueOf ( )
@@ -812,6 +814,17 @@ Value TemporalPlainYearMonth::valueOf(const CallContext& ctx, const std::vector<
 
 JSObject* TemporalPlainYearMonth::getGlobalPrototype() {
     return rift::core::BuiltinManager::getPlainYearMonthPrototype();
+}
+
+// ----------------------------------------------------------------------------
+// 9.3.21 Temporal.PlainYearMonth.prototype.toLocaleString ( [ locales [ , options ] ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainyearmonth.prototype.tolocalestring
+//
+// SIMPLIFIED: No Intl support — delegates to toString().
+// ----------------------------------------------------------------------------
+Value TemporalPlainYearMonth::toLocaleString(const CallContext& ctx,
+                                             const std::vector<Value>& args) {
+    return toString(ctx, args);
 }
 
 }  // namespace rift::builtins

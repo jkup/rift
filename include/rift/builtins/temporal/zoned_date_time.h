@@ -232,6 +232,19 @@ class TemporalZonedDateTime : public BuiltinBase<TemporalZonedDateTime> {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 6.3.32 Temporal.ZonedDateTime.prototype.round ( roundTo )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.round
+    static Value round(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 6.3.35 Temporal.ZonedDateTime.prototype.getTimeZoneTransition ( direction )
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.gettimezonetransition
+    static Value getTimeZoneTransition(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 6.3.42 Temporal.ZonedDateTime.prototype.toLocaleString ( [ locales [ , options ] ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.tolocalestring
+    static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Helper to create a JS ZonedDateTime object from a temporal_rs::ZonedDateTime.
     static Value wrapZonedDateTime(std::unique_ptr<temporal_rs::ZonedDateTime> zdt);
 

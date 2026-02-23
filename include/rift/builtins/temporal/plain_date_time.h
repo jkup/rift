@@ -185,6 +185,23 @@ class TemporalPlainDateTime : public BuiltinBase<TemporalPlainDateTime> {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 5.3.28 Temporal.PlainDateTime.prototype.round ( roundTo )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.round
+    static Value round(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 5.3.22 Temporal.PlainDateTime.prototype.withCalendar ( calendarLike )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.withcalendar
+    static Value withCalendar(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 5.3.29 Temporal.PlainDateTime.prototype.toZonedDateTime ( timeZone [ , options ] )
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.tozoneddatetime
+    static Value toZonedDateTime(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 5.3.35 Temporal.PlainDateTime.prototype.toLocaleString ( [ locales [ , options ] ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime.prototype.tolocalestring
+    static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Helper to create a JS PlainDateTime object from a temporal_rs::PlainDateTime.
     static Value wrapPlainDateTime(std::unique_ptr<temporal_rs::PlainDateTime> dt);
 

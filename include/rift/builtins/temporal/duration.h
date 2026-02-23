@@ -144,6 +144,10 @@ class TemporalDuration : public BuiltinBase<TemporalDuration> {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.duration.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 7.3.25 Temporal.Duration.prototype.toLocaleString ( [ locales [ , options ] ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.duration.prototype.tolocalestring
+    static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Helper to create a JS Duration object from a temporal_rs::Duration.
     static Value wrapDuration(std::unique_ptr<temporal_rs::Duration> dur);
 

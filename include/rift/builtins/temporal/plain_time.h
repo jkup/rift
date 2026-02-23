@@ -120,6 +120,14 @@ class TemporalPlainTime : public BuiltinBase<TemporalPlainTime> {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 4.3.15 Temporal.PlainTime.prototype.round ( roundTo )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.round
+    static Value round(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 4.3.18 Temporal.PlainTime.prototype.toLocaleString ( [ locales [ , options ] ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.tolocalestring
+    static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Helper to create a JS PlainTime object from a temporal_rs::PlainTime.
     static Value wrapPlainTime(std::unique_ptr<temporal_rs::PlainTime> time);
 

@@ -37,6 +37,10 @@ class TemporalNow {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.now.plaindatetimeiso
     static Value plainDateTimeISO(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 2.3.6 Temporal.Now.zonedDateTimeISO ( [ temporalTimeZoneLike ] )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.now.zoneddatetimeiso
+    static Value zonedDateTimeISO(const CallContext& ctx, const std::vector<Value>& args);
+
   private:
     static rift::memory::ObjectFactory* factory_;
 };

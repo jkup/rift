@@ -185,6 +185,8 @@ void TemporalPlainMonthDay::setupPrototypeMethods(JSObject* prototype,
 
     // String
     RIFT_METHOD(prototype, "toString", 0, TemporalPlainMonthDay::toString);
+    // 10.3.12 Temporal.PlainMonthDay.prototype.toLocaleString ( [ locales [ , options ] ] )
+    RIFT_METHOD(prototype, "toLocaleString", 0, TemporalPlainMonthDay::toLocaleString);
     RIFT_METHOD(prototype, "toJSON", 0, TemporalPlainMonthDay::toJSON);
     RIFT_METHOD(prototype, "valueOf", 0, TemporalPlainMonthDay::valueOf);
 }
@@ -390,6 +392,17 @@ Value TemporalPlainMonthDay::valueOf(const CallContext& ctx, const std::vector<V
 
 JSObject* TemporalPlainMonthDay::getGlobalPrototype() {
     return rift::core::BuiltinManager::getPlainMonthDayPrototype();
+}
+
+// ----------------------------------------------------------------------------
+// 10.3.12 Temporal.PlainMonthDay.prototype.toLocaleString ( [ locales [ , options ] ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday.prototype.tolocalestring
+//
+// SIMPLIFIED: No Intl support — delegates to toString().
+// ----------------------------------------------------------------------------
+Value TemporalPlainMonthDay::toLocaleString(const CallContext& ctx,
+                                            const std::vector<Value>& args) {
+    return toString(ctx, args);
 }
 
 }  // namespace rift::builtins

@@ -256,6 +256,7 @@ void TemporalPlainDate::setupPrototypeMethods(JSObject* prototype,
 
     // Mutation
     RIFT_METHOD(prototype, "with", 1, TemporalPlainDate::with);
+    RIFT_METHOD(prototype, "withCalendar", 1, TemporalPlainDate::withCalendar);
 
     // Arithmetic
     RIFT_METHOD(prototype, "add", 1, TemporalPlainDate::add);
@@ -274,6 +275,7 @@ void TemporalPlainDate::setupPrototypeMethods(JSObject* prototype,
 
     // String
     RIFT_METHOD(prototype, "toString", 0, TemporalPlainDate::toString);
+    RIFT_METHOD(prototype, "toLocaleString", 0, TemporalPlainDate::toLocaleString);
     RIFT_METHOD(prototype, "toJSON", 0, TemporalPlainDate::toJSON);
     RIFT_METHOD(prototype, "valueOf", 0, TemporalPlainDate::valueOf);
 }
@@ -735,6 +737,44 @@ Value TemporalPlainDate::toJSON(const CallContext& ctx, const std::vector<Value>
 Value TemporalPlainDate::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     throw rift::core::JavaScriptException(
         Value("TypeError: Cannot convert a Temporal.PlainDate to a primitive value"));
+}
+
+// ----------------------------------------------------------------------------
+// 3.3.17 Temporal.PlainDate.prototype.withCalendar ( calendarLike )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindate.prototype.withcalendar
+//
+// Returns a new PlainDate with the same ISO date but a different calendar.
+// ----------------------------------------------------------------------------
+Value TemporalPlainDate::withCalendar(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainDateData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: withCalendar called on non-PlainDate"));
+    }
+
+    if(args.empty() || !args[0].isString()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.PlainDate.prototype.withCalendar requires a string"));
+    }
+
+    auto cal = temporal_rs::AnyCalendarKind::get_for_str(args[0].getString());
+    if(!cal.has_value()) {
+        throw rift::core::JavaScriptException(
+            Value("RangeError: Invalid calendar: " + args[0].getString()));
+    }
+
+    auto pd = data->with_calendar(cal.value());
+    return wrapPlainDate(std::move(pd));
+}
+
+// ----------------------------------------------------------------------------
+// 3.3.25 Temporal.PlainDate.prototype.toLocaleString ( [ locales [ , options ] ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindate.prototype.tolocalestring
+//
+// SIMPLIFIED: No Intl support — delegates to toString().
+// ----------------------------------------------------------------------------
+Value TemporalPlainDate::toLocaleString(const CallContext& ctx, const std::vector<Value>& args) {
+    return toString(ctx, args);
 }
 
 JSObject* TemporalPlainDate::getGlobalPrototype() {

@@ -26,8 +26,11 @@
 #include "temporal_rs/PlainDateTime.hpp"
 #include "temporal_rs/PlainTime.hpp"
 #include "temporal_rs/Precision.hpp"
+#include "temporal_rs/RoundingOptions.hpp"
 #include "temporal_rs/TimeZone.hpp"
 #include "temporal_rs/ToStringRoundingOptions.hpp"
+#include "temporal_rs/TransitionDirection.hpp"
+#include "temporal_rs/Unit.hpp"
 #include "temporal_rs/ZonedDateTime.hpp"
 
 // ============================================================================
@@ -112,6 +115,31 @@ static void throwTemporalError(const temporal_rs::TemporalError& err) {
         default:
             throw rift::core::JavaScriptException(Value("Error: " + msg));
     }
+}
+
+// NON-STANDARD: Helper to parse a string unit name to temporal_rs::Unit.
+static temporal_rs::Unit parseUnit(const std::string& str) {
+    if(str == "year" || str == "years")
+        return temporal_rs::Unit::Year;
+    if(str == "month" || str == "months")
+        return temporal_rs::Unit::Month;
+    if(str == "week" || str == "weeks")
+        return temporal_rs::Unit::Week;
+    if(str == "day" || str == "days")
+        return temporal_rs::Unit::Day;
+    if(str == "hour" || str == "hours")
+        return temporal_rs::Unit::Hour;
+    if(str == "minute" || str == "minutes")
+        return temporal_rs::Unit::Minute;
+    if(str == "second" || str == "seconds")
+        return temporal_rs::Unit::Second;
+    if(str == "millisecond" || str == "milliseconds")
+        return temporal_rs::Unit::Millisecond;
+    if(str == "microsecond" || str == "microseconds")
+        return temporal_rs::Unit::Microsecond;
+    if(str == "nanosecond" || str == "nanoseconds")
+        return temporal_rs::Unit::Nanosecond;
+    throw rift::core::JavaScriptException(Value("RangeError: Invalid unit: " + str));
 }
 
 // ----------------------------------------------------------------------------
@@ -370,8 +398,15 @@ void TemporalZonedDateTime::setupPrototypeMethods(JSObject* prototype,
     // 6.3.31 Temporal.ZonedDateTime.prototype.since ( other [ , options ] )
     RIFT_METHOD(prototype, "since", 1, TemporalZonedDateTime::since);
 
+    // 6.3.32 Temporal.ZonedDateTime.prototype.round ( roundTo )
+    RIFT_METHOD(prototype, "round", 1, TemporalZonedDateTime::round);
+
     // 6.3.33 Temporal.ZonedDateTime.prototype.equals ( other )
     RIFT_METHOD(prototype, "equals", 1, TemporalZonedDateTime::equals);
+
+    // 6.3.35 Temporal.ZonedDateTime.prototype.getTimeZoneTransition ( direction )
+    RIFT_METHOD(prototype, "getTimeZoneTransition", 1,
+                TemporalZonedDateTime::getTimeZoneTransition);
 
     // 6.3.36 Temporal.ZonedDateTime.prototype.toInstant ( )
     RIFT_METHOD(prototype, "toInstant", 0, TemporalZonedDateTime::toInstant);
@@ -389,6 +424,8 @@ void TemporalZonedDateTime::setupPrototypeMethods(JSObject* prototype,
 
     // 6.3.35 Temporal.ZonedDateTime.prototype.toString ( [ options ] )
     RIFT_METHOD(prototype, "toString", 0, TemporalZonedDateTime::toString);
+    // 6.3.42 Temporal.ZonedDateTime.prototype.toLocaleString ( [ locales [ , options ] ] )
+    RIFT_METHOD(prototype, "toLocaleString", 0, TemporalZonedDateTime::toLocaleString);
     // 6.3.40 Temporal.ZonedDateTime.prototype.toJSON ( )
     RIFT_METHOD(prototype, "toJSON", 0, TemporalZonedDateTime::toJSON);
     // 6.3.41 Temporal.ZonedDateTime.prototype.valueOf ( )
@@ -1314,6 +1351,120 @@ Value TemporalZonedDateTime::toJSON(const CallContext& ctx, const std::vector<Va
 Value TemporalZonedDateTime::valueOf(const CallContext& ctx, const std::vector<Value>& args) {
     throw rift::core::JavaScriptException(
         Value("TypeError: Cannot convert a Temporal.ZonedDateTime to a primitive value"));
+}
+
+// ----------------------------------------------------------------------------
+// 6.3.32 Temporal.ZonedDateTime.prototype.round ( roundTo )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.round
+//
+// Rounds the zoned date-time to the given smallest unit.
+// SIMPLIFIED: The roundingMode option is not parsed.
+// ----------------------------------------------------------------------------
+Value TemporalZonedDateTime::round(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getZonedDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: round called on non-ZonedDateTime"));
+    }
+
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.ZonedDateTime.prototype.round requires an argument"));
+    }
+
+    temporal_rs::RoundingOptions options{std::nullopt, std::nullopt, std::nullopt, std::nullopt};
+
+    if(args[0].isString()) {
+        options.smallest_unit = parseUnit(args[0].getString());
+    } else if(args[0].isObject() || args[0].isFunction()) {
+        auto* obj = args[0].getObject();
+        Value smallest = obj->getProperty("smallestUnit");
+        Value largest = obj->getProperty("largestUnit");
+        Value inc = obj->getProperty("roundingIncrement");
+
+        if(!smallest.isUndefined())
+            options.smallest_unit = parseUnit(smallest.toString());
+        if(!largest.isUndefined())
+            options.largest_unit = parseUnit(largest.toString());
+        if(!inc.isUndefined())
+            options.increment = static_cast<uint32_t>(inc.toNumber());
+    }
+
+    auto result = data->round(options);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return wrapZonedDateTime(std::move(result).ok().value());
+}
+
+// ----------------------------------------------------------------------------
+// 6.3.35 Temporal.ZonedDateTime.prototype.getTimeZoneTransition ( direction )
+// @spec
+// https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.gettimezonetransition
+//
+// Returns the next or previous time zone transition as a ZonedDateTime,
+// or null if there is no such transition.
+// ----------------------------------------------------------------------------
+Value TemporalZonedDateTime::getTimeZoneTransition(const CallContext& ctx,
+                                                   const std::vector<Value>& args) {
+    auto* data = getZonedDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: getTimeZoneTransition called on non-ZonedDateTime"));
+    }
+
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Temporal.ZonedDateTime.prototype.getTimeZoneTransition requires an "
+                  "argument"));
+    }
+
+    temporal_rs::TransitionDirection dir = temporal_rs::TransitionDirection::Next;
+    if(args[0].isString()) {
+        std::string dir_str = args[0].getString();
+        if(dir_str == "next") {
+            dir = temporal_rs::TransitionDirection::Next;
+        } else if(dir_str == "previous") {
+            dir = temporal_rs::TransitionDirection::Previous;
+        } else {
+            throw rift::core::JavaScriptException(
+                Value("RangeError: Invalid direction: " + dir_str));
+        }
+    } else if(args[0].isObject() || args[0].isFunction()) {
+        auto* obj = args[0].getObject();
+        Value dir_val = obj->getProperty("direction");
+        if(!dir_val.isUndefined()) {
+            std::string dir_str = dir_val.toString();
+            if(dir_str == "next") {
+                dir = temporal_rs::TransitionDirection::Next;
+            } else if(dir_str == "previous") {
+                dir = temporal_rs::TransitionDirection::Previous;
+            } else {
+                throw rift::core::JavaScriptException(
+                    Value("RangeError: Invalid direction: " + dir_str));
+            }
+        }
+    }
+
+    auto result = data->get_time_zone_transition(dir);
+    if(!result.is_ok()) {
+        // If the error indicates no transition, return null
+        return Value();  // null
+    }
+
+    return wrapZonedDateTime(std::move(result).ok().value());
+}
+
+// ----------------------------------------------------------------------------
+// 6.3.42 Temporal.ZonedDateTime.prototype.toLocaleString ( [ locales [ , options ] ] )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.tolocalestring
+//
+// SIMPLIFIED: No Intl support — delegates to toString().
+// ----------------------------------------------------------------------------
+Value TemporalZonedDateTime::toLocaleString(const CallContext& ctx,
+                                            const std::vector<Value>& args) {
+    return toString(ctx, args);
 }
 
 // ============================================================================
