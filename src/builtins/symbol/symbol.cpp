@@ -38,6 +38,10 @@ uint64_t Symbol::to_primitive_id_ = 0;
 uint64_t Symbol::unscopables_id_ = 0;
 uint64_t Symbol::is_concat_spreadable_id_ = 0;
 uint64_t Symbol::async_iterator_id_ = 0;
+uint64_t Symbol::match_id_ = 0;
+uint64_t Symbol::replace_id_ = 0;
+uint64_t Symbol::search_id_ = 0;
+uint64_t Symbol::split_id_ = 0;
 
 // Internal helper: generates a new unique symbol ID.
 // This implements the spec's requirement that each Symbol value is
@@ -322,6 +326,78 @@ uint64_t Symbol::getToPrimitiveId() {
     return to_primitive_id_;
 }
 
+// 20.4.2.7 Symbol.match
+// @spec https://tc39.es/ecma262/#sec-symbol.match
+// A method that is called to determine if a RegExp is used as a matcher
+// by String.prototype.match.
+Value Symbol::getMatch() {
+    if(match_id_ == 0) {
+        match_id_ = generateSymbolId();
+    }
+    return Value::symbol(match_id_, "Symbol.match");
+}
+
+// 20.4.2.10 Symbol.replace
+// @spec https://tc39.es/ecma262/#sec-symbol.replace
+// A method that replaces matched substrings of a string.
+// Called by String.prototype.replace.
+Value Symbol::getReplace() {
+    if(replace_id_ == 0) {
+        replace_id_ = generateSymbolId();
+    }
+    return Value::symbol(replace_id_, "Symbol.replace");
+}
+
+// 20.4.2.11 Symbol.search
+// @spec https://tc39.es/ecma262/#sec-symbol.search
+// A method that returns the index within a string that matches the
+// regular expression. Called by String.prototype.search.
+Value Symbol::getSearch() {
+    if(search_id_ == 0) {
+        search_id_ = generateSymbolId();
+    }
+    return Value::symbol(search_id_, "Symbol.search");
+}
+
+// 20.4.2.13 Symbol.split
+// @spec https://tc39.es/ecma262/#sec-symbol.split
+// A method that splits a string at the indices that match the
+// regular expression. Called by String.prototype.split.
+Value Symbol::getSplit() {
+    if(split_id_ == 0) {
+        split_id_ = generateSymbolId();
+    }
+    return Value::symbol(split_id_, "Symbol.split");
+}
+
+uint64_t Symbol::getMatchId() {
+    if(match_id_ == 0) {
+        match_id_ = generateSymbolId();
+    }
+    return match_id_;
+}
+
+uint64_t Symbol::getReplaceId() {
+    if(replace_id_ == 0) {
+        replace_id_ = generateSymbolId();
+    }
+    return replace_id_;
+}
+
+uint64_t Symbol::getSearchId() {
+    if(search_id_ == 0) {
+        search_id_ = generateSymbolId();
+    }
+    return search_id_;
+}
+
+uint64_t Symbol::getSplitId() {
+    if(split_id_ == 0) {
+        split_id_ = generateSymbolId();
+    }
+    return split_id_;
+}
+
 // ----------------------------------------------------------------------------
 // 20.4.2 Properties of the Symbol Constructor
 // @spec https://tc39.es/ecma262/#sec-properties-of-the-symbol-constructor
@@ -366,13 +442,25 @@ void Symbol::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
     PropertyDescriptor asyncIteratorDesc(getAsyncIterator(), false, false, false);
     constructor->defineProperty("asyncIterator", asyncIteratorDesc);
 
-    // INCOMPLETE: Missing well-known symbol properties:
-    // 20.4.2.7  Symbol.match
-    // 20.4.2.8  Symbol.matchAll
+    // 20.4.2.7 Symbol.match
+    PropertyDescriptor matchDesc(getMatch(), false, false, false);
+    constructor->defineProperty("match", matchDesc);
+
     // 20.4.2.10 Symbol.replace
+    PropertyDescriptor replaceDesc(getReplace(), false, false, false);
+    constructor->defineProperty("replace", replaceDesc);
+
     // 20.4.2.11 Symbol.search
-    // 20.4.2.12 Symbol.species
+    PropertyDescriptor searchDesc(getSearch(), false, false, false);
+    constructor->defineProperty("search", searchDesc);
+
     // 20.4.2.13 Symbol.split
+    PropertyDescriptor splitDesc(getSplit(), false, false, false);
+    constructor->defineProperty("split", splitDesc);
+
+    // INCOMPLETE: Missing well-known symbol properties:
+    // 20.4.2.8  Symbol.matchAll
+    // 20.4.2.12 Symbol.species
 }
 
 // ----------------------------------------------------------------------------

@@ -85,11 +85,31 @@ class Symbol : public BuiltinBase<Symbol> {
     /// @spec https://tc39.es/ecma262/#sec-symbol.asynciterator
     static Value getAsyncIterator();
 
+    /// 20.4.2.7 Symbol.match
+    /// @spec https://tc39.es/ecma262/#sec-symbol.match
+    static Value getMatch();
+
+    /// 20.4.2.10 Symbol.replace
+    /// @spec https://tc39.es/ecma262/#sec-symbol.replace
+    static Value getReplace();
+
+    /// 20.4.2.11 Symbol.search
+    /// @spec https://tc39.es/ecma262/#sec-symbol.search
+    static Value getSearch();
+
+    /// 20.4.2.13 Symbol.split
+    /// @spec https://tc39.es/ecma262/#sec-symbol.split
+    static Value getSplit();
+
     /// NON-STANDARD: Internal accessors for well-known symbol IDs
     static uint64_t getIteratorId();
     static uint64_t getToStringTagId();
     static uint64_t getAsyncIteratorId();
     static uint64_t getToPrimitiveId();
+    static uint64_t getMatchId();
+    static uint64_t getReplaceId();
+    static uint64_t getSearchId();
+    static uint64_t getSplitId();
 
   private:
     static JSObject* getGlobalPrototype();
@@ -109,6 +129,10 @@ class Symbol : public BuiltinBase<Symbol> {
     static uint64_t unscopables_id_;
     static uint64_t is_concat_spreadable_id_;
     static uint64_t async_iterator_id_;
+    static uint64_t match_id_;
+    static uint64_t replace_id_;
+    static uint64_t search_id_;
+    static uint64_t split_id_;
 };
 
 }  // namespace rift::builtins

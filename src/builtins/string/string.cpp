@@ -553,15 +553,36 @@ Value String::trim(const CallContext& ctx, const std::vector<Value>& args) {
 Value String::split(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be the this value.
     // 2. Perform ? RequireObjectCoercible(O).
-    // INCOMPLETE: Step 3 (Symbol.split dispatch for RegExp objects) not implemented.
     // 4. Let S be ? ToString(O).
     std::string str = extractThisString(ctx);
 
+    // 3. If separator is an Object, then
+    //   a. Let splitter be ? GetMethod(separator, %Symbol.split%).
+    //   b. If splitter is not undefined, then
+    //     i. Return ? Call(splitter, separator, <<O, limit>>).
+    if(!args.empty() && args[0].isObject()) {
+        auto* obj = args[0].getObject();
+        std::string split_key =
+            rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getSplitId());
+        Value splitter = obj->getProperty(split_key);
+        if(splitter.isFunction()) {
+            auto* func = dynamic_cast<JSFunction*>(splitter.getObject());
+            if(func) {
+                std::vector<Value> call_args;
+                call_args.emplace_back(str);
+                if(args.size() > 1) {
+                    call_args.push_back(args[1]);
+                } else {
+                    call_args.push_back(Value::undefined());
+                }
+                rift::core::CallContext cb_ctx(rift::core::CallType::Function, args[0]);
+                return func->call(cb_ctx, call_args);
+            }
+        }
+    }
+
     // Create an array to hold the results using GC-managed creation
     std::vector<Value> elements;
-
-    // 5. If limit is undefined, let lim be 2^32 - 1; else let lim be R(? ToUint32(limit)).
-    // INCOMPLETE: The limit parameter is not yet handled.
 
     // 8. If separator is undefined, then
     //   a. Return CreateArrayFromList(<<S>>).
@@ -644,41 +665,39 @@ Value String::search(const CallContext& ctx, const std::vector<Value>& args) {
     //   a. Let searcher be ? GetMethod(regexp, %Symbol.search%).
     //   b. If searcher is not undefined, then
     //     i. Return ? Call(searcher, regexp, <<O>>).
-    // DEVIATION: Rift does not dispatch through Symbol.search. Instead, it
-    // directly checks if the argument is a RegExp and performs the search inline.
-
-    // Check if argument is a RegExp
-    RegExpData* data = nullptr;
-    std::unique_ptr<RE2> temp_regex;
-
     if(args[0].isObject()) {
-        data = RegExpRegistry::get(args[0].getObject());
+        auto* obj = args[0].getObject();
+        std::string search_key =
+            rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getSearchId());
+        Value searcher = obj->getProperty(search_key);
+        if(searcher.isFunction()) {
+            auto* func = dynamic_cast<JSFunction*>(searcher.getObject());
+            if(func) {
+                std::vector<Value> call_args;
+                call_args.emplace_back(str);
+                rift::core::CallContext cb_ctx(rift::core::CallType::Function, args[0]);
+                return func->call(cb_ctx, call_args);
+            }
+        }
     }
 
     // 4. Let string be ? ToString(O).
     // 5. Let rx be ? RegExpCreate(regexp, undefined).
     // 6. Return ? Invoke(rx, %Symbol.search%, <<string>>).
-    // SIMPLIFIED: Instead of creating a new RegExp and invoking Symbol.search,
-    // Rift creates a temporary RE2 regex and matches directly.
-    RE2* regex_ptr = nullptr;
-    if(data) {
-        regex_ptr = data->regex.get();
-    } else {
-        // Convert to string and create a temporary regex
-        std::string pattern = args[0].toString();
-        RE2::Options opts;
-        opts.set_log_errors(false);
-        temp_regex = std::make_unique<RE2>(pattern, opts);
-        regex_ptr = temp_regex.get();
-    }
+    // SIMPLIFIED: For non-RegExp arguments, create a temporary RE2 regex
+    // and match directly instead of creating a full RegExp object.
+    std::string pattern = args[0].toString();
+    RE2::Options opts;
+    opts.set_log_errors(false);
+    auto temp_regex = std::make_unique<RE2>(pattern, opts);
 
-    if(!regex_ptr || !regex_ptr->ok()) {
+    if(!temp_regex || !temp_regex->ok()) {
         return Value(-1.0);
     }
 
     absl::string_view text(str);
     absl::string_view submatch;
-    if(regex_ptr->Match(text, 0, static_cast<int>(str.size()), RE2::UNANCHORED, &submatch, 1)) {
+    if(temp_regex->Match(text, 0, static_cast<int>(str.size()), RE2::UNANCHORED, &submatch, 1)) {
         size_t index = submatch.data() - str.data();
         return Value(static_cast<double>(index));
     }
@@ -707,110 +726,61 @@ Value String::match(const CallContext& ctx, const std::vector<Value>& args) {
     //   a. Let matcher be ? GetMethod(regexp, %Symbol.match%).
     //   b. If matcher is not undefined, then
     //     i. Return ? Call(matcher, regexp, <<O>>).
-    // DEVIATION: Rift does not dispatch through Symbol.match. Instead, it
-    // directly checks if the argument is a RegExp and performs matching inline.
-
-    // Check if argument is a RegExp
-    RegExpData* data = nullptr;
-    std::unique_ptr<RE2> temp_regex;
-    bool is_global = false;
-
     if(args[0].isObject()) {
-        data = RegExpRegistry::get(args[0].getObject());
+        auto* obj = args[0].getObject();
+        std::string match_key =
+            rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getMatchId());
+        Value matcher = obj->getProperty(match_key);
+        if(matcher.isFunction()) {
+            auto* func = dynamic_cast<JSFunction*>(matcher.getObject());
+            if(func) {
+                std::vector<Value> call_args;
+                call_args.emplace_back(str);
+                rift::core::CallContext cb_ctx(rift::core::CallType::Function, args[0]);
+                return func->call(cb_ctx, call_args);
+            }
+        }
     }
 
     // 4. Let S be ? ToString(O).
     // 5. Let rx be ? RegExpCreate(regexp, undefined).
     // 6. Return ? Invoke(rx, %Symbol.match%, <<S>>).
-    // SIMPLIFIED: Instead of creating a new RegExp and invoking Symbol.match,
-    // Rift creates a temporary RE2 regex and matches directly.
-    RE2* regex_ptr = nullptr;
-    if(data) {
-        regex_ptr = data->regex.get();
-        is_global = data->global;
-    } else {
-        // Convert to string and create a temporary regex
-        std::string pattern = args[0].toString();
-        RE2::Options opts;
-        opts.set_log_errors(false);
-        temp_regex = std::make_unique<RE2>(pattern, opts);
-        regex_ptr = temp_regex.get();
-    }
+    // SIMPLIFIED: For non-RegExp arguments, create a temporary RE2 regex
+    // and match directly instead of creating a full RegExp object.
+    std::string pattern = args[0].toString();
+    RE2::Options opts;
+    opts.set_log_errors(false);
+    auto temp_regex = std::make_unique<RE2>(pattern, opts);
 
-    if(!regex_ptr || !regex_ptr->ok()) {
+    if(!temp_regex || !temp_regex->ok()) {
         return Value::null();
     }
 
     absl::string_view text(str);
+    int num_groups = temp_regex->NumberOfCapturingGroups();
+    int num_submatch = 1 + num_groups;
+    std::vector<absl::string_view> submatch(num_submatch);
 
-    if(!is_global) {
-        // Non-global: return single match with groups, index, input (like exec)
-        // This follows the RegExp.prototype[@@match] behavior for non-global regexps,
-        // which delegates to RegExpExec (22.2.7.1).
-        int num_groups = regex_ptr->NumberOfCapturingGroups();
-        int num_submatch = 1 + num_groups;
-        std::vector<absl::string_view> submatch(num_submatch);
-
-        if(!regex_ptr->Match(text, 0, static_cast<int>(str.size()), RE2::UNANCHORED,
-                             submatch.data(), num_submatch)) {
-            return Value::null();
-        }
-
-        size_t match_index = submatch[0].data() - str.data();
-
-        std::vector<Value> elements;
-        elements.emplace_back(std::string(submatch[0]));
-        for(int i = 1; i < num_submatch; ++i) {
-            if(submatch[i].data() == nullptr) {
-                elements.push_back(Value::undefined());
-            } else {
-                elements.emplace_back(std::string(submatch[i]));
-            }
-        }
-
-        auto* result = Array::createArrayObject(getObjectFactory(), std::move(elements));
-        result->setProperty("index", Value(static_cast<double>(match_index)));
-        result->setProperty("input", Value(str));
-        return Value(result);
-    }
-
-    // Global: return array of all matched strings
-    // This follows the RegExp.prototype[@@match] behavior for global regexps,
-    // which collects all match strings into an array.
-    std::vector<Value> matches;
-    absl::string_view submatch;
-    size_t start_pos = 0;
-
-    while(start_pos <= str.size()) {
-        if(!regex_ptr->Match(text, static_cast<int>(start_pos), static_cast<int>(str.size()),
-                             RE2::UNANCHORED, &submatch, 1)) {
-            break;
-        }
-
-        matches.emplace_back(std::string(submatch));
-
-        size_t match_end = (submatch.data() - str.data()) + submatch.size();
-        if(match_end == start_pos) {
-            // Avoid infinite loop on zero-length match
-            start_pos++;
-        } else {
-            start_pos = match_end;
-        }
-    }
-
-    if(matches.empty()) {
+    if(!temp_regex->Match(text, 0, static_cast<int>(str.size()), RE2::UNANCHORED, submatch.data(),
+                          num_submatch)) {
         return Value::null();
     }
 
-    // Reset lastIndex for global regexp
-    if(data) {
-        data->lastIndex = 0;
-        if(args[0].isObject()) {
-            args[0].getObject()->setProperty("lastIndex", Value(0.0));
+    size_t match_index = submatch[0].data() - str.data();
+    std::vector<Value> elements;
+    elements.emplace_back(std::string(submatch[0]));
+    for(int i = 1; i < num_submatch; ++i) {
+        if(submatch[i].data() == nullptr) {
+            elements.push_back(Value::undefined());
+        } else {
+            elements.emplace_back(std::string(submatch[i]));
         }
     }
 
-    return Value(Array::createArrayObject(getObjectFactory(), std::move(matches)));
+    auto* result = Array::createArrayObject(getObjectFactory(), std::move(elements));
+    result->setProperty("index", Value(static_cast<double>(match_index)));
+    result->setProperty("input", Value(str));
+    return Value(result);
 }
 
 // 22.1.3.19 String.prototype.replace ( searchValue, replaceValue )
@@ -912,7 +882,24 @@ Value String::replace(const CallContext& ctx, const std::vector<Value>& args) {
     //   a. Let replacer be ? GetMethod(searchValue, %Symbol.replace%).
     //   b. If replacer is not undefined, then
     //     i. Return ? Call(replacer, searchValue, <<O, replaceValue>>).
-    // DEVIATION: Rift checks directly for RegExp instead of using Symbol.replace.
+    if(search_value.isObject()) {
+        auto* obj = search_value.getObject();
+        std::string replace_key =
+            rift::core::EvaluationUtils::symbolToPropertyKey(Symbol::getReplaceId());
+        Value replacer = obj->getProperty(replace_key);
+        if(replacer.isFunction()) {
+            auto* func = dynamic_cast<JSFunction*>(replacer.getObject());
+            if(func) {
+                std::vector<Value> call_args;
+                call_args.emplace_back(str);
+                call_args.push_back(replace_value);
+                rift::core::CallContext cb_ctx(rift::core::CallType::Function, search_value);
+                return func->call(cb_ctx, call_args);
+            }
+        }
+    }
+
+    // Legacy inline path kept for non-object RegExp data (should not happen normally)
     RegExpData* data = nullptr;
     if(search_value.isObject()) {
         data = RegExpRegistry::get(search_value.getObject());

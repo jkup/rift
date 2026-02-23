@@ -65,6 +65,22 @@ class RegExp : public BuiltinBase<RegExp> {
     /// @spec https://tc39.es/ecma262/#sec-regexp.prototype.tostring
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 22.2.6.8 RegExp.prototype [ @@match ] ( string )
+    /// @spec https://tc39.es/ecma262/#sec-regexp.prototype-@@match
+    static Value symbolMatch(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.2.6.11 RegExp.prototype [ @@replace ] ( string, replaceValue )
+    /// @spec https://tc39.es/ecma262/#sec-regexp.prototype-@@replace
+    static Value symbolReplace(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.2.6.12 RegExp.prototype [ @@search ] ( string )
+    /// @spec https://tc39.es/ecma262/#sec-regexp.prototype-@@search
+    static Value symbolSearch(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.2.6.15 RegExp.prototype [ @@split ] ( string, limit )
+    /// @spec https://tc39.es/ecma262/#sec-regexp.prototype-@@split
+    static Value symbolSplit(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: BuiltinBase setup hooks for constructor and prototype registration.
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
