@@ -276,6 +276,8 @@ void TemporalPlainYearMonth::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "monthsInYear", TemporalPlainYearMonth::monthsInYear);
     RIFT_GETTER(prototype, "inLeapYear", TemporalPlainYearMonth::inLeapYear);
     RIFT_GETTER(prototype, "calendarId", TemporalPlainYearMonth::calendarId);
+    RIFT_GETTER(prototype, "era", TemporalPlainYearMonth::era);
+    RIFT_GETTER(prototype, "eraYear", TemporalPlainYearMonth::eraYear);
 
     // 9.3.11 Temporal.PlainYearMonth.prototype.with ( temporalYearMonthLike [ , options ] )
     RIFT_METHOD(prototype, "with", 1, TemporalPlainYearMonth::with);
@@ -817,6 +819,33 @@ JSObject* TemporalPlainYearMonth::getGlobalPrototype() {
 }
 
 // ----------------------------------------------------------------------------
+// get Temporal.PlainYearMonth.prototype.era
+Value TemporalPlainYearMonth::era(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainYearMonthData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(Value("TypeError: era called on non-PlainYearMonth"));
+    }
+    std::string era_str = data->era();
+    if(era_str.empty()) {
+        return Value::undefined();
+    }
+    return Value(era_str);
+}
+
+// get Temporal.PlainYearMonth.prototype.eraYear
+Value TemporalPlainYearMonth::eraYear(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainYearMonthData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: eraYear called on non-PlainYearMonth"));
+    }
+    auto ey = data->era_year();
+    if(ey.has_value()) {
+        return Value(static_cast<double>(ey.value()));
+    }
+    return Value::undefined();
+}
+
 // 9.3.21 Temporal.PlainYearMonth.prototype.toLocaleString ( [ locales [ , options ] ] )
 // @spec https://tc39.es/proposal-temporal/#sec-temporal.plainyearmonth.prototype.tolocalestring
 //

@@ -130,16 +130,16 @@ assert(withMultiple.day === 30, "with multiple: day");
 assert(withMultiple.hour === 23, "with multiple: hour");
 assert(withMultiple.minute === 59, "with multiple: minute");
 
-// === withTime() ===
+// === withPlainTime() ===
 var baseDT = Temporal.PlainDateTime(2024, 6, 15, 10, 30, 0);
 var newTime = Temporal.PlainTime(20, 45, 30);
-var withNewTime = baseDT.withTime(newTime);
-assert(withNewTime.year === 2024, "withTime preserves year");
-assert(withNewTime.month === 6, "withTime preserves month");
-assert(withNewTime.day === 15, "withTime preserves day");
-assert(withNewTime.hour === 20, "withTime sets hour");
-assert(withNewTime.minute === 45, "withTime sets minute");
-assert(withNewTime.second === 30, "withTime sets second");
+var withNewTime = baseDT.withPlainTime(newTime);
+assert(withNewTime.year === 2024, "withPlainTime preserves year");
+assert(withNewTime.month === 6, "withPlainTime preserves month");
+assert(withNewTime.day === 15, "withPlainTime preserves day");
+assert(withNewTime.hour === 20, "withPlainTime sets hour");
+assert(withNewTime.minute === 45, "withPlainTime sets minute");
+assert(withNewTime.second === 30, "withPlainTime sets second");
 
 // === add() ===
 var addBase = Temporal.PlainDateTime(2024, 1, 15, 10, 30, 0);

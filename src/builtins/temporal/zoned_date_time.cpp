@@ -5,7 +5,9 @@
 #include "rift/builtins/temporal/instant.h"
 #include "rift/builtins/temporal/plain_date.h"
 #include "rift/builtins/temporal/plain_date_time.h"
+#include "rift/builtins/temporal/plain_month_day.h"
 #include "rift/builtins/temporal/plain_time.h"
+#include "rift/builtins/temporal/plain_year_month.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "rift/interpreter/this_helpers.h"
 #include "rift/memory/gc_protector.h"
@@ -24,7 +26,9 @@
 #include "temporal_rs/PartialZonedDateTime.hpp"
 #include "temporal_rs/PlainDate.hpp"
 #include "temporal_rs/PlainDateTime.hpp"
+#include "temporal_rs/PlainMonthDay.hpp"
 #include "temporal_rs/PlainTime.hpp"
+#include "temporal_rs/PlainYearMonth.hpp"
 #include "temporal_rs/Precision.hpp"
 #include "temporal_rs/RoundingOptions.hpp"
 #include "temporal_rs/TimeZone.hpp"
@@ -354,6 +358,9 @@ void TemporalZonedDateTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "dayOfWeek", TemporalZonedDateTime::dayOfWeek);
     RIFT_GETTER(prototype, "dayOfYear", TemporalZonedDateTime::dayOfYear);
     RIFT_GETTER(prototype, "weekOfYear", TemporalZonedDateTime::weekOfYear);
+    RIFT_GETTER(prototype, "yearOfWeek", TemporalZonedDateTime::yearOfWeek);
+    RIFT_GETTER(prototype, "era", TemporalZonedDateTime::era);
+    RIFT_GETTER(prototype, "eraYear", TemporalZonedDateTime::eraYear);
     RIFT_GETTER(prototype, "daysInMonth", TemporalZonedDateTime::daysInMonth);
     RIFT_GETTER(prototype, "daysInYear", TemporalZonedDateTime::daysInYear);
     RIFT_GETTER(prototype, "monthsInYear", TemporalZonedDateTime::monthsInYear);
@@ -416,6 +423,8 @@ void TemporalZonedDateTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_METHOD(prototype, "toPlainTime", 0, TemporalZonedDateTime::toPlainTime);
     // 6.3.39 Temporal.ZonedDateTime.prototype.toPlainDateTime ( )
     RIFT_METHOD(prototype, "toPlainDateTime", 0, TemporalZonedDateTime::toPlainDateTime);
+    RIFT_METHOD(prototype, "toPlainYearMonth", 0, TemporalZonedDateTime::toPlainYearMonth);
+    RIFT_METHOD(prototype, "toPlainMonthDay", 0, TemporalZonedDateTime::toPlainMonthDay);
 
     // 6.3.34 Temporal.ZonedDateTime.prototype.startOfDay ( )
     RIFT_METHOD(prototype, "startOfDay", 0, TemporalZonedDateTime::startOfDay);
@@ -1353,6 +1362,78 @@ Value TemporalZonedDateTime::valueOf(const CallContext& ctx, const std::vector<V
         Value("TypeError: Cannot convert a Temporal.ZonedDateTime to a primitive value"));
 }
 
+// get Temporal.ZonedDateTime.prototype.yearOfWeek
+Value TemporalZonedDateTime::yearOfWeek(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getZonedDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: yearOfWeek called on non-ZonedDateTime"));
+    }
+    auto yow = data->year_of_week();
+    if(yow.has_value()) {
+        return Value(static_cast<double>(yow.value()));
+    }
+    return Value::undefined();
+}
+
+// get Temporal.ZonedDateTime.prototype.era
+Value TemporalZonedDateTime::era(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getZonedDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(Value("TypeError: era called on non-ZonedDateTime"));
+    }
+    std::string era_str = data->era();
+    if(era_str.empty()) {
+        return Value::undefined();
+    }
+    return Value(era_str);
+}
+
+// get Temporal.ZonedDateTime.prototype.eraYear
+Value TemporalZonedDateTime::eraYear(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getZonedDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: eraYear called on non-ZonedDateTime"));
+    }
+    auto ey = data->era_year();
+    if(ey.has_value()) {
+        return Value(static_cast<double>(ey.value()));
+    }
+    return Value::undefined();
+}
+
+// Temporal.ZonedDateTime.prototype.toPlainYearMonth ( )
+Value TemporalZonedDateTime::toPlainYearMonth(const CallContext& ctx,
+                                              const std::vector<Value>& args) {
+    auto* data = getZonedDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: toPlainYearMonth called on non-ZonedDateTime"));
+    }
+    auto pd = data->to_plain_date();
+    auto result = pd->to_plain_year_month();
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+    return TemporalPlainYearMonth::wrapPlainYearMonth(std::move(result).ok().value());
+}
+
+// Temporal.ZonedDateTime.prototype.toPlainMonthDay ( )
+Value TemporalZonedDateTime::toPlainMonthDay(const CallContext& ctx,
+                                             const std::vector<Value>& args) {
+    auto* data = getZonedDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: toPlainMonthDay called on non-ZonedDateTime"));
+    }
+    auto pd = data->to_plain_date();
+    auto result = pd->to_plain_month_day();
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+    return TemporalPlainMonthDay::wrapPlainMonthDay(std::move(result).ok().value());
+}
 // ----------------------------------------------------------------------------
 // 6.3.32 Temporal.ZonedDateTime.prototype.round ( roundTo )
 // @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.round

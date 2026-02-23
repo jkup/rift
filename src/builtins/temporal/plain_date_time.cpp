@@ -3,7 +3,9 @@
 #include "rift/builtins/builtin_manager.h"
 #include "rift/builtins/temporal/duration.h"
 #include "rift/builtins/temporal/plain_date.h"
+#include "rift/builtins/temporal/plain_month_day.h"
 #include "rift/builtins/temporal/plain_time.h"
+#include "rift/builtins/temporal/plain_year_month.h"
 #include "rift/builtins/temporal/zoned_date_time.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "rift/interpreter/this_helpers.h"
@@ -17,7 +19,10 @@
 #include "temporal_rs/PartialDate.hpp"
 #include "temporal_rs/PartialDateTime.hpp"
 #include "temporal_rs/PartialTime.hpp"
+#include "temporal_rs/PlainDate.hpp"
 #include "temporal_rs/PlainDateTime.hpp"
+#include "temporal_rs/PlainMonthDay.hpp"
+#include "temporal_rs/PlainYearMonth.hpp"
 #include "temporal_rs/Precision.hpp"
 #include "temporal_rs/RoundingOptions.hpp"
 #include "temporal_rs/TimeZone.hpp"
@@ -340,6 +345,9 @@ void TemporalPlainDateTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_GETTER(prototype, "dayOfWeek", TemporalPlainDateTime::dayOfWeek);
     RIFT_GETTER(prototype, "dayOfYear", TemporalPlainDateTime::dayOfYear);
     RIFT_GETTER(prototype, "weekOfYear", TemporalPlainDateTime::weekOfYear);
+    RIFT_GETTER(prototype, "yearOfWeek", TemporalPlainDateTime::yearOfWeek);
+    RIFT_GETTER(prototype, "era", TemporalPlainDateTime::era);
+    RIFT_GETTER(prototype, "eraYear", TemporalPlainDateTime::eraYear);
     RIFT_GETTER(prototype, "daysInMonth", TemporalPlainDateTime::daysInMonth);
     RIFT_GETTER(prototype, "daysInYear", TemporalPlainDateTime::daysInYear);
     RIFT_GETTER(prototype, "monthsInYear", TemporalPlainDateTime::monthsInYear);
@@ -381,6 +389,8 @@ void TemporalPlainDateTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_METHOD(prototype, "toPlainDate", 0, TemporalPlainDateTime::toPlainDate);
     // 5.3.32 Temporal.PlainDateTime.prototype.toPlainTime ( )
     RIFT_METHOD(prototype, "toPlainTime", 0, TemporalPlainDateTime::toPlainTime);
+    RIFT_METHOD(prototype, "toPlainYearMonth", 0, TemporalPlainDateTime::toPlainYearMonth);
+    RIFT_METHOD(prototype, "toPlainMonthDay", 0, TemporalPlainDateTime::toPlainMonthDay);
 
     // 5.3.29 Temporal.PlainDateTime.prototype.toZonedDateTime ( timeZone [ , options ] )
     RIFT_METHOD(prototype, "toZonedDateTime", 1, TemporalPlainDateTime::toZonedDateTime);
@@ -1102,6 +1112,79 @@ Value TemporalPlainDateTime::valueOf(const CallContext& ctx, const std::vector<V
 
 JSObject* TemporalPlainDateTime::getGlobalPrototype() {
     return rift::core::BuiltinManager::getPlainDateTimePrototype();
+}
+
+// get Temporal.PlainDateTime.prototype.yearOfWeek
+Value TemporalPlainDateTime::yearOfWeek(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: yearOfWeek called on non-PlainDateTime"));
+    }
+    auto yow = data->year_of_week();
+    if(yow.has_value()) {
+        return Value(static_cast<double>(yow.value()));
+    }
+    return Value::undefined();
+}
+
+// get Temporal.PlainDateTime.prototype.era
+Value TemporalPlainDateTime::era(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(Value("TypeError: era called on non-PlainDateTime"));
+    }
+    std::string era_str = data->era();
+    if(era_str.empty()) {
+        return Value::undefined();
+    }
+    return Value(era_str);
+}
+
+// get Temporal.PlainDateTime.prototype.eraYear
+Value TemporalPlainDateTime::eraYear(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: eraYear called on non-PlainDateTime"));
+    }
+    auto ey = data->era_year();
+    if(ey.has_value()) {
+        return Value(static_cast<double>(ey.value()));
+    }
+    return Value::undefined();
+}
+
+// Temporal.PlainDateTime.prototype.toPlainYearMonth ( )
+Value TemporalPlainDateTime::toPlainYearMonth(const CallContext& ctx,
+                                              const std::vector<Value>& args) {
+    auto* data = getPlainDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: toPlainYearMonth called on non-PlainDateTime"));
+    }
+    auto pd = data->to_plain_date();
+    auto result = pd->to_plain_year_month();
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+    return TemporalPlainYearMonth::wrapPlainYearMonth(std::move(result).ok().value());
+}
+
+// Temporal.PlainDateTime.prototype.toPlainMonthDay ( )
+Value TemporalPlainDateTime::toPlainMonthDay(const CallContext& ctx,
+                                             const std::vector<Value>& args) {
+    auto* data = getPlainDateTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: toPlainMonthDay called on non-PlainDateTime"));
+    }
+    auto pd = data->to_plain_date();
+    auto result = pd->to_plain_month_day();
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+    return TemporalPlainMonthDay::wrapPlainMonthDay(std::move(result).ok().value());
 }
 
 // ----------------------------------------------------------------------------

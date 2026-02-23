@@ -241,6 +241,28 @@ class TemporalZonedDateTime : public BuiltinBase<TemporalZonedDateTime> {
     /// https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.gettimezonetransition
     static Value getTimeZoneTransition(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 6.3.?? get Temporal.ZonedDateTime.prototype.yearOfWeek
+    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.yearofweek
+    static Value yearOfWeek(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 6.3.?? get Temporal.ZonedDateTime.prototype.era
+    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.era
+    static Value era(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 6.3.?? get Temporal.ZonedDateTime.prototype.eraYear
+    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.zoneddatetime.prototype.erayear
+    static Value eraYear(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 6.3.?? Temporal.ZonedDateTime.prototype.toPlainYearMonth ( )
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.toplainyearmonth
+    static Value toPlainYearMonth(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 6.3.?? Temporal.ZonedDateTime.prototype.toPlainMonthDay ( )
+    /// @spec
+    /// https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.toplainmonthday
+    static Value toPlainMonthDay(const CallContext& ctx, const std::vector<Value>& args);
+
     /// 6.3.42 Temporal.ZonedDateTime.prototype.toLocaleString ( [ locales [ , options ] ] )
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime.prototype.tolocalestring
     static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);

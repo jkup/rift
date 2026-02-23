@@ -2,12 +2,16 @@
 
 #include "rift/builtins/builtin_manager.h"
 #include "rift/builtins/temporal/duration.h"
+#include "rift/builtins/temporal/plain_date.h"
+#include "rift/builtins/temporal/plain_date_time.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "rift/interpreter/this_helpers.h"
 #include "rift/memory/gc_protector.h"
 #include "temporal_rs/DifferenceSettings.hpp"
 #include "temporal_rs/Duration.hpp"
 #include "temporal_rs/PartialTime.hpp"
+#include "temporal_rs/PlainDate.hpp"
+#include "temporal_rs/PlainDateTime.hpp"
 #include "temporal_rs/PlainTime.hpp"
 #include "temporal_rs/Precision.hpp"
 #include "temporal_rs/RoundingOptions.hpp"
@@ -305,7 +309,7 @@ void TemporalPlainTime::setupPrototypeMethods(JSObject* prototype,
     RIFT_METHOD(prototype, "valueOf", 0, TemporalPlainTime::valueOf);
 
     // 4.3.21 Temporal.PlainTime.prototype.toPlainDateTime ( temporalDate )
-    // INCOMPLETE: toPlainDateTime is not implemented.
+    RIFT_METHOD(prototype, "toPlainDateTime", 1, TemporalPlainTime::toPlainDateTime);
     // 4.3.22 Temporal.PlainTime.prototype.toZonedDateTime ( item )
     // INCOMPLETE: toZonedDateTime is not implemented.
 }
@@ -697,6 +701,43 @@ Value TemporalPlainTime::round(const CallContext& ctx, const std::vector<Value>&
     return wrapPlainTime(std::move(result).ok().value());
 }
 
+// ----------------------------------------------------------------------------
+// 4.3.21 Temporal.PlainTime.prototype.toPlainDateTime ( temporalDate )
+// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.toplaindatetime
+//
+// Returns a PlainDateTime by combining this time with the given date.
+// ----------------------------------------------------------------------------
+Value TemporalPlainTime::toPlainDateTime(const CallContext& ctx, const std::vector<Value>& args) {
+    auto* data = getPlainTimeData(ctx);
+    if(!data) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: toPlainDateTime called on non-PlainTime"));
+    }
+
+    if(args.empty()) {
+        throw rift::core::JavaScriptException(Value(
+            "TypeError: Temporal.PlainTime.prototype.toPlainDateTime requires a date argument"));
+    }
+
+    // Get the PlainDate from the argument
+    temporal_rs::PlainDate* date_ptr = nullptr;
+    if(args[0].isObject() || args[0].isFunction()) {
+        date_ptr = PlainDateRegistry::get(args[0].getObject());
+    }
+
+    if(!date_ptr) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: toPlainDateTime requires a Temporal.PlainDate argument"));
+    }
+
+    // PlainDate.to_plain_date_time(time) creates a PlainDateTime
+    auto result = date_ptr->to_plain_date_time(data);
+    if(!result.is_ok()) {
+        throwTemporalError(std::move(result).err().value());
+    }
+
+    return TemporalPlainDateTime::wrapPlainDateTime(std::move(result).ok().value());
+}
 // ----------------------------------------------------------------------------
 // 4.3.18 Temporal.PlainTime.prototype.toLocaleString ( [ locales [ , options ] ] )
 // @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.tolocalestring

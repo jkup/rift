@@ -128,6 +128,10 @@ class TemporalPlainTime : public BuiltinBase<TemporalPlainTime> {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.tolocalestring
     static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 4.3.21 Temporal.PlainTime.prototype.toPlainDateTime ( temporalDate )
+    /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime.prototype.toplaindatetime
+    static Value toPlainDateTime(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Helper to create a JS PlainTime object from a temporal_rs::PlainTime.
     static Value wrapPlainTime(std::unique_ptr<temporal_rs::PlainTime> time);
 

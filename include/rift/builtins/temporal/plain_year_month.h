@@ -137,6 +137,14 @@ class TemporalPlainYearMonth : public BuiltinBase<TemporalPlainYearMonth> {
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainyearmonth.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 9.3.?? get Temporal.PlainYearMonth.prototype.era
+    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.era
+    static Value era(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 9.3.?? get Temporal.PlainYearMonth.prototype.eraYear
+    /// @spec https://tc39.es/proposal-temporal/#sec-get-temporal.plainyearmonth.prototype.erayear
+    static Value eraYear(const CallContext& ctx, const std::vector<Value>& args);
+
     /// 9.3.21 Temporal.PlainYearMonth.prototype.toLocaleString ( [ locales [ , options ] ] )
     /// @spec
     /// https://tc39.es/proposal-temporal/#sec-temporal.plainyearmonth.prototype.tolocalestring
