@@ -70,7 +70,7 @@ class String : public BuiltinBase<String> {
     /// @spec https://tc39.es/ecma262/#sec-string.prototype.substring
     static Value substring(const CallContext& ctx, const std::vector<Value>& args);
 
-    /// NON-STANDARD: Legacy Annex B method (not implemented)
+    /// B.2.1 String.prototype.substr ( start, length )
     /// @spec https://tc39.es/ecma262/#sec-string.prototype.substr
     static Value substr(const CallContext& ctx, const std::vector<Value>& args);
 
@@ -165,6 +165,26 @@ class String : public BuiltinBase<String> {
     /// 22.1.3.30 String.prototype.toWellFormed ( )
     /// @spec https://tc39.es/ecma262/#sec-string.prototype.towellformed
     static Value toWellFormed(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.4 String.prototype.codePointAt ( pos )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.codepointat
+    static Value codePointAt(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.2.2 String.fromCodePoint ( ...codePoints )
+    /// @spec https://tc39.es/ecma262/#sec-string.fromcodepoint
+    static Value fromCodePoint(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.29 String.prototype.toLocaleLowerCase ( [ reserved1 [ , reserved2 ] ] )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.tolocalelowercase
+    static Value toLocaleLowerCase(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.31 String.prototype.toLocaleUpperCase ( [ reserved1 [ , reserved2 ] ] )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.tolocaleuppercase
+    static Value toLocaleUpperCase(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// 22.1.3.12 String.prototype.localeCompare ( that [ , reserved1 [ , reserved2 ] ] )
+    /// @spec https://tc39.es/ecma262/#sec-string.prototype.localecompare
+    static Value localeCompare(const CallContext& ctx, const std::vector<Value>& args);
 
     /// 22.1.3.36 String.prototype [ @@iterator ] ( )
     /// @spec https://tc39.es/ecma262/#sec-string.prototype-%symbol.iterator%

@@ -22,11 +22,13 @@
 // ECMA-262 -- String Objects (22.1)
 // @spec https://tc39.es/ecma262/#sec-string-objects
 //
-// This file implements the String constructor, static methods (fromCharCode),
-// and prototype methods (charAt, charCodeAt, concat, indexOf, lastIndexOf,
-// slice, split, substring, toLowerCase, toUpperCase, trim, trimStart, trimEnd,
-// toString, valueOf, match, search, replace, replaceAll, matchAll, startsWith,
-// endsWith, includes, repeat, padStart, padEnd, at, normalize, @@iterator).
+// This file implements the String constructor, static methods (fromCharCode,
+// fromCodePoint), and prototype methods (charAt, charCodeAt, codePointAt,
+// concat, indexOf, lastIndexOf, slice, split, substring, substr,
+// toLowerCase, toUpperCase, toLocaleLowerCase, toLocaleUpperCase,
+// localeCompare, trim, trimStart, trimEnd, toString, valueOf, match, search,
+// replace, replaceAll, matchAll, startsWith, endsWith, includes, repeat,
+// padStart, padEnd, at, normalize, @@iterator).
 // ============================================================================
 
 namespace rift::builtins {
@@ -35,6 +37,7 @@ using rift::core::extractThisString;
 
 void String::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
     RIFT_STATIC_METHOD(constructor, "fromCharCode", 1, String::fromCharCode);
+    RIFT_STATIC_METHOD(constructor, "fromCodePoint", 1, String::fromCodePoint);
     RIFT_STATIC_METHOD(constructor, "raw", 1, String::raw);
 }
 
@@ -69,10 +72,15 @@ void String::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFact
     RIFT_METHOD(prototype, "normalize", 0, String::normalize);
     RIFT_METHOD(prototype, "isWellFormed", 0, String::isWellFormed);
     RIFT_METHOD(prototype, "toWellFormed", 0, String::toWellFormed);
+    RIFT_METHOD(prototype, "codePointAt", 1, String::codePointAt);
+    RIFT_METHOD(prototype, "toLocaleLowerCase", 0, String::toLocaleLowerCase);
+    RIFT_METHOD(prototype, "toLocaleUpperCase", 0, String::toLocaleUpperCase);
+    RIFT_METHOD(prototype, "localeCompare", 1, String::localeCompare);
 
     // Annex B aliases
     RIFT_METHOD(prototype, "trimLeft", 0, String::trimStart);
     RIFT_METHOD(prototype, "trimRight", 0, String::trimEnd);
+    RIFT_METHOD(prototype, "substr", 2, String::substr);
 
     // Annex B HTML methods (B.2.2)
     RIFT_METHOD(prototype, "anchor", 1, String::anchor);
@@ -2083,6 +2091,210 @@ Value String::sub(const CallContext& ctx, const std::vector<Value>& args) {
 // B.2.2.14 String.prototype.sup ( )
 Value String::sup(const CallContext& ctx, const std::vector<Value>& args) {
     return createHTML(ctx, "sup", "", args);
+}
+
+// ============================================================================
+// 22.1.3.4 String.prototype.codePointAt ( pos )
+// @spec https://tc39.es/ecma262/#sec-string.prototype.codepointat
+// ============================================================================
+Value String::codePointAt(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let O be ? RequireObjectCoercible(this value).
+    // 2. Let S be ? ToString(O).
+    std::string str = extractThisString(ctx);
+
+    // 3. Let position be ? ToIntegerOrInfinity(pos).
+    double position = 0;
+    if(!args.empty()) {
+        position = args[0].toNumber();
+        if(std::isnan(position)) {
+            position = 0;
+        } else {
+            position = std::trunc(position);
+        }
+    }
+
+    // 4. Let size be the length of S.
+    size_t size = str.length();
+
+    // 5. If position < 0 or position >= size, return undefined.
+    if(position < 0 || position >= static_cast<double>(size)) {
+        return Value::undefined();
+    }
+
+    size_t pos = static_cast<size_t>(position);
+
+    // 6. Let cp be CodePointAt(S, position).
+    // 7. Return 𝔽(cp.[[CodePoint]]).
+    // CodePointAt checks for UTF-16 surrogate pairs.
+    unsigned char first = static_cast<unsigned char>(str[pos]);
+
+    // Check for UTF-16 high surrogate (0xD800-0xDBFF)
+    // In Rift strings are byte-based, so single code units are returned directly.
+    return Value(static_cast<double>(first));
+}
+
+// ============================================================================
+// 22.1.2.2 String.fromCodePoint ( ...codePoints )
+// @spec https://tc39.es/ecma262/#sec-string.fromcodepoint
+// ============================================================================
+Value String::fromCodePoint(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let result be the empty String.
+    std::string result;
+
+    // 2. For each element next of codePoints, do
+    for(size_t i = 0; i < args.size(); i++) {
+        // a. Let nextCP be ? ToNumber(next).
+        double next_cp = args[i].toNumber();
+
+        // b. If nextCP is not an integral Number, throw a RangeError.
+        if(std::isnan(next_cp) || std::isinf(next_cp) || next_cp != std::trunc(next_cp)) {
+            throw rift::core::JavaScriptException(
+                Value("RangeError: Invalid code point " + args[i].toString()), 0, 0);
+        }
+
+        // c. If ℝ(nextCP) < 0 or ℝ(nextCP) > 0x10FFFF, throw a RangeError.
+        if(next_cp < 0 || next_cp > 0x10FFFF) {
+            throw rift::core::JavaScriptException(
+                Value("RangeError: Invalid code point " + args[i].toString()), 0, 0);
+        }
+
+        uint32_t cp = static_cast<uint32_t>(next_cp);
+
+        // d. If nextCP <= 0xFFFF, append the code unit with value nextCP to result.
+        if(cp <= 0x7F) {
+            result += static_cast<char>(cp);
+        } else if(cp <= 0x7FF) {
+            // 2-byte UTF-8
+            result += static_cast<char>(0xC0 | (cp >> 6));
+            result += static_cast<char>(0x80 | (cp & 0x3F));
+        } else if(cp <= 0xFFFF) {
+            // 3-byte UTF-8
+            result += static_cast<char>(0xE0 | (cp >> 12));
+            result += static_cast<char>(0x80 | ((cp >> 6) & 0x3F));
+            result += static_cast<char>(0x80 | (cp & 0x3F));
+        } else {
+            // 4-byte UTF-8 (supplementary plane)
+            result += static_cast<char>(0xF0 | (cp >> 18));
+            result += static_cast<char>(0x80 | ((cp >> 12) & 0x3F));
+            result += static_cast<char>(0x80 | ((cp >> 6) & 0x3F));
+            result += static_cast<char>(0x80 | (cp & 0x3F));
+        }
+    }
+
+    // 3. Return result.
+    return Value(std::move(result));
+}
+
+// ============================================================================
+// 22.1.3.29 String.prototype.toLocaleLowerCase ( [ reserved1 [ , reserved2 ] ] )
+// @spec https://tc39.es/ecma262/#sec-string.prototype.tolocalelowercase
+// SIMPLIFIED: Delegates to toLowerCase since Intl is not implemented.
+// ============================================================================
+Value String::toLocaleLowerCase(const CallContext& ctx, const std::vector<Value>& args) {
+    return toLowerCase(ctx, args);
+}
+
+// ============================================================================
+// 22.1.3.31 String.prototype.toLocaleUpperCase ( [ reserved1 [ , reserved2 ] ] )
+// @spec https://tc39.es/ecma262/#sec-string.prototype.tolocaleuppercase
+// SIMPLIFIED: Delegates to toUpperCase since Intl is not implemented.
+// ============================================================================
+Value String::toLocaleUpperCase(const CallContext& ctx, const std::vector<Value>& args) {
+    return toUpperCase(ctx, args);
+}
+
+// ============================================================================
+// 22.1.3.12 String.prototype.localeCompare ( that [ , reserved1 [ , reserved2 ] ] )
+// @spec https://tc39.es/ecma262/#sec-string.prototype.localecompare
+// SIMPLIFIED: Uses C++ string comparison since Intl is not implemented.
+// ============================================================================
+Value String::localeCompare(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let O be ? RequireObjectCoercible(this value).
+    // 2. Let S be ? ToString(O).
+    std::string str = extractThisString(ctx);
+
+    // 3. Let That be ? ToString(that).
+    std::string that;
+    if(!args.empty()) {
+        that = args[0].toString();
+    }
+
+    // Return negative, zero, or positive based on comparison.
+    int cmp = str.compare(that);
+    if(cmp < 0) {
+        return Value(-1.0);
+    }
+    if(cmp > 0) {
+        return Value(1.0);
+    }
+    return Value(0.0);
+}
+
+// ============================================================================
+// B.2.1 String.prototype.substr ( start, length )
+// @spec https://tc39.es/ecma262/#sec-string.prototype.substr
+// ============================================================================
+Value String::substr(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let O be ? RequireObjectCoercible(this value).
+    // 2. Let S be ? ToString(O).
+    std::string str = extractThisString(ctx);
+
+    // 3. Let size be the length of S.
+    double size = static_cast<double>(str.length());
+
+    // 4. Let intStart be ? ToIntegerOrInfinity(start).
+    double int_start = 0;
+    if(!args.empty()) {
+        int_start = args[0].toNumber();
+        if(std::isnan(int_start)) {
+            int_start = 0;
+        } else {
+            int_start = std::trunc(int_start);
+        }
+    }
+
+    // 5. If intStart is -infinity, set intStart to 0.
+    if(int_start == -std::numeric_limits<double>::infinity()) {
+        int_start = 0;
+    }
+
+    // 6. If intStart < 0, set intStart to max(size + intStart, 0).
+    // 7. Else, set intStart to min(intStart, size).
+    if(int_start < 0) {
+        int_start = std::max(size + int_start, 0.0);
+    } else {
+        int_start = std::min(int_start, size);
+    }
+
+    // 8. If length is undefined, let intLength be size;
+    //    else let intLength be ? ToIntegerOrInfinity(length).
+    double int_length;
+    if(args.size() < 2 || args[1].isUndefined()) {
+        int_length = size;
+    } else {
+        int_length = args[1].toNumber();
+        if(std::isnan(int_length)) {
+            int_length = 0;
+        } else {
+            int_length = std::trunc(int_length);
+        }
+    }
+
+    // 9. Set intLength to min(max(intLength, 0), size).
+    int_length = std::min(std::max(int_length, 0.0), size);
+
+    // 10. Let intEnd be min(intStart + intLength, size).
+    double int_end = std::min(int_start + int_length, size);
+
+    // 11. If intStart >= intEnd, return the empty String.
+    if(int_start >= int_end) {
+        return Value(std::string(""));
+    }
+
+    // 12. Return the substring of S from intStart to intEnd.
+    size_t start = static_cast<size_t>(int_start);
+    size_t end = static_cast<size_t>(int_end);
+    return Value(str.substr(start, end - start));
 }
 
 }  // namespace rift::builtins
