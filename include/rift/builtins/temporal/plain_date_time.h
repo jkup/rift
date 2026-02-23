@@ -35,6 +35,9 @@ class PlainDateTimeRegistry {
 /// @spec https://tc39.es/proposal-temporal/#sec-temporal-plaindatetime-objects
 class TemporalPlainDateTime : public BuiltinBase<TemporalPlainDateTime> {
   public:
+    static constexpr const char* builtinName = "PlainDateTime";
+    static constexpr int builtinLength = 3;
+
     /// 5.1.1 Temporal.PlainDateTime ( isoYear, isoMonth, isoDay [ , hour [ , minute [ , second [ ,
     /// millisecond [ , microsecond [ , nanosecond [ , calendar ] ] ] ] ] ] ] )
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaindatetime

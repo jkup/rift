@@ -35,6 +35,9 @@ class ZonedDateTimeRegistry {
 /// @spec https://tc39.es/proposal-temporal/#sec-temporal-zoneddatetime-objects
 class TemporalZonedDateTime : public BuiltinBase<TemporalZonedDateTime> {
   public:
+    static constexpr const char* builtinName = "ZonedDateTime";
+    static constexpr int builtinLength = 2;
+
     /// 6.1.1 Temporal.ZonedDateTime ( epochNanoseconds, timeZoneLike [ , calendarLike ] )
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.zoneddatetime
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

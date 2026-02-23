@@ -29,6 +29,9 @@ using rift::core::CallContext;
 /// Internal storage uses weak properties to avoid preventing GC of keys.
 class WeakMap : public BuiltinBase<WeakMap> {
   public:
+    static constexpr const char* builtinName = "WeakMap";
+    static constexpr int builtinLength = 0;
+
     /// 24.3.1.1 WeakMap ( [ iterable ] )
     /// @spec https://tc39.es/ecma262/#sec-weakmap-iterable
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

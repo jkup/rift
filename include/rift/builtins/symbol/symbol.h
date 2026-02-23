@@ -19,6 +19,9 @@ using rift::core::CallContext;
 /// @spec https://tc39.es/ecma262/#sec-symbol-objects
 class Symbol : public BuiltinBase<Symbol> {
   public:
+    static constexpr const char* builtinName = "Symbol";
+    static constexpr int builtinLength = 0;
+
     /// 20.4.1.1 Symbol ( description )
     /// @spec https://tc39.es/ecma262/#sec-symbol-description
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

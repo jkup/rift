@@ -29,6 +29,9 @@ using rift::core::CallContext;
 /// Internal storage uses weak properties to avoid preventing GC of values.
 class WeakSet : public BuiltinBase<WeakSet> {
   public:
+    static constexpr const char* builtinName = "WeakSet";
+    static constexpr int builtinLength = 0;
+
     /// 24.4.1.1 WeakSet ( [ iterable ] )
     /// @spec https://tc39.es/ecma262/#sec-weakset-iterable
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

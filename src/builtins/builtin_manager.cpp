@@ -795,6 +795,11 @@ void BuiltinManager::setupFunction(std::shared_ptr<Environment> globalEnv,
     auto* constructor = factory->createJSFunction(builtins::Function::constructor);
     builtins::Function::setupStaticMethods(constructor, factory);
 
+    // Set constructor name and length per spec § 17
+    constructor->defineProperty(
+        "name", PropertyDescriptor(Value(std::string("Function")), false, false, true));
+    constructor->defineProperty("length", PropertyDescriptor(Value(1.0), false, false, true));
+
     constructor->setProperty("prototype", Value(prototype));
     prototype->setProperty("constructor", Value(constructor));
 

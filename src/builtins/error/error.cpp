@@ -22,8 +22,7 @@ using rift::core::extractThisObject;
 // 20.5.2 Properties of the Error Constructor
 // @spec https://tc39.es/ecma262/#sec-properties-of-the-error-constructor
 void Error::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    // Set the name property on the constructor
-    RIFT_PROPERTY(constructor, "name", Value("Error"));
+    // name and length are set by BuiltinBase::create()
 }
 
 // 20.5.3 Properties of the Error Prototype Object

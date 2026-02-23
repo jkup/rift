@@ -24,6 +24,9 @@ using rift::core::CallContext;
 /// if it is still alive, or undefined if it has been collected.
 class WeakRef : public BuiltinBase<WeakRef> {
   public:
+    static constexpr const char* builtinName = "WeakRef";
+    static constexpr int builtinLength = 1;
+
     /// 26.1.1.1 WeakRef ( target )
     /// @spec https://tc39.es/ecma262/#sec-weak-ref-target
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

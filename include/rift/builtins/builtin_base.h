@@ -99,6 +99,15 @@ class BuiltinBase {
                 });
         }
 
+        // Set constructor name and length per spec § 17
+        // { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true }
+        constructor->defineProperty(
+            "name",
+            PropertyDescriptor(Value(std::string(Derived::builtinName)), false, false, true));
+        constructor->defineProperty(
+            "length", PropertyDescriptor(Value(static_cast<double>(Derived::builtinLength)), false,
+                                         false, true));
+
         // Let derived class add static methods (e.g., Array.isArray, Object.keys)
         callSetupStaticMethods(constructor, factory);
 

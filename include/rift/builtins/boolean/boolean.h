@@ -17,6 +17,9 @@ using rift::core::CallContext;
 /// @spec https://tc39.es/ecma262/#sec-boolean-objects
 class Boolean : public BuiltinBase<Boolean> {
   public:
+    static constexpr const char* builtinName = "Boolean";
+    static constexpr int builtinLength = 1;
+
     /// 20.3.1.1 Boolean ( value )
     /// @spec https://tc39.es/ecma262/#sec-boolean-constructor-boolean-value
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

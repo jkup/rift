@@ -29,6 +29,9 @@ using rift::core::CallContext;
 /// - [[SetNextIndex]] - Next index for insertion
 class Set : public BuiltinBase<Set> {
   public:
+    static constexpr const char* builtinName = "Set";
+    static constexpr int builtinLength = 0;
+
     /// 24.2.1.1 Set ( [ iterable ] )
     /// @spec https://tc39.es/ecma262/#sec-set-iterable
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

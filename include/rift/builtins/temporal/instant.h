@@ -35,6 +35,9 @@ class InstantRegistry {
 /// @spec https://tc39.es/proposal-temporal/#sec-temporal-instant-objects
 class TemporalInstant : public BuiltinBase<TemporalInstant> {
   public:
+    static constexpr const char* builtinName = "Instant";
+    static constexpr int builtinLength = 1;
+
     /// 8.1.1 Temporal.Instant ( epochNanoseconds )
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.instant
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

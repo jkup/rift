@@ -35,6 +35,9 @@ class DurationRegistry {
 /// @spec https://tc39.es/proposal-temporal/#sec-temporal-duration-objects
 class TemporalDuration : public BuiltinBase<TemporalDuration> {
   public:
+    static constexpr const char* builtinName = "Duration";
+    static constexpr int builtinLength = 0;
+
     /// 7.1.1 Temporal.Duration ( [ years [ , months [ , weeks [ , days [ , hours [ , minutes [ ,
     /// seconds [ , milliseconds [ , microseconds [ , nanoseconds ] ] ] ] ] ] ] ] ] ] )
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.duration

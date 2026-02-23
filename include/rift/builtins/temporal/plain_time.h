@@ -35,6 +35,9 @@ class PlainTimeRegistry {
 /// @spec https://tc39.es/proposal-temporal/#sec-temporal-plaintime-objects
 class TemporalPlainTime : public BuiltinBase<TemporalPlainTime> {
   public:
+    static constexpr const char* builtinName = "PlainTime";
+    static constexpr int builtinLength = 0;
+
     /// 4.1.1 Temporal.PlainTime ( [ hour [ , minute [ , second [ , millisecond [ , microsecond [ ,
     /// nanosecond ] ] ] ] ] ] )
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plaintime

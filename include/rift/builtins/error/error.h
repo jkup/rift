@@ -17,6 +17,9 @@ using rift::core::CallContext;
 /// @spec https://tc39.es/ecma262/#sec-error-objects
 class Error : public BuiltinBase<Error> {
   public:
+    static constexpr const char* builtinName = "Error";
+    static constexpr int builtinLength = 1;
+
     /// NON-STANDARD: BuiltinBase setup hooks for constructor and prototype registration.
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);

@@ -36,6 +36,9 @@ using rift::core::CallContext;
 /// - [[PromiseIsHandled]]: Boolean for unhandled rejection tracking
 class Promise : public BuiltinBase<Promise> {
   public:
+    static constexpr const char* builtinName = "Promise";
+    static constexpr int builtinLength = 1;
+
     // Promise state constants
     static constexpr const char* STATE_PENDING = "pending";
     static constexpr const char* STATE_FULFILLED = "fulfilled";

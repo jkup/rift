@@ -20,6 +20,9 @@ using rift::core::CallContext;
 /// @spec https://tc39.es/ecma262/#sec-function-objects
 class Function : public BuiltinBase<Function> {
   public:
+    static constexpr const char* builtinName = "Function";
+    static constexpr int builtinLength = 1;
+
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 

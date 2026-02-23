@@ -26,6 +26,9 @@ using rift::core::CallContext;
 /// are not proactively invoked. The register/unregister API is fully functional.
 class FinalizationRegistry : public BuiltinBase<FinalizationRegistry> {
   public:
+    static constexpr const char* builtinName = "FinalizationRegistry";
+    static constexpr int builtinLength = 1;
+
     /// 26.2.1.1 FinalizationRegistry ( cleanupCallback )
     /// @spec https://tc39.es/ecma262/#sec-finalization-registry-cleanup-callback
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

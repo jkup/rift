@@ -17,6 +17,9 @@ using rift::core::CallContext;
 /// @spec https://tc39.es/ecma262/#sec-date-objects
 class Date : public BuiltinBase<Date> {
   public:
+    static constexpr const char* builtinName = "Date";
+    static constexpr int builtinLength = 7;
+
     /// 21.4.2.1 Date ( ...values )
     /// @spec https://tc39.es/ecma262/#sec-date
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

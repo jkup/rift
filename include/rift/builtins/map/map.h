@@ -27,6 +27,9 @@ using rift::core::CallContext;
 /// - [[MapNextIndex]]: Next index for insertion (maintains insertion order)
 class Map : public BuiltinBase<Map> {
   public:
+    static constexpr const char* builtinName = "Map";
+    static constexpr int builtinLength = 0;
+
     /// 24.1.1.1 Map ( [ iterable ] )
     /// @spec https://tc39.es/ecma262/#sec-map-iterable
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

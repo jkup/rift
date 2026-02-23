@@ -17,6 +17,9 @@ using rift::core::CallContext;
 /// @spec https://tc39.es/ecma262/#sec-number-objects
 class Number : public BuiltinBase<Number> {
   public:
+    static constexpr const char* builtinName = "Number";
+    static constexpr int builtinLength = 1;
+
     /// 21.1.1.1 Number ( value )
     /// @spec https://tc39.es/ecma262/#sec-number-constructor-number-value
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

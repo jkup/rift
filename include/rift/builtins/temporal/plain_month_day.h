@@ -35,6 +35,9 @@ class PlainMonthDayRegistry {
 /// @spec https://tc39.es/proposal-temporal/#sec-temporal-plainmonthday-objects
 class TemporalPlainMonthDay : public BuiltinBase<TemporalPlainMonthDay> {
   public:
+    static constexpr const char* builtinName = "PlainMonthDay";
+    static constexpr int builtinLength = 2;
+
     /// 10.1.1 Temporal.PlainMonthDay ( isoMonth, isoDay [ , calendar [ , referenceISOYear ] ] )
     /// @spec https://tc39.es/proposal-temporal/#sec-temporal.plainmonthday
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);

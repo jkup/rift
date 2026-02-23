@@ -19,8 +19,7 @@ namespace rift::builtins {
 // 20.5.5.2 Properties of the NativeError Constructors
 // @spec https://tc39.es/ecma262/#sec-properties-of-the-nativeerror-constructors
 void TypeError::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory) {
-    // Set the name property on the constructor
-    RIFT_PROPERTY(constructor, "name", Value("TypeError"));
+    // name and length are set by BuiltinBase::create()
 }
 
 // 20.5.5.3 Properties of the NativeError Prototype Objects

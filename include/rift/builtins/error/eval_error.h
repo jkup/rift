@@ -15,6 +15,9 @@ using namespace rift::runtime;
 /// @spec https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-evalerror
 class EvalError : public BuiltinBase<EvalError> {
   public:
+    static constexpr const char* builtinName = "EvalError";
+    static constexpr int builtinLength = 1;
+
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);
 

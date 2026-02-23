@@ -20,6 +20,9 @@ using rift::core::CallContext;
 /// @spec https://tc39.es/ecma262/#sec-array-objects
 class Array : public BuiltinBase<Array> {
   public:
+    static constexpr const char* builtinName = "Array";
+    static constexpr int builtinLength = 1;
+
     /// Setup methods required by BuiltinBase template
     static void setupStaticMethods(JSObject* constructor, rift::memory::ObjectFactory* factory);
     static void setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory);

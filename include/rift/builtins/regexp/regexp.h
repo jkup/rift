@@ -49,6 +49,9 @@ class RegExpRegistry {
 /// @spec https://tc39.es/ecma262/#sec-regexp-regular-expression-objects
 class RegExp : public BuiltinBase<RegExp> {
   public:
+    static constexpr const char* builtinName = "RegExp";
+    static constexpr int builtinLength = 2;
+
     /// 22.2.3.1 RegExp ( pattern, flags )
     /// @spec https://tc39.es/ecma262/#sec-regexp-pattern-flags
     static Value constructor(const CallContext& ctx, const std::vector<Value>& args);
