@@ -60,6 +60,14 @@ class WeakMap : public BuiltinBase<WeakMap> {
     /// @spec https://tc39.es/ecma262/#sec-weakmap.prototype.delete
     static Value deleteMethod(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// WeakMap.prototype.getOrInsert ( key, value )
+    /// @spec https://tc39.es/proposal-upsert/#sec-weakmap.prototype.getorinsert
+    static Value getOrInsert(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// WeakMap.prototype.getOrInsertComputed ( key, callbackfn )
+    /// @spec https://tc39.es/proposal-upsert/#sec-weakmap.prototype.getorinsertcomputed
+    static Value getOrInsertComputed(const CallContext& ctx, const std::vector<Value>& args);
+
     /// NON-STANDARD: Global prototype access for internal use.
     static JSObject* getGlobalPrototype();
 

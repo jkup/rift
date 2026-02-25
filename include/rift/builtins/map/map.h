@@ -82,6 +82,14 @@ class Map : public BuiltinBase<Map> {
     /// @spec https://tc39.es/ecma262/#sec-get-map.prototype.size
     static Value sizeGetter(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// Map.prototype.getOrInsert ( key, value )
+    /// @spec https://tc39.es/proposal-upsert/#sec-map.prototype.getorinsert
+    static Value getOrInsert(const CallContext& ctx, const std::vector<Value>& args);
+
+    /// Map.prototype.getOrInsertComputed ( key, callbackfn )
+    /// @spec https://tc39.es/proposal-upsert/#sec-map.prototype.getorinsertcomputed
+    static Value getOrInsertComputed(const CallContext& ctx, const std::vector<Value>& args);
+
     /// 24.1.2.1 Map.groupBy ( items, callbackfn )
     /// @spec https://tc39.es/ecma262/#sec-map.groupby
     static Value groupBy(const CallContext& ctx, const std::vector<Value>& args);

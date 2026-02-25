@@ -49,6 +49,11 @@ void WeakMap::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFac
     // 24.3.3.2 WeakMap.prototype.delete ( key )
     RIFT_METHOD(prototype, "delete", 1, WeakMap::deleteMethod);
 
+    // WeakMap.prototype.getOrInsert ( key, value )
+    RIFT_METHOD(prototype, "getOrInsert", 2, WeakMap::getOrInsert);
+    // WeakMap.prototype.getOrInsertComputed ( key, callbackfn )
+    RIFT_METHOD(prototype, "getOrInsertComputed", 2, WeakMap::getOrInsertComputed);
+
     // WeakMap is NOT iterable - no Symbol.iterator, no keys/values/entries/forEach
     // No size property either
     // INCOMPLETE: 24.3.3.6 WeakMap.prototype [ @@toStringTag ] not yet set.
@@ -510,6 +515,168 @@ Value WeakMap::deleteMethod(const CallContext& ctx, const std::vector<Value>& ar
     entries->deleteProperty(keyStr);
 
     return Value(true);
+}
+
+// WeakMap.prototype.getOrInsert ( key, value )
+// @spec https://tc39.es/proposal-upsert/#sec-weakmap.prototype.getorinsert
+//
+// Spec algorithm:
+//   1. Let M be the this value.
+//   2. Perform ? RequireInternalSlot(M, [[WeakMapData]]).
+//   3. If CanBeHeldWeakly(key) is false, throw a TypeError exception.
+//   4. For each Record { [[Key]], [[Value]] } p of M.[[WeakMapData]], do
+//      a. If p.[[Key]] is not empty and SameValue(p.[[Key]], key) is true,
+//         return p.[[Value]].
+//   5. Let p be the Record { [[Key]]: key, [[Value]]: value }.
+//   6. Append p to M.[[WeakMapData]].
+//   7. Return value.
+Value WeakMap::getOrInsert(const CallContext& ctx, const std::vector<Value>& args) {
+    // Step 1: Let M be the this value.
+    if(ctx.thisValue.getType() != ValueType::Object) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: WeakMap.prototype.getOrInsert called on non-object"));
+    }
+
+    auto* weakMapObj = ctx.thisValue.getObject();
+
+    // Step 2: Perform ? RequireInternalSlot(M, [[WeakMapData]]).
+    Value entriesVal = weakMapObj->getProperty("[[WeakMapData]]");
+    if(entriesVal.isUndefined()) {
+        throw rift::core::JavaScriptException(Value(
+            "TypeError: Method WeakMap.prototype.getOrInsert called on incompatible receiver"));
+    }
+
+    Value key = args.empty() ? Value() : args[0];
+    Value value = args.size() > 1 ? args[1] : Value();
+
+    // Step 3: If CanBeHeldWeakly(key) is false, throw a TypeError exception.
+    if(!isValidWeakKey(key)) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Invalid value used as weak map key"));
+    }
+
+    // Step 4: Search for existing entry.
+    auto* keyObj = key.getObject();
+    std::string keyStr = objectToWeakKey(keyObj);
+    auto* entries = entriesVal.getObject();
+    Value entryVal = entries->getProperty(keyStr);
+
+    if(!entryVal.isUndefined() && entryVal.getType() == ValueType::Object) {
+        auto* factory = getObjectFactory();
+        if(factory->getObjectManager()->objectExists(keyObj)) {
+            // Step 4a: Key found — return existing value.
+            auto* entry = entryVal.getObject();
+            return entry->getProperty("value");
+        }
+        // Key was garbage collected — remove stale entry and fall through to insert.
+        entries->deleteProperty(keyStr);
+    }
+
+    // Steps 5-6: Create new entry and append.
+    auto* factory = getObjectFactory();
+    auto* entry = factory->createJSObject();
+    entry->setWeakProperty("key", key);
+    entry->setProperty("value", value);
+    entries->setProperty(keyStr, Value(entry));
+
+    // Step 7: Return value.
+    return value;
+}
+
+// WeakMap.prototype.getOrInsertComputed ( key, callbackfn )
+// @spec https://tc39.es/proposal-upsert/#sec-weakmap.prototype.getorinsertcomputed
+//
+// Spec algorithm:
+//   1. Let M be the this value.
+//   2. Perform ? RequireInternalSlot(M, [[WeakMapData]]).
+//   3. If CanBeHeldWeakly(key) is false, throw a TypeError exception.
+//   4. If IsCallable(callbackfn) is false, throw a TypeError exception.
+//   5. For each Record { [[Key]], [[Value]] } p of M.[[WeakMapData]], do
+//      a. If p.[[Key]] is not empty and SameValue(p.[[Key]], key) is true,
+//         return p.[[Value]].
+//   6. Let value be ? Call(callbackfn, undefined, << key >>).
+//   7. For each Record { [[Key]], [[Value]] } p of M.[[WeakMapData]], do
+//      a. If p.[[Key]] is not empty and SameValue(p.[[Key]], key) is true, then
+//         i. Set p.[[Value]] to value.
+//         ii. Return value.
+//   8. Let p be the Record { [[Key]]: key, [[Value]]: value }.
+//   9. Append p to M.[[WeakMapData]].
+//   10. Return value.
+Value WeakMap::getOrInsertComputed(const CallContext& ctx, const std::vector<Value>& args) {
+    // Step 1: Let M be the this value.
+    if(ctx.thisValue.getType() != ValueType::Object) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: WeakMap.prototype.getOrInsertComputed called on non-object"));
+    }
+
+    auto* weakMapObj = ctx.thisValue.getObject();
+
+    // Step 2: Perform ? RequireInternalSlot(M, [[WeakMapData]]).
+    Value entriesVal = weakMapObj->getProperty("[[WeakMapData]]");
+    if(entriesVal.isUndefined()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Method WeakMap.prototype.getOrInsertComputed called on incompatible "
+                  "receiver"));
+    }
+
+    Value key = args.empty() ? Value() : args[0];
+    Value callbackfn = args.size() > 1 ? args[1] : Value();
+
+    // Step 3: If CanBeHeldWeakly(key) is false, throw a TypeError exception.
+    if(!isValidWeakKey(key)) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Invalid value used as weak map key"));
+    }
+
+    // Step 4: If IsCallable(callbackfn) is false, throw a TypeError exception.
+    if(callbackfn.getType() != ValueType::Function) {
+        throw rift::core::JavaScriptException(Value("TypeError: callbackfn is not a function"));
+    }
+
+    auto* callback = dynamic_cast<JSFunction*>(callbackfn.getObject());
+    if(callback == nullptr) {
+        throw rift::core::JavaScriptException(Value("TypeError: callbackfn is not a function"));
+    }
+
+    // Step 5: Search for existing entry.
+    auto* keyObj = key.getObject();
+    std::string keyStr = objectToWeakKey(keyObj);
+    auto* entries = entriesVal.getObject();
+    Value entryVal = entries->getProperty(keyStr);
+
+    if(!entryVal.isUndefined() && entryVal.getType() == ValueType::Object) {
+        auto* factory = getObjectFactory();
+        if(factory->getObjectManager()->objectExists(keyObj)) {
+            // Step 5a: Key found — return existing value without calling callback.
+            auto* entry = entryVal.getObject();
+            return entry->getProperty("value");
+        }
+        entries->deleteProperty(keyStr);
+    }
+
+    // Step 6: Let value be ? Call(callbackfn, undefined, << key >>).
+    CallContext cbCtx = ctx;
+    cbCtx.thisValue = Value();  // undefined
+    Value value = callback->call(cbCtx, {key});
+
+    // Step 7: Re-scan after callback (callback may have mutated the weak map).
+    entryVal = entries->getProperty(keyStr);
+    if(!entryVal.isUndefined() && entryVal.getType() == ValueType::Object) {
+        // Step 7a: Key was inserted during callback — overwrite with computed value.
+        auto* entry = entryVal.getObject();
+        entry->setProperty("value", value);
+        return value;
+    }
+
+    // Steps 8-9: Create new entry and append.
+    auto* factory = getObjectFactory();
+    auto* entry = factory->createJSObject();
+    entry->setWeakProperty("key", key);
+    entry->setProperty("value", value);
+    entries->setProperty(keyStr, Value(entry));
+
+    // Step 10: Return value.
+    return value;
 }
 
 JSObject* WeakMap::getGlobalPrototype() {

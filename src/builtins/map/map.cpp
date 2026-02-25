@@ -77,6 +77,11 @@ void Map::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory
     // 24.1.3.4 Map.prototype.entries ( )
     RIFT_METHOD(prototype, "entries", 0, Map::entries);
 
+    // Map.prototype.getOrInsert ( key, value )
+    RIFT_METHOD(prototype, "getOrInsert", 2, Map::getOrInsert);
+    // Map.prototype.getOrInsertComputed ( key, callbackfn )
+    RIFT_METHOD(prototype, "getOrInsertComputed", 2, Map::getOrInsertComputed);
+
     // 24.1.3.10 get Map.prototype.size
     // @spec https://tc39.es/ecma262/#sec-get-map.prototype.size
     RIFT_GETTER(prototype, "size", Map::sizeGetter);
@@ -1011,6 +1016,199 @@ Value Map::sizeGetter(const CallContext& ctx, const std::vector<Value>& /*args*/
     // Steps 3-5: Return count of non-empty entries.
     // SIMPLIFIED: Returns pre-computed [[MapSize]] instead of counting.
     return sizeVal;
+}
+
+// Map.prototype.getOrInsert ( key, value )
+// @spec https://tc39.es/proposal-upsert/#sec-map.prototype.getorinsert
+//
+// Spec algorithm:
+//   1. Let M be the this value.
+//   2. Perform ? RequireInternalSlot(M, [[MapData]]).
+//   3. For each Record { [[Key]], [[Value]] } p of M.[[MapData]], do
+//      a. If p.[[Key]] is not empty and SameValueZero(p.[[Key]], key) is true,
+//         return p.[[Value]].
+//   4. Let key be CanonicalizeKeyedCollectionKey(key).
+//   5. Let p be the Record { [[Key]]: key, [[Value]]: value }.
+//   6. Append p to M.[[MapData]].
+//   7. Return value.
+Value Map::getOrInsert(const CallContext& ctx, const std::vector<Value>& args) {
+    // Step 1: Let M be the this value.
+    if(ctx.thisValue.getType() != ValueType::Object) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Map.prototype.getOrInsert called on non-object"));
+    }
+
+    auto* mapObj = ctx.thisValue.getObject();
+
+    // Step 2: Perform ? RequireInternalSlot(M, [[MapData]]).
+    Value entriesVal = mapObj->getProperty("[[MapEntries]]");
+    Value keysVal = mapObj->getProperty("[[MapKeys]]");
+    Value sizeVal = mapObj->getProperty("[[MapSize]]");
+    Value nextIndexVal = mapObj->getProperty("[[MapNextIndex]]");
+
+    if(entriesVal.isUndefined() || keysVal.isUndefined()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Method Map.prototype.getOrInsert called on incompatible receiver"));
+    }
+
+    Value key = args.empty() ? Value() : args[0];
+    Value value = args.size() > 1 ? args[1] : Value();
+
+    // Step 3: Search for existing entry using SameValueZero.
+    std::string keyStr = valueToMapKey(key);
+    auto* keys = keysVal.getObject();
+    Value existingIndex = keys->getProperty(keyStr);
+
+    if(!existingIndex.isUndefined()) {
+        // Step 3a: Key found — return existing value.
+        auto* entries = entriesVal.getObject();
+        int idx = static_cast<int>(existingIndex.toNumber());
+        Value entryVal = entries->getProperty(std::to_string(idx));
+
+        if(entryVal.getType() == ValueType::Object) {
+            auto* entry = entryVal.getObject();
+            return entry->getProperty("value");
+        }
+    }
+
+    // Step 4: Let key be CanonicalizeKeyedCollectionKey(key).
+    // Normalize -0 to +0.
+    if(key.getType() == ValueType::Number && key.toNumber() == 0.0) {
+        key = Value(0.0);
+    }
+
+    // Steps 5-6: Create new entry and append.
+    double nextIndex = nextIndexVal.toNumber();
+    double size = sizeVal.toNumber();
+
+    auto* entry = getObjectFactory()->createJSObject();
+    entry->setProperty("key", key);
+    entry->setProperty("value", value);
+
+    auto* entries = entriesVal.getObject();
+    entries->setProperty(std::to_string(static_cast<int>(nextIndex)), Value(entry));
+    keys->setProperty(valueToMapKey(key), Value(nextIndex));
+
+    mapObj->setProperty("[[MapSize]]", Value(size + 1));
+    mapObj->setProperty("[[MapNextIndex]]", Value(nextIndex + 1));
+
+    // Step 7: Return value.
+    return value;
+}
+
+// Map.prototype.getOrInsertComputed ( key, callbackfn )
+// @spec https://tc39.es/proposal-upsert/#sec-map.prototype.getorinsertcomputed
+//
+// Spec algorithm:
+//   1. Let M be the this value.
+//   2. Perform ? RequireInternalSlot(M, [[MapData]]).
+//   3. If IsCallable(callbackfn) is false, throw a TypeError exception.
+//   4. For each Record { [[Key]], [[Value]] } p of M.[[MapData]], do
+//      a. If p.[[Key]] is not empty and SameValueZero(p.[[Key]], key) is true,
+//         return p.[[Value]].
+//   5. Let key be CanonicalizeKeyedCollectionKey(key).
+//   6. Let value be ? Call(callbackfn, undefined, << key >>).
+//   7. For each Record { [[Key]], [[Value]] } p of M.[[MapData]], do
+//      a. If p.[[Key]] is not empty and SameValueZero(p.[[Key]], key) is true, then
+//         i. Set p.[[Value]] to value.
+//         ii. Return value.
+//   8. Let p be the Record { [[Key]]: key, [[Value]]: value }.
+//   9. Append p to M.[[MapData]].
+//   10. Return value.
+Value Map::getOrInsertComputed(const CallContext& ctx, const std::vector<Value>& args) {
+    // Step 1: Let M be the this value.
+    if(ctx.thisValue.getType() != ValueType::Object) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Map.prototype.getOrInsertComputed called on non-object"));
+    }
+
+    auto* mapObj = ctx.thisValue.getObject();
+
+    // Step 2: Perform ? RequireInternalSlot(M, [[MapData]]).
+    Value entriesVal = mapObj->getProperty("[[MapEntries]]");
+    Value keysVal = mapObj->getProperty("[[MapKeys]]");
+
+    if(entriesVal.isUndefined() || keysVal.isUndefined()) {
+        throw rift::core::JavaScriptException(Value(
+            "TypeError: Method Map.prototype.getOrInsertComputed called on incompatible receiver"));
+    }
+
+    Value key = args.empty() ? Value() : args[0];
+    Value callbackfn = args.size() > 1 ? args[1] : Value();
+
+    // Step 3: If IsCallable(callbackfn) is false, throw a TypeError exception.
+    if(callbackfn.getType() != ValueType::Function) {
+        throw rift::core::JavaScriptException(Value("TypeError: callbackfn is not a function"));
+    }
+
+    auto* callback = dynamic_cast<JSFunction*>(callbackfn.getObject());
+    if(callback == nullptr) {
+        throw rift::core::JavaScriptException(Value("TypeError: callbackfn is not a function"));
+    }
+
+    // Step 4: Search for existing entry using SameValueZero.
+    std::string keyStr = valueToMapKey(key);
+    auto* keys = keysVal.getObject();
+    Value existingIndex = keys->getProperty(keyStr);
+
+    if(!existingIndex.isUndefined()) {
+        // Step 4a: Key found — return existing value without calling callback.
+        auto* entries = entriesVal.getObject();
+        int idx = static_cast<int>(existingIndex.toNumber());
+        Value entryVal = entries->getProperty(std::to_string(idx));
+
+        if(entryVal.getType() == ValueType::Object) {
+            auto* entry = entryVal.getObject();
+            return entry->getProperty("value");
+        }
+    }
+
+    // Step 5: Let key be CanonicalizeKeyedCollectionKey(key).
+    if(key.getType() == ValueType::Number && key.toNumber() == 0.0) {
+        key = Value(0.0);
+    }
+
+    // Step 6: Let value be ? Call(callbackfn, undefined, << key >>).
+    CallContext cbCtx = ctx;
+    cbCtx.thisValue = Value();  // undefined
+    Value value = callback->call(cbCtx, {key});
+
+    // Step 7: Re-scan after callback (callback may have mutated the map).
+    keyStr = valueToMapKey(key);
+    existingIndex = keys->getProperty(keyStr);
+
+    if(!existingIndex.isUndefined()) {
+        // Step 7a: Key was inserted during callback — overwrite with computed value.
+        auto* entries = entriesVal.getObject();
+        int idx = static_cast<int>(existingIndex.toNumber());
+        Value entryVal = entries->getProperty(std::to_string(idx));
+
+        if(entryVal.getType() == ValueType::Object) {
+            auto* entry = entryVal.getObject();
+            entry->setProperty("value", value);
+            return value;
+        }
+    }
+
+    // Steps 8-9: Create new entry and append.
+    Value sizeVal = mapObj->getProperty("[[MapSize]]");
+    Value nextIndexVal = mapObj->getProperty("[[MapNextIndex]]");
+    double nextIndex = nextIndexVal.toNumber();
+    double size = sizeVal.toNumber();
+
+    auto* entry = getObjectFactory()->createJSObject();
+    entry->setProperty("key", key);
+    entry->setProperty("value", value);
+
+    auto* entries = entriesVal.getObject();
+    entries->setProperty(std::to_string(static_cast<int>(nextIndex)), Value(entry));
+    keys->setProperty(valueToMapKey(key), Value(nextIndex));
+
+    mapObj->setProperty("[[MapSize]]", Value(size + 1));
+    mapObj->setProperty("[[MapNextIndex]]", Value(nextIndex + 1));
+
+    // Step 10: Return value.
+    return value;
 }
 
 // 24.1.2.1 Map.groupBy ( items, callbackfn )
