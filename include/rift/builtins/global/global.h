@@ -35,12 +35,33 @@ class Global {
     /// @spec https://tc39.es/ecma262/#sec-isfinite-number
     static Value isFinite(const std::vector<Value>& args);
 
+    /// 19.2.6.1 encodeURI ( uri )
+    /// @spec https://tc39.es/ecma262/#sec-encodeuri-uri
+    static Value encodeURI(const std::vector<Value>& args);
+
+    /// 19.2.6.2 encodeURIComponent ( uriComponent )
+    /// @spec https://tc39.es/ecma262/#sec-encodeuricomponent-uricomponent
+    static Value encodeURIComponent(const std::vector<Value>& args);
+
+    /// 19.2.6.3 decodeURI ( encodedURI )
+    /// @spec https://tc39.es/ecma262/#sec-decodeuri-encodeduri
+    static Value decodeURI(const std::vector<Value>& args);
+
+    /// 19.2.6.4 decodeURIComponent ( encodedURIComponent )
+    /// @spec https://tc39.es/ecma262/#sec-decodeuricomponent-encodeduricomponent
+    static Value decodeURIComponent(const std::vector<Value>& args);
+
     /// NON-STANDARD: Internal helper to create array objects in the current runtime.
     static Value createArray(const std::vector<Value>& args);
 
     /// NON-STANDARD: Internal helpers for parseInt digit parsing.
     static bool isValidDigit(char c, int radix);
     static int getDigitValue(char c);
+
+    /// Internal helpers for URI encoding/decoding.
+    static std::string encodeHelper(const std::string& str, const std::string& unescaped);
+    static std::string decodeHelper(const std::string& str, const std::string& reserved_set);
+    static int hexDigitValue(char c);
 };
 
 }  // namespace rift::builtins
