@@ -670,6 +670,11 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
 // 3. Perform Set(array, "length", len, true).
 // 4. Return array.
 //
+// ArrayAccumulation for Elision:
+// 1. Set nextIndex to nextIndex + padding (number of elisions).
+// 2. Perform Set(array, "length", nextIndex, true).
+// 3. Return nextIndex.
+//
 // ArrayAccumulation for SpreadElement:
 // 1. Let spreadRef be ? Evaluation of AssignmentExpression.
 // 2. Let spreadObj be ? GetValue(spreadRef).
@@ -680,19 +685,30 @@ Value ExpressionEvaluator::evaluateMemberExpression(std::shared_ptr<ASTNode> nod
 //    c. Perform ! CreateDataPropertyOrThrow(array, ! ToString(nextIndex), next).
 //    d. Set nextIndex to nextIndex + 1.
 //
-// SIMPLIFIED: Rift collects elements into a vector then creates the array
-// via Array::createArrayObject, rather than creating the array first and
-// accumulating into it. For spread, Rift uses the iterator protocol when
+// Elisions (holes) are represented as nullptr children in the AST. When
+// encountered, the index advances but no property is set, creating a sparse
+// array (the index simply has no property, matching spec behavior).
+//
+// SIMPLIFIED: Rift builds the array by iterating children and setting indexed
+// properties directly, rather than creating an empty array and accumulating via
+// CreateDataPropertyOrThrow. For spread, Rift uses the iterator protocol when
 // Symbol.iterator is present, but falls back to array-like length-based
 // iteration (which the spec does not — it always requires an iterator).
+// Elisions (nullptr children) advance the index without setting a property,
+// creating sparse arrays where hole indices have no property defined.
 Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
                                                 std::shared_ptr<Environment> env, Rift* engine) {
-    // Collect elements, expanding spread elements (ArrayAccumulation)
-    std::vector<Value> elements;
-    elements.reserve(node->children.size());
+    auto* arrayPrototype = builtins::Array::getGlobalPrototype();
+    auto* factory = engine->getObjectFactory();
+    auto* array_obj = factory->createJSObject(arrayPrototype);
+    rift::memory::GCProtector protect(array_obj, factory->getObjectManager());
 
+    size_t next_index = 0;
     for(const auto& child : node->children) {
-        if(child->type == ASTNodeType::SpreadElement) {
+        if(!child) {
+            // Elision: advance index but do not set a property (creates a hole)
+            next_index++;
+        } else if(child->type == ASTNodeType::SpreadElement) {
             // SpreadElement : ... AssignmentExpression
             // Step 1-2. Let spreadObj be ? GetValue(? Evaluation of AssignmentExpression).
             Value spread_value = engine->evaluate(child->children[0], env);
@@ -701,7 +717,7 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
                 // Strings are iterable — each character is an element
                 std::string str = spread_value.getString();
                 for(char c : str) {
-                    elements.push_back(Value(std::string(1, c)));
+                    array_obj->setProperty(std::to_string(next_index++), Value(std::string(1, c)));
                 }
             } else if(spread_value.isObject()) {
                 auto* obj = spread_value.getObject();
@@ -755,7 +771,7 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
                                 // Step 4c. Perform CreateDataPropertyOrThrow(array, nextIndex,
                                 // next).
                                 Value value = result_obj->getProperty("value");
-                                elements.push_back(value);
+                                array_obj->setProperty(std::to_string(next_index++), value);
                             }
                         }
                     }
@@ -768,7 +784,7 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
                         size_t length = static_cast<size_t>(length_val.getNumber());
                         for(size_t idx = 0; idx < length; ++idx) {
                             Value elem = obj->getProperty(std::to_string(idx));
-                            elements.push_back(elem);
+                            array_obj->setProperty(std::to_string(next_index++), elem);
                         }
                     }
                 }
@@ -776,17 +792,16 @@ Value ExpressionEvaluator::evaluateArrayLiteral(std::shared_ptr<ASTNode> node,
             // DEVIATION: For non-iterable primitive values (number, boolean, etc.),
             // spread silently does nothing. The spec would throw TypeError.
         } else {
-            // Non-spread element: evaluate and append
+            // Non-spread element: evaluate and set at current index
             // ElementList step: Let initValue be ? GetValue(? Evaluation of element).
-            elements.push_back(engine->evaluate(child, env));
+            Value val = engine->evaluate(child, env);
+            array_obj->setProperty(std::to_string(next_index++), val);
         }
     }
 
-    // Steps 1, 3. Create the array object with the collected elements.
-    // SIMPLIFIED: Rift uses Array::createArrayObject which creates the array
-    // and sets all elements + length in one step, rather than creating an
-    // empty array and accumulating via CreateDataPropertyOrThrow.
-    auto* array_obj = builtins::Array::createArrayObject(engine->getObjectFactory(), elements);
+    // Set the length property — per spec, { writable: true, enumerable: false, configurable: false
+    // }
+    builtins::Array::setArrayLength(array_obj, next_index);
     return Value(array_obj);
 }
 

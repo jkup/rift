@@ -913,11 +913,9 @@ std::shared_ptr<ASTNode> Parser::parse_computed_member_expression(std::shared_pt
 //             | Elision? SpreadElement
 //             | ElementList , Elision? AssignmentExpression
 //             | ElementList , Elision? SpreadElement
+// Elision :: , | Elision ,
 // SpreadElement :: ... AssignmentExpression
 // @spec https://tc39.es/ecma262/#sec-array-initializer
-//
-// INCOMPLETE: Elision (holes) like [1,,3] is not fully handled; a trailing comma
-// is allowed but consecutive commas for sparse arrays are not parsed as elisions.
 std::shared_ptr<ASTNode> Parser::parse_array_literal() {
     Token& startToken = current_token();  // Save location before consuming
     consume(TokenType::LeftBracket);      // consume '['
@@ -935,11 +933,24 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
         return array;
     }
 
-    // Parse ElementList
-    do {
-        // ArrayLiteral :: [ ElementList , ] (trailing comma allowed)
+    // Parse ElementList with Elision support
+    // Elisions (holes) are represented as nullptr children.
+    // Leading elisions: [,1] means hole at index 0, value 1 at index 1.
+    // Middle elisions: [1,,3] means value 1, hole at index 1, value 3 at index 2.
+    // Trailing elisions: [1,2,] is a trailing comma (length 2), [1,2,,] has a hole (length 3).
+    while(true) {
+        // Check for closing bracket (end of array or after trailing comma/elision)
         if(current_token().type == TokenType::RightBracket) {
-            break;  // Trailing comma is allowed, stop parsing elements
+            break;
+        }
+
+        // Elision :: , (comma without a preceding element in this position)
+        // Each comma at element position represents a hole (elision).
+        if(current_token().type == TokenType::Comma) {
+            // This is an elision — push nullptr to represent the hole
+            array->children.push_back(nullptr);
+            current++;  // consume ','
+            continue;
         }
 
         // SpreadElement :: ... AssignmentExpression
@@ -953,7 +964,17 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
             auto element = parse_expression();
             ASTFactory::addArrayElement(array, element);
         }
-    } while(match(TokenType::Comma));
+
+        // After an element, expect either ',' or ']'
+        if(current_token().type == TokenType::Comma) {
+            current++;  // consume ','
+            // Continue to next iteration — if next token is ']', it's a trailing comma;
+            // if next token is ',', it's another elision; otherwise parse next element.
+        } else {
+            // No comma — must be ']'
+            break;
+        }
+    }
 
     consume(TokenType::RightBracket);  // consume ']'
     suppress_in_ = old_suppress_in;
