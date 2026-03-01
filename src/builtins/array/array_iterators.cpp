@@ -51,6 +51,8 @@ Value Array::forEach(const CallContext& ctx, const std::vector<Value>& args) {
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
+    // Let thisArg be args[1] if present, else undefined.
+    Value thisArg = args.size() > 1 ? args[1] : Value::undefined();
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
 
     if(!callbackFn) {
@@ -70,10 +72,8 @@ Value Array::forEach(const CallContext& ctx, const std::vector<Value>& args) {
         if(!element.isUndefined()) {
             // i. Let kValue be ? Get(O, Pk).
             // ii. Perform ? Call(callbackfn, thisArg, << kValue, F(k), O >>).
-            // INCOMPLETE: thisArg (args[1]) is not forwarded; spec uses it as the
-            // this-binding for the callback invocation.
             std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-            rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+            rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
             callbackFn->call(cbCtx, callArgs);
         }
         // d. Set k to k + 1.
@@ -105,6 +105,8 @@ Value Array::map(const CallContext& ctx, const std::vector<Value>& args) {
         throw rift::core::JavaScriptException(err);
     }
     size_t length = static_cast<size_t>(raw_length);
+    // Let thisArg be args[1] if present, else undefined.
+    Value thisArg = args.size() > 1 ? args[1] : Value::undefined();
     // SIMPLIFIED: Rift creates a plain array instead of calling ArraySpeciesCreate,
     // so subclassed arrays will not produce instances of the subclass.
     std::vector<Value> results;
@@ -128,9 +130,8 @@ Value Array::map(const CallContext& ctx, const std::vector<Value>& args) {
         if(!element.isUndefined()) {
             // i. Let kValue be ? Get(O, Pk).
             // ii. Let mappedValue be ? Call(callbackfn, thisArg, << kValue, F(k), O >>).
-            // INCOMPLETE: thisArg (args[1]) is not forwarded to the callback.
             std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-            rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+            rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
             Value result = callbackFn->call(cbCtx, callArgs);
             // iii. Perform ? CreateDataPropertyOrThrow(A, Pk, mappedValue).
             results.push_back(result);
@@ -159,6 +160,8 @@ Value Array::filter(const CallContext& ctx, const std::vector<Value>& args) {
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
+    // Let thisArg be args[1] if present, else undefined.
+    Value thisArg = args.size() > 1 ? args[1] : Value::undefined();
     // 4. Let A be ? ArraySpeciesCreate(O, 0).
     // SIMPLIFIED: Rift creates a plain array instead of calling ArraySpeciesCreate.
     std::vector<Value> results;
@@ -181,9 +184,8 @@ Value Array::filter(const CallContext& ctx, const std::vector<Value>& args) {
         if(!element.isUndefined()) {
             // i. Let kValue be ? Get(O, Pk).
             // ii. Let selected be ToBoolean(? Call(callbackfn, thisArg, << kValue, F(k), O >>)).
-            // INCOMPLETE: thisArg (args[1]) is not forwarded to the callback.
             std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-            rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+            rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
             Value result = callbackFn->call(cbCtx, callArgs);
 
             // iii. If selected is true, then
@@ -365,6 +367,8 @@ Value Array::find(const CallContext& ctx, const std::vector<Value>& args) {
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
+    // Let thisArg be args[1] if present, else undefined.
+    Value thisArg = args.size() > 1 ? args[1] : Value::undefined();
 
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
@@ -380,9 +384,8 @@ Value Array::find(const CallContext& ctx, const std::vector<Value>& args) {
         Value element = arrayObj->getProperty(std::to_string(i));
 
         // c. Let testResult be ToBoolean(? Call(predicate, thisArg, << kValue, F(k), O >>)).
-        // INCOMPLETE: thisArg (args[1]) is not forwarded to the callback.
         std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
         Value result = callbackFn->call(cbCtx, callArgs);
 
         // d. If testResult is true, return kValue.
@@ -411,6 +414,8 @@ Value Array::findIndex(const CallContext& ctx, const std::vector<Value>& args) {
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
+    // Let thisArg be args[1] if present, else undefined.
+    Value thisArg = args.size() > 1 ? args[1] : Value::undefined();
 
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
@@ -426,9 +431,8 @@ Value Array::findIndex(const CallContext& ctx, const std::vector<Value>& args) {
         Value element = arrayObj->getProperty(std::to_string(i));
 
         // c. Let testResult be ToBoolean(? Call(predicate, thisArg, << kValue, F(k), O >>)).
-        // INCOMPLETE: thisArg (args[1]) is not forwarded to the callback.
         std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
         Value result = callbackFn->call(cbCtx, callArgs);
 
         // d. If testResult is true, return F(k).
@@ -457,6 +461,8 @@ Value Array::findLast(const CallContext& ctx, const std::vector<Value>& args) {
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
+    // Let thisArg be args[1] if present, else undefined.
+    Value thisArg = args.size() > 1 ? args[1] : Value::undefined();
 
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
@@ -472,9 +478,8 @@ Value Array::findLast(const CallContext& ctx, const std::vector<Value>& args) {
         Value element = arrayObj->getProperty(std::to_string(i - 1));
 
         // c. Let testResult be ToBoolean(? Call(predicate, thisArg, << kValue, F(k), O >>)).
-        // INCOMPLETE: thisArg (args[1]) is not forwarded to the callback.
         std::vector<Value> callArgs = {element, Value(static_cast<double>(i - 1)), Value(arrayObj)};
-        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
         Value result = callbackFn->call(cbCtx, callArgs);
 
         // d. If testResult is true, return kValue.
@@ -503,6 +508,8 @@ Value Array::findLastIndex(const CallContext& ctx, const std::vector<Value>& arg
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
+    // Let thisArg be args[1] if present, else undefined.
+    Value thisArg = args.size() > 1 ? args[1] : Value::undefined();
 
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
@@ -518,9 +525,8 @@ Value Array::findLastIndex(const CallContext& ctx, const std::vector<Value>& arg
         Value element = arrayObj->getProperty(std::to_string(i - 1));
 
         // c. Let testResult be ToBoolean(? Call(predicate, thisArg, << kValue, F(k), O >>)).
-        // INCOMPLETE: thisArg (args[1]) is not forwarded to the callback.
         std::vector<Value> callArgs = {element, Value(static_cast<double>(i - 1)), Value(arrayObj)};
-        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
         Value result = callbackFn->call(cbCtx, callArgs);
 
         // d. If testResult is true, return F(k).
@@ -549,6 +555,8 @@ Value Array::every(const CallContext& ctx, const std::vector<Value>& args) {
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
+    // Let thisArg be args[1] if present, else undefined.
+    Value thisArg = args.size() > 1 ? args[1] : Value::undefined();
 
     if(length == 0) {
         return Value(true);
@@ -572,9 +580,8 @@ Value Array::every(const CallContext& ctx, const std::vector<Value>& args) {
         // which differs from the spec's skip-holes behavior for sparse arrays.
         // i. Let kValue be ? Get(O, Pk).
         // ii. Let testResult be ToBoolean(? Call(callbackfn, thisArg, << kValue, F(k), O >>)).
-        // INCOMPLETE: thisArg (args[1]) is not forwarded to the callback.
         std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
         Value result = callbackFn->call(cbCtx, callArgs);
 
         // iii. If testResult is false, return false.
@@ -603,6 +610,8 @@ Value Array::some(const CallContext& ctx, const std::vector<Value>& args) {
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
+    // Let thisArg be args[1] if present, else undefined.
+    Value thisArg = args.size() > 1 ? args[1] : Value::undefined();
 
     if(length == 0) {
         return Value(false);
@@ -626,9 +635,8 @@ Value Array::some(const CallContext& ctx, const std::vector<Value>& args) {
         // which differs from the spec's skip-holes behavior for sparse arrays.
         // i. Let kValue be ? Get(O, Pk).
         // ii. Let testResult be ToBoolean(? Call(callbackfn, thisArg, << kValue, F(k), O >>)).
-        // INCOMPLETE: thisArg (args[1]) is not forwarded to the callback.
         std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
         Value result = callbackFn->call(cbCtx, callArgs);
 
         // iii. If testResult is true, return true.
@@ -739,6 +747,8 @@ Value Array::flatMap(const CallContext& ctx, const std::vector<Value>& args) {
 
     // 2. Let sourceLen be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
+    // Let thisArg be args[1] if present, else undefined.
+    Value thisArg = args.size() > 1 ? args[1] : Value::undefined();
     // 4. Let A be ? ArraySpeciesCreate(O, 0).
     // SIMPLIFIED: Rift creates a plain array instead of calling ArraySpeciesCreate.
     std::vector<Value> result;
@@ -758,9 +768,8 @@ Value Array::flatMap(const CallContext& ctx, const std::vector<Value>& args) {
 
         // FlattenIntoArray step 3.d (with mapperFunction):
         //   Set element to ? Call(mapperFunction, thisArg, << element, sourceIndex, source >>).
-        // INCOMPLETE: thisArg (args[1]) is not forwarded to the callback.
         std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
         Value mappedValue = callbackFn->call(cbCtx, callArgs);
 
         // FlattenIntoArray step 3.f-g: If depth > 0 and IsArray(element), flatten one level.
