@@ -17,16 +17,13 @@
 
 namespace rift::builtins {
 
-using rift::core::extractThisObject;
+using rift::core::thisToObject;
 
 // 23.1.3.1 Array.prototype.at ( index )
 // @spec https://tc39.es/ecma262/#sec-array.prototype.at
 Value Array::at(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.at");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     int64_t len = static_cast<int64_t>(getArrayLength(arrayObj));
@@ -67,7 +64,7 @@ Value Array::at(const CallContext& ctx, const std::vector<Value>& args) {
 // not a prototype method.
 // @spec https://tc39.es/ecma262/#sec-properties-of-array-instances-length
 Value Array::getLength(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = extractThisObject(ctx);
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.length");
     if(!arrayObj) {
         return Value(0.0);
     }
@@ -79,13 +76,9 @@ Value Array::getLength(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.indexof
 Value Array::indexOf(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    // SIMPLIFIED: Rift uses extractThisObject which combines ToObject + type check.
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value(-1.0);
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.indexOf");
 
-    Value searchElement = args[0];
+    Value searchElement = args.empty() ? Value::undefined() : args[0];
     size_t fromIndex = 0;
 
     // 3. Let n be ? ToIntegerOrInfinity(fromIndex).
@@ -124,10 +117,7 @@ Value Array::indexOf(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.lastindexof
 Value Array::lastIndexOf(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value(-1.0);
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.lastIndexOf");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
@@ -136,7 +126,7 @@ Value Array::lastIndexOf(const CallContext& ctx, const std::vector<Value>& args)
         return Value(-1.0);
     }
 
-    Value searchElement = args[0];
+    Value searchElement = args.empty() ? Value::undefined() : args[0];
 
     // 4. If fromIndex is present, let n be ? ToIntegerOrInfinity(fromIndex);
     //    else let n be len - 1.
@@ -177,10 +167,7 @@ Value Array::includes(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.slice
 Value Array::slice(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value(createArrayObject(getObjectFactory(), {}));
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.slice");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
@@ -244,10 +231,7 @@ Value Array::slice(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.concat
 Value Array::concat(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value(createArrayObject(getObjectFactory(), {}));
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.concat");
 
     // 2. Let A be ? ArraySpeciesCreate(O, 0).
     // INCOMPLETE: ArraySpeciesCreate is not used; always creates a plain Array.
@@ -299,10 +283,7 @@ Value Array::concat(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.join
 Value Array::join(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value("");
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.join");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
@@ -351,10 +332,7 @@ Value Array::join(const CallContext& ctx, const std::vector<Value>& args) {
 // looking up and calling the "join" method. This means overriding
 // Array.prototype.join will not affect toString behavior.
 Value Array::toString(const CallContext& ctx, const std::vector<Value>& args) {
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value("");
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.toString");
 
     size_t length = getArrayLength(arrayObj);
     std::string result = "";
@@ -381,10 +359,7 @@ Value Array::toString(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.toreversed
 Value Array::toReversed(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value(createArrayObject(getObjectFactory(), {}));
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.toReversed");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t len = getArrayLength(arrayObj);
@@ -420,10 +395,7 @@ Value Array::toSorted(const CallContext& ctx, const std::vector<Value>& args) {
     }
 
     // 2. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value(createArrayObject(getObjectFactory(), {}));
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.toSorted");
 
     // 3. Let len be ? LengthOfArrayLike(O).
     size_t len = getArrayLength(arrayObj);
@@ -460,10 +432,7 @@ Value Array::toSorted(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.tospliced
 Value Array::toSpliced(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value(createArrayObject(getObjectFactory(), {}));
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.toSpliced");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     int64_t len = static_cast<int64_t>(getArrayLength(arrayObj));
@@ -570,11 +539,7 @@ Value Array::toSpliced(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.with
 Value Array::with(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.with called on null or undefined"));
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.with");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     int64_t len = static_cast<int64_t>(getArrayLength(arrayObj));

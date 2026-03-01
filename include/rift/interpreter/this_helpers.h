@@ -27,6 +27,22 @@ inline runtime::JSObject* extractThisObject(const CallContext& ctx) {
 }
 
 /**
+ * 7.1.18 ToObject ( argument )
+ * @spec https://tc39.es/ecma262/#sec-toobject
+ *
+ * Performs the spec's ToObject operation on the this value:
+ * - Objects pass through unchanged
+ * - Booleans, Numbers, Strings are wrapped in their object wrappers
+ * - null/undefined throw TypeError
+ *
+ * @param ctx The call context containing the this value
+ * @param methodName Name of the calling method (for error messages)
+ * @return JSObject* — always non-null (throws on failure)
+ * @throws JavaScriptException(TypeError) if this is null or undefined
+ */
+runtime::JSObject* thisToObject(const CallContext& ctx, const char* methodName);
+
+/**
  * Extract the "this" value as a string.
  * Handles both string primitives and String wrapper objects.
  *

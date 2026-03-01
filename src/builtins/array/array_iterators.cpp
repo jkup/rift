@@ -34,22 +34,16 @@
 
 namespace rift::builtins {
 
-using rift::core::extractThisObject;
+using rift::core::thisToObject;
 
 // 23.1.3.15 Array.prototype.forEach ( callbackfn [ , thisArg ] )
 // @spec https://tc39.es/ecma262/#sec-array.prototype.foreach
 Value Array::forEach(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    // 2. Let len be ? LengthOfArrayLike(O).
-    // SIMPLIFIED: Rift uses extractThisObject which combines ToObject + type check,
-    // and getArrayLength which reads .length directly instead of LengthOfArrayLike.
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.forEach");
 
     // 3. If IsCallable(callbackfn) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.forEach callback must be a function"));
@@ -93,13 +87,10 @@ Value Array::forEach(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.map
 Value Array::map(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value(createArrayObject(getObjectFactory(), {}));
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.map");
 
     // 3. If IsCallable(callbackfn) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.map callback must be a function"));
@@ -157,13 +148,10 @@ Value Array::map(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.filter
 Value Array::filter(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value(createArrayObject(getObjectFactory(), {}));
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.filter");
 
     // 3. If IsCallable(callbackfn) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.filter callback must be a function"));
@@ -216,13 +204,10 @@ Value Array::filter(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.reduce
 Value Array::reduce(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.reduce");
 
     // 3. If IsCallable(callbackfn) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.reduce callback must be a function"));
@@ -294,13 +279,10 @@ Value Array::reduce(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.reduceright
 Value Array::reduceRight(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.reduceRight");
 
     // 3. If IsCallable(callbackfn) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.reduceRight callback must be a function"));
@@ -372,13 +354,10 @@ Value Array::reduceRight(const CallContext& ctx, const std::vector<Value>& args)
 // @spec https://tc39.es/ecma262/#sec-array.prototype.find
 Value Array::find(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.find");
 
     // 3. If IsCallable(predicate) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.find callback must be a function"));
@@ -421,13 +400,10 @@ Value Array::find(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.findindex
 Value Array::findIndex(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value(-1.0);
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.findIndex");
 
     // 3. If IsCallable(predicate) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.findIndex callback must be a function"));
@@ -470,13 +446,10 @@ Value Array::findIndex(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.findlast
 Value Array::findLast(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.findLast");
 
     // 3. If IsCallable(predicate) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.findLast callback must be a function"));
@@ -519,13 +492,10 @@ Value Array::findLast(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.findlastindex
 Value Array::findLastIndex(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value(-1.0);
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.findLastIndex");
 
     // 3. If IsCallable(predicate) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.findLastIndex callback must be a function"));
@@ -568,13 +538,10 @@ Value Array::findLastIndex(const CallContext& ctx, const std::vector<Value>& arg
 // @spec https://tc39.es/ecma262/#sec-array.prototype.every
 Value Array::every(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value(true);
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.every");
 
     // 3. If IsCallable(callbackfn) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.every callback must be a function"));
@@ -625,13 +592,10 @@ Value Array::every(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.some
 Value Array::some(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value(false);
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.some");
 
     // 3. If IsCallable(callbackfn) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.some callback must be a function"));
@@ -682,10 +646,7 @@ Value Array::some(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.flat
 Value Array::flat(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value(createArrayObject(getObjectFactory(), {}));
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.flat");
 
     // 2. Let sourceLen be ? LengthOfArrayLike(O).
     // 3. Let depthNum be 1.
@@ -767,13 +728,10 @@ Value Array::flat(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.flatmap
 Value Array::flatMap(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj || args.empty()) {
-        return Value(createArrayObject(getObjectFactory(), {}));
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.flatMap");
 
     // 3. If IsCallable(mapperFunction) is false, throw a TypeError exception.
-    Value callback = args[0];
+    Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
             Value("TypeError: Array.prototype.flatMap callback must be a function"));

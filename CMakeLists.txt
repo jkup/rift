@@ -193,6 +193,7 @@ set(INTERPRETER_SOURCES
     src/interpreter/async_executor.cpp
     src/interpreter/async_generator_evaluator.cpp
     src/interpreter/class_builder.cpp
+    src/interpreter/this_helpers.cpp
 )
 
 set(API_SOURCES

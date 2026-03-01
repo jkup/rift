@@ -22,17 +22,13 @@
 
 namespace rift::builtins {
 
-using rift::core::extractThisObject;
+using rift::core::thisToObject;
 
 // 23.1.3.21 Array.prototype.push ( ...items )
 // @spec https://tc39.es/ecma262/#sec-array.prototype.push
 Value Array::push(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    // SIMPLIFIED: Rift uses extractThisObject which combines ToObject + type check.
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value(std::numeric_limits<double>::quiet_NaN());
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.push");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
@@ -66,10 +62,7 @@ Value Array::push(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.pop
 Value Array::pop(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.pop");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
@@ -103,10 +96,7 @@ Value Array::pop(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.shift
 Value Array::shift(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.shift");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
@@ -152,10 +142,7 @@ Value Array::shift(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.unshift
 Value Array::unshift(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value(0.0);
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.unshift");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
@@ -208,10 +195,7 @@ Value Array::unshift(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.splice
 Value Array::splice(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.splice");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
@@ -338,10 +322,7 @@ Value Array::splice(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.reverse
 Value Array::reverse(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.reverse");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
@@ -384,10 +365,7 @@ Value Array::sort(const CallContext& ctx, const std::vector<Value>& args) {
     // values instead of throwing TypeError.
 
     // 2. Let obj be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.sort");
 
     // 3. Let len be ? LengthOfArrayLike(obj).
     size_t length = getArrayLength(arrayObj);
@@ -445,10 +423,7 @@ Value Array::sort(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.fill
 Value Array::fill(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.fill");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
@@ -508,10 +483,7 @@ Value Array::fill(const CallContext& ctx, const std::vector<Value>& args) {
 // @spec https://tc39.es/ecma262/#sec-array.prototype.copywithin
 Value Array::copyWithin(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Let O be ? ToObject(this value).
-    auto* arrayObj = extractThisObject(ctx);
-    if(!arrayObj) {
-        return Value::undefined();
-    }
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.copyWithin");
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
