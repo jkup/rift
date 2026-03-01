@@ -27,6 +27,7 @@
 
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/error/range_error.h"
+#include "rift/builtins/error/type_error.h"
 #include "rift/interpreter/call_context.h"
 #include "rift/interpreter/evaluation_utils.h"
 #include "rift/interpreter/javascript_exception.h"
@@ -46,7 +47,7 @@ Value Array::forEach(const CallContext& ctx, const std::vector<Value>& args) {
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.forEach callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
@@ -57,25 +58,25 @@ Value Array::forEach(const CallContext& ctx, const std::vector<Value>& args) {
 
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.forEach callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 4. Let k be 0.
     // 5. Repeat, while k < len,
     for(size_t i = 0; i < length; ++i) {
         // a. Let Pk be ! ToString(F(k)).
+        std::string pk = std::to_string(i);
         // b. Let kPresent be ? HasProperty(O, Pk).
-        Value element = arrayObj->getProperty(std::to_string(i));
-        // c. If kPresent is true, then
-        // DEVIATION: Rift checks for undefined instead of HasProperty. This skips
-        // holes but also skips explicitly-set undefined values, which the spec would visit.
-        if(!element.isUndefined()) {
-            // i. Let kValue be ? Get(O, Pk).
-            // ii. Perform ? Call(callbackfn, thisArg, << kValue, F(k), O >>).
-            std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-            rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
-            callbackFn->call(cbCtx, callArgs);
+        if(!arrayObj->hasProperty(pk)) {
+            continue;  // Skip holes
         }
+        // c. If kPresent is true, then
+        // i. Let kValue be ? Get(O, Pk).
+        Value element = arrayObj->getProperty(pk);
+        // ii. Perform ? Call(callbackfn, thisArg, << kValue, F(k), O >>).
+        std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
+        callbackFn->call(cbCtx, callArgs);
         // d. Set k to k + 1.
     }
 
@@ -93,7 +94,7 @@ Value Array::map(const CallContext& ctx, const std::vector<Value>& args) {
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.map callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
@@ -115,29 +116,29 @@ Value Array::map(const CallContext& ctx, const std::vector<Value>& args) {
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.map callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 5. Let k be 0.
     // 6. Repeat, while k < len,
     for(size_t i = 0; i < length; ++i) {
         // a. Let Pk be ! ToString(F(k)).
+        std::string pk = std::to_string(i);
         // b. Let kPresent be ? HasProperty(O, Pk).
-        Value element = arrayObj->getProperty(std::to_string(i));
-        // c. If kPresent is true, then
-        // DEVIATION: Rift checks for undefined instead of HasProperty.
-        // Holes should produce holes in the result, but Rift pushes undefined instead.
-        if(!element.isUndefined()) {
-            // i. Let kValue be ? Get(O, Pk).
-            // ii. Let mappedValue be ? Call(callbackfn, thisArg, << kValue, F(k), O >>).
-            std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-            rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
-            Value result = callbackFn->call(cbCtx, callArgs);
-            // iii. Perform ? CreateDataPropertyOrThrow(A, Pk, mappedValue).
-            results.push_back(result);
-        } else {
+        if(!arrayObj->hasProperty(pk)) {
+            // Hole: produce a hole in the result (push undefined placeholder).
             results.push_back(Value::undefined());
+            continue;
         }
+        // c. If kPresent is true, then
+        // i. Let kValue be ? Get(O, Pk).
+        Value element = arrayObj->getProperty(pk);
+        // ii. Let mappedValue be ? Call(callbackfn, thisArg, << kValue, F(k), O >>).
+        std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
+        Value result = callbackFn->call(cbCtx, callArgs);
+        // iii. Perform ? CreateDataPropertyOrThrow(A, Pk, mappedValue).
+        results.push_back(result);
         // d. Set k to k + 1.
     }
 
@@ -155,7 +156,7 @@ Value Array::filter(const CallContext& ctx, const std::vector<Value>& args) {
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.filter callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
@@ -169,7 +170,7 @@ Value Array::filter(const CallContext& ctx, const std::vector<Value>& args) {
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.filter callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 5. Let k be 0.
@@ -177,23 +178,24 @@ Value Array::filter(const CallContext& ctx, const std::vector<Value>& args) {
     // 7. Repeat, while k < len,
     for(size_t i = 0; i < length; ++i) {
         // a. Let Pk be ! ToString(F(k)).
+        std::string pk = std::to_string(i);
         // b. Let kPresent be ? HasProperty(O, Pk).
-        Value element = arrayObj->getProperty(std::to_string(i));
+        if(!arrayObj->hasProperty(pk)) {
+            continue;  // Skip holes
+        }
         // c. If kPresent is true, then
-        // DEVIATION: Rift checks for undefined instead of HasProperty.
-        if(!element.isUndefined()) {
-            // i. Let kValue be ? Get(O, Pk).
-            // ii. Let selected be ToBoolean(? Call(callbackfn, thisArg, << kValue, F(k), O >>)).
-            std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
-            rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
-            Value result = callbackFn->call(cbCtx, callArgs);
+        // i. Let kValue be ? Get(O, Pk).
+        Value element = arrayObj->getProperty(pk);
+        // ii. Let selected be ToBoolean(? Call(callbackfn, thisArg, << kValue, F(k), O >>)).
+        std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
+        Value result = callbackFn->call(cbCtx, callArgs);
 
-            // iii. If selected is true, then
-            if(result.toBool()) {
-                // 1. Perform ? CreateDataPropertyOrThrow(A, ! ToString(F(to)), kValue).
-                // 2. Set to to to + 1.
-                results.push_back(element);
-            }
+        // iii. If selected is true, then
+        if(result.toBool()) {
+            // 1. Perform ? CreateDataPropertyOrThrow(A, ! ToString(F(to)), kValue).
+            // 2. Set to to to + 1.
+            results.push_back(element);
         }
         // d. Set k to k + 1.
     }
@@ -212,21 +214,21 @@ Value Array::reduce(const CallContext& ctx, const std::vector<Value>& args) {
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.reduce callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
     // 4. If len = 0 and initialValue is not present, throw a TypeError exception.
     if(length == 0 && args.size() < 2) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: Reduce of empty array with no initial value"));
+        throw rift::core::JavaScriptException(TypeError::constructor(
+            {Value(std::string("Reduce of empty array with no initial value"))}));
     }
 
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.reduce callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 5. Let k be 0.
@@ -242,34 +244,42 @@ Value Array::reduce(const CallContext& ctx, const std::vector<Value>& args) {
         // 8. Else,
         // a. Let kPresent be false.
         // b. Repeat, while kPresent is false and k < len,
-        //    i. Let Pk be ! ToString(F(k)).
-        //    ii. Set kPresent to ? HasProperty(O, Pk).
-        //    iii. If kPresent is true, then
-        //         1. Set accumulator to ? Get(O, Pk).
-        //    iv. Set k to k + 1.
-        // SIMPLIFIED: Rift just reads index 0 directly instead of searching
-        // for the first present property.
-        accumulator = arrayObj->getProperty("0");
-        startIndex = 1;
+        bool found = false;
+        for(size_t k = 0; k < length; ++k) {
+            std::string pk = std::to_string(k);
+            //    ii. Set kPresent to ? HasProperty(O, Pk).
+            if(arrayObj->hasProperty(pk)) {
+                //    iii. If kPresent is true, then
+                //         1. Set accumulator to ? Get(O, Pk).
+                accumulator = arrayObj->getProperty(pk);
+                startIndex = k + 1;
+                found = true;
+                break;
+            }
+        }
         // c. If kPresent is false, throw a TypeError exception.
-        // INCOMPLETE: Does not check if element at index 0 was actually present.
+        if(!found) {
+            throw rift::core::JavaScriptException(TypeError::constructor(
+                {Value(std::string("Reduce of empty array with no initial value"))}));
+        }
     }
 
     // 9. Repeat, while k < len,
     for(size_t i = startIndex; i < length; ++i) {
         // a. Let Pk be ! ToString(F(k)).
+        std::string pk = std::to_string(i);
         // b. Let kPresent be ? HasProperty(O, Pk).
-        Value element = arrayObj->getProperty(std::to_string(i));
-        // c. If kPresent is true, then
-        // DEVIATION: Rift checks for undefined instead of HasProperty.
-        if(!element.isUndefined()) {
-            // i. Set accumulator to ? Call(callbackfn, undefined,
-            //    << accumulator, kValue, F(k), O >>).
-            std::vector<Value> callArgs = {accumulator, element, Value(static_cast<double>(i)),
-                                           Value(arrayObj)};
-            rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
-            accumulator = callbackFn->call(cbCtx, callArgs);
+        if(!arrayObj->hasProperty(pk)) {
+            continue;  // Skip holes
         }
+        // c. If kPresent is true, then
+        // i. Set accumulator to ? Call(callbackfn, undefined,
+        //    << accumulator, kValue, F(k), O >>).
+        Value element = arrayObj->getProperty(pk);
+        std::vector<Value> callArgs = {accumulator, element, Value(static_cast<double>(i)),
+                                       Value(arrayObj)};
+        rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
+        accumulator = callbackFn->call(cbCtx, callArgs);
         // d. Set k to k + 1.
     }
 
@@ -287,21 +297,21 @@ Value Array::reduceRight(const CallContext& ctx, const std::vector<Value>& args)
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.reduceRight callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
     size_t length = getArrayLength(arrayObj);
     // 4. If len = 0 and initialValue is not present, throw a TypeError exception.
     if(length == 0 && args.size() < 2) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: Reduce of empty array with no initial value"));
+        throw rift::core::JavaScriptException(TypeError::constructor(
+            {Value(std::string("Reduce of empty array with no initial value"))}));
     }
 
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.reduceRight callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 5. Let k be len - 1.
@@ -318,29 +328,35 @@ Value Array::reduceRight(const CallContext& ctx, const std::vector<Value>& args)
         // 8. Else,
         // a. Let kPresent be false.
         // b. Repeat, while kPresent is false and k >= 0,
-        //    i-iv. (search backwards for first present element)
-        // SIMPLIFIED: Rift just reads the last index directly instead of searching
-        // backwards for the first present property.
-        if(length == 0) {
-            return Value::undefined();
+        bool found = false;
+        for(size_t k = length; k > 0; --k) {
+            std::string pk = std::to_string(k - 1);
+            if(arrayObj->hasProperty(pk)) {
+                accumulator = arrayObj->getProperty(pk);
+                startIndex = k - 1;
+                found = true;
+                break;
+            }
         }
-        accumulator = arrayObj->getProperty(std::to_string(length - 1));
-        startIndex = length - 1;
         // c. If kPresent is false, throw a TypeError exception.
-        // INCOMPLETE: Does not check if the last element was actually present.
+        if(!found) {
+            throw rift::core::JavaScriptException(TypeError::constructor(
+                {Value(std::string("Reduce of empty array with no initial value"))}));
+        }
     }
 
     // 9. Repeat, while k >= 0,
     for(size_t i = startIndex; i > 0; --i) {
         // a. Let Pk be ! ToString(F(k)).
+        std::string pk = std::to_string(i - 1);
         // b. Let kPresent be ? HasProperty(O, Pk).
-        Value element = arrayObj->getProperty(std::to_string(i - 1));
-
+        if(!arrayObj->hasProperty(pk)) {
+            continue;  // Skip holes
+        }
         // c. If kPresent is true, then
-        // DEVIATION: Rift does not check HasProperty; it always calls the callback
-        // even for holes, which differs from the spec's skip-holes behavior.
         // i. Set accumulator to ? Call(callbackfn, undefined,
         //    << accumulator, kValue, F(k), O >>).
+        Value element = arrayObj->getProperty(pk);
         std::vector<Value> callArgs = {accumulator, element, Value(static_cast<double>(i - 1)),
                                        Value(arrayObj)};
         rift::core::CallContext cbCtx(rift::core::CallType::Function, Value::undefined());
@@ -362,7 +378,7 @@ Value Array::find(const CallContext& ctx, const std::vector<Value>& args) {
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.find callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
@@ -373,7 +389,7 @@ Value Array::find(const CallContext& ctx, const std::vector<Value>& args) {
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.find callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 4. Let k be 0.
@@ -409,7 +425,7 @@ Value Array::findIndex(const CallContext& ctx, const std::vector<Value>& args) {
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.findIndex callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
@@ -420,7 +436,7 @@ Value Array::findIndex(const CallContext& ctx, const std::vector<Value>& args) {
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.findIndex callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 4. Let k be 0.
@@ -456,7 +472,7 @@ Value Array::findLast(const CallContext& ctx, const std::vector<Value>& args) {
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.findLast callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
@@ -467,7 +483,7 @@ Value Array::findLast(const CallContext& ctx, const std::vector<Value>& args) {
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.findLast callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 4. Let k be len - 1.
@@ -503,7 +519,7 @@ Value Array::findLastIndex(const CallContext& ctx, const std::vector<Value>& arg
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.findLastIndex callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
@@ -514,7 +530,7 @@ Value Array::findLastIndex(const CallContext& ctx, const std::vector<Value>& arg
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.findLastIndex callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 4. Let k be len - 1.
@@ -550,7 +566,7 @@ Value Array::every(const CallContext& ctx, const std::vector<Value>& args) {
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.every callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
@@ -565,20 +581,21 @@ Value Array::every(const CallContext& ctx, const std::vector<Value>& args) {
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.every callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 4. Let k be 0.
     // 5. Repeat, while k < len,
     for(size_t i = 0; i < length; ++i) {
         // a. Let Pk be ! ToString(F(k)).
+        std::string pk = std::to_string(i);
         // b. Let kPresent be ? HasProperty(O, Pk).
-        Value element = arrayObj->getProperty(std::to_string(i));
-
+        if(!arrayObj->hasProperty(pk)) {
+            continue;  // Skip holes
+        }
         // c. If kPresent is true, then
-        // DEVIATION: Rift does not check HasProperty; it always calls the callback,
-        // which differs from the spec's skip-holes behavior for sparse arrays.
         // i. Let kValue be ? Get(O, Pk).
+        Value element = arrayObj->getProperty(pk);
         // ii. Let testResult be ToBoolean(? Call(callbackfn, thisArg, << kValue, F(k), O >>)).
         std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
         rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
@@ -605,7 +622,7 @@ Value Array::some(const CallContext& ctx, const std::vector<Value>& args) {
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.some callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let len be ? LengthOfArrayLike(O).
@@ -620,20 +637,21 @@ Value Array::some(const CallContext& ctx, const std::vector<Value>& args) {
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.some callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 4. Let k be 0.
     // 5. Repeat, while k < len,
     for(size_t i = 0; i < length; ++i) {
         // a. Let Pk be ! ToString(F(k)).
+        std::string pk = std::to_string(i);
         // b. Let kPresent be ? HasProperty(O, Pk).
-        Value element = arrayObj->getProperty(std::to_string(i));
-
+        if(!arrayObj->hasProperty(pk)) {
+            continue;  // Skip holes
+        }
         // c. If kPresent is true, then
-        // DEVIATION: Rift does not check HasProperty; it always calls the callback,
-        // which differs from the spec's skip-holes behavior for sparse arrays.
         // i. Let kValue be ? Get(O, Pk).
+        Value element = arrayObj->getProperty(pk);
         // ii. Let testResult be ToBoolean(? Call(callbackfn, thisArg, << kValue, F(k), O >>)).
         std::vector<Value> callArgs = {element, Value(static_cast<double>(i)), Value(arrayObj)};
         rift::core::CallContext cbCtx(rift::core::CallType::Function, thisArg);
@@ -742,7 +760,7 @@ Value Array::flatMap(const CallContext& ctx, const std::vector<Value>& args) {
     Value callback = args.empty() ? Value::undefined() : args[0];
     if(!callback.isFunction()) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.flatMap callback must be a function"));
+            TypeError::constructor({Value(std::string("callback must be a function"))}));
     }
 
     // 2. Let sourceLen be ? LengthOfArrayLike(O).
@@ -756,7 +774,7 @@ Value Array::flatMap(const CallContext& ctx, const std::vector<Value>& args) {
     auto* callbackFn = dynamic_cast<JSFunction*>(callback.getObject());
     if(!callbackFn) {
         throw rift::core::JavaScriptException(
-            Value("TypeError: Array.prototype.flatMap callback is not a function"));
+            TypeError::constructor({Value(std::string("callback is not a function"))}));
     }
 
     // 5. Perform ? FlattenIntoArray(A, O, sourceLen, 0, 1, mapperFunction, thisArg).

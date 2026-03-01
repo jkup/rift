@@ -21,7 +21,7 @@ runtime::JSObject* thisToObject(const CallContext& ctx, const char* methodName) 
     const runtime::Value& thisValue = ctx.thisValue;
 
     // Objects and functions pass through unchanged.
-    if(thisValue.isObject()) {
+    if(thisValue.isObject() || thisValue.isFunction()) {
         auto* obj = thisValue.getObject();
         if(obj) {
             return obj;

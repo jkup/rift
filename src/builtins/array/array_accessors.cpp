@@ -11,6 +11,8 @@
 #include <cmath>
 
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/error/range_error.h"
+#include "rift/builtins/error/type_error.h"
 #include "rift/interpreter/call_context.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "rift/interpreter/this_helpers.h"
@@ -390,8 +392,8 @@ Value Array::toSorted(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. If comparefn is not undefined and IsCallable(comparefn) is false,
     //    throw a TypeError exception.
     if(!args.empty() && !args[0].isUndefined() && !args[0].isFunction()) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: comparefn must be a function or undefined"));
+        throw rift::core::JavaScriptException(TypeError::constructor(
+            {Value(std::string("comparefn must be a function or undefined"))}));
     }
 
     // 2. Let O be ? ToObject(this value).
@@ -555,7 +557,8 @@ Value Array::with(const CallContext& ctx, const std::vector<Value>& args) {
     int64_t actual_index;
     if(std::isinf(relative_index)) {
         // Infinity or -Infinity will always be out of bounds.
-        throw rift::core::JavaScriptException(Value("RangeError: Invalid index"));
+        throw rift::core::JavaScriptException(
+            RangeError::constructor({Value(std::string("Invalid index"))}));
     }
     int64_t idx = static_cast<int64_t>(relative_index);
     if(idx >= 0) {
@@ -566,7 +569,8 @@ Value Array::with(const CallContext& ctx, const std::vector<Value>& args) {
 
     // 6. If actualIndex >= len or actualIndex < 0, throw a RangeError exception.
     if(actual_index >= len || actual_index < 0) {
-        throw rift::core::JavaScriptException(Value("RangeError: Invalid index"));
+        throw rift::core::JavaScriptException(
+            RangeError::constructor({Value(std::string("Invalid index"))}));
     }
 
     // Get the replacement value.

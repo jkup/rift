@@ -24,6 +24,7 @@
 #include "rift/builtins/array/array_iterator.h"
 #include "rift/builtins/builtin_manager.h"
 #include "rift/builtins/error/range_error.h"
+#include "rift/builtins/error/type_error.h"
 #include "rift/builtins/symbol/symbol.h"
 #include "rift/interpreter/call_context.h"
 #include "rift/interpreter/evaluation_utils.h"
@@ -455,7 +456,7 @@ Value Array::from(const CallContext& ctx, const std::vector<Value>& args) {
         auto* mapFn = dynamic_cast<JSFunction*>(args[1].getObject());
         if(!mapFn) {
             throw rift::core::JavaScriptException(
-                Value("TypeError: Array.from mapFn is not a function"));
+                TypeError::constructor({Value(std::string("Array.from mapFn is not a function"))}));
         }
         for(size_t i = 0; i < result.size(); ++i) {
             std::vector<Value> callArgs = {result[i], Value(static_cast<double>(i))};
@@ -504,8 +505,8 @@ Value Array::of(const CallContext& ctx, const std::vector<Value>& args) {
 Value Array::keys(const CallContext& ctx, const std::vector<Value>& /* args */) {
     // 1. Let O be ? ToObject(this value).
     if(!ctx.thisValue.isObject()) {
-        throw core::JavaScriptException(
-            Value("TypeError: Array.prototype.keys called on non-object"));
+        throw core::JavaScriptException(TypeError::constructor(
+            {Value(std::string("Array.prototype.keys called on non-object"))}));
     }
     // 2. Return CreateArrayIterator(O, key).
     return Value(ArrayIterator::create(getObjectFactory(), ctx.thisValue.getObject(),
@@ -517,8 +518,8 @@ Value Array::keys(const CallContext& ctx, const std::vector<Value>& /* args */) 
 Value Array::values(const CallContext& ctx, const std::vector<Value>& /* args */) {
     // 1. Let O be ? ToObject(this value).
     if(!ctx.thisValue.isObject()) {
-        throw core::JavaScriptException(
-            Value("TypeError: Array.prototype.values called on non-object"));
+        throw core::JavaScriptException(TypeError::constructor(
+            {Value(std::string("Array.prototype.values called on non-object"))}));
     }
     // 2. Return CreateArrayIterator(O, value).
     return Value(ArrayIterator::create(getObjectFactory(), ctx.thisValue.getObject(),
@@ -530,8 +531,8 @@ Value Array::values(const CallContext& ctx, const std::vector<Value>& /* args */
 Value Array::entries(const CallContext& ctx, const std::vector<Value>& /* args */) {
     // 1. Let O be ? ToObject(this value).
     if(!ctx.thisValue.isObject()) {
-        throw core::JavaScriptException(
-            Value("TypeError: Array.prototype.entries called on non-object"));
+        throw core::JavaScriptException(TypeError::constructor(
+            {Value(std::string("Array.prototype.entries called on non-object"))}));
     }
     // 2. Return CreateArrayIterator(O, key+value).
     return Value(ArrayIterator::create(getObjectFactory(), ctx.thisValue.getObject(),

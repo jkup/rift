@@ -1,6 +1,7 @@
 #include "rift/builtins/array/array_iterator.h"
 
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/error/type_error.h"
 #include "rift/builtins/symbol/symbol.h"
 #include "rift/interpreter/evaluation_utils.h"
 #include "rift/interpreter/javascript_exception.h"
@@ -28,13 +29,14 @@ JSObject* ArrayIterator::create(rift::memory::ObjectFactory* factory, JSObject* 
 Value ArrayIterator::next(const CallContext& ctx, const std::vector<Value>& /* args */) {
     // Get the iterator object
     if(!ctx.thisValue.isObject()) {
-        throw rift::core::JavaScriptException(
-            Value("TypeError: ArrayIterator.next called on non-object"));
+        throw rift::core::JavaScriptException(TypeError::constructor(
+            {Value(std::string("ArrayIterator.next called on non-object"))}));
     }
 
     auto* iter = ctx.thisValue.getObject();
     if(!iter) {
-        throw rift::core::JavaScriptException(Value("TypeError: invalid ArrayIterator"));
+        throw rift::core::JavaScriptException(
+            TypeError::constructor({Value(std::string("invalid ArrayIterator"))}));
     }
 
     // Get internal slots
