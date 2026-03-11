@@ -157,6 +157,7 @@ Value Error::isError(const CallContext& /*ctx*/, const std::vector<Value>& args)
         rift::core::BuiltinManager::getRangeErrorPrototype(),
         rift::core::BuiltinManager::getEvalErrorPrototype(),
         rift::core::BuiltinManager::getURIErrorPrototype(),
+        rift::core::BuiltinManager::getAggregateErrorPrototype(),
     };
 
     while(proto != nullptr) {

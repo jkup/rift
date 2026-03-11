@@ -4,6 +4,7 @@
 #include "rift/builtins/array/array_iterator.h"
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/builtins/date/date.h"
+#include "rift/builtins/error/aggregate_error.h"
 #include "rift/builtins/error/error.h"
 #include "rift/builtins/error/eval_error.h"
 #include "rift/builtins/error/range_error.h"
@@ -66,6 +67,7 @@ JSObject* BuiltinManager::syntaxErrorPrototype_ = nullptr;
 JSObject* BuiltinManager::rangeErrorPrototype_ = nullptr;
 JSObject* BuiltinManager::evalErrorPrototype_ = nullptr;
 JSObject* BuiltinManager::uriErrorPrototype_ = nullptr;
+JSObject* BuiltinManager::aggregateErrorPrototype_ = nullptr;
 JSObject* BuiltinManager::regexpPrototype_ = nullptr;
 JSObject* BuiltinManager::iteratorPrototype_ = nullptr;
 JSObject* BuiltinManager::setPrototype_ = nullptr;
@@ -107,6 +109,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         builtins::RangeError::setObjectFactory(factory);
         builtins::EvalError::setObjectFactory(factory);
         builtins::URIError::setObjectFactory(factory);
+        builtins::AggregateError::setObjectFactory(factory);
         builtins::RegExp::setObjectFactory(factory);
         builtins::Symbol::setObjectFactory(factory);
         builtins::Set::setObjectFactory(factory);
@@ -164,6 +167,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     setupRangeError(globalEnv, factory);
     setupEvalError(globalEnv, factory);
     setupURIError(globalEnv, factory);
+    setupAggregateError(globalEnv, factory);
     setupRegExp(globalEnv, factory);
     setupSymbol(globalEnv, factory);
     setupSet(globalEnv, factory);
@@ -189,6 +193,7 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     auto* rangeErrorConstructor = globalEnv->get("RangeError").getObject();
     auto* evalErrorConstructor = globalEnv->get("EvalError").getObject();
     auto* uriErrorConstructor = globalEnv->get("URIError").getObject();
+    auto* aggregateErrorConstructor = globalEnv->get("AggregateError").getObject();
     auto* regexpConstructor = globalEnv->get("RegExp").getObject();
     auto* symbolConstructor = globalEnv->get("Symbol").getObject();
     auto* setConstructor = globalEnv->get("Set").getObject();
@@ -224,6 +229,8 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         evalErrorPrototype_ = evalErrorConstructor->getProperty("prototype").getObject();
     if(uriErrorConstructor)
         uriErrorPrototype_ = uriErrorConstructor->getProperty("prototype").getObject();
+    if(aggregateErrorConstructor)
+        aggregateErrorPrototype_ = aggregateErrorConstructor->getProperty("prototype").getObject();
     if(regexpConstructor)
         regexpPrototype_ = regexpConstructor->getProperty("prototype").getObject();
     if(symbolConstructor)
@@ -318,6 +325,44 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     }
     if(objectPrototype_ && zonedDateTimePrototype_) {
         zonedDateTimePrototype_->setPrototype(objectPrototype_);
+    }
+
+    // NativeError prototypes inherit from Error.prototype per spec (20.5.5.3)
+    if(errorPrototype_) {
+        if(typeErrorPrototype_)
+            typeErrorPrototype_->setPrototype(errorPrototype_);
+        if(referenceErrorPrototype_)
+            referenceErrorPrototype_->setPrototype(errorPrototype_);
+        if(syntaxErrorPrototype_)
+            syntaxErrorPrototype_->setPrototype(errorPrototype_);
+        if(rangeErrorPrototype_)
+            rangeErrorPrototype_->setPrototype(errorPrototype_);
+        if(evalErrorPrototype_)
+            evalErrorPrototype_->setPrototype(errorPrototype_);
+        if(uriErrorPrototype_)
+            uriErrorPrototype_->setPrototype(errorPrototype_);
+        if(aggregateErrorPrototype_)
+            aggregateErrorPrototype_->setPrototype(errorPrototype_);
+    }
+
+    // NativeError constructors inherit from Error constructor per spec (20.5.5.2)
+    auto error_ctor_val = globalEnv->get("Error");
+    if(error_ctor_val.isFunction()) {
+        auto* error_ctor = error_ctor_val.getObject();
+        if(typeErrorConstructor)
+            typeErrorConstructor->setPrototype(error_ctor);
+        if(referenceErrorConstructor)
+            referenceErrorConstructor->setPrototype(error_ctor);
+        if(syntaxErrorConstructor)
+            syntaxErrorConstructor->setPrototype(error_ctor);
+        if(rangeErrorConstructor)
+            rangeErrorConstructor->setPrototype(error_ctor);
+        if(evalErrorConstructor)
+            evalErrorConstructor->setPrototype(error_ctor);
+        if(uriErrorConstructor)
+            uriErrorConstructor->setPrototype(error_ctor);
+        if(aggregateErrorConstructor)
+            aggregateErrorConstructor->setPrototype(error_ctor);
     }
 
     // Setup GC functions if engine is provided
@@ -436,6 +481,10 @@ JSObject* BuiltinManager::getEvalErrorPrototype() {
 
 JSObject* BuiltinManager::getURIErrorPrototype() {
     return uriErrorPrototype_;
+}
+
+JSObject* BuiltinManager::getAggregateErrorPrototype() {
+    return aggregateErrorPrototype_;
 }
 
 JSObject* BuiltinManager::getFunctionPrototype() {
@@ -636,6 +685,11 @@ void BuiltinManager::setupURIError(std::shared_ptr<Environment> globalEnv,
     auto* uriError = builtins::URIError::create(factory);
     globalEnv->define("URIError", Value(uriError));
 }
+void BuiltinManager::setupAggregateError(std::shared_ptr<Environment> globalEnv,
+                                         rift::memory::ObjectFactory* factory) {
+    auto* aggregateError = builtins::AggregateError::create(factory);
+    globalEnv->define("AggregateError", Value(aggregateError));
+}
 void BuiltinManager::setupGCFunctions(std::shared_ptr<Environment> globalEnv, Rift* engine) {
     // Create GC functions that have access to the engine using GC-managed creation
     auto* gcFunction = engine->getObjectFactory()->createJSFunction(
@@ -679,6 +733,7 @@ void BuiltinManager::clearStaticPrototypes() {
     rangeErrorPrototype_ = nullptr;
     evalErrorPrototype_ = nullptr;
     uriErrorPrototype_ = nullptr;
+    aggregateErrorPrototype_ = nullptr;
     iteratorPrototype_ = nullptr;
     setPrototype_ = nullptr;
     mapPrototype_ = nullptr;

@@ -1,6 +1,7 @@
 #include "rift/builtins/promise/promise.h"
 
 #include "rift/builtins/builtin_manager.h"
+#include "rift/builtins/error/aggregate_error.h"
 #include "rift/interpreter/engine.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "rift/memory/gc_protector.h"
@@ -1722,8 +1723,12 @@ Value Promise::any(const CallContext& /*ctx*/, const std::vector<Value>& args) {
 
     if(args.empty()) {
         // Empty iterable -- reject with AggregateError (spec step 4b.ii)
-        // INCOMPLETE: Should create an actual AggregateError object.
-        rejectPromise(result_promise, Value("AggregateError: All promises were rejected"));
+        auto* empty_errors =
+            factory->createJSObject(rift::core::BuiltinManager::getArrayPrototype());
+        empty_errors->setProperty("length", Value(0.0));
+        Value aggregate = builtins::AggregateError::createError(Value(empty_errors),
+                                                                "All promises were rejected");
+        rejectPromise(result_promise, aggregate);
         return Value(result_promise);
     }
 
@@ -1748,8 +1753,12 @@ Value Promise::any(const CallContext& /*ctx*/, const std::vector<Value>& args) {
     // Step 4b: If next is done and remainingElementsCount is 0,
     // reject with AggregateError (empty iterable case).
     if(length == 0) {
-        // INCOMPLETE: Should create an actual AggregateError object.
-        rejectPromise(result_promise, Value("AggregateError: All promises were rejected"));
+        auto* empty_errors =
+            factory->createJSObject(rift::core::BuiltinManager::getArrayPrototype());
+        empty_errors->setProperty("length", Value(0.0));
+        Value aggregate = builtins::AggregateError::createError(Value(empty_errors),
+                                                                "All promises were rejected");
+        rejectPromise(result_promise, aggregate);
         return Value(result_promise);
     }
 
@@ -1817,11 +1826,10 @@ Value Promise::any(const CallContext& /*ctx*/, const std::vector<Value>& args) {
                 //   11a: Let error be a newly created AggregateError object.
                 //   11b: Perform ! DefinePropertyOrThrow(error, "errors", ...).
                 //   11c: Return ThrowCompletion(error).
-                // INCOMPLETE: Should create an actual AggregateError object with
-                // an .errors property containing the collected rejection reasons.
                 if(remaining == 0) {
-                    rejectPromise(result_promise,
-                                  Value("AggregateError: All promises were rejected"));
+                    Value aggregate = builtins::AggregateError::createError(
+                        Value(errors), "All promises were rejected");
+                    rejectPromise(result_promise, aggregate);
                 }
 
                 return Value::undefined();

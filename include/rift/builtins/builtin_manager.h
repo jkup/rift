@@ -32,6 +32,7 @@ class BuiltinManager {
     static JSObject* getRangeErrorPrototype();
     static JSObject* getEvalErrorPrototype();
     static JSObject* getURIErrorPrototype();
+    static JSObject* getAggregateErrorPrototype();
     static JSObject* getRegExpPrototype();
     static JSObject* getIteratorPrototype();
     static JSObject* getSetPrototype();
@@ -80,6 +81,7 @@ class BuiltinManager {
     static JSObject* rangeErrorPrototype_;
     static JSObject* evalErrorPrototype_;
     static JSObject* uriErrorPrototype_;
+    static JSObject* aggregateErrorPrototype_;
     static JSObject* regexpPrototype_;
     static JSObject* iteratorPrototype_;
     static JSObject* setPrototype_;
@@ -133,6 +135,8 @@ class BuiltinManager {
                                rift::memory::ObjectFactory* factory);
     static void setupURIError(std::shared_ptr<Environment> globalEnv,
                               rift::memory::ObjectFactory* factory);
+    static void setupAggregateError(std::shared_ptr<Environment> globalEnv,
+                                    rift::memory::ObjectFactory* factory);
     static void setupRegExp(std::shared_ptr<Environment> globalEnv,
                             rift::memory::ObjectFactory* factory);
     static void setupSymbol(std::shared_ptr<Environment> globalEnv,
