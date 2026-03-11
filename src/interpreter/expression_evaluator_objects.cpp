@@ -1729,7 +1729,7 @@ Value ExpressionEvaluator::evaluateGeneratorFunctionExpression(std::shared_ptr<A
             if(is_async_generator) {
                 // 27.6 AsyncGenerator Objects — create AsyncGeneratorIterator
                 auto* generator = builtins::AsyncGeneratorIterator::create(
-                    engine->getObjectFactory(), body, env, engine, param_names, processed_args);
+                    engine->getObjectFactory(), body, env, engine, param_info, processed_args);
                 return Value(generator);
             }
 
@@ -1737,7 +1737,7 @@ Value ExpressionEvaluator::evaluateGeneratorFunctionExpression(std::shared_ptr<A
             // Create a Generator object in "suspendedStart" state.
             // The body will be executed lazily when .next() is called.
             auto* generator = builtins::GeneratorIterator::create(
-                engine->getObjectFactory(), body, env, engine, param_names, processed_args);
+                engine->getObjectFactory(), body, env, engine, param_info, processed_args);
 
             return Value(generator);
         });

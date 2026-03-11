@@ -12,6 +12,7 @@
 #include "rift/interpreter/engine.h"
 #include "rift/interpreter/evaluation_utils.h"
 #include "rift/interpreter/javascript_exception.h"
+#include "rift/interpreter/statement_evaluator.h"
 #include "rift/memory/gc_protector.h"
 
 namespace rift::builtins {
@@ -71,6 +72,49 @@ JSObject* AsyncGeneratorIterator::create(rift::memory::ObjectFactory* factory,
     ctx.env = gen_env;
     ctx.engine = engine;
     ctx.param_names = paramNames;
+
+    size_t context_index = async_generator_contexts.size();
+    async_generator_contexts.push_back(std::move(ctx));
+
+    iterator->setProperty("[[GeneratorState]]",
+                          Value(static_cast<double>(GeneratorState::SuspendedStart)));
+    iterator->setProperty("[[GeneratorContextIndex]]", Value(static_cast<double>(context_index)));
+
+    return iterator;
+}
+
+// Overload that accepts full parameter info for destructuring support.
+JSObject* AsyncGeneratorIterator::create(rift::memory::ObjectFactory* factory,
+                                         std::shared_ptr<rift::ast::ASTNode> body,
+                                         std::shared_ptr<Environment> env, rift::core::Rift* engine,
+                                         const ParamInfo& paramInfo,
+                                         const std::vector<Value>& args) {
+    auto* iterator = factory->createJSObject(prototype_);
+    rift::memory::GCProtector protect(iterator, factory->getObjectManager());
+
+    auto gen_env = std::make_shared<Environment>(env);
+
+    // Bind parameters with destructuring support
+    std::vector<std::string> param_names;
+    for(size_t i = 0; i < paramInfo.size(); ++i) {
+        const auto& [param_name, default_ast, is_rest, pattern] = paramInfo[i];
+        Value arg_value = (i < args.size()) ? args[i] : Value::undefined();
+
+        if(pattern) {
+            rift::core::StatementEvaluator::applyPatternBinding(pattern, arg_value, gen_env, engine,
+                                                                runtime::VariableType::Var);
+            param_names.emplace_back("");
+        } else {
+            gen_env->define(param_name, arg_value, runtime::VariableType::Var);
+            param_names.push_back(param_name);
+        }
+    }
+
+    AsyncGeneratorContextStorage ctx;
+    ctx.body = body;
+    ctx.env = gen_env;
+    ctx.engine = engine;
+    ctx.param_names = param_names;
 
     size_t context_index = async_generator_contexts.size();
     async_generator_contexts.push_back(std::move(ctx));

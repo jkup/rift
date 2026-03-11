@@ -47,6 +47,10 @@ enum class GeneratorState {
 /// - [[GeneratorSentValue]] - Value passed to next()
 class GeneratorIterator {
   public:
+    /// Parameter info tuple: (name, default_ast, is_rest, destructuring_pattern)
+    using ParamInfo = std::vector<std::tuple<std::string, std::shared_ptr<rift::ast::ASTNode>, bool,
+                                             std::shared_ptr<rift::ast::ASTNode>>>;
+
     /// 27.5.3.1 GeneratorStart ( generator, generatorBody )
     /// @spec https://tc39.es/ecma262/#sec-generatorstart
     ///
@@ -58,6 +62,12 @@ class GeneratorIterator {
                             std::shared_ptr<Environment> env, rift::core::Rift* engine,
                             const std::vector<std::string>& paramNames,
                             const std::vector<Value>& args);
+
+    /// Overload that accepts full parameter info for destructuring support.
+    static JSObject* create(rift::memory::ObjectFactory* factory,
+                            std::shared_ptr<rift::ast::ASTNode> body,
+                            std::shared_ptr<Environment> env, rift::core::Rift* engine,
+                            const ParamInfo& paramInfo, const std::vector<Value>& args);
 
     /// 27.5.1.2 %GeneratorPrototype%.next ( value )
     /// @spec https://tc39.es/ecma262/#sec-generator.prototype.next

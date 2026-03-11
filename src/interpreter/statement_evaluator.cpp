@@ -1289,7 +1289,7 @@ Value StatementEvaluator::evaluateGeneratorFunctionDeclaration(std::shared_ptr<A
             if(is_async_generator) {
                 // 27.6 AsyncGenerator Objects — create AsyncGeneratorIterator
                 auto* generator = builtins::AsyncGeneratorIterator::create(
-                    engine->getObjectFactory(), body, env, engine, param_names, processed_args);
+                    engine->getObjectFactory(), body, env, engine, param_info, processed_args);
                 return Value(generator);
             }
 
@@ -1300,7 +1300,7 @@ Value StatementEvaluator::evaluateGeneratorFunctionDeclaration(std::shared_ptr<A
             // AST body and environment, implementing lazy evaluation via coroutine-like
             // suspend/resume rather than the spec's GeneratorStart/GeneratorResume.
             auto* generator = builtins::GeneratorIterator::create(
-                engine->getObjectFactory(), body, env, engine, param_names, processed_args);
+                engine->getObjectFactory(), body, env, engine, param_info, processed_args);
 
             return Value(generator);
         });

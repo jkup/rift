@@ -138,13 +138,13 @@ void ClassBuilder::addMethods(const std::vector<std::shared_ptr<ASTNode>>& metho
                     }
                     if(is_async_gen) {
                         auto* generator = builtins::AsyncGeneratorIterator::create(
-                            engine->getObjectFactory(), method_body, class_env, engine, param_names,
-                            processed_args);
+                            engine->getObjectFactory(), method_body, class_env, engine,
+                            method_param_info, processed_args);
                         return Value(generator);
                     }
                     auto* generator = builtins::GeneratorIterator::create(
-                        engine->getObjectFactory(), method_body, class_env, engine, param_names,
-                        processed_args);
+                        engine->getObjectFactory(), method_body, class_env, engine,
+                        method_param_info, processed_args);
                     return Value(generator);
                 });
         } else if(is_async && is_instance) {

@@ -31,12 +31,22 @@ using rift::core::CallContext;
 /// return Promises that resolve to {value, done} iterator results.
 class AsyncGeneratorIterator {
   public:
+    /// Parameter info tuple: (name, default_ast, is_rest, destructuring_pattern)
+    using ParamInfo = std::vector<std::tuple<std::string, std::shared_ptr<rift::ast::ASTNode>, bool,
+                                             std::shared_ptr<rift::ast::ASTNode>>>;
+
     /// Create an AsyncGeneratorIterator for the given async generator function.
     static JSObject* create(rift::memory::ObjectFactory* factory,
                             std::shared_ptr<rift::ast::ASTNode> body,
                             std::shared_ptr<Environment> env, rift::core::Rift* engine,
                             const std::vector<std::string>& paramNames,
                             const std::vector<Value>& args);
+
+    /// Overload that accepts full parameter info for destructuring support.
+    static JSObject* create(rift::memory::ObjectFactory* factory,
+                            std::shared_ptr<rift::ast::ASTNode> body,
+                            std::shared_ptr<Environment> env, rift::core::Rift* engine,
+                            const ParamInfo& paramInfo, const std::vector<Value>& args);
 
     /// 27.6.1.2 %AsyncGeneratorPrototype%.next ( value )
     static Value next(const CallContext& ctx, const std::vector<Value>& args);
