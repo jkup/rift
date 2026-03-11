@@ -57,13 +57,14 @@ inline std::string extractThisString(const CallContext& ctx) {
         return thisValue.getString();
     }
 
-    // If it's a String object, check for "value" property
+    // If it's a wrapper object (String, Number, Boolean), use the "value" property
+    // to get the primitive, then convert to string via ToString.
     if(thisValue.isObject()) {
         auto* obj = thisValue.getObject();
         if(obj) {
             runtime::Value valueProperty = obj->getProperty("value");
-            if(valueProperty.isString()) {
-                return valueProperty.getString();
+            if(!valueProperty.isUndefined()) {
+                return valueProperty.toString();
             }
         }
     }

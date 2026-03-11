@@ -107,21 +107,37 @@ void String::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFact
 // 22.1.1.1 String ( value )
 // @spec https://tc39.es/ecma262/#sec-string-constructor-string-value
 Value String::constructor(const CallContext& ctx, const std::vector<Value>& args) {
-    // 1. If value is not present, then
-    //   a. Let s be the empty String.
-    if(args.empty()) {
-        return Value("");
+    // 22.1.1.1 String ( value )
+    // @spec https://tc39.es/ecma262/#sec-string-constructor-string-value
+
+    // 1. If value is not present, let s be the empty String.
+    std::string s = args.empty() ? "" : args[0].toString();
+
+    // 3. If NewTarget is undefined, return s (called as a function, not constructor).
+    if(!ctx.isConstructorCall()) {
+        return Value(std::move(s));
     }
 
-    // 2. Else,
-    //   a. If NewTarget is undefined and value is a Symbol, return SymbolDescriptiveString(value).
-    //   b. Let s be ? ToString(value).
-    // INCOMPLETE: Step 2a (Symbol special case) not implemented.
-
-    // 3. If NewTarget is undefined, return s.
-    // SIMPLIFIED: Rift always returns a primitive string; String object wrapping
-    // (step 4: StringCreate) is not yet implemented.
-    return Value(args[0].toString());
+    // 4. Return StringCreate(s, ? GetPrototypeFromConstructor(newTarget, "%String.prototype%")).
+    // Store the primitive value on the wrapper object so extractThisString can find it.
+    if(ctx.thisValue.isObject()) {
+        auto* obj = ctx.thisValue.getObject();
+        if(obj) {
+            // Set indexed character properties and length for String exotic object behavior.
+            for(size_t i = 0; i < s.size(); ++i) {
+                obj->defineProperty(
+                    std::to_string(i),
+                    runtime::PropertyDescriptor(Value(std::string(1, s[i])), false, true, false));
+            }
+            obj->defineProperty(
+                "length", runtime::PropertyDescriptor(Value(static_cast<double>(s.size())), false,
+                                                      false, false));
+            // Store the primitive string value last (after we're done reading s).
+            obj->defineProperty(
+                "value", runtime::PropertyDescriptor(Value(std::move(s)), false, false, false));
+        }
+    }
+    return ctx.thisValue;
 }
 
 // 22.1.2.1 String.fromCharCode ( ...codeUnits )
@@ -559,12 +575,11 @@ Value String::trim(const CallContext& ctx, const std::vector<Value>& args) {
 // 22.1.3.23 String.prototype.split ( separator, limit )
 // @spec https://tc39.es/ecma262/#sec-string.prototype.split
 Value String::split(const CallContext& ctx, const std::vector<Value>& args) {
-    // 1. Let O be the this value.
-    // 2. Perform ? RequireObjectCoercible(O).
-    // 4. Let S be ? ToString(O).
-    std::string str = extractThisString(ctx);
+    // 22.1.3.23 String.prototype.split ( separator, limit )
+    // @spec https://tc39.es/ecma262/#sec-string.prototype.split
 
-    // 3. If separator is an Object, then
+    // 1. Let O be ? RequireObjectCoercible(this value).
+    // 2. If separator is not undefined and not null, then
     //   a. Let splitter be ? GetMethod(separator, %Symbol.split%).
     //   b. If splitter is not undefined, then
     //     i. Return ? Call(splitter, separator, <<O, limit>>).
@@ -577,7 +592,7 @@ Value String::split(const CallContext& ctx, const std::vector<Value>& args) {
             auto* func = dynamic_cast<JSFunction*>(splitter.getObject());
             if(func) {
                 std::vector<Value> call_args;
-                call_args.emplace_back(str);
+                call_args.emplace_back(extractThisString(ctx));
                 if(args.size() > 1) {
                     call_args.push_back(args[1]);
                 } else {
@@ -589,40 +604,79 @@ Value String::split(const CallContext& ctx, const std::vector<Value>& args) {
         }
     }
 
-    // Create an array to hold the results using GC-managed creation
-    std::vector<Value> elements;
+    // 3. Let S be ? ToString(O).
+    std::string str = extractThisString(ctx);
 
-    // 8. If separator is undefined, then
-    //   a. Return CreateArrayFromList(<<S>>).
-    if(args.empty() || args[0].isUndefined()) {
-        elements.push_back(Value(std::move(str)));
-    } else {
-        // 6. Let R be ? ToString(separator).
-        std::string separator = args[0].toString();
-
-        // 10. If separatorLength = 0, then
-        //   a-d. Split into individual code units.
-        if(separator.empty()) {
-            for(size_t i = 0; i < str.length(); ++i) {
-                elements.push_back(Value(std::string(1, str[i])));
-            }
+    // 5. If limit is undefined, let lim be 2^32 - 1; else let lim be ? ToUint32(limit).
+    uint32_t lim = 0xFFFFFFFF;  // 2^32 - 1
+    if(args.size() > 1 && !args[1].isUndefined()) {
+        double lim_d = args[1].toNumber();
+        if(std::isnan(lim_d) || lim_d == 0.0) {
+            lim = 0;
+        } else if(std::isinf(lim_d)) {
+            lim = 0;  // ToUint32(Infinity) = 0
         } else {
-            // 11. If S is the empty String, return CreateArrayFromList(<<S>>).
-            // 12-16. Split by separator using StringIndexOf.
-            size_t start = 0;
-            size_t pos = 0;
-
-            while((pos = str.find(separator, start)) != std::string::npos) {
-                elements.push_back(Value(str.substr(start, pos - start)));
-                start = pos + separator.length();
-            }
-
-            // Add the remaining part
-            elements.push_back(Value(str.substr(start)));
+            // ToUint32: take the integer part, then modulo 2^32
+            double int_val = lim_d < 0 ? -std::floor(std::abs(lim_d)) : std::floor(std::abs(lim_d));
+            double mod_val = std::fmod(int_val, 4294967296.0);
+            if(mod_val < 0)
+                mod_val += 4294967296.0;
+            lim = static_cast<uint32_t>(mod_val);
         }
     }
 
-    // Build a proper Array instance using Array helper
+    // 6. If lim = 0, return A (empty array).
+    if(lim == 0) {
+        return Value(Array::createArrayObject(getObjectFactory(), {}));
+    }
+
+    std::vector<Value> elements;
+
+    // 7. If separator is undefined, return CreateArrayFromList(<<S>>).
+    if(args.empty() || args[0].isUndefined()) {
+        elements.push_back(Value(std::move(str)));
+        return Value(Array::createArrayObject(getObjectFactory(), std::move(elements)));
+    }
+
+    // 8. Let R be ? ToString(separator).
+    std::string separator = args[0].toString();
+    size_t s_len = str.length();
+    size_t r_len = separator.length();
+
+    // 9. If S is the empty String, then
+    if(s_len == 0) {
+        // a. If R is also empty, return empty array.
+        if(r_len == 0) {
+            return Value(Array::createArrayObject(getObjectFactory(), {}));
+        }
+        // b. Otherwise return [S].
+        elements.push_back(Value(std::move(str)));
+        return Value(Array::createArrayObject(getObjectFactory(), std::move(elements)));
+    }
+
+    // 10. If separator is the empty String, split into individual characters.
+    if(r_len == 0) {
+        for(size_t i = 0; i < s_len && elements.size() < lim; ++i) {
+            elements.push_back(Value(std::string(1, str[i])));
+        }
+        return Value(Array::createArrayObject(getObjectFactory(), std::move(elements)));
+    }
+
+    // 11-16. Split by separator using StringIndexOf.
+    size_t start = 0;
+    size_t pos = 0;
+
+    while((pos = str.find(separator, start)) != std::string::npos) {
+        elements.push_back(Value(str.substr(start, pos - start)));
+        if(elements.size() >= lim) {
+            return Value(Array::createArrayObject(getObjectFactory(), std::move(elements)));
+        }
+        start = pos + r_len;
+    }
+
+    // Add the trailing substring.
+    elements.push_back(Value(str.substr(start)));
+
     return Value(Array::createArrayObject(getObjectFactory(), std::move(elements)));
 }
 

@@ -183,6 +183,10 @@ rift::core::BuiltinManager::getArrayPrototype()
 rift::core::EvaluationUtils::symbolToPropertyKey(id)
 ```
 
+### Wrapper Objects (String, Number, Boolean)
+
+Wrapper objects created via `new String(x)`, `new Number(x)`, `new Boolean(x)` store their primitive value in a non-enumerable `"value"` property. The `extractThisString` helper (in `this_helpers.h`) retrieves this by checking `obj->getProperty("value")` and calling `toString()` on whatever it finds. String wrapper objects also have indexed character properties (`"0"`, `"1"`, ...) and a `"length"` property.
+
 ### Property Descriptors
 
 ```cpp

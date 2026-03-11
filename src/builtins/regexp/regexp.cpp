@@ -2,6 +2,8 @@
 
 #include <absl/strings/string_view.h>
 
+#include <cmath>
+
 #include "rift/builtins/array/array.h"
 #include "rift/builtins/builtin_manager.h"
 #include "rift/builtins/symbol/symbol.h"
@@ -826,8 +828,16 @@ Value RegExp::symbolSplit(const CallContext& ctx, const std::vector<Value>& args
     uint32_t lim = 0xFFFFFFFF;  // 2^32 - 1
     if(args.size() > 1 && !args[1].isUndefined()) {
         double lim_d = args[1].toNumber();
-        if(lim_d >= 0 && lim_d < 4294967296.0) {
-            lim = static_cast<uint32_t>(lim_d);
+        if(std::isnan(lim_d) || lim_d == 0.0) {
+            lim = 0;
+        } else if(std::isinf(lim_d)) {
+            lim = 0;  // ToUint32(Infinity) = 0
+        } else {
+            double int_val = lim_d < 0 ? -std::floor(std::abs(lim_d)) : std::floor(std::abs(lim_d));
+            double mod_val = std::fmod(int_val, 4294967296.0);
+            if(mod_val < 0)
+                mod_val += 4294967296.0;
+            lim = static_cast<uint32_t>(mod_val);
         }
     }
 
@@ -865,6 +875,13 @@ Value RegExp::symbolSplit(const CallContext& ctx, const std::vector<Value>& args
 
         size_t match_start = submatch[0].data() - str.data();
         size_t match_end = match_start + submatch[0].size();
+
+        // Per spec 22.2.7.8 step 16a: if match position >= string length, no match.
+        // This prevents zero-length matches at the very end of the string from
+        // producing a spurious trailing empty string in the result.
+        if(match_start >= str.size()) {
+            break;
+        }
 
         // Skip zero-length match at the current position
         if(match_end == last_end && match_start == last_end && search_pos == last_end) {
