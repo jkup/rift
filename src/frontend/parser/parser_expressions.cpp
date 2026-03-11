@@ -692,13 +692,28 @@ std::shared_ptr<ASTNode> Parser::parse_binary_expression(int precedence) {
 // Expression :: AssignmentExpression | Expression , AssignmentExpression
 // @spec https://tc39.es/ecma262/#sec-comma-operator
 //
-// SIMPLIFIED: The spec's comma operator creates a sequence. Rift delegates to
-// parse_binary_expression(0) which starts at the lowest precedence (assignment).
-// The comma operator itself is not handled here as a binary operator; instead,
-// comma-separated expressions are handled by the caller context (e.g., argument
-// lists, variable declarations, for-loop headers).
+// The comma operator evaluates each operand left-to-right and returns the
+// value of the last operand. It has the lowest precedence of all operators.
+// Callers that use commas as separators (argument lists, variable declarations,
+// for-loop headers) should call parse_binary_expression(0) directly instead
+// of parse_expression() to avoid consuming the comma as an operator.
 std::shared_ptr<ASTNode> Parser::parse_expression() {
-    return parse_binary_expression(0);
+    auto expr = parse_binary_expression(0);
+
+    if(current < tokens.size() && current_token().type == TokenType::Comma) {
+        auto seq = std::make_shared<ASTNode>(ASTNodeType::SequenceExpression);
+        seq->copyLocationFrom(expr);
+        seq->children.push_back(expr);
+
+        while(current < tokens.size() && current_token().type == TokenType::Comma) {
+            current++;  // consume ','
+            seq->children.push_back(parse_binary_expression(0));
+        }
+
+        return seq;
+    }
+
+    return expr;
 }
 
 // 13.3 Left-Hand-Side Expressions + 13.4 Postfix Update Expressions
@@ -837,7 +852,7 @@ std::shared_ptr<ASTNode> Parser::parse_call_expression(std::shared_ptr<ASTNode> 
                 ASTFactory::addArgument(call, spread_element);
             } else {
                 // ArgumentList :: AssignmentExpression
-                auto arg = parse_expression();
+                auto arg = parse_binary_expression(0);
                 ASTFactory::addArgument(call, arg);
             }
         } while(match(TokenType::Comma));
@@ -961,7 +976,7 @@ std::shared_ptr<ASTNode> Parser::parse_array_literal() {
             ASTFactory::addArrayElement(array, spread_element);
         } else {
             // ElementList :: AssignmentExpression
-            auto element = parse_expression();
+            auto element = parse_binary_expression(0);
             ASTFactory::addArrayElement(array, element);
         }
 
@@ -1086,7 +1101,7 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
             // ComputedPropertyName :: [ AssignmentExpression ]
             // @spec https://tc39.es/ecma262/#sec-object-initializer
             current++;  // consume '['
-            auto expr = parse_expression();
+            auto expr = parse_binary_expression(0);
             consume(TokenType::RightBracket);
             // Wrap in a marker node so the evaluator knows to evaluate the expression
             key = std::make_shared<ASTNode>(ASTNodeType::ExpressionStatement);
@@ -1154,7 +1169,7 @@ std::shared_ptr<ASTNode> Parser::parse_object_literal() {
         } else {
             // PropertyDefinition :: PropertyName : AssignmentExpression
             consume(TokenType::Colon);
-            auto value = parse_expression();
+            auto value = parse_binary_expression(0);
             ASTFactory::addObjectProperty(object, key, value);
         }
 
@@ -1215,7 +1230,7 @@ std::shared_ptr<ASTNode> Parser::parse_new_expression() {
                     auto spread_element = ASTFactory::makeSpreadElement(spread_arg);
                     ASTFactory::addNewArgument(newExpr, spread_element);
                 } else {
-                    auto arg = parse_expression();
+                    auto arg = parse_binary_expression(0);
                     ASTFactory::addNewArgument(newExpr, arg);
                 }
             } while(match(TokenType::Comma));

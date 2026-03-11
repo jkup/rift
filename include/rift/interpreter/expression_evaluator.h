@@ -67,6 +67,8 @@ class ExpressionEvaluator {
                                        std::shared_ptr<Environment> env, Rift* engine);
     static Value evaluateConditionalExpression(std::shared_ptr<ASTNode> node,
                                                std::shared_ptr<Environment> env, Rift* engine);
+    static Value evaluateSequenceExpression(std::shared_ptr<ASTNode> node,
+                                            std::shared_ptr<Environment> env, Rift* engine);
 };
 
 }  // namespace rift::core

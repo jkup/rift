@@ -23,6 +23,7 @@
 #include "rift/interpreter/evaluation_utils.h"
 #include "rift/interpreter/expression_evaluator.h"
 #include "rift/interpreter/javascript_exception.h"
+#include "rift/interpreter/statement_evaluator.h"
 #include "rift/memory/gc_protector.h"
 #include "rift/types/object.h"
 
@@ -168,6 +169,19 @@ Value ExpressionEvaluator::evaluateAssignmentExpression(std::shared_ptr<ASTNode>
     // Step (simple) 1c-d / Step (compound) 3-4: Evaluate RHS and GetValue
     Value rightValue = engine->evaluate(node->children[1], env);
     std::string operator_ = node->value.empty() ? "=" : node->value;
+
+    // -----------------------------------------------------------------------
+    // Case 0: Destructuring assignment — ArrayLiteral or ObjectLiteral as LHS
+    // 13.15.1: If LeftHandSideExpression is an ObjectLiteral or ArrayLiteral,
+    // perform DestructuringAssignmentEvaluation.
+    // @spec https://tc39.es/ecma262/#sec-destructuring-assignment
+    // -----------------------------------------------------------------------
+    if(leftSide->type == ASTNodeType::ArrayLiteral ||
+       leftSide->type == ASTNodeType::ObjectLiteral) {
+        StatementEvaluator::applyPatternBinding(leftSide, rightValue, env, engine,
+                                                VariableType::Var);
+        return rightValue;
+    }
 
     // -----------------------------------------------------------------------
     // Case 1: LeftHandSideExpression is a MemberExpression (property assignment)

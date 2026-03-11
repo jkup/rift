@@ -75,6 +75,7 @@ enum class ASTNodeType {
     AwaitExpression,           // await value
     ForAwaitOfStatement,       // for await (x of iterable) {}
     LabeledStatement,          // label: statement
+    SequenceExpression,        // (expr1, expr2, ..., exprN) — comma operator
 };
 
 struct ASTNode {

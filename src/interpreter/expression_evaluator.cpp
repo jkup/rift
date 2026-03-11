@@ -141,6 +141,9 @@ Value ExpressionEvaluator::evaluate(std::shared_ptr<ASTNode> node, std::shared_p
         // 13.14 Conditional Operator ( ? : )
         case ASTNodeType::ConditionalExpression:
             return evaluateConditionalExpression(node, env, engine);
+        // 13.16 Comma Operator
+        case ASTNodeType::SequenceExpression:
+            return evaluateSequenceExpression(node, env, engine);
         default:
             return Value::undefined();
     }
@@ -690,6 +693,23 @@ Value ExpressionEvaluator::evaluateConditionalExpression(std::shared_ptr<ASTNode
     }
     // Step 4: lval is false — evaluate and return the alternate
     return engine->evaluate(node->children[2], env);
+}
+
+// 13.16 Comma Operator (,)
+// @spec https://tc39.es/ecma262/#sec-comma-operator
+// Expression : Expression , AssignmentExpression
+//   1. Let lref be ? Evaluation of Expression.
+//   2. Perform ? GetValue(lref).
+//   3. Let rref be ? Evaluation of AssignmentExpression.
+//   4. Return ? GetValue(rref).
+Value ExpressionEvaluator::evaluateSequenceExpression(std::shared_ptr<ASTNode> node,
+                                                      std::shared_ptr<Environment> env,
+                                                      Rift* engine) {
+    Value result = Value::undefined();
+    for(const auto& child : node->children) {
+        result = engine->evaluate(child, env);
+    }
+    return result;
 }
 
 }  // namespace rift::core

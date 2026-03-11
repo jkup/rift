@@ -198,7 +198,7 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
         if(!match(TokenType::Assign)) {
             throw std::runtime_error("Destructuring declaration requires initializer");
         }
-        auto initializer = parse_expression();
+        auto initializer = parse_binary_expression(0);
 
         // Create declaration node with pattern in children[0] and initializer in children[1]
         // Use metadata to mark this as a destructuring declaration
@@ -246,7 +246,7 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
             if(!match(TokenType::Assign)) {
                 throw std::runtime_error("Destructuring declaration requires initializer");
             }
-            auto init = parse_expression();
+            auto init = parse_binary_expression(0);
             std::shared_ptr<ASTNode> node;
             switch(declType) {
                 case TokenType::Var:
@@ -287,7 +287,7 @@ std::shared_ptr<ASTNode> Parser::parse_variable_declaration() {
 
         std::shared_ptr<ASTNode> initializer = nullptr;
         if(match(TokenType::Assign)) {
-            initializer = parse_expression();
+            initializer = parse_binary_expression(0);
         } else if(declType == TokenType::Const) {
             throw std::runtime_error("Missing initializer in const declaration");
         }
@@ -411,8 +411,8 @@ std::shared_ptr<ASTNode> Parser::parse_array_pattern() {
         // Initializer :: = AssignmentExpression
         // Default value: [x = 10]
         if(current_token().type == TokenType::Assign) {
-            current++;                                      // consume '='
-            auto default_val = parse_binary_expression(1);  // Stop before comma
+            current++;  // consume '='
+            auto default_val = parse_binary_expression(0);
             element = ASTFactory::makeAssignmentPattern(element, default_val);
         }
 
@@ -517,7 +517,7 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
             // Default value after renaming: {key: renamed = 10}
             if(current_token().type == TokenType::Assign) {
                 current++;  // consume '='
-                auto default_val = parse_binary_expression(1);
+                auto default_val = parse_binary_expression(0);
                 value_pattern = ASTFactory::makeAssignmentPattern(value_pattern, default_val);
             }
         } else if(current_token().type == TokenType::Assign) {
@@ -530,7 +530,7 @@ std::shared_ptr<ASTNode> Parser::parse_object_pattern() {
                     "' is a reserved word and cannot be used as an identifier");
             }
             current++;  // consume '='
-            auto default_val = parse_binary_expression(1);
+            auto default_val = parse_binary_expression(0);
             value_pattern = ASTFactory::makeAssignmentPattern(ASTFactory::makeIdentifier(key_name),
                                                               default_val);
         } else {
@@ -802,7 +802,7 @@ std::shared_ptr<ASTNode> Parser::parse_for_statement() {
                 if(!match(TokenType::Assign)) {
                     throw std::runtime_error("Destructuring declaration requires initializer");
                 }
-                auto initializer = parse_expression();
+                auto initializer = parse_binary_expression(0);
                 auto decl_node = std::make_shared<ASTNode>(
                     decl_type == TokenType::Var   ? ASTNodeType::VariableDeclaration
                     : decl_type == TokenType::Let ? ASTNodeType::LetDeclaration
@@ -1435,7 +1435,7 @@ std::shared_ptr<ASTNode> Parser::parse_class_declaration() {
     std::shared_ptr<ASTNode> superClass = nullptr;
     if(current_token().type == TokenType::Extends) {
         current++;  // consume 'extends'
-        superClass = parse_expression();
+        superClass = parse_binary_expression(0);
     }
 
     // { ClassBody? }
@@ -1468,7 +1468,7 @@ std::shared_ptr<ASTNode> Parser::parse_class_expression() {
     std::shared_ptr<ASTNode> superClass = nullptr;
     if(current_token().type == TokenType::Extends) {
         current++;  // consume 'extends'
-        superClass = parse_expression();
+        superClass = parse_binary_expression(0);
     }
 
     // { ClassBody? }
@@ -1601,7 +1601,7 @@ std::shared_ptr<ASTNode> Parser::parse_method_definition() {
         // ComputedPropertyName :: [ AssignmentExpression ]
         isComputed = true;
         current++;  // consume '['
-        computedKey = parse_expression();
+        computedKey = parse_binary_expression(0);
         consume(TokenType::RightBracket);
     } else if(current_token().type == TokenType::Identifier) {
         // LiteralPropertyName :: IdentifierName
