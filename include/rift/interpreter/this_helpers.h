@@ -103,33 +103,17 @@ inline bool extractThisBool(const CallContext& ctx) {
 }
 
 /**
+ * 21.1.3 ThisNumberValue ( value )
+ * @spec https://tc39.es/ecma262/#sec-thisnumbervalue
+ *
  * Extract the "this" value as a number.
  * Handles both number primitives and Number wrapper objects.
+ * Throws TypeError if this is not a Number value or Number object.
  *
  * @param ctx The call context containing the this value
  * @return The numeric value, either directly or from the "value" property
+ * @throws JavaScriptException(TypeError) if this is not a Number
  */
-inline double extractThisNumber(const CallContext& ctx) {
-    const runtime::Value& thisValue = ctx.thisValue;
-
-    // If it's a number primitive, return it directly
-    if(thisValue.isNumber()) {
-        return thisValue.toNumber();
-    }
-
-    // If it's a Number object, check for "value" property
-    if(thisValue.isObject()) {
-        auto* obj = thisValue.getObject();
-        if(obj) {
-            runtime::Value valueProperty = obj->getProperty("value");
-            if(valueProperty.isNumber()) {
-                return valueProperty.toNumber();
-            }
-        }
-    }
-
-    // Fallback: convert to number
-    return thisValue.toNumber();
-}
+double extractThisNumber(const CallContext& ctx);
 
 }  // namespace rift::core

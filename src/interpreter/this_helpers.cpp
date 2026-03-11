@@ -82,4 +82,29 @@ runtime::JSObject* thisToObject(const CallContext& ctx, const char* methodName) 
         {runtime::Value(std::string("Cannot convert value to object"))}));
 }
 
+double extractThisNumber(const CallContext& ctx) {
+    const runtime::Value& thisValue = ctx.thisValue;
+
+    // 1. If value is a Number, return value.
+    if(thisValue.isNumber()) {
+        return thisValue.toNumber();
+    }
+
+    // 2. If value is an Object and value has a [[NumberData]] internal slot, return
+    //    value.[[NumberData]].
+    if(thisValue.isObject()) {
+        auto* obj = thisValue.getObject();
+        if(obj) {
+            runtime::Value valueProperty = obj->getProperty("value");
+            if(valueProperty.isNumber()) {
+                return valueProperty.toNumber();
+            }
+        }
+    }
+
+    // 3. Throw a TypeError exception.
+    throw JavaScriptException(rift::builtins::TypeError::constructor(
+        {runtime::Value(std::string("Number.prototype method called on incompatible receiver"))}));
+}
+
 }  // namespace rift::core

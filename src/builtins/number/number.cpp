@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include "rift/builtins/builtin_manager.h"
+#include "rift/builtins/error/range_error.h"
 #include "rift/interpreter/call_context.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "rift/interpreter/this_helpers.h"
@@ -71,6 +72,10 @@ void Number::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
 // 21.1.3 Properties of the Number Prototype Object
 // @spec https://tc39.es/ecma262/#sec-properties-of-the-number-prototype-object
 void Number::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
+    // 21.1.3 The Number prototype object has a [[NumberData]] internal slot of +0.
+    // @spec https://tc39.es/ecma262/#sec-properties-of-the-number-prototype-object
+    prototype->setProperty("value", Value(0.0));
+
     RIFT_METHOD(prototype, "toString", 1, Number::toString);
     RIFT_METHOD(prototype, "valueOf", 0, Number::valueOf);
     RIFT_METHOD(prototype, "toFixed", 1, Number::toFixed);
@@ -298,8 +303,8 @@ Value Number::toString(const CallContext& ctx, const std::vector<Value>& args) {
 
         // 4. If radixMV is not in the inclusive interval from 2 to 36, throw a RangeError.
         if(radix < 2 || radix > 36) {
-            throw rift::core::JavaScriptException(
-                Value("RangeError: toString() radix must be between 2 and 36"));
+            throw rift::core::JavaScriptException(RangeError::constructor(
+                {Value(std::string("toString() radix must be between 2 and 36"))}));
         }
     }
 
@@ -325,27 +330,50 @@ Value Number::toString(const CallContext& ctx, const std::vector<Value>& args) {
         return Value(oss.str());
     }
 
-    // INCOMPLETE: For non-decimal radixes, only the integer part is converted.
-    // The spec requires fractional parts to be represented in the given radix as well.
-    long long intValue = static_cast<long long>(numValue);
-    bool negative = intValue < 0;
-    if(negative)
-        intValue = -intValue;
+    // 6. Return the String representation of this Number value using the radix specified
+    //    by radixMV.
+    bool negative = numValue < 0;
+    double abs_val = negative ? -numValue : numValue;
 
-    std::string result;
     const char* digits = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-    if(intValue == 0) {
+    // Convert integer part
+    double int_part = std::floor(abs_val);
+    double frac_part = abs_val - int_part;
+
+    std::string result;
+    if(int_part == 0) {
         result = "0";
     } else {
-        while(intValue > 0) {
-            result = digits[intValue % radix] + result;
-            intValue /= radix;
+        // Use double arithmetic to avoid overflow with large numbers
+        while(int_part > 0) {
+            int digit = static_cast<int>(std::fmod(int_part, radix));
+            result = digits[digit] + result;
+            int_part = std::floor(int_part / radix);
         }
     }
 
-    if(negative)
+    // Convert fractional part
+    if(frac_part > 0) {
+        result += '.';
+        // Limit to reasonable precision to avoid infinite loops
+        // Use enough digits to represent the value accurately in the given radix
+        int max_frac_digits = 64;
+        for(int i = 0; i < max_frac_digits && frac_part > 0; ++i) {
+            frac_part *= radix;
+            int digit = static_cast<int>(frac_part);
+            result += digits[digit];
+            frac_part -= digit;
+            // Stop if remaining fraction is negligible (floating point precision)
+            if(frac_part < 1e-15) {
+                break;
+            }
+        }
+    }
+
+    if(negative) {
         result = "-" + result;
+    }
     return Value(result);
 }
 
