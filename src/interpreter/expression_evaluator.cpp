@@ -524,8 +524,8 @@ Value ExpressionEvaluator::evaluateUnaryExpression(std::shared_ptr<ASTNode> node
                     } else {
                         property = operand_node->children[1]->value;
                     }
-                    obj->deleteProperty(property);
-                    return Value(true);
+                    bool deleted = obj->deleteProperty(property);
+                    return Value(deleted);
                 }
             }
             return Value(true);
