@@ -41,6 +41,17 @@ void Global::setupGlobalFunctions(std::shared_ptr<Environment> global_env,
     decode_uri_comp_fn->setProperty("length", Value(1.0));
     global_env->define("decodeURIComponent", Value(decode_uri_comp_fn));
 
+    // Annex B legacy functions (B.2.1, B.2.2)
+    auto* escape_fn = factory->createJSFunction(escape);
+    escape_fn->defineProperty("name", PropertyDescriptor(Value("escape"), false, false, true));
+    escape_fn->defineProperty("length", PropertyDescriptor(Value(1.0), false, false, true));
+    global_env->define("escape", Value(escape_fn));
+
+    auto* unescape_fn = factory->createJSFunction(unescape);
+    unescape_fn->defineProperty("name", PropertyDescriptor(Value("unescape"), false, false, true));
+    unescape_fn->defineProperty("length", PropertyDescriptor(Value(1.0), false, false, true));
+    global_env->define("unescape", Value(unescape_fn));
+
     // Add array creation helper
     global_env->define("createArray", Value(factory->createJSFunction(createArray)));
 
@@ -475,6 +486,199 @@ Value Global::decodeURIComponent(const std::vector<Value>& args) {
 
     // No reserved set — decode everything
     return Value(decodeHelper(encoded_component, ""));
+}
+
+// ============================================================================
+// Annex B Legacy Functions (B.2.1, B.2.2)
+// @spec https://tc39.es/ecma262/#sec-additional-built-in-properties
+// ============================================================================
+
+/// B.2.1 escape ( string )
+/// @spec https://tc39.es/ecma262/#sec-escape-string
+/// @spec-steps
+/// 1. Set string to ? ToString(string).
+/// 2. Let length be the length of string.
+/// 3. Let R be the empty String.
+/// 4. Let unescapedSet be the string-concatenation of the ASCII word characters and "@*+-./".
+/// 5. Let k be 0.
+/// 6. Repeat, while k < length,
+///   a. Let char be the code unit at index k within string.
+///   b. If unescapedSet contains char, then
+///     i. Let S be char.
+///   c. Else if char < 256, then
+///     i. Let S be the string-concatenation of "%" and the String representation of char as
+///        a two-digit uppercase hexadecimal number.
+///   d. Else,
+///     i. Let S be the string-concatenation of "%u" and the String representation of char as
+///        a four-digit uppercase hexadecimal number.
+///   e. Set R to the string-concatenation of R and S.
+///   f. Set k to k + 1.
+/// 7. Return R.
+Value Global::escape(const std::vector<Value>& args) {
+    std::string str = args.empty() ? "undefined" : args[0].toString();
+
+    // Characters that are NOT escaped
+    static const std::string unescaped =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*_+-./";
+
+    static const char hex_chars[] = "0123456789ABCDEF";
+
+    std::string result;
+    result.reserve(str.size());
+
+    // escape() works on UTF-16 code units, so we need to convert UTF-8 to code points
+    // and then to UTF-16 code units
+    size_t i = 0;
+    while(i < str.size()) {
+        unsigned char c = static_cast<unsigned char>(str[i]);
+
+        // Decode UTF-8 to a code point
+        uint32_t code_point = 0;
+        size_t byte_count = 1;
+
+        if(c <= 0x7F) {
+            code_point = c;
+        } else if((c & 0xE0) == 0xC0) {
+            byte_count = 2;
+            code_point = c & 0x1F;
+        } else if((c & 0xF0) == 0xE0) {
+            byte_count = 3;
+            code_point = c & 0x0F;
+        } else if((c & 0xF8) == 0xF0) {
+            byte_count = 4;
+            code_point = c & 0x07;
+        } else {
+            // Raw byte (e.g., from \xHH escape above 0x7F stored as Latin-1)
+            code_point = c;
+        }
+
+        for(size_t j = 1; j < byte_count; j++) {
+            if(i + j < str.size()) {
+                code_point = (code_point << 6) | (static_cast<unsigned char>(str[i + j]) & 0x3F);
+            }
+        }
+        i += byte_count;
+
+        // Convert code point to UTF-16 code unit(s) and escape each
+        if(code_point <= 0xFFFF) {
+            // Single UTF-16 code unit (BMP character)
+            char16_t cu = static_cast<char16_t>(code_point);
+            if(cu <= 0x7F && unescaped.find(static_cast<char>(cu)) != std::string::npos) {
+                result += static_cast<char>(cu);
+            } else if(cu < 256) {
+                result += '%';
+                result += hex_chars[(cu >> 4) & 0x0F];
+                result += hex_chars[cu & 0x0F];
+            } else {
+                result += '%';
+                result += 'u';
+                result += hex_chars[(cu >> 12) & 0x0F];
+                result += hex_chars[(cu >> 8) & 0x0F];
+                result += hex_chars[(cu >> 4) & 0x0F];
+                result += hex_chars[cu & 0x0F];
+            }
+        } else {
+            // Supplementary character — encode as surrogate pair
+            uint32_t adjusted = code_point - 0x10000;
+            char16_t high = static_cast<char16_t>(0xD800 + (adjusted >> 10));
+            char16_t low = static_cast<char16_t>(0xDC00 + (adjusted & 0x3FF));
+
+            // Surrogates are always >= 0xD800, so always %uXXXX
+            result += '%';
+            result += 'u';
+            result += hex_chars[(high >> 12) & 0x0F];
+            result += hex_chars[(high >> 8) & 0x0F];
+            result += hex_chars[(high >> 4) & 0x0F];
+            result += hex_chars[high & 0x0F];
+
+            result += '%';
+            result += 'u';
+            result += hex_chars[(low >> 12) & 0x0F];
+            result += hex_chars[(low >> 8) & 0x0F];
+            result += hex_chars[(low >> 4) & 0x0F];
+            result += hex_chars[low & 0x0F];
+        }
+    }
+
+    return Value(result);
+}
+
+/// B.2.2 unescape ( string )
+/// @spec https://tc39.es/ecma262/#sec-unescape-string
+/// @spec-steps
+/// 1. Set string to ? ToString(string).
+/// 2. Let length be the length of string.
+/// 3. Let R be the empty String.
+/// 4. Let k be 0.
+/// 5. Repeat, while k < length,
+///   a. Let c be the code unit at index k within string.
+///   b. If c is the code unit 0x0025 (PERCENT SIGN), then
+///     i. If k + 5 < length and the code unit at index k + 1 is 0x0075 (LATIN SMALL LETTER U),
+///        let the next four chars be hex digits, decode as %uXXXX.
+///     ii. Else if k + 2 < length and the next two chars are hex digits, decode as %XX.
+///   c. Else, append c.
+///   d. Set k to k + 1.
+/// 6. Return R.
+Value Global::unescape(const std::vector<Value>& args) {
+    std::string str = args.empty() ? "undefined" : args[0].toString();
+
+    std::string result;
+    result.reserve(str.size());
+
+    size_t k = 0;
+    size_t length = str.size();
+
+    while(k < length) {
+        char c = str[k];
+
+        if(c == '%') {
+            // Try %uXXXX first
+            if(k + 5 < length && str[k + 1] == 'u') {
+                int d1 = hexDigitValue(str[k + 2]);
+                int d2 = hexDigitValue(str[k + 3]);
+                int d3 = hexDigitValue(str[k + 4]);
+                int d4 = hexDigitValue(str[k + 5]);
+                if(d1 >= 0 && d2 >= 0 && d3 >= 0 && d4 >= 0) {
+                    uint32_t code_point =
+                        static_cast<uint32_t>((d1 << 12) | (d2 << 8) | (d3 << 4) | d4);
+                    // Encode the code point to match internal string representation
+                    if(code_point <= 0x7F) {
+                        result += static_cast<char>(code_point);
+                    } else if(code_point <= 0xFF) {
+                        // Latin-1 range: store as raw byte (matches lexer \xHH storage)
+                        result += static_cast<char>(code_point);
+                    } else if(code_point <= 0x7FF) {
+                        result += static_cast<char>(0xC0 | (code_point >> 6));
+                        result += static_cast<char>(0x80 | (code_point & 0x3F));
+                    } else {
+                        result += static_cast<char>(0xE0 | (code_point >> 12));
+                        result += static_cast<char>(0x80 | ((code_point >> 6) & 0x3F));
+                        result += static_cast<char>(0x80 | (code_point & 0x3F));
+                    }
+                    k += 6;
+                    continue;
+                }
+            }
+
+            // Try %XX
+            if(k + 2 < length) {
+                int d1 = hexDigitValue(str[k + 1]);
+                int d2 = hexDigitValue(str[k + 2]);
+                if(d1 >= 0 && d2 >= 0) {
+                    unsigned char byte_val = static_cast<unsigned char>((d1 << 4) | d2);
+                    // Output the raw byte — matches how the lexer stores \xHH escapes
+                    result += static_cast<char>(byte_val);
+                    k += 3;
+                    continue;
+                }
+            }
+        }
+
+        result += c;
+        k++;
+    }
+
+    return Value(result);
 }
 
 }  // namespace rift::builtins

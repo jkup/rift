@@ -58,6 +58,14 @@ class Global {
     static bool isValidDigit(char c, int radix);
     static int getDigitValue(char c);
 
+    /// B.2.1 escape ( string )
+    /// @spec https://tc39.es/ecma262/#sec-escape-string
+    static Value escape(const std::vector<Value>& args);
+
+    /// B.2.2 unescape ( string )
+    /// @spec https://tc39.es/ecma262/#sec-unescape-string
+    static Value unescape(const std::vector<Value>& args);
+
     /// Internal helpers for URI encoding/decoding.
     static std::string encodeHelper(const std::string& str, const std::string& unescaped);
     static std::string decodeHelper(const std::string& str, const std::string& reserved_set);
