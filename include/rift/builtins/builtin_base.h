@@ -112,8 +112,11 @@ class BuiltinBase {
         callSetupStaticMethods(constructor, factory);
 
         // Create and set prototype
+        // Per spec, constructor.prototype is { writable: false, enumerable: false,
+        // configurable: false } for built-in constructors.
         auto* prototype = createPrototype(factory);
-        constructor->setProperty("prototype", Value(prototype));
+        constructor->defineProperty("prototype",
+                                    PropertyDescriptor(Value(prototype), false, false, false));
         // Set constructor property on prototype (non-enumerable per spec)
         prototype->defineProperty("constructor",
                                   PropertyDescriptor(Value(constructor), true, false, true));
