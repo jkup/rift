@@ -178,6 +178,10 @@ class Array : public BuiltinBase<Array> {
     /// @spec https://tc39.es/ecma262/#sec-array.prototype.tostring
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 23.1.3.31 Array.prototype.toLocaleString ( [ reserved1 [ , reserved2 ] ] )
+    /// @spec https://tc39.es/ecma262/#sec-array.prototype.tolocalestring
+    static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);
+
     /// 23.1.3.16 Array.prototype.keys ( )
     /// @spec https://tc39.es/ecma262/#sec-array.prototype.keys
     static Value keys(const CallContext& ctx, const std::vector<Value>& args);

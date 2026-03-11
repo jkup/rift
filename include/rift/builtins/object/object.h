@@ -128,6 +128,10 @@ class Object : public BuiltinBase<Object> {
     /// @spec https://tc39.es/ecma262/#sec-object.prototype.tostring
     static Value toString(const CallContext& ctx, const std::vector<Value>& args);
 
+    /// 20.1.3.5 Object.prototype.toLocaleString ( [ reserved1 [ , reserved2 ] ] )
+    /// @spec https://tc39.es/ecma262/#sec-object.prototype.tolocalestring
+    static Value toLocaleString(const CallContext& ctx, const std::vector<Value>& args);
+
     /// 20.1.3.7 Object.prototype.valueOf ( )
     /// @spec https://tc39.es/ecma262/#sec-object.prototype.valueof
     static Value valueOf(const CallContext& ctx, const std::vector<Value>& args);

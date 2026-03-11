@@ -61,6 +61,7 @@ void Object::setupStaticMethods(JSObject* constructor, rift::memory::ObjectFacto
 
 void Object::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFactory* factory) {
     RIFT_METHOD(prototype, "toString", 0, Object::toString);
+    RIFT_METHOD(prototype, "toLocaleString", 0, Object::toLocaleString);
     RIFT_METHOD(prototype, "valueOf", 0, Object::valueOf);
     RIFT_METHOD(prototype, "hasOwnProperty", 1, Object::hasOwnProperty);
     RIFT_METHOD(prototype, "propertyIsEnumerable", 1, Object::propertyIsEnumerable);
@@ -314,6 +315,48 @@ Value Object::toString(const CallContext& ctx, const std::vector<Value>& args) {
 
     // 17. Return the string-concatenation of "[object ", tag, and "]".
     return Value("[object Object]");
+}
+
+// 20.1.3.5 Object.prototype.toLocaleString ( [ reserved1 [ , reserved2 ] ] )
+// @spec https://tc39.es/ecma262/#sec-object.prototype.tolocalestring
+Value Object::toLocaleString(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let O be the this value.
+    const Value& this_value = ctx.thisValue;
+
+    // Throw TypeError if this is null or undefined (spec requires ToObject which throws).
+    if(this_value.isNull() || this_value.isUndefined()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Cannot convert undefined or null to object"));
+    }
+
+    // 2. Return ? Invoke(O, "toString").
+    // Invoke requires looking up "toString" on the value, which means finding
+    // it on the appropriate prototype for primitives.
+    JSObject* lookup_obj = nullptr;
+    if(this_value.isObject() || this_value.isFunction()) {
+        lookup_obj = this_value.getObject();
+    } else if(this_value.isString()) {
+        lookup_obj = rift::core::BuiltinManager::getStringPrototype();
+    } else if(this_value.isNumber()) {
+        lookup_obj = rift::core::BuiltinManager::getNumberPrototype();
+    } else if(this_value.isBoolean()) {
+        lookup_obj = rift::core::BuiltinManager::getBooleanPrototype();
+    }
+
+    if(lookup_obj) {
+        Value to_string_method = lookup_obj->getProperty("toString");
+        if(to_string_method.isObject() || to_string_method.isFunction()) {
+            auto* func = dynamic_cast<JSFunction*>(to_string_method.getObject());
+            if(func) {
+                rift::core::CallContext call_ctx(rift::core::CallType::Function, this_value);
+                return func->call(call_ctx, {});
+            }
+        }
+        throw rift::core::JavaScriptException(Value("TypeError: toString is not a function"));
+    }
+
+    // For other primitives (symbol, null, undefined), use C++ toString
+    return Value(this_value.toString());
 }
 
 // 20.1.3.7 Object.prototype.valueOf ( )

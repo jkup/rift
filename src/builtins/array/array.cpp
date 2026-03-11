@@ -90,6 +90,7 @@ void Array::setupPrototypeMethods(JSObject* prototype, rift::memory::ObjectFacto
     RIFT_METHOD(prototype, "concat", 1, Array::concat);
     RIFT_METHOD(prototype, "join", 1, Array::join);
     RIFT_METHOD(prototype, "toString", 0, Array::toString);
+    RIFT_METHOD(prototype, "toLocaleString", 0, Array::toLocaleString);
 
     // Change-array-by-copy methods (array_accessors.cpp)
     RIFT_METHOD(prototype, "toReversed", 0, Array::toReversed);

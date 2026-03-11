@@ -11,6 +11,7 @@
 #include <cmath>
 
 #include "rift/builtins/array/array.h"
+#include "rift/builtins/builtin_manager.h"
 #include "rift/builtins/error/range_error.h"
 #include "rift/builtins/error/type_error.h"
 #include "rift/interpreter/call_context.h"
@@ -349,6 +350,78 @@ Value Array::toString(const CallContext& ctx, const std::vector<Value>& args) {
         }
     }
 
+    return Value(std::move(result));
+}
+
+// 23.1.3.31 Array.prototype.toLocaleString ( [ reserved1 [ , reserved2 ] ] )
+// @spec https://tc39.es/ecma262/#sec-array.prototype.tolocalestring
+Value Array::toLocaleString(const CallContext& ctx, const std::vector<Value>& args) {
+    // 1. Let O be ? ToObject(this value).
+    auto* arrayObj = thisToObject(ctx, "Array.prototype.toLocaleString");
+
+    // 2. Let len be ? LengthOfArrayLike(O).
+    size_t length = getArrayLength(arrayObj);
+
+    // 3. Let separator be the host-defined list separator String value.
+    // NOTE: In most implementations, this is a comma.
+    std::string separator = ",";
+
+    // 4. Let R be the empty String.
+    std::string result;
+
+    // 5. Let k be 0.
+    // 6. Repeat, while k < len,
+    for(size_t k = 0; k < length; ++k) {
+        //    a. If k > 0, set R to the string-concatenation of R and separator.
+        if(k > 0) {
+            result += separator;
+        }
+
+        //    b. Let nextElement be ? Get(O, ! ToString(F(k))).
+        Value next_element = arrayObj->getProperty(std::to_string(k));
+
+        //    c. If nextElement is not undefined or null, then
+        if(!next_element.isUndefined() && !next_element.isNull()) {
+            //    i. Let S be ? ToString(? Invoke(nextElement, "toLocaleString")).
+            // Look up toLocaleString on the element (handles both objects and primitives
+            // via prototype chain lookup).
+            JSObject* elem_obj = nullptr;
+            if(next_element.isObject() || next_element.isFunction()) {
+                elem_obj = next_element.getObject();
+            } else if(next_element.isString()) {
+                elem_obj = rift::core::BuiltinManager::getStringPrototype();
+            } else if(next_element.isNumber()) {
+                elem_obj = rift::core::BuiltinManager::getNumberPrototype();
+            } else if(next_element.isBoolean()) {
+                elem_obj = rift::core::BuiltinManager::getBooleanPrototype();
+            }
+
+            if(elem_obj) {
+                Value tls_method = elem_obj->getProperty("toLocaleString");
+                if(tls_method.isObject() || tls_method.isFunction()) {
+                    auto* func = dynamic_cast<JSFunction*>(tls_method.getObject());
+                    if(func) {
+                        rift::core::CallContext elem_ctx(rift::core::CallType::Function,
+                                                         next_element);
+                        Value tls_result = func->call(elem_ctx, {});
+                        result += tls_result.toString();
+                    } else {
+                        throw rift::core::JavaScriptException(
+                            Value("TypeError: toLocaleString is not a function"));
+                    }
+                } else {
+                    throw rift::core::JavaScriptException(
+                        Value("TypeError: toLocaleString is not a function"));
+                }
+            } else {
+                // Symbol or other type — fall back to toString
+                result += next_element.toString();
+            }
+        }
+        //    d. Set k to k + 1.
+    }
+
+    // 7. Return R.
     return Value(std::move(result));
 }
 
