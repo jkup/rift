@@ -44,9 +44,10 @@ class Environment : public std::enable_shared_from_this<Environment> {
     JSObject* binding_object_ = nullptr;  // Global object backing (for globalThis)
 
   public:
-    Environment(std::shared_ptr<Environment> parent = nullptr, bool is_block_scope = false)
-        : parent_(parent), is_block_scope_(is_block_scope), is_strict_mode_(false) {
-    }
+    // Defined out-of-line so the environment can register/unregister itself
+    // with the GC's live-environment registry (see environment_registry.h).
+    Environment(std::shared_ptr<Environment> parent = nullptr, bool is_block_scope = false);
+    ~Environment();
 
     // Variable operations
     void define(const std::string& name, const Value& value, VariableType type = VariableType::Var);
@@ -88,6 +89,13 @@ class Environment : public std::enable_shared_from_this<Environment> {
 
     // Get all variable names in this scope
     std::vector<std::string> getVariableNames() const;
+
+    // Get the JS objects directly referenced by this environment's bindings
+    // (variable values plus the binding object). Used by the GC mark phase to
+    // treat every live environment as a root source. Does not traverse the
+    // parent chain — each environment registers itself, so parents are visited
+    // independently.
+    std::vector<JSObject*> getReferencedObjects() const;
 
     // Global object binding (for globalThis support)
     void setBindingObject(JSObject* obj) {

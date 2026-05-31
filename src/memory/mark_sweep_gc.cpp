@@ -1,6 +1,7 @@
 #include <chrono>
 #include <iostream>
 
+#include "rift/memory/environment_registry.h"
 #include "rift/memory/gc.h"
 
 namespace rift::memory {
@@ -83,10 +84,15 @@ class MarkSweepGC : public GarbageCollector {
             obj->clearMark();
         }
 
-        // Mark phase: start from roots
+        // Mark phase: start from explicit roots
         for(auto* root : roots_) {
             markObject(root);
         }
+
+        // Mark phase: every live environment is also a root source. This covers
+        // objects reachable only through an active call frame, a block scope, or
+        // a closure-captured environment — none of which are explicit roots.
+        markLiveEnvironmentRoots([this](GCObject* obj) { markObject(obj); });
 
         // Sweep phase: delete unmarked objects
         auto it = all_objects_.begin();

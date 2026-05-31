@@ -4,11 +4,21 @@
 
 #include "rift/builtins/builtin_manager.h"
 #include "rift/interpreter/javascript_exception.h"
+#include "rift/memory/environment_registry.h"
 #include "rift/types/object.h"
 
 namespace rift::runtime {
 
 using rift::core::JavaScriptException;
+
+Environment::Environment(std::shared_ptr<Environment> parent, bool is_block_scope)
+    : parent_(std::move(parent)), is_block_scope_(is_block_scope), is_strict_mode_(false) {
+    rift::memory::registerEnvironment(this);
+}
+
+Environment::~Environment() {
+    rift::memory::unregisterEnvironment(this);
+}
 
 void Environment::define(const std::string& name, const Value& value, VariableType type) {
     // Check for redeclaration conflicts
@@ -136,6 +146,22 @@ std::vector<std::string> Environment::getVariableNames() const {
         names.push_back(pair.first);
     }
     return names;
+}
+
+std::vector<JSObject*> Environment::getReferencedObjects() const {
+    std::vector<JSObject*> refs;
+    for(const auto& [name, entry] : variables_) {
+        const Value& value = entry.value;
+        if(value.isObject() || value.isFunction()) {
+            if(JSObject* obj = value.getObject()) {
+                refs.push_back(obj);
+            }
+        }
+    }
+    if(binding_object_) {
+        refs.push_back(binding_object_);
+    }
+    return refs;
 }
 
 }  // namespace rift::runtime
