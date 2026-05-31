@@ -1,123 +1,129 @@
 # Contributing to Rift
 
+Thanks for your interest in Rift, a JavaScript runtime written in C++23. This
+document is a high-level orientation. For detailed, task-by-task instructions
+(adding an operator, a built-in method, a new built-in object, etc.), see
+[`CLAUDE.md`](CLAUDE.md), which is the authoritative developer guide.
+
 ## Architecture Overview
 
-Rift follows a classic interpreter architecture: **Source → Lexer → Parser → AST → Evaluator → Runtime**.
+Rift follows a classic interpreter architecture:
 
-### **Frontend** (`include/frontend/`, `src/frontend/`)
-- **Lexer** (`lexer.h/cpp`): Breaks source code into tokens (keywords, operators, literals)
-- **Parser** (`parser.h/cpp`): Converts tokens into an Abstract Syntax Tree (AST)
-- **AST** (`ast_node.h`, `ast_factory.h`): Tree representation of JavaScript code
-- **Tokens** (`token.h`): Individual lexical units (numbers, strings, identifiers, etc.)
+**JS source → Lexer (tokens) → Parser (AST) → Engine `evaluate()` → Value**
 
-### **Core Engine** (`include/core/engine/`, `src/core/engine/`)
-- **Rift** (`engine.h/cpp`): Main engine coordinator, manages global environment and GC
-- **ExpressionEvaluator** (`expression_evaluator.h/cpp`): Handles expressions (math, function calls, object access)
-- **StatementEvaluator** (`statement_evaluator.h/cpp`): Handles statements (if/while/try-catch/functions)
-- **OperationHandler** (`operation_handler.h/cpp`): Implements JavaScript operators (+, -, ==, etc.)
-- **BuiltinManager** (`builtin_manager.h/cpp`): Sets up built-in objects (Array, Object, Error, etc.)
+It has a hand-written lexer, a recursive descent parser, a tree-walking
+evaluator, mark-sweep garbage collection, and a growing standard library of
+built-in objects (Array, String, Object, Map, Set, RegExp, Promise, Temporal,
+…). It targets ECMAScript compliance as measured by the test262 suite.
 
-### **Runtime** (`include/runtime/`, `src/runtime/`)
-- **Value** (`values/value.h/cpp`): JavaScript values (undefined, null, boolean, number, string, object)
-- **JSObject** (`values/object.h/cpp`): JavaScript objects with properties and prototype chain
-- **JSFunction**: JavaScript functions (stored as JSObject with callable behavior)
-- **Environment** (`environment/environment.h/cpp`): Variable scopes and lexical environments
+Headers live under `include/rift/` and mirror the `src/` layout.
 
-### **Memory Management** (`include/memory/`, `src/memory/`)
-- **ObjectManager** (`object_manager.h/cpp`): Creates and tracks all JavaScript objects
-- **MarkSweepGC** (`mark_sweep_gc.cpp`): Garbage collector using mark-and-sweep algorithm
-- **GCEnvironment** (`gc_environment.h/cpp`): Makes environments GC-aware
+### Frontend — `src/frontend/`
+- **Lexer** (`lexer/lexer.cpp`): turns source into tokens one at a time via
+  `next_token()`. Token types are defined in
+  `include/rift/frontend/lexer/token.h`.
+- **Parser** (`parser/`): recursive descent.
+  `parser_expressions.cpp` handles operators, calls, and member access;
+  `parser_statements.cpp` handles declarations and control flow. AST nodes are
+  built with `ASTFactory::make*()`.
 
-**Current Memory Strategy (Hybrid Approach):**
-- **JavaScript Objects**: Managed by `shared_ptr` reference counting for immediate cleanup
-- **Environments**: Tracked by GC as roots for reachability analysis
-- **Trade-off**: Cannot handle circular references, but avoids complex ownership conflicts
-- **Benefits**: No segfaults, predictable memory usage, simpler debugging
+### Interpreter — `src/interpreter/`
+- **Engine** (`engine.cpp`): the `evaluate()` dispatcher. A switch on
+  `ASTNodeType` routes each node to the expression or statement evaluator. If
+  you add a new AST node type, you must add it here or it silently evaluates to
+  `undefined`.
+- **ExpressionEvaluator** (`expression_evaluator*.cpp`): expressions — calls,
+  member access, `new`, array/object literals, assignment operators.
+- **StatementEvaluator** (`statement_evaluator*.cpp`): declarations and control
+  flow (if/for/while/switch/try-catch).
+- **class_builder.cpp**, **generator_evaluator.cpp**, **async_executor.cpp**,
+  **async_generator_evaluator.cpp**: classes, generators, and async execution.
 
-### **Built-ins** (`include/builtins/`, `src/builtins/`)
-Each built-in follows the same pattern:
-- **Console** (`console/`): `console.log()`, `console.error()`
-- **Math** (`math/`): `Math.PI`, `Math.abs()`, etc.
-- **Array** (`array/`): `Array()` constructor, `push()`, `pop()`, etc.
-- **Object** (`object/`): `Object()` constructor, `Object.keys()`, etc.
-- **String** (`string/`): `String()` constructor, string methods
-- **Boolean** (`boolean/`): `Boolean()` constructor
-- **Error** (`error/`): `Error()` constructor, `toString()` method
+### Foundation types — `src/types/`
+- **Value** (`value.cpp`): a JavaScript value — number, string, boolean, null,
+  undefined, object, or function.
+- **JSObject / JSFunction** (`object.cpp`): objects with properties and a
+  prototype chain; functions are callable objects.
+- **operations.cpp**: type coercion, arithmetic, and comparison (spec §7).
 
-### **API** (`include/api/`, `src/api/`)
-- **JavaScript** (`api.h/cpp`): Public C++ API for executing JavaScript code
+### Execution context — `src/execution/`
+- **Environment** (`environment.cpp`): variable scoping and lexical
+  environments (child scopes resolve up to parents).
+- **microtask_queue.cpp**: the Promise microtask queue.
 
-## Key Concepts
+### Memory — `src/memory/`
+- **ObjectManager** (`object_manager.cpp`) and the ObjectFactory: create and
+  track all JS objects. **Always create objects through the factory**, never
+  with raw `new`.
+- **MarkSweepGC** (`mark_sweep_gc.cpp`): mark-and-sweep collector.
+- **GCProtector** (`gc_protector.cpp`) and **GCDisabler** (`gc_disabler.cpp`):
+  RAII helpers to root objects (or pause GC) while you initialize them — see
+  *GC Safety* below.
 
-### **Value System**
-Everything in JavaScript is a `Value`. Values have types (undefined, null, boolean, number, string, object) and can be converted between types.
+### Built-ins — `src/builtins/`
+One folder per type. `builtin_manager.cpp` wires up all the prototypes. Each
+built-in extends the `BuiltinBase<T>` CRTP base and registers methods with the
+`RIFT_METHOD` / `RIFT_STATIC_METHOD` / `RIFT_GETTER` macros. See `map/`,
+`array/`, or any existing built-in for the pattern.
 
-```cpp
-Value num(42.0);           // Number
-Value str("hello");        // String  
-Value obj(jsObjectPtr);    // Object
+### Host APIs — `src/host/`
+Non-spec host functionality such as `console` (`console/console.cpp`).
+
+### Public API — `src/api/`
+`api.cpp`: the embedding/C++ entry point for executing JavaScript.
+
+## Key Patterns
+
+### GC Safety
+- **Create objects via the ObjectFactory**, never raw `new`.
+- Use a `GCProtector` when you set multiple properties on a fresh object before
+  returning it — it roots the object for its lifetime so the collector won't
+  reclaim it mid-initialization.
+- Disable GC (`setGCEnabled(false)` / `GCDisabler`) when creating many objects
+  in a tight loop, then restore the previous state.
+
+### Exceptions as control flow
+Non-local control flow is modeled with C++ exceptions: `JavaScriptException`
+for thrown JS errors, plus `ReturnException`, `BreakException`,
+`ContinueException`, and `YieldException` for returns, loop control, and
+generators. Never `catch(...)` — catch the specific exception type, and always
+null-check `dynamic_cast` results.
+
+### AST node metadata
+Semantic flags ride on the `ASTNode::metadata` string field (e.g. `"computed"`
+for `obj[key]`, `"optional"` for `obj?.prop`, `"rest"` for `...args`). The full
+table is in [`CLAUDE.md`](CLAUDE.md).
+
+## Building
+
+Prerequisites: a C++23 compiler (GCC 13+ / Clang 16+), CMake 3.22+, Node.js
+14+, and Rust 1.83+ (for the Temporal built-in).
+
+```bash
+./build.sh                                   # full clean build
+cd build && make -j$(sysctl -n hw.ncpu)      # fast incremental build (~2-5s)
+./build/rift path/to/script.js               # run a file
+./build/rift -e "console.log('hi')"          # run inline JS
 ```
-
-### **AST Evaluation**
-The engine walks the AST recursively:
-1. **Expressions** return values (variables, math, function calls)
-2. **Statements** perform actions (assignments, control flow, declarations)
-
-### **Environment Chain**
-Variables live in environments. Child environments can access parent variables (lexical scoping).
-
-```javascript
-function outer() {
-    var x = 1;
-    function inner() {
-        return x; // Finds x in parent environment
-    }
-}
-```
-
-### **Object Model**
-- All objects are `JSObject` instances with property maps
-- Prototype chain: `obj → obj.__proto__ → Object.prototype → null`
-- Functions are objects with a `call()` method
-
-### **Exception Handling**
-- `throw` statements create `JavaScriptException`
-- `return` statements create `ReturnException` 
-- Try-catch blocks catch and handle these exceptions
-
-### **Garbage Collection**
-- **Hybrid system**: GC tracks environment roots, shared_ptr manages object lifetimes
-- **Mark-and-sweep GC**: Runs automatically when thresholds are reached
-- **Exception safety**: GC defers collection during exception handling to prevent crashes
-- **Manual control**: `gc()` function available for explicit collection
-- **Limitation**: Circular references between objects will cause memory leaks
 
 ## Testing
 
-- **Unit tests**: `test/` directory with `.js` files
-- **Test runner**: `test-runner.js` (Node.js) and `./run-tests.sh`
-- **Test262**: Official ECMAScript test suite via `test262-runner.js`
-
-## Build System
-
 ```bash
-./build.sh          # Build the project
-./build/rift file.js # Run JavaScript file
-./run-tests.sh       # Run unit tests
+npm test                                     # custom tests in test/
+npm run test262                              # full test262 suite (slow)
+npm run test262 -- --include="built-ins/Temporal"   # filtered run
+npm run test262:diff                         # show regressions vs baseline
 ```
 
-Built with CMake, organized by modules in `CMakeLists.txt`.
-
-## Current Status
-
-**Working**: Variables, functions, objects, arrays, strings, booleans, arithmetic, control flow, try-catch, Error constructor, basic built-ins, garbage collection
-
-**Missing**: `this` keyword, template literals, closures, `Function.prototype.call/apply`, most built-in objects/methods
+When you implement a feature, remove it from the `UNSUPPORTED_FEATURES` set in
+`scripts/test262/core.js` so its tests stop being skipped.
 
 ## Code Style
 
-- Use `snake_case` for variables/functions
-- Use `PascalCase` for classes
-- Prefer smart pointers (`std::shared_ptr`, `std::unique_ptr`)
-- Keep functions focused and small
-- Add comments for complex logic
+- `PascalCase` classes, `camelCase` functions, `snake_case` variables,
+  `UPPER_CASE` constants, `trailing_underscore_` private members.
+- 4-space indentation, 100-character line limit.
+- Reference the spec: <https://262.ecma-international.org/16.0/>. When you touch
+  an annotated method, keep its `@spec` step comments in sync (see
+  `docs/STYLE_GUIDE.md`).
+- Run `cd build && make format` (clang-format) before committing.
