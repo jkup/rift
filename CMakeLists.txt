@@ -172,6 +172,7 @@ set(BUILTINS_SOURCES
     src/builtins/promise/promise.cpp
     src/builtins/function/function.cpp
     src/builtins/temporal/temporal.cpp
+    src/builtins/temporal/temporal_error.cpp
     src/builtins/temporal/instant.cpp
     src/builtins/temporal/now.cpp
     src/builtins/temporal/duration.cpp

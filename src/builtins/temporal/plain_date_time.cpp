@@ -6,6 +6,7 @@
 #include "rift/builtins/temporal/plain_month_day.h"
 #include "rift/builtins/temporal/plain_time.h"
 #include "rift/builtins/temporal/plain_year_month.h"
+#include "rift/builtins/temporal/temporal_error.h"
 #include "rift/builtins/temporal/zoned_date_time.h"
 #include "rift/interpreter/javascript_exception.h"
 #include "rift/interpreter/this_helpers.h"
@@ -87,27 +88,6 @@ static temporal_rs::PlainDateTime* getPlainDateTimeData(const CallContext& ctx) 
         return PlainDateTimeRegistry::get(obj);
     }
     return nullptr;
-}
-
-// NON-STANDARD: Internal helper to convert temporal_rs::TemporalError
-// into the appropriate JavaScript exception type (TypeError, RangeError,
-// or SyntaxError) based on the error kind.
-static void throwTemporalError(const temporal_rs::TemporalError& err) {
-    std::string msg = "Temporal error";
-    if(err.msg.has_value()) {
-        msg = std::string(err.msg.value());
-    }
-
-    switch(static_cast<int>(err.kind)) {
-        case 1:  // Type
-            throw rift::core::JavaScriptException(Value("TypeError: " + msg));
-        case 2:  // Range
-            throw rift::core::JavaScriptException(Value("RangeError: " + msg));
-        case 3:  // Syntax
-            throw rift::core::JavaScriptException(Value("SyntaxError: " + msg));
-        default:
-            throw rift::core::JavaScriptException(Value("Error: " + msg));
-    }
 }
 
 // NON-STANDARD: Helper to parse a string unit name to temporal_rs::Unit.

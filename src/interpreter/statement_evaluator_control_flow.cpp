@@ -90,7 +90,8 @@ Value StatementEvaluator::evaluateLabeledStatement(std::shared_ptr<ASTNode> node
             return Value::undefined();
         }
         throw;
-    } catch(...) {
+    } catch(const std::exception&) {
+        // Restore metadata on any other abrupt completion, then propagate.
         if(is_loop_or_switch) {
             body->metadata = saved_metadata;
         }
@@ -901,7 +902,7 @@ Value StatementEvaluator::evaluateForOfStatement(std::shared_ptr<ASTNode> node,
             }
             // Continue does not close the iterator — iteration continues normally
             continue;
-        } catch(...) {
+        } catch(const std::exception&) {
             // Step 2f: IteratorClose on throw/return (any abrupt completion)
             iteratorClose(record);
             throw;

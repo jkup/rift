@@ -428,12 +428,12 @@ Value String::slice(const CallContext& ctx, const std::vector<Value>& args) {
     double endNum = static_cast<double>(length);
 
     if(!args.empty()) {
-        startNum = args[0].toNumber();
+        startNum = args[0].toIntegerOrInfinity();
     }
 
     // 9. If end is undefined, let intEnd be len; else let intEnd be ? ToIntegerOrInfinity(end).
     if(args.size() >= 2 && !args[1].isUndefined()) {
-        endNum = args[1].toNumber();
+        endNum = args[1].toIntegerOrInfinity();
     }
 
     // 6. If intStart = -inf, let from be 0.
@@ -2159,12 +2159,7 @@ Value String::codePointAt(const CallContext& ctx, const std::vector<Value>& args
     // 3. Let position be ? ToIntegerOrInfinity(pos).
     double position = 0;
     if(!args.empty()) {
-        position = args[0].toNumber();
-        if(std::isnan(position)) {
-            position = 0;
-        } else {
-            position = std::trunc(position);
-        }
+        position = args[0].toIntegerOrInfinity();
     }
 
     // 4. Let size be the length of S.
@@ -2299,12 +2294,7 @@ Value String::substr(const CallContext& ctx, const std::vector<Value>& args) {
     // 4. Let intStart be ? ToIntegerOrInfinity(start).
     double int_start = 0;
     if(!args.empty()) {
-        int_start = args[0].toNumber();
-        if(std::isnan(int_start)) {
-            int_start = 0;
-        } else {
-            int_start = std::trunc(int_start);
-        }
+        int_start = args[0].toIntegerOrInfinity();
     }
 
     // 5. If intStart is -infinity, set intStart to 0.
@@ -2326,12 +2316,7 @@ Value String::substr(const CallContext& ctx, const std::vector<Value>& args) {
     if(args.size() < 2 || args[1].isUndefined()) {
         int_length = size;
     } else {
-        int_length = args[1].toNumber();
-        if(std::isnan(int_length)) {
-            int_length = 0;
-        } else {
-            int_length = std::trunc(int_length);
-        }
+        int_length = args[1].toIntegerOrInfinity();
     }
 
     // 9. Set intLength to min(max(intLength, 0), size).

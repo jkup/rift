@@ -51,9 +51,6 @@ class Global {
     /// @spec https://tc39.es/ecma262/#sec-decodeuricomponent-encodeduricomponent
     static Value decodeURIComponent(const std::vector<Value>& args);
 
-    /// NON-STANDARD: Internal helper to create array objects in the current runtime.
-    static Value createArray(const std::vector<Value>& args);
-
     /// NON-STANDARD: Internal helpers for parseInt digit parsing.
     static bool isValidDigit(char c, int radix);
     static int getDigitValue(char c);

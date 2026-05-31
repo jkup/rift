@@ -153,6 +153,21 @@ double Value::toNumber() const {
     }
 }
 
+// ECMA-262 §7.1.5 ToIntegerOrInfinity ( argument )
+double Value::toIntegerOrInfinity() const {
+    double number = toNumber();
+    // 2. If number is NaN, +0, or -0, return 0.
+    if(std::isnan(number)) {
+        return 0.0;
+    }
+    // 3-4. If number is +∞ or -∞, return number.
+    if(std::isinf(number)) {
+        return number;
+    }
+    // 5. Return truncate(number).
+    return std::trunc(number);
+}
+
 JSObject* Value::toObject() const {
     if(type_ == ValueType::Object || type_ == ValueType::Function) {
         return std::get<JSObject*>(data_);

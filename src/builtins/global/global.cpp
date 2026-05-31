@@ -52,9 +52,6 @@ void Global::setupGlobalFunctions(std::shared_ptr<Environment> global_env,
     unescape_fn->defineProperty("length", PropertyDescriptor(Value(1.0), false, false, true));
     global_env->define("unescape", Value(unescape_fn));
 
-    // Add array creation helper
-    global_env->define("createArray", Value(factory->createJSFunction(createArray)));
-
     // Add global constants
     global_env->define("undefined", Value::undefined());
     global_env->define("NaN", Value(std::numeric_limits<double>::quiet_NaN()));
@@ -187,13 +184,6 @@ Value Global::isFinite(const std::vector<Value>& args) {
 
     double num = args[0].toNumber();
     return Value(std::isfinite(num));
-}
-
-Value Global::createArray(const std::vector<Value>& args) {
-    // TODO: Placeholder implementation. This should create and return a new array using the
-    // ObjectFactory. Currently returns undefined because the factory is not available in this
-    // context. To implement, refactor to provide access to the factory or pass it as an argument.
-    return Value::undefined();
 }
 
 bool Global::isValidDigit(char c, int radix) {

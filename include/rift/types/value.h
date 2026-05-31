@@ -87,6 +87,9 @@ class Value {
     std::string toString() const;
     bool toBool() const;
     double toNumber() const;
+    // ToIntegerOrInfinity (ECMA-262 §7.1.5): ToNumber, then NaN/±0 -> 0,
+    // ±Infinity preserved, otherwise truncated toward zero.
+    double toIntegerOrInfinity() const;
     JSObject* toObject() const;  // Now returns raw pointer
 
     // Getters
