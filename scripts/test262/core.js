@@ -32,7 +32,6 @@ const SKIP_HARNESS_FILES = new Set([
 
 const UNSUPPORTED_HARNESS = new Set([
   "compareIterator.js",
-  "isConstructor.js",
   "nativeFunctionMatcher.js",
   "atomicsHelper.js",
   "testAtomics.js",
@@ -88,12 +87,8 @@ const UNSUPPORTED_FEATURES = new Set([
   // Symbols as WeakMap keys
   "symbols-as-weakmap-keys",
 
-  // Proxy and Reflect
+  // Proxy (Reflect is implemented)
   "Proxy",
-  "Reflect",
-  "Reflect.construct",
-  "Reflect.set",
-  "Reflect.setPrototypeOf",
 
   // TypedArrays and ArrayBuffer
   "TypedArray",

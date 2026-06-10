@@ -869,7 +869,11 @@ Value ExpressionEvaluator::evaluateObjectLiteral(std::shared_ptr<ASTNode> node,
             // 2. Let propName be ? GetValue(exprValue).
             // 3. Return ? ToPropertyKey(propName).
             Value key_value = engine->evaluate(key_node->children[0], env);
-            key = key_value.toString();
+            if(key_value.isSymbol()) {
+                key = EvaluationUtils::symbolToPropertyKey(key_value.getSymbol().id);
+            } else {
+                key = EvaluationUtils::toPropertyKeyString(key_value);
+            }
         } else if(key_node->type == ASTNodeType::Identifier) {
             // LiteralPropertyName : IdentifierName — use StringValue
             key = key_node->value;

@@ -169,6 +169,7 @@ class JSFunction : public JSObject {
     std::function<Value(const rift::core::CallContext&, const std::vector<Value>&)>
         native_function_;
     JSObject* home_object_ = nullptr;  // [[HomeObject]] for super support in methods
+    bool is_constructor_ = true;       // false for built-in methods (no [[Construct]])
 
   public:
     JSFunction(std::function<Value(const rift::core::CallContext&, const std::vector<Value>&)> func)
@@ -180,9 +181,14 @@ class JSFunction : public JSObject {
         return native_function_(callContext, args);
     }
 
-    // Check if this function can be used as a constructor
+    // Check if this function can be used as a constructor.
+    // Built-in methods (RIFT_METHOD etc.) have no [[Construct]] per spec §17
+    // and clear this flag; regular functions default to constructable.
     virtual bool isConstructor() const {
-        return true;  // Regular functions can be constructors
+        return is_constructor_;
+    }
+    void setIsConstructor(bool is_constructor) {
+        is_constructor_ = is_constructor;
     }
 
     // Home object for super support (set when method is defined in a class)

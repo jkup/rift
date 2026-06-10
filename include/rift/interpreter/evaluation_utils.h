@@ -142,9 +142,11 @@ inline std::string toPropertyKeyString(const Value& value) {
         if(!std::isfinite(num)) {
             return value.toString();
         }
-        // If integer within 64-bit range, format as plain integer string
+        // If integer within the double-exact range (|x| < 2^53), format as a
+        // plain integer string. Beyond that, ToString(Number) semantics apply
+        // (e.g. 1e21 -> "1e+21") and the long long cast would overflow.
         double intpart;
-        if(std::modf(num, &intpart) == 0.0) {
+        if(std::modf(num, &intpart) == 0.0 && std::abs(intpart) < 9007199254740992.0) {
             long long asInt = static_cast<long long>(intpart);
             return std::to_string(asInt);
         }

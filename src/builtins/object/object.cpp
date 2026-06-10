@@ -6,6 +6,7 @@
 #include "rift/builtins/boolean/boolean.h"
 #include "rift/builtins/builtin_manager.h"
 #include "rift/builtins/error/range_error.h"
+#include "rift/builtins/reflect/reflect.h"
 #include "rift/builtins/string/string.h"
 #include "rift/builtins/symbol/symbol.h"
 #include "rift/interpreter/call_context.h"
@@ -383,8 +384,7 @@ Value Object::hasOwnProperty(const CallContext& ctx, const std::vector<Value>& a
     Value propertyName = args[0];
 
     // 1. Let P be ? ToPropertyKey(V).
-    // SIMPLIFIED: Rift uses toString() instead of the full ToPropertyKey abstract operation.
-    // ToPropertyKey handles Symbols; toString() does not.
+    // Symbols become internal "@@sym:<id>" key strings.
 
     // 2. Let O be ? ToObject(this value).
     // SIMPLIFIED: Rift checks isObject/isFunction directly instead of calling ToObject.
@@ -397,15 +397,14 @@ Value Object::hasOwnProperty(const CallContext& ctx, const std::vector<Value>& a
         return Value(false);
     }
 
-    std::string propName = propertyName.toString();
+    std::string propName =
+        propertyName.isSymbol()
+            ? rift::core::EvaluationUtils::symbolToPropertyKey(propertyName.getSymbol().id)
+            : rift::core::EvaluationUtils::toPropertyKeyString(propertyName);
 
     // 3. Return ? HasOwnProperty(O, P).
     // HasOwnProperty (7.3.13): Let desc be ? O.[[GetOwnProperty]](P). Return desc is not undefined.
-    auto ownPropertyNames = obj->getOwnPropertyNames();
-    bool hasOwn = std::find(ownPropertyNames.begin(), ownPropertyNames.end(), propName) !=
-                  ownPropertyNames.end();
-
-    return Value(hasOwn);
+    return Value(obj->hasOwnProperty(propName));
 }
 
 // 20.1.3.4 Object.prototype.propertyIsEnumerable ( V )
@@ -429,14 +428,14 @@ Value Object::propertyIsEnumerable(const CallContext& ctx, const std::vector<Val
         return Value(false);
     }
 
-    std::string propName = args[0].toString();
+    std::string propName =
+        args[0].isSymbol()
+            ? rift::core::EvaluationUtils::symbolToPropertyKey(args[0].getSymbol().id)
+            : rift::core::EvaluationUtils::toPropertyKeyString(args[0]);
 
     // 3. Let desc be ? O.[[GetOwnProperty]](P).
-    auto own_names = obj->getOwnPropertyNames();
-    bool is_own = std::find(own_names.begin(), own_names.end(), propName) != own_names.end();
-
     // 4. If desc is undefined, return false.
-    if(!is_own) {
+    if(!obj->hasOwnProperty(propName)) {
         return Value(false);
     }
 
@@ -507,8 +506,11 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
     }
 
     // 2. Let key be ? ToPropertyKey(P).
-    // SIMPLIFIED: Uses toString() instead of full ToPropertyKey (no Symbol key support here).
-    std::string propertyKey = args[1].toString();
+    // Symbols become internal "@@sym:<id>" key strings.
+    std::string propertyKey =
+        args[1].isSymbol()
+            ? rift::core::EvaluationUtils::symbolToPropertyKey(args[1].getSymbol().id)
+            : rift::core::EvaluationUtils::toPropertyKeyString(args[1]);
 
     // 3. Let desc be ? ToPropertyDescriptor(Attributes).
     // ToPropertyDescriptor (6.2.6.5): converts a JS object to a PropertyDescriptor record.
@@ -541,14 +543,14 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
         desc.is_accessor = true;
         // For absent getter/setter, inherit from existing accessor if available
         if(has_get) {
-            desc.getter = descriptorObj->getProperty("get");
+            desc.getter = Reflect::objectGet(descriptorObj, "get", descriptorVal);
         } else if(has_existing && existing_desc.is_accessor) {
             desc.getter = existing_desc.getter;
         } else {
             desc.getter = Value::undefined();
         }
         if(has_set) {
-            desc.setter = descriptorObj->getProperty("set");
+            desc.setter = Reflect::objectGet(descriptorObj, "set", descriptorVal);
         } else if(has_existing && existing_desc.is_accessor) {
             desc.setter = existing_desc.setter;
         } else {
@@ -567,7 +569,7 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
 
         // ToPropertyDescriptor step 7: If Obj has a "value" property, set desc.[[Value]].
         if(descriptorObj->hasOwnProperty("value")) {
-            desc.value = descriptorObj->getProperty("value");
+            desc.value = Reflect::objectGet(descriptorObj, "value", descriptorVal);
         } else if(has_existing && !existing_desc.is_accessor) {
             desc.value = existing_desc.value;
         } else {
@@ -576,7 +578,7 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
 
         // ToPropertyDescriptor step 8: If Obj has a "writable" property, set desc.[[Writable]].
         if(descriptorObj->hasOwnProperty("writable")) {
-            desc.writable = descriptorObj->getProperty("writable").toBool();
+            desc.writable = Reflect::objectGet(descriptorObj, "writable", descriptorVal).toBool();
         } else if(has_existing && !existing_desc.is_accessor) {
             desc.writable = existing_desc.writable;
         } else {
@@ -586,7 +588,7 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
 
     // ToPropertyDescriptor step 5: If Obj has "enumerable", set desc.[[Enumerable]].
     if(descriptorObj->hasOwnProperty("enumerable")) {
-        desc.enumerable = descriptorObj->getProperty("enumerable").toBool();
+        desc.enumerable = Reflect::objectGet(descriptorObj, "enumerable", descriptorVal).toBool();
     } else if(has_existing) {
         desc.enumerable = existing_desc.enumerable;
     } else {
@@ -595,7 +597,8 @@ Value Object::defineProperty(const CallContext& ctx, const std::vector<Value>& a
 
     // ToPropertyDescriptor step 6: If Obj has "configurable", set desc.[[Configurable]].
     if(descriptorObj->hasOwnProperty("configurable")) {
-        desc.configurable = descriptorObj->getProperty("configurable").toBool();
+        desc.configurable =
+            Reflect::objectGet(descriptorObj, "configurable", descriptorVal).toBool();
     } else if(has_existing) {
         desc.configurable = existing_desc.configurable;
     } else {
@@ -754,7 +757,11 @@ Value Object::getOwnPropertyDescriptor(const CallContext& ctx, const std::vector
     }
 
     // 2. Let key be ? ToPropertyKey(P).
-    std::string propertyKey = args[1].toString();
+    // Symbols become internal "@@sym:<id>" key strings.
+    std::string propertyKey =
+        args[1].isSymbol()
+            ? rift::core::EvaluationUtils::symbolToPropertyKey(args[1].getSymbol().id)
+            : rift::core::EvaluationUtils::toPropertyKeyString(args[1]);
 
     // 3. Let desc be ? obj.[[GetOwnProperty]](key).
     if(!obj->hasOwnProperty(propertyKey)) {
@@ -887,50 +894,35 @@ Value Object::getPrototypeOf(const CallContext& ctx, const std::vector<Value>& a
 // @spec https://tc39.es/ecma262/#sec-object.setprototypeof
 Value Object::setPrototypeOf(const CallContext& ctx, const std::vector<Value>& args) {
     // 1. Set O to ? RequireObjectCoercible(O).
-    if(args.size() < 2) {
-        return Value::undefined();
+    Value objVal = args.empty() ? Value::undefined() : args[0];
+    if(objVal.isUndefined() || objVal.isNull()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Object.setPrototypeOf called on null or undefined"));
     }
 
-    Value objVal = args[0];
-
     // 2. If proto is not an Object and proto is not null, throw a TypeError exception.
-    // (checked below after the non-object early return)
+    Value protoArg = args.size() > 1 ? args[1] : Value::undefined();
+    if(!protoArg.isNull() && !protoArg.isObject() && !protoArg.isFunction()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Object prototype may only be an Object or null"));
+    }
 
     // 3. If O is not an Object, return O.
     if(!objVal.isObject() && !objVal.isFunction()) {
         return objVal;
     }
 
-    auto* obj = objVal.getObject();
-    if(!obj) {
-        return objVal;
-    }
-
-    // DEVIATION: Spec does not check extensibility here; it relies on
-    // [[SetPrototypeOf]] to handle that (which may throw). Rift checks early
-    // and silently returns without throwing.
-    if(!obj->isExtensible()) {
-        return objVal;
-    }
-
-    Value protoArg = args[1];
-    JSObject* newProto = nullptr;
-
-    if(protoArg.isNull()) {
-        newProto = nullptr;
-    } else if(protoArg.isObject()) {
-        newProto = protoArg.getObject();
-    } else {
-        // TypeError: Object prototype may only be an Object or null
-        // DEVIATION: Should throw TypeError per step 2; Rift silently returns.
-        return objVal;
-    }
-
     // 4. Let status be ? O.[[SetPrototypeOf]](proto).
+    // OrdinarySetPrototypeOf (incl. extensibility and cycle checks) is shared
+    // with Reflect.setPrototypeOf, which returns the status as a boolean.
+    Value status = Reflect::setPrototypeOf(ctx, {objVal, protoArg});
+
     // 5. If status is false, throw a TypeError exception.
-    // INCOMPLETE: Rift does not check the return value of [[SetPrototypeOf]]
-    // (e.g., for prototype chain cycle detection).
-    obj->setPrototype(newProto);
+    if(!status.toBool()) {
+        throw rift::core::JavaScriptException(
+            Value("TypeError: Object.setPrototypeOf failed (object is non-extensible or the "
+                  "prototype chain would be cyclic)"));
+    }
 
     // 6. Return O.
     return objVal;

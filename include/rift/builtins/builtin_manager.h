@@ -145,6 +145,8 @@ class BuiltinManager {
                          rift::memory::ObjectFactory* factory);
     static void setupMap(std::shared_ptr<Environment> globalEnv,
                          rift::memory::ObjectFactory* factory);
+    static void setupReflect(std::shared_ptr<Environment> globalEnv,
+                             rift::memory::ObjectFactory* factory);
     static void setupWeakMap(std::shared_ptr<Environment> globalEnv,
                              rift::memory::ObjectFactory* factory);
     static void setupWeakSet(std::shared_ptr<Environment> globalEnv,

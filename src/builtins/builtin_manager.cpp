@@ -25,6 +25,7 @@
 #include "rift/builtins/number/number.h"
 #include "rift/builtins/object/object.h"
 #include "rift/builtins/promise/promise.h"
+#include "rift/builtins/reflect/reflect.h"
 #include "rift/builtins/regexp/regexp.h"
 #include "rift/builtins/set/set.h"
 #include "rift/builtins/set/set_iterator.h"
@@ -253,6 +254,10 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
     if(dateConstructor)
         datePrototype_ = dateConstructor->getProperty("prototype").getObject();
 
+    // Reflect is set up after prototype caching because Reflect::create needs
+    // getObjectPrototype() (namespace objects have no constructor to link later).
+    setupReflect(globalEnv, factory);
+
     // Set up prototype chain: All prototypes -> Object.prototype (except Object itself)
     if(objectPrototype_ && arrayPrototype_) {
         arrayPrototype_->setPrototype(objectPrototype_);
@@ -375,13 +380,17 @@ void BuiltinManager::setupBuiltins(std::shared_ptr<Environment> globalEnv, Rift*
         auto* globalObject = factory->createJSObject();
         rift::memory::GCProtector protect(globalObject, factory->getObjectManager());
 
-        // Populate globalThis with all current global variables
+        // Populate globalThis with all current global variables.
+        // Built-in globals are { [[Writable]]: true, [[Enumerable]]: false,
+        // [[Configurable]]: true } per spec §19.1.
         for(const auto& name : globalEnv->getVariableNames()) {
-            globalObject->setProperty(name, globalEnv->get(name));
+            globalObject->defineProperty(
+                name, rift::runtime::PropertyDescriptor(globalEnv->get(name), true, false, true));
         }
 
-        // Self-referential: globalThis.globalThis === globalThis
-        globalObject->setProperty("globalThis", Value(globalObject));
+        // Self-referential: globalThis.globalThis === globalThis (19.1.1, same attributes)
+        globalObject->defineProperty("globalThis", rift::runtime::PropertyDescriptor(
+                                                       Value(globalObject), true, false, true));
 
         // Link the global environment to this object so future define/set calls sync
         globalEnv->setBindingObject(globalObject);
@@ -784,6 +793,13 @@ void BuiltinManager::setupSet(std::shared_ptr<Environment> globalEnv,
 
 void BuiltinManager::setupJSON(std::shared_ptr<Environment> globalEnv, rift::core::Rift* engine) {
     rift::builtins::JSON::setup(globalEnv, engine);
+}
+
+void BuiltinManager::setupReflect(std::shared_ptr<Environment> globalEnv,
+                                  rift::memory::ObjectFactory* factory) {
+    // 28.1 The Reflect Object — a plain namespace object, not a constructor
+    auto* reflect = builtins::Reflect::create(factory);
+    globalEnv->define("Reflect", Value(reflect));
 }
 
 void BuiltinManager::setupMap(std::shared_ptr<Environment> globalEnv,

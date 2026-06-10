@@ -34,6 +34,7 @@ using namespace rift::runtime;
 #define RIFT_REGISTER_METHOD(obj, name, len, func)                                               \
     do {                                                                                         \
         auto* _fn = factory->createJSFunction(func);                                             \
+        _fn->setIsConstructor(false); /* built-in methods have no [[Construct]] (§17) */         \
         _fn->defineProperty(                                                                     \
             "name", rift::runtime::PropertyDescriptor(rift::runtime::Value(std::string(name)),   \
                                                       false, false, true));                      \
@@ -51,10 +52,14 @@ using namespace rift::runtime;
 #define RIFT_STATIC_METHOD(obj, name, len, func) RIFT_REGISTER_METHOD(obj, name, len, func)
 
 /// Register a getter property (non-enumerable, configurable per spec)
-#define RIFT_GETTER(obj, name, func)                                                       \
-    (obj)->defineProperty(name, rift::runtime::PropertyDescriptor::accessor(               \
-                                    rift::runtime::Value(factory->createJSFunction(func)), \
-                                    rift::runtime::Value::undefined(), false, true))
+#define RIFT_GETTER(obj, name, func)                                                      \
+    do {                                                                                  \
+        auto* _getter = factory->createJSFunction(func);                                  \
+        _getter->setIsConstructor(false); /* accessors have no [[Construct]] (§17) */     \
+        (obj)->defineProperty(name, rift::runtime::PropertyDescriptor::accessor(          \
+                                        rift::runtime::Value(_getter),                    \
+                                        rift::runtime::Value::undefined(), false, true)); \
+    } while(0)
 
 /// Register a static property (constant, non-enumerable, non-configurable per spec)
 #define RIFT_PROPERTY(obj, name, value) \
