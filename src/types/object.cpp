@@ -1,7 +1,9 @@
 #include "rift/types/object.h"
 
 #include <algorithm>
+#include <cctype>
 #include <cmath>
+#include <cstdint>
 
 namespace rift::runtime {
 
@@ -30,16 +32,17 @@ bool JSObject::hasOwnProperty(const std::string& key) const {
     return property_index_.find(key) != property_index_.end();
 }
 
-Value JSObject::getProperty(const std::string& key) const {
+Value JSObject::getProperty(const std::string& key, const Value& receiver) const {
     // O(1) lookup via hash map
     auto it = property_index_.find(key);
     if(it != property_index_.end()) {
         return properties_[it->second].second.value;
     }
 
-    // Check prototype chain
+    // Check prototype chain, threading the receiver through so an exotic
+    // object (e.g. Proxy) in the chain sees the original receiver
     if(prototype_) {
-        return prototype_->getProperty(key);
+        return prototype_->getProperty(key, receiver);
     }
 
     return Value::undefined();
@@ -65,7 +68,7 @@ std::pair<bool, PropertyDescriptor> JSObject::findPropertyDescriptor(const std::
     return {false, PropertyDescriptor()};
 }
 
-bool JSObject::setProperty(const std::string& key, const Value& value) {
+bool JSObject::setProperty(const std::string& key, const Value& value, const Value& /*receiver*/) {
     // O(1) lookup for existing property
     auto it = property_index_.find(key);
     if(it != property_index_.end()) {
@@ -276,6 +279,53 @@ std::vector<std::string> JSObject::getEnumerablePropertyNames() const {
     }
 
     return names;
+}
+
+std::vector<std::string> JSObject::getOwnPropertyKeys() const {
+    // 10.1.11 OrdinaryOwnPropertyKeys ( O )
+    // @spec https://tc39.es/ecma262/#sec-ordinaryownpropertykeys
+
+    // Step 2: array-index keys in ascending numeric order
+    std::vector<std::pair<uint64_t, std::string>> index_keys;
+    // Step 3: string keys in property creation order
+    std::vector<std::string> string_keys;
+    // Step 4: symbol keys in property creation order
+    std::vector<std::string> symbol_keys;
+
+    for(const auto& pair : properties_) {
+        const std::string& key = pair.first;
+        if(isSymbolKey(key)) {
+            symbol_keys.push_back(key);
+            continue;
+        }
+        // An array index is a canonical numeric string in [0, 2^32-1)
+        uint64_t index = 0;
+        bool is_index = !key.empty() && key.size() <= 10 &&
+                        (key == "0" ||
+                         (key[0] != '0' && std::all_of(key.begin(), key.end(), [](unsigned char c) {
+                              return std::isdigit(c);
+                          })));
+        if(is_index) {
+            index = std::stoull(key);
+            is_index = index < 4294967295ULL;
+        }
+        if(is_index) {
+            index_keys.emplace_back(index, key);
+        } else {
+            string_keys.push_back(key);
+        }
+    }
+
+    std::sort(index_keys.begin(), index_keys.end());
+
+    std::vector<std::string> keys;
+    keys.reserve(index_keys.size() + string_keys.size() + symbol_keys.size());
+    for(const auto& [index, key] : index_keys) {
+        keys.push_back(key);
+    }
+    keys.insert(keys.end(), string_keys.begin(), string_keys.end());
+    keys.insert(keys.end(), symbol_keys.begin(), symbol_keys.end());
+    return keys;
 }
 
 std::vector<std::string> JSObject::getOwnPropertySymbols() const {

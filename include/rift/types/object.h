@@ -78,32 +78,42 @@ class JSObject : public rift::memory::GCObject {
         property_index_.reserve(64);
     }
 
-    // Property operations
-    bool hasProperty(const std::string& key) const;
-    Value getProperty(const std::string& key) const;
-    bool setProperty(const std::string& key, const Value& value);
-    bool deleteProperty(const std::string& key);
+    // Property operations (virtual so exotic objects like Proxy can intercept).
+    // `receiver` mirrors the spec's [[Get]](P, Receiver) / [[Set]](P, V, Receiver);
+    // undefined means "the object itself". Ordinary objects ignore it (accessor
+    // invocation currently happens at the interpreter level).
+    virtual bool hasProperty(const std::string& key) const;
+    virtual Value getProperty(const std::string& key, const Value& receiver = Value()) const;
+    virtual bool setProperty(const std::string& key, const Value& value,
+                             const Value& receiver = Value());
+    virtual bool deleteProperty(const std::string& key);
 
     // Property descriptor operations
-    bool hasOwnProperty(const std::string& key) const;
-    PropertyDescriptor getOwnPropertyDescriptor(const std::string& key) const;
-    bool defineProperty(const std::string& key, const PropertyDescriptor& descriptor);
-    std::pair<bool, PropertyDescriptor> findPropertyDescriptor(const std::string& key) const;
+    virtual bool hasOwnProperty(const std::string& key) const;
+    virtual PropertyDescriptor getOwnPropertyDescriptor(const std::string& key) const;
+    virtual bool defineProperty(const std::string& key, const PropertyDescriptor& descriptor);
+    virtual std::pair<bool, PropertyDescriptor> findPropertyDescriptor(
+        const std::string& key) const;
 
     // Prototype chain
-    JSObject* getPrototype() const {
+    virtual JSObject* getPrototype() const {
         return prototype_;
     }
-    void setPrototype(JSObject* prototype) {
+    virtual void setPrototype(JSObject* prototype) {
         prototype_ = prototype;
     }
 
     // Extensibility - controls whether new properties can be added
-    bool isExtensible() const {
+    virtual bool isExtensible() const {
         return extensible_;
     }
-    void preventExtensions() {
+    virtual void preventExtensions() {
         extensible_ = false;
+    }
+
+    // Exotic object identification (Proxy overrides this)
+    virtual bool isProxy() const {
+        return false;
     }
 
     // Object type identification
@@ -113,16 +123,22 @@ class JSObject : public rift::memory::GCObject {
     virtual ~JSObject() = default;
 
     // Get all property names
-    std::vector<std::string> getPropertyNames() const;
+    virtual std::vector<std::string> getPropertyNames() const;
 
     // Get only own property names (not inherited from prototype)
-    std::vector<std::string> getOwnPropertyNames() const;
+    virtual std::vector<std::string> getOwnPropertyNames() const;
 
     // Get only enumerable own property names
-    std::vector<std::string> getEnumerablePropertyNames() const;
+    virtual std::vector<std::string> getEnumerablePropertyNames() const;
 
     // Get only symbol-keyed own property names
-    std::vector<std::string> getOwnPropertySymbols() const;
+    virtual std::vector<std::string> getOwnPropertySymbols() const;
+
+    // 10.1.11 OrdinaryOwnPropertyKeys: all own keys (string + symbol, as internal
+    // key strings) in spec order — array indices ascending, then string keys in
+    // insertion order, then symbol keys in insertion order.
+    // @spec https://tc39.es/ecma262/#sec-ordinaryownpropertykeys
+    virtual std::vector<std::string> getOwnPropertyKeys() const;
 
     // Weak property support (for WeakMap/WeakSet)
     // Weak properties are excluded from GC traversal - their referenced objects
