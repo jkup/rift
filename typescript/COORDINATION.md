@@ -1,6 +1,6 @@
 # Rewrite coordination state
 
-Owner authorization: continue bounded rewrite tasks autonomously, create new Codex chats, review them rigorously, and commit/push tested milestones while the owner is away. Ask only for material decisions or blockers not resolvable from the approved goals. Do not merge to main, force-push, remove C++, or manufacture work.
+Owner authorization: continue bounded rewrite tasks autonomously, create new Codex chats, review them rigorously, and commit/push tested milestones while the owner is away. Ask only for material decisions or blockers not resolvable from the approved goals. The owner subsequently authorized merging the reviewed branch to main after TS-007P completes, pushing, then continuing on a fresh branch. Future main merges require owner authorization. Do not force-push, remove C++, or manufacture work.
 
 Repository: `C:\Users\jonku\code\rift`. Integration branch: `typescript-scriptc-probes`. Host: `local`. Use one implementation writer at a time in this shared checkout. Review actual diffs and evidence before assigning successors. Preserve companion tasks in root `Claude Roadmap.md` for Claude Code.
 
@@ -134,3 +134,10 @@ Accepted TS-006 `402c326`: reviewed parser hole/trailing comma cases, AST null e
 Next ready TS-007P designs primitive computed-key conversion and measures numeric string formatting before source implementation. Enables a[0] eventually without broad object coercion or boxing assumptions. Claude queue remains ready/reserved.
 
 Active sole writer: TS-007P chat `01a19882-ddd8-7b03-9cd7-0c0ddc28e9fd`, host `local`, base `b4eb794`. Owns primitive-key design/probe/evidence and own task handoff. Initial progress active; saved cursor `14ba7f6f-ccee-42ce-ae8c-966ef760fd62:1`. Coordinator also asked this writer to reconcile stale TS-006 status to accepted 402c326 while editing TASKS; no competing coordinator task-file writes. Coordinator owns this file.
+
+## TS-007P acceptance and authorized main integration
+
+Accepted `5f4965a`: reviewed actual design, caller inventory, fixed formatting expectations and probe harness. Independently rebuilt isolated Node/native probe: 36/36 expected strings each, 11/11 static; five Node reference-order scenarios pass. Independently checked living-spec GetValue/PutValue order. No exhaustive formatting claim; runtime integration still requires validation. Completed chat idle, cursor `14ba7f6f-ccee-42ce-ae8c-966ef760fd62:2`.
+
+Owner explicitly requested merging this completed task and prior reviewed milestones into main, pushing, then resuming the next task. Main is an ancestor of the reviewed branch after fetch; no conflict resolution is needed. Next task TS-007 is frozen in TASKS.md. Claude queue remains ready and reserved.
+Pre-merge independent rebuild completed: Node/native 152/152 each, no skips, all twelve static native gates passed. Prior producer runner20/probes10/typecheck evidence retained; no runtime change in TS-007P.
