@@ -38,7 +38,7 @@ Handoff: pending.
 
 ## CL-002 — Audit test262 runner semantics before future reuse
 
-Status: **ready**. Owner: unclaimed. Dependencies: none.
+Status: **review needed**. Owner: Claude Code session, branch `claude/cl-002-test262-runner-audit` (separate worktree), base `0819c71`. Dependencies: none.
 
 Purpose: provide a concrete checklist for a trustworthy future TypeScript test262 adapter; implementing the adapter is not this task.
 
@@ -55,7 +55,7 @@ Deliver:
 
 Acceptance: findings are evidence-backed, with authoritative links for harness requirements. No changes to runner code, feature skip lists, tests or published compliance claims.
 
-Handoff: pending.
+Handoff (2026-11-01): output `typescript/docs/assistance/test262-runner-audit.md` (work commit `b29d398`). Upstream consulted: tc39/test262 `91c7075` (2026-10-29) `INTERPRETING.md`, `harness/assert.js` and example tests, read through the GitHub API without downloading the suite. Static inspection only; neither the runner nor C++ was executed. Ten correctness defects with code references and scenarios. Most serious: runtime-phase negative tests always fail because guest throws exit 0; negative phase is never checked; `raw` tests get the harness prepended (upstream `directive-prologue/10.1.1-2gs.js` cannot pass); `module` tests run as strict scripts; dropped includes and the weakened `harness-compat.js` `assert.throws` (accepts any thrown primitive); a crash after output counts as a pass; the incremental cache key excludes skip lists, harness and test262 revision. Includes an adapter checklist and a 25-row validation matrix independent of the new interpreter APIs. Limitations: no effect sizes are estimated because no run was performed; proposed fixes need coordinator assignment.
 
 ## CL-003 — Prepare independent semantic examples
 
