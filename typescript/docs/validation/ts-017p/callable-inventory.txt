@@ -1,0 +1,64 @@
+typescript/src\array-map.ts:10:    if (callback.kind !== "object" || callback.object.callable === null) return failure("TypeError", "map callback is not callable", loc);
+typescript/test\addition.ts:16:    object.callable = { kind: "builtin", invoke };
+typescript/test\array-literals.ts:73:abruptRealm.registerBuiltin(host, "stop", 0, (_receiver, _args, _context, _loc) => sentinel);
+typescript/test\array-like.ts:167:method.callable = { kind: "builtin", invoke: (receiver, args, context, _at) => {
+typescript/test\array-length-coercion.ts:26:    value.callable = { kind: "builtin", invoke };
+typescript/test\array-map.ts:32:    object.callable = { kind: "builtin", invoke };
+typescript/test\array-map.ts:106:const adapter = realm.registerBuiltin(host, "__testMapObjectDefaultArray", 3, (_receiver, args, context, at) => {
+typescript/test\array-map.ts:316:realm.registerBuiltin(host, "observe", 5, (_receiver, args, context, _at) => {
+typescript/test\array-map.ts:369:realm.registerBuiltin(host, "effect", 1, (_receiver, args, _context, _at) => {
+typescript/src\builtins\function.ts:5:    realm.registerBuiltin(realm.functionPrototype, "call", 1, (receiver, args, context, loc) => {
+typescript/src\builtins\function.ts:6:        if (receiver.kind !== "object" || receiver.object.callable === null) {
+typescript/src\builtins\number.ts:27:    realm.registerBuiltin(namespace, name, 1, invoke);
+typescript/src\primitive-conversion.ts:20:        if (method.value.kind !== "object" || method.value.object.callable === null) continue;
+typescript/src\evaluator.ts:26:        const object = this.context.realm.createFunction({ kind: "guest", params, body, environment });
+typescript/src\evaluator.ts:226:        if (callee.kind !== "object" || callee.object.callable === null) return failure("TypeError", "value is not callable", loc);
+typescript/test\array-storage.ts:116:hook.callable = {
+typescript/src\realm.ts:16:        this.functionPrototype.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc) => normal(UNDEFINED) };
+typescript/src\realm.ts:24:        this.registerBuiltin(consoleObject, "log", 0, (_receiver, args, _context, _loc) => {
+typescript/src\realm.ts:35:    createFunction(callable: Callable): GuestObject {
+typescript/src\realm.ts:37:        object.callable = callable;
+typescript/src\realm.ts:40:    createBuiltin(name: string, length: number, invoke: Builtin): GuestObject {
+typescript/src\realm.ts:41:        const object = this.createFunction({ kind: "builtin", invoke });
+typescript/src\realm.ts:45:    registerBuiltin(target: GuestObject, name: string, length: number, invoke: Builtin): Value {
+typescript/src\realm.ts:46:        const object = this.createBuiltin(name, length, invoke);
+typescript/test\conversion.ts:107:hook.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc): Completion => { throw new Error("must not call conversion hook"); } };
+typescript/src\runtime.ts:252:        case "object": return value.object.callable === null ? "[object Object]" : "[function]";
+typescript/test\function-call.ts:62:low.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc) => normal() };
+typescript/test\function-call.ts:82:const builtinReceiver = value(r.createBuiltin("receiver", 0, (thisArg, _args, _context, _loc) => normal(thisArg)));
+typescript/test\function-call.ts:96:const inspect = value(r.createBuiltin("inspect", 2, (thisArg, args, context, actualLoc) => {
+typescript/test\function-call.ts:107:const empty = value(r.createBuiltin("empty", 0, (thisArg, args, _context, _loc) => {
+typescript/test\function-call.ts:118:opaque.callable = {kind: "builtin", invoke: (thisArg, _args, _context, _loc) => normal(thisArg)};
+typescript/test\function-call.ts:146:const thrower = value(r.createBuiltin("thrower", 0, (_receiver, _args, _context, _loc) => sentinel));
+typescript/test\function-call.ts:153:const broken = value(r.createBuiltin("broken", 0, (_receiver, _args, _context, _loc): Completion => { throw fault; }));
+typescript/test\function-call.ts:162:    const illegal = value(r.createBuiltin("illegal", 0, (_receiver, _args, _context, _loc) => ({type, value: token})));
+typescript/test\function-call.ts:175:const reenter = value(r.createBuiltin("reenter", 1, (thisArg, args, context, callLoc) => {
+typescript/test\function-call.ts:203:const tickTarget = value(r.createBuiltin("ticks", 0, (_receiver, _args, context, callLoc) => {
+typescript/test\function-call.ts:223:const foreignBuiltin = value(r.createBuiltin("foreign", 0, (thisArg, _args, context, actualLoc) => {
+typescript/test\length-coercion.ts:26:    object.callable = { kind: "builtin", invoke };
+typescript/test\length-coercion.ts:63:    active.context.realm.registerBuiltin(host, "length", 1, (_receiver, args, context, at) => {
+typescript/test\length-coercion.ts:67:    active.context.realm.registerBuiltin(host, "map", 2, (_receiver, args, context, at) => mapObjectDefaultArray(object(args[0]), args[1], UNDEFINED, context, at));
+typescript/test\length-coercion.ts:68:    active.context.realm.registerBuiltin(host, "remove", 2, (_receiver, args, _context, _at) => {
+typescript/test\key-coercion.ts:15:    object.callable = { kind: "builtin", invoke };
+typescript/test\key-coercion.ts:124:                if (kind === "function") object.callable = { kind: "builtin", invoke: (_r, _a, _c, _l): Completion => { throw new Error("key called directly"); } };
+typescript/test\numeric-operators.ts:14:    object.callable = { kind: "builtin", invoke };
+typescript/test\operation-context.ts:16:    object.callable = { kind: "builtin", invoke };
+typescript/test\operation-context.ts:36:realm.registerBuiltin(host, "observe", 1, (receiver, args, context, callLoc) => {
+typescript/test\operation-context.ts:42:realm.registerBuiltin(host, "callback", 3, (_receiver, args, context, callLoc) => context.call(args[0], args[1], [args[2]], callLoc));
+typescript/test\operation-context.ts:75:realm.registerBuiltin(host, "thrower", 0, (_receiver, _args, _context, _loc) => sentinel);
+typescript/test\operation-context.ts:107:realm.registerBuiltin(host, "reenter", 0, (_receiver, args, context, callLoc) => {
+typescript/test\operation-context.ts:162:const noncallable = zero.call(UNDEFINED, UNDEFINED, [], loc);
+typescript/test\operator-coercion.ts:20:    object.callable = { kind: "builtin", invoke };
+typescript/test\operator-coercion.ts:117:        if (kind === "function") object.callable = { kind: "builtin", invoke: (_r, _a, _c, _l): Completion => { throw new Error("input function called"); } };
+typescript/test\relational.ts:17:    object.callable = { kind: "builtin", invoke };
+typescript/test\relational.ts:153:    object.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc): Completion => sentinel };
+typescript/test\primitive-conversion.ts:19:    object.callable = { kind: "builtin", invoke };
+typescript/test\primitive-conversion.ts:169:        if (kind === "function") object.callable = { kind: "builtin", invoke: (_r, _a, _c, _l): Completion => { throw new Error("input called"); } };
+typescript/test\realms.ts:33:a.registerBuiltin(target, "test", 1, (receiver, args, _context, _loc) => {
+typescript/test\realms.ts:78:        if (predicate.callable === null || predicate.callable.kind !== "builtin") throw new Error("Number predicate callable");
+typescript/test\realms.ts:132:    checkGraph(o.callable === null && f.callable !== null && ar instanceof GuestArray, "G1 root kinds");
+typescript/test\realms.ts:140:        checkGraph(namespace.getPrototypeOf() === o && namespace.callable === null, "G9 namespace");
+typescript/test\realms.ts:172:    try { r1.createBuiltin("bad", length, (_receiver, _args, _context, _loc) => normal()); }
+typescript/test\realms.ts:176:metadata(r1.createBuiltin("zero", -0, (_receiver, _args, _context, _loc) => normal()), "zero", 0);
+typescript/test\property-key-conversion.ts:28:    object.callable = { kind: "builtin", invoke };
+typescript/test\property-key-conversion.ts:265:callableKey.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _location): Completion => { throw new Error("key itself called"); } };
