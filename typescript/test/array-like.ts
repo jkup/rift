@@ -1,3 +1,4 @@
+import { Evaluator } from "../src/evaluator.js";
 import { GuestObject, UNDEFINED, failure, type Value, type ValueCompletion, type InternalBooleanCompletion } from "../src/runtime.js";
 import { GuestArray } from "../src/array-object.js";
 import { Realm } from "../src/realm.js";
@@ -5,6 +6,7 @@ import { toIntegerOrInfinity, toLength, type NumberCompletion } from "../src/con
 import { lengthOfArrayLike } from "../src/array-like.js";
 import type { Location } from "../src/syntax.js";
 
+const active = new Evaluator(new Realm((_line) => {}));
 const loc: Location = { line: 7, column: 13 };
 function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
 function boolean(result: InternalBooleanCompletion, expected: boolean): void {
@@ -55,7 +57,7 @@ boolean(array.internalDelete("1"), true);
 boolean(array.internalHasProperty("1", loc), true);
 boolean(array.internalDelete("2"), true);
 boolean(array.internalHasProperty("2", loc), false);
-numeric(lengthOfArrayLike(array, loc), 3);
+numeric(lengthOfArrayLike(array, active.context, loc), 3);
 
 // Append at the tail so cycle checks do not make construction quadratic.
 const head = new GuestObject();
@@ -111,26 +113,27 @@ const rows: { input: Value; integer: number; length: number }[] = [
     { input: s("-Infinity"), integer: -Infinity, length: 0 },
 ];
 const ordinary = new GuestObject();
-numeric(lengthOfArrayLike(ordinary, loc), 0);
+numeric(lengthOfArrayLike(ordinary, active.context, loc), 0);
 for (const row of rows) {
     numeric(toIntegerOrInfinity(row.input, loc), row.integer);
     numeric(toLength(row.input, loc), row.length);
     ordinary.define("length", row.input, true, true, true);
-    numeric(lengthOfArrayLike(ordinary, loc), row.length);
+    numeric(lengthOfArrayLike(ordinary, active.context, loc), row.length);
 }
 const inherited = new GuestObject();
 boolean(inherited.setPrototypeOf(ordinary), true);
 ordinary.define("length", s("8.9"), true, true, true);
-numeric(lengthOfArrayLike(inherited, loc), 8);
+numeric(lengthOfArrayLike(inherited, active.context, loc), 8);
 inherited.define("length", UNDEFINED, true, true, true);
-numeric(lengthOfArrayLike(inherited, loc), 0);
+numeric(lengthOfArrayLike(inherited, active.context, loc), 0);
 boolean(inherited.internalDelete("length"), true);
-numeric(lengthOfArrayLike(inherited, loc), 8);
+numeric(lengthOfArrayLike(inherited, active.context, loc), 8);
 unsupported(toIntegerOrInfinity(o(parent), loc));
 unsupported(toLength(o(parent), loc));
 ordinary.define("length", o(parent), true, true, true);
-unsupported(lengthOfArrayLike(ordinary, loc));
-numeric(lengthOfArrayLike(new GuestArray(), loc), 0);
+const missing = lengthOfArrayLike(ordinary, active.context, loc);
+check(missing.type === "throw" && missing.diagnostic.message === "cannot convert object to primitive" && missing.diagnostic.loc === loc, "no-method length failure");
+numeric(lengthOfArrayLike(new GuestArray(), active.context, loc), 0);
 
 class ObservedGet extends GuestObject {
     calls = 0;
@@ -145,7 +148,7 @@ class ObservedGet extends GuestObject {
 }
 const observed = new ObservedGet();
 observed.define("length", n(999), true, true, true);
-numeric(lengthOfArrayLike(observed, loc), 12);
+numeric(lengthOfArrayLike(observed, active.context, loc), 12);
 check(observed.calls === 1, "one normal Get");
 boolean(observed.internalHasProperty("length", loc), true);
 boolean(observed.internalHasProperty("absent", loc), false);
@@ -154,12 +157,23 @@ check(observed.calls === 1, "presence performs no Get");
 const thrown = failure("SentinelError", "Get failed", loc);
 thrown.value = o(parent);
 observed.result = thrown;
-const abrupt = lengthOfArrayLike(observed, loc);
+const abrupt = lengthOfArrayLike(observed, active.context, loc);
 check(abrupt === thrown, "exact throw completion; no conversion after throw");
 if (abrupt.type !== "throw") throw new Error("expected Get throw");
 check(abrupt.value === thrown.value && abrupt.diagnostic === thrown.diagnostic && abrupt.diagnostic.loc === loc, "throw payload/diagnostic/location identity");
 check(observed.calls === 2, "one abrupt Get");
+let hooks = 0;
+const method = new GuestObject();
+method.callable = { kind: "builtin", invoke: (receiver, args, context, _at) => {
+    hooks++;
+    check(receiver.kind === "object" && receiver.object === parent && args.length === 0 && context === active.context, "length hook receiver/context");
+    return { type: "normal", value: n(4.9) };
+} };
+parent.define("valueOf", o(method), true, true, true);
+ordinary.define("length", o(parent), true, true, true);
+numeric(lengthOfArrayLike(ordinary, active.context, loc), 4);
 observed.result = { type: "normal", value: o(parent) };
-unsupported(lengthOfArrayLike(observed, loc));
-check(observed.calls === 3, "one Get before unsupported conversion");
+numeric(lengthOfArrayLike(observed, active.context, loc), 4);
+check(hooks === 2, "one hook per operation");
+check(observed.calls === 3, "one Get before ordinary conversion");
 console.log("array-like prerequisites passed");

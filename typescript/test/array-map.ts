@@ -452,16 +452,26 @@ put(otherResult, "0", num(8));
 element(secondResult, "0", singleElement.get("0"));
 check(!otherRealm.global.bindings.has("host") && firstRun.context !== otherEvaluator.context, "realm independent storage/registration");
 
-// Same-name errors still identify the earlier unsupported conversion boundary.
+// Same-name errors still identify the earlier no-method conversion boundary.
 const absentLength = new Traced();
 error(map(absentLength, obj(new GuestObject())), "TypeError");
 traceIs("Get length");
 put(absentLength, "length", obj(new GuestObject()));
 const conversionError = map(absentLength, UNDEFINED);
 check(
-    conversionError.type === "throw" && conversionError.diagnostic.message.includes("object"),
+    conversionError.type === "throw" && conversionError.diagnostic.message === "cannot convert object to primitive",
     "conversion error precedes callback validation",
 );
+traceIs("Get length");
+const convertibleLength = new GuestObject();
+let lengthHooks = 0;
+put(convertibleLength, "valueOf", builtin((_receiver, _args, _context, _at) => {
+    lengthHooks++;
+    return normal(num(0));
+}));
+put(absentLength, "length", obj(convertibleLength));
+const callbackError = map(absentLength, UNDEFINED);
+check(callbackError.type === "throw" && callbackError.diagnostic.message === "map callback is not callable" && lengthHooks === 1, "successful length conversion precedes callback failure");
 traceIs("Get length");
 const inheritedUndefined = ordinary(num(1));
 const undefinedPrototype = new GuestObject();

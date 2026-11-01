@@ -38,8 +38,7 @@ TS-001. Existing C++ tests and test262 are not counted in the foundation test to
 TS-005H adds internal ordinary `internalHasProperty`, primitive
 `toIntegerOrInfinity`/`toLength`, and object-only `lengthOfArrayLike`. Presence
 includes inherited undefined and distinguishes holes; length reads use the
-completion-aware Get path and clamp at 2^53-1. Object-to-primitive conversion
-still explicitly throws unsupported TypeError. No guest APIs, boxing, map,
+completion-aware Get path and clamp at 2^53-1. TS-014 adds number-hint ordinary conversion of the saved length Value using a required active context. Direct primitive converters remain unchanged. No guest APIs, boxing, map,
 accessors or proxy/exotic traversal are introduced. See the TS-005H architecture
 notes and `docs/validation/ts-005h/` for interfaces, sources and measured checks.
 
@@ -73,5 +72,5 @@ Internal ordinaryToPrimitive and partial toPrimitive support explicit own or
 inherited callable valueOf/toString methods, original receivers, fresh fallback
 lookups and shared active evaluation budgets. A compiled test bridge exercises
 real guest methods; no guest intrinsic is registered. TS-012 connects the helper to existing numeric, addition and relational operators.
-TS-013 connects computed keys and required-context reference consumption. Direct numeric/string converters and array length paths remain primitive-only. Standard prototypes, symbol hooks, Date/wrappers, accessors/proxies
+TS-013 connects computed keys and required-context reference consumption. TS-014 connects array-like length and internal map. Direct numeric/string converters and array storage length paths remain primitive-only. Standard prototypes, symbol hooks, Date/wrappers, accessors/proxies
 and full ToPrimitive remain unsupported. Evidence: [TS-011](validation/ts-011/README.md).

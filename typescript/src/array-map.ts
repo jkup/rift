@@ -5,7 +5,7 @@ import type { Location } from "./syntax.js";
 
 // Internal object-only operation. Boxing and non-default species are deferred.
 export function mapObjectDefaultArray(object: GuestObject, callback: Value, thisArg: Value, context: OperationContext, loc: Location): ValueCompletion {
-    const length = lengthOfArrayLike(object, loc);
+    const length = lengthOfArrayLike(object, context, loc);
     if (length.type === "throw") return length;
     if (callback.kind !== "object" || callback.object.callable === null) return failure("TypeError", "map callback is not callable", loc);
     const input: Value = { kind: "object", object };

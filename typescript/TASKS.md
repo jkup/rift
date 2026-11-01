@@ -452,7 +452,7 @@ Awaiting coordinator review.
 
 ### TS-014 — Array-like length coercion and internal map order
 
-Status: **ready**. Prerequisites helpers/keys accepted; TS-013 `205e7d7` done, superseding awaiting-review handoff. Own src/array-like.ts, lengthOfArrayLike call in src/array-map.ts, required direct test/array-like.ts callers and relevant map-test migrations, focused new compiled assertions/runtime-read fixtures/registration, scoped docs and docs/validation/ts-014/. Coordinator owns COORDINATION.md. No runtime/array-storage/primitive converter API change.
+Status: **in progress — awaiting coordinator review**. Owner: Codex implementation chat `01a198fe-ff6b-7393-ae2e-5dc25eba628a`; base `205e7d7` on `codex/primitive-computed-keys`. Prerequisites helpers/keys accepted; TS-013 `205e7d7` done, superseding awaiting-review handoff. Own src/array-like.ts, lengthOfArrayLike call in src/array-map.ts, required direct test/array-like.ts callers and relevant map-test migrations, focused new compiled assertions/runtime-read fixtures/registration, scoped docs and docs/validation/ts-014/. Coordinator owns COORDINATION.md. No runtime/array-storage/primitive converter API change.
 
 Change lengthOfArrayLike(object, context: OperationContext, loc): NumberCompletion to perform exactly one semantic Get('length'), number-hint toPrimitive on that saved Value using the supplied active context, then existing primitive toLength. Return exact Get/helper/conversion throws unchanged. Forward map's existing context; direct test callers supply deliberate retained evaluator contexts. No ambient/new evaluator in helpers or optional context. Preserve object-only entry/no boxing and all ToLength normalization/clamping. If the length hook replaces object.length, do not reread it. No extra ticks besides accepted helper/evaluator/map policies.
 
@@ -463,3 +463,21 @@ Required expectations: own/inherited number-hint methods on ordinary/array/funct
 Inventory all superseded unsupported length expectations in test/array-like.ts (ordinary and observed Get cases) and map conversionError boundary. Migrate positively where explicit methods are installed; retain meaningful no-method/both-object and exact error precedence negatives. Preserve Get counts, prior assertions/denominator and primitive results. Direct toNumber/toString/toIntegerOrInfinity/toLength and array length assignment/definition remain primitive-only with zero-hook regressions; computed keys/operators stay supported. No pins/C++/Claude or unrelated syntax/intrinsic changes. Use readable fixtures/assertions and fixed results, not parity.
 
 Run typecheck, runner/probes and rebuilt Node/native with every static gate/new driver. Record evidence/limitations and commit/push coherent task; stop awaiting review, no successor/main merge.
+
+
+Handoff (2026-11-01): LengthOfArrayLike now requires the active context, gets
+length once, applies number-hint ordinary conversion to that saved Value and
+uses existing primitive ToLength. Map forwards its context and preserves
+conversion-before-callback/constructor/allocation ordering and live elements.
+Migrated direct callers and prior length negatives without removing entries.
+New compiled runtime-read fixture/driver covers F12-F14, primitive return and
+object-kind matrix, exact abrupt records/ticks, mutations, budgets, cleanup,
+realm independence and zero-hook primitive converter/array storage exclusions.
+Typecheck passes; runner 20/20; probes 10/10; rebuilt Node/native 161/161 each,
+no skips; all 20 static gates pass. Evidence, migration inventory, initial test
+observer error, reduced SC1090 test comparison and Zig sandbox failures:
+docs/validation/ts-014/. Narrowed test comparison and approved Zig access
+resolved validation; no engine workaround, pins or gates changed. No runtime/
+primitive converter/array storage API changes, standard map registration,
+symbols/species/boxing/accessors/proxies, C++/Claude/COORDINATION changes, branch
+switch, main merge or successor work. Awaiting coordinator review.

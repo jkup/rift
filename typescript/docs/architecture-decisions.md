@@ -312,11 +312,11 @@ propagates throws, preserves infinities and truncates finite numbers with +0 for
 all zero results. Length clamps to 0 through 9007199254740991, without uint32
 wrapping. Both retain the explicit unsupported object-conversion TypeError.
 
-`lengthOfArrayLike(object: GuestObject, loc)` in `src/array-like.ts` calls
+`lengthOfArrayLike(object: GuestObject, context: OperationContext, loc)` in `src/array-like.ts` calls
 `internalGet("length", objectValue, loc)` once, preserving the input as receiver
-and the exact abrupt completion, then converts the normal value with ToLength.
+and the exact abrupt completion, then (since TS-014) applies number-hint ToPrimitive with the required active context and primitive ToLength.
 Missing length therefore yields +0. This API requires an object; it supplies no
-ToObject, boxing, guest entry point, callback context, species or map algorithm.
+ToObject, boxing, guest entry point, species or map algorithm.
 
 Sources consulted 2026-11-01: ECMA-262 **16th edition (2025)**
 [ToIntegerOrInfinity](https://tc39.es/ecma262/2025/multipage/abstract-operations.html#sec-tointegerorinfinity),
@@ -516,3 +516,21 @@ engine262 references. The actual runtime -> conversion -> primitive-conversion
 Only keys integrate here. Direct numeric/string converters, array storage and
 length conversion signatures remain unchanged. No symbols, boxing, new syntax,
 standard prototypes or compound/update reference caching are introduced.
+
+
+## Array-like ordinary length coercion (TS-014)
+
+The existing map context now reaches LengthOfArrayLike. One semantic length Get
+selects a Value, then accepted ordinary conversion runs before callback checking,
+array constructor checking or allocation. Replacing the source property does not
+replace that saved Value. The numeric bound is retained; element presence and
+values remain live. No extra ticks are added: helper candidate ticks and existing
+evaluator/map ticks share the same active budget. Exact abrupt records propagate.
+
+This implements the accepted object-coercion-integration design F12-F14, using
+its specification and V8/engine262 source rationale. Actual GuestArray storage
+length remains numeric and its definition/assignment conversions remain primitive
+only. A test subclass returning an object for length observes ordering only; it
+is not an accessor or exotic-storage implementation. There is no standard map
+registration, boxing, species expansion or symbol hook. Evidence and migration
+inventory: validation/ts-014/README.md.
