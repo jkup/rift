@@ -3,7 +3,7 @@ import { Environment, GuestObject, UNDEFINED, equal, failure, getValue, normal, 
 import type { Realm } from "./realm.js";
 import { stringConcat } from "./strings.js";
 import { GuestArray } from "./array-object.js";
-import { toNumber } from "./conversion.js";
+import { toNumber, toString } from "./conversion.js";
 
 export class Evaluator {
     steps = 0;
@@ -248,6 +248,25 @@ export class Evaluator {
         }
     }
     binary(op: string, left: Value, right: Value, loc: Location): Completion {
+        if (op === "+") {
+            // Both GetValue operations have completed. Full addition would now
+            // perform ToPrimitive with the default hint; objects remain unsupported.
+            if (left.kind === "object" || right.kind === "object") {
+                return failure("TypeError", "object-to-primitive conversion unsupported", loc);
+            }
+            if (left.kind === "string" || right.kind === "string") {
+                const a = toString(left, loc);
+                if (a.type === "throw") return a;
+                const b = toString(right, loc);
+                if (b.type === "throw") return b;
+                return normal({ kind: "string", value: stringConcat(a.value, b.value) });
+            }
+            const a = toNumber(left, loc);
+            if (a.type === "throw") return a;
+            const b = toNumber(right, loc);
+            if (b.type === "throw") return b;
+            return normal({ kind: "number", value: a.value + b.value });
+        }
         if (op === "-" || op === "*" || op === "/" || op === "%") {
             // Both operand evaluations/GetValue have finished. Conversion is
             // left-to-right, so an abrupt RHS evaluation precedes either conversion.
@@ -263,12 +282,10 @@ export class Evaluator {
             }
         }
         if (op === "===" || op === "!==") return normal({ kind: "boolean", value: op === "===" ? equal(left, right) : !equal(left, right) });
-        if (op === "+" && left.kind === "string" && right.kind === "string") return normal({ kind: "string", value: stringConcat(left.value, right.value) });
         if (left.kind !== "number" || right.kind !== "number") return failure("TypeError", "numeric operands required (coercion unsupported)", loc);
         const a = left.value;
         const b = right.value;
         switch (op) {
-            case "+": return normal({ kind: "number", value: a + b });
             case "<": return normal({ kind: "boolean", value: a < b });
             case ">": return normal({ kind: "boolean", value: a > b });
             case "<=": return normal({ kind: "boolean", value: a <= b });

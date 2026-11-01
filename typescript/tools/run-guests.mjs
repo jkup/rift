@@ -28,7 +28,7 @@ const generated = [
     ["number", "console.log(01);", 2, "parse SyntaxError: leading-zero numbers are unsupported"],
     ["exponent", "console.log(1e2);", 2, "parse SyntaxError: unsupported numeric literal"],
     ["proto", "let o={__proto__: null};", 2, "parse SyntaxError: prototype literal syntax is unsupported"],
-    ["coercion", "console.log(1 + '2');", 1, "runtime TypeError: numeric operands required (coercion unsupported)"],
+    ["coercion", "console.log(1 + '2');", 0, "", "12\n"],
     ["primitive-base", "console.log(null.x);", 1, "runtime TypeError: property base must be an object"],
     ["detached", "let o={x:1, f:function(){return this.x;}}; let f=o.f; f();", 1, "runtime TypeError: property base must be an object"],
     ["assignment-missing", "missing=1;", 1, "runtime ReferenceError: missing is not defined"],
@@ -204,6 +204,9 @@ execute("property-key-conversion", propertyCommand, propertyArgs, { stdout: "pro
 const numericCommand = lane === "node" ? process.execPath : join(root, "build/native/numeric-operators" + suffix);
 const numericArgs = lane === "node" ? [join(root, "build/node/test/numeric-operators.js")] : [];
 execute("numeric-operators", numericCommand, numericArgs, { stdout: "4 12 3 0\n3 -3\nLRLRLRLRUU\nnumeric operators passed\n" });
+const additionCommand = lane === "node" ? process.execPath : join(root, "build/native/addition" + suffix);
+const additionArgs = lane === "node" ? [join(root, "build/node/test/addition.js")] : [];
+execute("addition", additionCommand, additionArgs, { stdout: "addition passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

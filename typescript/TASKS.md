@@ -299,10 +299,24 @@ resolved them. No backend discrepancy, API redesign, pins/C++/Claude/COORDINATIO
 changes, branch switch, main merge or successor work. Awaiting coordinator review.
 ### TS-009 — Primitive binary addition
 
-Status: **ready**. Prerequisites: accepted TS-007/TS-008 (`7defba5`, `4ba6708`); TS-008 is done, superseding its awaiting-review handoff. Own binary-plus path in src/evaluator.ts, focused compiled host assertions and runtime-read guest fixtures, necessary test registration and migration of superseded plus rejection expectations, scoped feature/API docs and docs/validation/ts-009/. Coordinator owns COORDINATION.md. No unrelated runtime/parser/conversion API changes.
+Status: **in progress — awaiting coordinator review**. Owner: Codex implementation chat `01a198ab-eb69-7810-b1c5-5d9b3bd824f5`; base `fb93c15` on `codex/primitive-computed-keys`. Prerequisites: accepted TS-007/TS-008 (`7defba5`, `4ba6708`); TS-008 is done, superseding its awaiting-review handoff. Own binary-plus path in src/evaluator.ts, focused compiled host assertions and runtime-read guest fixtures, necessary test registration and migration of superseded plus rejection expectations, scoped feature/API docs and docs/validation/ts-009/. Coordinator owns COORDINATION.md. No unrelated runtime/parser/conversion API changes.
 
 Implement binary + for the existing primitive Value kinds. Evaluate/GetValue both operands left-to-right before conversion. Reject ordinary/array/function operands explicitly as unsupported object-to-primitive conversion without hook reads/calls (full addition uses the default ToPrimitive hint, not the property-key string hint). With primitive operands, if either is a string, convert both with existing partial toString and concatenate via stringConcat; otherwise convert left then right with existing toNumber and add typed binary64 numbers. Preserve exact abrupt completions and existing AST error locations. Keep readable explicit steps; do not stringify host Value wrappers, use display(), or silently implement object conversion. No relational/equality/logical changes, new syntax/update/compound operators, BigInt, symbols, boxing, standard Array API, pins or C++ changes. Consult primary spec and a relevant engine, record source references.
 
 Required tests: meaningful fixed outputs for every primitive kind paired on both sides of string and nonstring operands; null/undefined/booleans, empty/whitespace/numeric/invalid strings; number+number versus string concatenation; NaN/infinities, positive/negative zero, overflow and shortest numeric formatting/boundaries already supported by toString. Host assertions distinguish signed zero and preserve UTF-16 including NUL and lone surrogates. Exercise real parsed guest source, left association and existing precedence, closures and one-time operand effects. Exact left throw skips right; exact right throw wins over unsupported left object conversion; call and property GetValue abrupt identity; ordinary/array/function operands on either side reject with located errors and no hooks, including string partner. Retain existing numeric/string addition regressions, all TS-008 assertions, and explicit unchanged relational boundaries. Replace superseded plus rejection cases positively rather than deleting them, including generated coercion case in tools/run-guests.mjs and plus cases in test/numeric-operators.ts; inventory all others before editing. Preserve test denominator and assertions, adjusting intended expectations only.
 
 Run typecheck, runner/probes and rebuilt Node/native suites with all static gates. Keep source/tests readable and scope claims honest. Reduce backend failures; no weakened gates or pin changes. Record evidence/limitations, commit/push coherent work on current branch, stop for coordinator review. No successor dispatch or main merge.
+
+Handoff (2026-11-01): primitive binary + now selects existing partial ToString
+and stringConcat when either primitive is a string, otherwise existing partial
+ToNumber and binary64 addition. Both GetValue operations finish first; exact
+abrupt records and AST locations are preserved. Objects reject at the explicit
+default-hint ToPrimitive boundary without hook reads/calls. Three superseded
+plus rejection expectations migrated positively; all prior cases retained.
+Fixed-result compiled tests cover primitive pairs, numeric/formatting boundaries,
+signed zero, UTF-16, precedence/association, runtime-read closures, evaluation
+order and exact abrupt identity. Typecheck passes; runner 20/20; probes 10/10;
+rebuilt Node/native 156/156 each, no skips; all 15 native static gates pass.
+Evidence, migration inventory and limitations: docs/validation/ts-009/.
+No compiler/backend discrepancy, new API, pins/C++/Claude/COORDINATION changes,
+branch switch, merge or successor dispatch. Awaiting coordinator review.

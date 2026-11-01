@@ -412,3 +412,22 @@ ToPrimitive remain unsupported. Ordinary objects, arrays and functions reject
 without reading or calling conversion hooks. Binary plus, comparisons, logical
 operators, grammar, boxing and symbols remain unchanged. No conversion backend
 or compiler workaround was added. See [validation](validation/ts-008/README.md).
+
+## Primitive binary addition (TS-009)
+
+The existing binary expression path evaluates/GetValue left then right, returning
+abrupt records unchanged before entering operator application. Addition now rejects
+objects explicitly at the default-hint ToPrimitive boundary. This is distinct from
+the string hint used for property keys; no hook is read or called. For current
+primitives, either string operand selects left then right partial toString and
+stringConcat. Otherwise left then right partial toNumber feeds typed binary64
+addition. Existing conversion backends and AST error locations are unchanged.
+
+Source review (2026-11-01):
+[ECMA-262 operator application](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-applystringornumericbinaryoperator)
+and [operand evaluation](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-evaluatestringornumericbinaryexpression),
+plus [engine262 application at d553e7b52501fbc47eae981c8d0fa7a5c26d0171](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/runtime-semantics/ApplyStringOrNumericBinaryOperator.mts).
+These support the branch and order; no source code was copied. Full ToPrimitive,
+BigInt/ToNumeric, symbols and boxing remain outside this primitive-only contract.
+Relational/equality/logical operations and grammar are unchanged. See
+[TS-009 validation](validation/ts-009/README.md) for matrix and migrations.

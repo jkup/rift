@@ -155,7 +155,13 @@ for (const objectSource of ["{}", "[]", "function() {} "]) {
         check(hooks.kind === "number" && hooks.value === 0, "no conversion hooks");
     }
 }
-for (const expression of ["1 + '2'", "null + 1", "'1' < 2", "true >= 0"]) {
+// Superseded plus rejections remain explicit positive regressions.
+number("null + 1", 1);
+const plusRealm = new Realm((_line) => {});
+check(execute("let mixedPlus = 1 + '2';", plusRealm).type === "normal", "mixed plus completion");
+const mixedPlus = value(plusRealm, "mixedPlus");
+check(mixedPlus.kind === "string" && mixedPlus.value === "12", "mixed plus regression");
+for (const expression of ["'1' < 2", "true >= 0"]) {
     const result = execute(expression + ";", new Realm((line) => console.log(line)));
     check(result.type === "throw" && result.diagnostic.message === "numeric operands required (coercion unsupported)", "unchanged boundary " + expression);
 }
