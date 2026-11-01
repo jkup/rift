@@ -152,3 +152,9 @@ Accepted `7defba5`: reviewed actual primitive conversion/reference migration, al
 
 Next ready TS-008 integrates existing primitive ToNumber into unary numeric and non-additive arithmetic operators. This is a bounded follow-on using accepted conversion infrastructure, not a full coercion implementation. Same integration branch; main remains 0819c71. Claude queue remains ready/reserved.
 Active sole implementation writer: TS-008 chat `01a1989e-7fb4-7ad1-ac9b-2b27fb6302f1`, host `local`, assigned base `620cd29`. Progress confirmed active; saved cursor `7c598d2b-de1e-46dc-b2e1-2891f1bf303b:1`. Owns frozen numeric operator implementation/test/docs contract only. Coordinator owns this file. Review actual work and static/native evidence before acceptance.
+
+## TS-008 acceptance — 2026-11-01 19:51 UTC
+
+Accepted `4ba6708`: reviewed actual evaluator migration, primitive/edge expectations, exact evaluation/GetValue throws, no-hook object boundaries, registration and evidence. Independently rebuilt Node/native suites: 155/155 each, no skips; all fourteen static gates pass. Producer runner20/probes10/typecheck evidence retained. Completed chat idle; cursor `7c598d2b-de1e-46dc-b2e1-2891f1bf303b:2`. Binary plus and relational coercion remain unsupported; full ToPrimitive/BigInt not claimed.
+
+Next ready TS-009 adds primitive binary addition using accepted number/string conversions. Same integration branch; main unchanged. Claude queue ready and reserved.
