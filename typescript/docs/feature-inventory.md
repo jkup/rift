@@ -34,3 +34,11 @@ Line-terminator regressions write actual LF, CR, CRLF, U+2028 and U+2029 into ru
 Full descriptor/prototype semantics, arrays, coercion, broad builtins, modules,
 Temporal, regex, async/generators, weak collections and optimization remain outside
 TS-001. Existing C++ tests and test262 are not counted in the foundation test total.
+
+TS-005H adds internal ordinary `internalHasProperty`, primitive
+`toIntegerOrInfinity`/`toLength`, and object-only `lengthOfArrayLike`. Presence
+includes inherited undefined and distinguishes holes; length reads use the
+completion-aware Get path and clamp at 2^53-1. Object-to-primitive conversion
+still explicitly throws unsupported TypeError. No guest APIs, boxing, map,
+accessors or proxy/exotic traversal are introduced. See the TS-005H architecture
+notes and `docs/validation/ts-005h/` for interfaces, sources and measured checks.

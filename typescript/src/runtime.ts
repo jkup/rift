@@ -113,6 +113,16 @@ export class GuestObject {
         this.prototypeSlot = prototype;
         return { type: "normal", value: true };
     }
+    // Ordinary data-only presence, including inherited undefined. No value reads
+    // or exotic prototype dispatch; current arrays share these ordinary slots.
+    internalHasProperty(key: PropertyKey, _loc: Location): InternalBooleanCompletion {
+        let object: GuestObject | null = this;
+        while (object !== null) {
+            if (object.propertyStorage.has(key)) return { type: "normal", value: true };
+            object = object.prototypeSlot;
+        }
+        return { type: "normal", value: false };
+    }
     internalGet(key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
         let object: GuestObject | null = this;
         while (object !== null) {

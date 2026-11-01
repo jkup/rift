@@ -88,3 +88,20 @@ export function toUint32(value: Value, loc: Location): NumberCompletion {
     const remainder = integer % 4294967296;
     return { type: "normal", value: remainder === 0 ? 0 : remainder < 0 ? remainder + 4294967296 : remainder };
 }
+
+export function toIntegerOrInfinity(value: Value, loc: Location): NumberCompletion {
+    const converted = toNumber(value, loc);
+    if (converted.type === "throw") return converted;
+    const number = converted.value;
+    if (Number.isNaN(number) || number === 0) return { type: "normal", value: 0 };
+    if (!Number.isFinite(number)) return converted;
+    const integer = Math.trunc(number);
+    // Mathematical truncation has no negative zero, including for (-1, 0).
+    return { type: "normal", value: integer === 0 ? 0 : integer };
+}
+
+export function toLength(value: Value, loc: Location): NumberCompletion {
+    const integer = toIntegerOrInfinity(value, loc);
+    if (integer.type === "throw") return integer;
+    return { type: "normal", value: Math.min(Math.max(integer.value, 0), 9007199254740991) };
+}

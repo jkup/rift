@@ -275,3 +275,41 @@ already-tested class override and ordered key API, without copying upstream code
 or introducing its generator/intrinsics machinery. Future object coercion still
 needs its own guest-call boundary and tests; separate conversion calls here are
 not evidence that object hooks work. See [TS-005A validation](validation/ts-005a/README.md).
+
+## Property presence and array-like length (TS-005H)
+
+`GuestObject.internalHasProperty(key, loc): InternalBooleanCompletion` traverses
+private ordinary slots iteratively. It distinguishes a missing property from a
+present undefined value, includes prototypes, and performs no Get or guest call.
+This covers current ordinary objects and arrays; it does not dispatch exotic
+prototype operations or claim proxy/accessor support.
+
+`toIntegerOrInfinity(value, loc)` and `toLength(value, loc)` return
+`NumberCompletion`. Integer conversion invokes the existing ToNumber once,
+propagates throws, preserves infinities and truncates finite numbers with +0 for
+all zero results. Length clamps to 0 through 9007199254740991, without uint32
+wrapping. Both retain the explicit unsupported object-conversion TypeError.
+
+`lengthOfArrayLike(object: GuestObject, loc)` in `src/array-like.ts` calls
+`internalGet("length", objectValue, loc)` once, preserving the input as receiver
+and the exact abrupt completion, then converts the normal value with ToLength.
+Missing length therefore yields +0. This API requires an object; it supplies no
+ToObject, boxing, guest entry point, callback context, species or map algorithm.
+
+Sources consulted 2026-11-01: ECMA-262 **16th edition (2025)**
+[ToIntegerOrInfinity](https://tc39.es/ecma262/2025/multipage/abstract-operations.html#sec-tointegerorinfinity),
+[ToLength](https://tc39.es/ecma262/2025/multipage/abstract-operations.html#sec-tolength),
+[LengthOfArrayLike](https://tc39.es/ecma262/2025/multipage/abstract-operations.html#sec-lengthofarraylike), and
+[OrdinaryHasProperty](https://tc39.es/ecma262/2025/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryhasproperty).
+The mathematical integer result motivates explicitly normalizing truncated
+negative fractions to +0, rather than exposing host Math.trunc's -0.
+
+Engine comparison: engine262 revision
+`d553e7b52501fbc47eae981c8d0fa7a5c26d0171`, inspected through GitHub:
+[type-conversion.mts](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/abstract-ops/type-conversion.mts),
+[object-operations.mts](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/abstract-ops/object-operations.mts), and
+[objects.mts](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/abstract-ops/objects.mts).
+Its staged Get/ToLength abrupt handling and descriptor-based presence support
+these semantics. Rift uses existing explicit records and an iterative ordinary
+slot traversal instead of generator-based recursive exotic dispatch. No upstream
+code was copied. These inspections are design evidence, not conformance results.
