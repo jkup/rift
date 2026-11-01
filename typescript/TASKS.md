@@ -40,7 +40,11 @@ Acceptance evidence: typecheck passes; runner regressions 20/20; compiler probes
 
 ## TS-002 — Frontend extension batch
 
-Status: **ready** (TS-001 dependency satisfied). Owner: unassigned.
+Status: **in progress** — implementation complete, awaiting coordinator review. Owner: Codex implementation chat `01a197b1-67cb-7e00-87ed-dc86a82b933b`; base `d7e3019` (clean checkout).
+
+Coordinator-approved scope extension: conditional-specific generated cases in `tools/run-guests.mjs` and new retained evidence in `docs/validation/ts-002/`. Preserve all prior cases, acceptance logic and TS-001 evidence.
+
+Handoff (2026-11-01): added the conditional AST/evaluator case and precedence-climbing parser support, with assignment expressions in both arms and right association. Selected-arm evaluation returns values and propagates abrupt completions. Explicit expected-result tests cover precedence, nested arguments, all existing truthiness categories, chosen-arm effects, detached methods, missing arms/colon, errors/throws, unsupported adjacent syntax, and parser/evaluation bounds. Typecheck passes, runner 20/20, probes 10/10, Node/native guests 112/112 each with no skips. Native CLI 657/657 static statements, realm driver 670/670; linking used approved Zig library access. Evidence and design sources: `docs/validation/ts-002/README.md`. No new compiler workaround, coercion expansion or follow-on feature work. Existing unsupported grammar and resource limits remain; coordinator acceptance is pending.
 
 Assignment: conditional (`test ? consequent : alternate`) expressions only. Own `src/syntax.ts`, `src/parser.ts`, the new conditional case in `src/evaluator.ts`, `test/fixtures/conditional.js`, conditional entries in `test/cases.json`, and the corresponding inventory row. Add the `?` token in `src/lexer.ts` as a coordinated one-line change. The evaluator already supplies `truthy` and explicit completion propagation; it does **not** yet have a conditional node, so adding that single union alternative and evaluator case is part of this task. No other interface redesign.
 

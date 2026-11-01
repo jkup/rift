@@ -166,6 +166,13 @@ export class Evaluator {
                 if (result.value.kind !== "number") return failure("TypeError", "numeric operand required (coercion unsupported)", expr.loc);
                 return normal({ kind: "number", value: expr.op === "-" ? -result.value.value : result.value.value });
             }
+            case "conditional": {
+                const test = this.evaluate(expr.test, env, receiver);
+                if (test.type !== "normal") return test;
+                // Return the chosen arm's value or abrupt completion unchanged.
+                if (truthy(test.value)) return this.evaluate(expr.consequent, env, receiver);
+                return this.evaluate(expr.alternate, env, receiver);
+            }
             case "binary": {
                 const left = this.evaluate(expr.left, env, receiver);
                 if (left.type !== "normal") return left;

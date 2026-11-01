@@ -1,4 +1,5 @@
 [
+  {"file":"test/fixtures/conditional.js","stdout":"0\n2\n5\n7 7 0\n10 7 10\n12 12\n13 15\n18 19\n-6 22 14\n0 23\n25 28\n30 ta\n33 tafd\n34 35\n36 37\n0 0 0 0 0 0 0\n1 1 1 1 1 1\ntrue 38\ntrue\ntrue\n39\n"},
   {"file":"examples/counter.js","stdout":"total 36\nnext 14\nsame object true\n"},
   {"file":"test/fixtures/semantics.js","stdout":"24\n1 2 11 3\n10 12\ntrue false 3 6 10 10\ntrue true\nundefined 12 12\n1 2\n7 undefined\n3\n5 8\n19\n7 9 3 4 -6 true\nfalse true 9 8\ntrue false false true\nhéllo let }\n5 5\n2\n1\n"},
   {"file":"test/fixtures/order.js","stdout":"bkr 7\ntrue bmrrc\nrr 7 7\n"},

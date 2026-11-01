@@ -150,12 +150,13 @@ class Parser {
     }
     precedence(op: string): number {
         if (op === "=") return 1;
-        if (op === "||") return 2;
-        if (op === "&&") return 3;
-        if (op === "===" || op === "!==") return 4;
-        if (op === "<" || op === ">" || op === "<=" || op === ">=") return 5;
-        if (op === "+" || op === "-") return 6;
-        if (op === "*" || op === "/" || op === "%") return 7;
+        if (op === "?") return 2;
+        if (op === "||") return 3;
+        if (op === "&&") return 4;
+        if (op === "===" || op === "!==") return 5;
+        if (op === "<" || op === ">" || op === "<=" || op === ">=") return 6;
+        if (op === "+" || op === "-") return 7;
+        if (op === "*" || op === "/" || op === "%") return 8;
         return 0;
     }
     expression(min: number): Expr {
@@ -194,6 +195,15 @@ class Parser {
             const precedence = this.current().kind === "punct" ? this.precedence(op) : 0;
             if (precedence === 0 || precedence < min) break;
             this.take();
+            if (op === "?") {
+                // Both arms are AssignmentExpressions. Parsing them at assignment
+                // precedence also makes nested conditionals associate to the right.
+                const consequent = this.expression(1);
+                this.expect(":");
+                const alternate = this.expression(1);
+                left = { kind: "conditional", loc, test: left, consequent, alternate };
+                continue;
+            }
             const right = this.expression(op === "=" ? precedence : precedence + 1);
             if (op === "=") {
                 if (left.kind !== "identifier" && left.kind !== "member") this.fail("invalid assignment target", loc);
@@ -220,7 +230,7 @@ class Parser {
             this.expect(")");
             return expr;
         }
-        if (t.text === "!" || t.text === "-" || t.text === "+") return { kind: "unary", loc, op: t.text, operand: this.expression(8) };
+        if (t.text === "!" || t.text === "-" || t.text === "+") return { kind: "unary", loc, op: t.text, operand: this.expression(9) };
         if (t.text === "{") {
             const keys: string[] = [];
             const values: Expr[] = [];

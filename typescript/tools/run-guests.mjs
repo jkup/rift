@@ -57,6 +57,32 @@ function lineCase(name, source, expected) {
     writeFileSync(join(root, file), source);
     cases.push({ file, ...expected });
 }
+// Conditional failures assert the phase, diagnostic and effects before completion.
+for (const [name, source, expected] of [
+    ["missing-colon", "true ? 1;", { status: 2, error: "1:9: parse SyntaxError: expected ':', found ';'" }],
+    ["missing-consequent", "true ? : 1;", { status: 2, error: "1:8: parse SyntaxError: unsupported or unexpected syntax: :" }],
+    ["missing-alternate", "true ? 1 :;", { status: 2, error: "1:11: parse SyntaxError: unsupported or unexpected syntax: ;" }],
+    ["alternate-eof", "true ? 1 :", { status: 2, error: "1:11: parse SyntaxError: unsupported or unexpected syntax: <eof>" }],
+    ["assignment-target", "(true ? a : b) = 1;", { status: 2, error: "1:1: parse SyntaxError: invalid assignment target" }],
+    ["unchosen-syntax", "console.log('no'); true ? 1 :;", { status: 2, error: "1:30: parse SyntaxError: unsupported or unexpected syntax: ;" }],
+    ["optional-chain", "true?.x;", { status: 2, error: "1:5: parse SyntaxError: unsupported operator: ?." }],
+    ["nullish", "true ?? 1;", { status: 2, error: "1:7: parse SyntaxError: unsupported or unexpected syntax: ?" }],
+    ["comma", "true ? 1, 2 : 3;", { status: 2, error: "1:9: parse SyntaxError: expected ':', found ','" }],
+    ["abrupt-test", "missing ? console.log('no') : console.log('no');", { status: 1, error: "1:1: runtime ReferenceError: missing is not defined" }],
+    ["abrupt-consequent", "true ? missing : console.log('no'); console.log('after');", { status: 1, error: "1:8: runtime ReferenceError: missing is not defined" }],
+    ["abrupt-alternate", "false ? console.log('no') : missing; console.log('after');", { status: 1, error: "1:29: runtime ReferenceError: missing is not defined" }],
+    ["throw-test", "function stop() { throw 'stop'; } stop() ? console.log('no') : console.log('no');", { status: 1, error: "1:19: runtime Uncaught: stop" }],
+    ["throw-consequent", "function stop() { throw 'stop'; } true ? stop() : console.log('no'); console.log('after');", { status: 1, error: "1:19: runtime Uncaught: stop" }],
+    ["throw-alternate", "function stop() { throw 'stop'; } false ? console.log('no') : stop(); console.log('after');", { status: 1, error: "1:19: runtime Uncaught: stop" }],
+    ["effects-before-throw", "function stop() { console.log('chosen'); throw 'stop'; } false ? console.log('no') : stop();", { status: 1, stdout: "chosen\n", error: "1:42: runtime Uncaught: stop" }],
+    ["nested-success", "console.log(" + "false ? 0 : ".repeat(30) + "42);", { stdout: "42\n" }],
+    ["consequent-depth", "true ? ".repeat(200) + "1" + " : 0".repeat(200) + ";", { status: 2, errorPattern: "1:\\d+: parse SyntaxError: syntax nesting limit exceeded" }],
+    ["alternate-depth", "false ? 0 : ".repeat(200) + "1;", { status: 2, errorPattern: "1:\\d+: parse SyntaxError: syntax nesting limit exceeded" }],
+    ["unchosen-depth", "true ? 1 : " + "false ? 0 : ".repeat(200) + "1;", { status: 2, errorPattern: "1:\\d+: parse SyntaxError: syntax nesting limit exceeded" }],
+    ["evaluation-depth", "1" + "+(true ? 1 : 0)".repeat(300) + ";", { status: 1, errorPattern: "1:\\d+: runtime RangeError: evaluation nesting limit exceeded" }],
+]) {
+    lineCase("conditional-" + name, source, expected);
+}
 for (const [name, separator] of [["lf", "\n"], ["cr", "\r"], ["crlf", "\r\n"], ["ls", "\u2028"], ["ps", "\u2029"]]) {
     lineCase(name + "-line-comment", "console.log(1); // comment" + separator + "console.log(2);", { stdout: "1\n2\n" });
     lineCase(name + "-whitespace", "console.log(1);" + separator + "console.log(2);", { stdout: "1\n2\n" });

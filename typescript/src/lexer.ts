@@ -106,7 +106,7 @@ export function lex(source: string): LexResult {
             advance();
             advance();
             tokens.push({ kind: "punct", text: two, loc });
-        } else if ("{}();,.:[]+-*/%<>=!".includes(c)) {
+        } else if ("{}();,.:?[]+-*/%<>=!".includes(c)) {
             tokens.push({ kind: "punct", text: advance(), loc });
         } else { fail("unsupported character: " + c, loc); }
     }

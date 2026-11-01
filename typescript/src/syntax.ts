@@ -7,6 +7,7 @@ export type Expr =
     | { kind: "unary"; loc: Location; op: string; operand: Expr }
     | { kind: "binary"; loc: Location; op: string; left: Expr; right: Expr }
     | { kind: "assign"; loc: Location; target: Expr; value: Expr }
+    | { kind: "conditional"; loc: Location; test: Expr; consequent: Expr; alternate: Expr }
     | { kind: "member"; loc: Location; base: Expr; key: Expr }
     | { kind: "call"; loc: Location; callee: Expr; args: Expr[] }
     | { kind: "function"; loc: Location; params: string[]; body: Stmt[] }
