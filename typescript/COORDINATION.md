@@ -86,3 +86,5 @@ Completed implementation writer: TS-005A chat `01a19822-9932-7562-94df-3e3d5f329
 Accepted TS-005A `0962b57`: inspected actual array algorithm, sparse descending truncation/restore/freeze, receiver dispatch, primitive conversion boundary and host/guest expected tests. Independently rebuilt Node/native lanes, 134/134 each, eight static gates pass. Producer runner20/probes10/typecheck evidence reviewed. Objects, array syntax/constructor/methods remain explicitly unsupported. Completed chat idle; cursor `127b0799-4721-40c4-9efb-07c906b044b1:2`.
 
 Next ready TS-005H implements ordinary HasProperty and primitive ToLength/LengthOfArrayLike prerequisites under the frozen TASKS contract. Map remains blocked pending callback/boxing/species design. Claude queue preserved and ready.
+
+Active sole implementation writer: TS-005H chat `01a19830-8a3a-7b90-ac70-ef0846f2b896`, host `local`, base `f036c8e`. Owns frozen presence/length helper modules and compiled tests/registration/scoped docs. Initial progress active; saved cursor `7675fe4e-54e1-4ecf-a15b-261da1e526a4:1`. Coordinator owns this file; map remains blocked.
