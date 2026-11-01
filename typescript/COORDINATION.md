@@ -231,3 +231,9 @@ Accepted pushed implementation `c77d9f1`: reviewed required-context forwarding, 
 
 Next ready TS-015B implements effectful array length under the accepted design's L1-L21 matrix and explicit old-test migrations. Bootstrap and direct converters retain zero-hook primitive boundaries. Claude queue remains reserved; main remains unchanged.
 Acceptance and TS-015B contract pushed through 737d5a6. Active sole writer: TS-015B chat `01a19935-908b-7331-9a83-88016377a453`, host `local`, base `737d5a6`. Explicit wait confirms active progress; saved cursor `39877dc1-1cdb-49a2-b529-62ab006fdcdf:2`. Owns frozen effectful length task only; coordinator owns this file.
+
+## TS-015B acceptance — 2026-11-01 22:36 UTC
+
+Accepted pushed `3a5d360`: reviewed saved descriptor/Value, distinct conversions and post-hook storage, complete new driver/fixture, previous negative migrations, registration and evidence. Independently rebuilt Node/native: 162/162 each, no skips; all 21 static builds/coverage gates pass. Producer typecheck/runner20/probes10 retained; test-only narrowed comparisons have a retained compiler reduction. Diff check passes. Completed chat idle; saved cursor `39877dc1-1cdb-49a2-b529-62ab006fdcdf:3`.
+
+Next ready TS-016P is a bounded design for realm-owned intrinsic prototypes. Current null-root production allocation prevents ordinary default conversion and standard method exposure; resolve graph/bootstrap/allocation and test migration before implementation. No standard library expansion is implicitly authorized. Main unchanged, three Claude companion tasks reserved. Bootstrap/direct converters still reject object conversion without hooks.
