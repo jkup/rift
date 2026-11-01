@@ -111,10 +111,16 @@ Accepted TS-005C `5d59909`: actual context/call-boundary diff, all callers and c
 
 TS-005B now ready only as internal object-only default-array map under frozen contract. No standard API, boxing or complete species. Claude tasks reserved and unchanged.
 
-Active sole implementation writer: TS-005B chat `01a19859-b6f6-79a2-bd0f-9a766b28b875`, host `local`, base `8b39d7b`. Owns frozen internal map module, compiled tests/guest fixtures, registration and scoped docs/evidence. Initial progress active; saved cursor `ff3a79e6-b38d-45c7-8b96-0b67cda06963:1`. Coordinator owns this file. TS-005C is accepted at 5d59909 despite its stale task-row status; reconcile that row next time TASKS.md is not actively being claimed/edited by implementation. Acceptance here and frozen TS-005B prerequisites are authoritative.
+Completed implementation writer: TS-005B chat `01a19859-b6f6-79a2-bd0f-9a766b28b875`, host `local`, base `8b39d7b`. Owns frozen internal map module, compiled tests/guest fixtures, registration and scoped docs/evidence. Initial progress active; saved cursor `ff3a79e6-b38d-45c7-8b96-0b67cda06963:1`. Coordinator owns this file. TS-005C is accepted at 5d59909 despite its stale task-row status; reconcile that row next time TASKS.md is not actively being claimed/edited by implementation. Acceptance here and frozen TS-005B prerequisites are authoritative.
 
 ## Review at 2026-11-01 18:36 UTC
 
 Reviewed TS-005B candidate `f3f93c8`: core algorithm, matrix evidence, test registration and scope inspected; independent Node rebuild 137/137 passes. Not accepted yet. Requested concrete readability fix: expand densely compressed host test scenarios and multistep guest fixture functions, preserve all checks/order and update source-location assertions deliberately. Implementation chat remains sole writer for that review fix, also authorized to reconcile stale TS-005C status to accepted 5d59909. No coordinator edits to its active files. Native independent final validation waits for the fix.
 
 Review message delivered and progress confirmed active; saved cursor `ff3a79e6-b38d-45c7-8b96-0b67cda06963:3`. Next step: inspect actual fix diff, rerun relevant final Node/native validation, accept only once readable and correct; then choose the next bounded rewrite task. Claude queue remains ready and reserved. No owner decision needed.
+
+## Review at 2026-11-01 18:51 UTC
+
+Accepted TS-005B final `2ad1619` (core implementation `f3f93c8`). Reviewed readability fix and fixture location assertions; prior core/matrix review retained. Independently rebuilt both suites, 137/137 each; eleven static native gates pass. Producer runner20/probes10/typecheck evidence retained. Internal object-only/default-array operation only; no standard registration/boxing/species. Stale TS-005C status reconciled. Completed chat idle; cursor `ff3a79e6-b38d-45c7-8b96-0b67cda06963:4`.
+
+Next ready TS-006 exposes existing array storage through bounded array literal syntax, preserving holes and limits. This follows approved rewrite purpose without widening standard-library claims. Claude companion tasks remain ready and reserved. Review-fix push was rejected in implementation chat; coordinator verifies existing origin and original owner commit/push authorization before pushing acceptance and fix.
