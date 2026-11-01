@@ -17,7 +17,7 @@ The coordinator replenishes this queue during implementation reviews when useful
 
 ## CL-001 — Audit the existing custom JavaScript tests
 
-Status: **ready**. Owner: unclaimed. Dependencies: none.
+Status: **review needed**. Owner: Claude Code session, branch `claude/cl-001-custom-test-audit` (separate worktree), base `0819c71`. Dependencies: none.
 
 Purpose: identify portable regression evidence we can reuse without assuming the current C++ harness establishes correctness.
 
@@ -34,7 +34,7 @@ Deliver:
 
 Acceptance: another agent can locate each cited example and reproduce inventory counts. No invented pass rates; running C++ is optional and must be reported separately from static inspection. No core or existing-test edits.
 
-Handoff: pending.
+Handoff (2026-11-01): outputs `typescript/docs/assistance/custom-test-audit.md` and read-only `typescript/tools/assistance/custom-test-audit/inventory.mjs` (work commit `e7e41dc`). Counts reproduce with `node typescript/tools/assistance/custom-test-audit/inventory.mjs`: 240 files under `test/`, 225 run by `npm test`, classified by area and failure visibility. Static inspection plus Node v26.13.0 reference runs of two files; C++ was not built or run, so no Rift pass rates are claimed. Key findings: uncaught guest throws exit 0 (H1); 106 of 225 run files have no harness-visible failure signal; stale UNSUPPORTED scripts and one test asserting non-spec sloppy `this` behavior. No dedicated closure or receiver fixtures exist, so legacy reuse for the first milestone is limited to adapted loop/function/object fixtures. Limitations: area and category assignment is heuristic regex classification; proposed harness fixes require separate coordinator assignment.
 
 ## CL-002 — Audit test262 runner semantics before future reuse
 
