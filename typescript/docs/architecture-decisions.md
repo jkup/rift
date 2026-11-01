@@ -455,3 +455,27 @@ The code-unit loop deliberately avoids relying on host collation or scalar order
 Fixed surrogate, NUL and prefix assertions execute through parsed expressions in
 both hosts. No object conversion, equality change or new syntax is included.
 Evidence and regression migration inventory: validation/ts-010/README.md.
+
+### Internal ordinary primitive conversion (TS-011)
+
+`primitive-conversion.ts` exports the frozen `ordinaryToPrimitive(input, hint,
+context, loc)` and partial `toPrimitive(input, hint, context, loc)` helpers.
+Both return ValueCompletion. The ordinary helper requires an object (host fault
+otherwise); its number/string hint selects sequential valueOf/toString lookups.
+The wrapper preserves primitive Value identity without operations and maps default
+to number. Each candidate spends exactly one active lookup tick, performs semantic
+internalGet with the original receiver, and calls callable methods through the
+same OperationContext with a fresh empty argument list. Any primitive succeeds;
+object results advance to the next fresh lookup. Tick/Get/call throws propagate
+unchanged; exhaustion creates a located TypeError. No helper-local counters or
+ambient evaluator state exist.
+
+This implements the accepted [TS-011P contract](object-coercion-integration.md).
+The specification's [OrdinaryToPrimitive](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-ordinarytoprimitive)
+and V8 **12.0.267** [JSReceiver::OrdinaryToPrimitive](https://github.com/v8/v8/blob/12.0.267/src/objects/js-objects.cc)
+were checked for sequential lookup, callable filtering, receiver and primitive
+acceptance. No engine source was copied. Rift's explicit completions and lookup
+tick are local conventions. The partial wrapper deliberately omits symbol hooks.
+Only the compiled driver and its test bridge call these helpers; existing
+operators, converters, references, arrays and production registration are unchanged.
+See [evidence and H1-H17 coverage](validation/ts-011/README.md).

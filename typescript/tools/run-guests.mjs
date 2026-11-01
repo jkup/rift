@@ -210,6 +210,9 @@ execute("addition", additionCommand, additionArgs, { stdout: "addition passed\n"
 const relationalCommand = lane === "node" ? process.execPath : join(root, "build/native/relational" + suffix);
 const relationalArgs = lane === "node" ? [join(root, "build/node/test/relational.js")] : [];
 execute("relational", relationalCommand, relationalArgs, { stdout: "relational passed\n" });
+const primitiveCommand = lane === "node" ? process.execPath : join(root, "build/native/primitive-conversion" + suffix);
+const primitiveArgs = lane === "node" ? [join(root, "build/node/test/primitive-conversion.js")] : [];
+execute("primitive-conversion", primitiveCommand, primitiveArgs, { stdout: "primitive conversion passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

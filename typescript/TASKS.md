@@ -372,10 +372,22 @@ merge or successor work. Await coordinator review and implementation freeze.
 
 ### TS-011 — Internal ordinary primitive-conversion helpers
 
-Status: **ready**. Prerequisite TS-011P accepted at `d48a08f`, superseding its awaiting-review handoff. The coordinator freezes docs/object-coercion-integration.md Exact next-batch interfaces, Context/resource/realm ownership, H1-H17 matrix and Proposed next implementation ownership/acceptance. Own only new src/primitive-conversion.ts, test/primitive-conversion.ts, runtime-read test/fixtures/primitive-conversion.js, necessary driver registration, scoped feature/API docs and docs/validation/ts-011/, plus task claim/handoff. Coordinator owns COORDINATION.md. No existing production runtime/evaluator/conversion/array API edits.
+Status: **in progress — awaiting coordinator review**. Owner: Codex implementation chat `01a198d4-f2f6-7341-85b5-60bfde026ba5`; base `99b37af` on `codex/primitive-computed-keys`. Prerequisite TS-011P accepted at `d48a08f`, superseding its awaiting-review handoff. The coordinator freezes docs/object-coercion-integration.md Exact next-batch interfaces, Context/resource/realm ownership, H1-H17 matrix and Proposed next implementation ownership/acceptance. Own only new src/primitive-conversion.ts, test/primitive-conversion.ts, runtime-read test/fixtures/primitive-conversion.js, necessary driver registration, scoped feature/API docs and docs/validation/ts-011/, plus task claim/handoff. Coordinator owns COORDINATION.md. No existing production runtime/evaluator/conversion/array API edits.
 
 Implement ordinaryToPrimitive(input Value, number|string hint, context, loc) and partial toPrimitive(input Value, default|number|string hint, context, loc), returning ValueCompletion. Ordinary helper nonobject input is a host invariant fault; partial wrapper returns exact primitive Value unchanged with no ticks/lookups/calls. Default maps to number for current object subset. Per candidate: exactly one active tick, fresh semantic internalGet with original Value receiver, skip noncallables, context.call with original receiver and zero arguments, accept any primitive return or fall back after object result; final located TypeError. Preserve exact tick/Get/call throws, method mutations and host faults. No symbol hooks/string substitutes, recursion into returned objects, host wrapper conversion, ambient/new evaluator or counters reset.
 
 Implement every H1-H17 scenario, including real guest method execution through retained evaluator context and test-only bridge, builtin reentrancy/guest runaway bounds, first/second abrupt identity and mutation, exact receivers/args, all primitive returns/hints, method deletion/prototype changes, active-call cleanup for host faults/invalid builtin completions and realm independence. Also assert ordinary helper's nonobject precondition faults without guest wrapping. Keep existing operator/converter rejection behavior and every prior assertion unchanged. Full ToPrimitive, standard prototypes, Date/wrappers/symbols/accessors/proxies and production caller integrations remain outside scope. No extra ticks beyond frozen policy. Readable tests; synthetic Get traces do not claim accessors.
 
 Run typecheck, runner/probes and rebuilt Node/native suites; retain all 157 entries and add the driver, with all 17 static gates. New helper must be reached in compiled tests. Reduce/report compiler failures, no pins or weakened coverage. Record honest evidence/limitations, commit/push coherent work on current branch and stop awaiting coordinator review. No successor dispatch or main merge.
+
+
+Handoff (2026-11-01): implemented frozen ordinaryToPrimitive/partial toPrimitive
+in a new helper-only module. H1-H17 compiled assertions and runtime-read guest
+methods cover fresh lookup order, receivers, all primitive returns, mutations,
+exact abrupt identity, shared budgets, host-fault call cleanup and realm state.
+Existing production source and all prior tests remain unchanged. Typecheck passes;
+runner 20/20; probes 10/10; rebuilt Node/native 158/158, no skips; all 17 native
+static gates pass. Evidence/limitations: docs/validation/ts-011/. Initial sandbox
+Zig library failures retained; approved escalation resolved linking. No compiler
+workaround, pin/API/C++/Claude/COORDINATION changes, branch switch, main merge or
+successor dispatch. Awaiting coordinator review.

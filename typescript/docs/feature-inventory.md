@@ -66,3 +66,13 @@ Each slot spends a shared execution tick, including holes. Initial prototype is
 null; no Array global, methods, spread, destructuring or comma operator. Computed
 numeric keys convert to strings (`a[0]` and `a['0']` alias). Parser/source limits apply.
 The readable `test/fixtures/array-literals.js` also serves as a CLI example.
+
+### Internal primitive-conversion helpers (TS-011)
+
+Internal ordinaryToPrimitive and partial toPrimitive support explicit own or
+inherited callable valueOf/toString methods, original receivers, fresh fallback
+lookups and shared active evaluation budgets. A compiled test bridge exercises
+real guest methods; no guest intrinsic is registered. All production operators,
+converters, computed keys and array paths retain their previous primitive-only
+restrictions. Standard prototypes, symbol hooks, Date/wrappers, accessors/proxies
+and full ToPrimitive remain unsupported. Evidence: [TS-011](validation/ts-011/README.md).
