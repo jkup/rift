@@ -94,3 +94,5 @@ Completed implementation writer: TS-005H chat `01a19830-8a3a-7b90-ac70-ef0846f2b
 Accepted TS-005H `a1a6aa6`: inspected presence versus undefined, iterative traversal, integer/length normalization, single completion-aware Get and exact abrupt propagation. Independently rebuilt Node/native suites, 135/135 each; nine static gates pass. Retained producer runner20/probes10/typecheck evidence reviewed. Object conversion and primitive boxing remain unsupported. Completed chat idle; cursor `7675fe4e-54e1-4ecf-a15b-261da1e526a4:2`.
 
 Next ready TS-005M resolves map callback/budget/entry/species/boxing integration design. TS-005B remains blocked until concrete contract review. Claude tasks remain ready and reserved.
+
+Active sole writer: TS-005M design chat `01a1983e-12f1-7c00-b02f-8b445fc4a0a1`, host `local`, base `2cd4a08`. Owns map design/optional isolated probes/evidence and own task handoff only; no core implementation edits. Initial progress active; saved cursor `721e7df7-77b3-46cf-90cb-558b1466eb82:1`. Coordinator owns this file. Review budget/reentrancy, callback and partial-feature boundaries before dispatching map implementation.
