@@ -207,6 +207,9 @@ execute("numeric-operators", numericCommand, numericArgs, { stdout: "4 12 3 0\n3
 const additionCommand = lane === "node" ? process.execPath : join(root, "build/native/addition" + suffix);
 const additionArgs = lane === "node" ? [join(root, "build/node/test/addition.js")] : [];
 execute("addition", additionCommand, additionArgs, { stdout: "addition passed\n" });
+const relationalCommand = lane === "node" ? process.execPath : join(root, "build/native/relational" + suffix);
+const relationalArgs = lane === "node" ? [join(root, "build/node/test/relational.js")] : [];
+execute("relational", relationalCommand, relationalArgs, { stdout: "relational passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

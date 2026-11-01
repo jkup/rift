@@ -431,3 +431,27 @@ These support the branch and order; no source code was copied. Full ToPrimitive,
 BigInt/ToNumeric, symbols and boxing remain outside this primitive-only contract.
 Relational/equality/logical operations and grammar are unchanged. See
 [TS-009 validation](validation/ts-009/README.md) for matrix and migrations.
+
+## Primitive relational comparisons (TS-010)
+
+The relational path in Evaluator.binary receives already evaluated source-left
+and source-right Values. It rejects objects at the number-hint ToPrimitive
+boundary. Two strings use stringCompare in strings.ts, an explicit charCodeAt
+loop with a prefix-length fallback. Other primitive pairs use existing toNumber
+left then right. The local comparison result is -1, 0, 1, or null (unordered).
+Operator mapping tests that order against zero; null returns false before mapping.
+This avoids turning unordered <= or >= into true through boolean negation.
+
+Sources consulted on 2026-11-01:
+- [ECMAScript 2025 IsLessThan](https://tc39.es/ecma262/2025/multipage/abstract-operations.html#sec-islessthan): number hint, two-string code-unit path, numeric path and unordered result.
+- [ECMAScript 2025 relational evaluation](https://tc39.es/ecma262/2025/multipage/ecmascript-language-expressions.html#sec-relational-operators-runtime-semantics-evaluation): evaluate/GetValue left then right for every operator; < and >= use IsLessThan(left,right,true), > and <= use IsLessThan(right,left,false). Inclusive operators reject both true and unordered before negation.
+- [V8 Object::Compare and StrictNumberCompare, revision 22afaacd47a47baef49222b20e94083d0dd37e2d](https://chromium.googlesource.com/v8/v8/%2B/22afaacd47a47baef49222b20e94083d0dd37e2d/src/objects/objects.cc): reviewed the source-order number-hint conversions, string branch, and separate unordered/less/equal/greater result. Adopted the recognizable comparison-result approach, not engine-specific storage or optimization code.
+
+For this primitive-only subset, source-order numeric conversion followed by
+operator mapping is equivalent to reversing IsLessThan arguments: primitive
+numeric conversion has no guest effects. A future full ToPrimitive must preserve
+the number hint and source order; it cannot simply swap the operand evaluations.
+The code-unit loop deliberately avoids relying on host collation or scalar order.
+Fixed surrogate, NUL and prefix assertions execute through parsed expressions in
+both hosts. No object conversion, equality change or new syntax is included.
+Evidence and regression migration inventory: validation/ts-010/README.md.

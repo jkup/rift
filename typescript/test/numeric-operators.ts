@@ -162,8 +162,10 @@ check(execute("let mixedPlus = 1 + '2';", plusRealm).type === "normal", "mixed p
 const mixedPlus = value(plusRealm, "mixedPlus");
 check(mixedPlus.kind === "string" && mixedPlus.value === "12", "mixed plus regression");
 for (const expression of ["'1' < 2", "true >= 0"]) {
-    const result = execute(expression + ";", new Realm((line) => console.log(line)));
-    check(result.type === "throw" && result.diagnostic.message === "numeric operands required (coercion unsupported)", "unchanged boundary " + expression);
+    const comparisonRealm = new Realm((_line) => {});
+    const result = execute("let result = " + expression + ";", comparisonRealm);
+    const actual = value(comparisonRealm, "result");
+    check(result.type === "normal" && actual.kind === "boolean" && actual.value, "primitive relational regression " + expression);
 }
 const realm = new Realm((line) => console.log(line));
 check(execute(readFileSync("test/fixtures/numeric-operators.js", "utf8"), realm).type === "normal", "runtime-read closure fixture");

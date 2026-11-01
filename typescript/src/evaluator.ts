@@ -1,7 +1,7 @@
 import type { Expr, Location, Stmt } from "./syntax.js";
 import { Environment, GuestObject, UNDEFINED, equal, failure, getValue, normal, putValue, truthy, type Completion, type ReferenceResult, type Value, type OperationContext, type ValueCompletion } from "./runtime.js";
 import type { Realm } from "./realm.js";
-import { stringConcat } from "./strings.js";
+import { stringConcat, stringCompare } from "./strings.js";
 import { GuestArray } from "./array-object.js";
 import { toNumber, toString } from "./conversion.js";
 
@@ -282,14 +282,35 @@ export class Evaluator {
             }
         }
         if (op === "===" || op === "!==") return normal({ kind: "boolean", value: op === "===" ? equal(left, right) : !equal(left, right) });
-        if (left.kind !== "number" || right.kind !== "number") return failure("TypeError", "numeric operands required (coercion unsupported)", loc);
-        const a = left.value;
-        const b = right.value;
-        switch (op) {
-            case "<": return normal({ kind: "boolean", value: a < b });
-            case ">": return normal({ kind: "boolean", value: a > b });
-            case "<=": return normal({ kind: "boolean", value: a <= b });
-            case ">=": return normal({ kind: "boolean", value: a >= b });
+        if (op === "<" || op === ">" || op === "<=" || op === ">=") {
+            // GetValue has finished in source order. IsLessThan's number-hint
+            // ToPrimitive boundary remains unsupported for objects, without hooks.
+            if (left.kind === "object" || right.kind === "object") {
+                return failure("TypeError", "object-to-primitive conversion unsupported", loc);
+            }
+            // Keep source order even for > and <=. Once both values are primitive,
+            // numeric conversion has no guest effects; reverse only the relation.
+            let order: number | null;
+            if (left.kind === "string" && right.kind === "string") {
+                order = stringCompare(left.value, right.value);
+            } else {
+                const a = toNumber(left, loc);
+                if (a.type === "throw") return a;
+                const b = toNumber(right, loc);
+                if (b.type === "throw") return b;
+                if (Number.isNaN(a.value) || Number.isNaN(b.value)) order = null;
+                else if (a.value < b.value) order = -1;
+                else if (a.value > b.value) order = 1;
+                else order = 0;
+            }
+            // Unordered is distinct from equal: every NaN comparison is false.
+            if (order === null) return normal({ kind: "boolean", value: false });
+            switch (op) {
+                case "<": return normal({ kind: "boolean", value: order < 0 });
+                case ">": return normal({ kind: "boolean", value: order > 0 });
+                case "<=": return normal({ kind: "boolean", value: order <= 0 });
+                case ">=": return normal({ kind: "boolean", value: order >= 0 });
+            }
         }
         throw new Error("unknown binary operator: " + op);
     }
