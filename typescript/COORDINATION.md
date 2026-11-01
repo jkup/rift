@@ -18,7 +18,7 @@ Repository: `C:\Users\jonku\code\rift`. Integration branch: `typescript-scriptc-
 - Completed TS-002 chat: `01a197b1-67cb-7e00-87ed-dc86a82b933b`, host `local`, idle. Last cursor: `8e67dac2-0c53-46ac-bf9e-da49a0475e04:4`.
 - TS-003 accepted at `e120f0c`: reviewed exact constants, non-coercing predicates, descriptor flags, name/length metadata and per-realm isolation; independently rebuilt both guest lanes (128/128 each) with static native build gates. Number remains intentionally partial and non-callable.
 - Completed TS-003 chat: `01a197c2-c572-74c0-8236-1b92a8297bf3`, host `local`, idle. Last cursor: `f7ce1e33-4bf0-4e9c-a44f-743403edfc69:3`.
-- Active: TS-004A data-descriptor validation, chat `01a197d0-4326-7392-b10a-3d5936222503`, host `local`, dispatched from `fc31b54`. Sole implementation writer; owns runtime data-descriptor operations, compiled descriptor host tests, necessary test-entry integration, documentation and new `docs/validation/ts-004a/` evidence. Prototype/key-order tasks remain blocked pending the descriptor interface and review. Do not run shared-manifest/core writers simultaneously in this checkout.
+- Completed: TS-004A data-descriptor validation, chat `01a197d0-4326-7392-b10a-3d5936222503`, host `local`, dispatched from `fc31b54`. Sole implementation writer; owns runtime data-descriptor operations, compiled descriptor host tests, necessary test-entry integration, documentation and new `docs/validation/ts-004a/` evidence. Prototype/key-order tasks remain blocked pending the descriptor interface and review. Do not run shared-manifest/core writers simultaneously in this checkout.
 - Preserve deferred scope and explicitly document partial semantics. Do not turn task completion into claims of complete support.
 
 ## Review cycle
@@ -31,3 +31,9 @@ Repository: `C:\Users\jonku\code\rift`. Integration branch: `typescript-scriptc-
 6. Keep the Claude queue useful and independent; review completed companion work before integrating.
 
 The heartbeat continues this cycle every 15 minutes. Unchanged/non-actionable checks remain quiet. Report meaningful completed milestones, material failures, or required owner decisions.
+
+## Review at 2026-11-01 16:06 UTC
+
+Accepted TS-004A `0728bc8`: reviewed descriptor validation, SameValue, extensibility, atomic rejection, copies and explicit trusted-host immutable-Value convention. Independently rebuilt Node and native lanes, 129/129 each, including static native coverage gates. Producer evidence additionally records typecheck, runner 20/20 and probes 10/10. No accessor/reflection/conformance claim. Completed chat is idle; last cursor `8f07cc3c-2930-4707-8d09-fb5d04d2e93a:2`.
+
+TS-004B is ready under the interface contract in TASKS.md. Claude companion tasks remain ready and reserved for the owner's Claude session.

@@ -62,11 +62,11 @@ Constants: non-writable/non-enumerable/non-configurable. Predicate properties: w
 
 ## TS-004 — Ordinary object semantics
 
-Status: **blocked** as an umbrella; only TS-004A below is ready. Integration owner must sequence these changes. No accessors or prototype work is authorized merely by claiming TS-004A.
+Status: **in progress** as a sequenced umbrella; TS-004A is accepted and TS-004B is ready. Integration owner must sequence these changes. No accessors or prototype work is authorized merely by claiming TS-004A.
 
 ### TS-004A — Validate data descriptor updates
 
-Status: **in progress — implementation complete, awaiting coordinator review**. Owner: Codex chat `01a197d0-4326-7392-b10a-3d5936222503`; base `a534b05` (clean checkout). Prerequisite: TS-001.
+Status: **done** — coordinator accepted `0728bc8` after source review and independent Node/native rebuilds (129/129 each; static gate passed). Owner: Codex chat `01a197d0-4326-7392-b10a-3d5936222503`; base `a534b05` (clean checkout). Prerequisite: TS-001.
 
 Handoff (2026-11-01): internal data/generic descriptor validation returns normal boolean success/failure; strict assignment retains guest TypeErrors. Explicit absent fields, defaults, SameValue, extensibility, atomic updates and detached descriptor inspection are tested. Bootstrap define now validates and reports invalid initialization as a host fault. Typecheck passes; runner 20/20; probes 10/10; Node/native lanes 129/129 each with no skips. Static coverage: CLI 715/715, realm driver 780/780, descriptor driver 180/180. Zig required escalated library access; blocked and successful transcripts retained under `docs/validation/ts-004a/`. Existing tsconfig test glob required no edit. No accessors, prototypes, guest reflection, deletion, enumeration or arrays. Get/Set and host-test proposals are documented for review only; TS-004B/C remain blocked.
 
@@ -76,7 +76,7 @@ Acceptance: expected host assertions in both compiled lanes for creating/default
 
 ### TS-004B — Prototype reads/writes and receivers
 
-Status: **blocked** by TS-004A and integration review of completion-aware object operations. Planned files: `src/runtime.ts`, `src/evaluator.ts`, `test/object-prototypes.ts`, `test/fixtures/prototypes.js`. Bounded batch: ordinary prototype traversal, cycle rejection, inherited data reads, inherited writable/non-writable writes with explicit receiver, receiver-own updates; no accessors. Test multiple realms, distinct base/receiver objects, inherited read-only failures, and cycle rejection in both lanes. Before ready, the integration owner must freeze Get/Set result signatures and the host test entry contract. Accessor descriptors and guest getter/setter calls require a separate task after these interfaces land.
+Status: **ready** — TS-004A accepted; the coordinator-approved contract below governs this task. Planned files: `src/runtime.ts`, `src/evaluator.ts`, `test/object-prototypes.ts`, `test/fixtures/prototypes.js`. Bounded batch: ordinary prototype traversal, cycle rejection, inherited data reads, inherited writable/non-writable writes with explicit receiver, receiver-own updates; no accessors. Test multiple realms, distinct base/receiver objects, inherited read-only failures, and cycle rejection in both lanes. Before ready, the integration owner must freeze Get/Set result signatures and the host test entry contract. Accessor descriptors and guest getter/setter calls require a separate task after these interfaces land.
 
 ### TS-004C — Own property ordering and deletion
 
@@ -102,3 +102,11 @@ Status: **blocked** by TS-005A, completion-aware HasProperty/Get/Set, ToObject/L
 - Guest jobs/promises, generators, async functions, then async generators.
 - Dependency feasibility for regex/Date/Temporal and eventual breadth recovery.
 - Performance work only after correctness and a reproducible demo.
+
+### TS-004B approved interface contract (2026-11-01)
+
+Add `internalGet(key, receiver, loc)` returning normal/throw Value completion and `internalSet(key, value, receiver, loc)` returning normal/throw host-boolean completion. Receiver is a Value, separate from the lookup-base GuestObject. Preserve explicit abrupt propagation; no return/break/continue variants in these internal result types. Ordinary data-only implementations currently return normal results. Strict assignment translates false into guest TypeError and returns the RHS on success. Migrate semantic property reads/writes to these operations; any retained convenience wrapper must delegate rather than duplicate semantics.
+
+Keep a private prototype slot, initially null. `getPrototypeOf()` returns GuestObject or null; `setPrototypeOf(prototype)` returns normal boolean, rejects cycles and changes on nonextensible objects, but accepts setting the existing prototype even when nonextensible. Use iterative traversal to avoid host stack overflow on deep host-created chains. Preserve ordinary receiver-own descriptor/extensibility checks and avoid mutating the lookup base when the receiver differs. No automatic intrinsic prototype hierarchy or guest reflection API is implied.
+
+Register a compiled host driver in both lanes with a fixed success line and throwing assertions. It may seed guest realms with prototype-bearing objects for guest evaluator/receiver tests; do not add guest Object APIs just to expose the tests. Own necessary runtime consumers, test registration, scoped documentation and new validation evidence. Accessors, exotics, deletion/key ordering, arrays and coercion remain excluded. TS-004C remains blocked until its own API freeze.
