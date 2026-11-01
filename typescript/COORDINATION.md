@@ -95,4 +95,10 @@ Accepted TS-005H `a1a6aa6`: inspected presence versus undefined, iterative trave
 
 Next ready TS-005M resolves map callback/budget/entry/species/boxing integration design. TS-005B remains blocked until concrete contract review. Claude tasks remain ready and reserved.
 
-Active sole writer: TS-005M design chat `01a1983e-12f1-7c00-b02f-8b445fc4a0a1`, host `local`, base `2cd4a08`. Owns map design/optional isolated probes/evidence and own task handoff only; no core implementation edits. Initial progress active; saved cursor `721e7df7-77b3-46cf-90cb-558b1466eb82:1`. Coordinator owns this file. Review budget/reentrancy, callback and partial-feature boundaries before dispatching map implementation.
+Completed writer: TS-005M design chat `01a1983e-12f1-7c00-b02f-8b445fc4a0a1`, host `local`, base `2cd4a08`. Owns map design/optional isolated probes/evidence and own task handoff only; no core implementation edits. Initial progress active; saved cursor `721e7df7-77b3-46cf-90cb-558b1466eb82:1`. Coordinator owns this file. Review budget/reentrancy, callback and partial-feature boundaries before dispatching map implementation.
+
+## Review at 2026-11-01 18:06 UTC
+
+Accepted TS-005M design `0fa0aca`: inspected actual evaluator/registration callers, per-run ownership, shared tick/call budgets and explicit object-only/default-array boundary. Documentation-only diff check passes; no unnecessary execution claims. Added inline callable.invoke fixtures to the frozen migration inventory. Completed chat idle; cursor `721e7df7-77b3-46cf-90cb-558b1466eb82:2`.
+
+TS-005C active-context implementation is ready. Map still blocked until context acceptance and contract freeze. Implementation chat push was rejected for missing export authorization; coordinator verified existing origin jkup/rift and original owner authorization to commit/push this branch before retrying. Claude queue preserved.

@@ -312,3 +312,7 @@ proxy behavior, symbols/@@species/Construct, context-aware coercion/accessors an
 generic result property creation before removing explicit restrictions. Add full
 boxing, species-default/custom/error-order and cross-realm tests there. Do not
 bundle those subsystems into the first map task. Stop here for review.
+
+## Coordinator review (2026-11-01)
+
+Accepted design `0fa0aca` after tracing the actual evaluator, registration and direct-call paths. Approve the internal object-only default-array map direction and explicit unsupported constructor/species boundary; standard installation remains deferred. Only TS-005C context/call-boundary implementation is ready now. Its frozen contract in TASKS.md also requires migrating inline callable.invoke fixture arrows, which the original search table did not enumerate. Existing evidence is reused honestly; no fresh execution or integrated context/map capability is claimed by this design acceptance. Map needs a separate implementation contract after context validation.
