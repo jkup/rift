@@ -71,4 +71,10 @@ Accepted TS-005N `c595fdb`: reviewed exact scanner/whitespace, binary64 backend 
 
 TS-005D ready under frozen definition completion/location contract. Array storage remains blocked until integrated dispatch passes review. Claude queue unchanged and reserved.
 
-Active sole implementation writer: TS-005D chat `01a19815-200c-7f92-a524-a1523bb79726`, host `local`, base `e174a35`. Owns definition completion/location migration, affected assertions, actual-runtime dispatch driver/registration and scoped docs/evidence. No arrays or conversion changes. Initial progress active; cursor `25ae023f-2ece-49d3-b93a-3bccb9139abc:1`. Coordinator owns this file.
+Completed implementation writer: TS-005D chat `01a19815-200c-7f92-a524-a1523bb79726`, host `local`, base `e174a35`. Owns definition completion/location migration, affected assertions, actual-runtime dispatch driver/registration and scoped docs/evidence. No arrays or conversion changes. Initial progress active; cursor `25ae023f-2ece-49d3-b93a-3bccb9139abc:1`. Coordinator owns this file.
+
+## Review at 2026-11-01 17:21 UTC
+
+Accepted TS-005D `74e21da`: reviewed completion/location migration, bootstrap guards, all callers and actual runtime subclass assertions. Independently rebuilt Node/native lanes, 133/133 each; seven static gates pass. Retained producer runner 20/probes 10/typecheck evidence reviewed. Completed chat idle; cursor `25ae023f-2ece-49d3-b93a-3bccb9139abc:2`.
+
+TS-005A is ready under frozen array-storage contract in TASKS.md and reviewed array-prerequisites design. Only data-only internal array storage with primitive length conversion; no syntax/methods/guest constructor or object coercion. Claude companion queue remains ready and reserved.
