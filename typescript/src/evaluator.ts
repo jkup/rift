@@ -2,6 +2,7 @@ import type { Expr, Location, Stmt } from "./syntax.js";
 import { Environment, GuestObject, UNDEFINED, equal, failure, getValue, normal, putValue, truthy, type Completion, type ReferenceResult, type Value, type OperationContext, type ValueCompletion } from "./runtime.js";
 import type { Realm } from "./realm.js";
 import { stringConcat } from "./strings.js";
+import { GuestArray } from "./array-object.js";
 
 export class Evaluator {
     steps = 0;
@@ -140,6 +141,30 @@ export class Evaluator {
                 return putValue(ref.reference, value.value, expr.loc);
             }
             case "function": return normal(this.closure(expr.params, expr.body, env));
+            case "array": {
+                const object = new GuestArray();
+                for (let i = 0; i < expr.elements.length; i++) {
+                    // Holes cost a slot tick too; nested elements share this budget.
+                    const budget = this.tick(expr.loc);
+                    if (budget.type !== "normal") return budget;
+                    const element = expr.elements[i];
+                    if (element === null) continue;
+                    const value = this.evaluate(element, env, receiver);
+                    if (value.type !== "normal") return value;
+                    const defined = object.defineOwnProperty(String(i), {
+                        value: value.value, writable: true, enumerable: true, configurable: true,
+                    }, expr.loc);
+                    if (defined.type === "throw") return defined;
+                    if (!defined.value) throw new Error("fresh array literal element invariant");
+                }
+                // Index definitions grow length, but trailing holes do not define keys.
+                const length = object.defineOwnProperty("length", {
+                    value: { kind: "number", value: expr.elements.length },
+                }, expr.loc);
+                if (length.type === "throw") return length;
+                if (!length.value) throw new Error("fresh array literal length invariant");
+                return normal({ kind: "object", object });
+            }
             case "object": {
                 const object = new GuestObject();
                 for (let i = 0; i < expr.keys.length; i++) {

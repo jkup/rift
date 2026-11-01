@@ -335,3 +335,37 @@ Its staged Get/ToLength abrupt handling and descriptor-based presence support
 these semantics. Rift uses existing explicit records and an iterative ordinary
 slot traversal instead of generator-based recursive exotic dispatch. No upstream
 code was copied. These inspections are design evidence, not conformance results.
+
+### Array literals (TS-006)
+
+`Expr` has an array variant with `(Expr | null)[]`: null is an absent slot,
+whereas a guest null literal remains a literal expression. The primary parser
+reads AssignmentExpressions at precedence 1 and consumes their separator
+separately from elision commas. Thus `[1,]` has one slot and `[1,,]` has two.
+The existing expression recursion and lexer source limits still apply. A dot
+at an array element boundary explicitly rejects unsupported spread syntax.
+
+Each evaluation allocates a fresh GuestArray and visits slots in source order.
+Every slot first consumes the active evaluator's tick, including holes; present
+expressions additionally spend their usual AST ticks. Present values use the
+validated own definition operation with writable/enumerable/configurable true.
+Abrupt element completions are returned unchanged. A final validated length
+update accounts for trailing holes without defining undefined properties.
+Normal-false definition on this fresh, inaccessible array is an invariant fault.
+
+Sources consulted on 2026-11-01: [ECMA-262 edition 16, sections 13.2.4,
+13.2.4.1 and 13.2.4.2](https://262.ecma-international.org/16.0/#sec-array-initializer)
+and [engine262 ArrayLiteral.mts at d553e7b52501fbc47eae981c8d0fa7a5c26d0171](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/runtime-semantics/ArrayLiteral.mts).
+Both distinguish elisions from evaluated elements and create own data properties
+in order. Rift follows that decomposition using existing explicit completions,
+without copying upstream code or introducing generator/iterator infrastructure.
+The spec/engine update length during elisions; Rift defers their remaining length
+update until completion. This is unobservable here: the fresh result cannot escape
+before return, its prototype is null, and source length bounds keep slot counts
+far below the array length limit. Revisit that reasoning if allocation hooks or
+literal construction observability are introduced. Resource ticks are Rift policy.
+
+No Array intrinsics, spread, destructuring, comma operator, numeric property-key
+coercion or standard map installation is included. The existing null prototype
+limitation remains. Tests inspect parsed guest results through existing host
+operations; no guest reflection API was added. See [validation](validation/ts-006/README.md).

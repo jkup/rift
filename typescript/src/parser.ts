@@ -231,6 +231,23 @@ class Parser {
             return expr;
         }
         if (t.text === "!" || t.text === "-" || t.text === "+") return { kind: "unary", loc, op: t.text, operand: this.expression(9) };
+        if (t.text === "[") {
+            const elements: (Expr | null)[] = [];
+            while (this.error === null && !this.at("]")) {
+                if (this.eat(",")) {
+                    elements.push(null);
+                    continue;
+                }
+                if (this.at(".")) {
+                    this.fail("array spread is unsupported", this.current().loc);
+                    break;
+                }
+                elements.push(this.expression(1));
+                if (!this.eat(",")) break;
+            }
+            this.expect("]");
+            return { kind: "array", loc, elements };
+        }
         if (t.text === "{") {
             const keys: string[] = [];
             const values: Expr[] = [];

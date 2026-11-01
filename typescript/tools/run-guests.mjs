@@ -57,6 +57,24 @@ function lineCase(name, source, expected) {
     writeFileSync(join(root, file), source);
     cases.push({ file, ...expected });
 }
+// Array literal parser boundaries retain exact phases and located diagnostics.
+for (const [name, source, expected] of [
+    ["eof", "let a = [", { status: 2, error: "1:10: parse SyntaxError: unsupported or unexpected syntax: <eof>" }],
+    ["separator", "let a = [1 2];", { status: 2, error: "1:12: parse SyntaxError: expected ']', found '2'" }],
+    ["delimiter", "let a = [1);", { status: 2, error: "1:11: parse SyntaxError: expected ']', found ')'" }],
+    ["spread", "let a = [...x];", { status: 2, error: "1:10: parse SyntaxError: array spread is unsupported" }],
+    ["binding-pattern", "let [x] = [1];", { status: 2, error: "1:5: parse SyntaxError: expected binding identifier" }],
+    ["assignment-pattern", "[x] = [1];", { status: 2, error: "1:1: parse SyntaxError: invalid assignment target" }],
+    ["comma-operator", "let a = [(1, 2)];", { status: 2, error: "1:12: parse SyntaxError: expected ')', found ','" }],
+    ["numeric-key", "let a = [1]; a[0];", { status: 1, error: "1:14: runtime TypeError: only string property keys are supported" }],
+    ["deep", "[".repeat(200) + "0" + "]".repeat(200) + ";", { status: 2, errorPattern: "1:\\d+: parse SyntaxError: syntax nesting limit exceeded" }],
+    ["nested-success", "console.log(" + "[".repeat(30) + "1" + "]".repeat(30) + ".length);", { stdout: "1\n" }],
+    ["throw", "function stop() {\n    throw 'stop';\n}\nlet a = [console.log('first'), stop(), console.log('later')];", { status: 1, stdout: "first\n", error: "2:5: runtime Uncaught: stop" }],
+    ["missing", "let a = [console.log('first'), missing, console.log('later')];", { status: 1, stdout: "first\n", error: "1:32: runtime ReferenceError: missing is not defined" }],
+    ["holes-loop-budget", "while (true) { [" + ",".repeat(1000) + "]; }", { status: 1, errorPattern: "1:\\d+: runtime RangeError: execution step limit exceeded" }],
+]) {
+    lineCase("array-literal-" + name, source, expected);
+}
 // Conditional failures assert the phase, diagnostic and effects before completion.
 for (const key of ["NaN", "POSITIVE_INFINITY", "NEGATIVE_INFINITY", "MAX_VALUE", "MIN_VALUE", "EPSILON", "MAX_SAFE_INTEGER", "MIN_SAFE_INTEGER"]) {
     lineCase("number-readonly-" + key, "Number." + key + " = console.log('rhs'); console.log('after');", {
@@ -177,6 +195,9 @@ execute("operation-context", contextCommand, contextArgs, { stdout: "operation c
 const mapCommand = lane === "node" ? process.execPath : join(root, "build/native/array-map" + suffix);
 const mapArgs = lane === "node" ? [join(root, "build/node/test/array-map.js")] : [];
 execute("array-map", mapCommand, mapArgs, { stdout: "array map passed\n" });
+const literalsCommand = lane === "node" ? process.execPath : join(root, "build/native/array-literals" + suffix);
+const literalsArgs = lane === "node" ? [join(root, "build/node/test/array-literals.js")] : [];
+execute("array-literals", literalsCommand, literalsArgs, { stdout: "array literals passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

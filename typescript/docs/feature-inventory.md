@@ -22,7 +22,7 @@ claim that all coercion cases are supported.
 | Errors | Parse locations, runtime locations, thrown guest values, ReferenceError/TypeError/RangeError diagnostics | Engine errors are string values plus diagnostic records, not Error instances. No guest catch syntax or stack traces. Across-run redeclaration fails at runtime before new declarations are installed. |
 | Primitive conversion (TS-005N) | Internal ToNumber/ToUint32 for existing primitive Value kinds, exact numeric-string scanning and tested binary64 backend, signed-zero preservation/normalization. | Host driver API only; no operator/builtin integration. Objects explicitly throw unsupported-conversion runtime TypeError without guest calls. No symbols/BigInts or ToPrimitive. |
 | Definition dispatch (TS-005D) | Required-location normal/throw definition API; receiver overrides propagate exact guest throws, strict assignment preserves RHS and translates false, bootstrap rejects false/throw as host faults. | Internal prerequisite only; no arrays, generic exotics, guest reflection or conversion integration. |
-| Array storage (TS-005A) | Host-created GuestArray with real own length, canonical index growth, holes, sparse descending truncation, partial failure restoration/delayed freezing, primitive length conversion, ordinary prototype reads and receiver-aware assignment. Seeded guest assignments preserve original RHS and report runtime errors at the assignment. | No guest array syntax, Array constructor/intrinsics, methods, species, symbols, accessors or generic exotics. Object length conversion explicitly throws unsupported TypeError. Initial prototype is null. |
+| Array storage (TS-005A) | Host-created GuestArray with real own length, canonical index growth, holes, sparse descending truncation, partial failure restoration/delayed freezing, primitive length conversion, ordinary prototype reads and receiver-aware assignment. Seeded guest assignments preserve original RHS and report runtime errors at the assignment. | Array literals are supported by TS-006 below; no Array constructor/intrinsics, methods, species, symbols, accessors or generic exotics. Object length conversion explicitly throws unsupported TypeError. Initial prototype is null. |
 | Resources | Source, parser, step, call and frame bounds; independent realm state | No heap quota, suspension, jobs or security isolation guarantees; see architecture decisions. |
 
 `test/fixtures/semantics.js`, `order.js`, `examples/counter.js`, and the realm driver
@@ -54,3 +54,15 @@ above 4294967295 reject before result allocation. This is not a registered
 Array method and does not implement primitive boxing or complete species.
 Only the compiled test driver seeds a host adapter. Full expected-result matrix
 and Node/native evidence: [TS-005B](validation/ts-005b/README.md).
+
+### Array literals (TS-006)
+
+Array expressions support empty lists, elisions, trailing commas and existing
+assignment expressions as elements. Holes remain absent own properties; explicit
+undefined/null elements are present. Values evaluate left-to-right with abrupt
+propagation, fresh array identity and retained nested object identity. Length
+includes holes and responds to existing guest string-key/length assignments.
+Each slot spends a shared execution tick, including holes. Initial prototype is
+null; no Array global, methods, spread, destructuring or comma operator. Computed
+numeric keys still reject at runtime; use `a['0']`. Parser/source limits apply.
+The readable `test/fixtures/array-literals.js` also serves as a CLI example.

@@ -12,7 +12,7 @@ function run(args) {
     return { status: r.status, signal: r.signal, error: r.error ? { code: r.error.code, message: r.error.message } : null, stdout: r.stdout ?? "", stderr: r.stderr ?? "" };
 }
 const results = [];
-for (const [entry, name] of [["src/cli.ts", "rift"], ["test/realms.ts", "realms"], ["test/object-descriptors.ts", "object-descriptors"], ["test/object-prototypes.ts", "object-prototypes"], ["test/object-keys.ts", "object-keys"], ["test/conversion.ts", "conversion"], ["test/definition-dispatch.ts", "definition-dispatch"], ["test/array-storage.ts", "array-storage"], ["test/array-like.ts", "array-like"], ["test/operation-context.ts", "operation-context"], ["test/array-map.ts", "array-map"]]) {
+for (const [entry, name] of [["src/cli.ts", "rift"], ["test/realms.ts", "realms"], ["test/object-descriptors.ts", "object-descriptors"], ["test/object-prototypes.ts", "object-prototypes"], ["test/object-keys.ts", "object-keys"], ["test/conversion.ts", "conversion"], ["test/definition-dispatch.ts", "definition-dispatch"], ["test/array-storage.ts", "array-storage"], ["test/array-like.ts", "array-like"], ["test/operation-context.ts", "operation-context"], ["test/array-map.ts", "array-map"], ["test/array-literals.ts", "array-literals"]]) {
     const build = run(["build", entry, "--tier", "static-only", "-o", join(root, "build/native", name + suffix)]);
     const coverage = run(["coverage", entry]);
     // Reuse the fail-closed pinned coverage parser. Execution has its own suite.

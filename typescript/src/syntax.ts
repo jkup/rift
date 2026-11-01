@@ -1,6 +1,7 @@
 export type Location = { line: number; column: number };
 export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: string; loc: Location };
 export type Expr =
+    | { kind: "array"; loc: Location; elements: (Expr | null)[] }
     | { kind: "literal"; loc: Location; value: number | string | boolean | null }
     | { kind: "identifier"; loc: Location; name: string }
     | { kind: "this"; loc: Location }
