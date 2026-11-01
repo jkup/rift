@@ -20,7 +20,7 @@ export type Completion =
     | { type: "throw"; value: Value; diagnostic: Diagnostic }
     | { type: "break" | "continue"; value: Value };
 export function normal(value: Value = UNDEFINED): Completion { return { type: "normal", value }; }
-export function failure(name: string, message: string, loc: Location): Completion {
+export function failure(name: string, message: string, loc: Location): ThrowCompletion {
     return { type: "throw", value: { kind: "string", value: name + ": " + message }, diagnostic: { phase: "runtime", name, message, loc } };
 }
 export type Builtin = (receiver: Value, args: Value[], loc: Location) => Completion;

@@ -196,3 +196,28 @@ no guest coercion or signed bitwise conversion is involved. Index/key pairs reta
 the parsed number for sorting. The classifier is available for future array work;
 no array semantics are implemented here. Source revisions and validation are in
 [TS-004C evidence](validation/ts-004c/README.md).
+
+## Primitive numeric conversion (TS-005N)
+
+`src/conversion.ts` exports `NumberCompletion` (normal host-number payload or
+`ThrowCompletion`), `toNumber(value, loc)`, `toUint32(value, loc)`, and
+`stringToNumber(value: GuestString): number`. These are internal prerequisites;
+operators and the Number namespace do not call them yet. `failure` now advertises
+its existing throw-only result precisely.
+
+String conversion trims the exact 2025 ECMAScript whitespace/line-terminator set,
+then scans the entire decimal/Infinity or unsigned radix token. Invalid strings
+produce NaN; empty trimmed strings produce +0. A single private backend calls
+host `Number` only on a validated string to obtain binary64 rounding. No host
+object coercion, partial parsing, regex, or decimal digit-accumulation algorithm
+is used. ToUint32 converts once, propagates throw, truncates finite values toward
+zero and normalizes modulo 2^32 into [0, 2^32), including positive zero.
+
+Objects explicitly throw runtime TypeError with `object-to-primitive conversion
+unsupported`. This is a partial abstract operation, not ECMAScript object
+conversion. No guest hook runs; future ToPrimitive needs its own call boundary.
+The design follows the versioned specification and engine262 analysis in
+[array prerequisites](array-prerequisites.md#sources-inspected-and-design-influence).
+Fixed-result Node/native tests support the conditional numeric backend choice;
+see [TS-005N evidence](validation/ts-005n/README.md). They do not prove every
+possible binary64 rounding input or extend guest syntax/builtin support.
