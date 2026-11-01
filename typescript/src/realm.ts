@@ -1,4 +1,5 @@
 import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value } from "./runtime.js";
+import { registerNumber } from "./builtins/number.js";
 
 export type Output = (line: string) => void;
 export class Realm {
@@ -15,6 +16,7 @@ export class Realm {
             return normal();
         });
         this.global.bindings.set("console", { initialized: true, mutable: true, value: { kind: "object", object: consoleObject } });
+        registerNumber(this);
     }
     registerBuiltin(target: GuestObject, name: string, invoke: Builtin): Value {
         const object = new GuestObject(); object.callable = { kind: "builtin", invoke };

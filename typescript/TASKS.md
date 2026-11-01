@@ -52,7 +52,9 @@ Acceptance: fixed outputs for right association, precedence with assignment/||/a
 
 ## TS-003 — Number built-ins batch
 
-Status: **ready** (TS-001 dependency satisfied). Owner: unassigned.
+Status: **in progress** — implementation complete, awaiting coordinator review. Owner: Codex implementation chat `01a197c2-c572-74c0-8236-1b92a8297bf3`; base `6c79781` (clean checkout; coordinator dispatch recorded).
+
+Handoff (2026-11-01): exact eight constants and two non-coercing predicates registered per realm, with descriptor flags and predicate name/length metadata. No shared runtime changes. Typecheck passes; runner 20/20; probes 10/10; guest Node/native 128/128 each, no skips. Native CLI 679/679 and host driver 744/744 static statements. Zig linking required approved library access; initial sandbox failures and successful runs are retained in `docs/validation/ts-003/`. Number remains intentionally non-callable, with construction/conversion/wrappers/formatting/extra predicates/reflection deferred. No TS-004A work; coordinator acceptance pending.
 
 Assignment: a deliberately partial, non-callable `Number` namespace with `NaN`, `POSITIVE_INFINITY`, `NEGATIVE_INFINITY`, `MAX_VALUE`, `MIN_VALUE`, `EPSILON`, `MAX_SAFE_INTEGER`, `MIN_SAFE_INTEGER`, `isNaN`, and `isFinite`. Own new `src/builtins/number.ts`, `test/fixtures/number.js`, number entries in `test/cases.json`, number host assertions in `test/realms.ts`, and inventory notes. Integration owner coordinates the single registration call in `src/realm.ts`. Use `registerBuiltin`, Value kind tests and Completion; predicates never coerce. No parser/evaluator changes.
 

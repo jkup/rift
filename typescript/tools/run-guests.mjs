@@ -58,6 +58,24 @@ function lineCase(name, source, expected) {
     cases.push({ file, ...expected });
 }
 // Conditional failures assert the phase, diagnostic and effects before completion.
+for (const key of ["NaN", "POSITIVE_INFINITY", "NEGATIVE_INFINITY", "MAX_VALUE", "MIN_VALUE", "EPSILON", "MAX_SAFE_INTEGER", "MIN_SAFE_INTEGER"]) {
+    lineCase("number-readonly-" + key, "Number." + key + " = console.log('rhs'); console.log('after');", {
+        status: 1, stdout: "rhs\n", error: "1:1: runtime TypeError: property is not writable: " + key,
+    });
+}
+for (const predicate of ["isNaN", "isFinite"]) {
+    lineCase("number-abrupt-extra-" + predicate, "Number." + predicate + "(0, missing, console.log('after'));", {
+        status: 1, errorPattern: "1:\\d+: runtime ReferenceError: missing is not defined",
+    });
+    for (const key of ["name", "length"]) {
+        lineCase("number-metadata-" + predicate + "-" + key, "Number." + predicate + "." + key + " = 2;", {
+            status: 1, error: "1:1: runtime TypeError: property is not writable: " + key,
+        });
+    }
+}
+lineCase("number-noncallable", "Number(console.log('arg'));", {
+    status: 1, stdout: "arg\n", error: "1:1: runtime TypeError: value is not callable",
+});
 for (const [name, source, expected] of [
     ["missing-colon", "true ? 1;", { status: 2, error: "1:9: parse SyntaxError: expected ':', found ';'" }],
     ["missing-consequent", "true ? : 1;", { status: 2, error: "1:8: parse SyntaxError: unsupported or unexpected syntax: :" }],

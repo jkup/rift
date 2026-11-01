@@ -39,3 +39,50 @@ try { run("console.log(1);", broken); }
 catch (error) { escaped = error instanceof Error && error.message === "host output fault"; }
 if (!escaped) throw new Error("host fault was swallowed");
 console.log("realms independent");
+
+// Number bootstrap descriptors and mutable state must belong to each realm.
+function numberNamespace(realm: Realm): GuestObject {
+    const binding = realm.global.bindings.get("Number");
+    if (binding === undefined || !binding.initialized || !binding.mutable || binding.value.kind !== "object") throw new Error("Number binding");
+    return binding.value.object;
+}
+const an = numberNamespace(a);
+const bn = numberNamespace(b);
+if (an === bn || an.callable !== null || bn.callable !== null || an.properties.size !== 10) throw new Error("Number namespace scope/identity");
+const constantNames = ["NaN", "POSITIVE_INFINITY", "NEGATIVE_INFINITY", "MAX_VALUE", "MIN_VALUE", "EPSILON", "MAX_SAFE_INTEGER", "MIN_SAFE_INTEGER"];
+const constantValues = [NaN, Infinity, -Infinity, 1.7976931348623157e308, 5e-324, 2.220446049250313e-16, 9007199254740991, -9007199254740991];
+for (let i = 0; i < constantNames.length; i++) {
+    const key = constantNames[i];
+    for (const namespace of [an, bn]) {
+        const descriptor = namespace.properties.get(key);
+        if (descriptor === undefined || descriptor.writable || descriptor.enumerable || descriptor.configurable || descriptor.value.kind !== "number") throw new Error("Number constant flags: " + key);
+        const actual = descriptor.value.value;
+        const expected = constantValues[i];
+        if (!(Number.isNaN(expected) ? Number.isNaN(actual) : actual === expected)) throw new Error("Number constant value: " + key);
+        if (namespace.set(key, UNDEFINED, { line: 1, column: 1 }).type !== "throw" || namespace.get(key) !== descriptor.value) throw new Error("Number constant write: " + key);
+    }
+}
+for (const key of ["isNaN", "isFinite"]) {
+    const ap = an.get(key);
+    const bp = bn.get(key);
+    if (ap.kind !== "object" || bp.kind !== "object" || ap.object === bp.object) throw new Error("Number predicate identity");
+    for (const namespace of [an, bn]) {
+        const descriptor = namespace.properties.get(key);
+        if (descriptor === undefined || !descriptor.writable || descriptor.enumerable || !descriptor.configurable || descriptor.value.kind !== "object") throw new Error("Number predicate flags");
+        const predicate = descriptor.value.object;
+        if (predicate.callable === null || predicate.callable.kind !== "builtin") throw new Error("Number predicate callable");
+        const name = predicate.properties.get("name");
+        const length = predicate.properties.get("length");
+        if (name === undefined || name.writable || name.enumerable || !name.configurable || name.value.kind !== "string" || name.value.value !== key) throw new Error("Number predicate name");
+        if (length === undefined || length.writable || length.enumerable || !length.configurable || length.value.kind !== "number" || length.value.value !== 1) throw new Error("Number predicate length");
+        for (const receiver of [UNDEFINED, { kind: "null" } as const, { kind: "number", value: NaN } as const, { kind: "object", object: namespace } as const]) {
+            const result = predicate.callable.invoke(receiver, [{ kind: "number", value: key === "isNaN" ? NaN : 1 }], { line: 1, column: 1 });
+            if (result.type !== "normal" || result.value.kind !== "boolean" || !result.value.value) throw new Error("Number predicate receiver");
+        }
+    }
+    ap.object.set("realmMarker", UNDEFINED, { line: 1, column: 1 });
+    if (bp.object.properties.has("realmMarker")) throw new Error("Number shared predicate state");
+    if (an.set(key, UNDEFINED, { line: 1, column: 1 }).type !== "normal" || bn.get(key) !== bp) throw new Error("Number shared namespace state");
+}
+const rebind = run("Number = 5;", a);
+if (rebind.phase !== "runtime" || rebind.completion.type !== "normal" || numberNamespace(b) !== bn) throw new Error("Number realm binding isolation");
