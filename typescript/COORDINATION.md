@@ -14,7 +14,7 @@ Repository: `C:\Users\jonku\code\rift`. Integration branch: `typescript-scriptc-
 
 ## Current dispatch
 
-- Next: TS-002 conditional expressions, ready in `TASKS.md`. New implementation chat pending creation.
+- Active: TS-002 conditional expressions. Implementation chat `01a197b1-67cb-7e00-87ed-dc86a82b933b`, host `local`, dispatched from `19b889d`. This chat is the sole implementation writer; coordinator owns this file. Await its handoff, review and fix findings before accepting or dispatching a successor.
 - TS-003 Number built-ins and TS-004A data-descriptor validation follow after review; choose order based on interface dependencies. Do not run shared-manifest/core writers simultaneously in this checkout.
 - Preserve deferred scope and explicitly document partial semantics. Do not turn task completion into claims of complete support.
 
