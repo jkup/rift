@@ -12,11 +12,11 @@ export function registerNumber(realm: Realm): void {
     namespace.define("EPSILON", { kind: "number", value: Number.EPSILON }, false, false, false);
     namespace.define("MAX_SAFE_INTEGER", { kind: "number", value: Number.MAX_SAFE_INTEGER }, false, false, false);
     namespace.define("MIN_SAFE_INTEGER", { kind: "number", value: Number.MIN_SAFE_INTEGER }, false, false, false);
-    registerPredicate(realm, namespace, "isNaN", (_receiver, args, _loc) => {
+    registerPredicate(realm, namespace, "isNaN", (_receiver, args, _context, _loc) => {
         const value = args.length === 0 ? UNDEFINED : args[0];
         return normal({ kind: "boolean", value: value.kind === "number" && Number.isNaN(value.value) });
     });
-    registerPredicate(realm, namespace, "isFinite", (_receiver, args, _loc) => {
+    registerPredicate(realm, namespace, "isFinite", (_receiver, args, _context, _loc) => {
         const value = args.length === 0 ? UNDEFINED : args[0];
         return normal({ kind: "boolean", value: value.kind === "number" && Number.isFinite(value.value) });
     });

@@ -1,0 +1,17 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\operation-context.ts
+
+  statements analyzed   905
+  compile statically    905  (100%)
+    in dynamic tier     4  (operate on values typed only at runtime; --explain-dynamic lists them)
+
+  fully static — all analyzed statements compile to native code.
+
+  dynamic tier   (tier assignment, report-only; --tier=auto)
+    5 functions already operate on dynamic values (4 statements)
+      <top level>  C:/Users/jonku/code/rift/typescript/test/operation-context.ts:1:1: dynScalarEq at C:/Users/jonku/code/rift/typescript/test/operation-context.ts:159:33
+      %dyn.class.properties  C:/Users/jonku/code/rift/typescript/test/operation-context.ts:1:1: dynObjLit at C:/Users/jonku/code/rift/typescript/test/operation-context.ts:1:1
+      %fn.0f404a8c12d0  C:/Users/jonku/code/rift/typescript/test/operation-context.ts:58:25: dynScalarEq at C:/Users/jonku/code/rift/typescript/test/operation-context.ts:59:38
+      %fn.25ff05676dd5  C:/Users/jonku/code/rift/typescript/test/operation-context.ts:132:26: dynScalarEq at C:/Users/jonku/code/rift/typescript/test/operation-context.ts:135:30
+      %fn.adapt.a405df9e81ea.impl  C:/Users/jonku/code/rift/typescript/test/operation-context.ts:131:24: dyn.this at C:/Users/jonku/code/rift/typescript/test/operation-context.ts:131:24
+
+    0 demotion requests (refusals and fences the dynamic tier would replace)

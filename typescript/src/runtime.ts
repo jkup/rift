@@ -1,5 +1,6 @@
 import type { Diagnostic, Location, Stmt } from "./syntax.js";
 import type { GuestString } from "./strings.js";
+import type { Realm } from "./realm.js";
 import { arrayIndex } from "./property-keys.js";
 
 export type Value =
@@ -19,11 +20,16 @@ export type Completion =
     | { type: "normal" | "return"; value: Value }
     | { type: "throw"; value: Value; diagnostic: Diagnostic }
     | { type: "break" | "continue"; value: Value };
-export function normal(value: Value = UNDEFINED): Completion { return { type: "normal", value }; }
+export function normal(value: Value = UNDEFINED): ValueCompletion { return { type: "normal", value }; }
 export function failure(name: string, message: string, loc: Location): ThrowCompletion {
     return { type: "throw", value: { kind: "string", value: name + ": " + message }, diagnostic: { phase: "runtime", name, message, loc } };
 }
-export type Builtin = (receiver: Value, args: Value[], loc: Location) => Completion;
+export type OperationContext = {
+    readonly realm: Realm;
+    call: (callee: Value, receiver: Value, args: Value[], loc: Location) => ValueCompletion;
+    tick: (loc: Location) => ValueCompletion;
+};
+export type Builtin = (receiver: Value, args: Value[], context: OperationContext, loc: Location) => Completion;
 export type Callable =
     | { kind: "guest"; params: string[]; body: Stmt[]; environment: Environment }
     | { kind: "builtin"; invoke: Builtin };

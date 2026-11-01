@@ -101,7 +101,7 @@ primitive({ kind: "string", value: "0x100000001" }, 4294967297, 1, "radix modulo
 
 const object = new GuestObject();
 const hook = new GuestObject();
-hook.callable = { kind: "builtin", invoke: (_receiver, _args, _loc): Completion => { throw new Error("must not call conversion hook"); } };
+hook.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc): Completion => { throw new Error("must not call conversion hook"); } };
 object.define("valueOf", { kind: "object", object: hook }, true, true, true);
 object.define("toString", { kind: "object", object: hook }, true, true, true);
 for (const result of [toNumber({ kind: "object", object }, loc), toUint32({ kind: "object", object }, loc)]) {

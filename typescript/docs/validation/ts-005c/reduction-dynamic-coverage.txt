@@ -1,0 +1,16 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\docs\validation\ts-005c\dynamic-reduction.ts
+
+  statements analyzed   14
+  compile statically    14  (100%)
+    in dynamic tier     3  (operate on values typed only at runtime; --explain-dynamic lists them)
+
+  fully static — all analyzed statements compile to native code.
+
+  dynamic tier   (tier assignment, report-only; --tier=auto)
+    4 functions already operate on dynamic values (3 statements)
+      <top level>  C:/Users/jonku/code/rift/typescript/docs/validation/ts-005c/dynamic-reduction.ts:1:1: dynScalarEq at C:/Users/jonku/code/rift/typescript/docs/validation/ts-005c/dynamic-reduction.ts:16:9
+      %dyn.class.properties  C:/Users/jonku/code/rift/typescript/docs/validation/ts-005c/dynamic-reduction.ts:1:1: dynObjLit at C:/Users/jonku/code/rift/typescript/docs/validation/ts-005c/dynamic-reduction.ts:1:1
+      %fn.35651b9cfde6  C:/Users/jonku/code/rift/typescript/docs/validation/ts-005c/dynamic-reduction.ts:10:12: dynScalarEq at C:/Users/jonku/code/rift/typescript/docs/validation/ts-005c/dynamic-reduction.ts:11:13
+      %fn.adapt.860669a89149.impl  C:/Users/jonku/code/rift/typescript/docs/validation/ts-005c/dynamic-reduction.ts:14:12: dyn.this at C:/Users/jonku/code/rift/typescript/docs/validation/ts-005c/dynamic-reduction.ts:14:12
+
+    0 demotion requests (refusals and fences the dynamic tier would replace)

@@ -1,6 +1,7 @@
 // This host driver is compiled, but the guest sources are always read at runtime.
 import { readFileSync } from "node:fs";
 import { run } from "../src/interpreter.js";
+import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
 import { GuestObject, normal, UNDEFINED } from "../src/runtime.js";
 const a = new Realm((line) => { console.log("a " + line); });
@@ -25,7 +26,7 @@ const write = target.set("fixed", UNDEFINED, { line: 1, column: 1 });
 if (write.type !== "throw" || target.get("fixed").kind !== "number") throw new Error("descriptor write check failed");
 const d = target.properties.get("fixed");
 if (d === undefined || d.writable || d.enumerable || d.configurable) throw new Error("descriptor flags failed");
-a.registerBuiltin(target, "test", (receiver, args, _loc) => {
+a.registerBuiltin(target, "test", (receiver, args, _context, _loc) => {
     if (receiver.kind !== "object" || receiver.object !== target || args.length !== 1) throw new Error("builtin call boundary failed");
     return normal(args[0]);
 });
@@ -76,7 +77,7 @@ for (const key of ["isNaN", "isFinite"]) {
         if (name === undefined || name.writable || name.enumerable || !name.configurable || name.value.kind !== "string" || name.value.value !== key) throw new Error("Number predicate name");
         if (length === undefined || length.writable || length.enumerable || !length.configurable || length.value.kind !== "number" || length.value.value !== 1) throw new Error("Number predicate length");
         for (const receiver of [UNDEFINED, { kind: "null" } as const, { kind: "number", value: NaN } as const, { kind: "object", object: namespace } as const]) {
-            const result = predicate.callable.invoke(receiver, [{ kind: "number", value: key === "isNaN" ? NaN : 1 }], { line: 1, column: 1 });
+            const result = new Evaluator(namespace === an ? a : b).call(descriptor.value, receiver, [{ kind: "number", value: key === "isNaN" ? NaN : 1 }], { line: 1, column: 1 });
             if (result.type !== "normal" || result.value.kind !== "boolean" || !result.value.value) throw new Error("Number predicate receiver");
         }
     }

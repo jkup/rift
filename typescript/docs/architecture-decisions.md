@@ -13,7 +13,7 @@ design to populate in advance. Source is original; no upstream code was copied.
 | `src/strings.ts` | `GuestString`, `stringLength`, `stringUnit`, `stringConcat`: host UTF-16 storage behind a replaceable API. No normalization or scalar-value reinterpretation. |
 | `src/runtime.ts` | `Value`, `PropertyKey`, `DataDescriptor`, `GuestObject`, `Environment`, `Reference`, `Completion`, Get/PutValue, truthiness, strict equality and diagnostic display. |
 | `src/evaluator.ts` | `Evaluator.block`, `statement`, `evaluate`, `reference`, `call`: explicit evaluation order and propagation of guest abrupt completions. A fresh evaluator owns each run's budgets. |
-| `src/realm.ts` | `new Realm(output)` creates an independent global environment and console objects. `registerBuiltin(target, name, invoke)` allocates an ordinary callable object with a uniform receiver/args/location signature. |
+| `src/realm.ts` | `new Realm(output)` creates an independent global environment and console objects. `registerBuiltin(target, name, invoke)` allocates an ordinary callable object with a uniform receiver/args/context/location signature. |
 | `src/interpreter.ts` | `run(source, realm): RunResult` returns either a parse diagnostic or runtime completion. The caller owns realm lifetime; repeated runs retain bindings. |
 | `src/cli.ts` | Sole production host boundary: argv, file read, output adapter, diagnostics and exit codes. Host faults escape `run` and are caught here as internal faults. |
 
@@ -35,6 +35,28 @@ string-only key lists (details below).
 are evaluated left-to-right, including excess arguments, before callability is
 checked; a failure resolving the callee prevents argument evaluation. Guest calls
 allocate parameter bindings and instantiate the body. Falling off returns undefined.
+
+TS-005C makes this boundary return only ValueCompletion (normal or throw).
+Guest return is normalized; builtin return and escaped break/continue are host
+invariant faults. Throws preserve the original record, value, diagnostic and
+location. A host finally releases the active call count even on host exceptions;
+host faults are never translated into guest throws. Callability and depth guards
+precede the increment; step counts remain monotonic.
+
+Each new Evaluator(realm, maxSteps = 100000, maxCalls = 64) owns one readonly
+context with readonly realm and full-arity call/tick callbacks delegating to that
+same evaluator. Builtins receive (receiver, args, context, loc) on each invocation
+and still return Completion; normal(), tick() and call() return ValueCompletion.
+Nested guest/builtin calls share budgets. Only the top-level run entry creates a
+fresh evaluator. Guest closures retain lexical environments, not evaluators;
+registration must not retain a context for later execution. The context driver
+retains identities only as test observations across runs.
+
+This supplies the active run's Realm, not full cross-realm intrinsic semantics.
+Property operations and primitive conversions remain context-free because they
+cannot invoke guest code in this profile. No map implementation or standard API
+installation is included. Trusted builtin host work still requires explicit ticks
+to be bounded; the context is not a universal CPU or heap limit.
 
 A reference records a binding's environment (or unresolved name), or a property's
 object and string key. Calls retain that reference long enough to choose the

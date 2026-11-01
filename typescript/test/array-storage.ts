@@ -109,7 +109,7 @@ for (const value of invalidInputs) {
 }
 const coercible = new GuestObject();
 const hook = new GuestObject();
-hook.callable = { kind: "builtin", invoke: (_receiver, _args, _loc): Completion => { throw new Error("unsupported hook called"); } };
+hook.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc): Completion => { throw new Error("unsupported hook called"); } };
 coercible.define("valueOf", obj(hook), true, true, true);
 coercible.define("toString", obj(hook), true, true, true);
 const unsupported = three();

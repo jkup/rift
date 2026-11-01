@@ -7,5 +7,5 @@ export type RunResult = { phase: "parse"; diagnostic: Diagnostic } | { phase: "r
 export function run(source: string, realm: Realm): RunResult {
     const parsed = parse(source);
     if (parsed.error !== null) return { phase: "parse", diagnostic: parsed.error };
-    return { phase: "runtime", completion: new Evaluator().block(parsed.body, realm.global, UNDEFINED) };
+    return { phase: "runtime", completion: new Evaluator(realm).block(parsed.body, realm.global, UNDEFINED) };
 }

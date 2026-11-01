@@ -1,13 +1,21 @@
 import type { Expr, Location, Stmt } from "./syntax.js";
-import { Environment, GuestObject, UNDEFINED, equal, failure, getValue, normal, putValue, truthy, type Completion, type ReferenceResult, type Value } from "./runtime.js";
+import { Environment, GuestObject, UNDEFINED, equal, failure, getValue, normal, putValue, truthy, type Completion, type ReferenceResult, type Value, type OperationContext, type ValueCompletion } from "./runtime.js";
+import type { Realm } from "./realm.js";
 import { stringConcat } from "./strings.js";
 
 export class Evaluator {
     steps = 0;
     calls = 0;
     depth = 0;
-    constructor(public maxSteps: number = 100000, public maxCalls: number = 64) {}
-    tick(loc: Location): Completion {
+    readonly context: OperationContext;
+    constructor(realm: Realm, public maxSteps: number = 100000, public maxCalls: number = 64) {
+        this.context = {
+            realm,
+            call: (callee, receiver, args, loc) => this.call(callee, receiver, args, loc),
+            tick: (loc) => this.tick(loc),
+        };
+    }
+    tick(loc: Location): ValueCompletion {
         if (++this.steps > this.maxSteps) return failure("RangeError", "execution step limit exceeded", loc);
         return normal();
     }
@@ -185,28 +193,34 @@ export class Evaluator {
             }
         }
     }
-    call(callee: Value, receiver: Value, args: Value[], loc: Location): Completion {
+    call(callee: Value, receiver: Value, args: Value[], loc: Location): ValueCompletion {
         if (callee.kind !== "object" || callee.object.callable === null) return failure("TypeError", "value is not callable", loc);
         if (this.calls >= this.maxCalls) return failure("RangeError", "call depth limit exceeded", loc);
         this.calls++;
-        const fn = callee.object.callable;
-        let result: Completion;
-        if (fn.kind === "builtin") result = fn.invoke(receiver, args, loc);
-        else {
-            const env = new Environment(fn.environment);
-            for (let i = 0; i < fn.params.length; i++) {
-                env.bindings.set(fn.params[i], {
-                    initialized: true,
-                    mutable: true,
-                    value: i < args.length ? args[i] : UNDEFINED,
-                });
+        try {
+            const fn = callee.object.callable;
+            let result: Completion;
+            if (fn.kind === "builtin") result = fn.invoke(receiver, args, this.context, loc);
+            else {
+                const env = new Environment(fn.environment);
+                for (let i = 0; i < fn.params.length; i++) {
+                    env.bindings.set(fn.params[i], {
+                        initialized: true,
+                        mutable: true,
+                        value: i < args.length ? args[i] : UNDEFINED,
+                    });
+                }
+                result = this.block(fn.body, env, receiver);
+                if (result.type === "return") return normal(result.value);
+                if (result.type === "normal") return normal();
             }
-            result = this.block(fn.body, env, receiver);
-            if (result.type === "return") result = normal(result.value);
-            else if (result.type === "normal") result = normal();
+            if (result.type === "throw") return result;
+            if (result.type === "normal") return normal(result.value);
+            throw new Error("invalid completion escaped call boundary: " + result.type);
+        } finally {
+            // Release active calls even when a host fault escapes.
+            this.calls--;
         }
-        this.calls--;
-        return result;
     }
     binary(op: string, left: Value, right: Value, loc: Location): Completion {
         if (op === "===" || op === "!==") return normal({ kind: "boolean", value: op === "===" ? equal(left, right) : !equal(left, right) });
