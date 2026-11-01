@@ -1,8 +1,8 @@
 # TypeScript rewrite: Rift compiled with scriptc
 
-Status: exploration and starter implementation plan. Written 2026-11-01. Feasibility probes run 2026-11-01; Gate A passed (see section 4).
+Status: implementation direction approved 2026-11-01. Feasibility probes passed Gate A (see section 4). The owner has authorized the first integrated-interpreter task and the lightweight coordination plan. Approved defaults and working rules now live in [typescript/AGENTS.md](typescript/AGENTS.md) and [project goals](typescript/docs/project-goals.md); the live implementation backlog is [typescript/TASKS.md](typescript/TASKS.md). Those files supersede tentative choices below.
 
-This document prepares a possible rewrite; it does not authorize starting one or declare feasibility proven. The immediate objective is to discover whether a JavaScript engine written in TypeScript and compiled to native code with scriptc is a fun, coherent, demonstrable project. Production adoption and broad Node compatibility are not prerequisites for success.
+This document retains the exploration and longer-term design rationale. The immediate implementation objective is a small integrated JavaScript interpreter, followed by bounded feature assignments once shared interfaces work. Probe success does not prove complete-engine feasibility. Production adoption and broad Node compatibility are not prerequisites for success.
 
 The implementation should eventually be divisible into bounded agent tasks. First establish the compiler constraints and shared interfaces; only then distribute substantial feature work.
 
