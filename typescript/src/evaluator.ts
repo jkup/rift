@@ -102,9 +102,7 @@ export class Evaluator {
             if (base.type !== "normal") return { type: "abrupt", completion: base };
             const key = this.evaluate(expr.key, env, receiver);
             if (key.type !== "normal") return { type: "abrupt", completion: key };
-            if (base.value.kind !== "object") return { type: "abrupt", completion: failure("TypeError", "property base must be an object", expr.loc) };
-            if (key.value.kind !== "string") return { type: "abrupt", completion: failure("TypeError", "only string property keys are supported", expr.loc) };
-            return { type: "reference", reference: { kind: "property", base: base.value.object, key: key.value.value } };
+            return { type: "reference", reference: { kind: "property", base: base.value, key: key.value, loc: expr.loc } };
         }
         throw new Error("parser admitted a non-reference target");
     }
@@ -181,7 +179,7 @@ export class Evaluator {
                     const ref = this.reference(expr.callee, env, receiver);
                     if (ref.type === "abrupt") return ref.completion;
                     callee = getValue(ref.reference, expr.loc);
-                    if (ref.reference.kind === "property") thisValue = { kind: "object", object: ref.reference.base };
+                    if (ref.reference.kind === "property") thisValue = ref.reference.base;
                 } else callee = this.evaluate(expr.callee, env, receiver);
                 if (callee.type !== "normal") return callee;
                 const args: Value[] = [];

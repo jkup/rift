@@ -29,7 +29,6 @@ const generated = [
     ["exponent", "console.log(1e2);", 2, "parse SyntaxError: unsupported numeric literal"],
     ["proto", "let o={__proto__: null};", 2, "parse SyntaxError: prototype literal syntax is unsupported"],
     ["coercion", "console.log(1 + '2');", 1, "runtime TypeError: numeric operands required (coercion unsupported)"],
-    ["numeric-key", "let o={}; o[1]=2;", 1, "runtime TypeError: only string property keys are supported"],
     ["primitive-base", "console.log(null.x);", 1, "runtime TypeError: property base must be an object"],
     ["detached", "let o={x:1, f:function(){return this.x;}}; let f=o.f; f();", 1, "runtime TypeError: property base must be an object"],
     ["assignment-missing", "missing=1;", 1, "runtime ReferenceError: missing is not defined"],
@@ -57,6 +56,7 @@ function lineCase(name, source, expected) {
     writeFileSync(join(root, file), source);
     cases.push({ file, ...expected });
 }
+lineCase("numeric-key", "let o={}; o[1]=2; console.log(o[1], o['1']);", { stdout: "2 2\n" });
 // Array literal parser boundaries retain exact phases and located diagnostics.
 for (const [name, source, expected] of [
     ["eof", "let a = [", { status: 2, error: "1:10: parse SyntaxError: unsupported or unexpected syntax: <eof>" }],
@@ -66,7 +66,7 @@ for (const [name, source, expected] of [
     ["binding-pattern", "let [x] = [1];", { status: 2, error: "1:5: parse SyntaxError: expected binding identifier" }],
     ["assignment-pattern", "[x] = [1];", { status: 2, error: "1:1: parse SyntaxError: invalid assignment target" }],
     ["comma-operator", "let a = [(1, 2)];", { status: 2, error: "1:12: parse SyntaxError: expected ')', found ','" }],
-    ["numeric-key", "let a = [1]; a[0];", { status: 1, error: "1:14: runtime TypeError: only string property keys are supported" }],
+    ["numeric-key", "let a = [1]; console.log(a[0]);", { stdout: "1\n" }],
     ["deep", "[".repeat(200) + "0" + "]".repeat(200) + ";", { status: 2, errorPattern: "1:\\d+: parse SyntaxError: syntax nesting limit exceeded" }],
     ["nested-success", "console.log(" + "[".repeat(30) + "1" + "]".repeat(30) + ".length);", { stdout: "1\n" }],
     ["throw", "function stop() {\n    throw 'stop';\n}\nlet a = [console.log('first'), stop(), console.log('later')];", { status: 1, stdout: "first\n", error: "2:5: runtime Uncaught: stop" }],
@@ -198,6 +198,9 @@ execute("array-map", mapCommand, mapArgs, { stdout: "array map passed\n" });
 const literalsCommand = lane === "node" ? process.execPath : join(root, "build/native/array-literals" + suffix);
 const literalsArgs = lane === "node" ? [join(root, "build/node/test/array-literals.js")] : [];
 execute("array-literals", literalsCommand, literalsArgs, { stdout: "array literals passed\n" });
+const propertyCommand = lane === "node" ? process.execPath : join(root, "build/native/property-key-conversion" + suffix);
+const propertyArgs = lane === "node" ? [join(root, "build/node/test/property-key-conversion.js")] : [];
+execute("property-key-conversion", propertyCommand, propertyArgs, { stdout: "property key conversion passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

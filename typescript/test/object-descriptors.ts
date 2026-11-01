@@ -73,8 +73,8 @@ result(o.defineOwnProperty("new", { value: num(2), writable: true }, loc), false
 check(o.getOwnProperty("new") === undefined, "no rejected insertion");
 result(o.defineOwnProperty("empty", {}, loc), true, "nonextensible existing empty");
 result(o.defineOwnProperty("assigned", { value: num(2) }, loc), true, "nonextensible existing definition");
-check(putValue({ kind: "property", base: o, key: "new" }, num(3), loc).type === "throw", "putValue nonextensible rejection");
-const write = putValue({ kind: "property", base: o, key: "assigned" }, num(4), loc);
+check(putValue({ kind: "property", base: { kind: "object", object: o }, key: { kind: "string", value: "new" }, loc }, num(3), loc).type === "throw", "putValue nonextensible rejection");
+const write = putValue({ kind: "property", base: { kind: "object", object: o }, key: { kind: "string", value: "assigned" }, loc }, num(4), loc);
 check(write.type === "normal" && sameValue(write.value, num(4)), "putValue existing writable RHS");
 state(o, "assigned", num(4), true, true, true);
 state(o, "copied", num(8), false, false, false);

@@ -1,0 +1,75 @@
+{
+  "nodeVersion": "v26.13.0",
+  "scriptc": "0.4.7",
+  "verdict": "PASS",
+  "tsc": {
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "node_modules/typescript/bin/tsc",
+      "--ignoreConfig",
+      "--strict",
+      "--target",
+      "es2024",
+      "--module",
+      "nodenext",
+      "--types",
+      "node",
+      "--outDir",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\property-key-conversion",
+      "probes/property-key-conversion/numbers.ts"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": ""
+  },
+  "node": {
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\property-key-conversion\\numbers.js"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "positive-zero|0|0|PASS\nnegative-zero|0|0|PASS\nnan|NaN|NaN|PASS\npositive-infinity|Infinity|Infinity|PASS\nnegative-infinity|-Infinity|-Infinity|PASS\none|1|1|PASS\nnegative-integer|-42|-42|PASS\nfraction|1.5|1.5|PASS\nsafe-max|9007199254740991|9007199254740991|PASS\nsafe-next|9007199254740992|9007199254740992|PASS\nrounded-integer|1000000000000000100|1000000000000000100|PASS\narray-index-max|4294967294|4294967294|PASS\narray-nonindex|4294967295|4294967295|PASS\nmax-finite|1.7976931348623157e+308|1.7976931348623157e+308|PASS\nnegative-max|-1.7976931348623157e+308|-1.7976931348623157e+308|PASS\nmin-subnormal|5e-324|5e-324|PASS\nnegative-subnormal|-5e-324|-5e-324|PASS\nnext-subnormal|1e-323|1e-323|PASS\nlargest-subnormal|2.225073858507201e-308|2.225073858507201e-308|PASS\nmin-normal|2.2250738585072014e-308|2.2250738585072014e-308|PASS\nbelow-small-boundary|9.999999999999997e-7|9.999999999999997e-7|PASS\nsmall-boundary|0.000001|0.000001|PASS\nabove-small-boundary|0.0000010000000000000002|0.0000010000000000000002|PASS\nsmall-exponent|1e-7|1e-7|PASS\nnegative-small-boundary|-0.000001|-0.000001|PASS\nlarge-decimal|100000000000000000000|100000000000000000000|PASS\nbelow-large-boundary|999999999999999900000|999999999999999900000|PASS\nlarge-boundary|1e+21|1e+21|PASS\nabove-large-boundary|1.0000000000000001e+21|1.0000000000000001e+21|PASS\nnegative-large-boundary|-1e+21|-1e+21|PASS\ntenth|0.1|0.1|PASS\nsum|0.30000000000000004|0.30000000000000004|PASS\none-next|1.0000000000000002|1.0000000000000002|PASS\none-previous|0.9999999999999999|0.9999999999999999|PASS\nseventeen-digits|1.2345678901234567|1.2345678901234567|PASS\npi|3.141592653589793|3.141592653589793|PASS\ncases=36; failures=0\n",
+    "stderr": ""
+  },
+  "build": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+    "args": [
+      "build",
+      "probes/property-key-conversion/numbers.ts",
+      "--tier",
+      "static-only",
+      "-o",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\property-key-conversion\\numbers.exe"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\property-key-conversion\\numbers.exe\n",
+    "stderr": ""
+  },
+  "coverage": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+    "args": [
+      "coverage",
+      "probes/property-key-conversion/numbers.ts"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\property-key-conversion\\numbers.ts\n\n  statements analyzed   11\n  compile statically    11  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+    "stderr": ""
+  },
+  "native": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\property-key-conversion\\numbers.exe",
+    "args": [],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "positive-zero|0|0|PASS\nnegative-zero|0|0|PASS\nnan|NaN|NaN|PASS\npositive-infinity|Infinity|Infinity|PASS\nnegative-infinity|-Infinity|-Infinity|PASS\none|1|1|PASS\nnegative-integer|-42|-42|PASS\nfraction|1.5|1.5|PASS\nsafe-max|9007199254740991|9007199254740991|PASS\nsafe-next|9007199254740992|9007199254740992|PASS\nrounded-integer|1000000000000000100|1000000000000000100|PASS\narray-index-max|4294967294|4294967294|PASS\narray-nonindex|4294967295|4294967295|PASS\nmax-finite|1.7976931348623157e+308|1.7976931348623157e+308|PASS\nnegative-max|-1.7976931348623157e+308|-1.7976931348623157e+308|PASS\nmin-subnormal|5e-324|5e-324|PASS\nnegative-subnormal|-5e-324|-5e-324|PASS\nnext-subnormal|1e-323|1e-323|PASS\nlargest-subnormal|2.225073858507201e-308|2.225073858507201e-308|PASS\nmin-normal|2.2250738585072014e-308|2.2250738585072014e-308|PASS\nbelow-small-boundary|9.999999999999997e-7|9.999999999999997e-7|PASS\nsmall-boundary|0.000001|0.000001|PASS\nabove-small-boundary|0.0000010000000000000002|0.0000010000000000000002|PASS\nsmall-exponent|1e-7|1e-7|PASS\nnegative-small-boundary|-0.000001|-0.000001|PASS\nlarge-decimal|100000000000000000000|100000000000000000000|PASS\nbelow-large-boundary|999999999999999900000|999999999999999900000|PASS\nlarge-boundary|1e+21|1e+21|PASS\nabove-large-boundary|1.0000000000000001e+21|1.0000000000000001e+21|PASS\nnegative-large-boundary|-1e+21|-1e+21|PASS\ntenth|0.1|0.1|PASS\nsum|0.30000000000000004|0.30000000000000004|PASS\none-next|1.0000000000000002|1.0000000000000002|PASS\none-previous|0.9999999999999999|0.9999999999999999|PASS\nseventeen-digits|1.2345678901234567|1.2345678901234567|PASS\npi|3.141592653589793|3.141592653589793|PASS\ncases=36; failures=0\n",
+    "stderr": ""
+  }
+}

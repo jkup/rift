@@ -1,3 +1,4 @@
+import { toPropertyKey } from "./conversion.js";
 import type { Diagnostic, Location, Stmt } from "./syntax.js";
 import type { GuestString } from "./strings.js";
 import type { Realm } from "./realm.js";
@@ -194,17 +195,27 @@ export class Environment {
 }
 export type Reference =
     | { kind: "binding"; environment: Environment | null; name: string }
-    | { kind: "property"; base: GuestObject; key: PropertyKey };
+    | { kind: "property"; base: Value; key: Value; loc: Location };
 export type ReferenceResult = { type: "reference"; reference: Reference } | { type: "abrupt"; completion: Completion };
 export function getValue(ref: Reference, loc: Location): Completion {
-    if (ref.kind === "property") return ref.base.internalGet(ref.key, { kind: "object", object: ref.base }, loc);
+    if (ref.kind === "property") {
+        if (ref.base.kind !== "object") return failure("TypeError", "property base must be an object", ref.loc);
+        const key = toPropertyKey(ref.key, ref.loc);
+        if (key.type === "throw") return key;
+        return ref.base.object.internalGet(key.value, ref.base, loc);
+    }
     const binding = ref.environment === null ? undefined : ref.environment.bindings.get(ref.name);
     if (binding === undefined) return failure("ReferenceError", ref.name + " is not defined", loc);
     if (!binding.initialized) return failure("ReferenceError", ref.name + " is not initialized", loc);
     return normal(binding.value);
 }
 export function putValue(ref: Reference, value: Value, loc: Location): Completion {
-    if (ref.kind === "property") return ref.base.set(ref.key, value, loc);
+    if (ref.kind === "property") {
+        if (ref.base.kind !== "object") return failure("TypeError", "property base must be an object", ref.loc);
+        const key = toPropertyKey(ref.key, ref.loc);
+        if (key.type === "throw") return key;
+        return ref.base.object.set(key.value, value, loc);
+    }
     const binding = ref.environment === null ? undefined : ref.environment.bindings.get(ref.name);
     if (binding === undefined) return failure("ReferenceError", ref.name + " is not defined", loc);
     if (!binding.initialized) return failure("ReferenceError", ref.name + " is not initialized", loc);

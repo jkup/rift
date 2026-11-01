@@ -1,0 +1,12 @@
+let o = {};
+o[1] = 2;
+o[-0] = 3;
+o['-0'] = 4;
+o['01'] = 5;
+o[1.5] = 6;
+o[-1] = 7;
+o[NaN] = 8;
+o[Infinity] = 9;
+o[-Infinity] = 10;
+let a = [1, , undefined];
+a[3] = 4;

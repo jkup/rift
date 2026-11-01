@@ -61,9 +61,9 @@ for (const primitive of [UNDEFINED, { kind: "null" } as const, num(1), { kind: "
 }
 result(child.internalSet("fixed", num(2), obj(child), loc), false, "inherited readonly");
 check(child.getOwnProperty("fixed") === undefined, "no rejected shadow");
-check(putValue({ kind: "property", base: child, key: "fixed" }, num(2), loc).type === "throw", "strict boundary");
+check(putValue({ kind: "property", base: { kind: "object", object: child }, key: { kind: "string", value: "fixed" }, loc }, num(2), loc).type === "throw", "strict boundary");
 const rhs = num(11);
-const assigned = putValue({ kind: "property", base: child, key: "x" }, rhs, loc);
+const assigned = putValue({ kind: "property", base: { kind: "object", object: child }, key: { kind: "string", value: "x" }, loc }, rhs, loc);
 check(assigned.type === "normal" && assigned.value === rhs, "assignment RHS identity");
 // Build bottom-up: each insertion checks a short chain; final traversal is deep.
 const deep = new GuestObject();

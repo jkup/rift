@@ -1,0 +1,2137 @@
+[
+  {
+    "name": "test/fixtures/array-literals.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0 1 2 1 2\n4 undefined undefined null undefined\nfalse true\n1 11 12 12 5\n2 true 2\n5 undefined 9\n1 undefined\n",
+    "stderr": "",
+    "expected": {
+      "file": "test/fixtures/array-literals.js",
+      "stdout": "0 1 2 1 2\n4 undefined undefined null undefined\nfalse true\n1 11 12 12 5\n2 true 2\n5 undefined 9\n1 undefined\n"
+    }
+  },
+  {
+    "name": "test/fixtures/number.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "false false\ntrue false\ntrue false\nfalse false\nfalse false\nfalse true\nfalse true\nfalse true\nfalse true\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\ntrue\ntrue true true true\ntrue abc\ntrue abcde\nfalse false\ntrue true true\n1.7976931348623157e+308 5e-324 2.220446049250313e-16\n9007199254740991 -9007199254740991\ntrue true true\ntrue true true\nisNaN 1 isFinite 1\n23\n17\n",
+    "stderr": "",
+    "expected": {
+      "file": "test/fixtures/number.js",
+      "stdout": "false false\ntrue false\ntrue false\nfalse false\nfalse false\nfalse true\nfalse true\nfalse true\nfalse true\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\ntrue\ntrue true true true\ntrue abc\ntrue abcde\nfalse false\ntrue true true\n1.7976931348623157e+308 5e-324 2.220446049250313e-16\n9007199254740991 -9007199254740991\ntrue true true\ntrue true true\nisNaN 1 isFinite 1\n23\n17\n"
+    }
+  },
+  {
+    "name": "test/fixtures/conditional.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0\n2\n5\n7 7 0\n10 7 10\n12 12\n13 15\n18 19\n-6 22 14\n0 23\n25 28\n30 ta\n33 tafd\n34 35\n36 37\n0 0 0 0 0 0 0\n1 1 1 1 1 1\ntrue 38\ntrue\ntrue\n39\n",
+    "stderr": "",
+    "expected": {
+      "file": "test/fixtures/conditional.js",
+      "stdout": "0\n2\n5\n7 7 0\n10 7 10\n12 12\n13 15\n18 19\n-6 22 14\n0 23\n25 28\n30 ta\n33 tafd\n34 35\n36 37\n0 0 0 0 0 0 0\n1 1 1 1 1 1\ntrue 38\ntrue\ntrue\n39\n"
+    }
+  },
+  {
+    "name": "examples/counter.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "total 36\nnext 14\nsame object true\n",
+    "stderr": "",
+    "expected": {
+      "file": "examples/counter.js",
+      "stdout": "total 36\nnext 14\nsame object true\n"
+    }
+  },
+  {
+    "name": "test/fixtures/semantics.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "24\n1 2 11 3\n10 12\ntrue false 3 6 10 10\ntrue true\nundefined 12 12\n1 2\n7 undefined\n3\n5 8\n19\n7 9 3 4 -6 true\nfalse true 9 8\ntrue false false true\nhéllo let }\n5 5\n2\n1\n",
+    "stderr": "",
+    "expected": {
+      "file": "test/fixtures/semantics.js",
+      "stdout": "24\n1 2 11 3\n10 12\ntrue false 3 6 10 10\ntrue true\nundefined 12 12\n1 2\n7 undefined\n3\n5 8\n19\n7 9 3 4 -6 true\nfalse true 9 8\ntrue false false true\nhéllo let }\n5 5\n2\n1\n"
+    }
+  },
+  {
+    "name": "test/fixtures/order.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "bkr 7\ntrue bmrrc\nrr 7 7\n",
+    "stderr": "",
+    "expected": {
+      "file": "test/fixtures/order.js",
+      "stdout": "bkr 7\ntrue bmrrc\nrr 7 7\n"
+    }
+  },
+  {
+    "name": "test/fixtures/missing.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "test/fixtures/missing.js:2:13: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "test/fixtures/missing.js",
+      "status": 1,
+      "error": "2:13: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "test/fixtures/invalid.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "test/fixtures/invalid.js:2:9: parse SyntaxError: unsupported or unexpected syntax: ;\n",
+    "expected": {
+      "file": "test/fixtures/invalid.js",
+      "status": 2,
+      "error": "2:9: parse SyntaxError: unsupported or unexpected syntax: ;"
+    }
+  },
+  {
+    "name": "test/fixtures/tdz.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "test/fixtures/tdz.js:2:15: runtime ReferenceError: outer is not initialized\n",
+    "expected": {
+      "file": "test/fixtures/tdz.js",
+      "status": 1,
+      "error": "2:15: runtime ReferenceError: outer is not initialized"
+    }
+  },
+  {
+    "name": "test/fixtures/throw.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "test/fixtures/throw.js:1:19: runtime Uncaught: stop\n",
+    "expected": {
+      "file": "test/fixtures/throw.js",
+      "status": 1,
+      "error": "1:19: runtime Uncaught: stop"
+    }
+  },
+  {
+    "name": "test/fixtures/runaway.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "test/fixtures/runaway.js:1:14: runtime RangeError: execution step limit exceeded\n",
+    "expected": {
+      "file": "test/fixtures/runaway.js",
+      "status": 1,
+      "errorPattern": "\\d+:\\d+: runtime RangeError: execution step limit exceeded"
+    }
+  },
+  {
+    "name": "test/fixtures/recursion.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "test/fixtures/recursion.js:1:29: runtime RangeError: call depth limit exceeded\n",
+    "expected": {
+      "file": "test/fixtures/recursion.js",
+      "status": 1,
+      "errorPattern": "\\d+:\\d+: runtime RangeError: (call depth|evaluation nesting) limit exceeded"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/duplicate.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/duplicate.js:1:8: parse SyntaxError: duplicate binding: x\n",
+    "expected": {
+      "file": "build/guest-fixtures/duplicate.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: duplicate binding: x",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/duplicate-param.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/duplicate-param.js:1:1: parse SyntaxError: duplicate parameter: x\n",
+    "expected": {
+      "file": "build/guest-fixtures/duplicate-param.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: duplicate parameter: x",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/param-let.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/param-let.js:1:17: parse SyntaxError: duplicate binding: x\n",
+    "expected": {
+      "file": "build/guest-fixtures/param-let.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: duplicate binding: x",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/const.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/const.js:1:1: parse SyntaxError: unsupported or unexpected syntax: const\n",
+    "expected": {
+      "file": "build/guest-fixtures/const.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: unsupported or unexpected syntax: const",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/increment.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/increment.js:1:11: parse SyntaxError: unsupported operator: ++\n",
+    "expected": {
+      "file": "build/guest-fixtures/increment.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: unsupported operator: ++",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/assignment-target.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/assignment-target.js:1:1: parse SyntaxError: invalid assignment target\n",
+    "expected": {
+      "file": "build/guest-fixtures/assignment-target.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: invalid assignment target",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/break.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/break.js:1:1: parse SyntaxError: break outside loop\n",
+    "expected": {
+      "file": "build/guest-fixtures/break.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: break outside loop",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/continue.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/continue.js:1:1: parse SyntaxError: continue outside loop\n",
+    "expected": {
+      "file": "build/guest-fixtures/continue.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: continue outside loop",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/return.js:1:1: parse SyntaxError: return outside function\n",
+    "expected": {
+      "file": "build/guest-fixtures/return.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: return outside function",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cross-function-break.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cross-function-break.js:1:30: parse SyntaxError: break outside loop\n",
+    "expected": {
+      "file": "build/guest-fixtures/cross-function-break.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: break outside loop",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/asi.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/asi.js:2:1: parse SyntaxError: expected ';', found 'console'\n",
+    "expected": {
+      "file": "build/guest-fixtures/asi.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: expected ';'",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/newline-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/newline-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/newline-return.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: newline after return/throw is unsupported",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/newline-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/newline-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/newline-throw.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: newline after return/throw is unsupported",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/string.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/string.js:1:1: parse SyntaxError: unterminated string\n",
+    "expected": {
+      "file": "build/guest-fixtures/string.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: unterminated string",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/comment.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/comment.js:1:1: parse SyntaxError: unterminated comment\n",
+    "expected": {
+      "file": "build/guest-fixtures/comment.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: unterminated comment",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/number.js:1:13: parse SyntaxError: leading-zero numbers are unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/number.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: leading-zero numbers are unsupported",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/exponent.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/exponent.js:1:13: parse SyntaxError: unsupported numeric literal\n",
+    "expected": {
+      "file": "build/guest-fixtures/exponent.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: unsupported numeric literal",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/proto.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/proto.js:1:8: parse SyntaxError: prototype literal syntax is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/proto.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: prototype literal syntax is unsupported",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/coercion.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/coercion.js:1:13: runtime TypeError: numeric operands required (coercion unsupported)\n",
+    "expected": {
+      "file": "build/guest-fixtures/coercion.js",
+      "status": 1,
+      "errorContains": "runtime TypeError: numeric operands required (coercion unsupported)",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/primitive-base.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/primitive-base.js:1:13: runtime TypeError: property base must be an object\n",
+    "expected": {
+      "file": "build/guest-fixtures/primitive-base.js",
+      "status": 1,
+      "errorContains": "runtime TypeError: property base must be an object",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/detached.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/detached.js:1:33: runtime TypeError: property base must be an object\n",
+    "expected": {
+      "file": "build/guest-fixtures/detached.js",
+      "status": 1,
+      "errorContains": "runtime TypeError: property base must be an object",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/assignment-missing.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/assignment-missing.js:1:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/assignment-missing.js",
+      "status": 1,
+      "errorContains": "runtime ReferenceError: missing is not defined",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/self-tdz.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/self-tdz.js:1:7: runtime ReferenceError: x is not initialized\n",
+    "expected": {
+      "file": "build/guest-fixtures/self-tdz.js",
+      "status": 1,
+      "errorContains": "runtime ReferenceError: x is not initialized",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/readonly.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/readonly.js:1:1: runtime TypeError: binding is not mutable: undefined\n",
+    "expected": {
+      "file": "build/guest-fixtures/readonly.js",
+      "status": 1,
+      "errorContains": "runtime TypeError: binding is not mutable: undefined",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/not-callable.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "arg\n",
+    "stderr": "build/guest-fixtures/not-callable.js:1:10: runtime TypeError: value is not callable\n",
+    "expected": {
+      "file": "build/guest-fixtures/not-callable.js",
+      "status": 1,
+      "errorContains": "runtime TypeError: value is not callable",
+      "stdout": "arg\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/abrupt-args.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/abrupt-args.js:1:22: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/abrupt-args.js",
+      "status": 1,
+      "errorContains": "runtime ReferenceError: missing is not defined",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/parse-before-execute.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/parse-before-execute.js:1:20: parse SyntaxError: unsupported or unexpected syntax: const\n",
+    "expected": {
+      "file": "build/guest-fixtures/parse-before-execute.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: unsupported or unexpected syntax: const",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/syntax-depth.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/syntax-depth.js:1:128: parse SyntaxError: syntax nesting limit exceeded\n",
+    "expected": {
+      "file": "build/guest-fixtures/syntax-depth.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: syntax nesting limit exceeded",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/eval-depth.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/eval-depth.js:1:1: runtime RangeError: evaluation nesting limit exceeded\n",
+    "expected": {
+      "file": "build/guest-fixtures/eval-depth.js",
+      "status": 1,
+      "errorContains": "runtime RangeError: evaluation nesting limit exceeded",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/source-limit.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/source-limit.js:1:1: parse SyntaxError: source exceeds 100000 UTF-16 units\n",
+    "expected": {
+      "file": "build/guest-fixtures/source-limit.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: source exceeds 100000 UTF-16 units",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/string-operator.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/string-operator.js:1:3: parse SyntaxError: expected ';', found '+'\n",
+    "expected": {
+      "file": "build/guest-fixtures/string-operator.js",
+      "status": 2,
+      "errorContains": "parse SyntaxError: expected ';'",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/nested-call-blocks.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/nested-call-blocks.js:1:61: runtime RangeError: evaluation nesting limit exceeded\n",
+    "expected": {
+      "file": "build/guest-fixtures/nested-call-blocks.js",
+      "status": 1,
+      "errorContains": "runtime RangeError: evaluation nesting limit exceeded",
+      "stdout": ""
+    }
+  },
+  {
+    "name": "build/guest-fixtures/numeric-key.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "2 2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/numeric-key.js",
+      "stdout": "2 2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-eof.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/array-literal-eof.js:1:10: parse SyntaxError: unsupported or unexpected syntax: <eof>\n",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-eof.js",
+      "status": 2,
+      "error": "1:10: parse SyntaxError: unsupported or unexpected syntax: <eof>"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-separator.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/array-literal-separator.js:1:12: parse SyntaxError: expected ']', found '2'\n",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-separator.js",
+      "status": 2,
+      "error": "1:12: parse SyntaxError: expected ']', found '2'"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-delimiter.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/array-literal-delimiter.js:1:11: parse SyntaxError: expected ']', found ')'\n",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-delimiter.js",
+      "status": 2,
+      "error": "1:11: parse SyntaxError: expected ']', found ')'"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-spread.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/array-literal-spread.js:1:10: parse SyntaxError: array spread is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-spread.js",
+      "status": 2,
+      "error": "1:10: parse SyntaxError: array spread is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-binding-pattern.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/array-literal-binding-pattern.js:1:5: parse SyntaxError: expected binding identifier\n",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-binding-pattern.js",
+      "status": 2,
+      "error": "1:5: parse SyntaxError: expected binding identifier"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-assignment-pattern.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/array-literal-assignment-pattern.js:1:1: parse SyntaxError: invalid assignment target\n",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-assignment-pattern.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: invalid assignment target"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-comma-operator.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/array-literal-comma-operator.js:1:12: parse SyntaxError: expected ')', found ','\n",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-comma-operator.js",
+      "status": 2,
+      "error": "1:12: parse SyntaxError: expected ')', found ','"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-numeric-key.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-numeric-key.js",
+      "stdout": "1\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-deep.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/array-literal-deep.js:1:128: parse SyntaxError: syntax nesting limit exceeded\n",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-deep.js",
+      "status": 2,
+      "errorPattern": "1:\\d+: parse SyntaxError: syntax nesting limit exceeded"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-nested-success.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-nested-success.js",
+      "stdout": "1\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-throw.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "first\n",
+    "stderr": "build/guest-fixtures/array-literal-throw.js:2:5: runtime Uncaught: stop\n",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-throw.js",
+      "status": 1,
+      "stdout": "first\n",
+      "error": "2:5: runtime Uncaught: stop"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-missing.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "first\n",
+    "stderr": "build/guest-fixtures/array-literal-missing.js:1:32: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-missing.js",
+      "status": 1,
+      "stdout": "first\n",
+      "error": "1:32: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/array-literal-holes-loop-budget.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/array-literal-holes-loop-budget.js:1:16: runtime RangeError: execution step limit exceeded\n",
+    "expected": {
+      "file": "build/guest-fixtures/array-literal-holes-loop-budget.js",
+      "status": 1,
+      "errorPattern": "1:\\d+: runtime RangeError: execution step limit exceeded"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-readonly-NaN.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "rhs\n",
+    "stderr": "build/guest-fixtures/number-readonly-NaN.js:1:1: runtime TypeError: property is not writable: NaN\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-readonly-NaN.js",
+      "status": 1,
+      "stdout": "rhs\n",
+      "error": "1:1: runtime TypeError: property is not writable: NaN"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-readonly-POSITIVE_INFINITY.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "rhs\n",
+    "stderr": "build/guest-fixtures/number-readonly-POSITIVE_INFINITY.js:1:1: runtime TypeError: property is not writable: POSITIVE_INFINITY\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-readonly-POSITIVE_INFINITY.js",
+      "status": 1,
+      "stdout": "rhs\n",
+      "error": "1:1: runtime TypeError: property is not writable: POSITIVE_INFINITY"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-readonly-NEGATIVE_INFINITY.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "rhs\n",
+    "stderr": "build/guest-fixtures/number-readonly-NEGATIVE_INFINITY.js:1:1: runtime TypeError: property is not writable: NEGATIVE_INFINITY\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-readonly-NEGATIVE_INFINITY.js",
+      "status": 1,
+      "stdout": "rhs\n",
+      "error": "1:1: runtime TypeError: property is not writable: NEGATIVE_INFINITY"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-readonly-MAX_VALUE.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "rhs\n",
+    "stderr": "build/guest-fixtures/number-readonly-MAX_VALUE.js:1:1: runtime TypeError: property is not writable: MAX_VALUE\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-readonly-MAX_VALUE.js",
+      "status": 1,
+      "stdout": "rhs\n",
+      "error": "1:1: runtime TypeError: property is not writable: MAX_VALUE"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-readonly-MIN_VALUE.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "rhs\n",
+    "stderr": "build/guest-fixtures/number-readonly-MIN_VALUE.js:1:1: runtime TypeError: property is not writable: MIN_VALUE\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-readonly-MIN_VALUE.js",
+      "status": 1,
+      "stdout": "rhs\n",
+      "error": "1:1: runtime TypeError: property is not writable: MIN_VALUE"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-readonly-EPSILON.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "rhs\n",
+    "stderr": "build/guest-fixtures/number-readonly-EPSILON.js:1:1: runtime TypeError: property is not writable: EPSILON\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-readonly-EPSILON.js",
+      "status": 1,
+      "stdout": "rhs\n",
+      "error": "1:1: runtime TypeError: property is not writable: EPSILON"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-readonly-MAX_SAFE_INTEGER.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "rhs\n",
+    "stderr": "build/guest-fixtures/number-readonly-MAX_SAFE_INTEGER.js:1:1: runtime TypeError: property is not writable: MAX_SAFE_INTEGER\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-readonly-MAX_SAFE_INTEGER.js",
+      "status": 1,
+      "stdout": "rhs\n",
+      "error": "1:1: runtime TypeError: property is not writable: MAX_SAFE_INTEGER"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-readonly-MIN_SAFE_INTEGER.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "rhs\n",
+    "stderr": "build/guest-fixtures/number-readonly-MIN_SAFE_INTEGER.js:1:1: runtime TypeError: property is not writable: MIN_SAFE_INTEGER\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-readonly-MIN_SAFE_INTEGER.js",
+      "status": 1,
+      "stdout": "rhs\n",
+      "error": "1:1: runtime TypeError: property is not writable: MIN_SAFE_INTEGER"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-abrupt-extra-isNaN.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/number-abrupt-extra-isNaN.js:1:17: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-abrupt-extra-isNaN.js",
+      "status": 1,
+      "errorPattern": "1:\\d+: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-metadata-isNaN-name.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/number-metadata-isNaN-name.js:1:1: runtime TypeError: property is not writable: name\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-metadata-isNaN-name.js",
+      "status": 1,
+      "error": "1:1: runtime TypeError: property is not writable: name"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-metadata-isNaN-length.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/number-metadata-isNaN-length.js:1:1: runtime TypeError: property is not writable: length\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-metadata-isNaN-length.js",
+      "status": 1,
+      "error": "1:1: runtime TypeError: property is not writable: length"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-abrupt-extra-isFinite.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/number-abrupt-extra-isFinite.js:1:20: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-abrupt-extra-isFinite.js",
+      "status": 1,
+      "errorPattern": "1:\\d+: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-metadata-isFinite-name.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/number-metadata-isFinite-name.js:1:1: runtime TypeError: property is not writable: name\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-metadata-isFinite-name.js",
+      "status": 1,
+      "error": "1:1: runtime TypeError: property is not writable: name"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-metadata-isFinite-length.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/number-metadata-isFinite-length.js:1:1: runtime TypeError: property is not writable: length\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-metadata-isFinite-length.js",
+      "status": 1,
+      "error": "1:1: runtime TypeError: property is not writable: length"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/number-noncallable.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "arg\n",
+    "stderr": "build/guest-fixtures/number-noncallable.js:1:1: runtime TypeError: value is not callable\n",
+    "expected": {
+      "file": "build/guest-fixtures/number-noncallable.js",
+      "status": 1,
+      "stdout": "arg\n",
+      "error": "1:1: runtime TypeError: value is not callable"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-missing-colon.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-missing-colon.js:1:9: parse SyntaxError: expected ':', found ';'\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-missing-colon.js",
+      "status": 2,
+      "error": "1:9: parse SyntaxError: expected ':', found ';'"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-missing-consequent.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-missing-consequent.js:1:8: parse SyntaxError: unsupported or unexpected syntax: :\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-missing-consequent.js",
+      "status": 2,
+      "error": "1:8: parse SyntaxError: unsupported or unexpected syntax: :"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-missing-alternate.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-missing-alternate.js:1:11: parse SyntaxError: unsupported or unexpected syntax: ;\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-missing-alternate.js",
+      "status": 2,
+      "error": "1:11: parse SyntaxError: unsupported or unexpected syntax: ;"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-alternate-eof.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-alternate-eof.js:1:11: parse SyntaxError: unsupported or unexpected syntax: <eof>\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-alternate-eof.js",
+      "status": 2,
+      "error": "1:11: parse SyntaxError: unsupported or unexpected syntax: <eof>"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-assignment-target.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-assignment-target.js:1:1: parse SyntaxError: invalid assignment target\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-assignment-target.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: invalid assignment target"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-unchosen-syntax.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-unchosen-syntax.js:1:30: parse SyntaxError: unsupported or unexpected syntax: ;\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-unchosen-syntax.js",
+      "status": 2,
+      "error": "1:30: parse SyntaxError: unsupported or unexpected syntax: ;"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-optional-chain.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-optional-chain.js:1:5: parse SyntaxError: unsupported operator: ?.\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-optional-chain.js",
+      "status": 2,
+      "error": "1:5: parse SyntaxError: unsupported operator: ?."
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-nullish.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-nullish.js:1:7: parse SyntaxError: unsupported or unexpected syntax: ?\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-nullish.js",
+      "status": 2,
+      "error": "1:7: parse SyntaxError: unsupported or unexpected syntax: ?"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-comma.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-comma.js:1:9: parse SyntaxError: expected ':', found ','\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-comma.js",
+      "status": 2,
+      "error": "1:9: parse SyntaxError: expected ':', found ','"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-abrupt-test.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-abrupt-test.js:1:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-abrupt-test.js",
+      "status": 1,
+      "error": "1:1: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-abrupt-consequent.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-abrupt-consequent.js:1:8: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-abrupt-consequent.js",
+      "status": 1,
+      "error": "1:8: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-abrupt-alternate.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-abrupt-alternate.js:1:29: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-abrupt-alternate.js",
+      "status": 1,
+      "error": "1:29: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-throw-test.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-throw-test.js:1:19: runtime Uncaught: stop\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-throw-test.js",
+      "status": 1,
+      "error": "1:19: runtime Uncaught: stop"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-throw-consequent.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-throw-consequent.js:1:19: runtime Uncaught: stop\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-throw-consequent.js",
+      "status": 1,
+      "error": "1:19: runtime Uncaught: stop"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-throw-alternate.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-throw-alternate.js:1:19: runtime Uncaught: stop\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-throw-alternate.js",
+      "status": 1,
+      "error": "1:19: runtime Uncaught: stop"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-effects-before-throw.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "chosen\n",
+    "stderr": "build/guest-fixtures/conditional-effects-before-throw.js:1:42: runtime Uncaught: stop\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-effects-before-throw.js",
+      "status": 1,
+      "stdout": "chosen\n",
+      "error": "1:42: runtime Uncaught: stop"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-nested-success.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "42\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-nested-success.js",
+      "stdout": "42\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-consequent-depth.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-consequent-depth.js:1:890: parse SyntaxError: syntax nesting limit exceeded\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-consequent-depth.js",
+      "status": 2,
+      "errorPattern": "1:\\d+: parse SyntaxError: syntax nesting limit exceeded"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-alternate-depth.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-alternate-depth.js:1:1521: parse SyntaxError: syntax nesting limit exceeded\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-alternate-depth.js",
+      "status": 2,
+      "errorPattern": "1:\\d+: parse SyntaxError: syntax nesting limit exceeded"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-unchosen-depth.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-unchosen-depth.js:1:1520: parse SyntaxError: syntax nesting limit exceeded\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-unchosen-depth.js",
+      "status": 2,
+      "errorPattern": "1:\\d+: parse SyntaxError: syntax nesting limit exceeded"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/conditional-evaluation-depth.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/conditional-evaluation-depth.js:1:1: runtime RangeError: evaluation nesting limit exceeded\n",
+    "expected": {
+      "file": "build/guest-fixtures/conditional-evaluation-depth.js",
+      "status": 1,
+      "errorPattern": "1:\\d+: runtime RangeError: evaluation nesting limit exceeded"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-line-comment.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/lf-line-comment.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-whitespace.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/lf-whitespace.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-line-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-line-location.js:2:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-line-location.js",
+      "status": 1,
+      "error": "2:1: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-block-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-block-location.js:2:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-block-location.js",
+      "status": 1,
+      "error": "2:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-block-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-block-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-block-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-block-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-block-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-block-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-line-comment.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/cr-line-comment.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-whitespace.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/cr-whitespace.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-line-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-line-location.js:2:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-line-location.js",
+      "status": 1,
+      "error": "2:1: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-block-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-block-location.js:2:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-block-location.js",
+      "status": 1,
+      "error": "2:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-block-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-block-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-block-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-block-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-block-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-block-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-line-comment.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-line-comment.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-whitespace.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-whitespace.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-line-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-line-location.js:2:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-line-location.js",
+      "status": 1,
+      "error": "2:1: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-block-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-block-location.js:2:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-block-location.js",
+      "status": 1,
+      "error": "2:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-block-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-block-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-block-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-block-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-block-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-block-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-line-comment.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ls-line-comment.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-whitespace.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ls-whitespace.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-line-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-line-location.js:2:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-line-location.js",
+      "status": 1,
+      "error": "2:1: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-block-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-block-location.js:2:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-block-location.js",
+      "status": 1,
+      "error": "2:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-block-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-block-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-block-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-block-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-block-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-block-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-line-comment.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ps-line-comment.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-whitespace.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ps-whitespace.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-line-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-line-location.js:2:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-line-location.js",
+      "status": 1,
+      "error": "2:1: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-block-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-block-location.js:2:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-block-location.js",
+      "status": 1,
+      "error": "2:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-block-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-block-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-block-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-block-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-block-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-block-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-string.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "a b\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ls-string.js",
+      "stdout": "a b\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-string.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "a b\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ps-string.js",
+      "stdout": "a b\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/mixed-line-positions.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/mixed-line-positions.js:4:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/mixed-line-positions.js",
+      "status": 1,
+      "error": "4:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "inline",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "42\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "42\n"
+    }
+  },
+  {
+    "name": "usage",
+    "verdict": "PASS",
+    "status": 64,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "usage: rift <file.js> | -e <source>\n",
+    "expected": {
+      "status": 64,
+      "stderr": "usage: rift <file.js> | -e <source>\n"
+    }
+  },
+  {
+    "name": "missing-inline",
+    "verdict": "PASS",
+    "status": 64,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "usage: rift <file.js> | -e <source>\n",
+    "expected": {
+      "status": 64,
+      "stderr": "usage: rift <file.js> | -e <source>\n"
+    }
+  },
+  {
+    "name": "io",
+    "verdict": "PASS",
+    "status": 66,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "cannot read source: build/nonexistent-guest.js\n",
+    "expected": {
+      "status": 66,
+      "stderr": "cannot read source: build/nonexistent-guest.js\n"
+    }
+  },
+  {
+    "name": "realms",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "a 41\nb 7 undefined\na 42\na 23\nrealms independent\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "a 41\nb 7 undefined\na 42\na 23\nrealms independent\n"
+    }
+  },
+  {
+    "name": "object-descriptors",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "object descriptors passed\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "object descriptors passed\n"
+    }
+  },
+  {
+    "name": "object-prototypes",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "object prototypes passed\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "object prototypes passed\n"
+    }
+  },
+  {
+    "name": "object-keys",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "object keys passed\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "object keys passed\n"
+    }
+  },
+  {
+    "name": "conversion",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "primitive conversion passed\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "primitive conversion passed\n"
+    }
+  },
+  {
+    "name": "definition-dispatch",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "definition dispatch passed\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "definition dispatch passed\n"
+    }
+  },
+  {
+    "name": "array-storage",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "array storage passed\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "array storage passed\n"
+    }
+  },
+  {
+    "name": "array-like",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "array-like prerequisites passed\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "array-like prerequisites passed\n"
+    }
+  },
+  {
+    "name": "operation-context",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "operation context passed\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "operation context passed\n"
+    }
+  },
+  {
+    "name": "array-map",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "array map passed\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "array map passed\n"
+    }
+  },
+  {
+    "name": "array-literals",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "array literals passed\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "array literals passed\n"
+    }
+  },
+  {
+    "name": "property-key-conversion",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "property key conversion passed\n",
+    "stderr": "",
+    "expected": {
+      "stdout": "property key conversion passed\n"
+    }
+  }
+]

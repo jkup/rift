@@ -1,5 +1,5 @@
 import { failure } from "./runtime.js";
-import type { Value, ThrowCompletion } from "./runtime.js";
+import type { Value, ThrowCompletion, PropertyKey } from "./runtime.js";
 import type { Location } from "./syntax.js";
 import type { GuestString } from "./strings.js";
 
@@ -104,4 +104,28 @@ export function toLength(value: Value, loc: Location): NumberCompletion {
     const integer = toIntegerOrInfinity(value, loc);
     if (integer.type === "throw") return integer;
     return { type: "normal", value: Math.min(Math.max(integer.value, 0), 9007199254740991) };
+}
+
+export type StringCompletion = { type: "normal"; value: GuestString } | ThrowCompletion;
+export type PropertyKeyCompletion = { type: "normal"; value: PropertyKey } | ThrowCompletion;
+
+// The sole numeric formatting backend accepts a typed binary64 payload.
+export function numberToString(value: number): GuestString { return String(value); }
+
+// Partial ToString: object coercion requires guest calls and is not supported.
+export function toString(value: Value, loc: Location): StringCompletion {
+    switch (value.kind) {
+        case "undefined": return { type: "normal", value: "undefined" };
+        case "null": return { type: "normal", value: "null" };
+        case "boolean": return { type: "normal", value: value.value ? "true" : "false" };
+        case "string": return { type: "normal", value: value.value };
+        case "number": return { type: "normal", value: numberToString(value.value) };
+        case "object": return failure("TypeError", "object-to-primitive conversion unsupported", loc);
+    }
+}
+
+// Partial ToPropertyKey. Future symbols must retain identity here while
+// ToString rejects them; these operations will then diverge.
+export function toPropertyKey(value: Value, loc: Location): PropertyKeyCompletion {
+    return toString(value, loc);
 }

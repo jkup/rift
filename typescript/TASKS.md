@@ -256,6 +256,22 @@ Handoff (2026-11-01): docs/property-key-conversion.md proposes exact primitive s
 
 ### TS-007 — Primitive computed keys and deferred reference validation
 
-Status: **ready**. Prerequisite TS-007P accepted at `5f4965a`; this acceptance supersedes its historical awaiting-review entry. Implement exactly the interfaces, caller migration, evaluation-order rules and complete acceptance matrix in docs/property-key-conversion.md. The coordinator freezes that document's bounded implementation contract, including moving base/key checks into GetValue/PutValue after RHS for simple writes. Own only the source/test/registration/docs paths listed there, plus this task's status/handoff and docs/validation/ts-007/. Coordinator owns COORDINATION.md.
+Status: **in progress** (implemented and validated; awaiting coordinator review). Owner: Codex implementation chat `01a1988e-2066-7561-a3f4-920625df6259`; base `0819c71` on `codex/primitive-computed-keys`. Prerequisite TS-007P accepted at `5f4965a`; this acceptance supersedes its historical awaiting-review entry. Implement exactly the interfaces, caller migration, evaluation-order rules and complete acceptance matrix in docs/property-key-conversion.md. The coordinator freezes that document's bounded implementation contract, including moving base/key checks into GetValue/PutValue after RHS for simple writes. Own only the source/test/registration/docs paths listed there, plus this task's status/handoff and docs/validation/ts-007/. Coordinator owns COORDINATION.md.
 
 All primitive keys are supported; object coercion, symbols, primitive boxing, computed object literal names, new operators and standard Array APIs remain excluded. Preserve the two existing numeric-key cases as positive tests and all prior assertions. Validate integrated runtime/conversion module cycle with static-only native compilation; reduce and report failures rather than redesign or change pins. Run typecheck, runner, existing probes, isolated formatting probe and rebuilt Node/native suites with all coverage gates. Keep tests readable, deterministic and assertion-bearing. Commit/push the assigned branch and stop for coordinator review; no successor work or main merge.
+
+
+Handoff (2026-11-01): implemented the frozen partial ToString/ToPropertyKey APIs,
+typed number formatting, raw Value references and deferred GetValue/PutValue
+validation. Exact saved base Values reach property Get and method calls. All five
+host reference callers migrated; both numeric-key regressions remain positive.
+The new compiled driver plus runtime-read fixtures asserts the full conversion,
+sparse-array, order/abrupt/receiver and boundary matrix. Node/native 153/153 each;
+typecheck passes, runner 20/20, compiler probes 10/10, formatting 36/36 in both
+hosts with 11/11 static coverage, order probe 5/5. All 13 integrated entry points
+pass static-only and separate coverage (CLI 1004/1004; new driver 1209/1209).
+Initial Zig sandbox linking failures resolved with approved library access; one
+inferred-never test callback adapter resolved by explicit Completion annotation.
+No cycle blocker or formatting discrepancy. Evidence and limitations:
+docs/validation/ts-007/. Preserved C++, pins, companion tasks and coordinator files.
+No merge, branch change or successor work. Stop for coordinator review.

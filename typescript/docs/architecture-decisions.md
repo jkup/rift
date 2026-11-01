@@ -369,3 +369,20 @@ No Array intrinsics, spread, destructuring, comma operator, numeric property-key
 coercion or standard map installation is included. The existing null prototype
 limitation remains. Tests inspect parsed guest results through existing host
 operations; no guest reflection API was added. See [validation](validation/ts-006/README.md).
+
+## Primitive property keys (TS-007)
+
+Property references retain the raw base Value, key Value and member location.
+GetValue/PutValue first reject non-object bases, then apply partial ToPropertyKey.
+Simple assignment evaluates its RHS before either restriction. Reads obtain the
+property before call arguments; method calls pass the exact saved base Value as
+receiver. No base/key reevaluation occurs when RHS or arguments replace bindings.
+
+conversion.ts exports StringCompletion, PropertyKeyCompletion, numberToString,
+toString and toPropertyKey. Both conversions support every current primitive;
+object/array/function keys return the existing unsupported-object TypeError
+without reading or calling coercion hooks. The numeric backend uses String on a
+typed number, preserving binary64 formatting rather than array-index conversion.
+PropertyKey itself remains GuestString. Future symbols require the two conversion
+operations to diverge. Object coercion, primitive boxing and new operators remain
+excluded. See property-key-conversion.md for the frozen order and test contract.

@@ -65,7 +65,7 @@ for (const own of [false, true]) {
             const target = new DefinitionObject();
             if (own) target.define("x", UNDEFINED, true, true, true);
             target.calls = 0; target.mode = mode;
-            const r = viaReference ? putValue({ kind: "property", base: target, key: "x" }, rhs, loc) : target.set("x", rhs, loc);
+            const r = viaReference ? putValue({ kind: "property", base: { kind: "object", object: target }, key: { kind: "string", value: "x" }, loc }, rhs, loc) : target.set("x", rhs, loc);
             check(target.calls === 1 && target.seenLocation === loc, "strict dispatch once");
             if (mode === "throw") exact(r, target);
             else if (mode === "false") check(r.type === "throw" && r.diagnostic.name === "TypeError" && r.diagnostic.phase === "runtime" && r.diagnostic.loc === loc, "strict false translation");
