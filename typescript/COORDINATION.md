@@ -70,3 +70,5 @@ Completed implementation writer: TS-005N chat `01a19807-4414-7561-a505-e9595f9df
 Accepted TS-005N `c595fdb`: reviewed exact scanner/whitespace, binary64 backend isolation, modulo and explicit unsupported object boundary, plus fixed rounding expectations and evidence. Independently rebuilt Node/native lanes, 132/132 each; all six static native gates pass. Producer typecheck/runner 20/probes 10 evidence retained. Numeric tests support this backend, not exhaustive rounding proof. No operator/builtin integration. Completed chat idle; cursor `42a3efef-d980-4d09-b6e0-03cda6342281:2`.
 
 TS-005D ready under frozen definition completion/location contract. Array storage remains blocked until integrated dispatch passes review. Claude queue unchanged and reserved.
+
+Active sole implementation writer: TS-005D chat `01a19815-200c-7f92-a524-a1523bb79726`, host `local`, base `e174a35`. Owns definition completion/location migration, affected assertions, actual-runtime dispatch driver/registration and scoped docs/evidence. No arrays or conversion changes. Initial progress active; cursor `25ae023f-2ece-49d3-b93a-3bccb9139abc:1`. Coordinator owns this file.
