@@ -576,7 +576,7 @@ Coordinator acceptance: TS-015B accepted at `3a5d360` on 2026-11-01 after actual
 
 ### TS-016P — Realm intrinsic prototype bootstrap design
 
-Status: **ready**. Prerequisite TS-015B accepted `3a5d360`. Design only; no production implementation authorized by this task. Own docs/realm-intrinsic-prototypes.md, docs/validation/ts-016p/, optional isolated probes/realm-intrinsics/ only if an actual compiler uncertainty needs reduction, and this task claim/handoff. Coordinator owns COORDINATION.md; Claude tasks remain reserved.
+Status: **in progress — design delivered, awaiting coordinator review**. Owner: design chat `01a19943-623a-70c0-a2c2-07ce8c487217`; base `bf8c129`. Prerequisite TS-015B accepted `3a5d360`. Design only; no production implementation authorized by this task. Own docs/realm-intrinsic-prototypes.md, docs/validation/ts-016p/, optional isolated probes/realm-intrinsics/ only if an actual compiler uncertainty needs reduction, and this task claim/handoff. Coordinator owns COORDINATION.md; Claude tasks remain reserved.
 
 The interpreter now supports ordinary coercion but production objects, functions and arrays still start with null prototypes, and map is internal only. Design the smallest coherent per-Realm intrinsic prototype foundation needed to make later standard methods usable. Inspect current Realm bootstrap, registerBuiltin, evaluator function/object/array creation, GuestArray constructor and map result allocation, plus host fixtures. Consult authoritative specification algorithms and a relevant pinned engine implementation. Record exact revisions/links and distinguish deliberate partial scope from full intrinsics.
 
@@ -585,3 +585,22 @@ Produce a concrete graph/allocation order and exact APIs for realm-owned Object,
 Separate graph plumbing from first methods and guest exposure where reviewable. Identify a minimal method follow-up, not an entire standard library. Explicitly analyze the consequences of installing Object.prototype valueOf/toString and eventual Array methods: changed no-method errors, default object conversion, inherited method mutation, existing constructor/species rejection, arrays lacking toString/join, and functions lacking standard toString. Do not silently implement incorrect approximations or claim missing wrappers/symbol hooks/constructors/accessors are complete. List prerequisites/deferred restrictions for each method instead of broadening them automatically. Standard method implementations remain future work until reviewed and assigned.
 
 Deliver exact smallest-next-batch ownership/signatures, migration checklist and fixed expected-result matrix for graph identity/descriptors/callability, no bootstrap guest calls, realm isolation, ordinary lookup/shadowing, guest object/function/array allocation, map results, existing coercion/budget behavior and explicit unsupported cases. Preserve every baseline assertion purpose; enumerate required future positive migrations. Explain alternatives and choose readable minimal boundaries. Probe only actual static compilation uncertainty, retaining both static build and coverage evidence if used. Documentation-only work must not claim new native capability. Commit/push coherent design and stop for coordinator review, no production/test/manifest/pin/C++/Claude/COORDINATION edits, branch switch, main merge or successor assignment.
+
+TS-016P handoff (2026-11-01): delivered `docs/realm-intrinsic-prototypes.md`
+and `docs/validation/ts-016p/`. Recommends graph/allocation/builtin metadata only
+as the smallest coherent next batch: per-Realm O/F/A, immutable null-root O,
+callable F, exotic A, explicit host null roots and Realm factories. Includes all
+production allocation sites, registration/host fixture migrations, G1-G17 fixed
+acceptance scenarios and future positive coercion migrations. No constructors
+or conversion methods are proposed in that batch; Function.prototype.call is
+the minimal separately reviewed method candidate. Internal map result Realm is
+the supplied context Realm; foreign value identity is preserved, while standard
+foreign function Realm entry remains explicitly deferred.
+
+Sources: ECMA-262 fixed 2025 edition and inspected engine262
+`d553e7b52501fbc47eae981c8d0fa7a5c26d0171` files with recorded blob revisions.
+Documentation whitespace/scope review only; no compiler uncertainty justified
+a probe and no runtime suite was rerun. Inherited accepted baseline remains
+Node/native 162/162 and 21 static gates, not new evidence from this prose.
+No production/tests/manifests/pins/C++/Claude/COORDINATION edits. Stop for
+coordinator review; no implementation, branch switch, main merge or successor.
