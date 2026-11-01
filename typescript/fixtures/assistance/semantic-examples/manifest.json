@@ -1,0 +1,81 @@
+{
+  "description": "Standalone guest examples with exact expected stdout. 'current' uses only the TS-001 syntax subset; 'deferred' needs later features and is not a current regression.",
+  "verifiedWith": "node v26.13.0",
+  "examples": [
+    {
+      "file": "current/01-retained-mutable-closure.js",
+      "group": "current",
+      "rule": "A closure retains and shares its captured binding; it sees later assignments.",
+      "stdout": "1\n2\n3\nafter\n"
+    },
+    {
+      "file": "current/02-closure-independence.js",
+      "group": "current",
+      "rule": "Each call creates a fresh environment; closures from one call share it, closures from different calls do not.",
+      "stdout": "1 2 101 3 102\n7 0\n7 9\n"
+    },
+    {
+      "file": "current/03-object-aliasing.js",
+      "group": "current",
+      "rule": "Bindings hold object references; mutation is shared through aliases, rebinding is not, and identity is not structural.",
+      "stdout": "2 true\n2 3 false\n10\n20 10\nfalse\n"
+    },
+    {
+      "file": "current/04-method-receivers.js",
+      "group": "current",
+      "rule": "`this` comes from the call form: member calls (dot or computed) pass the object; plain calls pass undefined in strict code.",
+      "stdout": "left right\nright\nleft\ntrue\ntrue\n"
+    },
+    {
+      "file": "current/05-evaluation-order.js",
+      "group": "current",
+      "rule": "Arguments, operands, callee and assignment target/key are evaluated left to right before the right-hand side; && and || short-circuit.",
+      "stdout": "arg 1\narg 2\narg 3\n6\nleft\nright\n10\ntarget\nkey\nvalue\n42\ncallee\nargument\ndone\nand-left\nfalse\nor-left\n1\n"
+    },
+    {
+      "file": "current/06-shadowing.js",
+      "group": "current",
+      "rule": "Names resolve to the nearest enclosing binding; inner bindings and assignments to them do not affect outer bindings.",
+      "stdout": "block\nouter\nparameter outer\nfunction\n51\n1\n"
+    },
+    {
+      "file": "current/07-loop-side-effects.js",
+      "group": "current",
+      "rule": "A while condition (with its side effects) runs before every iteration; continue re-tests it, break does not.",
+      "stdout": "3 4\n6 9\n2 2\n1\n"
+    },
+    {
+      "file": "current/08-return-propagation.js",
+      "group": "current",
+      "rule": "return exits the whole function from any nesting depth; missing or bare return yields undefined; inner returns stay inner.",
+      "stdout": "4\nearly not reached\nundefined undefined\ninner false\nouter\n"
+    },
+    {
+      "file": "current/09-function-declaration-hoisting.js",
+      "group": "current",
+      "rule": "Function declarations are initialized before their scope's statements run, enabling calls before the declaration and mutual recursion.",
+      "stdout": "16\ntrue true\n42\n"
+    },
+    {
+      "file": "deferred/d1-for-let-per-iteration.js",
+      "group": "deferred",
+      "needs": ["for", "var", "const", "array literals with push", "update operators"],
+      "rule": "for-let creates a binding per iteration; var shares one binding across all closures.",
+      "stdout": "0 1 2\n3 3 3\n"
+    },
+    {
+      "file": "deferred/d2-finally-completion.js",
+      "group": "deferred",
+      "needs": ["try/finally", "Error constructor"],
+      "rule": "finally always runs; a normal finally preserves the earlier completion, an abrupt one replaces it.",
+      "stdout": "finally ran\ntry\nfinally\nswallowed\n"
+    },
+    {
+      "file": "deferred/d3-arrow-lexical-this.js",
+      "group": "deferred",
+      "needs": ["arrow functions"],
+      "rule": "Arrow functions use the enclosing function's this regardless of how they are called; ordinary functions do not.",
+      "stdout": "owner owner\nno receiver other\n"
+    }
+  ]
+}
