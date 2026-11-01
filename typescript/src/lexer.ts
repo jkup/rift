@@ -5,6 +5,9 @@ function digit(c: string): boolean { return c >= "0" && c <= "9"; }
 function letter(c: string): boolean {
     return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_" || c === "$";
 }
+function lineTerminator(c: string): boolean {
+    return c === "\r" || c === "\n" || c === "\u2028" || c === "\u2029";
+}
 export function lex(source: string): LexResult {
     const tokens: Token[] = [];
     let i = 0;
@@ -13,9 +16,13 @@ export function lex(source: string): LexResult {
     let error: Diagnostic | null = null;
     function advance(): string {
         const c = source.charAt(i++);
-        if (c === "\r") { line++; column = 1; }
-        else if (c === "\n") { if (i < 2 || source.charAt(i - 2) !== "\r") line++; column = 1; }
-        else { column++; }
+        if (lineTerminator(c)) {
+            // CRLF is one line boundary, including inside block comments.
+            if (c !== "\n" || i < 2 || source.charAt(i - 2) !== "\r") line++;
+            column = 1;
+        } else {
+            column++;
+        }
         return c;
     }
     function fail(message: string, loc: Location): void {
@@ -25,16 +32,23 @@ export function lex(source: string): LexResult {
     while (i < source.length && error === null) {
         const c = source.charAt(i);
         const loc = { line, column };
-        if (c === " " || c === "\t" || c === "\r" || c === "\n") { advance(); continue; }
+        if (c === " " || c === "\t" || lineTerminator(c)) {
+            advance();
+            continue;
+        }
         if (c === "/" && source.charAt(i + 1) === "/") {
-            while (i < source.length && source.charAt(i) !== "\n" && source.charAt(i) !== "\r") advance();
+            while (i < source.length && !lineTerminator(source.charAt(i))) advance();
             continue;
         }
         if (c === "/" && source.charAt(i + 1) === "*") {
-            advance(); advance();
+            advance();
+            advance();
             while (i < source.length && !(source.charAt(i) === "*" && source.charAt(i + 1) === "/")) advance();
             if (i === source.length) fail("unterminated comment", loc);
-            else { advance(); advance(); }
+            else {
+                advance();
+                advance();
+            }
             continue;
         }
         if (letter(c)) {
@@ -60,7 +74,11 @@ export function lex(source: string): LexResult {
             let text = "";
             while (i < source.length && source.charAt(i) !== quote && error === null) {
                 let unit = advance();
-                if (unit === "\n" || unit === "\r") { fail("newline in string", loc); break; }
+                // Unlike CR/LF, raw U+2028/U+2029 are allowed in modern JS strings.
+                if (unit === "\n" || unit === "\r") {
+                    fail("newline in string", loc);
+                    break;
+                }
                 if (unit === "\\") {
                     unit = advance();
                     if (unit === "n") unit = "\n";
@@ -70,18 +88,24 @@ export function lex(source: string): LexResult {
                 }
                 text += unit;
             }
-            if (i >= source.length) fail("unterminated string", loc); else advance();
+            if (i >= source.length) fail("unterminated string", loc);
+            else advance();
             tokens.push({ kind: "string", text, loc });
             continue;
         }
         const three = source.slice(i, i + 3);
         const two = source.slice(i, i + 2);
         if (three === "===" || three === "!==") {
-            advance(); advance(); advance(); tokens.push({ kind: "punct", text: three, loc });
+            advance();
+            advance();
+            advance();
+            tokens.push({ kind: "punct", text: three, loc });
         } else if (["++", "--", "==", "!=", "=>", "+=", "-=", "*=", "/=", "%=", "**", "<<", ">>", "?."].includes(two)) {
             fail("unsupported operator: " + two, loc);
         } else if (two === "<=" || two === ">=" || two === "&&" || two === "||") {
-            advance(); advance(); tokens.push({ kind: "punct", text: two, loc });
+            advance();
+            advance();
+            tokens.push({ kind: "punct", text: two, loc });
         } else if ("{}();,.:[]+-*/%<>=!".includes(c)) {
             tokens.push({ kind: "punct", text: advance(), loc });
         } else { fail("unsupported character: " + c, loc); }

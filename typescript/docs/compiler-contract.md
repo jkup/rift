@@ -104,3 +104,15 @@ runaway loops, recursion, deep expressions and recursion inside nested blocks.
 This supplies bounded integration evidence, not proof of arbitrary stack or heap
 safety. See [architecture decisions](architecture-decisions.md) for the limits and
 [retained TS-001 transcripts](validation/ts-001/README.md) for full subprocess records.
+
+### Coordinator review correction
+
+The follow-up to `b677091` fixes U+2028/U+2029 being swallowed by single-line
+comments. A shared line-terminator check now governs whitespace, comment endings
+and source positions; CRLF counts once. Return/throw restrictions see line breaks
+inside block comments as well. Parser/evaluator control-flow formatting was also
+expanded without architecture changes. Rebuilt Node and native lanes pass 90/90
+cases, including 43 additional newline regressions. Coverage is 642/642 for the CLI
+and 655/655 for the realm driver, both fully static. All ten probes, 20 runner
+regressions and typechecking pass again. The retained transcripts now reflect this
+review correction; the initial evidence remains available at `b677091`.

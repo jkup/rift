@@ -12,7 +12,8 @@ export class Evaluator {
         return normal();
     }
     closure(params: string[], body: Stmt[], environment: Environment): Value {
-        const object = new GuestObject(); object.callable = { kind: "guest", params, body, environment };
+        const object = new GuestObject();
+        object.callable = { kind: "guest", params, body, environment };
         return { kind: "object", object };
     }
     block(body: Stmt[], env: Environment, receiver: Value): Completion {
@@ -36,10 +37,15 @@ export class Evaluator {
         return normal();
     }
     statement(stmt: Stmt, env: Environment, receiver: Value): Completion {
-        const budget = this.tick(stmt.loc); if (budget.type !== "normal") return budget;
-        if (++this.depth > 256) { this.depth--; return failure("RangeError", "evaluation nesting limit exceeded", stmt.loc); }
+        const budget = this.tick(stmt.loc);
+        if (budget.type !== "normal") return budget;
+        if (++this.depth > 256) {
+            this.depth--;
+            return failure("RangeError", "evaluation nesting limit exceeded", stmt.loc);
+        }
         const result = this.statementInner(stmt, env, receiver);
-        this.depth--; return result;
+        this.depth--;
+        return result;
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
@@ -50,17 +56,21 @@ export class Evaluator {
                 if (result.type !== "normal") return result;
                 const binding = env.bindings.get(stmt.name);
                 if (binding === undefined) throw new Error("uninstantiated lexical declaration");
-                binding.value = result.value; binding.initialized = true; return normal();
+                binding.value = result.value;
+                binding.initialized = true;
+                return normal();
             }
             case "block": return this.block(stmt.body, new Environment(env), receiver);
             case "if": {
-                const test = this.evaluate(stmt.test, env, receiver); if (test.type !== "normal") return test;
+                const test = this.evaluate(stmt.test, env, receiver);
+                if (test.type !== "normal") return test;
                 if (truthy(test.value)) return this.statement(stmt.consequent, env, receiver);
                 return stmt.alternate === null ? normal() : this.statement(stmt.alternate, env, receiver);
             }
             case "while": {
                 while (true) {
-                    const test = this.evaluate(stmt.test, env, receiver); if (test.type !== "normal") return test;
+                    const test = this.evaluate(stmt.test, env, receiver);
+                    if (test.type !== "normal") return test;
                     if (!truthy(test.value)) return normal();
                     const result = this.statement(stmt.body, env, receiver);
                     if (result.type === "break") return normal();
@@ -79,8 +89,10 @@ export class Evaluator {
     reference(expr: Expr, env: Environment, receiver: Value): ReferenceResult {
         if (expr.kind === "identifier") return { type: "reference", reference: { kind: "binding", environment: env.resolve(expr.name), name: expr.name } };
         if (expr.kind === "member") {
-            const base = this.evaluate(expr.base, env, receiver); if (base.type !== "normal") return { type: "abrupt", completion: base };
-            const key = this.evaluate(expr.key, env, receiver); if (key.type !== "normal") return { type: "abrupt", completion: key };
+            const base = this.evaluate(expr.base, env, receiver);
+            if (base.type !== "normal") return { type: "abrupt", completion: base };
+            const key = this.evaluate(expr.key, env, receiver);
+            if (key.type !== "normal") return { type: "abrupt", completion: key };
             if (base.value.kind !== "object") return { type: "abrupt", completion: failure("TypeError", "property base must be an object", expr.loc) };
             if (key.value.kind !== "string") return { type: "abrupt", completion: failure("TypeError", "only string property keys are supported", expr.loc) };
             return { type: "reference", reference: { kind: "property", base: base.value.object, key: key.value.value } };
@@ -88,10 +100,15 @@ export class Evaluator {
         throw new Error("parser admitted a non-reference target");
     }
     evaluate(expr: Expr, env: Environment, receiver: Value): Completion {
-        const budget = this.tick(expr.loc); if (budget.type !== "normal") return budget;
-        if (++this.depth > 256) { this.depth--; return failure("RangeError", "evaluation nesting limit exceeded", expr.loc); }
+        const budget = this.tick(expr.loc);
+        if (budget.type !== "normal") return budget;
+        if (++this.depth > 256) {
+            this.depth--;
+            return failure("RangeError", "evaluation nesting limit exceeded", expr.loc);
+        }
         const result = this.expression(expr, env, receiver);
-        this.depth--; return result;
+        this.depth--;
+        return result;
     }
     expression(expr: Expr, env: Environment, receiver: Value): Completion {
         switch (expr.kind) {
@@ -108,15 +125,18 @@ export class Evaluator {
                 return ref.type === "abrupt" ? ref.completion : getValue(ref.reference, expr.loc);
             }
             case "assign": {
-                const ref = this.reference(expr.target, env, receiver); if (ref.type === "abrupt") return ref.completion;
-                const value = this.evaluate(expr.value, env, receiver); if (value.type !== "normal") return value;
+                const ref = this.reference(expr.target, env, receiver);
+                if (ref.type === "abrupt") return ref.completion;
+                const value = this.evaluate(expr.value, env, receiver);
+                if (value.type !== "normal") return value;
                 return putValue(ref.reference, value.value, expr.loc);
             }
             case "function": return normal(this.closure(expr.params, expr.body, env));
             case "object": {
                 const object = new GuestObject();
                 for (let i = 0; i < expr.keys.length; i++) {
-                    const value = this.evaluate(expr.values[i], env, receiver); if (value.type !== "normal") return value;
+                    const value = this.evaluate(expr.values[i], env, receiver);
+                    if (value.type !== "normal") return value;
                     object.define(expr.keys[i], value.value, true, true, true);
                 }
                 return normal({ kind: "object", object });
@@ -125,29 +145,34 @@ export class Evaluator {
                 let thisValue = UNDEFINED;
                 let callee: Completion;
                 if (expr.callee.kind === "identifier" || expr.callee.kind === "member") {
-                    const ref = this.reference(expr.callee, env, receiver); if (ref.type === "abrupt") return ref.completion;
+                    const ref = this.reference(expr.callee, env, receiver);
+                    if (ref.type === "abrupt") return ref.completion;
                     callee = getValue(ref.reference, expr.loc);
                     if (ref.reference.kind === "property") thisValue = { kind: "object", object: ref.reference.base };
                 } else callee = this.evaluate(expr.callee, env, receiver);
                 if (callee.type !== "normal") return callee;
                 const args: Value[] = [];
                 for (const arg of expr.args) {
-                    const value = this.evaluate(arg, env, receiver); if (value.type !== "normal") return value;
+                    const value = this.evaluate(arg, env, receiver);
+                    if (value.type !== "normal") return value;
                     args.push(value.value);
                 }
                 return this.call(callee.value, thisValue, args, expr.loc);
             }
             case "unary": {
-                const result = this.evaluate(expr.operand, env, receiver); if (result.type !== "normal") return result;
+                const result = this.evaluate(expr.operand, env, receiver);
+                if (result.type !== "normal") return result;
                 if (expr.op === "!") return normal({ kind: "boolean", value: !truthy(result.value) });
                 if (result.value.kind !== "number") return failure("TypeError", "numeric operand required (coercion unsupported)", expr.loc);
                 return normal({ kind: "number", value: expr.op === "-" ? -result.value.value : result.value.value });
             }
             case "binary": {
-                const left = this.evaluate(expr.left, env, receiver); if (left.type !== "normal") return left;
+                const left = this.evaluate(expr.left, env, receiver);
+                if (left.type !== "normal") return left;
                 if (expr.op === "&&" && !truthy(left.value)) return left;
                 if (expr.op === "||" && truthy(left.value)) return left;
-                const right = this.evaluate(expr.right, env, receiver); if (right.type !== "normal") return right;
+                const right = this.evaluate(expr.right, env, receiver);
+                if (right.type !== "normal") return right;
                 if (expr.op === "&&" || expr.op === "||") return right;
                 return this.binary(expr.op, left.value, right.value, expr.loc);
             }
@@ -162,18 +187,26 @@ export class Evaluator {
         if (fn.kind === "builtin") result = fn.invoke(receiver, args, loc);
         else {
             const env = new Environment(fn.environment);
-            for (let i = 0; i < fn.params.length; i++) env.bindings.set(fn.params[i], { initialized: true, mutable: true, value: i < args.length ? args[i] : UNDEFINED });
+            for (let i = 0; i < fn.params.length; i++) {
+                env.bindings.set(fn.params[i], {
+                    initialized: true,
+                    mutable: true,
+                    value: i < args.length ? args[i] : UNDEFINED,
+                });
+            }
             result = this.block(fn.body, env, receiver);
             if (result.type === "return") result = normal(result.value);
             else if (result.type === "normal") result = normal();
         }
-        this.calls--; return result;
+        this.calls--;
+        return result;
     }
     binary(op: string, left: Value, right: Value, loc: Location): Completion {
         if (op === "===" || op === "!==") return normal({ kind: "boolean", value: op === "===" ? equal(left, right) : !equal(left, right) });
         if (op === "+" && left.kind === "string" && right.kind === "string") return normal({ kind: "string", value: stringConcat(left.value, right.value) });
         if (left.kind !== "number" || right.kind !== "number") return failure("TypeError", "numeric operands required (coercion unsupported)", loc);
-        const a = left.value; const b = right.value;
+        const a = left.value;
+        const b = right.value;
         switch (op) {
             case "+": return normal({ kind: "number", value: a + b });
             case "-": return normal({ kind: "number", value: a - b });

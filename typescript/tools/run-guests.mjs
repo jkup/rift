@@ -50,6 +50,35 @@ for (const [name, source, status, errorContains, stdout = ""] of generated) {
     writeFileSync(join(root, file), source);
     cases.push({ file, status, errorContains, stdout });
 }
+// Write actual line terminators into runtime files, rather than guest escapes.
+// All five forms must agree on comment boundaries and source coordinates.
+function lineCase(name, source, expected) {
+    const file = "build/guest-fixtures/" + name + ".js";
+    writeFileSync(join(root, file), source);
+    cases.push({ file, ...expected });
+}
+for (const [name, separator] of [["lf", "\n"], ["cr", "\r"], ["crlf", "\r\n"], ["ls", "\u2028"], ["ps", "\u2029"]]) {
+    lineCase(name + "-line-comment", "console.log(1); // comment" + separator + "console.log(2);", { stdout: "1\n2\n" });
+    lineCase(name + "-whitespace", "console.log(1);" + separator + "console.log(2);", { stdout: "1\n2\n" });
+    lineCase(name + "-line-location", "// comment" + separator + "missing;", {
+        status: 1, error: "2:1: runtime ReferenceError: missing is not defined",
+    });
+    lineCase(name + "-block-location", "/* comment" + separator + "*/missing;", {
+        status: 1, error: "2:3: runtime ReferenceError: missing is not defined",
+    });
+    for (const [prefix, suffix] of [["return", "function f() { return"], ["throw", "throw"]]) {
+        const tail = prefix === "return" ? "1; }" : "1;";
+        const error = "1:" + (prefix === "return" ? "16" : "1") + ": parse SyntaxError: newline after return/throw is unsupported";
+        lineCase(name + "-" + prefix, suffix + separator + tail, { status: 2, error });
+        lineCase(name + "-block-" + prefix, suffix + " /* comment" + separator + "*/" + tail, { status: 2, error });
+    }
+}
+for (const [name, separator] of [["ls", "\u2028"], ["ps", "\u2029"]]) {
+    lineCase(name + "-string", 'console.log("a' + separator + 'b");', { stdout: "a" + separator + "b\n" });
+}
+lineCase("mixed-line-positions", "/*\r\n\u2028\u2029*/missing;", {
+    status: 1, error: "4:3: runtime ReferenceError: missing is not defined",
+});
 const results = [];
 function execute(name, executable, args, expected) {
     const r = spawnSync(executable, args, { cwd: root, encoding: "utf8", timeout: 10000 });

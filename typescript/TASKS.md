@@ -4,7 +4,7 @@ Statuses: **ready**, **blocked**, **in progress**, **done**. Claim a ready task 
 
 ## TS-001 — First integrated interpreter
 
-Status: **done**. Owner: Codex implementation chat `01a19794-baaa-7113-bba5-479887f71000`; base `2ed8a3e` (clean checkout). Implementation milestone: `a016967`; validated on 2026-11-01. Coordinator companion-queue changes at `325577d` preserved.
+Status: **done** (Unicode line-terminator review fix validated). Owner: Codex implementation chat `01a19794-baaa-7113-bba5-479887f71000`; base `2ed8a3e` (clean checkout). Implementation milestone: `a016967`; validated on 2026-11-01. Coordinator companion-queue changes at `325577d` preserved.
 
 Prerequisites: probe fixes at `ec968f6`; approved `AGENTS.md` and `docs/project-goals.md`. No need to wait for full C++ baseline auditing to build this bounded prototype; existing tests are references, not a measured conformance baseline.
 
@@ -36,7 +36,7 @@ Handoff: changed behavior, files/interfaces, validation commands/results, native
 
 Delivered: `src/` interpreter and CLI; `examples/counter.js`; expected-result guest suite and independent-realm host driver; Node/native build commands with mandatory static coverage. `README.md`, `docs/architecture-decisions.md`, and `docs/feature-inventory.md` document actual interfaces, supported behavior, resource limits, and restrictions. No C++ changes or later feature implementation. Later owner authorization permits commits and pushes to `typescript-scriptc-probes`, not merging.
 
-Acceptance evidence: typecheck passes; runner regressions 20/20; compiler probes 10/10; guest Node 47/47 and native 47/47, no skips. Native CLI 644/644 static statements, realm driver 657/657. Windows x64 native linking required approved access to installed Zig libraries; no gate was weakened. Full retained transcripts: `docs/validation/ts-001/`. Guest source is read at runtime in both lanes. This is a bounded strict-call profile with own data properties, not a conformance claim: coercion, prototypes, Error objects, full Script/global/strictness semantics, ASI and broader syntax remain explicitly deferred.
+Acceptance evidence: typecheck passes; runner regressions 20/20; compiler probes 10/10; guest Node 90/90 and native 90/90, no skips. Native CLI 642/642 static statements, realm driver 655/655. The coordinator-found Unicode comment-boundary bug is resolved: all ECMAScript line terminators now stop line comments and update source positions; return/throw boundaries include block-comment line breaks. Parser/evaluator multi-statement control flow was expanded for readability. Windows x64 native linking required approved access to installed Zig libraries; no gate was weakened. Full retained transcripts: `docs/validation/ts-001/`. Guest source is read at runtime in both lanes. This is a bounded strict-call profile with own data properties, not a conformance claim: coercion, prototypes, Error objects, full Script/global/strictness semantics, ASI and broader syntax remain explicitly deferred.
 
 ## TS-002 — Frontend extension batch
 

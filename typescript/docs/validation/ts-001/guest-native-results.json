@@ -618,6 +618,596 @@
     }
   },
   {
+    "name": "build/guest-fixtures/lf-line-comment.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/lf-line-comment.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-whitespace.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/lf-whitespace.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-line-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-line-location.js:2:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-line-location.js",
+      "status": 1,
+      "error": "2:1: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-block-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-block-location.js:2:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-block-location.js",
+      "status": 1,
+      "error": "2:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-block-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-block-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-block-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/lf-block-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/lf-block-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/lf-block-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-line-comment.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/cr-line-comment.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-whitespace.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/cr-whitespace.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-line-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-line-location.js:2:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-line-location.js",
+      "status": 1,
+      "error": "2:1: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-block-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-block-location.js:2:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-block-location.js",
+      "status": 1,
+      "error": "2:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-block-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-block-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-block-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/cr-block-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/cr-block-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/cr-block-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-line-comment.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-line-comment.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-whitespace.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-whitespace.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-line-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-line-location.js:2:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-line-location.js",
+      "status": 1,
+      "error": "2:1: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-block-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-block-location.js:2:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-block-location.js",
+      "status": 1,
+      "error": "2:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-block-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-block-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-block-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/crlf-block-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/crlf-block-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/crlf-block-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-line-comment.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ls-line-comment.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-whitespace.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ls-whitespace.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-line-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-line-location.js:2:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-line-location.js",
+      "status": 1,
+      "error": "2:1: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-block-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-block-location.js:2:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-block-location.js",
+      "status": 1,
+      "error": "2:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-block-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-block-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-block-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-block-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ls-block-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ls-block-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-line-comment.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ps-line-comment.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-whitespace.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1\n2\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ps-whitespace.js",
+      "stdout": "1\n2\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-line-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-line-location.js:2:1: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-line-location.js",
+      "status": 1,
+      "error": "2:1: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-block-location.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-block-location.js:2:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-block-location.js",
+      "status": 1,
+      "error": "2:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-block-return.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-block-return.js:1:16: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-block-return.js",
+      "status": 2,
+      "error": "1:16: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-block-throw.js",
+    "verdict": "PASS",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/ps-block-throw.js:1:1: parse SyntaxError: newline after return/throw is unsupported\n",
+    "expected": {
+      "file": "build/guest-fixtures/ps-block-throw.js",
+      "status": 2,
+      "error": "1:1: parse SyntaxError: newline after return/throw is unsupported"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ls-string.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "a b\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ls-string.js",
+      "stdout": "a b\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/ps-string.js",
+    "verdict": "PASS",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "a b\n",
+    "stderr": "",
+    "expected": {
+      "file": "build/guest-fixtures/ps-string.js",
+      "stdout": "a b\n"
+    }
+  },
+  {
+    "name": "build/guest-fixtures/mixed-line-positions.js",
+    "verdict": "PASS",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "build/guest-fixtures/mixed-line-positions.js:4:3: runtime ReferenceError: missing is not defined\n",
+    "expected": {
+      "file": "build/guest-fixtures/mixed-line-positions.js",
+      "status": 1,
+      "error": "4:3: runtime ReferenceError: missing is not defined"
+    }
+  },
+  {
     "name": "inline",
     "verdict": "PASS",
     "status": 0,

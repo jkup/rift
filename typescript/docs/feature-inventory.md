@@ -7,7 +7,7 @@ claim that all coercion cases are supported.
 
 | Area | Supported | Explicit limits / deferred behavior |
 |---|---|---|
-| Lexing | ASCII identifiers including `$`/`_`; decimal integer/fraction literals starting with a digit; single/double quoted UTF-16 strings; space/tab/CR/LF; line/block comments | No identifier escapes/Unicode identifiers, radix/exponent/separator numbers, leading-zero integers, templates or regex. String escapes only quote, backslash, n/r/t. |
+| Lexing | ASCII identifiers including `$`/`_`; decimal integer/fraction literals starting with a digit; single/double quoted UTF-16 strings; space/tab; CR/LF/CRLF/U+2028/U+2029 line boundaries; line/block comments | No identifier escapes/Unicode identifiers, radix/exponent/separator numbers, leading-zero integers, templates or regex. String escapes only quote, backslash, n/r/t. Raw U+2028/U+2029 are preserved inside strings; raw CR/LF are rejected. |
 | Literals/values | number, string, boolean, null; undefined/NaN/Infinity bindings; ordinary object/function identity | No bigint or symbol. NaN uses strict-equality semantics; console renders signed zero as `0`. |
 | Expressions | parentheses, numeric + - * / %, numeric < <= > >=, === !==, ! and numeric unary +/-; short-circuit &&/\|\|; assignment | String + string concatenates. Other arithmetic/coercion and string relational operations rejected. No loose equality, comma, ternary, bitwise, update, compound assignment or optional chaining. |
 | Statements | semicolon-terminated expressions and let; blocks, if/else, while, function declarations, return, throw, unlabelled break/continue, empty statement | Semicolons required; no ASI, var/const, for/do, switch, try/catch/finally or labels. Declarations as if/while bodies require braces. Return/throw expressions cannot start on a later line. |
@@ -22,7 +22,7 @@ claim that all coercion cases are supported.
 exercise successful behavior with fixed outputs. `test/cases.json` records fixed
 source locations for representative errors. `tools/run-guests.mjs` also materializes
 negative syntax, abrupt evaluation, CLI and resource-bound cases as runtime files.
-Every fixture is tested by the same compiled interpreter in Node and native lanes.
+Line-terminator regressions write actual LF, CR, CRLF, U+2028 and U+2029 into runtime files and assert comment termination, exact line/column diagnostics, whitespace, and return/throw restrictions including block comments. Every fixture is tested by the same compiled interpreter in Node and native lanes.
 
 Full descriptor/prototype semantics, arrays, coercion, broad builtins, modules,
 Temporal, regex, async/generators, weak collections and optimization remain outside

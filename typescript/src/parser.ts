@@ -16,9 +16,20 @@ class Parser {
     error: Diagnostic | null = null;
     constructor(public tokens: Token[]) {}
     current(): Token { return this.tokens[this.index]; }
-    at(text: string): boolean { const t = this.current(); return t.kind !== "string" && t.kind !== "number" && t.text === text; }
-    take(): Token { const t = this.current(); if (t.kind !== "eof") this.index++; return t; }
-    eat(text: string): boolean { if (!this.at(text)) return false; this.take(); return true; }
+    at(text: string): boolean {
+        const t = this.current();
+        return t.kind !== "string" && t.kind !== "number" && t.text === text;
+    }
+    take(): Token {
+        const t = this.current();
+        if (t.kind !== "eof") this.index++;
+        return t;
+    }
+    eat(text: string): boolean {
+        if (!this.at(text)) return false;
+        this.take();
+        return true;
+    }
     fail(message: string, loc: Location): void {
         if (this.error === null) this.error = { phase: "parse", name: "SyntaxError", message, loc };
     }
@@ -30,7 +41,10 @@ class Parser {
         if (t.kind !== "word" || RESERVED.includes(" " + t.text + " ")) this.fail("expected binding identifier", t.loc);
         return t.text;
     }
-    program(): ParseResult { const body = this.list(false, []); return { body, error: this.error }; }
+    program(): ParseResult {
+        const body = this.list(false, []);
+        return { body, error: this.error };
+    }
     list(braced: boolean, parameters: string[]): Stmt[] {
         const body: Stmt[] = [];
         const names = parameters.slice();
@@ -47,7 +61,11 @@ class Parser {
     }
     statement(): Stmt {
         const loc = this.current().loc;
-        if (++this.depth > 128) { this.fail("syntax nesting limit exceeded", loc); this.depth--; return { kind: "empty", loc }; }
+        if (++this.depth > 128) {
+            this.fail("syntax nesting limit exceeded", loc);
+            this.depth--;
+            return { kind: "empty", loc };
+        }
         const result = this.statementInner();
         this.depth--;
         return result;
@@ -72,34 +90,47 @@ class Parser {
             return { kind: "function", loc, name, params: fn.params, body: fn.body };
         }
         if (this.eat("if")) {
-            this.expect("("); const test = this.expression(0); this.expect(")");
+            this.expect("(");
+            const test = this.expression(0);
+            this.expect(")");
             const consequent = this.branch();
             const alternate = this.eat("else") ? this.branch() : null;
             return { kind: "if", loc, test, consequent, alternate };
         }
         if (this.eat("while")) {
-            this.expect("("); const test = this.expression(0); this.expect(")");
-            this.loops++; const body = this.branch(); this.loops--;
+            this.expect("(");
+            const test = this.expression(0);
+            this.expect(")");
+            this.loops++;
+            const body = this.branch();
+            this.loops--;
             return { kind: "while", loc, test, body };
         }
         if (this.at("return") || this.at("throw")) {
             const kind = this.take().text === "return" ? "return" : "throw";
             if (kind === "return" && this.functions === 0) this.fail("return outside function", loc);
-            if (this.current().loc.line !== loc.line && !this.at(";")) this.fail("newline after return/throw is unsupported", loc);
+            // Token locations include line terminators hidden inside comments.
+            if (this.current().loc.line !== loc.line && !this.at(";")) {
+                this.fail("newline after return/throw is unsupported", loc);
+            }
             const value = this.at(";") ? null : this.expression(0);
             if (kind === "throw" && value === null) this.fail("throw requires an expression", loc);
-            this.expect(";"); return { kind, loc, value };
+            this.expect(";");
+            return { kind, loc, value };
         }
         if (this.at("break") || this.at("continue")) {
             const kind = this.take().text === "break" ? "break" : "continue";
             if (this.loops === 0) this.fail(kind + " outside loop", loc);
-            this.expect(";"); return { kind, loc };
+            this.expect(";");
+            return { kind, loc };
         }
-        const expression = this.expression(0); this.expect(";");
+        const expression = this.expression(0);
+        this.expect(";");
         return { kind: "expression", loc, expression };
     }
     functionTail(loc: Location): { params: string[]; body: Stmt[] } {
-        this.expect("("); const params: string[] = [];
+        this.expect("(");
+        const params: string[] = [];
         if (!this.at(")")) {
             do {
                 const name = this.name();
@@ -107,10 +138,14 @@ class Parser {
                 params.push(name);
             } while (this.error === null && this.eat(","));
         }
-        this.expect(")"); this.expect("{");
-        const loops = this.loops; this.loops = 0; this.functions++;
+        this.expect(")");
+        this.expect("{");
+        const loops = this.loops;
+        this.loops = 0;
+        this.functions++;
         const body = this.list(true, params);
-        this.functions--; this.loops = loops;
+        this.functions--;
+        this.loops = loops;
         return { params, body };
     }
     precedence(op: string): number {
@@ -126,7 +161,8 @@ class Parser {
     expression(min: number): Expr {
         const loc = this.current().loc;
         if (++this.depth > 128) {
-            this.fail("syntax nesting limit exceeded", loc); this.depth--;
+            this.fail("syntax nesting limit exceeded", loc);
+            this.depth--;
             return { kind: "literal", loc, value: null };
         }
         let left = this.primary();
@@ -138,13 +174,21 @@ class Parser {
                 continue;
             }
             if (this.eat("[")) {
-                const key = this.expression(0); this.expect("]");
-                left = { kind: "member", loc, base: left, key }; continue;
+                const key = this.expression(0);
+                this.expect("]");
+                left = { kind: "member", loc, base: left, key };
+                continue;
             }
             if (this.eat("(")) {
                 const args: Expr[] = [];
-                if (!this.at(")")) do { args.push(this.expression(0)); } while (this.error === null && this.eat(","));
-                this.expect(")"); left = { kind: "call", loc, callee: left, args }; continue;
+                if (!this.at(")")) {
+                    do {
+                        args.push(this.expression(0));
+                    } while (this.error === null && this.eat(","));
+                }
+                this.expect(")");
+                left = { kind: "call", loc, callee: left, args };
+                continue;
             }
             const op = this.current().text;
             const precedence = this.current().kind === "punct" ? this.precedence(op) : 0;
@@ -156,29 +200,42 @@ class Parser {
                 left = { kind: "assign", loc, target: left, value: right };
             } else left = { kind: "binary", loc, op, left, right };
         }
-        this.depth--; return left;
+        this.depth--;
+        return left;
     }
     primary(): Expr {
-        const t = this.take(); const loc = t.loc;
+        const t = this.take();
+        const loc = t.loc;
         if (t.kind === "number") return { kind: "literal", loc, value: Number(t.text) };
         if (t.kind === "string") return { kind: "literal", loc, value: t.text };
         if (t.text === "true" || t.text === "false") return { kind: "literal", loc, value: t.text === "true" };
         if (t.text === "null") return { kind: "literal", loc, value: null };
         if (t.text === "this") return { kind: "this", loc };
         if (t.text === "function") {
-            const fn = this.functionTail(loc); return { kind: "function", loc, params: fn.params, body: fn.body };
+            const fn = this.functionTail(loc);
+            return { kind: "function", loc, params: fn.params, body: fn.body };
         }
-        if (t.text === "(" ) { const expr = this.expression(0); this.expect(")"); return expr; }
+        if (t.text === "(") {
+            const expr = this.expression(0);
+            this.expect(")");
+            return expr;
+        }
         if (t.text === "!" || t.text === "-" || t.text === "+") return { kind: "unary", loc, op: t.text, operand: this.expression(8) };
         if (t.text === "{") {
-            const keys: string[] = []; const values: Expr[] = [];
-            if (!this.at("}")) do {
-                const key = this.take();
-                if (key.kind !== "word" && key.kind !== "string") this.fail("expected string property name", key.loc);
-                if (key.text === "__proto__") this.fail("prototype literal syntax is unsupported", key.loc);
-                keys.push(key.text); this.expect(":"); values.push(this.expression(0));
-            } while (this.error === null && this.eat(","));
-            this.expect("}"); return { kind: "object", loc, keys, values };
+            const keys: string[] = [];
+            const values: Expr[] = [];
+            if (!this.at("}")) {
+                do {
+                    const key = this.take();
+                    if (key.kind !== "word" && key.kind !== "string") this.fail("expected string property name", key.loc);
+                    if (key.text === "__proto__") this.fail("prototype literal syntax is unsupported", key.loc);
+                    keys.push(key.text);
+                    this.expect(":");
+                    values.push(this.expression(0));
+                } while (this.error === null && this.eat(","));
+            }
+            this.expect("}");
+            return { kind: "object", loc, keys, values };
         }
         if (t.kind === "word" && !RESERVED.includes(" " + t.text + " ")) return { kind: "identifier", loc, name: t.text };
         this.fail("unsupported or unexpected syntax: " + t.text, loc);
