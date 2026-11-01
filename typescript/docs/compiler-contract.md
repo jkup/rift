@@ -81,3 +81,26 @@ The compiled interpreter is about 3× slower than the same TypeScript under Node
 - Long-running memory with large retained graphs rather than short-lived cycles.
 - Native interop for regex or Temporal.
 - macOS and Linux lanes.
+
+## Integrated foundation evidence (TS-001, 2026-11-01)
+
+The module-based interpreter at implementation commit `a016967` builds with the
+same pinned toolchain. `npm run build:native` applies static-only and separate
+coverage gates to `src/cli.ts` (644/644 static statements) and the realm host test
+driver `test/realms.ts` (657/657). No new compiler workaround or dynamic tier was
+needed. Both `npm run test:guest:node` and `npm run test:guest:native` pass 47/47
+expected-result cases, with no skips. All ten existing compiler probes and all
+20 runner regression tests pass; typechecking passes.
+
+Windows native linking succeeded with the installed Zig directory on PATH and
+approved sandbox access to its libraries. The initial sandboxed linker attempt
+failed to locate Zig's installation directory; that was an environment failure,
+not a skipped test or a relaxed gate. Native startup and performance have not been
+benchmarked for this integrated engine. The earlier probe measurements above do
+not imply interpreter throughput.
+
+The evaluator now enforces explicit call, frame and step limits, tested with
+runaway loops, recursion, deep expressions and recursion inside nested blocks.
+This supplies bounded integration evidence, not proof of arbitrary stack or heap
+safety. See [architecture decisions](architecture-decisions.md) for the limits and
+[retained TS-001 transcripts](validation/ts-001/README.md) for full subprocess records.
