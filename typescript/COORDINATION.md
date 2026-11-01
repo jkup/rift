@@ -46,3 +46,5 @@ Initial TS-004B progress confirmed active; saved cursor: `e8efa6ae-3b69-4832-b89
 Accepted TS-004B `07902da`: reviewed iterative ordinary lookup/cycle checks, distinct receiver semantics, strict boundary and seeded guest tests. Independently rebuilt both lanes, 130/130 each; all four static native gates pass. Producer typecheck, runner 20/20 and probes 10/10 evidence reviewed. Initial prototypes remain null; accessors/exotics and guest reflection remain unsupported. Completed chat idle; saved cursor `e8efa6ae-3b69-4832-b895-b8e9ea9e1686:2`.
 
 TS-004C ready under the newly frozen deletion/key-list/classifier contract in TASKS.md. Claude companion queue remains reserved and unchanged.
+
+Active sole implementation writer: TS-004C chat `01a197eb-ca8c-74b1-9c26-8945d1d7296a`, host `local`, base `51fb1f6`. Owns runtime/property-key classification, compiled key/deletion host tests and registration, scoped docs and ts-004c evidence. Initial progress confirmed active; saved cursor `8112ebd9-fa7d-4bc5-ac2c-fa2826b6f5b4:1`. Coordinator owns this file. TS-005 and later work remain blocked; Claude queue preserved.
