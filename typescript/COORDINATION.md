@@ -238,3 +238,9 @@ Accepted pushed `3a5d360`: reviewed saved descriptor/Value, distinct conversions
 
 Next ready TS-016P is a bounded design for realm-owned intrinsic prototypes. Current null-root production allocation prevents ordinary default conversion and standard method exposure; resolve graph/bootstrap/allocation and test migration before implementation. No standard library expansion is implicitly authorized. Main unchanged, three Claude companion tasks reserved. Bootstrap/direct converters still reject object conversion without hooks.
 Acceptance and next contract pushed through bf8c129. Active sole writer: TS-016P design chat `01a19943-623a-70c0-a2c2-07ce8c487217`, host `local`, base `bf8c129`. Explicit wait confirmed active; saved cursor `76646749-3a9d-4ecf-a672-20f959b7d957:2`. Owns frozen prototype design/evidence only; no implementation before review.
+
+## TS-016P acceptance — 2026-11-01 22:51 UTC
+
+Accepted design `ffbab58`: reviewed actual diff, explicit O/F/A graph/bootstrap/factories, production and fixture migrations, metadata and map realm boundary against runtime call/allocation paths and specification Function root. Corrected erroneous builtin-function source section/link in acceptance commit. Design intentionally preserves null-root host construction and defers foreign function realm entry, methods and constructor exposure. Documentation check passes; no new runtime/native claim or unnecessary suites rerun. Baseline remains accepted 162/162 and 21 gates. Completed chat idle; cursor `76646749-3a9d-4ecf-a672-20f959b7d957:3`.
+
+Next ready TS-016A implements only the frozen graph/allocation/metadata batch and G1-G17. Main unchanged, Claude queue reserved.
