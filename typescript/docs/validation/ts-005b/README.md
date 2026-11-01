@@ -48,7 +48,7 @@ They check fixed expected values, traces and diagnostics rather than parity.
 | thisArg | Parsed receiver returns exact object/number/null/undefined, omitted adapter argument is UNDEFINED |
 | Closure/arguments/aliasing | Parsed retained closure observes original element object, numeric index, input identity and this; counter survives two current evaluators; result element aliases original object |
 | Has false/Has throw/Get throw | Hole traces omit Get/Call; index-1 faults preserve exact record/value/diagnostic after one callback |
-| Guest throw | Parsed throwing records prior effects; throws original object at 9:61; no index 2; capturing builtin verifies exact guest throw record and diagnostic identity |
+| Guest throw | Parsed throwing records prior effects; throws original object at 50:9; no index 2; capturing builtin verifies exact guest throw record and diagnostic identity |
 | Builtin throw | Exact sentinel returned unchanged |
 | Constant builtin budget | Dense length 5 with M=3: three calls, steps=4, no AST ticks required |
 | Reentrant budget | Outer tick + inner holes 0/1; next tick fails at steps=4; same context, active outer callback depth=2, no replenishment |
@@ -84,8 +84,28 @@ callbacks. No existing runtime/context/conversion APIs changed.
 
 Initial development checks caught a fixture using unsupported numeric computed
 keys and an incorrect expected guest-throw location. The fixture now uses string
-keys and asserts its actual source throw at 9:61; semantic implementation and
+keys and originally asserted its source throw at 9:61; semantic implementation and
 scope were unchanged. The first integrated driver was fully static; no compiler
 workaround or reduction was needed. Subsequent additions strengthen exact guest
 throw and host-call recovery assertions and are included in the final rebuild.
 
+## Readability review fix
+
+Review base: `f3f93c82634ffd378fdccf0482393309c1d76fbf`.
+Expanded the host driver and runtime-read fixture into normally formatted
+blocks, with descriptive scenario locals and short comments identifying the
+semantic rule. Preserved setup/mutation/call/assertion order and every case;
+no core operation, interface, registration or expected value changed.
+Fixture formatting deliberately moves the throw from 9:61 to 50:9 and the
+recursive map call from line 10 to line 56. The matching diagnostic assertions
+were updated, and both rebuilt hosts pass them.
+
+A comparison against the review base confirmed all 246 host-driver string
+literals retain content and order. Call-site counts are unchanged: check 35,
+error 12, result 19, element 17, hole 8, traceIs 20, map 35 and put 39 (including
+helper declarations). Full rebuilt Node/native suites pass 137/137 each, runner
+20/20, probes 10/10 and typecheck passes. All eleven static gates pass; the map
+driver remains 1271/1271 static. The accompanying transcripts and JSON now
+record this review rebuild. TASKS.md also reconciles TS-005C to coordinator
+acceptance at `5d59909`, as explicitly requested. COORDINATION.md is untouched.
+TS-005B remains awaiting review; no successor work.

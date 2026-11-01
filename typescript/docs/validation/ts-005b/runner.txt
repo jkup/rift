@@ -2,26 +2,26 @@
 > test:runner
 > node --test tools/probe-verdict.test.mjs
 
-✔ accepts expected successful execution and the intentional host exit (0.7685ms)
-✔ matching unexpected exits cannot pass (0.0744ms)
-✔ rejects build exit, even with matching stdout (0.0576ms)
-✔ rejects build signal, even with matching stdout (0.0427ms)
-✔ rejects build timeout, even with matching stdout (0.0563ms)
+✔ accepts expected successful execution and the intentional host exit (0.704ms)
+✔ matching unexpected exits cannot pass (0.0747ms)
+✔ rejects build exit, even with matching stdout (0.0578ms)
+✔ rejects build signal, even with matching stdout (0.0431ms)
+✔ rejects build timeout, even with matching stdout (0.0551ms)
 ✔ rejects build spawn, even with matching stdout (0.0608ms)
-✔ rejects coverage exit, even with matching stdout (0.0512ms)
-✔ rejects coverage signal, even with matching stdout (0.0372ms)
-✔ rejects coverage timeout, even with matching stdout (0.05ms)
-✔ rejects coverage spawn, even with matching stdout (0.0739ms)
+✔ rejects coverage exit, even with matching stdout (0.0449ms)
+✔ rejects coverage signal, even with matching stdout (0.0399ms)
+✔ rejects coverage timeout, even with matching stdout (0.0488ms)
+✔ rejects coverage spawn, even with matching stdout (0.0732ms)
 ✔ rejects node exit, even with matching stdout (0.0534ms)
-✔ rejects node signal, even with matching stdout (0.0506ms)
-✔ rejects node timeout, even with matching stdout (0.0319ms)
-✔ rejects node spawn, even with matching stdout (0.0217ms)
-✔ rejects native exit, even with matching stdout (0.0274ms)
-✔ rejects native signal, even with matching stdout (0.0292ms)
-✔ rejects native timeout, even with matching stdout (0.0221ms)
-✔ rejects native spawn, even with matching stdout (0.0784ms)
-✔ fails closed on missing, changed or incomplete coverage reports (0.21ms)
-✔ rejects dynamic coverage and output differences (0.0467ms)
+✔ rejects node signal, even with matching stdout (0.0491ms)
+✔ rejects node timeout, even with matching stdout (0.0283ms)
+✔ rejects node spawn, even with matching stdout (0.0259ms)
+✔ rejects native exit, even with matching stdout (0.0475ms)
+✔ rejects native signal, even with matching stdout (0.0386ms)
+✔ rejects native timeout, even with matching stdout (0.3764ms)
+✔ rejects native spawn, even with matching stdout (0.0455ms)
+✔ fails closed on missing, changed or incomplete coverage reports (0.2456ms)
+✔ rejects dynamic coverage and output differences (0.0543ms)
 ℹ tests 20
 ℹ suites 0
 ℹ pass 20
@@ -29,4 +29,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 66.9404
+ℹ duration_ms 48.0568

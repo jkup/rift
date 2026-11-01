@@ -2,13 +2,13 @@
 > test:probes
 > node tools/run-probes.mjs
 
-PASS         control  (build 707ms)
-PASS         dispatch  (build 743ms)
-PASS         host  (build 709ms)
-PASS         interpreter  (build 781ms)
-PASS         memory  (build 705ms)
-PASS         numbers  (build 711ms)
-PASS         objects  (build 727ms)
-PASS         strings  (build 716ms)
-PASS         suspension  (build 710ms)
-PASS         values  (build 715ms)
+PASS         control  (build 403ms)
+PASS         dispatch  (build 393ms)
+PASS         host  (build 391ms)
+PASS         interpreter  (build 402ms)
+PASS         memory  (build 404ms)
+PASS         numbers  (build 401ms)
+PASS         objects  (build 409ms)
+PASS         strings  (build 387ms)
+PASS         suspension  (build 393ms)
+PASS         values  (build 376ms)
