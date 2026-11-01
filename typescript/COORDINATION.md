@@ -141,3 +141,5 @@ Accepted `5f4965a`: reviewed actual design, caller inventory, fixed formatting e
 
 Owner explicitly requested merging this completed task and prior reviewed milestones into main, pushing, then resuming the next task. Main is an ancestor of the reviewed branch after fetch; no conflict resolution is needed. Next task TS-007 is frozen in TASKS.md. Claude queue remains ready and reserved.
 Pre-merge independent rebuild completed: Node/native 152/152 each, no skips, all twelve static native gates passed. Prior producer runner20/probes10/typecheck evidence retained; no runtime change in TS-007P.
+
+Main integration completed: origin/main verified at 0819c71. Fresh branch codex/primitive-computed-keys created from that accepted base for TS-007; no active writer during branch changes. Heartbeat updated to follow this file's current branch and preserve the new merge authorization history.
