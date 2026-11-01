@@ -1,0 +1,11 @@
+[
+  {"file":"examples/counter.js","stdout":"total 36\nnext 14\nsame object true\n"},
+  {"file":"test/fixtures/semantics.js","stdout":"24\n1 2 11 3\n10 12\ntrue false 3 6 10 10\ntrue true\nundefined 12 12\n1 2\n7 undefined\n3\n5 8\n19\n7 9 3 4 -6 true\nfalse true 9 8\ntrue false false true\nhéllo let }\n5 5\n2\n1\n"},
+  {"file":"test/fixtures/order.js","stdout":"bkr 7\ntrue bmrrc\nrr 7 7\n"},
+  {"file":"test/fixtures/missing.js","status":1,"error":"2:13: runtime ReferenceError: missing is not defined"},
+  {"file":"test/fixtures/invalid.js","status":2,"error":"2:9: parse SyntaxError: unsupported or unexpected syntax: ;"},
+  {"file":"test/fixtures/tdz.js","status":1,"error":"2:15: runtime ReferenceError: outer is not initialized"},
+  {"file":"test/fixtures/throw.js","status":1,"error":"1:19: runtime Uncaught: stop"},
+  {"file":"test/fixtures/runaway.js","status":1,"errorPattern":"\\d+:\\d+: runtime RangeError: execution step limit exceeded"},
+  {"file":"test/fixtures/recursion.js","status":1,"errorPattern":"\\d+:\\d+: runtime RangeError: (call depth|evaluation nesting) limit exceeded"}
+]

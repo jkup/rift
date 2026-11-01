@@ -4,7 +4,7 @@ Statuses: **ready**, **blocked**, **in progress**, **done**. Claim a ready task 
 
 ## TS-001 — First integrated interpreter
 
-Status: **ready**. Owner: to be claimed by the new Codex implementation chat.
+Status: **in progress**. Owner: Codex implementation chat `01a19794-baaa-7113-bba5-479887f71000`; base `2ed8a3e` (clean checkout).
 
 Prerequisites: probe fixes at `ec968f6`; approved `AGENTS.md` and `docs/project-goals.md`. No need to wait for full C++ baseline auditing to build this bounded prototype; existing tests are references, not a measured conformance baseline.
 

@@ -13,6 +13,10 @@
   "scripts": {
     "test:runner": "node --test tools/probe-verdict.test.mjs",
     "typecheck": "tsc -p tsconfig.json",
-    "test:probes": "node tools/run-probes.mjs"
+    "test:probes": "node tools/run-probes.mjs",
+    "build:node": "tsc -p tsconfig.json",
+    "build:native": "node tools/build-native.mjs",
+    "test:guest:node": "npm run build:node && node tools/run-guests.mjs node",
+    "test:guest:native": "npm run build:native && node tools/run-guests.mjs native"
   }
 }
