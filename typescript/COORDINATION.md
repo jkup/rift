@@ -47,4 +47,10 @@ Accepted TS-004B `07902da`: reviewed iterative ordinary lookup/cycle checks, dis
 
 TS-004C ready under the newly frozen deletion/key-list/classifier contract in TASKS.md. Claude companion queue remains reserved and unchanged.
 
-Active sole implementation writer: TS-004C chat `01a197eb-ca8c-74b1-9c26-8945d1d7296a`, host `local`, base `51fb1f6`. Owns runtime/property-key classification, compiled key/deletion host tests and registration, scoped docs and ts-004c evidence. Initial progress confirmed active; saved cursor `8112ebd9-fa7d-4bc5-ac2c-fa2826b6f5b4:1`. Coordinator owns this file. TS-005 and later work remain blocked; Claude queue preserved.
+Completed implementation writer: TS-004C chat `01a197eb-ca8c-74b1-9c26-8945d1d7296a`, host `local`, base `51fb1f6`. Owns runtime/property-key classification, compiled key/deletion host tests and registration, scoped docs and ts-004c evidence. Initial progress confirmed active; saved cursor `8112ebd9-fa7d-4bc5-ac2c-fa2826b6f5b4:1`. Coordinator owns this file. TS-005 and later work remain blocked; Claude queue preserved.
+
+## Review at 2026-11-01 16:36 UTC
+
+Accepted TS-004C `ba97a03`: reviewed bounded index parsing, numeric/string ordering, deletion invariants, detached lists and host assertions. Independently rebuilt Node/native lanes, 131/131 each with all five static native gates passing. Producer typecheck, runner 20/20 and probes 10/10 evidence reviewed. String-only ordinary host APIs remain the explicit scope. Chat idle; saved cursor `8112ebd9-fa7d-4bc5-ac2c-fa2826b6f5b4:2`.
+
+Next ready task TS-005P resolves array dispatch/coercion prerequisites through a bounded design and optional isolated compiler probe. Arrays are not ready for implementation until this is reviewed; no scope change or owner decision is currently needed. Claude queue remains reserved and unchanged.
