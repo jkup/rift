@@ -145,3 +145,9 @@ Pre-merge independent rebuild completed: Node/native 152/152 each, no skips, all
 Main integration completed: origin/main verified at 0819c71. Fresh branch codex/primitive-computed-keys created from that accepted base for TS-007; no active writer during branch changes. Heartbeat updated to follow this file's current branch and preserve the new merge authorization history.
 Active sole implementation writer: TS-007 chat `01a1988e-2066-7561-a3f4-920625df6259`, host `local`, assigned base `ad52527`. Progress confirmed active; saved cursor `6a271016-662e-4f60-a5bc-514d069472b3:2`. Owns frozen primitive-key implementation/test/docs contract only. Coordinator owns this file; review actual diffs and all gates before acceptance. Claude queue remains reserved.
 
+
+## TS-007 acceptance — 2026-11-01 19:36 UTC
+
+Accepted `7defba5`: reviewed actual primitive conversion/reference migration, all five reference callers, positive replacement of both numeric-key regressions, compiled expected-result and operation-order matrix, scope/evidence. Independently rebuilt Node/native suites: 153/153 each, no skips; all thirteen static gates pass. Producer runner20/probes10/typecheck and formatting36/order5 retained. Completed chat idle; cursor `6a271016-662e-4f60-a5bc-514d069472b3:3`. No object coercion, boxing or symbol support claimed.
+
+Next ready TS-008 integrates existing primitive ToNumber into unary numeric and non-additive arithmetic operators. This is a bounded follow-on using accepted conversion infrastructure, not a full coercion implementation. Same integration branch; main remains 0819c71. Claude queue remains ready/reserved.
