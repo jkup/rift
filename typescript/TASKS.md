@@ -347,7 +347,7 @@ changes, branch switch, main merge or successor work. Awaiting coordinator revie
 
 ### TS-011P — Ordinary object coercion integration design
 
-Status: **ready**. Prerequisites: TS-007 through TS-010 accepted; TS-010 done at `8cf17fa`, superseding its awaiting-review handoff. Design only. Own docs/object-coercion-integration.md, optional isolated probes/object-coercion/ and docs/validation/ts-011p/, plus this task's claim/handoff. No src/existing tests/manifests/pins/Claude/COORDINATION edits.
+Status: **in progress — awaiting coordinator review**. Owner: Codex design chat `01a198c7-c792-7e60-9f85-a40a05f95b57`; base `9235558` on `codex/primitive-computed-keys`. Prerequisites: TS-007 through TS-010 accepted; TS-010 done at `8cf17fa`, superseding its awaiting-review handoff. Design only. Own docs/object-coercion-integration.md, optional isolated probes/object-coercion/ and docs/validation/ts-011p/, plus this task's claim/handoff. No src/existing tests/manifests/pins/Claude/COORDINATION edits.
 
 Prepare the next small safe step toward guest valueOf/toString coercion. Inspect all current conversion/reference/operator/array-length/array-like/map entry paths and existing OperationContext call/tick ownership. Propose exact completion-returning OrdinaryToPrimitive and partial ToPrimitive interfaces, hint representation and where active context must be passed. Record complete caller inventory and bounded migration sequence. Do not silently turn context-free conversion into ambient evaluator state or reset budgets. Compare a helper-only first batch versus full caller migration; recommend one smallest coherent implementation contract.
 
@@ -356,3 +356,16 @@ Consult authoritative specification and a relevant engine with exact source refe
 Audit observable order when coercion becomes effectful: both operand evaluations precede conversions, source-order conversion for reversed relational operators, addition default hint before string selection, property-key conversion timing and original reference capture, array length double conversion/side effects and array-like length Get. Distinguish callers deliberately left primitive-only in an initial helper batch from integrated ones; no hidden scope expansion. Account for reentrancy, shared ticks/call depth, nested coercion, exception cleanup, realm ownership and host faults. Identify every affected old unsupported-conversion regression and how it would be preserved positively or as a meaningful remaining negative.
 
 Deliver concrete interfaces, file ownership, dependency order and fixed expected-result matrix including method mutation between lookups, inherited methods, noncallables, all primitive returns, both-object returns, exact throws, budgets/realms and operator/reference/array order as applicable. Use probes only for real uncertain static-native mechanics; no proof-by-parity or unnecessary engine rebuild for prose. No implementation or pin changes. Commit/push design evidence on existing branch, stop for coordinator review before successor work.
+
+Handoff (2026-11-01): docs/object-coercion-integration.md specifies context-aware
+OrdinaryToPrimitive and partial ToPrimitive, exact lookup/call/hint/completion
+rules, active budget/realm ownership, and a helper-only next batch. All existing
+production conversion paths deliberately remain primitive-only. Complete caller
+and regression inventories cover operators, deferred references, array length
+(double conversion), array-like length and map, with bounded later migration
+order and fixed H/F acceptance matrices. Sources: current specification, V8
+12.0.267 and engine262 d553e7b52501fbc47eae981c8d0fa7a5c26d0171. Typecheck and
+diff whitespace validation pass; no runtime change, new probe or engine rebuild
+was needed or claimed. Evidence/limitations: docs/validation/ts-011p/. No
+src/existing tests/manifests/pins/C++/Claude/COORDINATION edits, branch switch,
+merge or successor work. Await coordinator review and implementation freeze.
