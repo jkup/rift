@@ -481,3 +481,12 @@ resolved validation; no engine workaround, pins or gates changed. No runtime/
 primitive converter/array storage API changes, standard map registration,
 symbols/species/boxing/accessors/proxies, C++/Claude/COORDINATION changes, branch
 switch, main merge or successor work. Awaiting coordinator review.
+
+TS-014 review follow-up (2026-11-01): expanded compact host/guest test helpers,
+setup, mutations, inheritance, constructor and budget/fault scenarios into
+readable blocks, preserving cases/assertions/order. Runaway loop and recursive
+coercion now require the exact step-limit versus call-depth-limit messages.
+No production change. Fresh typecheck, runner 20/20, probes 10/10, rebuilt
+Node/native 161/161 each and all 20 static gates pass. Evidence and source-location
+notes: docs/validation/ts-014/review-fix/. Coordinator handles push and acceptance;
+implementation chat stops after local focused commit, with no successor work.

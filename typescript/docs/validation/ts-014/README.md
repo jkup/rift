@@ -81,3 +81,9 @@ not guest accessor support. Array storage length remains numeric; primitive
 converter and runtime/array definition APIs are unchanged. No C++, pins, Claude,
 COORDINATION, branch switch, main merge or successor work. Await coordinator
 review; task not marked accepted/done by this implementation chat.
+
+## Coordinator review follow-up
+
+The readability and exact-budget-diagnostic review fix is documented with fresh
+full validation in [review-fix/README.md](review-fix/README.md). Original evidence
+above is retained; the review-fix directory contains the latest rebuilt results.
