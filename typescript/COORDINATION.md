@@ -189,3 +189,9 @@ Accepted `de9cc1f`: reviewed helper's exact sequential tick/Get/Call path, primi
 
 Next ready TS-012 connects the accepted helper only to existing arithmetic/relational operators. Reference keys, direct converters and array length paths remain primitive-only. Main unchanged; Claude queue ready/reserved.
 Active sole implementation writer: TS-012 chat `01a198e3-086d-7472-a0d0-3ad2a5914c54`, host `local`, assigned base `4050de9`. Progress confirmed active; saved cursor `fc1ba9c4-f264-4092-8d7d-d4b414e51eab:1`. Owns frozen operator integration/tests/registration/docs only. Coordinator owns this file; keys/converters/array integration remains excluded.
+
+## TS-012 acceptance — 2026-11-01 21:06 UTC
+
+Accepted `bf2bed2`: inspected operator integration and migrated assertions, LRPQ capture/mutation traces, exact abrupt identities, runtime-read methods, shared budgets and preserved noncoercing paths. Independently rebuilt Node/native: 159/159 each, no skips; eighteen static gates pass. Producer runner20/probes10/typecheck retained. Completed chat idle; cursor `fc1ba9c4-f264-4092-8d7d-d4b414e51eab:2`. Direct converters/keys/array paths stay primitive-only.
+
+Next ready TS-013 integrates ordinary object keys with required context in reference consumers, leaving other converter/array APIs alone. Claude queue reserved; main unchanged. Implementation push was rejected for delegated export authorization; coordinator verified original human push authorization and existing origin jkup/rift before pushing acceptance and implementation.
