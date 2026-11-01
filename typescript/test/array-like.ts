@@ -28,28 +28,28 @@ function s(value: string): Value { return { kind: "string", value }; }
 function o(object: GuestObject): Value { return { kind: "object", object }; }
 
 const parent = new GuestObject();
-parent.define("x", UNDEFINED, true, true, true);
+parent.bootstrapDefine("x", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
 const child = new GuestObject();
 boolean(child.setPrototypeOf(parent), true);
 boolean(child.internalHasProperty("x", loc), true);
 boolean(child.internalHasProperty("missing", loc), false);
-child.define("x", n(8), true, true, true);
+child.bootstrapDefine("x", { value: n(8), writable: true, enumerable: true, configurable: true });
 boolean(child.internalHasProperty("x", loc), true);
 boolean(child.internalDelete("x"), true);
 boolean(child.internalHasProperty("x", loc), true);
 boolean(parent.internalDelete("x"), true);
 boolean(child.internalHasProperty("x", loc), false);
-child.define("x", UNDEFINED, false, false, false);
+child.bootstrapDefine("x", { value: UNDEFINED, writable: false, enumerable: false, configurable: false });
 boolean(child.internalHasProperty("x", loc), true);
 boolean(child.internalDelete("x"), false);
 boolean(child.internalHasProperty("x", loc), true);
 
 const array = new GuestArray();
-boolean(array.defineOwnProperty("2", { value: UNDEFINED, configurable: true }, loc), true);
+boolean(array.defineOwnProperty("2", { value: UNDEFINED, configurable: true }, active.context, loc), true);
 boolean(array.internalHasProperty("0", loc), false);
 boolean(array.internalHasProperty("2", loc), true);
 boolean(array.internalHasProperty("length", loc), true);
-parent.define("1", UNDEFINED, true, true, true);
+parent.bootstrapDefine("1", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
 boolean(array.setPrototypeOf(parent), true);
 boolean(array.internalHasProperty("1", loc), true);
 check(array.getOwnProperty("1") === undefined, "inherited index stays hole");
@@ -67,7 +67,7 @@ for (let i = 0; i < 20000; i++) {
     boolean(tail.setPrototypeOf(next), true);
     tail = next;
 }
-tail.define("deep", UNDEFINED, true, true, true);
+tail.bootstrapDefine("deep", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
 boolean(head.internalHasProperty("deep", loc), true);
 boolean(head.internalHasProperty("absent", loc), false);
 boolean(tail.internalDelete("deep"), true);
@@ -77,7 +77,7 @@ const second = new Realm((_line) => {});
 const a = first.global.bindings.get("console");
 const b = second.global.bindings.get("console");
 if (a === undefined || b === undefined || a.value.kind !== "object" || b.value.kind !== "object") throw new Error("realm setup");
-a.value.object.define("onlyFirst", UNDEFINED, true, true, true);
+a.value.object.bootstrapDefine("onlyFirst", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
 boolean(a.value.object.internalHasProperty("onlyFirst", loc), true);
 boolean(b.value.object.internalHasProperty("onlyFirst", loc), false);
 
@@ -117,20 +117,20 @@ numeric(lengthOfArrayLike(ordinary, active.context, loc), 0);
 for (const row of rows) {
     numeric(toIntegerOrInfinity(row.input, loc), row.integer);
     numeric(toLength(row.input, loc), row.length);
-    ordinary.define("length", row.input, true, true, true);
+    ordinary.bootstrapDefine("length", { value: row.input, writable: true, enumerable: true, configurable: true });
     numeric(lengthOfArrayLike(ordinary, active.context, loc), row.length);
 }
 const inherited = new GuestObject();
 boolean(inherited.setPrototypeOf(ordinary), true);
-ordinary.define("length", s("8.9"), true, true, true);
+ordinary.bootstrapDefine("length", { value: s("8.9"), writable: true, enumerable: true, configurable: true });
 numeric(lengthOfArrayLike(inherited, active.context, loc), 8);
-inherited.define("length", UNDEFINED, true, true, true);
+inherited.bootstrapDefine("length", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
 numeric(lengthOfArrayLike(inherited, active.context, loc), 0);
 boolean(inherited.internalDelete("length"), true);
 numeric(lengthOfArrayLike(inherited, active.context, loc), 8);
 unsupported(toIntegerOrInfinity(o(parent), loc));
 unsupported(toLength(o(parent), loc));
-ordinary.define("length", o(parent), true, true, true);
+ordinary.bootstrapDefine("length", { value: o(parent), writable: true, enumerable: true, configurable: true });
 const missing = lengthOfArrayLike(ordinary, active.context, loc);
 check(missing.type === "throw" && missing.diagnostic.message === "cannot convert object to primitive" && missing.diagnostic.loc === loc, "no-method length failure");
 numeric(lengthOfArrayLike(new GuestArray(), active.context, loc), 0);
@@ -147,7 +147,7 @@ class ObservedGet extends GuestObject {
     }
 }
 const observed = new ObservedGet();
-observed.define("length", n(999), true, true, true);
+observed.bootstrapDefine("length", { value: n(999), writable: true, enumerable: true, configurable: true });
 numeric(lengthOfArrayLike(observed, active.context, loc), 12);
 check(observed.calls === 1, "one normal Get");
 boolean(observed.internalHasProperty("length", loc), true);
@@ -169,8 +169,8 @@ method.callable = { kind: "builtin", invoke: (receiver, args, context, _at) => {
     check(receiver.kind === "object" && receiver.object === parent && args.length === 0 && context === active.context, "length hook receiver/context");
     return { type: "normal", value: n(4.9) };
 } };
-parent.define("valueOf", o(method), true, true, true);
-ordinary.define("length", o(parent), true, true, true);
+parent.bootstrapDefine("valueOf", { value: o(method), writable: true, enumerable: true, configurable: true });
+ordinary.bootstrapDefine("length", { value: o(parent), writable: true, enumerable: true, configurable: true });
 numeric(lengthOfArrayLike(ordinary, active.context, loc), 4);
 observed.result = { type: "normal", value: o(parent) };
 numeric(lengthOfArrayLike(observed, active.context, loc), 4);

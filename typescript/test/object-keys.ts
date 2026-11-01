@@ -1,3 +1,5 @@
+import { Evaluator } from "../src/evaluator.js";
+const keyContext = new Evaluator(new Realm((_line) => {})).context;
 const loc = { line: 1, column: 1 };
 import { arrayIndex } from "../src/property-keys.js";
 import { GuestObject, UNDEFINED, sameValue } from "../src/runtime.js";
@@ -12,7 +14,7 @@ function list(actual: string[], expected: string[], label: string): void {
     check(actual.length === expected.length, label + " length");
     for (let i = 0; i < expected.length; i++) check(actual[i] === expected[i], label + " position " + i);
 }
-function add(o: GuestObject, key: string): void { o.define(key, UNDEFINED, true, true, true); }
+function add(o: GuestObject, key: string): void { o.bootstrapDefine(key, { value: UNDEFINED, writable: true, enumerable: true, configurable: true }); }
 
 const valid = ["0", "1", "9", "10", "100", "2147483647", "2147483648", "4294967293", "4294967294"];
 const values = [0, 1, 9, 10, 100, 2147483647, 2147483648, 4294967293, 4294967294];
@@ -26,11 +28,11 @@ list(unusual.ownPropertyKeys(), invalid, "all noncanonical keys retain insertion
 const o = new GuestObject();
 list(o.ownPropertyKeys(), [], "empty");
 for (const key of ["z", "10", "4294967295", "2", "01", "4294967294", "0", "a", "2147483648"]) add(o, key);
-o.define("hidden", UNDEFINED, false, false, true);
-o.define("3", UNDEFINED, false, false, false);
+o.bootstrapDefine("hidden", { value: UNDEFINED, writable: false, enumerable: false, configurable: true });
+o.bootstrapDefine("3", { value: UNDEFINED, writable: false, enumerable: false, configurable: false });
 const initial = ["0", "2", "3", "10", "2147483648", "4294967294", "z", "4294967295", "01", "a", "hidden"];
 list(o.ownPropertyKeys(), initial, "numeric before chronological including nonenumerable");
-result(o.defineOwnProperty("z", { value: { kind: "number", value: 7 }, enumerable: false }, loc), true, "overwrite");
+result(o.defineOwnProperty("z", { value: { kind: "number", value: 7 }, enumerable: false }, keyContext, loc), true, "overwrite");
 add(o, "10");
 list(o.ownPropertyKeys(), initial, "overwrites preserve positions");
 const snapshot = o.ownPropertyKeys();
@@ -57,8 +59,8 @@ result(o.internalDelete("hidden"), true, "repeated deletion");
 list(o.ownPropertyKeys(), beforeFailure, "absent deletion preserves order");
 
 const parent = new GuestObject();
-parent.define("locked", UNDEFINED, true, true, false);
-parent.define("shared", { kind: "number", value: 4 }, true, true, true);
+parent.bootstrapDefine("locked", { value: UNDEFINED, writable: true, enumerable: true, configurable: false });
+parent.bootstrapDefine("shared", { value: { kind: "number", value: 4 }, writable: true, enumerable: true, configurable: true });
 add(parent, "1");
 const child = new GuestObject();
 result(child.setPrototypeOf(parent), true, "prototype");
@@ -66,14 +68,14 @@ result(child.internalDelete("locked"), true, "inherited nonconfigurable is absen
 result(child.internalDelete("shared"), true, "inherited configurable untouched");
 list(child.ownPropertyKeys(), [], "no inherited keys");
 list(parent.ownPropertyKeys(), ["1", "locked", "shared"], "parent unchanged");
-child.define("shared", { kind: "number", value: 9 }, true, true, true);
+child.bootstrapDefine("shared", { value: { kind: "number", value: 9 }, writable: true, enumerable: true, configurable: true });
 result(child.internalDelete("shared"), true, "delete shadow");
 check(sameValue(child.get("shared"), { kind: "number", value: 4 }), "deletion exposes inherited value");
 check(parent.getOwnProperty("shared") !== undefined && child.getPrototypeOf() === parent, "prototype unchanged");
 add(child, "removable");
 result(child.preventExtensions(), true, "prevent extensions");
 result(child.internalDelete("removable"), true, "nonextensible deletion");
-result(child.defineOwnProperty("removable", {}, loc), false, "nonextensible reinsertion rejected");
+result(child.defineOwnProperty("removable", {}, keyContext, loc), false, "nonextensible reinsertion rejected");
 result(child.internalDelete("missing"), true, "nonextensible absent");
 check(!child.isExtensible(), "deletion does not enable extensions");
 list(child.ownPropertyKeys(), [], "rejected reinsertion adds no key");

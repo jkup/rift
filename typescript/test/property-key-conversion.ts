@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { toString, toPropertyKey, numberToString } from "../src/conversion.js";
-import { GuestObject, UNDEFINED, normal, getValue, putValue, type Builtin, type Completion, type Value, type ValueCompletion, type ThrowCompletion } from "../src/runtime.js";
+import { GuestObject, UNDEFINED, normal, getValue, putValue, type OperationContext, type Builtin, type Completion, type Value, type ValueCompletion, type ThrowCompletion } from "../src/runtime.js";
 import { GuestArray } from "../src/array-object.js";
 import { Realm } from "../src/realm.js";
 import { Evaluator } from "../src/evaluator.js";
@@ -142,6 +142,7 @@ class ObservedObject extends GuestObject {
     trace = "";
     getThrow = false;
     setThrow = false;
+    seenContext: OperationContext | null = null;
     receiver: Value = UNDEFINED;
     sentinel: ThrowCompletion = { type: "throw", value: obj(new GuestObject()), diagnostic: { phase: "runtime", name: "RangeError", message: "sentinel", loc } };
     internalGet(key: string, receiver: Value, location: Location): ValueCompletion {
@@ -149,9 +150,10 @@ class ObservedObject extends GuestObject {
         this.receiver = receiver;
         return this.getThrow ? this.sentinel : super.internalGet(key, receiver, location);
     }
-    set(key: string, value: Value, location: Location): Completion {
+    set(key: string, value: Value, context: OperationContext, location: Location): Completion {
+        this.seenContext = context;
         this.trace += "S";
-        return this.setThrow ? this.sentinel : super.set(key, value, location);
+        return this.setThrow ? this.sentinel : super.set(key, value, context, location);
     }
 }
 class ForbiddenKey extends GuestObject {
@@ -183,9 +185,9 @@ class Scenario {
         });
         if (inherited) {
             const parent = new GuestObject();
-            parent.define("1", method, true, true, true);
+            parent.bootstrapDefine("1", { value: method, writable: true, enumerable: true, configurable: true });
             this.original.setPrototypeOf(parent);
-        } else this.original.define("1", method, true, true, true);
+        } else this.original.bootstrapDefine("1", { value: method, writable: true, enumerable: true, configurable: true });
         seed(this.realm, "base", builtin((_receiver, _args, _context, _location) => {
             this.original.trace += "B";
             return this.stop === "B" ? this.original.sentinel : normal(this.replace ? binding(this.realm, "selectedBase") : this.baseValue);
@@ -218,6 +220,7 @@ const write = new Scenario();
 write.replace = true;
 check(write.run("write").type === "normal" && write.original.trace === "BKRS", "one-time write order");
 check(write.original.get("1") === write.rhsValue && write.original.getOwnProperty("2") === undefined && write.replacement.getOwnProperty("1") === undefined && write.replacement.getOwnProperty("2") === undefined, "original write base and key");
+check(write.original.seenContext === write.evaluator.context, "Set context identity");
 check(binding(write.realm, "assigned") === write.rhsValue, "assignment result exact RHS");
 for (const inherited of [false, true]) {
     const call = new Scenario(inherited);
@@ -229,7 +232,7 @@ for (const inherited of [false, true]) {
 const detached = new Scenario();
 const parsedMethod = execute("function method() { return this.x; }", detached.evaluator);
 check(parsedMethod.type === "normal", "method setup");
-detached.original.define("1", binding(detached.realm, "method"), true, true, true);
+detached.original.bootstrapDefine("1", { value: binding(detached.realm, "method"), writable: true, enumerable: true, configurable: true });
 const detachedResult = detached.run("detached");
 check(detachedResult.type === "throw" && detachedResult.diagnostic.message === "property base must be an object" && detached.original.trace === "BKG", "detached method");
 for (const path of ["read", "write", "call"]) {
@@ -263,12 +266,12 @@ callableKey.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _
 for (const object of [new GuestObject(), new GuestArray(), callableKey]) {
     let calls = 0;
     const keyValue = obj(object);
-    object.define("toString", builtin((receiver, args, _context, _location) => {
+    object.bootstrapDefine("toString", { value: builtin((receiver, args, _context, _location) => {
         check(receiver === keyValue && args.length === 0, "key receiver/arguments");
         calls++;
         return normal(str("1"));
-    }), true, true, true);
-    object.define("valueOf", builtin((_r, _a, _c, _l): Completion => { throw new Error("wrong hint"); }), true, true, true);
+    }), writable: true, enumerable: true, configurable: true });
+    object.bootstrapDefine("valueOf", { value: builtin((_r, _a, _c, _l): Completion => { throw new Error("wrong hint"); }), writable: true, enumerable: true, configurable: true });
     const directString = toString(keyValue, loc);
     check(directString.type === "throw" && directString.diagnostic.message === "object-to-primitive conversion unsupported" && directString.diagnostic.loc === loc && calls === 0, "direct ToString stays primitive-only");
     const directKey = toPropertyKey(keyValue, keyContext, loc);
@@ -300,7 +303,7 @@ check(setThrow.original.trace === "BKRS", "Set throw after RHS");
 for (const inherited of [false, true]) {
     const readonly = new Scenario();
     const owner = inherited ? new GuestObject() : readonly.original;
-    owner.define("2", num(42), false, true, true);
+    owner.bootstrapDefine("2", { value: num(42), writable: false, enumerable: true, configurable: true });
     if (inherited) readonly.original.setPrototypeOf(owner);
     readonly.keyValue = num(2);
     const read = readonly.run("read");
@@ -318,7 +321,7 @@ typeError(closed.run("write"), "property is not writable: 2", 16);
 check(closed.original.trace === "BKRS" && closed.original.getOwnProperty("2") === undefined, "nonextensible false Set");
 for (const stop of ["", "A"]) {
     const notCallable = new Scenario();
-    notCallable.original.define("1", num(42), true, true, true);
+    notCallable.original.bootstrapDefine("1", { value: num(42), writable: true, enumerable: true, configurable: true });
     notCallable.stop = stop;
     const result = notCallable.run("call");
     if (stop === "A") exact(result, notCallable.original.sentinel);

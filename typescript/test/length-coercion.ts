@@ -19,7 +19,7 @@ function num(value: number): Value {
     return { kind: "number", value };
 }
 function put(object: GuestObject, key: string, value: Value): void {
-    object.define(key, value, true, true, true);
+    object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true });
 }
 function builtin(invoke: Builtin): Value {
     const object = new GuestObject();
@@ -309,8 +309,8 @@ check(stringResult.type === "throw", "direct string boundary");
 error(toIntegerOrInfinity(value, loc), "TypeError");
 error(toLength(value, loc), "TypeError");
 const storage = new GuestArray();
-error(storage.set("length", value, loc), "TypeError");
-const defined = storage.defineOwnProperty("length", { value }, loc);
+error(storage.set("length", value, excluded.context, loc), "TypeError");
+const defined = storage.defineOwnProperty("length", { value }, excluded.context, loc);
 check(defined.type === "throw", "array define boundary");
 check(sameValue(binding(excluded, "hits"), num(0)), "excluded paths invoke no hooks");
 class ForbiddenHooks extends GuestObject {
@@ -326,8 +326,8 @@ error(toNumber(forbiddenValue, loc), "TypeError");
 check(toString(forbiddenValue, loc).type === "throw", "string zero-read boundary");
 error(toIntegerOrInfinity(forbiddenValue, loc), "TypeError");
 error(toLength(forbiddenValue, loc), "TypeError");
-error(storage.set("length", forbiddenValue, loc), "TypeError");
-check(storage.defineOwnProperty("length", { value: forbiddenValue }, loc).type === "throw" && forbidden.reads === 0, "array/converter zero hook reads");
+error(storage.set("length", forbiddenValue, excluded.context, loc), "TypeError");
+check(storage.defineOwnProperty("length", { value: forbiddenValue }, excluded.context, loc).type === "throw" && forbidden.reads === 0, "array/converter zero hook reads");
 // Guest throw identity is captured at the bridge; host faults still unwind calls.
 const exact = setup();
 const hook = new GuestObject();

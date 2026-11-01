@@ -134,16 +134,17 @@ assignments; this foundation does not authorize starting them.
 
 ## TS-004A: ordinary data descriptors
 
-`defineOwnProperty(key, DataDescriptorUpdate, loc): InternalBooleanCompletion`
+`defineOwnProperty(key, DataDescriptorUpdate, context, loc): InternalBooleanCompletion`
 returns normal boolean or throw (signature widened in TS-005D). The payload is a host boolean, not a guest
 Value. Ordinary data-only validation cannot call guest code or throw a guest
 exception. Rejection is normal false. `preventExtensions()` returns normal boolean
 and always succeeds, including repeated calls; `isExtensible()` reads the slot.
 `set`/`putValue` retain the current strict assignment contract: normal RHS Value
 on success, guest TypeError on rejection. Even a same-value assignment to a frozen
-property fails. `define` remains a complete-descriptor bootstrap/literal helper,
-but now validates too and raises a host fault if an internal caller violates an
-invariant. There is no public unchecked insertion method.
+property fails. TS-015A replaces `define` with descriptor-form `bootstrapDefine`,
+which uses a separate validated setup dispatch and raises a host fault on false
+or throw. Literals use semantic Define with the active context. There is no
+public unchecked insertion method.
 
 Update fields are optional. Host `undefined` denotes an absent field; guest
 undefined is the distinct tagged `UNDEFINED` Value. Explicit false is present.
@@ -162,7 +163,7 @@ with this change.
 ## TS-004B: ordinary prototype lookup and explicit receivers
 
 The approved contract is implemented as internalGet(key, receiver, loc):
-ValueCompletion and internalSet(key, value, receiver, loc):
+ValueCompletion and internalSet(key, value, receiver, context, loc):
 InternalBooleanCompletion. These unions contain only normal and throw alternatives;
 boolean payloads are host booleans. Ordinary data operations currently return normal
 results. GetValue propagates Get directly; PutValue delegates to the strict set
@@ -250,9 +251,10 @@ Definition requires a Location. Both ordinary Set receiver paths forward the exa
 location and full completion from the receiver override. The base ordinary
 definition remains normal-only; strict set/putValue propagate throws unchanged,
 translate only normal false to TypeError, and return the original RHS on success.
-Bootstrap define keeps its convenience signature, supplies synthetic host location
-1:1, and checks the discriminant before the boolean payload: either rejection or
-guest throw is a host initialization fault.
+TS-015A supersedes the old bootstrap convenience signature with
+`bootstrapDefine(key, desc)`. Its dedicated protected bootstrap dispatch supplies
+synthetic host location 1:1 and checks the discriminant before the boolean payload:
+either rejection or throw is a host initialization fault.
 
 Readonly lookup/receiver checks and primitive receiver rejection precede definition.
 Extensibility is checked by ordinary definition, so a subclass override is still
@@ -534,3 +536,25 @@ only. A test subclass returning an object for length observes ordering only; it
 is not an accessor or exotic-storage implementation. There is no standard map
 registration, boxing, species expansion or symbol hook. Evidence and migration
 inventory: validation/ts-014/README.md.
+
+## TS-015A: semantic context and validated bootstrap
+
+Semantic Define, internalSet and Set require OperationContext before Location.
+PutValue forwards its active context through both receiver-definition branches,
+preserving virtual receiver dispatch, exact abrupt records and original RHS.
+Ordinary definitions perform no conversion, ticks or guest calls. All literal
+and map definitions use their existing active context.
+
+Trusted setup calls bootstrapDefine(key, descriptor), then the protected
+bootstrapDefineOwnProperty at synthetic 1:1. It never calls semantic Define.
+Both ordinary entries share protected ordinaryDefineOwnProperty validation;
+private storage remains inaccessible to consumers. Array construction explicitly
+calls the super ordinary validator, bypassing all subclass dispatch. Array
+semantic/bootstrap entries share non-length index-growth and normalized length
+storage phases, including sparse descending deletion, partial rollback and
+delayed freezing. Bootstrap rejects object length before hook lookup or mutation;
+ordinary object-valued length and elements remain data.
+
+Semantic length is still primitive-only. Effectful two-conversion length work
+remains a separate reviewed batch. See [the frozen contract](array-length-context.md)
+and [validation](validation/ts-015a/README.md).

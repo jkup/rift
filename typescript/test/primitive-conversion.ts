@@ -19,7 +19,7 @@ function builtin(invoke: Builtin): Value {
     object.callable = { kind: "builtin", invoke };
     return objectValue(object);
 }
-function define(object: GuestObject, key: string, value: Value): void { object.define(key, value, true, true, true); }
+function define(object: GuestObject, key: string, value: Value): void { object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true }); }
 function returns(value: Value): Value { return builtin((_receiver, _args, _context, _loc) => normal(value)); }
 function numberResult(result: ValueCompletion, expected: number, label: string): void {
     check(result.type === "normal" && result.value.kind === "number" && result.value.value === expected, label);

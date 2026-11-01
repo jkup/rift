@@ -25,7 +25,7 @@ function num(value: number): Value {
     return { kind: "number", value };
 }
 function put(object: GuestObject, key: string, value: Value): void {
-    object.define(key, value, true, true, true);
+    object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true });
 }
 function builtin(invoke: Builtin): Value {
     const object = new GuestObject();

@@ -119,11 +119,11 @@ for (const kind of ["ordinary", "array", "function"]) {
         const proto = new GuestObject();
         check(object.setPrototypeOf(proto).value, "install inherited method");
         let calls = 0;
-        proto.define("valueOf", builtin((receiver, args, context, _loc) => {
+        proto.bootstrapDefine("valueOf", { value: builtin((receiver, args, context, _loc) => {
             check(receiver === input && args.length === 0 && context === active.context, "inherited method receiver/args");
             calls++;
             return normal({ kind: "number", value: 6 });
-        }), true, true, true);
+        }), writable: true, enumerable: true, configurable: true });
         seed(active, "operand", input);
         const index = expression === "+operand" ? -2 : expression === "-operand" ? -1 : operators.indexOf(expression.split(" ")[1]);
         expect(active, expression, index === -2 ? 6 : index === -1 ? -6 : expected[index]);
@@ -192,10 +192,10 @@ for (const mode of ["host", "break", "continue"] as const) {
     const active = setup();
     const object = new GuestObject();
     const fault = new Error("host operator fault");
-    object.define("valueOf", builtin((_r, _a, _c, _l): Completion => {
+    object.bootstrapDefine("valueOf", { value: builtin((_r, _a, _c, _l): Completion => {
         if (mode === "host") throw fault;
         return { type: mode, value: UNDEFINED };
-    }), true, true, true);
+    }), writable: true, enumerable: true, configurable: true });
     seed(active, "operand", { kind: "object", object });
     let escaped = false;
     try { run(active, "+operand;"); }

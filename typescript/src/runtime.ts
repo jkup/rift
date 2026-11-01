@@ -80,7 +80,13 @@ export class GuestObject {
     }
     // Ordinary [[DefineOwnProperty]], restricted to data/generic descriptors.
     // Rejection is normal(false), not a guest exception. Validate before committing.
-    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _loc: Location): InternalBooleanCompletion {
+    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _context: OperationContext, _loc: Location): InternalBooleanCompletion {
+        return this.ordinaryDefineOwnProperty(key, desc);
+    }
+    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _loc: Location): InternalBooleanCompletion {
+        return this.ordinaryDefineOwnProperty(key, desc);
+    }
+    protected ordinaryDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate): BooleanCompletion {
         const current = this.propertyStorage.get(key);
         if (current === undefined) {
             if (!this.extensible) return { type: "normal", value: false };
@@ -139,7 +145,7 @@ export class GuestObject {
         }
         return { type: "normal", value: UNDEFINED };
     }
-    internalSet(key: PropertyKey, value: Value, receiver: Value, loc: Location): InternalBooleanCompletion {
+    internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, loc: Location): InternalBooleanCompletion {
         // Keep Receiver unchanged while finding the first descriptor. Direct
         // slot traversal is valid only for this ordinary, data-only object model.
         let object: GuestObject | null = this;
@@ -156,9 +162,9 @@ export class GuestObject {
         const existing = target.getOwnProperty(key);
         if (existing !== undefined) {
             if (!existing.writable) return { type: "normal", value: false };
-            return target.defineOwnProperty(key, { value }, loc);
+            return target.defineOwnProperty(key, { value }, context, loc);
         }
-        return target.defineOwnProperty(key, { value, writable: true, enumerable: true, configurable: true }, loc);
+        return target.defineOwnProperty(key, { value, writable: true, enumerable: true, configurable: true }, context, loc);
     }
     // Trusted host-test inspection only; semantic reads propagate completions.
     get(key: PropertyKey): Value {
@@ -166,17 +172,15 @@ export class GuestObject {
         if (result.type === "throw") throw new Error("abrupt host inspection: " + key);
         return result.value;
     }
-    set(key: PropertyKey, value: Value, loc: Location): Completion {
-        const result = this.internalSet(key, value, { kind: "object", object: this }, loc);
+    set(key: PropertyKey, value: Value, context: OperationContext, loc: Location): Completion {
+        const result = this.internalSet(key, value, { kind: "object", object: this }, context, loc);
         if (result.type === "throw") return result;
         if (!result.value) return failure("TypeError", "property is not writable: " + key, loc);
         return normal(value);
     }
-    define(key: PropertyKey, value: Value, writable: boolean, enumerable: boolean, configurable: boolean): void {
-        // Bootstrap/literal convenience, still validated. Rejection is a host
-        // initialization bug, not a guest exception or an unchecked escape hatch.
-        // Bootstrap has no guest source; 1:1 is its synthetic host location.
-        const result = this.defineOwnProperty(key, { value, writable, enumerable, configurable }, { line: 1, column: 1 });
+    // Trusted setup uses separate validated dispatch, with no execution context.
+    bootstrapDefine(key: PropertyKey, desc: DataDescriptorUpdate): void {
+        const result = this.bootstrapDefineOwnProperty(key, desc, { line: 1, column: 1 });
         if (result.type === "throw" || !result.value) throw new Error("invalid internal property definition: " + key);
     }
 }
@@ -214,7 +218,7 @@ export function putValue(ref: Reference, value: Value, context: OperationContext
         if (ref.base.kind !== "object") return failure("TypeError", "property base must be an object", ref.loc);
         const key = toPropertyKey(ref.key, context, ref.loc);
         if (key.type === "throw") return key;
-        return ref.base.object.set(key.value, value, loc);
+        return ref.base.object.set(key.value, value, context, loc);
     }
     const binding = ref.environment === null ? undefined : ref.environment.bindings.get(ref.name);
     if (binding === undefined) return failure("ReferenceError", ref.name + " is not defined", loc);

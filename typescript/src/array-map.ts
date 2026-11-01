@@ -16,7 +16,7 @@ export function mapObjectDefaultArray(object: GuestObject, callback: Value, this
     }
     if (length.value > 4294967295) return failure("RangeError", "map result length exceeds array limit", loc);
     const result = new GuestArray();
-    const initialized = result.defineOwnProperty("length", { value: { kind: "number", value: length.value } }, loc);
+    const initialized = result.defineOwnProperty("length", { value: { kind: "number", value: length.value } }, context, loc);
     if (initialized.type === "throw" || !initialized.value) throw new Error("fresh map array length invariant");
     // Only the limit is captured. Presence and values are observed after each
     // callback, and holes consume the same active budget as present elements.
@@ -31,7 +31,7 @@ export function mapObjectDefaultArray(object: GuestObject, callback: Value, this
         if (element.type === "throw") return element;
         const mapped = context.call(callback, thisArg, [element.value, { kind: "number", value: k }, input], loc);
         if (mapped.type === "throw") return mapped;
-        const defined = result.defineOwnProperty(key, { value: mapped.value, writable: true, enumerable: true, configurable: true }, loc);
+        const defined = result.defineOwnProperty(key, { value: mapped.value, writable: true, enumerable: true, configurable: true }, context, loc);
         if (defined.type === "throw") return defined;
         if (!defined.value) throw new Error("fresh map array element invariant");
     }

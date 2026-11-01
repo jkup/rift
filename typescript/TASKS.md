@@ -522,7 +522,7 @@ Coordinator acceptance: TS-015P accepted at `25292bb` on 2026-11-01; supersedes 
 
 ### TS-015A — Semantic definition context and validated bootstrap
 
-Status: **ready**. Prerequisite TS-015P accepted at `25292bb`. Implement only batch 1 of docs/array-length-context.md; batch 2 effectful length remains blocked pending review. Own src/runtime.ts, src/array-object.ts, src/evaluator.ts, src/array-map.ts, src/realm.ts, src/builtins/number.ts, the affected test consumers listed in the design, scoped architecture/feature notes, this task handoff and docs/validation/ts-015a/. Coordinator owns COORDINATION.md. Preserve root Claude queue.
+Status: **in progress — implemented, awaiting coordinator review**. Owner: implementation chat `01a19928-e995-7d43-ae9e-f01aad50eea1`; base `f1987eb`. Prerequisite TS-015P accepted at `25292bb`. Implement only batch 1 of docs/array-length-context.md; batch 2 effectful length remains blocked pending review. Own src/runtime.ts, src/array-object.ts, src/evaluator.ts, src/array-map.ts, src/realm.ts, src/builtins/number.ts, the affected test consumers listed in the design, scoped architecture/feature notes, this task handoff and docs/validation/ts-015a/. Coordinator owns COORDINATION.md. Preserve root Claude queue.
 
 Adopt the exact required OperationContext signatures and forward original context/location/receiver through putValue, set, internalSet and both receiver definition branches. Migrate all consumers atomically; no optional context, ambient evaluator, manufactured execution context or ignored completion. Ordinary storage never coerces values or adds ticks. Semantic object/array literals and map definitions use the active context with exact throw propagation and explicit impossible-false checks.
 
@@ -531,3 +531,12 @@ Remove ambiguous GuestObject.define, replacing trusted setup with descriptor-for
 Implement P1-P6 with readable expected-result assertions in existing compiled drivers. Preserve every previous test entry/assertion purpose, all prior semantic conversion exclusions, flags, holes, original RHS and exact abrupt records. Migrate bootstrap observer false/throw tests to the dedicated protected override and explicitly test semantic override bypass. Check context identity for own/new/inherited receiver dispatch, same realm selection and zero added ticks. Search all src/test callers again, distinguish host Map.set, and check the formerly ignored realmMarker Set result. Retain prior suites and twenty static gates; no new harness/manifest is expected.
 
 Run typecheck, runner regressions, probes, rebuilt Node/native guest suites, static-only builds and coverage gates. Baseline 161 entries per guest lane and twenty static gates must remain; report actual totals honestly. Reduce any compiler blocker before adopting a workaround. Keep tests readable with separate setup/actions/assertions and exact outcomes. Record evidence and remaining scope, commit/push coherent changes, then stop for coordinator review. No effectful length integration, direct converter redesign, new syntax/intrinsics, pins, C++/Claude/COORDINATION edits, branch switch, main merge or successor assignment.
+
+TS-015A handoff (2026-11-01): batch 1 implemented with required semantic context,
+validated bootstrap dispatch, constructor bypass and shared array storage. P1-P6
+are exercised in existing compiled drivers. Typecheck passes; runner 20/20;
+probes 10/10; rebuilt Node/native 161/161 each, no skips; all 20 native static-only
+and separate coverage gates pass. Pinned Zig required approved installation
+access after sandbox linker failure; no compiler workaround or relaxed gate.
+See [retained evidence](docs/validation/ts-015a/README.md). Semantic object length
+still rejects without hooks. Stop for coordinator review; batch 2 is not started.

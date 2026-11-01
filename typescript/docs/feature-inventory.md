@@ -74,3 +74,9 @@ lookups and shared active evaluation budgets. A compiled test bridge exercises
 real guest methods; no guest intrinsic is registered. TS-012 connects the helper to existing numeric, addition and relational operators.
 TS-013 connects computed keys and required-context reference consumption. TS-014 connects array-like length and internal map. Direct numeric/string converters and array storage length paths remain primitive-only. Standard prototypes, symbol hooks, Date/wrappers, accessors/proxies
 and full ToPrimitive remain unsupported. Evidence: [TS-011](validation/ts-011/README.md).
+
+TS-015A requires OperationContext on semantic Set/Define and replaces host setup
+`define` with validated descriptor-form `bootstrapDefine`. Constructor and setup
+exclude semantic subclass dispatch; array length storage is shared. No guest
+features or ticks are added, and semantic array length remains primitive-only.
+See [TS-015A evidence](validation/ts-015a/README.md).

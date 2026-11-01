@@ -21,7 +21,7 @@ export class Realm {
     registerBuiltin(target: GuestObject, name: string, invoke: Builtin): Value {
         const object = new GuestObject(); object.callable = { kind: "builtin", invoke };
         const value: Value = { kind: "object", object };
-        target.define(name, value, true, false, true);
+        target.bootstrapDefine(name, { value: value, writable: true, enumerable: false, configurable: true });
         return value;
     }
 }

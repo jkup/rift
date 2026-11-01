@@ -4,7 +4,7 @@ import { Realm } from "../src/realm.js";
 import { parse } from "../src/parser.js";
 import { toPropertyKey, toString, toNumber } from "../src/conversion.js";
 import { GuestArray } from "../src/array-object.js";
-import { GuestObject, UNDEFINED, normal, getValue, putValue, type Builtin, type Completion, type Value, type ValueCompletion, type ThrowCompletion } from "../src/runtime.js";
+import { GuestObject, UNDEFINED, normal, getValue, putValue, type OperationContext, type Builtin, type Completion, type Value, type ValueCompletion, type ThrowCompletion } from "../src/runtime.js";
 import type { Location } from "../src/syntax.js";
 function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
 function obj(object: GuestObject): Value { return { kind: "object", object }; }
@@ -52,9 +52,10 @@ class Observed extends GuestObject {
         check(receiver === this.original, "original base Get receiver");
         return this.stop === "G" ? sentinel : super.internalGet(key, receiver, location);
     }
-    set(key: string, value: Value, location: Location): Completion {
+    set(key: string, value: Value, context: OperationContext, location: Location): Completion {
+        check(context === this.active.context, "Set active context identity");
         this.mark("S");
-        return this.stop === "S" ? sentinel : super.set(key, value, location);
+        return this.stop === "S" ? sentinel : super.set(key, value, context, location);
     }
 }
 for (const path of ["read", "write", "call"]) {
@@ -69,11 +70,11 @@ for (const path of ["read", "write", "call"]) {
         seed(active, "target", target.original);
         const key = binding(active, "key");
         if (key.kind !== "object") throw new Error("key");
-        key.object.define("toString", builtin((receiver, args, context, _location) => {
+        key.object.bootstrapDefine("toString", { value: builtin((receiver, args, context, _location) => {
             target.mark("C");
             check(receiver === key && args.length === 0 && context === active.context, "original key/context/zero args");
             return stop === "C" ? sentinel : normal(str("x"));
-        }), true, true, true);
+        }), writable: true, enumerable: true, configurable: true });
         const rhs = obj(new GuestObject());
         for (const stage of ["B", "K", "R", "A"]) {
             const name = stage === "B" ? "base" : stage === "K" ? "keyExpression" : stage === "R" ? "rhs" : "argument";
@@ -82,11 +83,11 @@ for (const path of ["read", "write", "call"]) {
                 return stop === stage ? sentinel : normal(stage === "B" ? target.original : stage === "K" ? key : rhs);
             }));
         }
-        target.define("x", builtin((receiver, args, _context, _location) => {
+        target.bootstrapDefine("x", { value: builtin((receiver, args, _context, _location) => {
             target.mark("M");
             check(receiver === target.original && args.length === 2 && args[0] === rhs && args[1] === rhs, "method receiver/args");
             return stop === "M" ? sentinel : normal(receiver);
-        }), true, true, true);
+        }), writable: true, enumerable: true, configurable: true });
         const source = path === "write" ? "let result = base()[keyExpression()] = rhs();" : path === "call" ? "let result = base()[keyExpression()](argument(), argument());" : "let result = base()[keyExpression()];";
         const result = run(active, source);
         const full = path === "write" ? "BKRCS" : path === "call" ? "BKCGAAM" : "BKCG";
@@ -130,8 +131,8 @@ for (const kind of ["ordinary", "array", "function"]) {
                     calls++;
                     return normal(row.value);
                 });
-                owner.define("toString", fallback === "first" ? method : fallback === "noncallable" ? num(8) : builtin((_r, _a, _c, _l) => normal(key)), true, true, true);
-                owner.define("valueOf", fallback === "first" ? UNDEFINED : method, true, true, true);
+                owner.bootstrapDefine("toString", { value: fallback === "first" ? method : fallback === "noncallable" ? num(8) : builtin((_r, _a, _c, _l) => normal(key)), writable: true, enumerable: true, configurable: true });
+                owner.bootstrapDefine("valueOf", { value: fallback === "first" ? UNDEFINED : method, writable: true, enumerable: true, configurable: true });
                 const result = toPropertyKey(key, active.context, loc);
                 check(result.type === "normal" && result.value === row.key && calls === 1, "primitive spelling/hint/fallback " + kind);
                 const target = obj(new GuestObject());
@@ -147,7 +148,7 @@ for (const kind of ["ordinary", "array", "function"]) {
 for (const both of [false, true]) {
     const object = new GuestObject();
     const key = obj(object);
-    if (both) for (const name of ["toString", "valueOf"]) object.define(name, builtin((_r, _a, _c, _l) => normal(key)), true, true, true);
+    if (both) for (const name of ["toString", "valueOf"]) object.bootstrapDefine(name, { value: builtin((_r, _a, _c, _l) => normal(key)), writable: true, enumerable: true, configurable: true });
     const result = toPropertyKey(key, active.context, loc);
     check(result.type === "throw" && result.diagnostic.message === "cannot convert object to primitive" && result.diagnostic.loc === loc, "located no primitive result");
 }
@@ -163,7 +164,7 @@ for (const stop of ["toString", "valueOf"]) {
     const object = new ThrowingKey(); object.stop = stop;
     check(toPropertyKey(obj(object), active.context, loc) === sentinel && object.reads === (stop === "toString" ? "toString;" : "toString;valueOf;"), "exact first/second Get throw");
     const callKey = new GuestObject();
-    callKey.define(stop, builtin((_r, _a, _c, _l) => sentinel), true, true, true);
+    callKey.bootstrapDefine(stop, { value: builtin((_r, _a, _c, _l) => sentinel), writable: true, enumerable: true, configurable: true });
     check(toPropertyKey(obj(callKey), active.context, loc) === sentinel, "exact first/second call throw");
 }
 // Active ticks propagate unchanged, before either candidate lookup.
@@ -188,7 +189,7 @@ for (const name of ["looping", "recursive"]) {
 }
 for (const mode of ["host", "break", "continue"] as const) {
     const key = new GuestObject();
-    key.define("toString", builtin((_r, _a, _c, _l): Completion => { if (mode === "host") throw new Error("host fault"); return { type: mode, value: UNDEFINED }; }), true, true, true);
+    key.bootstrapDefine("toString", { value: builtin((_r, _a, _c, _l): Completion => { if (mode === "host") throw new Error("host fault"); return { type: mode, value: UNDEFINED }; }), writable: true, enumerable: true, configurable: true });
     let escaped = false;
     try { toPropertyKey(obj(key), active.context, loc); } catch { escaped = true; }
     check(escaped && active.calls === 0, "call cleanup " + mode);
@@ -205,7 +206,7 @@ check(run(mutation, "key.toString = function() { key.valueOf = function() { retu
 for (const closed of [false, true]) {
     const target = new GuestObject();
     if (closed) target.preventExtensions();
-    else target.define("x", num(4), false, true, true);
+    else target.bootstrapDefine("x", { value: num(4), writable: false, enumerable: true, configurable: true });
     const key = binding(second, "key");
     const result = putValue({ kind: "property", base: obj(target), key, loc }, num(9), second.context, loc);
     check(result.type === "throw" && result.diagnostic.message === "property is not writable: x" && result.diagnostic.loc === loc, "object key strict false Set");

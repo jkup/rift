@@ -153,14 +153,14 @@ export class Evaluator {
                     if (value.type !== "normal") return value;
                     const defined = object.defineOwnProperty(String(i), {
                         value: value.value, writable: true, enumerable: true, configurable: true,
-                    }, expr.loc);
+                    }, this.context, expr.loc);
                     if (defined.type === "throw") return defined;
                     if (!defined.value) throw new Error("fresh array literal element invariant");
                 }
                 // Index definitions grow length, but trailing holes do not define keys.
                 const length = object.defineOwnProperty("length", {
                     value: { kind: "number", value: expr.elements.length },
-                }, expr.loc);
+                }, this.context, expr.loc);
                 if (length.type === "throw") return length;
                 if (!length.value) throw new Error("fresh array literal length invariant");
                 return normal({ kind: "object", object });
@@ -170,7 +170,9 @@ export class Evaluator {
                 for (let i = 0; i < expr.keys.length; i++) {
                     const value = this.evaluate(expr.values[i], env, receiver);
                     if (value.type !== "normal") return value;
-                    object.define(expr.keys[i], value.value, true, true, true);
+                    const defined = object.defineOwnProperty(expr.keys[i], { value: value.value, writable: true, enumerable: true, configurable: true }, this.context, expr.loc);
+                    if (defined.type === "throw") return defined;
+                    if (!defined.value) throw new Error("fresh object property definition failed");
                 }
                 return normal({ kind: "object", object });
             }

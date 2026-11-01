@@ -6,6 +6,8 @@ import { Realm } from "../src/realm.js";
 import { GuestObject, normal, UNDEFINED } from "../src/runtime.js";
 const a = new Realm((line) => { console.log("a " + line); });
 const b = new Realm((line) => { console.log("b " + line); });
+const aContext = new Evaluator(a).context;
+const bContext = new Evaluator(b).context;
 const setup = readFileSync(process.argv[2], "utf8");
 const check = readFileSync(process.argv[3], "utf8");
 const first = run(setup, a);
@@ -21,8 +23,8 @@ if (av.value.object === bv.value.object) throw new Error("shared console");
 const al = av.value.object.get("log"); const bl = bv.value.object.get("log");
 if (al.kind !== "object" || bl.kind !== "object" || al.object === bl.object) throw new Error("shared builtin");
 const target = new GuestObject();
-target.define("fixed", { kind: "number", value: 1 }, false, false, false);
-const write = target.set("fixed", UNDEFINED, { line: 1, column: 1 });
+target.bootstrapDefine("fixed", { value: { kind: "number", value: 1 }, writable: false, enumerable: false, configurable: false });
+const write = target.set("fixed", UNDEFINED, aContext, { line: 1, column: 1 });
 if (write.type !== "throw" || target.get("fixed").kind !== "number") throw new Error("descriptor write check failed");
 const d = target.properties.get("fixed");
 if (d === undefined || d.writable || d.enumerable || d.configurable) throw new Error("descriptor flags failed");
@@ -60,7 +62,7 @@ for (let i = 0; i < constantNames.length; i++) {
         const actual = descriptor.value.value;
         const expected = constantValues[i];
         if (!(Number.isNaN(expected) ? Number.isNaN(actual) : actual === expected)) throw new Error("Number constant value: " + key);
-        if (namespace.set(key, UNDEFINED, { line: 1, column: 1 }).type !== "throw" || namespace.get(key) !== descriptor.value) throw new Error("Number constant write: " + key);
+        if (namespace.set(key, UNDEFINED, (namespace === an ? aContext : bContext), { line: 1, column: 1 }).type !== "throw" || namespace.get(key) !== descriptor.value) throw new Error("Number constant write: " + key);
     }
 }
 for (const key of ["isNaN", "isFinite"]) {
@@ -81,9 +83,9 @@ for (const key of ["isNaN", "isFinite"]) {
             if (result.type !== "normal" || result.value.kind !== "boolean" || !result.value.value) throw new Error("Number predicate receiver");
         }
     }
-    ap.object.set("realmMarker", UNDEFINED, { line: 1, column: 1 });
+    if (ap.object.set("realmMarker", UNDEFINED, aContext, { line: 1, column: 1 }).type !== "normal") throw new Error("realm marker write failed");
     if (bp.object.properties.has("realmMarker")) throw new Error("Number shared predicate state");
-    if (an.set(key, UNDEFINED, { line: 1, column: 1 }).type !== "normal" || bn.get(key) !== bp) throw new Error("Number shared namespace state");
+    if (an.set(key, UNDEFINED, aContext, { line: 1, column: 1 }).type !== "normal" || bn.get(key) !== bp) throw new Error("Number shared namespace state");
 }
 const rebind = run("Number = 5;", a);
 if (rebind.phase !== "runtime" || rebind.completion.type !== "normal" || numberNamespace(b) !== bn) throw new Error("Number realm binding isolation");
