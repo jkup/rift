@@ -1,0 +1,24 @@
+
+> test:guest:native
+> npm run build:native && node tools/run-guests.mjs native
+
+
+> build:native
+> node tools/build-native.mjs
+
+PASS src/cli.ts
+PASS test/realms.ts
+PASS test/object-descriptors.ts
+PASS test/object-prototypes.ts
+PASS test/object-keys.ts
+PASS test/conversion.ts
+PASS test/definition-dispatch.ts
+DYNAMIC test/array-storage.ts
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\array-storage.ts
+
+  statements analyzed   1120
+  compile statically    1120  (100%)
+    in dynamic tier     2  (operate on values typed only at runtime; --explain-dynamic lists them)
+
+  fully static — all analyzed statements compile to native code.
+ 

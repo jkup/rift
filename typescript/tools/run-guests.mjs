@@ -165,6 +165,9 @@ execute("conversion", conversionCommand, conversionArgs, { stdout: "primitive co
 const definitionCommand = lane === "node" ? process.execPath : join(root, "build/native/definition-dispatch" + suffix);
 const definitionArgs = lane === "node" ? [join(root, "build/node/test/definition-dispatch.js")] : [];
 execute("definition-dispatch", definitionCommand, definitionArgs, { stdout: "definition dispatch passed\n" });
+const arrayCommand = lane === "node" ? process.execPath : join(root, "build/native/array-storage" + suffix);
+const arrayArgs = lane === "node" ? [join(root, "build/node/test/array-storage.js")] : [];
+execute("array-storage", arrayCommand, arrayArgs, { stdout: "array storage passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

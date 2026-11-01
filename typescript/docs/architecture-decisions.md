@@ -239,3 +239,39 @@ this supports definition overrides only, not generic exotic Get/Set/prototypes.
 No array or coercion behavior is added. The accepted design and source rationale
 remain in array-prerequisites.md; actual-runtime compiled tests and gate transcripts
 are in [TS-005D validation](validation/ts-005d/README.md).
+
+## TS-005A: data-only array storage
+
+`GuestArray` in `src/array-object.ts` subclasses GuestObject and overrides only
+definition. Its empty constructor initializes an ordinary own length descriptor
+(+0, writable, nonenumerable, nonconfigurable) through validated base definition.
+There is no parallel length slot; ordinary reads, keys, deletion and receiver Set
+observe the same private base storage. Initial prototype remains null. No runtime
+or conversion interface change was needed.
+
+Length definition copies the caller descriptor, calls ToUint32 then separately
+ToNumber on the original value, compares numerically (SameValueZero for the finite
+uint32 operand), and reads current length only afterward. Invalid numeric lengths
+throw RangeError before flag rejection; object conversion hits the explicit
+unsupported TypeError boundary. Ordinary Set can reject readonly length before
+definition/conversion, including same-value writes. Successful assignment returns
+the original RHS even when the stored length has been normalized to a number.
+
+Indices grow length only after successful ordinary definition. Shrinking first
+validates the new length descriptor, temporarily keeps writable true if freezing
+was requested, then traverses the detached own-key list backward. Only present
+indices at/above the target are deleted; holes cost no iteration. At a blocked
+index, higher deletions stay committed, length becomes index+1, and any requested
+freeze is applied. Base operations guaranteed by these invariants are asserted.
+Work/storage depend on present own keys (including their ordinary sorting), never
+on numeric length. This relies on ordinary data-only deletion without callbacks.
+
+The algorithm follows [ECMA-262 2025 ArraySetLength](https://tc39.es/ecma262/2025/multipage/ordinary-and-exotic-objects-behaviours.html#sec-arraysetlength)
+and the same page's array DefineOwnProperty algorithm, checked on 2026-11-01.
+[engine262 array-objects.mts at d553e7b](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/abstract-ops/array-objects.mts)
+was inspected through the GitHub connector: repeated conversions, present-key
+descending deletion and delayed freezing support this design. Rift uses the
+already-tested class override and ordered key API, without copying upstream code
+or introducing its generator/intrinsics machinery. Future object coercion still
+needs its own guest-call boundary and tests; separate conversion calls here are
+not evidence that object hooks work. See [TS-005A validation](validation/ts-005a/README.md).
