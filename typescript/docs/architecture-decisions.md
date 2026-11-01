@@ -112,10 +112,10 @@ assignments; this foundation does not authorize starting them.
 
 ## TS-004A: ordinary data descriptors
 
-`defineOwnProperty(key, DataDescriptorUpdate): BooleanCompletion` returns
-`{ type: "normal", value: boolean }`. The payload is a host boolean, not a guest
+`defineOwnProperty(key, DataDescriptorUpdate, loc): InternalBooleanCompletion`
+returns normal boolean or throw (signature widened in TS-005D). The payload is a host boolean, not a guest
 Value. Ordinary data-only validation cannot call guest code or throw a guest
-exception. Rejection is false. `preventExtensions()` has the same result shape
+exception. Rejection is normal false. `preventExtensions()` returns normal boolean
 and always succeeds, including repeated calls; `isExtensible()` reads the slot.
 `set`/`putValue` retain the current strict assignment contract: normal RHS Value
 on success, guest TypeError on rejection. Even a same-value assignment to a frozen
@@ -221,3 +221,21 @@ The design follows the versioned specification and engine262 analysis in
 Fixed-result Node/native tests support the conditional numeric backend choice;
 see [TS-005N evidence](validation/ts-005n/README.md). They do not prove every
 possible binary64 rounding input or extend guest syntax/builtin support.
+
+## TS-005D: completion-aware definition dispatch
+
+Definition requires a Location. Both ordinary Set receiver paths forward the exact
+location and full completion from the receiver override. The base ordinary
+definition remains normal-only; strict set/putValue propagate throws unchanged,
+translate only normal false to TypeError, and return the original RHS on success.
+Bootstrap define keeps its convenience signature, supplies synthetic host location
+1:1, and checks the discriminant before the boolean payload: either rejection or
+guest throw is a host initialization fault.
+
+Readonly lookup/receiver checks and primitive receiver rejection precede definition.
+Extensibility is checked by ordinary definition, so a subclass override is still
+called on a nonextensible receiver. Storage and iterative lookup remain unchanged;
+this supports definition overrides only, not generic exotic Get/Set/prototypes.
+No array or coercion behavior is added. The accepted design and source rationale
+remain in array-prerequisites.md; actual-runtime compiled tests and gate transcripts
+are in [TS-005D validation](validation/ts-005d/README.md).

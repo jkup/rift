@@ -1,3 +1,4 @@
+const loc = { line: 1, column: 1 };
 import { arrayIndex } from "../src/property-keys.js";
 import { GuestObject, UNDEFINED, sameValue } from "../src/runtime.js";
 import type { InternalBooleanCompletion } from "../src/runtime.js";
@@ -29,7 +30,7 @@ o.define("hidden", UNDEFINED, false, false, true);
 o.define("3", UNDEFINED, false, false, false);
 const initial = ["0", "2", "3", "10", "2147483648", "4294967294", "z", "4294967295", "01", "a", "hidden"];
 list(o.ownPropertyKeys(), initial, "numeric before chronological including nonenumerable");
-result(o.defineOwnProperty("z", { value: { kind: "number", value: 7 }, enumerable: false }), true, "overwrite");
+result(o.defineOwnProperty("z", { value: { kind: "number", value: 7 }, enumerable: false }, loc), true, "overwrite");
 add(o, "10");
 list(o.ownPropertyKeys(), initial, "overwrites preserve positions");
 const snapshot = o.ownPropertyKeys();
@@ -72,7 +73,7 @@ check(parent.getOwnProperty("shared") !== undefined && child.getPrototypeOf() ==
 add(child, "removable");
 result(child.preventExtensions(), true, "prevent extensions");
 result(child.internalDelete("removable"), true, "nonextensible deletion");
-result(child.defineOwnProperty("removable", {}), false, "nonextensible reinsertion rejected");
+result(child.defineOwnProperty("removable", {}, loc), false, "nonextensible reinsertion rejected");
 result(child.internalDelete("missing"), true, "nonextensible absent");
 check(!child.isExtensible(), "deletion does not enable extensions");
 list(child.ownPropertyKeys(), [], "rejected reinsertion adds no key");

@@ -48,7 +48,7 @@ check(updated !== undefined && updated.writable && !updated.enumerable && !updat
 read(receiver, "own", num(5));
 result(root.internalSet("new", num(6), obj(receiver), loc), false, "nonextensible receiver missing");
 result(root.internalSet("x", num(7), obj(receiver), loc), true, "nonextensible existing");
-receiver.defineOwnProperty("x", { writable: false });
+result(receiver.defineOwnProperty("x", { writable: false }, loc), true, "freeze receiver");
 result(root.internalSet("x", num(7), obj(receiver), loc), false, "receiver readonly same value");
 read(receiver, "x", num(7)); read(root, "x", num(1));
 const other = new GuestObject();

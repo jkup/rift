@@ -73,7 +73,7 @@ export class GuestObject {
     }
     // Ordinary [[DefineOwnProperty]], restricted to data/generic descriptors.
     // Rejection is normal(false), not a guest exception. Validate before committing.
-    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate): BooleanCompletion {
+    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _loc: Location): InternalBooleanCompletion {
         const current = this.propertyStorage.get(key);
         if (current === undefined) {
             if (!this.extensible) return { type: "normal", value: false };
@@ -122,7 +122,7 @@ export class GuestObject {
         }
         return { type: "normal", value: UNDEFINED };
     }
-    internalSet(key: PropertyKey, value: Value, receiver: Value, _loc: Location): InternalBooleanCompletion {
+    internalSet(key: PropertyKey, value: Value, receiver: Value, loc: Location): InternalBooleanCompletion {
         // Keep Receiver unchanged while finding the first descriptor. Direct
         // slot traversal is valid only for this ordinary, data-only object model.
         let object: GuestObject | null = this;
@@ -139,9 +139,9 @@ export class GuestObject {
         const existing = target.getOwnProperty(key);
         if (existing !== undefined) {
             if (!existing.writable) return { type: "normal", value: false };
-            return target.defineOwnProperty(key, { value });
+            return target.defineOwnProperty(key, { value }, loc);
         }
-        return target.defineOwnProperty(key, { value, writable: true, enumerable: true, configurable: true });
+        return target.defineOwnProperty(key, { value, writable: true, enumerable: true, configurable: true }, loc);
     }
     // Trusted host-test inspection only; semantic reads propagate completions.
     get(key: PropertyKey): Value {
@@ -158,8 +158,9 @@ export class GuestObject {
     define(key: PropertyKey, value: Value, writable: boolean, enumerable: boolean, configurable: boolean): void {
         // Bootstrap/literal convenience, still validated. Rejection is a host
         // initialization bug, not a guest exception or an unchecked escape hatch.
-        const result = this.defineOwnProperty(key, { value, writable, enumerable, configurable });
-        if (!result.value) throw new Error("invalid internal property definition: " + key);
+        // Bootstrap has no guest source; 1:1 is its synthetic host location.
+        const result = this.defineOwnProperty(key, { value, writable, enumerable, configurable }, { line: 1, column: 1 });
+        if (result.type === "throw" || !result.value) throw new Error("invalid internal property definition: " + key);
     }
 }
 export type Binding = { initialized: boolean; mutable: boolean; value: Value };

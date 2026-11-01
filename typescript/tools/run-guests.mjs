@@ -162,6 +162,9 @@ execute("object-keys", keysCommand, keysArgs, { stdout: "object keys passed\n" }
 const conversionCommand = lane === "node" ? process.execPath : join(root, "build/native/conversion" + suffix);
 const conversionArgs = lane === "node" ? [join(root, "build/node/test/conversion.js")] : [];
 execute("conversion", conversionCommand, conversionArgs, { stdout: "primitive conversion passed\n" });
+const definitionCommand = lane === "node" ? process.execPath : join(root, "build/native/definition-dispatch" + suffix);
+const definitionArgs = lane === "node" ? [join(root, "build/node/test/definition-dispatch.js")] : [];
+execute("definition-dispatch", definitionCommand, definitionArgs, { stdout: "definition dispatch passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;
