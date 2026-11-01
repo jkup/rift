@@ -316,3 +316,14 @@ bundle those subsystems into the first map task. Stop here for review.
 ## Coordinator review (2026-11-01)
 
 Accepted design `0fa0aca` after tracing the actual evaluator, registration and direct-call paths. Approve the internal object-only default-array map direction and explicit unsupported constructor/species boundary; standard installation remains deferred. Only TS-005C context/call-boundary implementation is ready now. Its frozen contract in TASKS.md also requires migrating inline callable.invoke fixture arrows, which the original search table did not enumerate. Existing evidence is reused honestly; no fresh execution or integrated context/map capability is claimed by this design acceptance. Map needs a separate implementation contract after context validation.
+
+### Internal map implementation (TS-005B, awaiting review)
+
+`src/array-map.ts` now implements the frozen object-only operation with the
+accepted shared OperationContext. Only the host test driver installs an adapter;
+standard realms still have no map API. See [TS-005B evidence](validation/ts-005b/README.md)
+for the full matrix and measured Node/native results. The final TASKS.md freeze
+makes impossible normal-false definition on the fresh inaccessible result a
+host invariant; that overrides step 6's earlier proposed guest TypeError.
+All other constructor/species/boxing and future standard-installation boundaries
+above remain in effect.

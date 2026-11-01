@@ -42,3 +42,15 @@ completion-aware Get path and clamp at 2^53-1. Object-to-primitive conversion
 still explicitly throws unsupported TypeError. No guest APIs, boxing, map,
 accessors or proxy/exotic traversal are introduced. See the TS-005H architecture
 notes and `docs/validation/ts-005h/` for interfaces, sources and measured checks.
+
+### Internal default-array map (TS-005B)
+
+The internal `mapObjectDefaultArray` operation accepts an already validated
+GuestObject and calls callbacks through the current OperationContext. It
+preserves holes, inherited data and callback mutations, snapshots length once,
+and charges one shared tick per index. Array inputs with non-undefined
+constructor reject unsupported constructor/species behavior; generic lengths
+above 4294967295 reject before result allocation. This is not a registered
+Array method and does not implement primitive boxing or complete species.
+Only the compiled test driver seeds a host adapter. Full expected-result matrix
+and Node/native evidence: [TS-005B](validation/ts-005b/README.md).

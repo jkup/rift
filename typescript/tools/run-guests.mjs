@@ -174,6 +174,9 @@ execute("array-like", arrayLikeCommand, arrayLikeArgs, { stdout: "array-like pre
 const contextCommand = lane === "node" ? process.execPath : join(root, "build/native/operation-context" + suffix);
 const contextArgs = lane === "node" ? [join(root, "build/node/test/operation-context.js")] : [];
 execute("operation-context", contextCommand, contextArgs, { stdout: "operation context passed\n" });
+const mapCommand = lane === "node" ? process.execPath : join(root, "build/native/array-map" + suffix);
+const mapArgs = lane === "node" ? [join(root, "build/node/test/array-map.js")] : [];
+execute("array-map", mapCommand, mapArgs, { stdout: "array map passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;
