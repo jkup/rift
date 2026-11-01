@@ -24,9 +24,9 @@ objects use the object alternative too, so identity and own properties work for
 functions without a second incompatible value representation. A `GuestObject`
 stores a `Map<PropertyKey, DataDescriptor>` and optional `Callable`. `PropertyKey`
 currently means string only. Descriptors hold value/writable/enumerable/configurable;
-only writability has an observable guest operation yet. `define` is internal
-creation, **not** a public implementation of DefineOwnProperty. There is no
-prototype chain, accessor, deletion, enumeration, or extensibility protocol yet.
+only writability has a directly exposed guest operation yet. TS-004A adds internal
+validated data descriptor updates and extensibility (details below). There is no
+prototype chain, accessor, deletion, enumeration, or guest reflection API yet.
 
 `Callable` is guest parameters/body/captured environment, or a builtin callback.
 `Evaluator.call(callee, receiver, args, loc)` is the shared call boundary. Arguments
@@ -108,3 +108,39 @@ make object operations completion-aware and explicitly carry the receiver and gu
 call capability. Do not add callbacks to descriptor storage ad hoc. Arrays await
 those interfaces plus coercion and length/hole semantics. See `TASKS.md` for bounded
 assignments; this foundation does not authorize starting them.
+
+## TS-004A: ordinary data descriptors
+
+`defineOwnProperty(key, DataDescriptorUpdate): BooleanCompletion` returns
+`{ type: "normal", value: boolean }`. The payload is a host boolean, not a guest
+Value. Ordinary data-only validation cannot call guest code or throw a guest
+exception. Rejection is false. `preventExtensions()` has the same result shape
+and always succeeds, including repeated calls; `isExtensible()` reads the slot.
+`set`/`putValue` retain the current strict assignment contract: normal RHS Value
+on success, guest TypeError on rejection. Even a same-value assignment to a frozen
+property fails. `define` remains a complete-descriptor bootstrap/literal helper,
+but now validates too and raises a host fault if an internal caller violates an
+invariant. There is no public unchecked insertion method.
+
+Update fields are optional. Host `undefined` denotes an absent field; guest
+undefined is the distinct tagged `UNDEFINED` Value. Explicit false is present.
+Storage contains complete descriptors. Validation precedes a single replacement,
+and stored records never alias input descriptors. `getOwnProperty` returns a copy;
+the legacy `properties` inspection getter returns a detached map of copied records.
+These are trusted host APIs, not guest enumeration. Values follow the existing
+runtime convention of immutable tagged records; referenced guest objects retain
+their identity and mutable state. TypeScript private storage prevents typed host
+callers from bypassing validation; this is not a hostile-host security boundary.
+
+Sources and test evidence are in [TS-004A validation](validation/ts-004a/README.md).
+No accessors, exotic objects, coercion, prototypes or Object/Reflect builtins land
+with this change.
+
+Proposed later interfaces, **pending coordinator review**: ordinary Get should
+return a normal/throw Value completion and take an explicit receiver; ordinary
+Set should return a normal/throw boolean completion and take receiver separately
+from the lookup base. Keep strict PutValue responsible for turning false into a
+guest TypeError. Delete can use that boolean completion shape too. Host test
+entries should print one fixed success line, throw host errors on failed assertions,
+and be registered in both build-native and run-guests; tsconfig already includes
+all test/**/*.ts. TS-004B/C remain blocked; these proposals implement neither.

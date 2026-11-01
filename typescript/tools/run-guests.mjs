@@ -150,6 +150,9 @@ execute("io", command, [...prefix, "build/nonexistent-guest.js"], { status: 66, 
 const realmCommand = lane === "node" ? process.execPath : join(root, "build/native/realms" + suffix);
 const realmPrefix = lane === "node" ? [join(root, "build/node/test/realms.js")] : [];
 execute("realms", realmCommand, [...realmPrefix, "test/fixtures/realm-setup.js", "test/fixtures/realm-check.js"], { stdout: "a 41\nb 7 undefined\na 42\na 23\nrealms independent\n" });
+const descriptorCommand = lane === "node" ? process.execPath : join(root, "build/native/object-descriptors" + suffix);
+const descriptorArgs = lane === "node" ? [join(root, "build/node/test/object-descriptors.js")] : [];
+execute("object-descriptors", descriptorCommand, descriptorArgs, { stdout: "object descriptors passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

@@ -1,0 +1,32 @@
+
+> test:runner
+> node --test tools/probe-verdict.test.mjs
+
+✔ accepts expected successful execution and the intentional host exit (0.7392ms)
+✔ matching unexpected exits cannot pass (0.0731ms)
+✔ rejects build exit, even with matching stdout (0.0582ms)
+✔ rejects build signal, even with matching stdout (0.0437ms)
+✔ rejects build timeout, even with matching stdout (0.0548ms)
+✔ rejects build spawn, even with matching stdout (0.0714ms)
+✔ rejects coverage exit, even with matching stdout (0.0518ms)
+✔ rejects coverage signal, even with matching stdout (0.0412ms)
+✔ rejects coverage timeout, even with matching stdout (0.0488ms)
+✔ rejects coverage spawn, even with matching stdout (0.0732ms)
+✔ rejects node exit, even with matching stdout (0.0514ms)
+✔ rejects node signal, even with matching stdout (0.0438ms)
+✔ rejects node timeout, even with matching stdout (0.0252ms)
+✔ rejects node spawn, even with matching stdout (0.021ms)
+✔ rejects native exit, even with matching stdout (0.0272ms)
+✔ rejects native signal, even with matching stdout (0.0355ms)
+✔ rejects native timeout, even with matching stdout (0.0209ms)
+✔ rejects native spawn, even with matching stdout (0.0373ms)
+✔ fails closed on missing, changed or incomplete coverage reports (0.3056ms)
+✔ rejects dynamic coverage and output differences (0.055ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 66.1682

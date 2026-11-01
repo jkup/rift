@@ -66,7 +66,9 @@ Status: **blocked** as an umbrella; only TS-004A below is ready. Integration own
 
 ### TS-004A — Validate data descriptor updates
 
-Status: **ready**. Owner: unassigned. Prerequisite: TS-001.
+Status: **in progress — implementation complete, awaiting coordinator review**. Owner: Codex chat `01a197d0-4326-7392-b10a-3d5936222503`; base `a534b05` (clean checkout). Prerequisite: TS-001.
+
+Handoff (2026-11-01): internal data/generic descriptor validation returns normal boolean success/failure; strict assignment retains guest TypeErrors. Explicit absent fields, defaults, SameValue, extensibility, atomic updates and detached descriptor inspection are tested. Bootstrap define now validates and reports invalid initialization as a host fault. Typecheck passes; runner 20/20; probes 10/10; Node/native lanes 129/129 each with no skips. Static coverage: CLI 715/715, realm driver 780/780, descriptor driver 180/180. Zig required escalated library access; blocked and successful transcripts retained under `docs/validation/ts-004a/`. Existing tsconfig test glob required no edit. No accessors, prototypes, guest reflection, deletion, enumeration or arrays. Get/Set and host-test proposals are documented for review only; TS-004B/C remain blocked.
 
 Own `src/runtime.ts` data-descriptor operations, new `test/object-descriptors.ts`, and integration-owned registration of that host test entry in `tools/build-native.mjs` / `tools/run-guests.mjs` / `tsconfig.json` if needed. Add an internal completion-returning DefineOwnProperty for **data descriptors only**, distinguishing omitted attributes from false/undefined, preserving existing flags, respecting non-configurable/non-writable transitions and SameValue (NaN and signed zero). Add an extensible flag and preventExtensions internal operation. Bootstrap creation remains explicit. Exclude accessors, proxies, prototypes, guest Object builtins and enumeration.
 

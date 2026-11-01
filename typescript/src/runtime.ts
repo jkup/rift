@@ -7,6 +7,9 @@ export type Value =
     | { kind: "string"; value: GuestString } | { kind: "object"; object: GuestObject };
 export const UNDEFINED: Value = { kind: "undefined" };
 export type PropertyKey = GuestString;
+// Host undefined means absent; guest undefined is the present Value UNDEFINED.
+export type DataDescriptorUpdate = { value?: Value; writable?: boolean; enumerable?: boolean; configurable?: boolean };
+export type BooleanCompletion = { type: "normal"; value: boolean };
 export type DataDescriptor = { value: Value; writable: boolean; enumerable: boolean; configurable: boolean };
 export type Completion =
     | { type: "normal" | "return"; value: Value }
@@ -21,23 +24,75 @@ export type Callable =
     | { kind: "guest"; params: string[]; body: Stmt[]; environment: Environment }
     | { kind: "builtin"; invoke: Builtin };
 export class GuestObject {
-    properties: Map<PropertyKey, DataDescriptor> = new Map();
+    private propertyStorage: Map<PropertyKey, DataDescriptor> = new Map();
+    private extensible = true;
     callable: Callable | null = null;
+    // Compatibility inspection snapshot, never a mutable view of internal slots.
+    get properties(): Map<PropertyKey, DataDescriptor> {
+        const snapshot = new Map<PropertyKey, DataDescriptor>();
+        for (const [key, d] of this.propertyStorage) {
+            snapshot.set(key, { value: d.value, writable: d.writable, enumerable: d.enumerable, configurable: d.configurable });
+        }
+        return snapshot;
+    }
+    getOwnProperty(key: PropertyKey): DataDescriptor | undefined {
+        const d = this.propertyStorage.get(key);
+        return d === undefined ? undefined : { value: d.value, writable: d.writable, enumerable: d.enumerable, configurable: d.configurable };
+    }
+    isExtensible(): boolean { return this.extensible; }
+    preventExtensions(): BooleanCompletion {
+        this.extensible = false;
+        return { type: "normal", value: true };
+    }
+    // Ordinary [[DefineOwnProperty]], restricted to data/generic descriptors.
+    // Rejection is normal(false), not a guest exception. Validate before committing.
+    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate): BooleanCompletion {
+        const current = this.propertyStorage.get(key);
+        if (current === undefined) {
+            if (!this.extensible) return { type: "normal", value: false };
+            this.propertyStorage.set(key, {
+                value: desc.value === undefined ? UNDEFINED : desc.value,
+                writable: desc.writable === undefined ? false : desc.writable,
+                enumerable: desc.enumerable === undefined ? false : desc.enumerable,
+                configurable: desc.configurable === undefined ? false : desc.configurable,
+            });
+            return { type: "normal", value: true };
+        }
+        if (!current.configurable) {
+            if (desc.configurable === true) return { type: "normal", value: false };
+            if (desc.enumerable !== undefined && desc.enumerable !== current.enumerable) return { type: "normal", value: false };
+            if (!current.writable) {
+                if (desc.writable === true) return { type: "normal", value: false };
+                if (desc.value !== undefined) return { type: "normal", value: sameValue(desc.value, current.value) };
+            }
+        }
+        this.propertyStorage.set(key, {
+            value: desc.value === undefined ? current.value : desc.value,
+            writable: desc.writable === undefined ? current.writable : desc.writable,
+            enumerable: desc.enumerable === undefined ? current.enumerable : desc.enumerable,
+            configurable: desc.configurable === undefined ? current.configurable : desc.configurable,
+        });
+        return { type: "normal", value: true };
+    }
     get(key: PropertyKey): Value {
-        const descriptor = this.properties.get(key);
+        const descriptor = this.propertyStorage.get(key);
         return descriptor === undefined ? UNDEFINED : descriptor.value;
     }
     set(key: PropertyKey, value: Value, loc: Location): Completion {
-        const descriptor = this.properties.get(key);
-        if (descriptor !== undefined) {
-            if (!descriptor.writable) return failure("TypeError", "property is not writable: " + key, loc);
-            descriptor.value = value;
-        } else this.define(key, value, true, true, true);
+        // Strict assignment rejects even same-value writes to read-only properties.
+        const descriptor = this.propertyStorage.get(key);
+        if (descriptor !== undefined && !descriptor.writable) return failure("TypeError", "property is not writable: " + key, loc);
+        const result = descriptor === undefined
+            ? this.defineOwnProperty(key, { value, writable: true, enumerable: true, configurable: true })
+            : this.defineOwnProperty(key, { value });
+        if (!result.value) return failure("TypeError", "object is not extensible: " + key, loc);
         return normal(value);
     }
     define(key: PropertyKey, value: Value, writable: boolean, enumerable: boolean, configurable: boolean): void {
-        // Bootstrap/internal creation only. General ValidateAndApplyPropertyDescriptor is deferred.
-        this.properties.set(key, { value, writable, enumerable, configurable });
+        // Bootstrap/literal convenience, still validated. Rejection is a host
+        // initialization bug, not a guest exception or an unchecked escape hatch.
+        const result = this.defineOwnProperty(key, { value, writable, enumerable, configurable });
+        if (!result.value) throw new Error("invalid internal property definition: " + key);
     }
 }
 export type Binding = { initialized: boolean; mutable: boolean; value: Value };
@@ -101,4 +156,12 @@ export function equal(left: Value, right: Value): boolean {
         case "string": return right.kind === "string" && left.value === right.value;
         case "object": return right.kind === "object" && left.object === right.object;
     }
+}
+// SameValue differs from strict equality only for NaN and signed zero.
+export function sameValue(left: Value, right: Value): boolean {
+    if (left.kind === "number" && right.kind === "number") {
+        if (Number.isNaN(left.value)) return Number.isNaN(right.value);
+        if (left.value === 0 && right.value === 0) return 1 / left.value === 1 / right.value;
+    }
+    return equal(left, right);
 }
