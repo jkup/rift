@@ -1,16 +1,18 @@
 // Runs every probe in two lanes and compares them:
 //   node:   tsc output executed by Node
 //   native: scriptc --tier static-only executable
-// A probe passes only when it builds natively and both lanes agree on stdout
-// and exit status. stderr is reported but not compared.
+// A probe passes only with verified static coverage, expected exit statuses,
+// and matching stdout. stderr is retained but not compared.
 //
 // Usage: node tools/run-probes.mjs [probe-name...]
 
 import { spawnSync } from "node:child_process";
 import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { completed, probeVerdict } from "./probe-verdict.mjs";
 
-const ROOT = new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1");
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const EXE = process.platform === "win32" ? ".exe" : "";
 // The scriptc package ships its native CLI as bin/scriptc.exe on every platform.
 const scriptc = join(ROOT, "node_modules", "scriptc", "bin", "scriptc.exe");
@@ -28,6 +30,7 @@ function run(command, args) {
     return {
         status: r.status,
         signal: r.signal,
+        error: r.error ? { code: r.error.code, message: r.error.message } : null,
         stdout: r.stdout ?? "",
         stderr: r.stderr ?? "",
         ms: Math.round(performance.now() - started),
@@ -35,14 +38,23 @@ function run(command, args) {
 }
 
 const requested = process.argv.slice(2);
-const probes = readdirSync(join(ROOT, "probes"))
+const available = readdirSync(join(ROOT, "probes"))
     .filter((f) => f.endsWith(".ts") && f !== "hello.ts")
-    .map((f) => basename(f, ".ts"))
-    .filter((name) => requested.length === 0 || requested.includes(name));
+    .map((f) => basename(f, ".ts"));
+const unknown = requested.filter((name) => !available.includes(name));
+if (unknown.length > 0) {
+    console.error(`Unknown probes: ${unknown.join(", ")}`);
+    process.exit(1);
+}
+const probes = available.filter((name) => requested.length === 0 || requested.includes(name));
+if (probes.length === 0) {
+    console.error("No probes selected.");
+    process.exit(1);
+}
 
 const typecheck = run(process.execPath, [tscJs, "-p", "tsconfig.json"]);
-if (typecheck.status !== 0) {
-    console.error(typecheck.stdout, typecheck.stderr);
+if (!completed(typecheck)) {
+    console.error(typecheck);
     process.exit(1);
 }
 
@@ -53,20 +65,14 @@ for (const name of probes) {
     const node = run(process.execPath, [join(ROOT, "build", "node", "probes", name + ".js"), ...args]);
     const exe = join(ROOT, "build", "native", name + EXE);
     const build = run(scriptc, ["build", join("probes", name + ".ts"), "--tier", "static-only", "-o", exe]);
-    const native = build.status === 0 ? run(exe, args) : null;
+    const native = completed(build) ? run(exe, args) : null;
     // static-only forbids fallback demotions but still admits runtime-typed
     // values ("dynamic tier"); the coverage report is the stricter gate.
     const coverage = run(scriptc, ["coverage", join("probes", name + ".ts")]);
-    const dynamic = /in dynamic tier\s+\d+/.test(coverage.stdout);
+    const expectedStatus = name === "host" ? 3 : 0;
+    const verdict = probeVerdict({ build, coverage, node, native, expectedStatus });
 
-    let verdict;
-    if (build.status !== 0) verdict = "BUILD-FAIL";
-    else if (dynamic) verdict = "DYNAMIC";
-    else if (native.status !== node.status) verdict = "EXIT-DIFF";
-    else if (native.stdout !== node.stdout) verdict = "OUTPUT-DIFF";
-    else verdict = "PASS";
-
-    results.push({ name, verdict, node, build, native });
+    results.push({ name, verdict, expectedStatus, node, build, coverage, native });
     console.log(`${verdict.padEnd(12)} ${name}  (build ${build.ms}ms)`);
 }
 
@@ -75,20 +81,15 @@ writeFileSync(join(ROOT, "build", "probe-results.json"), JSON.stringify(results,
 for (const r of results) {
     if (r.verdict === "PASS") continue;
     console.log(`\n=== ${r.name}: ${r.verdict}`);
-    if (r.verdict === "BUILD-FAIL") {
-        console.log((r.build.stdout + r.build.stderr).trim());
-        continue;
+    console.log(`  expected execution status: ${r.expectedStatus}`);
+    for (const lane of ["build", "coverage", "node", "native"]) {
+        const result = r[lane];
+        if (!result) continue;
+        console.log(`  ${lane}: status=${result.status} signal=${result.signal ?? "none"}`);
+        if (result.error) console.log(`  ${result.error.code}: ${result.error.message}`);
+        if (result.stdout) console.log(result.stdout.trim().slice(0, 2000));
+        // Linker diagnostics often end with the useful error after a long command.
+        if (result.stderr) console.log(result.stderr.trim().slice(-4000));
     }
-    if (r.verdict === "DYNAMIC") {
-        console.log("  uses the dynamic tier; run `scriptc coverage --explain-dynamic` on it");
-        continue;
-    }
-    const a = r.node.stdout.split("\n");
-    const b = r.native.stdout.split("\n");
-    for (let i = 0; i < Math.max(a.length, b.length); i++) {
-        if (a[i] !== b[i]) console.log(`  line ${i + 1}\n    node:   ${a[i]}\n    native: ${b[i]}`);
-    }
-    if (r.native.status !== r.node.status) console.log(`  exit node=${r.node.status} native=${r.native.status} ${r.native.signal ?? ""}`);
-    if (r.native.stderr) console.log("  native stderr:", r.native.stderr.trim().slice(0, 2000));
 }
 process.exitCode = results.every((r) => r.verdict === "PASS") ? 0 : 1;

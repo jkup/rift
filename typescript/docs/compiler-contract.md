@@ -20,10 +20,11 @@ npm reports scriptc's postinstall script as not approved under `allowScripts`. B
 
 ```bash
 npm install
+npm run test:runner        # regression tests for probe acceptance rules
 npm run test:probes        # tsc + node lane, scriptc native lane, coverage gate, diff
 ```
 
-The runner builds each probe with `scriptc build --tier static-only` and also runs `scriptc coverage`. A probe passes only when it builds, its coverage report shows no dynamic-tier statements, and Node and native agree on stdout and exit status.
+The runner builds each probe with `scriptc build --tier static-only` and also runs `scriptc coverage`. A probe passes only when the build and coverage commands succeed, a recognized coverage report confirms every analyzed statement is static, and both executions produce matching stdout with their expected exit status (0 normally; 3 for the host probe). Subprocess errors, signals, timeouts, unknown coverage formats and unknown probe names fail the run. Full coverage and execution transcripts are retained in `build/probe-results.json`; stderr is retained but not compared because the memory probe reports host-specific RSS there.
 
 ## Static-only is two checks, not one
 
@@ -51,11 +52,11 @@ All ten probes pass both lanes and the coverage gate.
 
 ## Rules for engine code
 
-Each was found by a probe going dynamic or failing; the probe file holds the minimal case.
+The following rules record observed constraints. The probe files exercise the adopted patterns; not every original failing experiment is retained.
 
 1. **No class field named `prototype`.** It is treated as class-prototype machinery and moves every method of that class into the dynamic tier. Use `proto` or `prototypeSlot`. (`objects.ts`)
 2. **Function values must declare the full parameter list of their target signature.** An arrow with fewer parameters than the declared function type is adapted through the dynamic tier. Write `(_thisValue, _args) => …`. (`dispatch.ts`)
-3. **Do not inspect a `catch` binding.** It is `unknown`; `instanceof` or `===` on it is dynamic. Guest throws are completion values; host exceptions mean implementation faults and are caught without inspection at the top level. (`control.ts`)
+3. **Catch-binding inspection is not categorically forbidden.** The committed `interpreter.ts` narrows a caught value with `instanceof Error` and reads its message; scriptc 0.4.7 reports all 83 statements static. The earlier blanket restriction was unsupported by this reproducer and is withdrawn. Check coverage for any new pattern rather than avoid readable error handling. Guest throws remain completion values by design; host exceptions indicate implementation faults.
 4. **Bound guest recursion explicitly.** Native stack overflow terminates the process silently (exit 127, no output, no catchable `RangeError`), at somewhere between 300,000 and 1,000,000 frames of a trivial function. Node throws a catchable `RangeError` near 10,000. The evaluator needs its own call-depth limit that produces a guest `RangeError` well before either.
 
 ## Performance snapshot

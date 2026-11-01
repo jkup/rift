@@ -1,9 +1,9 @@
 // Probe: guest control flow as data (completion records), host try/finally
 // ordering, and host exceptions used only for implementation faults.
 //
-// A host `catch (e)` binding is typed unknown, and inspecting it (instanceof,
-// ===) runs through scriptc's dynamic tier. Guest throws are therefore never
-// host exceptions; they travel as Completion values.
+// Guest throws travel as Completion values by design, independently of host
+// catch support. interpreter.ts also probes narrowing a host catch binding
+// with instanceof Error, which compiles statically on the pinned toolchain.
 
 type GuestValue = { kind: "number"; value: number } | { kind: "string"; value: string };
 
