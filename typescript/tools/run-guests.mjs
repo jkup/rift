@@ -216,6 +216,9 @@ execute("primitive-conversion", primitiveCommand, primitiveArgs, { stdout: "prim
 const operatorCommand = lane === "node" ? process.execPath : join(root, "build/native/operator-coercion" + suffix);
 const operatorArgs = lane === "node" ? [join(root, "build/node/test/operator-coercion.js")] : [];
 execute("operator-coercion", operatorCommand, operatorArgs, { stdout: "operator coercion passed\n" });
+const keyCommand = lane === "node" ? process.execPath : join(root, "build/native/key-coercion" + suffix);
+const keyArgs = lane === "node" ? [join(root, "build/node/test/key-coercion.js")] : [];
+execute("key-coercion", keyCommand, keyArgs, { stdout: "key coercion passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

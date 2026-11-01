@@ -268,18 +268,22 @@ for (const mode of ["host", "break", "continue"] as const) {
     }
     check(escaped && evaluator.calls === 0 && object.trace === "tick;Get valueOf;Call;", "host fault cleanup/no fallback");
 }
-// H17: direct converters and keys remain primitive-only; operators integrate.
+// H17: direct numeric/string converters remain primitive-only; keys and operators integrate.
 const boundary = observed();
 boundary.requireLocation = false;
 define(boundary, "valueOf", returns(num(6)));
 define(boundary, "toString", returns({ kind: "string", value: "x" }));
-for (const result of [toNumber(boundary.expected, loc), toString(boundary.expected, loc), toPropertyKey(boundary.expected, loc)]) {
+for (const result of [toNumber(boundary.expected, loc), toString(boundary.expected, loc)]) {
     check(result.type === "throw" && result.diagnostic.name === "TypeError", "primitive-only converter");
 }
+check(boundary.trace === "", "excluded converters perform no hook reads/calls");
+const convertedKey = toPropertyKey(boundary.expected, evaluator.context, loc);
+check(convertedKey.type === "normal" && convertedKey.value === "x" && boundary.trace === "Get toString;", "integrated direct key");
+boundary.trace = "";
 seed(realm, "operand", boundary.expected);
 const keyResult = program("let holder = {}; holder[operand];", evaluator);
-check(keyResult.type === "throw" && keyResult.diagnostic.name === "TypeError", "primitive-only key");
-check(boundary.trace === "", "excluded paths perform no hook reads/calls");
+check(keyResult.type === "normal", "integrated parsed key");
+check(boundary.trace === "Get toString;", "one parsed key lookup");
 const expressions = ["+operand", "-operand", "operand - 2", "operand * 2", "operand / 2", "operand % 2", "operand + 2", "operand < 2", "operand > 2", "operand <= 2", "operand >= 2"];
 const expected = [6, -6, 4, 12, 3, 0, 8, false, true, false, true];
 for (let i = 0; i < expressions.length; i++) {

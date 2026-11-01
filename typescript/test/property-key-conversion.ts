@@ -7,6 +7,8 @@ import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
 import type { Location } from "../src/syntax.js";
 
+const keyEvaluator = new Evaluator(new Realm((_line) => {}));
+const keyContext = keyEvaluator.context;
 function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
 function obj(object: GuestObject): Value { return { kind: "object", object }; }
 function num(value: number): Value { return { kind: "number", value }; }
@@ -87,13 +89,13 @@ const cases: { label: string; input: number; expected: string }[] = [
 for (const row of cases) {
     check(numberToString(row.input) === row.expected, row.label + " backend");
     const string = toString(num(row.input), loc);
-    const key = toPropertyKey(num(row.input), loc);
+    const key = toPropertyKey(num(row.input), keyContext, loc);
     check(string.type === "normal" && string.value === row.expected && key.type === "normal" && key.value === row.expected, row.label + " conversion");
     const target = obj(new GuestObject());
     const rhs = obj(new GuestObject());
     const ref = { kind: "property" as const, base: target, key: num(row.input), loc };
-    const write = putValue(ref, rhs, loc);
-    const read = getValue(ref, loc);
+    const write = putValue(ref, rhs, keyContext, loc);
+    const read = getValue(ref, keyContext, loc);
     check(write.type === "normal" && write.value === rhs && read.type === "normal" && read.value === rhs, row.label + " reference");
     check(target.kind === "object" && target.object.get(row.expected) === rhs, row.label + " exact property name");
 }
@@ -104,13 +106,13 @@ const primitives: { value: Value; expected: string }[] = [
 ];
 for (const row of primitives) {
     const string = toString(row.value, loc);
-    const key = toPropertyKey(row.value, loc);
+    const key = toPropertyKey(row.value, keyContext, loc);
     check(string.type === "normal" && string.value === row.expected && key.type === "normal" && key.value === row.expected, "primitive exact UTF-16");
     for (const target of [new GuestObject(), new GuestArray()]) {
         const rhs = obj(new GuestObject());
         const ref = { kind: "property" as const, base: obj(target), key: row.value, loc };
-        const write = putValue(ref, rhs, loc);
-        const read = getValue(ref, loc);
+        const write = putValue(ref, rhs, keyContext, loc);
+        const read = getValue(ref, keyContext, loc);
         check(write.type === "normal" && write.value === rhs && read.type === "normal" && read.value === rhs && target.get(row.expected) === rhs, "primitive key on ordinary/array");
     }
 }
@@ -125,17 +127,17 @@ for (const row of [{ key: "1", value: 2 }, { key: "0", value: 3 }, { key: "-0", 
 check(isNumber(array.object.get("0"), 1) && isNumber(array.object.get("length"), 4) && array.object.getOwnProperty("1") === undefined && array.object.getOwnProperty("2")?.value === UNDEFINED && isNumber(array.object.get("3"), 4), "holes and explicit undefined");
 const sparse = new GuestArray();
 for (const value of [4294967295, -1, 1.5, 1e21]) {
-    check(putValue({ kind: "property", base: obj(sparse), key: num(value), loc }, num(8), loc).type === "normal", "nonindex write");
+    check(putValue({ kind: "property", base: obj(sparse), key: num(value), loc }, num(8), keyContext, loc).type === "normal", "nonindex write");
     check(isNumber(sparse.get("length"), 0) && isNumber(sparse.get(numberToString(value)), 8), "nonindex does not grow");
 }
-check(putValue({ kind: "property", base: obj(sparse), key: num(4294967294), loc }, num(9), loc).type === "normal", "max index");
+check(putValue({ kind: "property", base: obj(sparse), key: num(4294967294), loc }, num(9), keyContext, loc).type === "normal", "max index");
 check(isNumber(sparse.get("length"), 4294967295) && sparse.getOwnProperty("0") === undefined, "sparse maximum length");
 const small = new GuestArray();
-putValue({ kind: "property", base: obj(small), key: num(2), loc }, num(9), loc);
+putValue({ kind: "property", base: obj(small), key: num(2), loc }, num(9), keyContext, loc);
 check(isNumber(small.get("length"), 3) && small.getOwnProperty("1") === undefined, "numeric index growth");
 
 // Synthetic operations observe order and exact completion identity, without
-// claiming guest accessors or object-to-primitive support.
+// claiming guest accessors.
 class ObservedObject extends GuestObject {
     trace = "";
     getThrow = false;
@@ -157,10 +159,6 @@ class ForbiddenKey extends GuestObject {
     get(_key: string): Value { throw new Error("object key get"); }
 }
 
-class ForbiddenArrayKey extends GuestArray {
-    internalGet(_key: string, _receiver: Value, _location: Location): ValueCompletion { throw new Error("array key read"); }
-    get(_key: string): Value { throw new Error("array key get"); }
-}
 
 class Scenario {
     realm = new Realm((_line) => {});
@@ -260,26 +258,34 @@ for (const base of primitiveBases) {
     exact(abrupt.run("write"), abrupt.original.sentinel);
     check(abrupt.original.trace === "BKR", "RHS dominates invalid base/key");
 }
-const callableKey = new ForbiddenKey();
-callableKey.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _location): Completion => { throw new Error("key called"); } };
-for (const object of [new ForbiddenKey(), new ForbiddenArrayKey(), callableKey]) {
-    const trap = builtin((_receiver, _args, _context, _location): Completion => { throw new Error("coercion hook called"); });
-    object.define("toString", trap, true, true, true);
-    object.define("valueOf", trap, true, true, true);
-    for (const conversion of [toString(obj(object), loc), toPropertyKey(obj(object), loc)]) {
-        check(conversion.type === "throw" && conversion.diagnostic.name === "TypeError" && conversion.diagnostic.message === "object-to-primitive conversion unsupported" && conversion.diagnostic.loc === loc, "partial conversion located rejection");
-    }
+const callableKey = new GuestObject();
+callableKey.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _location): Completion => { throw new Error("key itself called"); } };
+for (const object of [new GuestObject(), new GuestArray(), callableKey]) {
+    let calls = 0;
+    const keyValue = obj(object);
+    object.define("toString", builtin((receiver, args, _context, _location) => {
+        check(receiver === keyValue && args.length === 0, "key receiver/arguments");
+        calls++;
+        return normal(str("1"));
+    }), true, true, true);
+    object.define("valueOf", builtin((_r, _a, _c, _l): Completion => { throw new Error("wrong hint"); }), true, true, true);
+    const directString = toString(keyValue, loc);
+    check(directString.type === "throw" && directString.diagnostic.message === "object-to-primitive conversion unsupported" && directString.diagnostic.loc === loc && calls === 0, "direct ToString stays primitive-only");
+    const directKey = toPropertyKey(keyValue, keyContext, loc);
+    check(directKey.type === "normal" && directKey.value === "1" && calls === 1, "direct object key");
     for (const path of ["read", "write", "call"]) {
-        const invalid = new Scenario();
-        invalid.keyValue = obj(object);
-        typeError(invalid.run(path), "object-to-primitive conversion unsupported", path === "read" ? 1 : 16);
-        check(invalid.original.trace === (path === "write" ? "BKR" : "BK"), "object key stops Get/Set/arguments");
+        const positive = new Scenario();
+        positive.keyValue = keyValue;
+        const before = calls;
+        check(positive.run(path).type === "normal" && calls === before + 1, "object key converts once");
+        check(positive.original.trace === (path === "write" ? "BKRS" : path === "call" ? "BKGAAM" : "BKG"), "object key completes reference");
     }
     const abrupt = new Scenario();
-    abrupt.keyValue = obj(object);
+    abrupt.keyValue = keyValue;
     abrupt.stop = "R";
+    const before = calls;
     exact(abrupt.run("write"), abrupt.original.sentinel);
-    check(abrupt.original.trace === "BKR", "RHS dominates object conversion");
+    check(abrupt.original.trace === "BKR" && calls === before, "RHS dominates object conversion");
 }
 for (const path of ["read", "call"]) {
     const abrupt = new Scenario();
@@ -299,7 +305,7 @@ for (const inherited of [false, true]) {
     readonly.keyValue = num(2);
     const read = readonly.run("read");
     check(read.type === "normal" && readonly.original.trace === "BKG", "inherited numeric read");
-    const ref = getValue({ kind: "property", base: readonly.originalValue, key: num(2), loc }, loc);
+    const ref = getValue({ kind: "property", base: readonly.originalValue, key: num(2), loc }, keyContext, loc);
     check(ref.type === "normal" && isNumber(ref.value, 42), "inherited read value");
     readonly.original.trace = "";
     typeError(readonly.run("write"), "property is not writable: 2", 16);

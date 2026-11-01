@@ -1,6 +1,10 @@
+import { Realm } from "../src/realm.js";
+import { Evaluator } from "../src/evaluator.js";
 import { GuestObject, UNDEFINED, putValue, sameValue } from "../src/runtime.js";
 import type { InternalBooleanCompletion, DataDescriptorUpdate, Value } from "../src/runtime.js";
 
+const keyEvaluator = new Evaluator(new Realm((_line) => {}));
+const keyContext = keyEvaluator.context;
 function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
 function result(actual: InternalBooleanCompletion, expected: boolean, label: string): void {
     check(actual.type === "normal" && actual.value === expected, label);
@@ -73,8 +77,8 @@ result(o.defineOwnProperty("new", { value: num(2), writable: true }, loc), false
 check(o.getOwnProperty("new") === undefined, "no rejected insertion");
 result(o.defineOwnProperty("empty", {}, loc), true, "nonextensible existing empty");
 result(o.defineOwnProperty("assigned", { value: num(2) }, loc), true, "nonextensible existing definition");
-check(putValue({ kind: "property", base: { kind: "object", object: o }, key: { kind: "string", value: "new" }, loc }, num(3), loc).type === "throw", "putValue nonextensible rejection");
-const write = putValue({ kind: "property", base: { kind: "object", object: o }, key: { kind: "string", value: "assigned" }, loc }, num(4), loc);
+check(putValue({ kind: "property", base: { kind: "object", object: o }, key: { kind: "string", value: "new" }, loc }, num(3), keyContext, loc).type === "throw", "putValue nonextensible rejection");
+const write = putValue({ kind: "property", base: { kind: "object", object: o }, key: { kind: "string", value: "assigned" }, loc }, num(4), keyContext, loc);
 check(write.type === "normal" && sameValue(write.value, num(4)), "putValue existing writable RHS");
 state(o, "assigned", num(4), true, true, true);
 state(o, "copied", num(8), false, false, false);

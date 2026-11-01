@@ -1,9 +1,12 @@
+import { Evaluator } from "../src/evaluator.js";
 import { readFileSync } from "node:fs";
 import { GuestObject, UNDEFINED, sameValue, putValue } from "../src/runtime.js";
 import type { Value, InternalBooleanCompletion } from "../src/runtime.js";
 import { Realm } from "../src/realm.js";
 import { run } from "../src/interpreter.js";
 const loc = { line: 1, column: 1 };
+const keyEvaluator = new Evaluator(new Realm((_line) => {}));
+const keyContext = keyEvaluator.context;
 function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
 function num(value: number): Value { return { kind: "number", value }; }
 function obj(object: GuestObject): Value { return { kind: "object", object }; }
@@ -61,9 +64,9 @@ for (const primitive of [UNDEFINED, { kind: "null" } as const, num(1), { kind: "
 }
 result(child.internalSet("fixed", num(2), obj(child), loc), false, "inherited readonly");
 check(child.getOwnProperty("fixed") === undefined, "no rejected shadow");
-check(putValue({ kind: "property", base: { kind: "object", object: child }, key: { kind: "string", value: "fixed" }, loc }, num(2), loc).type === "throw", "strict boundary");
+check(putValue({ kind: "property", base: { kind: "object", object: child }, key: { kind: "string", value: "fixed" }, loc }, num(2), keyContext, loc).type === "throw", "strict boundary");
 const rhs = num(11);
-const assigned = putValue({ kind: "property", base: { kind: "object", object: child }, key: { kind: "string", value: "x" }, loc }, rhs, loc);
+const assigned = putValue({ kind: "property", base: { kind: "object", object: child }, key: { kind: "string", value: "x" }, loc }, rhs, keyContext, loc);
 check(assigned.type === "normal" && assigned.value === rhs, "assignment RHS identity");
 // Build bottom-up: each insertion checks a short chain; final traversal is deep.
 const deep = new GuestObject();

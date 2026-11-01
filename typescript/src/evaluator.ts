@@ -131,14 +131,14 @@ export class Evaluator {
             case "this": return normal(receiver);
             case "identifier": case "member": {
                 const ref = this.reference(expr, env, receiver);
-                return ref.type === "abrupt" ? ref.completion : getValue(ref.reference, expr.loc);
+                return ref.type === "abrupt" ? ref.completion : getValue(ref.reference, this.context, expr.loc);
             }
             case "assign": {
                 const ref = this.reference(expr.target, env, receiver);
                 if (ref.type === "abrupt") return ref.completion;
                 const value = this.evaluate(expr.value, env, receiver);
                 if (value.type !== "normal") return value;
-                return putValue(ref.reference, value.value, expr.loc);
+                return putValue(ref.reference, value.value, this.context, expr.loc);
             }
             case "function": return normal(this.closure(expr.params, expr.body, env));
             case "array": {
@@ -180,7 +180,7 @@ export class Evaluator {
                 if (expr.callee.kind === "identifier" || expr.callee.kind === "member") {
                     const ref = this.reference(expr.callee, env, receiver);
                     if (ref.type === "abrupt") return ref.completion;
-                    callee = getValue(ref.reference, expr.loc);
+                    callee = getValue(ref.reference, this.context, expr.loc);
                     if (ref.reference.kind === "property") thisValue = ref.reference.base;
                 } else callee = this.evaluate(expr.callee, env, receiver);
                 if (callee.type !== "normal") return callee;

@@ -379,13 +379,11 @@ property before call arguments; method calls pass the exact saved base Value as
 receiver. No base/key reevaluation occurs when RHS or arguments replace bindings.
 
 conversion.ts exports StringCompletion, PropertyKeyCompletion, numberToString,
-toString and toPropertyKey. Both conversions support every current primitive;
-object/array/function keys return the existing unsupported-object TypeError
-without reading or calling coercion hooks. The numeric backend uses String on a
+toString and toPropertyKey. Both conversions support every current primitive. TS-013 adds ordinary object key
+coercion to toPropertyKey; direct toString stays primitive-only. The numeric backend uses String on a
 typed number, preserving binary64 formatting rather than array-index conversion.
 PropertyKey itself remains GuestString. Future symbols require the two conversion
-operations to diverge. Object coercion, primitive boxing and new operators remain
-excluded. See property-key-conversion.md for the frozen order and test contract.
+operations to diverge. Primitive boxing and new syntax remain excluded. See property-key-conversion.md for the frozen order and test contract.
 
 ## Primitive numeric operators (TS-008)
 
@@ -497,3 +495,24 @@ explicit own/inherited methods can convert; objects lacking usable methods fail
 with the helper's located TypeError. Equality, logical/truthiness operations and
 Number predicates remain noncoercing. See the accepted source-backed
 [design](object-coercion-integration.md) and [TS-012 evidence](validation/ts-012/README.md).
+
+
+## Ordinary computed key coercion (TS-013)
+
+Required signatures are toPropertyKey(value, context, loc), getValue(ref,
+context, loc), and putValue(ref, value, context, loc). Every evaluator consumption,
+including bindings, supplies its retained context. Host reference tests retain
+an explicit Evaluator context; no semantic helper creates one.
+
+ToPropertyKey invokes accepted partial ToPrimitive with string hint, propagates
+an exact throw, then calls primitive-only ToString. Reference capture still saves
+raw base/key Values and location. GetValue/PutValue validate the base first;
+simple assignment evaluates RHS first. This preserves BKCG, BKRCS and BKCGAAM
+and live method mutation on a saved key without redirecting a saved base.
+Source mapping: object-coercion-integration.md F5-F7 and its specification/V8/
+engine262 references. The actual runtime -> conversion -> primitive-conversion
+-> runtime module cycle is tested by every native build, not an isolated mock.
+
+Only keys integrate here. Direct numeric/string converters, array storage and
+length conversion signatures remain unchanged. No symbols, boxing, new syntax,
+standard prototypes or compound/update reference caching are introduced.

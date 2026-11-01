@@ -1,5 +1,6 @@
+import { toPrimitive } from "./primitive-conversion.js";
 import { failure } from "./runtime.js";
-import type { Value, ThrowCompletion, PropertyKey } from "./runtime.js";
+import type { Value, ThrowCompletion, PropertyKey, OperationContext } from "./runtime.js";
 import type { Location } from "./syntax.js";
 import type { GuestString } from "./strings.js";
 
@@ -126,6 +127,8 @@ export function toString(value: Value, loc: Location): StringCompletion {
 
 // Partial ToPropertyKey. Future symbols must retain identity here while
 // ToString rejects them; these operations will then diverge.
-export function toPropertyKey(value: Value, loc: Location): PropertyKeyCompletion {
-    return toString(value, loc);
+export function toPropertyKey(value: Value, context: OperationContext, loc: Location): PropertyKeyCompletion {
+    const primitive = toPrimitive(value, "string", context, loc);
+    if (primitive.type === "throw") return primitive;
+    return toString(primitive.value, loc);
 }

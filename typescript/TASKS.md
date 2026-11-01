@@ -422,7 +422,7 @@ or successor work. Awaiting coordinator review.
 
 ### TS-013 — Ordinary coercion for computed property keys
 
-Status: **ready**. Prerequisites accepted helpers/operators, TS-012 `bf2bed2` done (supersedes awaiting-review handoff). Freeze key integration from docs/object-coercion-integration.md F5-F7. Own toPropertyKey in src/conversion.ts, reference getValue/putValue in src/runtime.ts and their evaluator callers, required direct caller migrations, focused new compiled key-coercion tests/runtime-read fixtures/registration, scoped docs and docs/validation/ts-013/. Coordinator owns COORDINATION.md. No other runtime/array/converter refactoring.
+Status: **in progress — awaiting coordinator review**. Owner: Codex implementation chat `01a198f0-d325-7542-a3f0-9d9dc3407593`; base `75679a3`. Prerequisites accepted helpers/operators, TS-012 `bf2bed2` done (supersedes awaiting-review handoff). Freeze key integration from docs/object-coercion-integration.md F5-F7. Own toPropertyKey in src/conversion.ts, reference getValue/putValue in src/runtime.ts and their evaluator callers, required direct caller migrations, focused new compiled key-coercion tests/runtime-read fixtures/registration, scoped docs and docs/validation/ts-013/. Coordinator owns COORDINATION.md. No other runtime/array/converter refactoring.
 
 Required signatures: toPropertyKey(value, context: OperationContext, loc): PropertyKeyCompletion; getValue(ref, context, loc): Completion; putValue(ref, value, context, loc): Completion. Context is required, never optional or ambient. toPropertyKey obtains toPrimitive(value, 'string', context, loc), returns exact throw, then calls existing primitive-only toString. Keep PropertyKey=GuestString, raw Reference base/key/loc, direct toString/toNumber/Uint32/Length APIs and array/set definition signatures unchanged. Evaluator passes its existing context at every reference consumption (identifier path included); direct host tests provide deliberate retained evaluator contexts. Inspect all callers before migration (current grep hits src conversion/runtime/evaluator; test definition-dispatch/object-prototypes/object-descriptors/property-key-conversion/primitive-conversion). No manufactured context inside semantic helpers. Validate actual static module-cycle integration; reduce blockers rather than redesign.
 
@@ -433,3 +433,19 @@ Implement F5-F7 plus own/inherited key methods on ordinary/array/function keys, 
 Inventory and positively migrate superseded key rejections in property-key-conversion.ts and H17 primitive-conversion.ts without dropping assertions/denominator. Direct toString object rejection remains negative and separate from now-supported toPropertyKey; invalid primitive base still prevents object key hooks. Convert previous throwing key traps into exact sentinel propagation or meaningful positive method tests; retain RHS-wins cases. Do not touch historical evidence. Keep !/strict equality/Number predicates noncoercing and direct numeric/string/array length boundaries intact. No symbols/boxing/standard prototypes/object literal computed names/new syntax/pins/C++/Claude edits.
 
 Run typecheck, runner/probes and rebuilt Node/native suites with every static gate/new driver. Tests must be readable and expectation-bearing; report counts/limitations honestly. Commit/push coherent work then stop awaiting review; no successors/main merge.
+
+
+Handoff (2026-11-01): computed keys now invoke accepted string-hint ordinary
+conversion with required active contexts in ToPropertyKey/GetValue/PutValue and
+every evaluator reference consumer. Raw references preserve base/key capture,
+RHS-before-coercion and original receiver/throw identity. Superseded key
+rejections migrated positively, retaining prior entries and direct numeric/string
+negative boundaries. New compiled fixture/driver covers F5-F7, all object kinds,
+primitive returns, fallback/mutation, exact throws/ticks, arrays, budgets, cleanup
+and realm isolation. Typecheck passes; runner 20/20; probes 10/10; rebuilt
+Node/native 160/160 each, no skips; all 19 static gates pass, including the actual
+runtime/conversion/helper import cycle. Evidence and initial test/environment
+failures: docs/validation/ts-013/. Zig library escalation resolved linking.
+No array/converter redesign, symbols/boxing/standard prototypes/new syntax, pins,
+C++/Claude/COORDINATION changes, branch switch, main merge or successor work.
+Awaiting coordinator review.

@@ -197,10 +197,10 @@ export type Reference =
     | { kind: "binding"; environment: Environment | null; name: string }
     | { kind: "property"; base: Value; key: Value; loc: Location };
 export type ReferenceResult = { type: "reference"; reference: Reference } | { type: "abrupt"; completion: Completion };
-export function getValue(ref: Reference, loc: Location): Completion {
+export function getValue(ref: Reference, context: OperationContext, loc: Location): Completion {
     if (ref.kind === "property") {
         if (ref.base.kind !== "object") return failure("TypeError", "property base must be an object", ref.loc);
-        const key = toPropertyKey(ref.key, ref.loc);
+        const key = toPropertyKey(ref.key, context, ref.loc);
         if (key.type === "throw") return key;
         return ref.base.object.internalGet(key.value, ref.base, loc);
     }
@@ -209,10 +209,10 @@ export function getValue(ref: Reference, loc: Location): Completion {
     if (!binding.initialized) return failure("ReferenceError", ref.name + " is not initialized", loc);
     return normal(binding.value);
 }
-export function putValue(ref: Reference, value: Value, loc: Location): Completion {
+export function putValue(ref: Reference, value: Value, context: OperationContext, loc: Location): Completion {
     if (ref.kind === "property") {
         if (ref.base.kind !== "object") return failure("TypeError", "property base must be an object", ref.loc);
-        const key = toPropertyKey(ref.key, ref.loc);
+        const key = toPropertyKey(ref.key, context, ref.loc);
         if (key.type === "throw") return key;
         return ref.base.object.set(key.value, value, loc);
     }
