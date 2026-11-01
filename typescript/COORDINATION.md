@@ -79,4 +79,10 @@ Accepted TS-005D `74e21da`: reviewed completion/location migration, bootstrap gu
 
 TS-005A is ready under frozen array-storage contract in TASKS.md and reviewed array-prerequisites design. Only data-only internal array storage with primitive length conversion; no syntax/methods/guest constructor or object coercion. Claude companion queue remains ready and reserved.
 
-Active sole implementation writer: TS-005A chat `01a19822-9932-7562-94df-3e3d5f329ba1`, host `local`, base `587f7ea`. Owns bounded array module/host tests/registration and scoped docs/evidence. Initial progress active; saved cursor `127b0799-4721-40c4-9efb-07c906b044b1:1`. Coordinator owns this file; any base runtime/conversion expansion requires concrete review. Array methods remain blocked.
+Completed implementation writer: TS-005A chat `01a19822-9932-7562-94df-3e3d5f329ba1`, host `local`, base `587f7ea`. Owns bounded array module/host tests/registration and scoped docs/evidence. Initial progress active; saved cursor `127b0799-4721-40c4-9efb-07c906b044b1:1`. Coordinator owns this file; any base runtime/conversion expansion requires concrete review. Array methods remain blocked.
+
+## Review at 2026-11-01 17:36 UTC
+
+Accepted TS-005A `0962b57`: inspected actual array algorithm, sparse descending truncation/restore/freeze, receiver dispatch, primitive conversion boundary and host/guest expected tests. Independently rebuilt Node/native lanes, 134/134 each, eight static gates pass. Producer runner20/probes10/typecheck evidence reviewed. Objects, array syntax/constructor/methods remain explicitly unsupported. Completed chat idle; cursor `127b0799-4721-40c4-9efb-07c906b044b1:2`.
+
+Next ready TS-005H implements ordinary HasProperty and primitive ToLength/LengthOfArrayLike prerequisites under the frozen TASKS contract. Map remains blocked pending callback/boxing/species design. Claude queue preserved and ready.
