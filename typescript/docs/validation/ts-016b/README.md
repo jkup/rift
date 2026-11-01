@@ -84,3 +84,9 @@ side-effect import remains unchanged.
 - git diff --check passes. No evaluator/runtime interface or pins changed.
 
 Stop at coordinator review. No successor assignment or main merge.
+
+Readability review follow-up: expanded test helpers/actions/callbacks/try-catch
+and multi-step fixture bodies, replacing asserted casts with saved narrowed
+Values. Production code unchanged. Exact detached/borrowed diagnostics moved to
+27:30 and 28:31; throw/recursion locations and exact budgets remain unchanged.
+Final-revision evidence is in [readability/README.md](readability/README.md).

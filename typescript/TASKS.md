@@ -673,3 +673,11 @@ original failure and paired reductions are retained. Accepted conversion import
 workaround preserved. Pinned Zig installation access was required; initial
 sandbox failure retained separately. Evidence: docs/validation/ts-016b/README.md.
 No C++/Claude/COORDINATION/pin edits, evaluator redesign, successor or main merge.
+
+TS-016B readability follow-up to coordinator review of ca471fb: test helpers,
+actions, callbacks and try/catch expanded; name/trace/count use saved narrowed
+Values; multi-step fixture bodies expanded. Exact detached/borrowed locations
+updated to 27:30/28:31; all other assertions and exact budgets retained. No
+production changes. Rebuilt Node/native 163/163 each, 22 static gates, runner
+20/20, probes 10/10 and typecheck pass; function-call driver 1331/1331 static.
+Evidence: docs/validation/ts-016b/readability/README.md. Awaiting review.
