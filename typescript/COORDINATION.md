@@ -2,7 +2,7 @@
 
 Owner authorization: continue bounded rewrite tasks autonomously, create new Codex chats, review them rigorously, and commit/push tested milestones while the owner is away. Ask only for material decisions or blockers not resolvable from the approved goals. The owner subsequently authorized merging the reviewed branch to main after TS-007P completes, pushing, then continuing on a fresh branch. Future main merges require owner authorization. Do not force-push, remove C++, or manufacture work.
 
-Repository: `C:\Users\jonku\code\rift`. Integration branch: `typescript-scriptc-probes`. Host: `local`. Use one implementation writer at a time in this shared checkout. Review actual diffs and evidence before assigning successors. Preserve companion tasks in root `Claude Roadmap.md` for Claude Code.
+Repository: `C:\Users\jonku\code\rift`. Current integration branch: `codex/primitive-computed-keys`, based on main `0819c71`. Previous branch `typescript-scriptc-probes` was merged and pushed to main. Host: `local`. Use one implementation writer at a time in this shared checkout. Review actual diffs and evidence before assigning successors. Preserve companion tasks in root `Claude Roadmap.md` for Claude Code.
 
 ## Accepted foundation
 
@@ -143,3 +143,4 @@ Owner explicitly requested merging this completed task and prior reviewed milest
 Pre-merge independent rebuild completed: Node/native 152/152 each, no skips, all twelve static native gates passed. Prior producer runner20/probes10/typecheck evidence retained; no runtime change in TS-007P.
 
 Main integration completed: origin/main verified at 0819c71. Fresh branch codex/primitive-computed-keys created from that accepted base for TS-007; no active writer during branch changes. Heartbeat updated to follow this file's current branch and preserve the new merge authorization history.
+Active sole implementation writer: TS-007 chat `01a1988e-2066-7561-a3f4-920625df6259`, host `local`, assigned base `ad52527`. Progress confirmed active; saved cursor `6a271016-662e-4f60-a5bc-514d069472b3:1`. Owns frozen primitive-key implementation/test/docs contract only. Coordinator owns this file; review actual diffs and all gates before acceptance. Claude queue remains reserved.
