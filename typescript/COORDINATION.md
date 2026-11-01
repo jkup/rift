@@ -248,3 +248,9 @@ Acceptance and implementation contract pushed through 5819ace. Active sole write
 
 ## TS-016A progress — 2026-11-01 23:06 UTC
 Implementation remains active, not accepted; saved cursor `29b1acf7-699e-4a24-ba47-8cefb8950607:3`. Reviewed retained coverage entry reductions: pinned scriptc coverage hangs on bare runtime import; explicit Array module import resolves reduction, while production type erasure/import alternatives are rejected. Approved narrow scope extension to test/conversion.ts for a documented side-effect Array import, with all assertions/gates preserved and full normal validation required. Sent approval to sole implementation owner; coordinator leaves active files untouched. No owner action required; no successor dispatch. Main/Claude queue unchanged.
+
+## TS-016A acceptance — 2026-11-01 23:21 UTC
+
+Accepted `2dfdbdc`: reviewed explicit prototype slots/immutability, per-Realm bootstrap/factories, complete production allocations and arities, G1-G17 fixtures/identity/mutation/budget expectations and isolated conversion-driver import. Independently rebuilt Node/native: 162/162 each, all 21 static builds/coverage gates pass, no skips. Producer runner20/probes10/typecheck retained; diff check passes. Completed chat idle; cursor `29b1acf7-699e-4a24-ba47-8cefb8950607:4`. Implementation push was rejected for delegated export authorization; original owner authorization and existing jkup/rift origin verified for coordinator push.
+
+Next ready TS-016B adds only Function.prototype.call under frozen callable forwarding/identity/budget tests. Checked fixed specification 20.2.3.3; existing strict-receiver, no proper-tail-call and caller-context foreign execution limits remain explicit. No other methods/constructors or realm redesign. Main unchanged; three Claude companion tasks remain reserved.
