@@ -175,3 +175,9 @@ Checkout was unexpectedly on clean main at review start; inspected reflog and ch
 
 Next ready TS-011P is a bounded design/caller audit for context-aware ordinary object coercion. No runtime implementation until reviewed contract; main unchanged, Claude queue reserved.
 Active sole writer: TS-011P design chat `01a198c7-c792-7e60-9f85-a40a05f95b57`, host `local`, assigned base `9235558`. Progress confirmed active; saved cursor `03b57e50-7d4a-44b7-aa4d-953f5884a5c8:1`. Owns frozen design/optional isolated probes/evidence and task handoff only. Coordinator owns this file; no runtime coercion implementation until review.
+
+## TS-011P acceptance — 2026-11-01 20:36 UTC
+
+Accepted design `d48a08f`: reviewed exact helper contract/H1-H17, production/test caller inventory, context/reentrancy boundaries and proposed dependency order against actual runtime/evaluator/array code. Independently cross-checked OrdinaryToPrimitive/ToPrimitive specification algorithm; diff whitespace passes. Documentation-only: no new runtime execution claimed. Existing accepted baseline remains 157/157 each and sixteen static gates at 8cf17fa. Completed chat idle; cursor `03b57e50-7d4a-44b7-aa4d-953f5884a5c8:2`.
+
+Freeze helper-only TS-011. Existing production conversions stay primitive-only; later integrations require separate contracts. Claude queue ready/reserved; main unchanged. Design-chat push rejected for export authorization; coordinator will push using original human authorization and verified existing origin, as for prior milestone.
