@@ -3,7 +3,7 @@ import { GuestObject, normal, UNDEFINED, type Builtin } from "../runtime.js";
 
 // A deliberately partial namespace: Number conversion and construction are deferred.
 export function registerNumber(realm: Realm): void {
-    const namespace = new GuestObject();
+    const namespace = realm.createObject();
     namespace.bootstrapDefine("NaN", { value: { kind: "number", value: NaN }, writable: false, enumerable: false, configurable: false });
     namespace.bootstrapDefine("POSITIVE_INFINITY", { value: { kind: "number", value: Infinity }, writable: false, enumerable: false, configurable: false });
     namespace.bootstrapDefine("NEGATIVE_INFINITY", { value: { kind: "number", value: -Infinity }, writable: false, enumerable: false, configurable: false });
@@ -24,8 +24,5 @@ export function registerNumber(realm: Realm): void {
 }
 
 function registerPredicate(realm: Realm, namespace: GuestObject, name: string, invoke: Builtin): void {
-    const value = realm.registerBuiltin(namespace, name, invoke);
-    if (value.kind !== "object") throw new Error("builtin registration must return an object");
-    value.object.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: false, enumerable: false, configurable: true });
-    value.object.bootstrapDefine("length", { value: { kind: "number", value: 1 }, writable: false, enumerable: false, configurable: true });
+    realm.registerBuiltin(namespace, name, 1, invoke);
 }

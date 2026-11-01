@@ -312,3 +312,12 @@ Before any method implementation, re-search the retained sites and generated
 runner cases against the new base, freeze exact additions/migrations and source
 format expectations in its own task. No negative is deleted simply to keep a
 denominator green. This design stops at coordinator review.
+
+## TS-016A implementation note
+
+The graph/allocation/metadata batch is implemented for coordinator review. The
+interfaces and scope above are now exercised in the existing compiled drivers;
+G1-G11/G14/G15/G17 live in realms.ts and G12/G13/G16 in array-map.ts, with all
+array literal shape expectations selecting their explicit Realm. No later method
+batch or foreign-function Realm entry is implemented. See
+[implementation evidence](validation/ts-016a/README.md).

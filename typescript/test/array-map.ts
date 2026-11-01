@@ -39,7 +39,7 @@ function error(completion: Completion, name: string, at: Location = loc): void {
         "error phase/name/location " + name,
     );
 }
-function result(completion: Completion, length: number): GuestObject {
+function result(completion: Completion, length: number, expectedRealm: Realm = realm): GuestObject {
     if (completion.type !== "normal" || completion.value.kind !== "object") {
         throw new Error("expected map result");
     }
@@ -51,6 +51,7 @@ function result(completion: Completion, length: number): GuestObject {
         !descriptor.enumerable && !descriptor.configurable,
         "result array length/flags",
     );
+    check(object.getPrototypeOf() === expectedRealm.arrayPrototype, "result Realm array prototype");
     return object;
 }
 function element(object: GuestObject, key: string, value: Value): void {
@@ -102,7 +103,7 @@ const realm = new Realm((_line) => {
 const host = new GuestObject();
 realm.global.bindings.set("host", { initialized: true, mutable: true, value: obj(host) });
 const contexts: OperationContext[] = [];
-const adapter = realm.registerBuiltin(host, "__testMapObjectDefaultArray", (_receiver, args, context, at) => {
+const adapter = realm.registerBuiltin(host, "__testMapObjectDefaultArray", 3, (_receiver, args, context, at) => {
     const input = args[0] ?? UNDEFINED;
     if (input.kind !== "object") return failure("TypeError", "object-only test map entry", at);
     return mapObjectDefaultArray(input.object, args[1] ?? UNDEFINED, args[2] ?? UNDEFINED, context, at);
@@ -312,7 +313,7 @@ element(
 
 // Retained lexical state survives runs while callbacks use the current context.
 let observed = 0;
-realm.registerBuiltin(host, "observe", (_receiver, args, context, _at) => {
+realm.registerBuiltin(host, "observe", 5, (_receiver, args, context, _at) => {
     observed++;
     check(
         args[0] === singleElement.get("0") && sameValue(args[1], num(0)) &&
@@ -365,7 +366,7 @@ throwing.failGet = "";
 
 // Guest throws retain the source location and stop before the next index.
 put(host, "sentinel", obj(new GuestObject()));
-realm.registerBuiltin(host, "effect", (_receiver, args, _context, _at) => {
+realm.registerBuiltin(host, "effect", 1, (_receiver, args, _context, _at) => {
     trace.push("Effect " + (args[0].kind === "number" ? String(args[0].value) : "bad"));
     return normal();
 });
@@ -447,7 +448,7 @@ const otherCallback = builtin((_receiver, args, context, _at) => {
     check(context.realm === otherRealm && context === otherEvaluator.context, "other active realm");
     return normal(args[0]);
 });
-const otherResult = result(map(singleElement, otherCallback, UNDEFINED, otherEvaluator), 1);
+const otherResult = result(map(singleElement, otherCallback, UNDEFINED, otherEvaluator), 1, otherRealm);
 put(otherResult, "0", num(8));
 element(secondResult, "0", singleElement.get("0"));
 check(!otherRealm.global.bindings.has("host") && firstRun.context !== otherEvaluator.context, "realm independent storage/registration");
@@ -511,3 +512,54 @@ const recovery = builtin((_receiver, _args, context, at) => {
 result(recoveryEvaluator.call(recovery, UNDEFINED, [], loc), 1);
 check(recoveryEvaluator.calls === 0, "outer recovery releases calls");
 console.log("array map passed");
+
+// G12/G16: the supplied operation context selects the result Realm, independently
+// of input and callback origins. Exact Values and holes survive the allocation.
+const sourceRealm = new Realm((_line) => {});
+const resultRealm = new Realm((_line) => {});
+const resultActive = new Evaluator(resultRealm);
+const sourceArray = sourceRealm.createArray();
+const savedElement = obj(sourceRealm.createObject());
+put(sourceArray, "0", savedElement);
+put(sourceArray, "2", num(12));
+const sourceGeneric = sourceRealm.createObject();
+put(sourceGeneric, "length", num(3));
+put(sourceGeneric, "0", savedElement);
+put(sourceGeneric, "2", num(12));
+for (const input of [sourceArray, sourceGeneric]) {
+    const mapped = result(mapObjectDefaultArray(input, identity, UNDEFINED, resultActive.context, loc), 3, resultRealm);
+    check(mapped.getPrototypeOf() === resultRealm.arrayPrototype, "G12 supplied context result prototype");
+    check(mapped.get("0") === savedElement && mapped.get("2") === input.get("2"), "G12 exact returned Values");
+    hole(mapped, "1");
+}
+check(sourceArray.getPrototypeOf() === sourceRealm.arrayPrototype && sourceGeneric.getPrototypeOf() === sourceRealm.objectPrototype, "G12 input chains unchanged");
+// G13 extends the existing traced ordering tests to inherited Realm roots.
+for (const constructorValue of [UNDEFINED, { kind: "null" } as const, num(7), obj(sourceRealm.createObject())]) {
+    put(sourceRealm.arrayPrototype, "constructor", constructorValue);
+    const mapped = mapObjectDefaultArray(sourceArray, identity, UNDEFINED, resultActive.context, loc);
+    if (constructorValue.kind === "undefined") {
+        check(result(mapped, 3, resultRealm).getPrototypeOf() === resultRealm.arrayPrototype, "G13 inherited undefined constructor");
+    } else {
+        check(mapped.type === "throw" && mapped.diagnostic.name === "TypeError" && mapped.diagnostic.message === "unsupported map constructor/species" && mapped.diagnostic.loc === loc, "G13 exact inherited species rejection");
+    }
+}
+check(sourceRealm.arrayPrototype.internalDelete("constructor").type === "normal", "G13 cleanup");
+put(sourceGeneric, "constructor", num(7));
+check(result(mapObjectDefaultArray(sourceGeneric, identity, UNDEFINED, resultActive.context, loc), 3, resultRealm).getPrototypeOf() === resultRealm.arrayPrototype, "G13 generic ignores constructor");
+const holeProgram = parse("let inheritedHoles = [,,];");
+check(holeProgram.error === null, "G16 literal parse");
+const holeActive = new Evaluator(sourceRealm);
+check(holeActive.block(holeProgram.body, sourceRealm.global, UNDEFINED).type === "normal", "G16 literal execute");
+const holesBinding = sourceRealm.global.bindings.get("inheritedHoles");
+if (holesBinding === undefined || holesBinding.value.kind !== "object") throw new Error("G16 literal binding");
+const inheritedHoles = holesBinding.value.object;
+put(sourceRealm.arrayPrototype, "1", num(8));
+hole(inheritedHoles, "0");
+hole(inheritedHoles, "1");
+check(sameValue(inheritedHoles.get("1"), num(8)), "G16 inherited index read");
+const inheritedResult = result(mapObjectDefaultArray(inheritedHoles, identity, UNDEFINED, resultActive.context, loc), 2, resultRealm);
+check(inheritedResult.getPrototypeOf() === resultRealm.arrayPrototype, "G16 result Realm");
+element(inheritedResult, "1", num(8));
+hole(inheritedResult, "0");
+check(sourceRealm.arrayPrototype.internalDelete("1").type === "normal" && inheritedHoles.get("1").kind === "undefined" && resultRealm.arrayPrototype.get("1").kind === "undefined", "G16 deletion/isolation");
+check(resultActive.calls === 0 && holeActive.calls === 0, "G15 map call cleanup");

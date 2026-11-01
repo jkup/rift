@@ -37,7 +37,12 @@ export type Callable =
 export class GuestObject {
     private propertyStorage: Map<PropertyKey, DataDescriptor> = new Map();
     private extensible = true;
-    private prototypeSlot: GuestObject | null = null;
+    private prototypeSlot: GuestObject | null;
+    private readonly immutablePrototypeSlot: boolean;
+    constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false) {
+        this.prototypeSlot = proto;
+        this.immutablePrototypeSlot = immutablePrototype;
+    }
     callable: Callable | null = null;
     // Compatibility inspection snapshot, never a mutable view of internal slots.
     get properties(): Map<PropertyKey, DataDescriptor> {
@@ -117,6 +122,7 @@ export class GuestObject {
     getPrototypeOf(): GuestObject | null { return this.prototypeSlot; }
     setPrototypeOf(prototype: GuestObject | null): BooleanCompletion {
         if (prototype === this.prototypeSlot) return { type: "normal", value: true };
+        if (this.immutablePrototypeSlot) return { type: "normal", value: false };
         if (!this.extensible) return { type: "normal", value: false };
         let candidate = prototype;
         while (candidate !== null) {

@@ -1,0 +1,40 @@
+[
+  {
+    "entry": "test/realms.ts",
+    "build": {
+      "status": 0,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\realms.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\realms.ts\n\n  statements analyzed   1353\n  compile statically    1353  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "execution": {
+      "status": 0,
+      "stdout": "a 41\nb 7 undefined\na 42\na 23\nrealms independent\n",
+      "stderr": ""
+    },
+    "expected": "a 41\nb 7 undefined\na 42\na 23\nrealms independent\n"
+  },
+  {
+    "entry": "test/array-map.ts",
+    "build": {
+      "status": 0,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\array-map.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-map.ts\n\n  statements analyzed   1533\n  compile statically    1533  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "execution": {
+      "status": 0,
+      "stdout": "array map passed\n",
+      "stderr": ""
+    },
+    "expected": "array map passed\n"
+  }
+]

@@ -609,7 +609,7 @@ Coordinator acceptance: TS-016P accepted at `ffbab58` on 2026-11-01; supersedes 
 
 ### TS-016A — Realm prototype graph and allocation
 
-Status: **ready**. Prerequisite TS-016P accepted `ffbab58`. Implement graph/allocation/builtin metadata batch only in docs/realm-intrinsic-prototypes.md. Own src/runtime.ts, src/array-object.ts, src/realm.ts, src/builtins/number.ts, src/evaluator.ts and src/array-map.ts for frozen interfaces/allocation migration; test/realms.ts, test/array-literals.ts, test/array-map.ts, registration callers test/operation-context.ts and test/length-coercion.ts, optional runtime-read test/fixtures/realm-intrinsics.js; scoped docs, task handoff and docs/validation/ts-016a/. Coordinator owns COORDINATION.md; preserve Claude queue.
+Status: **in progress — implemented, awaiting coordinator review**. Owner: implementation chat `01a19950-ba63-7f41-bf67-b02205d733da`; base `5819ace`. Prerequisite TS-016P accepted `ffbab58`. Implement graph/allocation/builtin metadata batch only in docs/realm-intrinsic-prototypes.md. Own src/runtime.ts, src/array-object.ts, src/realm.ts, src/builtins/number.ts, src/evaluator.ts and src/array-map.ts for frozen interfaces/allocation migration; test/realms.ts, test/array-literals.ts, test/array-map.ts, registration callers test/operation-context.ts and test/length-coercion.ts, optional runtime-read test/fixtures/realm-intrinsics.js; scoped docs, task handoff and docs/validation/ts-016a/. Coordinator-approved scope extension (2026-11-01): test/conversion.ts only for the documented side-effect Array import required by the reduced pinned compiler failure; preserve every assertion. Coordinator owns COORDINATION.md; preserve Claude queue.
 
 Implement exact explicit constructor/factory/metadata APIs in the accepted design. Per Realm allocate immutable null-root O, callable F inheriting O with own empty name/+0 length, then real array A inheriting O with own +0 length and existing exotic invariants. All roots fresh/extensible, no constructor back-links or methods. Bootstrap without guest operations, evaluator or fabricated context. Low-level constructors retain null defaults. Immutable prototype SameValue success precedes rejection, and property extensibility remains independent. No unchecked descriptor writes or virtual constructor dispatch.
 
@@ -618,3 +618,27 @@ Migrate every production allocation and registerBuiltin caller from the design i
 Implement G1-G17 with fixed readable expected results in existing compiled drivers, preserving all 162 entries and 21 gates. Verify graph/descriptor/callability/immutable-slot behavior, no bootstrap output or guest calls, parsed allocation identities and freshness, root mutation/shadowing/readonly effects, independent realms and foreign identity, context-selected map results/constructor failures, inherited array indices and no new ticks. Preserve explicit null-root host fixtures, all coercion negatives/positive hooks, exact budget failures and cleanup. No Object/Function/Array global, constructor property, Object conversion method, call/map/join method, boxing/symbols/accessors or source serialization. These remain separately assigned work.
 
 Run typecheck, runner/probes, rebuilt Node/native and all static-only/coverage gates. Reduce genuine compiler blockers rather than weakening gates or changing pins. Record evidence and honest partial scope; commit/push coherent changes and stop for review. No C++/Claude/COORDINATION edits, branch switching, main merge or successor assignment.
+
+TS-016A handoff (2026-11-01): graph/allocation/metadata batch implemented with
+explicit O/F/A roots, immutable Object prototype slot, callable Function root,
+exotic Array root, Realm factories and centralized validated builtin metadata.
+All production allocation/registration sites migrated; low-level null-root
+fixtures and captured environments remain. Map selects the supplied context
+Realm and retains exact Values/holes/order/species restrictions. No methods,
+constructor exposure or foreign-function Realm switching is included.
+
+G1-G17 extend existing compiled drivers and a runtime-read realm fixture; all
+162 baseline guest entries and 21 gates remain. Typecheck passes; runner 20/20;
+probes 10/10; normal rebuilt Node/native suites 162/162 each, no skips; all 21
+static-only builds and separate coverage gates pass. Realm driver 1353/1353,
+map 1533/1533 and conversion 503/503 static. Evidence and limitations:
+[docs/validation/ts-016a/README.md](docs/validation/ts-016a/README.md).
+
+A real pinned compiler failure was reduced before a workaround: conversion's
+static build rejected Callable (SC2009), while coverage timed out with only
+GuestObject imported. Explicit Array reachability fixes both. Coordinator
+approved a single additional test/conversion.ts import with a source comment;
+all assertions and gates are retained. Rejected production type/import changes
+were tested only in scratch copies and not adopted. Original failures and final
+normal-run evidence are separate. Pinned Zig required installation access.
+Stop for coordinator review; no later method work or main merge.

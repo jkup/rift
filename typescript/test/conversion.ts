@@ -1,3 +1,6 @@
+// scriptc 0.4.7 needs this runtime class reachable when analyzing Realm's types.
+// See docs/validation/ts-016a/coverage-notes.md for the reduced failure.
+import "../src/array-object.js";
 import { stringToNumber, toNumber, toUint32 } from "../src/conversion.js";
 import type { NumberCompletion } from "../src/conversion.js";
 import { GuestObject, UNDEFINED } from "../src/runtime.js";

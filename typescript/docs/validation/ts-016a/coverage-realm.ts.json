@@ -1,0 +1,5 @@
+{
+  "status": 0,
+  "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-016a\\coverage-realm.ts\n\n  statements analyzed   465\n  compile statically    465  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+  "stderr": ""
+}

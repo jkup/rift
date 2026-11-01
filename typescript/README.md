@@ -73,3 +73,11 @@ one line per `console.log` call; the semantic core has no filesystem/process I/O
 Start reading at [architecture decisions](docs/architecture-decisions.md), then
 follow `src/interpreter.ts` into the parser and evaluator. See the
 [feature inventory](docs/feature-inventory.md) before writing guest programs.
+
+TS-016A supplies per-Realm Object, Function and Array prototype roots and explicit
+allocation factories. Builtin name/length metadata is centralized. These are
+partial roots: no constructor globals/back-links or standard prototype methods
+are installed. Host low-level objects still default to null prototypes; foreign
+function execution still uses the caller context. See the
+[graph contract](docs/realm-intrinsic-prototypes.md) and
+[validation](docs/validation/ts-016a/README.md).

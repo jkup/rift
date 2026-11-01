@@ -60,12 +60,12 @@ function setup(): Evaluator {
     const active = new Evaluator(new Realm((_line) => {}), 100000, 12);
     const host = new GuestObject();
     seed(active, "host", obj(host));
-    active.context.realm.registerBuiltin(host, "length", (_receiver, args, context, at) => {
+    active.context.realm.registerBuiltin(host, "length", 1, (_receiver, args, context, at) => {
         const result = lengthOfArrayLike(object(args[0]), context, at);
         return result.type === "throw" ? result : normal(num(result.value));
     });
-    active.context.realm.registerBuiltin(host, "map", (_receiver, args, context, at) => mapObjectDefaultArray(object(args[0]), args[1], UNDEFINED, context, at));
-    active.context.realm.registerBuiltin(host, "remove", (_receiver, args, _context, _at) => {
+    active.context.realm.registerBuiltin(host, "map", 2, (_receiver, args, context, at) => mapObjectDefaultArray(object(args[0]), args[1], UNDEFINED, context, at));
+    active.context.realm.registerBuiltin(host, "remove", 2, (_receiver, args, _context, _at) => {
         check(args[1].kind === "string", "delete key");
         if (args[1].kind === "string") object(args[0]).internalDelete(args[1].value);
         return normal();

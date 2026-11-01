@@ -23,8 +23,7 @@ export class Evaluator {
         return normal();
     }
     closure(params: string[], body: Stmt[], environment: Environment): Value {
-        const object = new GuestObject();
-        object.callable = { kind: "guest", params, body, environment };
+        const object = this.context.realm.createFunction({ kind: "guest", params, body, environment });
         return { kind: "object", object };
     }
     block(body: Stmt[], env: Environment, receiver: Value): Completion {
@@ -142,7 +141,7 @@ export class Evaluator {
             }
             case "function": return normal(this.closure(expr.params, expr.body, env));
             case "array": {
-                const object = new GuestArray();
+                const object = this.context.realm.createArray();
                 for (let i = 0; i < expr.elements.length; i++) {
                     // Holes cost a slot tick too; nested elements share this budget.
                     const budget = this.tick(expr.loc);
@@ -166,7 +165,7 @@ export class Evaluator {
                 return normal({ kind: "object", object });
             }
             case "object": {
-                const object = new GuestObject();
+                const object = this.context.realm.createObject();
                 for (let i = 0; i < expr.keys.length; i++) {
                     const value = this.evaluate(expr.values[i], env, receiver);
                     if (value.type !== "normal") return value;

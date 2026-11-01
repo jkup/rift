@@ -33,13 +33,13 @@ function range(result: Completion, location: Location): void {
 
 // The retained guest closure captures mutable lexical state, never an evaluator.
 const contexts: OperationContext[] = [];
-realm.registerBuiltin(host, "observe", (receiver, args, context, callLoc) => {
+realm.registerBuiltin(host, "observe", 1, (receiver, args, context, callLoc) => {
     check(context.realm === realm && callLoc.line === 1, "active realm/location");
     check(number(args[0], contexts.length + 1), "retained lexical counter");
     contexts.push(context);
     return normal(args[0]);
 });
-realm.registerBuiltin(host, "callback", (_receiver, args, context, callLoc) => context.call(args[0], args[1], [args[2]], callLoc));
+realm.registerBuiltin(host, "callback", 3, (_receiver, args, context, callLoc) => context.call(args[0], args[1], [args[2]], callLoc));
 check(run("function make() { let n=0; return function(x) { n=n+1; host.observe(n); return this; }; } let saved=make(); let receiver={}; let argument={}; let result=host.callback(saved,receiver,argument);", realm).phase === "runtime", "setup run");
 const firstContext = contexts[0];
 check(firstContext !== undefined && binding("result") === binding("receiver"), "guest this exact Value");
@@ -72,7 +72,7 @@ check(!other.global.bindings.has("saved"), "lexical state isolation");
 // A guest bridge propagates the original host-supplied throw record unchanged.
 const sentinel = failure("Sentinel", "original", loc);
 sentinel.value = arg;
-realm.registerBuiltin(host, "thrower", (_receiver, _args, _context, _loc) => sentinel);
+realm.registerBuiltin(host, "thrower", 0, (_receiver, _args, _context, _loc) => sentinel);
 check(program("function throwing() { return host.thrower(); } function guestThrow(x) { throw x; }", evalA).type === "normal", "throw setup");
 const thrown = evalA.call(binding("throwing"), UNDEFINED, [], { line: 99, column: 1 });
 check(thrown === sentinel && thrown.value === arg && thrown.diagnostic === sentinel.diagnostic && evalA.calls === 0, "exact abrupt record");
@@ -104,7 +104,7 @@ check(budget.steps === 5 && evalB.steps === 0, "monotonic independent steps");
 // Guest -> builtin -> guest recursion cannot replenish call or AST budgets.
 const recursive = new Evaluator(realm, 1000, 4);
 let reentries = 0;
-realm.registerBuiltin(host, "reenter", (_receiver, args, context, callLoc) => {
+realm.registerBuiltin(host, "reenter", 0, (_receiver, args, context, callLoc) => {
     check(context === recursive.context, "recursive context");
     reentries++;
     return context.call(args[0], UNDEFINED, [], callLoc);

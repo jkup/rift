@@ -15,7 +15,7 @@ export function mapObjectDefaultArray(object: GuestObject, callback: Value, this
         if (constructor.value.kind !== "undefined") return failure("TypeError", "unsupported map constructor/species", loc);
     }
     if (length.value > 4294967295) return failure("RangeError", "map result length exceeds array limit", loc);
-    const result = new GuestArray();
+    const result = context.realm.createArray();
     const initialized = result.defineOwnProperty("length", { value: { kind: "number", value: length.value } }, context, loc);
     if (initialized.type === "throw" || !initialized.value) throw new Error("fresh map array length invariant");
     // Only the limit is captured. Presence and values are observed after each

@@ -13,7 +13,7 @@ design to populate in advance. Source is original; no upstream code was copied.
 | `src/strings.ts` | `GuestString`, `stringLength`, `stringUnit`, `stringConcat`: host UTF-16 storage behind a replaceable API. No normalization or scalar-value reinterpretation. |
 | `src/runtime.ts` | `Value`, `PropertyKey`, `DataDescriptor`, `GuestObject`, `Environment`, `Reference`, `Completion`, Get/PutValue, truthiness, strict equality and diagnostic display. |
 | `src/evaluator.ts` | `Evaluator.block`, `statement`, `evaluate`, `reference`, `call`: explicit evaluation order and propagation of guest abrupt completions. A fresh evaluator owns each run's budgets. |
-| `src/realm.ts` | `new Realm(output)` creates an independent global environment and console objects. `registerBuiltin(target, name, invoke)` allocates an ordinary callable object with a uniform receiver/args/context/location signature. |
+| `src/realm.ts` | `new Realm(output)` creates an independent global environment and console objects. `registerBuiltin(target, name, length, invoke)` allocates an ordinary callable object with a uniform receiver/args/context/location signature. |
 | `src/interpreter.ts` | `run(source, realm): RunResult` returns either a parse diagnostic or runtime completion. The caller owns realm lifetime; repeated runs retain bindings. |
 | `src/cli.ts` | Sole production host boundary: argv, file read, output adapter, diagnostics and exit codes. Host faults escape `run` and are caught here as internal faults. |
 
@@ -26,7 +26,7 @@ stores a `Map<PropertyKey, DataDescriptor>` and optional `Callable`. `PropertyKe
 currently means string only. Descriptors hold value/writable/enumerable/configurable;
 only writability has a directly exposed guest operation yet. TS-004A adds internal
 validated data descriptor updates and extensibility (details below). TS-004B adds
-ordinary data-only prototype chains; initial prototypes remain null. There are no
+ordinary data-only prototype chains; TS-016A adds explicit per-Realm roots while low-level constructors retain null defaults. There are no
 accessors or guest reflection APIs. TS-004C adds internal deletion and detached
 string-only key lists (details below).
 
@@ -362,13 +362,13 @@ in order. Rift follows that decomposition using existing explicit completions,
 without copying upstream code or introducing generator/iterator infrastructure.
 The spec/engine update length during elisions; Rift defers their remaining length
 update until completion. This is unobservable here: the fresh result cannot escape
-before return, its prototype is null, and source length bounds keep slot counts
+before return, own definitions bypass inherited properties, and source length bounds keep slot counts
 far below the array length limit. Revisit that reasoning if allocation hooks or
 literal construction observability are introduced. Resource ticks are Rift policy.
 
-No Array intrinsics, spread, destructuring, comma operator, numeric property-key
-coercion or standard map installation is included. The existing null prototype
-limitation remains. Tests inspect parsed guest results through existing host
+This original TS-006 batch did not install Array intrinsics or methods. TS-007
+subsequently added primitive numeric keys; TS-016A adds the Realm array root.
+Spread, destructuring, comma operator and standard map installation remain deferred. Tests inspect parsed guest results through existing host
 operations; no guest reflection API was added. See [validation](validation/ts-006/README.md).
 
 ## Primitive property keys (TS-007)
@@ -575,3 +575,33 @@ against callback replacement of the host record without claiming descriptor
 accessor/concurrent mutation support. Bootstrap and direct conversion APIs stay
 primitive-only; no new ambient context, guest intrinsic or compiler workaround.
 See [validation and L1-L21 mapping](validation/ts-015b/README.md).
+
+## Realm prototype graph (TS-016A)
+
+Each Realm bootstraps three fresh, extensible roots in dependency order: immutable
+null-root Object prototype, callable Function prototype inheriting Object, and
+exotic Array prototype inheriting Object. Bootstrap uses explicit constructor
+slots and validated descriptor storage without an evaluator, guest operations,
+output or ticks. Function's no-op callable returns undefined and has own empty
+name/+0 length; Array has the normal exotic +0 length descriptor.
+
+Realm factories select Object/Array/Function roots for all production allocations.
+Low-level constructors retain explicit null defaults for host fixtures. Prototype
+immutability rejects a different slot value even on extensible Object root, but
+same-slot success precedes both immutability and extensibility checks. Properties
+remain independently mutable. Builtin creation centralizes name/length metadata,
+rejects nonfinite, negative or fractional lengths as host faults and normalizes
+zero to +0. Guest closures retain their original environment and inherit the
+Function root's empty name/zero length until own metadata is separately designed.
+
+Internal map selects the supplied context Realm for results, preserving exact
+returned Values, holes, order and the existing constructor/species rejection.
+Transferred values retain identities and chains. Foreign guest functions still
+execute with the caller evaluator's context and original lexical environment;
+body allocations therefore use the caller Realm. No owner-Realm switching is
+claimed. No constructor bindings/back-links or standard prototype methods are
+installed, so existing no-method coercion failures remain intentional.
+
+The accepted [design](realm-intrinsic-prototypes.md) records fixed ECMA-262 2025
+and pinned engine262 sources and the adopted boundaries. No engine code is copied.
+See [validation](validation/ts-016a/README.md) for G1-G17 coverage and lane evidence.

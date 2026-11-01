@@ -21,11 +21,11 @@ function array(value: Value): GuestArray {
 function number(value: Value, expected: number): boolean {
     return value.kind === "number" && value.value === expected;
 }
-function shape(object: GuestArray, length: number, keys: string): void {
+function shape(object: GuestArray, length: number, keys: string, realm: Realm): void {
     const desc = object.getOwnProperty("length");
     check(desc !== undefined && number(desc.value, length) && desc.writable && !desc.enumerable && !desc.configurable, "length and flags");
     check(object.ownPropertyKeys().join(",") === keys, "own keys and holes");
-    check(object.getPrototypeOf() === null, "current null intrinsic prototype");
+    check(object.getPrototypeOf() === realm.arrayPrototype, "Realm array prototype");
     for (const key of object.ownPropertyKeys()) {
         if (key === "length") continue;
         const element = object.getOwnProperty(key);
@@ -41,13 +41,13 @@ const source = readFileSync("test/fixtures/array-literals.js", "utf8");
 const realm = new Realm((_line) => {});
 const result = run(source, realm);
 check(result.phase === "runtime" && result.completion.type === "normal", "runtime-read fixture");
-shape(array(binding(realm, "empty")), 0, "length");
-shape(array(binding(realm, "oneHole")), 1, "length");
-shape(array(binding(realm, "twoHoles")), 2, "length");
-shape(array(binding(realm, "trailing")), 1, "0,length");
-shape(array(binding(realm, "trailingHole")), 2, "0,length");
+shape(array(binding(realm, "empty")), 0, "length", realm);
+shape(array(binding(realm, "oneHole")), 1, "length", realm);
+shape(array(binding(realm, "twoHoles")), 2, "length", realm);
+shape(array(binding(realm, "trailing")), 1, "0,length", realm);
+shape(array(binding(realm, "trailingHole")), 2, "0,length", realm);
 const mixed = array(binding(realm, "mixed"));
-shape(mixed, 4, "1,2,length");
+shape(mixed, 4, "1,2,length", realm);
 check(mixed.getOwnProperty("0") === undefined && mixed.getOwnProperty("3") === undefined, "holes absent");
 check(mixed.getOwnProperty("1")?.value.kind === "undefined", "explicit undefined present");
 check(mixed.getOwnProperty("2")?.value.kind === "null", "guest null is present");
@@ -56,9 +56,9 @@ const second = array(binding(realm, "second"));
 check(first !== second, "repeated evaluation freshness");
 check(first.getOwnProperty("0")?.value === binding(realm, "shared"), "shared Value identity");
 check(second.getOwnProperty("0")?.value === binding(realm, "shared"), "shared nested identity");
-shape(array(binding(realm, "grown")), 5, "0,4,length");
-shape(array(binding(realm, "shrunk")), 1, "0,length");
-shape(array(binding(realm, "nested")), 3, "0,1,2,length");
+shape(array(binding(realm, "grown")), 5, "0,4,length", realm);
+shape(array(binding(realm, "shrunk")), 1, "0,length", realm);
+shape(array(binding(realm, "nested")), 3, "0,1,2,length", realm);
 const other = new Realm((_line) => {});
 const otherResult = run(source, other);
 check(otherResult.phase === "runtime" && otherResult.completion.type === "normal", "second realm");
@@ -70,7 +70,7 @@ const host = new GuestObject();
 abruptRealm.global.bindings.set("host", { initialized: true, mutable: true, value: { kind: "object", object: host } });
 const sentinel = failure("Sentinel", "exact", { line: 9, column: 7 });
 sentinel.value = { kind: "object", object: new GuestObject() };
-abruptRealm.registerBuiltin(host, "stop", (_receiver, _args, _context, _loc) => sentinel);
+abruptRealm.registerBuiltin(host, "stop", 0, (_receiver, _args, _context, _loc) => sentinel);
 const abruptEval = new Evaluator(abruptRealm);
 const abrupt = program(`
 let effects = 0;
@@ -88,7 +88,7 @@ for (const limit of [4, 5]) {
     check(evaluator.steps === 5, "three holes cost five total ticks");
     if (limit === 5) {
         check(completion.type === "normal", "exact budget succeeds");
-        shape(array(binding(budgetRealm, "holes")), 3, "length");
+        shape(array(binding(budgetRealm, "holes")), 3, "length", budgetRealm);
     } else {
         check(completion.type === "throw" && completion.diagnostic.name === "RangeError" && completion.diagnostic.loc.column === 13, "hole budget location");
         check(budgetRealm.global.bindings.get("holes")?.initialized === false, "budget prevents assignment");

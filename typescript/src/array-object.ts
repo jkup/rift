@@ -13,8 +13,8 @@ function invariant(result: InternalBooleanCompletion): void {
 // Length lives in the base property storage, so inspection and receiver Set see
 // the same descriptor that this algorithm validates.
 export class GuestArray extends GuestObject {
-    constructor() {
-        super();
+    constructor(proto: GuestObject | null = null) {
+        super(proto);
         invariant(super.ordinaryDefineOwnProperty("length", {
             value: { kind: "number", value: 0 }, writable: true, enumerable: false, configurable: false,
         }));
