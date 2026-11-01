@@ -394,7 +394,7 @@ successor dispatch. Awaiting coordinator review.
 
 ### TS-012 — Ordinary object coercion in existing operators
 
-Status: **ready**. Prerequisite TS-011 accepted `de9cc1f` (done, superseding its awaiting-review handoff). Own operator portions of src/evaluator.ts, new focused compiled test/fixtures for operator coercion, necessary registration, scoped docs and docs/validation/ts-012/, and positive migrations in test/numeric-operators.ts, addition.ts, relational.ts and primitive-conversion.ts H17. Coordinator owns COORDINATION.md. No changes to primitive-conversion/conversion/runtime/reference/array APIs or parser.
+Status: **in progress — awaiting coordinator review**. Owner: Codex implementation chat `01a198e3-086d-7472-a0d0-3ad2a5914c54`; base `4050de9` on `codex/primitive-computed-keys`. Prerequisite TS-011 accepted `de9cc1f` (done, superseding its awaiting-review handoff). Own operator portions of src/evaluator.ts, new focused compiled test/fixtures for operator coercion, necessary registration, scoped docs and docs/validation/ts-012/, and positive migrations in test/numeric-operators.ts, addition.ts, relational.ts and primitive-conversion.ts H17. Coordinator owns COORDINATION.md. No changes to primitive-conversion/conversion/runtime/reference/array APIs or parser.
 
 Use accepted toPrimitive with this.context. Unary + and - request number hint after operand evaluation, then existing primitive toNumber. Binary -, *, /, % evaluate/GetValue both operands first (existing evaluator path), then source-left number-hint primitive/numeric conversion followed by source-right. Binary + performs source-left and source-right default-hint conversion before deciding string concatenation versus numeric addition. Relational < > <= >= performs source-left and source-right number-hint conversion before choosing two-string UTF-16 versus numeric/unordered comparison; never reverse observable conversions for > or <=. Preserve exact abrupt records, existing AST locations, original receivers and shared context/budgets. No new ticks outside the accepted helper/evaluator policies. Ordinary/array/function values with explicit own/inherited methods can convert; missing or both-object methods produce the helper's located TypeError. No standard prototype methods are added. Read relevant source-backed design order sections in docs/object-coercion-integration.md and record implementation mapping.
 
@@ -403,3 +403,19 @@ Explicitly leave direct toNumber/toString/toPropertyKey, computed keys/reference
 Implement design F1-F4 and additional fixed expectations using real runtime-read guest fixtures: every affected operator with ordinary/array/function inputs, own/inherited methods, number/default hints demonstrated by competing methods, noncallable-first/fallback/primitive returns, string-vs-numeric addition/comparison selection and NaN/signed-zero/UTF-16 preservation. Exact L/R operand and P/Q coercion traces LRPQ for every binary operator; R throw beats left no-method/lookup failure, L throw skips R, P throw skips Q, Q throw preserves prior P effects. Both addition objects convert even if first becomes string. First coercion mutates second object's methods and later lookup sees it; replacing operand bindings does not replace already captured Values. Preserve exact call/Get throw identities, original receivers and zero arguments. Test nested coercion through parsed operators, guest runaway loop/recursion/shared monotonic budgets, call cleanup and independent realm state. No native recursion overflow or reset counters; host-fault cleanup claims limited to existing guarantees.
 
 Migrate every superseded operator rejection assertion in numeric-operators/addition/relational and H17 positively; preserve expression counts/assertion purposes. Observed Get sentinel traps now propagate exactly; hook-bearing objects return fixed numeric/string/boolean results and call counts. Add meaningful no-method/both-object negatives. H17 direct converter/key exclusions stay negative with zero hook reads; avoid shared trace contamination between supported and unsupported paths. Number.isNaN/isFinite, strict equality and truthiness keep zero-hook assertions. All old test entries remain. Run typecheck, runner/probes and rebuilt Node/native suites with all static gates and new driver. Readable scenarios; preserve denominator and expected results rather than parity. Commit/push coherent milestone/evidence and stop for review; no successor/main merge.
+
+Handoff (2026-11-01): existing numeric/addition/relational operators now use the
+accepted helper with source-order coercion, number/default hints, exact abrupt
+records and the active context/budgets. Migrated every superseded operator
+rejection positively, retaining expression counts; direct converter/key H17
+exclusions remain negative with zero reads. New compiled runtime-read assertions
+cover F1-F4, mutations/captured Values, all object kinds/inherited methods,
+receivers/arguments, UTF-16/NaN/signed zero, nested coercion, realm state,
+runaway budgets and existing call cleanup. Typecheck passes; runner 20/20;
+probes 10/10; rebuilt Node/native 159/159 each, no skips; all 18 native static
+gates pass. Evidence, migration inventory, initial test errors and sandbox Zig
+failures: docs/validation/ts-012/. A never-returning test builtin needed the full
+Completion annotation to avoid a dynamic adapter; no gate/pin was weakened.
+No helper/runtime/converter/reference/array/parser API changes, standard
+prototypes, symbols, C++/Claude/COORDINATION changes, branch switch, main merge
+or successor work. Awaiting coordinator review.

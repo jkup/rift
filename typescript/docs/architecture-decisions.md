@@ -479,3 +479,21 @@ tick are local conventions. The partial wrapper deliberately omits symbol hooks.
 Only the compiled driver and its test bridge call these helpers; existing
 operators, converters, references, arrays and production registration are unchanged.
 See [evidence and H1-H17 coverage](validation/ts-011/README.md).
+
+### TS-012: operator coercion integration
+
+Supersedes the operator object-rejection boundaries recorded for TS-008 through
+TS-011 above. Evaluator unary +/- and binary - * / % now call partial toPrimitive
+with number hint and the existing active context before primitive ToNumber.
+Binary addition calls it left then right with default hint before choosing string
+concatenation; relational operators call it left then right with number hint
+before two-string/numeric selection, including > and <=. Both operand GetValue
+operations still finish before coercion. The accepted helper owns candidate
+lookup ticks and context.call; operators add no ticks or fresh evaluators.
+
+Existing primitive converters and all key/reference/array APIs remain unchanged.
+No ambient context, standard methods or symbol hooks are introduced. Objects with
+explicit own/inherited methods can convert; objects lacking usable methods fail
+with the helper's located TypeError. Equality, logical/truthiness operations and
+Number predicates remain noncoercing. See the accepted source-backed
+[design](object-coercion-integration.md) and [TS-012 evidence](validation/ts-012/README.md).

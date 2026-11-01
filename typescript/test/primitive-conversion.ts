@@ -33,11 +33,12 @@ sentinel.value = objectValue(new GuestObject());
 // Synthetic internal Get traces exercise plumbing, not guest accessors.
 class Observed extends GuestObject {
     trace = "";
+    requireLocation = true;
     reads = 0;
     failAt = 0;
     expected: Value = UNDEFINED;
     override internalGet(key: string, receiver: Value, location: Location): ValueCompletion {
-        check(receiver === this.expected && location === loc, "exact Get receiver/location");
+        check(receiver === this.expected && (!this.requireLocation || location === loc), "exact Get receiver/location");
         this.reads++;
         this.trace += "Get " + key + ";";
         if (this.reads === this.failAt) return sentinel;
@@ -267,17 +268,26 @@ for (const mode of ["host", "break", "continue"] as const) {
     }
     check(escaped && evaluator.calls === 0 && object.trace === "tick;Get valueOf;Call;", "host fault cleanup/no fallback");
 }
-// H17: production paths still reject before consulting methods.
+// H17: direct converters and keys remain primitive-only; operators integrate.
 const boundary = observed();
+boundary.requireLocation = false;
 define(boundary, "valueOf", returns(num(6)));
 define(boundary, "toString", returns({ kind: "string", value: "x" }));
 for (const result of [toNumber(boundary.expected, loc), toString(boundary.expected, loc), toPropertyKey(boundary.expected, loc)]) {
     check(result.type === "throw" && result.diagnostic.name === "TypeError", "primitive-only converter");
 }
 seed(realm, "operand", boundary.expected);
-for (const source of ["+operand;", "-operand;", "operand - 2;", "operand * 2;", "operand / 2;", "operand % 2;", "operand + 2;", "operand < 2;", "operand > 2;", "operand <= 2;", "operand >= 2;", "let holder = {}; holder[operand];"]) {
-    const result = program(source, evaluator);
-    check(result.type === "throw" && result.diagnostic.name === "TypeError", "unchanged production boundary");
+const keyResult = program("let holder = {}; holder[operand];", evaluator);
+check(keyResult.type === "throw" && keyResult.diagnostic.name === "TypeError", "primitive-only key");
+check(boundary.trace === "", "excluded paths perform no hook reads/calls");
+const expressions = ["+operand", "-operand", "operand - 2", "operand * 2", "operand / 2", "operand % 2", "operand + 2", "operand < 2", "operand > 2", "operand <= 2", "operand >= 2"];
+const expected = [6, -6, 4, 12, 3, 0, 8, false, true, false, true];
+for (let i = 0; i < expressions.length; i++) {
+    boundary.trace = "";
+    seed(realm, "actualResult", UNDEFINED);
+    const result = program("actualResult = " + expressions[i] + ";", evaluator);
+    const actual = binding(realm, "actualResult");
+    check(result.type === "normal" && (actual.kind === "number" || actual.kind === "boolean") && actual.value === expected[i], "integrated operator result");
+    check(boundary.trace === "Get valueOf;", "one operator lookup");
 }
-check(boundary.trace === "", "no production hook reads/calls");
 console.log("primitive conversion passed");

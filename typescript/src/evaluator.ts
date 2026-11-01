@@ -3,6 +3,7 @@ import { Environment, GuestObject, UNDEFINED, equal, failure, getValue, normal, 
 import type { Realm } from "./realm.js";
 import { stringConcat, stringCompare } from "./strings.js";
 import { GuestArray } from "./array-object.js";
+import { toPrimitive } from "./primitive-conversion.js";
 import { toNumber, toString } from "./conversion.js";
 
 export class Evaluator {
@@ -195,7 +196,9 @@ export class Evaluator {
                 const result = this.evaluate(expr.operand, env, receiver);
                 if (result.type !== "normal") return result;
                 if (expr.op === "!") return normal({ kind: "boolean", value: !truthy(result.value) });
-                const number = toNumber(result.value, expr.loc);
+                const primitive = toPrimitive(result.value, "number", this.context, expr.loc);
+                if (primitive.type === "throw") return primitive;
+                const number = toNumber(primitive.value, expr.loc);
                 if (number.type === "throw") return number;
                 return normal({ kind: "number", value: expr.op === "-" ? -number.value : number.value });
             }
@@ -249,11 +252,13 @@ export class Evaluator {
     }
     binary(op: string, left: Value, right: Value, loc: Location): Completion {
         if (op === "+") {
-            // Both GetValue operations have completed. Full addition would now
-            // perform ToPrimitive with the default hint; objects remain unsupported.
-            if (left.kind === "object" || right.kind === "object") {
-                return failure("TypeError", "object-to-primitive conversion unsupported", loc);
-            }
+            // Convert both captured Values before selecting concatenation.
+            const leftPrimitive = toPrimitive(left, "default", this.context, loc);
+            if (leftPrimitive.type === "throw") return leftPrimitive;
+            const rightPrimitive = toPrimitive(right, "default", this.context, loc);
+            if (rightPrimitive.type === "throw") return rightPrimitive;
+            left = leftPrimitive.value;
+            right = rightPrimitive.value;
             if (left.kind === "string" || right.kind === "string") {
                 const a = toString(left, loc);
                 if (a.type === "throw") return a;
@@ -270,9 +275,13 @@ export class Evaluator {
         if (op === "-" || op === "*" || op === "/" || op === "%") {
             // Both operand evaluations/GetValue have finished. Conversion is
             // left-to-right, so an abrupt RHS evaluation precedes either conversion.
-            const a = toNumber(left, loc);
+            const leftPrimitive = toPrimitive(left, "number", this.context, loc);
+            if (leftPrimitive.type === "throw") return leftPrimitive;
+            const a = toNumber(leftPrimitive.value, loc);
             if (a.type === "throw") return a;
-            const b = toNumber(right, loc);
+            const rightPrimitive = toPrimitive(right, "number", this.context, loc);
+            if (rightPrimitive.type === "throw") return rightPrimitive;
+            const b = toNumber(rightPrimitive.value, loc);
             if (b.type === "throw") return b;
             switch (op) {
                 case "-": return normal({ kind: "number", value: a.value - b.value });
@@ -283,11 +292,12 @@ export class Evaluator {
         }
         if (op === "===" || op === "!==") return normal({ kind: "boolean", value: op === "===" ? equal(left, right) : !equal(left, right) });
         if (op === "<" || op === ">" || op === "<=" || op === ">=") {
-            // GetValue has finished in source order. IsLessThan's number-hint
-            // ToPrimitive boundary remains unsupported for objects, without hooks.
-            if (left.kind === "object" || right.kind === "object") {
-                return failure("TypeError", "object-to-primitive conversion unsupported", loc);
-            }
+            const leftPrimitive = toPrimitive(left, "number", this.context, loc);
+            if (leftPrimitive.type === "throw") return leftPrimitive;
+            const rightPrimitive = toPrimitive(right, "number", this.context, loc);
+            if (rightPrimitive.type === "throw") return rightPrimitive;
+            left = leftPrimitive.value;
+            right = rightPrimitive.value;
             // Keep source order even for > and <=. Once both values are primitive,
             // numeric conversion has no guest effects; reverse only the relation.
             let order: number | null;

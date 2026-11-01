@@ -145,15 +145,15 @@ for (const expression of objectExpressions) {
     const object = new ObservedObject();
     seed(realm, "operand", { kind: "object", object });
     const result = execute(expression + ";", realm);
-    check(result.type === "throw" && result.diagnostic.name === "TypeError" && object.reads === 0, expression + " does not read hooks");
+    check(result === sentinel && object.reads === 1, expression + " exact hook Get throw");
     const array = new ObservedArray();
     seed(realm, "operand", { kind: "object", object: array });
     const arrayResult = execute(expression + ";", realm);
-    check(arrayResult.type === "throw" && arrayResult.diagnostic.name === "TypeError" && array.reads === 0, expression + " array does not read hooks");
+    check(arrayResult === sentinel && array.reads === 1, expression + " array exact hook Get throw");
     object.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc): Completion => sentinel };
     seed(realm, "operand", { kind: "object", object });
     const functionResult = execute(expression + ";", realm);
-    check(functionResult.type === "throw" && functionResult.diagnostic.name === "TypeError" && object.reads === 0, expression + " function does not read hooks");
+    check(functionResult === sentinel && object.reads === 2, expression + " function exact hook Get throw");
 }
 for (const op of ["<", ">", "<=", ">="]) {
     const realm = new Realm((line) => console.log(line));
@@ -182,7 +182,7 @@ for (const op of ["<", ">", "<=", ">="]) {
     check(execute("holder.x " + op + " right();", realm) === sentinel && order === "", op + " exact left property abrupt");
     check(execute("({}) " + op + " holder.x;", realm) === sentinel && object.reads === 2, op + " exact right property abrupt");
 }
-// Hook-bearing ordinary objects, arrays and functions must reject without calls.
+// Hook-bearing ordinary objects, arrays and functions convert with exactly one valueOf call.
 for (const objectSource of ["{}", "[]", "function() {} "]) {
     for (const expression of objectExpressions) {
         const realm = new Realm((line) => console.log(line));
@@ -197,14 +197,13 @@ operand.toString = function() {
     return '6';
 };`;
         check(execute(setup, realm).type === "normal", "hook setup");
-        const result = execute("\n" + expression + ";", realm);
-        // Preserve the parser-provided expression location (binary start, not token).
-        const column = 1;
-        check(result.type === "throw" && result.diagnostic.phase === "runtime" && result.diagnostic.name === "TypeError"
-            && result.diagnostic.message === "object-to-primitive conversion unsupported"
-            && result.diagnostic.loc.line === 2 && result.diagnostic.loc.column === column, expression + " located object rejection");
+        const result = execute("let converted = " + expression + ";", realm);
+        check(result.type === "normal", expression + " hook completion");
+        const actual = value(realm, "converted");
+        const expected = [false, true, false, false, true, false, false, false, false, true, false, false, true, false, false, false];
+        check(actual.kind === "boolean" && actual.value === expected[objectExpressions.indexOf(expression)], expression + " fixed hook result");
         const hooks = value(realm, "hooks");
-        check(hooks.kind === "number" && hooks.value === 0, "no conversion hooks");
+        check(hooks.kind === "number" && hooks.value === 1, "one conversion hook");
     }
 }
 

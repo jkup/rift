@@ -105,7 +105,7 @@ for (const expression of ["+operand", "-operand", "operand - 2", "2 - operand", 
     const object = new ObservedObject();
     seed(realm, "operand", { kind: "object", object });
     const result = execute(expression + ";", realm);
-    check(result.type === "throw" && result.diagnostic.name === "TypeError" && object.reads === 0, expression + " does not read hooks");
+    check(result === sentinel && object.reads === 1, expression + " exact hook Get throw");
 }
 for (const op of ["-", "*", "/", "%"]) {
     const realm = new Realm((line) => console.log(line));
@@ -140,19 +140,19 @@ for (const op of ["+", "-"]) {
     check(execute(op + "stop();", realm) === sentinel, "exact unary throw " + op);
 }
 
-// Hook-bearing ordinary objects, arrays and functions must reject without calls.
+// Hook-bearing ordinary objects, arrays and functions convert with exactly one valueOf call.
 for (const objectSource of ["{}", "[]", "function() {} "]) {
     for (const expression of ["+operand", "-operand", "operand - 2", "2 - operand", "operand * 2", "2 * operand", "operand / 2", "2 / operand", "operand % 2", "2 % operand"]) {
         const realm = new Realm((line) => console.log(line));
         check(execute("let operand = " + objectSource + ";\nlet hooks = 0;\noperand.valueOf = function() { hooks = hooks + 1; return 6; };\noperand.toString = function() { hooks = hooks + 1; return '6'; };", realm).type === "normal", "hook setup");
-        const result = execute("\n" + expression + ";", realm);
-        // Preserve the parser-provided expression location (binary start, not token).
-        const column = 1;
-        check(result.type === "throw" && result.diagnostic.phase === "runtime" && result.diagnostic.name === "TypeError"
-            && result.diagnostic.message === "object-to-primitive conversion unsupported"
-            && result.diagnostic.loc.line === 2 && result.diagnostic.loc.column === column, expression + " located object rejection");
+        const result = execute("let converted = " + expression + ";", realm);
+        check(result.type === "normal", expression + " hook completion");
+        const actual = value(realm, "converted");
+        const expressions = ["+operand", "-operand", "operand - 2", "2 - operand", "operand * 2", "2 * operand", "operand / 2", "2 / operand", "operand % 2", "2 % operand"];
+        const expected = [6, -6, 4, -4, 12, 12, 3, 0.3333333333333333, 0, 2];
+        check(actual.kind === "number" && Object.is(actual.value, expected[expressions.indexOf(expression)]), expression + " fixed hook result");
         const hooks = value(realm, "hooks");
-        check(hooks.kind === "number" && hooks.value === 0, "no conversion hooks");
+        check(hooks.kind === "number" && hooks.value === 1, "one conversion hook");
     }
 }
 // Superseded plus rejections remain explicit positive regressions.
