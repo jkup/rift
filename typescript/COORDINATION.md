@@ -224,3 +224,9 @@ Accepted design `25292bb`: inspected actual diff, runtime/array storage and disp
 Next ready TS-015A implements only context/bootstrap plumbing under the frozen task contract; effectful length remains blocked until acceptance. Claude queue remains three reserved ready tasks; main unchanged. Delegated design push was rejected for documentation export authorization; coordinator verified existing jkup/rift origin and uses the owner's original explicit commit/push authorization for the reviewed design and next-task contract.
 
 Reviewed design and contract pushed through f1987eb, resolving delegated push rejection. Active sole writer: TS-015A chat `01a19928-e995-7d43-ae9e-f01aad50eea1`, host `local`, base `f1987eb`. Explicit progress wait confirmed active; saved cursor `f24cf615-82a6-4843-8298-325786c7abd1:2`. Owns only frozen context/bootstrap plumbing. Coordinator owns this file; effectful array length remains blocked pending review.
+
+## TS-015A acceptance — 2026-11-01 22:21 UTC
+
+Accepted pushed implementation `c77d9f1`: reviewed required-context forwarding, validated ordinary/bootstrap split, constructor bypass, shared sparse shrink/rollback, all caller migrations and P1-P6 assertions. Independently rebuilt Node/native: 161/161 each, no skips; all twenty static builds/coverage gates pass. Retained producer typecheck/runner20/probes10 evidence inspected. Diff-check warnings are confined to verbatim sandbox/typecheck transcripts, not source. Completed chat idle; saved cursor `f24cf615-82a6-4843-8298-325786c7abd1:3`.
+
+Next ready TS-015B implements effectful array length under the accepted design's L1-L21 matrix and explicit old-test migrations. Bootstrap and direct converters retain zero-hook primitive boundaries. Claude queue remains reserved; main remains unchanged.
