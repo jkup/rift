@@ -605,3 +605,27 @@ installed, so existing no-method coercion failures remain intentional.
 The accepted [design](realm-intrinsic-prototypes.md) records fixed ECMA-262 2025
 and pinned engine262 sources and the adopted boundaries. No engine code is copied.
 See [validation](validation/ts-016a/README.md) for G1-G17 coverage and lane evidence.
+
+## Function.prototype.call (TS-016B)
+
+A fresh registered builtin on each Realm's Function root validates its receiver's
+callable slot, selects the first argument (or undefined), copies remaining Values
+in order, and forwards through the supplied OperationContext.call with the same
+location. It performs no target property lookup, coercion, boxing, or extra tick.
+The original argument list is untouched; Values retain identity. Noncallable
+receivers throw the located TypeError `Function.prototype.call receiver is not callable`.
+Argument expressions have already evaluated before this check, as for other calls.
+
+The evaluator boundary is unchanged. Both the builtin and target occupy active
+call slots: proper tail calls (the specification's PrepareForTailCall) are not
+implemented. All guest functions retain Rift's existing strict receiver profile.
+Foreign functions keep their lexical environments and object identities but run
+in the caller's context; body allocations use the caller Realm. This method does
+not add standard foreign-function Realm entry, sloppy this substitution, Function
+constructors, apply/bind/toString, or ordinary guest function metadata inference.
+
+Sources consulted on 2026-11-01: [ECMA-262 2025, 20.2.3.3](https://tc39.es/ecma262/2025/multipage/fundamental-objects.html#sec-function.prototype.call)
+and [engine262 FunctionPrototype.mts at d553e7b52501fbc47eae981c8d0fa7a5c26d0171](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/intrinsics/FunctionPrototype.mts).
+Adopted callable validation and ordered unchanged Value forwarding; no source
+copied, no generator execution machinery or tail-call emulation adopted.
+[Validation and scope](validation/ts-016b/README.md).

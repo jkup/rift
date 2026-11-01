@@ -321,3 +321,13 @@ G1-G11/G14/G15/G17 live in realms.ts and G12/G13/G16 in array-map.ts, with all
 array literal shape expectations selecting their explicit Realm. No later method
 batch or foreign-function Realm entry is implemented. See
 [implementation evidence](validation/ts-016a/README.md).
+
+## TS-016B method note
+
+Function.prototype.call is now the sole installed standard prototype method.
+The original G17 graph-only expectation is extended from name,length to
+name,length,call on F; all its missing-method and other root assertions remain.
+No constructor back-links or coercion methods are installed. The strict receiver,
+caller-context foreign execution and lack of proper tail calls are explicit in
+[architecture decisions](architecture-decisions.md#functionprototypecall-ts-016b).
+See [TS-016B evidence](validation/ts-016b/README.md).

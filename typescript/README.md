@@ -76,8 +76,10 @@ follow `src/interpreter.ts` into the parser and evaluator. See the
 
 TS-016A supplies per-Realm Object, Function and Array prototype roots and explicit
 allocation factories. Builtin name/length metadata is centralized. These are
-partial roots: no constructor globals/back-links or standard prototype methods
-are installed. Host low-level objects still default to null prototypes; foreign
+partial roots: no constructor globals/back-links are installed. TS-016B adds only
+Function.prototype.call (name call, length 1), preserving strict receivers and
+shared budgets without proper tail calls. Host low-level objects still default to null prototypes; foreign
 function execution still uses the caller context. See the
 [graph contract](docs/realm-intrinsic-prototypes.md) and
-[validation](docs/validation/ts-016a/README.md).
+[graph validation](docs/validation/ts-016a/README.md) and
+[call validation](docs/validation/ts-016b/README.md).

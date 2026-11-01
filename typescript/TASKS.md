@@ -647,7 +647,7 @@ Coordinator acceptance: TS-016A accepted at `2dfdbdc` on 2026-11-01. Independent
 
 ### TS-016B — Function.prototype.call
 
-Status: **ready**. Prerequisite TS-016A accepted `2dfdbdc`. Implement only the first method proposed in docs/realm-intrinsic-prototypes.md. Own new src/builtins/function.ts, minimal Realm registration after roots exist, new compiled test/function-call.ts and runtime-read test/fixtures/function-call.js, required driver registration, test/realms.ts exact root-key migration, scoped docs, task handoff and docs/validation/ts-016b/. Coordinator owns COORDINATION.md; preserve Claude queue.
+Status: **in progress**. Owner: Codex implementation chat `01a1996c-a05b-7201-a956-00f4f82aab6b`; assigned base `7d40c24`, checkout `d8cceb9` (coordinator changes preserved). Prerequisite TS-016A accepted `2dfdbdc`. Implement only the first method proposed in docs/realm-intrinsic-prototypes.md. Own new src/builtins/function.ts, minimal Realm registration after roots exist, new compiled test/function-call.ts and runtime-read test/fixtures/function-call.js, required driver registration, test/realms.ts exact root-key migration, scoped docs, task handoff and docs/validation/ts-016b/. Coordinator owns COORDINATION.md; preserve Claude queue.
 
 Install one fresh call builtin per Realm on functionPrototype via existing registerBuiltin, name call, length 1, method W/E/C true/false/true, metadata false/false/true and function prototype F. No Function global or constructor back-link. Follow ECMA-262 2025 20.2.3.3: validate callable receiver (Value object with callable slot), select first argument or guest undefined as thisArg, copy remaining Values in order, and return active context.call(receiver, thisArg, rest, loc). Do not read target.call/name/length/prototype, box or coerce anything, modify the original argument list, create an evaluator, or bypass call/step limits. Choose and document a precise located TypeError for noncallable receiver. Existing evaluator call boundary remains unchanged. This is the existing strict receiver/limited realm-entry profile, without proper tail calls; document that limitations apply to this method too.
 
@@ -656,3 +656,20 @@ Use readable expectation-bearing runtime-read guest functions plus host inspecti
 Extend the existing G17 exact Function-root own keys from name,length to name,length,call while preserving all other graph/metadata/missing-method assertions. Keep all baseline cases; add a new compiled driver and fail-closed gate (minimum 163 guest entries and 22 native gates). No object/array conversion, apply/bind/toString, boxing/symbols/accessors, realm-entry redesign, guest own metadata inference or constructor support. Retain the accepted isolated compiler import workaround.
 
 Consult the fixed specification and relevant engine source, record revisions. Run typecheck, runner/probes, rebuilt Node/native and all static build/coverage gates; reduce compiler failures before workarounds. Record precise results/limitations, commit/push coherent work, stop for review. No C++/Claude/COORDINATION/pin changes, branch switch, main merge or successor assignment.
+
+TS-016B handoff (2026-11-01): implemented for coordinator review; status remains
+in progress until acceptance. Fresh per-Realm call builtin forwards unchanged
+Values through active context.call with exact noncallable-receiver diagnostic.
+Evaluator unchanged; proper tail calls and foreign-function Realm entry remain
+unsupported. New runtime-read guest fixture and compiled host driver cover the
+frozen forwarding, errors, reentry/budgets, metadata and Realm-isolation cases.
+Only G17's exact F root keys changed; all 162 baseline entries retained.
+
+Typecheck passes; runner 20/20; probes 10/10; rebuilt Node/native 163/163 each,
+no skips; all 22 static-only and separate coverage gates pass. CLI 1166/1166,
+new driver 1303/1303 static statements. A test-only un-narrowed catch comparison
+was reduced before using the existing instanceof Error narrowing pattern;
+original failure and paired reductions are retained. Accepted conversion import
+workaround preserved. Pinned Zig installation access was required; initial
+sandbox failure retained separately. Evidence: docs/validation/ts-016b/README.md.
+No C++/Claude/COORDINATION/pin edits, evaluator redesign, successor or main merge.

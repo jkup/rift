@@ -225,6 +225,9 @@ execute("length-coercion", lengthCommand, lengthArgs, { stdout: "length coercion
 const arrayLengthCommand = lane === "node" ? process.execPath : join(root, "build/native/array-length-coercion" + suffix);
 const arrayLengthArgs = lane === "node" ? [join(root, "build/node/test/array-length-coercion.js")] : [];
 execute("array-length-coercion", arrayLengthCommand, arrayLengthArgs, { stdout: "array length coercion passed\n" });
+const functionCallCommand = lane === "node" ? process.execPath : join(root, "build/native/function-call" + suffix);
+const functionCallArgs = lane === "node" ? [join(root, "build/node/test/function-call.js")] : [];
+execute("function-call", functionCallCommand, functionCallArgs, { stdout: "function call passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

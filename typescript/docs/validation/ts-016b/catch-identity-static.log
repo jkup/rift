@@ -1,0 +1,11 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\docs\validation\ts-016b\catch-identity-static.ts
+
+  statements analyzed   6
+  compile statically    6  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+  dynamic tier   (tier assignment, report-only; --tier=auto)
+    0 functions already operate on dynamic values (0 statements)
+
+    0 demotion requests (refusals and fences the dynamic tier would replace)

@@ -130,7 +130,7 @@ for (const realm of [r1, r2]) {
     const ar = realm.arrayPrototype;
     checkGraph(o.getPrototypeOf() === null && f.getPrototypeOf() === o && ar.getPrototypeOf() === o, "G1 graph");
     checkGraph(o.callable === null && f.callable !== null && ar instanceof GuestArray, "G1 root kinds");
-    checkGraph(o.ownPropertyKeys().length === 0 && f.ownPropertyKeys().join(",") === "name,length" && ar.ownPropertyKeys().join(",") === "length", "G17 exact initial keys");
+    checkGraph(o.ownPropertyKeys().length === 0 && f.ownPropertyKeys().join(",") === "name,length,call" && ar.ownPropertyKeys().join(",") === "length", "G17 exact initial keys");
     for (const root of [o, f, ar]) {
         for (const key of ["constructor", "toString", "valueOf", "join", "map"]) checkGraph(root.get(key).kind === "undefined", "G17 missing methods");
     }

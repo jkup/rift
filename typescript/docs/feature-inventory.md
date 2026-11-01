@@ -72,7 +72,7 @@ Internal ordinaryToPrimitive and partial toPrimitive support explicit own or
 inherited callable valueOf/toString methods, original receivers, fresh fallback
 lookups and shared active evaluation budgets. A compiled test bridge exercises
 real guest methods; no guest intrinsic is registered. TS-012 connects the helper to existing numeric, addition and relational operators.
-TS-013 connects computed keys and required-context reference consumption. TS-014 connects array-like length and internal map. TS-015B connects semantic array length definitions through two separate number-hint conversions. Direct numeric/string converters and bootstrap array length remain primitive-only. Standard prototype methods, symbol hooks, Date/wrappers, accessors/proxies
+TS-013 connects computed keys and required-context reference consumption. TS-014 connects array-like length and internal map. TS-015B connects semantic array length definitions through two separate number-hint conversions. Direct numeric/string converters and bootstrap array length remain primitive-only. Standard conversion methods, symbol hooks, Date/wrappers, accessors/proxies
 and full ToPrimitive remain unsupported. Evidence: [TS-011](validation/ts-011/README.md).
 
 TS-015A requires OperationContext on semantic Set/Define and replaces host setup
@@ -85,3 +85,18 @@ TS-015B preserves original assignment RHS identity, post-hook length observation
 readonly Set ordering and sparse partial deletion/freeze. Runtime-read guest
 methods and direct definitions cover L1-L21. Bootstrap remains a validated
 zero-hook path. See [TS-015B evidence](validation/ts-015b/README.md).
+
+### Function.prototype.call (TS-016B)
+
+Functions now inherit a per-Realm `call` builtin (name `call`, length 1).
+`f.call(thisArg, a, b)` passes thisArg and remaining Values unchanged. A missing
+thisArg is undefined; invalid callable receivers produce a located TypeError.
+Saved methods can be borrowed and used after target.call is shadowed. Method
+and metadata descriptors use the existing standard builtin registration flags.
+No ordinary/array instance inherits call, and null-root host functions remain bare.
+
+Existing strict receiver behavior applies. Proper tail calls and function-Realm
+entry remain unsupported: forwarding occupies both builtin and target call slots,
+and foreign targets execute in the caller context with their original lexical
+environment. No constructors, apply/bind/toString, boxing or conversion methods
+are added. See [TS-016B evidence](validation/ts-016b/README.md).
