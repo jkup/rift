@@ -18,7 +18,7 @@ Repository: `C:\Users\jonku\code\rift`. Integration branch: `typescript-scriptc-
 - Completed TS-002 chat: `01a197b1-67cb-7e00-87ed-dc86a82b933b`, host `local`, idle. Last cursor: `8e67dac2-0c53-46ac-bf9e-da49a0475e04:4`.
 - TS-003 accepted at `e120f0c`: reviewed exact constants, non-coercing predicates, descriptor flags, name/length metadata and per-realm isolation; independently rebuilt both guest lanes (128/128 each) with static native build gates. Number remains intentionally partial and non-callable.
 - Completed TS-003 chat: `01a197c2-c572-74c0-8236-1b92a8297bf3`, host `local`, idle. Last cursor: `f7ce1e33-4bf0-4e9c-a44f-743403edfc69:3`.
-- Next dispatch: TS-004A data-descriptor validation; chat pending creation. Do not run shared-manifest/core writers simultaneously in this checkout. Prototype/key-order tasks remain blocked pending the descriptor interface and review.
+- Active: TS-004A data-descriptor validation, chat `01a197d0-4326-7392-b10a-3d5936222503`, host `local`, dispatched from `fc31b54`. Sole implementation writer; owns runtime data-descriptor operations, compiled descriptor host tests, necessary test-entry integration, documentation and new `docs/validation/ts-004a/` evidence. Prototype/key-order tasks remain blocked pending the descriptor interface and review. Do not run shared-manifest/core writers simultaneously in this checkout.
 - Preserve deferred scope and explicitly document partial semantics. Do not turn task completion into claims of complete support.
 
 ## Review cycle
