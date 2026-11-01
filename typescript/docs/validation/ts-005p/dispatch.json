@@ -1,0 +1,73 @@
+{
+  "nodeVersion": "v26.13.0",
+  "expected": "dispatch: 7 expected assertions passed\n",
+  "verdict": "PASS",
+  "tsc": {
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "node_modules/typescript/bin/tsc",
+      "--ignoreConfig",
+      "--strict",
+      "--target",
+      "es2024",
+      "--module",
+      "nodenext",
+      "--outDir",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\array-prerequisites",
+      "probes/array-prerequisites/dispatch.ts"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": ""
+  },
+  "node": {
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\array-prerequisites\\dispatch.js"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "dispatch: 7 expected assertions passed\n",
+    "stderr": ""
+  },
+  "build": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+    "args": [
+      "build",
+      "probes/array-prerequisites/dispatch.ts",
+      "--tier",
+      "static-only",
+      "-o",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\array-prerequisites\\dispatch.exe"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\array-prerequisites\\dispatch.exe\n",
+    "stderr": ""
+  },
+  "coverage": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+    "args": [
+      "coverage",
+      "probes/array-prerequisites/dispatch.ts"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\array-prerequisites\\dispatch.ts\n\n  statements analyzed   33\n  compile statically    33  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+    "stderr": ""
+  },
+  "native": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\array-prerequisites\\dispatch.exe",
+    "args": [],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "dispatch: 7 expected assertions passed\n",
+    "stderr": ""
+  }
+}
