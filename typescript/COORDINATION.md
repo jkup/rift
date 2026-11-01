@@ -103,4 +103,10 @@ Accepted TS-005M design `0fa0aca`: inspected actual evaluator/registration calle
 
 TS-005C active-context implementation is ready. Map still blocked until context acceptance and contract freeze. Implementation chat push was rejected for missing export authorization; coordinator verified existing origin jkup/rift and original owner authorization to commit/push this branch before retrying. Claude queue preserved.
 
-Active sole implementation writer: TS-005C chat `01a1984b-96e9-7b83-b5fb-96dcb4b661c9`, host `local`, base `89ecebc`. Owns context/call-boundary migration and scoped tests/registration/docs. Initial progress active; saved cursor `b1c72b9f-e3a2-4982-a7df-97a3243d0eb9:1`. Design/acceptance push succeeded through `89ecebc`, resolving the implementation chat's export-authorization rejection using verified original owner authorization. Coordinator owns this file; no map implementation yet.
+Completed implementation writer: TS-005C chat `01a1984b-96e9-7b83-b5fb-96dcb4b661c9`, host `local`, base `89ecebc`. Owns context/call-boundary migration and scoped tests/registration/docs. Initial progress active; saved cursor `b1c72b9f-e3a2-4982-a7df-97a3243d0eb9:1`. Design/acceptance push succeeded through `89ecebc`, resolving the implementation chat's export-authorization rejection using verified original owner authorization. Coordinator owns this file; no map implementation yet.
+
+## Review at 2026-11-01 18:21 UTC
+
+Accepted TS-005C `5d59909`: actual context/call-boundary diff, all callers and compiled runtime tests reviewed. Independently rebuilt Node/native suites, 136/136 each; all ten static gates pass. Producer runner20/probes10/typecheck retained. Coordinator committed and pushed reviewed implementation after verifying original owner authorization and origin, resolving implementation chat approval rejection. No general host-fault frame reuse/cross-realm intrinsic claims. Chat idle; cursor `b1c72b9f-e3a2-4982-a7df-97a3243d0eb9:2`.
+
+TS-005B now ready only as internal object-only default-array map under frozen contract. No standard API, boxing or complete species. Claude tasks reserved and unchanged.
