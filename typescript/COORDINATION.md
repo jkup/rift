@@ -166,3 +166,11 @@ Accepted `b0c7e46`: reviewed actual plus implementation, fixed primitive/formatt
 
 Next ready TS-010 integrates primitive relational comparisons with explicit unordered NaN semantics and UTF-16 string ordering. Frozen contract in TASKS.md; same integration branch.
 Active sole implementation writer: TS-010 chat `01a198b9-bdc0-79c0-a5b6-1ddda9b52c1f`, host `local`, assigned base `86ffe9a`. Progress confirmed active; saved cursor `12e32293-fc0f-4812-a162-72788e5e7557:1`. Owns frozen relational comparison implementation/tests/docs only. Coordinator owns this file; review actual work and all gates before acceptance.
+
+## TS-010 acceptance — 2026-11-01 20:21 UTC
+
+Accepted `8cf17fa`: reviewed actual primitive relational mapping, explicit unordered result, UTF-16 code-unit loop, fixed comparison/abrupt/no-hook tests and positive migration. Independently rebuilt Node/native: 157/157 each, no skips; sixteen static gates pass. Producer runner20/probes10/typecheck evidence retained. Completed chat idle; cursor `12e32293-fc0f-4812-a162-72788e5e7557:2`.
+
+Checkout was unexpectedly on clean main at review start; inspected reflog and chat inventory (all implementation chats idle), then restored authorized integration branch without modifying main. Implementation push approval had rejected export authorization. Coordinator verified original human authorization and existing origin jkup/rift, then successfully pushed 8cf17fa; no blocker remains.
+
+Next ready TS-011P is a bounded design/caller audit for context-aware ordinary object coercion. No runtime implementation until reviewed contract; main unchanged, Claude queue reserved.
