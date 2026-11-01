@@ -1,5 +1,14 @@
 # CLAUDE.md - Rift JavaScript Runtime
 
+## TypeScript rewrite companion work
+
+When asked to assist the TypeScript conversion, read `typescript/AGENTS.md` and
+`typescript/docs/project-goals.md`, then choose one ready task from
+`Claude Roadmap.md`. Follow that task's ownership, claiming and handoff rules.
+The C++ commands and conventions below apply to C++ work; do not run a repository-wide
+formatter or alter the core interpreter for an assistance-only task. Do not duplicate
+the active implementation work in `typescript/TASKS.md`.
+
 ## Commands
 
 | Task | Command |

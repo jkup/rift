@@ -21,6 +21,8 @@ These rules govern the TypeScript rewrite. The owner approved this direction on 
 
 ## Task coordination
 
+- Independent companion work is listed in the root `Claude Roadmap.md`. The owner can have Claude Code claim any ready entry. Those entries own only their specified assistance output paths and do not authorize changes to the active core task. Companion agents claim that queue rather than `TASKS.md`.
+- The coordinating agent maintains the companion queue during reviews: add useful independent tasks with explicit ownership and acceptance, review returned work, and mark it accepted before integrating it. Do not add speculative busywork or assign the same work in both queues.
 - Claim a ready task in `TASKS.md` before starting. Do not start blocked tasks or duplicate another agent's work.
 - The initial integration owner establishes shared types, bootstrap and test interfaces. Feature agents coordinate changes to those interfaces rather than creating alternate versions.
 - Keep work within the assigned task. Record newly discovered work as blocked/ready tasks rather than silently expanding scope.
