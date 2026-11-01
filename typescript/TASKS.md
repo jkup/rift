@@ -62,7 +62,7 @@ Constants: non-writable/non-enumerable/non-configurable. Predicate properties: w
 
 ## TS-004 — Ordinary object semantics
 
-Status: **in progress** as a sequenced umbrella; TS-004A is accepted and TS-004B awaits coordinator review. Integration owner must sequence these changes. No accessors or prototype work is authorized merely by claiming TS-004A.
+Status: **in progress** as a sequenced umbrella; TS-004A is accepted and TS-004B is accepted and TS-004C is ready. Integration owner must sequence these changes. No accessors or prototype work is authorized merely by claiming TS-004A.
 
 ### TS-004A — Validate data descriptor updates
 
@@ -76,13 +76,13 @@ Acceptance: expected host assertions in both compiled lanes for creating/default
 
 ### TS-004B — Prototype reads/writes and receivers
 
-Status: **in progress — awaiting coordinator review**. Implemented by Codex chat `01a197e0-1cfb-7e32-965b-278b987b6bf7`, base `984064e` (includes accepted TS-004A and approved contract). Own necessary runtime consumers, prototype tests, registration and scoped docs. Ordinary prototype traversal, cycle rejection, inherited data reads and explicit-receiver writes only; no accessors. The approved contract below freezes the APIs and host test entry.
+Status: **done** — coordinator accepted `07902da` after source review and independent rebuilt Node/native lanes (130/130 each; all static gates pass). Implemented by Codex chat `01a197e0-1cfb-7e32-965b-278b987b6bf7`, base `984064e` (includes accepted TS-004A and approved contract). Own necessary runtime consumers, prototype tests, registration and scoped docs. Ordinary prototype traversal, cycle rejection, inherited data reads and explicit-receiver writes only; no accessors. The approved contract below freezes the APIs and host test entry.
 
 Handoff (2026-11-01): implemented the frozen data-only prototype and receiver contract, with iterative Get/Set/cycle traversal, explicit normal/throw result types and strict assignment boundary. Existing evaluator references require no source change; seeded guest tests exercise inherited method this and mutation. Host driver covers distinct receivers, primitive/read-only/nonextensible rejection, prototype invariants, 20,000-link chains and realm isolation. Typecheck passes; runner 20/20; probes 10/10; Node/native rebuilt lanes 130/130 each with no skips. Static statements: CLI 753/753, realms 818/818, descriptors 218/218, prototypes 825/825. Zig linking needed authorized library access; both failed sandbox and successful transcripts retained under `docs/validation/ts-004b/`. No subsequent work dispatched; TS-004C stays blocked.
 
 ### TS-004C — Own property ordering and deletion
 
-Status: **blocked** by TS-004A plus a frozen internal deletion/key-list API (integration owner). Planned files: new `src/property-keys.ts`, `src/runtime.ts`, `test/object-keys.ts`. Scope string keys only: canonical array-index ordering before insertion-ordered strings, deleting configurable properties, delete/reinsert ordering, and non-configurable rejection. Test boundary index strings, ordinary strings, overwrites and reinsertion under Node/native. Symbols and guest reflection builtins are separate prerequisites before claiming complete OwnPropertyKeys.
+Status: **ready** — descriptor/prototype prerequisites accepted; approved API contract below. Planned files: new `src/property-keys.ts`, `src/runtime.ts`, `test/object-keys.ts`. Scope string keys only: canonical array-index ordering before insertion-ordered strings, deleting configurable properties, delete/reinsert ordering, and non-configurable rejection. Test boundary index strings, ordinary strings, overwrites and reinsertion under Node/native. Symbols and guest reflection builtins are separate prerequisites before claiming complete OwnPropertyKeys.
 
 ## TS-005 — Array method batches
 
@@ -112,3 +112,13 @@ Add `internalGet(key, receiver, loc)` returning normal/throw Value completion an
 Keep a private prototype slot, initially null. `getPrototypeOf()` returns GuestObject or null; `setPrototypeOf(prototype)` returns normal boolean, rejects cycles and changes on nonextensible objects, but accepts setting the existing prototype even when nonextensible. Use iterative traversal to avoid host stack overflow on deep host-created chains. Preserve ordinary receiver-own descriptor/extensibility checks and avoid mutating the lookup base when the receiver differs. No automatic intrinsic prototype hierarchy or guest reflection API is implied.
 
 Register a compiled host driver in both lanes with a fixed success line and throwing assertions. It may seed guest realms with prototype-bearing objects for guest evaluator/receiver tests; do not add guest Object APIs just to expose the tests. Own necessary runtime consumers, test registration, scoped documentation and new validation evidence. Accessors, exotics, deletion/key ordering, arrays and coercion remain excluded. TS-004C remains blocked until its own API freeze.
+
+### TS-004C approved interface contract (2026-11-01)
+
+Add `internalDelete(key): InternalBooleanCompletion`: missing or configurable own properties return normal true, nonconfigurable own properties return normal false without mutation. Inherited properties are never deleted. No guest delete syntax or strict-delete wrapper in this batch.
+
+Add `ownPropertyKeys(): PropertyKey[]`, returning a detached list of all own string keys (including nonenumerable), canonical array indices ascending first, then other strings in insertion order. No prototype traversal. Updates preserve insertion position; successful deletion/reinsertion creates a new position. Storage Map insertion order may supply the string ordering. Document that the list is string-only and ordinary objects cannot throw here; no complete symbol/exotic OwnPropertyKeys claim.
+
+Export `arrayIndex(key: PropertyKey): number | undefined` from `src/property-keys.ts`. Recognize exactly canonical decimal integer strings 0 through 4294967294; 4294967295, -0, leading zeros, signs, whitespace, fractions and exponent forms are ordinary strings. Use clear bounded digit parsing, avoiding guest coercion, host sorting defaults or bitwise signed truncation. This classifier is the future array-storage dependency. Freeze numeric ordering with an explicit comparator or readable equivalent supported by pinned static compilation.
+
+Compiled host tests must cover boundary/noncanonical keys, nonenumerable keys, overwrite order, delete/reinsert, atomic failed deletion, absent/inherited deletion, snapshot independence and realm isolation. Register the driver in both lanes; retain all previous checks. Own only runtime/property-keys, host tests and necessary registration, scoped docs and new ts-004c validation evidence. Preserve C++, pins, guest syntax and Claude outputs.
