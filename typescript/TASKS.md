@@ -52,7 +52,7 @@ Acceptance: fixed outputs for right association, precedence with assignment/||/a
 
 ## TS-003 — Number built-ins batch
 
-Status: **in progress** — implementation complete, awaiting coordinator review. Owner: Codex implementation chat `01a197c2-c572-74c0-8236-1b92a8297bf3`; base `6c79781` (clean checkout; coordinator dispatch recorded).
+Status: **done** — coordinator accepted `e120f0c` on 2026-11-01 after reviewing constant/predicate implementation, descriptors, metadata, realm isolation and evidence, and independently rebuilding both guest lanes (128/128 each, static native gate passes). Owner: Codex implementation chat `01a197c2-c572-74c0-8236-1b92a8297bf3`; base `6c79781` (clean checkout; coordinator dispatch recorded).
 
 Handoff (2026-11-01): exact eight constants and two non-coercing predicates registered per realm, with descriptor flags and predicate name/length metadata. No shared runtime changes. Typecheck passes; runner 20/20; probes 10/10; guest Node/native 128/128 each, no skips. Native CLI 679/679 and host driver 744/744 static statements. Zig linking required approved library access; initial sandbox failures and successful runs are retained in `docs/validation/ts-003/`. Number remains intentionally non-callable, with construction/conversion/wrappers/formatting/extra predicates/reflection deferred. No TS-004A work; coordinator acceptance pending.
 

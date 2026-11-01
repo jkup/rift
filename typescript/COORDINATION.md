@@ -16,7 +16,9 @@ Repository: `C:\Users\jonku\code\rift`. Integration branch: `typescript-scriptc-
 
 - TS-002 accepted at `493fbd4`: reviewed precedence/assignment arms, short-circuiting, abrupt completion and bounded-depth tests; independently rebuilt Node and native guest lanes, 112/112 each. Static native build gates passed. Existing syntax/coercion limitations remain explicit.
 - Completed TS-002 chat: `01a197b1-67cb-7e00-87ed-dc86a82b933b`, host `local`, idle. Last cursor: `8e67dac2-0c53-46ac-bf9e-da49a0475e04:4`.
-- Active: TS-003 Number constants/predicates, chat `01a197c2-c572-74c0-8236-1b92a8297bf3`, host `local`, dispatched from `757fca7`. Sole implementation writer. Ownership includes the planned realm registration, Number-only generated tests and `docs/validation/ts-003/`; no general runtime redesign. TS-004A data-descriptor validation follows after review. Do not run shared-manifest/core writers simultaneously in this checkout.
+- TS-003 accepted at `e120f0c`: reviewed exact constants, non-coercing predicates, descriptor flags, name/length metadata and per-realm isolation; independently rebuilt both guest lanes (128/128 each) with static native build gates. Number remains intentionally partial and non-callable.
+- Completed TS-003 chat: `01a197c2-c572-74c0-8236-1b92a8297bf3`, host `local`, idle. Last cursor: `f7ce1e33-4bf0-4e9c-a44f-743403edfc69:3`.
+- Next dispatch: TS-004A data-descriptor validation; chat pending creation. Do not run shared-manifest/core writers simultaneously in this checkout. Prototype/key-order tasks remain blocked pending the descriptor interface and review.
 - Preserve deferred scope and explicitly document partial semantics. Do not turn task completion into claims of complete support.
 
 ## Review cycle
