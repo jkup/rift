@@ -209,3 +209,9 @@ Reviewed key milestone and acceptance pushed through d341380, resolving implemen
 Reviewed candidate `cd9b121` actual production diff, call migration, tests/evidence and scope. Independent rebuilt Node suite passes 161/161. Not accepted yet: requested readability fix for compressed multistep test helpers/scenarios and guest methods, plus exact runaway error-message assertions distinguishing step/call limits from unrelated RangeErrors. Preserve every case/order/assertion; rerun required gates. Native independent final rebuild waits for fix.
 
 Review sent to owning chat; progress active, saved cursor `5f1b1803-67a2-4864-8583-89f3b7440952:3`. Same sole writer, no successor dispatch. Coordinator owns this file, leaves implementation files untouched. Claude queue reserved, main unchanged. Delegated push was rejected for missing recognized export authorization; root retains original human authorization for jkup/rift and will push reviewed changes.
+
+## TS-014 acceptance — 2026-11-01 21:51 UTC
+
+Accepted final `d477b86` (production `cd9b121`). Reviewed full readability fix and exact step/call-depth assertions; prior core/matrix review retained. Independently rebuilt Node/native: 161/161 each, no skips; all twenty static gates pass. Producer runner20/probes10/typecheck retained. Completed chat idle; cursor `5f1b1803-67a2-4864-8583-89f3b7440952:4`. Array-like lengths support ordinary coercion; array storage length still primitive-only.
+
+Next TS-015P resolves required context and bootstrap definition API for array length coercion before implementation. Main unchanged; Claude queue reserved. Coordinator pushes reviewed task/fix using original human authorization for existing jkup/rift origin, resolving delegated push rejection.
