@@ -216,3 +216,9 @@ Accepted final `d477b86` (production `cd9b121`). Reviewed full readability fix a
 
 Next TS-015P resolves required context and bootstrap definition API for array length coercion before implementation. Main unchanged; Claude queue reserved. Coordinator pushes reviewed task/fix using original human authorization for existing jkup/rift origin, resolving delegated push rejection.
 Reviewed TS-014 and acceptance pushed successfully through f2fde9c. Active sole writer: TS-015P design chat `01a19919-ec56-7c02-9dec-ec2e5aa870eb`, host `local`, assigned base `f2fde9c`. Progress confirmed active; saved cursor `23fc9186-660c-4dbb-ac3a-afac389fb408:1`. Owns frozen design/optional probes/evidence and task handoff only. Coordinator owns this file; no array definition implementation before contract review.
+
+## TS-015P acceptance — 2026-11-01 22:06 UTC
+
+Accepted design `25292bb`: inspected actual diff, runtime/array storage and dispatch consumers, caller inventory and spec ArraySetLength double conversion/post-conversion descriptor order. Required-context semantic path and validated bootstrap split are coherent; batch separation keeps storage refactoring reviewable before guest reentrancy. Documentation diff check passes. No runtime tests rerun for prose; baseline 161/161 and twenty static gates remain inherited TS-014 evidence, not new compiler proof. Completed design chat idle; saved cursor `23fc9186-660c-4dbb-ac3a-afac389fb408:2`.
+
+Next ready TS-015A implements only context/bootstrap plumbing under the frozen task contract; effectful length remains blocked until acceptance. Claude queue remains three reserved ready tasks; main unchanged. Delegated design push was rejected for documentation export authorization; coordinator verified existing jkup/rift origin and uses the owner's original explicit commit/push authorization for the reviewed design and next-task contract.
