@@ -111,15 +111,24 @@ for (const value of invalidInputs) {
     length(a, 3); check(a.ownPropertyKeys().join(",") === "0,1,2,length", "invalid conversion no mutation");
 }
 const coercible = new GuestObject();
+let hookCalls = 0;
 const hook = new GuestObject();
-hook.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc): Completion => { throw new Error("unsupported hook called"); } };
+hook.callable = {
+    kind: "builtin",
+    invoke: (_receiver, _args, _context, _loc): Completion => {
+        hookCalls++;
+        return { type: "normal", value: num(2) };
+    },
+};
 coercible.bootstrapDefine("valueOf", { value: obj(hook), writable: true, enumerable: true, configurable: true });
 coercible.bootstrapDefine("toString", { value: obj(hook), writable: true, enumerable: true, configurable: true });
-const unsupported = three();
-const rejected = defineLength(unsupported, { value: obj(coercible), writable: false });
-error(rejected, "TypeError");
-check(rejected.type === "throw" && rejected.diagnostic.message === "object-to-primitive conversion unsupported", "explicit unsupported object conversion");
-length(unsupported, 3); check(unsupported.ownPropertyKeys().join(",") === "0,1,2,length", "object rejection preserves indices");
+const converted = three();
+const convertedResult = defineLength(converted, { value: obj(coercible), writable: false });
+bool(convertedResult, true);
+check(hookCalls === 2, "two object length conversions");
+length(converted, 2, false);
+check(converted.ownPropertyKeys().join(",") === "0,1,length", "object shrink removes index 2");
+hookCalls = 0;
 
 const frozen = new GuestArray(); element(frozen, "1");
 bool(defineLength(frozen, { value: num(3), writable: false }), true); length(frozen, 3, false);
@@ -130,6 +139,7 @@ error(defineLength(frozen, { value: num(NaN) }), "RangeError");
 bool(frozen.internalSet("length", num(NaN), obj(frozen), keyContext, loc), false);
 error(frozen.set("length", num(NaN), keyContext, loc), "TypeError");
 bool(frozen.internalSet("length", obj(coercible), obj(frozen), keyContext, loc), false);
+check(hookCalls === 0, "readonly Set skips hooks");
 bool(defineLength(frozen, { value: num(2) }), false);
 bool(defineLength(frozen, { value: num(4) }), false);
 bool(frozen.defineOwnProperty("3", { value: num(1) }, keyContext, loc), false);
@@ -198,13 +208,22 @@ for (const mode of ["invalid", "readonly", "partial", "object"]) {
     const rhs = mode === "invalid" ? num(NaN) : mode === "readonly" ? num(3) : mode === "partial" ? num(1) : obj(coercible);
     r.global.bindings.set("a", { initialized: true, mutable: true, value: obj(a) });
     r.global.bindings.set("rhs", { initialized: true, mutable: true, value: rhs });
-    const result = run("function effect() { console.log('rhs'); return rhs; }\n  a.length = effect(); console.log('after');", r);
+    hookCalls = 0;
+    const result = run("function effect() { console.log('rhs'); return rhs; }\n  let assigned = a.length = effect(); console.log('after');", r);
+    if (mode === "object") {
+        check(result.phase === "runtime" && result.completion.type === "normal", "object assignment success");
+        check(effects === "rhs\nafter\n" && hookCalls === 2, "object assignment effects and two hooks");
+        check(r.global.bindings.get("assigned")?.value === rhs, "object assignment RHS identity");
+        length(a, 2);
+        check(a.getOwnProperty("2") === undefined, "object assignment shrink");
+        continue;
+    }
     check(effects === "rhs\n", "RHS effect once, failure stops execution");
     check(result.phase === "runtime", "guest error runtime phase");
     if (result.phase !== "runtime" || result.completion.type !== "throw") throw new Error("guest throw missing");
     const diagnostic = result.completion.diagnostic;
     check(diagnostic.name === (mode === "invalid" ? "RangeError" : "TypeError") && diagnostic.phase === "runtime", "guest failure kind");
-    check(diagnostic.loc.line === 2 && diagnostic.loc.column === 3, "guest assignment location");
+    check(diagnostic.loc.line === 2 && diagnostic.loc.column === 18, "guest assignment location");
     length(a, mode === "partial" ? 4 : 3, mode !== "readonly");
     check(a.ownPropertyKeys().join(",") === (mode === "partial" ? "1,3,length" : "0,1,2,length"), "guest failure final state");
 }

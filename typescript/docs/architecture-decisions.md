@@ -276,8 +276,8 @@ or conversion interface change was needed.
 Length definition copies the caller descriptor, calls ToUint32 then separately
 ToNumber on the original value, compares numerically (SameValueZero for the finite
 uint32 operand), and reads current length only afterward. Invalid numeric lengths
-throw RangeError before flag rejection; object conversion hits the explicit
-unsupported TypeError boundary. Ordinary Set can reject readonly length before
+throw RangeError before flag rejection. TS-015B enables separate number-hint
+ordinary object conversion before each primitive numeric conversion. Ordinary Set can reject readonly length before
 definition/conversion, including same-value writes. Successful assignment returns
 the original RHS even when the stored length has been normalized to a number.
 
@@ -296,9 +296,8 @@ and the same page's array DefineOwnProperty algorithm, checked on 2026-11-01.
 was inspected through the GitHub connector: repeated conversions, present-key
 descending deletion and delayed freezing support this design. Rift uses the
 already-tested class override and ordered key API, without copying upstream code
-or introducing its generator/intrinsics machinery. Future object coercion still
-needs its own guest-call boundary and tests; separate conversion calls here are
-not evidence that object hooks work. See [TS-005A validation](validation/ts-005a/README.md).
+or introducing its generator/intrinsics machinery. TS-015B supplies the guest-call boundary and effectful tests; the original
+TS-005A milestone itself demonstrated primitive inputs only. See [TS-005A validation](validation/ts-005a/README.md).
 
 ## Property presence and array-like length (TS-005H)
 
@@ -555,6 +554,24 @@ storage phases, including sparse descending deletion, partial rollback and
 delayed freezing. Bootstrap rejects object length before hook lookup or mutation;
 ordinary object-valued length and elements remain data.
 
-Semantic length is still primitive-only. Effectful two-conversion length work
-remains a separate reviewed batch. See [the frozen contract](array-length-context.md)
+This plumbing milestone retained primitive-only semantic length. TS-015B below
+adds effectful conversion in the separately assigned batch. See [the frozen contract](array-length-context.md)
 and [validation](validation/ts-015a/README.md).
+
+## TS-015B: effectful array length
+
+Semantic setLength copies all descriptor fields and retains the original Value.
+It calls number-hint toPrimitive then toUint32, independently calls toPrimitive
+again on that Value then toNumber, compares, and passes the normalized descriptor
+to the existing storage phase. Neither primitive results nor methods are cached.
+Thus 2.9 followed by 2 succeeds; 2 followed by 2.9 fails after both hook effects.
+The old descriptor is read only by the later storage phase. Hook mutations and
+exact abrupt records survive; readonly Set still rejects before definition.
+
+The implementation rechecks the living [ArraySetLength algorithm](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-arraysetlength)
+on 2026-11-01 and follows the engine262 comparison retained in
+[array-length-context.md](array-length-context.md). Descriptor snapshots protect
+against callback replacement of the host record without claiming descriptor
+accessor/concurrent mutation support. Bootstrap and direct conversion APIs stay
+primitive-only; no new ambient context, guest intrinsic or compiler workaround.
+See [validation and L1-L21 mapping](validation/ts-015b/README.md).

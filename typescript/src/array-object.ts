@@ -3,6 +3,7 @@ import type { DataDescriptorUpdate, InternalBooleanCompletion, OperationContext,
 import type { Location } from "./syntax.js";
 import { arrayIndex } from "./property-keys.js";
 import { toNumber, toUint32 } from "./conversion.js";
+import { toPrimitive } from "./primitive-conversion.js";
 
 function invariant(result: InternalBooleanCompletion): void {
     if (result.type !== "normal" || !result.value) throw new Error("array storage invariant failed");
@@ -44,9 +45,27 @@ export class GuestArray extends GuestObject {
         return { type: "normal", value: true };
     }
 
-    private setLength(desc: DataDescriptorUpdate, _context: OperationContext, loc: Location): InternalBooleanCompletion {
-        // Batch 1 deliberately retains primitive-only semantic length conversion.
-        return this.definePrimitiveLength(desc, loc);
+    private setLength(desc: DataDescriptorUpdate, context: OperationContext, loc: Location): InternalBooleanCompletion {
+        const updated: DataDescriptorUpdate = {
+            value: desc.value, writable: desc.writable,
+            enumerable: desc.enumerable, configurable: desc.configurable,
+        };
+        const savedValue = updated.value;
+        if (savedValue === undefined) return this.applyLengthDescriptor(updated, loc);
+        // Each conversion looks up methods again on the original object. Hooks
+        // may change those methods, the caller's descriptor, or the array itself.
+        const first = toPrimitive(savedValue, "number", context, loc);
+        if (first.type === "throw") return first;
+        const uint32 = toUint32(first.value, loc);
+        if (uint32.type === "throw") return uint32;
+        const second = toPrimitive(savedValue, "number", context, loc);
+        if (second.type === "throw") return second;
+        const number = toNumber(second.value, loc);
+        if (number.type === "throw") return number;
+        if (uint32.value !== number.value) return failure("RangeError", "invalid array length", loc);
+        updated.value = { kind: "number", value: uint32.value };
+        // Read old length only in the shared storage phase, after both calls.
+        return this.applyLengthDescriptor(updated, loc);
     }
 
     private definePrimitiveLength(desc: DataDescriptorUpdate, loc: Location): InternalBooleanCompletion {
@@ -55,8 +74,7 @@ export class GuestArray extends GuestObject {
             value: desc.value, writable: desc.writable,
             enumerable: desc.enumerable, configurable: desc.configurable,
         };
-        // Preserve both conversions and their order. Future guest coercion may
-        // have effects on each call; old length must be read only afterward.
+        // Bootstrap conversions remain primitive-only and never invoke hooks.
         const uint32 = toUint32(desc.value, loc);
         if (uint32.type === "throw") return uint32;
         const number = toNumber(desc.value, loc);

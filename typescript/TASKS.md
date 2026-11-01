@@ -545,7 +545,7 @@ Coordinator acceptance: TS-015A accepted at `c77d9f1` on 2026-11-01; supersedes 
 
 ### TS-015B — Effectful array length definitions
 
-Status: **ready**. Prerequisite TS-015A accepted `c77d9f1`. Implement batch 2 of docs/array-length-context.md, including P1-P6 preservation and L1-L21 acceptance. Own src/array-object.ts semantic setLength, test/array-storage.ts and test/length-coercion.ts superseded assertions, new test/array-length-coercion.ts and runtime-read fixture, necessary existing driver/fixture registration, scoped docs, this task handoff and docs/validation/ts-015b/. Coordinator owns COORDINATION.md; root Claude queue remains reserved.
+Status: **in progress — implemented, awaiting coordinator review**. Owner: implementation chat `01a19935-908b-7331-9a83-88016377a453`; base `737d5a6`. Prerequisite TS-015A accepted `c77d9f1`. Implement batch 2 of docs/array-length-context.md, including P1-P6 preservation and L1-L21 acceptance. Own src/array-object.ts semantic setLength, test/array-storage.ts and test/length-coercion.ts superseded assertions, new test/array-length-coercion.ts and runtime-read fixture, necessary existing driver/fixture registration, scoped docs, this task handoff and docs/validation/ts-015b/. Coordinator owns COORDINATION.md; root Claude queue remains reserved.
 
 Snapshot the descriptor fields and original Value before guest calls. Missing value performs validated storage without conversion. Otherwise apply number-hint toPrimitive then primitive toUint32, separately apply number-hint toPrimitive to the same original Value then primitive toNumber, compare numeric results, normalize the copied descriptor and enter the existing shared storage phase. Both conversions are observable; do not cache the first primitive/method or validate fractions/infinity before the second conversion. Return exact abrupt records, preserve hook effects and read old length only after conversions. Keep strict Set early readonly rejection and original RHS result, direct Define conversion-before-validation, descending sparse deletion and partial rollback/freeze. Keep bootstrap and direct converters primitive-only with zero guest hooks; no global API redesign.
 
@@ -554,3 +554,20 @@ Implement all L1-L21 scenarios with explicit expected results and readable runti
 Migrate only the explicitly superseded object-length rejections enumerated in the design: array-storage coercible hook and guest object assignment, length-coercion successful storage calls using returned=2 (its default 2.9 still needs separate RangeError coverage), and exact ForbiddenHooks sentinel/read counts. Isolate direct converter zero-hook counters before supported storage calls. Preserve every existing test entry/assertion purpose and add a compiled driver with a fail-closed static gate; expected minimum 162 entries per guest lane and 21 native gates.
 
 Run typecheck, runner/probes and rebuilt Node/native suites with all static-only builds and separate coverage gates. Keep pinned toolchain and readable code; reduce compiler issues before workarounds. Record evidence, exact coverage and limitations, commit/push coherent changes and stop for review. No standard Array intrinsics/species, symbols/boxing/accessors/proxies, new syntax, C++/Claude/COORDINATION edits, branch switches, main merge or successor dispatch.
+
+TS-015B handoff (2026-11-01): semantic length now snapshots the descriptor and
+original Value, performs independent number-hint ToUint32/ToNumber conversions,
+and enters shared storage only after comparison. Bootstrap/direct converters
+stay primitive-only. L1-L21 have fixed expected-result coverage in a new compiled
+runtime-read fixture/driver; all baseline entries and P1-P6 remain. Superseded
+array-storage and length-coercion assertions migrated as frozen, including the
+2.9 failure, successful returned=2 and separate zero-read converter counters.
+
+Typecheck passes; runner 20/20; probes 10/10; rebuilt Node/native 162/162 each,
+no skips; all 21 static-only builds and separate coverage gates pass. The new
+driver is 1616/1616 static. Retained evidence and matrix/migration notes:
+[docs/validation/ts-015b/README.md](docs/validation/ts-015b/README.md). Initial
+Zig sandbox link failures resolved with approved installed-library access.
+Two test-only SC1090 comparisons were narrowed after retaining a small reduction;
+no production workaround, changed pins or relaxed gates. Scope remains batch 2
+only. Stop for coordinator review; no successor or main merge.

@@ -300,7 +300,7 @@ put(object(sparse.get("length")), "valueOf", builtin((_receiver, _args, _context
 const budget = new Evaluator(sparseActive.context.realm, 3);
 error(mapObjectDefaultArray(sparse, binding(budget, "identity"), UNDEFINED, budget.context, loc), "RangeError");
 check(budget.steps === 4 && budget.calls === 0, "one hook tick plus bounded sparse scan");
-// Primitive converters and array storage remain zero-hook boundaries.
+// Direct converters remain zero-hook boundaries; semantic storage converts twice.
 const excluded = setup();
 const value = binding(excluded, "lengthValue");
 error(toNumber(value, loc), "TypeError");
@@ -308,11 +308,17 @@ const stringResult = toString(value, loc);
 check(stringResult.type === "throw", "direct string boundary");
 error(toIntegerOrInfinity(value, loc), "TypeError");
 error(toLength(value, loc), "TypeError");
+check(sameValue(binding(excluded, "hits"), num(0)), "direct converters invoke no hooks");
 const storage = new GuestArray();
-error(storage.set("length", value, excluded.context, loc), "TypeError");
+error(storage.set("length", value, excluded.context, loc), "RangeError");
+check(sameValue(binding(excluded, "hits"), num(2)), "constant 2.9 converts twice before rejection");
+seed(excluded, "returned", num(2));
+seed(excluded, "hits", num(0));
+const assigned = storage.set("length", value, excluded.context, loc);
+check(assigned.type === "normal" && assigned.value === value, "storage assignment original RHS");
 const defined = storage.defineOwnProperty("length", { value }, excluded.context, loc);
-check(defined.type === "throw", "array define boundary");
-check(sameValue(binding(excluded, "hits"), num(0)), "excluded paths invoke no hooks");
+check(defined.type === "normal" && defined.value, "array define success");
+check(sameValue(storage.get("length"), num(2)) && sameValue(binding(excluded, "hits"), num(4)), "storage calls each convert twice");
 class ForbiddenHooks extends GuestObject {
     reads = 0;
     internalGet(_key: string, _receiver: Value, _at: Location): ValueCompletion {
@@ -326,8 +332,11 @@ error(toNumber(forbiddenValue, loc), "TypeError");
 check(toString(forbiddenValue, loc).type === "throw", "string zero-read boundary");
 error(toIntegerOrInfinity(forbiddenValue, loc), "TypeError");
 error(toLength(forbiddenValue, loc), "TypeError");
-error(storage.set("length", forbiddenValue, excluded.context, loc), "TypeError");
-check(storage.defineOwnProperty("length", { value: forbiddenValue }, excluded.context, loc).type === "throw" && forbidden.reads === 0, "array/converter zero hook reads");
+check(forbidden.reads === 0, "direct converters perform zero reads");
+check(storage.set("length", forbiddenValue, excluded.context, loc) === sentinel, "Set exact Get sentinel");
+check(forbidden.reads === 1, "Set one lookup");
+check(storage.defineOwnProperty("length", { value: forbiddenValue }, excluded.context, loc) === sentinel, "Define exact Get sentinel");
+check(forbidden.reads === 2, "two semantic lookups total");
 // Guest throw identity is captured at the bridge; host faults still unwind calls.
 const exact = setup();
 const hook = new GuestObject();

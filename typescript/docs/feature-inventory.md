@@ -22,7 +22,7 @@ claim that all coercion cases are supported.
 | Errors | Parse locations, runtime locations, thrown guest values, ReferenceError/TypeError/RangeError diagnostics | Engine errors are string values plus diagnostic records, not Error instances. No guest catch syntax or stack traces. Across-run redeclaration fails at runtime before new declarations are installed. |
 | Primitive conversion (TS-005N) | Internal ToNumber/ToUint32 for existing primitive Value kinds, exact numeric-string scanning and tested binary64 backend, signed-zero preservation/normalization. | Host driver API only; no operator/builtin integration. Objects explicitly throw unsupported-conversion runtime TypeError without guest calls. No symbols/BigInts or ToPrimitive. |
 | Definition dispatch (TS-005D) | Required-location normal/throw definition API; receiver overrides propagate exact guest throws, strict assignment preserves RHS and translates false, bootstrap rejects false/throw as host faults. | Internal prerequisite only; no arrays, generic exotics, guest reflection or conversion integration. |
-| Array storage (TS-005A) | Host-created GuestArray with real own length, canonical index growth, holes, sparse descending truncation, partial failure restoration/delayed freezing, primitive length conversion, ordinary prototype reads and receiver-aware assignment. Seeded guest assignments preserve original RHS and report runtime errors at the assignment. | Array literals are supported by TS-006 below; no Array constructor/intrinsics, methods, species, symbols, accessors or generic exotics. Object length conversion explicitly throws unsupported TypeError. Initial prototype is null. |
+| Array storage (TS-005A) | Host-created GuestArray with real own length, canonical index growth, holes, sparse descending truncation, partial failure restoration/delayed freezing, double number-hint length conversion (TS-015B), ordinary prototype reads and receiver-aware assignment. Seeded guest assignments preserve original RHS and report runtime errors at the assignment. | Array literals are supported by TS-006 below; no Array constructor/intrinsics, methods, species, symbols, accessors or generic exotics. Explicit ordinary valueOf/toString hooks are supported for length; absent/both-object methods throw TypeError. Initial prototype is null. |
 | Resources | Source, parser, step, call and frame bounds; independent realm state | No heap quota, suspension, jobs or security isolation guarantees; see architecture decisions. |
 
 `test/fixtures/semantics.js`, `order.js`, `examples/counter.js`, and the realm driver
@@ -72,11 +72,16 @@ Internal ordinaryToPrimitive and partial toPrimitive support explicit own or
 inherited callable valueOf/toString methods, original receivers, fresh fallback
 lookups and shared active evaluation budgets. A compiled test bridge exercises
 real guest methods; no guest intrinsic is registered. TS-012 connects the helper to existing numeric, addition and relational operators.
-TS-013 connects computed keys and required-context reference consumption. TS-014 connects array-like length and internal map. Direct numeric/string converters and array storage length paths remain primitive-only. Standard prototypes, symbol hooks, Date/wrappers, accessors/proxies
+TS-013 connects computed keys and required-context reference consumption. TS-014 connects array-like length and internal map. TS-015B connects semantic array length definitions through two separate number-hint conversions. Direct numeric/string converters and bootstrap array length remain primitive-only. Standard prototypes, symbol hooks, Date/wrappers, accessors/proxies
 and full ToPrimitive remain unsupported. Evidence: [TS-011](validation/ts-011/README.md).
 
 TS-015A requires OperationContext on semantic Set/Define and replaces host setup
 `define` with validated descriptor-form `bootstrapDefine`. Constructor and setup
-exclude semantic subclass dispatch; array length storage is shared. No guest
-features or ticks are added, and semantic array length remains primitive-only.
+exclude semantic subclass dispatch; array length storage is shared. The plumbing itself adds no guest
+features or ticks; TS-015B subsequently enables semantic array length coercion.
 See [TS-015A evidence](validation/ts-015a/README.md).
+
+TS-015B preserves original assignment RHS identity, post-hook length observation,
+readonly Set ordering and sparse partial deletion/freeze. Runtime-read guest
+methods and direct definitions cover L1-L21. Bootstrap remains a validated
+zero-hook path. See [TS-015B evidence](validation/ts-015b/README.md).
