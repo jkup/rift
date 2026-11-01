@@ -245,3 +245,6 @@ Accepted design `ffbab58`: reviewed actual diff, explicit O/F/A graph/bootstrap/
 
 Next ready TS-016A implements only the frozen graph/allocation/metadata batch and G1-G17. Main unchanged, Claude queue reserved.
 Acceptance and implementation contract pushed through 5819ace. Active sole writer: TS-016A chat `01a19950-ba63-7f41-bf67-b02205d733da`, host `local`, base `5819ace`. Explicit wait confirmed active; saved cursor `29b1acf7-699e-4a24-ba47-8cefb8950607:2`. Owns frozen graph/allocation/metadata task only; coordinator owns this file.
+
+## TS-016A progress — 2026-11-01 23:06 UTC
+Implementation remains active, not accepted; saved cursor `29b1acf7-699e-4a24-ba47-8cefb8950607:3`. Reviewed retained coverage entry reductions: pinned scriptc coverage hangs on bare runtime import; explicit Array module import resolves reduction, while production type erasure/import alternatives are rejected. Approved narrow scope extension to test/conversion.ts for a documented side-effect Array import, with all assertions/gates preserved and full normal validation required. Sent approval to sole implementation owner; coordinator leaves active files untouched. No owner action required; no successor dispatch. Main/Claude queue unchanged.
