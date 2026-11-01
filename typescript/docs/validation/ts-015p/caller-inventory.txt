@@ -1,0 +1,229 @@
+typescript/test\addition.ts:12:    realm.global.bindings.set(name, { initialized: true, mutable: true, value });
+typescript/test\array-like.ts:31:parent.define("x", UNDEFINED, true, true, true);
+typescript/test\array-like.ts:36:child.define("x", n(8), true, true, true);
+typescript/test\array-like.ts:42:child.define("x", UNDEFINED, false, false, false);
+typescript/test\array-like.ts:48:boolean(array.defineOwnProperty("2", { value: UNDEFINED, configurable: true }, loc), true);
+typescript/test\array-like.ts:52:parent.define("1", UNDEFINED, true, true, true);
+typescript/test\array-like.ts:70:tail.define("deep", UNDEFINED, true, true, true);
+typescript/test\array-like.ts:80:a.value.object.define("onlyFirst", UNDEFINED, true, true, true);
+typescript/test\array-like.ts:120:    ordinary.define("length", row.input, true, true, true);
+typescript/test\array-like.ts:125:ordinary.define("length", s("8.9"), true, true, true);
+typescript/test\array-like.ts:127:inherited.define("length", UNDEFINED, true, true, true);
+typescript/test\array-like.ts:133:ordinary.define("length", o(parent), true, true, true);
+typescript/test\array-like.ts:150:observed.define("length", n(999), true, true, true);
+typescript/test\array-like.ts:172:parent.define("valueOf", o(method), true, true, true);
+typescript/test\array-like.ts:173:ordinary.define("length", o(parent), true, true, true);
+typescript/test\array-literals.ts:70:abruptRealm.global.bindings.set("host", { initialized: true, mutable: true, value: { kind: "object", object: host } });
+typescript/test\array-map.ts:28:    object.define(key, value, true, true, true);
+typescript/test\array-map.ts:103:realm.global.bindings.set("host", { initialized: true, mutable: true, value: obj(host) });
+typescript/test\array-storage.ts:27:    bool(a.defineOwnProperty(key, { value: UNDEFINED, writable: true, enumerable: true, configurable }, loc), true);
+typescript/test\array-storage.ts:46:    const r = a.defineOwnProperty("length", d, loc);
+typescript/test\array-storage.ts:68:const parent = new GuestObject(); parent.define("4", num(7), true, true, true);
+typescript/test\array-storage.ts:70:bool(parent.internalSet("4", num(9), obj(receiver), loc), true); length(receiver, 5);
+typescript/test\array-storage.ts:75:bool(receiver.internalSet("8", num(11), obj(ordinary), loc), true); length(receiver, 5);
+typescript/test\array-storage.ts:77:bool(receiver.internalSet("4", num(12), obj(ordinary), loc), true); length(receiver, 5);
+typescript/test\array-storage.ts:113:coercible.define("valueOf", obj(hook), true, true, true);
+typescript/test\array-storage.ts:114:coercible.define("toString", obj(hook), true, true, true);
+typescript/test\array-storage.ts:124:bool(frozen.internalSet("length", num(3), obj(frozen), loc), false);
+typescript/test\array-storage.ts:125:error(frozen.set("length", num(3), loc), "TypeError");
+typescript/test\array-storage.ts:127:bool(frozen.internalSet("length", num(NaN), obj(frozen), loc), false);
+typescript/test\array-storage.ts:128:error(frozen.set("length", num(NaN), loc), "TypeError");
+typescript/test\array-storage.ts:129:bool(frozen.internalSet("length", obj(coercible), obj(frozen), loc), false);
+typescript/test\array-storage.ts:132:bool(frozen.defineOwnProperty("3", { value: num(1) }, loc), false);
+typescript/test\array-storage.ts:133:bool(frozen.defineOwnProperty("1", { value: num(2) }, loc), true);
+typescript/test\array-storage.ts:140:bool(closed.defineOwnProperty("0", { value: UNDEFINED }, loc), false);
+typescript/test\array-storage.ts:141:bool(closed.defineOwnProperty("2", { value: UNDEFINED }, loc), false); length(closed, 2);
+typescript/test\array-storage.ts:142:bool(closed.defineOwnProperty("1", { value: num(4) }, loc), true);
+typescript/test\array-storage.ts:176:realm.global.bindings.set("a", { initialized: true, mutable: true, value: obj(guestArray) });
+typescript/test\array-storage.ts:177:realm.global.bindings.set("rhs", { initialized: true, mutable: true, value: originalRhs });
+typescript/test\array-storage.ts:184:other.global.bindings.set("a", { initialized: true, mutable: true, value: obj(otherArray) });
+typescript/test\array-storage.ts:196:    r.global.bindings.set("a", { initialized: true, mutable: true, value: obj(a) });
+typescript/test\array-storage.ts:197:    r.global.bindings.set("rhs", { initialized: true, mutable: true, value: rhs });
+typescript/src\evaluator.ts:40:                env.bindings.set(stmt.name, { initialized: stmt.kind === "function", mutable: true,
+typescript/src\evaluator.ts:154:                    const defined = object.defineOwnProperty(String(i), {
+typescript/src\evaluator.ts:161:                const length = object.defineOwnProperty("length", {
+typescript/src\evaluator.ts:173:                    object.define(expr.keys[i], value.value, true, true, true);
+typescript/src\evaluator.ts:235:                    env.bindings.set(fn.params[i], {
+typescript/src\builtins\number.ts:7:    namespace.define("NaN", { kind: "number", value: NaN }, false, false, false);
+typescript/src\builtins\number.ts:8:    namespace.define("POSITIVE_INFINITY", { kind: "number", value: Infinity }, false, false, false);
+typescript/src\builtins\number.ts:9:    namespace.define("NEGATIVE_INFINITY", { kind: "number", value: -Infinity }, false, false, false);
+typescript/src\builtins\number.ts:10:    namespace.define("MAX_VALUE", { kind: "number", value: Number.MAX_VALUE }, false, false, false);
+typescript/src\builtins\number.ts:11:    namespace.define("MIN_VALUE", { kind: "number", value: Number.MIN_VALUE }, false, false, false);
+typescript/src\builtins\number.ts:12:    namespace.define("EPSILON", { kind: "number", value: Number.EPSILON }, false, false, false);
+typescript/src\builtins\number.ts:13:    namespace.define("MAX_SAFE_INTEGER", { kind: "number", value: Number.MAX_SAFE_INTEGER }, false, false, false);
+typescript/src\builtins\number.ts:14:    namespace.define("MIN_SAFE_INTEGER", { kind: "number", value: Number.MIN_SAFE_INTEGER }, false, false, false);
+typescript/src\builtins\number.ts:23:    realm.global.bindings.set("Number", { initialized: true, mutable: true, value: { kind: "object", object: namespace } });
+typescript/src\builtins\number.ts:29:    value.object.define("name", { kind: "string", value: name }, false, false, true);
+typescript/src\builtins\number.ts:30:    value.object.define("length", { kind: "number", value: 1 }, false, false, true);
+typescript/src\array-map.ts:19:    const initialized = result.defineOwnProperty("length", { value: { kind: "number", value: length.value } }, loc);
+typescript/src\array-map.ts:34:        const defined = result.defineOwnProperty(key, { value: mapped.value, writable: true, enumerable: true, configurable: true }, loc);
+typescript/test\conversion.ts:105:object.define("valueOf", { kind: "object", object: hook }, true, true, true);
+typescript/test\conversion.ts:106:object.define("toString", { kind: "object", object: hook }, true, true, true);
+typescript/src\array-object.ts:17:        invariant(super.defineOwnProperty("length", {
+typescript/src\array-object.ts:22:    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, loc: Location): InternalBooleanCompletion {
+typescript/src\array-object.ts:23:        if (key === "length") return this.setLength(desc, loc);
+typescript/src\array-object.ts:25:        if (index === undefined) return super.defineOwnProperty(key, desc, loc);
+typescript/src\array-object.ts:29:        const defined = super.defineOwnProperty(key, desc, loc);
+typescript/src\array-object.ts:32:            invariant(super.defineOwnProperty("length", { value: { kind: "number", value: index + 1 } }, loc));
+typescript/src\array-object.ts:37:    private setLength(desc: DataDescriptorUpdate, loc: Location): InternalBooleanCompletion {
+typescript/src\array-object.ts:38:        if (desc.value === undefined) return super.defineOwnProperty("length", desc, loc);
+typescript/src\array-object.ts:54:        if (uint32.value >= old.value.value) return super.defineOwnProperty("length", updated, loc);
+typescript/src\array-object.ts:58:        const shortened = super.defineOwnProperty("length", updated, loc);
+typescript/src\array-object.ts:72:                invariant(super.defineOwnProperty("length", {
+typescript/src\array-object.ts:78:        if (freeze) invariant(super.defineOwnProperty("length", { writable: false }, loc));
+typescript/src\realm.ts:8:        this.global.bindings.set("undefined", { initialized: true, mutable: false, value: UNDEFINED });
+typescript/src\realm.ts:9:        this.global.bindings.set("NaN", { initialized: true, mutable: false, value: { kind: "number", value: NaN } });
+typescript/src\realm.ts:10:        this.global.bindings.set("Infinity", { initialized: true, mutable: false, value: { kind: "number", value: Infinity } });
+typescript/src\realm.ts:18:        this.global.bindings.set("console", { initialized: true, mutable: true, value: { kind: "object", object: consoleObject } });
+typescript/src\realm.ts:24:        target.define(name, value, true, false, true);
+typescript/src\runtime.ts:46:            snapshot.set(key, { value: d.value, writable: d.writable, enumerable: d.enumerable, configurable: d.configurable });
+typescript/src\runtime.ts:83:    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _loc: Location): InternalBooleanCompletion {
+typescript/src\runtime.ts:87:            this.propertyStorage.set(key, {
+typescript/src\runtime.ts:103:        this.propertyStorage.set(key, {
+typescript/src\runtime.ts:142:    internalSet(key: PropertyKey, value: Value, receiver: Value, loc: Location): InternalBooleanCompletion {
+typescript/src\runtime.ts:159:            return target.defineOwnProperty(key, { value }, loc);
+typescript/src\runtime.ts:161:        return target.defineOwnProperty(key, { value, writable: true, enumerable: true, configurable: true }, loc);
+typescript/src\runtime.ts:170:        const result = this.internalSet(key, value, { kind: "object", object: this }, loc);
+typescript/src\runtime.ts:175:    define(key: PropertyKey, value: Value, writable: boolean, enumerable: boolean, configurable: boolean): void {
+typescript/src\runtime.ts:179:        const result = this.defineOwnProperty(key, { value, writable, enumerable, configurable }, { line: 1, column: 1 });
+typescript/src\runtime.ts:217:        return ref.base.object.set(key.value, value, loc);
+typescript/test\key-coercion.ts:19:    active.context.realm.global.bindings.set(name, { initialized: true, mutable: true, value });
+typescript/test\key-coercion.ts:57:        return this.stop === "S" ? sentinel : super.set(key, value, location);
+typescript/test\key-coercion.ts:72:        key.object.define("toString", builtin((receiver, args, context, _location) => {
+typescript/test\key-coercion.ts:85:        target.define("x", builtin((receiver, args, _context, _location) => {
+typescript/test\key-coercion.ts:133:                owner.define("toString", fallback === "first" ? method : fallback === "noncallable" ? num(8) : builtin((_r, _a, _c, _l) => normal(key)), true, true, true);
+typescript/test\key-coercion.ts:134:                owner.define("valueOf", fallback === "first" ? UNDEFINED : method, true, true, true);
+typescript/test\key-coercion.ts:150:    if (both) for (const name of ["toString", "valueOf"]) object.define(name, builtin((_r, _a, _c, _l) => normal(key)), true, true, true);
+typescript/test\key-coercion.ts:166:    callKey.define(stop, builtin((_r, _a, _c, _l) => sentinel), true, true, true);
+typescript/test\key-coercion.ts:191:    key.define("toString", builtin((_r, _a, _c, _l): Completion => { if (mode === "host") throw new Error("host fault"); return { type: mode, value: UNDEFINED }; }), true, true, true);
+typescript/test\key-coercion.ts:208:    else target.define("x", num(4), false, true, true);
+typescript/test\length-coercion.ts:22:    object.define(key, value, true, true, true);
+typescript/test\length-coercion.ts:30:    active.context.realm.global.bindings.set(key, { initialized: true, mutable: true, value });
+typescript/test\length-coercion.ts:312:error(storage.set("length", value, loc), "TypeError");
+typescript/test\length-coercion.ts:313:const defined = storage.defineOwnProperty("length", { value }, loc);
+typescript/test\length-coercion.ts:329:error(storage.set("length", forbiddenValue, loc), "TypeError");
+typescript/test\length-coercion.ts:330:check(storage.defineOwnProperty("length", { value: forbiddenValue }, loc).type === "throw" && forbidden.reads === 0, "array/converter zero hook reads");
+typescript/test\definition-dispatch.ts:24:    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, location: Location): InternalBooleanCompletion {
+typescript/test\definition-dispatch.ts:34:        return super.defineOwnProperty(key, desc, location);
+typescript/test\definition-dispatch.ts:47:        base.define("x", UNDEFINED, true, false, false);
+typescript/test\definition-dispatch.ts:49:        if (own) receiver.define("x", UNDEFINED, true, false, false);
+typescript/test\definition-dispatch.ts:52:        const r = base.internalSet("x", rhs, obj(receiver), loc);
+typescript/test\definition-dispatch.ts:69:            if (own) target.define("x", UNDEFINED, true, true, true);
+typescript/test\definition-dispatch.ts:71:            const r = viaReference ? putValue({ kind: "property", base: { kind: "object", object: target }, key: { kind: "string", value: "x" }, loc }, rhs, keyContext, loc) : target.set("x", rhs, loc);
+typescript/test\definition-dispatch.ts:80:base.define("locked", UNDEFINED, false, true, true);
+typescript/test\definition-dispatch.ts:82:receiver.define("locked", rhs, true, true, true);
+typescript/test\definition-dispatch.ts:83:receiver.define("ownLocked", rhs, false, true, true);
+typescript/test\definition-dispatch.ts:85:boolean(base.internalSet("locked", UNDEFINED, obj(receiver), loc), false);
+typescript/test\definition-dispatch.ts:86:boolean(base.internalSet("ownLocked", UNDEFINED, obj(receiver), loc), false);
+typescript/test\definition-dispatch.ts:91:boolean(inherited.internalSet("locked", rhs, obj(inherited), loc), false);
+typescript/test\definition-dispatch.ts:93:    boolean(inherited.internalSet("new", rhs, primitive, loc), false);
+typescript/test\definition-dispatch.ts:97:closed.define("existing", UNDEFINED, true, true, true);
+typescript/test\definition-dispatch.ts:100:boolean(base.internalSet("missing", rhs, obj(closed), loc), false);
+typescript/test\definition-dispatch.ts:102:boolean(base.internalSet("existing", rhs, obj(closed), loc), true);
+typescript/test\definition-dispatch.ts:105:exact(base.internalSet("missing", rhs, obj(closed), loc), closed);
+typescript/test\definition-dispatch.ts:113:    realm.global.bindings.set("target", { initialized: true, mutable: true, value: obj(target) });
+typescript/test\definition-dispatch.ts:114:    realm.global.bindings.set("rhs", { initialized: true, mutable: true, value: rhs });
+typescript/test\definition-dispatch.ts:133:    try { target.define("x", rhs, true, true, true); }
+typescript/test\object-descriptors.ts:20:result(o.defineOwnProperty("empty", {}, loc), true, "empty creation");
+typescript/test\object-descriptors.ts:22:result(o.defineOwnProperty("empty", {}, loc), true, "empty existing");
+typescript/test\object-descriptors.ts:23:result(o.defineOwnProperty("empty", { value: UNDEFINED, writable: false, enumerable: false, configurable: false }, loc), true, "explicit defaults");
+typescript/test\object-descriptors.ts:24:result(o.defineOwnProperty("empty", { writable: true }, loc), false, "cannot thaw");
+typescript/test\object-descriptors.ts:25:result(o.defineOwnProperty("empty", { configurable: true }, loc), false, "cannot configure");
+typescript/test\object-descriptors.ts:26:result(o.defineOwnProperty("empty", { enumerable: true }, loc), false, "cannot enumerate");
+typescript/test\object-descriptors.ts:27:result(o.defineOwnProperty("flex", { value: num(1), writable: true, enumerable: true, configurable: true }, loc), true, "full creation");
+typescript/test\object-descriptors.ts:28:result(o.defineOwnProperty("flex", {}, loc), true, "omitted flags preserve true");
+typescript/test\object-descriptors.ts:30:result(o.defineOwnProperty("flex", { value: UNDEFINED }, loc), true, "present guest undefined");
+typescript/test\object-descriptors.ts:32:result(o.defineOwnProperty("flex", { writable: false, enumerable: false }, loc), true, "explicit false");
+typescript/test\object-descriptors.ts:34:result(o.defineOwnProperty("flex", { value: num(2), writable: true, enumerable: true }, loc), true, "configurable can thaw and change value");
+typescript/test\object-descriptors.ts:35:result(o.defineOwnProperty("flex", { configurable: false }, loc), true, "lock configurable");
+typescript/test\object-descriptors.ts:36:result(o.defineOwnProperty("flex", { value: num(3) }, loc), true, "nonconfigurable still writable");
+typescript/test\object-descriptors.ts:37:result(o.defineOwnProperty("flex", { value: num(4), writable: false, enumerable: false }, loc), false, "atomic reject enumerable");
+typescript/test\object-descriptors.ts:39:result(o.defineOwnProperty("flex", { value: num(4), writable: false, configurable: true }, loc), false, "atomic reject configurable");
+typescript/test\object-descriptors.ts:41:result(o.defineOwnProperty("flex", { value: num(4), writable: false }, loc), true, "change value and freeze together");
+typescript/test\object-descriptors.ts:42:result(o.defineOwnProperty("flex", { value: num(5), writable: true }, loc), false, "atomic frozen reject");
+typescript/test\object-descriptors.ts:52:    result(frozen.defineOwnProperty("x", { value: values[i] }, loc), true, "frozen create");
+typescript/test\object-descriptors.ts:53:    result(frozen.defineOwnProperty("x", { value: same[i] }, loc), true, "frozen same");
+typescript/test\object-descriptors.ts:54:    result(frozen.defineOwnProperty("x", { value: different[i] }, loc), false, "frozen different");
+typescript/test\object-descriptors.ts:56:    check(frozen.set("x", same[i], loc).type === "throw", "assignment differs from definition");
+typescript/test\object-descriptors.ts:60:result(o.defineOwnProperty("copied", input, loc), true, "input copied");
+typescript/test\object-descriptors.ts:66:snapshot.set("copied", { value: num(11), writable: true, enumerable: true, configurable: true });
+typescript/test\object-descriptors.ts:69:check(o.set("copied", num(12), loc).type === "throw", "mutation cannot bypass flags");
+typescript/test\object-descriptors.ts:70:check(o.set("assigned", num(1), loc).type === "normal", "assignment creates");
+typescript/test\object-descriptors.ts:75:result(o.defineOwnProperty("new", {}, loc), false, "nonextensible empty new");
+typescript/test\object-descriptors.ts:76:result(o.defineOwnProperty("new", { value: num(2), writable: true }, loc), false, "nonextensible full new");
+typescript/test\object-descriptors.ts:78:result(o.defineOwnProperty("empty", {}, loc), true, "nonextensible existing empty");
+typescript/test\object-descriptors.ts:79:result(o.defineOwnProperty("assigned", { value: num(2) }, loc), true, "nonextensible existing definition");
+typescript/test\object-descriptors.ts:87:try { o.define("new", num(1), true, true, true); }
+typescript/test\numeric-operators.ts:10:    realm.global.bindings.set(name, { initialized: true, mutable: true, value });
+typescript/test\object-keys.ts:15:function add(o: GuestObject, key: string): void { o.define(key, UNDEFINED, true, true, true); }
+typescript/test\object-keys.ts:29:o.define("hidden", UNDEFINED, false, false, true);
+typescript/test\object-keys.ts:30:o.define("3", UNDEFINED, false, false, false);
+typescript/test\object-keys.ts:33:result(o.defineOwnProperty("z", { value: { kind: "number", value: 7 }, enumerable: false }, loc), true, "overwrite");
+typescript/test\object-keys.ts:60:parent.define("locked", UNDEFINED, true, true, false);
+typescript/test\object-keys.ts:61:parent.define("shared", { kind: "number", value: 4 }, true, true, true);
+typescript/test\object-keys.ts:69:child.define("shared", { kind: "number", value: 9 }, true, true, true);
+typescript/test\object-keys.ts:76:result(child.defineOwnProperty("removable", {}, loc), false, "nonextensible reinsertion rejected");
+typescript/test\object-prototypes.ts:24:root.define("x", num(1), true, false, false);
+typescript/test\object-prototypes.ts:25:root.define("fixed", num(2), false, true, false);
+typescript/test\object-prototypes.ts:29:child.define("x", UNDEFINED, true, true, true);
+typescript/test\object-prototypes.ts:42:result(root.internalSet("x", num(3), obj(receiver), loc), true, "distinct receiver creation");
+typescript/test\object-prototypes.ts:46:receiver.define("own", num(4), true, false, false);
+typescript/test\object-prototypes.ts:48:result(root.internalSet("own", num(5), obj(receiver), loc), true, "missing base updates receiver own");
+typescript/test\object-prototypes.ts:52:result(root.internalSet("new", num(6), obj(receiver), loc), false, "nonextensible receiver missing");
+typescript/test\object-prototypes.ts:53:result(root.internalSet("x", num(7), obj(receiver), loc), true, "nonextensible existing");
+typescript/test\object-prototypes.ts:54:result(receiver.defineOwnProperty("x", { writable: false }, loc), true, "freeze receiver");
+typescript/test\object-prototypes.ts:55:result(root.internalSet("x", num(7), obj(receiver), loc), false, "receiver readonly same value");
+typescript/test\object-prototypes.ts:58:other.define("fixed", num(8), true, true, true);
+typescript/test\object-prototypes.ts:59:result(root.internalSet("fixed", num(9), obj(other), loc), false, "base readonly beats receiver writable");
+typescript/test\object-prototypes.ts:62:    result(root.internalSet("x", num(9), primitive, loc), false, "primitive existing");
+typescript/test\object-prototypes.ts:63:    result(root.internalSet("absent", num(9), primitive, loc), false, "primitive absent");
+typescript/test\object-prototypes.ts:65:result(child.internalSet("fixed", num(2), obj(child), loc), false, "inherited readonly");
+typescript/test\object-prototypes.ts:79:tail.define("end", num(42), true, true, true);
+typescript/test\object-prototypes.ts:81:result(deep.internalSet("end", num(43), obj(deep), loc), true, "deep set");
+typescript/test\object-prototypes.ts:87:    parent.define("x", num(10), true, true, true);
+typescript/test\object-prototypes.ts:88:    parent.define("fixed", num(20), false, true, false);
+typescript/test\object-prototypes.ts:91:    realm.global.bindings.set("parent", { initialized: true, mutable: true, value: obj(parent) });
+typescript/test\object-prototypes.ts:92:    realm.global.bindings.set("child", { initialized: true, mutable: true, value: obj(target) });
+typescript/test\operation-context.ts:13:realm.global.bindings.set("host", { initialized: true, mutable: true, value: { kind: "object", object: host } });
+typescript/test\primitive-conversion.ts:22:function define(object: GuestObject, key: string, value: Value): void { object.define(key, value, true, true, true); }
+typescript/test\primitive-conversion.ts:91:    define(object, first, returns(expected));
+typescript/test\primitive-conversion.ts:97:        define(skip, first, candidate);
+typescript/test\primitive-conversion.ts:98:        define(skip, second, returns(num(9)));
+typescript/test\primitive-conversion.ts:105:            define(item, first, returns(fallback ? objectValue(new GuestObject()) : primitive));
+typescript/test\primitive-conversion.ts:106:            define(item, second, returns(primitive));
+typescript/test\primitive-conversion.ts:114:    define(missing, second, returns(num(9)));
+typescript/test\primitive-conversion.ts:118:    define(fallback, first, returns(objectValue(new GuestObject())));
+typescript/test\primitive-conversion.ts:119:    define(fallback, second, returns(num(9)));
+typescript/test\primitive-conversion.ts:126:            define(bad, first, mode === "objects" ? returns(objectValue(new GuestObject())) : num(1));
+typescript/test\primitive-conversion.ts:127:            define(bad, second, mode === "objects" ? returns(objectValue(new GuestObject())) : num(2));
+typescript/test\primitive-conversion.ts:135:        define(item, second, builtin((_r, _a, _c, _l): Completion => { throw new Error("stale method called"); }));
+typescript/test\primitive-conversion.ts:136:        define(item, first, builtin((_r, _a, _c, _l) => {
+typescript/test\primitive-conversion.ts:137:            if (mode === "replace") define(item, second, returns(num(11)));
+typescript/test\primitive-conversion.ts:143:                    define(proto, second, returns(num(12)));
+typescript/test\primitive-conversion.ts:174:        define(owner, "valueOf", builtin((receiver, args, context, location) => {
+typescript/test\primitive-conversion.ts:190:    define(object, "valueOf", builtin((_r, _a, _c, _l) => {
+typescript/test\primitive-conversion.ts:194:    define(object, "toString", builtin((_r, _a, _c, _l) => sentinel));
+typescript/test\primitive-conversion.ts:206:    define(object, "valueOf", builtin((_r, _a, context, location) => {
+typescript/test\primitive-conversion.ts:217:function seed(target: Realm, name: string, value: Value): void { target.global.bindings.set(name, { initialized: true, mutable: true, value }); }
+typescript/test\primitive-conversion.ts:260:    define(object, "valueOf", builtin((_r, _a, _c, _l): Completion => {
+typescript/test\primitive-conversion.ts:274:define(boundary, "valueOf", returns(num(6)));
+typescript/test\primitive-conversion.ts:275:define(boundary, "toString", returns({ kind: "string", value: "x" }));
+typescript/test\relational.ts:13:    realm.global.bindings.set(name, { initialized: true, mutable: true, value });
+typescript/test\operator-coercion.ts:11:    active.context.realm.global.bindings.set(name, { initialized: true, mutable: true, value });
+typescript/test\operator-coercion.ts:122:        proto.define("valueOf", builtin((receiver, args, context, _loc) => {
+typescript/test\operator-coercion.ts:195:    object.define("valueOf", builtin((_r, _a, _c, _l): Completion => {
+typescript/test\realms.ts:24:target.define("fixed", { kind: "number", value: 1 }, false, false, false);
+typescript/test\realms.ts:25:const write = target.set("fixed", UNDEFINED, { line: 1, column: 1 });
+typescript/test\realms.ts:33:a.global.bindings.set("host", { initialized: true, mutable: true, value: { kind: "object", object: target } });
+typescript/test\realms.ts:63:        if (namespace.set(key, UNDEFINED, { line: 1, column: 1 }).type !== "throw" || namespace.get(key) !== descriptor.value) throw new Error("Number constant write: " + key);
+typescript/test\realms.ts:84:    ap.object.set("realmMarker", UNDEFINED, { line: 1, column: 1 });
+typescript/test\realms.ts:86:    if (an.set(key, UNDEFINED, { line: 1, column: 1 }).type !== "normal" || bn.get(key) !== bp) throw new Error("Number shared namespace state");
+typescript/test\property-key-conversion.ts:19:    realm.global.bindings.set(name, { initialized: true, mutable: true, value });
+typescript/test\property-key-conversion.ts:154:        return this.setThrow ? this.sentinel : super.set(key, value, location);
+typescript/test\property-key-conversion.ts:186:            parent.define("1", method, true, true, true);
+typescript/test\property-key-conversion.ts:188:        } else this.original.define("1", method, true, true, true);
+typescript/test\property-key-conversion.ts:232:detached.original.define("1", binding(detached.realm, "method"), true, true, true);
+typescript/test\property-key-conversion.ts:266:    object.define("toString", builtin((receiver, args, _context, _location) => {
+typescript/test\property-key-conversion.ts:271:    object.define("valueOf", builtin((_r, _a, _c, _l): Completion => { throw new Error("wrong hint"); }), true, true, true);
+typescript/test\property-key-conversion.ts:303:    owner.define("2", num(42), false, true, true);
+typescript/test\property-key-conversion.ts:321:    notCallable.original.define("1", num(42), true, true, true);

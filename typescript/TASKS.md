@@ -493,7 +493,7 @@ implementation chat stops after local focused commit, with no successor work.
 
 ### TS-015P — Array length definition/context design
 
-Status: **ready**. Prerequisite TS-014 accepted final `d477b86` (production `cd9b121`), done superseding prior awaiting-review handoff. Design only. Own docs/array-length-context.md, optional isolated probes/array-length-context/, docs/validation/ts-015p/, and this task claim/handoff. No production/test/manifest/pin/Claude/COORDINATION changes.
+Status: **in progress — awaiting coordinator review**. Owner: Codex design chat `01a19919-ec56-7c02-9dec-ec2e5aa870eb`; base `f2fde9c6a4c29a720c3f2847b0d223c03dc158cd` on `codex/primitive-computed-keys`. Prerequisite TS-014 accepted final `d477b86` (production `cd9b121`), done superseding prior awaiting-review handoff. Design only. Own docs/array-length-context.md, optional isolated probes/array-length-context/, docs/validation/ts-015p/, and this task claim/handoff. No production/test/manifest/pin/Claude/COORDINATION changes.
 
 Finalize the deferred array-definition integration from docs/object-coercion-integration.md. Inspect actual GuestObject.defineOwnProperty/internalSet/set/define, GuestArray constructor/override/setLength, evaluator object/array literals/reference writes, map result definitions, builtin registration and all test overrides/setup helpers. Produce exact context-carrying semantic signatures and a safe concrete bootstrap API, full caller migration inventory, and bounded dependency order. No optional or ambient context, manufactured evaluator or ignored completion. Preserve virtual receiver dispatch and original context through inherited Set and array definitions. Ordinary data storage must never coerce values.
 
@@ -504,3 +504,16 @@ Inspect authoritative ArraySetLength and ordinary Set/Define algorithms and rele
 Acceptance matrix must cover real guest assignments and explicit direct definition host cases: conversion2/2 success,2/3 mismatch, second lookup/method mutation, first/second exact throws, hook changes length/writability/indices, double signed-zero normalization and invalid/infinite/fraction/range boundaries, inherited receiver dispatch, readonly Set no hooks versus direct Define conversion, nested assignment/reentrancy/shared budgets/realms, no outer update after abrupt while hook effects persist, shrink rollback/freeze behavior. Preserve all prior descriptor/array assertions and enumerate superseded object-length rejection tests for positive migration. Record no changes needed for already supported array-like/operator/key behavior; direct primitive converter APIs may remain unchanged via explicit local ToPrimitive calls.
 
 No standard Array intrinsics/species, symbols, accessors/proxies, boxing, new syntax, full converter migration or C++ removal. Use isolated static probes only for actual uncertainty; no native capability claims from prose. Commit/push design/evidence and stop for coordinator review, no implementation or successor dispatch.
+
+Handoff (2026-11-01): `docs/array-length-context.md` specifies required semantic
+context signatures, explicit validated bootstrap dispatch, shared ordinary/array
+storage phases, constructor and subclass contracts, complete caller/override
+inventory, exact double-conversion and mutation/rollback order, and fixed P1-P6 /
+L1-L21 acceptance matrices. Recommends separately reviewed plumbing/bootstrap
+then effectful length batches, with precise ownership and superseded-test
+migrations (including TS-014's fractional fixture default). Spec and pinned
+engine262 sources inspected; search evidence in `docs/validation/ts-015p/`.
+Documentation diff checks pass; no runtime or compiler tests/probes rerun and no
+new capability claim. Baseline 161/161 each host and 20 static gates remains
+inherited accepted evidence. No production/tests/pins/C++/Claude/COORDINATION
+changes, implementation, branch switch, main merge or successor. Stop for review.
