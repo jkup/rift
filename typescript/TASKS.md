@@ -278,8 +278,22 @@ No merge, branch change or successor work. Stop for coordinator review.
 
 ### TS-008 — Primitive numeric operator conversion
 
-Status: **ready**. Prerequisites: TS-005N and TS-007 accepted (`7defba5`); TS-007 is done despite its historical awaiting-review handoff. Own numeric unary/binary portions of src/evaluator.ts, focused new compiled host assertions and runtime-read guest fixtures, necessary test registration, scoped feature/API docs and docs/validation/ts-008/. Coordinator owns COORDINATION.md. No parser/runtime/conversion API redesign.
+Status: **in progress — awaiting coordinator review**. Owner: Codex implementation chat `01a1989e-7fb4-7ad1-ac9b-2b27fb6302f1`; base `620cd29` on `codex/primitive-computed-keys`. Prerequisites: TS-005N and TS-007 accepted (`7defba5`); TS-007 is done despite its historical awaiting-review handoff. Own numeric unary/binary portions of src/evaluator.ts, focused new compiled host assertions and runtime-read guest fixtures, necessary test registration, scoped feature/API docs and docs/validation/ts-008/. Coordinator owns COORDINATION.md. No parser/runtime/conversion API redesign.
 
 Integrate existing partial toNumber into unary + and -, and binary -, *, /, %. For binary expressions evaluate/GetValue left then right before converting left then right; preserve exact abrupt records and operator source location. Unary conversion occurs after operand evaluation. Return numbers using existing binary64 operations; preserve signed zero, NaN, infinities and remainder semantics. Existing object conversion explicitly rejects without reading/calling hooks; do not add ToPrimitive. Reuse toNumber's tested numeric-string scanner/backend; no host Value-wrapper coercion. No changes to binary +, relational/equality/logical operators, grammar, compound/update operators, BigInt, symbols, boxing, Array APIs or pins. Keep those exclusions explicit. Consult primary spec and a relevant engine and record source references before implementation.
 
 Tests must cover all existing primitive kinds for each affected operator; empty/whitespace/numeric/invalid strings, null/undefined/booleans, signed zero (host assertions distinguish), NaN/infinities, division by both zero signs, overflow/underflow and remainder sign/zero/infinity cases with fixed expected results. Exercise real parsed guest source, closures/side effects and exact left/right evaluation order. Exact thrown operand completions propagate; RHS throwing wins over an unsupported left object conversion, while left operand evaluation throwing skips RHS. Object operands (ordinary/array/function) reject with located errors and no hooks. Retain prior numeric-only behavior, unchanged plus/relational boundaries, all existing regressions and budget/realm coverage. Readable test scenarios, no compressed multistep fixtures. Preserve denominator; turn any superseded rejection into positive coverage. Independently meaningful expectations in both hosts, not parity alone. Run typecheck, runner/probes and rebuilt Node/native suites with all static gates. Reduce/report numeric backend discrepancies rather than weakening expectations or changing pins. Commit/push coherent work on current branch, hand off evidence/limitations, stop awaiting review; no successor or main merge.
+
+Handoff (2026-11-01): unary +/- and binary - * / % integrate existing partial
+toNumber after operand evaluation, preserving left/right GetValue order, exact
+abrupt records and existing AST source locations. Fixed-result compiled tests
+cover every current primitive on both sides, binary64 edges/signed zero,
+closures, order, exact call/property throws, located ordinary/array/function
+rejections and no hook reads/calls. Existing plus/relational boundaries remain.
+Typecheck passes; runner 20/20; probes 10/10; rebuilt Node/native 155/155 each,
+no skips; all 14 native static gates pass (CLI 1013/1013, numeric driver 1062/1062).
+All 153 prior cases retained. Evidence and source research:
+docs/validation/ts-008/ and docs/architecture-decisions.md. Initial Zig ENOENT
+failures retained; explicit installed Zig PATH and approved library access
+resolved them. No backend discrepancy, API redesign, pins/C++/Claude/COORDINATION
+changes, branch switch, main merge or successor work. Awaiting coordinator review.

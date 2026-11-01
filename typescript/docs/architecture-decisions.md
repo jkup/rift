@@ -386,3 +386,29 @@ typed number, preserving binary64 formatting rather than array-index conversion.
 PropertyKey itself remains GuestString. Future symbols require the two conversion
 operations to diverge. Object coercion, primitive boxing and new operators remain
 excluded. See property-key-conversion.md for the frozen order and test contract.
+
+## Primitive numeric operators (TS-008)
+
+Unary +/- now call existing partial toNumber after evaluating their operand.
+Binary -, *, / and % evaluate/GetValue left, then right, before converting left
+and then right. Each abrupt completion returns unchanged; conversion receives
+the existing AST location (binary expression start). No parser location or API
+change was needed. Typed number payloads use the existing binary64 operations.
+Unary minus flips zero sign; remainder follows the dividend sign, not modulo.
+
+Source review before implementation used ECMA-262 edition 16 (2025),
+[unary plus](https://262.ecma-international.org/16.0/#sec-unary-plus-operator-runtime-semantics-evaluation),
+[unary minus](https://262.ecma-international.org/16.0/#sec-unary-minus-operator-runtime-semantics-evaluation),
+[operand evaluation](https://262.ecma-international.org/16.0/#sec-evaluatestringornumericbinaryexpression)
+and [operator application](https://262.ecma-international.org/16.0/#sec-applystringornumericbinaryoperator).
+The order is also explicit in engine262 revision
+`d553e7b52501fbc47eae981c8d0fa7a5c26d0171`:
+[evaluation](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/runtime-semantics/EvaluateStringOrNumericBinaryExpression.mts),
+[application](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/runtime-semantics/ApplyStringOrNumericBinaryOperator.mts),
+and [unary evaluation](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/runtime-semantics/UnaryExpression.mts).
+These establish the ordering, not implementation code reuse. Full ToNumeric also
+handles BigInt; our approved subset reuses ToNumber because BigInt and object
+ToPrimitive remain unsupported. Ordinary objects, arrays and functions reject
+without reading or calling conversion hooks. Binary plus, comparisons, logical
+operators, grammar, boxing and symbols remain unchanged. No conversion backend
+or compiler workaround was added. See [validation](validation/ts-008/README.md).

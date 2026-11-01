@@ -1,4 +1,5 @@
 [
+  {"file":"test/fixtures/numeric-operators.js","stdout":"4 12 3 0\n3 -3\nLRLRLRLRUU\n"},
   {"file":"test/fixtures/array-literals.js","stdout":"0 1 2 1 2\n4 undefined undefined null undefined\nfalse true\n1 11 12 12 5\n2 true 2\n5 undefined 9\n1 undefined\n"},
   {"file":"test/fixtures/number.js","stdout":"false false\ntrue false\ntrue false\nfalse false\nfalse false\nfalse true\nfalse true\nfalse true\nfalse true\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\nfalse false\ntrue\ntrue true true true\ntrue abc\ntrue abcde\nfalse false\ntrue true true\n1.7976931348623157e+308 5e-324 2.220446049250313e-16\n9007199254740991 -9007199254740991\ntrue true true\ntrue true true\nisNaN 1 isFinite 1\n23\n17\n"},
   {"file":"test/fixtures/conditional.js","stdout":"0\n2\n5\n7 7 0\n10 7 10\n12 12\n13 15\n18 19\n-6 22 14\n0 23\n25 28\n30 ta\n33 tafd\n34 35\n36 37\n0 0 0 0 0 0 0\n1 1 1 1 1 1\ntrue 38\ntrue\ntrue\n39\n"},

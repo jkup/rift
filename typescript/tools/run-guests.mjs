@@ -201,6 +201,9 @@ execute("array-literals", literalsCommand, literalsArgs, { stdout: "array litera
 const propertyCommand = lane === "node" ? process.execPath : join(root, "build/native/property-key-conversion" + suffix);
 const propertyArgs = lane === "node" ? [join(root, "build/node/test/property-key-conversion.js")] : [];
 execute("property-key-conversion", propertyCommand, propertyArgs, { stdout: "property key conversion passed\n" });
+const numericCommand = lane === "node" ? process.execPath : join(root, "build/native/numeric-operators" + suffix);
+const numericArgs = lane === "node" ? [join(root, "build/node/test/numeric-operators.js")] : [];
+execute("numeric-operators", numericCommand, numericArgs, { stdout: "4 12 3 0\n3 -3\nLRLRLRLRUU\nnumeric operators passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;
