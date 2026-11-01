@@ -55,4 +55,10 @@ Accepted TS-004C `ba97a03`: reviewed bounded index parsing, numeric/string order
 
 Next ready task TS-005P resolves array dispatch/coercion prerequisites through a bounded design and optional isolated compiler probe. Arrays are not ready for implementation until this is reviewed; no scope change or owner decision is currently needed. Claude queue remains reserved and unchanged.
 
-Active sole writer: TS-005P design/feasibility chat `01a197f9-8a02-7ce3-84d7-fbdfabca3938`, host `local`, base `56edcbe`. Owns array-prerequisite design, isolated probe/evidence directory and own task status only; core implementation remains unchanged. Initial progress active; saved cursor `9af7f2a7-df19-48b6-925c-611a49555860:1`. Review the proposal and native evidence before unblocking array/coercion implementation.
+Completed writer: TS-005P design/feasibility chat `01a197f9-8a02-7ce3-84d7-fbdfabca3938`, host `local`, base `56edcbe`. Owns array-prerequisite design, isolated probe/evidence directory and own task status only; core implementation remains unchanged. Initial progress active; saved cursor `9af7f2a7-df19-48b6-925c-611a49555860:1`. Review the proposal and native evidence before unblocking array/coercion implementation.
+
+## Review at 2026-11-01 16:51 UTC
+
+Accepted TS-005P `dbcdb86` design and isolated dispatch feasibility. Reviewed actual diff, migration map, primitive grammar and array algorithm against versioned specification; independently rebuilt dispatch probe (seven assertions per lane, 33/33 static). Existing engine source was unchanged; retained producer gates pass 131/131 per lane. Completed chat idle, cursor `9af7f2a7-df19-48b6-925c-611a49555860:2`.
+
+TS-005N primitive conversion is ready under the new frozen contract. Class override is approved for later arrays, but numeric backend and integrated semantics still need implementation evidence. Claude queue remains ready and reserved, with no duplicated assignments.
