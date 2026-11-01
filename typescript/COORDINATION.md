@@ -258,3 +258,9 @@ Reviewed milestone and task contract pushed through 7d40c24, resolving delegated
 
 ## TS-016B review — 2026-11-01 23:36 UTC
 Reviewed pushed candidate ca471fb core forwarding, registration, fixture/driver, migration and evidence. Independent rebuilt Node/native both pass 163/163 with all 22 static gates. Not accepted yet: requested focused readability follow-up for compressed multi-step helpers/setup/callbacks/try-catch and guest bodies, replacing repeated property reads/type assertions with saved narrowed Values; preserve exact case/order/budget/identity assertions and deliberately update moved diagnostic locations. Source diff check is clean; raw failure/typecheck transcripts have whitespace warnings. Sole implementation chat is active on review fix; saved cursor `9171b060-71dc-4dbe-a794-f71213d3323a:4`. Coordinator leaves active files untouched, no successor dispatch. Final revision needs review/revalidation. Main and Claude queue unchanged.
+
+## TS-016B acceptance — 2026-11-01 23:51 UTC
+
+Accepted final `59bd44e` (production `ca471fb`): reviewed focused readability changes, preserved assertions and deliberately moved diagnostic locations. Independently rebuilt final Node/native: 163/163 each, no skips; all 22 static gates pass. Retained producer runner20/probes10/typecheck reviewed. Production unchanged from prior review. Completed chat idle; cursor `9171b060-71dc-4dbe-a794-f71213d3323a:5`. Delegated fix push rejected export authorization; coordinator verified existing jkup/rift origin and uses original human authorization to push reviewed milestone.
+
+Next ready TS-017P resolves the documented function realm entry limitation with a bounded design before further realm-sensitive standard methods. It must preserve shared budgets, exact abrupt records and context restoration. No runtime expansion until design review. Main unchanged; Claude queue reserved.
