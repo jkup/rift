@@ -59,7 +59,7 @@ Handoff: pending.
 
 ## CL-003 — Prepare independent semantic examples
 
-Status: **ready**. Owner: unclaimed. Dependencies: none.
+Status: **review needed**. Owner: Claude Code session, branch `claude/cl-003-semantic-examples` (separate worktree), base `0819c71`. Dependencies: none.
 
 Purpose: create small readable examples with explicit expected outcomes for later integration, without touching the active test harness.
 
@@ -71,7 +71,7 @@ For each fixture include exact expected stdout and a short explanation in a loca
 
 Acceptance: examples produce the documented expected output under Node, can be read without a custom assertion library, and teach distinct semantic rules. Passing Node is reference evidence, not proof Rift supports them. The coordinator chooses when/how to integrate them; do not edit `typescript/test/`, package scripts or the core engine.
 
-Handoff: pending.
+Handoff (2026-11-01): outputs under `typescript/fixtures/assistance/semantic-examples/` (work commit `cb81e62`): nine `current/` examples in the TS-001 subset (retained mutable closures, closure independence, object aliasing, method receivers, evaluation order, shadowing, loop side effects, return propagation, function-declaration hoisting) and three `deferred/` examples (for-let per-iteration bindings, finally completions, arrow lexical this) labeled as not current regressions. Exact stdout lives in `manifest.json`; `verify-node.mjs` runs each as a classic script and matched 12/12 under Node v26.13.0 (expectations hand-written first). Not run under Node-hosted or native Rift, and not wired into `typescript/test/` or package scripts. Limitations: Node agreement is reference evidence only; the receiver example relies on a `"use strict"` directive so that Node matches the Rift strict-call profile.
 
 ## Not ready for companion assignment
 
