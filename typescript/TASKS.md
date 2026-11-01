@@ -40,7 +40,7 @@ Acceptance evidence: typecheck passes; runner regressions 20/20; compiler probes
 
 ## TS-002 — Frontend extension batch
 
-Status: **in progress** — implementation complete, awaiting coordinator review. Owner: Codex implementation chat `01a197b1-67cb-7e00-87ed-dc86a82b933b`; base `d7e3019` (clean checkout).
+Status: **done** — coordinator accepted `493fbd4` on 2026-11-01 after reviewing the parser/evaluator changes, expected-result cases and retained evidence, and independently rebuilding both guest lanes (112/112 each, no skips). Owner: Codex implementation chat `01a197b1-67cb-7e00-87ed-dc86a82b933b`; base `d7e3019` (clean checkout).
 
 Coordinator-approved scope extension: conditional-specific generated cases in `tools/run-guests.mjs` and new retained evidence in `docs/validation/ts-002/`. Preserve all prior cases, acceptance logic and TS-001 evidence.
 
