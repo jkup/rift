@@ -78,3 +78,5 @@ Completed implementation writer: TS-005D chat `01a19815-200c-7f92-a524-a1523bb79
 Accepted TS-005D `74e21da`: reviewed completion/location migration, bootstrap guards, all callers and actual runtime subclass assertions. Independently rebuilt Node/native lanes, 133/133 each; seven static gates pass. Retained producer runner 20/probes 10/typecheck evidence reviewed. Completed chat idle; cursor `25ae023f-2ece-49d3-b93a-3bccb9139abc:2`.
 
 TS-005A is ready under frozen array-storage contract in TASKS.md and reviewed array-prerequisites design. Only data-only internal array storage with primitive length conversion; no syntax/methods/guest constructor or object coercion. Claude companion queue remains ready and reserved.
+
+Active sole implementation writer: TS-005A chat `01a19822-9932-7562-94df-3e3d5f329ba1`, host `local`, base `587f7ea`. Owns bounded array module/host tests/registration and scoped docs/evidence. Initial progress active; saved cursor `127b0799-4721-40c4-9efb-07c906b044b1:1`. Coordinator owns this file; any base runtime/conversion expansion requires concrete review. Array methods remain blocked.
