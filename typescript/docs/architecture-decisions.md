@@ -25,8 +25,9 @@ functions without a second incompatible value representation. A `GuestObject`
 stores a `Map<PropertyKey, DataDescriptor>` and optional `Callable`. `PropertyKey`
 currently means string only. Descriptors hold value/writable/enumerable/configurable;
 only writability has a directly exposed guest operation yet. TS-004A adds internal
-validated data descriptor updates and extensibility (details below). There is no
-prototype chain, accessor, deletion, enumeration, or guest reflection API yet.
+validated data descriptor updates and extensibility (details below). TS-004B adds
+ordinary data-only prototype chains; initial prototypes remain null. There are no
+accessors, deletion, enumeration, or guest reflection APIs.
 
 `Callable` is guest parameters/body/captured environment, or a builtin callback.
 `Evaluator.call(callee, receiver, args, loc)` is the shared call boundary. Arguments
@@ -103,9 +104,8 @@ and separately parsed 100% static coverage remain mandatory.
 
 Frontend additions update syntax/parser/evaluator together with expected-result
 fixtures. Builtins should use `Realm.registerBuiltin` and return completions; never
-call guest functions as host functions. Future accessor/prototype work must first
-make object operations completion-aware and explicitly carry the receiver and guest
-call capability. Do not add callbacks to descriptor storage ad hoc. Arrays await
+call guest functions as host functions. TS-004B makes Get/Set completion-aware with explicit receivers. Future accessor
+work must additionally supply guest-call capability. Do not add callbacks to descriptor storage ad hoc. Arrays await
 those interfaces plus coercion and length/hole semantics. See `TASKS.md` for bounded
 assignments; this foundation does not authorize starting them.
 
@@ -136,11 +136,39 @@ Sources and test evidence are in [TS-004A validation](validation/ts-004a/README.
 No accessors, exotic objects, coercion, prototypes or Object/Reflect builtins land
 with this change.
 
-Proposed later interfaces, **pending coordinator review**: ordinary Get should
-return a normal/throw Value completion and take an explicit receiver; ordinary
-Set should return a normal/throw boolean completion and take receiver separately
-from the lookup base. Keep strict PutValue responsible for turning false into a
-guest TypeError. Delete can use that boolean completion shape too. Host test
-entries should print one fixed success line, throw host errors on failed assertions,
-and be registered in both build-native and run-guests; tsconfig already includes
-all test/**/*.ts. TS-004B/C remain blocked; these proposals implement neither.
+## TS-004B: ordinary prototype lookup and explicit receivers
+
+The approved contract is implemented as internalGet(key, receiver, loc):
+ValueCompletion and internalSet(key, value, receiver, loc):
+InternalBooleanCompletion. These unions contain only normal and throw alternatives;
+boolean payloads are host booleans. Ordinary data operations currently return normal
+results. GetValue propagates Get directly; PutValue delegates to the strict set
+wrapper, which propagates throw, turns false into TypeError and returns the exact
+RHS Value on success. The host-inspection get wrapper delegates to internalGet and
+reports an unexpected throw as a host fault; semantic reads never use it.
+
+A private prototypeSlot begins null. getPrototypeOf reads it; setPrototypeOf
+returns normal boolean, accepts the identical prototype before testing extensibility,
+and checks the whole candidate chain before changing the slot. No shared intrinsic
+prototype graph is created. Get, Set and cycle detection traverse iteratively.
+The private slot plus cycle-rejecting mutation keeps ordinary chains acyclic.
+
+Set finds the nearest descriptor on the lookup base's chain, rejects read-only data,
+then checks the separate receiver. A primitive receiver fails. An existing receiver
+own property must be writable and receives a value-only descriptor update; a missing
+one is created with all three flags true, subject to receiver extensibility. The
+lookup base is never the write target merely because it supplied the descriptor.
+The evaluator already obtains method this from the property reference base, so no
+AST or evaluator source change is necessary. The seeded guest fixture tests that
+path, including an inherited method that writes through this.
+
+This specialization deliberately uses direct ordinary slots rather than generic
+exotic dispatch or accessor calls. Those features require revisiting traversal;
+there is no claim of proxy/accessor support. The existing descriptor API remains
+normal-only because its bounded implementation cannot throw guest exceptions.
+Deletion/key-list interfaces remain unfrozen and TS-004C remains blocked.
+
+The compiled host driver prints one fixed success line and throws on assertion
+failure. Both lanes register it; its guest fixture is read at runtime and executed
+in a seeded realm. Source references, design comparison and validation are in
+[TS-004B evidence](validation/ts-004b/README.md).

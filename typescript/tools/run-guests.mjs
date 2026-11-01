@@ -153,6 +153,9 @@ execute("realms", realmCommand, [...realmPrefix, "test/fixtures/realm-setup.js",
 const descriptorCommand = lane === "node" ? process.execPath : join(root, "build/native/object-descriptors" + suffix);
 const descriptorArgs = lane === "node" ? [join(root, "build/node/test/object-descriptors.js")] : [];
 execute("object-descriptors", descriptorCommand, descriptorArgs, { stdout: "object descriptors passed\n" });
+const prototypeCommand = lane === "node" ? process.execPath : join(root, "build/native/object-prototypes" + suffix);
+const prototypeArgs = lane === "node" ? [join(root, "build/node/test/object-prototypes.js")] : [];
+execute("object-prototypes", prototypeCommand, [...prototypeArgs, "test/fixtures/prototypes.js"], { stdout: "object prototypes passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

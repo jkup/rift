@@ -10,6 +10,9 @@ export type PropertyKey = GuestString;
 // Host undefined means absent; guest undefined is the present Value UNDEFINED.
 export type DataDescriptorUpdate = { value?: Value; writable?: boolean; enumerable?: boolean; configurable?: boolean };
 export type BooleanCompletion = { type: "normal"; value: boolean };
+export type ThrowCompletion = { type: "throw"; value: Value; diagnostic: Diagnostic };
+export type ValueCompletion = { type: "normal"; value: Value } | ThrowCompletion;
+export type InternalBooleanCompletion = BooleanCompletion | ThrowCompletion;
 export type DataDescriptor = { value: Value; writable: boolean; enumerable: boolean; configurable: boolean };
 export type Completion =
     | { type: "normal" | "return"; value: Value }
@@ -26,6 +29,7 @@ export type Callable =
 export class GuestObject {
     private propertyStorage: Map<PropertyKey, DataDescriptor> = new Map();
     private extensible = true;
+    private prototypeSlot: GuestObject | null = null;
     callable: Callable | null = null;
     // Compatibility inspection snapshot, never a mutable view of internal slots.
     get properties(): Map<PropertyKey, DataDescriptor> {
@@ -74,18 +78,58 @@ export class GuestObject {
         });
         return { type: "normal", value: true };
     }
+    getPrototypeOf(): GuestObject | null { return this.prototypeSlot; }
+    setPrototypeOf(prototype: GuestObject | null): BooleanCompletion {
+        if (prototype === this.prototypeSlot) return { type: "normal", value: true };
+        if (!this.extensible) return { type: "normal", value: false };
+        let candidate = prototype;
+        while (candidate !== null) {
+            if (candidate === this) return { type: "normal", value: false };
+            candidate = candidate.prototypeSlot;
+        }
+        this.prototypeSlot = prototype;
+        return { type: "normal", value: true };
+    }
+    internalGet(key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+        let object: GuestObject | null = this;
+        while (object !== null) {
+            const descriptor = object.propertyStorage.get(key);
+            if (descriptor !== undefined) return { type: "normal", value: descriptor.value };
+            object = object.prototypeSlot;
+        }
+        return { type: "normal", value: UNDEFINED };
+    }
+    internalSet(key: PropertyKey, value: Value, receiver: Value, _loc: Location): InternalBooleanCompletion {
+        // Keep Receiver unchanged while finding the first descriptor. Direct
+        // slot traversal is valid only for this ordinary, data-only object model.
+        let object: GuestObject | null = this;
+        while (object !== null) {
+            const descriptor = object.propertyStorage.get(key);
+            if (descriptor !== undefined) {
+                if (!descriptor.writable) return { type: "normal", value: false };
+                break;
+            }
+            object = object.prototypeSlot;
+        }
+        if (receiver.kind !== "object") return { type: "normal", value: false };
+        const target = receiver.object;
+        const existing = target.getOwnProperty(key);
+        if (existing !== undefined) {
+            if (!existing.writable) return { type: "normal", value: false };
+            return target.defineOwnProperty(key, { value });
+        }
+        return target.defineOwnProperty(key, { value, writable: true, enumerable: true, configurable: true });
+    }
+    // Trusted host-test inspection only; semantic reads propagate completions.
     get(key: PropertyKey): Value {
-        const descriptor = this.propertyStorage.get(key);
-        return descriptor === undefined ? UNDEFINED : descriptor.value;
+        const result = this.internalGet(key, { kind: "object", object: this }, { line: 1, column: 1 });
+        if (result.type === "throw") throw new Error("abrupt host inspection: " + key);
+        return result.value;
     }
     set(key: PropertyKey, value: Value, loc: Location): Completion {
-        // Strict assignment rejects even same-value writes to read-only properties.
-        const descriptor = this.propertyStorage.get(key);
-        if (descriptor !== undefined && !descriptor.writable) return failure("TypeError", "property is not writable: " + key, loc);
-        const result = descriptor === undefined
-            ? this.defineOwnProperty(key, { value, writable: true, enumerable: true, configurable: true })
-            : this.defineOwnProperty(key, { value });
-        if (!result.value) return failure("TypeError", "object is not extensible: " + key, loc);
+        const result = this.internalSet(key, value, { kind: "object", object: this }, loc);
+        if (result.type === "throw") return result;
+        if (!result.value) return failure("TypeError", "property is not writable: " + key, loc);
         return normal(value);
     }
     define(key: PropertyKey, value: Value, writable: boolean, enumerable: boolean, configurable: boolean): void {
@@ -113,7 +157,7 @@ export type Reference =
     | { kind: "property"; base: GuestObject; key: PropertyKey };
 export type ReferenceResult = { type: "reference"; reference: Reference } | { type: "abrupt"; completion: Completion };
 export function getValue(ref: Reference, loc: Location): Completion {
-    if (ref.kind === "property") return normal(ref.base.get(ref.key));
+    if (ref.kind === "property") return ref.base.internalGet(ref.key, { kind: "object", object: ref.base }, loc);
     const binding = ref.environment === null ? undefined : ref.environment.bindings.get(ref.name);
     if (binding === undefined) return failure("ReferenceError", ref.name + " is not defined", loc);
     if (!binding.initialized) return failure("ReferenceError", ref.name + " is not initialized", loc);
