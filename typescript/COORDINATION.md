@@ -16,7 +16,7 @@ Repository: `C:\Users\jonku\code\rift`. Integration branch: `typescript-scriptc-
 
 - TS-002 accepted at `493fbd4`: reviewed precedence/assignment arms, short-circuiting, abrupt completion and bounded-depth tests; independently rebuilt Node and native guest lanes, 112/112 each. Static native build gates passed. Existing syntax/coercion limitations remain explicit.
 - Completed TS-002 chat: `01a197b1-67cb-7e00-87ed-dc86a82b933b`, host `local`, idle. Last cursor: `8e67dac2-0c53-46ac-bf9e-da49a0475e04:4`.
-- Next dispatch: TS-003 Number constants/predicates; chat pending creation. TS-004A data-descriptor validation follows after review. Do not run shared-manifest/core writers simultaneously in this checkout.
+- Active: TS-003 Number constants/predicates, chat `01a197c2-c572-74c0-8236-1b92a8297bf3`, host `local`, dispatched from `757fca7`. Sole implementation writer. Ownership includes the planned realm registration, Number-only generated tests and `docs/validation/ts-003/`; no general runtime redesign. TS-004A data-descriptor validation follows after review. Do not run shared-manifest/core writers simultaneously in this checkout.
 - Preserve deferred scope and explicitly document partial semantics. Do not turn task completion into claims of complete support.
 
 ## Review cycle
