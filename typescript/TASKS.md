@@ -62,7 +62,7 @@ Constants: non-writable/non-enumerable/non-configurable. Predicate properties: w
 
 ## TS-004 — Ordinary object semantics
 
-Status: **in progress** as a sequenced umbrella; TS-004A is accepted and TS-004B is accepted and TS-004C is ready. Integration owner must sequence these changes. No accessors or prototype work is authorized merely by claiming TS-004A.
+Status: **in progress** as a sequenced umbrella; TS-004A is accepted and TS-004B is accepted; TS-004C is implemented and awaiting coordinator review. Integration owner must sequence these changes. No accessors or prototype work is authorized merely by claiming TS-004A.
 
 ### TS-004A — Validate data descriptor updates
 
@@ -82,8 +82,9 @@ Handoff (2026-11-01): implemented the frozen data-only prototype and receiver co
 
 ### TS-004C — Own property ordering and deletion
 
-Status: **ready** — descriptor/prototype prerequisites accepted; approved API contract below. Planned files: new `src/property-keys.ts`, `src/runtime.ts`, `test/object-keys.ts`. Scope string keys only: canonical array-index ordering before insertion-ordered strings, deleting configurable properties, delete/reinsert ordering, and non-configurable rejection. Test boundary index strings, ordinary strings, overwrites and reinsertion under Node/native. Symbols and guest reflection builtins are separate prerequisites before claiming complete OwnPropertyKeys.
+Status: **in progress — awaiting coordinator review** — Codex chat `01a197eb-ca8c-74b1-9c26-8945d1d7296a`, base `c95f60f` (approved contract at `51fb1f6`, coordinator tracking commit preserved). Owned files: new `src/property-keys.ts`, `src/runtime.ts`, `test/object-keys.ts`, necessary driver registration and scoped docs/evidence. Scope string keys only: canonical array-index ordering before insertion-ordered strings, deleting configurable properties, delete/reinsert ordering, and non-configurable rejection. Symbols and guest reflection builtins are separate prerequisites before claiming complete OwnPropertyKeys.
 
+Handoff (2026-11-01): implemented the frozen internalDelete, detached string-only ownPropertyKeys and canonical arrayIndex APIs. Compiled host assertions cover edge/noncanonical indices, numeric/insertion ordering, nonenumerability, overwrite/reinsert, rejected/absent/inherited deletion, nonextensibility, snapshots and realm isolation. Typecheck passes; runner 20/20; probes 10/10; rebuilt Node/native lanes 131/131 each, no skips. Static coverage: CLI 785/785, realms 850/850, descriptors 250/250, prototypes 857/857, keys 294/294. Zig required authorized library access; initial failure and successful transcripts retained in `docs/validation/ts-004c/`. Architecture/inventory interfaces updated. No guest syntax, symbols, exotics, arrays, accessors, coercion or toolchain changes. Awaiting coordinator acceptance; successor work remains unstarted.
 ## TS-005 — Array method batches
 
 Status: **blocked** by array storage/hole/length semantics, TS-004, coercion and callback calls.

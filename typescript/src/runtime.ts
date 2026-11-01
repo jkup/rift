@@ -1,5 +1,6 @@
 import type { Diagnostic, Location, Stmt } from "./syntax.js";
 import type { GuestString } from "./strings.js";
+import { arrayIndex } from "./property-keys.js";
 
 export type Value =
     | { kind: "undefined" } | { kind: "null" }
@@ -42,6 +43,28 @@ export class GuestObject {
     getOwnProperty(key: PropertyKey): DataDescriptor | undefined {
         const d = this.propertyStorage.get(key);
         return d === undefined ? undefined : { value: d.value, writable: d.writable, enumerable: d.enumerable, configurable: d.configurable };
+    }
+    internalDelete(key: PropertyKey): InternalBooleanCompletion {
+        const current = this.propertyStorage.get(key);
+        if (current === undefined) return { type: "normal", value: true };
+        if (!current.configurable) return { type: "normal", value: false };
+        this.propertyStorage.delete(key);
+        return { type: "normal", value: true };
+    }
+    // Detached, string-only ordinary [[OwnPropertyKeys]]; no guest calls or throws.
+    ownPropertyKeys(): PropertyKey[] {
+        const indices: { key: PropertyKey; index: number }[] = [];
+        const strings: PropertyKey[] = [];
+        for (const key of this.propertyStorage.keys()) {
+            const index = arrayIndex(key);
+            if (index === undefined) strings.push(key);
+            else indices.push({ key, index });
+        }
+        indices.sort((left, right) => left.index - right.index);
+        const keys: PropertyKey[] = [];
+        for (const entry of indices) keys.push(entry.key);
+        for (const key of strings) keys.push(key);
+        return keys;
     }
     isExtensible(): boolean { return this.extensible; }
     preventExtensions(): BooleanCompletion {

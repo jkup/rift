@@ -156,6 +156,9 @@ execute("object-descriptors", descriptorCommand, descriptorArgs, { stdout: "obje
 const prototypeCommand = lane === "node" ? process.execPath : join(root, "build/native/object-prototypes" + suffix);
 const prototypeArgs = lane === "node" ? [join(root, "build/node/test/object-prototypes.js")] : [];
 execute("object-prototypes", prototypeCommand, [...prototypeArgs, "test/fixtures/prototypes.js"], { stdout: "object prototypes passed\n" });
+const keysCommand = lane === "node" ? process.execPath : join(root, "build/native/object-keys" + suffix);
+const keysArgs = lane === "node" ? [join(root, "build/node/test/object-keys.js")] : [];
+execute("object-keys", keysCommand, keysArgs, { stdout: "object keys passed\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

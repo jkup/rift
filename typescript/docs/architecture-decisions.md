@@ -27,7 +27,8 @@ currently means string only. Descriptors hold value/writable/enumerable/configur
 only writability has a directly exposed guest operation yet. TS-004A adds internal
 validated data descriptor updates and extensibility (details below). TS-004B adds
 ordinary data-only prototype chains; initial prototypes remain null. There are no
-accessors, deletion, enumeration, or guest reflection APIs.
+accessors or guest reflection APIs. TS-004C adds internal deletion and detached
+string-only key lists (details below).
 
 `Callable` is guest parameters/body/captured environment, or a builtin callback.
 `Evaluator.call(callee, receiver, args, loc)` is the shared call boundary. Arguments
@@ -166,9 +167,32 @@ This specialization deliberately uses direct ordinary slots rather than generic
 exotic dispatch or accessor calls. Those features require revisiting traversal;
 there is no claim of proxy/accessor support. The existing descriptor API remains
 normal-only because its bounded implementation cannot throw guest exceptions.
-Deletion/key-list interfaces remain unfrozen and TS-004C remains blocked.
+TS-004C supplies the approved deletion/key-list interfaces described below.
 
 The compiled host driver prints one fixed success line and throws on assertion
 failure. Both lanes register it; its guest fixture is read at runtime and executed
 in a seeded realm. Source references, design comparison and validation are in
 [TS-004B evidence](validation/ts-004b/README.md).
+
+## TS-004C: ordinary own keys and deletion
+
+`internalDelete(key): InternalBooleanCompletion` checks only the own descriptor.
+Absence succeeds, configurable properties are removed, and nonconfigurable
+properties reject without mutation. Extensibility does not prevent deletion.
+There is no guest delete syntax or strict-delete wrapper.
+
+`ownPropertyKeys(): PropertyKey[]` returns a fresh list including nonenumerable
+own strings. Indices sort numerically with an explicit comparator; other strings
+retain Map creation order. Updating a descriptor preserves position; deletion and
+reinsertion create a new string position. No prototype traversal or descriptor
+filtering occurs. Ordinary objects cannot throw here. Symbols and exotic dispatch
+remain unsupported, so this is not complete ECMAScript OwnPropertyKeys.
+
+`src/property-keys.ts` exports `arrayIndex(key): number | undefined`. Bounded ASCII
+digit parsing accepts exactly canonical decimal strings from 0 to 4294967294.
+It rejects leading zeros, signs (including -0), whitespace, decimal/exponent forms
+and the excluded upper bound. Ten-digit arithmetic stays exactly representable;
+no guest coercion or signed bitwise conversion is involved. Index/key pairs retain
+the parsed number for sorting. The classifier is available for future array work;
+no array semantics are implemented here. Source revisions and validation are in
+[TS-004C evidence](validation/ts-004c/README.md).
