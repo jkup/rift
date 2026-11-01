@@ -159,3 +159,9 @@ Accepted `4ba6708`: reviewed actual evaluator migration, primitive/edge expectat
 
 Next ready TS-009 adds primitive binary addition using accepted number/string conversions. Same integration branch; main unchanged. Claude queue ready and reserved.
 Active sole implementation writer: TS-009 chat `01a198ab-eb69-7810-b1c5-5d9b3bd824f5`, host `local`, assigned base `a652ac3`. Progress confirmed active; saved cursor `82f30943-6fe7-44f2-9f5e-3149305849c0:1`. Owns frozen primitive-addition implementation/tests/docs only. Coordinator owns this file; review actual work and all gates before acceptance.
+
+## TS-009 acceptance — 2026-11-01 20:06 UTC
+
+Accepted `b0c7e46`: reviewed actual plus implementation, fixed primitive/formatting/UTF-16 expectations, abrupt/order checks, all three positive replacement regressions and retained scope. Independently rebuilt Node/native suites: 156/156 each, no skips; all fifteen static gates pass. Producer runner20/probes10/typecheck evidence retained. Completed chat idle; cursor `82f30943-6fe7-44f2-9f5e-3149305849c0:2`. No object coercion/boxing/symbol support. Main unchanged; Claude queue ready/reserved.
+
+Next ready TS-010 integrates primitive relational comparisons with explicit unordered NaN semantics and UTF-16 string ordering. Frozen contract in TASKS.md; same integration branch.
