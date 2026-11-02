@@ -670,3 +670,7 @@ Accepted main research synchronized into feature at c4c2488 and pushed. Merge to
 ## TS-031C-P progress — 2026-11-02 14:38 heartbeat
 
 Designer active, saved cursorc7a3c148-5576-4361-ba3d-c4ac3df80016:2. Proposed design keeps certification non-emitting and recommends internal return-only whole-source coverage audit before any public change; references/offsets/ownership checks in progress. No independent acceptance yet, no runtime changes or successor. Await completed frozen handoff before review.
+
+## TS-031C-P acceptance — 2026-11-02 14:53 heartbeat
+
+Acceptedd319710 after full design/interfaces/F01-F29/C01-C08/source review. Independently reran116 Rift parser observations58 labelled reference compilations6 metadata controls and protected-file audit; original evidence files preserved after replay. Checked ECMA-2622025 Script ~Return and Statement +Return grammar. Runtime/tool/test sources unchanged; reused accepted binaries, no full rebuild claimed. Designer idle cursorc7a3c148-5576-4361-ba3d-c4ac3df80016:3. Approved only non-emitting audit prerequisite TS-031C-A frozen in TASKS; no public certification/profile/conformance admission. Main remains78811ec, prior research integration complete. Next writer pending dispatch.
