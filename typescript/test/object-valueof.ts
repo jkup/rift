@@ -1,4 +1,5 @@
 import { GuestSymbol } from "../src/symbols.js";
+import { testSymbolConversions } from "./symbol-conversions.js";
 import { GuestSymbolObject } from "../src/primitive-objects.js";
 import { toObject } from "../src/object-conversion.js";
 import { stringKeys } from "./key-assertions.js";
@@ -273,7 +274,7 @@ check(symbolEvaluator.steps === 0 && symbolEvaluator.context.realm === a, "A16 n
 const transported = new Evaluator(c);
 check(object(result(transported.call(symbolMethod, value(symbolBox), [], loc))) === symbolBox, "A2/A16 foreign existing box unchanged");
 check(symbolB.symbolPrototype !== a.symbolPrototype && !(symbolB.symbolPrototype instanceof GuestSymbolObject), "A17 root has no payload");
-check(symbolB.symbolPrototype.ownPropertyKeys().length === 0 && symbolB.symbolPrototype.getPrototypeOf() === symbolB.objectPrototype && symbolB.symbolPrototype.isExtensible() && symbolB.symbolPrototype.callable === null, "A17 exact root graph");
+check(symbolB.symbolPrototype.ownPropertyKeys().length === 3 && symbolB.symbolPrototype.getPrototypeOf() === symbolB.objectPrototype && symbolB.symbolPrototype.isExtensible() && symbolB.symbolPrototype.callable === null, "A17/B2 exact root graph");
 const lookalike = new GuestObject(symbolB.symbolPrototype);
 check(!(lookalike instanceof GuestSymbolObject), "A17 prototype is not a slot");
 symbolBox.setPrototypeOf(null);
@@ -287,7 +288,12 @@ for (const box of [symbolBox, anotherBox]) {
         if (conversion.type === "throw") error(conversion, "TypeError", "object-to-primitive conversion unsupported", loc);
     }
     check(symbolEvaluator.steps === before, "A19 direct zero hooks/ticks");
-    error(toPrimitive(value(box), "default", symbolEvaluator.context, loc), "TypeError", "cannot convert object to primitive", loc);
+    const converted = toPrimitive(value(box), "default", symbolEvaluator.context, loc);
+    if (box === symbolBox) {
+        error(converted, "TypeError", "cannot convert object to primitive", loc);
+    } else {
+        check(sameValue(result(converted), symbolValue), "B2 intact box uses inherited Symbol hook");
+    }
 }
 for (const mode of ["normal", "guest", "host", "steps"]) {
     const active = new Evaluator(a, 1, 3);
@@ -324,6 +330,8 @@ for (const mode of ["normal", "guest", "host", "steps"]) {
 const symbolLimit = new Evaluator(a, 0, 1);
 error(symbolLimit.call(forwarded, symbolMethod, [symbolValue], loc), "RangeError", "call depth limit exceeded", loc);
 check(symbolLimit.calls === 0 && symbolLimit.context.realm === a && symbolLimit.steps === 0, "A18 shared call limit cleanup");
-check(!symbolB.global.bindings.has("Symbol") && symbolB.symbolPrototype.ownPropertyKeys().length === 0, "A24 no Symbol exposure");
+check(!symbolB.global.bindings.has("Symbol") && symbolB.symbolPrototype.ownPropertyKeys().length === 3, "A24/B2 methods without Symbol global");
+
+testSymbolConversions();
 
 console.log("object valueOf passed");

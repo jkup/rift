@@ -868,7 +868,7 @@ Coordinator acceptance: TS-019B1 accepted final `f3a381e` (production `cfe56bb`)
 
 ### TS-019B2 — Symbol prototype conversion methods
 
-Status: **ready for assignment**. Prerequisite TS-019B1 accepted `f3a381e`. Implement B2/P10-P11 from docs/symbol-foundation.md only. Own new src/builtins/symbol.ts, minimal Realm registration, existing compiled drivers/runtime-read fixtures and scoped docs/validation/ts-019b2/. Coordinator owns COORDINATION.md; Claude assistance paths remain reserved.
+Status: **in progress**. Owner: Codex implementation chat `01a19a13-8caa-72f0-8395-1529fadf8ee7`; accepted base `e5bffe3`, dispatch `8f7b6ee`, existing branch `codex/primitive-computed-keys`. Prerequisite TS-019B1 accepted `f3a381e`. Implement B2/P10-P11 from docs/symbol-foundation.md only. Own new src/builtins/symbol.ts, minimal Realm registration, existing compiled drivers/runtime-read fixtures and scoped docs/validation/ts-019b2/. Coordinator owns COORDINATION.md; Claude assistance paths remain reserved.
 
 Add thisSymbolValue and registerSymbolConversions using the frozen design API. Accept symbol primitives and actual GuestSymbolObject payloads regardless of prototype/Realm; otherwise located TypeError `receiver is not a symbol`. Never infer slots from prototype/properties or invoke receiver hooks. The ordinary Symbol root has no payload. Install fresh per-Realm valueOf/name valueOf/length0 and toString/name toString/length0, properties W/E/C true/false/true. Install canonical wellKnownToPrimitive method name [Symbol.toPrimitive]/length1 with false/false/true property attributes using createBuiltin/bootstrapDefine. Function metadata remains false/false/true, defining Realm ownership and functionPrototype linkage retained. Register toString then valueOf then canonical hook for deterministic own-key order. Hook ignores hint/extra arguments without coercing or inspecting them. Use existing descriptive-string helper; no new ticks or evaluator in method bodies.
 
@@ -879,3 +879,20 @@ Default/number/string ToPrimitive on an intact box returns its payload; ToProper
 Audit every empty-Symbol-root/missing-method/boxed-symbol conversion expectation before changing it, particularly realms/object-valueof/conversion/primitive-conversion drivers. Update only newly implemented behavior; retain root-without-payload, null-root, direct-converter, ordinary-object negative intent and budgets with explicit reasons. Preserve all 164 cases and23gates; extend existing drivers where practical and fail-closed register any needed new driver. No Symbol global/factory/registry, description accessor, constructor backlink, toStringTag, Object toString, implicit member boxing, parser or async work. Symbol remains a deliberately partial surface.
 
 Consult fixed ECMA-262 2025 sections20.4.3.3–5 and pinned engine evidence. Require typecheck, runner/probes, full rebuilt Node/native and every static-only build/separate coverage gate. Retain reductions before compiler workarounds; preserve pins/import workarounds. Commit/push tested coherent work and stop for review. No C++/Claude/COORDINATION edits, branch switch, main merge or successor dispatch.
+
+TS-019B2 handoff (2026-11-02): implementation complete, awaiting coordinator review.
+Added slot-based thisSymbolValue and per-Realm toString/valueOf/canonical
+toPrimitive methods with frozen metadata and descriptors. Extended P10/P11
+assertions compile through the existing object-valueOf driver; runtime-read
+fixture covers guest calls, ignored argument effects, boxed keys and exact
+operator/receiver/readonly failures. Deletion/replacement, foreign/relinked
+boxes, root negatives, direct-converter limits and exact ticks/calls are covered.
+Only the newly implemented intact-box/root-key expectations changed; retained
+null-root, ordinary-object and host-fault cleanup negatives. Typecheck PASS,
+runner 20/20, probes 10/10, rebuilt Node/native 164/164 each, no skips, and all
+23 static-only builds/separate coverage gates PASS (CLI 1282, object-valueof
+1694). No compiler workaround, pin/import/annotation change or gate relaxation.
+Initial missing-Zig-PATH failures and successful authorized rerun retained in
+docs/validation/ts-019b2/ with full matrix and migration audit. No C/tag/Object
+toString/global/registry/accessor/implicit boxing expansion, C++/Claude/
+COORDINATION edit, branch switch, main merge or successor work. Stop for review.

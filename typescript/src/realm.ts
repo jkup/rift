@@ -4,6 +4,7 @@ import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, typ
 import { registerNumber } from "./builtins/number.js";
 import { registerFunction } from "./builtins/function.js";
 import { registerObjectValueOf } from "./builtins/object.js";
+import { registerSymbolConversions } from "./builtins/symbol.js";
 import type { Stmt } from "./syntax.js";
 import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
 import type { GuestString } from "./strings.js";
@@ -32,6 +33,7 @@ export class Realm {
         this.symbolPrototype = new GuestObject(this.objectPrototype);
         registerObjectValueOf(this);
         registerFunction(this);
+        registerSymbolConversions(this);
         this.global.bindings.set("undefined", { initialized: true, mutable: false, value: UNDEFINED });
         this.global.bindings.set("NaN", { initialized: true, mutable: false, value: { kind: "number", value: NaN } });
         this.global.bindings.set("Infinity", { initialized: true, mutable: false, value: { kind: "number", value: Infinity } });

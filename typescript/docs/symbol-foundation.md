@@ -456,3 +456,13 @@ B1 is implemented for coordinator review. The canonical identity and protocol
 follow the frozen boundary above; P1-P9 and consumer/observer/budget migrations
 are recorded in [TS-019B1 evidence](validation/ts-019b1/README.md).
 This does not assign or implement B2 or C.
+
+## B2 implementation status (2026-11-02)
+
+B2 is implemented for coordinator review. `builtins/symbol.ts` owns the frozen
+`SymbolCompletion`, `thisSymbolValue`, and `registerSymbolConversions` APIs.
+Realm bootstrap installs the three methods in toString/valueOf/canonical-hook
+order. Method bodies perform only slot validation and primitive result creation;
+existing context calls, conversion lookups and budgets remain authoritative.
+The extended P10/P11 matrix, negative-expectation audit and validation records are
+in [TS-019B2 evidence](validation/ts-019b2/README.md). C remains unimplemented.

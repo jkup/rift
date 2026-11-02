@@ -1,0 +1,283 @@
+
+> test:guest:native
+> npm run build:native && node tools/run-guests.mjs native
+
+
+> build:native
+> node tools/build-native.mjs
+
+BUILD-FAIL src/cli.ts
+C:\Users\jonku\code\rift\typescript\src\cli.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\src\cli.ts
+
+  statements analyzed   1282
+  compile statically    1282  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+BUILD-FAIL test/realms.ts
+C:\Users\jonku\code\rift\typescript\test\realms.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\realms.ts
+
+  statements analyzed   1613
+  compile statically    1613  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+BUILD-FAIL test/object-descriptors.ts
+C:\Users\jonku\code\rift\typescript\test\object-descriptors.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\object-descriptors.ts
+
+  statements analyzed   1079
+  compile statically    1079  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+BUILD-FAIL test/object-prototypes.ts
+C:\Users\jonku\code\rift\typescript\test\object-prototypes.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\object-prototypes.ts
+
+  statements analyzed   1394
+  compile statically    1394  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+BUILD-FAIL test/object-keys.ts
+C:\Users\jonku\code\rift\typescript\test\object-keys.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\object-keys.ts
+
+  statements analyzed   1084
+  compile statically    1084  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\conversion.ts:1:1 - error SC3004: spawnSync zig ENOENT
+BUILD-FAIL test/conversion.ts
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\conversion.ts
+
+  statements analyzed   700
+  compile statically    700  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\definition-dispatch.ts:1:1 - error SC3004: spawnSync zig ENOENT
+BUILD-FAIL test/definition-dispatch.ts
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\definition-dispatch.ts
+
+  statements analyzed   1420
+  compile statically    1420  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\array-storage.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+BUILD-FAIL test/array-storage.ts
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\array-storage.ts
+
+  statements analyzed   1562
+  compile statically    1562  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\array-like.ts:1:1 - error SC3004: spawnSync zig ENOENT
+BUILD-FAIL test/array-like.ts
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\array-like.ts
+
+  statements analyzed   1044
+  compile statically    1044  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\operation-context.ts:1:1 - error SC3004: spawnSync zig ENOENT
+BUILD-FAIL test/operation-context.ts
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\operation-context.ts
+
+  statements analyzed   1602
+  compile statically    1602  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+BUILD-FAIL test/array-map.ts
+C:\Users\jonku\code\rift\typescript\test\array-map.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\array-map.ts
+
+  statements analyzed   1755
+  compile statically    1755  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+BUILD-FAIL test/array-literals.ts
+C:\Users\jonku\code\rift\typescript\test\array-literals.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\array-literals.ts
+
+  statements analyzed   1333
+  compile statically    1333  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\property-key-conversion.ts:1:1 - error SC3004: spawnSync zig ENOENT
+BUILD-FAIL test/property-key-conversion.ts
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\property-key-conversion.ts
+
+  statements analyzed   1593
+  compile statically    1593  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+BUILD-FAIL test/numeric-operators.ts
+C:\Users\jonku\code\rift\typescript\test\numeric-operators.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\numeric-operators.ts
+
+  statements analyzed   1366
+  compile statically    1366  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+BUILD-FAIL test/addition.ts
+C:\Users\jonku\code\rift\typescript\test\addition.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\addition.ts
+
+  statements analyzed   1380
+  compile statically    1380  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\relational.ts:1:1 - error SC3004: spawnSync zig ENOENT
+BUILD-FAIL test/relational.ts
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\relational.ts
+
+  statements analyzed   1411
+  compile statically    1411  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\primitive-conversion.ts:1:1 - error SC3004: spawnSync zig ENOENT
+BUILD-FAIL test/primitive-conversion.ts
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\primitive-conversion.ts
+
+  statements analyzed   1783
+  compile statically    1783  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\operator-coercion.ts:1:1 - error SC3004: spawnSync zig ENOENT
+BUILD-FAIL test/operator-coercion.ts
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\operator-coercion.ts
+
+  statements analyzed   1398
+  compile statically    1398  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+BUILD-FAIL test/key-coercion.ts
+C:\Users\jonku\code\rift\typescript\test\key-coercion.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\key-coercion.ts
+
+  statements analyzed   1430
+  compile statically    1430  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\length-coercion.ts:1:1 - error SC3004: spawnSync zig ENOENT
+BUILD-FAIL test/length-coercion.ts
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\length-coercion.ts
+
+  statements analyzed   1560
+  compile statically    1560  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\array-length-coercion.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+BUILD-FAIL test/array-length-coercion.ts
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\array-length-coercion.ts
+
+  statements analyzed   1780
+  compile statically    1780  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+C:\Users\jonku\code\rift\typescript\test\function-call.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\function-call.ts
+
+  statements analyzed   1452
+  compile statically    1452  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+BUILD-FAIL test/function-call.ts
+BUILD-FAIL test/object-valueof.ts
+C:\Users\jonku\code\rift\typescript\test\object-valueof.ts:1:1 - error SC3004: spawnSync zig ENOENT
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\object-valueof.ts
+
+  statements analyzed   1694
+  compile statically    1694  (100%)
+
+  fully static — all analyzed statements compile to native code.

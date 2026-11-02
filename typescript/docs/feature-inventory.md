@@ -163,6 +163,23 @@ operator, array-like length/map and double array-length conversions all consume
 this protocol with shared budgets and callable-Realm restoration.
 
 This is an internal/host-bridge surface. There is no guest Symbol global,
-registry, Symbol prototype conversion method, toStringTag, Object toString,
+registry, toStringTag, Object toString,
 accessor/proxy or implicit boxing expansion. Earlier TS-011 exclusions of symbol
 hooks are superseded only by this bounded stage. [P1-P9 evidence](validation/ts-019b1/README.md).
+
+### Symbol prototype conversion methods (TS-019B2)
+
+Each Realm now installs fresh Symbol `toString`, `valueOf`, and canonical
+`[Symbol.toPrimitive]` methods. They accept symbol primitives and actual Symbol
+boxes, including foreign or relinked boxes; the ordinary Symbol root and objects
+merely inheriting from it have no payload and fail. Explicit `toString` produces
+a descriptive UTF-16 string. Intact boxes return their symbol payload for every
+conversion hint, including property-key conversion; implicit numeric/string
+conversion then rejects that symbol. The configurable, readonly protocol method
+can be deleted, exposing fresh ordinary method lookup in the usual hint order.
+
+This supersedes earlier missing-Symbol-method limits only. Direct converters
+still reject objects without invoking hooks, and Object `valueOf` still boxes
+symbol primitives. No Symbol global/factory/registry, description accessor,
+constructor backlink, tag, Object toString, or implicit member boxing is added.
+[P10/P11 evidence and expectation audit](validation/ts-019b2/README.md).
