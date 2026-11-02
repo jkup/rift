@@ -131,12 +131,12 @@ export class GuestObject {
         this.prototypeSlot = prototype;
         return { type: "normal", value: true };
     }
-    // Ordinary data-only presence, including inherited undefined. No value reads
-    // or exotic prototype dispatch; current arrays share these ordinary slots.
+    // Data-only presence through descriptor dispatch, including inherited
+    // undefined and virtual String indices. Never invoke semantic Get here.
     internalHasProperty(key: PropertyKey, _loc: Location): InternalBooleanCompletion {
         let object: GuestObject | null = this;
         while (object !== null) {
-            if (object.propertyStorage.has(key)) return { type: "normal", value: true };
+            if (object.getOwnProperty(key) !== undefined) return { type: "normal", value: true };
             object = object.prototypeSlot;
         }
         return { type: "normal", value: false };
@@ -144,18 +144,18 @@ export class GuestObject {
     internalGet(key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
         let object: GuestObject | null = this;
         while (object !== null) {
-            const descriptor = object.propertyStorage.get(key);
+            const descriptor = object.getOwnProperty(key);
             if (descriptor !== undefined) return { type: "normal", value: descriptor.value };
             object = object.prototypeSlot;
         }
         return { type: "normal", value: UNDEFINED };
     }
     internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, loc: Location): InternalBooleanCompletion {
-        // Keep Receiver unchanged while finding the first descriptor. Direct
-        // slot traversal is valid only for this ordinary, data-only object model.
+        // Keep Receiver unchanged while finding the first descriptor, including
+        // virtual data properties on prototypes.
         let object: GuestObject | null = this;
         while (object !== null) {
-            const descriptor = object.propertyStorage.get(key);
+            const descriptor = object.getOwnProperty(key);
             if (descriptor !== undefined) {
                 if (!descriptor.writable) return { type: "normal", value: false };
                 break;

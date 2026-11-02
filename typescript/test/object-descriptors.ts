@@ -96,4 +96,74 @@ try { bootstrapFrozen.bootstrapDefine("x", { value: num(0) }); }
 catch (error) { frozenFault = error instanceof Error; }
 check(frozenFault, "bootstrap frozen signed zero rejects");
 state(bootstrapFrozen, "x", num(-0), false, false, false);
+// W5-W9/W11/W14: String units are virtual readonly data properties.
+const units = keyContext.realm.createStringObject("A\ud83d\ude00\ud800\0");
+state(units, "length", num(5), false, false, false);
+const expectedUnits = ["A", "\ud83d", "\ude00", "\ud800", "\0"];
+for (let i = 0; i < expectedUnits.length; i++) {
+    state(units, String(i), { kind: "string", value: expectedUnits[i] }, false, true, false);
+}
+check(units.ownPropertyKeys().join(",") === "0,1,2,3,4,length", "W5 UTF-16 keys");
+const text = keyContext.realm.createStringObject("ab");
+const aUnit: Value = { kind: "string", value: "a" };
+const compatible: DataDescriptorUpdate[] = [
+    {}, { value: aUnit }, { writable: false }, { enumerable: true }, { configurable: false },
+    { value: aUnit, writable: false, enumerable: true, configurable: false },
+];
+for (const update of compatible) {
+    result(text.defineOwnProperty("0", update, keyContext, loc), true, "W7 compatible index");
+    state(text, "0", aUnit, false, true, false);
+}
+const incompatible: DataDescriptorUpdate[] = [
+    { value: { kind: "string", value: "z" } }, { writable: true }, { enumerable: false }, { configurable: true },
+    { value: aUnit, writable: false, enumerable: false },
+];
+for (const update of incompatible) {
+    result(text.defineOwnProperty("0", update, keyContext, loc), false, "W8 incompatible index");
+    state(text, "0", aUnit, false, true, false);
+}
+result(text.internalSet("0", aUnit, { kind: "object", object: text }, keyContext, loc), false, "W8 same-value Set");
+const strictUnit = text.set("0", aUnit, keyContext, loc);
+check(strictUnit.type === "throw" && strictUnit.diagnostic.name === "TypeError"
+    && strictUnit.diagnostic.message === "property is not writable: 0" && strictUnit.diagnostic.loc === loc, "W8 strict Set");
+result(text.internalDelete("0"), false, "W8 index delete");
+result(text.internalDelete("length"), false, "W8 length delete");
+result(text.defineOwnProperty("length", { value: num(2) }, keyContext, loc), true, "W9 same length");
+for (const update of [{ value: num(3) }, { writable: true }, { enumerable: true }, { configurable: true }]) {
+    result(text.defineOwnProperty("length", update, keyContext, loc), false, "W9 immutable length");
+    state(text, "length", num(2), false, false, false);
+}
+result(text.defineOwnProperty("2", { value: { kind: "string", value: "x" }, writable: true, enumerable: true, configurable: true }, keyContext, loc), true, "W9 ordinary out-of-range index");
+state(text, "2", { kind: "string", value: "x" }, true, true, true);
+state(text, "length", num(2), false, false, false);
+const frozenText = keyContext.realm.createStringObject("ab");
+frozenText.preventExtensions();
+for (const update of compatible) result(frozenText.defineOwnProperty("0", update, keyContext, loc), true, "W11 frozen compatible index");
+result(frozenText.defineOwnProperty("length", { value: num(2) }, keyContext, loc), true, "W11 frozen length");
+result(frozenText.defineOwnProperty("2", {}, keyContext, loc), false, "W11 new key");
+result(frozenText.setPrototypeOf(null), false, "W11 new prototype");
+result(frozenText.setPrototypeOf(keyContext.realm.stringPrototype), true, "W11 same prototype");
+check(frozenText.ownPropertyKeys().join(",") === "0,1,length", "W11 unchanged keys");
+state(frozenText, "0", aUnit, false, true, false);
+const detachedUnit = text.getOwnProperty("0");
+const detachedLength = text.getOwnProperty("length");
+if (detachedUnit === undefined || detachedLength === undefined) throw new Error("W14 missing descriptors");
+detachedUnit.value = num(99);
+detachedUnit.writable = true;
+detachedLength.value = num(99);
+const stringSnapshot = text.properties;
+check(Array.from(stringSnapshot.keys()).join(",") === "0,1,2,length", "W14 snapshot order");
+const snapshotUnit = stringSnapshot.get("1");
+if (snapshotUnit === undefined) throw new Error("W14 missing snapshot unit");
+snapshotUnit.value = num(99);
+stringSnapshot.clear();
+const detachedKeys = text.ownPropertyKeys();
+detachedKeys.push("fake");
+state(text, "0", aUnit, false, true, false);
+state(text, "1", { kind: "string", value: "b" }, false, true, false);
+state(text, "length", num(2), false, false, false);
+check(text.ownPropertyKeys().join(",") === "0,1,2,length", "W14 detached keys/map");
+text.bootstrapDefine("stringData", { value: num(99) });
+text.setPrototypeOf(null);
+check(text.stringData === "ab", "W14 scalar payload survives property/prototype changes");
 console.log("object descriptors passed");

@@ -168,4 +168,20 @@ check(child.calls === 1 && child.seenContext === active.context && child.seenLoc
 boolean(child.defineOwnProperty("length", { value: rhs }, active.context, loc), true);
 check(child.calls === 2 && child.seenContext === active.context && child.get("length") === rhs, "direct Define identity");
 check(active.steps === 0 && active.calls === 0 && keyEvaluator.steps === 0, "ordinary writes add no ticks or calls");
+// W18: bootstrap dispatch validates virtual indices without a context.
+const silentRealm = new Realm((_line) => { throw new Error("W18 bootstrap output"); });
+const bootstrapText: GuestObject = silentRealm.createStringObject("ab");
+bootstrapText.bootstrapDefine("0", { value: { kind: "string", value: "a" }, writable: false, enumerable: true, configurable: false });
+let invalidIndexEscaped = false;
+try {
+    bootstrapText.bootstrapDefine("0", { writable: true });
+} catch (error) {
+    invalidIndexEscaped = error instanceof Error && error.message === "invalid internal property definition: 0";
+}
+check(invalidIndexEscaped, "W18 invalid bootstrap index invariant");
+bootstrapText.preventExtensions();
+bootstrapText.bootstrapDefine("0", {});
+const bootstrapUnit = bootstrapText.getOwnProperty("0");
+check(bootstrapUnit !== undefined && !bootstrapUnit.writable && bootstrapUnit.enumerable && !bootstrapUnit.configurable, "W18 bootstrap flags unchanged");
+check(keyEvaluator.steps === 0 && keyEvaluator.calls === 0, "W18 no execution work");
 console.log("definition dispatch passed");

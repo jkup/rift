@@ -3,7 +3,11 @@ import { readFileSync } from "node:fs";
 import { run } from "../src/interpreter.js";
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
-import { GuestObject, normal, UNDEFINED, sameValue, type Value } from "../src/runtime.js";
+import { GuestObject, normal, failure, truthy, UNDEFINED, sameValue, type Value, type ValueCompletion, type OperationContext } from "../src/runtime.js";
+import { GuestBoolean, GuestNumber, GuestStringObject } from "../src/primitive-objects.js";
+import { toObject } from "../src/object-conversion.js";
+import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from "../src/conversion.js";
+import { toPrimitive } from "../src/primitive-conversion.js";
 import { GuestArray } from "../src/array-object.js";
 import { parse } from "../src/parser.js";
 const a = new Realm((line) => { console.log("a " + line); });
@@ -43,7 +47,6 @@ let escaped = false;
 try { run("console.log(1);", broken); }
 catch (error) { escaped = error instanceof Error && error.message === "host output fault"; }
 if (!escaped) throw new Error("host fault was swallowed");
-console.log("realms independent");
 
 // Number bootstrap descriptors and mutable state must belong to each realm.
 function numberNamespace(realm: Realm): GuestObject {
@@ -244,3 +247,163 @@ for (const name of [
 }
 const numberCall = active.context.call(graphBinding(r1, "numberCall"), UNDEFINED, [], at);
 checkGraph(numberCall.type === "throw" && numberCall.diagnostic.name === "TypeError" && numberCall.diagnostic.message === "value is not callable", "G9 Number remains namespace");
+
+// W1-W4/W14/W17/W18: explicit boxing and immutable scalar payloads.
+const boxA = new Realm((_line) => { throw new Error("W18 unexpected bootstrap output"); });
+const boxB = new Realm((_line) => { throw new Error("W18 unexpected bootstrap output"); });
+const boxC = new Realm((_line) => { throw new Error("W18 unexpected bootstrap output"); });
+const boxEvaluator = new Evaluator(boxA);
+const zeroHookContext: OperationContext = {
+    realm: boxA,
+    // Explicit return types avoid scriptc's never-return callback adapters.
+    // The reduced inferred/explicit comparison is retained with TS-018A evidence.
+    call: (_callee, _receiver, _args, _loc): ValueCompletion => { throw new Error("boxing called guest code"); },
+    tick: (_loc): ValueCompletion => { throw new Error("boxing ticked"); },
+};
+function box(input: Value, context: OperationContext = zeroHookContext): GuestObject {
+    const converted = toObject(input, context, at);
+    if (converted.type !== "normal") throw new Error("unexpected boxing failure");
+    return converted.value;
+}
+for (const realm of [boxA, boxB]) {
+    const roots: GuestObject[] = [realm.booleanPrototype, realm.numberPrototype, realm.stringPrototype];
+    for (const root of roots) {
+        checkGraph(root.getPrototypeOf() === realm.objectPrototype && root.callable === null && root.isExtensible(), "W1 root graph/flags");
+        for (const key of ["constructor", "valueOf", "toString"]) {
+            checkGraph(root.get(key).kind === "undefined", "W17 missing wrapper methods");
+        }
+    }
+    checkGraph(!realm.booleanPrototype.booleanData && 1 / realm.numberPrototype.numberData === Infinity && realm.stringPrototype.stringData === "", "W1 root payloads");
+    checkGraph(realm.booleanPrototype.ownPropertyKeys().length === 0 && realm.numberPrototype.ownPropertyKeys().length === 0 && realm.stringPrototype.ownPropertyKeys().join(",") === "length", "W1 root keys");
+    checkGraph(realm.objectPrototype.ownPropertyKeys().length === 0 && realm.functionPrototype.ownPropertyKeys().join(",") === "name,length,call" && realm.arrayPrototype.ownPropertyKeys().join(",") === "length", "W1 original root keys");
+    for (const name of ["Object", "Boolean", "String"]) checkGraph(!realm.global.bindings.has(name), "W17 no new globals");
+    const namespace = graphObject(graphBinding(realm, "Number"));
+    checkGraph(namespace !== realm.numberPrototype && namespace.getPrototypeOf() === realm.objectPrototype && namespace.callable === null, "W1 Number namespace preserved");
+}
+checkGraph(boxA.booleanPrototype !== boxB.booleanPrototype && boxA.numberPrototype !== boxB.numberPrototype && boxA.stringPrototype !== boxB.stringPrototype, "W1 independent roots");
+const primitives: Value[] = [
+    { kind: "boolean", value: false }, { kind: "boolean", value: true },
+    numberValue(0), numberValue(-0), numberValue(NaN), numberValue(Infinity), numberValue(-Infinity),
+    { kind: "string", value: "" }, { kind: "string", value: "ab" },
+];
+for (const primitive of primitives) {
+    const firstBox = box(primitive);
+    const secondBox = box(primitive);
+    checkGraph(firstBox !== secondBox && truthy({ kind: "object", object: firstBox }), "W2 fresh truthy boxes");
+    if (primitive.kind === "boolean") {
+        checkGraph(firstBox instanceof GuestBoolean && firstBox.booleanData === primitive.value && firstBox.getPrototypeOf() === boxA.booleanPrototype, "W2 Boolean payload/root");
+    } else if (primitive.kind === "number") {
+        checkGraph(firstBox instanceof GuestNumber && sameValue(numberValue(firstBox.numberData), primitive) && firstBox.getPrototypeOf() === boxA.numberPrototype, "W2 Number payload/root");
+    } else if (primitive.kind === "string") {
+        checkGraph(firstBox instanceof GuestStringObject && firstBox.stringData === primitive.value && firstBox.getPrototypeOf() === boxA.stringPrototype, "W2 String payload/root");
+    }
+}
+class NoBoxReads extends GuestObject {
+    internalGet(_key: string, _receiver: Value, _loc: { line: number; column: number }): ValueCompletion {
+        throw new Error("W3 boxing read an object");
+    }
+}
+const existingBoxes: GuestObject[] = [
+    boxA.createObject(), boxA.createArray(), boxA.functionPrototype,
+    boxA.createStringObject("ab"), boxB.createNumberObject(-0), new GuestObject(), new NoBoxReads(),
+];
+for (const object of existingBoxes) {
+    const prototype = object.getPrototypeOf();
+    const keys = object.ownPropertyKeys().join(",");
+    checkGraph(box({ kind: "object", object }) === object && object.getPrototypeOf() === prototype && object.ownPropertyKeys().join(",") === keys, "W3 exact identity/chain/state");
+}
+for (const input of [UNDEFINED, { kind: "null" } as const]) {
+    const converted = toObject(input, zeroHookContext, at);
+    checkGraph(converted.type === "throw" && converted.diagnostic.name === "TypeError"
+        && converted.diagnostic.phase === "runtime" && converted.diagnostic.message === "cannot convert null or undefined to object"
+        && converted.diagnostic.loc === at && sameValue(converted.value, { kind: "string", value: "TypeError: cannot convert null or undefined to object" }), "W4 exact nullish error");
+}
+checkGraph(boxEvaluator.steps === 0 && boxEvaluator.calls === 0 && boxEvaluator.depth === 0 && boxEvaluator.context.realm === boxA, "W3/W4 no execution work");
+const booleanPayload = boxA.createBooleanObject(false);
+const numberPayload = boxA.createNumberObject(-0);
+booleanPayload.bootstrapDefine("booleanData", { value: numberValue(99) });
+numberPayload.bootstrapDefine("numberData", { value: numberValue(99) });
+booleanPayload.setPrototypeOf(null);
+numberPayload.setPrototypeOf(null);
+checkGraph(!booleanPayload.booleanData && 1 / numberPayload.numberData === -Infinity, "W14 Boolean/Number scalar slots");
+for (const wrapper of [boxA.createBooleanObject(false), boxA.createNumberObject(0), boxA.createStringObject("ab")]) {
+    const value: Value = { kind: "object", object: wrapper };
+    const missing = toPrimitive(value, "number", boxEvaluator.context, at);
+    checkGraph(missing.type === "throw" && missing.diagnostic.message === "cannot convert object to primitive" && missing.diagnostic.loc === at, "W17 no hidden unboxing");
+    const hook = boxA.createBuiltin("trap", 0, (_receiver, _args, _context, _loc): ValueCompletion => { throw new Error("W17 direct converter hook"); });
+    wrapper.bootstrapDefine("valueOf", { value: { kind: "object", object: hook } });
+    wrapper.bootstrapDefine("toString", { value: { kind: "object", object: hook } });
+    const before = boxEvaluator.steps;
+    for (const converted of [toNumber(value, at), toUint32(value, at), toIntegerOrInfinity(value, at), toLength(value, at), toString(value, at)]) {
+        checkGraph(converted.type === "throw" && converted.diagnostic.message === "object-to-primitive conversion unsupported" && converted.diagnostic.loc === at, "W17 direct converter rejects wrapper");
+    }
+    checkGraph(boxEvaluator.steps === before && boxEvaluator.calls === 0, "W17 direct conversion zero hooks");
+}
+for (const source of ["'ab'[0];", "false.x;", "(1).x;", "'ab'[0] = 'z';"]) {
+    const rejected = run(source, boxA);
+    checkGraph(rejected.phase === "runtime" && rejected.completion.type === "throw" && rejected.completion.diagnostic.name === "TypeError" && rejected.completion.diagnostic.message === "property base must be an object", "W17 primitive member still rejected");
+}
+
+// W15: a saved context follows B -> C -> B, and finally restores A.
+const entry = new Evaluator(boxA, 1, 2);
+const boxTrace: string[] = [];
+const boxes: GuestObject[] = [];
+const inC = boxC.createBuiltin("boxC", 0, (_receiver, _args, context, _loc) => {
+    checkGraph(context === entry.context && context.realm === boxC && entry.calls === 2, "W15 C context/shared calls");
+    boxTrace.push("C");
+    const allocated = box({ kind: "string", value: "c" }, context);
+    boxes.push(allocated);
+    return normal({ kind: "object", object: allocated });
+});
+const inB = boxB.createBuiltin("boxB", 0, (_receiver, _args, context, loc) => {
+    checkGraph(context.realm === boxB && entry.calls === 1, "W15 B entry");
+    const saved = context;
+    boxTrace.push("B");
+    boxes.push(box(numberValue(-0), saved));
+    const nested = context.call({ kind: "object", object: inC }, UNDEFINED, [], loc);
+    checkGraph(nested.type === "normal" && nested.value.kind === "object" && nested.value.object === boxes[1], "W15 returned C identity");
+    checkGraph(saved.realm === boxB && entry.calls === 1, "W15 B continuation");
+    boxTrace.push("B");
+    const allocated = box({ kind: "boolean", value: false }, saved);
+    boxes.push(allocated);
+    return normal({ kind: "object", object: allocated });
+});
+const boxedResult = entry.call({ kind: "object", object: inB }, UNDEFINED, [], at);
+checkGraph(boxedResult.type === "normal" && boxedResult.value.kind === "object" && boxedResult.value.object === boxes[2], "W15 returned B identity");
+checkGraph(boxTrace.join(",") === "B,C,B" && boxes[0].getPrototypeOf() === boxB.numberPrototype && boxes[1].getPrototypeOf() === boxC.stringPrototype && boxes[2].getPrototypeOf() === boxB.booleanPrototype, "W15 allocation roots");
+checkGraph(entry.context.realm === boxA && entry.calls === 0 && entry.depth === 0 && entry.steps === 0, "W15 normal cleanup/no boxing ticks");
+const boxSentinel = failure("Sentinel", "boxing guest throw", at);
+for (const mode of ["guest", "host"]) {
+    const abruptBox = boxB.createBuiltin("abruptBox", 0, (_receiver, _args, context, _loc) => {
+        checkGraph(box(numberValue(1), context).getPrototypeOf() === boxB.numberPrototype, "W15 abrupt allocation root");
+        if (mode === "host") throw new Error("W15 host fault");
+        return boxSentinel;
+    });
+    let hostEscaped = false;
+    if (mode === "guest") {
+        const completion = entry.call({ kind: "object", object: abruptBox }, UNDEFINED, [], at);
+        checkGraph(completion === boxSentinel, "W15 exact guest throw");
+    } else {
+        try {
+            entry.call({ kind: "object", object: abruptBox }, UNDEFINED, [], at);
+        } catch (error) {
+            hostEscaped = error instanceof Error && error.message === "W15 host fault";
+        }
+    }
+    checkGraph(hostEscaped === (mode === "host") && entry.context.realm === boxA && entry.calls === 0 && entry.depth === 0 && entry.steps === 0, "W15 abrupt cleanup");
+}
+const limitedBoxes = new Evaluator(boxA, 0, 1);
+const limitBridge = boxB.createBuiltin("limit", 0, (_receiver, _args, context, loc) => {
+    checkGraph(box(numberValue(1), context).getPrototypeOf() === boxB.numberPrototype, "W15 boxing with exhausted step budget");
+    return context.call({ kind: "object", object: inC }, UNDEFINED, [], loc);
+});
+const limitedResult = limitedBoxes.call({ kind: "object", object: limitBridge }, UNDEFINED, [], at);
+checkGraph(limitedResult.type === "throw" && limitedResult.diagnostic.message === "call depth limit exceeded" && limitedResult.diagnostic.loc === at, "W15 shared call guard");
+checkGraph(limitedBoxes.steps === 0 && limitedBoxes.calls === 0 && limitedBoxes.context.realm === boxA, "W15 limited cleanup");
+const stepBridge = boxB.createBuiltin("step", 0, (_receiver, _args, context, loc) => {
+    box(numberValue(2), context);
+    return context.tick(loc);
+});
+const exhaustedStep = limitedBoxes.call({ kind: "object", object: stepBridge }, UNDEFINED, [], at);
+checkGraph(exhaustedStep.type === "throw" && exhaustedStep.diagnostic.message === "execution step limit exceeded" && limitedBoxes.steps === 1 && limitedBoxes.context.realm === boxA && limitedBoxes.calls === 0, "W15 monotonic step budget");
+console.log("realms independent");

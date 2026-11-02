@@ -110,4 +110,27 @@ check(detached.phase === "runtime" && detached.completion.type === "throw" && de
 const abrupt = run("child.x = missing;", a);
 check(abrupt.phase === "runtime" && abrupt.completion.type === "throw" && abrupt.completion.diagnostic.name === "ReferenceError", "abrupt RHS");
 read(ac, "x", num(32));
+// W12/W13: descriptor traversal reaches virtual properties on prototypes.
+const textRoot: GuestObject = keyContext.realm.createStringObject("ab");
+const textChild = new GuestObject(textRoot);
+const textLeaf = new GuestObject(textChild);
+const aUnit: Value = { kind: "string", value: "a" };
+read(textLeaf, "0", aUnit);
+result(textLeaf.internalHasProperty("0", loc), true, "W12 inherited virtual presence");
+result(textLeaf.internalHasProperty("2", loc), false, "W12 missing index");
+result(textChild.internalSet("0", aUnit, obj(textChild), keyContext, loc), false, "W12 inherited readonly Set");
+check(textChild.getOwnProperty("0") === undefined, "W12 no own index after rejection");
+result(textChild.internalDelete("0"), true, "W12 absent own delete");
+read(textRoot, "0", aUnit);
+result(textChild.defineOwnProperty("0", { value: num(7), writable: true, enumerable: true, configurable: true }, keyContext, loc), true, "W12 direct shadow");
+read(textLeaf, "0", num(7));
+read(textRoot, "0", aUnit);
+const ordinaryBase = new GuestObject();
+result(ordinaryBase.internalSet("0", aUnit, obj(textRoot), keyContext, loc), false, "W13 String receiver rejects virtual index");
+result(textRoot.internalSet("0", num(9), obj(textChild), keyContext, loc), false, "W13 readonly base wins over writable receiver");
+read(textChild, "0", num(7));
+textRoot.bootstrapDefine("extra", { value: num(1), writable: true, enumerable: true, configurable: true });
+result(textRoot.internalSet("extra", num(2), obj(textChild), keyContext, loc), true, "W13 writable added property");
+read(textRoot, "extra", num(1));
+read(textChild, "extra", num(2));
 console.log("object prototypes passed");

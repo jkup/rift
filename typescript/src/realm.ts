@@ -3,6 +3,8 @@ import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, typ
 import { registerNumber } from "./builtins/number.js";
 import { registerFunction } from "./builtins/function.js";
 import type { Stmt } from "./syntax.js";
+import { GuestBoolean, GuestNumber, GuestStringObject } from "./primitive-objects.js";
+import type { GuestString } from "./strings.js";
 
 export type Output = (line: string) => void;
 export class Realm {
@@ -10,6 +12,9 @@ export class Realm {
     readonly objectPrototype: GuestObject;
     readonly functionPrototype: GuestObject;
     readonly arrayPrototype: GuestArray;
+    readonly booleanPrototype: GuestBoolean;
+    readonly numberPrototype: GuestNumber;
+    readonly stringPrototype: GuestStringObject;
     constructor(output: Output) {
         // Bootstrap dependencies directly, before factories or global installation.
         this.objectPrototype = new GuestObject(null, true);
@@ -18,6 +23,9 @@ export class Realm {
         });
         setBuiltinMetadata(this.functionPrototype, "", 0);
         this.arrayPrototype = new GuestArray(this.objectPrototype);
+        this.booleanPrototype = new GuestBoolean(false, this.objectPrototype);
+        this.numberPrototype = new GuestNumber(0, this.objectPrototype);
+        this.stringPrototype = new GuestStringObject("", this.objectPrototype);
         registerFunction(this);
         this.global.bindings.set("undefined", { initialized: true, mutable: false, value: UNDEFINED });
         this.global.bindings.set("NaN", { initialized: true, mutable: false, value: { kind: "number", value: NaN } });
@@ -34,6 +42,9 @@ export class Realm {
     }
     createObject(): GuestObject { return new GuestObject(this.objectPrototype); }
     createArray(): GuestArray { return new GuestArray(this.arrayPrototype); }
+    createBooleanObject(value: boolean): GuestBoolean { return new GuestBoolean(value, this.booleanPrototype); }
+    createNumberObject(value: number): GuestNumber { return new GuestNumber(value, this.numberPrototype); }
+    createStringObject(value: GuestString): GuestStringObject { return new GuestStringObject(value, this.stringPrototype); }
     createGuestFunction(params: string[], body: Stmt[], environment: Environment): GuestObject {
         return new GuestObject(this.functionPrototype, false, { kind: "guest", realm: this, params, body, environment });
     }

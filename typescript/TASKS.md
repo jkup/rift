@@ -744,7 +744,7 @@ Coordinator acceptance: TS-018P accepted `7b6021a` on 2026-11-02. Reviewed full 
 
 ### TS-018A — Primitive wrappers and explicit ToObject
 
-Status: **ready**. Prerequisite TS-018P accepted `7b6021a`. Implement only stage A and W1-W19 in docs/primitive-wrappers.md. Own new src/primitive-objects.ts and src/object-conversion.ts, src/property-keys.ts stringIndex, scoped src/runtime.ts descriptor traversal and src/realm.ts roots/factories; existing compiled realms/object-descriptors/object-prototypes/object-keys/definition-dispatch/array-map drivers and their runtime-read fixtures as needed; scoped docs and docs/validation/ts-018a/. Coordinator owns COORDINATION.md; preserve Claude queue and assistance paths.
+Status: **in progress**. Owner: Codex implementation chat `01a199c0-93a2-75c3-a8b2-df2a493e111e`; base `cc755f7` (clean checkout). Prerequisite TS-018P accepted `7b6021a`. Implement only stage A and W1-W19 in docs/primitive-wrappers.md. Own new src/primitive-objects.ts and src/object-conversion.ts, src/property-keys.ts stringIndex, scoped src/runtime.ts descriptor traversal and src/realm.ts roots/factories; existing compiled realms/object-descriptors/object-prototypes/object-keys/definition-dispatch/array-map drivers and their runtime-read fixtures as needed; scoped docs and docs/validation/ts-018a/. Coordinator owns COORDINATION.md; preserve Claude queue and assistance paths.
 
 Implement explicit readonly scalar Boolean/Number/String payloads and per-Realm B/N/S roots with false/+0/empty-string payloads inheriting O. Preserve existing O/F/A, callable owners, Number namespace and metadata. Factories create fresh wrappers; ToObject preserves exact existing object identity, boxes supported primitives in context.realm and rejects null/undefined with the frozen located TypeError, with zero Get/Call/tick operations. No optional generic slots, fake empty boxes, hidden unboxing or new globals.
 
@@ -753,3 +753,16 @@ Implement String virtual UTF-16 unit descriptors and ordinary readonly length. S
 Cover all W1-W19 with readable expected results: graph/freshness/identity/nullish errors; signed zero/NaN/infinities/truthiness; surrogate pairs/lone surrogates/NUL; canonical/ordinary keys and numeric versus string -0; descriptors, deletes, nonextensibility and inherited/receiver Set; detached snapshots and payload identity; A/B/C boxing/restoration/budgets; explicit String map/length consumption; unchanged primitive-base failures and direct-converter zero-hook rejection; silent bootstrap and large-index helper-only boundary. Retain all 163 cases and 22 static gates, extending existing drivers. No fixture or assertion removal; success output must follow all assertions. Preserve the accepted conversion-driver import workaround.
 
 Do not add Object.valueOf/toString, wrapper methods, symbols, constructors, implicit member/receiver boxing, global bindings, accessors/proxies, species or asynchronous execution. Run typecheck, runner/probes, rebuilt Node/native and every static build/coverage gate. Reduce actual compiler failures before workarounds; retain evidence and do not change pins. Record exact limitations; commit/push coherent tested work then stop for review. No C++/Claude/COORDINATION edits, branch switching, main merge or successor dispatch.
+
+TS-018A handoff (2026-11-02): stage A implemented; coordinator acceptance pending.
+Readonly scalar wrappers, per-Realm B/N/S roots/factories, explicit zero-hook
+ToObject, virtual UTF-16 String descriptors/keys/snapshots and descriptor-aware
+iterative Get/Has/Set are covered by W1-W19 across the existing six drivers.
+Typecheck, runner 20/20, probes 10/10, rebuilt Node/native 163/163 and all 22 static
+build/coverage gates pass, no skips. Retained original compiler coverage failure
+and seven-statement reduction justify three test-only explicit callback return
+types; no production workaround, pin/gate weakening or conversion import change.
+Initial Zig sandbox-access failures and successful runs are retained separately.
+Evidence and exact matrix map: docs/validation/ts-018a/README.md. No excluded stage
+B/C work, C++, Claude, COORDINATION, branch switch, main merge or successor work.
+Ready for coordinator review; status remains in progress until acceptance.

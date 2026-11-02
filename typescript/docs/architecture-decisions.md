@@ -657,3 +657,34 @@ error diagnostics. It adds no suspension model, jobs, modules, constructors,
 species, boxing, Error objects, bound/proxy functions or standard methods.
 The [accepted contract](function-realm-entry.md) records the fixed specification
 and engine sources and rationale. See [validation](validation/ts-017a/README.md).
+
+## Primitive wrappers and explicit ToObject (TS-018A)
+
+GuestBoolean, GuestNumber and GuestStringObject carry readonly host-scalar
+payloads. Each Realm bootstraps separate false/+0/empty-string roots directly
+under its Object root, then allocates fresh wrappers through typed factories.
+Existing object/array/function roots, callable ownership and the Number namespace
+are unchanged. Explicit toObject returns existing objects verbatim, allocates
+primitive wrappers in the live context Realm, and returns a located TypeError
+for null/undefined. It performs no Get, Call or tick and has no production caller.
+
+String indices synthesize detached readonly/enumerable/nonconfigurable UTF-16
+unit descriptors. The readonly length lives in validated ordinary storage.
+Compatible index definitions succeed without storage insertion, including on
+nonextensible objects. Semantic and bootstrap definitions share the same check.
+Keys place virtual indices before stored array indices and insertion-ordered
+ordinary strings; the String-specific properties snapshot follows that order.
+No virtual unit can enter ordinary storage through the supported definition APIs,
+so appending ordinary keys cannot duplicate virtual indices.
+
+Get, HasProperty and Set search each prototype's getOwnProperty iteratively.
+This includes virtual data properties while preserving Receiver and existing
+completion/observer behavior. HasProperty does not invoke Get. This remains a
+synchronous data-descriptor model, not general accessor or proxy dispatch.
+
+The implementation follows the [accepted design](primitive-wrappers.md), including
+its pinned engine262 comparison, and the fixed [ECMA-262 String exotic algorithms](https://tc39.es/ecma262/2025/multipage/ordinary-and-exotic-objects-behaviours.html#sec-string-exotic-objects).
+No source was copied. No implicit member/receiver boxing, constructors, globals,
+wrapper conversion methods or Object valueOf/toString are added. Direct primitive
+converters still reject wrappers; ordinary conversion requires explicit hooks.
+See [W1-W19 validation](validation/ts-018a/README.md).

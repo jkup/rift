@@ -1,5 +1,7 @@
 import { readFileSync } from "node:fs";
 import { mapObjectDefaultArray } from "../src/array-map.js";
+import { lengthOfArrayLike } from "../src/array-like.js";
+import { GuestStringObject } from "../src/primitive-objects.js";
 import { GuestArray } from "../src/array-object.js";
 import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
@@ -515,7 +517,6 @@ const recovery = builtin(realm, (_receiver, _args, context, at) => {
 });
 result(recoveryEvaluator.call(recovery, UNDEFINED, [], loc), 1);
 check(recoveryEvaluator.calls === 0, "outer recovery releases calls");
-console.log("array map passed");
 
 // G12/G16: the supplied operation context selects the result Realm, independently
 // of input and callback origins. Exact Values and holes survive the allocation.
@@ -635,3 +636,31 @@ for (const value of callbackResults) {
     check(value.kind === "object" && value.object.getPrototypeOf() === mapC.objectPrototype, "R18 C element prototype");
 }
 check(mapTrace.join(",") === "A length,C callback,C callback" && mapEntry.context.realm === mapA && mapEntry.calls === 0 && mapEntry.depth === 0, "R18 ordering and restoration");
+
+// W16: String objects are explicit array-like inputs, never implicit boxes.
+class ObservedString extends GuestStringObject {
+    reads: string[] = [];
+    internalGet(key: string, receiver: Value, at: Location): ValueCompletion {
+        this.reads.push(key);
+        if (key === "constructor") throw new Error("W16 String constructor read");
+        return super.internalGet(key, receiver, at);
+    }
+}
+const stringInput = new ObservedString("ab", mapA.stringPrototype);
+const stringLength = lengthOfArrayLike(stringInput, mapEntry.context, loc);
+check(stringLength.type === "normal" && stringLength.value === 2, "W16 explicit String length");
+stringInput.reads = [];
+const stringReceiver = obj(mapC.createObject());
+let stringVisits = 0;
+const stringCallback = builtin(mapC, (receiver, args, context, at) => {
+    check(receiver === stringReceiver && context.realm === mapC && at === loc, "W16 callback receiver/Realm/location");
+    check(args.length === 3 && args[2].kind === "object" && args[2].object === stringInput, "W16 exact input argument");
+    check(sameValue(args[1], num(stringVisits)) && sameValue(args[0], { kind: "string", value: stringVisits === 0 ? "a" : "b" }), "W16 callback unit/index");
+    stringVisits++;
+    return normal(args[0]);
+});
+const stringMapped = result(mapObjectDefaultArray(stringInput, stringCallback, stringReceiver, mapEntry.context, loc), 2, mapA);
+element(stringMapped, "0", { kind: "string", value: "a" });
+element(stringMapped, "1", { kind: "string", value: "b" });
+check(stringVisits === 2 && stringInput.reads.join(",") === "length,0,1" && mapEntry.context.realm === mapA, "W16 visits/read order/restoration");
+console.log("array map passed");

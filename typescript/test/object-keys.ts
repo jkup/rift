@@ -1,7 +1,8 @@
 import { Evaluator } from "../src/evaluator.js";
 const keyContext = new Evaluator(new Realm((_line) => {})).context;
 const loc = { line: 1, column: 1 };
-import { arrayIndex } from "../src/property-keys.js";
+import { arrayIndex, stringIndex } from "../src/property-keys.js";
+import { toPropertyKey } from "../src/conversion.js";
 import { GuestObject, UNDEFINED, sameValue } from "../src/runtime.js";
 import type { InternalBooleanCompletion } from "../src/runtime.js";
 import { Realm } from "../src/realm.js";
@@ -95,4 +96,23 @@ check(first.getOwnProperty("isNaN") === undefined && second.getOwnProperty("isNa
 check(second.getOwnProperty("0") === undefined, "realm insertion isolation");
 list(second.ownPropertyKeys(), secondKeys, "realm order isolation");
 result(first.internalDelete("NaN"), false, "realm constant protected");
+// W6/W10/W19: canonical String indices and ordinary property ordering.
+const text = keyContext.realm.createStringObject("ab");
+check(stringIndex("0", 2) === 0 && stringIndex("1", 2) === 1, "W6 valid indices");
+for (const key of ["2", "01", "+0", "1.0", "-0", "-1", "0.5", "NaN", "Infinity", "", " 0", "1e0"]) {
+    check(stringIndex(key, 2) === undefined && text.getOwnProperty(key) === undefined, "W6 ordinary key " + key);
+    add(text, key);
+    check(text.getOwnProperty(key) !== undefined, "W6 ordinary definition " + key);
+}
+const negativeZeroKey = toPropertyKey({ kind: "number", value: -0 }, keyContext, loc);
+check(negativeZeroKey.type === "normal" && negativeZeroKey.value === "0", "W6 numeric -0 key");
+if (negativeZeroKey.type !== "normal") throw new Error("W6 unexpected key failure");
+check(sameValue(text.get(negativeZeroKey.value), { kind: "string", value: "a" }) && text.get("-0").kind === "undefined", "W6 distinct string -0");
+const orderedText = keyContext.realm.createStringObject("ab");
+for (const key of ["z", "10", "2", "01", "-0", "4294967295"]) add(orderedText, key);
+list(orderedText.ownPropertyKeys(), ["0", "1", "2", "10", "length", "z", "01", "-0", "4294967295"], "W10 initial order");
+result(orderedText.internalDelete("z"), true, "W10 delete z");
+add(orderedText, "z");
+list(orderedText.ownPropertyKeys(), ["0", "1", "2", "10", "length", "01", "-0", "4294967295", "z"], "W10 reinsert order");
+check(stringIndex("4294967295", 4294967296) === 4294967295 && arrayIndex("4294967295") === undefined, "W19 String has no array-index ceiling");
 console.log("object keys passed");

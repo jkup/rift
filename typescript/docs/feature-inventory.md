@@ -17,7 +17,7 @@ claim that all coercion cases are supported.
 | Bootstrap | Per-realm console object and console.log; undefined/NaN/Infinity bindings; partial Number namespace below | No other standard constructors or globals, eval, Function, filesystem or process in guest code. Console rendering is a host diagnostic convention, not guest ToString. |
 | Data descriptors (TS-004A) | Internal data/generic descriptor validation with explicit absence/defaulting, SameValue, atomic rejection, non-configurable/non-writable invariants, and preventExtensions. Existing writable own properties remain writable on non-extensible objects; new assignment fails. | Host APIs only; no guest Object/Reflect builtins, accessors or proxies. Internal key listing/deletion are described in TS-004C below. Internal false and strict assignment TypeError are distinct. |
 | Prototypes (TS-004B) | Internal get/set with explicit receiver and normal/throw results; iterative inherited data lookup, receiver-own writes, cycle and extensibility checks; strict assignment rejection. Compiled host tests seed guest realms and exercise inherited method this. | TS-016A adds per-Realm Object/Function/Array roots, with an immutable null-root Object prototype. No guest prototype mutation/reflection APIs or accessors. Literal __proto__ still rejected. |
-| Number (TS-003) | Per-realm, mutable global binding to a non-callable namespace. Constants NaN, POSITIVE_INFINITY, NEGATIVE_INFINITY, MAX_VALUE, MIN_VALUE, EPSILON, MAX_SAFE_INTEGER, MIN_SAFE_INTEGER have non-writable/non-enumerable/non-configurable own properties. isNaN/isFinite never coerce, ignore receivers and excess argument values, and have writable/non-enumerable/configurable namespace properties. Each predicate has its correct name and length 1, both non-writable/non-enumerable/configurable. | Intentionally partial intermediate namespace, not complete Number support. No Number conversion/call/constructor, wrappers, prototype, formatting, integer predicates, parsing methods or guest reflection APIs. Extra argument expressions still evaluate normally. Builtin metadata is centralized in Realm registration; guest function own name/arity inference remains deferred. |
+| Number (TS-003) | Per-realm, mutable global binding to a non-callable namespace. Constants NaN, POSITIVE_INFINITY, NEGATIVE_INFINITY, MAX_VALUE, MIN_VALUE, EPSILON, MAX_SAFE_INTEGER, MIN_SAFE_INTEGER have non-writable/non-enumerable/non-configurable own properties. isNaN/isFinite never coerce, ignore receivers and excess argument values, and have writable/non-enumerable/configurable namespace properties. Each predicate has its correct name and length 1, both non-writable/non-enumerable/configurable. | Intentionally partial intermediate namespace, not complete Number support. No Number conversion/call/constructor, guest prototype exposure, formatting, integer predicates, parsing methods or guest reflection APIs. Extra argument expressions still evaluate normally. Builtin metadata is centralized in Realm registration; guest function own name/arity inference remains deferred. |
 | Own keys/deletion (TS-004C) | Internal configurable-own deletion, normal false on nonconfigurable rejection, detached lists of all own string keys including nonenumerable keys; canonical array indices first numerically, other strings by creation order. Overwrite preserves position; delete/reinsert renews it. | Host APIs only; no guest delete syntax, Object/Reflect APIs, symbols or generic exotics. Ordinary key listing cannot throw; arrays reuse these operations. |
 | Errors | Parse locations, runtime locations, thrown guest values, ReferenceError/TypeError/RangeError diagnostics | Engine errors are string values plus diagnostic records, not Error instances. No guest catch syntax or stack traces. Across-run redeclaration fails at runtime before new declarations are installed. |
 | Primitive conversion (TS-005N) | Internal ToNumber/ToUint32 for existing primitive Value kinds, exact numeric-string scanning and tested binary64 backend, signed-zero preservation/normalization. | Host driver API only; no operator/builtin integration. Objects explicitly throw unsupported-conversion runtime TypeError without guest calls. No symbols/BigInts or ToPrimitive. |
@@ -117,3 +117,22 @@ and metadata mutations do not alter function ownership. This adds no methods,
 constructors, suspension support or Error objects; strict receiver behavior and
 resource limits remain the existing bounded profile.
 See [TS-017A evidence](validation/ts-017a/README.md).
+
+### Explicit primitive wrapper objects (TS-018A)
+
+Internal Boolean/Number/String wrappers now retain readonly scalar payloads and
+inherit separate per-Realm roots. Explicit ToObject preserves object identity,
+boxes supported primitives freshly in the active Realm and rejects nullish values
+without reads/calls/ticks. String wrappers expose virtual UTF-16 indices and an
+ordinary readonly length, with compatible definition, deletion, ordering,
+nonextensibility and detached inspection behavior. Descriptor-aware inherited
+Get/Has/Set sees these virtual units. Internal map and lengthOfArrayLike accept an
+explicit String object; neither performs implicit boxing.
+
+These are host/internal APIs. Primitive member access still fails, receivers stay
+unchanged, Number remains a noncallable namespace, and no wrapper globals,
+constructors or conversion methods are installed. Direct primitive converters
+still reject every object, and ordinary ToPrimitive still needs explicit hooks.
+Symbols, accessors, proxies and Object.valueOf/toString remain deferred. Keys and
+snapshots allocate proportional to string length; no huge-string resource claim
+is made. [Acceptance evidence and W1-W19 map](validation/ts-018a/README.md).
