@@ -75,7 +75,7 @@ Handoff (2026-11-01): outputs under `typescript/fixtures/assistance/semantic-exa
 
 ## CL-004 — Identify a small trustworthy test262 starting corpus
 
-Status: **ready**. Owner: unclaimed. Dependencies: accepted CL-002 audit.
+Status: **in progress**. Owner: Claude Code session, branch `claude/cl-004-test262-starter-corpus` (separate worktree), base `609c2f3`. Dependencies: accepted CL-002 audit.
 
 Purpose: prepare evidence for a future conformance adapter without changing the interpreter or claiming compliance. Pin one upstream test262 revision and inspect 15–25 relevant tests for already implemented language semantics (strict lexical bindings, closures, evaluation order, primitive operators, ordinary data properties). Use accepted TS-017A as the capability baseline; distinguish parse support, runtime support and harness dependencies.
 
