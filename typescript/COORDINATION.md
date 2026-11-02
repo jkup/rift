@@ -405,3 +405,9 @@ Acceptance/next contract pushed through4a0f051, resolving delegated export rejec
 ## TS-022A interim review — 2026-11-02 04:23 heartbeat
 
 Writer remains active; saved cursor `3f876e9d-3727-41a4-a2f4-0eff282334f8:2`. Inspected production join/toString, intrinsic capture, current J/T/R test matrices, runtime fixture and actual expectation migrations. No production defect identified in inspected paths; acceptance and independent full rebuild await final handoff. Writer retaining separate-coverage reductions for test catch identity and inferred-never throwing callback. Sent scope clarification: C2 abstract equality and C3 guest delete remain existing parse exclusions; explicit negative tests/internal deletion are appropriate, but handoff must distinguish these from proposed runtime rows. Additional discovered default Array migrations justified. No competing edits/builds or successor; CL-004/005 reserved, main unchanged.
+
+## TS-022A acceptance — 2026-11-02 04:38 heartbeat
+
+Accepted pushed3d8d37f with explicit C2/C3 design corrections (existing equality/delete syntax exclusions). Reviewed full production/test matrices, fixture, migrations and retained test-only compiler reductions. Independently rebuilt Node/native166/166 each, no skips, all24 static-only/separate coverage gates pass; logs build/ts-022a-review-node.log and build/ts-022a-review-native.log. Producer typecheck/runner20/probes10 evidence reviewed. Completed writer idle; saved cursor `3f876e9d-3727-41a4-a2f4-0eff282334f8:3`. Native default64 cycles/reentry validated; cyclic empty-string compatibility and allocation guarantees remain deferred.
+
+Frozen next TS-023P design for Function string conversion/source retention, based on inspected lexer/AST lacking source spans. No implementation before source contract review. CL-004/005 ready/reserved; main remains7f7d682. No repeat merge.
