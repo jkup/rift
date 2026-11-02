@@ -374,8 +374,10 @@ operations; no guest reflection API was added. See [validation](validation/ts-00
 ## Primitive property keys (TS-007)
 
 Property references retain the raw base Value, key Value and member location.
-GetValue/PutValue first reject non-object bases, then apply partial ToPropertyKey.
-Simple assignment evaluates its RHS before either restriction. Reads obtain the
+TS-028A supersedes the original object-only GetValue restriction: reads use
+ToObject before deferred ToPropertyKey and save a successful key on the reference.
+PutValue still rejects non-object bases before key conversion. Simple assignment
+evaluates its RHS before that restriction. Reads obtain the
 property before call arguments; method calls pass the exact saved base Value as
 receiver. No base/key reevaluation occurs when RHS or arguments replace bindings.
 
@@ -384,7 +386,7 @@ toString and toPropertyKey. Both conversions support every current primitive. TS
 coercion to toPropertyKey; direct toString stays primitive-only. The numeric backend uses String on a
 typed number, preserving binary64 formatting rather than array-index conversion.
 PropertyKey itself remains GuestString. Future symbols require the two conversion
-operations to diverge. Primitive boxing and new syntax remain excluded. See property-key-conversion.md for the frozen order and test contract.
+operations to diverge. Primitive reads now box through TS-028A; writes and syntax remain unchanged. See property-key-conversion.md for the frozen order and test contract.
 
 ## Primitive numeric operators (TS-008)
 
@@ -853,3 +855,21 @@ were retained without algorithm changes. Array length and String virtual indices
 remain nonconfigurable; raw internalDelete still returns normal false. Deletion
 adds no hidden conversion budgets, call limits, Realm resets or target GetValue.
 [Implementation evidence and matrix mapping](validation/ts-025a/README.md).
+
+## Primitive property reads and successful reference keys (TS-028A)
+
+Following the accepted [fixed-2025 design](primitive-property-reads.md), GetValue
+uses ToObject before key conversion and saves only the successfully converted
+string/symbol Value. It dispatches with the original base and operation location,
+including when a temporary wrapper was necessary. A dispatch failure keeps the
+saved key; a conversion failure does not. Neither the wrapper nor the result is
+cached. PutValue and binding reads remain byte-for-byte unchanged.
+
+The dedicated driver instruments actual wrapper factories, rather than prototype
+Get overrides that ordinary descriptor lookup would bypass. Its expected values,
+traces, locations and work limits are literal semantic oracles. It tests temporary
+wrapper Realm selection separately from a foreign method's defining Realm and
+native default64 recursion separately from small limits. Existing code supplies
+all guard/Realm cleanup; no new compiler workaround or built-in is introduced.
+See [validation and migration audit](validation/ts-028a/README.md). Windows x64 and
+the represented-Value subset remain the tested boundary.

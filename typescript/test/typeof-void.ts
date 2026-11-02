@@ -569,7 +569,7 @@ for (const op of ["typeof", "void"]) {
             }),
         );
         const result = run(e, op + " b()[k()];");
-        check(trace + target.trace === traces[index], name + " trace");
+        check(trace + target.trace === (invalidBase && base.kind !== "null" && base.kind !== "undefined" ? "BKC" : traces[index]), name + " trace");
         if (
             name === "BaseAbrupt" ||
             name === "KeyAbrupt" ||
@@ -580,8 +580,11 @@ for (const op of ["typeof", "void"]) {
                 result === sentinel && result.value === sentinel.value,
                 "B20/E3-E6 identical throw " + name,
             );
+        } else if (invalidBase && base.kind !== "null" && base.kind !== "undefined") {
+            expect(result, op === "void" ? U : s("undefined"), "E10 " + name);
+            check(target.reads === 0, "E10 no old target read");
         } else if (invalidBase) {
-            error(result, "property base must be an object", column, "E10 " + name, "TypeError");
+            error(result, "cannot convert null or undefined to object", column, "E10 " + name, "TypeError");
         } else if (name === "InvalidHook") {
             error(result, "symbol toPrimitive method is not callable", column, "E11", "TypeError");
         } else if (name === "ObjectHookResult") {
@@ -1189,7 +1192,7 @@ for (const op of ["typeof", "void"]) {
         } else if (mode === "invalidBase") {
             error(
                 result,
-                "property base must be an object",
+                "cannot convert null or undefined to object",
                 column,
                 "R13 InvalidBase",
                 "TypeError",

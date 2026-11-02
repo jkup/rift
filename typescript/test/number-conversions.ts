@@ -336,10 +336,13 @@ function testGuestConsumers(): void {
     const parsed = parse(readFileSync("test/fixtures/number-conversions.js", "utf8"));
     check(parsed.error === null, "fixture parse");
     check(evaluator.block(parsed.body, realm.global, UNDEFINED).type === "normal", "fixture execution");
+    const primitiveMember = realm.global.bindings.get("primitiveMember");
+    if (primitiveMember === undefined) throw new Error("missing primitiveMember");
+    const primitiveRead = evaluator.call(primitiveMember.value, UNDEFINED, [], loc);
+    check(primitiveRead.type === "normal" && sameValue(primitiveRead.value, realm.numberPrototype.get("valueOf")), "primitiveMember positive read");
     const negatives: { name: string; line: number; column: number; message: string; errorName: string }[] = [
         { name: "invalidLength", line: 75, column: 5, message: "invalid array length", errorName: "RangeError" },
         { name: "invalidReceiver", line: 78, column: 12, message: "receiver is not a number", errorName: "TypeError" },
-        { name: "primitiveMember", line: 81, column: 12, message: "property base must be an object", errorName: "TypeError" },
         { name: "namespaceCall", line: 84, column: 12, message: "value is not callable", errorName: "TypeError" },
         { name: "bothObjects", line: 93, column: 12, message: "cannot convert object to primitive", errorName: "TypeError" },
     ];

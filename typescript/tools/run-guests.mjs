@@ -18,6 +18,15 @@ cases.push(
     { file: "test/fixtures/in-competing.js", status: 1, error: "1:1: runtime ReferenceError: missing is not defined" },
     { file: "test/fixtures/in-parse-before-effects.js", status: 2, error: "1:17: parse SyntaxError: unsupported or unexpected syntax: ;" },
 );
+// TS-028A C1-C5/C7: independent literal runtime-file expectations.
+cases.push(
+    { file: "test/fixtures/primitive-reads-basic.js", stdout: "a 2 true 2\n" },
+    { file: "test/fixtures/primitive-reads-methods.js", stdout: "x false undefined\n" },
+    { file: "test/fixtures/primitive-reads-nullish.js", status: 1, error: "1:1: runtime TypeError: cannot convert null or undefined to object" },
+    { file: "test/fixtures/primitive-reads-write.js", status: 1, error: "1:1: runtime TypeError: property base must be an object" },
+    { file: "test/fixtures/primitive-reads-effects.js", stdout: "2 1\n" },
+    { file: "test/fixtures/primitive-reads-parse.js", status: 2, error: "1:15: parse SyntaxError: unsupported operator: +=" },
+);
 const generated = [
     ["delete-success", "let o={x:1}; console.log(delete o.x, o.x);", 0, "", "true undefined\n"],
     ["delete-identifier", "console.log('no'); delete x;", 2, "1:20: parse SyntaxError: delete of an identifier is not allowed"],
@@ -42,8 +51,8 @@ const generated = [
     ["exponent", "console.log(1e2);", 2, "parse SyntaxError: unsupported numeric literal"],
     ["proto", "let o={__proto__: null};", 2, "parse SyntaxError: prototype literal syntax is unsupported"],
     ["coercion", "console.log(1 + '2');", 0, "", "12\n"],
-    ["primitive-base", "console.log(null.x);", 1, "runtime TypeError: property base must be an object"],
-    ["detached", "let o={x:1, f:function(){return this.x;}}; let f=o.f; f();", 1, "runtime TypeError: property base must be an object"],
+    ["primitive-base", "console.log(null.x);", 1, "runtime TypeError: cannot convert null or undefined to object"],
+    ["detached", "let o={x:1, f:function(){return this.x;}}; let f=o.f; f();", 1, "runtime TypeError: cannot convert null or undefined to object"],
     ["assignment-missing", "missing=1;", 1, "runtime ReferenceError: missing is not defined"],
     ["self-tdz", "let x=x;", 1, "runtime ReferenceError: x is not initialized"],
     ["readonly", "undefined=1;", 1, "runtime TypeError: binding is not mutable: undefined"],
@@ -273,6 +282,9 @@ execute("typeof-void", typeofCommand, typeofArgs, { stdout: "typeof-void ok\n" }
 const inCommand = lane === "node" ? process.execPath : join(root, "build/native/in-operator" + suffix);
 const inArgs = lane === "node" ? [join(root, "build/node/test/in-operator.js")] : [];
 execute("in-operator", inCommand, inArgs, { stdout: "in-operator ok\n" });
+const primitiveReadsCommand = lane === "node" ? process.execPath : join(root, "build/native/primitive-reads" + suffix);
+const primitiveReadsArgs = lane === "node" ? [join(root, "build/node/test/primitive-reads.js")] : [];
+execute("primitive-reads", primitiveReadsCommand, primitiveReadsArgs, { stdout: "primitive-reads ok\n" });
 const equalityCommand = lane === "node" ? process.execPath : join(root, "build/native/abstract-equality" + suffix);
 const equalityArgs = lane === "node" ? [join(root, "build/node/test/abstract-equality.js")] : [];
 execute("abstract-equality", equalityCommand, equalityArgs, { stdout: "abstract-equality ok\n" });

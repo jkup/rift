@@ -904,7 +904,7 @@ class Member extends GuestObject {
     bind(t.realm.global, "p", o(t.key));
     error(
         run(t.e, "null[p] in right();"),
-        "property base must be an object",
+        "cannot convert null or undefined to object",
         1,
         "E29 PrimitiveMemberLimit",
     );

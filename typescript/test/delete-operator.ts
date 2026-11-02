@@ -360,7 +360,7 @@ for (const source of [
         nullish
             ? "cannot convert null or undefined to object"
             : read
-              ? "property base must be an object"
+              ? "cannot convert null or undefined to object"
               : "property is not configurable: " + key,
         1,
         nullish || read ? 8 : 1,

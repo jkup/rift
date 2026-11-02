@@ -214,13 +214,19 @@ for (const closed of [false, true]) {
     check(result.type === "throw" && result.diagnostic.message === "property is not writable: x" && result.diagnostic.loc === loc, "object key strict false Set");
     check(closed ? target.getOwnProperty("x") === undefined : payload(target.get("x")) === 4, "rejected write preserves state");
 }
-// Invalid bases reject before a key lookup in direct reference APIs too.
+// Nullish reads and all primitive writes reject before a key lookup.
 for (const base of [UNDEFINED, { kind: "null" } as Value, num(1), str("text"), { kind: "boolean", value: false } as Value]) {
     const key = new ThrowingKey();
     const ref = { kind: "property" as const, base, key: obj(key), loc };
-    for (const result of [getValue(ref, active.context, loc), putValue(ref, num(3), active.context, loc)]) {
-        check(result.type === "throw" && result.diagnostic.message === "property base must be an object" && result.diagnostic.loc === loc && key.reads === "", "direct invalid base precedes coercion");
+    const read = getValue(ref, active.context, loc);
+    if (base.kind === "null" || base.kind === "undefined") {
+        check(read.type === "throw" && read.diagnostic.message === "cannot convert null or undefined to object" && read.diagnostic.loc === loc && key.reads === "", "nullish read before coercion");
+    } else {
+        check(read === sentinel && key.reads === "toString;", "primitive read reaches key sentinel");
     }
+    key.reads = "";
+    const write = putValue(ref, num(3), active.context, loc);
+    check(write.type === "throw" && write.diagnostic.message === "property base must be an object" && write.diagnostic.loc === loc && key.reads === "", "write before coercion");
 }
 console.log("key coercion passed");
 

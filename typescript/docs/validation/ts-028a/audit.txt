@@ -1,0 +1,296 @@
+{
+  "gates": [
+    {
+      "entry": "src/cli.ts",
+      "verdict": "PASS",
+      "staticStatements": 1532,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/realms.ts",
+      "verdict": "PASS",
+      "staticStatements": 1888,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-descriptors.ts",
+      "verdict": "PASS",
+      "staticStatements": 1323,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-prototypes.ts",
+      "verdict": "PASS",
+      "staticStatements": 1644,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-keys.ts",
+      "verdict": "PASS",
+      "staticStatements": 1328,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 855,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/definition-dispatch.ts",
+      "verdict": "PASS",
+      "staticStatements": 1670,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-storage.ts",
+      "verdict": "PASS",
+      "staticStatements": 1812,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-like.ts",
+      "verdict": "PASS",
+      "staticStatements": 1281,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/operation-context.ts",
+      "verdict": "PASS",
+      "staticStatements": 1852,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-map.ts",
+      "verdict": "PASS",
+      "staticStatements": 1998,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-literals.ts",
+      "verdict": "PASS",
+      "staticStatements": 1583,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/property-key-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1856,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/numeric-operators.ts",
+      "verdict": "PASS",
+      "staticStatements": 1616,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/addition.ts",
+      "verdict": "PASS",
+      "staticStatements": 1630,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/relational.ts",
+      "verdict": "PASS",
+      "staticStatements": 1661,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/primitive-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 2026,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/operator-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1663,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/key-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1685,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/length-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1803,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-length-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 2023,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/function-call.ts",
+      "verdict": "PASS",
+      "staticStatements": 1702,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-valueof.ts",
+      "verdict": "PASS",
+      "staticStatements": 2832,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-string-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 2029,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/function-string-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1845,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/abstract-equality.ts",
+      "verdict": "PASS",
+      "staticStatements": 1931,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/delete-operator.ts",
+      "verdict": "PASS",
+      "staticStatements": 2308,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/typeof-void.ts",
+      "verdict": "PASS",
+      "staticStatements": 2055,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/in-operator.ts",
+      "verdict": "PASS",
+      "staticStatements": 2217,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/primitive-reads.ts",
+      "verdict": "PASS",
+      "staticStatements": 2292,
+      "dynamic": 0
+    }
+  ],
+  "baselineGatesPreserved": 29,
+  "lanes": [
+    {
+      "lane": "node",
+      "passed": 196,
+      "baselineNamesPreserved": 189,
+      "migrations": [
+        {
+          "name": "build/guest-fixtures/primitive-base.js",
+          "before": {
+            "file": "build/guest-fixtures/primitive-base.js",
+            "status": 1,
+            "errorContains": "runtime TypeError: property base must be an object",
+            "stdout": ""
+          },
+          "after": {
+            "file": "build/guest-fixtures/primitive-base.js",
+            "status": 1,
+            "errorContains": "runtime TypeError: cannot convert null or undefined to object",
+            "stdout": ""
+          },
+          "authorization": "A17"
+        },
+        {
+          "name": "build/guest-fixtures/detached.js",
+          "before": {
+            "file": "build/guest-fixtures/detached.js",
+            "status": 1,
+            "errorContains": "runtime TypeError: property base must be an object",
+            "stdout": ""
+          },
+          "after": {
+            "file": "build/guest-fixtures/detached.js",
+            "status": 1,
+            "errorContains": "runtime TypeError: cannot convert null or undefined to object",
+            "stdout": ""
+          },
+          "authorization": "A17"
+        }
+      ],
+      "added": [
+        "test/fixtures/primitive-reads-basic.js",
+        "test/fixtures/primitive-reads-methods.js",
+        "test/fixtures/primitive-reads-nullish.js",
+        "test/fixtures/primitive-reads-write.js",
+        "test/fixtures/primitive-reads-effects.js",
+        "test/fixtures/primitive-reads-parse.js",
+        "primitive-reads"
+      ]
+    },
+    {
+      "lane": "native",
+      "passed": 196,
+      "baselineNamesPreserved": 189,
+      "migrations": [
+        {
+          "name": "build/guest-fixtures/primitive-base.js",
+          "before": {
+            "file": "build/guest-fixtures/primitive-base.js",
+            "status": 1,
+            "errorContains": "runtime TypeError: property base must be an object",
+            "stdout": ""
+          },
+          "after": {
+            "file": "build/guest-fixtures/primitive-base.js",
+            "status": 1,
+            "errorContains": "runtime TypeError: cannot convert null or undefined to object",
+            "stdout": ""
+          },
+          "authorization": "A17"
+        },
+        {
+          "name": "build/guest-fixtures/detached.js",
+          "before": {
+            "file": "build/guest-fixtures/detached.js",
+            "status": 1,
+            "errorContains": "runtime TypeError: property base must be an object",
+            "stdout": ""
+          },
+          "after": {
+            "file": "build/guest-fixtures/detached.js",
+            "status": 1,
+            "errorContains": "runtime TypeError: cannot convert null or undefined to object",
+            "stdout": ""
+          },
+          "authorization": "A17"
+        }
+      ],
+      "added": [
+        "test/fixtures/primitive-reads-basic.js",
+        "test/fixtures/primitive-reads-methods.js",
+        "test/fixtures/primitive-reads-nullish.js",
+        "test/fixtures/primitive-reads-write.js",
+        "test/fixtures/primitive-reads-effects.js",
+        "test/fixtures/primitive-reads-parse.js",
+        "primitive-reads"
+      ]
+    }
+  ],
+  "unchangedBoundaries": [
+    "src/evaluator.ts",
+    "src/parser.ts",
+    "src/delete-reference.ts",
+    "src/realm.ts",
+    "src/primitive-objects.ts",
+    "src/conversion.ts",
+    "package.json",
+    "package-lock.json",
+    "test/cases.json"
+  ],
+  "bindingAndWriteCodeUnchanged": true,
+  "baselineFixturesPreserved": 56
+}

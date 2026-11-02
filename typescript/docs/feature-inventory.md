@@ -13,7 +13,7 @@ claim that all coercion cases are supported.
 | Statements | semicolon-terminated expressions and let; blocks, if/else, while, function declarations, return, throw, unlabelled break/continue, empty statement | Semicolons required; no ASI, var/const, for/do, switch, try/catch/finally or labels. Declarations as if/while bodies require braces. Return/throw expressions cannot start on a later line. |
 | Scope | Block lexical bindings, TDZ, mutable captured bindings, function hoisting in their declaration list, recursion, shadowing in nested blocks | One let binding per declaration. Duplicate names/parameters rejected, including function declarations sharing a parameter name. Global builtin names cannot be redeclared. Separate Script global environments and Annex B deferred. |
 | Functions | Declarations and anonymous expressions, simple parameters, left-to-right argument effects, missing args undefined/excess args evaluated, return/fallthrough, own properties | No named function expressions, arrows, rest/default/destructuring parameters, constructors, classes, argument objects, generators/async. Strict-call profile regardless of directives; detached and top-level this are undefined. |
-| Objects | Colon-valued literal entries with word/string keys; dot and computed key get/write; aliases; ordinary methods as function-valued properties; missing properties undefined | Ordinary inherited data properties supported when seeded by the host; production objects inherit their Realm Object root. No accessors, method shorthand, numeric/computed literal keys, spread or enumeration APIs. Guest delete uses unconditional strict-delete: identifier operands are parse errors and nonconfigurable properties throw. Literal __proto__ rejected. Symbol keys retain identity; other primitive keys convert to strings. Object keys use the symbol protocol then string-hint ordinary conversion; default objects key as [object Object]. Primitive property reads/writes reject; delete alone boxes primitives before deferred key conversion. |
+| Objects | Colon-valued literal entries with word/string keys; dot and computed key get/write; aliases; ordinary methods as function-valued properties; missing properties undefined | Ordinary inherited data properties supported when seeded by the host; production objects inherit their Realm Object root. No accessors, method shorthand, numeric/computed literal keys, spread or enumeration APIs. Guest delete uses unconditional strict-delete: identifier operands are parse errors and nonconfigurable properties throw. Literal __proto__ rejected. Symbol keys retain identity; other primitive keys convert to strings. Object keys use the symbol protocol then string-hint ordinary conversion; default objects key as [object Object]. Primitive property reads/calls box before deferred key conversion and preserve the original primitive Receiver/this; primitive writes remain object-only. Delete keeps its existing boxing path. |
 | Bootstrap | Per-realm console object and console.log; undefined/NaN/Infinity bindings; partial Number namespace below | No other standard constructors or globals, eval, Function, filesystem or process in guest code. Console rendering is a host diagnostic convention, not guest ToString. |
 | Data descriptors (TS-004A) | Internal data/generic descriptor validation with explicit absence/defaulting, SameValue, atomic rejection, non-configurable/non-writable invariants, and preventExtensions. Existing writable own properties remain writable on non-extensible objects; new assignment fails. | Host APIs only; no guest Object/Reflect builtins, accessors or proxies. Internal key listing/deletion are described in TS-004C below. Internal false and strict assignment TypeError are distinct. |
 | Prototypes (TS-004B) | Internal get/set with explicit receiver and normal/throw results; iterative inherited data lookup, receiver-own writes, cycle and extensibility checks; strict assignment rejection. Compiled host tests seed guest realms and exercise inherited method this. | TS-016A adds per-Realm Object/Function/Array roots, with an immutable null-root Object prototype. No guest prototype mutation/reflection APIs or accessors. Literal __proto__ still rejected. |
@@ -204,7 +204,7 @@ string. String methods preserve UTF-16 exactly. Bodies perform no property reads
 coercion or ticks. Ordinary conversion still looks up the canonical hook then
 the appropriate method; deletion/replacement remains observable. Object.valueOf
 continues boxing and Object.toString continues tag lookup. Direct converters
-reject objects and primitive member access remains unsupported. No constructors,
+reject objects. TS-028A adds primitive member reads and calls through temporary wrappers. No constructors,
 globals, backlinks, Number/Array/Function overrides or other String methods.
 [M1-M8 evidence and migrations](validation/ts-020/README.md).
 
@@ -248,8 +248,8 @@ or builtin callability. Only a direct unresolved identifier (including erased
 parentheses) produces `undefined`; TDZ and nested missing-name failures retain
 their ordinary diagnostics. `void` evaluates and obtains its operand Value once,
 then returns the guest undefined value. Neither operator coerces its result.
-Member operands still use the existing object-only read path and key conversion;
-strict-delete's explicit boxing exception is unchanged. No BigInt or HTMLDDA
+Member operands use TS-028A ToObject reads and deferred key conversion;
+strict-delete retains its existing boxing behavior. No BigInt or HTMLDDA
 support is implied. See [contract](typeof-void.md) and
 [implementation evidence](validation/ts-026a/README.md).
 
@@ -270,3 +270,17 @@ for-in, private membership, instanceof, proxies/accessors, reflection API or new
 boxing support is implied. Existing resource guards and defining-Realm hook
 entry apply unchanged. [Implementation evidence](validation/ts-027a/README.md)
 records the complete named matrix, runtime fixtures and retained failures.
+### Primitive property reads and calls (TS-028A)
+
+GetValue uses the existing active-Realm ToObject before deferred ToPropertyKey.
+Successful keys are saved as string/symbol Values on the reference before Get;
+failed conversions retain their raw key. Each read gets a fresh temporary wrapper
+and fresh property value. Get and member calls retain the original primitive
+Receiver/this. Nullish reads reject before conversion hooks, after evaluation of
+the key expression. String indices and length use existing UTF-16 virtual data.
+
+Primitive writes remain object-only, after RHS evaluation and before key hooks.
+Delete, binding reads, parser syntax and built-in inventory are unchanged.
+Number.toString remains the inherited Object method (`[object Number]`); decimal
+and radix Number formatting are not added. The [implementation evidence](validation/ts-028a/README.md)
+maps all 144 named rows and records precise expectation migrations and preservation.

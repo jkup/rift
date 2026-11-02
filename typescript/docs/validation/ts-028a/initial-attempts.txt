@@ -1,0 +1,14 @@
+The first edit helper attempted the inaccessible WindowsApps python alias; no files changed.
+A replacement helper had a JavaScript syntax error and made no edits; corrected before proceeding.
+The first typecheck was invoked at the repository root, which has no typecheck script.
+The first TypeScript typecheck found two unknown `realm` references in symbol-conversions.ts:
+a positive migration insertion had matched an earlier method-name array. Moved it next to the
+runtime fixture's negative rows. Typecheck then passed.
+The first registered suite invocation failed before executing cases:
+SyntaxError: Identifier 'primitiveCommand' has already been declared
+at tools/run-guests.mjs:285 (existing primitive-conversion driver used that name).
+Renamed the new variables to primitiveReadsCommand/primitiveReadsArgs. No oracles changed.
+The initial full native build lacked Zig on PATH (SC3004 spawnSync zig ENOENT).
+Stopped that attempt once established; retained native-missing-zig.txt, no pass claimed.
+Adding Zig to PATH exposed the documented sandbox library-access failure; retained separately.
+No compiler semantic/static-coverage failure or semantic oracle contradiction occurred in these attempts.

@@ -299,11 +299,14 @@ function testDefaultConsumers(): void {
     const parsed = parse(source);
     check(parsed.error === null, "fixture parse");
     check(evaluator.block(parsed.body, realm.global, UNDEFINED).type === "normal", "fixture execution");
+    const primitiveMember = realm.global.bindings.get("primitiveMember");
+    if (primitiveMember === undefined) throw new Error("missing primitiveMember");
+    const primitiveRead = evaluator.call(primitiveMember.value, UNDEFINED, [], loc);
+    check(primitiveRead.type === "normal" && sameValue(primitiveRead.value, str("x")), "primitiveMember positive read");
     const negatives = [
         { name: "bothObjects", line: 79, column: 12, error: "TypeError", message: "cannot convert object to primitive" },
         { name: "nullRoot", line: 85, column: 12, error: "TypeError", message: "cannot convert object to primitive" },
         { name: "invalidLength", line: 89, column: 5, error: "RangeError", message: "invalid array length" },
-        { name: "primitiveMember", line: 92, column: 12, error: "TypeError", message: "property base must be an object" },
     ];
     for (const row of negatives) {
         const completion = evaluator.call(binding(realm, row.name), UNDEFINED, [], loc);

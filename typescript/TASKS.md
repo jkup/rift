@@ -1448,8 +1448,26 @@ Coordinator acceptance: TS-028P accepted553c9a8 on 2026-11-02. Reviewed full des
 
 ### TS-028A — Primitive property reads and method calls implementation
 
-Status: **ready**. Prerequisite accepted TS-028P553c9a8. Implement docs/primitive-property-reads.md and all V/S/E/M/W/R/C rows/variants in docs/validation/ts-028p/matrix.md, with exact A1-A19 migrations. Own runtime GetValue integration, object-conversion comment, dedicated readable driver/fixtures, necessary existing-test migrations, runner/native registration and current scope/evidence/TASKS updates. Coordinator owns COORDINATION.md; Claude work reserved.
+Status: **review needed**. Owner: Codex chat `01a19b5c-fc24-7b70-afe4-6c27ae8a01b0`, sole implementation writer, dispatch base `fba0431`, existing branch (2026-11-02). Prerequisite accepted TS-028P553c9a8. Implement docs/primitive-property-reads.md and all V/S/E/M/W/R/C rows/variants in docs/validation/ts-028p/matrix.md, with exact A1-A19 migrations. Own runtime GetValue integration, object-conversion comment, dedicated readable driver/fixtures, necessary existing-test migrations, runner/native registration and current scope/evidence/TASKS updates. Coordinator owns COORDINATION.md; Claude work reserved.
 
 Box with existing ToObject before deferred key conversion; retain original base Receiver/this and active-Realm wrapper. Save successfully converted string/symbol Value key before Get, including dispatch failure; preserve raw key on conversion failure. No wrapper/value caching. Binding reads, primitive writes, delete, syntax and built-in inventory unchanged. Preserve abrupt identity, Realm/frame cleanup, exact resource guards, UTF-16 indices and captured method/base order. Test all named rows including reused direct references, foreign methods, host faults and actual native default64 recursion. Retain every189 baseline case name and29 gates; only enumerated obsolete expectations may migrate, with audited expected-record diff. Keep historical evidence.
 
 Run typecheck, runner, probes, full rebuilt Node/native and every static-only build plus independently parsed coverage. Retain failures/reductions before workarounds, report oracle contradictions before changing them. Keep tests readable from the outset: named scenarios, separate setup/action/assertions, no dense statement chains or opaque nested resource selections. No pins, C++, Claude/COORDINATION edits, branch switch/main merge or successor. Commit/push tested milestone on current branch, then stop for independent review.
+
+TS-028A handoff (2026-11-02): GetValue uses existing ToObject before deferred
+key conversion, saves only successful string/symbol Value keys before Get, and
+preserves original primitive Receiver/this. No wrapper/result cache. Binding
+reads, PutValue, parser, delete and built-in inventory unchanged. All144 primary
+rows/variants mapped to named readable driver/fixtures; exact A1-A19 migrations
+retain old assertions except their specifically obsolete outcomes.
+
+Typecheck PASS; runner20/20; probes10/10; final rebuilt Node/native196/196 each,
+no skips. All30 static-only builds and separate parsed coverage gates PASS, zero
+dynamic. Actual default64 native recursion passes261/325 ticks, peak67/131, plus
+small guards, Realm/host-fault/abrupt identity and retry controls. Independent
+preservation audit keeps189 baseline names/29 gates; only two A17 expected-record
+changes. Initial edit/registration/Zig failures retained; no compiler semantic
+failure, workaround or oracle adjustment. Evidence: docs/validation/ts-028a/.
+Number.toString remains inherited Object-method limitation; no radix work.
+Commit/push tested milestone on existing branch under owner authorization, then
+stop for independent coordinator review; no self-acceptance or successor.

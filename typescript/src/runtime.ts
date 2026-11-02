@@ -1,4 +1,5 @@
 import { GuestSymbol, formatPropertyKey, symbolDescriptiveString } from "./symbols.js";
+import { toObject } from "./object-conversion.js";
 import { toPropertyKey } from "./conversion.js";
 import type { Diagnostic, Location, Stmt, FunctionSource } from "./syntax.js";
 import type { GuestString } from "./strings.js";
@@ -213,10 +214,16 @@ export type Reference =
 export type ReferenceResult = { type: "reference"; reference: Reference } | { type: "abrupt"; completion: Completion };
 export function getValue(ref: Reference, context: OperationContext, loc: Location): Completion {
     if (ref.kind === "property") {
-        if (ref.base.kind !== "object") return failure("TypeError", "property base must be an object", ref.loc);
+        const object = toObject(ref.base, context, ref.loc);
+        if (object.type === "throw") return object;
         const key = toPropertyKey(ref.key, context, ref.loc);
         if (key.type === "throw") return key;
-        return ref.base.object.internalGet(key.value, ref.base, loc);
+        // Save only a successful key, before dispatch: Get can fail or mutate.
+        // The original base remains the Receiver; wrappers and values are local.
+        ref.key = typeof key.value === "string"
+            ? { kind: "string", value: key.value }
+            : { kind: "symbol", value: key.value };
+        return object.value.internalGet(key.value, ref.base, loc);
     }
     const binding = ref.environment === null ? undefined : ref.environment.bindings.get(ref.name);
     if (binding === undefined) return failure("ReferenceError", ref.name + " is not defined", loc);

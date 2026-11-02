@@ -336,11 +336,14 @@ function testGuestConsumers(): void {
     const parsed = parse(readFileSync("test/fixtures/boolean-string-conversions.js", "utf8"));
     check(parsed.error === null, "M6 parse");
     check(evaluator.block(parsed.body, realm.global, UNDEFINED).type === "normal", "M6 execution");
+    const primitiveMember = realm.global.bindings.get("primitiveMember");
+    if (primitiveMember === undefined) throw new Error("missing primitiveMember");
+    const primitiveRead = evaluator.call(primitiveMember.value, UNDEFINED, [], loc);
+    check(primitiveRead.type === "normal" && sameValue(primitiveRead.value, realm.stringPrototype.get("toString")), "primitiveMember positive read");
     const negatives: { name: string; line: number; column: number; message: string; errorName: string }[] = [
         { name: "invalidLength", line: 63, column: 5, message: "invalid array length", errorName: "RangeError" },
         { name: "invalidBoolean", line: 66, column: 12, message: "receiver is not a boolean", errorName: "TypeError" },
         { name: "invalidString", line: 69, column: 12, message: "receiver is not a string", errorName: "TypeError" },
-        { name: "primitiveMember", line: 72, column: 12, message: "property base must be an object", errorName: "TypeError" },
     ];
     for (const row of negatives) {
         const binding = realm.global.bindings.get(row.name);

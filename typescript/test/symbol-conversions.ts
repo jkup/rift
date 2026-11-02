@@ -263,11 +263,13 @@ function testGuestCalls(realm: Realm, identity: GuestSymbol): void {
     for (const name of ["unboxed", "primitive", "hintIgnored"]) check(sameValue(binding(realm, name), sym(identity)), "guest payload " + name);
     check(sameValue(binding(realm, "effects"), { kind: "number", value: 4 }), "ignored arguments evaluated exactly once");
     check(sameValue(binding(realm, "keyResult"), { kind: "number", value: 17 }), "guest box key matches symbol");
-    const names = ["numeric", "implicitString", "invalidRoot", "implicitMember", "readonlyHook"];
+    const implicitRead = evaluator.call(binding(realm, "implicitMember"), UNDEFINED, [], loc);
+    check(implicitRead.type === "normal" && sameValue(implicitRead.value, realm.symbolPrototype.get("valueOf")), "implicitMember positive read");
+    const names = ["numeric", "implicitString", "invalidRoot", "readonlyHook"];
     const messages = ["cannot convert symbol to number", "cannot convert symbol to string", "receiver is not a symbol",
-        "property base must be an object", "property is not writable: Symbol(Symbol.toPrimitive)"];
-    const lines = [12, 15, 18, 21, 24];
-    const columns = [12, 12, 12, 12, 5];
+        "property is not writable: Symbol(Symbol.toPrimitive)"];
+    const lines = [12, 15, 18, 24];
+    const columns = [12, 12, 12, 5];
     for (let i = 0; i < names.length; i++) {
         error(evaluator.call(binding(realm, names[i]), UNDEFINED, [], loc), messages[i], { line: lines[i], column: columns[i] });
         check(evaluator.calls === 0 && evaluator.context.realm === realm, "guest failure cleanup");

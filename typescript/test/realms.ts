@@ -359,9 +359,19 @@ for (const wrapper of [boxA.createBooleanObject(false), boxA.createNumberObject(
     }
     checkGraph(boxEvaluator.steps === before && boxEvaluator.calls === 0, "W17 direct conversion zero hooks");
 }
-for (const source of ["'ab'[0];", "false.x;", "(1).x;", "'ab'[0] = 'z';"]) {
+for (const source of ["'ab'[0];", "false.x;", "(1).x;"]) {
+    const parsed = parse(source);
+    checkGraph(parsed.error === null, "W17 read parse");
+    const completion = boxEvaluator.statement(parsed.body[0], boxA.global, UNDEFINED);
+    const expected: Value = source === "'ab'[0];" ? { kind: "string", value: "a" } : UNDEFINED;
+    checkGraph(completion.type === "normal" && sameValue(completion.value, expected), "W17 primitive read");
+}
+const stringRootKeysBeforeWrite = boxA.stringPrototype.ownPropertyKeys().length;
+const stringRootParentBeforeWrite = boxA.stringPrototype.getPrototypeOf();
+for (const source of ["'ab'[0] = 'z';"]) {
     const rejected = run(source, boxA);
-    checkGraph(rejected.phase === "runtime" && rejected.completion.type === "throw" && rejected.completion.diagnostic.name === "TypeError" && rejected.completion.diagnostic.message === "property base must be an object", "W17 primitive member still rejected");
+    checkGraph(rejected.phase === "runtime" && rejected.completion.type === "throw" && rejected.completion.diagnostic.name === "TypeError" && rejected.completion.diagnostic.message === "property base must be an object", "W17 primitive write still rejected");
+    checkGraph(boxA.stringPrototype.stringData === "" && boxA.stringPrototype.ownPropertyKeys().length === stringRootKeysBeforeWrite && boxA.stringPrototype.getPrototypeOf() === stringRootParentBeforeWrite, "W17 rejected write preserves String root/payload");
 }
 
 // W15: a saved context follows B -> C -> B, and finally restores A.

@@ -239,7 +239,7 @@ const parsedMethod = execute("function method() { return this.x; }", detached.ev
 check(parsedMethod.type === "normal", "method setup");
 detached.original.bootstrapDefine("1", { value: binding(detached.realm, "method"), writable: true, enumerable: true, configurable: true });
 const detachedResult = detached.run("detached");
-check(detachedResult.type === "throw" && detachedResult.diagnostic.message === "property base must be an object" && detached.original.trace === "BKG", "detached method");
+check(detachedResult.type === "throw" && detachedResult.diagnostic.message === "cannot convert null or undefined to object" && detached.original.trace === "BKG", "detached method");
 for (const path of ["read", "write", "call"]) {
     for (const stage of ["B", "K"]) {
         const early = new Scenario();
@@ -255,9 +255,20 @@ for (const base of primitiveBases) {
         const invalid = new Scenario();
         invalid.baseValue = base;
         invalid.keyValue = obj(new ForbiddenKey());
-        const result = invalid.run(path);
-        typeError(result, "property base must be an object", path === "write" ? 16 : path === "call" ? 16 : 1);
-        check(invalid.original.trace === (path === "write" ? "BKR" : "BK"), "base restriction timing before conversion");
+        if (path !== "write" && base.kind !== "null" && base.kind !== "undefined") {
+            let escaped = false;
+            try {
+                invalid.run(path);
+            } catch (fault) {
+                escaped = fault instanceof Error && fault.message === "object key read";
+            }
+            check(escaped && invalid.evaluator.calls === 0 && invalid.evaluator.depth === 0 && invalid.evaluator.context.realm === invalid.realm, "primitive key fault cleanup");
+        } else {
+            const result = invalid.run(path);
+            const message = path === "write" ? "property base must be an object" : "cannot convert null or undefined to object";
+            typeError(result, message, path === "read" ? 1 : 16);
+        }
+        check(invalid.original.trace === (path === "write" ? "BKR" : "BK"), "primitive read/write timing");
     }
     const abrupt = new Scenario();
     abrupt.baseValue = base;
@@ -405,8 +416,18 @@ for (const path of ["read", "write", "call"]) {
     const scenario = new Scenario();
     scenario.baseValue = symbolValue;
     scenario.keyValue = obj(new ForbiddenKey());
-    typeError(scenario.run(path), "property base must be an object", path === "read" ? 1 : 16);
-    check(scenario.original.trace === (path === "write" ? "BKR" : "BK"), "A22 symbol base rejection before key conversion");
+    if (path === "write") {
+        typeError(scenario.run(path), "property base must be an object", 16);
+    } else {
+        let escaped = false;
+        try {
+            scenario.run(path);
+        } catch (fault) {
+            escaped = fault instanceof Error && fault.message === "object key read";
+        }
+        check(escaped && scenario.evaluator.calls === 0 && scenario.evaluator.depth === 0 && scenario.evaluator.context.realm === scenario.realm, "A22 symbol key fault cleanup");
+    }
+    check(scenario.original.trace === (path === "write" ? "BKR" : "BK"), "A22 symbol read reaches key; write rejects before key");
 }
 const symbolReadonly = new Scenario();
 symbolReadonly.keyValue = symbolValue;
