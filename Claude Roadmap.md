@@ -17,7 +17,7 @@ The coordinator replenishes this queue during implementation reviews when useful
 
 ## CL-001 — Audit the existing custom JavaScript tests
 
-Status: **review needed**. Owner: Claude Code session, branch `claude/cl-001-custom-test-audit` (separate worktree), base `0819c71`. Dependencies: none.
+Status: **accepted** (coordinator review and authorized PR merge, 2026-11-02). Owner: Claude Code session, branch `claude/cl-001-custom-test-audit` (separate worktree), base `0819c71`. Dependencies: none.
 
 Purpose: identify portable regression evidence we can reuse without assuming the current C++ harness establishes correctness.
 
@@ -38,7 +38,7 @@ Handoff (2026-11-01): outputs `typescript/docs/assistance/custom-test-audit.md` 
 
 ## CL-002 — Audit test262 runner semantics before future reuse
 
-Status: **review needed**. Owner: Claude Code session, branch `claude/cl-002-test262-runner-audit` (separate worktree), base `0819c71`. Dependencies: none.
+Status: **accepted** (coordinator review and authorized PR merge, 2026-11-02). Owner: Claude Code session, branch `claude/cl-002-test262-runner-audit` (separate worktree), base `0819c71`. Dependencies: none.
 
 Purpose: provide a concrete checklist for a trustworthy future TypeScript test262 adapter; implementing the adapter is not this task.
 
@@ -59,7 +59,7 @@ Handoff (2026-11-01): output `typescript/docs/assistance/test262-runner-audit.md
 
 ## CL-003 — Prepare independent semantic examples
 
-Status: **review needed**. Owner: Claude Code session, branch `claude/cl-003-semantic-examples` (separate worktree), base `0819c71`. Dependencies: none.
+Status: **accepted** (coordinator review and authorized PR merge, 2026-11-02). Owner: Claude Code session, branch `claude/cl-003-semantic-examples` (separate worktree), base `0819c71`. Dependencies: none.
 
 Purpose: create small readable examples with explicit expected outcomes for later integration, without touching the active test harness.
 
@@ -73,7 +73,19 @@ Acceptance: examples produce the documented expected output under Node, can be r
 
 Handoff (2026-11-01): outputs under `typescript/fixtures/assistance/semantic-examples/` (work commit `cb81e62`): nine `current/` examples in the TS-001 subset (retained mutable closures, closure independence, object aliasing, method receivers, evaluation order, shadowing, loop side effects, return propagation, function-declaration hoisting) and three `deferred/` examples (for-let per-iteration bindings, finally completions, arrow lexical this) labeled as not current regressions. Exact stdout lives in `manifest.json`; `verify-node.mjs` runs each as a classic script and matched 12/12 under Node v26.13.0 (expectations hand-written first). Not run under Node-hosted or native Rift, and not wired into `typescript/test/` or package scripts. Limitations: Node agreement is reference evidence only; the receiver example relies on a `"use strict"` directive so that Node matches the Rift strict-call profile.
 
-## Not ready for companion assignment
+## CL-004 — Identify a small trustworthy test262 starting corpus
+
+Status: **ready**. Owner: unclaimed. Dependencies: accepted CL-002 audit.
+
+Purpose: prepare evidence for a future conformance adapter without changing the interpreter or claiming compliance. Pin one upstream test262 revision and inspect 15–25 relevant tests for already implemented language semantics (strict lexical bindings, closures, evaluation order, primitive operators, ordinary data properties). Use accepted TS-017A as the capability baseline; distinguish parse support, runtime support and harness dependencies.
+
+Write only: `typescript/docs/assistance/test262-starter-corpus.md`, optional machine-readable manifest under `typescript/fixtures/assistance/test262-starter-corpus/`, and this entry's status/handoff. Preserve upstream licensing if copying any content; links and metadata are preferred. No runner, package, core, existing tests or feature-list changes.
+
+For each candidate provide revision-pinned path/link, flags/features/includes, strict/raw/module variants, negative phase/type if any, semantic expectation, exact required harness helpers and known blocker. Include deliberately unsuitable examples that expose adapter pitfalls from CL-002. Separate plausible candidates from tests actually run; do not count Node output as Rift conformance or silently strip directives/harness assertions. End with the smallest explicit adapter prerequisite checklist. Acceptance: another agent can retrieve each exact test and understand why it is included or deferred, without inventing support or relying on upstream default-branch contents.
+
+Handoff: pending.
+
+## Deferred companion areas
 
 - Built-in implementation: wait for stable registration/object/coercion interfaces and bounded ownership in `typescript/TASKS.md`.
 - Parser/evaluator refactoring: owned by the integration task until the foundation is accepted.
