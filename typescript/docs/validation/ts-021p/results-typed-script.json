@@ -1,0 +1,2168 @@
+{
+  "nodeVersion": "v26.13.0",
+  "rows": [
+    [
+      "zero",
+      "0",
+      "2",
+      "0"
+    ],
+    [
+      "negative-zero",
+      "-0",
+      "36",
+      "0"
+    ],
+    [
+      "nan",
+      "NaN",
+      "16",
+      "NaN"
+    ],
+    [
+      "positive-infinity",
+      "Infinity",
+      "2",
+      "Infinity"
+    ],
+    [
+      "negative-infinity",
+      "-Infinity",
+      "36",
+      "-Infinity"
+    ],
+    [
+      "binary-integer",
+      "255",
+      "2",
+      "11111111"
+    ],
+    [
+      "negative-hex",
+      "-255",
+      "16",
+      "-ff"
+    ],
+    [
+      "base36",
+      "35",
+      "36",
+      "z"
+    ],
+    [
+      "binary-half",
+      "0.5",
+      "2",
+      "0.1"
+    ],
+    [
+      "hex-fraction",
+      "10.5",
+      "16",
+      "a.8"
+    ],
+    [
+      "octal-fraction",
+      "0.125",
+      "8",
+      "0.1"
+    ],
+    [
+      "binary-subnormal",
+      "5e-324",
+      "2",
+      "0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+    ],
+    [
+      "binary-max",
+      "1.7976931348623157e308",
+      "2",
+      "1111111111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    ],
+    [
+      "safe-integer",
+      "9007199254740991",
+      "16",
+      "1fffffffffffff"
+    ],
+    [
+      "next-integer",
+      "9007199254740992",
+      "16",
+      "20000000000000"
+    ],
+    [
+      "decimal-small",
+      "0.000001",
+      "10",
+      "0.000001"
+    ],
+    [
+      "decimal-small-exp",
+      "0.0000001",
+      "10",
+      "1e-7"
+    ],
+    [
+      "decimal-large",
+      "1e20",
+      "10",
+      "100000000000000000000"
+    ],
+    [
+      "decimal-large-exp",
+      "1e21",
+      "10",
+      "1e+21"
+    ],
+    [
+      "decimal-subnormal",
+      "5e-324",
+      "10",
+      "5e-324"
+    ],
+    [
+      "decimal-max",
+      "1.7976931348623157e308",
+      "10",
+      "1.7976931348623157e+308"
+    ],
+    [
+      "decimal-tenth",
+      "0.1",
+      "10",
+      "0.1"
+    ],
+    [
+      "base-2",
+      "3",
+      "2",
+      "11"
+    ],
+    [
+      "half-2",
+      "0.5",
+      "2",
+      "0.1"
+    ],
+    [
+      "base-3",
+      "4",
+      "3",
+      "11"
+    ],
+    [
+      "base-4",
+      "5",
+      "4",
+      "11"
+    ],
+    [
+      "half-4",
+      "0.5",
+      "4",
+      "0.2"
+    ],
+    [
+      "base-5",
+      "6",
+      "5",
+      "11"
+    ],
+    [
+      "base-6",
+      "7",
+      "6",
+      "11"
+    ],
+    [
+      "half-6",
+      "0.5",
+      "6",
+      "0.3"
+    ],
+    [
+      "base-7",
+      "8",
+      "7",
+      "11"
+    ],
+    [
+      "base-8",
+      "9",
+      "8",
+      "11"
+    ],
+    [
+      "half-8",
+      "0.5",
+      "8",
+      "0.4"
+    ],
+    [
+      "base-9",
+      "10",
+      "9",
+      "11"
+    ],
+    [
+      "base-10",
+      "11",
+      "10",
+      "11"
+    ],
+    [
+      "half-10",
+      "0.5",
+      "10",
+      "0.5"
+    ],
+    [
+      "base-11",
+      "12",
+      "11",
+      "11"
+    ],
+    [
+      "base-12",
+      "13",
+      "12",
+      "11"
+    ],
+    [
+      "half-12",
+      "0.5",
+      "12",
+      "0.6"
+    ],
+    [
+      "base-13",
+      "14",
+      "13",
+      "11"
+    ],
+    [
+      "base-14",
+      "15",
+      "14",
+      "11"
+    ],
+    [
+      "half-14",
+      "0.5",
+      "14",
+      "0.7"
+    ],
+    [
+      "base-15",
+      "16",
+      "15",
+      "11"
+    ],
+    [
+      "base-16",
+      "17",
+      "16",
+      "11"
+    ],
+    [
+      "half-16",
+      "0.5",
+      "16",
+      "0.8"
+    ],
+    [
+      "base-17",
+      "18",
+      "17",
+      "11"
+    ],
+    [
+      "base-18",
+      "19",
+      "18",
+      "11"
+    ],
+    [
+      "half-18",
+      "0.5",
+      "18",
+      "0.9"
+    ],
+    [
+      "base-19",
+      "20",
+      "19",
+      "11"
+    ],
+    [
+      "base-20",
+      "21",
+      "20",
+      "11"
+    ],
+    [
+      "half-20",
+      "0.5",
+      "20",
+      "0.a"
+    ],
+    [
+      "base-21",
+      "22",
+      "21",
+      "11"
+    ],
+    [
+      "base-22",
+      "23",
+      "22",
+      "11"
+    ],
+    [
+      "half-22",
+      "0.5",
+      "22",
+      "0.b"
+    ],
+    [
+      "base-23",
+      "24",
+      "23",
+      "11"
+    ],
+    [
+      "base-24",
+      "25",
+      "24",
+      "11"
+    ],
+    [
+      "half-24",
+      "0.5",
+      "24",
+      "0.c"
+    ],
+    [
+      "base-25",
+      "26",
+      "25",
+      "11"
+    ],
+    [
+      "base-26",
+      "27",
+      "26",
+      "11"
+    ],
+    [
+      "half-26",
+      "0.5",
+      "26",
+      "0.d"
+    ],
+    [
+      "base-27",
+      "28",
+      "27",
+      "11"
+    ],
+    [
+      "base-28",
+      "29",
+      "28",
+      "11"
+    ],
+    [
+      "half-28",
+      "0.5",
+      "28",
+      "0.e"
+    ],
+    [
+      "base-29",
+      "30",
+      "29",
+      "11"
+    ],
+    [
+      "base-30",
+      "31",
+      "30",
+      "11"
+    ],
+    [
+      "half-30",
+      "0.5",
+      "30",
+      "0.f"
+    ],
+    [
+      "base-31",
+      "32",
+      "31",
+      "11"
+    ],
+    [
+      "base-32",
+      "33",
+      "32",
+      "11"
+    ],
+    [
+      "half-32",
+      "0.5",
+      "32",
+      "0.g"
+    ],
+    [
+      "base-33",
+      "34",
+      "33",
+      "11"
+    ],
+    [
+      "base-34",
+      "35",
+      "34",
+      "11"
+    ],
+    [
+      "half-34",
+      "0.5",
+      "34",
+      "0.h"
+    ],
+    [
+      "base-35",
+      "36",
+      "35",
+      "11"
+    ],
+    [
+      "base-36",
+      "37",
+      "36",
+      "11"
+    ],
+    [
+      "half-36",
+      "0.5",
+      "36",
+      "0.i"
+    ]
+  ],
+  "probes": [
+    {
+      "name": "radix",
+      "typecheck": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": ""
+      },
+      "build": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\radix.exe\n",
+        "stderr": ""
+      },
+      "coverage": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\radix.ts\n\n  statements analyzed   5\n  compile statically    5  (100%)\n    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n",
+        "stderr": ""
+      },
+      "cases": [
+        {
+          "id": "zero",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "negative-zero",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "nan",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "NaN\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "NaN\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "positive-infinity",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "Infinity\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "Infinity\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "negative-infinity",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "-Infinity\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "-Infinity\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "binary-integer",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11111111\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11111111\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "negative-hex",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "-ff\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "-ff\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base36",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "z\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "z\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "binary-half",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "hex-fraction",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "a.8\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "a.8\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "octal-fraction",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "binary-subnormal",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "binary-max",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1111111111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1111111111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "safe-integer",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1fffffffffffff\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1fffffffffffff\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "next-integer",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "20000000000000\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "20000000000000\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-small",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.000001\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.000001\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-small-exp",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1e-7\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1e-7\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-large",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "100000000000000000000\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "100000000000000000000\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-large-exp",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1e+21\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1e+21\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-subnormal",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "5e-324\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "5e-324\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-max",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1.7976931348623157e+308\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1.7976931348623157e+308\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-tenth",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-2",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-2",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-3",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-4",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-4",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.2\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.2\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-5",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-6",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-6",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.3\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.3\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-7",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-8",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-8",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.4\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.4\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-9",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-10",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-10",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.5\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.5\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-11",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-12",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-12",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.6\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.6\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-13",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-14",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-14",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.7\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.7\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-15",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-16",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-16",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.8\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.8\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-17",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-18",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-18",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.9\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.9\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-19",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-20",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-20",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.a\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.a\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-21",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-22",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-22",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.b\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.b\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-23",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-24",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-24",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.c\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.c\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-25",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-26",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-26",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.d\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.d\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-27",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-28",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-28",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.e\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.e\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-29",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-30",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-30",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.f\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.f\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-31",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-32",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-32",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.g\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.g\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-33",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-34",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-34",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.h\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.h\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-35",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-36",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-36",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.i\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.i\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        }
+      ],
+      "exploratory": [
+        {
+          "args": [
+            "0.1",
+            "3"
+          ],
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.0022002200220022002200220022002201\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.0022002200220022002200220022002201\n",
+            "stderr": ""
+          }
+        },
+        {
+          "args": [
+            "0.1",
+            "16"
+          ],
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1999999999999a\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1999999999999a\n",
+            "stderr": ""
+          }
+        },
+        {
+          "args": [
+            "1.1",
+            "36"
+          ],
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1.3llllllllm\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1.3llllllllm\n",
+            "stderr": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "decimal",
+      "typecheck": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": ""
+      },
+      "build": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\decimal.exe\n",
+        "stderr": ""
+      },
+      "coverage": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\decimal.ts\n\n  statements analyzed   4\n  compile statically    4  (100%)\n    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n",
+        "stderr": ""
+      },
+      "cases": [
+        {
+          "id": "decimal-small",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.000001\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.000001\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-small-exp",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1e-7\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1e-7\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-large",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "100000000000000000000\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "100000000000000000000\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-large-exp",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1e+21\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1e+21\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-subnormal",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "5e-324\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "5e-324\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-max",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1.7976931348623157e+308\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "1.7976931348623157e+308\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "decimal-tenth",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.1\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "base-10",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "11\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        },
+        {
+          "id": "half-10",
+          "node": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.5\n",
+            "stderr": ""
+          },
+          "native": {
+            "status": 0,
+            "signal": null,
+            "error": null,
+            "stdout": "0.5\n",
+            "stderr": ""
+          },
+          "gate": "DYNAMIC",
+          "oracle": true
+        }
+      ],
+      "exploratory": []
+    }
+  ]
+}

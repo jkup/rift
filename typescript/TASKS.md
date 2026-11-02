@@ -973,7 +973,7 @@ Coordinator acceptance: TS-020 accepted `a3d74fd` on 2026-11-02. Reviewed produc
 
 ### TS-021P — Number prototype conversion and radix backend design
 
-Status: **ready for assignment**. Prerequisite TS-020 accepted `a3d74fd`. Design and isolated evidence only. Resolve the remaining Number-wrapper conversion limitation before implementing valueOf/toString. Own docs/number-prototype-conversions.md, docs/validation/ts-021p/ including optional isolated probes and this task claim/handoff. Coordinator owns COORDINATION.md; Claude assistance paths reserved. No production/tests/manifests/pins changes in this design task.
+Status: **review needed**. Owner: bounded TS-021P design chat, branch `codex/primitive-computed-keys`, assigned base `051c88b` (checkout dispatch `61a45c7`). Prerequisite TS-020 accepted `a3d74fd`. Design and isolated evidence only. Resolve the remaining Number-wrapper conversion limitation before implementing valueOf/toString. Own docs/number-prototype-conversions.md, docs/validation/ts-021p/ including optional isolated probes and this task claim/handoff. Coordinator owns COORDINATION.md; Claude assistance paths reserved. No production/tests/manifests/pins changes in this design task.
 
 Inspect existing Number namespace, real Number root/box payloads, decimal numberToString backend, primitive-only converters and effectful ToPrimitive/context/budget boundaries. Consult fixed ECMA-2622025 Number.prototype.valueOf/toString, ThisNumberValue and number formatting rules plus revision-pinned relevant engine code. Freeze explicit APIs, metadata/property order, receiver errors and radix errors/locations. Preserve genuine root +0, NaN/-0/infinities, foreign/relinked slots and prototype lookalike rejection. Keep Number namespace noncallable with existing constants/predicates; no constructor/global redesign.
 
@@ -982,3 +982,22 @@ Specify observable order of receiver validation, missing/undefined radix, effect
 Assess a typed primitive numeric formatting backend for radices2–36 on pinned scriptc0.4.7 and Node. If using host number formatting, prove both static-only build AND separate coverage, runtime-supplied number/radix inputs and fixed expected results; do not merely constant-fold examples or compare two hosts without an oracle. Probe exact integer/power-of-two fractions and representative decimal/special/exponent/subnormal/boundary values; distinguish specification guarantees and implementation latitude for nondecimal fractions. Retain failures/reductions. Existing decimal backend behavior must not regress. No arbitrary radix/precision restriction presented as complete support. If reliable full formatting is blocked, recommend a coherent staged next task (e.g. valueOf first) and explicitly blocked remainder with evidence; do not change pins or implement a large formatter ad hoc.
 
 Deliver a concrete expected-result matrix and full affected expectation inventory (Number root keys, inherited Object methods, numeric/string/default hints, computed keys/operators/length/map, borrowed Object/Symbol/Boolean/String behavior and existing limits). Specify the smallest atomic next implementation and owned files with readable tests/runtime-read fixtures, exact diagnostics/negative intent, metadata/Realm isolation and mutation tests. Preserve164cases/23gates and existing workaround imports/annotations. No Array/Function overrides, other Number formatting methods, parsers, accessors, constructors, implicit boxing, C++/Claude/COORDINATION edits, branch switch or main merge. Commit/push design/evidence and stop for review; no implementation or successors until separately assigned.
+
+TS-021P handoff (2026-11-02): design/evidence complete, awaiting independent
+review. docs/number-prototype-conversions.md freezes receiver/radix APIs,
+metadata, exact matrices, observable order/budgets, full migration inventory
+and a Number valueOf-only next assignment. Full toString is explicitly blocked:
+typed host radix formatting passes static-only plus separate coverage (5/5),
+84 fixed runtime-input cases on both hosts, and decimal control4/4 coverage
+with18 fixed cases; nevertheless both hosts fail exact binary64 rounding-
+interval membership for7/23 nondecimal fraction cases. Retained0.3/base3
+integer-arithmetic reduction proves an out-of-interval result independently
+of host agreement. Passing16 interval cases do not prove shortestness.
+Retained initial TypeScript CLI/Zig access failures and dynamic Number-parser
+reductions; final typed parseFloat is isolated input plumbing, no production
+workaround. Fixed ECMA-2622025 and pinned engine262 consulted. Evidence in
+docs/validation/ts-021p/. No runtime support claim, integrated suite rerun,
+production/test/manifest/pin/C++/Claude/COORDINATION edit, branch switch,
+main merge or successor dispatch. Accepted baseline remains a3d74fd with
+independent164/164 both hosts and23 gates. Commit/push this design/evidence
+and stop; coordinator owns acceptance and future assignment.

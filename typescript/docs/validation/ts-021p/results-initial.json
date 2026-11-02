@@ -1,0 +1,1142 @@
+{
+  "nodeVersion": "v26.13.0",
+  "rows": [
+    [
+      "zero",
+      "0",
+      "2",
+      "0"
+    ],
+    [
+      "negative-zero",
+      "-0",
+      "36",
+      "0"
+    ],
+    [
+      "nan",
+      "NaN",
+      "16",
+      "NaN"
+    ],
+    [
+      "positive-infinity",
+      "Infinity",
+      "2",
+      "Infinity"
+    ],
+    [
+      "negative-infinity",
+      "-Infinity",
+      "36",
+      "-Infinity"
+    ],
+    [
+      "binary-integer",
+      "255",
+      "2",
+      "11111111"
+    ],
+    [
+      "negative-hex",
+      "-255",
+      "16",
+      "-ff"
+    ],
+    [
+      "base36",
+      "35",
+      "36",
+      "z"
+    ],
+    [
+      "binary-half",
+      "0.5",
+      "2",
+      "0.1"
+    ],
+    [
+      "hex-fraction",
+      "10.5",
+      "16",
+      "a.8"
+    ],
+    [
+      "octal-fraction",
+      "0.125",
+      "8",
+      "0.1"
+    ],
+    [
+      "binary-subnormal",
+      "5e-324",
+      "2",
+      "0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+    ],
+    [
+      "binary-max",
+      "1.7976931348623157e308",
+      "2",
+      "1111111111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    ],
+    [
+      "safe-integer",
+      "9007199254740991",
+      "16",
+      "1fffffffffffff"
+    ],
+    [
+      "next-integer",
+      "9007199254740992",
+      "16",
+      "20000000000000"
+    ],
+    [
+      "decimal-small",
+      "0.000001",
+      "10",
+      "0.000001"
+    ],
+    [
+      "decimal-small-exp",
+      "0.0000001",
+      "10",
+      "1e-7"
+    ],
+    [
+      "decimal-large",
+      "1e20",
+      "10",
+      "100000000000000000000"
+    ],
+    [
+      "decimal-large-exp",
+      "1e21",
+      "10",
+      "1e+21"
+    ],
+    [
+      "decimal-subnormal",
+      "5e-324",
+      "10",
+      "5e-324"
+    ],
+    [
+      "decimal-max",
+      "1.7976931348623157e308",
+      "10",
+      "1.7976931348623157e+308"
+    ],
+    [
+      "decimal-tenth",
+      "0.1",
+      "10",
+      "0.1"
+    ],
+    [
+      "base-2",
+      "3",
+      "2",
+      "11"
+    ],
+    [
+      "half-2",
+      "0.5",
+      "2",
+      "0.1"
+    ],
+    [
+      "base-3",
+      "4",
+      "3",
+      "11"
+    ],
+    [
+      "base-4",
+      "5",
+      "4",
+      "11"
+    ],
+    [
+      "half-4",
+      "0.5",
+      "4",
+      "0.2"
+    ],
+    [
+      "base-5",
+      "6",
+      "5",
+      "11"
+    ],
+    [
+      "base-6",
+      "7",
+      "6",
+      "11"
+    ],
+    [
+      "half-6",
+      "0.5",
+      "6",
+      "0.3"
+    ],
+    [
+      "base-7",
+      "8",
+      "7",
+      "11"
+    ],
+    [
+      "base-8",
+      "9",
+      "8",
+      "11"
+    ],
+    [
+      "half-8",
+      "0.5",
+      "8",
+      "0.4"
+    ],
+    [
+      "base-9",
+      "10",
+      "9",
+      "11"
+    ],
+    [
+      "base-10",
+      "11",
+      "10",
+      "11"
+    ],
+    [
+      "half-10",
+      "0.5",
+      "10",
+      "0.5"
+    ],
+    [
+      "base-11",
+      "12",
+      "11",
+      "11"
+    ],
+    [
+      "base-12",
+      "13",
+      "12",
+      "11"
+    ],
+    [
+      "half-12",
+      "0.5",
+      "12",
+      "0.6"
+    ],
+    [
+      "base-13",
+      "14",
+      "13",
+      "11"
+    ],
+    [
+      "base-14",
+      "15",
+      "14",
+      "11"
+    ],
+    [
+      "half-14",
+      "0.5",
+      "14",
+      "0.7"
+    ],
+    [
+      "base-15",
+      "16",
+      "15",
+      "11"
+    ],
+    [
+      "base-16",
+      "17",
+      "16",
+      "11"
+    ],
+    [
+      "half-16",
+      "0.5",
+      "16",
+      "0.8"
+    ],
+    [
+      "base-17",
+      "18",
+      "17",
+      "11"
+    ],
+    [
+      "base-18",
+      "19",
+      "18",
+      "11"
+    ],
+    [
+      "half-18",
+      "0.5",
+      "18",
+      "0.9"
+    ],
+    [
+      "base-19",
+      "20",
+      "19",
+      "11"
+    ],
+    [
+      "base-20",
+      "21",
+      "20",
+      "11"
+    ],
+    [
+      "half-20",
+      "0.5",
+      "20",
+      "0.a"
+    ],
+    [
+      "base-21",
+      "22",
+      "21",
+      "11"
+    ],
+    [
+      "base-22",
+      "23",
+      "22",
+      "11"
+    ],
+    [
+      "half-22",
+      "0.5",
+      "22",
+      "0.b"
+    ],
+    [
+      "base-23",
+      "24",
+      "23",
+      "11"
+    ],
+    [
+      "base-24",
+      "25",
+      "24",
+      "11"
+    ],
+    [
+      "half-24",
+      "0.5",
+      "24",
+      "0.c"
+    ],
+    [
+      "base-25",
+      "26",
+      "25",
+      "11"
+    ],
+    [
+      "base-26",
+      "27",
+      "26",
+      "11"
+    ],
+    [
+      "half-26",
+      "0.5",
+      "26",
+      "0.d"
+    ],
+    [
+      "base-27",
+      "28",
+      "27",
+      "11"
+    ],
+    [
+      "base-28",
+      "29",
+      "28",
+      "11"
+    ],
+    [
+      "half-28",
+      "0.5",
+      "28",
+      "0.e"
+    ],
+    [
+      "base-29",
+      "30",
+      "29",
+      "11"
+    ],
+    [
+      "base-30",
+      "31",
+      "30",
+      "11"
+    ],
+    [
+      "half-30",
+      "0.5",
+      "30",
+      "0.f"
+    ],
+    [
+      "base-31",
+      "32",
+      "31",
+      "11"
+    ],
+    [
+      "base-32",
+      "33",
+      "32",
+      "11"
+    ],
+    [
+      "half-32",
+      "0.5",
+      "32",
+      "0.g"
+    ],
+    [
+      "base-33",
+      "34",
+      "33",
+      "11"
+    ],
+    [
+      "base-34",
+      "35",
+      "34",
+      "11"
+    ],
+    [
+      "half-34",
+      "0.5",
+      "34",
+      "0.h"
+    ],
+    [
+      "base-35",
+      "36",
+      "35",
+      "11"
+    ],
+    [
+      "base-36",
+      "37",
+      "36",
+      "11"
+    ],
+    [
+      "half-36",
+      "0.5",
+      "36",
+      "0.i"
+    ]
+  ],
+  "probes": [
+    {
+      "name": "radix",
+      "typecheck": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "error TS5112: tsconfig.json is present but will not be loaded if files are specified on commandline. Use '--ignoreConfig' to skip this error.\n",
+        "stderr": ""
+      },
+      "build": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\radix.ts:1:1 - error SC3004: Command failed: zig cc -target x86_64-windows-gnu -Wl,--gc-sections C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_context.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_shared.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_number.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_bigint.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_string.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_grapheme.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_array.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_bytes.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_bytes_io.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_fs_cp.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_map.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_closure.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_ffi.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_object.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_union.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_exception.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_unwind.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_error.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_console.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_lib.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_hash.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_path.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_os.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_url.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_url_params.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_json.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_node_builtin.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_async.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_crypto_async.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_child.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_cycle.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_publish.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_region.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_arena.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_itable.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_slots.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_alloc.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_cipher_info.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_ieee754.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_glibc_math.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\runtime\\artifacts\\release\\runtime\\default\\scr_win.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\input\\program.obj -ladvapi32 -liphlpapi -lws2_32 -o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-d3y1du\\radix.exe\nerror: unable to find zig installation directory from executable path \"C:\\\\Users\\\\jonku\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\zig.zig_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\zig-x86_64-windows-0.17.0\\\\zig.exe\": FileNotFound\n\n\n1 error.\n"
+      },
+      "coverage": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\radix.ts\n\n  statements analyzed   4\n  compile statically    4  (100%)\n    in dynamic tier     2  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n",
+        "stderr": ""
+      },
+      "cases": [
+        {
+          "id": "zero",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "negative-zero",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "nan",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "positive-infinity",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "negative-infinity",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "binary-integer",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "negative-hex",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base36",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "binary-half",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "hex-fraction",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "octal-fraction",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "binary-subnormal",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "binary-max",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "safe-integer",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "next-integer",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-small",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-small-exp",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-large",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-large-exp",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-subnormal",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-max",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-tenth",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-2",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-2",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-3",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-4",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-4",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-5",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-6",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-6",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-7",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-8",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-8",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-9",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-10",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-10",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-11",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-12",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-12",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-13",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-14",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-14",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-15",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-16",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-16",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-17",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-18",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-18",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-19",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-20",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-20",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-21",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-22",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-22",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-23",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-24",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-24",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-25",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-26",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-26",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-27",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-28",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-28",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-29",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-30",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-30",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-31",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-32",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-32",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-33",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-34",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-34",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-35",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-36",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-36",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        }
+      ],
+      "exploratory": [
+        {
+          "args": [
+            "0.1",
+            "3"
+          ],
+          "node": {
+            "status": 1,
+            "signal": null,
+            "error": null,
+            "stdout": "",
+            "stderr": "node:internal/modules/cjs/loader:1607\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\radix.js'\r\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1603:15)\r\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1145:27)\r\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1169:10)\r\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1196:12)\r\n    at Module._load (node:internal/modules/cjs/loader:1370:5)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\r\n    at node:internal/main/run_main_module:33:47 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v26.13.0\r\n"
+          },
+          "native": null
+        },
+        {
+          "args": [
+            "0.1",
+            "16"
+          ],
+          "node": {
+            "status": 1,
+            "signal": null,
+            "error": null,
+            "stdout": "",
+            "stderr": "node:internal/modules/cjs/loader:1607\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\radix.js'\r\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1603:15)\r\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1145:27)\r\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1169:10)\r\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1196:12)\r\n    at Module._load (node:internal/modules/cjs/loader:1370:5)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\r\n    at node:internal/main/run_main_module:33:47 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v26.13.0\r\n"
+          },
+          "native": null
+        },
+        {
+          "args": [
+            "1.1",
+            "36"
+          ],
+          "node": {
+            "status": 1,
+            "signal": null,
+            "error": null,
+            "stdout": "",
+            "stderr": "node:internal/modules/cjs/loader:1607\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\radix.js'\r\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1603:15)\r\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1145:27)\r\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1169:10)\r\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1196:12)\r\n    at Module._load (node:internal/modules/cjs/loader:1370:5)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\r\n    at node:internal/main/run_main_module:33:47 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v26.13.0\r\n"
+          },
+          "native": null
+        }
+      ]
+    },
+    {
+      "name": "decimal",
+      "typecheck": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "error TS5112: tsconfig.json is present but will not be loaded if files are specified on commandline. Use '--ignoreConfig' to skip this error.\n",
+        "stderr": ""
+      },
+      "build": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "",
+        "stderr": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\decimal.ts:1:1 - error SC3004: Command failed: zig cc -target x86_64-windows-gnu -Wl,--gc-sections C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_context.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_shared.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_number.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_bigint.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_string.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_grapheme.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_array.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_bytes.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_bytes_io.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_fs_cp.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_map.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_closure.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_ffi.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_object.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_union.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_exception.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_unwind.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_error.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_console.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_lib.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_hash.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_path.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_os.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_url.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_url_params.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_json.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_node_builtin.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_async.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_crypto_async.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_child.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_cycle.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_publish.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_region.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_arena.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_itable.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_slots.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_alloc.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_cipher_info.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_ieee754.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_glibc_math.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\runtime\\artifacts\\release\\runtime\\default\\scr_win.o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\input\\program.obj -ladvapi32 -liphlpapi -lws2_32 -o C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\generated\\.scriptc-native-n5fl0q\\decimal.exe\nerror: unable to find zig installation directory from executable path \"C:\\\\Users\\\\jonku\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\zig.zig_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\zig-x86_64-windows-0.17.0\\\\zig.exe\": FileNotFound\n\n\n1 error.\n"
+      },
+      "coverage": {
+        "status": 0,
+        "signal": null,
+        "error": null,
+        "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-021p\\decimal.ts\n\n  statements analyzed   2\n  compile statically    2  (100%)\n    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n",
+        "stderr": ""
+      },
+      "cases": [
+        {
+          "id": "decimal-small",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-small-exp",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-large",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-large-exp",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-subnormal",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-max",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "decimal-tenth",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "base-10",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        },
+        {
+          "id": "half-10",
+          "node": null,
+          "native": null,
+          "gate": "BUILD-FAIL",
+          "oracle": false
+        }
+      ],
+      "exploratory": []
+    }
+  ]
+}
