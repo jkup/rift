@@ -1,0 +1,1 @@
+function f() { /*keep*/ p[k] = 7; }

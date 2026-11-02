@@ -376,8 +376,9 @@ operations; no guest reflection API was added. See [validation](validation/ts-00
 Property references retain the raw base Value, key Value and member location.
 TS-028A supersedes the original object-only GetValue restriction: reads use
 ToObject before deferred ToPropertyKey and save a successful key on the reference.
-PutValue still rejects non-object bases before key conversion. Simple assignment
-evaluates its RHS before that restriction. Reads obtain the
+TS-029A supersedes the original PutValue object-only restriction: after the RHS,
+ToObject precedes deferred key conversion and successful-key caching, followed by
+internalSet with the original base Receiver. Reads obtain the
 property before call arguments; method calls pass the exact saved base Value as
 receiver. No base/key reevaluation occurs when RHS or arguments replace bindings.
 
@@ -873,3 +874,27 @@ native default64 recursion separately from small limits. Existing code supplies
 all guard/Realm cleanup; no new compiler workaround or built-in is introduced.
 See [validation and migration audit](validation/ts-028a/README.md). Windows x64 and
 the represented-Value subset remain the tested boundary.
+
+
+## Property assignment boxing and Receiver (TS-029A, 2026-11-02)
+
+The accepted [assignment design](property-assignment.md) applies existing ToObject
+and ToPropertyKey in PutValue, saves only a successful key, then calls internalSet
+exactly once with the original base Value. The small local false-to-TypeError
+translation preserves operation location and exact RHS/abrupt identities. Calling
+the wrapper set convenience method would replace the Receiver, so that method is
+unchanged and is not used here. This supersedes the historical TS-025/TS-028
+object-only write restriction above without changing their historical evidence.
+
+GetValue, binding writes, evaluator capture/guards, parser, Realm factories,
+internalSet/set and exotic definition algorithms are unchanged. No new syntax,
+built-ins, accessors/proxies or compiler workaround is introduced. Temporary
+wrappers are fresh per attempt in the active Realm; successful key conversion
+remains cached even after failed dispatch. Explicit RHS/key effects survive
+failed writes, including Array partial shrink.
+
+[Implementation evidence](validation/ts-029a/README.md) records 31 static-only and
+separate coverage gates and the frozen 146-row mapping. Independent coordinator review corrected R30 from6 to5 ticks: identifier
+callees use reference/GetValue directly, with no evaluate tick. The historical
+matrix and failures remain retained. Runtime ticks are unchanged; implementation
+acceptance still requires independent review.

@@ -27,7 +27,7 @@ const loc: Location = { line: 1, column: 1 };
 const refLoc: Location = { line: 7, column: 9 };
 const opLoc: Location = { line: 8, column: 4 };
 const nullish = "cannot convert null or undefined to object";
-const writeOnly = "property base must be an object";
+
 const Q: ThrowCompletion = failure("ReferenceError", "sentinel", refLoc);
 Q.value = n(91);
 const F = new Error("host sentinel");
@@ -709,7 +709,13 @@ for (const value of [...primitives, nil, U]) {
     } else {
         expect(read, n(1), "W6 PrimitiveReadWrite");
     }
-    error(putValue(ref, n(3), e.context, opLoc), writeOnly, "W6/W7 write", 9, 7);
+    const writeResult = putValue(ref, n(3), e.context, opLoc);
+    if (isNullish) {
+        error(writeResult, nullish, "W7 write", 9, 7);
+    } else {
+        error(writeResult, "property is not writable: x", "W6 write", 4, 8);
+        check(realm.observation.boxes.length === 2 && realm.observation.boxes[0] !== realm.observation.boxes[1], "W6 fresh Put box");
+    }
     check(hooks === (isNullish ? 0 : 1), "W6/W7 hook count");
     if (!isNullish) {
         check(sameValue(prototype(realm, value).get("x"), n(1)), "W6 prototype unchanged");
@@ -743,9 +749,15 @@ for (const name of ["W13 SimplePrimitiveWrite", "W14 RHSAbrupt", "W15 SimpleObje
             expect(result, n(3), name);
             check(sameValue(target.get("y"), n(3)) && target.getOwnProperty("x") === undefined, name + " deferred key");
         } else {
-            error(result, writeOnly, name);
+            error(result, "property is not writable: y", name);
         }
-        check(trace === (name === "W15 SimpleObjectWrite" ? "RY" : "R") && realm.observation.boxes.length === 0, name + " trace/no box");
+        if (name === "W13 SimplePrimitiveWrite") {
+            check(trace === "RY" && realm.observation.boxes.length === 1, name + " trace/box");
+        } else if (name === "W14 RHSAbrupt") {
+            check(trace === "R" && realm.observation.boxes.length === 0, name + " trace/no box");
+        } else {
+            check(trace === "RY" && realm.observation.boxes.length === 0, name + " trace/no box");
+        }
     }
 }
 const parseRows = [

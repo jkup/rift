@@ -1516,8 +1516,28 @@ Coordinator acceptance: TS-029P acceptede38b9f7 (delivery note9f7b399), 2026-11-
 
 ### TS-029A — Strict property assignment implementation
 
-Status: **ready**. Prerequisite accepted TS-029Pe38b9f7. Implement docs/property-assignment.md, all146 named V/E/K/F/R/C rows/variants and exact A1-A14 migrations. Own minimal PutValue/comment changes, dedicated readable tests/runtime fixtures, listed observer/expectation migrations, native/runner registration, current scope/evidence/TASKS. Coordinator owns COORDINATION.md; Claude tasks reserved.
+Status: **review needed**. Owner: Codex chat `01a19b85-aa88-7b12-bc0d-b15dcbf5c256`, branch `codex/primitive-computed-keys`, dispatch base `63d4cff`. Prerequisite accepted TS-029Pe38b9f7. Implement docs/property-assignment.md, all146 named V/E/K/F/R/C rows/variants and exact A1-A14 migrations. Own minimal PutValue/comment changes, dedicated readable tests/runtime fixtures, listed observer/expectation migrations, native/runner registration, current scope/evidence/TASKS. Coordinator owns COORDINATION.md; Claude tasks reserved.
 
 Use existing ToObject then deferred ToPropertyKey, save successful string/symbol Value before exactly one internalSet with original ref.base, preserve throws and translate false locally at operation location. Return exact RHS on success. Keep GetValue/binding assignment/internalSet/set/evaluator/parser/exotics unchanged. Preserve original Receiver and no temporary-box definitions, RHS effects/order, foreign Realm and host-fault/abrupt identity, Array definition dispatch/partial shrink and success-only key reuse. Move A13/A14 test observers to internalSet while retaining every S trace/sentinel and adding original Receiver checks. No weakened expectations.
 
 Run full matrix including actual constructor-default64 native recursion326/390 ticks, exact small limits and seeded cleanup. Preserve196 case names/30 gates, only A9 existing top-level oracle change; retain historical fixtures/evidence. Require typecheck, runner/probes, full rebuilt Node/native, every static-only build and separately parsed coverage. Retain failures/reductions; report oracle contradictions before adjustments. Readable named scenarios and separate setup/action/assertions throughout. No syntax/built-ins/accessors/proxies, pins/C++/Claude/COORDINATION edits, branch switch/main merge or successor. Commit/push tested work on current branch and stop for independent review.
+
+
+TS-029A handoff (2026-11-02): minimal PutValue/comment change, all146 mapped
+rows/variants, exact A1-A14 migrations, seven runtime-read fixtures and additive
+driver registration implemented. Independently reviewed R30 correction is5 ticks
+instead of6: identifier callee uses reference/GetValue without evaluate. Historical
+TS-029P matrix and original failures retained; no runtime tick change.
+
+Final rebuilt Node/native203/203 each, no skips;31 static-only and separately
+parsed coverage gates PASS, zero dynamic. Typecheck, runner20/20 and probes10/10
+pass. Complete preservation audit confirms196 baseline names,30 gates,63 fixture
+files, only A9 old expected-record migration, unchanged GetValue/binding writes/
+internalSet/set/evaluator/parser/exotics/pins. Actual native default64 host/guest
+recursion326/390 ticks, peaks67/131 and65 boxes passes.
+
+Evidence and derivation: docs/validation/ts-029a/README.md, matrix.md, retained
+transcripts, r30-reproduction.mjs and complete-mode audit.mjs. Initial observer
+assertion-order failure, sandbox linker failure and R30 failures retained. No
+genuine compiler failure/workaround. COORDINATION/Claude/C++ untouched. Stop at
+this boundary for independent review; no acceptance, main merge or successor.

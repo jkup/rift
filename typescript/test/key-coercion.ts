@@ -6,7 +6,7 @@ import { Realm } from "../src/realm.js";
 import { parse } from "../src/parser.js";
 import { toPropertyKey, toString, toNumber } from "../src/conversion.js";
 import { GuestArray } from "../src/array-object.js";
-import { GuestObject, UNDEFINED, normal, getValue, putValue, type OperationContext, type Builtin, type Completion, type Value, type ValueCompletion, type ThrowCompletion } from "../src/runtime.js";
+import { GuestObject, UNDEFINED, normal, getValue, putValue, type InternalBooleanCompletion, type OperationContext, type Builtin, type Completion, type Value, type ValueCompletion, type ThrowCompletion } from "../src/runtime.js";
 import type { Location } from "../src/syntax.js";
 function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
 function obj(object: GuestObject): Value { return { kind: "object", object }; }
@@ -53,10 +53,11 @@ class Observed extends GuestObject {
         check(receiver === this.original, "original base Get receiver");
         return this.stop === "G" ? sentinel : super.internalGet(key, receiver, location);
     }
-    set(key: PropertyKey, value: Value, context: OperationContext, location: Location): Completion {
+    internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, location: Location): InternalBooleanCompletion {
         check(context === this.active.context, "Set active context identity");
+        check(receiver === this.original, "original base Set receiver");
         this.mark("S");
-        return this.stop === "S" ? sentinel : super.set(key, value, context, location);
+        return this.stop === "S" ? sentinel : super.internalSet(key, value, receiver, context, location);
     }
 }
 for (const path of ["read", "write", "call"]) {
@@ -141,7 +142,7 @@ for (const kind of ["ordinary", "array", "function"]) {
                 const rhs = obj(new GuestObject());
                 check(putValue(ref, rhs, active.context, loc).type === "normal", "direct write");
                 const read = getValue(ref, active.context, loc);
-                check(read.type === "normal" && read.value === rhs && calls === 3, "direct read once per consumption");
+                check(read.type === "normal" && read.value === rhs && calls === 2, "direct read reuses saved key");
             }
         }
     }
@@ -214,7 +215,7 @@ for (const closed of [false, true]) {
     check(result.type === "throw" && result.diagnostic.message === "property is not writable: x" && result.diagnostic.loc === loc, "object key strict false Set");
     check(closed ? target.getOwnProperty("x") === undefined : payload(target.get("x")) === 4, "rejected write preserves state");
 }
-// Nullish reads and all primitive writes reject before a key lookup.
+// Nullish reads/writes reject before key lookup; other primitives reach coercion.
 for (const base of [UNDEFINED, { kind: "null" } as Value, num(1), str("text"), { kind: "boolean", value: false } as Value]) {
     const key = new ThrowingKey();
     const ref = { kind: "property" as const, base, key: obj(key), loc };
@@ -226,7 +227,11 @@ for (const base of [UNDEFINED, { kind: "null" } as Value, num(1), str("text"), {
     }
     key.reads = "";
     const write = putValue(ref, num(3), active.context, loc);
-    check(write.type === "throw" && write.diagnostic.message === "property base must be an object" && write.diagnostic.loc === loc && key.reads === "", "write before coercion");
+    if (base.kind === "null" || base.kind === "undefined") {
+        check(write.type === "throw" && write.diagnostic.message === "cannot convert null or undefined to object" && write.diagnostic.loc === loc && key.reads === "", "nullish write before coercion");
+    } else {
+        check(write === sentinel && key.reads === "toString;", "primitive write reaches key sentinel");
+    }
 }
 console.log("key coercion passed");
 

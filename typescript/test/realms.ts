@@ -370,7 +370,7 @@ const stringRootKeysBeforeWrite = boxA.stringPrototype.ownPropertyKeys().length;
 const stringRootParentBeforeWrite = boxA.stringPrototype.getPrototypeOf();
 for (const source of ["'ab'[0] = 'z';"]) {
     const rejected = run(source, boxA);
-    checkGraph(rejected.phase === "runtime" && rejected.completion.type === "throw" && rejected.completion.diagnostic.name === "TypeError" && rejected.completion.diagnostic.message === "property base must be an object", "W17 primitive write still rejected");
+    checkGraph(rejected.phase === "runtime" && rejected.completion.type === "throw" && rejected.completion.diagnostic.name === "TypeError" && rejected.completion.diagnostic.message === "property is not writable: 0", "W17 primitive write still rejected");
     checkGraph(boxA.stringPrototype.stringData === "" && boxA.stringPrototype.ownPropertyKeys().length === stringRootKeysBeforeWrite && boxA.stringPrototype.getPrototypeOf() === stringRootParentBeforeWrite, "W17 rejected write preserves String root/payload");
 }
 

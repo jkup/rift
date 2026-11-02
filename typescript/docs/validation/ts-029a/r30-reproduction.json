@@ -1,0 +1,22 @@
+{
+  "source": "p[k] = rhs();",
+  "frozenSteps": 6,
+  "actualSteps": 5,
+  "rhsCalls": 1,
+  "result": {
+    "type": "throw",
+    "value": {
+      "kind": "string",
+      "value": "TypeError: cannot convert null or undefined to object"
+    },
+    "diagnostic": {
+      "phase": "runtime",
+      "name": "TypeError",
+      "message": "cannot convert null or undefined to object",
+      "loc": {
+        "line": 1,
+        "column": 1
+      }
+    }
+  }
+}

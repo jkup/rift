@@ -1,0 +1,1 @@
+let o = {}; console.log(o.x = 7, o.x);

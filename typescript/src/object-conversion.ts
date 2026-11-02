@@ -3,7 +3,7 @@ import type { Location } from "./syntax.js";
 
 export type ObjectCompletion = { type: "normal"; value: GuestObject } | ThrowCompletion;
 
-// Boxing for explicit conversion and property reads; no ticks or conversion hooks.
+// Boxing for explicit conversion and property reads/assignments; no ticks or conversion hooks.
 export function toObject(input: Value, context: OperationContext, loc: Location): ObjectCompletion {
     switch (input.kind) {
         case "object": return { type: "normal", value: input.object };

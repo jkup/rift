@@ -3,7 +3,7 @@ import { sameValue } from "../src/runtime.js";
 import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { toString, toPropertyKey, numberToString } from "../src/conversion.js";
-import { GuestObject, UNDEFINED, normal, getValue, putValue, type OperationContext, type Builtin, type Completion, type Value, type ValueCompletion, type ThrowCompletion } from "../src/runtime.js";
+import { GuestObject, UNDEFINED, normal, getValue, putValue, type InternalBooleanCompletion, type OperationContext, type Builtin, type Completion, type Value, type ValueCompletion, type ThrowCompletion } from "../src/runtime.js";
 import { GuestArray } from "../src/array-object.js";
 import { Realm } from "../src/realm.js";
 import { Evaluator } from "../src/evaluator.js";
@@ -146,6 +146,7 @@ class ObservedObject extends GuestObject {
     setThrow = false;
     seenContext: OperationContext | null = null;
     receiver: Value = UNDEFINED;
+    expectedReceiver: Value = UNDEFINED;
     observedKey: PropertyKey = "";
     sentinel: ThrowCompletion = { type: "throw", value: obj(new GuestObject()), diagnostic: { phase: "runtime", name: "RangeError", message: "sentinel", loc } };
     internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
@@ -154,11 +155,13 @@ class ObservedObject extends GuestObject {
         this.receiver = receiver;
         return this.getThrow ? this.sentinel : super.internalGet(key, receiver, location);
     }
-    set(key: PropertyKey, value: Value, context: OperationContext, location: Location): Completion {
+    internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, location: Location): InternalBooleanCompletion {
+        check(receiver === this.expectedReceiver, "original Set Receiver on every object write");
         this.seenContext = context;
+        this.receiver = receiver;
         this.observedKey = key;
         this.trace += "S";
-        return this.setThrow ? this.sentinel : super.set(key, value, context, location);
+        return this.setThrow ? this.sentinel : super.internalSet(key, value, receiver, context, location);
     }
 }
 class ForbiddenKey extends GuestObject {
@@ -180,6 +183,7 @@ class Scenario {
     replace = false;
     args = 0;
     constructor(inherited: boolean = false) {
+        this.original.expectedReceiver = this.originalValue;
         seed(this.realm, "selectedBase", this.originalValue);
         seed(this.realm, "selectedKey", this.keyValue);
         const method = builtin(this.realm, (receiver, args, context, _location) => {
@@ -224,8 +228,8 @@ class Scenario {
 const write = new Scenario();
 write.replace = true;
 check(write.run("write").type === "normal" && write.original.trace === "BKRS", "one-time write order");
+check(write.original.seenContext === write.evaluator.context && write.original.receiver === write.originalValue, "Set context and original Receiver identity");
 check(write.original.get("1") === write.rhsValue && write.original.getOwnProperty("2") === undefined && write.replacement.getOwnProperty("1") === undefined && write.replacement.getOwnProperty("2") === undefined, "original write base and key");
-check(write.original.seenContext === write.evaluator.context, "Set context identity");
 check(binding(write.realm, "assigned") === write.rhsValue, "assignment result exact RHS");
 for (const inherited of [false, true]) {
     const call = new Scenario(inherited);
@@ -255,7 +259,7 @@ for (const base of primitiveBases) {
         const invalid = new Scenario();
         invalid.baseValue = base;
         invalid.keyValue = obj(new ForbiddenKey());
-        if (path !== "write" && base.kind !== "null" && base.kind !== "undefined") {
+        if (base.kind !== "null" && base.kind !== "undefined") {
             let escaped = false;
             try {
                 invalid.run(path);
@@ -265,7 +269,7 @@ for (const base of primitiveBases) {
             check(escaped && invalid.evaluator.calls === 0 && invalid.evaluator.depth === 0 && invalid.evaluator.context.realm === invalid.realm, "primitive key fault cleanup");
         } else {
             const result = invalid.run(path);
-            const message = path === "write" ? "property base must be an object" : "cannot convert null or undefined to object";
+            const message = "cannot convert null or undefined to object";
             typeError(result, message, path === "read" ? 1 : 16);
         }
         check(invalid.original.trace === (path === "write" ? "BKR" : "BK"), "primitive read/write timing");
@@ -416,18 +420,14 @@ for (const path of ["read", "write", "call"]) {
     const scenario = new Scenario();
     scenario.baseValue = symbolValue;
     scenario.keyValue = obj(new ForbiddenKey());
-    if (path === "write") {
-        typeError(scenario.run(path), "property base must be an object", 16);
-    } else {
-        let escaped = false;
-        try {
-            scenario.run(path);
-        } catch (fault) {
-            escaped = fault instanceof Error && fault.message === "object key read";
-        }
-        check(escaped && scenario.evaluator.calls === 0 && scenario.evaluator.depth === 0 && scenario.evaluator.context.realm === scenario.realm, "A22 symbol key fault cleanup");
+    let escaped = false;
+    try {
+        scenario.run(path);
+    } catch (fault) {
+        escaped = fault instanceof Error && fault.message === "object key read";
     }
-    check(scenario.original.trace === (path === "write" ? "BKR" : "BK"), "A22 symbol read reaches key; write rejects before key");
+    check(escaped && scenario.evaluator.calls === 0 && scenario.evaluator.depth === 0 && scenario.evaluator.context.realm === scenario.realm, "A22 symbol key fault cleanup");
+    check(scenario.original.trace === (path === "write" ? "BKR" : "BK"), "A22 symbol key fault follows RHS on write");
 }
 const symbolReadonly = new Scenario();
 symbolReadonly.keyValue = symbolValue;

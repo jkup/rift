@@ -232,10 +232,19 @@ export function getValue(ref: Reference, context: OperationContext, loc: Locatio
 }
 export function putValue(ref: Reference, value: Value, context: OperationContext, loc: Location): Completion {
     if (ref.kind === "property") {
-        if (ref.base.kind !== "object") return failure("TypeError", "property base must be an object", ref.loc);
+        const object = toObject(ref.base, context, ref.loc);
+        if (object.type === "throw") return object;
         const key = toPropertyKey(ref.key, context, ref.loc);
         if (key.type === "throw") return key;
-        return ref.base.object.set(key.value, value, context, loc);
+        // Cache only successful conversion, even when the following Set fails.
+        // Boxing is local: Set must receive the original primitive/object base.
+        ref.key = typeof key.value === "string"
+            ? { kind: "string", value: key.value }
+            : { kind: "symbol", value: key.value };
+        const result = object.value.internalSet(key.value, value, ref.base, context, loc);
+        if (result.type === "throw") return result;
+        if (!result.value) return failure("TypeError", "property is not writable: " + formatPropertyKey(key.value), loc);
+        return normal(value);
     }
     const binding = ref.environment === null ? undefined : ref.environment.bindings.get(ref.name);
     if (binding === undefined) return failure("ReferenceError", ref.name + " is not defined", loc);

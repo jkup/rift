@@ -23,9 +23,18 @@ cases.push(
     { file: "test/fixtures/primitive-reads-basic.js", stdout: "a 2 true 2\n" },
     { file: "test/fixtures/primitive-reads-methods.js", stdout: "x false undefined\n" },
     { file: "test/fixtures/primitive-reads-nullish.js", status: 1, error: "1:1: runtime TypeError: cannot convert null or undefined to object" },
-    { file: "test/fixtures/primitive-reads-write.js", status: 1, error: "1:1: runtime TypeError: property base must be an object" },
+    { file: "test/fixtures/primitive-reads-write.js", status: 1, error: "1:1: runtime TypeError: property is not writable: 0" },
     { file: "test/fixtures/primitive-reads-effects.js", stdout: "2 1\n" },
     { file: "test/fixtures/primitive-reads-parse.js", status: 2, error: "1:15: parse SyntaxError: unsupported operator: +=" },
+);
+// TS-029A C1-C6: frozen independent CLI expectations.
+cases.push(
+    { file: "test/fixtures/property-assignment-object.js", stdout: "7 7\n" },
+    { file: "test/fixtures/property-assignment-primitive.js", status: 1, error: "1:1: runtime TypeError: property is not writable: 0" },
+    { file: "test/fixtures/property-assignment-nullish.js", status: 1, error: "1:1: runtime TypeError: cannot convert null or undefined to object" },
+    { file: "test/fixtures/property-assignment-effects.js", stdout: "rhs\nkey\n", status: 1, error: "2:1: runtime TypeError: property is not writable: x" },
+    { file: "test/fixtures/property-assignment-rhs-wins.js", status: 1, error: "1:10: runtime ReferenceError: missing is not defined" },
+    { file: "test/fixtures/property-assignment-parse.js", status: 2, error: "1:15: parse SyntaxError: unsupported operator: +=" },
 );
 const generated = [
     ["delete-success", "let o={x:1}; console.log(delete o.x, o.x);", 0, "", "true undefined\n"],
@@ -285,6 +294,9 @@ execute("in-operator", inCommand, inArgs, { stdout: "in-operator ok\n" });
 const primitiveReadsCommand = lane === "node" ? process.execPath : join(root, "build/native/primitive-reads" + suffix);
 const primitiveReadsArgs = lane === "node" ? [join(root, "build/node/test/primitive-reads.js")] : [];
 execute("primitive-reads", primitiveReadsCommand, primitiveReadsArgs, { stdout: "primitive-reads ok\n" });
+const assignmentCommand = lane === "node" ? process.execPath : join(root, "build/native/property-assignment" + suffix);
+const assignmentArgs = lane === "node" ? [join(root, "build/node/test/property-assignment.js")] : [];
+execute("property-assignment", assignmentCommand, assignmentArgs, { stdout: "property-assignment ok\n" });
 const equalityCommand = lane === "node" ? process.execPath : join(root, "build/native/abstract-equality" + suffix);
 const equalityArgs = lane === "node" ? [join(root, "build/node/test/abstract-equality.js")] : [];
 execute("abstract-equality", equalityCommand, equalityArgs, { stdout: "abstract-equality ok\n" });
