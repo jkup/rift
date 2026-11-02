@@ -340,8 +340,31 @@ individual var/function creation primitives. Captured strict host references
 retain their environment or unresolved base across mutations. Existing property
 dispatch preserves original abrupt records and locations.
 
-This module is not installed in any Realm or called by the parser, evaluator,
-entry points or observation adapter. It does not implement declaration
+The Script Realm profile installs this module as its host-only composite global
+record (TS-033C). It is not used to evaluate Script source. It does not implement declaration
 instantiation, multi-name atomic checks, source G/L scenarios, sloppy execution,
 accessors/exotic globals or Error objects. Legacy behavior and all conformance
 admission blockers remain. See [interfaces and evidence](validation/ts-033b/README.md).
+
+
+### Script Realm bootstrap and closed execution boundary (TS-033C)
+
+Host construction accepts a readonly legacy/script profile, defaulting to legacy.
+Legacy retains its replaceable Environment; Script allocates one ordinary global
+object and composite record, with that same object as global this. Both install
+exactly undefined, NaN, Infinity, console and the partial noncallable Number
+namespace. There is no guest globalThis property or additional constructor.
+Script-only helpers seed ordinary descriptors and read through lexical precedence.
+
+Script source execution and guest-function creation remain unavailable. Body
+observation, run and evaluator construction reject Script with host errors;
+parser observation remains profile-neutral with unchanged limit precedence.
+Evaluator dispatch and every builtin invoke wrapper (including functionPrototype)
+reject cross-profile calls before dispatch effects; Script-to-Script builtin
+invocation is also unavailable. Direct callable seeding rejects foreign profiles,
+while nested/low-level storage is checked at invocation. Legacy cross-Realm calls
+retain defining-Realm allocation, strict receivers and finally restoration.
+
+This adds no parser/Reference integration, declaration instantiation, Script
+execution session, strictness semantics, observation schema or conformance
+admission. See [implementation and validation](validation/ts-033c/README.md).

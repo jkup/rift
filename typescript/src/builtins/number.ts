@@ -25,7 +25,7 @@ export function registerNumber(realm: Realm): void {
         const value = args.length === 0 ? UNDEFINED : args[0];
         return normal({ kind: "boolean", value: value.kind === "number" && Number.isFinite(value.value) });
     });
-    realm.global.bindings.set("Number", { initialized: true, mutable: true, value: { kind: "object", object: namespace } });
+    realm.installGlobal("Number", { kind: "object", object: namespace }, true);
 }
 
 function registerPredicate(realm: Realm, namespace: GuestObject, name: string, invoke: Builtin): void {

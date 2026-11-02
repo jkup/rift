@@ -1,0 +1,14 @@
+node:fs:3028
+    return binding.writeFileUtf8(
+                   ^
+
+Error: UNKNOWN: unknown error, open 'C:\Users\jonku\code\rift\typescript\docs\validation\ts-033c\metadata-final\metadata-node.json'
+    at writeFileSync (node:fs:3028:20)
+    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-033a/validate.mjs:18:3 {
+  errno: -4094,
+  code: 'UNKNOWN',
+  syscall: 'open',
+  path: 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033c\\metadata-final\\metadata-node.json'
+}
+
+Node.js v26.13.0

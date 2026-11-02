@@ -47,6 +47,7 @@ export function observe(source: string, realm: Realm, mode: ObservationMode, uni
     if (!Number.isSafeInteger(limits.steps) || limits.steps < 0 || !Number.isSafeInteger(limits.calls) || limits.calls < 0) {
         throw new Error("observation limits must be nonnegative safe integers");
     }
+    if (mode === "body-observation" && realm.profile !== "legacy") throw new Error("legacy Realm required");
     const parsed = parse(source);
     if (parsed.error !== null) {
         if (parsed.rejection === null) throw new Error("missing parse rejection");

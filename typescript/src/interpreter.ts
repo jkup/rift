@@ -6,6 +6,7 @@ import { Realm } from "./realm.js";
 import type { Diagnostic } from "./syntax.js";
 export type RunResult = { phase: "parse"; diagnostic: Diagnostic; rejection: Rejection } | { phase: "runtime"; completion: Completion };
 export function run(source: string, realm: Realm): RunResult {
+    if (realm.profile !== "legacy") throw new Error("legacy Realm required");
     const parsed = parse(source);
     if (parsed.error !== null) {
         if (parsed.rejection === null) throw new Error("missing parse rejection");

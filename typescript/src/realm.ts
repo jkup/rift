@@ -1,6 +1,6 @@
 import type { GuestSymbol } from "./symbols.js";
 import { GuestArray } from "./array-object.js";
-import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value } from "./runtime.js";
+import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value, type DataDescriptor, type ValueCompletion } from "./runtime.js";
 import { registerNumber, registerNumberConversions } from "./builtins/number.js";
 import { registerFunction, nativeFunctionString } from "./builtins/function.js";
 import { registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
@@ -8,13 +8,16 @@ import { registerSymbolConversions } from "./builtins/symbol.js";
 import { registerBooleanConversions } from "./builtins/boolean.js";
 import { registerStringConversions } from "./builtins/string.js";
 import { registerArrayConversions } from "./builtins/array.js";
-import type { Stmt, FunctionSource } from "./syntax.js";
+import { GlobalEnvironment } from "./global-environment.js";
+import type { Stmt, FunctionSource, Location } from "./syntax.js";
 import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
 import type { GuestString } from "./strings.js";
 
 export type Output = (line: string) => void;
+export type RealmProfile = "legacy" | "script";
 export class Realm {
-    global: Environment = new Environment(null);
+    private legacyGlobal: Environment | null = null;
+    private scriptGlobal: GlobalEnvironment | null = null;
     readonly objectPrototype: GuestObject;
     readonly functionPrototype: GuestObject;
     readonly arrayPrototype: GuestArray;
@@ -22,11 +25,12 @@ export class Realm {
     readonly numberPrototype: GuestNumber;
     readonly symbolPrototype: GuestObject;
     readonly stringPrototype: GuestStringObject;
-    constructor(output: Output) {
+    constructor(output: Output, readonly profile: RealmProfile = "legacy") {
+        if (profile !== "legacy" && profile !== "script") throw new Error("invalid Realm profile");
         // Bootstrap dependencies directly, before factories or global installation.
         this.objectPrototype = new GuestObject(null, true);
         this.functionPrototype = new GuestObject(this.objectPrototype, false, {
-            kind: "builtin", initialName: "", realm: this, invoke: (_receiver, _args, _context, _loc) => normal(UNDEFINED),
+            kind: "builtin", initialName: "", realm: this, invoke: this.guardBuiltin((_receiver, _args, _context, _loc) => normal(UNDEFINED)),
         });
         setBuiltinMetadata(this.functionPrototype, "", 0);
         this.arrayPrototype = new GuestArray(this.objectPrototype);
@@ -42,9 +46,14 @@ export class Realm {
         registerBooleanConversions(this);
         registerStringConversions(this);
         registerNumberConversions(this);
-        this.global.bindings.set("undefined", { initialized: true, mutable: false, value: UNDEFINED });
-        this.global.bindings.set("NaN", { initialized: true, mutable: false, value: { kind: "number", value: NaN } });
-        this.global.bindings.set("Infinity", { initialized: true, mutable: false, value: { kind: "number", value: Infinity } });
+        if (profile === "legacy") this.legacyGlobal = new Environment(null);
+        else {
+            const object = new GuestObject(this.objectPrototype);
+            this.scriptGlobal = new GlobalEnvironment(object, object);
+        }
+        this.installGlobal("undefined", UNDEFINED, false);
+        this.installGlobal("NaN", { kind: "number", value: NaN }, false);
+        this.installGlobal("Infinity", { kind: "number", value: Infinity }, false);
         const consoleObject = this.createObject();
         this.registerBuiltin(consoleObject, "log", 0, (_receiver, args, _context, _loc) => {
             let line = "";
@@ -52,8 +61,42 @@ export class Realm {
             output(line);
             return normal();
         });
-        this.global.bindings.set("console", { initialized: true, mutable: true, value: { kind: "object", object: consoleObject } });
+        this.installGlobal("console", { kind: "object", object: consoleObject }, true);
         registerNumber(this);
+    }
+    get global(): Environment {
+        if (this.legacyGlobal === null) throw new Error("legacy Realm required");
+        return this.legacyGlobal;
+    }
+    set global(environment: Environment) {
+        if (this.profile !== "legacy") throw new Error("legacy Realm required");
+        this.legacyGlobal = environment;
+    }
+    get globalEnvironment(): GlobalEnvironment {
+        if (this.scriptGlobal === null) throw new Error("Script Realm required");
+        return this.scriptGlobal;
+    }
+    get globalObject(): GuestObject { return this.globalEnvironment.globalObject; }
+    get globalThisValue(): Value { return this.globalEnvironment.getThisBinding(); }
+    // Trusted bootstrap only: declarations use the composite environment APIs.
+    installGlobal(name: string, value: Value, mutable: boolean): void {
+        if (name !== "undefined" && name !== "NaN" && name !== "Infinity" && name !== "console" && name !== "Number") throw new Error("invalid bootstrap global");
+        if (this.profile === "legacy") this.global.bindings.set(name, { initialized: true, mutable, value });
+        else this.globalObject.bootstrapDefine(name, { value, writable: mutable, enumerable: false, configurable: mutable });
+    }
+    defineScriptGlobal(name: string, descriptor: DataDescriptor): void {
+        const object = this.globalObject;
+        const value = descriptor.value;
+        if (value.kind === "object" && value.object.callable !== null && value.object.callable.realm.profile !== this.profile) throw new Error("cross-profile callable transfer");
+        object.bootstrapDefine(name, descriptor);
+    }
+    readScriptGlobal(name: string, loc: Location): ValueCompletion { return this.globalEnvironment.getBindingValue(name, loc); }
+    private guardBuiltin(invoke: Builtin): Builtin {
+        return (receiver, args, context, loc) => {
+            if (context.realm.profile !== this.profile) throw new Error("cross-profile callable invocation");
+            if (this.profile !== "legacy") throw new Error("Script execution unavailable");
+            return invoke(receiver, args, context, loc);
+        };
     }
     createObject(): GuestObject { return new GuestObject(this.objectPrototype); }
     createArray(): GuestArray { return new GuestArray(this.arrayPrototype); }
@@ -62,6 +105,7 @@ export class Realm {
     createStringObject(value: GuestString): GuestStringObject { return new GuestStringObject(value, this.stringPrototype); }
     createSymbolObject(value: GuestSymbol): GuestSymbolObject { return new GuestSymbolObject(value, this.symbolPrototype); }
     createGuestFunction(params: string[], body: Stmt[], environment: Environment, source: FunctionSource | null): GuestObject {
+        if (this.profile !== "legacy") throw new Error("legacy Realm required");
         if (source !== null && (!Number.isInteger(source.start) || !Number.isInteger(source.end) || source.start < 0 || source.start >= source.end || source.end > source.source.text.length)) {
             throw new Error("invalid function source range");
         }
@@ -69,7 +113,7 @@ export class Realm {
     }
     createBuiltin(name: string, length: number, invoke: Builtin): GuestObject {
         nativeFunctionString(name);
-        const object = new GuestObject(this.functionPrototype, false, { kind: "builtin", initialName: name, realm: this, invoke });
+        const object = new GuestObject(this.functionPrototype, false, { kind: "builtin", initialName: name, realm: this, invoke: this.guardBuiltin(invoke) });
         setBuiltinMetadata(object, name, length);
         return object;
     }

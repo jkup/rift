@@ -2012,8 +2012,23 @@ Coordinator acceptance: e460858 accepted after actual entry/factory/direct-invok
 
 ### TS-033C — Script Realm bootstrap with closed execution boundary
 
-Status: **ready** for one assigned writer. Prerequisite accepted TS033C-Pe460858 and TS033B7183015. Implement exact docs/script-realm-bootstrap.md contract and B01-B18. Own src/realm.ts profile/storage/bootstrap/helpers/wrapped builtin construction; src/builtins/number.ts installer call; listed guards only in interpreter.ts/observation.ts/evaluator.ts; additive test/script-realm-bootstrap.ts, runtime-input fixture, native gate and evidence docs/validation/ts-033c/; TASKS/feature-scope. Coordinator owns COORDINATION, Claude owns CL006. No runtime Reference union, parser, GlobalEnvironment algorithm, Function.call forwarding or protocol/schema changes.
+Status: **implemented, pending independent review** — Codex chat 01a19d90-97b8-7c31-bfab-1d871d9f5bcc, sole writer, base abca67a, 2026-11-02. Prerequisite accepted TS033C-Pe460858 and TS033B7183015. Implement exact docs/script-realm-bootstrap.md contract and B01-B18. Own src/realm.ts profile/storage/bootstrap/helpers/wrapped builtin construction; src/builtins/number.ts installer call; listed guards only in interpreter.ts/observation.ts/evaluator.ts; additive test/script-realm-bootstrap.ts, runtime-input fixture, native gate and evidence docs/validation/ts-033c/; TASKS/feature-scope. Coordinator owns COORDINATION, Claude owns CL006. No runtime Reference union, parser, GlobalEnvironment algorithm, Function.call forwarding or protocol/schema changes.
 
 Default legacy profile preserves every existing result/descriptor/budget/seed path. Script profile owns one ordinary global/globalThis object and composite storage, no unused legacy Map. Install exactly five ordered existing globals with frozen descriptors and fresh intrinsic ownership; no guest globalThis/constructor globals. Enforce profile-specific accessors and direct host seed validation. Run/body-observe/Evaluator/block/closure/guest-function factory cannot execute Script; parser-observation remains profile-neutral with existing limit precedence. Invocation checks cover Evaluator.call and every builtin wrapper including functionPrototype, before rejected dispatch effects/budget mutation, and preserve same-profile legacy cross-Realm cleanup. Script-to-Script invocation remains disabled; host errors must never become guest/protocol records.
 
 Literal B01-B18 run in Node/native with both post-compilation input sets. Verify exact descriptor/key order/intrinsic identity, same-object globalThis, TDZ/captured refs, wrong-profile guard precedence at maxCalls0, saved/nested/coercion/array/Function.call paths, original guest/host abrupt identity and counters/Realm restoration. No mechanical old expectation migration: all212 old guest records39 old gate entries remain identical; add one static-only/separately parsed zero-dynamic target. Full rebuilt suites, typecheck/runner/probes,host73/observations16,metadata136/42/stress8 and TS033B15 rows/two inputs per lane. Preserve historical evidence and all blocked profiles; retain compiler/environment failures, no pin changes or workaround without review. Stop after coherent tested commit/push for independent review, no P3/P4 or main merge. Ask coordinator about genuine interface conflicts before broadening scope.
+
+
+TS033C handoff (2026-11-02): exact Realm profile/storage/bootstrap APIs and closed
+entry/dispatch guards implemented within the frozen file ownership. Parser
+observation stays neutral; runtime/schema/Reference/GlobalEnvironment/grammar and
+legacy expected results remain unchanged. Node/native212/212 each preserve exact
+old records; all39 old gates plus new driver pass static-only and separately
+parsed coverage (new driver2287/2287, zero dynamic). B01-B18 pass both runtime
+inputs per lane; metadata136/42, stress8, global15/two inputs per lane,
+runner20/20, probes10/10, host73/73, observations16/16 and typecheck pass.
+Evidence docs/validation/ts-033c/ retains sandbox Zig/temp/symlink failures,
+metadata repeated-open failures and the audit path correction. Task-local
+metadata orchestration preserves all assertions and writes output once per lane.
+Preservation:2386 protected files unchanged,60variants blocked; no compiler
+workaround/pin change, interface conflict, successor or main merge. Await review.

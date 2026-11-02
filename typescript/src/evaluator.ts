@@ -23,6 +23,7 @@ export class Evaluator {
     private readonly activeContext: ActiveOperationContext;
     readonly context: OperationContext;
     constructor(realm: Realm, public maxSteps: number = 100000, public maxCalls: number = 64) {
+        if (realm.profile !== "legacy") throw new Error("legacy Realm required");
         this.activeContext = {
             realm,
             call: (callee, receiver, args, loc) => this.call(callee, receiver, args, loc),
@@ -35,10 +36,12 @@ export class Evaluator {
         return normal();
     }
     closure(params: string[], body: Stmt[], environment: Environment, source: FunctionSource | null): Value {
+        if (this.context.realm.profile !== "legacy") throw new Error("legacy Realm required");
         const object = this.context.realm.createGuestFunction(params, body, environment, source);
         return { kind: "object", object };
     }
     block(body: Stmt[], env: Environment, receiver: Value): Completion {
+        if (this.context.realm.profile !== "legacy") throw new Error("legacy Realm required");
         // Instantiate before execution: let bindings start in the TDZ; functions
         // capture this same environment and are callable before their declaration.
         for (const stmt of body) {
@@ -282,6 +285,8 @@ export class Evaluator {
     call(callee: Value, receiver: Value, args: Value[], loc: Location): ValueCompletion {
         if (callee.kind !== "object" || callee.object.callable === null) return failure("TypeError", "value is not callable", loc);
         const fn = callee.object.callable;
+        if (fn.realm.profile !== this.context.realm.profile) throw new Error("cross-profile callable invocation");
+        if (this.context.realm.profile !== "legacy") throw new Error("Script execution unavailable");
         if (this.calls >= this.maxCalls) return resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
         const callerRealm = this.activeContext.realm;
         this.calls++;
