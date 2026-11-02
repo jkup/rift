@@ -1633,3 +1633,5 @@ gates PASS, driver2756/2756 static. Typecheck, runner20 and probes10 PASS.
 Preservation audit reproduced; earlier evidence retained under ts-030a/pre-review/.
 Commit the revision and stop for independent re-review; no self-acceptance,
 successor, branch switch, COORDINATION edit or main merge.
+
+Coordinator acceptance: TS-030A accepted a190709 (production682280d), 2026-11-02. All three review findings resolved with literal state/effect assertions and foreign-RHS operand restoration coverage; no production changes in revision. Independent rebuilt Node/native211/211 each, no skips;32 static-only build/separate coverage gates PASS; preservation audit reproduced. Producer typecheck/runner20/probes10 evidence reviewed. Native evidence remains Windows x64, not full ECMAScript conformance.
