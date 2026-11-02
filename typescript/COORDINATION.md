@@ -616,3 +616,7 @@ Accepted500d09a after actual correction/source/test review; all three reported g
 Next frozen TS-031B-P: audit and design structured engine outcomes and observation driver, preserving all conformance blockers. No runtime implementation until review; next designer pending dispatch.
 
 Acceptance/next contract pusheda87e86c. Active sole TS-031B-P designer chat `01a19c39-2d1f-7613-ae72-08071a76a217`, hostlocal, basea87e86c. Explicit wait confirmed active; saved cursor `0ffd9238-d75f-4f19-961a-f0c687c2b694:1`. No implementation before independent design review.
+
+## TS-031B-P progress — 2026-11-02 12:38 heartbeat
+
+Designer active; saved cursor0ffd9238-d75f-4f19-961a-f0c687c2b694:2. Audit distinguishes semantic RangeError from resource provenance, capturing counters before cleanup; call guard64/64 versus post-increment step/nesting. Proposed smallest slice keeps candidate syntax tags non-emitting until certification. Full final design/matrix/source audit review pending; no implementation or acceptance. PR79 remote still6c5ff975; Claude correction pending. No branch/main changes or competing writer.
