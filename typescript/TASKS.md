@@ -1038,7 +1038,7 @@ Coordinator acceptance: TS-021A accepted `14e3d9d` on 2026-11-02. Reviewed slot/
 
 ### TS-022P — Array join and toString design
 
-Status: **ready for assignment**. Prerequisite TS-021A accepted `14e3d9d`. Design only for the remaining Array default-conversion limitation. Own docs/array-string-conversion.md, docs/validation/ts-022p/ including isolated probes only if needed, and this task claim/handoff. Coordinator owns COORDINATION.md; Claude formatter research and other assistance outputs reserved.
+Status: **review needed** (Codex TS-022P design writer, 2026-11-02; existing `codex/primitive-computed-keys`; assignment base `3c27e10`, observed checkout `38ca424`). Prerequisite TS-021A accepted `14e3d9d`. Design only for the remaining Array default-conversion limitation. Own docs/array-string-conversion.md, docs/validation/ts-022p/ including isolated probes only if needed, and this task claim/handoff. Coordinator owns COORDINATION.md; Claude formatter research and other assistance outputs reserved.
 
 Inspect actual Array storage/prototype, lengthOfArrayLike, ToObject, primitive-only ToString, effectful ToPrimitive, internalGet, intrinsic registration and shared context/budgets. Consult fixed ECMA-2622025 Array.prototype.join/toString plus pinned relevant engines. Specify exact APIs and an atomic or staged implementation boundary. Resolve generic explicit receiver boxing, length snapshot once before separator conversion, missing/undefined separator versus explicit null, observable separator and element string conversion, holes versus inherited properties (Get not Has), nullish elements, symbols, object hooks, mutations during separator/element conversion and fresh indexed reads. Do not delegate guest arrays/objects to host join/String.
 
@@ -1049,3 +1049,19 @@ Resolve recursive/nested/self/mutual array conversion under existing call/step g
 Produce fixed expected-result matrices covering empty/sparse/nullish/nested arrays, inherited indices, generic receivers, separator side effects/errors, length/index mutation, symbols/objects, callable/noncallable join overrides and fallback tags, full Realm/metadata/mutation/resource scenarios and runtime-read default operator/key/length consumers. Audit all interim [object Array], missing join/toString, root own keys, Object valueOf fallback and budgets before future migrations. Preserve explicit null-root/both-object negatives and Array/Function/Number stage distinctions. Propose smallest ready implementation with owned files and concrete validation; no implementation in this task.
 
 Keep164existingcases/23gates and pins/workarounds unchanged. Optional probes must answer real compiler uncertainty with runtime inputs, fixed oracles, static-only build plus separate coverage; retain failures/reductions. No production/integrated tests/manifests/C++/Claude/COORDINATION changes, branch switch/main merge or successors. Commit/push coherent design/evidence and stop for independent review. Number radix backend is separately blocked and reserved for Claude CL-005 research, not this assignment.
+
+TS-022P handoff (2026-11-02): docs/array-string-conversion.md freezes generic
+join/toString APIs, bootstrap-local capture of the exact defining-Realm Object
+toString Value, observable order, explicit boxing and charged boundaries. J1-J30,
+T1-T14, R1-R15 and C1-C9 are fixed proposed acceptance rows, not executed tests.
+Inspected fixed ECMA-2622025 and pinned engine262/V8 source. First implementation
+proposed as atomic TS-022A, with shared call/step guards and explicitly deferred
+cycle-empty-string compatibility; no mutable recursion state. Migration inventory
+covers four changed assertion sites plus controls that must remain unchanged.
+docs/validation/ts-022p retains reproducible inventory (65 source files, 59
+candidate lines), source retrieval details and limits. git diff --check passes.
+No compiler probe needed or runtime test run: accepted 14e3d9d baseline remains
+164/164 both hosts and 23 gates, with no new support claim. No out-of-scope files
+changed; Number formatter/CL-005 reserved. Commit/push design then stop for
+independent review; implementation, native recursion safety and allocation policy
+remain unvalidated.
