@@ -706,3 +706,7 @@ Acceptance/next contract pushed9c39011. Active sole TS-032A writer chat `01a19d0
 ## TS-032A progress — 2026-11-02 16:23 heartbeat
 
 Writer active, saved cursor9837901c-d18f-4f49-aa7c-5b194d9901fd:2. Reports full212/212 Node/native and36 old static gates plus backend gate passing; finishing probes, timing/RSS, decimal preservation and failure/limitation evidence. Claims not independently accepted. No competing builds/edits or successor; CL006 remains Claude-owned. Await coherent handoff before numerical implementation review.
+
+## TS-032A acceptance — 2026-11-02 16:38 heartbeat
+
+Accepted f7524b7 after actual numerical implementation, orchestration and evidence review. Independent full rebuild passed 212/212 guest cases on Node/native and all 37 static-only/separate-coverage gates. Replayed 14768 cases per lane through canonical/interval/minimum-k/Note2 oracle, plus 18 decimal controls and protected-source/corpus/gate preservation audit. Logs build/ts032a-review-{node,native,corpus,audit}.log. Read-only arithmetic reviewer found no actionable defects and independently checked another 8704 Node subnormal/radix pairs. Writer idle, saved cursor9837901c-d18f-4f49-aa7c-5b194d9901fd:3. Finite Windows-x64 evidence, not exhaustive conformance or peak-memory proof. Original owner authorization covers root publication. Next TS-032B integrates only Number.prototype.toString under accepted TS021P semantics and TS032 backend; no main merge. CL006 remains reserved for Claude.
