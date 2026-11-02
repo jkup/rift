@@ -294,7 +294,6 @@ for (let i = 0; i < expressions.length; i++) {
     check(result.type === "normal" && (actual.kind === "number" || actual.kind === "boolean") && actual.value === expected[i], "integrated operator result");
     check(boundary.trace === "Get valueOf;", "one operator lookup");
 }
-console.log("primitive conversion passed");
 
 // R19: each freshly read hook enters its defining Realm and restores A before Get.
 const conversionA = new Realm((_line) => {});
@@ -412,3 +411,4 @@ for (const mode of ["throw", "fault"]) {
     check(caught === (mode === "fault") && calls === 2 && length.kind === "number" && length.value === 1 && unchanged.get("0") === conversionToken, "R20 second failure precedes writes/deletion");
     check(conversionEntry.context.realm === conversionA && conversionEntry.calls === 0 && conversionEntry.depth === 0, "R20 second failure restoration");
 }
+console.log("primitive conversion passed");

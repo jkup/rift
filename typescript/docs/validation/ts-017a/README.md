@@ -102,3 +102,7 @@ All entries build under static-only; each analyzed statement is static.
 | test/length-coercion.ts | 1443 / 1443 |
 | test/array-length-coercion.ts | 1638 / 1638 |
 | test/function-call.ts | 1330 / 1330 |
+
+Review follow-up: see [focused readability correction and complete rerun](review-followup/README.md)
+for the post-review evidence, including the separately retained coordinator native
+link failure. All required checks pass again after the correction.

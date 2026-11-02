@@ -164,7 +164,6 @@ check(noncallable.type === "throw" && noncallable.diagnostic.name === "TypeError
 range(zero.call(binding("identity"), UNDEFINED, args, loc), loc);
 check(zero.calls === 0 && zero.steps === 0, "guard before increment");
 check(faults.call(binding("identity"), receiver, args, loc).type === "normal" && faults.calls === 0, "post-fault calls recover");
-console.log("operation context passed");
 
 
 // TS-017A R1-R16: defining ownership and synchronous evaluator reentry.
@@ -198,7 +197,26 @@ const entryContext = entry.context;
 const token = objectValue(a.createObject());
 a.global.bindings.set("n", { initialized: true, mutable: true, value: { kind: "number", value: 100 } });
 b.global.bindings.set("token", { initialized: true, mutable: true, value: token });
-check(program("let n=0; function retained() { n=n+1; return {o:{}, a:[], f:function(){return {};}, token:token}; } let expression=function(){return token;}; function throwingToken(x){throw x;}", defining).type === "normal", "R1 guest setup");
+check(program(`
+    let n = 0;
+    function retained() {
+        n = n + 1;
+        return {
+            o: {},
+            a: [],
+            f: function() {
+                return {};
+            },
+            token: token
+        };
+    }
+    let expression = function() {
+        return token;
+    };
+    function throwingToken(x) {
+        throw x;
+    }
+`, defining).type === "normal", "R1 guest setup");
 const retainedFunction = realmBinding(b, "retained");
 for (const owner of [a, b, c]) {
     check(owner.functionPrototype.callable !== null && owner.functionPrototype.callable.realm === owner, "R1 F owner");
@@ -312,7 +330,13 @@ const faultB = builtin(b, (_receiver, _args, context, _at): Completion => {
     throw foreignFault;
 });
 b.global.bindings.set("fault", { initialized: true, mutable: true, value: faultB });
-check(program("function astFault(){ { return fault(); } }", defining).type === "normal", "R9 AST setup");
+check(program(`
+    function astFault() {
+        {
+            return fault();
+        }
+    }
+`, defining).type === "normal", "R9 AST setup");
 const recoverA = builtin(a, (_receiver, _args, context, at) => {
     const priorCalls = entry.calls;
     const priorDepth = entry.depth;
@@ -327,22 +351,32 @@ const recoverA = builtin(a, (_receiver, _args, context, at) => {
     return context.call(realmBinding(b, "expression"), UNDEFINED, [], at);
 });
 a.global.bindings.set("recover", { initialized: true, mutable: true, value: recoverA });
-check(program("function recoveryAST(){return recover();}", entry).type === "normal", "R9 caller setup");
+check(program(`
+    function recoveryAST() {
+        return recover();
+    }
+`, entry).type === "normal", "R9 caller setup");
 check(returnedValue(entry.call(realmBinding(a, "recoveryAST"), UNDEFINED, [], loc)) === token, "R9 recovery callback");
 idle(entry, a);
 for (const type of ["return", "break", "continue"] as const) {
     const invalid = builtin(b, (_receiver, _args, _context, _at) => ({ type, value: token }));
     let caught = false;
-    try { entry.call(invalid, UNDEFINED, [], loc); }
-    catch (error) { caught = error instanceof Error && error.message === "invalid completion escaped call boundary: " + type; }
+    try {
+        entry.call(invalid, UNDEFINED, [], loc);
+    } catch (error) {
+        caught = error instanceof Error && error.message === "invalid completion escaped call boundary: " + type;
+    }
     check(caught, "R10 illegal foreign builtin completion");
     idle(entry, a);
 }
 for (const type of ["break", "continue"] as const) {
     const invalid = defining.closure([], [{ kind: type, loc }], new Environment(null));
     let caught = false;
-    try { entry.call(invalid, UNDEFINED, [], loc); }
-    catch (error) { caught = error instanceof Error && error.message === "invalid completion escaped call boundary: " + type; }
+    try {
+        entry.call(invalid, UNDEFINED, [], loc);
+    } catch (error) {
+        caught = error instanceof Error && error.message === "invalid completion escaped call boundary: " + type;
+    }
     check(caught, "R10 illegal foreign guest completion");
     idle(entry, a);
 }
@@ -411,3 +445,4 @@ for (const proto of [c.functionPrototype, null]) {
 }
 check(objectOf(middleB).getPrototypeOf() === null && objectOf(middleB).ownPropertyKeys().length === 0, "R16 explicit null-root fixture remains bare");
 check(entry.context === entryContext, "stable context through all paths");
+console.log("operation context passed");
