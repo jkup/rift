@@ -1638,6 +1638,29 @@ Coordinator acceptance: TS-030A accepted a190709 (production682280d), 2026-11-02
 
 ### TS-031P — Trustworthy test262 classification design
 
-Status: **ready**. Owner: unclaimed. Prerequisites: accepted CL-002/CL-004 and TS-030A. Design only; no engine/runner implementation. Own docs/test262-classification.md, optional docs/validation/ts-031p/ research evidence and this task handoff. Coordinator owns COORDINATION.md; CL005 stays reserved to Claude.
+Status: **review needed**. Owner: Codex design chat `01a19bf5-589e-7b32-a605-f2c419837724`, existing `codex/test262-classification`, base `19f2529` (2026-11-02). Prerequisites: accepted CL-002/CL-004 and TS-030A. Design only; no engine/runner implementation. Own docs/test262-classification.md, optional docs/validation/ts-031p/ research evidence and this task handoff. Coordinator owns COORDINATION.md; CL005 stays reserved to Claude.
 
 Freeze a small adapter contract for the revision-pinned CL004 corpus: exact byte retrieval/hash verification, frontmatter validation, flags/variants/raw/module/async handling, strict-profile limitations, harness loading and independent harness validation, phase/type matching and explicit unsupported syntax versus genuine early errors. Preserve denominators and distinguish pass/fail/unsupported-feature/unsupported-profile/harness-error/resource-limit/timeout/host-fault. No rewritten harness, host eval of guest source, altered upstream assertions, or pass claims from coincidental SyntaxErrors. Record fixed specification/test262 guidance and exact source revisions; inspect actual CLI/parser/completion paths. Define machine-readable result/schema boundary, minimum required engine changes and smallest ordered implementation slices. Give named literal acceptance scenarios covering CL002 defects and CL004 unsuitable examples. Separate raw parser/body observations from faithful conformance results. Current errors are diagnostic records, not Error objects; do not silently equate these. Current suite211/211 per host32 native gates must remain intact. Do not implement, expand syntax/builtins, change pins/C++, or merge main. Commit/push design on codex/test262-classification and stop for independent review.
+
+TS-031P handoff (2026-11-02): docs/test262-classification.md defines exact-byte
+verification, validated metadata,60-variant ledger for33 files per lane,
+profile/capability gates, unchanged separately evaluated harness and independent
+harness controls, audited early-error rules, structured outcome/type provenance,
+eight exclusive statuses and honest denominators. Diagnostic strings cannot
+satisfy runtime Error negatives. Current strict-call behavior does not certify
+strict Script; all admission requires reviewed whole-file capability evidence.
+
+docs/validation/ts-031p/ retains source provenance/limitations and115 named literal
+matrix rows plus explicit variants, covering all CL002 D1-D10 and CL004 U01-U11.
+Inspected pinned guidance/assert/sta, S18-S22/U07, fixed2025 Script semantics,
+revision-pinned engine262 worker and actual Rift source. Five ordered future
+slices identify prerequisites without authorizing implementation or broadening
+syntax/builtins here. Engine262 harness substitutions were explicitly rejected.
+
+Documentation checks pass:115 unique row IDs,33/60 corpus counts and exact mode
+breakdown, local links and whitespace. No new guest/harness/reference execution,
+byte download verification, typecheck/runner/probe/native/static coverage run.
+Baseline remains accepted TS030A211/211 both hosts/32gates, Windows x64 only.
+Historical CL004 measurements stay labeled as inherited research. Only owned
+docs/TASKS changed; coordinator's concurrent dispatch8f61e91 preserved.
+Commit/push design then stop for independent review; no self-acceptance or successor.
