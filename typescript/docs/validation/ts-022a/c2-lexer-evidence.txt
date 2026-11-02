@@ -1,0 +1,22 @@
+6:    return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_" || c === "$";
+9:    return c === "\r" || c === "\n" || c === "\u2028" || c === "\u2029";
+21:            if (c !== "\n" || i < 2 || source.charAt(i - 2) !== "\r") line++;
+32:    while (i < source.length && error === null) {
+35:        if (c === " " || c === "\t" || lineTerminator(c)) {
+39:        if (c === "/" && source.charAt(i + 1) === "/") {
+43:        if (c === "/" && source.charAt(i + 1) === "*") {
+46:            while (i < source.length && !(source.charAt(i) === "*" && source.charAt(i + 1) === "/")) advance();
+47:            if (i === source.length) fail("unterminated comment", loc);
+63:            if (text.length > 1 && text.charAt(0) === "0") fail("leading-zero numbers are unsupported", loc);
+64:            if (source.charAt(i) === ".") {
+72:        if (c === "'" || c === '"') {
+75:            while (i < source.length && source.charAt(i) !== quote && error === null) {
+78:                if (unit === "\n" || unit === "\r") {
+82:                if (unit === "\\") {
+84:                    if (unit === "n") unit = "\n";
+85:                    else if (unit === "r") unit = "\r";
+86:                    else if (unit === "t") unit = "\t";
+87:                    else if (unit !== "\\" && unit !== "'" && unit !== '"') fail("unsupported string escape", loc);
+98:        if (three === "===" || three === "!==") {
+103:        } else if (["++", "--", "==", "!=", "=>", "+=", "-=", "*=", "/=", "%=", "**", "<<", ">>", "?."].includes(two)) {
+105:        } else if (two === "<=" || two === ">=" || two === "&&" || two === "||") {

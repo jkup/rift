@@ -144,8 +144,8 @@ for (const row of primitiveRows) {
         expect(active, "+operand", row.numeric);
     }
 }
-// C defaults are interim tags for arrays/functions; explicit both-object hooks still fail.
-for (const source of ["{}", "[]", "function() {}"]) {
+// Object/Function retain interim tags; Array now converts through join.
+for (const source of ["{}", "function() {}"]) {
     const active = setup();
     run(active, "let operand = " + source + ";");
     const tag = source === "{}" ? "Object" : source === "[]" ? "Array" : "Function";
@@ -153,6 +153,12 @@ for (const source of ["{}", "[]", "function() {}"]) {
     expect(active, "-operand", NaN);
     for (const op of operators) expect(active, "operand " + op + " 2", op === "+" ? "[object " + tag + "]2" : ["<", ">", "<=", ">="].includes(op) ? false : NaN);
 }
+const emptyArray = setup();
+run(emptyArray, "let operand = [];");
+expect(emptyArray, "+operand", 0);
+expect(emptyArray, "-operand", -0);
+const arrayResults: (number | string | boolean)[] = [-2, 0, 0, 0, "2", true, false, true, false];
+for (let i = 0; i < operators.length; i++) expect(emptyArray, "operand " + operators[i] + " 2", arrayResults[i]);
 for (const object of ["{valueOf: function() { return {}; }, toString: function() { return []; }}"]) {
     for (const expression of ["+operand", "-operand", ...operators.map(op => "operand " + op + " 2")]) {
         const active = setup();

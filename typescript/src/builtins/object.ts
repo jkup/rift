@@ -1,6 +1,6 @@
 import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
-import { normal } from "../runtime.js";
+import { normal, type Value } from "../runtime.js";
 import { GuestArray } from "../array-object.js";
 import { GuestBoolean, GuestNumber, GuestStringObject } from "../primitive-objects.js";
 import { wellKnownToStringTag } from "../symbols.js";
@@ -13,8 +13,8 @@ export function registerObjectValueOf(realm: Realm): void {
     });
 }
 
-export function registerObjectToString(realm: Realm): void {
-    realm.registerBuiltin(realm.objectPrototype, "toString", 0, (receiver, _args, context, loc) => {
+export function registerObjectToString(realm: Realm): Value {
+    return realm.registerBuiltin(realm.objectPrototype, "toString", 0, (receiver, _args, context, loc) => {
         if (receiver.kind === "undefined") return normal({ kind: "string", value: "[object Undefined]" });
         if (receiver.kind === "null") return normal({ kind: "string", value: "[object Null]" });
         const boxed = toObject(receiver, context, loc);

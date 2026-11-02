@@ -755,3 +755,33 @@ This implements the accepted fixed-2025/pinned-engine design in
 valueOf. Full Number.toString remains blocked on a separately validated radix
 backend. No production compiler workaround or primitive-converter contract change.
 [Validation and migration audit](validation/ts-021a/README.md).
+
+## Array string conversion (TS-022A, pending review)
+
+Array.prototype.join explicitly boxes its receiver, snapshots LengthOfArrayLike,
+converts the separator, then Gets and converts each indexed element in order.
+Nullish elements contribute empty text; holes still perform Get and can inherit
+values. Generic lengths are not constrained by Array's uint32 storage limit.
+Array.prototype.toString fetches the current join and calls it, or calls the
+exact defining-Realm Object.toString Value captured during bootstrap. Both calls
+use the shared context, and direct toString forwards its result unchanged.
+
+The private effectful string helper composes ToPrimitive with the unchanged
+primitive-only converter. Local ticks charge length lookup, each join iteration,
+and the toString join lookup. No global Get charge or receiver mutation is added.
+The accepted [design](array-string-conversion.md) supplies the fixed specification
+and pinned engine references. No upstream implementation was copied.
+
+Self/mutual cycles and separator/element reentry use the existing call guard,
+including tested native default maxCalls=64. Cycle empty-string compatibility is
+deferred. Steps do not bound output bytes or guarantee OOM recovery. There is no
+new accessor/proxy, constructor/species, implicit member boxing, Array method or
+Number formatting support. Array's former default tag conversion is superseded;
+explicit Object.toString Array tags and Function/Number stage controls remain.
+
+The frozen consumer matrix has two pre-existing syntax gaps: abstract equality
+(`==`) and guest `delete` remain rejected. C2's equality expectation cannot be
+accepted within this task's scope; C3 deletion is covered only through the
+existing internal interface after effectful key conversion. These are retained
+review exceptions, not passing conformance claims. See the [matrix, migrations
+and evidence](validation/ts-022a/README.md).

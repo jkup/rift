@@ -1,0 +1,96 @@
+typescript/test/fixtures/object-tostring.js:3:check(ordinary.toString() === '[object Object]');
+typescript/test/fixtures/object-tostring.js:9:check([] + '' === '[object Array]');
+typescript/test/fixtures/object-tostring.js:65:check(ordinary.toString() === '[object ]');
+typescript/test/fixtures/object-tostring.js:67:check(ordinary.toString() === '[object Object]');
+typescript/test/fixtures/object-tostring.js:70:    this.toString = function() { return 'changed'; };
+typescript/test/fixtures/object-tostring.js:74:objectRoot.toString = function() { return 'replacement'; };
+typescript/test/fixtures/object-tostring.js:76:objectRoot.toString = savedToString;
+typescript/test/fixtures/object-tostring.js:81:        toString: function() { return []; }
+typescript/test/fixtures/object-tostring.js:92:    return 'x'.toString();
+typescript/test/object-tostring.ts:96:    const method = b.objectPrototype.get("toString");
+typescript/test/object-tostring.ts:101:        keys(realm.objectPrototype.ownPropertyKeys(), ["valueOf", "toString"], "Object keys");
+typescript/test/object-tostring.ts:102:        keys(realm.symbolPrototype.ownPropertyKeys(), ["toString", "valueOf", wellKnownToPrimitive, wellKnownToStringTag], "Symbol keys");
+typescript/test/object-tostring.ts:105:        const descriptor = realm.objectPrototype.getOwnProperty("toString");
+typescript/test/object-tostring.ts:107:        const own = realm.objectPrototype.get("toString");
+typescript/test/object-tostring.ts:111:        keys(own.object.ownPropertyKeys(), ["name", "length"], "metadata keys");
+typescript/test/object-tostring.ts:112:        check(sameValue(own.object.get("name"), str("toString")) && sameValue(own.object.get("length"), num(0)), "metadata values");
+typescript/test/object-tostring.ts:127:        const before = evaluator.steps;
+typescript/test/object-tostring.ts:129:        check(evaluator.steps - before === (i < 2 ? 0 : 1), "one tag tick or nullish fast path");
+typescript/test/object-tostring.ts:140:    expect(evaluator.call(method, obj(new CallableArray(a)), [], loc), str("[object Array]"), "Array before callable classification");
+typescript/test/object-tostring.ts:145:    for (const key of ["toStringTag", "@@toStringTag", "Symbol.toStringTag", new GuestSymbol("Symbol.toStringTag")]) put(child, key, str("Impostor"));
+typescript/test/object-tostring.ts:157:    for (const key of ["valueOf", "toString", wellKnownToPrimitive]) put(hooked, key, throwing);
+typescript/test/object-tostring.ts:173:    const forwardingSteps = evaluator.steps;
+typescript/test/object-tostring.ts:175:    check(evaluator.steps === forwardingSteps + 1 && evaluator.context.realm === a && evaluator.calls === 0, "forwarded shared tick/cleanup");
+typescript/test/object-tostring.ts:178:    check(limited.steps === 0 && limited.calls === 0 && limited.context.realm === a, "forwarded target limit");
+typescript/test/object-tostring.ts:196:    put(b.objectPrototype, "toString", num(9));
+typescript/test/object-tostring.ts:197:    check(!sameValue(a.objectPrototype.get("toString"), num(9)), "method isolation");
+typescript/test/object-tostring.ts:198:    b.objectPrototype.internalDelete("toString");
+typescript/test/object-tostring.ts:213:            check(evaluator.context.realm === b && evaluator.steps === reads, "B active and charged before Get");
+typescript/test/object-tostring.ts:249:    check(zero.steps === 1 && zero.calls === 0 && zero.context.realm === a, "step exhaustion cleanup");
+typescript/test/object-tostring.ts:250:    expect(zero.call(method, UNDEFINED, [], loc), str("[object Undefined]"), "undefined after exhausted steps");
+typescript/test/object-tostring.ts:251:    expect(zero.call(method, { kind: "null" }, [], loc), str("[object Null]"), "null after exhausted steps");
+typescript/test/object-tostring.ts:252:    check(zero.steps === 1, "nullish zero ticks");
+typescript/test/object-tostring.ts:255:    check(noCalls.steps === 0 && noCalls.calls === 0 && noCalls.context.realm === a, "call failure before body");
+typescript/test/object-tostring.ts:282:    seed(realm, "savedToString", realm.objectPrototype.get("toString"));
+typescript/test/object-tostring.ts:327:        const before = active.steps;
+typescript/test/object-tostring.ts:329:        keys(reads, hint === "string" ? [wellKnownToPrimitive, "toString", wellKnownToStringTag] : [wellKnownToPrimitive, "valueOf", "toString", wellKnownToStringTag], "default lookup sequence");
+typescript/test/object-tostring.ts:330:        check(active.steps - before === (hint === "string" ? 3 : 4), "exact default ticks");
+typescript/test/object-tostring.ts:337:    const before = active.steps;
+typescript/test/object-tostring.ts:341:    keys(reads, [wellKnownToPrimitive, "valueOf", "toString", wellKnownToStringTag, wellKnownToPrimitive, "valueOf", "toString", wellKnownToStringTag], "two full length conversions");
+typescript/test/object-tostring.ts:342:    check(active.steps - before === 8 && sameValue(array.get("length"), num(3)), "two conversions and no length write");
+typescript/test/object-tostring.ts:349:            put(mutation, "toString", obj(fresh.createBuiltin("numericSecond", 0, (_rr, _aa, _cc, _ll) => normal(num(0)))));
+typescript/test/object-tostring.ts:353:    const beforeMutation = active.steps;
+typescript/test/object-tostring.ts:356:    check(conversions === 2 && active.steps - beforeMutation === 7, "first default tag tick, second explicit hook has no tag tick");
+typescript/test/object-tostring.ts:359:    check(tight.steps === 4 && tight.calls === 0 && tight.context.realm === fresh, "default tag lookup is fourth tick");
+typescript/test/object-valueof.ts:16:import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from "../src/conversion.js";
+typescript/test/object-valueof.ts:59:check(stringKeys(fn.ownPropertyKeys()).join(",") === "name,length", "only metadata");
+typescript/test/object-valueof.ts:68:check(stringKeys(b.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && !b.global.bindings.has("Object"), "bounded installation");
+typescript/test/object-valueof.ts:84:    const keys = stringKeys(receiver.ownPropertyKeys()).join(",");
+typescript/test/object-valueof.ts:86:    check(receiver.getPrototypeOf() === proto && stringKeys(receiver.ownPropertyKeys()).join(",") === keys, "unchanged object");
+typescript/test/object-valueof.ts:88:check(e.steps === 0 && e.calls === 0 && e.context.realm === a, "no hidden work/restoration");
+typescript/test/object-valueof.ts:113:        check(stringKeys(first.ownPropertyKeys()).join(",") === (primitive.value.length === 0 ? "length" : "0,1,2,3,4,length"), "String key order");
+typescript/test/object-valueof.ts:160:check(trace === "C;B;C;" && budget.context.realm === a && budget.calls === 0 && budget.steps === 0, "restore A/no added ticks");
+typescript/test/object-valueof.ts:163:check(short.context.realm === a && short.calls === 0 && short.steps === 0, "forwarding budget cleanup");
+typescript/test/object-valueof.ts:167:for (const mode of ["null", "guest", "host", "steps"]) {
+typescript/test/object-valueof.ts:184:        if (mode === "steps") {
+typescript/test/object-valueof.ts:186:            check(active.steps === 2, "shared step budget");
+typescript/test/object-valueof.ts:188:            check(active.steps === 3, "no budget reset");
+typescript/test/object-valueof.ts:212:            check((first || callee === local.objectPrototype.get("toString")) && receiver === operand && args.length === 0, "real inherited method call");
+typescript/test/object-valueof.ts:213:            events += first ? "valueOf;" : "toString;";
+typescript/test/object-valueof.ts:223:    check(events === "tick;tick;valueOf;tick;toString;" && active.steps === 4, "inherited conversion trace");
+typescript/test/object-valueof.ts:226:    check(tight.steps === 2 && tight.calls === 0 && tight.context.realm === a, "new inherited call participates in limit");
+typescript/test/object-valueof.ts:236:check(zeroCalls.steps === 3 && bare.get("valueOf").kind === "undefined", "null root protocol lookup plus two missing ordinary methods");
+typescript/test/object-valueof.ts:238:    for (const conversion of [toNumber(v, loc), toString(v, loc), toUint32(v, loc), toIntegerOrInfinity(v, loc), toLength(v, loc)]) {
+typescript/test/object-valueof.ts:250:    toString: function() {
+typescript/test/object-valueof.ts:280:check(symbolEvaluator.steps === 0 && symbolEvaluator.context.realm === a, "A16 no ticks and restoration");
+typescript/test/object-valueof.ts:284:check(symbolB.symbolPrototype.ownPropertyKeys().length === 4 && symbolB.symbolPrototype.getPrototypeOf() === symbolB.objectPrototype && symbolB.symbolPrototype.isExtensible() && symbolB.symbolPrototype.callable === null, "A17/B2 exact root graph");
+typescript/test/object-valueof.ts:292:    const before = symbolEvaluator.steps;
+typescript/test/object-valueof.ts:293:    for (const conversion of [toNumber(value(box), loc), toString(value(box), loc)]) {
+typescript/test/object-valueof.ts:297:    check(symbolEvaluator.steps === before, "A19 direct zero hooks/ticks");
+typescript/test/object-valueof.ts:305:for (const mode of ["normal", "guest", "host", "steps"]) {
+typescript/test/object-valueof.ts:315:        if (mode === "steps") {
+typescript/test/object-valueof.ts:327:        if (mode === "steps") {
+typescript/test/object-valueof.ts:329:            check(active.steps === 2, "A18 shared steps");
+typescript/test/object-valueof.ts:339:check(symbolLimit.calls === 0 && symbolLimit.context.realm === a && symbolLimit.steps === 0, "A18 shared call limit cleanup");
+typescript/test/object-valueof.ts:340:check(!symbolB.global.bindings.has("Symbol") && symbolB.symbolPrototype.ownPropertyKeys().length === 4, "A24/B2 methods without Symbol global");
+typescript/test/realms.ts:12:import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from "../src/conversion.js";
+typescript/test/realms.ts:140:    checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(ar.ownPropertyKeys()).join(",") === "length", "G17 exact initial keys");
+typescript/test/realms.ts:143:        for (const key of ["constructor", "join", "map"]) checkGraph(root.get(key).kind === "undefined", "G17 missing methods");
+typescript/test/realms.ts:173:    checkGraph(called.type === "normal" && called.value.kind === "undefined" && active.calls === 0 && active.steps === 0, "G4 no-op callable cleanup/no ticks");
+typescript/test/realms.ts:196:checkGraph(active.steps === 0 && active.calls === 0, "G15 allocation and primitive definitions add no ticks");
+typescript/test/realms.ts:224:checkGraph(stringKeys(literalObject.ownPropertyKeys()).join(",") === "x" && !declared.properties.has("y") && !literalArray.properties.has("z"), "G10 reads do not define");
+typescript/test/realms.ts:234:checkGraph(r2.createObject().get("x").kind === "undefined" && stringKeys(r2.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString", "G11 independent root mutation");
+typescript/test/realms.ts:292:    checkGraph(stringKeys(realm.booleanPrototype.ownPropertyKeys()).join(",") === "toString,valueOf" && stringKeys(realm.numberPrototype.ownPropertyKeys()).join(",") === "valueOf" && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(",") === "length,toString,valueOf", "M1 root keys");
+typescript/test/realms.ts:293:    checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length", "W1 original root keys");
+typescript/test/realms.ts:327:    const keys = stringKeys(object.ownPropertyKeys()).join(",");
+typescript/test/realms.ts:328:    checkGraph(box({ kind: "object", object }) === object && object.getPrototypeOf() === prototype && stringKeys(object.ownPropertyKeys()).join(",") === keys, "W3 exact identity/chain/state");
+typescript/test/realms.ts:336:checkGraph(boxEvaluator.steps === 0 && boxEvaluator.calls === 0 && boxEvaluator.depth === 0 && boxEvaluator.context.realm === boxA, "W3/W4 no execution work");
+typescript/test/realms.ts:352:    wrapper.bootstrapDefine("toString", { value: { kind: "object", object: hook } });
+typescript/test/realms.ts:353:    const before = boxEvaluator.steps;
+typescript/test/realms.ts:354:    for (const converted of [toNumber(value, at), toUint32(value, at), toIntegerOrInfinity(value, at), toLength(value, at), toString(value, at)]) {
+typescript/test/realms.ts:357:    checkGraph(boxEvaluator.steps === before && boxEvaluator.calls === 0, "W17 direct conversion zero hooks");
+typescript/test/realms.ts:390:checkGraph(boxTrace.join(",") === "B,C,B" && boxes[0].getPrototypeOf() === boxB.numberPrototype && boxes[1].getPrototypeOf() === boxC.stringPrototype && boxes[2].getPrototypeOf() === boxB.booleanPrototype, "W15 allocation roots");
+typescript/test/realms.ts:391:checkGraph(entry.context.realm === boxA && entry.calls === 0 && entry.depth === 0 && entry.steps === 0, "W15 normal cleanup/no boxing ticks");
+typescript/test/realms.ts:410:    checkGraph(hostEscaped === (mode === "host") && entry.context.realm === boxA && entry.calls === 0 && entry.depth === 0 && entry.steps === 0, "W15 abrupt cleanup");
+typescript/test/realms.ts:419:checkGraph(limitedBoxes.steps === 0 && limitedBoxes.calls === 0 && limitedBoxes.context.realm === boxA, "W15 limited cleanup");
+typescript/test/realms.ts:425:checkGraph(exhaustedStep.type === "throw" && exhaustedStep.diagnostic.message === "execution step limit exceeded" && limitedBoxes.steps === 1 && limitedBoxes.context.realm === boxA && limitedBoxes.calls === 0, "W15 monotonic step budget");

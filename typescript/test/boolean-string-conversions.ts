@@ -299,7 +299,7 @@ function testLookupAndBoundaries(): void {
         { object: realm.functionPrototype, tag: "Function" },
     ];
     for (const row of rows) {
-        expect(toPrimitive(obj(row.object), "default", evaluator.context, loc), str("[object " + row.tag + "]"), "M8 retained interim defaults");
+        expect(toPrimitive(obj(row.object), "default", evaluator.context, loc), str(row.tag === "Array" ? "" : "[object " + row.tag + "]"), "M8 Array join/retained Function default");
     }
     expect(toPrimitive(obj(realm.createNumberObject(2)), "default", evaluator.context, loc), num(2), "N Number default payload");
     const identity = new GuestSymbol("boundary");

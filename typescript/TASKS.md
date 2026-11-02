@@ -1070,8 +1070,37 @@ Coordinator acceptance: TS-022P accepted `1c34ebd` on 2026-11-02. Reviewed full 
 
 ### TS-022A — Array join and toString
 
-Status: **ready**. Owner: next assigned Codex chat, existing `codex/primitive-computed-keys`. Prerequisite accepted TS-022P1c34ebd. Implement exactly docs/array-string-conversion.md: all J1-J30, T1-T14, R1-R15 and C1-C9 rows, metadata, charged boundaries and migration inventory. Own src/builtins/array.ts, Object registration return signature and Realm-local intrinsic capture, test/array-string-conversion.ts and runtime-read fixture, precise existing test migrations, minimal driver registration, current architecture scope note and docs/validation/ts-022a/. Coordinator owns COORDINATION.md; Claude outputs reserved.
+Status: **review needed** (Codex TS-022A writer, 2026-11-02; assignment base `4a0f051`). Owner: assigned Codex chat, existing `codex/primitive-computed-keys`. Prerequisite accepted TS-022P1c34ebd. Implement exactly docs/array-string-conversion.md: all J1-J30, T1-T14, R1-R15 and C1-C9 rows, metadata, charged boundaries and migration inventory. Own src/builtins/array.ts, Object registration return signature and Realm-local intrinsic capture, test/array-string-conversion.ts and runtime-read fixture, precise existing test migrations, minimal driver registration, current architecture scope note and docs/validation/ts-022a/. Coordinator owns COORDINATION.md; Claude outputs reserved.
 
 Keep effectful string conversion private, primitive converter unchanged, generic ToObject/length snapshot/Get order and original abrupt completions. Call current join or immutable captured defining-Realm Object intrinsic through context.call with boxed receiver and no arguments. No host guest-array conversion, HasProperty, length/output caps, receiver writes or ambient cycle state. Preserve exact budget and Realm cleanup expectations. Test native default maxCalls=64 self/mutual/separator reentry as well as small exact-boundary cases: a host stack crash is a blocker, not an acceptable resource error. Document deferred cyclic-empty-string compatibility and lack of output-allocation bounds honestly.
 
 Use readable multiline effectful tests and explicit independent oracles. Repeat migration inventory before changing expectations; retain direct Object Array tags, Number string-hint stage, Function defaults and null-root/both-object controls. Preserve all164 existing cases and23 separate static coverage gates; additions may increase counts. Require typecheck, runner/probes, full rebuilt Node/native and every static build plus separate parsed coverage. Retain failures and minimal reductions before compiler workarounds; do not change pins. No C++, formatter/CL-005, constructors, accessors/proxies, implicit boxing, unrelated methods, branch switching/main merge or successor dispatch. Commit/push coherent tested work, hand off evidence and stop for independent review.
+
+TS-022A handoff (2026-11-02): bounded Array join/toString, bootstrap-local exact
+Object intrinsic capture, private effectful string conversion and unchanged
+shared runtime/evaluator are implemented. J/T/R tests include native self/mutual
+and separator/element reentry at the actual default64-call guard, exact small
+boundaries, Realm cleanup and original abrupt/host-fault identities. Runtime-read
+consumer tests and precise default-Array expectation migrations are included.
+
+Literal frozen acceptance has two pre-existing syntax gaps requiring coordinator
+review: C2 `[] == 0` is rejected by the lexer and C3 guest `delete` by the parser.
+Their located failures are retained; internal key conversion/deletion is tested,
+but neither unsupported guest feature was added or claimed. No successor work.
+Additional real Array-default assumptions found in realms G14, operator-coercion
+and boolean-string-conversions M8 were migrated after retaining initial failures;
+Object/Function/Number and explicit negative controls remain. Test-only unknown
+catch equality and inferred-never callback dynamic reports were reduced before
+Error narrowing/explicit ValueCompletion annotations. No production workaround
+or pin/gate change. Evidence and full matrix mapping: docs/validation/ts-022a/.
+
+Final validation: typecheck; runner20/20; probes10/10; rebuilt Node/native166/166
+each, no skips; all24 static-only builds and separate parsed coverage gates.
+All existing164 cases/23 gates preserved, plus two cases/one gate. Cycle empty
+string compatibility and output-allocation bounds remain deferred. Commit/push
+tested milestone, then stop for independent review; no main merge.
+
+Coordinator interim read-only review confirmed the C2/C3 design-oracle
+corrections and additional actual Array migrations are appropriate: keep C2/C3
+partial rather than expand parser scope. This is not final acceptance or an
+independent rebuild. Implementation writer stops after tested commit/push.

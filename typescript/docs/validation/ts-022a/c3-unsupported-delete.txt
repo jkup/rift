@@ -1,0 +1,1 @@
+test/fixtures/array-string-conversion.js:23:7: parse SyntaxError: unsupported or unexpected syntax: delete

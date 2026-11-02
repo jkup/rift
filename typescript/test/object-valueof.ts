@@ -209,7 +209,7 @@ for (const source of ["{}", "[]", "function() {}"] ) {
         tick: (at) => { events += "tick;"; return active.tick(at); },
         call: (callee, receiver, args, at) => {
             const first = callee === local.objectPrototype.get("valueOf");
-            check((first || callee === local.objectPrototype.get("toString")) && receiver === operand && args.length === 0, "real inherited method call");
+            check((first || callee === (source === "[]" ? local.arrayPrototype : local.objectPrototype).get("toString")) && receiver === operand && args.length === 0, "real inherited method call");
             events += first ? "valueOf;" : "toString;";
             const completion = active.call(callee, receiver, args, at);
             if (first) check(object(result(completion)) === object(operand), "inherited method returns object");
@@ -218,9 +218,9 @@ for (const source of ["{}", "[]", "function() {}"] ) {
     };
     const converted = result(toPrimitive(operand, "number", context, loc));
     const tag = source === "{}" ? "Object" : source === "[]" ? "Array" : "Function";
-    check(converted.kind === "string" && converted.value === "[object " + tag + "]", "inherited default result");
+    check(converted.kind === "string" && converted.value === (source === "[]" ? "" : "[object " + tag + "]"), "inherited default result");
     // The method body uses the active evaluator context, not this observer adapter.
-    check(events === "tick;tick;valueOf;tick;toString;" && active.steps === 4, "inherited conversion trace");
+    check(events === "tick;tick;valueOf;tick;toString;" && active.steps === (source === "[]" ? 5 : 4), "inherited conversion trace");
     const tight = new Evaluator(a, 2, 0);
     error(toPrimitive(operand, "number", tight.context, loc), "RangeError", "call depth limit exceeded", loc);
     check(tight.steps === 2 && tight.calls === 0 && tight.context.realm === a, "new inherited call participates in limit");

@@ -7,6 +7,7 @@ import { registerObjectValueOf, registerObjectToString } from "./builtins/object
 import { registerSymbolConversions } from "./builtins/symbol.js";
 import { registerBooleanConversions } from "./builtins/boolean.js";
 import { registerStringConversions } from "./builtins/string.js";
+import { registerArrayConversions } from "./builtins/array.js";
 import type { Stmt } from "./syntax.js";
 import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
 import type { GuestString } from "./strings.js";
@@ -34,7 +35,8 @@ export class Realm {
         this.stringPrototype = new GuestStringObject("", this.objectPrototype);
         this.symbolPrototype = new GuestObject(this.objectPrototype);
         registerObjectValueOf(this);
-        registerObjectToString(this);
+        const objectToString = registerObjectToString(this);
+        registerArrayConversions(this, objectToString);
         registerFunction(this);
         registerSymbolConversions(this);
         registerBooleanConversions(this);
