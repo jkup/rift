@@ -1614,3 +1614,8 @@ only test callback signatures and operator string extraction. See
 
 Commit/push tested milestone on existing branch under owner authorization, then
 stop for independent review. No self-acceptance, successor or main merge.
+TS-030A delivery: tested local implementation commit `682280d`. Automatic approval
+review rejected `git push origin codex/primitive-computed-keys` because it treated
+repository code/validation artifacts as sensitive egress without trusted payload/
+destination authorization. No bypass or alternate export attempted. Publication
+awaits approval/coordinator resolution. Independent acceptance remains pending.
