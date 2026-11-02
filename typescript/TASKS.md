@@ -1828,6 +1828,28 @@ Coordinator acceptance (2026-11-02): accepted e58c7b0 after source/protocol/asse
 
 ### TS-032P — Exact nondecimal formatter backend design
 
-Status: **ready**. Design/proof-plan only, based on accepted CL-005 research d532a14 and TS-021P number conversion contract. Own docs/radix-formatter-backend.md, docs/validation/ts-032p/ bounded reproducible design/probes, TASKS handoff. No production formatter/registration/decimal backend/compiler/test262/companion edits. Coordinator owns COORDINATION. Use docs/assistance/radix-formatter-options.md and retained seven failures; do not repeat the completed research survey.
+Status: **in progress**. Owner: Codex design chat `01a19cee-0243-7c02-8578-12f2cf9d25a7`, base `2bf6fd2`, 2026-11-02. Design/proof-plan only, based on accepted CL-005 research d532a14 and TS-021P number conversion contract. Own docs/radix-formatter-backend.md, docs/validation/ts-032p/ bounded reproducible design/probes, TASKS handoff. No production formatter/registration/decimal backend/compiler/test262/companion edits. Coordinator owns COORDINATION. Use docs/assistance/radix-formatter-options.md and retained seven failures; do not repeat the completed research survey.
 
 Freeze an agent-ready readable exact-bigint backend for positive finite numbers and validated integer radix2-36 except10. Specify interval endpoint/tie treatment, minimal significand proof, digit/exponent bookkeeping, step6 canonical rendering, exact closest/even choice including cross-power subnormal candidates; distinguish required spec steps from Note2 target. Define invalid-input policy and special-value/sign/radix10 ownership at future callers; no builtin registration yet. Use pinned specification/paper sources and reviewed research oracle, independently reason about termination/bounds and licensing. Provide literal acceptance vectors plus frozen13350-pair corpus identity and oracle independence, both lanes/static separate coverage, output bounds and measured resources. Existing compiler probe is evidence, not exhaustive proof; probe only a new unresolved lowering question if necessary. Recommend one bounded backend implementation task, then separate Number.prototype.toString integration with TS-021P R/N matrices. Stop at design review with honest limitations; no new production support or conformance claim.
+
+TS-032P handoff (2026-11-02): design complete, awaiting independent review.
+`docs/radix-formatter-backend.md` freezes exact bigint half-gap/free-format
+generation, exact iterative scaling, bounded three-exponent/six-candidate global
+closest/even selection, canonical rendering and caller/precondition ownership.
+Separates required steps from adopted Note2 target; provides derived termination,
+57-digit/16384-bit/1076-unsigned-character conservative bounds and B01–B11 later
+acceptance. `docs/validation/ts-032p/` retains24 full-string literal vectors,
+13350 ordered binary64/radix pairs (SHA2569102f9fe83fc37b2b883a55e29c9ec173e4c0d54118eaf96113a166702dc1c6d),
+dependency blob/hash identities and reproducible host-only design checks.
+New selection arithmetic matches exact oracle13350/13350 and corrects all7
+accepted cross-power differences;24 literal checks pass on Node26.13.0.
+This reuses accepted free-format k and is not a production/backend/native proof.
+Verified fixed2025 spec and corrected author-paper text, including warning about
+the original correct-rounding theorem. PDF byte hash/screenshots unavailable;
+source-access failures and independent derivation recorded honestly. No engine,
+decimal,builtin,compiler,test262,CL006 or accepted-evidence edits; no native
+build/full runtime rerun. Existing212/36 baseline inherited. Remaining decisions:
+typed batch driver/test-hook layout and measured resource costs; full-module
+lowering/platform behavior unverified. Recommend backend-only implementation
+after review, then separately reviewed TS021P N1–N8/R1–R16 integration. Stop here;
+no production implementation, successor or main merge.

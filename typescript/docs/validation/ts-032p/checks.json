@@ -1,0 +1,10 @@
+{
+  "node": "v26.13.0",
+  "pairs": 13350,
+  "newSelectorMatches": 13350,
+  "correctedCrossPowerCases": 7,
+  "maxK": 53,
+  "literalVectors": 24,
+  "productionBackendRun": false,
+  "nativeBuildRun": false
+}
