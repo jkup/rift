@@ -87,7 +87,7 @@ Handoff: pending.
 
 ## CL-005 — Research a faithful nondecimal number formatter
 
-Status: **in progress**. Owner: Claude Code session, branch `claude/cl-005-radix-formatter-options` (separate worktree), base `36fc2be`. Dependencies: accepted TS-021P evidence.
+Status: **review needed**. Owner: Claude Code session, branch `claude/cl-005-radix-formatter-options` (separate worktree), base `36fc2be`. Dependencies: accepted TS-021P evidence.
 
 Purpose: investigate the concrete Number.toString blocker without changing the engine. Read typescript/docs/number-prototype-conversions.md and docs/validation/ts-021p/: both hosts fail seven exact rounding-interval cases, including0.3/base3. Static compilation and host agreement alone are insufficient. Number valueOf proceeds independently.
 
@@ -97,7 +97,7 @@ Compare a small set of revision-pinned algorithms/implementations for binary64 t
 
 Acceptance: evidence-backed comparison directly addresses the retained counterexamples and shortestness, with precise source revisions/licenses and honest portability uncertainty. A coordinator can choose a later isolated backend task without guessing the algorithm or numerical contract. No new runtime support/compliance claim.
 
-Handoff: pending.
+Handoff (2026-11-02): outputs `typescript/docs/assistance/radix-formatter-options.md` and research files under `typescript/fixtures/assistance/radix-formatter-options/` (work commit `f780ead`). Pinned source review: V8 14.6.202.34 (Node 26.13.0) `DoubleToRadixStringView`, scriptc 0.4.7 vendored V8 radix component, Boa v0.22 V8 port, SpiderMonkey `js_dtobasestr`, QuickJS-ng v0.18.0 `js_dtoa`, engine262 host delegation, and Burger & Dybvig 1996 free-format. Measured with an exact step 5 search oracle (`oracle.mjs`) cross-checked by an independent free-format reference over 13,350 nondecimal cases (`run.mjs`, exit 0): V8/Node in interval 1,956/1,956 for power-of-two radices but 4,056/11,394 otherwise, reproducing all 7 TS-021P failures; free-format in interval and shortest 13,350/13,350 (7 subnormal Note 2 differences). Models of the QuickJS-ng selection rule (27 non-shortest at powers of two) and SpiderMonkey integer branch (not shortest above 2^53) are labeled as models. A `bigint` transcription builds under scriptc 0.4.7 static-only (78/78 static) and matches the oracle in Node and native, 167/167 (`probe-run.mjs`, exit 0). Recommends an isolated `numberToStringRadix` backend task (free-format from the paper with exact bigint plus a cross-power Note 2 step) with acceptance matrix A1-A10; decimal backend unchanged. Limitations: other engines not run; Windows x64 only; bigint performance, other platforms and an exhaustive proof remain unproven.
 
 ## Deferred companion areas
 
