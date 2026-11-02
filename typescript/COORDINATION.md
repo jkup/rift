@@ -592,3 +592,9 @@ TS-031P active confirmed; saved cursor `7e25bdaa-f946-4476-b41f-a95dc92adf05:1`.
 ## TS-031P progress — 2026-11-02 11:23 heartbeat
 
 Designer remains active validating matrix/counts/links and owned-file diff; cursor7e25bdaa-f946-4476-b41f-a95dc92adf05:2. Initial source-boundary and input-identity sections inspected: explicitly distinguishes observations from conformance and notes current Script/profile and diagnostic limitations. Final complete review remains pending; no acceptance/implementation/successor. Remote PR79 head unchanged6c5ff975; Claude correction still pending. No competing writes to design files, no branch switch or main merge.
+
+## TS-031P acceptance — 2026-11-02 11:38 heartbeat
+
+Accepted6faae58 after full design/matrix review, independent pinned INTERPRETING raw/variant/harness/phase-type checks and actual CLI/interpreter/guard inspection. Recomputed33 files/60 variants per lane,115 unique rows; diff clean. No runtime changes/rerun; baseline211/211 per host32 gates remains accepted. Designer idle, saved cursor7e25bdaa-f946-4476-b41f-a95dc92adf05:3. PR79 remote unchanged6c5ff97, fix pending. Coordinator original owner authorization covers publication after delegated push rejection.
+
+Next bounded TS-031A frozen: host-only verifier/planner/pure classifier and synthetic controls, no guest execution/engine changes, current profiles remain blocked. Main unchanged64bf139; maintenance not repeated. Next writer pending dispatch.
