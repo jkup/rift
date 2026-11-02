@@ -151,3 +151,12 @@ and block comments; String tests cover null/relinked/foreign box prototypes.
 
 Presentation .log files have trailing whitespace normalized; JSON subprocess
 records retain original stdout/stderr and statuses.
+
+## Coordinator-requested readability correction
+
+The [readability follow-up](readability/README.md) preserves every assertion and
+oracle while expanding the dedicated driver's control flow and replacing opaque
+scenario numbers with local descriptive names. Original scenario28 is explicitly
+a repeated success, not added coverage. Rebuilt Node/native177/177 each and all27
+gates pass again; the revised driver has2259 fully static statements. Independent
+re-review remains pending.

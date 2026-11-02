@@ -1277,3 +1277,13 @@ No frozen semantic oracle adjustment, production workaround, pins, C++, Claude
 outputs, COORDINATION, branch switch, main merge or successor work.
 Evidence/matrix/migrations: docs/validation/ts-025a/README.md. Commit/push tested
 milestone and stop for independent coordinator review; not self-accepted.
+
+TS-025A readability follow-up (2026-11-02, review pending): after coordinator
+clearance, expanded the dedicated test driver into consistently formatted,
+explicitly braced control flow with local named scenario mappings. Preserved all
+160 assertion calls and603 string literals; original E scenario28 is honestly
+labelled RepeatedSuccess, not distinct coverage. No production/fixture/runner or
+scope changes. Typecheck and rebuilt Node/native177/177 each pass; all27 static
+build/separate coverage gates pass (delete driver2259/2259, zero dynamic).
+Evidence: docs/validation/ts-025a/readability/. Commit/push bounded correction and
+stop for independent re-review; coordinator retains acceptance ownership.
