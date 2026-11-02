@@ -75,7 +75,7 @@ Handoff (2026-11-01): outputs under `typescript/fixtures/assistance/semantic-exa
 
 ## CL-004 — Identify a small trustworthy test262 starting corpus
 
-Status: **in progress**. Owner: Claude Code session, branch `claude/cl-004-test262-starter-corpus` (separate worktree), base `609c2f3`. Dependencies: accepted CL-002 audit.
+Status: **review needed**. Owner: Claude Code session, branch `claude/cl-004-test262-starter-corpus` (separate worktree), base `609c2f3`. Dependencies: accepted CL-002 audit.
 
 Purpose: prepare evidence for a future conformance adapter without changing the interpreter or claiming compliance. Pin one upstream test262 revision and inspect 15–25 relevant tests for already implemented language semantics (strict lexical bindings, closures, evaluation order, primitive operators, ordinary data properties). Use accepted TS-017A as the capability baseline; distinguish parse support, runtime support and harness dependencies.
 
@@ -83,7 +83,7 @@ Write only: `typescript/docs/assistance/test262-starter-corpus.md`, optional mac
 
 For each candidate provide revision-pinned path/link, flags/features/includes, strict/raw/module variants, negative phase/type if any, semantic expectation, exact required harness helpers and known blocker. Include deliberately unsuitable examples that expose adapter pitfalls from CL-002. Separate plausible candidates from tests actually run; do not count Node output as Rift conformance or silently strip directives/harness assertions. End with the smallest explicit adapter prerequisite checklist. Acceptance: another agent can retrieve each exact test and understand why it is included or deferred, without inventing support or relying on upstream default-branch contents.
 
-Handoff: pending.
+Handoff (2026-11-02): outputs `typescript/docs/assistance/test262-starter-corpus.md` and `typescript/fixtures/assistance/test262-starter-corpus/manifest.json` (work commit `d5b09b5`). Pinned tc39/test262 `91c7075` (2026-10-29, same as CL-002); 22 candidates across TDZ/closures, strict this, primitive operators, ordinary data properties and genuine early errors, plus 11 deliberately unsuitable examples mapped to CL-002 defects. Each entry records pinned link, git blob SHA (all 33 verified against upstream), flags/features/includes, INTERPRETING variants, negative phase/type, helpers, expectation and blockers. Measured on Node-hosted Rift only, at TS-017A `b02cfc3` and head `609c2f3`, in raw (no harness) and labeled probe-shim modes; neither is reported as conformance. Key findings: pinned assert.js/sta.js do not parse in the subset, so no non-raw test can run faithfully; unsupported syntax is reported as parse SyntaxError, so all 308 surveyed parse-negative tests are rejected but 173 only via unsupported messages; engine errors are not Error objects. Node v26.13.0 reference matched every candidate variant and disagreed with U07. Limitations: native lane not built; survey covered 41 directories (2,000 files), not the whole suite; syntax scan is heuristic.
 
 ## CL-005 — Research a faithful nondecimal number formatter
 
