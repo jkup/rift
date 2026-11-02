@@ -1,0 +1,132 @@
+
+> test:test262
+> node --test tools/test262/*.test.mjs
+
+✔ R1 O03 O05 O07 T06 expected phase/type/null must come from parent at both boundaries (17.5587ms)
+✔ R1 coordinator reproduction and missing parent policy cannot enter a ledger (1.0127ms)
+✔ R1 T06 T17 every Inputs field is parent-bound, including limits and ordered harness (8.6349ms)
+✔ R1 blockers cannot be removed or replaced; production-blocked invariant retained (2.5308ms)
+✔ R2 exported classify enforces every cross-record invariant even without Classification (1.4894ms)
+✔ R2 exported classify rejects forged classification, unknown fields and observation modes (0.384ms)
+✔ R3 O14 calls guard uses active depth at boundary: 64/64 and 0/0 remain resource limits (2.0351ms)
+✔ R3 O12 O13 O14 other guards retain post-increment/size overflow semantics (0.3878ms)
+✔ T07 mode, body, stage and location must describe a possible driver operation (53.7455ms)
+✔ certified return has a closed rule and consistent operation and binding in both modes (27.7122ms)
+✔ T04 T05 T06 T07 T08 T16 T20 T29 strict child framing, identity and closed schema (13.6496ms)
+✔ T09 T10 T11 T12 T13 T14 T15 exact transport precedence and counts (1.2108ms)
+✔ T12 T13 combined pipe byte chunks preserve exactly 1048600 at first crossing (0.2506ms)
+✔ T21 all parent Identity and Inputs fields remain context-bound (2.352ms)
+✔ T24 T25 T26 T27 observation invariant and conformance ledger remain separate (1.8832ms)
+✔ I01 I02 production pin/selection cannot be replaced by synthetic bytes (3.8953ms)
+✔ I03 I07 revision failure and retrieval preserve selected entry with unknown variants (2.7874ms)
+✔ I04 I05 I06 exact synthetic Unicode/BOM/NUL and invalid UTF-8 (0.3185ms)
+✔ I08 rejects metadata (3.2503ms)
+✔ I09 rejects metadata (0.709ms)
+✔ I10 rejects metadata (0.4548ms)
+✔ I11 rejects metadata (0.2171ms)
+✔ I20 rejects metadata (0.3102ms)
+✔ I12 I13 metadata cardinality and missing description (0.5193ms)
+✔ I14 metadata drift including order and null negative (0.7901ms)
+✔ I15 all seven incompatible pairs (0.9565ms)
+✖ I16 paths and symlink escape never read outside (7.8216ms)
+✔ I17 missing include is an input error (1.0763ms)
+✔ I18 unknown flag and unknown execution fields fail closed (1.1666ms)
+✔ I19 unknown feature retains both variants (0.2734ms)
+✔ YAML supports folded prose, quoted strings, flow and legacy fields without execution (0.9057ms)
+✔ V01 V02 V03 V08 strict transforms and planning order (0.6294ms)
+✔ V04 V05 raw retains metadata and bytes but zero harness (0.2767ms)
+✔ V06 V07 V09 module async and strict all blocked (0.3709ms)
+✔ V10 V11 environment and nondeterminism (0.347ms)
+✔ V12 comments do not invent feature blockers (execution deferred) (0.1091ms)
+✔ H01 ordered harness plan retains repeated includes; semantic effects deferred (0.218ms)
+✔ T09 lane numerators remain separate (2.245ms)
+✔ T10 all eight statuses count once with literal denominators (2.1757ms)
+✔ V01 T11 complete pairs retain both statuses and file does not pass (0.7168ms)
+✔ T12 frozen metadata plan: 33 files / 60 variants independently per lane; not byte-verification evidence (23.1173ms)
+✔ T13 malformed metadata retains unknown denominator (0.4554ms)
+✔ T14 fixture paths are explicitly excluded and cannot broaden production (0.952ms)
+✖ T15 cancellation persists full selection before any terminal records (6.5267ms)
+✔ T16 retries require explicit policy and retain initial failure (1.2757ms)
+✔ T17 no cache path; all identity/input changes remain distinct records (2.618ms)
+✔ T18 observation success cannot enter ledger or numerator (0.2961ms)
+✔ T19 three batch exits (0.2957ms)
+✔ Blocked selection cannot accept a synthetic pass or altered input identity (0.2147ms)
+✖ CLI retains input-error ledgers and refuses to overwrite a previous run (9.364ms)
+✔ O01 positive normal ignores diagnostic-looking stdout hash (6.5262ms)
+✔ O02 five primitive/plain throws fail positives (5.8186ms)
+✔ O03 O15 O16 O17 negative constructor names, including runtime SyntaxError (3.8523ms)
+✔ O04 diagnostic string cannot supply constructor evidence (2.1875ms)
+✔ O05 wrong phase never matches (1.3501ms)
+✔ O06 O08 normal negative fails without evaluating parse-negative body (2.1597ms)
+✔ O07 wrong runtime type (0.8177ms)
+✔ O09 audited parse negative requires valid rule, unit and location (1.1004ms)
+✔ O10 O11 O21 unsupported source is not repaired or matched (2.0397ms)
+✔ O12 O13 O14 guard provenance wins over matching error names (2.105ms)
+✔ O18 O19 constructor extraction abrupt/host fault retained (1.2777ms)
+✔ O20 harness-defined function throwing in test remains test failure (0.7451ms)
+✔ H02 H03 H20 synthetic harness outcomes cannot satisfy negatives (1.8798ms)
+✔ T01 deadline wins even over normal envelope (0.3457ms)
+✔ T02 T03 abnormal termination overrides absent or normal envelope (0.174ms)
+✔ T04 T05 console text is not an envelope; actual throw remains failure (0.8081ms)
+✔ T06 invalid envelopes, duplicate/escaped keys and wrong identity (2.4501ms)
+✔ T07 output cap overrides normal result (0.153ms)
+✔ T08 host diagnostic SyntaxError remains a host fault (0.9459ms)
+✔ T18 observation records omit classification altogether (0.7282ms)
+✔ Closed records reject missing/extra fields at every nesting level (1.0168ms)
+✔ Contradictory evidence, forgery, null provenance and constructor names fail closed (0.5977ms)
+✔ Unexecuted positive body cannot pass; nested observation fields remain closed (0.7325ms)
+ℹ tests 73
+ℹ suites 0
+ℹ pass 70
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 290.6234
+
+✖ failing tests:
+
+test at tools\test262\input.test.mjs:63:1
+✖ I16 paths and symlink escape never read outside (7.8216ms)
+  Error: EPERM: operation not permitted, symlink 'C:\Users\jonku\AppData\Local\Packages\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\AC\Temp\rift-t262-8SKt7i\outside' -> 'C:\Users\jonku\AppData\Local\Packages\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\AC\Temp\rift-t262-8SKt7i\root\harness'
+      at async symlink (node:internal/fs/promises:1843:10)
+      at async TestContext.<anonymous> (file:///C:/Users/jonku/code/rift/typescript/tools/test262/input.test.mjs:71:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'symlink',
+    path: 'C:\\Users\\jonku\\AppData\\Local\\Packages\\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\\AC\\Temp\\rift-t262-8SKt7i\\outside',
+    dest: 'C:\\Users\\jonku\\AppData\\Local\\Packages\\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\\AC\\Temp\\rift-t262-8SKt7i\\root\\harness'
+  }
+
+test at tools\test262\ledger.test.mjs:98:1
+✖ T15 cancellation persists full selection before any terminal records (6.5267ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\jonku\AppData\Local\Packages\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\AC\Temp\rift-ledger-gWQaIO\ledger.json.fa5eced4-c695-4b17-a04a-55cecd5d37bb.tmp' -> 'C:\Users\jonku\AppData\Local\Packages\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\AC\Temp\rift-ledger-gWQaIO\ledger.json'
+      at async rename (node:internal/fs/promises:1618:10)
+      at async persist (file:///C:/Users/jonku/code/rift/typescript/tools/test262/ledger.mjs:91:5)
+      at async TestContext.<anonymous> (file:///C:/Users/jonku/code/rift/typescript/tools/test262/ledger.test.mjs:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\jonku\\AppData\\Local\\Packages\\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\\AC\\Temp\\rift-ledger-gWQaIO\\ledger.json.fa5eced4-c695-4b17-a04a-55cecd5d37bb.tmp',
+    dest: 'C:\\Users\\jonku\\AppData\\Local\\Packages\\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\\AC\\Temp\\rift-ledger-gWQaIO\\ledger.json'
+  }
+
+test at tools\test262\ledger.test.mjs:155:1
+✖ CLI retains input-error ledgers and refuses to overwrite a previous run (9.364ms)
+  Error: EPERM: operation not permitted, rename 'C:\Users\jonku\AppData\Local\Packages\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\AC\Temp\rift-plan-QG0KU0\run\ledger.json.214308d2-ef35-430b-8e73-3b22567bf59c.tmp' -> 'C:\Users\jonku\AppData\Local\Packages\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\AC\Temp\rift-plan-QG0KU0\run\ledger.json'
+      at async rename (node:internal/fs/promises:1618:10)
+      at async persist (file:///C:/Users/jonku/code/rift/typescript/tools/test262/ledger.mjs:91:5)
+      at async main (file:///C:/Users/jonku/code/rift/typescript/tools/test262/plan.mjs:53:3)
+      at async TestContext.<anonymous> (file:///C:/Users/jonku/code/rift/typescript/tools/test262/ledger.test.mjs:162:18)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'rename',
+    path: 'C:\\Users\\jonku\\AppData\\Local\\Packages\\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\\AC\\Temp\\rift-plan-QG0KU0\\run\\ledger.json.214308d2-ef35-430b-8e73-3b22567bf59c.tmp',
+    dest: 'C:\\Users\\jonku\\AppData\\Local\\Packages\\sandbox.{4d310f19-ad16-4ccf-b979-049b4ea637a2}\\AC\\Temp\\rift-plan-QG0KU0\\run\\ledger.json'
+  }

@@ -205,7 +205,7 @@ const valueRows: { name: string; source: string; value: Value; expected: Value }
     { name: "V7 SymbolValue", source: "p.valueOf();", value: sym(identity), expected: sym(identity) },
     { name: "V7 SymbolText", source: "p.toString();", value: sym(identity), expected: s("Symbol(x)") },
     { name: "V8 SymbolHook", source: "p[h]('ignored');", value: sym(identity), expected: sym(identity) },
-    { name: "V20 NumberToStringBoundary", source: "(2).toString();", value: U, expected: s("[object Number]") },
+    { name: "V20 NumberToStringBoundary", source: "(2).toString();", value: U, expected: s("2") },
 ];
 for (const row of valueRows) {
     const realm = fresh();

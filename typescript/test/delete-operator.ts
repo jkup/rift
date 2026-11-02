@@ -870,7 +870,7 @@ for (const hook of [false, true]) {
     );
 }
 
-// E22/E23 default consumer keys, preserving Number's bounded string hint.
+// E22/E23 default consumer keys, using Number's decimal string hint.
 {
     const r = new Realm((_line) => {});
     const e = new Evaluator(r);
@@ -889,7 +889,7 @@ for (const hook of [false, true]) {
         o(r.createStringObject("payload")),
         o(r.createNumberObject(12)),
     ];
-    const keys = ["", "1,2", source, "true", "payload", "[object Number]"];
+    const keys = ["", "1,2", source, "true", "payload", "12"];
     for (let i = 0; i < values.length; i++) {
         const t = r.createObject();
         put(t, keys[i], n(7));

@@ -25,7 +25,7 @@ check(infinite > 3);
 check(infinite + "x" === "Infinityx");
 let keyed = {};
 keyed[box] = 7;
-check(keyed["[object Number]"] === 7);
+check(keyed["2"] === 7);
 let array = [10, 20, 30];
 array.length = box;
 check(array.length === 2);

@@ -1,0 +1,28 @@
+
+> test:observations
+> node tools/test262/observation.integration.mjs
+
+✔ node T21 preparation snapshots caller selection, nested metadata and source before yielding (431.2841ms)
+✔ node T01 T02 T03 T22 T24 actual parser/body/forgery/strict coordinates (1181.7969ms)
+✔ node actual default guards, throw and no constructor claim (894.0016ms)
+✔ node T17 T18 invalid argument and every numeric input fault (700.7581ms)
+✔ node T23 T32 exact encoder roundtrip and observable getter effects excluded (44.4378ms)
+✔ node actual timeout and combined output cap terminate process and archive real counts (655.6158ms)
+✔ native T21 preparation snapshots caller selection, nested metadata and source before yielding (140.0679ms)
+✔ native T01 T02 T03 T22 T24 actual parser/body/forgery/strict coordinates (392.3958ms)
+✔ native actual default guards, throw and no constructor claim (290.1606ms)
+✔ native T17 T18 invalid argument and every numeric input fault (163.0207ms)
+✔ native T23 T32 exact encoder roundtrip and observable getter effects excluded (49.7767ms)
+✔ native actual timeout and combined output cap terminate process and archive real counts (317.2859ms)
+✔ T19 fixed caps are rejected before any launch (0.4897ms)
+✔ T21 every prepared Identity/Inputs mutation is rejected before launch (320.1276ms)
+✔ T30 cancellation retains unfinished archive without terminal success (251.8691ms)
+✔ T31 preexisting result and symlink attempt roots rejected, prior bytes preserved (569.2549ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6407.2577

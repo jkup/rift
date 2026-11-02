@@ -1,0 +1,14 @@
+
+> test:guest:node
+> npm run build:node && node tools/run-guests.mjs node
+
+
+> build:node
+> tsc -p tsconfig.json
+
+test/number-conversions.ts(565,12): error TS2345: Argument of type 'Completion' is not assignable to parameter of type 'ValueCompletion'.
+  Type '{ type: "normal" | "return"; value: Value; }' is not assignable to type 'ValueCompletion'.
+    Type '{ type: "normal" | "return"; value: Value; }' is not assignable to type '{ type: "normal"; value: Value; }'.
+      Types of property 'type' are incompatible.
+        Type '"normal" | "return"' is not assignable to type '"normal"'.
+          Type '"return"' is not assignable to type '"normal"'.

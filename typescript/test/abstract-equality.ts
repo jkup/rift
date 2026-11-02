@@ -512,7 +512,7 @@ pair(o(relinked), n(2), true, "C13 relinked");
 const control = new Evaluator(realm);
 const numberBox = o(realm.createNumberObject(2));
 const tag = toPrimitive(numberBox, "string", control.context, loc);
-check(tag.type === "normal" && sameValue(tag.value, s("[object Number]")), "C14 string hint unchanged");
+check(tag.type === "normal" && sameValue(tag.value, s("2")), "C14 Number string payload");
 for (const [value, expected] of [[o(realm.createArray()), "[object Array]"], [o(realm.functionPrototype), "[object Function]"]] as [Value, string][]) {
     const result = control.call(realm.objectPrototype.get("toString"), value, [], loc);
     check(result.type === "normal" && sameValue(result.value, s(expected)), "C15 explicit tags");

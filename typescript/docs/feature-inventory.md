@@ -9,7 +9,7 @@ claim that all coercion cases are supported.
 |---|---|---|
 | Lexing | ASCII identifiers including `$`/`_`; decimal integer/fraction literals starting with a digit; single/double quoted UTF-16 strings; space/tab; CR/LF/CRLF/U+2028/U+2029 line boundaries; line/block comments | No identifier escapes/Unicode identifiers, radix/exponent/separator numbers, leading-zero integers, templates or regex. String escapes only quote, backslash, n/r/t. Raw U+2028/U+2029 are preserved inside strings; raw CR/LF are rejected. |
 | Literals/values | number, string, boolean, null; undefined/NaN/Infinity bindings; ordinary object/function identity | No bigint or symbol. NaN uses strict-equality semantics; console renders signed zero as `0`. |
-| Expressions | parentheses; + - * / % and unary +/-, strict-delete, typeof, void; < <= > >=, == != === !==, !; short-circuit &&/\|\|; simple assignment and += -= *= /= %=; conditional `test ? consequent : alternate` | Numeric operators use number-hint ordinary conversion; addition converts both operands with default hint before string/numeric selection. Relational operators convert in source order with number hint, compare two strings by UTF-16 code units, otherwise compare numbers with all NaN comparisons false. Own/inherited valueOf/toString methods work on ordinary objects, arrays and functions; default ordinary objects convert through inherited Object valueOf/toString to [object Object] (numeric NaN). Boolean/String wrappers use their standard payload methods. Number wrappers return numeric payloads for default/number hints and inherited tag strings for string hints. Arrays convert through join; functions convert to exact retained source or the native form. Both operand evaluations precede coercion. === !==, truthiness and Number predicates never coerce. Conditional precedence, selected-arm evaluation and existing bounds remain unchanged. Abstract equality selectively converts at most one object with the default hint; nullish/object and object/object comparisons never coerce. No BigInt, comma, bitwise, update, other compound assignments, nullish coalescing or optional chaining. |
+| Expressions | parentheses; + - * / % and unary +/-, strict-delete, typeof, void; < <= > >=, == != === !==, !; short-circuit &&/\|\|; simple assignment and += -= *= /= %=; conditional `test ? consequent : alternate` | Numeric operators use number-hint ordinary conversion; addition converts both operands with default hint before string/numeric selection. Relational operators convert in source order with number hint, compare two strings by UTF-16 code units, otherwise compare numbers with all NaN comparisons false. Own/inherited valueOf/toString methods work on ordinary objects, arrays and functions; default ordinary objects convert through inherited Object valueOf/toString to [object Object] (numeric NaN). Boolean/String wrappers use their standard payload methods. Number wrappers return numeric payloads for default/number hints and decimal payload strings for string hints. Arrays convert through join; functions convert to exact retained source or the native form. Both operand evaluations precede coercion. === !==, truthiness and Number predicates never coerce. Conditional precedence, selected-arm evaluation and existing bounds remain unchanged. Abstract equality selectively converts at most one object with the default hint; nullish/object and object/object comparisons never coerce. No BigInt, comma, bitwise, update, other compound assignments, nullish coalescing or optional chaining. |
 | Statements | semicolon-terminated expressions and let; blocks, if/else, while, function declarations, return, throw, unlabelled break/continue, empty statement | Semicolons required; no ASI, var/const, for/do, switch, try/catch/finally or labels. Declarations as if/while bodies require braces. Return/throw expressions cannot start on a later line. |
 | Scope | Block lexical bindings, TDZ, mutable captured bindings, function hoisting in their declaration list, recursion, shadowing in nested blocks | One let binding per declaration. Duplicate names/parameters rejected, including function declarations sharing a parameter name. Global builtin names cannot be redeclared. Separate Script global environments and Annex B deferred. |
 | Functions | Declarations and anonymous expressions, simple parameters, left-to-right argument effects, missing args undefined/excess args evaluated, return/fallthrough, own properties | No named function expressions, arrows, rest/default/destructuring parameters, constructors, classes, argument objects, generators/async. Strict-call profile regardless of directives; detached and top-level this are undefined. |
@@ -17,7 +17,7 @@ claim that all coercion cases are supported.
 | Bootstrap | Per-realm console object and console.log; undefined/NaN/Infinity bindings; partial Number namespace below | No other standard constructors or globals, eval, Function, filesystem or process in guest code. Console rendering is a host diagnostic convention, not guest ToString. |
 | Data descriptors (TS-004A) | Internal data/generic descriptor validation with explicit absence/defaulting, SameValue, atomic rejection, non-configurable/non-writable invariants, and preventExtensions. Existing writable own properties remain writable on non-extensible objects; new assignment fails. | Host APIs only; no guest Object/Reflect builtins, accessors or proxies. Internal key listing/deletion are described in TS-004C below. Internal false and strict assignment TypeError are distinct. |
 | Prototypes (TS-004B) | Internal get/set with explicit receiver and normal/throw results; iterative inherited data lookup, receiver-own writes, cycle and extensibility checks; strict assignment rejection. Compiled host tests seed guest realms and exercise inherited method this. | TS-016A adds per-Realm Object/Function/Array roots, with an immutable null-root Object prototype. No guest prototype mutation/reflection APIs or accessors. Literal __proto__ still rejected. |
-| Number (TS-003) | Per-realm, mutable global binding to a non-callable namespace. Constants NaN, POSITIVE_INFINITY, NEGATIVE_INFINITY, MAX_VALUE, MIN_VALUE, EPSILON, MAX_SAFE_INTEGER, MIN_SAFE_INTEGER have non-writable/non-enumerable/non-configurable own properties. isNaN/isFinite never coerce, ignore receivers and excess argument values, and have writable/non-enumerable/configurable namespace properties. Each predicate has its correct name and length 1, both non-writable/non-enumerable/configurable. | Intentionally partial intermediate namespace, not complete Number support. No Number conversion/call/constructor, guest prototype exposure, formatting, integer predicates, parsing methods or guest reflection APIs. Extra argument expressions still evaluate normally. Builtin metadata is centralized in Realm registration; guest function own name/arity inference remains deferred. |
+| Number (TS-003) | Per-realm, mutable global binding to a non-callable namespace. Constants NaN, POSITIVE_INFINITY, NEGATIVE_INFINITY, MAX_VALUE, MIN_VALUE, EPSILON, MAX_SAFE_INTEGER, MIN_SAFE_INTEGER have non-writable/non-enumerable/non-configurable own properties. isNaN/isFinite never coerce, ignore receivers and excess argument values, and have writable/non-enumerable/configurable namespace properties. Each predicate has its correct name and length 1, both non-writable/non-enumerable/configurable. | Intentionally partial intermediate namespace, not complete Number support. No Number conversion/call/constructor, guest prototype exposure, integer predicates, parsing methods or guest reflection APIs. Extra argument expressions still evaluate normally. Builtin metadata is centralized in Realm registration; guest function own name/arity inference remains deferred. |
 | Own keys/deletion (TS-004C) | Internal configurable-own deletion, normal false on nonconfigurable rejection, detached lists of all own string keys including nonenumerable keys; canonical array indices first numerically, other strings by creation order. Overwrite preserves position; delete/reinsert renews it. | Key listing remains host-only; TS-025A adds guest strict-delete over current string/symbol keys and Array/String dispatch. No Object/Reflect APIs or generic exotics. Ordinary key listing cannot throw; arrays reuse these operations. |
 | Errors | Parse locations, runtime locations, thrown guest values, ReferenceError/TypeError/RangeError diagnostics | Engine errors are string values plus diagnostic records, not Error instances. No guest catch syntax or stack traces. Across-run redeclaration fails at runtime before new declarations are installed. |
 | Primitive conversion (TS-005N) | Internal ToNumber/ToUint32 for existing primitive Value kinds, exact numeric-string scanning and tested binary64 backend, signed-zero preservation/normalization. | Host driver API only; no operator/builtin integration. Objects explicitly throw unsupported-conversion runtime TypeError without guest calls. No symbols/BigInts or ToPrimitive. |
@@ -131,7 +131,7 @@ explicit String object; neither performs implicit boxing.
 These are host/internal APIs. Primitive member access still fails, receivers stay
 unchanged, Number remains a noncallable namespace, and no wrapper globals,
 constructors are installed; TS-020 adds Boolean/String conversion methods. Direct primitive converters
-still reject every object. TS-018B installs Object.valueOf and TS-019C installs Object.toString; Number wrappers use TS-021A numeric valueOf but retain inherited string-hint tags; TS-020 adds Boolean/String payload methods. Symbols are covered by TS-019A/B/C; accessors and proxies remain deferred. Keys and
+still reject every object. TS-018B installs Object.valueOf and TS-019C installs Object.toString; Number wrappers use TS-021A numeric valueOf and TS-032B decimal string hints; TS-020 adds Boolean/String payload methods. Symbols are covered by TS-019A/B/C; accessors and proxies remain deferred. Keys and
 snapshots allocate proportional to string length; no huge-string resource claim
 is made. [Acceptance evidence and W1-W19 map](validation/ts-018a/README.md).
 
@@ -213,12 +213,11 @@ globals, backlinks, Number/Array/Function overrides or other String methods.
 Fresh per-Realm valueOf extracts number primitives or genuine GuestNumber slots,
 including root +0 and foreign/relinked boxes, preserving -0 and NaN. Its body
 has no property reads, coercion or ticks. Default/number conversion uses actual
-lookup (two ticks, one call); string hints and computed keys still use inherited
-Object.toString and [object Number] (three ticks, one call). Deletion exposes
+lookup (two ticks, one call); TS-032B now supplies decimal string hints and computed
+keys (two ticks, one call). Deletion exposes
 Object.valueOf and fresh fallback lookup. Direct converters still reject boxes.
 The existing Number namespace remains noncallable; no constructors or implicit
-boxing are added. Number.toString and radix formatting remain blocked by the
-accepted TS-021P semantic evidence. [N matrices and validation](validation/ts-021a/README.md).
+boxing are added. TS-032B supplies Number.toString using the accepted exact nondecimal backend. [N matrices and validation](validation/ts-021a/README.md).
 
 ### Function source and toString (TS-023A)
 
@@ -289,8 +288,8 @@ never cached or written by the assignment. Object and Array definition dispatch
 write profile, not full strict Script support. The R30 tick oracle has an independently reviewed correction from6 to5; see
 [TS-029A evidence](validation/ts-029a/README.md).
 Delete, binding reads, parser syntax and built-in inventory are unchanged.
-Number.toString remains the inherited Object method (`[object Number]`); decimal
-and radix Number formatting are not added. The [implementation evidence](validation/ts-028a/README.md)
+TS-032B subsequently replaces the inherited Number tag method with decimal
+and radix formatting. The [implementation evidence](validation/ts-028a/README.md)
 maps all 144 named rows and records precise expectation migrations and preservation.
 
 ### Return-only parse certification (TS-031C-B)
@@ -308,3 +307,15 @@ This adds no grammar, ASI or strict Script execution. All conformance profiles
 remain blocked with zero conformance execution; observations do not admit a
 profile, validate a harness or classify a test. See the bounded
 [implementation evidence](validation/ts-031c-b/README.md).
+
+### Number toString (TS-032B)
+
+Fresh per-Realm toString (length 1) precedes valueOf in Number root own-key order.
+Receiver slot validation precedes numeric-hint radix coercion; only absent or
+undefined radix defaults to ten. Range validation precedes special-value output.
+Decimal conversion is unchanged; positive finite nondecimal magnitudes use the
+accepted exact backend, with sign handled by the method. String hints and keys
+now use decimal payload strings. Saved/borrowed methods retain slot semantics;
+Object methods, namespace properties and primitive-only converter boundaries
+are unchanged. No constructors, additional Number methods or conformance admission.
+See [validation and exact expectation migrations](validation/ts-032b/README.md).

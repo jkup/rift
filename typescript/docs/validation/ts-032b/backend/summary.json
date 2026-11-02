@@ -1,0 +1,67 @@
+{
+  "node": "v26.13.0",
+  "frozenPairs": 13350,
+  "frozenHash": "9102f9fe83fc37b2b883a55e29c9ec173e4c0d54118eaf96113a166702dc1c6d",
+  "supplementPairs": 1394,
+  "literalVectors": 24,
+  "totalPerLane": 14768,
+  "lanes": {
+    "node": {
+      "canonical": 14768,
+      "interval": 14768,
+      "minimumK": 14768,
+      "note2": 14768,
+      "skips": 0,
+      "crashes": 0,
+      "timeouts": 0,
+      "maxima": {
+        "k": 53,
+        "scale": 1073,
+        "power": 1075,
+        "width": 2159,
+        "length": 1076,
+        "candidates": 6
+      },
+      "elapsedMs": 3160.652,
+      "callMedianMs": 0.019000000000005457,
+      "callMaxMs": 0.8415999999999997,
+      "warmBatchMedianMs": 412.9275,
+      "warmBatchMaxMs": 420.27419999999984,
+      "warmBatchCalls": 14768,
+      "warmBatchRepetitions": 5,
+      "reportedRssBefore": 44752896,
+      "reportedRssAfter": 58396672,
+      "outputHash": "9c153da86c666049825ae6fcc6aecfa29672c6c737f7ef1877299cedb9a84f24",
+      "artifactHash": "2847b6fae58600aab87e791958b90d9f0fed4b46aaf46cde20dedfd69131b269"
+    },
+    "native": {
+      "canonical": 14768,
+      "interval": 14768,
+      "minimumK": 14768,
+      "note2": 14768,
+      "skips": 0,
+      "crashes": 0,
+      "timeouts": 0,
+      "maxima": {
+        "k": 53,
+        "scale": 1073,
+        "power": 1075,
+        "width": 2159,
+        "length": 1076,
+        "candidates": 6
+      },
+      "elapsedMs": 5597.643899999999,
+      "callMedianMs": 0,
+      "callMaxMs": 16,
+      "warmBatchMedianMs": 750,
+      "warmBatchMaxMs": 782,
+      "warmBatchCalls": 14768,
+      "warmBatchRepetitions": 5,
+      "reportedRssBefore": 8642560,
+      "reportedRssAfter": 8044544,
+      "outputHash": "9c153da86c666049825ae6fcc6aecfa29672c6c737f7ef1877299cedb9a84f24",
+      "artifactHash": "c303548b0d10c11d8ea26e2fa65c7e1d4774a15bd03a513f56a26c70612b7930"
+    }
+  },
+  "malformedControls": 17
+}

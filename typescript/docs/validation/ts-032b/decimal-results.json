@@ -1,0 +1,488 @@
+[
+  {
+    "lane": "node",
+    "id": "decimal-small",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "0.000001"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.000001\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-small-exp",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "0.0000001"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1e-7\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-large",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "1e20"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "100000000000000000000\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-large-exp",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "1e21"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1e+21\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-subnormal",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "5e-324"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "5e-324\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-max",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "1.7976931348623157e308"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1.7976931348623157e+308\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-tenth",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "0.1"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.1\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-zero",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "0"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-negative-zero",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "-0"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-nan",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "NaN"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "NaN\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-infinity",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "Infinity"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "Infinity\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-negative-infinity",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "-Infinity"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "-Infinity\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-three-tenths",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "0.3"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.3\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-above-one",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "1.0000000000000002"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1.0000000000000002\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-below-one",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "0.9999999999999999"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.9999999999999999\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "decimal-min-normal",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "2.2250738585072014e-308"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "2.2250738585072014e-308\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "base-10",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "11"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "11\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "half-10",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs/validation/ts-021p/decimal.ts",
+      "0.5"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.5\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-small",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "0.000001"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.000001\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-small-exp",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "0.0000001"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1e-7\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-large",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "1e20"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "100000000000000000000\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-large-exp",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "1e21"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1e+21\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-subnormal",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "5e-324"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "5e-324\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-max",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "1.7976931348623157e308"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1.7976931348623157e+308\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-tenth",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "0.1"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.1\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-zero",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "0"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-negative-zero",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "-0"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-nan",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "NaN"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "NaN\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-infinity",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "Infinity"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "Infinity\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-negative-infinity",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "-Infinity"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "-Infinity\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-three-tenths",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "0.3"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.3\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-above-one",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "1.0000000000000002"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "1.0000000000000002\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-below-one",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "0.9999999999999999"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.9999999999999999\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "decimal-min-normal",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "2.2250738585072014e-308"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "2.2250738585072014e-308\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "base-10",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "11"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "11\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "half-10",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/ts032b-decimal.exe",
+    "args": [
+      "0.5"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.5\n",
+    "stderr": ""
+  }
+]

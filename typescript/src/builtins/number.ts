@@ -1,5 +1,7 @@
 import { GuestNumber } from "../primitive-objects.js";
-import type { NumberCompletion } from "../conversion.js";
+import { numberToString, toIntegerOrInfinity, type NumberCompletion } from "../conversion.js";
+import { toPrimitive } from "../primitive-conversion.js";
+import { numberToStringRadix } from "../number-radix.js";
 import type { Location } from "../syntax.js";
 import type { Realm } from "../realm.js";
 import { GuestObject, failure, normal, UNDEFINED, type Builtin, type Value } from "../runtime.js";
@@ -40,6 +42,27 @@ export function thisNumberValue(input: Value, loc: Location): NumberCompletion {
 }
 
 export function registerNumberConversions(realm: Realm): void {
+    realm.registerBuiltin(realm.numberPrototype, "toString", 1, (receiver, args, context, loc) => {
+        const extracted = thisNumberValue(receiver, loc);
+        if (extracted.type === "throw") return extracted;
+        let radix = 10;
+        if (args.length !== 0 && args[0].kind !== "undefined") {
+            const primitive = toPrimitive(args[0], "number", context, loc);
+            if (primitive.type === "throw") return primitive;
+            const integer = toIntegerOrInfinity(primitive.value, loc);
+            if (integer.type === "throw") return integer;
+            radix = integer.value;
+        }
+        // Radix effects and validation precede even zero/NaN/infinity formatting.
+        if (radix < 2 || radix > 36) return failure("RangeError", "radix must be between 2 and 36", loc);
+        const value = extracted.value;
+        if (radix === 10 || !Number.isFinite(value) || value === 0) {
+            return normal({ kind: "string", value: numberToString(value) });
+        }
+        const magnitude = value < 0 ? -value : value;
+        const digits = numberToStringRadix(magnitude, radix);
+        return normal({ kind: "string", value: value < 0 ? "-" + digits : digits });
+    });
     realm.registerBuiltin(realm.numberPrototype, "valueOf", 0, (receiver, _args, _context, loc) => {
         const result = thisNumberValue(receiver, loc);
         if (result.type === "throw") return result;
