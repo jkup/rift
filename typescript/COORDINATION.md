@@ -674,3 +674,5 @@ Designer active, saved cursorc7a3c148-5576-4361-ba3d-c4ac3df80016:2. Proposed de
 ## TS-031C-P acceptance — 2026-11-02 14:53 heartbeat
 
 Acceptedd319710 after full design/interfaces/F01-F29/C01-C08/source review. Independently reran116 Rift parser observations58 labelled reference compilations6 metadata controls and protected-file audit; original evidence files preserved after replay. Checked ECMA-2622025 Script ~Return and Statement +Return grammar. Runtime/tool/test sources unchanged; reused accepted binaries, no full rebuild claimed. Designer idle cursorc7a3c148-5576-4361-ba3d-c4ac3df80016:3. Approved only non-emitting audit prerequisite TS-031C-A frozen in TASKS; no public certification/profile/conformance admission. Main remains78811ec, prior research integration complete. Next writer pending dispatch.
+
+Acceptance/next contract pushed38d1d9e. Active sole TS-031C-A writer chat `01a19cc2-e08a-7b12-b47d-12ffa115d1dc`, hostlocal, base38d1d9e; explicit wait confirmed active, saved cursorec9b6279-30bb-4cba-866a-8f5b2178be53:2. Internal coverage only; no emission or successor before independent review.
