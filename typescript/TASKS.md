@@ -1345,3 +1345,13 @@ remove dynamic adaptation; no production workaround, pin/gate change or frozen
 semantic oracle adjustment. Windows x64 and represented Value subset only.
 Evidence: docs/validation/ts-026a/README.md. Commit/push tested milestone and stop
 for independent coordinator review; no self-acceptance or successor work.
+
+Coordinator acceptance: TS-026A accepted5cdf9e4 on 2026-11-02. Reviewed production, full named test driver/fixtures, override forwarding, precise migrations and compiler reductions. Independently rebuilt Node/native182/182 each, no skips; all28 static-only builds/separate coverage gates PASS. Represented Values and Windows x64 only; general primitive reads remain limited.
+
+### TS-027P — In operator design
+
+Status: **ready**. Owner: next assigned Codex design chat, existing codex/primitive-computed-keys. Prerequisite accepted TS-026A5cdf9e4. Design only for guest property presence using existing internalHasProperty. Own docs/in-operator.md, docs/validation/ts-027p/ and TASKS claim/handoff. Coordinator owns COORDINATION.md; Claude outputs reserved.
+
+Inspect parser relational precedence/word tokens, evaluator binary operand capture, ToPropertyKey and ordinary/Array/String internalHasProperty. Consult fixed2025 specification and revision-pinned engine sources. Freeze smallest implementation with exact left/right evaluation and conversion order, RHS object validation, no implicit boxing, inherited presence versus own-only, undefined-valued properties versus absence and holes. Preserve symbols and captured operands, key hooks/mutation, original abrupt records, Realm/budget/host-fault cleanup. Distinguish HasProperty from Get, no property value read. No for-in, private fields, instanceof, proxies/accessors, broad reflection APIs or scope expansion.
+
+Deliver named fixed source/host matrices for primitives/objects/symbol keys, invalid RHS and competing errors, own/inherited/nonenumerable/undefined properties, array holes/length/inherited indices, String virtual indices/length, wrapper and callable RHS, cross-Realm objects and mutation during conversion. Define exact ticks/locations/depth, native default64 recursive-key requirements, precedence/associativity with existing operators, reserved/property-name behavior, source retention and runtime-read expected fixtures. Audit current rejection sites and precise eventual migrations, keeping historical evidence. Preserve182cases/28gates in eventual implementation. Design only: no production/tests/manifests/pins/C++/Claude edits, branch switch/main merge or successor. Probes only for concrete uncertainty. Commit/push design and stop for independent review; no new runtime support claim.
