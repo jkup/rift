@@ -1163,10 +1163,26 @@ Coordinator acceptance TS-023A: accepted `0de8488` on 2026-11-02 after productio
 
 ### TS-024P — Abstract equality design
 
-Status: **ready**. Owner: next assigned Codex design chat, existing `codex/primitive-computed-keys`. Prerequisite accepted TS-023A0de8488. Design only for `==` and `!=`, closing a documented operator gap using the now-established effectful primitive conversion. Own docs/abstract-equality.md, docs/validation/ts-024p/ and task claim/handoff. Coordinator owns COORDINATION.md; Claude assistance reserved.
+Status: **design complete; awaiting independent review**. Owner: Codex chat `01a19aaa-a328-7690-9911-1ecb6b386e9b`, sole design writer, 2026-11-02; assignment base `1a438b5`, inspected checkout `c695409c`, existing `codex/primitive-computed-keys`. Prerequisite accepted TS-023A0de8488. Design only for `==` and `!=`, closing a documented operator gap using the now-established effectful primitive conversion. Own docs/abstract-equality.md, docs/validation/ts-024p/ and task claim/handoff. Coordinator owns COORDINATION.md; Claude assistance reserved.
 
 Inspect lexer longest-match, parser precedence/associativity, evaluator operand evaluation, runtime strict equality/SameValue, numeric-string conversion and current ToPrimitive/context. Consult fixed ECMA-2622025 IsLooselyEqual and equality evaluation plus pinned relevant engines. Freeze a readable algorithm/API for currently represented Value kinds only, including same-type identity/NaN/signed zero, null/undefined, booleans, string-number conversion, Symbols versus primitives and objects, and precisely when object conversion uses default hint. No host loose comparison over guest Values, unconditional object conversion, numeric conversion of Symbols or recursion without a termination argument. BigInt and HTMLDDA are absent, not silently implemented.
 
 Specify both operand evaluations before coercion, abrupt short-circuiting, one object's conversion only when required, same-object/two-object identity without hooks, exact shared budgets/Realm restoration, and != negation only after successful equality. Preserve ===/!== and truthiness. Define token/precedence integration preserving ===/!== and all unrelated parse boundaries, with a migration inventory of existing rejected ==/!= tests (including TS-022A C2).
 
 Produce independent fixed matrices for every represented kind-pair in both operand orders, tricky number/string and symbol/box cases, default Array/Function/wrapper consumers, hook order/mutation/errors, nullish/object noncoercion, same/distinct identity, runtime-read guest operand evaluation and parser precedence/chaining/longest-match. Record exact diagnostics, effect traces and resource counts. Propose smallest atomic implementation ownership and validation preserving167cases/25gates plus additions. No production/integrated tests/manifests, pins, C++, new value kinds, unrelated syntax/methods, branch switch/main merge or successor work. Optional probes only for evidenced compiler uncertainty, with retained reductions/static-only plus separate coverage. Commit/push coherent design, stop for review; do not claim implemented equality support.
+
+TS-024P handoff (2026-11-02): docs/abstract-equality.md freezes iterative
+IsLooselyEqual with a decreasing-weight termination argument, existing boolean
+completion reuse, selective default-hint conversion, captured operand order,
+successful-only negation, diagnostics and unchanged shared budgets/Realm cleanup.
+Fixed2025 specification plus pinned engine262 and V8 source/blob evidence is
+recorded in docs/validation/ts-024p/. Independent matrix: all49 ordered kind pairs,
+V1-V18 payloads, O1-O23 effects/abrupt paths, R1-R19 exact resource boundaries,
+P1-P19 parser cases and C1-C16 consumers; both operators/orders required.
+Reproducible inventory:103 files/8 candidate lines; identifies C2 assertion and
+fixture migration while retaining C3 and historical failures. git diff --check
+passes. No compiler uncertainty warranted a probe; no runtime suites/builds were
+run. Accepted0de8488 baseline167/167 bothhosts/25gates remains unchanged and is
+not equality evidence. No production/integrated tests/manifests, pins, C++,
+Claude/COORDINATION edits, branch switching/main merge or successor work.
+Commit/push design and stop for independent coordinator review.
