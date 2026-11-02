@@ -2037,10 +2037,25 @@ Coordinator acceptance: a1806fa accepted after actual guard/bootstrap/test revie
 
 ### TS-033D-P — Script declaration planning and instantiation design
 
-Status: **ready** for one design writer. Prerequisite TS033Ca1806fa; accepted Script design P3 is next. Own docs/script-declarations.md, reproducible source/semantic audit evidence under docs/validation/ts-033d-p/, TASKS handoff. Coordinator owns COORDINATION; preserve Claude CL006. No production/integrated tests/manifests/pins/C++/historical evidence changes.
+Status: **review needed** — Codex TS033D-P sole design writer, chat 01a19d9f-8bb3-7522-b614-54cfe455ea2e, assigned base 99e8fcf, inspected 250aa1b (2026-11-02). Prerequisite TS033Ca1806fa; accepted Script design P3 is next. Own docs/script-declarations.md, reproducible source/semantic audit evidence under docs/validation/ts-033d-p/, TASKS handoff. Coordinator owns COORDINATION; preserve Claude CL006. No production/integrated tests/manifests/pins/C++/historical evidence changes.
 
 Freeze smallest ordered P3 slices for a separate Script parse/declaration plan and eventual instantiation. Current parser.list conflates lexical/function/parameter names, while evaluator.block uses legacy Map hoisting; the new Script Realm intentionally cannot create/execute guest functions. Address these actual seams explicitly rather than removing guards to make examples run. Specify API/types and representation for scope summaries, simple var declarations/lists, top-level versus strict block functions, function-body vars/formals/lexicals, traversal that stops at nested functions, duplicate/overlap checks and last-declaration-wins ordering. No const/destructuring/default parameters/Annex B or broader syntax implied. Preserve legacy parse/audit/inspectScript behavior and keep current unsupported cases in legacy profile unchanged.
 
 Use fixed2025 spec and pinned engine source; distinguish parse early errors, whole-source unsupported veto, runtime declaration conflicts and resource guards. Freeze actual global-instantiation ordering using accepted GlobalEnvironment primitives, conflict prechecks before language-visible bindings, TDZ creation, var reuse and function materialization. Explain how non-executable plans or host-only controls can be tested while Script callable factories/P4 execution remain disabled; stub/synthetic evidence must be labeled, never represented as guest source execution. Specify later factory/context integration prerequisites, original abrupt propagation, mutation on guard interruption, deterministic source ordering and source-unit provenance. No global Error object or new error certification claims from diagnostics.
 
 Provide named literal G/L cases and neighbors, nested var collection, repeated functions, formal/lexical collisions, inherited globals/descriptors/extensibility, cross-unit conflicts, unsupported tails and large shallow ASTs (avoid recursive visitor crash). Explicitly distinguish declaration plan from executable AST/admission capability. Inventory expected legacy-preservation checks and any future opt-in-only changes. Recommend smallest next bounded implementation assignment with owned files and matrix; no omnibus P3/P4 implementation or hidden execution bypass. Keep212records40gates/all profiles blocked, no runtime/native claim without actual validation. Commit/push coherent design then stop for independent review, no successor/main merge.
+
+TS033D-P handoff (2026-11-02): design in docs/script-declarations.md and
+reproducible source/research evidence in docs/validation/ts-033d-p/. Freezes
+flat non-executable plan types, parser purpose/var-list seam, scope/formal
+conflicts and iterative traversal, exact global precheck/winner/creation/tick
+ordering, synthetic host materializer boundary and future block/FDI/P4
+prerequisites.33 named G/L/tail/resource rows with neighbors remain unexecuted.
+Recommends D1 planner only, D2 host orchestration only, later separately frozen
+P4 real factories/contexts; no guard removal or execution admission.
+Fixed2025 document hash verified, nine clauses retained; pinned engine262 GDI/FDI
+source and MIT license retained. Offline audit passes2436 protected files,
+160 source identities,829 seam occurrences,60/60 variants still blocked;
+212 records per lane/40 gates are inherited, not rerun. No production/test/
+manifest/history/pin/C++/COORDINATION/CL006 edits, no fresh runtime/native claim.
+Stop for independent review; no successor, branch switch or main merge.
