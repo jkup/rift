@@ -505,3 +505,9 @@ Accepted5664a35 after production987d83b review and independent readability/sourc
 Frozen next TS-028P primitive property read/call design, grounded in getValue object-only restriction and existing original-base call receiver capture. Explicitly examine deferred-key ordering and read-before-write interactions before implementation. CL-004/005 remain ready/reserved; main unchanged7f7d682. Next writer pending dispatch.
 
 Acceptance/next contract pushed through72a778a. Active sole design writer: TS-028P chat `01a19b50-e23e-7450-942a-25c0ab5581d8`, host `local`, base `72a778a`. Explicit progress wait confirmed active; saved cursor `be51abe1-a8b8-4377-a3d4-0a6cb6d1dc08:1`. Owns frozen primitive read/call design only; coordinator owns this file. No implementation before independent review.
+
+## TS-028P acceptance — 2026-11-02 08:23 heartbeat
+
+Accepted553c9a8 after complete design/matrix/migration review and independent fixed2025 GetValue inspection: ToObject before deferred conversion, successful key saved, original base Receiver. Checked actual evaluator reference/call/assignment and Realm boxing paths; reproduced125-file/69-candidate inventory unchanged. No runtime/integrated rerun; accepted5664a35 remains189/189/29gates. Designer idle, saved cursor `be51abe1-a8b8-4377-a3d4-0a6cb6d1dc08:2`. Missing direct-reference key memoization accepted as a bounded correctness fix with read/call implementation. Existing Number.toString limitation and primitive writes remain explicit.
+
+Frozen next TS-028A full144-row implementation and19 precise migrations. CL-004/005 reserved; main unchanged7f7d682. Coordinator push covers original owner-authorized verified origin after delegated rejection. Next implementation pending dispatch.

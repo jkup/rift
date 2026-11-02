@@ -1443,3 +1443,13 @@ test, manifest, pin, C++, Claude or COORDINATION changes; no runtime/probe/build
 runs or new support claim. Prior accepted5664a35 remains189/189 and29 gates.
 Commit/push this coherent design as authorized, then stop for independent review;
 not self-accepted. No branch switching, main merge or successor chat.
+
+Coordinator acceptance: TS-028P accepted553c9a8 on 2026-11-02. Reviewed full design,144 named matrix rows and19 migration entries; independently checked fixed2025 GetValue ToObject/key-cache/original Receiver sequence and actual evaluator/reference/boxing paths. Reproduced125-file/69-candidate audit unchanged; whitespace clean. No runtime changes or integrated rerun; baseline5664a35 remains189/189 and29 gates.
+
+### TS-028A — Primitive property reads and method calls implementation
+
+Status: **ready**. Prerequisite accepted TS-028P553c9a8. Implement docs/primitive-property-reads.md and all V/S/E/M/W/R/C rows/variants in docs/validation/ts-028p/matrix.md, with exact A1-A19 migrations. Own runtime GetValue integration, object-conversion comment, dedicated readable driver/fixtures, necessary existing-test migrations, runner/native registration and current scope/evidence/TASKS updates. Coordinator owns COORDINATION.md; Claude work reserved.
+
+Box with existing ToObject before deferred key conversion; retain original base Receiver/this and active-Realm wrapper. Save successfully converted string/symbol Value key before Get, including dispatch failure; preserve raw key on conversion failure. No wrapper/value caching. Binding reads, primitive writes, delete, syntax and built-in inventory unchanged. Preserve abrupt identity, Realm/frame cleanup, exact resource guards, UTF-16 indices and captured method/base order. Test all named rows including reused direct references, foreign methods, host faults and actual native default64 recursion. Retain every189 baseline case name and29 gates; only enumerated obsolete expectations may migrate, with audited expected-record diff. Keep historical evidence.
+
+Run typecheck, runner, probes, full rebuilt Node/native and every static-only build plus independently parsed coverage. Retain failures/reductions before workarounds, report oracle contradictions before changing them. Keep tests readable from the outset: named scenarios, separate setup/action/assertions, no dense statement chains or opaque nested resource selections. No pins, C++, Claude/COORDINATION edits, branch switch/main merge or successor. Commit/push tested milestone on current branch, then stop for independent review.
