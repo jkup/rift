@@ -513,3 +513,9 @@ Accepted553c9a8 after complete design/matrix/migration review and independent fi
 Frozen next TS-028A full144-row implementation and19 precise migrations. CL-004/005 reserved; main unchanged7f7d682. Coordinator push covers original owner-authorized verified origin after delegated rejection. Next implementation pending dispatch.
 
 Acceptance/next contract pushed throughfba0431. Active sole implementation writer: TS-028A chat `01a19b5c-fc24-7b70-afe4-6c27ae8a01b0`, host `local`, base `fba0431`. Explicit progress wait confirmed active; saved cursor `941664d0-7d90-4cc6-9c77-64f03dd12a29:1`. Owns frozen primitive read/call implementation and enumerated migrations; coordinator owns this file. No successor before independent review.
+
+## TS-028A acceptance — 2026-11-02 08:38 heartbeat
+
+Acceptedb9d3ef1 after production/full driver/fixtures and exact migration review. Independently rebuilt Node/native196/196 each no skips; all30 static-only/separate coverage gates PASS. Reproduced preservation audit;189 baseline names/29 gates and all old expected records except two A17 diagnostics retained. Logs build/ts-028a-review-node.log, build/ts-028a-review-native.log, build/ts-028a-review-audit.log. Producer typecheck/runner20/probes10 reviewed. Writer idle, cursor `941664d0-7d90-4cc6-9c77-64f03dd12a29:5`. No unresolved finding. Coordinator push resolves delegated rejection under original owner authorization.
+
+Next frozen TS-029P property assignment design: existing internalSet already preserves Receiver and rejects primitive receivers, while PutValue currently bypasses boxing/key effects. Review smallest strict data-only correction before implementation. CL-004/005 remain reserved; main unchanged7f7d682. Next designer pending dispatch.

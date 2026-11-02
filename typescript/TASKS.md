@@ -1471,3 +1471,13 @@ failure, workaround or oracle adjustment. Evidence: docs/validation/ts-028a/.
 Number.toString remains inherited Object-method limitation; no radix work.
 Commit/push tested milestone on existing branch under owner authorization, then
 stop for independent coordinator review; no self-acceptance or successor.
+
+Coordinator acceptance: TS-028A acceptedb9d3ef1 on 2026-11-02. Reviewed production, complete driver/fixtures and A1-A19 migrations; independently rebuilt Node/native196/196 each no skips and all30 static-only/separate coverage gates PASS. Reproduced preservation audit;189 prior names/29 gates preserved with only two authorized A17 top-level oracle changes. Logs build/ts-028a-review-{node,native,audit}.log. No unresolved finding. Producer typecheck/runner20/probes10 evidence reviewed.
+
+### TS-029P — Property assignment boxing and Receiver design
+
+Status: **ready**. Prerequisite accepted TS-028Ab9d3ef1. Design only: reconcile current PutValue object-only rejection with fixed2025 ToObject, deferred key conversion/memoization, original Receiver and existing internalSet. Own docs/property-assignment.md, docs/validation/ts-029p/ and TASKS claim/handoff; coordinator owns COORDINATION.md, Claude outputs reserved.
+
+Freeze smallest data-only strict-assignment contract, explicitly retaining current strict-write profile without claiming full strict Scripts. Evaluate RHS before PutValue; box before key hooks, save successful key before Set, preserve original primitive Receiver rather than writing a temporary box. Determine exact false-to-TypeError translation and whether to reuse a narrow helper without weakening object Set semantics. Inspect original Receiver path, inherited nonwritable descriptors, String virtual indices/length, symbols, Array length definition dispatch and direct reused references. Consult fixed2025 spec and revision-pinned engine evidence. Do not assume all primitive assignments reject before observable key effects.
+
+Deliver named literal expected-result matrices for every represented primitive/nullish value, competing RHS/key/Set errors, mutation/capture/aliasing, inherited properties, cross-Realm boxing and hooks, dispatch abrupt/host-fault identity, saved-key retries and no unintended writes. Include exact small budgets and actual native default64 recursive keys. Audit all existing rejection expectations with precise migrations, preserving historical evidence and current196 case names/30 gates. No compound/update/logical assignment syntax, accessors/proxies, new built-ins, implementation, pin/C++/Claude edits, branch switch/main merge or successor. Probes only for concrete uncertainty. Commit/push coherent design then stop for independent review.
