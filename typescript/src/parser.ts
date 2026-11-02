@@ -1,11 +1,12 @@
+import type { Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
 import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
-export type ParseResult = { body: Stmt[]; error: Diagnostic | null };
+export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
 export function parse(source: string): ParseResult {
     const result = lex(source);
-    if (result.error !== null) return { body: [], error: result.error };
+    if (result.error !== null) return { body: [], error: result.error, rejection: result.rejection };
     return new Parser(result.tokens, { text: source }).program();
 }
 class Parser {
@@ -14,6 +15,7 @@ class Parser {
     functions = 0;
     loops = 0;
     error: Diagnostic | null = null;
+    rejection: Rejection | null = null;
     constructor(public tokens: Token[], readonly source: SourceText) {}
     current(): Token { return this.tokens[this.index]; }
     at(text: string): boolean {
@@ -30,20 +32,23 @@ class Parser {
         this.take();
         return true;
     }
-    fail(message: string, loc: Location): void {
-        if (this.error === null) this.error = { phase: "parse", name: "SyntaxError", message, loc };
+    fail(reason: Rejection, message: string, loc: Location): void {
+        if (this.error === null) {
+            this.error = { phase: "parse", name: "SyntaxError", message, loc };
+            this.rejection = reason;
+        }
     }
     expect(text: string): void {
-        if (!this.eat(text)) this.fail("expected '" + text + "', found '" + this.current().text + "'", this.current().loc);
+        if (!this.eat(text)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "expected '" + text + "', found '" + this.current().text + "'", this.current().loc);
     }
     name(): string {
         const t = this.take();
-        if (t.kind !== "word" || RESERVED.includes(" " + t.text + " ")) this.fail("expected binding identifier", t.loc);
+        if (t.kind !== "word" || RESERVED.includes(" " + t.text + " ")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.binding-identifier" }, "expected binding identifier", t.loc);
         return t.text;
     }
     program(): ParseResult {
         const body = this.list(false, []);
-        return { body, error: this.error };
+        return { body, error: this.error, rejection: this.rejection };
     }
     list(braced: boolean, parameters: string[]): Stmt[] {
         const body: Stmt[] = [];
@@ -51,7 +56,7 @@ class Parser {
         while (this.error === null && this.current().kind !== "eof" && !(braced && this.at("}"))) {
             const stmt = this.statement();
             if (stmt.kind === "let" || stmt.kind === "function") {
-                if (names.includes(stmt.name)) this.fail("duplicate binding: " + stmt.name, stmt.loc);
+                if (names.includes(stmt.name)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-binding" }, "duplicate binding: " + stmt.name, stmt.loc);
                 names.push(stmt.name);
             }
             body.push(stmt);
@@ -62,7 +67,7 @@ class Parser {
     statement(): Stmt {
         const loc = this.current().loc;
         if (++this.depth > 128) {
-            this.fail("syntax nesting limit exceeded", loc);
+            this.fail({ kind: "resource-limit", guardCode: "parse-depth", count: this.depth, limit: 128 }, "syntax nesting limit exceeded", loc);
             this.depth--;
             return { kind: "empty", loc };
         }
@@ -71,7 +76,7 @@ class Parser {
         return result;
     }
     branch(): Stmt {
-        if (this.at("let") || this.at("function")) this.fail("declarations require a block", this.current().loc);
+        if (this.at("let") || this.at("function")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", this.current().loc);
         return this.statement();
     }
     statementInner(): Stmt {
@@ -109,19 +114,19 @@ class Parser {
         }
         if (this.at("return") || this.at("throw")) {
             const kind = this.take().text === "return" ? "return" : "throw";
-            if (kind === "return" && this.functions === 0) this.fail("return outside function", loc);
+            if (kind === "return" && this.functions === 0) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.return-context" }, "return outside function", loc);
             // Token locations include line terminators hidden inside comments.
             if (this.current().loc.line !== loc.line && !this.at(";")) {
-                this.fail("newline after return/throw is unsupported", loc);
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.line-terminator" }, "newline after return/throw is unsupported", loc);
             }
             const value = this.at(";") ? null : this.expression(0);
-            if (kind === "throw" && value === null) this.fail("throw requires an expression", loc);
+            if (kind === "throw" && value === null) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.throw-expression" }, "throw requires an expression", loc);
             this.expect(";");
             return { kind, loc, value };
         }
         if (this.at("break") || this.at("continue")) {
             const kind = this.take().text === "break" ? "break" : "continue";
-            if (this.loops === 0) this.fail(kind + " outside loop", loc);
+            if (this.loops === 0) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.loop-context" }, kind + " outside loop", loc);
             this.expect(";");
             return { kind, loc };
         }
@@ -135,7 +140,7 @@ class Parser {
         if (!this.at(")")) {
             do {
                 const name = this.name();
-                if (params.includes(name)) this.fail("duplicate parameter: " + name, loc);
+                if (params.includes(name)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate parameter: " + name, loc);
                 params.push(name);
             } while (this.error === null && this.eat(","));
         }
@@ -163,7 +168,7 @@ class Parser {
     expression(min: number): Expr {
         const loc = this.current().loc;
         if (++this.depth > 128) {
-            this.fail("syntax nesting limit exceeded", loc);
+            this.fail({ kind: "resource-limit", guardCode: "parse-depth", count: this.depth, limit: 128 }, "syntax nesting limit exceeded", loc);
             this.depth--;
             return { kind: "literal", loc, value: null };
         }
@@ -171,7 +176,7 @@ class Parser {
         while (this.error === null) {
             if (this.eat(".")) {
                 const key = this.take();
-                if (key.kind !== "word") this.fail("expected property name", key.loc);
+                if (key.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
                 left = { kind: "member", loc, base: left, key: { kind: "literal", loc: key.loc, value: key.text } };
                 continue;
             }
@@ -208,7 +213,7 @@ class Parser {
             }
             const right = this.expression(precedence === 1 ? precedence : precedence + 1);
             if (precedence === 1) {
-                if (left.kind !== "identifier" && left.kind !== "member") this.fail("invalid assignment target", loc);
+                if (left.kind !== "identifier" && left.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid assignment target", loc);
                 if (op === "=") left = { kind: "assign", loc, target: left, value: right };
                 else {
                     let binaryOp: "+" | "-" | "*" | "/" | "%" = "+";
@@ -244,7 +249,7 @@ class Parser {
             const operand = this.expression(9);
             // Parentheses preserve identifiers. Strict-delete is unconditional
             // in this profile, independently of inert directive strings.
-            if (t.text === "delete" && operand.kind === "identifier") this.fail("delete of an identifier is not allowed", loc);
+            if (t.text === "delete" && operand.kind === "identifier") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" }, "delete of an identifier is not allowed", loc);
             return { kind: "unary", loc, op: t.text, operand };
         }
         if (t.text === "[") {
@@ -255,7 +260,7 @@ class Parser {
                     continue;
                 }
                 if (this.at(".")) {
-                    this.fail("array spread is unsupported", this.current().loc);
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.array-spread" }, "array spread is unsupported", this.current().loc);
                     break;
                 }
                 elements.push(this.expression(1));
@@ -270,8 +275,8 @@ class Parser {
             if (!this.at("}")) {
                 do {
                     const key = this.take();
-                    if (key.kind !== "word" && key.kind !== "string") this.fail("expected string property name", key.loc);
-                    if (key.text === "__proto__") this.fail("prototype literal syntax is unsupported", key.loc);
+                    if (key.kind !== "word" && key.kind !== "string") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.object-key" }, "expected string property name", key.loc);
+                    if (key.text === "__proto__") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.prototype-literal" }, "prototype literal syntax is unsupported", key.loc);
                     keys.push(key.text);
                     this.expect(":");
                     values.push(this.expression(0));
@@ -281,7 +286,7 @@ class Parser {
             return { kind: "object", loc, keys, values };
         }
         if (t.kind === "word" && !RESERVED.includes(" " + t.text + " ")) return { kind: "identifier", loc, name: t.text };
-        this.fail("unsupported or unexpected syntax: " + t.text, loc);
+        this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported or unexpected syntax: " + t.text, loc);
         return { kind: "literal", loc, value: null };
     }
 }

@@ -1,0 +1,8 @@
+C:/Users/jonku/code/rift/typescript/docs/validation/ts-031b-a/reductions/before.ts:8:49 - error SC1090: comparisons of union-typed values (narrow first: check a discriminant field, or compare with '!== undefined'/'!== null' for unit arms) are not supported yet
+
+  7 | }
+  8 | function same(origin: Origin): boolean { return project(origin) === origin; }
+    |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 | console.log(same({ kind: "resource", count: 1 }));
+
+1 error.

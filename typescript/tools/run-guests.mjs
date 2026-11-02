@@ -313,6 +313,9 @@ execute("compound-assignment", compoundCommand, compoundArgs, { stdout: "compoun
 const equalityCommand = lane === "node" ? process.execPath : join(root, "build/native/abstract-equality" + suffix);
 const equalityArgs = lane === "node" ? [join(root, "build/node/test/abstract-equality.js")] : [];
 execute("abstract-equality", equalityCommand, equalityArgs, { stdout: "abstract-equality ok\n" });
+const outcomesCommand = lane === "node" ? process.execPath : join(root, "build/native/structured-outcomes" + suffix);
+const outcomesArgs = lane === "node" ? [join(root, "build/node/test/structured-outcomes.js")] : [];
+execute("structured-outcomes", outcomesCommand, outcomesArgs, { stdout: "structured-outcomes ok\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

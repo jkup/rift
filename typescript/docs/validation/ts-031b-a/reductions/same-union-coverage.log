@@ -1,0 +1,6 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\docs\validation\ts-031b-a\reductions\before.ts
+
+  statements analyzed   3
+  compile statically    3  (100%)
+
+  fully static — all analyzed statements compile to native code.

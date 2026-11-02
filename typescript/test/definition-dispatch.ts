@@ -21,7 +21,7 @@ class DefinitionObject extends GuestObject {
     seenContext: OperationContext | null = null;
     seenKey: PropertyKey = "";
     seenDescriptor: DataDescriptorUpdate = {};
-    thrown: ThrowCompletion = { type: "throw", value: obj(new GuestObject()), diagnostic: { phase: "runtime", name: "RangeError", message: "definition sentinel", loc } };
+    thrown: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value: obj(new GuestObject()), diagnostic: { phase: "runtime", name: "RangeError", message: "definition sentinel", loc } };
     defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, location: Location): InternalBooleanCompletion {
         this.calls++;
         this.seenContext = context;
@@ -139,7 +139,7 @@ class BootstrapObserver extends GuestObject {
         this.calls++;
         this.seenLocation = location;
         if (this.mode === "false") return { type: "normal", value: false };
-        if (this.mode === "throw") return { type: "throw", value: rhs, diagnostic: { phase: "runtime", name: "TypeError", message: "bootstrap sentinel", loc: location } };
+        if (this.mode === "throw") return { type: "throw", origin: { kind: "guest" }, value: rhs, diagnostic: { phase: "runtime", name: "TypeError", message: "bootstrap sentinel", loc: location } };
         return super.bootstrapDefineOwnProperty(key, desc, location);
     }
 }

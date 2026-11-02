@@ -1,5 +1,5 @@
 import { toPrimitive } from "./primitive-conversion.js";
-import { failure } from "./runtime.js";
+import { failure, unsupportedFailure } from "./runtime.js";
 import type { Value, ThrowCompletion, PropertyKey, OperationContext } from "./runtime.js";
 import type { Location } from "./syntax.js";
 import type { GuestString } from "./strings.js";
@@ -77,7 +77,7 @@ export function toNumber(value: Value, loc: Location): NumberCompletion {
         case "number": return { type: "normal", value: value.value };
         case "string": return { type: "normal", value: stringToNumber(value.value) };
         case "symbol": return failure("TypeError", "cannot convert symbol to number", loc);
-        case "object": return failure("TypeError", "object-to-primitive conversion unsupported", loc);
+        case "object": return unsupportedFailure("runtime.object-to-number", "TypeError", "object-to-primitive conversion unsupported", loc);
     }
 }
 
@@ -123,7 +123,7 @@ export function toString(value: Value, loc: Location): StringCompletion {
         case "string": return { type: "normal", value: value.value };
         case "number": return { type: "normal", value: numberToString(value.value) };
         case "symbol": return failure("TypeError", "cannot convert symbol to string", loc);
-        case "object": return failure("TypeError", "object-to-primitive conversion unsupported", loc);
+        case "object": return unsupportedFailure("runtime.object-to-string", "TypeError", "object-to-primitive conversion unsupported", loc);
     }
 }
 

@@ -1,3 +1,4 @@
+import type { Guard, RuntimeCapability, ThrowOrigin } from "./outcomes.js";
 import { GuestSymbol, formatPropertyKey, symbolDescriptiveString } from "./symbols.js";
 import { toObject } from "./object-conversion.js";
 import { toPropertyKey } from "./conversion.js";
@@ -16,17 +17,25 @@ export type PropertyKey = GuestString | GuestSymbol;
 // Host undefined means absent; guest undefined is the present Value UNDEFINED.
 export type DataDescriptorUpdate = { value?: Value; writable?: boolean; enumerable?: boolean; configurable?: boolean };
 export type BooleanCompletion = { type: "normal"; value: boolean };
-export type ThrowCompletion = { type: "throw"; value: Value; diagnostic: Diagnostic };
+export type ThrowCompletion = { type: "throw"; value: Value; diagnostic: Diagnostic; readonly origin: ThrowOrigin };
 export type ValueCompletion = { type: "normal"; value: Value } | ThrowCompletion;
 export type InternalBooleanCompletion = BooleanCompletion | ThrowCompletion;
 export type DataDescriptor = { value: Value; writable: boolean; enumerable: boolean; configurable: boolean };
 export type Completion =
     | { type: "normal" | "return"; value: Value }
-    | { type: "throw"; value: Value; diagnostic: Diagnostic }
+    | ThrowCompletion
     | { type: "break" | "continue"; value: Value };
 export function normal(value: Value = UNDEFINED): ValueCompletion { return { type: "normal", value }; }
 export function failure(name: string, message: string, loc: Location): ThrowCompletion {
-    return { type: "throw", value: { kind: "string", value: name + ": " + message }, diagnostic: { phase: "runtime", name, message, loc } };
+    return { type: "throw", origin: { kind: "engine-diagnostic" }, value: { kind: "string", value: name + ": " + message }, diagnostic: { phase: "runtime", name, message, loc } };
+}
+export function resourceFailure(guardCode: Guard, count: number, limit: number, message: string, loc: Location): ThrowCompletion {
+    const result = failure("RangeError", message, loc);
+    return { type: "throw", value: result.value, diagnostic: result.diagnostic, origin: { kind: "resource-limit", guardCode, count, limit } };
+}
+export function unsupportedFailure(capabilityCode: RuntimeCapability, name: string, message: string, loc: Location): ThrowCompletion {
+    const result = failure(name, message, loc);
+    return { type: "throw", value: result.value, diagnostic: result.diagnostic, origin: { kind: "unsupported-operation", capabilityCode } };
 }
 export type OperationContext = {
     readonly realm: Realm;

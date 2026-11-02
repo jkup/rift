@@ -1,6 +1,7 @@
+import type { Rejection } from "./outcomes.js";
 import type { Diagnostic, Location } from "./syntax.js";
 export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number };
-export type LexResult = { tokens: Token[]; error: Diagnostic | null };
+export type LexResult = { tokens: Token[]; error: Diagnostic | null; rejection: Rejection | null };
 function digit(c: string): boolean { return c >= "0" && c <= "9"; }
 function letter(c: string): boolean {
     return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === "_" || c === "$";
@@ -14,6 +15,7 @@ export function lex(source: string): LexResult {
     let line = 1;
     let column = 1;
     let error: Diagnostic | null = null;
+    let rejection: Rejection | null = null;
     function advance(): string {
         const c = source.charAt(i++);
         if (lineTerminator(c)) {
@@ -25,10 +27,11 @@ export function lex(source: string): LexResult {
         }
         return c;
     }
-    function fail(message: string, loc: Location): void {
+    function fail(reason: Rejection, message: string, loc: Location): void {
+        rejection = reason;
         error = { phase: "parse", name: "SyntaxError", message, loc };
     }
-    if (source.length > 100000) fail("source exceeds 100000 UTF-16 units", { line, column });
+    if (source.length > 100000) fail({ kind: "resource-limit", guardCode: "source-units", count: source.length, limit: 100000 }, "source exceeds 100000 UTF-16 units", { line, column });
     while (i < source.length && error === null) {
         const c = source.charAt(i);
         const loc = { line, column };
@@ -45,7 +48,7 @@ export function lex(source: string): LexResult {
             advance();
             advance();
             while (i < source.length && !(source.charAt(i) === "*" && source.charAt(i + 1) === "/")) advance();
-            if (i === source.length) fail("unterminated comment", loc);
+            if (i === source.length) fail({ kind: "unsupported-syntax", capabilityCode: "lex.indeterminate-comment" }, "unterminated comment", loc);
             else {
                 advance();
                 advance();
@@ -61,12 +64,12 @@ export function lex(source: string): LexResult {
         if (digit(c)) {
             let text = advance();
             while (digit(source.charAt(i))) text += advance();
-            if (text.length > 1 && text.charAt(0) === "0") fail("leading-zero numbers are unsupported", loc);
+            if (text.length > 1 && text.charAt(0) === "0") fail({ kind: "unsupported-syntax", capabilityCode: "lex.leading-zero" }, "leading-zero numbers are unsupported", loc);
             if (source.charAt(i) === ".") {
                 text += advance();
                 while (digit(source.charAt(i))) text += advance();
             }
-            if (letter(source.charAt(i))) fail("unsupported numeric literal", loc);
+            if (letter(source.charAt(i))) fail({ kind: "unsupported-syntax", capabilityCode: "lex.numeric-literal" }, "unsupported numeric literal", loc);
             tokens.push({ kind: "number", text, loc, start, end: i });
             continue;
         }
@@ -77,7 +80,7 @@ export function lex(source: string): LexResult {
                 let unit = advance();
                 // Unlike CR/LF, raw U+2028/U+2029 are allowed in modern JS strings.
                 if (unit === "\n" || unit === "\r") {
-                    fail("newline in string", loc);
+                    fail({ kind: "unsupported-syntax", capabilityCode: "lex.indeterminate-string-newline" }, "newline in string", loc);
                     break;
                 }
                 if (unit === "\\") {
@@ -85,11 +88,11 @@ export function lex(source: string): LexResult {
                     if (unit === "n") unit = "\n";
                     else if (unit === "r") unit = "\r";
                     else if (unit === "t") unit = "\t";
-                    else if (unit !== "\\" && unit !== "'" && unit !== '"') fail("unsupported string escape", loc);
+                    else if (unit !== "\\" && unit !== "'" && unit !== '"') fail({ kind: "unsupported-syntax", capabilityCode: "lex.string-escape" }, "unsupported string escape", loc);
                 }
                 text += unit;
             }
-            if (i >= source.length) fail("unterminated string", loc);
+            if (i >= source.length) fail({ kind: "unsupported-syntax", capabilityCode: "lex.indeterminate-string-end" }, "unterminated string", loc);
             else advance();
             tokens.push({ kind: "string", text, loc, start, end: i });
             continue;
@@ -102,15 +105,15 @@ export function lex(source: string): LexResult {
             advance();
             tokens.push({ kind: "punct", text: three, loc, start, end: i });
         } else if (["++", "--", "=>", "**", "<<", ">>", "?."].includes(two)) {
-            fail("unsupported operator: " + two, loc);
+            fail({ kind: "unsupported-syntax", capabilityCode: "lex.operator" }, "unsupported operator: " + two, loc);
         } else if (two === "==" || two === "!=" || two === "<=" || two === ">=" || two === "&&" || two === "||" || two === "+=" || two === "-=" || two === "*=" || two === "/=" || two === "%=") {
             advance();
             advance();
             tokens.push({ kind: "punct", text: two, loc, start, end: i });
         } else if ("{}();,.:?[]+-*/%<>=!".includes(c)) {
             tokens.push({ kind: "punct", text: advance(), loc, start, end: i });
-        } else { fail("unsupported character: " + c, loc); }
+        } else { fail({ kind: "unsupported-syntax", capabilityCode: "lex.character" }, "unsupported character: " + c, loc); }
     }
     tokens.push({ kind: "eof", text: "<eof>", loc: { line, column }, start: i, end: i });
-    return { tokens, error };
+    return { tokens, error, rejection };
 }

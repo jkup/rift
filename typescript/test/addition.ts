@@ -111,7 +111,7 @@ check(execute("let lone = left + 1;", utfRealm).type === "normal", "lone surroga
 const lone = value(utfRealm, "lone");
 check(lone.kind === "string" && lone.value === "A\u0000\ud8001", "NUL and lone surrogate preserved");
 const sentinel: ThrowCompletion = {
-    type: "throw", value: { kind: "object", object: new GuestObject() },
+    type: "throw", origin: { kind: "guest" }, value: { kind: "object", object: new GuestObject() },
     diagnostic: { phase: "runtime", name: "Uncaught", message: "sentinel", loc: { line: 31, column: 7 } },
 };
 class ObservedObject extends GuestObject {
@@ -196,7 +196,7 @@ for (const name of ["add"]) {
         let symbolTrace = "";
         const symbolValue: Value = { kind: "symbol", value: new GuestSymbol("x") };
         const symbolLoc: Location = { line: 91, column: 4 };
-        const symbolThrow: ThrowCompletion = { type: "throw", value: symbolValue, diagnostic: { phase: "runtime", name: "Sentinel", message: "symbol", loc: symbolLoc } };
+        const symbolThrow: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value: symbolValue, diagnostic: { phase: "runtime", name: "Sentinel", message: "symbol", loc: symbolLoc } };
         const operand = new GuestObject();
         operand.bootstrapDefine("valueOf", { value: builtin(symbolRealm, (_r, _args, _context, _at) => {
             symbolTrace += "H";

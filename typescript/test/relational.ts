@@ -123,7 +123,7 @@ for (const op of ["<", ">", "<=", ">="]) {
     objectExpressions.push("operand " + op + " 2", "2 " + op + " operand", "operand " + op + " 'x'", "'x' " + op + " operand");
 }
 const sentinel: ThrowCompletion = {
-    type: "throw", value: { kind: "object", object: new GuestObject() },
+    type: "throw", origin: { kind: "guest" }, value: { kind: "object", object: new GuestObject() },
     diagnostic: { phase: "runtime", name: "Uncaught", message: "sentinel", loc: { line: 31, column: 7 } },
 };
 class ObservedObject extends GuestObject {
@@ -224,7 +224,7 @@ for (const name of ["less","greater","lessEqual","greaterEqual"]) {
         let symbolTrace = "";
         const symbolValue: Value = { kind: "symbol", value: new GuestSymbol("x") };
         const symbolLoc: Location = { line: 91, column: 4 };
-        const symbolThrow: ThrowCompletion = { type: "throw", value: symbolValue, diagnostic: { phase: "runtime", name: "Sentinel", message: "symbol", loc: symbolLoc } };
+        const symbolThrow: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value: symbolValue, diagnostic: { phase: "runtime", name: "Sentinel", message: "symbol", loc: symbolLoc } };
         const operand = new GuestObject();
         operand.bootstrapDefine("valueOf", { value: builtin(symbolRealm, (_r, _args, _context, _at) => {
             symbolTrace += "H";

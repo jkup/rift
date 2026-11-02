@@ -1,5 +1,5 @@
 import type { Expr, Location, Stmt, FunctionSource } from "./syntax.js";
-import { Environment, GuestObject, UNDEFINED, equal, failure, getValue, normal, putValue, truthy, type Completion, type ReferenceResult, type Value, type OperationContext, type ValueCompletion } from "./runtime.js";
+import { Environment, GuestObject, UNDEFINED, equal, failure, resourceFailure, getValue, normal, putValue, truthy, type Completion, type ReferenceResult, type Value, type OperationContext, type ValueCompletion } from "./runtime.js";
 import type { Realm } from "./realm.js";
 import { stringConcat, stringCompare } from "./strings.js";
 import { GuestArray } from "./array-object.js";
@@ -31,7 +31,7 @@ export class Evaluator {
         this.context = this.activeContext;
     }
     tick(loc: Location): ValueCompletion {
-        if (++this.steps > this.maxSteps) return failure("RangeError", "execution step limit exceeded", loc);
+        if (++this.steps > this.maxSteps) return resourceFailure("steps", this.steps, this.maxSteps, "execution step limit exceeded", loc);
         return normal();
     }
     closure(params: string[], body: Stmt[], environment: Environment, source: FunctionSource | null): Value {
@@ -62,8 +62,9 @@ export class Evaluator {
         const budget = this.tick(stmt.loc);
         if (budget.type !== "normal") return budget;
         if (++this.depth > 256) {
+            const result = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", stmt.loc);
             this.depth--;
-            return failure("RangeError", "evaluation nesting limit exceeded", stmt.loc);
+            return result;
         }
         try {
             return this.statementInner(stmt, env, receiver);
@@ -105,7 +106,7 @@ export class Evaluator {
                 const result = stmt.value === null ? normal() : this.evaluate(stmt.value, env, receiver);
                 if (result.type !== "normal") return result;
                 if (stmt.kind === "return") return { type: "return", value: result.value };
-                return { type: "throw", value: result.value, diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: stmt.loc } };
+                return { type: "throw", origin: { kind: "guest" }, value: result.value, diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: stmt.loc } };
             }
             case "break": case "continue": return { type: stmt.kind, value: UNDEFINED };
         }
@@ -125,8 +126,9 @@ export class Evaluator {
         const budget = this.tick(expr.loc);
         if (budget.type !== "normal") return budget;
         if (++this.depth > 256) {
+            const result = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", expr.loc);
             this.depth--;
-            return failure("RangeError", "evaluation nesting limit exceeded", expr.loc);
+            return result;
         }
         try {
             // Only the direct typeof identifier may bypass GetValue, and only
@@ -280,7 +282,7 @@ export class Evaluator {
     call(callee: Value, receiver: Value, args: Value[], loc: Location): ValueCompletion {
         if (callee.kind !== "object" || callee.object.callable === null) return failure("TypeError", "value is not callable", loc);
         const fn = callee.object.callable;
-        if (this.calls >= this.maxCalls) return failure("RangeError", "call depth limit exceeded", loc);
+        if (this.calls >= this.maxCalls) return resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
         const callerRealm = this.activeContext.realm;
         this.calls++;
         try {

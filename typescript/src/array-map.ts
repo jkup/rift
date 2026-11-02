@@ -1,6 +1,6 @@
 import { GuestArray } from "./array-object.js";
 import { lengthOfArrayLike } from "./array-like.js";
-import { failure, normal, type GuestObject, type OperationContext, type Value, type ValueCompletion } from "./runtime.js";
+import { failure, unsupportedFailure, normal, type GuestObject, type OperationContext, type Value, type ValueCompletion } from "./runtime.js";
 import type { Location } from "./syntax.js";
 
 // Internal object-only operation. Boxing and non-default species are deferred.
@@ -12,7 +12,7 @@ export function mapObjectDefaultArray(object: GuestObject, callback: Value, this
     if (object instanceof GuestArray) {
         const constructor = object.internalGet("constructor", input, loc);
         if (constructor.type === "throw") return constructor;
-        if (constructor.value.kind !== "undefined") return failure("TypeError", "unsupported map constructor/species", loc);
+        if (constructor.value.kind !== "undefined") return unsupportedFailure("runtime.map-species", "TypeError", "unsupported map constructor/species", loc);
     }
     if (length.value > 4294967295) return failure("RangeError", "map result length exceeds array limit", loc);
     const result = context.realm.createArray();

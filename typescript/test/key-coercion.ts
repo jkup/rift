@@ -40,7 +40,7 @@ function setup(): Evaluator {
     return active;
 }
 const loc: Location = { line: 19, column: 7 };
-const sentinel: ThrowCompletion = { type: "throw", value: obj(new GuestObject()), diagnostic: { name: "RangeError", phase: "runtime", message: "key sentinel", loc } };
+const sentinel: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value: obj(new GuestObject()), diagnostic: { name: "RangeError", phase: "runtime", message: "key sentinel", loc } };
 // Synthetic Get/Set observations are host dispatch tests, not accessors/proxies.
 class Observed extends GuestObject {
     active: Evaluator;

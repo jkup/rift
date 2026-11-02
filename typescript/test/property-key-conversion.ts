@@ -148,7 +148,7 @@ class ObservedObject extends GuestObject {
     receiver: Value = UNDEFINED;
     expectedReceiver: Value = UNDEFINED;
     observedKey: PropertyKey = "";
-    sentinel: ThrowCompletion = { type: "throw", value: obj(new GuestObject()), diagnostic: { phase: "runtime", name: "RangeError", message: "sentinel", loc } };
+    sentinel: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value: obj(new GuestObject()), diagnostic: { phase: "runtime", name: "RangeError", message: "sentinel", loc } };
     internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
         this.observedKey = key;
         this.trace += "G";
