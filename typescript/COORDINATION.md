@@ -604,3 +604,7 @@ Acceptance/next contract pushed83e0eaa. Active sole TS-031A writer chat `01a19c1
 ## TS-031A progress — 2026-11-02 11:53 heartbeat
 
 Writer remains active; cursorae992a7a-a611-4692-b533-b847b8c37bca:2. Reports55 host-only tests passing,33-file60-variant plan in each lane with zero execution/passes, and corrected denominator preservation after missing harness. Still validating actual pinned corpus bytes and preparing evidence; claims not independently accepted yet. No competing builds/edits to owned files, successor or main merge. Remote PR79 still6c5ff975; Claude correction pending.
+
+## TS-031A independent review — 2026-11-02 12:08 heartbeat
+
+Reviewed cb7a1bc input/planning, tests/map/dependency diff; independent58 host tests,4 exact-corpus tests,typecheck and runner20 pass. Runtime/guest/build/probe paths unchanged. Read-only parallel schema/ledger review reproduced three acceptance blockers: self-reported expectedNegative not bound to planned metadata (synthetic normal record falsely passes planned runtime TypeError); exported classify bypasses cross-record validation (harnessValidated=false still passes); resource schema rejects legitimate at-limit call guard64/64 or0/0. Root independently reproduced first false pass. Sent bounded fixes to same owner; no acceptance/successor/runtime change. Logs build/ts031a-review-*.log and corpus artifacts build/ts031a-review. Writer idle cursor before follow-up ae992a7a-a611-4692-b533-b847b8c37bca:3. PR79 unchanged6c5ff975; Claude fix pending.
