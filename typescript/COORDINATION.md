@@ -608,3 +608,9 @@ Writer remains active; cursorae992a7a-a611-4692-b533-b847b8c37bca:2. Reports55 h
 ## TS-031A independent review — 2026-11-02 12:08 heartbeat
 
 Reviewed cb7a1bc input/planning, tests/map/dependency diff; independent58 host tests,4 exact-corpus tests,typecheck and runner20 pass. Runtime/guest/build/probe paths unchanged. Read-only parallel schema/ledger review reproduced three acceptance blockers: self-reported expectedNegative not bound to planned metadata (synthetic normal record falsely passes planned runtime TypeError); exported classify bypasses cross-record validation (harnessValidated=false still passes); resource schema rejects legitimate at-limit call guard64/64 or0/0. Root independently reproduced first false pass. Sent bounded fixes to same owner; no acceptance/successor/runtime change. Logs build/ts031a-review-*.log and corpus artifacts build/ts031a-review. Writer idle cursor before follow-up ae992a7a-a611-4692-b533-b847b8c37bca:3. PR79 unchanged6c5ff975; Claude fix pending.
+
+## TS-031A acceptance — 2026-11-02 12:23 heartbeat
+
+Accepted500d09a after actual correction/source/test review; all three reported gaps fixed with shared invariants and parent-owned context. Independently66 host tests4 exact-corpus checks pass, protected runtime/guest/build/probe paths unchanged. Logs build/ts031a-rereview-{tests,corpus}.log and build/ts031a-rereview artifacts. Prior independent typecheck/runner20 plus producer correction recheck reviewed. No native rerun; unchanged211/32 engine baseline inherited. Writer idle cursor ae992a7a-a611-4692-b533-b847b8c37bca:5. PR79 remote unchanged6c5ff975, Claude fix pending. Main unchanged64bf139.
+
+Next frozen TS-031B-P: audit and design structured engine outcomes and observation driver, preserving all conformance blockers. No runtime implementation until review; next designer pending dispatch.
