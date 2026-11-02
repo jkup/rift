@@ -1292,8 +1292,25 @@ Coordinator acceptance: TS-025A accepted through27e5b27 on 2026-11-02. Reviewed 
 
 ### TS-026P — Typeof and void design
 
-Status: **ready**. Owner: next assigned Codex design chat, existing codex/primitive-computed-keys. Prerequisite accepted TS-025A27e5b27. Bounded design only for two remaining unary operators. Own docs/typeof-void.md, docs/validation/ts-026p/ and TASKS claim/handoff. Coordinator owns COORDINATION.md; Claude outputs reserved.
+Status: **review needed**. Owner: Codex chat `01a19afd-670b-7703-9dcf-262da02d06bf`, sole TS-026P design writer, 2026-11-02; dispatch base `b856f28`, inspected checkout `9a3c5bd`, existing `codex/primitive-computed-keys`. Prerequisite accepted TS-025A27e5b27. Bounded design only for two remaining unary operators. Own docs/typeof-void.md, docs/validation/ts-026p/ and TASKS claim/handoff. Coordinator owns COORDINATION.md; Claude outputs reserved.
 
 Inspect parser precedence/parentheses/reserved words, Reference/environment resolution and TDZ, evaluator GetValue/callability and resource guards. Consult fixed ECMA-2622025 and revision-pinned engine sources. Freeze smallest correct implementation contract for typeof's unresolvable binding exception versus TDZ and ordinary property/nonreference evaluation; void must evaluate/GetValue once, propagate abrupt results and return undefined without coercion. Cover all represented Value kinds including null, symbols, wrappers, callable guest/builtin objects versus noncallable Number namespace, foreign objects and mutable visible properties. No BigInt/HTMLDDA claim, general boxing change, binding-scope overhaul or unrelated syntax.
 
 Deliver readable named matrices with fixed expected strings/undefined, effects, exact error phases/locations, binding shadowing/parentheses/TDZ, property key conversion and thrown/host-fault cleanup. Define exact tick/depth behavior for direct typeof identifiers without silently bypassing guards. Cover precedence, nested unary operators, line terminators, function source retention, no conversion hooks on classified values and independent expected runtime-read fixtures. Audit current typeof/void rejections including TS-025A P23-P24; specify precise current migrations while retaining historical evidence and unrelated unsupported syntax. Preserve177 cases/27 gates in eventual implementation, with both rebuilt hosts and static-only/separate coverage. No production/tests/manifests/pins/C++/Claude changes, branch switching/main merge or successor. Probe only concrete compiler uncertainties. Commit/push design and stop for independent review; no new runtime support claim.
+
+TS-026P handoff (2026-11-02): docs/typeof-void.md freezes a pure represented-Value
+classifier, localized direct-identifier unresolved exception inside existing
+evaluate guards, TDZ preservation and mandatory void operand GetValue. No
+classification/discard coercion; operand key effects, original abrupt records,
+object-only member limits and Realm/budget cleanup remain explicit.
+Fixed2025 specification and pinned engine262/V8 source/blob evidence recorded in
+docs/validation/ts-026p/. Named V/B/E/P/R/C matrices contain120 primary rows plus
+variants, exact diagnostics/resources, native default64 recursion requirements
+and independent runtime-read fixture plan. Inventory113files/183candidate lines
+identifies only TS-025A P23/P24 current guest rejection migrations; preserves
+all unrelated assertions and historical evidence. Documentation/inventory checks
+pass; no runtime suites, builds, coverage or compiler probes run. No concrete
+compiler uncertainty warranted a probe. Prior accepted177/177bothhosts/27gates
+is baseline only, not typeof/void support. No production/tests/manifests/pins/C++,
+Claude/COORDINATION edits, branch switch/main merge or successor. Commit/push
+coherent design and stop for independent coordinator review; not self-accepted.

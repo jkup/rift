@@ -1,0 +1,184 @@
+113 files inspected; 183 candidate lines.
+src/array-object.ts:8:function invariant(result: InternalBooleanCompletion): void {
+src/builtins/array.ts:16:export function registerArrayConversions(realm: Realm, objectToString: Value): void {
+src/builtins/boolean.ts:17:export function registerBooleanConversions(realm: Realm): void {
+src/builtins/function.ts:17:export function registerFunction(realm: Realm): void {
+src/builtins/number.ts:8:export function registerNumber(realm: Realm): void {
+src/builtins/number.ts:29:function registerPredicate(realm: Realm, namespace: GuestObject, name: string, invoke: Builtin): void {
+src/builtins/number.ts:42:export function registerNumberConversions(realm: Realm): void {
+src/builtins/object.ts:8:export function registerObjectValueOf(realm: Realm): void {
+src/builtins/string.ts:18:export function registerStringConversions(realm: Realm): void {
+src/builtins/symbol.ts:18:export function registerSymbolConversions(realm: Realm): void {
+src/cli.ts:6:function report(filename: string, diagnostic: Diagnostic): void {
+src/cli.ts:9:function main(): void {
+src/evaluator.ts:141:                if (typeof value === "number") return normal({ kind: "number", value });
+src/evaluator.ts:142:                if (typeof value === "boolean") return normal({ kind: "boolean", value });
+src/lexer.ts:28:    function fail(message: string, loc: Location): void {
+src/parser.ts:4:const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
+src/parser.ts:33:    fail(message: string, loc: Location): void {
+src/parser.ts:36:    expect(text: string): void {
+src/parser.ts:41:        if (t.kind !== "word" || RESERVED.includes(" " + t.text + " ")) this.fail("expected binding identifier", t.loc);
+src/parser.ts:274:        if (t.kind === "word" && !RESERVED.includes(" " + t.text + " ")) return { kind: "identifier", loc, name: t.text };
+src/property-keys.ts:6:    if (typeof key !== "string") return undefined;
+src/property-keys.ts:16:    if (typeof key !== "string") return undefined;
+src/realm.ts:15:export type Output = (line: string) => void;
+src/realm.ts:85:function setBuiltinMetadata(object: GuestObject, name: string, length: number): void {
+src/runtime.ts:74:            if (typeof key !== "string") symbols.push(key);
+src/runtime.ts:192:    bootstrapDefine(key: PropertyKey, desc: DataDescriptorUpdate): void {
+src/symbols.ts:17:    return typeof key === "string" ? key : symbolDescriptiveString(key);
+test/abstract-equality.ts:19:function check(ok: boolean, label: string): void { if (!ok) throw new Error("equality " + label); }
+test/abstract-equality.ts:20:function put(target: GuestObject, key: PropertyKey, value: Value): void {
+test/abstract-equality.ts:23:function bind(realm: Realm, name: string, value: Value): void {
+test/abstract-equality.ts:27:function expect(result: InternalBooleanCompletion, expected: boolean, label: string): void {
+test/abstract-equality.ts:30:function error(result: InternalBooleanCompletion | ValueCompletion, message: string, at: Location = loc): void {
+test/abstract-equality.ts:60:function pair(left: Value, right: Value, expected: boolean, label: string): void {
+test/abstract-equality.ts:174:        const record = (receiver: Value, args: Value[], name: string): void => {
+test/addition.ts:9:function check(ok: boolean, label: string): void {
+test/addition.ts:12:function seed(realm: Realm, name: string, value: Value): void {
+test/addition.ts:29:function number(source: string, expected: number): void {
+test/addition.ts:37:function string(source: string, expected: string): void {
+test/array-length-coercion.ts:15:function check(ok: boolean, label: string): void {
+test/array-length-coercion.ts:25:function put(target: GuestObject, key: string, value: Value): void {
+test/array-length-coercion.ts:32:function seed(active: Evaluator, key: string, value: Value): void {
+test/array-length-coercion.ts:40:function bool(result: InternalBooleanCompletion, expected: boolean): void {
+test/array-length-coercion.ts:43:function error(result: InternalBooleanCompletion | Completion, name: string, message: string): void {
+test/array-length-coercion.ts:46:function length(target: GuestObject, expected: number, writable = true): void {
+test/array-length-coercion.ts:51:function hits(active: Evaluator, expected: number, trace: string): void {
+test/array-length-coercion.ts:87:function effect(active: Evaluator, invoke: Builtin): void {
+test/array-length-coercion.ts:103:                check(result.type === "normal" && typeof result.value !== "boolean" && result.value === rhs, "assignment RHS identity");
+test/array-length-coercion.ts:105:                check(result.type === "normal" && typeof result.value === "boolean" && result.value, "Define success");
+test/array-like.ts:13:function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+test/array-like.ts:14:function boolean(result: InternalBooleanCompletion, expected: boolean): void {
+test/array-like.ts:17:function numeric(result: NumberCompletion, expected: number): void {
+test/array-like.ts:22:function unsupported(result: NumberCompletion): void {
+test/array-literals.ts:10:function check(ok: boolean, message: string): void {
+test/array-literals.ts:25:function shape(object: GuestArray, length: number, keys: string, realm: Realm): void {
+test/array-map.ts:19:function check(ok: boolean, message: string): void {
+test/array-map.ts:32:function put(object: GuestObject, key: string, value: Value): void {
+test/array-map.ts:39:function error(completion: Completion, name: string, at: Location = loc): void {
+test/array-map.ts:61:function element(object: GuestObject, key: string, value: Value): void {
+test/array-map.ts:69:function hole(object: GuestObject, key: string): void {
+test/array-map.ts:96:function traceIs(expected: string): void {
+test/array-storage.ts:12:function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
+test/array-storage.ts:16:function bool(r: InternalBooleanCompletion, expected: boolean): void {
+test/array-storage.ts:19:function error(r: InternalBooleanCompletion | Completion, name: string): void {
+test/array-storage.ts:25:function length(a: GuestArray, expected: number, writable = true): void {
+test/array-storage.ts:30:function element(a: GuestArray, key: string, configurable = true): void {
+test/array-storage.ts:233:function bootstrapFault(target: GuestObject, key: string, desc: DataDescriptorUpdate): void {
+test/array-string-conversion.ts:15:function check(ok: boolean, label: string): void {
+test/array-string-conversion.ts:19:function put(object: GuestObject, key: PropertyKey, value: Value): void {
+test/array-string-conversion.ts:25:function expect(completion: ValueCompletion, expected: Value, label: string): void {
+test/array-string-conversion.ts:28:function error(completion: ValueCompletion, message: string, name: string = "TypeError"): void {
+test/array-string-conversion.ts:58:function reads(object: Observed, expected: PropertyKey[], label: string): void {
+test/array-string-conversion.ts:246:function depthError(completion: ValueCompletion): void {
+test/boolean-string-conversions.ts:18:function check(ok: boolean, label: string): void {
+test/boolean-string-conversions.ts:28:function expect(completion: ValueCompletion, expected: Value, label: string): void {
+test/boolean-string-conversions.ts:31:function error(completion: ValueCompletion, message: string, at: Location = loc, name: string = "TypeError"): void {
+test/boolean-string-conversions.ts:37:function put(object: GuestObject, key: PropertyKey, value: Value): void {
+test/boolean-string-conversions.ts:40:function keys(actual: PropertyKey[], expected: PropertyKey[]): void {
+test/boolean-string-conversions.ts:65:export function testBooleanStringConversions(): void {
+test/boolean-string-conversions.ts:191:function testLookupAndBoundaries(): void {
+test/boolean-string-conversions.ts:311:function seed(realm: Realm, name: string, value: Value): void {
+test/boolean-string-conversions.ts:314:function testGuestConsumers(): void {
+test/conversion.ts:14:function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
+test/conversion.ts:15:function numeric(actual: number, expected: number, label: string): void {
+test/conversion.ts:18:function completion(actual: NumberCompletion, expected: number, label: string): void {
+test/conversion.ts:22:function primitive(value: Value, expected: number, uint: number, label: string): void {
+test/conversion.ts:32:function string(value: string, expected: number): void {
+test/definition-dispatch.ts:10:function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
+test/definition-dispatch.ts:12:function boolean(r: InternalBooleanCompletion, expected: boolean): void {
+test/definition-dispatch.ts:39:function exact(r: Completion | InternalBooleanCompletion, target: DefinitionObject): void {
+test/delete-operator.ts:68:function check(ok: boolean, label: string): void {
+test/delete-operator.ts:74:function put(target: GuestObject, key: PropertyKey, value: Value): void {
+test/delete-operator.ts:78:function bind(realm: Realm, name: string, value: Value): void {
+test/delete-operator.ts:96:function expect(result: Completion, value: Value = b(true)): void {
+test/delete-operator.ts:100:function error(result: Completion, message: string, line = 1, column = 1): void {
+test/delete-operator.ts:128:    "delete typeof x;",
+test/delete-operator.ts:129:    "delete void x;",
+test/delete-operator.ts:145:    "unsupported or unexpected syntax: typeof",
+test/delete-operator.ts:146:    "unsupported or unexpected syntax: void",
+test/delete-operator.ts:190:    onDelete: () => void = () => {};
+test/delete-operator.ts:1447:    bind(r, "method", typeof methodKey === "string" ? s(methodKey) : { kind: "symbol", value: methodKey });
+test/function-call.ts:10:function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+test/function-call.ts:32:function error(c: Completion, name: string, message: string, line: number, column: number): void {
+test/function-string-conversion.ts:13:function check(ok: boolean, label: string): void {
+test/function-string-conversion.ts:27:function expect(completion: ValueCompletion, expected: Value, label: string): void {
+test/function-string-conversion.ts:30:function error(completion: ValueCompletion, message: string, name: string = "TypeError"): void {
+test/function-string-conversion.ts:36:function put(target: GuestObject, key: PropertyKey, value: Value): void {
+test/function-string-conversion.ts:60:function text(value: Value, expected: string, label: string): void {
+test/function-string-conversion.ts:384:function idle(evaluator: Evaluator): void {
+test/key-assertions.ts:7:        if (typeof key !== "string") throw new Error("expected only string keys");
+test/key-coercion.ts:11:function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
+test/key-coercion.ts:19:function seed(active: Evaluator, name: string, value: Value): void {
+test/key-coercion.ts:50:    mark(letter: string): void { seed(this.active, "trace", str(payload(binding(this.active, "trace")) + letter)); }
+test/length-coercion.ts:14:function check(ok: boolean, label: string): void {
+test/length-coercion.ts:23:function put(object: GuestObject, key: string, value: Value): void {
+test/length-coercion.ts:30:function seed(active: Evaluator, key: string, value: Value): void {
+test/length-coercion.ts:47:function number(result: NumberCompletion, expected: number): void {
+test/length-coercion.ts:50:function error(result: NumberCompletion | Completion, name: string): void {
+test/number-conversions.ts:17:function check(ok: boolean, label: string): void {
+test/number-conversions.ts:27:function expect(completion: ValueCompletion, expected: Value, label: string): void {
+test/number-conversions.ts:30:function error(completion: ValueCompletion, message: string, at: Location = loc, name: string = "TypeError"): void {
+test/number-conversions.ts:36:function put(object: GuestObject, key: PropertyKey, value: Value): void {
+test/number-conversions.ts:39:function keys(actual: PropertyKey[], expected: PropertyKey[]): void {
+test/number-conversions.ts:56:export function testNumberConversions(): void {
+test/number-conversions.ts:165:function testLookupAndLengths(): void {
+test/number-conversions.ts:263:function testLengths(realm: Realm): void {
+test/number-conversions.ts:309:function seed(realm: Realm, name: string, value: Value): void {
+test/number-conversions.ts:312:function testGuestConsumers(): void {
+test/number-conversions.ts:362:function testMapLimits(): void {
+test/numeric-operators.ts:9:function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
+test/numeric-operators.ts:10:function seed(realm: Realm, name: string, value: Value): void {
+test/numeric-operators.ts:27:function number(source: string, expected: number): void {
+test/object-descriptors.ts:10:function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
+test/object-descriptors.ts:11:function result(actual: InternalBooleanCompletion, expected: boolean, label: string): void {
+test/object-descriptors.ts:15:function state(o: GuestObject, key: string, value: Value, w: boolean, e: boolean, c: boolean): void {
+test/object-keys.ts:15:function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
+test/object-keys.ts:16:function result(actual: InternalBooleanCompletion, expected: boolean, label: string): void {
+test/object-keys.ts:19:function list(actual: PropertyKey[], expected: PropertyKey[], label: string): void {
+test/object-keys.ts:23:function add(o: GuestObject, key: PropertyKey): void { o.bootstrapDefine(key, { value: UNDEFINED, writable: true, enumerable: true, configurable: true }); }
+test/object-prototypes.ts:11:function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+test/object-prototypes.ts:14:function result(r: InternalBooleanCompletion, expected: boolean, message: string): void {
+test/object-prototypes.ts:17:function read(o: GuestObject, key: string, expected: Value): void {
+test/object-tostring.ts:17:function check(ok: boolean, label: string): void { if (!ok) throw new Error("C " + label); }
+test/object-tostring.ts:25:function expect(completion: ValueCompletion, expected: Value, label: string): void {
+test/object-tostring.ts:28:function error(completion: ValueCompletion, name: string, message: string, at: Location = loc): void {
+test/object-tostring.ts:34:function put(object: GuestObject, key: PropertyKey, value: Value): void {
+test/object-tostring.ts:37:function keys(actual: PropertyKey[], expected: PropertyKey[], label: string): void {
+test/object-tostring.ts:41:function seed(realm: Realm, name: string, value: Value): void {
+test/object-tostring.ts:91:export function testObjectToString(): void {
+test/object-tostring.ts:203:function testTagCompletions(a: Realm, b: Realm, c: Realm, method: Value): void {
+test/object-tostring.ts:277:function testDefaultConsumers(): void {
+test/object-valueof.ts:20:function check(ok: boolean, message: string): void {
+test/object-valueof.ts:42:function error(c: Completion, name: string, message: string, at: Location): void {
+test/operation-context.ts:8:function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
+test/operation-context.ts:29:function range(result: Completion, location: Location): void {
+test/operation-context.ts:184:function idle(evaluator: Evaluator, owner: Realm): void {
+test/operation-context.ts:187:function exactError(result: Completion, name: string, message: string): void {
+test/operation-context.ts:250:function observeEntry(context: OperationContext, owner: Realm, calls: number): void {
+test/operator-coercion.ts:10:function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
+test/operator-coercion.ts:11:function seed(active: Evaluator, name: string, value: Value): void {
+test/operator-coercion.ts:28:function expect(active: Evaluator, source: string, expected: number | string | boolean): void {
+test/primitive-conversion.ts:15:function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
+test/primitive-conversion.ts:25:function define(object: GuestObject, key: PropertyKey, value: Value): void { object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true }); }
+test/primitive-conversion.ts:27:function numberResult(result: ValueCompletion, expected: number, label: string): void {
+test/primitive-conversion.ts:30:function typeError(result: ValueCompletion): void {
+test/primitive-conversion.ts:226:function seed(target: Realm, name: string, value: Value): void { target.global.bindings.set(name, { initialized: true, mutable: true, value }); }
+test/property-key-conversion.ts:15:function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }
+test/property-key-conversion.ts:21:function seed(realm: Realm, name: string, value: Value): void {
+test/property-key-conversion.ts:41:function exact(result: Completion, sentinel: ThrowCompletion): void {
+test/property-key-conversion.ts:46:function typeError(result: Completion, message: string, column: number): void {
+test/property-key-conversion.ts:216:    replaceBindings(): void {
+test/realms.ts:101:function checkGraph(ok: boolean, message: string): void {
+test/realms.ts:115:function graphPut(object: GuestObject, key: string, value: Value): void {
+test/realms.ts:118:function metadata(object: GuestObject, expectedName: string, expectedLength: number): void {
+test/relational.ts:10:function check(ok: boolean, label: string): void {
+test/relational.ts:13:function seed(realm: Realm, name: string, value: Value): void {
+test/relational.ts:32:function row(left: string, right: string, expected: boolean[]): void {
+test/symbol-conversions.ts:15:function check(ok: boolean, label: string): void {
+test/symbol-conversions.ts:25:function error(completion: ValueCompletion, message: string, at: Location = loc, name: string = "TypeError"): void {
+test/symbol-conversions.ts:31:function put(object: GuestObject, key: PropertyKey, value: Value): void {
+test/symbol-conversions.ts:34:function seed(realm: Realm, name: string, value: Value): void {
+test/symbol-conversions.ts:55:function keys(actual: PropertyKey[], expected: PropertyKey[], label: string): void {
+test/symbol-conversions.ts:60:export function testSymbolConversions(): void {
+test/symbol-conversions.ts:252:function testGuestCalls(realm: Realm, identity: GuestSymbol): void {
