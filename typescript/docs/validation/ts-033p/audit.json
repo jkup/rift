@@ -1,0 +1,1072 @@
+{
+  "base": "dc460ac",
+  "kind": "read-only source/identity/preservation audit; no guest execution or native build",
+  "node": "v26.13.0",
+  "protectedTrackedFiles": 2285,
+  "sources": [
+    {
+      "path": "src/interpreter.ts",
+      "sha256": "997425b4a2f6cb1d228c669c9feb10addbd523cde1ad0b952229d0d3bfbf3aa0"
+    },
+    {
+      "path": "src/runtime.ts",
+      "sha256": "fc4f64aab3894f6e540204b6c045b0e74b549711585599fe144879fb65f5cefb"
+    },
+    {
+      "path": "src/realm.ts",
+      "sha256": "229550e0d715c72e42eaca23b5c57e985dc0ade1f147a65546610a5bc8dc2d62"
+    },
+    {
+      "path": "src/parser.ts",
+      "sha256": "d1505042b5ac16c2e598d018325a53b1cecafea2984ead469c6ded3e6340ccde"
+    },
+    {
+      "path": "src/lexer.ts",
+      "sha256": "633923a226025b210a6bf93ae1f61de9bd9d59d972a48dd45ff08b332f435338"
+    },
+    {
+      "path": "src/syntax.ts",
+      "sha256": "0aa405a9673f4fb72b33b5e6bb93ed6f65e429dbefa71273224d2b84a30bfa0d"
+    },
+    {
+      "path": "src/evaluator.ts",
+      "sha256": "809734963fd0d8b988ca4866097316590cce191102ae3e19dd9f38f032dd6339"
+    },
+    {
+      "path": "src/observation.ts",
+      "sha256": "ab2ff475caf4b9c831db1fd26cf804b10e2f45e61f01f0655ab26257202e4a59"
+    },
+    {
+      "path": "src/observation-json.ts",
+      "sha256": "3d0561b635419eaf3f55639876b6eca6c0742c6a8c55d4a4104bd4e595d396e3"
+    },
+    {
+      "path": "src/outcomes.ts",
+      "sha256": "ac0e100ac4de91ee224e101b0c104d94b961759e8fd1d411b41218c83dc68582"
+    },
+    {
+      "path": "tools/test262/input.mjs",
+      "sha256": "f3d3378947571a407e7cbe5c9da8921798b547020e371dc6547d9210f3118a6c"
+    },
+    {
+      "path": "tools/test262/driver-result.mjs",
+      "sha256": "9595a6d38e8d3fdbad9e23b71ba4eb0a480cfe7fbc6caf2a6b7522cf3d3071c1"
+    },
+    {
+      "path": "tools/build-native.mjs",
+      "sha256": "4300b33bce42f31574b474b8594aee7aae7eb30e940c113ebc14dab721ef0704"
+    },
+    {
+      "path": "tools/run-guests.mjs",
+      "sha256": "b630601afba35991f281a3383005c192beae9e6dee584f3a74dd1bff53f6bf87"
+    },
+    {
+      "path": "test/cases.json",
+      "sha256": "a613da174021baaed1c21a2740d79f81e00f38e5a1bcbc631151a63beef07986"
+    },
+    {
+      "path": "package.json",
+      "sha256": "3e42e66c76cf561b584e435f723d0489a30fca37c69f47b74e7cb1ca47174f9f"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "3fb5f2eeb2b11e7a121f42f70983a0d8c265e0c3f418ed1d8aafff6e5ff86c9d"
+    },
+    {
+      "path": "src/builtins/number.ts",
+      "sha256": "2eda99679077a9831257b7695e474aba83cb447baedb2e62058c2495f3a44ea4"
+    },
+    {
+      "path": "src/builtins/symbol.ts",
+      "sha256": "ac197795211ece03fbac956940fae0a07361d13ac2d57b74e41da245c622b3ae"
+    },
+    {
+      "path": "src/builtins/string.ts",
+      "sha256": "099f26f1e39575fdffef386408aeead955e01e7276792d96a1fce06580164c7f"
+    },
+    {
+      "path": "src/builtins/object.ts",
+      "sha256": "f73bf54fbc34fd72ed1a04e4b86a911d24968da7cee3a0644be3bd038491c1b8"
+    }
+  ],
+  "corpus": {
+    "pin": "91c70759363c46557b694792bf34a2551a7af5ba",
+    "verifiedTests": 33,
+    "verifiedHarness": 3,
+    "variants": {
+      "strict": 30,
+      "non-strict": 28,
+      "raw": 1,
+      "module": 1
+    },
+    "blockers": [
+      {
+        "id": "S01",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "error-objects"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S01",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "error-objects"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S02",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "error-objects"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S02",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "error-objects"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S03",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S03",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S04",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S04",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S05",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S05",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S06",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S06",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S07",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S07",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S08",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S08",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S09",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S09",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S10",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S10",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S11",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S11",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S12",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S12",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S13",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S13",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S14",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S14",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S15",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S15",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S16",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S16",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S17",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S17",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S18",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S18",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S19",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S19",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S20",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S20",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S21",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "S22",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U01",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "asi"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U01",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "asi"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U02",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "async-functions"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U02",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "async-functions"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U03",
+        "variant": "raw",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "asi"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "directive-script"
+          }
+        ]
+      },
+      {
+        "id": "U04",
+        "variant": "module",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "module"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "module-profile"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U05",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U05",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U06",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U07",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "error-objects"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "global-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U08",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "async"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U08",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "async"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U09",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "RegExp"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U09",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "RegExp"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U10",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "asi"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U10",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "asi"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U11",
+        "variant": "non-strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "return-asi"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      },
+      {
+        "id": "U11",
+        "variant": "strict",
+        "blockers": [
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "return-asi"
+          },
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract"
+          },
+          {
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities"
+          }
+        ]
+      }
+    ]
+  },
+  "inheritedOnly": {
+    "acceptedGuestRecordsPerLane": 212,
+    "acceptedNativeGates": 37
+  },
+  "upstream": [
+    {
+      "url": "https://262.ecma-international.org/16.0/",
+      "bytes": 8169822,
+      "sha256": "6a28f9423133ed7b7c59a40baf620c2740f12f0bc9c251042f2a85b9cc5ed713"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/api.mts",
+      "bytes": 12444,
+      "sha256": "7ef7698d0e8e4ceb5ce1aabdc83bc32136b936954d51c66742ae6464514616c1"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/host-defined/engine.mts",
+      "bytes": 11419,
+      "sha256": "09f98f5e23deecb6107e50215f4d63fdd857df1762d77c595e7b0cb10fe2af06"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/parse.mts",
+      "bytes": 12326,
+      "sha256": "88b21004c2d4cd8dcad208697e62c07df366d54871f6bf5a99ccc4f62f1634c0"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/execution-context/Environment.mts",
+      "bytes": 39245,
+      "sha256": "6f5ab9b2ebda023f98bc8f1e5196b774f28505a3a76a1b36c902069b0bbc3305"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/abstract-ops/function-operations.mts",
+      "bytes": 33041,
+      "sha256": "a6c521c9f81bb94d75a015ab5d351448135c8f996c0e9eeb40e3d67726b176be"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/abstract-ops/execution-contexts.mts",
+      "bytes": 587,
+      "sha256": "2e8fa1169acd6735261bdb754368e7a5811fb8ec6547b0d170b462e2da37f23a"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/LICENSE",
+      "bytes": 1066,
+      "sha256": "171d63abdb8a993e2c2985ac14a509617d0f18dfb1d97108d5641af2bf82e387"
+    }
+  ],
+  "concurrentCoordinatorFile": {
+    "path": "typescript/COORDINATION.md",
+    "sha256": "aafd6a2febd15d90849a772b59d6f3eba1a9e8ee33b9fb197ad59a71c19e4a36",
+    "excludedFromPreservation": true
+  }
+}
