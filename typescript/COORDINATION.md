@@ -722,3 +722,7 @@ Writer active, saved cursor1095f4c7-4d5c-4197-9aa9-6d2ec9b19497:3. Reports added
 Accepted8504127 after actual production/test-migration review and read-only second review; no actionable defects. Independently rebuilt212/212 Node/native37 static gates, host73, reran14768 backend oracle and18decimal controls per lane and preservation audit. Logs build/ts032b-review-*.log; working tree clean after original evidence restoration. Writer idle saved cursor1095f4c7-4d5c-4197-9aa9-6d2ec9b19497:4. Remote open-PR check empty, CL006 still reserved for Claude. Next TS033P design-only follows accepted test262-classification ordered Script prerequisite, no conformance admission. Main unchanged78811ec, no repeated maintenance/integration.
 
 Acceptance/next contract pushed dc460ac. Active sole TS033P DESIGN writer chat `01a19d40-0d3e-78c2-9057-74849b29ddcb`, host local, base dc460ac; explicit wait confirmed active, saved cursorc0c28cda-52a5-4046-8019-a14f47e5d060:2. No implementation before design acceptance; preserve CL006 ownership.
+
+## TS-033P progress — 2026-11-02 17:23 heartbeat
+
+Design writer active, saved cursorc0c28cda-52a5-4046-8019-a14f47e5d060:3. Reports pinned spec distinction between same-unit parse errors and cross-unit declaration instantiation failures, strict reference timing controls, and verified33 selected test/3 harness blobs. Design/evidence still in progress; no independent acceptance, implementation dispatch, competing edits/builds or main integration. CL006 remains Claude-owned.
