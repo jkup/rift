@@ -150,7 +150,7 @@ class Parser {
         return { params, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end } };
     }
     precedence(op: string): number {
-        if (op === "=") return 1;
+        if (op === "=" || op === "+=" || op === "-=" || op === "*=" || op === "/=" || op === "%=") return 1;
         if (op === "?") return 2;
         if (op === "||") return 3;
         if (op === "&&") return 4;
@@ -206,10 +206,18 @@ class Parser {
                 left = { kind: "conditional", loc, test: left, consequent, alternate };
                 continue;
             }
-            const right = this.expression(op === "=" ? precedence : precedence + 1);
-            if (op === "=") {
+            const right = this.expression(precedence === 1 ? precedence : precedence + 1);
+            if (precedence === 1) {
                 if (left.kind !== "identifier" && left.kind !== "member") this.fail("invalid assignment target", loc);
-                left = { kind: "assign", loc, target: left, value: right };
+                if (op === "=") left = { kind: "assign", loc, target: left, value: right };
+                else {
+                    let binaryOp: "+" | "-" | "*" | "/" | "%" = "+";
+                    if (op === "-=") binaryOp = "-";
+                    else if (op === "*=") binaryOp = "*";
+                    else if (op === "/=") binaryOp = "/";
+                    else if (op === "%=") binaryOp = "%";
+                    left = { kind: "compound", loc, target: left, value: right, op: binaryOp };
+                }
             } else left = { kind: "binary", loc, op, left, right };
         }
         this.depth--;

@@ -761,7 +761,7 @@ for (const name of ["W13 SimplePrimitiveWrite", "W14 RHSAbrupt", "W15 SimpleObje
     }
 }
 const parseRows = [
-    { source: "p.x += 1;", column: 5, message: "unsupported operator: +=" },
+    { source: "p.x **= 1;", column: 5, message: "unsupported operator: **" },
     { source: "p.x++;", column: 4, message: "unsupported operator: ++" },
     { source: "++p.x;", column: 1, message: "unsupported operator: ++" },
     { source: "p.x &&= 1;", column: 7, message: "unsupported or unexpected syntax: =" },

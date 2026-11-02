@@ -167,6 +167,17 @@ export class Evaluator {
                 if (value.type !== "normal") return value;
                 return putValue(ref.reference, value.value, this.context, expr.loc);
             }
+            case "compound": {
+                const ref = this.reference(expr.target, env, receiver);
+                if (ref.type === "abrupt") return ref.completion;
+                const oldValue = getValue(ref.reference, this.context, expr.loc);
+                if (oldValue.type !== "normal") return oldValue;
+                const right = this.evaluate(expr.value, env, receiver);
+                if (right.type !== "normal") return right;
+                const result = this.binary(expr.op, oldValue.value, right.value, expr.loc);
+                if (result.type !== "normal") return result;
+                return putValue(ref.reference, result.value, this.context, expr.loc);
+            }
             case "function": return normal(this.closure(expr.params, expr.body, env, expr.source));
             case "array": {
                 const object = this.context.realm.createArray();

@@ -1589,8 +1589,49 @@ Coordinator acceptance: TS-030P accepteda7294bb (delivery51cfbea), 2026-11-02. R
 
 ### TS-030A — Arithmetic compound assignment implementation
 
-Status: **ready**. Prerequisite accepted TS-030Pa7294bb. Implement docs/compound-assignment.md, all178 named matrix rows and explicit five-operator variants in validation/ts-030p/matrix.md, exact A1-A8 migrations. Own minimal lexer/parser/syntax/evaluator integration, dedicated readable driver/runtime fixtures, listed migration/registration/scope/evidence/TASKS updates. Coordinator owns COORDINATION.md; Claude tasks reserved.
+Status: **review needed**. Owner: Codex chat `01a19baf-2549-75f0-84bd-e8094fe3de3d`, branch `codex/primitive-computed-keys`, dispatch base `f587e86`. Prerequisite accepted TS-030Pa7294bb. Implement docs/compound-assignment.md, all178 named matrix rows and explicit five-operator variants in validation/ts-030p/matrix.md, exact A1-A8 migrations. Own minimal lexer/parser/syntax/evaluator integration, dedicated readable driver/runtime fixtures, listed migration/registration/scope/evidence/TASKS updates. Coordinator owns COORDINATION.md; Claude tasks reserved.
 
 Admit only += -= *= /= %=; separate compound AST with explicit binary-op union. Capture one reference, Get once before RHS, evaluate RHS once, reuse binary helper then Put once. No synthetic binary AST or duplicated target/key; no helper semantic changes. Preserve right associativity, target validation, original Receiver/key cache, captured old Value, conversion order and guard/location contracts. Keep other operator families rejected. Only two enumerated old fixtures/expected records migrate to **= while preserving parse-before-effects; no baseline case removed. Historical evidence immutable.
 
 Cover all literal oracles/variants, actual native default64 key and operand recursion, host/guest/foreign Realm failures and seeded cleanup. Add disk-read CLI fixtures with literal expected stdout/stderr/status for all five operators, one-time key/RHS effects, Get-before-RHS and coercion/write failure, parse-before-effects and source retention; map these to matrix coverage. Preserve203 prior names/31 gates with audited A2-A7-only migrations. Typecheck, runner/probes, full rebuilt Node/native, all static-only builds and separate parsed coverage mandatory. Retain failures/reductions, report oracle contradictions before changing expectations. Named readable scenarios; avoid dense multi-statement lines/nested resource selection chains. No unrelated syntax/built-ins, pins/C++/Claude/COORDINATION edits, branch switch/main merge or successor. Commit/push tested milestone and stop for independent review.
+
+TS-030A handoff (2026-11-02): separate compound Expr and minimal lexer/parser/
+evaluator integration implement exactly five arithmetic compounds. Existing
+binary/reference/runtime helpers unchanged. Dedicated readable driver maps all178
+frozen rows/variants, seven disk-read CLI fixtures and one additive native gate.
+A2-A7 migrations only; audit preserves203 prior names/31 gates,70 fixtures and35
+old drivers, with exactly two expected-record changes and two fixture replacements.
+
+Final rebuilt Node/native211/211 each, no skips;32 static-only builds and separately
+parsed zero-dynamic coverage gates PASS. Driver2709/2709 static. Typecheck PASS,
+runner20/20 and probes10/10. Actual constructor-default64 host/guest key recursion
+261/325 and operand326/390 pass for all five ops, including foreign Realm/primitive
+variants, small limits and seeded abrupt/host-fault cleanup. No frozen oracle
+correction. Retained new CLI expectation typo, Zig sandbox access failure and
+three dynamic test statements with minimal before/after reductions; corrected
+only test callback signatures and operator string extraction. See
+[complete evidence](docs/validation/ts-030a/README.md), row map and preservation audit.
+
+Commit/push tested milestone on existing branch under owner authorization, then
+stop for independent review. No self-acceptance, successor or main merge.
+TS-030A delivery: tested local implementation commit `682280d`. Automatic approval
+review rejected `git push origin codex/primitive-computed-keys` because it treated
+repository code/validation artifacts as sensitive egress without trusted payload/
+destination authorization. No bypass or alternate export attempted. Publication
+awaits approval/coordinator resolution. Independent acceptance remains pending.
+
+TS-030A independent-review revision (2026-11-02): addressed the three bounded
+assertion gaps reported against682280d. R1-R28 now assert literal Get/Set counts,
+RHS attempt versus normal completion, RHS body calls and retained target/binding/
+prototype state; R27 checks retry progress. C3 now runs both operand hooks after
+foreign RHS and checks BKCGRLHS with caller Realm restoration. Added explicit
+stored-value assertions for E21/E22/E25/E26/E27/E28 and W3/W8/W10/W16/W17.
+All prior assertions retained; no production or frozen expectation changes.
+
+Rebuilt Node/native211/211 each;32/32 static-only and separately parsed coverage
+gates PASS, driver2756/2756 static. Typecheck, runner20 and probes10 PASS.
+Preservation audit reproduced; earlier evidence retained under ts-030a/pre-review/.
+Commit the revision and stop for independent re-review; no self-acceptance,
+successor, branch switch, COORDINATION edit or main merge.
+
+Coordinator acceptance: TS-030A accepted a190709 (production682280d), 2026-11-02. All three review findings resolved with literal state/effect assertions and foreign-RHS operand restoration coverage; no production changes in revision. Independent rebuilt Node/native211/211 each, no skips;32 static-only build/separate coverage gates PASS; preservation audit reproduced. Producer typecheck/runner20/probes10 evidence reviewed. Native evidence remains Windows x64, not full ECMAScript conformance.

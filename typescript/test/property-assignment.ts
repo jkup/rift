@@ -1352,7 +1352,7 @@ for (const row of recursionRows) {
     expect(result, s("function f() { /*keep*/ p[k] = 7; }"), "C7 SourceRetention");
 }
 const parseRows = [
-    { source: "p.x += 1;", column: 5, message: "unsupported operator: +=" },
+    { source: "p.x **= 1;", column: 5, message: "unsupported operator: **" },
     { source: "p.x++;", column: 4, message: "unsupported operator: ++" },
     { source: "++p.x;", column: 1, message: "unsupported operator: ++" },
     { source: "p.x &&= 1;", column: 7, message: "unsupported or unexpected syntax: =" },

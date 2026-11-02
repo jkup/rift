@@ -1,1 +1,1 @@
-effect(); p.x += 1;
+effect(); p.x **= 1;

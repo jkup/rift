@@ -466,7 +466,7 @@ const negatives: [string, string, number][] = [
     ["1 ==;", "unsupported or unexpected syntax: ;", 5], ["1 !=;", "unsupported or unexpected syntax: ;", 5],
     ["1 ==== 1;", "unsupported or unexpected syntax: =", 6], ["1 !=== 1;", "unsupported or unexpected syntax: =", 6],
     ["1 = = 1;", "unsupported or unexpected syntax: =", 5], ["1 == 1 = 2;", "invalid assignment target", 1],
-    ["1 == 1, 2;", "expected ';', found ','", 7], ["1 += 1;", "unsupported operator: +=", 3],
+    ["1 == 1, 2;", "expected ';', found ','", 7], ["1 += 1;", "invalid assignment target", 1],
     ["1 => 1;", "unsupported operator: =>", 3], ["1 ** 1;", "unsupported operator: **", 3],
     ["1 << 1;", "unsupported operator: <<", 3], ["1 == == 1;", "unsupported or unexpected syntax: ==", 6],
 ];

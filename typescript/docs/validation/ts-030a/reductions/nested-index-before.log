@@ -1,0 +1,14 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\docs\validation\ts-030a\reductions\nested-index-before.ts
+
+  statements analyzed   3
+  compile statically    3  (100%)
+    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)
+
+  fully static — all analyzed statements compile to native code.
+
+  dynamic tier   (tier assignment, report-only; --tier=auto)
+    2 functions already operate on dynamic values (1 statement)
+      <top level>  C:/Users/jonku/code/rift/typescript/docs/validation/ts-030a/reductions/nested-index-before.ts:1:1: %dyn.class.computed at C:/Users/jonku/code/rift/typescript/docs/validation/ts-030a/reductions/nested-index-before.ts:2:56
+      %dyn.class.computed.0  C:/Users/jonku/code/rift/typescript/docs/validation/ts-030a/reductions/nested-index-before.ts:2:56: dyn.arrLen at C:/Users/jonku/code/rift/typescript/docs/validation/ts-030a/reductions/nested-index-before.ts:2:56
+
+    0 demotion requests (refusals and fences the dynamic tier would replace)

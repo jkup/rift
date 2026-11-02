@@ -25,7 +25,7 @@ cases.push(
     { file: "test/fixtures/primitive-reads-nullish.js", status: 1, error: "1:1: runtime TypeError: cannot convert null or undefined to object" },
     { file: "test/fixtures/primitive-reads-write.js", status: 1, error: "1:1: runtime TypeError: property is not writable: 0" },
     { file: "test/fixtures/primitive-reads-effects.js", stdout: "2 1\n" },
-    { file: "test/fixtures/primitive-reads-parse.js", status: 2, error: "1:15: parse SyntaxError: unsupported operator: +=" },
+    { file: "test/fixtures/primitive-reads-parse.js", status: 2, error: "1:15: parse SyntaxError: unsupported operator: **" },
 );
 // TS-029A C1-C6: frozen independent CLI expectations.
 cases.push(
@@ -34,7 +34,17 @@ cases.push(
     { file: "test/fixtures/property-assignment-nullish.js", status: 1, error: "1:1: runtime TypeError: cannot convert null or undefined to object" },
     { file: "test/fixtures/property-assignment-effects.js", stdout: "rhs\nkey\n", status: 1, error: "2:1: runtime TypeError: property is not writable: x" },
     { file: "test/fixtures/property-assignment-rhs-wins.js", status: 1, error: "1:10: runtime ReferenceError: missing is not defined" },
-    { file: "test/fixtures/property-assignment-parse.js", status: 2, error: "1:15: parse SyntaxError: unsupported operator: +=" },
+    { file: "test/fixtures/property-assignment-parse.js", status: 2, error: "1:15: parse SyntaxError: unsupported operator: **" },
+);
+// TS-030A: committed files are read by the CLI in both lanes.
+cases.push(
+    { file: "test/fixtures/compound-basic.js", stdout: "15 9 36 4 0\n15 9 36 4 0\n" },
+    { file: "test/fixtures/compound-effects.js", stdout: "15 15 1 1\n" },
+    { file: "test/fixtures/compound-get-failure.js", status: 1, error: "1:1: runtime TypeError: cannot convert null or undefined to object" },
+    { file: "test/fixtures/compound-write-failure.js", stdout: "coerce\n", status: 1, error: "2:1: runtime TypeError: property is not writable: NaN" },
+    { file: "test/fixtures/compound-coercion-failure.js", stdout: "coerce\n", status: 1, error: "1:50: runtime Uncaught: sentinel" },
+    { file: "test/fixtures/compound-parse.js", status: 2, error: "1:11: parse SyntaxError: invalid assignment target" },
+    { file: "test/fixtures/compound-retention.js", stdout: "function f() { /*keep*/ x += 3; }\n" },
 );
 const generated = [
     ["delete-success", "let o={x:1}; console.log(delete o.x, o.x);", 0, "", "true undefined\n"],
@@ -297,6 +307,9 @@ execute("primitive-reads", primitiveReadsCommand, primitiveReadsArgs, { stdout: 
 const assignmentCommand = lane === "node" ? process.execPath : join(root, "build/native/property-assignment" + suffix);
 const assignmentArgs = lane === "node" ? [join(root, "build/node/test/property-assignment.js")] : [];
 execute("property-assignment", assignmentCommand, assignmentArgs, { stdout: "property-assignment ok\n" });
+const compoundCommand = lane === "node" ? process.execPath : join(root, "build/native/compound-assignment" + suffix);
+const compoundArgs = lane === "node" ? [join(root, "build/node/test/compound-assignment.js")] : [];
+execute("compound-assignment", compoundCommand, compoundArgs, { stdout: "compound-assignment ok\n" });
 const equalityCommand = lane === "node" ? process.execPath : join(root, "build/native/abstract-equality" + suffix);
 const equalityArgs = lane === "node" ? [join(root, "build/node/test/abstract-equality.js")] : [];
 execute("abstract-equality", equalityCommand, equalityArgs, { stdout: "abstract-equality ok\n" });

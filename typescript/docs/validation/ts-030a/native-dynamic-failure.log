@@ -1,0 +1,48 @@
+
+> test:guest:native
+> npm run build:native && node tools/run-guests.mjs native
+
+
+> build:native
+> node tools/build-native.mjs
+
+PASS src/cli.ts
+PASS test/realms.ts
+PASS test/object-descriptors.ts
+PASS test/object-prototypes.ts
+PASS test/object-keys.ts
+PASS test/conversion.ts
+PASS test/definition-dispatch.ts
+PASS test/array-storage.ts
+PASS test/array-like.ts
+PASS test/operation-context.ts
+PASS test/array-map.ts
+PASS test/array-literals.ts
+PASS test/property-key-conversion.ts
+PASS test/numeric-operators.ts
+PASS test/addition.ts
+PASS test/relational.ts
+PASS test/primitive-conversion.ts
+PASS test/operator-coercion.ts
+PASS test/key-coercion.ts
+PASS test/length-coercion.ts
+PASS test/array-length-coercion.ts
+PASS test/function-call.ts
+PASS test/object-valueof.ts
+PASS test/array-string-conversion.ts
+PASS test/function-string-conversion.ts
+PASS test/abstract-equality.ts
+PASS test/delete-operator.ts
+PASS test/typeof-void.ts
+PASS test/in-operator.ts
+PASS test/primitive-reads.ts
+PASS test/property-assignment.ts
+DYNAMIC test/compound-assignment.ts
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\compound-assignment.ts
+
+  statements analyzed   2709
+  compile statically    2709  (100%)
+    in dynamic tier     3  (operate on values typed only at runtime; --explain-dynamic lists them)
+
+  fully static — all analyzed statements compile to native code.
+ 
