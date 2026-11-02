@@ -31,7 +31,7 @@ Their literal stdout, stderr and status records live in run-guests.mjs.
 | Rebuilt Node suite | 211/211, no skips | node.log, guest-node-results.json |
 | Rebuilt native suite | 211/211, no skips | native.log, guest-native-results.json |
 | Native static-only builds and separately parsed coverage | 32/32; zero dynamic statements | native-build-results.json, preservation-and-coverage.json |
-| Dedicated driver coverage | 2709/2709 static statements | coverage-final.log |
+| Dedicated driver coverage | 2756/2756 static statements | coverage-final.log |
 | Preservation audit | PASS | audit.mjs, audit.log, preservation-and-coverage.json |
 
 The actual omitted-constructor-limit64 native runs pass for each of the five
@@ -75,3 +75,22 @@ The intermediate parameters-only reduction still inferred a dynamic adapter;
 its failed transcript is retained and explicit types make that reduction static.
 
 Independent coordinator review and acceptance remain pending.
+
+## Independent review revision
+
+The coordinator independently reproduced the original211/211 suites and32 gates,
+then identified three assertion gaps. This revision leaves production unchanged:
+
+- R1–R28 now use a literal progress/state table for Get, Set, RHS evaluator entry,
+  successful RHS completion, builtin RHS body execution and stored target state.
+  R27 additionally checks progress on the exhausted second attempt. The original
+  resource/diagnostic/hook/cleanup assertions remain intact.
+- C3 enables old/right operand hooks and asserts BKCGRLHS. The existing per-stage
+  Realm checks now require foreign R followed by caller L/H/S.
+- Explicit stored values cover E21/E22 freeze, E25/E26/E27 immutable bindings,
+  E28 outer binding, W3 readonly property, W8/W10 prototype property and W16/W17
+  Array indices. Expected values are frozen literals, never copied from results.
+
+The earlier final evidence is preserved under pre-review/. The refreshed evidence
+above represents the review revision; no test, production or oracle failure was
+encountered in this revision. Independent re-review and acceptance remain pending.

@@ -189,7 +189,7 @@
     {
       "entry": "test/compound-assignment.ts",
       "verdict": "PASS",
-      "staticStatements": 2709,
+      "staticStatements": 2756,
       "dynamic": 0
     }
   ],

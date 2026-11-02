@@ -193,12 +193,18 @@ class Measured extends Evaluator {
     peak = 0;
     invocations = 0;
     rhsEvaluations = 0;
+    watchedRHS: Expr | null = null;
+    rhsAttempts = 0;
+    rhsSuccesses = 0;
     compoundRealms: Realm[] = [];
     evaluate(expr: Expr, env: Environment, receiver: Value, allowUnresolvable = false): Completion {
         this.peak = Math.max(this.peak, this.depth + 1);
         if (expr.kind === "literal" && expr.value === 3 || expr.kind === "identifier" && expr.name === "r") this.rhsEvaluations++;
         if (expr.kind === "compound") this.compoundRealms.push(this.context.realm);
-        return super.evaluate(expr, env, receiver, allowUnresolvable);
+        if (expr === this.watchedRHS) this.rhsAttempts++;
+        const result = super.evaluate(expr, env, receiver, allowUnresolvable);
+        if (expr === this.watchedRHS && result.type === "normal") this.rhsSuccesses++;
+        return result;
     }
     call(callee: Value, receiver: Value, args: Value[], at: Location): ValueCompletion {
         if (this.calls < this.maxCalls) this.invocations++;
@@ -412,7 +418,10 @@ for (let i = 0; i < ops.length; i++) {
             const desc = q.target.getOwnProperty("x");
             check(desc !== undefined && desc.writable && desc.enumerable && desc.configurable, name + " recreated descriptor");
         }
-        if (row === 21 || row === 22) check(q.target.getOwnProperty("x")?.writable === false, name + " freeze persists");
+        if (row === 21 || row === 22) {
+            check(q.target.getOwnProperty("x")?.writable === false, name + " freeze persists");
+            check(sameValue(own(q.target, "x"), n(12)), name + " frozen value retained");
+        }
         for (const hint of q.hints) check(sameValue(hint, s(i === 0 ? "default" : "number")), name + " hint");
         q.dispatch(name);
     }
@@ -437,6 +446,9 @@ for (let i = 0; i < ops.length; i++) {
         if (row === 25) error(result, "binding is not mutable: x", name);
         if (row === 26 || row === 27) exact(result, name);
         if (row === 28) expect(result, baseline[i], name);
+        if (row === 25 || row === 26) check(sameValue(binding(q.realm, "x"), n(12)), name + " immutable value retained");
+        if (row === 27) check(sameValue(binding(q.realm, "x"), o(q.old)), name + " immutable object retained");
+        if (row === 28) check(sameValue(binding(q.realm, "x"), baseline[i]), name + " outer binding updated");
         let expectedTrace = "R";
         if (row === 23 || row === 24 || row === 28) expectedTrace = "";
         if (row === 27) expectedTrace = "RL";
@@ -614,6 +626,7 @@ for (let i = 0; i < ops.length; i++) {
             check(sameValue(own(target, "x"), expected), name + " stored");
         }
         check(calls === 1, name + " RHS");
+        if (row === 3) check(sameValue(own(target, "x"), n(12)), name + " readonly value retained");
         if (row === 2 || row === 4) check(sameValue(own(parent, "x"), n(12)), name + " inherited unchanged");
         if (row === 4 || row === 6) check(target.getOwnProperty("x") === undefined, name + " absent own");
     }
@@ -634,6 +647,7 @@ for (let i = 0; i < ops.length; i++) {
             const result = run(e, "p[k] " + ops[i] + " 3;");
             error(result, "property is not writable: " + key, name);
             boxes(realm, base, 2, name);
+            if (row === 8 || row === 10) check(sameValue(own(proto(realm, base), "x"), n(12)), name + " prototype value retained");
             let expected = baseline[i];
             if (row === 9) expected = n(NaN);
             if (row === 11) expected = [s("a3"), n(NaN), n(NaN), n(NaN), n(NaN)][i];
@@ -698,7 +712,11 @@ for (let i = 0; i < ops.length; i++) {
         if (row === 18 || row === 23) error(result, "property is not writable: " + key, name);
         else expect(result, row === 17 ? n(NaN) : baseline[i], name);
         check(rhsCalls === 1 && hooks === (row === 24 ? 1 : 0), name + " calls");
-        if (row === 16) check(sameValue(own(array, "length"), n(1)), name + " length");
+        if (row === 16) {
+            check(sameValue(own(array, "length"), n(1)), name + " length");
+            check(sameValue(own(array, "0"), baseline[i]), name + " stored index0");
+        }
+        if (row === 17) check(sameValue(own(array, "2"), n(NaN)), name + " stored index2");
         if (row === 17) check(sameValue(own(array, "length"), n(3)) && array.getOwnProperty("0") === undefined && array.getOwnProperty("1") === undefined, name + " growth holes");
         if (row === 18) check(sameValue(own(array, "length"), n(0)) && array.getOwnProperty("2") === undefined, name + " rejected growth");
         if (row === 19 || row === 24) check(sameValue(own(array, "length"), baseline[i]), name + " length result");
@@ -894,6 +912,38 @@ for (let i = 0; i < ops.length; i++) {
     bind(realm, "rhs", n(NaN));
     error(run(new Measured(realm), "  (p[k]) " + ops[i] + " rhs;"), "invalid array length", "L10 Array" + names[i], 3, "RangeError");
 }
+// Literal progress/state oracles for R1-R28. Get/Set include primitive boxes.
+// RHS attempt is entry to evaluate; success requires a normal completion.
+const resourceEffects = [
+    { get: 1, set: 1, attempt: 1, success: 1, body: 0, stored: "result" }, // R1
+    { get: 0, set: 0, attempt: 0, success: 0, body: 0, stored: "12" }, // R2
+    { get: 0, set: 0, attempt: 0, success: 0, body: 0, stored: "12" }, // R3
+    { get: 0, set: 0, attempt: 0, success: 0, body: 0, stored: "12" }, // R4
+    { get: 0, set: 0, attempt: 0, success: 0, body: 0, stored: "12" }, // R5
+    { get: 1, set: 0, attempt: 1, success: 0, body: 0, stored: "12" }, // R6
+    { get: 1, set: 1, attempt: 1, success: 1, body: 0, stored: "result" }, // R7
+    { get: 0, set: 0, attempt: 1, success: 1, body: 0, stored: "12" }, // R8
+    { get: 0, set: 0, attempt: 0, success: 0, body: 0, stored: "12" }, // R9
+    { get: 1, set: 1, attempt: 1, success: 1, body: 0, stored: "result" }, // R10
+    { get: 1, set: 1, attempt: 1, success: 1, body: 0, stored: "result" }, // R11
+    { get: 1, set: 1, attempt: 1, success: 1, body: 0, stored: "result" }, // R12
+    { get: 0, set: 0, attempt: 0, success: 0, body: 0, stored: "12" }, // R13
+    { get: 0, set: 0, attempt: 0, success: 0, body: 0, stored: "12" }, // R14
+    { get: 1, set: 1, attempt: 1, success: 1, body: 0, stored: "result" }, // R15
+    { get: 1, set: 1, attempt: 1, success: 1, body: 0, stored: "result" }, // R16
+    { get: 1, set: 0, attempt: 1, success: 1, body: 0, stored: "old" }, // R17
+    { get: 1, set: 0, attempt: 1, success: 1, body: 0, stored: "old" }, // R18
+    { get: 1, set: 1, attempt: 1, success: 1, body: 1, stored: "result" }, // R19
+    { get: 1, set: 0, attempt: 1, success: 0, body: 0, stored: "12" }, // R20
+    { get: 0, set: 0, attempt: 0, success: 0, body: 0, stored: "12" }, // R21
+    { get: 0, set: 0, attempt: 0, success: 0, body: 0, stored: "12" }, // R22
+    { get: 0, set: 0, attempt: 0, success: 0, body: 0, stored: "12" }, // R23
+    { get: 1, set: 1, attempt: 1, success: 1, body: 0, stored: "12" }, // R24
+    { get: 1, set: 1, attempt: 1, success: 1, body: 0, stored: "12" }, // R25
+    { get: 1, set: 0, attempt: 1, success: 0, body: 0, stored: "12" }, // R26
+    { get: 1, set: 1, attempt: 1, success: 1, body: 0, stored: "result" }, // R27
+    { get: 1, set: 1, attempt: 0, success: 0, body: 0, stored: "result" }, // R28
+];
 // R1-R28 exact guard budgets. Each row starts from an independently prepared Realm.
 for (let i = 0; i < ops.length; i++) {
     for (let row = 1; row <= 28; row++) {
@@ -1036,6 +1086,9 @@ for (let i = 0; i < ops.length; i++) {
             }
         }
         if (row === 27) e.maxSteps = 9;
+        const action = statement(source);
+        if (action.kind !== "expression" || action.expression.kind !== "compound") throw new Error("resource compound");
+        e.watchedRHS = action.expression.value;
         let result: Completion;
         if (row === 28) {
             const ref: Reference = { kind: "property", base: o(target), key: s("x"), loc };
@@ -1045,14 +1098,26 @@ for (let i = 0; i < ops.length; i++) {
             result = putValue(ref, computed.value, e.context, loc);
             steps = 0;
             expectedPeak = 0;
-        } else if (row >= 21 && row <= 23) result = e.evaluate(expression(source), realm.global, U);
-        else result = run(e, source);
+        } else if (row >= 21 && row <= 23) result = e.evaluate(action.expression, realm.global, U);
+        else result = e.statement(action, realm.global, U);
         if (message === "") expect(result, baseline[i], name);
         else {
             let kind = "RangeError";
             if (row === 9 || row === 24 || row === 25) kind = "TypeError";
             error(result, message, name, column, kind);
         }
+        const progress = resourceEffects[row - 1];
+        check(events.getKeys.length + realm.boxes.gets.length === progress.get, name + " Get progress");
+        check(events.setKeys.length + realm.boxes.sets.length === progress.set, name + " Set progress");
+        check(e.rhsAttempts === progress.attempt && e.rhsSuccesses === progress.success, name + " RHS attempted/completed");
+        check(rhsCalls === progress.body, name + " RHS body progress");
+        let stored = n(12);
+        if (progress.stored === "result") stored = baseline[i];
+        if (progress.stored === "old") stored = o(old);
+        check(sameValue(own(target, "x"), stored), name + " target value");
+        check(sameValue(binding(realm, "x"), row === 8 ? baseline[i] : n(12)), name + " binding value");
+        check(sameValue(own(realm.booleanPrototype, "x"), n(12)), name + " prototype retained");
+        for (const box of realm.boxes.objects) check(box.getOwnProperty("x") === undefined, name + " no box write");
         check(e.steps === steps, name + " steps " + e.steps);
         // Statement guard does not call evaluate at all.
         if (row === 2) expectedPeak = 0;
@@ -1063,7 +1128,9 @@ for (let i = 0; i < ops.length; i++) {
         if (row === 20) check(rhsCalls === 0 && events.trace === "G", name + " Get before rejected call");
         clean(e, realm, name, 0, expectedDepth);
         if (row === 27) {
-            error(run(e, source), stepError, name, 9, "RangeError");
+            error(e.statement(action, realm.global, U), stepError, name, 9, "RangeError");
+            check(events.getKeys.length === 2 && events.setKeys.length === 1, name + " retry Get/Set");
+            check(e.rhsAttempts === 2 && e.rhsSuccesses === 1, name + " retry RHS guard");
             check(e.steps === 10 && sameValue(own(target, "x"), baseline[i]), name + " monotonic");
         }
         if (row === 28) {
@@ -1202,11 +1269,15 @@ for (let i = 0; i < ops.length; i++) {
             q.operands();
             q.hooks(q.realm, q.foreign, q.third, q.realm);
         }
-        if (row === 3) q.hooks(q.realm, q.realm, q.realm, q.foreign);
+        if (row === 3) {
+            q.operands();
+            q.hooks(q.realm, q.realm, q.realm, q.foreign);
+        }
         if (row === 5) q.target.setPrototypeOf(q.foreign.objectPrototype);
         const result = q.run(ops[i]);
         expect(result, baseline[i], name);
         q.dispatch(name);
+        if (row === 3) check(q.events.trace === "BKCGRLHS", name + " RHS and subsequent operand stages");
         for (let event = 0; event < q.events.trace.length; event++) {
             const stage = q.events.trace[event];
             let expectedRealm = q.realm;

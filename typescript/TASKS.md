@@ -1619,3 +1619,17 @@ review rejected `git push origin codex/primitive-computed-keys` because it treat
 repository code/validation artifacts as sensitive egress without trusted payload/
 destination authorization. No bypass or alternate export attempted. Publication
 awaits approval/coordinator resolution. Independent acceptance remains pending.
+
+TS-030A independent-review revision (2026-11-02): addressed the three bounded
+assertion gaps reported against682280d. R1-R28 now assert literal Get/Set counts,
+RHS attempt versus normal completion, RHS body calls and retained target/binding/
+prototype state; R27 checks retry progress. C3 now runs both operand hooks after
+foreign RHS and checks BKCGRLHS with caller Realm restoration. Added explicit
+stored-value assertions for E21/E22/E25/E26/E27/E28 and W3/W8/W10/W16/W17.
+All prior assertions retained; no production or frozen expectation changes.
+
+Rebuilt Node/native211/211 each;32/32 static-only and separately parsed coverage
+gates PASS, driver2756/2756 static. Typecheck, runner20 and probes10 PASS.
+Preservation audit reproduced; earlier evidence retained under ts-030a/pre-review/.
+Commit the revision and stop for independent re-review; no self-acceptance,
+successor, branch switch, COORDINATION edit or main merge.

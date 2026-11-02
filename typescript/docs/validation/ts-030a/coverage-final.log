@@ -1,7 +1,7 @@
 scriptc coverage C:\Users\jonku\code\rift\typescript\test\compound-assignment.ts
 
-  statements analyzed   2709
-  compile statically    2709  (100%)
+  statements analyzed   2756
+  compile statically    2756  (100%)
 
   fully static — all analyzed statements compile to native code.
 
