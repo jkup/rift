@@ -433,3 +433,9 @@ Acceptance/next contract pushed through1a438b5, resolving delegated export rejec
 Accepted pushed1b79203 after full design/matrix/diff review, independent fixed2025 algorithm/operand-order check and comparison with evaluator tick/depth paths. Reproduced103-file/8-candidate inventory; clean diff. No runtime or integrated rerun; accepted0de8488 stays167/167/25gates. Completed designer idle; cursor `b02eb90a-65ce-440b-9a3c-852658e739d6:2`. Frozen TS-024A exact iterative equality and complete matrices including default64 recursion. CL-004/005 reserved; main unchanged7f7d682. Next implementation pending dispatch.
 
 Acceptance/next contract pushed throughd6ba7f9. Active sole implementation writer: TS-024A chat `01a19ab7-b1e2-7393-8b1d-6b040ce91c39`, host `local`, base `d6ba7f9`. Explicit progress wait confirmed active; saved cursor `b7aae0c6-044b-4400-9430-7b461b4cb42b:1`. Owns frozen equality implementation/migrations; coordinator owns this file. No successor before review.
+
+## TS-024A acceptance — 2026-11-02 05:38 heartbeat
+
+Acceptedfc19afe with R18 corrected to column128, independently reproduced for both loose/strict inputs. Reviewed helper/integration, complete K/V/O/R/P/C test coverage, runtime fixtures and exact C2 migration. Independently rebuilt Node/native172/172 each, no skips; all26 static-only/separate coverage gates pass. Logs build/ts-024a-review-node.log and build/ts-024a-review-native.log; producer typecheck/runner20/probes10 reviewed. Writer idle, cursor `b7aae0c6-044b-4400-9430-7b461b4cb42b:3`. Delegated push/messaging rejected; coordinator has original owner authorization and verified existing jkup/rift origin. No unresolved semantic blocker.
+
+Frozen next TS-025P deletion/reference design, addressing existing C3 gap with explicit strictness and primitive-base policy review before implementation. CL-004/005 reserved; main unchanged7f7d682. No repeat merge. Next writer pending dispatch.
