@@ -1541,3 +1541,8 @@ transcripts, r30-reproduction.mjs and complete-mode audit.mjs. Initial observer
 assertion-order failure, sandbox linker failure and R30 failures retained. No
 genuine compiler failure/workaround. COORDINATION/Claude/C++ untouched. Stop at
 this boundary for independent review; no acceptance, main merge or successor.
+
+TS-029A delivery: implementation commit `5169978`; push rejected by automatic
+approval review (external repository export; destination authorization and remote
+privacy/ownership not independently verified). No alternate export attempted.
+Publishing requires approval; local tested milestone remains ready for review.

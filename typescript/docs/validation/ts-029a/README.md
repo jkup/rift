@@ -108,3 +108,11 @@ node docs/validation/ts-029a/audit.mjs
 No C++, Claude queue, COORDINATION, compiler pins, branch switch, main merge or
 successor work. R30 is resolved; full implementation acceptance remains for review. No full
 strict Script, new built-in/accessor/proxy, platform or performance claim.
+
+Delivery: tested implementation committed locally as `5169978`. Automatic approval
+review rejected `git push origin codex/primitive-computed-keys` to the configured
+`https://github.com/jkup/rift.git`, citing external export of repository contents,
+unverified trusted user authorization for the destination and unverified remote
+privacy/ownership. No workaround or alternate export attempted. Publishing needs
+approval; local implementation is ready for independent review. The checkout was
+clean after the implementation commit. This delivery note changes no code/tests.
