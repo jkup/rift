@@ -588,3 +588,7 @@ Next evidence-backed slice: TS-031P test262 adapter classification design, based
 
 PR78 merged/pushed main64bf139; its fully merged local/remote branch removed. PR79 remains open/unmerged pending Claude fix. New integration branch codex/test262-classification, task contract19f2529 pushed. TS-031P sole design writer chat01a19bf5-589e-7b32-a605-f2c419837724, hostlocal; explicit progress wait issued. No runtime implementation authorized; coordinator owns this file. Main maintenance is complete and must not be repeated.
 TS-031P active confirmed; saved cursor `7e25bdaa-f946-4476-b41f-a95dc92adf05:1`.
+
+## TS-031P progress — 2026-11-02 11:23 heartbeat
+
+Designer remains active validating matrix/counts/links and owned-file diff; cursor7e25bdaa-f946-4476-b41f-a95dc92adf05:2. Initial source-boundary and input-identity sections inspected: explicitly distinguishes observations from conformance and notes current Script/profile and diagnostic limitations. Final complete review remains pending; no acceptance/implementation/successor. Remote PR79 head unchanged6c5ff975; Claude correction still pending. No competing writes to design files, no branch switch or main merge.
