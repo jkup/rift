@@ -303,3 +303,9 @@ Accepted pushed design `7b6021a`: reviewed complete stages/matrices/inventories,
 Frozen next TS-018A implements stage A only: real wrappers, virtual String indices, descriptor traversal, Realm roots and explicit ToObject with W1-W19. No implicit boxing/methods/globals. ValueOf needs later contract; Object toString remains blocked on real symbols/tag boundary. CL-004 ready and reserved for Claude; no duplicate corpus assignment. Main unchanged at 7f7d682.
 
 Acceptance and stage A contract pushed through cc755f7. Active sole implementation writer: TS-018A chat `01a199c0-93a2-75c3-a8b2-df2a493e111e`, host `local`, base `cc755f7`. Explicit wait confirmed active; saved cursor `8268c9a4-a919-4cc1-bb33-8ce284819a3b:1`. Owns frozen stage A implementation/tests/evidence only; coordinator owns this file. No later methods or boxing integration until separate review.
+
+## TS-018A acceptance — 2026-11-02 01:08 heartbeat
+
+Accepted pushed `254c097`: reviewed wrapper scalar slots, virtual String descriptors/keys/snapshots, iterative descriptor traversal, explicit ToObject and Realm graph; W1-W19 tests and retained reduced inferred-never callback coverage failure. Three explicit test-only return annotations are a measured, isolated fix. Independently rebuilt final Node/native 163/163 each with all 22 static builds/coverage gates passing, no skips. Coordinator logs build/ts-018a-review-node.log and build/ts-018a-review-native.log. Completed writer idle; saved cursor `8268c9a4-a919-4cc1-bb33-8ce284819a3b:2`. No outstanding blocker.
+
+Next ready TS-018B freezes only Object.prototype.valueOf using accepted ToObject, V1-V8 and exact inherited-method expectation migration. Fixed specification checked; no default toString, implicit boxing or wrapper methods. New driver must retain baseline and add a static gate. CL-004 remains ready/reserved for Claude; main unchanged at 7f7d682.
