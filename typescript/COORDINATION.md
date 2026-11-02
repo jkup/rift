@@ -632,3 +632,9 @@ Acceptance/next contract pushed6f86657. Active sole TS-031B-A writer chat `01a19
 ## TS-031B-A native discrepancy — 2026-11-02 13:08 heartbeat
 
 Writer active, saved cursor96241604-45a3-4cb2-a232-090934ef20d2:2. Reports33 native static gates pass and211 existing native cases pass; new R27 seeded-binding assertion differs from Node. Retaining failure/splitting assertions, no acceptance. Coordinator inspected R27 and observation path, requested reduction distinguishing host Binding record identity from frozen retained state/guest identity and proposal before oracle changes. No competing builds or runtime edits. PR79 remote unchanged6c5ff975; Claude correction pending.
+
+## TS-031B-A acceptance — 2026-11-02 13:23 heartbeat
+
+Accepted c51d056 after actual production diff and parallel read-only test/evidence review. Independent rebuilt Node/native212/212,33 static-only/separate coverage gates pass; audit reproduced211 old exact records32 gates10 origin-only migrations45 parser/lexer baseline comparisons and CLI controls. Logs build/ts031ba-review-{node,native,audit}.log. Explicit R27 Binding annotation preserves original identity oracle; retained Map-only reduction documents compiler adaptation, no runtime workaround. Producer runner20/probes10/host66/corpus4 reviewed. Writer idle cursor96241604-45a3-4cb2-a232-090934ef20d2:3. Scope A accepted; no conformance claim or C certification. Next frozen scope B driver/parent task is ready; dispatch pending.
+
+PR79 changed to d532a1422f02332f8919fed25d56483f4561a8ae. Existing read-only review chat01a19bda-2fd8-7e41-a44d-ad4e3b074d28 asked to independently review correction; no merge/acceptance yet. Shared checkout remains codex/test262-classification; main unchanged64bf139. Previous maintenance complete.
