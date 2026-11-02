@@ -17,7 +17,7 @@ The coordinator replenishes this queue during implementation reviews when useful
 
 ## CL-001 — Audit the existing custom JavaScript tests
 
-Status: **ready**. Owner: unclaimed. Dependencies: none.
+Status: **review needed**. Owner: Claude Code session, branch `claude/cl-001-custom-test-audit` (separate worktree), base `0819c71`. Dependencies: none.
 
 Purpose: identify portable regression evidence we can reuse without assuming the current C++ harness establishes correctness.
 
@@ -34,11 +34,11 @@ Deliver:
 
 Acceptance: another agent can locate each cited example and reproduce inventory counts. No invented pass rates; running C++ is optional and must be reported separately from static inspection. No core or existing-test edits.
 
-Handoff: pending.
+Handoff (2026-11-01): outputs `typescript/docs/assistance/custom-test-audit.md` and read-only `typescript/tools/assistance/custom-test-audit/inventory.mjs` (work commit `e7e41dc`). Counts reproduce with `node typescript/tools/assistance/custom-test-audit/inventory.mjs`: 240 files under `test/`, 225 run by `npm test`, classified by area and failure visibility. Static inspection plus Node v26.13.0 reference runs of two files; C++ was not built or run, so no Rift pass rates are claimed. Key findings: uncaught guest throws exit 0 (H1); 106 of 225 run files have no harness-visible failure signal; stale UNSUPPORTED scripts and one test asserting non-spec sloppy `this` behavior. No dedicated closure or receiver fixtures exist, so legacy reuse for the first milestone is limited to adapted loop/function/object fixtures. Limitations: area and category assignment is heuristic regex classification; proposed harness fixes require separate coordinator assignment.
 
 ## CL-002 — Audit test262 runner semantics before future reuse
 
-Status: **ready**. Owner: unclaimed. Dependencies: none.
+Status: **review needed**. Owner: Claude Code session, branch `claude/cl-002-test262-runner-audit` (separate worktree), base `0819c71`. Dependencies: none.
 
 Purpose: provide a concrete checklist for a trustworthy future TypeScript test262 adapter; implementing the adapter is not this task.
 
@@ -55,11 +55,11 @@ Deliver:
 
 Acceptance: findings are evidence-backed, with authoritative links for harness requirements. No changes to runner code, feature skip lists, tests or published compliance claims.
 
-Handoff: pending.
+Handoff (2026-11-01): output `typescript/docs/assistance/test262-runner-audit.md` (work commit `b29d398`). Upstream consulted: tc39/test262 `91c7075` (2026-10-29) `INTERPRETING.md`, `harness/assert.js` and example tests, read through the GitHub API without downloading the suite. Static inspection only; neither the runner nor C++ was executed. Ten correctness defects with code references and scenarios. Most serious: runtime-phase negative tests always fail because guest throws exit 0; negative phase is never checked; `raw` tests get the harness prepended (upstream `directive-prologue/10.1.1-2gs.js` cannot pass); `module` tests run as strict scripts; dropped includes and the weakened `harness-compat.js` `assert.throws` (accepts any thrown primitive); a crash after output counts as a pass; the incremental cache key excludes skip lists, harness and test262 revision. Includes an adapter checklist and a 25-row validation matrix independent of the new interpreter APIs. Limitations: no effect sizes are estimated because no run was performed; proposed fixes need coordinator assignment.
 
 ## CL-003 — Prepare independent semantic examples
 
-Status: **ready**. Owner: unclaimed. Dependencies: none.
+Status: **review needed**. Owner: Claude Code session, branch `claude/cl-003-semantic-examples` (separate worktree), base `0819c71`. Dependencies: none.
 
 Purpose: create small readable examples with explicit expected outcomes for later integration, without touching the active test harness.
 
@@ -71,7 +71,7 @@ For each fixture include exact expected stdout and a short explanation in a loca
 
 Acceptance: examples produce the documented expected output under Node, can be read without a custom assertion library, and teach distinct semantic rules. Passing Node is reference evidence, not proof Rift supports them. The coordinator chooses when/how to integrate them; do not edit `typescript/test/`, package scripts or the core engine.
 
-Handoff: pending.
+Handoff (2026-11-01): outputs under `typescript/fixtures/assistance/semantic-examples/` (work commit `cb81e62`): nine `current/` examples in the TS-001 subset (retained mutable closures, closure independence, object aliasing, method receivers, evaluation order, shadowing, loop side effects, return propagation, function-declaration hoisting) and three `deferred/` examples (for-let per-iteration bindings, finally completions, arrow lexical this) labeled as not current regressions. Exact stdout lives in `manifest.json`; `verify-node.mjs` runs each as a classic script and matched 12/12 under Node v26.13.0 (expectations hand-written first). Not run under Node-hosted or native Rift, and not wired into `typescript/test/` or package scripts. Limitations: Node agreement is reference evidence only; the receiver example relies on a `"use strict"` directive so that Node matches the Rift strict-call profile.
 
 ## Not ready for companion assignment
 
