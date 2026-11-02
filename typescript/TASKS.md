@@ -1420,6 +1420,26 @@ Coordinator acceptance: TS-027A accepted through5664a35 on 2026-11-02. Reviewed 
 
 ### TS-028P — Primitive property reads and method calls design
 
-Status: **ready**. Prerequisite accepted TS-027A5664a35. Design only: inspect existing getValue object-only restriction, ToObject wrappers and call receiver capture. Own docs/primitive-property-reads.md, docs/validation/ts-028p/ and TASKS claim/handoff; coordinator owns COORDINATION.md. Freeze the smallest coherent read/call extension, with exact evaluation/conversion ordering, nullish errors, captured primitive base, temporary wrapper Realm and original primitive Receiver/this. Consult fixed2025 specification and revision-pinned engine sources. Identify any mismatch in current deferred property-key semantics explicitly before proposing implementation.
+Status: **review needed**. Owner: Codex design chat `01a19b50-e23e-7450-942a-25c0ab5581d8`, dispatch base `72a778a`, inspected HEAD `841faaf`, existing branch `codex/primitive-computed-keys` (2026-11-02). Prerequisite accepted TS-027A5664a35. Design only: inspect existing getValue object-only restriction, ToObject wrappers and call receiver capture. Own docs/primitive-property-reads.md, docs/validation/ts-028p/ and TASKS claim/handoff; coordinator owns COORDINATION.md. Freeze the smallest coherent read/call extension, with exact evaluation/conversion ordering, nullish errors, captured primitive base, temporary wrapper Realm and original primitive Receiver/this. Consult fixed2025 specification and revision-pinned engine sources. Identify any mismatch in current deferred property-key semantics explicitly before proposing implementation.
 
 Deliver named literal expected-result matrices covering each supported primitive, String UTF-16 virtual indices/length, inherited/missing/symbol keys, primitive methods and detached calls, computed-key mutation and competing errors, cross-Realm lookup/calls, original abrupt identity, host-fault cleanup and exact small/recursive resource counts. Audit every affected existing rejection with precise future migrations, preserving historical evidence. Address compound assignment/update read-before-write interactions explicitly while retaining object-only writes. No implementation, general primitive writes, constructors, accessors/proxies, new built-ins, pin changes, C++, Claude outputs, branch switching, main merge or successor. Preserve189 cases/29 gates in eventual implementation except specifically justified expectation migrations. Probes only for concrete uncertainty. Commit/push coherent design and stop for independent review.
+
+TS-028P handoff (2026-11-02): docs/primitive-property-reads.md freezes existing
+ToObject-based GetValue with original primitive Receiver/this and active-Realm
+wrapper selection, successful deferred-key memoization and unchanged object-only
+writes. Fixed2025 confirms deferred conversion; the actual mismatch is failure
+to save a converted key for reused references. Compound/update syntax remains
+excluded; explicit direct-API read-before-write controls cover the boundary.
+
+Evidence in docs/validation/ts-028p/ includes pinned engine262 files/blobs,
+144 named primary expected-result/resource rows plus variants, and reproducible
+125-file/69-candidate audit with19 precise migration entries. Covers UTF-16,
+keys/hooks/mutations, nullish competing errors, detached calls, Realm/host-fault
+cleanup and derived actual-default64 recursion261/325 ticks. Explicitly retains
+the Number.toString limitation (inherited Object method) and all primitive writes.
+
+Audit reproducibility,144 row count and diff whitespace checked. No production,
+test, manifest, pin, C++, Claude or COORDINATION changes; no runtime/probe/build
+runs or new support claim. Prior accepted5664a35 remains189/189 and29 gates.
+Commit/push this coherent design as authorized, then stop for independent review;
+not self-accepted. No branch switching, main merge or successor chat.

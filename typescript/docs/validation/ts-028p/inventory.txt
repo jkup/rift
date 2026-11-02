@@ -1,0 +1,70 @@
+125 files inspected; 69 candidate lines.
+docs/architecture-decisions.md:280:ordinary object conversion before each primitive numeric conversion. Ordinary Set can reject readonly length before
+docs/architecture-decisions.md:503:Required signatures are toPropertyKey(value, context, loc), getValue(ref,
+docs/architecture-decisions.md:504:context, loc), and putValue(ref, value, context, loc). Every evaluator consumption,
+docs/feature-inventory.md:16:| Objects | Colon-valued literal entries with word/string keys; dot and computed key get/write; aliases; ordinary methods as function-valued properties; missing properties undefined | Ordinary inherited data properties supported when seeded by the host; production objects inherit their Realm Object root. No accessors, method shorthand, numeric/computed literal keys, spread or enumeration APIs. Guest delete uses unconditional strict-delete: identifier operands are parse errors and nonconfigurable properties throw. Literal __proto__ rejected. Symbol keys retain identity; other primitive keys convert to strings. Object keys use the symbol protocol then string-hint ordinary conversion; default objects key as [object Object]. Primitive property reads/writes reject; delete alone boxes primitives before deferred key conversion. |
+docs/feature-inventory.md:207:reject objects and primitive member access remains unsupported. No constructors,
+src/evaluator.ts:142:                return getValue(ref.reference, this.context, expr.loc);
+src/evaluator.ts:161:                return ref.type === "abrupt" ? ref.completion : getValue(ref.reference, this.context, expr.loc);
+src/evaluator.ts:168:                return putValue(ref.reference, value.value, this.context, expr.loc);
+src/evaluator.ts:212:                    callee = getValue(ref.reference, this.context, expr.loc);
+src/runtime.ts:214:export function getValue(ref: Reference, context: OperationContext, loc: Location): Completion {
+src/runtime.ts:216:        if (ref.base.kind !== "object") return failure("TypeError", "property base must be an object", ref.loc);
+src/runtime.ts:226:export function putValue(ref: Reference, value: Value, context: OperationContext, loc: Location): Completion {
+src/runtime.ts:228:        if (ref.base.kind !== "object") return failure("TypeError", "property base must be an object", ref.loc);
+test/boolean-string-conversions.ts:343:        { name: "primitiveMember", line: 72, column: 12, message: "property base must be an object", errorName: "TypeError" },
+test/definition-dispatch.ts:73:            const r = viaReference ? putValue({ kind: "property", base: { kind: "object", object: target }, key: { kind: "string", value: "x" }, loc }, rhs, keyContext, loc) : target.set("x", rhs, keyContext, loc);
+test/delete-operator.ts:363:              ? "property base must be an object"
+test/fixtures/boolean-string-conversions.js:71:function primitiveMember() {
+test/fixtures/number-conversions.js:80:function primitiveMember() {
+test/fixtures/object-tostring.js:91:function primitiveMember() {
+test/fixtures/symbol-conversions.js:20:function implicitMember() {
+test/in-operator.ts:907:        "property base must be an object",
+test/key-coercion.ts:142:                check(putValue(ref, rhs, active.context, loc).type === "normal", "direct write");
+test/key-coercion.ts:143:                const read = getValue(ref, active.context, loc);
+test/key-coercion.ts:213:    const result = putValue({ kind: "property", base: obj(target), key, loc }, num(9), second.context, loc);
+test/key-coercion.ts:221:    for (const result of [getValue(ref, active.context, loc), putValue(ref, num(3), active.context, loc)]) {
+test/key-coercion.ts:222:        check(result.type === "throw" && result.diagnostic.message === "property base must be an object" && result.diagnostic.loc === loc && key.reads === "", "direct invalid base precedes coercion");
+test/number-conversions.ts:342:        { name: "primitiveMember", line: 81, column: 12, message: "property base must be an object", errorName: "TypeError" },
+test/object-descriptors.ts:82:check(putValue({ kind: "property", base: { kind: "object", object: o }, key: { kind: "string", value: "new" }, loc }, num(3), keyContext, loc).type === "throw", "putValue nonextensible rejection");
+test/object-descriptors.ts:83:const write = putValue({ kind: "property", base: { kind: "object", object: o }, key: { kind: "string", value: "assigned" }, loc }, num(4), keyContext, loc);
+test/object-prototypes.ts:68:check(putValue({ kind: "property", base: { kind: "object", object: child }, key: { kind: "string", value: "fixed" }, loc }, num(2), keyContext, loc).type === "throw", "strict boundary");
+test/object-prototypes.ts:70:const assigned = putValue({ kind: "property", base: { kind: "object", object: child }, key: { kind: "string", value: "x" }, loc }, rhs, keyContext, loc);
+test/object-tostring.ts:306:        { name: "primitiveMember", line: 92, column: 12, error: "TypeError", message: "property base must be an object" },
+test/property-key-conversion.ts:99:    const write = putValue(ref, rhs, keyContext, loc);
+test/property-key-conversion.ts:100:    const read = getValue(ref, keyContext, loc);
+test/property-key-conversion.ts:116:        const write = putValue(ref, rhs, keyContext, loc);
+test/property-key-conversion.ts:117:        const read = getValue(ref, keyContext, loc);
+test/property-key-conversion.ts:132:    check(putValue({ kind: "property", base: obj(sparse), key: num(value), loc }, num(8), keyContext, loc).type === "normal", "nonindex write");
+test/property-key-conversion.ts:135:check(putValue({ kind: "property", base: obj(sparse), key: num(4294967294), loc }, num(9), keyContext, loc).type === "normal", "max index");
+test/property-key-conversion.ts:138:putValue({ kind: "property", base: obj(small), key: num(2), loc }, num(9), keyContext, loc);
+test/property-key-conversion.ts:242:check(detachedResult.type === "throw" && detachedResult.diagnostic.message === "property base must be an object" && detached.original.trace === "BKG", "detached method");
+test/property-key-conversion.ts:259:        typeError(result, "property base must be an object", path === "write" ? 16 : path === "call" ? 16 : 1);
+test/property-key-conversion.ts:315:    const ref = getValue({ kind: "property", base: readonly.originalValue, key: num(2), loc }, keyContext, loc);
+test/property-key-conversion.ts:408:    typeError(scenario.run(path), "property base must be an object", path === "read" ? 1 : 16);
+test/realms.ts:364:    checkGraph(rejected.phase === "runtime" && rejected.completion.type === "throw" && rejected.completion.diagnostic.name === "TypeError" && rejected.completion.diagnostic.message === "property base must be an object", "W17 primitive member still rejected");
+test/symbol-conversions.ts:266:    const names = ["numeric", "implicitString", "invalidRoot", "implicitMember", "readonlyHook"];
+test/symbol-conversions.ts:268:        "property base must be an object", "property is not writable: Symbol(Symbol.toPrimitive)"];
+test/typeof-void.ts:444:        "BooleanBase",
+test/typeof-void.ts:445:        "NumberBase",
+test/typeof-void.ts:446:        "StringBase",
+test/typeof-void.ts:447:        "SymbolBase",
+test/typeof-void.ts:489:        const invalidBase =
+test/typeof-void.ts:492:            name === "BooleanBase" ||
+test/typeof-void.ts:493:            name === "NumberBase" ||
+test/typeof-void.ts:494:            name === "StringBase" ||
+test/typeof-void.ts:495:            name === "SymbolBase";
+test/typeof-void.ts:502:        if (name === "BooleanBase") {
+test/typeof-void.ts:505:        if (name === "NumberBase") {
+test/typeof-void.ts:508:        if (name === "StringBase") {
+test/typeof-void.ts:511:        if (name === "SymbolBase") {
+test/typeof-void.ts:583:        } else if (invalidBase) {
+test/typeof-void.ts:584:            error(result, "property base must be an object", column, "E10 " + name, "TypeError");
+test/typeof-void.ts:1103:        "invalidBase",
+test/typeof-void.ts:1110:            mode === "stepGuard" || mode === "invalidBase" ? 5 : 100,
+test/typeof-void.ts:1143:            (mode === "invalidBase"
+test/typeof-void.ts:1154:            mode === "primitive" || mode === "invalidBase"
+test/typeof-void.ts:1189:        } else if (mode === "invalidBase") {
+test/typeof-void.ts:1192:                "property base must be an object",
+tools/run-guests.mjs:45:    ["primitive-base", "console.log(null.x);", 1, "runtime TypeError: property base must be an object"],
+tools/run-guests.mjs:46:    ["detached", "let o={x:1, f:function(){return this.x;}}; let f=o.f; f();", 1, "runtime TypeError: property base must be an object"],
