@@ -1912,10 +1912,26 @@ Coordinator acceptance: cdb5e6e (design34a536e plus correction) accepted after a
 
 ### TS-033A — Non-executing Script strictness metadata
 
-Status: **ready** for one assigned implementation writer. Implements only P1 of accepted docs/script-execution.md. Own bounded syntax/lexer/parser metadata support (or focused metadata module sharing parser machinery), additive runtime-input parser test/fixture and native gate, docs/validation/ts-033a/, TASKS/feature-scope handoff. Coordinator owns COORDINATION. Preserve Claude CL006.
+Status: **review needed** — Codex writer chat 01a19d5a-f788-7b53-9b2a-e29aa2bb0891, base 1f81bb2f6eae3ffe9efad8e051599db739ef3f71, branch codex/test262-classification (2026-11-02). Implements only P1 of accepted docs/script-execution.md. Own bounded syntax/lexer/parser metadata support (or focused metadata module sharing parser machinery), additive runtime-input parser test/fixture and native gate, docs/validation/ts-033a/, TASKS/feature-scope handoff. Coordinator owns COORDINATION. Preserve Claude CL006.
 
 Provide a non-executing inspection API with exact source-unit identity/text and structured Script/function strictness metadata, raw directive spans and syntactic enclosing inheritance. Do not return an executable new Script entry or route current interpreter/observation through it. Distinguish syntactic strictness from supported grammar and eligibility; no certification or conformance claim from strict=true. Host remains responsible for cryptographic identity verification; do not add hashing dependencies to semantic core. Readonly records and complete/blocked results must prevent partial successful metadata being treated as complete source coverage. Share existing parser/lexer rather than inventing a regex-based independent grammar.
 
 Freeze literal D01-D09/V01-V03 parser-only expectations before edits: exact quotes, preceding directives, parenthesized/late strings, empty statement, escaped/continued lookalikes, ASI unsupported, own versus inherited nested strictness, duplicate-parameter existing rejection, unsupported tails/resource limits, return certification preservation. Add empty source and directive-only metadata, sibling function isolation, anonymous/nested function forms, offsets/line terminators and function spans. Preserve current fail-closed reserved-identifier/strict-delete/unsupported escape restrictions. No new grammar, relaxed duplicate handling, strict-error emissions or rule codes; blocked rows stay honestly blocked even when future standard expectations are known. No global environment, declaration semantics, evaluator, Realm, CLI/protocol/classifier/admission changes.
 
 Preserve exact legacy parse outputs including partial bodies, diagnostics, rejection tags and source ranges, plus auditScriptReturns behavior. Demonstrate old/new baseline equality on a meaningful fixed runtime-input matrix including existing94 audit cases and new neighbors; keep historical evidence unchanged. Full Node/native212 old guest records and37 old gates plus additive metadata gate, typecheck/runner/probes and relevant host tests; static-only build and separately parsed zero-dynamic coverage for the new runtime-source driver. Add literal expected metadata, no self-derived oracle or host eval of guest code. Document scope and retained failures, commit/push coherent milestone then stop for independent review. No P2 successor/main merge/pins/C++ changes.
+
+TS-033A handoff (2026-11-02): non-executing inspectScript in focused
+src/script-metadata.ts shares the unchanged parser/lexer and traverses the parsed
+AST only to recover syntactic nesting. Readonly exact unit snapshots, complete/
+blocked results, raw directives and own/inherited function strictness; no AST,
+execution eligibility, grammar relaxation or new certification. Node/native each
+pass136 exact legacy parse/audit comparisons including all94 historical rows and
+42 literal metadata controls; full212 guest records per lane preserved exactly.
+All37 old static gates plus additive metadata gate pass (486/486 static),
+typecheck, runner20, probes10, host73 and observation16 pass. Evidence and exact
+source hashes in docs/validation/ts-033a/. Retained Zig/temp-rename environment
+failures and two corrected handwritten offset expectations. No parser, lexer,
+syntax, evaluator/Realm/protocol/classifier/pins/C++/historical/CL006 edits; no
+successor/main merge. Coordinator-only29f418b advanced the shared branch during
+validation; its file is excluded and hash-recorded. Commit/push and stop for
+independent acceptance; no scope decision needed.

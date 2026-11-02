@@ -1,6 +1,14 @@
 # Tested foundation profile
 
 This inventory is a scope statement, not an ECMAScript conformance score.
+TS-033A adds a separate non-executing `inspectScript({ id, text })` API in
+`src/script-metadata.ts`: complete supported-grammar results expose raw directive
+spans, Script strictness and syntactically inherited function strictness. Blocked
+results expose only the unchanged parser rejection/diagnostic and source unit.
+It returns no AST or execution eligibility. Legacy parser, return certification,
+interpreter and observation behavior remain unchanged; strict=true grants no new
+early-error certification or Script execution support. See
+[TS-033A evidence](validation/ts-033a/README.md).
 Diagnostics reject unsupported syntax before executing any of the program.
 Unsupported operand combinations fail at runtime; parsing an operator is not a
 claim that all coercion cases are supported.

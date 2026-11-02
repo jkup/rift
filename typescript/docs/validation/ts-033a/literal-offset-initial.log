@@ -1,0 +1,40 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+... Skipped lines
+
+  [
+    [
+      0,
++     41,
+-     46,
+      12,
+      null
+    ],
+    [
+      26,
+...
+    [
++     42,
++     56,
++     54,
+-     47,
+-     61,
+-     59,
+      null
+    ]
+  ]
+
+    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-033a/validate.mjs:47:30 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [ [ 0, 41, 12, null ], [ 26, 40, 38, 0 ], [ 42, 56, 54, null ] ],
+  expected: [ [ 0, 46, 12, null ], [ 26, 40, 38, 0 ], [ 47, 61, 59, null ] ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.13.0
