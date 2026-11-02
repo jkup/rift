@@ -1,0 +1,223 @@
+113 files inspected; 222 candidate lines.
+docs/architecture-decisions.md:89:This is a restricted **strict-call profile**, not a conforming Script implementation.
+docs/architecture-decisions.md:202:`internalDelete(key): InternalBooleanCompletion` checks only the own descriptor.
+docs/architecture-decisions.md:205:At TS-004C there was no guest delete syntax or strict-delete wrapper; TS-025A now adds the wrapper described below.
+docs/architecture-decisions.md:783:equality and guest delete. TS-024A now implements C2 equality; its original
+docs/architecture-decisions.md:785:delete assertions and own-descriptor inspection, preserving the raw internal
+docs/architecture-decisions.md:837:## Guest delete (TS-025A, pending independent review)
+docs/architecture-decisions.md:839:Delete uses unconditional strict-delete semantics in the limited language profile:
+docs/architecture-decisions.md:841:internalDelete becomes a guest TypeError at the delete token. Directives remain
+docs/architecture-decisions.md:846:the deferred key, then calls internalDelete exactly once. Base/key expression
+docs/architecture-decisions.md:851:The fixed 2025 order and pinned engine evidence in [the accepted design](delete-operator.md)
+docs/architecture-decisions.md:853:remain nonconfigurable; raw internalDelete still returns normal false. Deletion
+docs/feature-inventory.md:12:| Expressions | parentheses; + - * / % and unary +/-, strict-delete; < <= > >=, == != === !==, !; short-circuit &&/\|\|; assignment; conditional `test ? consequent : alternate` | Numeric operators use number-hint ordinary conversion; addition converts both operands with default hint before string/numeric selection. Relational operators convert in source order with number hint, compare two strings by UTF-16 code units, otherwise compare numbers with all NaN comparisons false. Own/inherited valueOf/toString methods work on ordinary objects, arrays and functions; default ordinary objects convert through inherited Object valueOf/toString to [object Object] (numeric NaN). Boolean/String wrappers use their standard payload methods. Number wrappers return numeric payloads for default/number hints and inherited tag strings for string hints. Arrays convert through join; functions convert to exact retained source or the native form. Both operand evaluations precede coercion. === !==, truthiness and Number predicates never coerce. Conditional precedence, selected-arm evaluation and existing bounds remain unchanged. Abstract equality selectively converts at most one object with the default hint; nullish/object and object/object comparisons never coerce. No BigInt, comma, bitwise, update, compound assignment, nullish coalescing or optional chaining. |
+docs/feature-inventory.md:16:| Objects | Colon-valued literal entries with word/string keys; dot and computed key get/write; aliases; ordinary methods as function-valued properties; missing properties undefined | Ordinary inherited data properties supported when seeded by the host; production objects inherit their Realm Object root. No accessors, method shorthand, numeric/computed literal keys, spread or enumeration APIs. Guest delete uses unconditional strict-delete: identifier operands are parse errors and nonconfigurable properties throw. Literal __proto__ rejected. Symbol keys retain identity; other primitive keys convert to strings. Object keys use the symbol protocol then string-hint ordinary conversion; default objects key as [object Object]. Primitive property reads/writes reject; delete alone boxes primitives before deferred key conversion. |
+docs/feature-inventory.md:21:| Own keys/deletion (TS-004C) | Internal configurable-own deletion, normal false on nonconfigurable rejection, detached lists of all own string keys including nonenumerable keys; canonical array indices first numerically, other strings by creation order. Overwrite preserves position; delete/reinsert renews it. | Key listing remains host-only; TS-025A adds guest strict-delete over current string/symbol keys and Array/String dispatch. No Object/Reflect APIs or generic exotics. Ordinary key listing cannot throw; arrays reuse these operations. |
+docs/feature-inventory.md:237:TS-025A adds unconditional strict-delete within this limited profile, not full
+docs/feature-inventory.md:240:delete bases are boxed before deferred key conversion; ordinary reads/writes
+src/array-object.ts:107:        // descending; holes have no delete effects in this ordinary-delete model.
+src/array-object.ts:114:            const deleted = this.internalDelete(key);
+src/delete-reference.ts:8:    if (ref.kind !== "property") throw new Error("delete requires a property reference");
+src/delete-reference.ts:16:    const deleted = object.internalDelete(key.value);
+src/evaluator.ts:7:import { deleteReference } from "./delete-reference.js";
+src/evaluator.ts:36:    closure(params: string[], body: Stmt[], environment: Environment, source: FunctionSource | null): Value {
+src/evaluator.ts:212:                if (expr.op === "delete") {
+src/evaluator.ts:213:                    if (expr.operand.kind === "identifier") throw new Error("delete requires a property reference");
+src/parser.ts:4:const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
+src/parser.ts:41:        if (t.kind !== "word" || RESERVED.includes(" " + t.text + " ")) this.fail("expected binding identifier", t.loc);
+src/parser.ts:132:    functionTail(loc: Location, start: number): { params: string[]; body: Stmt[]; source: FunctionSource } {
+src/parser.ts:234:        if (t.text === "!" || t.text === "-" || t.text === "+" || t.text === "delete") {
+src/parser.ts:236:            // Parentheses preserve identifiers. Strict-delete is unconditional
+src/parser.ts:238:            if (t.text === "delete" && operand.kind === "identifier") this.fail("delete of an identifier is not allowed", loc);
+src/parser.ts:274:        if (t.kind === "word" && !RESERVED.includes(" " + t.text + " ")) return { kind: "identifier", loc, name: t.text };
+src/primitive-objects.ts:54:    internalDelete(key: PropertyKey): InternalBooleanCompletion {
+src/primitive-objects.ts:56:        return super.internalDelete(key);
+src/realm.ts:64:    createGuestFunction(params: string[], body: Stmt[], environment: Environment, source: FunctionSource | null): GuestObject {
+src/runtime.ts:37:    | { readonly kind: "guest"; readonly realm: Realm; readonly params: string[]; readonly body: Stmt[]; readonly environment: Environment; readonly source: FunctionSource | null }
+src/runtime.ts:60:    internalDelete(key: PropertyKey): InternalBooleanCompletion {
+src/runtime.ts:64:        this.propertyStorage.delete(key);
+src/syntax.ts:16:    | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
+src/syntax.ts:22:    | { kind: "function"; loc: Location; name: string; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
+test/array-length-coercion.ts:122:        if (inherited) bool(rhs.internalDelete("valueOf"), true);
+test/array-length-coercion.ts:156:                bool(object(rhs).internalDelete("valueOf"), true);
+test/array-length-coercion.ts:183:        bool(rhs.internalDelete("valueOf"), true);
+test/array-length-coercion.ts:184:        bool(rhs.internalDelete("toString"), true);
+test/array-length-coercion.ts:263:            bool(target.internalDelete("1"), true);
+test/array-like.ts:40:boolean(child.internalDelete("x"), true);
+test/array-like.ts:42:boolean(parent.internalDelete("x"), true);
+test/array-like.ts:46:boolean(child.internalDelete("x"), false);
+test/array-like.ts:58:boolean(array.internalDelete("1"), true);
+test/array-like.ts:60:boolean(array.internalDelete("2"), true);
+test/array-like.ts:75:boolean(tail.internalDelete("deep"), true);
+test/array-like.ts:131:boolean(inherited.internalDelete("length"), true);
+test/array-map.ts:283:            const deleted = deletionInput.internalDelete("1");
+test/array-map.ts:284:            check(deleted.type === "normal" && deleted.value, "delete");
+test/array-map.ts:554:check(sourceRealm.arrayPrototype.internalDelete("constructor").type === "normal", "G13 cleanup");
+test/array-map.ts:572:check(sourceRealm.arrayPrototype.internalDelete("1").type === "normal" && inheritedHoles.get("1").kind === "undefined" && resultRealm.arrayPrototype.get("1").kind === "undefined", "G16 deletion/isolation");
+test/array-storage.ts:58:bool(empty.internalDelete("length"), false);
+test/array-storage.ts:70:bool(empty.internalDelete("2"), true); length(empty, 3);
+test/array-storage.ts:167:    bool(a.internalDelete("3"), false); length(a, 4, !freeze);
+test/array-string-conversion.ts:206:for (const mode of ["delete", "replace", "shrink"]) {
+test/array-string-conversion.ts:212:        if (mode === "delete") receiver.internalDelete("1");
+test/array-string-conversion.ts:217:            realm.arrayPrototype.internalDelete("1");
+test/array-string-conversion.ts:223:    expect(j(obj(receiver)), str(mode === "delete" ? "a,p" : mode === "replace" ? "a,z" : "a,"), "J25-J27");
+test/array-string-conversion.ts:270:deletedRealm.arrayPrototype.internalDelete("join");
+test/array-string-conversion.ts:287:b.stringPrototype.internalDelete("join");
+test/array-string-conversion.ts:317:    for (const mode of ["replace", "delete"]) {
+test/array-string-conversion.ts:319:        else owner.objectPrototype.internalDelete("toString");
+test/array-string-conversion.ts:338:savedRealm.arrayPrototype.internalDelete("toString");
+test/array-string-conversion.ts:341:savedRealm.arrayPrototype.internalDelete("join");
+test/array-string-conversion.ts:596:const deletion = parse("let object = {}; delete object.x;");
+test/array-string-conversion.ts:597:check(deletion.error === null, "C3 delete parse");
+test/array-string-conversion.ts:599:check(new Evaluator(deletionRealm).block(deletion.body, deletionRealm.global, UNDEFINED).type === "normal", "C3 delete success");
+test/array-string-conversion.ts:612:    const removed = receiver.internalDelete(converted.value);
+test/boolean-string-conversions.ts:244:        box.internalDelete(wellKnownToStringTag);
+test/boolean-string-conversions.ts:245:        root.internalDelete("toString");
+test/boolean-string-conversions.ts:256:        root.internalDelete("valueOf");
+test/boolean-string-conversions.ts:289:        box.internalDelete(wellKnownToPrimitive);
+test/boolean-string-conversions.ts:290:        box.internalDelete("valueOf");
+test/boolean-string-conversions.ts:291:        box.internalDelete("toString");
+test/delete-operator.ts:3:import { deleteReference } from "../src/delete-reference.js";
+test/delete-operator.ts:46:    if (!ok) throw new Error("delete " + label);
+test/delete-operator.ts:83:const effectSource = readFileSync("test/fixtures/delete-effects.js", "utf8").trim();
+test/delete-operator.ts:87:const badSources = ["delete x;", "delete (((x)));", "effect(); delete x;", "if (false) { delete x; }", "function f(x) { delete x; }", "'use strict'; delete x;", "delete o.x = 1;", "delete;", "let delete = 1;", "delete typeof x;", "delete void x;", "delete super.x;", "delete (o.x, o.y);", "delete " + "(".repeat(127) + "1" + ")".repeat(127) + ";"];
+test/delete-operator.ts:89:const messages = ["delete of an identifier is not allowed", "delete of an identifier is not allowed", "delete of an identifier is not allowed", "delete of an identifier is not allowed", "delete of an identifier is not allowed", "delete of an identifier is not allowed", "invalid assignment target", "unsupported or unexpected syntax: ;", "expected binding identifier", "unsupported or unexpected syntax: typeof", "unsupported or unexpected syntax: void", "unsupported or unexpected syntax: super", "expected ')', found ','", "syntax nesting limit exceeded"];
+test/delete-operator.ts:95:for (const name of ["missing", "x", "undefined", "f"]) check(parse("delete " + name + ";").error !== null, "P1 binding independent");
+test/delete-operator.ts:100:    expect(run(e,"delete" + term + "o.x;"));
+test/delete-operator.ts:101:    const p = stmt("delete" + term + "o.x;");
+test/delete-operator.ts:103:    expect(run(e,"delete /*" + term + "*/ o.x;"));
+test/delete-operator.ts:120:    internalDelete(key: PropertyKey): InternalBooleanCompletion {
+test/delete-operator.ts:127:        return super.internalDelete(key);
+test/delete-operator.ts:132:for (const source of ["delete this;", "delete null;", "delete 1;", "delete 'x';", "delete true;", "delete (o.x);", "delete (((o.x)));", "delete (x = 1);", "delete (true ? o.x : o.y);", "delete (true && o.x);", "delete (false || o.x);", "delete f();", "delete o.x === true;", "!delete o.x;", "+delete o.x;", "delete delete o.x;", "delete o.delete;", "delete o['delete'];"]) {
+test/delete-operator.ts:137:    put(target,"delete",n(8));
+test/delete-operator.ts:145:    expect(run(e,source),source === "!delete o.x;" ? b(false) : source === "+delete o.x;" ? n(1) : b(true));
+test/delete-operator.ts:148:    check(calls === (source === "delete f();" ? 1 : 0),"P calls");
+test/delete-operator.ts:150:    if (source === "delete (x = 1);") check(sameValue(r.global.bindings.get("x")!.value,n(1)),"P9 assignment");
+test/delete-operator.ts:155:    error(run(e,"delete missing.x;"),"missing is not defined",1,8);
+test/delete-operator.ts:156:    error(run(e,"delete (true && missing);"),"missing is not defined",1,17);
+test/delete-operator.ts:165:    expect(run(e,"delete o.x;"));
+test/delete-operator.ts:171:    expect(run(e,"delete o.child.x;"));
+test/delete-operator.ts:183:    const result = run(e,"delete o.x;");
+test/delete-operator.ts:187:        expect(run(e,"delete o.x;"));
+test/delete-operator.ts:194:        const raw=target.internalDelete("x");
+test/delete-operator.ts:214:for (const source of ["delete Number.NaN;","delete null.x;","delete undefined.x;","delete 'ab'[0];","delete 'ab'.length;","delete 'ab'[-0];","delete ''.length;","delete 'ab'.x.y;"]) {
+test/delete-operator.ts:222:for (const source of ["delete 'ab'[2];","delete 'ab'['01'];","delete 'ab'['-0'];","delete ''[0];"]) expect(run(new Evaluator(new Realm((_line)=>{
+test/delete-operator.ts:230:    expect(run(e,"delete a[1];"));
+test/delete-operator.ts:232:    expect(run(e,"delete a[1];"));
+test/delete-operator.ts:233:    expect(run(e,"delete a[8];"));
+test/delete-operator.ts:234:    error(run(e,"delete a.length;"),"property is not configurable: length");
+test/delete-operator.ts:236:    error(run(e,"delete a[0];"),"property is not configurable: 0");
+test/delete-operator.ts:250:    expect(run(e,"delete o[s];"));
+test/delete-operator.ts:256:    error(run(e,"delete o[s];"),"property is not configurable: Symbol(x)");
+test/delete-operator.ts:263:    for(const k of ["x","valueOf","toString"]) expect(run(e,"delete b."+k+";"));
+test/delete-operator.ts:319:        if(mode===15) t.internalDelete("x");
+test/delete-operator.ts:330:            key.internalDelete("valueOf");
+test/delete-operator.ts:336:            key.internalDelete("valueOf");
+test/delete-operator.ts:351:        key.internalDelete(wellKnownToPrimitive);
+test/delete-operator.ts:359:        key.internalDelete(wellKnownToPrimitive);
+test/delete-operator.ts:474:    expect(run(e,"delete f.name;"));
+test/delete-operator.ts:475:    expect(run(e,"delete f.length;"));
+test/delete-operator.ts:530:    const fault=new Error("delete fault");
+test/delete-operator.ts:535:        run(e,"delete o.x;");
+test/delete-operator.ts:540:    check(caught&&e.calls===0&&e.depth===0&&e.steps===4,"E25 delete fault cleanup");
+test/delete-operator.ts:597:    const result=run(e,"delete o.x;");
+test/delete-operator.ts:609:    const result=run(e,"delete 1;");
+test/delete-operator.ts:630:    const result=run(e,"delete o[k];");
+test/delete-operator.ts:648:    error(run(e,"delete null[k];"),"cannot convert null or undefined to object",1,8);
+test/delete-operator.ts:659:    const operation=stmt("delete o[k];");
+test/delete-operator.ts:662:        const setup=parse("function h() { return delete o[k]; }");
+test/delete-operator.ts:684:    const setup=parse("function h() { return delete o[k]; }");
+test/delete-operator.ts:687:    error(run(e,"delete o[k];"),"execution step limit exceeded",1,30);
+test/delete-operator.ts:691:    const operation=stmt("delete o.x;");
+test/delete-operator.ts:709:    expect(run(new Evaluator(bRealm),"delete o.x;"));
+test/delete-operator.ts:717:    const p=parse(readFileSync("test/fixtures/delete-operator.js","utf8"));
+test/delete-operator.ts:730:    expect(run(e, "delete a[1];"));
+test/delete-operator.ts:751:    expect(run(e, "delete o.x;"));
+test/delete-operator.ts:753:    expect(run(e, "delete o.method;"));
+test/delete-operator.ts:765:    check(helper(e, o(target), s("x")) === thrown, "D direct delete abrupt identity");
+test/delete-operator.ts:768:    check(run(e, "delete f();") === thrown, "P12 abrupt call identity");
+test/delete-operator.ts:773:        invariant = err instanceof Error && err.message === "delete requires a property reference";
+test/delete-operator.ts:778:        e.evaluate({ kind: "unary", op: "delete", loc, operand: { kind: "identifier", name: "x", loc } }, r.global, U);
+test/delete-operator.ts:780:        invariant = err instanceof Error && err.message === "delete requires a property reference";
+test/delete-operator.ts:815:    expect(run(e, "delete o[k];"));
+test/delete-operator.ts:816:    expect(run(e, "delete k[method];"));
+test/delete-operator.ts:817:    expect(run(e, "delete o[k];"));
+test/delete-operator.ts:841:console.log("delete-operator ok");
+test/fixtures/array-string-conversion.js:24:check(delete object[empty]);
+test/fixtures/array-string-conversion.js:25:check(delete object[pair]);
+test/fixtures/delete-effects.js:1:delete base()[key()];
+test/fixtures/delete-operator.js:2:    if (!ok) throw 'delete assertion';
+test/fixtures/delete-operator.js:5:check(delete (o.x = 9));
+test/fixtures/delete-operator.js:7:let result = delete o.x;
+test/fixtures/delete-operator.js:13:check(delete a[1]);
+test/fixtures/delete-operator.js:16:function f() { /*keep*/ return delete this.x; }
+test/fixtures/delete-operator.js:17:check(f.toString() === 'function f() { /*keep*/ return delete this.x; }');
+test/fixtures/delete-operator.js:21:function outer() { /* delete text */ return function() { return 'delete'; }; }
+test/fixtures/delete-operator.js:22:check(outer.toString() === "function outer() { /* delete text */ return function() { return 'delete'; }; }");
+test/fixtures/delete-operator.js:23:check(outer().toString() === "function() { return 'delete'; }");
+test/fixtures/delete-operator.js:27:check(delete key.toString);
+test/fixtures/delete-operator.js:30:check(delete o[key]);
+test/function-call.ts:237:const deleted = r.functionPrototype.internalDelete("call");
+test/function-string-conversion.ts:331:check(named.internalDelete("name").type === "normal" && named.internalDelete("length").type === "normal", "F7 delete metadata");
+test/function-string-conversion.ts:475:object(f).internalDelete(wellKnownToPrimitive);
+test/function-string-conversion.ts:503:object(f).internalDelete("valueOf");
+test/function-string-conversion.ts:504:object(f).internalDelete("toString");
+test/function-string-conversion.ts:505:const deletion = budgetRealm.functionPrototype.internalDelete("toString");
+test/function-string-conversion.ts:506:check(deletion.type === "normal" && deletion.value, "C10 delete root");
+test/function-string-conversion.ts:527:object(f).internalDelete(wellKnownToPrimitive);
+test/function-string-conversion.ts:528:object(f).internalDelete("toString");
+test/function-string-conversion.ts:562:object(binding(fixtureRealm, "f")).internalDelete("toString");
+test/length-coercion.ts:70:        check(args[1].kind === "string", "delete key");
+test/length-coercion.ts:71:        if (args[1].kind === "string") object(args[0]).internalDelete(args[1].value);
+test/length-coercion.ts:120:                target.internalDelete("valueOf");
+test/length-coercion.ts:121:                target.internalDelete("toString");
+test/number-conversions.ts:208:    for (const mode of ["delete", "noncallable", "object"]) {
+test/number-conversions.ts:209:        realm.numberPrototype.internalDelete("valueOf");
+test/number-conversions.ts:251:    box.internalDelete(wellKnownToPrimitive);
+test/number-conversions.ts:252:    box.internalDelete("valueOf");
+test/number-conversions.ts:253:    box.internalDelete("toString");
+test/object-descriptors.ts:131:result(text.internalDelete("0"), false, "W8 index delete");
+test/object-descriptors.ts:132:result(text.internalDelete("length"), false, "W8 length delete");
+test/object-keys.ts:49:result(o.internalDelete("z"), true, "delete string");
+test/object-keys.ts:50:result(o.internalDelete("2"), true, "delete index");
+test/object-keys.ts:56:result(o.internalDelete("hidden"), true, "nonwritable nonenumerable configurable deletion");
+test/object-keys.ts:59:result(o.internalDelete("3"), false, "nonconfigurable rejection");
+test/object-keys.ts:63:result(o.internalDelete("missing"), true, "absent deletion");
+test/object-keys.ts:64:result(o.internalDelete("hidden"), true, "repeated deletion");
+test/object-keys.ts:73:result(child.internalDelete("locked"), true, "inherited nonconfigurable is absent own");
+test/object-keys.ts:74:result(child.internalDelete("shared"), true, "inherited configurable untouched");
+test/object-keys.ts:78:result(child.internalDelete("shared"), true, "delete shadow");
+test/object-keys.ts:83:result(child.internalDelete("removable"), true, "nonextensible deletion");
+test/object-keys.ts:85:result(child.internalDelete("missing"), true, "nonextensible absent");
+test/object-keys.ts:98:result(first.internalDelete("isNaN"), true, "realm local delete");
+test/object-keys.ts:103:result(first.internalDelete("NaN"), false, "realm constant protected");
+test/object-keys.ts:119:result(orderedText.internalDelete("z"), true, "W10 delete z");
+test/object-keys.ts:149:result(mixed.internalDelete(s), true, "A5 delete s");
+test/object-keys.ts:151:result(mixed.internalDelete("z"), true, "A5 delete z");
+test/object-keys.ts:153:result(mixed.internalDelete(t), false, "A5 failed delete t");
+test/object-keys.ts:162:detachedMap.delete(t);
+test/object-keys.ts:188:result(symbolText.internalDelete(numericSymbol), true, "A12 ordinary symbol delete");
+test/object-keys.ts:189:result(symbolText.internalDelete("0"), false, "A12 virtual delete still rejected");
+test/object-prototypes.ts:124:result(textChild.internalDelete("0"), true, "W12 absent own delete");
+test/object-prototypes.ts:145:result(symbolChild.internalDelete(symbolKey), true, "A8 own absent deletion");
+test/object-tostring.ts:152:        child.internalDelete(wellKnownToStringTag);
+test/object-tostring.ts:180:    a.symbolPrototype.internalDelete(wellKnownToStringTag);
+test/object-tostring.ts:187:    existing.internalDelete(wellKnownToStringTag);
+test/object-tostring.ts:198:    b.objectPrototype.internalDelete("toString");
+test/object-valueof.ts:258:// V5: shadow/replace/delete are ordinary, Realm-local mutations; saved method survives.
+test/object-valueof.ts:263:const deleted = b.objectPrototype.internalDelete("valueOf");
+test/primitive-conversion.ts:141:    for (const mode of ["replace", "delete", "prototype"]) {
+test/primitive-conversion.ts:147:                const deleted = item.internalDelete(second);
+test/primitive-conversion.ts:148:                check(deleted.type === "normal" && deleted.value, "delete second");
+test/primitive-conversion.ts:158:        if (mode === "delete") typeError(result);
+test/realms.ts:226:checkGraph(literalObject.internalDelete("x").type === "normal" && sameValue(literalObject.get("x"), numberValue(7)), "G10 delete restores inheritance");
+test/symbol-conversions.ts:206:    const removeShadow = box.internalDelete(wellKnownToPrimitive);
+test/symbol-conversions.ts:208:    const deleted = b.symbolPrototype.internalDelete(wellKnownToPrimitive);
+tools/build-native.mjs:15:for (const [entry, name] of [["src/cli.ts", "rift"], ["test/realms.ts", "realms"], ["test/object-descriptors.ts", "object-descriptors"], ["test/object-prototypes.ts", "object-prototypes"], ["test/object-keys.ts", "object-keys"], ["test/conversion.ts", "conversion"], ["test/definition-dispatch.ts", "definition-dispatch"], ["test/array-storage.ts", "array-storage"], ["test/array-like.ts", "array-like"], ["test/operation-context.ts", "operation-context"], ["test/array-map.ts", "array-map"], ["test/array-literals.ts", "array-literals"], ["test/property-key-conversion.ts", "property-key-conversion"], ["test/numeric-operators.ts", "numeric-operators"], ["test/addition.ts", "addition"], ["test/relational.ts", "relational"], ["test/primitive-conversion.ts", "primitive-conversion"], ["test/operator-coercion.ts", "operator-coercion"], ["test/key-coercion.ts", "key-coercion"], ["test/length-coercion.ts", "length-coercion"], ["test/array-length-coercion.ts", "array-length-coercion"], ["test/function-call.ts", "function-call"], ["test/object-valueof.ts", "object-valueof"], ["test/array-string-conversion.ts", "array-string-conversion"], ["test/function-string-conversion.ts", "function-string-conversion"], ["test/abstract-equality.ts", "abstract-equality"], ["test/delete-operator.ts", "delete-operator"]]) {
+tools/run-guests.mjs:13:    ["delete-success", "let o={x:1}; console.log(delete o.x, o.x);", 0, "", "true undefined\n"],
+tools/run-guests.mjs:14:    ["delete-identifier", "console.log('no'); delete x;", 2, "1:20: parse SyntaxError: delete of an identifier is not allowed"],
+tools/run-guests.mjs:15:    ["delete-fixed", "delete Number.NaN;", 1, "1:1: runtime TypeError: property is not configurable: NaN"],
+tools/run-guests.mjs:16:    ["delete-null", "delete null.x;", 1, "1:8: runtime TypeError: cannot convert null or undefined to object"],
+tools/run-guests.mjs:254:const deleteCommand = lane === "node" ? process.execPath : join(root, "build/native/delete-operator" + suffix);
+tools/run-guests.mjs:255:const deleteArgs = lane === "node" ? [join(root, "build/node/test/delete-operator.js")] : [];
+tools/run-guests.mjs:256:execute("delete-operator", deleteCommand, deleteArgs, { stdout: "delete-operator ok\n" });

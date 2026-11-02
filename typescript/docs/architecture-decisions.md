@@ -202,7 +202,7 @@ in a seeded realm. Source references, design comparison and validation are in
 `internalDelete(key): InternalBooleanCompletion` checks only the own descriptor.
 Absence succeeds, configurable properties are removed, and nonconfigurable
 properties reject without mutation. Extensibility does not prevent deletion.
-There is no guest delete syntax or strict-delete wrapper.
+At TS-004C there was no guest delete syntax or strict-delete wrapper; TS-025A now adds the wrapper described below.
 
 `ownPropertyKeys(): PropertyKey[]` returns a fresh list including nonenumerable
 own strings. Indices sort numerically with an explicit comparator; other strings
@@ -781,9 +781,9 @@ explicit Object.toString Array tags and Function/Number stage controls remain.
 
 At TS-022A acceptance the frozen consumer matrix had two syntax gaps: abstract
 equality and guest delete. TS-024A now implements C2 equality; its original
-rejection transcript remains historical evidence. C3 guest delete is still
-rejected and covered only through the existing internal interface after
-effectful key conversion. See the [matrix, migrations
+rejection transcript remains historical evidence. TS-025A closes C3 with guest
+delete assertions and own-descriptor inspection, preserving the raw internal
+controls and historical rejection transcript. See the [matrix, migrations
 and evidence](validation/ts-022a/README.md).
 
 ## Function source and string conversion (TS-023A, pending independent review)
@@ -833,3 +833,23 @@ No BigInt, HTMLDDA, implicit boxing, other syntax or methods are added.
 The existing parser nesting diagnostic is preserved at 1:128 for R18, correcting
 the proposal's 1:129 oracle; acceptance of this documented correction is pending.
 See [matrix mapping and validation](validation/ts-024a/README.md).
+
+## Guest delete (TS-025A, pending independent review)
+
+Delete uses unconditional strict-delete semantics in the limited language profile:
+identifier operands (including parentheses) fail during parsing, and false from
+internalDelete becomes a guest TypeError at the delete token. Directives remain
+inert; this does not establish full strict Scripts or sloppy binding deletion.
+
+The evaluator captures a property Reference once and never reads its final
+property. The new deleteReference helper boxes the captured base before converting
+the deferred key, then calls internalDelete exactly once. Base/key expression
+errors, conversion throws and deletion throws preserve their original records.
+Nonreference operands evaluate normally and then produce true. General member
+reads/writes remain object-only; primitive boxing is limited to deletion.
+
+The fixed 2025 order and pinned engine evidence in [the accepted design](delete-operator.md)
+were retained without algorithm changes. Array length and String virtual indices
+remain nonconfigurable; raw internalDelete still returns normal false. Deletion
+adds no hidden conversion budgets, call limits, Realm resets or target GetValue.
+[Implementation evidence and matrix mapping](validation/ts-025a/README.md).

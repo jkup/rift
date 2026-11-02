@@ -21,7 +21,10 @@ check(object[''] === 7);
 object[pair] = 9;
 check(object['1,2'] === 9);
 check(object[empty] === 7);
-// C3 deletion is checked through the host internalDelete interface.
+check(delete object[empty]);
+check(delete object[pair]);
+check(object[''] === undefined);
+check(object['1,2'] === undefined);
 let trace = '';
 pair.join = function() {
     trace = trace + 'key;';

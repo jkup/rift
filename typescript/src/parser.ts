@@ -231,7 +231,13 @@ class Parser {
             this.expect(")");
             return expr;
         }
-        if (t.text === "!" || t.text === "-" || t.text === "+") return { kind: "unary", loc, op: t.text, operand: this.expression(9) };
+        if (t.text === "!" || t.text === "-" || t.text === "+" || t.text === "delete") {
+            const operand = this.expression(9);
+            // Parentheses preserve identifiers. Strict-delete is unconditional
+            // in this profile, independently of inert directive strings.
+            if (t.text === "delete" && operand.kind === "identifier") this.fail("delete of an identifier is not allowed", loc);
+            return { kind: "unary", loc, op: t.text, operand };
+        }
         if (t.text === "[") {
             const elements: (Expr | null)[] = [];
             while (this.error === null && !this.at("]")) {

@@ -1255,8 +1255,25 @@ Coordinator acceptance: TS-025P accepted1ff5fe5 on 2026-11-02. Reviewed complete
 
 ### TS-025A — Guest delete operator
 
-Status: **ready**. Owner: next assigned Codex implementation chat, existing codex/primitive-computed-keys. Prerequisite accepted TS-025P1ff5fe5. Implement exactly docs/delete-operator.md and complete P1-P27/D1-D26/E1-E26/R1-R21/C1-C10 matrix in docs/validation/ts-025p/matrix.md, including variants. Own minimal parser/evaluator integration, src/delete-reference.ts, dedicated tests/runtime-read fixture, required runner/native registration, precise current Array C3 migration and scope/evidence/task updates. Coordinator owns COORDINATION.md; Claude paths reserved.
+Status: **review needed**. Owner: assigned Codex TS-025A sole implementation writer, dispatch base `bd7342c`, existing codex/primitive-computed-keys (2026-11-02). Prerequisite accepted TS-025P1ff5fe5. Implement exactly docs/delete-operator.md and complete P1-P27/D1-D26/E1-E26/R1-R21/C1-C10 matrix in docs/validation/ts-025p/matrix.md, including variants. Own minimal parser/evaluator integration, src/delete-reference.ts, dedicated tests/runtime-read fixture, required runner/native registration, precise current Array C3 migration and scope/evidence/task updates. Coordinator owns COORDINATION.md; Claude paths reserved.
 
 Freeze unconditional strict-delete within the limited profile: identifier early errors including parentheses, nonreference evaluation then true, property reference consumption without final GetValue, ToObject before deferred ToPropertyKey and exactly one internalDelete. Preserve captured base, original abrupt completions, strict false TypeError location, primitive boxing Realm and ordinary read/write behavior. No binding deletion, sloppy mode, accessors/proxies, broad boxing, unrelated syntax or method expansion. Explain the policy explicitly in current scope docs.
 
 Require independent literal results, storage invariants, effects, error phases/locations, key mutation and Realm/host-fault cleanup. Validate exact budgets and native actual default64 recursive host and guest hooks, not only small limits. Preserve172 existing cases/26gates and raw internalDelete controls; migrate only current C3 rejection/fixture, retaining historical evidence. Run typecheck, runner/probes, full rebuilt Node/native, every static-only build AND separately parsed coverage. Retain failures/minimal reductions before workarounds; report contradictory oracles before adjusting. No pins, C++, Claude edits, branch switch/main merge or successor. Commit/push coherent tested milestone and stop for independent review.
+
+TS-025A handoff (2026-11-02): strict-delete parser/evaluator/helper implemented
+within the accepted limited profile. ToObject precedes deferred key conversion;
+captured references avoid final GetValue; original abrupt records and Realm/budget
+cleanup are preserved. Dedicated matrix driver/runtime fixtures cover P/D/E/R/C
+and native actual default64 host/guest recursion (261/325 steps). Precise current
+C3 migration retains raw internalDelete controls and historical rejection evidence.
+
+Typecheck PASS; runner20/20; probes10/10; rebuilt Node/native177/177 each, no skips.
+All27 static-only builds and separately parsed coverage gates PASS. Baseline172
+cases/26gates preserved. Retained initial Zig access failure, test corrections,
+and minimal catch-identity/never-callback dynamic-tier reductions; test-only
+explicit narrowing/return annotation fixes preserve identity and zero dynamic tier.
+No frozen semantic oracle adjustment, production workaround, pins, C++, Claude
+outputs, COORDINATION, branch switch, main merge or successor work.
+Evidence/matrix/migrations: docs/validation/ts-025a/README.md. Commit/push tested
+milestone and stop for independent coordinator review; not self-accepted.

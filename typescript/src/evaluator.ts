@@ -4,6 +4,7 @@ import type { Realm } from "./realm.js";
 import { stringConcat, stringCompare } from "./strings.js";
 import { GuestArray } from "./array-object.js";
 import { isLooselyEqual } from "./abstract-equality.js";
+import { deleteReference } from "./delete-reference.js";
 import { toPrimitive } from "./primitive-conversion.js";
 import { toNumber, toString } from "./conversion.js";
 
@@ -208,6 +209,16 @@ export class Evaluator {
                 return this.call(callee.value, thisValue, args, expr.loc);
             }
             case "unary": {
+                if (expr.op === "delete") {
+                    if (expr.operand.kind === "identifier") throw new Error("delete requires a property reference");
+                    if (expr.operand.kind === "member") {
+                        // Capture once, without reading the final property.
+                        const ref = this.reference(expr.operand, env, receiver);
+                        return ref.type === "abrupt" ? ref.completion : deleteReference(ref.reference, this.context, expr.loc);
+                    }
+                    const value = this.evaluate(expr.operand, env, receiver);
+                    return value.type === "normal" ? normal({ kind: "boolean", value: true }) : value;
+                }
                 const result = this.evaluate(expr.operand, env, receiver);
                 if (result.type !== "normal") return result;
                 if (expr.op === "!") return normal({ kind: "boolean", value: !truthy(result.value) });

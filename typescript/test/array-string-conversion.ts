@@ -594,9 +594,13 @@ check(fixture.error === null, "C fixture parse");
 const executed = consumer.block(fixture.body, consumerRealm.global, UNDEFINED);
 check(executed.type === "normal", "C fixture assertions");
 const deletion = parse("let object = {}; delete object.x;");
-check(deletion.error !== null && deletion.error.phase === "parse"
-    && deletion.error.message === "unsupported or unexpected syntax: delete"
-    && deletion.error.loc.line === 1 && deletion.error.loc.column === 18, "C3 retained unsupported delete boundary");
+check(deletion.error === null, "C3 delete parse");
+const deletionRealm = new Realm((_line) => {});
+check(new Evaluator(deletionRealm).block(deletion.body, deletionRealm.global, UNDEFINED).type === "normal", "C3 delete success");
+const consumerObject = consumerRealm.global.bindings.get("object");
+check(consumerObject !== undefined && consumerObject.value.kind === "object"
+    && consumerObject.value.object.getOwnProperty("") === undefined
+    && consumerObject.value.object.getOwnProperty("1,2") === undefined, "C3 guest descriptors absent");
 for (const values of [[], [num(1), num(2)]]) {
     const receiver = consumerRealm.createObject();
     const operand = obj(array(consumerRealm, values));

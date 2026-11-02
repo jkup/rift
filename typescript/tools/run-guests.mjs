@@ -10,6 +10,10 @@ const command = lane === "node" ? process.execPath : join(root, "build/native/ri
 const prefix = lane === "node" ? [join(root, "build/node/src/cli.js")] : [];
 const cases = JSON.parse(readFileSync(join(root, "test/cases.json"), "utf8"));
 const generated = [
+    ["delete-success", "let o={x:1}; console.log(delete o.x, o.x);", 0, "", "true undefined\n"],
+    ["delete-identifier", "console.log('no'); delete x;", 2, "1:20: parse SyntaxError: delete of an identifier is not allowed"],
+    ["delete-fixed", "delete Number.NaN;", 1, "1:1: runtime TypeError: property is not configurable: NaN"],
+    ["delete-null", "delete null.x;", 1, "1:8: runtime TypeError: cannot convert null or undefined to object"],
     ["duplicate", "let x; let x;", 2, "parse SyntaxError: duplicate binding: x"],
     ["duplicate-param", "function f(x,x) {}", 2, "parse SyntaxError: duplicate parameter: x"],
     ["param-let", "function f(x) { let x; }", 2, "parse SyntaxError: duplicate binding: x"],
@@ -247,6 +251,9 @@ execute("array-string-conversion", arrayStringCommand, arrayStringArgs, { stdout
 const functionStringCommand = lane === "node" ? process.execPath : join(root, "build/native/function-string-conversion" + suffix);
 const functionStringArgs = lane === "node" ? [join(root, "build/node/test/function-string-conversion.js")] : [];
 execute("function-string-conversion", functionStringCommand, functionStringArgs, { stdout: "function-string-conversion ok\n" });
+const deleteCommand = lane === "node" ? process.execPath : join(root, "build/native/delete-operator" + suffix);
+const deleteArgs = lane === "node" ? [join(root, "build/node/test/delete-operator.js")] : [];
+execute("delete-operator", deleteCommand, deleteArgs, { stdout: "delete-operator ok\n" });
 const equalityCommand = lane === "node" ? process.execPath : join(root, "build/native/abstract-equality" + suffix);
 const equalityArgs = lane === "node" ? [join(root, "build/node/test/abstract-equality.js")] : [];
 execute("abstract-equality", equalityCommand, equalityArgs, { stdout: "abstract-equality ok\n" });
