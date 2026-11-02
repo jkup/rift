@@ -87,7 +87,7 @@ Handoff (2026-11-02): outputs `typescript/docs/assistance/test262-starter-corpus
 
 ## CL-005 — Research a faithful nondecimal number formatter
 
-Status: **changes requested** (oracle grammar/canonical output validation; PR feedback posted). Owner: Claude Code, PR #79, branch `claude/cl-005-radix-formatter-options`. Dependencies: accepted TS-021P evidence.
+Status: **accepted** at `d532a14`; revised PR #80 merged to main `78811ec` (2026-11-02). Owner: Claude Code. Dependencies: accepted TS-021P evidence. Research accepted; production formatter remains a separately scoped future task.
 
 Purpose: investigate the concrete Number.toString blocker without changing the engine. Read typescript/docs/number-prototype-conversions.md and docs/validation/ts-021p/: both hosts fail seven exact rounding-interval cases, including0.3/base3. Static compilation and host agreement alone are insufficient. Number valueOf proceeds independently.
 
