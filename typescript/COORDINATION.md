@@ -692,3 +692,7 @@ Writer active, saved cursord0909a4c-1948-4182-b608-4d6823dc6609:3. Native static
 Acceptede58c7b0 after actual source/decoder/assertion review and independent full212/212 lanes36 static gates,host73,94-row dual-lane matrix/CLI and preservation audit. Exactly21 literal eligible return tag deltas; no other runtime behavior changed. Logs build/ts031cb-review-*.log. Writer idle cursord0909a4c-1948-4182-b608-4d6823dc6609:4; root original user authorization covers publication. Conformance remains blocked. Retained cancellation test race assigned as ready Claude CL-006, independent of next core work. Next TS-032P freezes exact nondecimal backend design from already-accepted CL005; no repeated research survey or builtin implementation yet. Main remains78811ec; no merge authorized/requested here.
 
 Acceptance/next contract pushed2bf6fd2. Active sole TS-032P designer chat `01a19cee-0243-7c02-8578-12f2cf9d25a7`, hostlocal, base2bf6fd2; explicit wait confirmed active, saved cursor2081f43a-25d9-4a72-9a2b-35c4bf7d94d9:1. Design/proof-plan only before backend implementation. CL006 ready for owner's Claude session, no duplicate Codex assignment.
+
+## TS-032P progress — 2026-11-02 15:53 heartbeat
+
+Designer active, saved cursor2081f43a-25d9-4a72-9a2b-35c4bf7d94d9:2. Reviewing corrected paper theorem and separating interval/shortestness proof from exact closest/even search across adjacent radix scales. No completed design or independent acceptance yet. No competing edits/builds, successor or main merge. CL006 remains reserved for Claude.
