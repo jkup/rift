@@ -1,0 +1,132 @@
+133 files inspected; 131 candidate lines.
+docs/architecture-decisions.md:166:ValueCompletion and internalSet(key, value, receiver, context, loc):
+docs/architecture-decisions.md:377:TS-028A supersedes the original object-only GetValue restriction: reads use
+docs/architecture-decisions.md:389:operations to diverge. Primitive reads now box through TS-028A; writes and syntax remain unchanged. See property-key-conversion.md for the frozen order and test contract.
+docs/architecture-decisions.md:506:context, loc), and putValue(ref, value, context, loc). Every evaluator consumption,
+docs/architecture-decisions.md:851:reads/writes remain object-only; primitive boxing is limited to deletion.
+docs/feature-inventory.md:16:| Objects | Colon-valued literal entries with word/string keys; dot and computed key get/write; aliases; ordinary methods as function-valued properties; missing properties undefined | Ordinary inherited data properties supported when seeded by the host; production objects inherit their Realm Object root. No accessors, method shorthand, numeric/computed literal keys, spread or enumeration APIs. Guest delete uses unconditional strict-delete: identifier operands are parse errors and nonconfigurable properties throw. Literal __proto__ rejected. Symbol keys retain identity; other primitive keys convert to strings. Object keys use the symbol protocol then string-hint ordinary conversion; default objects key as [object Object]. Primitive property reads/calls box before deferred key conversion and preserve the original primitive Receiver/this; primitive writes remain object-only. Delete keeps its existing boxing path. |
+docs/feature-inventory.md:39:`toIntegerOrInfinity`/`toLength`, and object-only `lengthOfArrayLike`. Presence
+docs/feature-inventory.md:282:Primitive writes remain object-only, after RHS evaluation and before key hooks.
+src/array-map.ts:6:// Internal object-only operation. Boxing and non-default species are deferred.
+src/evaluator.ts:168:                return putValue(ref.reference, value.value, this.context, expr.loc);
+src/runtime.ts:159:    internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, loc: Location): InternalBooleanCompletion {
+src/runtime.ts:186:    set(key: PropertyKey, value: Value, context: OperationContext, loc: Location): Completion {
+src/runtime.ts:187:        const result = this.internalSet(key, value, { kind: "object", object: this }, context, loc);
+src/runtime.ts:189:        if (!result.value) return failure("TypeError", "property is not writable: " + formatPropertyKey(key), loc);
+src/runtime.ts:233:export function putValue(ref: Reference, value: Value, context: OperationContext, loc: Location): Completion {
+src/runtime.ts:235:        if (ref.base.kind !== "object") return failure("TypeError", "property base must be an object", ref.loc);
+test/array-length-coercion.ts:312:    bool(base.internalSet("length", binding(active, "rhs"), obj(three()), active.context, loc), false);
+test/array-length-coercion.ts:315:    bool(writableBase.internalSet("length", binding(active, "rhs"), obj(target), active.context, loc), false);
+test/array-length-coercion.ts:409:    bool(base.internalSet("length", rhs, obj(receiver), active.context, loc), true);
+test/array-length-coercion.ts:413:    bool(receiver.internalSet("length", rhs, obj(ordinary), active.context, loc), true);
+test/array-map.ts:101:// Only this test realm installs the object-only adapter.
+test/array-map.ts:112:    if (input.kind !== "object") return failure("TypeError", "object-only test map entry", at);
+test/array-storage.ts:74:bool(parent.internalSet("4", num(9), obj(receiver), keyContext, loc), true); length(receiver, 5);
+test/array-storage.ts:79:bool(receiver.internalSet("8", num(11), obj(ordinary), keyContext, loc), true); length(receiver, 5);
+test/array-storage.ts:81:bool(receiver.internalSet("4", num(12), obj(ordinary), keyContext, loc), true); length(receiver, 5);
+test/array-storage.ts:137:bool(frozen.internalSet("length", num(3), obj(frozen), keyContext, loc), false);
+test/array-storage.ts:140:bool(frozen.internalSet("length", num(NaN), obj(frozen), keyContext, loc), false);
+test/array-storage.ts:142:bool(frozen.internalSet("length", obj(coercible), obj(frozen), keyContext, loc), false);
+test/definition-dispatch.ts:54:        const r = base.internalSet("x", rhs, obj(receiver), keyContext, loc);
+test/definition-dispatch.ts:73:            const r = viaReference ? putValue({ kind: "property", base: { kind: "object", object: target }, key: { kind: "string", value: "x" }, loc }, rhs, keyContext, loc) : target.set("x", rhs, keyContext, loc);
+test/definition-dispatch.ts:87:boolean(base.internalSet("locked", UNDEFINED, obj(receiver), keyContext, loc), false);
+test/definition-dispatch.ts:88:boolean(base.internalSet("ownLocked", UNDEFINED, obj(receiver), keyContext, loc), false);
+test/definition-dispatch.ts:93:boolean(inherited.internalSet("locked", rhs, obj(inherited), keyContext, loc), false);
+test/definition-dispatch.ts:95:    boolean(inherited.internalSet("new", rhs, primitive, keyContext, loc), false);
+test/definition-dispatch.ts:102:boolean(base.internalSet("missing", rhs, obj(closed), keyContext, loc), false);
+test/definition-dispatch.ts:104:boolean(base.internalSet("existing", rhs, obj(closed), keyContext, loc), true);
+test/definition-dispatch.ts:107:exact(base.internalSet("missing", rhs, obj(closed), keyContext, loc), closed);
+test/key-coercion.ts:56:    set(key: PropertyKey, value: Value, context: OperationContext, location: Location): Completion {
+test/key-coercion.ts:59:        return this.stop === "S" ? sentinel : super.set(key, value, context, location);
+test/key-coercion.ts:142:                check(putValue(ref, rhs, active.context, loc).type === "normal", "direct write");
+test/key-coercion.ts:144:                check(read.type === "normal" && read.value === rhs && calls === 3, "direct read once per consumption");
+test/key-coercion.ts:213:    const result = putValue({ kind: "property", base: obj(target), key, loc }, num(9), second.context, loc);
+test/key-coercion.ts:214:    check(result.type === "throw" && result.diagnostic.message === "property is not writable: x" && result.diagnostic.loc === loc, "object key strict false Set");
+test/key-coercion.ts:217:// Nullish reads and all primitive writes reject before a key lookup.
+test/key-coercion.ts:228:    const write = putValue(ref, num(3), active.context, loc);
+test/key-coercion.ts:229:    check(write.type === "throw" && write.diagnostic.message === "property base must be an object" && write.diagnostic.loc === loc && key.reads === "", "write before coercion");
+test/object-descriptors.ts:82:check(putValue({ kind: "property", base: { kind: "object", object: o }, key: { kind: "string", value: "new" }, loc }, num(3), keyContext, loc).type === "throw", "putValue nonextensible rejection");
+test/object-descriptors.ts:83:const write = putValue({ kind: "property", base: { kind: "object", object: o }, key: { kind: "string", value: "assigned" }, loc }, num(4), keyContext, loc);
+test/object-descriptors.ts:101:// W5-W9/W11/W14: String units are virtual readonly data properties.
+test/object-descriptors.ts:127:result(text.internalSet("0", aUnit, { kind: "object", object: text }, keyContext, loc), false, "W8 same-value Set");
+test/object-descriptors.ts:130:    && strictUnit.diagnostic.message === "property is not writable: 0" && strictUnit.diagnostic.loc === loc, "W8 strict Set");
+test/object-descriptors.ts:152:if (detachedUnit === undefined || detachedLength === undefined) throw new Error("W14 missing descriptors");
+test/object-descriptors.ts:157:check(stringKeys(Array.from(stringSnapshot.keys())).join(",") === "0,1,2,length", "W14 snapshot order");
+test/object-descriptors.ts:159:if (snapshotUnit === undefined) throw new Error("W14 missing snapshot unit");
+test/object-descriptors.ts:167:check(stringKeys(text.ownPropertyKeys()).join(",") === "0,1,2,length", "W14 detached keys/map");
+test/object-descriptors.ts:170:check(text.stringData === "ab", "W14 scalar payload survives property/prototype changes");
+test/object-descriptors.ts:180:result(symbolObject.internalSet(symbolKey, sameSymbol, { kind: "object", object: symbolObject }, keyContext, loc), false, "A6 readonly Set rejects identical payload");
+test/object-prototypes.ts:43:result(root.internalSet("x", num(3), obj(receiver), keyContext, loc), true, "distinct receiver creation");
+test/object-prototypes.ts:49:result(root.internalSet("own", num(5), obj(receiver), keyContext, loc), true, "missing base updates receiver own");
+test/object-prototypes.ts:53:result(root.internalSet("new", num(6), obj(receiver), keyContext, loc), false, "nonextensible receiver missing");
+test/object-prototypes.ts:54:result(root.internalSet("x", num(7), obj(receiver), keyContext, loc), true, "nonextensible existing");
+test/object-prototypes.ts:56:result(root.internalSet("x", num(7), obj(receiver), keyContext, loc), false, "receiver readonly same value");
+test/object-prototypes.ts:60:result(root.internalSet("fixed", num(9), obj(other), keyContext, loc), false, "base readonly beats receiver writable");
+test/object-prototypes.ts:63:    result(root.internalSet("x", num(9), primitive, keyContext, loc), false, "primitive existing");
+test/object-prototypes.ts:64:    result(root.internalSet("absent", num(9), primitive, keyContext, loc), false, "primitive absent");
+test/object-prototypes.ts:66:result(child.internalSet("fixed", num(2), obj(child), keyContext, loc), false, "inherited readonly");
+test/object-prototypes.ts:68:check(putValue({ kind: "property", base: { kind: "object", object: child }, key: { kind: "string", value: "fixed" }, loc }, num(2), keyContext, loc).type === "throw", "strict boundary");
+test/object-prototypes.ts:70:const assigned = putValue({ kind: "property", base: { kind: "object", object: child }, key: { kind: "string", value: "x" }, loc }, rhs, keyContext, loc);
+test/object-prototypes.ts:82:result(deep.internalSet("end", num(43), obj(deep), keyContext, loc), true, "deep set");
+test/object-prototypes.ts:114:// W12/W13: descriptor traversal reaches virtual properties on prototypes.
+test/object-prototypes.ts:122:result(textChild.internalSet("0", aUnit, obj(textChild), keyContext, loc), false, "W12 inherited readonly Set");
+test/object-prototypes.ts:130:result(ordinaryBase.internalSet("0", aUnit, obj(textRoot), keyContext, loc), false, "W13 String receiver rejects virtual index");
+test/object-prototypes.ts:131:result(textRoot.internalSet("0", num(9), obj(textChild), keyContext, loc), false, "W13 readonly base wins over writable receiver");
+test/object-prototypes.ts:134:result(textRoot.internalSet("extra", num(2), obj(textChild), keyContext, loc), true, "W13 writable added property");
+test/object-prototypes.ts:144:result(symbolChild.internalSet(symbolKey, num(1), obj(symbolChild), keyContext, loc), false, "A8 inherited readonly");
+test/object-prototypes.ts:149:result(symbolChild.internalSet(symbolKey, num(3), obj(symbolReceiver), keyContext, loc), false, "A9 inherited readonly wins over Receiver writable");
+test/object-prototypes.ts:152:result(symbolChild.internalSet(symbolKey, num(5), obj(symbolReceiver), keyContext, loc), true, "A9 writable path");
+test/primitive-reads.ts:30:const writeOnly = "property base must be an object";
+test/primitive-reads.ts:677:        expect(putValue(ref, n(3), e.context, opLoc), n(3), name + " write");
+test/primitive-reads.ts:710:        expect(read, n(1), "W6 PrimitiveReadWrite");
+test/primitive-reads.ts:712:    error(putValue(ref, n(3), e.context, opLoc), writeOnly, "W6/W7 write", 9, 7);
+test/primitive-reads.ts:713:    check(hooks === (isNullish ? 0 : 1), "W6/W7 hook count");
+test/primitive-reads.ts:718:for (const name of ["W13 SimplePrimitiveWrite", "W14 RHSAbrupt", "W15 SimpleObjectWrite"]) {
+test/primitive-reads.ts:729:        bind(realm, "p", name === "W15 SimpleObjectWrite" ? o(target) : value);
+test/primitive-reads.ts:737:            return name === "W14 RHSAbrupt" ? Q : normal(n(3));
+test/primitive-reads.ts:740:        if (name === "W14 RHSAbrupt") {
+test/primitive-reads.ts:742:        } else if (name === "W15 SimpleObjectWrite") {
+test/primitive-reads.ts:746:            error(result, writeOnly, name);
+test/primitive-reads.ts:748:        check(trace === (name === "W15 SimpleObjectWrite" ? "RY" : "R") && realm.observation.boxes.length === 0, name + " trace/no box");
+test/property-key-conversion.ts:99:    const write = putValue(ref, rhs, keyContext, loc);
+test/property-key-conversion.ts:116:        const write = putValue(ref, rhs, keyContext, loc);
+test/property-key-conversion.ts:118:        check(write.type === "normal" && write.value === rhs && read.type === "normal" && read.value === rhs && target.get(row.expected) === rhs, "primitive key on ordinary/array");
+test/property-key-conversion.ts:132:    check(putValue({ kind: "property", base: obj(sparse), key: num(value), loc }, num(8), keyContext, loc).type === "normal", "nonindex write");
+test/property-key-conversion.ts:135:check(putValue({ kind: "property", base: obj(sparse), key: num(4294967294), loc }, num(9), keyContext, loc).type === "normal", "max index");
+test/property-key-conversion.ts:138:putValue({ kind: "property", base: obj(small), key: num(2), loc }, num(9), keyContext, loc);
+test/property-key-conversion.ts:157:    set(key: PropertyKey, value: Value, context: OperationContext, location: Location): Completion {
+test/property-key-conversion.ts:161:        return this.setThrow ? this.sentinel : super.set(key, value, context, location);
+test/property-key-conversion.ts:268:            const message = path === "write" ? "property base must be an object" : "cannot convert null or undefined to object";
+test/property-key-conversion.ts:271:        check(invalid.original.trace === (path === "write" ? "BKR" : "BK"), "primitive read/write timing");
+test/property-key-conversion.ts:329:    typeError(readonly.run("write"), "property is not writable: 2", 16);
+test/property-key-conversion.ts:335:typeError(closed.run("write"), "property is not writable: 2", 16);
+test/property-key-conversion.ts:420:        typeError(scenario.run(path), "property base must be an object", 16);
+test/property-key-conversion.ts:435:typeError(symbolReadonly.run("write"), "property is not writable: Symbol(x)", 16);
+test/realms.ts:268:// W1-W4/W14/W17/W18: explicit boxing and immutable scalar payloads.
+test/realms.ts:346:checkGraph(!booleanPayload.booleanData && 1 / numberPayload.numberData === -Infinity, "W14 Boolean/Number scalar slots");
+test/realms.ts:373:    checkGraph(rejected.phase === "runtime" && rejected.completion.type === "throw" && rejected.completion.diagnostic.name === "TypeError" && rejected.completion.diagnostic.message === "property base must be an object", "W17 primitive write still rejected");
+test/realms.ts:377:// W15: a saved context follows B -> C -> B, and finally restores A.
+test/realms.ts:382:    checkGraph(context === entry.context && context.realm === boxC && entry.calls === 2, "W15 C context/shared calls");
+test/realms.ts:389:    checkGraph(context.realm === boxB && entry.calls === 1, "W15 B entry");
+test/realms.ts:394:    checkGraph(nested.type === "normal" && nested.value.kind === "object" && nested.value.object === boxes[1], "W15 returned C identity");
+test/realms.ts:395:    checkGraph(saved.realm === boxB && entry.calls === 1, "W15 B continuation");
+test/realms.ts:402:checkGraph(boxedResult.type === "normal" && boxedResult.value.kind === "object" && boxedResult.value.object === boxes[2], "W15 returned B identity");
+test/realms.ts:403:checkGraph(boxTrace.join(",") === "B,C,B" && boxes[0].getPrototypeOf() === boxB.numberPrototype && boxes[1].getPrototypeOf() === boxC.stringPrototype && boxes[2].getPrototypeOf() === boxB.booleanPrototype, "W15 allocation roots");
+test/realms.ts:404:checkGraph(entry.context.realm === boxA && entry.calls === 0 && entry.depth === 0 && entry.steps === 0, "W15 normal cleanup/no boxing ticks");
+test/realms.ts:408:        checkGraph(box(numberValue(1), context).getPrototypeOf() === boxB.numberPrototype, "W15 abrupt allocation root");
+test/realms.ts:409:        if (mode === "host") throw new Error("W15 host fault");
+test/realms.ts:415:        checkGraph(completion === boxSentinel, "W15 exact guest throw");
+test/realms.ts:420:            hostEscaped = error instanceof Error && error.message === "W15 host fault";
+test/realms.ts:423:    checkGraph(hostEscaped === (mode === "host") && entry.context.realm === boxA && entry.calls === 0 && entry.depth === 0 && entry.steps === 0, "W15 abrupt cleanup");
+test/realms.ts:427:    checkGraph(box(numberValue(1), context).getPrototypeOf() === boxB.numberPrototype, "W15 boxing with exhausted step budget");
+test/realms.ts:431:checkGraph(limitedResult.type === "throw" && limitedResult.diagnostic.message === "call depth limit exceeded" && limitedResult.diagnostic.loc === at, "W15 shared call guard");
+test/realms.ts:432:checkGraph(limitedBoxes.steps === 0 && limitedBoxes.calls === 0 && limitedBoxes.context.realm === boxA, "W15 limited cleanup");
+test/realms.ts:438:checkGraph(exhaustedStep.type === "throw" && exhaustedStep.diagnostic.message === "execution step limit exceeded" && limitedBoxes.steps === 1 && limitedBoxes.context.realm === boxA && limitedBoxes.calls === 0, "W15 monotonic step budget");
+test/symbol-conversions.ts:201:    const write = box.internalSet(wellKnownToPrimitive, methods[1], boxed, evaluator.context, loc);
+test/symbol-conversions.ts:202:    check(write.type === "normal" && !write.value && box.getOwnProperty(wellKnownToPrimitive) === undefined, "inherited readonly assignment");
+test/symbol-conversions.ts:270:        "property is not writable: Symbol(Symbol.toPrimitive)"];
+test/typeof-void.ts:112:    internalSet(
+test/typeof-void.ts:120:        return super.internalSet(key, value, receiver, context, loc);
+tools/run-guests.mjs:26:    { file: "test/fixtures/primitive-reads-write.js", status: 1, error: "1:1: runtime TypeError: property base must be an object" },
+tools/run-guests.mjs:107:        status: 1, stdout: "rhs\n", error: "1:1: runtime TypeError: property is not writable: " + key,
+tools/run-guests.mjs:116:            status: 1, error: "1:1: runtime TypeError: property is not writable: " + key,

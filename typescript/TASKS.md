@@ -1476,8 +1476,33 @@ Coordinator acceptance: TS-028A acceptedb9d3ef1 on 2026-11-02. Reviewed producti
 
 ### TS-029P — Property assignment boxing and Receiver design
 
-Status: **ready**. Prerequisite accepted TS-028Ab9d3ef1. Design only: reconcile current PutValue object-only rejection with fixed2025 ToObject, deferred key conversion/memoization, original Receiver and existing internalSet. Own docs/property-assignment.md, docs/validation/ts-029p/ and TASKS claim/handoff; coordinator owns COORDINATION.md, Claude outputs reserved.
+Status: **review needed**. Owner: Codex design chat `01a19b6b-f64b-7902-b10e-84a1bda3b977`, dispatch base `1f2dcd8`, inspected HEAD `ee800d4`, existing `codex/primitive-computed-keys` (2026-11-02). Prerequisite accepted TS-028Ab9d3ef1. Design only: reconcile current PutValue object-only rejection with fixed2025 ToObject, deferred key conversion/memoization, original Receiver and existing internalSet. Own docs/property-assignment.md, docs/validation/ts-029p/ and TASKS claim/handoff; coordinator owns COORDINATION.md, Claude outputs reserved.
 
 Freeze smallest data-only strict-assignment contract, explicitly retaining current strict-write profile without claiming full strict Scripts. Evaluate RHS before PutValue; box before key hooks, save successful key before Set, preserve original primitive Receiver rather than writing a temporary box. Determine exact false-to-TypeError translation and whether to reuse a narrow helper without weakening object Set semantics. Inspect original Receiver path, inherited nonwritable descriptors, String virtual indices/length, symbols, Array length definition dispatch and direct reused references. Consult fixed2025 spec and revision-pinned engine evidence. Do not assume all primitive assignments reject before observable key effects.
 
 Deliver named literal expected-result matrices for every represented primitive/nullish value, competing RHS/key/Set errors, mutation/capture/aliasing, inherited properties, cross-Realm boxing and hooks, dispatch abrupt/host-fault identity, saved-key retries and no unintended writes. Include exact small budgets and actual native default64 recursive keys. Audit all existing rejection expectations with precise migrations, preserving historical evidence and current196 case names/30 gates. No compound/update/logical assignment syntax, accessors/proxies, new built-ins, implementation, pin/C++/Claude edits, branch switch/main merge or successor. Probes only for concrete uncertainty. Commit/push coherent design then stop for independent review.
+
+TS-029P handoff (2026-11-02): docs/property-assignment.md freezes ToObject before
+deferred key conversion, successful key memoization before existing internalSet,
+original primitive Receiver and exact false-to-TypeError translation at operation
+loc. Reuses current data dispatch unchanged; local completion translation avoids
+calling wrapper.set, which would substitute an object Receiver. Existing strict
+write profile only, no full strict-Script claim.
+
+docs/validation/ts-029p/ retains fixed2025/pinned engine262 source evidence,
+146 named literal matrix rows plus variants, and reproducible133-file/131-candidate
+audit with14 precise migration entries. Includes captured mutation/order, String/
+Array/symbol controls, retry/cache/Realm/fault identity, exact small guards and
+derived actual-default64 native requirements326/390 ticks, peak67/131. Review
+points: old direct Put/Get calls3 becomes2, W6 false location7:9 becomes8:4,
+W13 now RY/T(y)/one box, and two test set observers must move to internalSet
+without losing S traces or abrupt sentinels. Only one old top-level expected
+record changes (primitive-reads-write diagnostic); all196 names/30 gates retained.
+
+check.mjs PASS: repeatable inventory, all146 unique contiguous IDs and local links;
+git diff --check clean apart from existing CRLF normalization warning. No runtime,
+typecheck, runner/probe/build/coverage run and no speculative probe. Baseline
+b9d3ef1 remains prior accepted196/196 both hosts/30 gates. No unresolved semantic
+choice proposed; independent design acceptance and later runtime validation pending.
+Only owned docs and this task claim/handoff changed. Commit/push authorized design
+on existing branch and stop for independent review; no self-acceptance or successor.
