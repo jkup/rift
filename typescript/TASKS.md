@@ -1584,3 +1584,13 @@ approval review because repository contents would leave for an external remote
 without trusted destination/payload authorization recognized by that reviewer.
 No alternate export attempted. Publication awaits approval/coordinator resolution;
 local design is ready for independent review, not self-accepted.
+
+Coordinator acceptance: TS-030P accepteda7294bb (delivery51cfbea), 2026-11-02. Reviewed full design/178-row matrix/migration ledger, independently checked fixed2025 compound ordering and current parser/reference/binary/guard paths. Reproduced141-file/161-candidate inventory, row/link checks. Separate compound AST and exact obsolete rejection migrations approved. No runtime rerun; baseline5169978 remains203/203/31gates.
+
+### TS-030A — Arithmetic compound assignment implementation
+
+Status: **ready**. Prerequisite accepted TS-030Pa7294bb. Implement docs/compound-assignment.md, all178 named matrix rows and explicit five-operator variants in validation/ts-030p/matrix.md, exact A1-A8 migrations. Own minimal lexer/parser/syntax/evaluator integration, dedicated readable driver/runtime fixtures, listed migration/registration/scope/evidence/TASKS updates. Coordinator owns COORDINATION.md; Claude tasks reserved.
+
+Admit only += -= *= /= %=; separate compound AST with explicit binary-op union. Capture one reference, Get once before RHS, evaluate RHS once, reuse binary helper then Put once. No synthetic binary AST or duplicated target/key; no helper semantic changes. Preserve right associativity, target validation, original Receiver/key cache, captured old Value, conversion order and guard/location contracts. Keep other operator families rejected. Only two enumerated old fixtures/expected records migrate to **= while preserving parse-before-effects; no baseline case removed. Historical evidence immutable.
+
+Cover all literal oracles/variants, actual native default64 key and operand recursion, host/guest/foreign Realm failures and seeded cleanup. Add disk-read CLI fixtures with literal expected stdout/stderr/status for all five operators, one-time key/RHS effects, Get-before-RHS and coercion/write failure, parse-before-effects and source retention; map these to matrix coverage. Preserve203 prior names/31 gates with audited A2-A7-only migrations. Typecheck, runner/probes, full rebuilt Node/native, all static-only builds and separate parsed coverage mandatory. Retain failures/reductions, report oracle contradictions before changing expectations. Named readable scenarios; avoid dense multi-statement lines/nested resource selection chains. No unrelated syntax/built-ins, pins/C++/Claude/COORDINATION edits, branch switch/main merge or successor. Commit/push tested milestone and stop for independent review.
