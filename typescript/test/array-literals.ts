@@ -1,3 +1,4 @@
+import { stringKeys } from "./key-assertions.js";
 import { readFileSync } from "node:fs";
 import { GuestArray } from "../src/array-object.js";
 import { Evaluator } from "../src/evaluator.js";
@@ -24,7 +25,7 @@ function number(value: Value, expected: number): boolean {
 function shape(object: GuestArray, length: number, keys: string, realm: Realm): void {
     const desc = object.getOwnProperty("length");
     check(desc !== undefined && number(desc.value, length) && desc.writable && !desc.enumerable && !desc.configurable, "length and flags");
-    check(object.ownPropertyKeys().join(",") === keys, "own keys and holes");
+    check(stringKeys(object.ownPropertyKeys()).join(",") === keys, "own keys and holes");
     check(object.getPrototypeOf() === realm.arrayPrototype, "Realm array prototype");
     for (const key of object.ownPropertyKeys()) {
         if (key === "length") continue;

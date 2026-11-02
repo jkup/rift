@@ -76,6 +76,7 @@ export function toNumber(value: Value, loc: Location): NumberCompletion {
         case "boolean": return { type: "normal", value: value.value ? 1 : 0 };
         case "number": return { type: "normal", value: value.value };
         case "string": return { type: "normal", value: stringToNumber(value.value) };
+        case "symbol": return failure("TypeError", "cannot convert symbol to number", loc);
         case "object": return failure("TypeError", "object-to-primitive conversion unsupported", loc);
     }
 }
@@ -121,14 +122,15 @@ export function toString(value: Value, loc: Location): StringCompletion {
         case "boolean": return { type: "normal", value: value.value ? "true" : "false" };
         case "string": return { type: "normal", value: value.value };
         case "number": return { type: "normal", value: numberToString(value.value) };
+        case "symbol": return failure("TypeError", "cannot convert symbol to string", loc);
         case "object": return failure("TypeError", "object-to-primitive conversion unsupported", loc);
     }
 }
 
-// Partial ToPropertyKey. Future symbols must retain identity here while
-// ToString rejects them; these operations will then diverge.
+// Property keys preserve symbol identity after ordinary primitive conversion.
 export function toPropertyKey(value: Value, context: OperationContext, loc: Location): PropertyKeyCompletion {
     const primitive = toPrimitive(value, "string", context, loc);
     if (primitive.type === "throw") return primitive;
+    if (primitive.value.kind === "symbol") return { type: "normal", value: primitive.value.value };
     return toString(primitive.value, loc);
 }

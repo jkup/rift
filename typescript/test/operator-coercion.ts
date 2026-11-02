@@ -1,3 +1,4 @@
+import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
@@ -82,7 +83,7 @@ const sentinel = failure("Sentinel", "operator", { line: 71, column: 9 });
 sentinel.value = { kind: "object", object: new GuestObject() };
 class ThrowingGet extends GuestObject {
     reads = 0;
-    override internalGet(_key: string, _receiver: Value, _loc: Location): ValueCompletion {
+    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
         this.reads++;
         return sentinel;
     }

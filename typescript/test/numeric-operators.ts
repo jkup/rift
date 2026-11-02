@@ -1,3 +1,4 @@
+import { GuestSymbol } from "../src/symbols.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
@@ -170,4 +171,40 @@ const realm = new Realm((line) => console.log(line));
 check(execute(readFileSync("test/fixtures/numeric-operators.js", "utf8"), realm).type === "normal", "runtime-read closure fixture");
 const trace = value(realm, "trace");
 check(trace.kind === "string" && trace.value === "LRLRLRLRUU", "closure order and unary effects");
+
+// O1-O4: runtime-read expressions preserve evaluation and conversion order.
+for (const name of ["subtract","multiply","divide","remainder"]) {
+    for (const abruptRight of [false, true]) {
+        const symbolRealm = new Realm((_line) => {});
+        const symbolEvaluator = new Evaluator(symbolRealm);
+        let symbolTrace = "";
+        const symbolValue: Value = { kind: "symbol", value: new GuestSymbol("x") };
+        const symbolLoc: Location = { line: 91, column: 4 };
+        const symbolThrow: ThrowCompletion = { type: "throw", value: symbolValue, diagnostic: { phase: "runtime", name: "Sentinel", message: "symbol", loc: symbolLoc } };
+        const operand = new GuestObject();
+        operand.bootstrapDefine("valueOf", { value: builtin(symbolRealm, (_r, _args, _context, _at) => {
+            symbolTrace += "H";
+            return normal({ kind: "number", value: 2 });
+        }) });
+        seed(symbolRealm, "left", builtin(symbolRealm, (_r, _args, _context, _at) => {
+            symbolTrace += "L";
+            return normal(symbolValue);
+        }));
+        seed(symbolRealm, "right", builtin(symbolRealm, (_r, _args, _context, _at) => {
+            symbolTrace += "R";
+            return abruptRight ? symbolThrow : normal({ kind: "object", object: operand });
+        }));
+        check(execute(readFileSync("test/fixtures/symbol-operators.js", "utf8"), symbolRealm).type === "normal", "symbol operator fixture");
+        const completion = symbolEvaluator.call(value(symbolRealm, name), UNDEFINED, [], symbolLoc);
+        if (abruptRight) {
+            check(completion === symbolThrow && symbolTrace === "LR", "O4 RHS exact throw precedes conversions");
+        } else {
+            check(completion.type === "throw" && completion.diagnostic.phase === "runtime" && completion.diagnostic.name === "TypeError" && completion.diagnostic.message === "cannot convert symbol to number", "symbol operator error");
+            check(completion.type === "throw" && completion.diagnostic.loc.line === {"add":2,"subtract":6,"multiply":10,"divide":14,"remainder":18,"less":22,"greater":26,"lessEqual":30,"greaterEqual":34}[name] && completion.diagnostic.loc.column === 12, "symbol operator location");
+            check(symbolTrace === "LR", "symbol operation-specific order");
+        }
+        check(symbolEvaluator.context.realm === symbolRealm && symbolEvaluator.calls === 0 && symbolEvaluator.depth === 0, "operator cleanup");
+    }
+}
+
 console.log("numeric operators passed");

@@ -1,3 +1,6 @@
+import { stringKeys } from "./key-assertions.js";
+import { formatPropertyKey } from "../src/symbols.js";
+import type { PropertyKey } from "../src/runtime.js";
 // This host driver is compiled, but the guest sources are always read at runtime.
 import { readFileSync } from "node:fs";
 import { run } from "../src/interpreter.js";
@@ -63,11 +66,11 @@ for (let i = 0; i < constantNames.length; i++) {
     const key = constantNames[i];
     for (const namespace of [an, bn]) {
         const descriptor = namespace.properties.get(key);
-        if (descriptor === undefined || descriptor.writable || descriptor.enumerable || descriptor.configurable || descriptor.value.kind !== "number") throw new Error("Number constant flags: " + key);
+        if (descriptor === undefined || descriptor.writable || descriptor.enumerable || descriptor.configurable || descriptor.value.kind !== "number") throw new Error("Number constant flags: " + formatPropertyKey(key));
         const actual = descriptor.value.value;
         const expected = constantValues[i];
-        if (!(Number.isNaN(expected) ? Number.isNaN(actual) : actual === expected)) throw new Error("Number constant value: " + key);
-        if (namespace.set(key, UNDEFINED, (namespace === an ? aContext : bContext), { line: 1, column: 1 }).type !== "throw" || namespace.get(key) !== descriptor.value) throw new Error("Number constant write: " + key);
+        if (!(Number.isNaN(expected) ? Number.isNaN(actual) : actual === expected)) throw new Error("Number constant value: " + formatPropertyKey(key));
+        if (namespace.set(key, UNDEFINED, (namespace === an ? aContext : bContext), { line: 1, column: 1 }).type !== "throw" || namespace.get(key) !== descriptor.value) throw new Error("Number constant write: " + formatPropertyKey(key));
     }
 }
 for (const key of ["isNaN", "isFinite"]) {
@@ -134,7 +137,7 @@ for (const realm of [r1, r2]) {
     checkGraph(o.getPrototypeOf() === null && f.getPrototypeOf() === o && ar.getPrototypeOf() === o, "G1 graph");
     checkGraph(o.callable === null && f.callable !== null && ar instanceof GuestArray, "G1 root kinds");
     checkGraph(f.callable !== null && f.callable.realm === realm, "R1 root owner");
-    checkGraph(o.ownPropertyKeys().join(",") === "valueOf" && f.ownPropertyKeys().join(",") === "name,length,call" && ar.ownPropertyKeys().join(",") === "length", "G17 exact initial keys");
+    checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(ar.ownPropertyKeys()).join(",") === "length", "G17 exact initial keys");
     for (const root of [o, f, ar]) {
         checkGraph(root.get("valueOf") === o.get("valueOf"), "G17 inherited valueOf");
         for (const key of ["constructor", "toString", "join", "map"]) checkGraph(root.get(key).kind === "undefined", "G17 missing methods");
@@ -218,7 +221,7 @@ for (const key of ["0", "1", "2"]) {
     checkGraph(left !== right && left.getPrototypeOf() === expected && right.getPrototypeOf() === expected, "G8 repeated nested allocations");
 }
 checkGraph(sameValue(graphBinding(r1, "inheritedX"), numberValue(7)) && sameValue(graphBinding(r1, "inheritedY"), numberValue(8)) && sameValue(graphBinding(r1, "inheritedZ"), numberValue(9)) && sameValue(graphBinding(r1, "shadow"), numberValue(10)), "G10 inherited values/shadow");
-checkGraph(literalObject.ownPropertyKeys().join(",") === "x" && !declared.properties.has("y") && !literalArray.properties.has("z"), "G10 reads do not define");
+checkGraph(stringKeys(literalObject.ownPropertyKeys()).join(",") === "x" && !declared.properties.has("y") && !literalArray.properties.has("z"), "G10 reads do not define");
 checkGraph(literalObject.internalDelete("x").type === "normal" && sameValue(literalObject.get("x"), numberValue(7)), "G10 delete restores inheritance");
 const readonlyWrite = active.context.call(graphBinding(r1, "readonlyWrite"), UNDEFINED, [], at);
 checkGraph(readonlyWrite.type === "throw" && readonlyWrite.diagnostic.name === "TypeError" && sameValue(graphBinding(r1, "effects"), numberValue(1)) && !literalObject.properties.has("fixed"), "G10 readonly write after RHS effect");
@@ -228,7 +231,7 @@ for (const name of ["object", "array", "declared"]) {
     r2.global.bindings.set(name, { initialized: true, mutable: true, value });
     checkGraph(graphBinding(r2, name) === value && sameValue(graphObject(value).get("x"), numberValue(7)), "G11 retained foreign identity/inheritance");
 }
-checkGraph(r2.createObject().get("x").kind === "undefined" && r2.objectPrototype.ownPropertyKeys().join(",") === "valueOf", "G11 independent root mutation");
+checkGraph(r2.createObject().get("x").kind === "undefined" && stringKeys(r2.objectPrototype.ownPropertyKeys()).join(",") === "valueOf", "G11 independent root mutation");
 const foreignActive = new Evaluator(r2);
 const foreignContext = foreignActive.context;
 const retained = foreignActive.context.call(graphBinding(r1, "declared"), UNDEFINED, [], at);
@@ -276,8 +279,8 @@ for (const realm of [boxA, boxB]) {
         }
     }
     checkGraph(!realm.booleanPrototype.booleanData && 1 / realm.numberPrototype.numberData === Infinity && realm.stringPrototype.stringData === "", "W1 root payloads");
-    checkGraph(realm.booleanPrototype.ownPropertyKeys().length === 0 && realm.numberPrototype.ownPropertyKeys().length === 0 && realm.stringPrototype.ownPropertyKeys().join(",") === "length", "W1 root keys");
-    checkGraph(realm.objectPrototype.ownPropertyKeys().join(",") === "valueOf" && realm.functionPrototype.ownPropertyKeys().join(",") === "name,length,call" && realm.arrayPrototype.ownPropertyKeys().join(",") === "length", "W1 original root keys");
+    checkGraph(realm.booleanPrototype.ownPropertyKeys().length === 0 && realm.numberPrototype.ownPropertyKeys().length === 0 && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(",") === "length", "W1 root keys");
+    checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length", "W1 original root keys");
     for (const name of ["Object", "Boolean", "String"]) checkGraph(!realm.global.bindings.has(name), "W17 no new globals");
     const namespace = graphObject(graphBinding(realm, "Number"));
     checkGraph(namespace !== realm.numberPrototype && namespace.getPrototypeOf() === realm.objectPrototype && namespace.callable === null, "W1 Number namespace preserved");
@@ -301,7 +304,7 @@ for (const primitive of primitives) {
     }
 }
 class NoBoxReads extends GuestObject {
-    internalGet(_key: string, _receiver: Value, _loc: { line: number; column: number }): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, _loc: { line: number; column: number }): ValueCompletion {
         throw new Error("W3 boxing read an object");
     }
 }
@@ -311,8 +314,8 @@ const existingBoxes: GuestObject[] = [
 ];
 for (const object of existingBoxes) {
     const prototype = object.getPrototypeOf();
-    const keys = object.ownPropertyKeys().join(",");
-    checkGraph(box({ kind: "object", object }) === object && object.getPrototypeOf() === prototype && object.ownPropertyKeys().join(",") === keys, "W3 exact identity/chain/state");
+    const keys = stringKeys(object.ownPropertyKeys()).join(",");
+    checkGraph(box({ kind: "object", object }) === object && object.getPrototypeOf() === prototype && stringKeys(object.ownPropertyKeys()).join(",") === keys, "W3 exact identity/chain/state");
 }
 for (const input of [UNDEFINED, { kind: "null" } as const]) {
     const converted = toObject(input, zeroHookContext, at);

@@ -1,3 +1,5 @@
+import { formatPropertyKey } from "../src/symbols.js";
+import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
@@ -83,7 +85,7 @@ const sentinel = failure("Sentinel", "length boundary", loc);
 class ObservedLength extends GuestObject {
     gets = 0;
     constructorReads = 0;
-    internalGet(key: string, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
         if (key === "length") {
             this.gets++;
             check(receiver.kind === "object" && receiver.object === this && at === loc, "length Get receiver/location");
@@ -138,8 +140,8 @@ class ObservedHook extends GuestObject {
     reads: string[] = [];
     original: Value = UNDEFINED;
     stop = "";
-    internalGet(key: string, receiver: Value, at: Location): ValueCompletion {
-        this.reads.push(key);
+    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+        this.reads.push(formatPropertyKey(key));
         check(receiver === this.original && at === loc, "hook original receiver/location");
         return key === this.stop ? sentinel : super.internalGet(key, receiver, at);
     }
@@ -246,8 +248,8 @@ for (const succeeds of [false, true]) {
 class ArrayObserver extends GuestArray {
     lengthValue: Value = UNDEFINED;
     trace: string[] = [];
-    internalGet(key: string, receiver: Value, at: Location): ValueCompletion {
-        this.trace.push(key);
+    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+        this.trace.push(formatPropertyKey(key));
         return key === "length" ? normal(this.lengthValue) : super.internalGet(key, receiver, at);
     }
 }
@@ -320,7 +322,7 @@ check(defined.type === "normal" && defined.value, "array define success");
 check(sameValue(storage.get("length"), num(2)) && sameValue(binding(excluded, "hits"), num(4)), "storage calls each convert twice");
 class ForbiddenHooks extends GuestObject {
     reads = 0;
-    internalGet(_key: string, _receiver: Value, _at: Location): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
         this.reads++;
         return sentinel;
     }

@@ -1,3 +1,6 @@
+import { GuestSymbol, formatPropertyKey } from "../src/symbols.js";
+import { sameValue } from "../src/runtime.js";
+import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { toString, toPropertyKey, numberToString } from "../src/conversion.js";
 import { GuestObject, UNDEFINED, normal, getValue, putValue, type OperationContext, type Builtin, type Completion, type Value, type ValueCompletion, type ThrowCompletion } from "../src/runtime.js";
@@ -143,21 +146,24 @@ class ObservedObject extends GuestObject {
     setThrow = false;
     seenContext: OperationContext | null = null;
     receiver: Value = UNDEFINED;
+    observedKey: PropertyKey = "";
     sentinel: ThrowCompletion = { type: "throw", value: obj(new GuestObject()), diagnostic: { phase: "runtime", name: "RangeError", message: "sentinel", loc } };
-    internalGet(key: string, receiver: Value, location: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+        this.observedKey = key;
         this.trace += "G";
         this.receiver = receiver;
         return this.getThrow ? this.sentinel : super.internalGet(key, receiver, location);
     }
-    set(key: string, value: Value, context: OperationContext, location: Location): Completion {
+    set(key: PropertyKey, value: Value, context: OperationContext, location: Location): Completion {
         this.seenContext = context;
+        this.observedKey = key;
         this.trace += "S";
         return this.setThrow ? this.sentinel : super.set(key, value, context, location);
     }
 }
 class ForbiddenKey extends GuestObject {
-    internalGet(_key: string, _receiver: Value, _location: Location): ValueCompletion { throw new Error("object key read"); }
-    get(_key: string): Value { throw new Error("object key get"); }
+    internalGet(_key: PropertyKey, _receiver: Value, _location: Location): ValueCompletion { throw new Error("object key read"); }
+    get(_key: PropertyKey): Value { throw new Error("object key get"); }
 }
 
 
@@ -346,4 +352,116 @@ const independent = new Realm((_line) => {});
 check(execute(fixture("access"), new Evaluator(independent)).type === "normal", "second realm fixture");
 const otherObject = binding(independent, "o");
 check(otherObject.kind === "object" && otherObject.object !== ordinary.object && otherObject.object.get("1") !== ordinary.object.get("1"), "realm property state independent");
+
+// A13/A20-A22/O5: host bridges supply identity to existing runtime-read fixtures.
+const symbolKey = new GuestSymbol("x");
+const symbolValue: Value = { kind: "symbol", value: symbolKey };
+const primitiveKey = toPropertyKey(symbolValue, keyContext, loc);
+check(primitiveKey.type === "normal" && primitiveKey.value === symbolKey, "A13 primitive key identity");
+for (const path of ["read", "write", "call", "detached"]) {
+    for (const useHook of [false, true]) {
+        const scenario = new Scenario();
+        const savedMethod = scenario.original.get("1");
+        scenario.original.trace = "";
+        scenario.original.bootstrapDefine(symbolKey, { value: savedMethod, writable: true, configurable: true });
+        let hookTrace = "";
+        const hook = new GuestObject();
+        hook.bootstrapDefine("toString", { value: builtin(scenario.realm, (_receiver, _args, _context, _at) => {
+            hookTrace += "s";
+            scenario.original.trace += "H";
+            return normal(symbolValue);
+        }) });
+        hook.bootstrapDefine("valueOf", { value: builtin(scenario.realm, (_receiver, _args, _context, _at): Completion => {
+            throw new Error("wrong Symbol key hint");
+        }) });
+        scenario.keyValue = useHook ? obj(hook) : symbolValue;
+        if (path === "detached") {
+            scenario.original.bootstrapDefine(symbolKey, { value: builtin(scenario.realm, (receiver, _args, _context, _at) => {
+                check(receiver === UNDEFINED, "A21 detached receiver");
+                return normal(symbolValue);
+            }), writable: true, configurable: true });
+        }
+        const completion = scenario.run(path);
+        check(completion.type === "normal", "A21 symbol reference success");
+        check(scenario.original.observedKey === symbolKey, "A21 raw Get/Set key identity");
+        check(hookTrace === (useHook ? "s" : ""), "O5 one string-hint conversion");
+        const conversion = useHook ? "H" : "";
+        check(scenario.original.trace === (path === "write" ? "BKR" + conversion + "S" : "BK" + conversion + (path === "call" ? "GAAM" : "G")), "A21/O5 reference order");
+        if (path === "write") check(scenario.original.get(symbolKey) === scenario.rhsValue, "A21 exact write");
+    }
+}
+for (const path of ["read", "write", "call"]) {
+    const scenario = new Scenario();
+    const hook = new GuestObject();
+    hook.bootstrapDefine("toString", { value: builtin(scenario.realm, (_r, _a, _c, _l) => {
+        scenario.original.trace += "H";
+        return scenario.original.sentinel;
+    }) });
+    scenario.keyValue = obj(hook);
+    exact(scenario.run(path), scenario.original.sentinel);
+    check(scenario.original.trace === (path === "write" ? "BKRH" : "BKH"), "O5 abrupt coercion skips Get/Set/arguments");
+}
+for (const path of ["read", "write", "call"]) {
+    const scenario = new Scenario();
+    scenario.baseValue = symbolValue;
+    scenario.keyValue = obj(new ForbiddenKey());
+    typeError(scenario.run(path), "property base must be an object", path === "read" ? 1 : 16);
+    check(scenario.original.trace === (path === "write" ? "BKR" : "BK"), "A22 symbol base rejection before key conversion");
+}
+const symbolReadonly = new Scenario();
+symbolReadonly.keyValue = symbolValue;
+symbolReadonly.original.bootstrapDefine(symbolKey, { value: symbolValue });
+typeError(symbolReadonly.run("write"), "property is not writable: Symbol(x)", 16);
+check(formatPropertyKey(symbolKey) === "Symbol(x)" && symbolReadonly.original.observedKey === symbolKey, "A20 explicit diagnostic key");
+let bootstrapFault = false;
+try {
+    symbolReadonly.original.bootstrapDefine(symbolKey, { value: num(1) });
+} catch (fault) {
+    check(fault instanceof Error && fault.message === "invalid internal property definition: Symbol(x)", "A20 bootstrap diagnostic");
+    bootstrapFault = true;
+}
+check(bootstrapFault, "A20 bootstrap rejected");
+const symbolGuestRealm = new Realm((_line) => {});
+const symbolGuestEvaluator = new Evaluator(symbolGuestRealm);
+seed(symbolGuestRealm, "s", symbolValue);
+seed(symbolGuestRealm, "t", { kind: "symbol", value: new GuestSymbol("x") });
+check(execute(readFileSync("test/fixtures/symbol-values.js", "utf8"), symbolGuestEvaluator).type === "normal", "A15 runtime symbol fixture");
+check(sameValue(binding(symbolGuestRealm, "negated"), { kind: "boolean", value: false }), "A15 not");
+check(binding(symbolGuestRealm, "andValue") === binding(symbolGuestRealm, "t") && binding(symbolGuestRealm, "orValue") === symbolValue, "A15 logical identity");
+check(isNumber(binding(symbolGuestRealm, "conditional"), 1), "A15 conditional");
+for (const name of ["nanResult", "finiteResult", "sameDescription", "textEqual"]) check(sameValue(binding(symbolGuestRealm, name), { kind: "boolean", value: false }), "A15 false predicate/equality");
+const symbolThrow = symbolGuestEvaluator.call(binding(symbolGuestRealm, "throwSymbol"), UNDEFINED, [], loc);
+check(symbolThrow.type === "throw" && symbolThrow.value === symbolValue && symbolThrow.diagnostic.loc.line === 10 && symbolThrow.diagnostic.loc.column === 5, "A20 exact thrown symbol and source");
+
+
+const primitiveSteps = keyEvaluator.steps;
+const repeatSymbolKey = toPropertyKey(symbolValue, keyContext, loc);
+check(repeatSymbolKey.type === "normal" && repeatSymbolKey.value === symbolKey && keyEvaluator.steps === primitiveSteps, "A13 primitive symbol has zero ticks");
+for (const finalSymbol of [false, true]) {
+    const fallback = new GuestObject();
+    let order = "";
+    fallback.bootstrapDefine("toString", { value: builtin(keyContext.realm, (_r, _a, _c, _l) => {
+        order += "s";
+        return normal(obj(fallback));
+    }) });
+    fallback.bootstrapDefine("valueOf", { value: builtin(keyContext.realm, (_r, _a, _c, _l) => {
+        order += "v";
+        return normal(finalSymbol ? symbolValue : obj(fallback));
+    }) });
+    const converted = toPropertyKey(obj(fallback), keyContext, loc);
+    check(order === "sv", "A13 existing string-hint fallback order");
+    if (finalSymbol) check(converted.type === "normal" && converted.value === symbolKey, "A13 fallback returns exact symbol");
+    else check(converted.type === "throw" && converted.diagnostic.message === "cannot convert object to primitive" && converted.diagnostic.loc === loc, "A13 both objects retain located negative");
+}
+const hostInspection = new Scenario();
+hostInspection.original.getThrow = true;
+let inspectionFault = false;
+try {
+    hostInspection.original.get(symbolKey);
+} catch (fault) {
+    check(fault instanceof Error && fault.message === "abrupt host inspection: Symbol(x)", "A20 host inspection diagnostic");
+    inspectionFault = true;
+}
+check(inspectionFault && hostInspection.original.observedKey === symbolKey, "A20 diagnostic retains lookup key");
+
 console.log("property key conversion passed");

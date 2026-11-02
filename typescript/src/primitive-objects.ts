@@ -1,3 +1,4 @@
+import type { GuestSymbol } from "./symbols.js";
 import { GuestObject, sameValue } from "./runtime.js";
 import type { DataDescriptor, DataDescriptorUpdate, InternalBooleanCompletion, OperationContext, PropertyKey } from "./runtime.js";
 import { stringIndex } from "./property-keys.js";
@@ -72,4 +73,8 @@ export class GuestStringObject extends GuestObject {
         }
         return snapshot;
     }
+}
+
+export class GuestSymbolObject extends GuestObject {
+    constructor(readonly symbolData: GuestSymbol, proto: GuestObject | null = null) { super(proto); }
 }

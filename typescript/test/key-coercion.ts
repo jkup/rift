@@ -1,3 +1,4 @@
+import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
@@ -46,12 +47,12 @@ class Observed extends GuestObject {
     original: Value = UNDEFINED;
     constructor(active: Evaluator) { super(); this.active = active; }
     mark(letter: string): void { seed(this.active, "trace", str(payload(binding(this.active, "trace")) + letter)); }
-    internalGet(key: string, receiver: Value, location: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
         this.mark("G");
         check(receiver === this.original, "original base Get receiver");
         return this.stop === "G" ? sentinel : super.internalGet(key, receiver, location);
     }
-    set(key: string, value: Value, context: OperationContext, location: Location): Completion {
+    set(key: PropertyKey, value: Value, context: OperationContext, location: Location): Completion {
         check(context === this.active.context, "Set active context identity");
         this.mark("S");
         return this.stop === "S" ? sentinel : super.set(key, value, context, location);
@@ -154,7 +155,7 @@ for (const both of [false, true]) {
 class ThrowingKey extends GuestObject {
     stop = "toString";
     reads = "";
-    internalGet(key: string, receiver: Value, location: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
         this.reads += key + ";";
         return key === this.stop ? sentinel : super.internalGet(key, receiver, location);
     }

@@ -1,10 +1,11 @@
+import type { GuestSymbol } from "./symbols.js";
 import { GuestArray } from "./array-object.js";
 import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value } from "./runtime.js";
 import { registerNumber } from "./builtins/number.js";
 import { registerFunction } from "./builtins/function.js";
 import { registerObjectValueOf } from "./builtins/object.js";
 import type { Stmt } from "./syntax.js";
-import { GuestBoolean, GuestNumber, GuestStringObject } from "./primitive-objects.js";
+import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
 import type { GuestString } from "./strings.js";
 
 export type Output = (line: string) => void;
@@ -15,6 +16,7 @@ export class Realm {
     readonly arrayPrototype: GuestArray;
     readonly booleanPrototype: GuestBoolean;
     readonly numberPrototype: GuestNumber;
+    readonly symbolPrototype: GuestObject;
     readonly stringPrototype: GuestStringObject;
     constructor(output: Output) {
         // Bootstrap dependencies directly, before factories or global installation.
@@ -27,6 +29,7 @@ export class Realm {
         this.booleanPrototype = new GuestBoolean(false, this.objectPrototype);
         this.numberPrototype = new GuestNumber(0, this.objectPrototype);
         this.stringPrototype = new GuestStringObject("", this.objectPrototype);
+        this.symbolPrototype = new GuestObject(this.objectPrototype);
         registerObjectValueOf(this);
         registerFunction(this);
         this.global.bindings.set("undefined", { initialized: true, mutable: false, value: UNDEFINED });
@@ -47,6 +50,7 @@ export class Realm {
     createBooleanObject(value: boolean): GuestBoolean { return new GuestBoolean(value, this.booleanPrototype); }
     createNumberObject(value: number): GuestNumber { return new GuestNumber(value, this.numberPrototype); }
     createStringObject(value: GuestString): GuestStringObject { return new GuestStringObject(value, this.stringPrototype); }
+    createSymbolObject(value: GuestSymbol): GuestSymbolObject { return new GuestSymbolObject(value, this.symbolPrototype); }
     createGuestFunction(params: string[], body: Stmt[], environment: Environment): GuestObject {
         return new GuestObject(this.functionPrototype, false, { kind: "guest", realm: this, params, body, environment });
     }

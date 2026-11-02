@@ -1,3 +1,5 @@
+import { formatPropertyKey } from "../src/symbols.js";
+import type { PropertyKey } from "../src/runtime.js";
 import { lengthOfArrayLike } from "../src/array-like.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
@@ -37,10 +39,10 @@ class Observed extends GuestObject {
     reads = 0;
     failAt = 0;
     expected: Value = UNDEFINED;
-    override internalGet(key: string, receiver: Value, location: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
         check(receiver === this.expected && (!this.requireLocation || location === loc), "exact Get receiver/location");
         this.reads++;
-        this.trace += "Get " + key + ";";
+        this.trace += "Get " + formatPropertyKey(key) + ";";
         if (this.reads === this.failAt) return sentinel;
         return super.internalGet(key, receiver, location);
     }
@@ -155,7 +157,7 @@ for (const hint of ["default", "number", "string"] as const) {
 class ObservedArray extends GuestArray {
     expected: Value = UNDEFINED;
     reads = 0;
-    override internalGet(key: string, receiver: Value, location: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
         check(receiver === this.expected && location === loc && key === "valueOf", "array Get receiver/key/location");
         this.reads++;
         return super.internalGet(key, receiver, location);
@@ -301,7 +303,7 @@ const conversionB = new Realm((_line) => {});
 const conversionC = new Realm((_line) => {});
 const conversionEntry = new Evaluator(conversionA);
 class RealmObserved extends GuestObject {
-    override internalGet(key: string, receiver: Value, at: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
         check(conversionEntry.context.realm === conversionA, "R19/R20 Get runs in caller Realm");
         return super.internalGet(key, receiver, at);
     }

@@ -1,3 +1,8 @@
+import { GuestSymbol } from "../src/symbols.js";
+import { GuestSymbolObject } from "../src/primitive-objects.js";
+import { toObject } from "../src/object-conversion.js";
+import { stringKeys } from "./key-assertions.js";
+import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
@@ -47,7 +52,7 @@ const fn = object(method);
 // V5: installation and immutable callable ownership use the existing factory.
 check(method !== a.objectPrototype.get("valueOf") && fn.getPrototypeOf() === b.functionPrototype, "fresh method/defining prototype");
 check(fn.callable !== null && fn.callable.realm === b, "defining Realm");
-check(fn.ownPropertyKeys().join(",") === "name,length", "only metadata");
+check(stringKeys(fn.ownPropertyKeys()).join(",") === "name,length", "only metadata");
 for (const key of ["name", "length"]) {
     const d = fn.getOwnProperty(key);
     check(d !== undefined && !d.writable && !d.enumerable && d.configurable, "metadata flags");
@@ -56,11 +61,11 @@ check(sameValue(fn.get("name"), { kind: "string", value: "valueOf" }), "method n
 check(sameValue(fn.get("length"), { kind: "number", value: 0 }), "method length");
 const d = b.objectPrototype.getOwnProperty("valueOf");
 check(d !== undefined && d.writable && !d.enumerable && d.configurable, "method flags");
-check(b.objectPrototype.ownPropertyKeys().join(",") === "valueOf" && !b.global.bindings.has("Object"), "bounded installation");
+check(stringKeys(b.objectPrototype.ownPropertyKeys()).join(",") === "valueOf" && !b.global.bindings.has("Object"), "bounded installation");
 
 // V1: ToObject must neither inspect the receiver nor invoke its methods.
 class NoReads extends GuestObject {
-    internalGet(_key: string, _receiver: Value, _at: Location): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
         throw new Error("unexpected receiver Get");
     }
 }
@@ -72,9 +77,9 @@ const kinds: GuestObject[] = [a.createObject(), a.createArray(), a.functionProto
     a.createStringObject("ab"), b.createObject(), new GuestObject(), new NoReads()];
 for (const receiver of kinds) {
     const proto = receiver.getPrototypeOf();
-    const keys = receiver.ownPropertyKeys().join(",");
+    const keys = stringKeys(receiver.ownPropertyKeys()).join(",");
     check(object(result(e.call(method, value(receiver), [value(new NoReads())], loc))) === receiver, "exact identity");
-    check(receiver.getPrototypeOf() === proto && receiver.ownPropertyKeys().join(",") === keys, "unchanged object");
+    check(receiver.getPrototypeOf() === proto && stringKeys(receiver.ownPropertyKeys()).join(",") === keys, "unchanged object");
 }
 check(e.steps === 0 && e.calls === 0 && e.context.realm === a, "no hidden work/restoration");
 
@@ -101,7 +106,7 @@ for (const primitive of primitives) {
             check(unit !== undefined && !unit.writable && unit.enumerable && !unit.configurable
                 && sameValue(unit.value, { kind: "string", value: primitive.value.charAt(i) }), "UTF-16 unit descriptor");
         }
-        check(first.ownPropertyKeys().join(",") === (primitive.value.length === 0 ? "length" : "0,1,2,3,4,length"), "String key order");
+        check(stringKeys(first.ownPropertyKeys()).join(",") === (primitive.value.length === 0 ? "length" : "0,1,2,3,4,length"), "String key order");
     }
 }
 
@@ -252,4 +257,72 @@ check(a.objectPrototype.get("valueOf") === otherMethod, "deletion isolation");
 check(fn.defineOwnProperty("name", { value: { kind: "string", value: "renamed" } }, e.context, loc).type === "normal", "metadata configurable");
 check(sameValue(fn.get("name"), { kind: "string", value: "renamed" }) && sameValue(object(otherMethod).get("name"), { kind: "string", value: "valueOf" }), "metadata isolated");
 check(object(result(e.call(method, { kind: "boolean", value: false }, [], loc))).getPrototypeOf() === b.booleanPrototype, "saved defining Realm survives deletion");
+
+// A2/A16-A19/A24: explicit Symbol boxing follows defining Realm, not payload origin.
+const symbol = new GuestSymbol("x");
+const symbolValue: Value = { kind: "symbol", value: symbol };
+const symbolB = new Realm((_line) => {});
+const symbolMethod = symbolB.objectPrototype.get("valueOf");
+const symbolEvaluator = new Evaluator(a);
+const symbolBox = object(result(symbolEvaluator.call(symbolMethod, symbolValue, [], loc)));
+const anotherBox = object(result(symbolEvaluator.call(symbolMethod, symbolValue, [], loc)));
+check(symbolBox instanceof GuestSymbolObject && symbolBox.symbolData === symbol && symbolBox.getPrototypeOf() === symbolB.symbolPrototype, "A16 defining Realm payload/root");
+check(anotherBox !== symbolBox && anotherBox instanceof GuestSymbolObject && anotherBox.symbolData === symbol, "A16 fresh boxes same symbol");
+check(symbolEvaluator.steps === 0 && symbolEvaluator.context.realm === a, "A16 no ticks and restoration");
+const transported = new Evaluator(c);
+check(object(result(transported.call(symbolMethod, value(symbolBox), [], loc))) === symbolBox, "A2/A16 foreign existing box unchanged");
+check(symbolB.symbolPrototype !== a.symbolPrototype && !(symbolB.symbolPrototype instanceof GuestSymbolObject), "A17 root has no payload");
+check(symbolB.symbolPrototype.ownPropertyKeys().length === 0 && symbolB.symbolPrototype.getPrototypeOf() === symbolB.objectPrototype && symbolB.symbolPrototype.isExtensible() && symbolB.symbolPrototype.callable === null, "A17 exact root graph");
+const lookalike = new GuestObject(symbolB.symbolPrototype);
+check(!(lookalike instanceof GuestSymbolObject), "A17 prototype is not a slot");
+symbolBox.setPrototypeOf(null);
+check(symbolBox instanceof GuestSymbolObject && symbolBox.symbolData === symbol, "A17 payload survives relink");
+const direct = toObject(symbolValue, transported.context, loc);
+check(direct.type === "normal" && direct.value instanceof GuestSymbolObject && direct.value.symbolData === symbol && direct.value.getPrototypeOf() === c.symbolPrototype, "A2/A16 independent evaluator transport");
+for (const box of [symbolBox, anotherBox]) {
+    const before = symbolEvaluator.steps;
+    for (const conversion of [toNumber(value(box), loc), toString(value(box), loc)]) {
+        check(conversion.type === "throw", "A19 direct box rejection");
+        if (conversion.type === "throw") error(conversion, "TypeError", "object-to-primitive conversion unsupported", loc);
+    }
+    check(symbolEvaluator.steps === before, "A19 direct zero hooks/ticks");
+    error(toPrimitive(value(box), "default", symbolEvaluator.context, loc), "TypeError", "cannot convert object to primitive", loc);
+}
+for (const mode of ["normal", "guest", "host", "steps"]) {
+    const active = new Evaluator(a, 1, 3);
+    const surrounding = value(c.createBuiltin("symbolBridge", 0, (_receiver, _args, context, at): ValueCompletion => {
+        check(context.realm === c && active.calls === 1, "A18 C entry");
+        const nested = context.call(forwarded, symbolMethod, [symbolValue], at);
+        check(context.realm === c && active.calls === 1, "A18 C restored");
+        const box = object(result(nested));
+        check(box instanceof GuestSymbolObject && box.symbolData === symbol && box.getPrototypeOf() === symbolB.symbolPrototype, "A18 B boxes symbol");
+        if (mode === "guest") return sentinel;
+        if (mode === "host") throw new Error("symbol host sentinel");
+        if (mode === "steps") {
+            const first = context.tick(at);
+            if (first.type === "throw") return first;
+            return context.tick(at);
+        }
+        return nested;
+    }));
+    let hostFault = false;
+    try {
+        const completion = active.call(surrounding, UNDEFINED, [], loc);
+        if (mode === "normal") check(completion.type === "normal", "A18 normal");
+        if (mode === "guest") check(completion === sentinel, "A18 exact guest throw");
+        if (mode === "steps") {
+            error(completion, "RangeError", "execution step limit exceeded", loc);
+            check(active.steps === 2, "A18 shared steps");
+        }
+    } catch (fault) {
+        check(mode === "host" && fault instanceof Error && fault.message === "symbol host sentinel", "A18 exact host fault");
+        hostFault = true;
+    }
+    check(hostFault === (mode === "host") && active.context.realm === a && active.calls === 0 && active.depth === 0, "A18 cleanup");
+}
+const symbolLimit = new Evaluator(a, 0, 1);
+error(symbolLimit.call(forwarded, symbolMethod, [symbolValue], loc), "RangeError", "call depth limit exceeded", loc);
+check(symbolLimit.calls === 0 && symbolLimit.context.realm === a && symbolLimit.steps === 0, "A18 shared call limit cleanup");
+check(!symbolB.global.bindings.has("Symbol") && symbolB.symbolPrototype.ownPropertyKeys().length === 0, "A24 no Symbol exposure");
+
 console.log("object valueOf passed");

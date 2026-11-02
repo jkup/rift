@@ -1,3 +1,6 @@
+import { GuestSymbol } from "../src/symbols.js";
+import { formatPropertyKey } from "../src/symbols.js";
+import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { mapObjectDefaultArray } from "../src/array-map.js";
 import { lengthOfArrayLike } from "../src/array-like.js";
@@ -60,32 +63,32 @@ function element(object: GuestObject, key: string, value: Value): void {
     check(
         descriptor !== undefined && sameValue(descriptor.value, value) &&
         descriptor.writable && descriptor.enumerable && descriptor.configurable,
-        "own element " + key,
+        "own element " + formatPropertyKey(key),
     );
 }
 function hole(object: GuestObject, key: string): void {
-    check(object.getOwnProperty(key) === undefined, "hole " + key);
+    check(object.getOwnProperty(key) === undefined, "hole " + formatPropertyKey(key));
 }
 
 // Synthetic overrides observe boundaries only; ordinary data supplies values.
 class Traced extends GuestObject {
     failGet = "";
     failHas = "";
-    internalGet(key: string, receiver: Value, at: Location): ValueCompletion {
-        trace.push("Get " + key);
+    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+        trace.push("Get " + formatPropertyKey(key));
         check(receiver.kind === "object" && receiver.object === this && at === loc, "Get receiver/location");
         return key === this.failGet ? sentinel : super.internalGet(key, receiver, at);
     }
-    internalHasProperty(key: string, at: Location): InternalBooleanCompletion {
-        trace.push("Has " + key);
+    internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
+        trace.push("Has " + formatPropertyKey(key));
         check(at === loc, "Has location");
         return key === this.failHas ? sentinel : super.internalHasProperty(key, at);
     }
 }
 class TracedArray extends GuestArray {
     failConstructor = false;
-    internalGet(key: string, receiver: Value, at: Location): ValueCompletion {
-        trace.push("Get " + key);
+    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+        trace.push("Get " + formatPropertyKey(key));
         check(receiver.kind === "object" && receiver.object === this && at === loc, "array receiver/location");
         return key === "constructor" && this.failConstructor ? sentinel : super.internalGet(key, receiver, at);
     }
@@ -575,7 +578,7 @@ const mapB = new Realm((_line) => {});
 const mapC = new Realm((_line) => {});
 const mapEntry = new Evaluator(mapA);
 class SparseInput extends GuestArray {
-    override internalHasProperty(key: string, at: Location): InternalBooleanCompletion {
+    override internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
         check(mapEntry.context.realm === mapA, "R17 restored A between callbacks");
         return super.internalHasProperty(key, at);
     }
@@ -599,7 +602,7 @@ check(directA.get("0") === firstElement && directA.get("2") === lastElement && c
 hole(directA, "1");
 check(sparseB.getPrototypeOf() === mapB.arrayPrototype && mapEntry.context.realm === mapA && mapEntry.calls === 0, "R17 input and restoration");
 class MapInput extends GuestObject {
-    override internalHasProperty(key: string, at: Location): InternalBooleanCompletion {
+    override internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
         check(mapEntry.context.realm === mapB, "R18 restored B between callbacks");
         return super.internalHasProperty(key, at);
     }
@@ -640,8 +643,8 @@ check(mapTrace.join(",") === "A length,C callback,C callback" && mapEntry.contex
 // W16: String objects are explicit array-like inputs, never implicit boxes.
 class ObservedString extends GuestStringObject {
     reads: string[] = [];
-    internalGet(key: string, receiver: Value, at: Location): ValueCompletion {
-        this.reads.push(key);
+    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+        this.reads.push(formatPropertyKey(key));
         if (key === "constructor") throw new Error("W16 String constructor read");
         return super.internalGet(key, receiver, at);
     }
@@ -663,4 +666,25 @@ const stringMapped = result(mapObjectDefaultArray(stringInput, stringCallback, s
 element(stringMapped, "0", { kind: "string", value: "a" });
 element(stringMapped, "1", { kind: "string", value: "b" });
 check(stringVisits === 2 && stringInput.reads.join(",") === "length,0,1" && mapEntry.context.realm === mapA, "W16 visits/read order/restoration");
+
+const symbolElement: Value = { kind: "symbol", value: new GuestSymbol("element") };
+const symbolMapRealm = new Realm((_line) => {});
+const symbolMapEvaluator = new Evaluator(symbolMapRealm);
+const symbolInput = symbolMapRealm.createObject();
+put(symbolInput, "length", symbolElement);
+const symbolBadLength = mapObjectDefaultArray(symbolInput, symbolElement, UNDEFINED, symbolMapEvaluator.context, loc);
+check(symbolBadLength.type === "throw" && symbolBadLength.diagnostic.message === "cannot convert symbol to number" && symbolBadLength.diagnostic.loc === loc, "A23 length before callback validation");
+put(symbolInput, "length", num(1));
+put(symbolInput, "0", symbolElement);
+const symbolBadCallback = mapObjectDefaultArray(symbolInput, symbolElement, UNDEFINED, symbolMapEvaluator.context, loc);
+check(symbolBadCallback.type === "throw" && symbolBadCallback.diagnostic.message === "map callback is not callable" && symbolBadCallback.diagnostic.loc === loc, "A23 symbol callback rejected after length");
+let symbolVisits = 0;
+const symbolCallback = builtin(symbolMapRealm, (_receiver, args, _context, _at) => {
+    symbolVisits++;
+    check(args[0] === symbolElement, "A23 callback exact symbol carrier");
+    return normal(args[0]);
+});
+const symbolMapped = mapObjectDefaultArray(symbolInput, symbolCallback, UNDEFINED, symbolMapEvaluator.context, loc);
+check(symbolMapped.type === "normal" && symbolMapped.value.kind === "object" && symbolMapped.value.object.get("0") === symbolElement && symbolVisits === 1, "A23 symbol element preserved");
+
 console.log("array map passed");

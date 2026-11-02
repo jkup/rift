@@ -116,3 +116,19 @@ cases, including 43 additional newline regressions. Coverage is 642/642 for the 
 and 655/655 for the realm driver, both fully static. All ten probes, 20 runner
 regressions and typechecking pass again. The retained transcripts now reflect this
 review correction; the initial evidence remains available at `b677091`.
+
+
+## Ordinary symbol integration (TS-019A, 2026-11-02)
+
+The integrated symbol Value and string-or-GuestSymbol PropertyKey compile with
+the pinned toolchain. GuestObject retains one Map; tests distinguish equal-text
+symbol identities, preserve key/payload references in detached snapshots, and
+exercise String/Array subclass dispatch through GuestObject. Readonly symbol
+payloads and defining-Realm boxes are reachable across modules without a new
+compiler workaround. All 23 static-only builds and separately parsed coverage
+gates pass (CLI 1244/1244; object-keys 1046/1046; object-valueof 1455/1455).
+Node/native each pass 164/164 cases, runner 20/20 and probes 10/10. The initial
+Zig installation-access failure is retained separately from the successful
+approved run. See [TS-019A evidence](validation/ts-019a/README.md) for the complete
+migration inventory and A1-A24/O1-O6 matrix. This does not establish symbol
+protocols, a guest Symbol factory/registry, other platforms or performance.

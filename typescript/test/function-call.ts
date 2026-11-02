@@ -1,3 +1,5 @@
+import { stringKeys } from "./key-assertions.js";
+import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
@@ -45,7 +47,7 @@ const call = r.functionPrototype.get("call");
 const callObject = object(call);
 const other = new Realm((_line) => {});
 check(callObject !== object(other.functionPrototype.get("call")) && callObject.getPrototypeOf() === r.functionPrototype, "per-Realm method and prototype");
-check(callObject.ownPropertyKeys().join(",") === "name,length", "method own metadata only");
+check(stringKeys(callObject.ownPropertyKeys()).join(",") === "name,length", "method own metadata only");
 for (const key of ["name", "length"]) {
     const d = callObject.getOwnProperty(key);
     check(d !== undefined && !d.writable && !d.enumerable && d.configurable, "metadata flags");
@@ -111,7 +113,7 @@ const emptyCall = e.call(call, empty, [], loc);
 check(result(emptyCall) === UNDEFINED, "missing this/rest builtin");
 // No Get on the target, even for names usually used in call dispatch/metadata.
 class NoLookup extends GuestObject {
-    override internalGet(_key: string, _receiver: Value, _loc: Location): ValueCompletion { throw new Error("target property lookup"); }
+    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion { throw new Error("target property lookup"); }
 }
 const opaque = new NoLookup(null, false, {kind: "builtin", realm: r, invoke: (thisArg, _args, _context, _loc) => normal(thisArg)});
 const opaqueCall = e.call(call, value(opaque), [token], loc);

@@ -9,6 +9,7 @@ export function toObject(input: Value, context: OperationContext, loc: Location)
         case "object": return { type: "normal", value: input.object };
         case "boolean": return { type: "normal", value: context.realm.createBooleanObject(input.value) };
         case "number": return { type: "normal", value: context.realm.createNumberObject(input.value) };
+        case "symbol": return { type: "normal", value: context.realm.createSymbolObject(input.value) };
         case "string": return { type: "normal", value: context.realm.createStringObject(input.value) };
         case "null": case "undefined": return failure("TypeError", "cannot convert null or undefined to object", loc);
     }

@@ -1,3 +1,5 @@
+import { GuestSymbol } from "../src/symbols.js";
+import type { PropertyKey } from "../src/runtime.js";
 import { Evaluator } from "../src/evaluator.js";
 import { GuestObject, UNDEFINED, failure, type Value, type ValueCompletion, type InternalBooleanCompletion } from "../src/runtime.js";
 import { GuestArray } from "../src/array-object.js";
@@ -138,7 +140,7 @@ numeric(lengthOfArrayLike(new GuestArray(), active.context, loc), 0);
 class ObservedGet extends GuestObject {
     calls = 0;
     result: ValueCompletion = { type: "normal", value: s("12.9") };
-    override internalGet(key: string, receiver: Value, actualLoc: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, actualLoc: Location): ValueCompletion {
         this.calls++;
         check(key === "length", "exact Get key");
         check(receiver.kind === "object" && receiver.object === this, "exact Get receiver");
@@ -175,4 +177,10 @@ observed.result = { type: "normal", value: o(parent) };
 numeric(lengthOfArrayLike(observed, active.context, loc), 4);
 check(hooks === 2, "one hook per operation");
 check(observed.calls === 3, "one Get before ordinary conversion");
+
+const symbolLengthObject = new GuestObject();
+symbolLengthObject.bootstrapDefine("length", { value: { kind: "symbol", value: new GuestSymbol("3") } });
+const symbolLengthResult = lengthOfArrayLike(symbolLengthObject, active.context, loc);
+check(symbolLengthResult.type === "throw" && symbolLengthResult.diagnostic.name === "TypeError" && symbolLengthResult.diagnostic.message === "cannot convert symbol to number" && symbolLengthResult.diagnostic.loc === loc, "A23 array-like symbol length");
+
 console.log("array-like prerequisites passed");

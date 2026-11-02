@@ -25,8 +25,8 @@ export function ordinaryToPrimitive(
     return failure("TypeError", "cannot convert object to primitive", loc);
 }
 
-// Partial ToPrimitive: symbols/exotic hooks and standard prototypes are absent.
-// Production conversion callers remain primitive-only until separately migrated.
+// Partial ToPrimitive: all primitive Values pass through unchanged.
+// Object conversion uses ordinary methods; exotic symbol hooks remain deferred.
 export function toPrimitive(
     input: Value, hint: PrimitiveHint,
     context: OperationContext, loc: Location,

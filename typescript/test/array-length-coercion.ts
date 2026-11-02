@@ -1,3 +1,6 @@
+import { GuestSymbol } from "../src/symbols.js";
+import { stringKeys } from "./key-assertions.js";
+import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
@@ -164,7 +167,7 @@ for (const name of ["rhs", "arrayRhs", "functionRhs"]) {
             }
             length(object(binding(active, "target")), row.expected);
             hits(active, 2, "vv");
-            if (row.expected === 0) check(object(binding(active, "target")).ownPropertyKeys().join(",") === "length", "zero removes indices");
+            if (row.expected === 0) check(stringKeys(object(binding(active, "target")).ownPropertyKeys()).join(",") === "length", "zero removes indices");
             if (row.first.kind === "number" && row.first.value === 0) check(1 / row.first.value === firstReciprocal, "first zero sign retained");
             if (row.second.kind === "number" && row.second.value === 0) check(1 / row.second.value === secondReciprocal, "second zero sign retained");
         }
@@ -197,7 +200,7 @@ class Observed extends GuestObject {
     reads = 0;
     failAt = 0;
     original: Value = UNDEFINED;
-    internalGet(key: string, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
         this.reads++;
         check(receiver === this.original && at === loc && key === "valueOf", "lookup original receiver/location/hint");
         if (this.reads === this.failAt) return sentinel;
@@ -337,7 +340,7 @@ for (const mode of ["partial", "success", "enumerable", "configurable"]) {
         bool(define(active, desc), mode === "success");
         const invalidFlags = mode === "enumerable" || mode === "configurable";
         length(target, invalidFlags ? 6 : mode === "partial" ? 4 : 1, invalidFlags || !freeze);
-        check(target.ownPropertyKeys().join(",") === (invalidFlags ? "1,3,5,length" : mode === "partial" ? "1,3,length" : "length"), "sparse descending deletion/rollback");
+        check(stringKeys(target.ownPropertyKeys()).join(",") === (invalidFlags ? "1,3,5,length" : mode === "partial" ? "1,3,length" : "length"), "sparse descending deletion/rollback");
         hits(active, 2, "vv");
     }
 }
@@ -505,7 +508,7 @@ for (const mode of ["guest", "fault", "break"]) {
 // Direct definition must not inspect old length before either conversion.
 class LengthReadObserver extends GuestArray {
     observations = "";
-    getOwnProperty(key: string): DataDescriptor | undefined {
+    getOwnProperty(key: PropertyKey): DataDescriptor | undefined {
         if (key === "length") this.observations += "L";
         return super.getOwnProperty(key);
     }
@@ -530,7 +533,7 @@ for (const mismatch of [false, true]) {
 class FallbackObserver extends GuestObject {
     reads = 0;
     failAt = 0;
-    internalGet(key: string, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
         this.reads++;
         check(key === (this.reads % 2 === 1 ? "valueOf" : "toString"), "fallback lookup order");
         if (this.reads === this.failAt) return sentinel;
@@ -571,5 +574,25 @@ for (const stage of ["get", "tick", "call"]) {
         check(active.calls === 0, "fallback cleanup");
     }
 }
+
+
+// A23/O6: original RHS is converted twice, but neither rejection commits length.
+const symbolLength: Value = { kind: "symbol", value: new GuestSymbol("2") };
+for (const secondConversion of [false, true]) {
+    const active = setup();
+    seed(active, secondConversion ? "second" : "first", symbolLength);
+    const target = object(binding(active, "target"));
+    const completion = call(active, "assign");
+    error(completion, "TypeError", "cannot convert symbol to number");
+    check(completion.type === "throw" && completion.diagnostic.loc.line === 37 && completion.diagnostic.loc.column === 12, "O6 assignment error location");
+    hits(active, secondConversion ? 2 : 1, secondConversion ? "vv" : "v");
+    length(target, 3);
+    check(sameValue(target.get("2"), num(12)), "O6 no storage commit");
+}
+const directSymbolArray = three();
+const directSymbolFailure = directSymbolArray.defineOwnProperty("length", { value: symbolLength }, new Evaluator(new Realm((_line) => {})).context, loc);
+error(directSymbolFailure, "TypeError", "cannot convert symbol to number");
+check(directSymbolFailure.type === "throw" && directSymbolFailure.diagnostic.loc === loc, "A23 direct length location");
+length(directSymbolArray, 3);
 
 console.log("array length coercion passed");

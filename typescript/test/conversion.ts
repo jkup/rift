@@ -1,3 +1,6 @@
+import { GuestSymbol } from "../src/symbols.js";
+import { display, truthy } from "../src/runtime.js";
+import { toString, toIntegerOrInfinity, toLength } from "../src/conversion.js";
 import { Realm } from "../src/realm.js";
 // scriptc 0.4.7 needs this runtime class reachable when analyzing Realm's types.
 // See docs/validation/ts-016a/coverage-notes.md for the reduced failure.
@@ -117,4 +120,14 @@ for (const result of [toNumber({ kind: "object", object }, loc), toUint32({ kind
     }
 }
 check(object.ownPropertyKeys().length === 2, "object remains unchanged");
+
+const symbolValue: Value = { kind: "symbol", value: new GuestSymbol("x") };
+check(truthy(symbolValue) && display(symbolValue) === "Symbol(x)", "A14/A15/A20 diagnostic versus conversion");
+for (const converted of [toNumber(symbolValue, loc), toUint32(symbolValue, loc), toIntegerOrInfinity(symbolValue, loc), toLength(symbolValue, loc)]) {
+    check(converted.type === "throw" && converted.diagnostic.phase === "runtime" && converted.diagnostic.name === "TypeError"
+        && converted.diagnostic.message === "cannot convert symbol to number" && converted.diagnostic.loc === loc, "A14 exact numeric error");
+}
+const symbolString = toString(symbolValue, loc);
+check(symbolString.type === "throw" && symbolString.diagnostic.name === "TypeError" && symbolString.diagnostic.message === "cannot convert symbol to string" && symbolString.diagnostic.loc === loc, "A14 exact string error");
+
 console.log("primitive conversion passed");

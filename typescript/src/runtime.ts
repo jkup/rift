@@ -1,3 +1,4 @@
+import { GuestSymbol, formatPropertyKey, symbolDescriptiveString } from "./symbols.js";
 import { toPropertyKey } from "./conversion.js";
 import type { Diagnostic, Location, Stmt } from "./syntax.js";
 import type { GuestString } from "./strings.js";
@@ -7,9 +8,10 @@ import { arrayIndex } from "./property-keys.js";
 export type Value =
     | { kind: "undefined" } | { kind: "null" }
     | { kind: "boolean"; value: boolean } | { kind: "number"; value: number }
+    | { kind: "symbol"; value: GuestSymbol }
     | { kind: "string"; value: GuestString } | { kind: "object"; object: GuestObject };
 export const UNDEFINED: Value = { kind: "undefined" };
-export type PropertyKey = GuestString;
+export type PropertyKey = GuestString | GuestSymbol;
 // Host undefined means absent; guest undefined is the present Value UNDEFINED.
 export type DataDescriptorUpdate = { value?: Value; writable?: boolean; enumerable?: boolean; configurable?: boolean };
 export type BooleanCompletion = { type: "normal"; value: boolean };
@@ -62,19 +64,22 @@ export class GuestObject {
         this.propertyStorage.delete(key);
         return { type: "normal", value: true };
     }
-    // Detached, string-only ordinary [[OwnPropertyKeys]]; no guest calls or throws.
+    // Detached ordinary [[OwnPropertyKeys]]; no guest calls or throws.
     ownPropertyKeys(): PropertyKey[] {
         const indices: { key: PropertyKey; index: number }[] = [];
         const strings: PropertyKey[] = [];
+        const symbols: PropertyKey[] = [];
         for (const key of this.propertyStorage.keys()) {
             const index = arrayIndex(key);
-            if (index === undefined) strings.push(key);
+            if (typeof key !== "string") symbols.push(key);
+            else if (index === undefined) strings.push(key);
             else indices.push({ key, index });
         }
         indices.sort((left, right) => left.index - right.index);
         const keys: PropertyKey[] = [];
         for (const entry of indices) keys.push(entry.key);
         for (const key of strings) keys.push(key);
+        for (const key of symbols) keys.push(key);
         return keys;
     }
     isExtensible(): boolean { return this.extensible; }
@@ -174,19 +179,19 @@ export class GuestObject {
     // Trusted host-test inspection only; semantic reads propagate completions.
     get(key: PropertyKey): Value {
         const result = this.internalGet(key, { kind: "object", object: this }, { line: 1, column: 1 });
-        if (result.type === "throw") throw new Error("abrupt host inspection: " + key);
+        if (result.type === "throw") throw new Error("abrupt host inspection: " + formatPropertyKey(key));
         return result.value;
     }
     set(key: PropertyKey, value: Value, context: OperationContext, loc: Location): Completion {
         const result = this.internalSet(key, value, { kind: "object", object: this }, context, loc);
         if (result.type === "throw") return result;
-        if (!result.value) return failure("TypeError", "property is not writable: " + key, loc);
+        if (!result.value) return failure("TypeError", "property is not writable: " + formatPropertyKey(key), loc);
         return normal(value);
     }
     // Trusted setup uses separate validated dispatch, with no execution context.
     bootstrapDefine(key: PropertyKey, desc: DataDescriptorUpdate): void {
         const result = this.bootstrapDefineOwnProperty(key, desc, { line: 1, column: 1 });
-        if (result.type === "throw" || !result.value) throw new Error("invalid internal property definition: " + key);
+        if (result.type === "throw" || !result.value) throw new Error("invalid internal property definition: " + formatPropertyKey(key));
     }
 }
 export type Binding = { initialized: boolean; mutable: boolean; value: Value };
@@ -238,7 +243,7 @@ export function truthy(value: Value): boolean {
         case "boolean": return value.value;
         case "number": return value.value !== 0 && !Number.isNaN(value.value);
         case "string": return value.value.length !== 0;
-        case "object": return true;
+        case "symbol": case "object": return true;
     }
 }
 // Diagnostic/console rendering, not the guest ToString abstract operation.
@@ -248,6 +253,7 @@ export function display(value: Value): string {
         case "null": return "null";
         case "boolean": case "number": return String(value.value);
         case "string": return value.value;
+        case "symbol": return symbolDescriptiveString(value.value);
         case "object": return value.object.callable === null ? "[object Object]" : "[function]";
     }
 }
@@ -258,6 +264,7 @@ export function equal(left: Value, right: Value): boolean {
         case "boolean": return right.kind === "boolean" && left.value === right.value;
         case "number": return right.kind === "number" && left.value === right.value;
         case "string": return right.kind === "string" && left.value === right.value;
+        case "symbol": return right.kind === "symbol" && left.value === right.value;
         case "object": return right.kind === "object" && left.object === right.object;
     }
 }

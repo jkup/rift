@@ -1,0 +1,261 @@
+src\array-object.ts:2:import type { DataDescriptorUpdate, InternalBooleanCompletion, OperationContext, PropertyKey } from "./runtime.js";
+src\array-object.ts:23:    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, loc: Location): InternalBooleanCompletion {
+src\array-object.ts:28:    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, loc: Location): InternalBooleanCompletion {
+src\array-object.ts:34:    private defineArrayProperty(key: PropertyKey, desc: DataDescriptorUpdate, _loc: Location): InternalBooleanCompletion {
+src\array-object.ts:108:        const keys = this.ownPropertyKeys();
+test\array-storage.ts:5:import type { BooleanCompletion, Completion, DataDescriptorUpdate, InternalBooleanCompletion, OperationContext, PropertyKey, Value, ValueCompletion } from "../src/runtime.js";
+test\array-storage.ts:30:function element(a: GuestArray, key: string, configurable = true): void {
+test\array-storage.ts:57:check(empty.getPrototypeOf() === null && stringKeys(empty.ownPropertyKeys()).join(",") === "length", "empty own length/null prototype");
+test\array-storage.ts:63:check(stringKeys(empty.ownPropertyKeys()).join(",") === "1,2,length,note", "own numeric order before real length");
+test\array-storage.ts:67:const keys = empty.ownPropertyKeys(); keys.push("fake");
+test\array-storage.ts:69:check(stringKeys(empty.ownPropertyKeys()).join(",") === "1,2,length,note", "detached snapshots");
+test\array-storage.ts:94:check(stringKeys(high.ownPropertyKeys()).join(",") === "length,4294967295,01,-0,1e0", "nonindices survive shrink");
+test\array-storage.ts:99:    check(stringKeys(a.ownPropertyKeys()).join(",") === "length", "zero removes all indices");
+test\array-storage.ts:112:    length(a, 3); check(stringKeys(a.ownPropertyKeys()).join(",") === "0,1,2,length", "invalid conversion no mutation");
+test\array-storage.ts:131:check(stringKeys(converted.ownPropertyKeys()).join(",") === "0,1,length", "object shrink removes index 2");
+test\array-storage.ts:158:check(stringKeys(closed.ownPropertyKeys()).join(",") === "1,length", "nonextensible grow only holes");
+test\array-storage.ts:166:    check(stringKeys(a.ownPropertyKeys()).join(",") === "1,3,length", "descending partial deletion stops at blocker");
+test\array-storage.ts:170:check(stringKeys(shrunk.ownPropertyKeys()).join(",") === "0,length", "successful delayed freeze");
+test\array-storage.ts:178:    check(stringKeys(a.ownPropertyKeys()).join(",") === "0,1,2,length", "flag rejection before deletion/freeze");
+test\array-storage.ts:183:check(stringKeys(flags.ownPropertyKeys()).join(",") === "0,1,2,length", "absent value never deletes");
+test\array-storage.ts:229:    check(stringKeys(a.ownPropertyKeys()).join(",") === (mode === "partial" ? "1,3,length" : "0,1,2,length"), "guest failure final state");
+test\array-storage.ts:233:function bootstrapFault(target: GuestObject, key: string, desc: DataDescriptorUpdate): void {
+test\array-storage.ts:241:    protected ordinaryDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate): BooleanCompletion {
+test\array-storage.ts:247:    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+test\array-storage.ts:252:    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, at: Location): InternalBooleanCompletion {
+test\array-storage.ts:274:    check(stringKeys(a.ownPropertyKeys()).join(",") === "length", "bootstrap zero shrink");
+test\array-storage.ts:280:    check(stringKeys(a.ownPropertyKeys()).join(",") === "0,1,2,length", "invalid bootstrap preserves storage");
+test\array-storage.ts:295:check(stringKeys(bootstrapClosed.ownPropertyKeys()).join(",") === "0,1,2,length", "closed bootstrap grows holes only");
+test\array-storage.ts:299:    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
+test\array-storage.ts:309:check(stringKeys(objectLength.ownPropertyKeys()).join(",") === "0,1,2,length" && untouchedObject.reads === 0, "object length fails before reads or mutation");
+test\array-storage.ts:320:check(stringKeys(bootstrapPartial.ownPropertyKeys()).join(",") === "1,3,length", "bootstrap descending partial deletion and freeze");
+test\array-like.ts:2:import type { PropertyKey } from "../src/runtime.js";
+test\array-like.ts:143:    override internalGet(key: PropertyKey, receiver: Value, actualLoc: Location): ValueCompletion {
+test\array-length-coercion.ts:3:import type { PropertyKey } from "../src/runtime.js";
+test\array-length-coercion.ts:24:function put(target: GuestObject, key: string, value: Value): void {
+test\array-length-coercion.ts:31:function seed(active: Evaluator, key: string, value: Value): void {
+test\array-length-coercion.ts:34:function binding(active: Evaluator, key: string): Value {
+test\array-length-coercion.ts:170:            if (row.expected === 0) check(stringKeys(object(binding(active, "target")).ownPropertyKeys()).join(",") === "length", "zero removes indices");
+test\array-length-coercion.ts:203:    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+test\array-length-coercion.ts:343:        check(stringKeys(target.ownPropertyKeys()).join(",") === (invalidFlags ? "1,3,5,length" : mode === "partial" ? "1,3,length" : "length"), "sparse descending deletion/rollback");
+test\array-length-coercion.ts:511:    getOwnProperty(key: PropertyKey): DataDescriptor | undefined {
+test\array-length-coercion.ts:536:    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+test\array-literals.ts:28:    check(stringKeys(object.ownPropertyKeys()).join(",") === keys, "own keys and holes");
+test\array-literals.ts:30:    for (const key of object.ownPropertyKeys()) {
+test\addition.ts:6:import { GuestObject, UNDEFINED, normal, type Builtin, type Completion, type Value, type ThrowCompletion, type ValueCompletion, type PropertyKey } from "../src/runtime.js";
+test\addition.ts:119:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+test\conversion.ts:122:check(object.ownPropertyKeys().length === 2, "object remains unchanged");
+src\evaluator.ts:72:        switch (stmt.kind) {
+src\evaluator.ts:135:        switch (expr.kind) {
+test\definition-dispatch.ts:3:import type { OperationContext, Completion, DataDescriptorUpdate, InternalBooleanCompletion, PropertyKey, ThrowCompletion, Value } from "../src/runtime.js";
+test\definition-dispatch.ts:22:    seenKey: PropertyKey = "";
+test\definition-dispatch.ts:25:    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, location: Location): InternalBooleanCompletion {
+test\definition-dispatch.ts:138:    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, location: Location): InternalBooleanCompletion {
+src\object-conversion.ts:8:    switch (input.kind) {
+test\function-call.ts:2:import type { PropertyKey } from "../src/runtime.js";
+test\function-call.ts:50:check(stringKeys(callObject.ownPropertyKeys()).join(",") === "name,length", "method own metadata only");
+test\function-call.ts:116:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion { throw new Error("target property lookup"); }
+test\array-map.ts:2:import { formatPropertyKey } from "../src/symbols.js";
+test\array-map.ts:3:import type { PropertyKey } from "../src/runtime.js";
+test\array-map.ts:32:function put(object: GuestObject, key: string, value: Value): void {
+test\array-map.ts:61:function element(object: GuestObject, key: string, value: Value): void {
+test\array-map.ts:66:        "own element " + formatPropertyKey(key),
+test\array-map.ts:69:function hole(object: GuestObject, key: string): void {
+test\array-map.ts:70:    check(object.getOwnProperty(key) === undefined, "hole " + formatPropertyKey(key));
+test\array-map.ts:77:    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+test\array-map.ts:78:        trace.push("Get " + formatPropertyKey(key));
+test\array-map.ts:82:    internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
+test\array-map.ts:83:        trace.push("Has " + formatPropertyKey(key));
+test\array-map.ts:90:    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+test\array-map.ts:91:        trace.push("Get " + formatPropertyKey(key));
+test\array-map.ts:581:    override internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
+test\array-map.ts:605:    override internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
+test\array-map.ts:646:    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+test\array-map.ts:647:        this.reads.push(formatPropertyKey(key));
+test\key-assertions.ts:1:import type { PropertyKey } from "../src/runtime.js";
+test\key-assertions.ts:4:export function stringKeys(keys: PropertyKey[]): string[] {
+test\key-coercion.ts:1:import type { PropertyKey } from "../src/runtime.js";
+test\key-coercion.ts:6:import { toPropertyKey, toString, toNumber } from "../src/conversion.js";
+test\key-coercion.ts:50:    internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+test\key-coercion.ts:55:    set(key: PropertyKey, value: Value, context: OperationContext, location: Location): Completion {
+test\key-coercion.ts:112:const primitives: { value: Value; key: string }[] = [
+test\key-coercion.ts:136:                const result = toPropertyKey(key, active.context, loc);
+test\key-coercion.ts:152:    const result = toPropertyKey(key, active.context, loc);
+test\key-coercion.ts:158:    internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+test\key-coercion.ts:165:    check(toPropertyKey(obj(object), active.context, loc) === sentinel && object.reads === (stop === "toString" ? "toString;" : "toString;valueOf;"), "exact first/second Get throw");
+test\key-coercion.ts:168:    check(toPropertyKey(obj(callKey), active.context, loc) === sentinel, "exact first/second call throw");
+test\key-coercion.ts:175:    check(toPropertyKey(obj(object), context, loc) === sentinel && object.reads === (second ? "toString;" : ""), "exact tick throw");
+test\key-coercion.ts:194:    try { toPropertyKey(obj(key), active.context, loc); } catch { escaped = true; }
+src\conversion.ts:3:import type { Value, ThrowCompletion, PropertyKey, OperationContext } from "./runtime.js";
+src\conversion.ts:73:    switch (value.kind) {
+src\conversion.ts:112:export type PropertyKeyCompletion = { type: "normal"; value: PropertyKey } | ThrowCompletion;
+src\conversion.ts:119:    switch (value.kind) {
+src\conversion.ts:131:export function toPropertyKey(value: Value, context: OperationContext, loc: Location): PropertyKeyCompletion {
+test\length-coercion.ts:1:import { formatPropertyKey } from "../src/symbols.js";
+test\length-coercion.ts:2:import type { PropertyKey } from "../src/runtime.js";
+test\length-coercion.ts:23:function put(object: GuestObject, key: string, value: Value): void {
+test\length-coercion.ts:30:function seed(active: Evaluator, key: string, value: Value): void {
+test\length-coercion.ts:33:function binding(active: Evaluator, key: string): Value {
+test\length-coercion.ts:88:    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+test\length-coercion.ts:143:    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+test\length-coercion.ts:144:        this.reads.push(formatPropertyKey(key));
+test\length-coercion.ts:251:    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+test\length-coercion.ts:252:        this.trace.push(formatPropertyKey(key));
+test\length-coercion.ts:325:    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
+test\object-descriptors.ts:15:function state(o: GuestObject, key: string, value: Value, w: boolean, e: boolean, c: boolean): void {
+test\object-descriptors.ts:67:const snapshot = o.properties;
+test\object-descriptors.ts:108:check(stringKeys(units.ownPropertyKeys()).join(",") === "0,1,2,3,4,length", "W5 UTF-16 keys");
+test\object-descriptors.ts:148:check(stringKeys(frozenText.ownPropertyKeys()).join(",") === "0,1,length", "W11 unchanged keys");
+test\object-descriptors.ts:156:const stringSnapshot = text.properties;
+test\object-descriptors.ts:162:const detachedKeys = text.ownPropertyKeys();
+test\object-descriptors.ts:167:check(stringKeys(text.ownPropertyKeys()).join(",") === "0,1,2,length", "W14 detached keys/map");
+test\numeric-operators.ts:6:import { GuestObject, UNDEFINED, normal, type Builtin, type Completion, type Value, type ThrowCompletion, type ValueCompletion, type PropertyKey } from "../src/runtime.js";
+test\numeric-operators.ts:98:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+test\object-keys.ts:4:import { formatPropertyKey } from "../src/symbols.js";
+test\object-keys.ts:5:import type { PropertyKey } from "../src/runtime.js";
+test\object-keys.ts:10:import { toPropertyKey } from "../src/conversion.js";
+test\object-keys.ts:19:function list(actual: PropertyKey[], expected: PropertyKey[], label: string): void {
+test\object-keys.ts:23:function add(o: GuestObject, key: PropertyKey): void { o.bootstrapDefine(key, { value: UNDEFINED, writable: true, enumerable: true, configurable: true }); }
+test\object-keys.ts:29:for (const key of invalid) check(arrayIndex(key) === undefined, "ordinary string " + formatPropertyKey(key));
+test\object-keys.ts:32:list(unusual.ownPropertyKeys(), invalid, "all noncanonical keys retain insertion order");
+test\object-keys.ts:35:list(o.ownPropertyKeys(), [], "empty");
+test\object-keys.ts:40:list(o.ownPropertyKeys(), initial, "numeric before chronological including nonenumerable");
+test\object-keys.ts:43:list(o.ownPropertyKeys(), initial, "overwrites preserve positions");
+test\object-keys.ts:44:const snapshot = o.ownPropertyKeys();
+test\object-keys.ts:47:list(o.ownPropertyKeys(), initial, "caller mutation detached");
+test\object-keys.ts:48:const beforeDelete = o.ownPropertyKeys();
+test\object-keys.ts:55:list(o.ownPropertyKeys(), ["0", "2", "3", "10", "2147483648", "4294967294", "4294967295", "01", "a", "hidden", "z"], "string reinsert moves; index reinsert sorts");
+test\object-keys.ts:58:const beforeFailure = o.ownPropertyKeys();
+test\object-keys.ts:62:list(o.ownPropertyKeys(), beforeFailure, "rejection preserves order");
+test\object-keys.ts:65:list(o.ownPropertyKeys(), beforeFailure, "absent deletion preserves order");
+test\object-keys.ts:75:list(child.ownPropertyKeys(), [], "no inherited keys");
+test\object-keys.ts:76:list(parent.ownPropertyKeys(), ["1", "locked", "shared"], "parent unchanged");
+test\object-keys.ts:87:list(child.ownPropertyKeys(), [], "rejected reinsertion adds no key");
+test\object-keys.ts:96:const secondKeys = second.ownPropertyKeys();
+test\object-keys.ts:102:list(second.ownPropertyKeys(), secondKeys, "realm order isolation");
+test\object-keys.ts:108:    check(stringIndex(key, 2) === undefined && text.getOwnProperty(key) === undefined, "W6 ordinary key " + formatPropertyKey(key));
+test\object-keys.ts:110:    check(text.getOwnProperty(key) !== undefined, "W6 ordinary definition " + formatPropertyKey(key));
+test\object-keys.ts:112:const negativeZeroKey = toPropertyKey({ kind: "number", value: -0 }, keyContext, loc);
+test\object-keys.ts:118:list(orderedText.ownPropertyKeys(), ["0", "1", "2", "10", "length", "z", "01", "-0", "4294967295"], "W10 initial order");
+test\object-keys.ts:121:list(orderedText.ownPropertyKeys(), ["0", "1", "2", "10", "length", "01", "-0", "4294967295", "z"], "W10 reinsert order");
+test\object-keys.ts:143:list(collisions.ownPropertyKeys(), ["Symbol(x)", "@@x", s, t], "A3 four distinct properties");
+test\object-keys.ts:147:list(mixed.ownPropertyKeys(), ["2", "10", "z", "01", "4294967295", s, t], "A4 category ordering");
+test\object-keys.ts:154:list(mixed.ownPropertyKeys(), ["2", "10", "01", "4294967295", "z", t, s], "A5 reinsertion");
+test\object-keys.ts:155:const detachedKeys = mixed.ownPropertyKeys();
+test\object-keys.ts:157:const detachedMap = mixed.properties;
+test\object-keys.ts:167:list(mixed.ownPropertyKeys(), ["2", "10", "01", "4294967295", "z", t, s], "A7 key array detached");
+test\object-keys.ts:182:list(symbolArray.ownPropertyKeys(), ["length", numericSymbol, lengthSymbol], "A10 symbols survive shrink");
+test\object-keys.ts:185:list(symbolText.ownPropertyKeys(), ["0", "1", "2", "length", "z", numericSymbol, s], "A11 String mixed order");
+test\object-keys.ts:186:list(Array.from(symbolText.properties.keys()), symbolText.ownPropertyKeys(), "A11 String snapshot own-key order");
+test\object-prototypes.ts:17:function read(o: GuestObject, key: string, expected: Value): void {
+test\object-valueof.ts:5:import type { PropertyKey } from "../src/runtime.js";
+test\object-valueof.ts:55:check(stringKeys(fn.ownPropertyKeys()).join(",") === "name,length", "only metadata");
+test\object-valueof.ts:64:check(stringKeys(b.objectPrototype.ownPropertyKeys()).join(",") === "valueOf" && !b.global.bindings.has("Object"), "bounded installation");
+test\object-valueof.ts:68:    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
+test\object-valueof.ts:80:    const keys = stringKeys(receiver.ownPropertyKeys()).join(",");
+test\object-valueof.ts:82:    check(receiver.getPrototypeOf() === proto && stringKeys(receiver.ownPropertyKeys()).join(",") === keys, "unchanged object");
+test\object-valueof.ts:109:        check(stringKeys(first.ownPropertyKeys()).join(",") === (primitive.value.length === 0 ? "length" : "0,1,2,3,4,length"), "String key order");
+test\object-valueof.ts:275:check(symbolB.symbolPrototype.ownPropertyKeys().length === 0 && symbolB.symbolPrototype.getPrototypeOf() === symbolB.objectPrototype && symbolB.symbolPrototype.isExtensible() && symbolB.symbolPrototype.callable === null, "A17 exact root graph");
+test\object-valueof.ts:326:check(!symbolB.global.bindings.has("Symbol") && symbolB.symbolPrototype.ownPropertyKeys().length === 0, "A24 no Symbol exposure");
+test\operation-context.ts:446:check(objectOf(middleB).getPrototypeOf() === null && objectOf(middleB).ownPropertyKeys().length === 0, "R16 explicit null-root fixture remains bare");
+src\primitive-objects.ts:3:import type { DataDescriptor, DataDescriptorUpdate, InternalBooleanCompletion, OperationContext, PropertyKey } from "./runtime.js";
+src\primitive-objects.ts:25:    getOwnProperty(key: PropertyKey): DataDescriptor | undefined {
+src\primitive-objects.ts:36:    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _context: OperationContext, _loc: Location): InternalBooleanCompletion {
+src\primitive-objects.ts:40:    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _loc: Location): InternalBooleanCompletion {
+src\primitive-objects.ts:44:    private defineStringProperty(key: PropertyKey, desc: DataDescriptorUpdate): InternalBooleanCompletion {
+src\primitive-objects.ts:54:    internalDelete(key: PropertyKey): InternalBooleanCompletion {
+src\primitive-objects.ts:59:    ownPropertyKeys(): PropertyKey[] {
+src\primitive-objects.ts:60:        const keys: PropertyKey[] = [];
+src\primitive-objects.ts:64:        for (const key of super.ownPropertyKeys()) keys.push(key);
+src\primitive-objects.ts:68:    get properties(): Map<PropertyKey, DataDescriptor> {
+src\primitive-objects.ts:69:        const snapshot = new Map<PropertyKey, DataDescriptor>();
+src\primitive-objects.ts:70:        for (const key of this.ownPropertyKeys()) {
+src\property-keys.ts:1:import type { PropertyKey } from "./runtime.js";
+src\property-keys.ts:5:export function stringIndex(key: PropertyKey, length: number): number | undefined {
+src\property-keys.ts:15:export function arrayIndex(key: PropertyKey): number | undefined {
+src\symbols.ts:12:export function formatPropertyKey(key: GuestString | GuestSymbol): GuestString {
+src\runtime.ts:1:import { GuestSymbol, formatPropertyKey, symbolDescriptiveString } from "./symbols.js";
+src\runtime.ts:2:import { toPropertyKey } from "./conversion.js";
+src\runtime.ts:14:export type PropertyKey = GuestString | GuestSymbol;
+src\runtime.ts:40:    private propertyStorage: Map<PropertyKey, DataDescriptor> = new Map();
+src\runtime.ts:49:    get properties(): Map<PropertyKey, DataDescriptor> {
+src\runtime.ts:50:        const snapshot = new Map<PropertyKey, DataDescriptor>();
+src\runtime.ts:56:    getOwnProperty(key: PropertyKey): DataDescriptor | undefined {
+src\runtime.ts:60:    internalDelete(key: PropertyKey): InternalBooleanCompletion {
+src\runtime.ts:67:    // Detached ordinary [[OwnPropertyKeys]]; no guest calls or throws.
+src\runtime.ts:68:    ownPropertyKeys(): PropertyKey[] {
+src\runtime.ts:69:        const indices: { key: PropertyKey; index: number }[] = [];
+src\runtime.ts:70:        const strings: PropertyKey[] = [];
+src\runtime.ts:71:        const symbols: PropertyKey[] = [];
+src\runtime.ts:79:        const keys: PropertyKey[] = [];
+src\runtime.ts:92:    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _context: OperationContext, _loc: Location): InternalBooleanCompletion {
+src\runtime.ts:95:    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _loc: Location): InternalBooleanCompletion {
+src\runtime.ts:98:    protected ordinaryDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate): BooleanCompletion {
+src\runtime.ts:141:    internalHasProperty(key: PropertyKey, _loc: Location): InternalBooleanCompletion {
+src\runtime.ts:149:    internalGet(key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+src\runtime.ts:158:    internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, loc: Location): InternalBooleanCompletion {
+src\runtime.ts:180:    get(key: PropertyKey): Value {
+src\runtime.ts:182:        if (result.type === "throw") throw new Error("abrupt host inspection: " + formatPropertyKey(key));
+src\runtime.ts:185:    set(key: PropertyKey, value: Value, context: OperationContext, loc: Location): Completion {
+src\runtime.ts:188:        if (!result.value) return failure("TypeError", "property is not writable: " + formatPropertyKey(key), loc);
+src\runtime.ts:192:    bootstrapDefine(key: PropertyKey, desc: DataDescriptorUpdate): void {
+src\runtime.ts:194:        if (result.type === "throw" || !result.value) throw new Error("invalid internal property definition: " + formatPropertyKey(key));
+src\runtime.ts:217:        const key = toPropertyKey(ref.key, context, ref.loc);
+src\runtime.ts:229:        const key = toPropertyKey(ref.key, context, ref.loc);
+src\runtime.ts:241:    switch (value.kind) {
+src\runtime.ts:251:    switch (value.kind) {
+src\runtime.ts:261:    switch (left.kind) {
+test\operator-coercion.ts:1:import type { PropertyKey } from "../src/runtime.js";
+test\operator-coercion.ts:86:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+test\primitive-conversion.ts:1:import { formatPropertyKey } from "../src/symbols.js";
+test\primitive-conversion.ts:2:import type { PropertyKey } from "../src/runtime.js";
+test\primitive-conversion.ts:9:import { toNumber, toString, toPropertyKey } from "../src/conversion.js";
+test\primitive-conversion.ts:24:function define(object: GuestObject, key: string, value: Value): void { object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true }); }
+test\primitive-conversion.ts:42:    override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+test\primitive-conversion.ts:45:        this.trace += "Get " + formatPropertyKey(key) + ";";
+test\primitive-conversion.ts:160:    override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+test\primitive-conversion.ts:282:const convertedKey = toPropertyKey(boundary.expected, evaluator.context, loc);
+test\primitive-conversion.ts:306:    override internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+test\property-key-conversion.ts:1:import { GuestSymbol, formatPropertyKey } from "../src/symbols.js";
+test\property-key-conversion.ts:3:import type { PropertyKey } from "../src/runtime.js";
+test\property-key-conversion.ts:5:import { toString, toPropertyKey, numberToString } from "../src/conversion.js";
+test\property-key-conversion.ts:94:    const key = toPropertyKey(num(row.input), keyContext, loc);
+test\property-key-conversion.ts:111:    const key = toPropertyKey(row.value, keyContext, loc);
+test\property-key-conversion.ts:149:    observedKey: PropertyKey = "";
+test\property-key-conversion.ts:151:    internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+test\property-key-conversion.ts:157:    set(key: PropertyKey, value: Value, context: OperationContext, location: Location): Completion {
+test\property-key-conversion.ts:165:    internalGet(_key: PropertyKey, _receiver: Value, _location: Location): ValueCompletion { throw new Error("object key read"); }
+test\property-key-conversion.ts:166:    get(_key: PropertyKey): Value { throw new Error("object key get"); }
+test\property-key-conversion.ts:281:    const directKey = toPropertyKey(keyValue, keyContext, loc);
+test\property-key-conversion.ts:359:const primitiveKey = toPropertyKey(symbolValue, keyContext, loc);
+test\property-key-conversion.ts:415:check(formatPropertyKey(symbolKey) === "Symbol(x)" && symbolReadonly.original.observedKey === symbolKey, "A20 explicit diagnostic key");
+test\property-key-conversion.ts:438:const repeatSymbolKey = toPropertyKey(symbolValue, keyContext, loc);
+test\property-key-conversion.ts:451:    const converted = toPropertyKey(obj(fallback), keyContext, loc);
+test\relational.ts:7:import { GuestObject, UNDEFINED, normal, type Builtin, type Completion, type Value, type ThrowCompletion, type ValueCompletion, type PropertyKey } from "../src/runtime.js";
+test\relational.ts:131:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+test\relational.ts:138:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+test\realms.ts:2:import { formatPropertyKey } from "../src/symbols.js";
+test\realms.ts:3:import type { PropertyKey } from "../src/runtime.js";
+test\realms.ts:38:const d = target.properties.get("fixed");
+test\realms.ts:62:if (an === bn || an.callable !== null || bn.callable !== null || an.properties.size !== 10) throw new Error("Number namespace scope/identity");
+test\realms.ts:68:        const descriptor = namespace.properties.get(key);
+test\realms.ts:69:        if (descriptor === undefined || descriptor.writable || descriptor.enumerable || descriptor.configurable || descriptor.value.kind !== "number") throw new Error("Number constant flags: " + formatPropertyKey(key));
+test\realms.ts:72:        if (!(Number.isNaN(expected) ? Number.isNaN(actual) : actual === expected)) throw new Error("Number constant value: " + formatPropertyKey(key));
+test\realms.ts:73:        if (namespace.set(key, UNDEFINED, (namespace === an ? aContext : bContext), { line: 1, column: 1 }).type !== "throw" || namespace.get(key) !== descriptor.value) throw new Error("Number constant write: " + formatPropertyKey(key));
+test\realms.ts:81:        const descriptor = namespace.properties.get(key);
+test\realms.ts:85:        const name = predicate.properties.get("name");
+test\realms.ts:86:        const length = predicate.properties.get("length");
+test\realms.ts:95:    if (bp.object.properties.has("realmMarker")) throw new Error("Number shared predicate state");
+test\realms.ts:115:function graphPut(object: GuestObject, key: string, value: Value): void {
+test\realms.ts:140:    checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(ar.ownPropertyKeys()).join(",") === "length", "G17 exact initial keys");
+test\realms.ts:175:checkGraph(!r1.functionPrototype.properties.has("prototype") && !r1.functionPrototype.properties.has("constructor"), "G4 no construction");
+test\realms.ts:195:checkGraph(shrink.type === "normal" && shrink.value && sameValue(r1.arrayPrototype.get("length"), numberValue(1)) && !r1.arrayPrototype.properties.has("2"), "G6 exotic shrink");
+test\realms.ts:211:checkGraph(!declared.properties.has("name") && !declared.properties.has("length") && sameValue(declared.get("length"), numberValue(0)), "G8 partial inherited function metadata");
+test\realms.ts:224:checkGraph(stringKeys(literalObject.ownPropertyKeys()).join(",") === "x" && !declared.properties.has("y") && !literalArray.properties.has("z"), "G10 reads do not define");
+test\realms.ts:227:checkGraph(readonlyWrite.type === "throw" && readonlyWrite.diagnostic.name === "TypeError" && sameValue(graphBinding(r1, "effects"), numberValue(1)) && !literalObject.properties.has("fixed"), "G10 readonly write after RHS effect");
+test\realms.ts:234:checkGraph(r2.createObject().get("x").kind === "undefined" && stringKeys(r2.objectPrototype.ownPropertyKeys()).join(",") === "valueOf", "G11 independent root mutation");
+test\realms.ts:282:    checkGraph(realm.booleanPrototype.ownPropertyKeys().length === 0 && realm.numberPrototype.ownPropertyKeys().length === 0 && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(",") === "length", "W1 root keys");
+test\realms.ts:283:    checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length", "W1 original root keys");
+test\realms.ts:307:    internalGet(_key: PropertyKey, _receiver: Value, _loc: { line: number; column: number }): ValueCompletion {
+test\realms.ts:317:    const keys = stringKeys(object.ownPropertyKeys()).join(",");
+test\realms.ts:318:    checkGraph(box({ kind: "object", object }) === object && object.getPrototypeOf() === prototype && stringKeys(object.ownPropertyKeys()).join(",") === keys, "W3 exact identity/chain/state");

@@ -1,3 +1,5 @@
+import { GuestSymbol } from "../src/symbols.js";
+import { stringKeys } from "./key-assertions.js";
 import { Realm } from "../src/realm.js";
 import { Evaluator } from "../src/evaluator.js";
 import { GuestObject, UNDEFINED, putValue, sameValue } from "../src/runtime.js";
@@ -103,7 +105,7 @@ const expectedUnits = ["A", "\ud83d", "\ude00", "\ud800", "\0"];
 for (let i = 0; i < expectedUnits.length; i++) {
     state(units, String(i), { kind: "string", value: expectedUnits[i] }, false, true, false);
 }
-check(units.ownPropertyKeys().join(",") === "0,1,2,3,4,length", "W5 UTF-16 keys");
+check(stringKeys(units.ownPropertyKeys()).join(",") === "0,1,2,3,4,length", "W5 UTF-16 keys");
 const text = keyContext.realm.createStringObject("ab");
 const aUnit: Value = { kind: "string", value: "a" };
 const compatible: DataDescriptorUpdate[] = [
@@ -143,7 +145,7 @@ result(frozenText.defineOwnProperty("length", { value: num(2) }, keyContext, loc
 result(frozenText.defineOwnProperty("2", {}, keyContext, loc), false, "W11 new key");
 result(frozenText.setPrototypeOf(null), false, "W11 new prototype");
 result(frozenText.setPrototypeOf(keyContext.realm.stringPrototype), true, "W11 same prototype");
-check(frozenText.ownPropertyKeys().join(",") === "0,1,length", "W11 unchanged keys");
+check(stringKeys(frozenText.ownPropertyKeys()).join(",") === "0,1,length", "W11 unchanged keys");
 state(frozenText, "0", aUnit, false, true, false);
 const detachedUnit = text.getOwnProperty("0");
 const detachedLength = text.getOwnProperty("length");
@@ -152,7 +154,7 @@ detachedUnit.value = num(99);
 detachedUnit.writable = true;
 detachedLength.value = num(99);
 const stringSnapshot = text.properties;
-check(Array.from(stringSnapshot.keys()).join(",") === "0,1,2,length", "W14 snapshot order");
+check(stringKeys(Array.from(stringSnapshot.keys())).join(",") === "0,1,2,length", "W14 snapshot order");
 const snapshotUnit = stringSnapshot.get("1");
 if (snapshotUnit === undefined) throw new Error("W14 missing snapshot unit");
 snapshotUnit.value = num(99);
@@ -162,8 +164,20 @@ detachedKeys.push("fake");
 state(text, "0", aUnit, false, true, false);
 state(text, "1", { kind: "string", value: "b" }, false, true, false);
 state(text, "length", num(2), false, false, false);
-check(text.ownPropertyKeys().join(",") === "0,1,2,length", "W14 detached keys/map");
+check(stringKeys(text.ownPropertyKeys()).join(",") === "0,1,2,length", "W14 detached keys/map");
 text.bootstrapDefine("stringData", { value: num(99) });
 text.setPrototypeOf(null);
 check(text.stringData === "ab", "W14 scalar payload survives property/prototype changes");
+
+const symbolKey = new GuestSymbol("locked");
+const symbolValue: Value = { kind: "symbol", value: symbolKey };
+const sameSymbol: Value = { kind: "symbol", value: symbolKey };
+const otherSymbol: Value = { kind: "symbol", value: new GuestSymbol("locked") };
+const symbolObject = new GuestObject();
+symbolObject.bootstrapDefine(symbolKey, { value: symbolValue });
+result(symbolObject.defineOwnProperty(symbolKey, { value: sameSymbol }, keyContext, loc), true, "A6 SameValue accepts same payload");
+result(symbolObject.defineOwnProperty(symbolKey, { value: otherSymbol }, keyContext, loc), false, "A6 distinct payload rejected");
+result(symbolObject.internalSet(symbolKey, sameSymbol, { kind: "object", object: symbolObject }, keyContext, loc), false, "A6 readonly Set rejects identical payload");
+check(symbolObject.get(symbolKey) === symbolValue, "A6 rejection atomic");
+
 console.log("object descriptors passed");

@@ -19,7 +19,7 @@ class DefinitionObject extends GuestObject {
     calls = 0;
     seenLocation: Location = { line: 0, column: 0 };
     seenContext: OperationContext | null = null;
-    seenKey = "";
+    seenKey: PropertyKey = "";
     seenDescriptor: DataDescriptorUpdate = {};
     thrown: ThrowCompletion = { type: "throw", value: obj(new GuestObject()), diagnostic: { phase: "runtime", name: "RangeError", message: "definition sentinel", loc } };
     defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, location: Location): InternalBooleanCompletion {

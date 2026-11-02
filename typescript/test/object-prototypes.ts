@@ -1,3 +1,4 @@
+import { GuestSymbol } from "../src/symbols.js";
 import { Evaluator } from "../src/evaluator.js";
 import { readFileSync } from "node:fs";
 import { GuestObject, UNDEFINED, sameValue, putValue } from "../src/runtime.js";
@@ -133,4 +134,22 @@ textRoot.bootstrapDefine("extra", { value: num(1), writable: true, enumerable: t
 result(textRoot.internalSet("extra", num(2), obj(textChild), keyContext, loc), true, "W13 writable added property");
 read(textRoot, "extra", num(1));
 read(textChild, "extra", num(2));
+
+const symbolKey = new GuestSymbol("inherited");
+const symbolParent = new GuestObject();
+symbolParent.bootstrapDefine(symbolKey, { value: UNDEFINED, writable: false });
+const symbolChild = new GuestObject(symbolParent);
+result(symbolChild.internalHasProperty(symbolKey, loc), true, "A8 inherited undefined presence");
+check(symbolChild.get(symbolKey) === UNDEFINED, "A8 inherited undefined read");
+result(symbolChild.internalSet(symbolKey, num(1), obj(symbolChild), keyContext, loc), false, "A8 inherited readonly");
+result(symbolChild.internalDelete(symbolKey), true, "A8 own absent deletion");
+check(symbolParent.getOwnProperty(symbolKey) !== undefined, "A8 parent not deleted");
+const symbolReceiver = new GuestObject();
+symbolReceiver.bootstrapDefine(symbolKey, { value: num(2), writable: true });
+result(symbolChild.internalSet(symbolKey, num(3), obj(symbolReceiver), keyContext, loc), false, "A9 inherited readonly wins over Receiver writable");
+check(sameValue(symbolReceiver.get(symbolKey), num(2)), "A9 Receiver unchanged");
+result(symbolChild.defineOwnProperty(symbolKey, { value: num(4), writable: true }, keyContext, loc), true, "A8 direct shadow allowed");
+result(symbolChild.internalSet(symbolKey, num(5), obj(symbolReceiver), keyContext, loc), true, "A9 writable path");
+check(sameValue(symbolReceiver.get(symbolKey), num(5)) && sameValue(symbolChild.get(symbolKey), num(4)), "A9 exact Receiver key");
+
 console.log("object prototypes passed");

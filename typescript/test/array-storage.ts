@@ -1,3 +1,4 @@
+import { stringKeys } from "./key-assertions.js";
 import { Evaluator } from "../src/evaluator.js";
 import { GuestArray } from "../src/array-object.js";
 import { GuestObject, UNDEFINED } from "../src/runtime.js";
@@ -53,19 +54,19 @@ function defineLength(a: GuestArray, d: DataDescriptorUpdate): InternalBooleanCo
 
 const empty = new GuestArray();
 length(empty, 0);
-check(empty.getPrototypeOf() === null && empty.ownPropertyKeys().join(",") === "length", "empty own length/null prototype");
+check(empty.getPrototypeOf() === null && stringKeys(empty.ownPropertyKeys()).join(",") === "length", "empty own length/null prototype");
 bool(empty.internalDelete("length"), false);
 element(empty, "2"); length(empty, 3);
 check(empty.getOwnProperty("0") === undefined && empty.getOwnProperty("1") === undefined, "holes absent");
 check(empty.getOwnProperty("2")?.value === UNDEFINED, "present undefined");
 element(empty, "note"); element(empty, "1");
-check(empty.ownPropertyKeys().join(",") === "1,2,length,note", "own numeric order before real length");
+check(stringKeys(empty.ownPropertyKeys()).join(",") === "1,2,length,note", "own numeric order before real length");
 const snapshot = empty.getOwnProperty("length");
 if (snapshot === undefined) throw new Error("snapshot missing");
 snapshot.value = num(99); snapshot.writable = false;
 const keys = empty.ownPropertyKeys(); keys.push("fake");
 length(empty, 3);
-check(empty.ownPropertyKeys().join(",") === "1,2,length,note", "detached snapshots");
+check(stringKeys(empty.ownPropertyKeys()).join(",") === "1,2,length,note", "detached snapshots");
 bool(empty.internalDelete("2"), true); length(empty, 3);
 
 const parent = new GuestObject(); parent.bootstrapDefine("4", { value: num(7), writable: true, enumerable: true, configurable: true });
@@ -90,12 +91,12 @@ const high = new GuestArray(); element(high, "4294967294"); length(high, 4294967
 for (const key of ["4294967295", "01", "-0", "1e0"]) { element(high, key); length(high, 4294967295); }
 bool(defineLength(high, { value: num(1) }), true); length(high, 1);
 check(high.getOwnProperty("4294967294") === undefined, "sparse maximum shrink");
-check(high.ownPropertyKeys().join(",") === "length,4294967295,01,-0,1e0", "nonindices survive shrink");
+check(stringKeys(high.ownPropertyKeys()).join(",") === "length,4294967295,01,-0,1e0", "nonindices survive shrink");
 
 const zeroInputs: Value[] = [num(-0), { kind: "null" }, { kind: "boolean", value: false }, str("")];
 for (const value of zeroInputs) {
     const a = three(); bool(defineLength(a, { value }), true); length(a, 0);
-    check(a.ownPropertyKeys().join(",") === "length", "zero removes all indices");
+    check(stringKeys(a.ownPropertyKeys()).join(",") === "length", "zero removes all indices");
     if (value.kind === "number") check(Object.is(value.value, -0), "original negative zero unchanged");
 }
 const validInputs: Value[] = [{ kind: "boolean", value: true }, str("2"), str("0x10")];
@@ -108,7 +109,7 @@ const invalidInputs = [UNDEFINED, num(NaN), num(Infinity), num(-Infinity), num(-
 for (const value of invalidInputs) {
     const a = three();
     error(defineLength(a, { value, writable: false, enumerable: true }), "RangeError");
-    length(a, 3); check(a.ownPropertyKeys().join(",") === "0,1,2,length", "invalid conversion no mutation");
+    length(a, 3); check(stringKeys(a.ownPropertyKeys()).join(",") === "0,1,2,length", "invalid conversion no mutation");
 }
 const coercible = new GuestObject();
 let hookCalls = 0;
@@ -127,7 +128,7 @@ const convertedResult = defineLength(converted, { value: obj(coercible), writabl
 bool(convertedResult, true);
 check(hookCalls === 2, "two object length conversions");
 length(converted, 2, false);
-check(converted.ownPropertyKeys().join(",") === "0,1,length", "object shrink removes index 2");
+check(stringKeys(converted.ownPropertyKeys()).join(",") === "0,1,length", "object shrink removes index 2");
 hookCalls = 0;
 
 const frozen = new GuestArray(); element(frozen, "1");
@@ -154,7 +155,7 @@ bool(closed.defineOwnProperty("0", { value: UNDEFINED }, keyContext, loc), false
 bool(closed.defineOwnProperty("2", { value: UNDEFINED }, keyContext, loc), false); length(closed, 2);
 bool(closed.defineOwnProperty("1", { value: num(4) }, keyContext, loc), true);
 bool(defineLength(closed, { value: num(7) }), true); length(closed, 7);
-check(closed.ownPropertyKeys().join(",") === "1,length", "nonextensible grow only holes");
+check(stringKeys(closed.ownPropertyKeys()).join(",") === "1,length", "nonextensible grow only holes");
 const closedValue = closed.get("1"); check(closedValue.kind === "number" && closedValue.value === 4, "nonextensible update");
 
 for (const freeze of [false, true]) {
@@ -162,11 +163,11 @@ for (const freeze of [false, true]) {
     const d: DataDescriptorUpdate = { value: num(1) };
     if (freeze) d.writable = false;
     bool(defineLength(a, d), false); length(a, 4, !freeze);
-    check(a.ownPropertyKeys().join(",") === "1,3,length", "descending partial deletion stops at blocker");
+    check(stringKeys(a.ownPropertyKeys()).join(",") === "1,3,length", "descending partial deletion stops at blocker");
     bool(a.internalDelete("3"), false); length(a, 4, !freeze);
 }
 const shrunk = three(); bool(defineLength(shrunk, { value: num(1), writable: false }), true); length(shrunk, 1, false);
-check(shrunk.ownPropertyKeys().join(",") === "0,length", "successful delayed freeze");
+check(stringKeys(shrunk.ownPropertyKeys()).join(",") === "0,length", "successful delayed freeze");
 bool(defineLength(shrunk, { value: num(2) }), false);
 for (const flag of ["enumerable", "configurable"]) {
     const a = three();
@@ -174,12 +175,12 @@ for (const flag of ["enumerable", "configurable"]) {
     if (flag === "enumerable") d.enumerable = true;
     else d.configurable = true;
     bool(defineLength(a, d), false); length(a, 3);
-    check(a.ownPropertyKeys().join(",") === "0,1,2,length", "flag rejection before deletion/freeze");
+    check(stringKeys(a.ownPropertyKeys()).join(",") === "0,1,2,length", "flag rejection before deletion/freeze");
 }
 const flags = three(); bool(defineLength(flags, {}), true);
 bool(defineLength(flags, { writable: false }), true); length(flags, 3, false);
 bool(defineLength(flags, { writable: true }), false); length(flags, 3, false);
-check(flags.ownPropertyKeys().join(",") === "0,1,2,length", "absent value never deletes");
+check(stringKeys(flags.ownPropertyKeys()).join(",") === "0,1,2,length", "absent value never deletes");
 
 // Guest assignments run through the evaluator's actual reference/receiver path.
 let output = "";
@@ -225,7 +226,7 @@ for (const mode of ["invalid", "readonly", "partial", "object"]) {
     check(diagnostic.name === (mode === "invalid" ? "RangeError" : "TypeError") && diagnostic.phase === "runtime", "guest failure kind");
     check(diagnostic.loc.line === 2 && diagnostic.loc.column === 18, "guest assignment location");
     length(a, mode === "partial" ? 4 : 3, mode !== "readonly");
-    check(a.ownPropertyKeys().join(",") === (mode === "partial" ? "1,3,length" : "0,1,2,length"), "guest failure final state");
+    check(stringKeys(a.ownPropertyKeys()).join(",") === (mode === "partial" ? "1,3,length" : "0,1,2,length"), "guest failure final state");
 }
 // P2-P5: trusted setup is validated, uses array storage rules, and never
 // dispatches semantic hooks. These cases intentionally exercise host faults.
@@ -270,13 +271,13 @@ for (const value of zeroInputs) {
     const a = three();
     a.bootstrapDefine("length", { value });
     length(a, 0);
-    check(a.ownPropertyKeys().join(",") === "length", "bootstrap zero shrink");
+    check(stringKeys(a.ownPropertyKeys()).join(",") === "length", "bootstrap zero shrink");
 }
 for (const value of invalidInputs) {
     const a = three();
     bootstrapFault(a, "length", { value, writable: false });
     length(a, 3);
-    check(a.ownPropertyKeys().join(",") === "0,1,2,length", "invalid bootstrap preserves storage");
+    check(stringKeys(a.ownPropertyKeys()).join(",") === "0,1,2,length", "invalid bootstrap preserves storage");
 }
 const bootstrapFrozen = three();
 bootstrapFrozen.bootstrapDefine("length", { writable: false });
@@ -291,7 +292,7 @@ bool(bootstrapClosed.preventExtensions(), true);
 bootstrapFault(bootstrapClosed, "3", { value: UNDEFINED });
 bootstrapClosed.bootstrapDefine("length", { value: num(7) });
 length(bootstrapClosed, 7);
-check(bootstrapClosed.ownPropertyKeys().join(",") === "0,1,2,length", "closed bootstrap grows holes only");
+check(stringKeys(bootstrapClosed.ownPropertyKeys()).join(",") === "0,1,2,length", "closed bootstrap grows holes only");
 
 class BootstrapValue extends GuestObject {
     reads = 0;
@@ -305,7 +306,7 @@ const untouched = obj(untouchedObject);
 const objectLength = three();
 bootstrapFault(objectLength, "length", { value: untouched, writable: false });
 length(objectLength, 3);
-check(objectLength.ownPropertyKeys().join(",") === "0,1,2,length" && untouchedObject.reads === 0, "object length fails before reads or mutation");
+check(stringKeys(objectLength.ownPropertyKeys()).join(",") === "0,1,2,length" && untouchedObject.reads === 0, "object length fails before reads or mutation");
 const ordinaryLength = new GuestObject();
 ordinaryLength.bootstrapDefine("length", { value: untouched });
 objectLength.bootstrapDefine("0", { value: untouched });
@@ -316,6 +317,6 @@ const partialDescriptor: DataDescriptorUpdate = { value: num(1), writable: false
 const originalValue = partialDescriptor.value;
 bootstrapFault(bootstrapPartial, "length", partialDescriptor);
 length(bootstrapPartial, 4, false);
-check(bootstrapPartial.ownPropertyKeys().join(",") === "1,3,length", "bootstrap descending partial deletion and freeze");
+check(stringKeys(bootstrapPartial.ownPropertyKeys()).join(",") === "1,3,length", "bootstrap descending partial deletion and freeze");
 check(partialDescriptor.value === originalValue && partialDescriptor.writable === false && partialDescriptor.enumerable === undefined && partialDescriptor.configurable === undefined, "bootstrap partial descriptor unchanged");
 console.log("array storage passed");

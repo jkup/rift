@@ -801,7 +801,7 @@ Coordinator acceptance: TS-019P accepted `eaf73d4` on 2026-11-02. Reviewed compl
 
 ### TS-019A — Ordinary symbol primitives and property keys
 
-Status: **ready**. Prerequisite TS-019P accepted `eaf73d4`. Implement only stage A, A1-A24 and O1-O6 in docs/symbol-foundation.md. Own new src/symbols.ts; scoped runtime.ts, conversion.ts, property-keys.ts, primitive-objects.ts, object-conversion.ts, realm.ts; audit-only or strictly necessary symbol compatibility changes in array-object/primitive-conversion/evaluator. Own listed affected compiled drivers, narrow-key observer migrations and runtime-read fixtures in the design, scoped docs and docs/validation/ts-019a/. Coordinator owns COORDINATION.md; Claude corpus queue/assistance reserved.
+Status: **in progress**. Owner: Codex implementation chat `01a199e9-c608-7162-952d-a1a1a3465f4d`; base `c80ee2c`. Prerequisite TS-019P accepted `eaf73d4`. Implement only stage A, A1-A24 and O1-O6 in docs/symbol-foundation.md. Own new src/symbols.ts; scoped runtime.ts, conversion.ts, property-keys.ts, primitive-objects.ts, object-conversion.ts, realm.ts; audit-only or strictly necessary symbol compatibility changes in array-object/primitive-conversion/evaluator. Own listed affected compiled drivers, narrow-key observer migrations and runtime-read fixtures in the design, scoped docs and docs/validation/ts-019a/. Coordinator owns COORDINATION.md; Claude corpus queue/assistance reserved.
 
 Use GuestSymbol class reference identity with readonly optional UTF-16 description; add symbol Value arm and string-or-symbol PropertyKey. Preserve identity across Values/keys/Realm transfers; no string encoding, host Symbol, interning, counters or registry. Keep one Map storage and exact key references. Partition own keys into numeric strings, other strings and symbols; preserve each snapshot contract, descriptor rules, deletion/reinsertion ordering, Receiver/prototype traversal. Guard index helpers for nonstrings; symbols never trigger Array length or String virtual-index handling and survive array shrink.
 
@@ -810,3 +810,20 @@ Add all exhaustive symbol cases: truthiness/identity, explicit diagnostic displa
 Implement all A/O matrix expectations with readable fixed-result tests, including same-description distinct keys versus strings, cross-Realm transfer, mixed key ordering, descriptor/snapshot/array/String behavior, inherited and distinct Receiver cases, conversion errors, symbol-returning ordinary hooks, runtime-read computed reads/writes/member calls, exact guest throws/diagnostics, symbol array lengths and first/second conversion failure. Widen all listed key-taking observer overrides even if variance checking permits narrower types. Compare mixed keys by identity, not formatting; add explicit string-only checks before retaining old key joins. Keep every 164 case and 23 gate; extend existing drivers without manifest churn. Preserve original negative intent and measured compiler imports/annotations.
 
 No guest Symbol global/factory/registry, well-known symbol constants, exotic toPrimitive protocol, Symbol methods, Object toString, parser features, implicit boxing, accessors/proxies or constructors. Run typecheck, runner/probes, rebuilt Node/native and all static-only builds/separate coverage gates. Reduce real compiler blockers before workarounds, retain original/reduced evidence; no pin changes or relaxed gates. Record exact limits, commit/push tested coherent work, then stop for review. No C++/Claude/COORDINATION edits, branch switch, main merge or successor dispatch.
+
+
+TS-019A handoff (2026-11-02): stage A implemented; coordinator review pending.
+GuestSymbol reference identity, symbol Value/PropertyKey, single mixed-key Map,
+category ordering/detached snapshots, explicit diagnostic formatting and located
+conversion errors, and defining-Realm Symbol boxing with payload-free root are
+implemented. All A1-A24/O1-O6 are mapped to assertions in existing drivers and
+runtime-read bridge fixtures. All listed observers widened; mixed keys compared
+by identity and legacy joins checked for strings. Previous negatives, exact
+budgets, 164 cases and 23 gates preserved. Typecheck PASS, runner 20/20, probes
+10/10, rebuilt Node/native 164/164 each, and 23/23 static builds/separate coverage
+gates PASS. No compiler workaround or pin/import change; retained initial Zig
+sandbox-access failures and successful authorized rerun. Complete production and
+fixture migration inventory, matrix and transcripts: docs/validation/ts-019a/README.md.
+No guest Symbol global/registry/well-known protocols/methods, parser or implicit
+boxing expansion. No C++/Claude/COORDINATION edits, branch switch, main merge or
+successor dispatch. Status remains in progress until coordinator acceptance.
