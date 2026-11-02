@@ -85,6 +85,20 @@ For each candidate provide revision-pinned path/link, flags/features/includes, s
 
 Handoff: pending.
 
+## CL-005 — Research a faithful nondecimal number formatter
+
+Status: **ready**. Owner: unclaimed. Dependencies: accepted TS-021P evidence.
+
+Purpose: investigate the concrete Number.toString blocker without changing the engine. Read typescript/docs/number-prototype-conversions.md and docs/validation/ts-021p/: both hosts fail seven exact rounding-interval cases, including0.3/base3. Static compilation and host agreement alone are insufficient. Number valueOf proceeds independently.
+
+Write only: `typescript/docs/assistance/radix-formatter-options.md`, optional research scripts/data under `typescript/fixtures/assistance/radix-formatter-options/`, and this entry's status/handoff. No core, integrated tests, toolchain, manifest or coordinator edits.
+
+Compare a small set of revision-pinned algorithms/implementations for binary64 to radix2–36 strings against fixed ECMA-2622025 step5: round-trip interval membership and shortest significand, separating recommended closest/even choice from required behavior. Explain exact arithmetic needs, subnormal/power boundaries, output size, licensing/attribution and plausible readable TypeScript representation under current static compilation constraints. Inspect source rather than citing library marketing. Use retained failures and mathematically independent oracles; report what actually ran and what remains unproven. Do not count a host formatter or handwritten fixed expected strings as a general oracle. Recommend a bounded future proof/probe plan and acceptance matrix, not an unsolicited production formatter or dependency upgrade. Existing decimal backend stays unchanged.
+
+Acceptance: evidence-backed comparison directly addresses the retained counterexamples and shortestness, with precise source revisions/licenses and honest portability uncertainty. A coordinator can choose a later isolated backend task without guessing the algorithm or numerical contract. No new runtime support/compliance claim.
+
+Handoff: pending.
+
 ## Deferred companion areas
 
 - Built-in implementation: wait for stable registration/object/coercion interfaces and bounded ownership in `typescript/TASKS.md`.
