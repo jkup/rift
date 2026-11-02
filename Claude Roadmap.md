@@ -75,7 +75,7 @@ Handoff (2026-11-01): outputs under `typescript/fixtures/assistance/semantic-exa
 
 ## CL-004 — Identify a small trustworthy test262 starting corpus
 
-Status: **ready**. Owner: unclaimed. Dependencies: accepted CL-002 audit.
+Status: **review needed**. Owner: Claude Code, PR #78, branch `claude/cl-004-test262-starter-corpus`. Dependencies: accepted CL-002 audit.
 
 Purpose: prepare evidence for a future conformance adapter without changing the interpreter or claiming compliance. Pin one upstream test262 revision and inspect 15–25 relevant tests for already implemented language semantics (strict lexical bindings, closures, evaluation order, primitive operators, ordinary data properties). Use accepted TS-017A as the capability baseline; distinguish parse support, runtime support and harness dependencies.
 
@@ -87,7 +87,7 @@ Handoff: pending.
 
 ## CL-005 — Research a faithful nondecimal number formatter
 
-Status: **ready**. Owner: unclaimed. Dependencies: accepted TS-021P evidence.
+Status: **review needed**. Owner: Claude Code, PR #79, branch `claude/cl-005-radix-formatter-options`. Dependencies: accepted TS-021P evidence.
 
 Purpose: investigate the concrete Number.toString blocker without changing the engine. Read typescript/docs/number-prototype-conversions.md and docs/validation/ts-021p/: both hosts fail seven exact rounding-interval cases, including0.3/base3. Static compilation and host agreement alone are insufficient. Number valueOf proceeds independently.
 
