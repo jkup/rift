@@ -1,0 +1,6 @@
+type Result = { type: "normal"; value: number } | { type: "throw"; value: number };
+class State { abrupt: { type: "throw"; value: number } | null = null; }
+function same(result: Result, state: State): boolean { return result === state.abrupt; }
+const state = new State();
+state.abrupt = { type: "throw", value: 7 };
+console.log(same(state.abrupt, state));

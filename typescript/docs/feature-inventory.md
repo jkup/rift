@@ -387,3 +387,18 @@ is introduced. Global instantiation and executable Script records remain separat
 unimplemented assignments. All Realm/profile guards remain closed.
 
 See [literal controls and validation](validation/ts-033d1/README.md).
+### Host-only global declaration instantiation (TS-033D2)
+
+The internal `instantiateGlobalDeclarations` seam accepts a validated strict plan,
+Script OperationContext, GlobalEnvironment and explicit materializer. It performs
+current-state lexical checks, reverse function admission, repeated forward var
+admission, then creates lexical TDZ bindings, winning functions and unique vars.
+Every occurrence and creation phase is budgeted at the frozen declaration site;
+interruption preserves the created prefix and the original abrupt record.
+
+The only materializer supplied in this slice is a test-local noncallable marker.
+No initializer/body executes; no callable factory, execution entry point, parser,
+Realm, interpreter, observation or existing global primitive was changed. Script
+execution and P4 remain unavailable behind the existing guards. Synthetic fault
+environments establish internal propagation only, not exotic global support.
+See [D2 evidence](validation/ts-033d2/README.md).

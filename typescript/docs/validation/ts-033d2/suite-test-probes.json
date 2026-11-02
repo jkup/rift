@@ -1,0 +1,10 @@
+[
+  {
+    "name": "test:probes",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "\n> test:probes\n> node tools/run-probes.mjs\n\nPASS         control  (build 2207ms)\nPASS         dispatch  (build 2176ms)\nPASS         host  (build 2144ms)\nPASS         interpreter  (build 2231ms)\nPASS         memory  (build 2169ms)\nPASS         numbers  (build 2206ms)\nPASS         objects  (build 2209ms)\nPASS         strings  (build 2197ms)\nPASS         suspension  (build 2184ms)\nPASS         values  (build 2230ms)\n",
+    "stderr": ""
+  }
+]
