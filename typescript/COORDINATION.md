@@ -577,3 +577,11 @@ Main maintenance completed: fast-forwarded main to284f02c and pushed origin/main
 Next bounded work: independently review Claude PR78/79 actual evidence and proposed prerequisites before selecting the next core slice. These new research results may resolve the radix formatting blocker and inform a trustworthy test262 adapter. Read-only review chat pending dispatch; no active core implementation writer. Keep main checkout stable during review; no new branch needed for read-only work.
 
 Maintenance outcome pushed3fa8298. New read-only research review chat `01a19bda-2fd8-7e41-a44d-ad4e3b074d28`, host local, reviews PR78/79; explicit wait confirmed active, cursor `0f150c52-8a07-4420-aec6-9d234073e38d:1`. No tracked-file writes/branch changes/merges authorized to reviewer; coordinator retains integration. Heartbeat updated to mark main cleanup complete and carry this review. No core writer active.
+
+## Claude research review — 2026-11-02 11:08 heartbeat
+
+Reviewer idle, cursor0f150c52-8a07-4420-aec6-9d234073e38d:2. Accepted PR78 head83085a4 as research after actual diff/doc/manifest inspection, reviewer independently verified33 upstream test blobs/3 harness blobs,99 metadata fields, pinned license/source, TDZ and five early errors. Coordinator independently hashed all33 retained test blobs. Historical2000-file survey/probe shim not reproduced; no conformance claim, no core change. Resolved only roadmap status conflict, preserving CL005 queue and CL004 handoff.
+
+PR79 head6c5ff97 NOT accepted. Reviewer reproduced13350 mathematical cases and167 Node/native outputs with78 static statements, but judge accepts malformed/noncanonical strings. Coordinator reproduced judge(0.5,2,'0.1.garbage') falsely passing all verdicts. Feedback posted https://github.com/jkup/rift/pull/79#issuecomment-6575188844. Claude owns bounded fix and negative self-checks; preserve unmerged branch. No formatter implementation until corrected research review.
+
+Next evidence-backed slice: TS-031P test262 adapter classification design, based on accepted CL002/004. Design only, freeze trustworthy statuses/variants/phase boundaries and engine prerequisites before implementation. Existing runtime remains independently validated211/211 both lanes32 gates.
