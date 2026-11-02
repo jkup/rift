@@ -1225,10 +1225,28 @@ Coordinator acceptance: TS-024A acceptedfc19afe on 2026-11-02, including R18 cor
 
 ### TS-025P — Delete operator and reference semantics design
 
-Status: **ready**. Owner: next assigned Codex design chat, existing codex/primitive-computed-keys. Prerequisite accepted TS-024Afc19afe. Design only to expose existing internal deletion correctly through guest syntax, closing TS-022A C3 without bypassing references. Own docs/delete-operator.md, docs/validation/ts-025p/ and task claim/handoff. Coordinator owns COORDINATION.md; Claude outputs reserved.
+Status: **review needed**. Owner: Codex TS-025P sole design writer, 2026-11-02, existing codex/primitive-computed-keys; assignment base `1bb6ed8`, observed checkout `b907588`. Prerequisite accepted TS-024Afc19afe. Design only to expose existing internal deletion correctly through guest syntax, closing TS-022A C3 without bypassing references. Own docs/delete-operator.md, docs/validation/ts-025p/ and task claim/handoff. Coordinator owns COORDINATION.md; Claude outputs reserved.
 
 Inspect parser unary/reference classification and parentheses, evaluator reference creation/GetValue/PutValue, property key conversion ordering, internalDelete, descriptors, array length/indices, String wrappers, and the existing strict-call/language profile. Consult fixed2025 delete evaluation/early errors/reference semantics and pinned engines. Freeze an explicit supported strictness policy consistent with Rift's existing limited language profile; identify semantic differences rather than pretending strict-call alone defines strict syntax. Propose smallest correct bounded implementation and any genuinely prerequisite decisions for coordinator review.
 
 Resolve property versus identifier versus non-reference operands, parenthesized identifiers, early-error placement versus runtime effects, missing/nonconfigurable/inherited properties, computed key conversion and nullish/primitive bases, no getter invocation, evaluation order and captured references. Explicitly assess ToObject for deletion and string index/length failures without silently changing general member reads/writes or introducing broad implicit boxing. Distinguish ordinary delete results from strict failure behavior, Array index deletion without length shrink, symbol keys, prototype exposure and Realm/budget/abrupt cleanup. No host delete over guest objects or bypass of internalDelete. Do not invent unrelated operators, binding deletion semantics or accessors/proxies.
 
 Deliver fixed source/host-injection matrices with exact values, storage/prototype invariants, effect traces, parse/runtime diagnostics, error locations, method/key mutation, nullish and primitive cases, resources and native recursive key conversion. Audit existing guest-delete rejections (C3), internalDelete controls, unsupported reserved words and source preservation after unary parsing changes. Retain historical failures; specify precise current migration. Require eventual Node/native plus static-only/separate coverage preserving172cases/26gates. Design only: no production/integrated tests/manifests/pins/C++/Claude edits, branch switch/main merge or successor. Optional isolated probes only for concrete uncertainty with fixed oracles/reductions. Commit/push design evidence and stop for review; no new delete support claim.
+
+TS-025P handoff (2026-11-02): docs/delete-operator.md proposes unconditional
+strict-delete within the limited profile: identifier early errors (including
+parentheses), nonreference effects then true, property reference consumption
+without target Get, ToObject before deferred key conversion, existing internalDelete
+dispatch and strict false translation. General member reads/writes stay object-only.
+This explicit policy requires coordinator acceptance; strict-call alone does not
+establish strict syntax. Fixed2025 and pinned engine262/V8 source/blob evidence
+recorded in docs/validation/ts-025p/. Matrices P1-P27/D1-D26/E1-E26/R1-R21/C1-C10
+freeze110 primary rows plus variants, locations, effects, storage, Realm and
+budget cleanup, and native default64 recursive-key acceptance requirements.
+Reproducible inventory109files/117candidate lines identifies precise C3 assertion
+and fixture migration; internalDelete controls and historical failures retained.
+git diff --check passes. No compiler uncertainty warranted a probe; no runtime
+suite/build/coverage run or delete support claim. Acceptedfc19afe172/172bothhosts/
+26gates remains baseline only. No production/tests/manifests/pins/C++/Claude/
+COORDINATION edits, branch switch/main merge or successor. Commit/push coherent
+design/evidence on existing branch and stop for independent review.
