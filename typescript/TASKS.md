@@ -1109,10 +1109,23 @@ Coordinator acceptance: TS-022A accepted `3d8d37f` on 2026-11-02 with the docume
 
 ### TS-023P — Function string conversion and source retention design
 
-Status: **ready**. Owner: next assigned Codex design chat; existing `codex/primitive-computed-keys`. Prerequisite TS-022A accepted3d8d37f. Design only: close the remaining Function default tag-conversion gap without fabricating source or silently expanding syntax. Own docs/function-string-conversion.md, docs/validation/ts-023p/ including narrowly justified isolated probes, and this task claim/handoff. Coordinator owns COORDINATION.md; Claude CL-004/005 reserved.
+Status: **design complete; awaiting independent review**. Owner: assigned Codex TS-023P design chat (2026-11-02); existing `codex/primitive-computed-keys`. Assignment base c21ea28; dispatch fec364f. Prerequisite TS-022A accepted3d8d37f. Design only: close the remaining Function default tag-conversion gap without fabricating source or silently expanding syntax. Own docs/function-string-conversion.md, docs/validation/ts-023p/ including narrowly justified isolated probes, and this task claim/handoff. Coordinator owns COORDINATION.md; Claude CL-004/005 reserved.
 
 Inspect lexer tokens, parser function boundaries, AST, closure allocation, callable records, Realm bootstrap and existing tests. Consult fixed ECMA-2622025 Function.prototype.toString/HostHasSourceTextAvailable and revision-pinned relevant engines. Freeze exact APIs for retaining original UTF-16 source (comments/whitespace included), declaration versus anonymous expression boundaries, nested/escaped/lone-surrogate content, multiple parse invocations and function lifetime. Compare shared source+offsets with copied slices for readability and storage, including trusted host-created functions with no parsed source. Specify source availability honestly; do not choose unavailable merely to avoid preserving guest source.
 
 Resolve callable versus noncallable receiver behavior, ordinary user functions versus builtins and callable Function root, permitted NativeFunction grammar/name rules, immutable internal metadata versus mutable guest name/toString properties, foreign/relinked/saved functions and Realm identity. No host Function.toString/eval/source regeneration as guest implementation. Freeze error locations, ticks/call guards, no receiver property coercion, and ordinary ToPrimitive/default operators/keys consumers. Audit current Function-tag/root-key assumptions while preserving explicit Object.toString tags and Number formatting boundary.
 
 Produce independent expected-result matrices with exact source strings, comments/line endings/UTF-16 offsets, nested functions, repeated parses/closures, metadata mutations, builtins/root/invalid receivers, resource/Realm behavior and runtime-read conversion. Propose smallest atomic or staged implementation with bounded files and migrations. No production, integrated tests/manifests, C++, pins, parser feature expansion, branch switching/main merge or successor work. Optional probes must address concrete static-compilation uncertainty with separate coverage and expected results; retain reductions before workarounds. Commit/push design evidence and stop for coordinator review. Accepted runtime baseline166/166/24gates is not proof of new Function support.
+
+Design handoff (2026-11-02): docs/function-string-conversion.md freezes shared
+immutable source records, UTF-16 half-open ranges, declaration/expression closure
+propagation, explicit source-less trusted host callables, initial native names,
+zero-body-tick receiver checks, Realm restoration and ordinary coercion behavior.
+Fixed ECMA-2622025 and pinned engine262/V8 source/blob evidence is recorded in
+docs/validation/ts-023p/. Matrix S1-S19/F1-F15/R1-R12/C1-C15 specifies independent
+expected outcomes and exact tag/root-key/budget/Callable migrations. Data-only
+ledger checks 9 inputs/11 fixed source ranges; inventory checks 92 source files,
+46 candidates. No compiler probe warranted; no runtime or native validation claim.
+Proposes one atomic implementation only after coordinator review. No runtime,
+integrated tests/manifests, pins, C++, Claude queue/output or COORDINATION edits.
+Commit/push this design handoff, then stop; accepted runtime stays3d8d37f166/166/24.
