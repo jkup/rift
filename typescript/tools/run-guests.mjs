@@ -234,6 +234,9 @@ execute("object-valueof", valueOfCommand, valueOfArgs, { stdout: "object valueOf
 const arrayStringCommand = lane === "node" ? process.execPath : join(root, "build/native/array-string-conversion" + suffix);
 const arrayStringArgs = lane === "node" ? [join(root, "build/node/test/array-string-conversion.js")] : [];
 execute("array-string-conversion", arrayStringCommand, arrayStringArgs, { stdout: "cycle false 1 4\ncycle false 2 5\ncycle false 4 10\ncycle false 64 160\ncycle true 1 4\ncycle true 2 5\ncycle true 4 10\ncycle true 64 160\nreentry separator 2 2\nreentry separator 64 64\nreentry element 2 3\nreentry element 64 87\narray-string-conversion ok\n" });
+const functionStringCommand = lane === "node" ? process.execPath : join(root, "build/native/function-string-conversion" + suffix);
+const functionStringArgs = lane === "node" ? [join(root, "build/node/test/function-string-conversion.js")] : [];
+execute("function-string-conversion", functionStringCommand, functionStringArgs, { stdout: "function-string-conversion ok\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;

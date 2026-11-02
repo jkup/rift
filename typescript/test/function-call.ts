@@ -60,7 +60,7 @@ const method = r.functionPrototype.getOwnProperty("call");
 check(method !== undefined && method.writable && !method.enumerable && method.configurable, "method flags");
 check(!r.global.bindings.has("Function") && r.functionPrototype.get("constructor").kind === "undefined", "no constructor");
 check(r.createObject().get("call").kind === "undefined" && r.createArray().get("call").kind === "undefined", "O/A do not inherit call");
-const low = new GuestObject(null, false, { kind: "builtin", realm: r, invoke: (_receiver, _args, _context, _loc) => normal() });
+const low = new GuestObject(null, false, { kind: "builtin", initialName: null, realm: r, invoke: (_receiver, _args, _context, _loc) => normal() });
 check(low.get("call").kind === "undefined", "null-root callable stays bare");
 const linked = low.setPrototypeOf(r.functionPrototype);
 check(linked.type === "normal" && low.get("call") === call, "deliberate linking");
@@ -115,7 +115,7 @@ check(result(emptyCall) === UNDEFINED, "missing this/rest builtin");
 class NoLookup extends GuestObject {
     override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion { throw new Error("target property lookup"); }
 }
-const opaque = new NoLookup(null, false, {kind: "builtin", realm: r, invoke: (thisArg, _args, _context, _loc) => normal(thisArg)});
+const opaque = new NoLookup(null, false, {kind: "builtin", initialName: null, realm: r, invoke: (thisArg, _args, _context, _loc) => normal(thisArg)});
 const opaqueCall = e.call(call, value(opaque), [token], loc);
 check(result(opaqueCall) === token, "no target property lookup/coercion");
 const invalid: Value[] = [UNDEFINED, {kind: "null"}, {kind: "boolean", value: false}, number(1), text("call"), value(r.createObject()), value(r.createArray())];

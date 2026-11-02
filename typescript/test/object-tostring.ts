@@ -84,7 +84,7 @@ class CallableArray extends GuestArray {
     callable: Callable | null = null;
     constructor(realm: Realm) {
         super(realm.arrayPrototype);
-        this.callable = { kind: "builtin", realm, invoke: (_r, _args, _context, _at) => normal() };
+        this.callable = { kind: "builtin", initialName: null, realm, invoke: (_r, _args, _context, _at) => normal() };
     }
 }
 
@@ -269,7 +269,7 @@ function testTagCompletions(a: Realm, b: Realm, c: Realm, method: Value): void {
     // Classification must precede Get even if host-observed Get changes the
     // classification surface. Guest code cannot change this internal slot.
     const evaluator = new Evaluator(a);
-    const changing = new ClassificationObserver({ kind: "builtin", realm: a, invoke: (_r, _args, _context, _at) => normal() });
+    const changing = new ClassificationObserver({ kind: "builtin", initialName: null, realm: a, invoke: (_r, _args, _context, _at) => normal() });
     expect(evaluator.call(method, obj(changing), [], loc), str("[object Object]"), "classification before Get effects");
     expect(evaluator.call(method, obj(changing), [], loc), str("[object Function]"), "next classification observes changed slot");
 }

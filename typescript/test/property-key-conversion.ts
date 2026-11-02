@@ -27,7 +27,7 @@ function binding(realm: Realm, name: string): Value {
     return entry.value;
 }
 function builtin(realm: Realm, invoke: Builtin): Value {
-    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+    const object = new GuestObject(null, false, { kind: "builtin", initialName: null, realm, invoke });
     return obj(object);
 }
 function execute(source: string, evaluator: Evaluator): Completion {
@@ -266,7 +266,7 @@ for (const base of primitiveBases) {
     exact(abrupt.run("write"), abrupt.original.sentinel);
     check(abrupt.original.trace === "BKR", "RHS dominates invalid base/key");
 }
-const callableKey = new GuestObject(null, false, { kind: "builtin", realm: keyEvaluator.context.realm, invoke: (_receiver, _args, _context, _location): Completion => { throw new Error("key itself called"); } });
+const callableKey = new GuestObject(null, false, { kind: "builtin", initialName: null, realm: keyEvaluator.context.realm, invoke: (_receiver, _args, _context, _location): Completion => { throw new Error("key itself called"); } });
 for (const object of [new GuestObject(), new GuestArray(), callableKey]) {
     let calls = 0;
     const keyValue = obj(object);

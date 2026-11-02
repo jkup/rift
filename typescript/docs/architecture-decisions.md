@@ -785,3 +785,32 @@ accepted within this task's scope; C3 deletion is covered only through the
 existing internal interface after effectful key conversion. These are retained
 review exceptions, not passing conformance claims. See the [matrix, migrations
 and evidence](validation/ts-022a/README.md).
+
+## Function source and string conversion (TS-023A, pending independent review)
+
+Every parse invocation owns one immutable SourceText record. Lexer tokens carry
+UTF-16 half-open offsets independently of decoded token text and diagnostic
+locations. Function AST nodes retain the keyword-to-closing-brace range; hoisted
+and expression closures pass the same range into their Callable record. Nested
+closures keep the source alive without a global current-source cache. Trusted
+host AST callers must explicitly pass null when source is unavailable. The factory
+rejects non-integral or out-of-bounds non-null ranges as host faults.
+
+Function.prototype.toString returns that exact slice or a bounded NativeFunction
+spelling. Builtins retain an immutable initialName independently of mutable guest
+name/length properties. Trusted names accept ASCII IdentifierName (keywords
+included), empty text, and the existing [Symbol.toPrimitive] name; invalid names
+are host faults, including raw records encountered during stringification.
+
+The body performs no guest Get, coercion, receiver call, or tick. Ordinary call
+entry guards and Realm restoration still apply. Default/number ToPrimitive now
+costs three lookup ticks and two sequential calls; string/key conversion costs
+two ticks and one call. Ordinary method replacement/deletion remains observable;
+saved methods read metadata even after relinking. Explicit Object.toString tags
+and diagnostic console display are unchanged. No syntax, Function constructor,
+name inference, accessors, or Number formatter is added. Source retention is bounded
+per input by the existing 100000-unit limit, not by an aggregate heap quota.
+
+The accepted [design](function-string-conversion.md) supplies normative and pinned
+engine evidence. [Implementation matrix and validation](validation/ts-023a/README.md)
+record both host lanes, migrations, and the test-only compiler reduction.

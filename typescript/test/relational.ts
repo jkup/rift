@@ -14,7 +14,7 @@ function seed(realm: Realm, name: string, value: Value): void {
     realm.global.bindings.set(name, { initialized: true, mutable: true, value });
 }
 function builtin(realm: Realm, invoke: Builtin): Value {
-    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+    const object = new GuestObject(null, false, { kind: "builtin", initialName: null, realm, invoke });
     return { kind: "object", object };
 }
 function execute(source: string, realm: Realm): Completion {
@@ -150,7 +150,7 @@ for (const expression of objectExpressions) {
     seed(realm, "operand", { kind: "object", object: array });
     const arrayResult = execute(expression + ";", realm);
     check(arrayResult === sentinel && array.reads === 1, expression + " array exact hook Get throw");
-    const callable = new ObservedObject(null, false, { kind: "builtin", realm, invoke: (_receiver, _args, _context, _loc): Completion => sentinel });
+    const callable = new ObservedObject(null, false, { kind: "builtin", initialName: null, realm, invoke: (_receiver, _args, _context, _loc): Completion => sentinel });
     seed(realm, "operand", { kind: "object", object: callable });
     const functionResult = execute(expression + ";", realm);
     check(functionResult === sentinel && callable.reads === 1, expression + " function exact hook Get throw");

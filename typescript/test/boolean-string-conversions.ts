@@ -103,7 +103,7 @@ export function testBooleanStringConversions(): void {
         put(lookalike, "stringData", str(""));
         const invalid: Value[] = [UNDEFINED, { kind: "null" }, num(0), num(NaN), { kind: "symbol", value: new GuestSymbol("x") },
             obj(a.createObject()), obj(new NoReads()), obj(lookalike), obj(a.createArray()),
-            obj(a.functionPrototype), obj(a.createGuestFunction([], [], a.global)), obj(a.createNumberObject(2)),
+            obj(a.functionPrototype), obj(a.createGuestFunction([], [], a.global, null)), obj(a.createNumberObject(2)),
             obj(a.createSymbolObject(new GuestSymbol("x"))), obj(a.symbolPrototype), obj(a.numberPrototype), obj(a.objectPrototype)];
         if (family.label === "boolean") invalid.push(str("false"), obj(a.createStringObject("")), obj(a.stringPrototype));
         else invalid.push({ kind: "boolean", value: false }, obj(a.createBooleanObject(false)), obj(a.booleanPrototype));
@@ -299,7 +299,7 @@ function testLookupAndBoundaries(): void {
         { object: realm.functionPrototype, tag: "Function" },
     ];
     for (const row of rows) {
-        expect(toPrimitive(obj(row.object), "default", evaluator.context, loc), str(row.tag === "Array" ? "" : "[object " + row.tag + "]"), "M8 Array join/retained Function default");
+        expect(toPrimitive(obj(row.object), "default", evaluator.context, loc), str(row.tag === "Array" ? "" : "function () { [native code] }"), "M8 Array join/Function native default");
     }
     expect(toPrimitive(obj(realm.createNumberObject(2)), "default", evaluator.context, loc), num(2), "N Number default payload");
     const identity = new GuestSymbol("boundary");

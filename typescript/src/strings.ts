@@ -20,3 +20,7 @@ export function stringCompare(left: GuestString, right: GuestString): number {
     if (left.length > right.length) return 1;
     return 0;
 }
+
+export function stringSlice(value: GuestString, start: number, end: number): GuestString {
+    return value.slice(start, end);
+}

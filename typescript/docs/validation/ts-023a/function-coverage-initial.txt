@@ -1,0 +1,9 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\function-string-conversion.ts
+
+  statements analyzed   1731
+  compile statically    1730  (99%)
+
+  blockers:
+      ×1  SC1090  '.join()' on arrays of this element type (number, string, boolean and Date arrays join — unions of those with undefined/null arms too, the units printing empty like JS)
+          at C:/Users/jonku/code/rift/typescript/test/function-string-conversion.ts:294:11
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)

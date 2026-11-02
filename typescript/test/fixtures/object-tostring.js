@@ -7,7 +7,7 @@ check(Number.isNaN(ordinary * 2));
 check((ordinary < 2) === false);
 check((ordinary >= 2) === false);
 check([] + '' === '');
-check(function() {} + '' === '[object Function]');
+check(function() {} + '' === 'function() {}');
 let table = {};
 table[ordinary] = 17;
 check(table['[object Object]'] === 17);

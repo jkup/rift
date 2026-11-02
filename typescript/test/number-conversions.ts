@@ -107,7 +107,7 @@ export function testNumberConversions(): void {
     if (namespace === undefined) throw new Error("N missing namespace");
     const invalid: Value[] = [UNDEFINED, { kind: "null" }, { kind: "boolean", value: false }, str("2"),
         { kind: "symbol", value: new GuestSymbol("n") }, obj(a.createObject()), namespace.value,
-        obj(a.createArray()), obj(a.functionPrototype), obj(a.createGuestFunction([], [], a.global)),
+        obj(a.createArray()), obj(a.functionPrototype), obj(a.createGuestFunction([], [], a.global, null)),
         obj(a.objectPrototype), obj(a.booleanPrototype), obj(a.stringPrototype), obj(a.symbolPrototype),
         obj(a.createBooleanObject(true)), obj(a.createStringObject("2")), obj(a.createSymbolObject(new GuestSymbol("n"))),
         obj(lookalike), ignored];

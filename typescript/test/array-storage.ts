@@ -115,7 +115,7 @@ const coercible = new GuestObject();
 let hookCalls = 0;
 const hook = new GuestObject(null, false, {
     realm: keyContext.realm,
-    kind: "builtin",
+    kind: "builtin", initialName: null,
     invoke: (_receiver, _args, _context, _loc): Completion => {
         hookCalls++;
         return { type: "normal", value: num(2) };

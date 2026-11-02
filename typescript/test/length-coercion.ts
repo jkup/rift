@@ -24,7 +24,7 @@ function put(object: GuestObject, key: string, value: Value): void {
     object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true });
 }
 function builtin(realm: Realm, invoke: Builtin): Value {
-    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+    const object = new GuestObject(null, false, { kind: "builtin", initialName: null, realm, invoke });
     return obj(object);
 }
 function seed(active: Evaluator, key: string, value: Value): void {

@@ -137,7 +137,7 @@ for (const realm of [r1, r2]) {
     checkGraph(o.getPrototypeOf() === null && f.getPrototypeOf() === o && ar.getPrototypeOf() === o, "G1 graph");
     checkGraph(o.callable === null && f.callable !== null && ar instanceof GuestArray, "G1 root kinds");
     checkGraph(f.callable !== null && f.callable.realm === realm, "R1 root owner");
-    checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(ar.ownPropertyKeys()).join(",") === "length,join,toString", "G17 exact initial keys");
+    checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call,toString" && stringKeys(ar.ownPropertyKeys()).join(",") === "length,join,toString", "G17 exact initial keys");
     for (const root of [o, f, ar]) {
         checkGraph(root.get("valueOf") === o.get("valueOf"), "G17 inherited valueOf");
         checkGraph(root.get("join").kind === (root === ar ? "object" : "undefined"), "G17 Array join only");
@@ -240,7 +240,7 @@ checkGraph(retained.type === "normal" && retained.value === graphBinding(r1, "ob
 const foreignAllocation = foreignActive.context.call(graphBinding(r1, "expression"), UNDEFINED, [], at);
 checkGraph(foreignAllocation.type === "normal" && graphObject(foreignAllocation.value).getPrototypeOf() === r1.objectPrototype && foreignActive.calls === 0, "G11 foreign body uses defining Realm");
 checkGraph(foreignActive.context === foreignContext && foreignContext.realm === r2, "R2 stable context restored");
-// G14/C: Array conversion is empty text; Object/Function retain tag defaults.
+// G14/C: Array conversion is empty text; Function uses source; Object retains its tag.
 for (const name of [
     "numericObject", "numericArray", "numericFunction",
     "additionObject", "additionArray", "additionFunction",
@@ -257,8 +257,8 @@ for (const name of [
         if (completion.type !== "normal") throw new Error("G14 completion");
         const tag = name.endsWith("Object") ? "Object" : name.endsWith("Array") ? "Array" : "Function";
         if (name.startsWith("numeric")) checkGraph(completion.value.kind === "number" && (tag === "Array" ? sameValue(completion.value, numberValue(0)) : Number.isNaN(completion.value.value)), "G14 numeric default");
-        if (name.startsWith("addition")) checkGraph(completion.value.kind === "string" && completion.value.value === (tag === "Array" ? "1" : "[object " + tag + "]1"), "G14 addition default");
-        if (name.startsWith("key")) checkGraph(completion.value.kind === "undefined", "G14 absent tag key");
+        if (name.startsWith("addition")) checkGraph(completion.value.kind === "string" && completion.value.value === (tag === "Array" ? "1" : tag === "Function" ? "function () { return {}; }1" : "[object " + tag + "]1"), "G14 addition default");
+        if (name.startsWith("key")) checkGraph(completion.value.kind === "undefined", "G14 absent converted key (Function uses source)");
     }
     checkGraph(active.calls === 0, "G14 cleanup");
 }
@@ -293,7 +293,7 @@ for (const realm of [boxA, boxB]) {
     }
     checkGraph(!realm.booleanPrototype.booleanData && 1 / realm.numberPrototype.numberData === Infinity && realm.stringPrototype.stringData === "", "W1 root payloads");
     checkGraph(stringKeys(realm.booleanPrototype.ownPropertyKeys()).join(",") === "toString,valueOf" && stringKeys(realm.numberPrototype.ownPropertyKeys()).join(",") === "valueOf" && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(",") === "length,toString,valueOf", "M1 root keys");
-    checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length,join,toString", "W1 original root keys");
+    checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call,toString" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length,join,toString", "W1 original root keys");
     for (const name of ["Object", "Boolean", "String"]) checkGraph(!realm.global.bindings.has(name), "W17 no new globals");
     const namespace = graphObject(graphBinding(realm, "Number"));
     checkGraph(namespace !== realm.numberPrototype && namespace.getPrototypeOf() === realm.objectPrototype && namespace.callable === null, "W1 Number namespace preserved");

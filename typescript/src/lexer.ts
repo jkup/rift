@@ -1,5 +1,5 @@
 import type { Diagnostic, Location } from "./syntax.js";
-export type Token = { kind: string; text: string; loc: Location };
+export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number };
 export type LexResult = { tokens: Token[]; error: Diagnostic | null };
 function digit(c: string): boolean { return c >= "0" && c <= "9"; }
 function letter(c: string): boolean {
@@ -32,6 +32,7 @@ export function lex(source: string): LexResult {
     while (i < source.length && error === null) {
         const c = source.charAt(i);
         const loc = { line, column };
+        const start = i;
         if (c === " " || c === "\t" || lineTerminator(c)) {
             advance();
             continue;
@@ -54,7 +55,7 @@ export function lex(source: string): LexResult {
         if (letter(c)) {
             let text = advance();
             while (letter(source.charAt(i)) || digit(source.charAt(i))) text += advance();
-            tokens.push({ kind: "word", text, loc });
+            tokens.push({ kind: "word", text, loc, start, end: i });
             continue;
         }
         if (digit(c)) {
@@ -66,7 +67,7 @@ export function lex(source: string): LexResult {
                 while (digit(source.charAt(i))) text += advance();
             }
             if (letter(source.charAt(i))) fail("unsupported numeric literal", loc);
-            tokens.push({ kind: "number", text, loc });
+            tokens.push({ kind: "number", text, loc, start, end: i });
             continue;
         }
         if (c === "'" || c === '"') {
@@ -90,7 +91,7 @@ export function lex(source: string): LexResult {
             }
             if (i >= source.length) fail("unterminated string", loc);
             else advance();
-            tokens.push({ kind: "string", text, loc });
+            tokens.push({ kind: "string", text, loc, start, end: i });
             continue;
         }
         const three = source.slice(i, i + 3);
@@ -99,17 +100,17 @@ export function lex(source: string): LexResult {
             advance();
             advance();
             advance();
-            tokens.push({ kind: "punct", text: three, loc });
+            tokens.push({ kind: "punct", text: three, loc, start, end: i });
         } else if (["++", "--", "==", "!=", "=>", "+=", "-=", "*=", "/=", "%=", "**", "<<", ">>", "?."].includes(two)) {
             fail("unsupported operator: " + two, loc);
         } else if (two === "<=" || two === ">=" || two === "&&" || two === "||") {
             advance();
             advance();
-            tokens.push({ kind: "punct", text: two, loc });
+            tokens.push({ kind: "punct", text: two, loc, start, end: i });
         } else if ("{}();,.:?[]+-*/%<>=!".includes(c)) {
-            tokens.push({ kind: "punct", text: advance(), loc });
+            tokens.push({ kind: "punct", text: advance(), loc, start, end: i });
         } else { fail("unsupported character: " + c, loc); }
     }
-    tokens.push({ kind: "eof", text: "<eof>", loc: { line, column } });
+    tokens.push({ kind: "eof", text: "<eof>", loc: { line, column }, start: i, end: i });
     return { tokens, error };
 }

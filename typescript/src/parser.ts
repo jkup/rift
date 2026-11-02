@@ -1,12 +1,12 @@
 import { lex, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, Location, Stmt } from "./syntax.js";
+import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null };
 export function parse(source: string): ParseResult {
     const result = lex(source);
     if (result.error !== null) return { body: [], error: result.error };
-    return new Parser(result.tokens).program();
+    return new Parser(result.tokens, { text: source }).program();
 }
 class Parser {
     index = 0;
@@ -14,7 +14,7 @@ class Parser {
     functions = 0;
     loops = 0;
     error: Diagnostic | null = null;
-    constructor(public tokens: Token[]) {}
+    constructor(public tokens: Token[], readonly source: SourceText) {}
     current(): Token { return this.tokens[this.index]; }
     at(text: string): boolean {
         const t = this.current();
@@ -75,6 +75,7 @@ class Parser {
         return this.statement();
     }
     statementInner(): Stmt {
+        const start = this.current().start;
         const loc = this.current().loc;
         if (this.eat(";")) return { kind: "empty", loc };
         if (this.eat("{")) return { kind: "block", loc, body: this.list(true, []) };
@@ -86,8 +87,8 @@ class Parser {
         }
         if (this.eat("function")) {
             const name = this.name();
-            const fn = this.functionTail(loc);
-            return { kind: "function", loc, name, params: fn.params, body: fn.body };
+            const fn = this.functionTail(loc, start);
+            return { kind: "function", loc, name, params: fn.params, body: fn.body, source: fn.source };
         }
         if (this.eat("if")) {
             this.expect("(");
@@ -128,7 +129,7 @@ class Parser {
         this.expect(";");
         return { kind: "expression", loc, expression };
     }
-    functionTail(loc: Location): { params: string[]; body: Stmt[] } {
+    functionTail(loc: Location, start: number): { params: string[]; body: Stmt[]; source: FunctionSource } {
         this.expect("(");
         const params: string[] = [];
         if (!this.at(")")) {
@@ -146,7 +147,7 @@ class Parser {
         const body = this.list(true, params);
         this.functions--;
         this.loops = loops;
-        return { params, body };
+        return { params, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end } };
     }
     precedence(op: string): number {
         if (op === "=") return 1;
@@ -222,8 +223,8 @@ class Parser {
         if (t.text === "null") return { kind: "literal", loc, value: null };
         if (t.text === "this") return { kind: "this", loc };
         if (t.text === "function") {
-            const fn = this.functionTail(loc);
-            return { kind: "function", loc, params: fn.params, body: fn.body };
+            const fn = this.functionTail(loc, t.start);
+            return { kind: "function", loc, params: fn.params, body: fn.body, source: fn.source };
         }
         if (t.text === "(") {
             const expr = this.expression(0);

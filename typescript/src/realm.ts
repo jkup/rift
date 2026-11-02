@@ -2,13 +2,13 @@ import type { GuestSymbol } from "./symbols.js";
 import { GuestArray } from "./array-object.js";
 import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value } from "./runtime.js";
 import { registerNumber, registerNumberConversions } from "./builtins/number.js";
-import { registerFunction } from "./builtins/function.js";
+import { registerFunction, nativeFunctionString } from "./builtins/function.js";
 import { registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
 import { registerSymbolConversions } from "./builtins/symbol.js";
 import { registerBooleanConversions } from "./builtins/boolean.js";
 import { registerStringConversions } from "./builtins/string.js";
 import { registerArrayConversions } from "./builtins/array.js";
-import type { Stmt } from "./syntax.js";
+import type { Stmt, FunctionSource } from "./syntax.js";
 import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
 import type { GuestString } from "./strings.js";
 
@@ -26,7 +26,7 @@ export class Realm {
         // Bootstrap dependencies directly, before factories or global installation.
         this.objectPrototype = new GuestObject(null, true);
         this.functionPrototype = new GuestObject(this.objectPrototype, false, {
-            kind: "builtin", realm: this, invoke: (_receiver, _args, _context, _loc) => normal(UNDEFINED),
+            kind: "builtin", initialName: "", realm: this, invoke: (_receiver, _args, _context, _loc) => normal(UNDEFINED),
         });
         setBuiltinMetadata(this.functionPrototype, "", 0);
         this.arrayPrototype = new GuestArray(this.objectPrototype);
@@ -61,11 +61,15 @@ export class Realm {
     createNumberObject(value: number): GuestNumber { return new GuestNumber(value, this.numberPrototype); }
     createStringObject(value: GuestString): GuestStringObject { return new GuestStringObject(value, this.stringPrototype); }
     createSymbolObject(value: GuestSymbol): GuestSymbolObject { return new GuestSymbolObject(value, this.symbolPrototype); }
-    createGuestFunction(params: string[], body: Stmt[], environment: Environment): GuestObject {
-        return new GuestObject(this.functionPrototype, false, { kind: "guest", realm: this, params, body, environment });
+    createGuestFunction(params: string[], body: Stmt[], environment: Environment, source: FunctionSource | null): GuestObject {
+        if (source !== null && (!Number.isInteger(source.start) || !Number.isInteger(source.end) || source.start < 0 || source.start >= source.end || source.end > source.source.text.length)) {
+            throw new Error("invalid function source range");
+        }
+        return new GuestObject(this.functionPrototype, false, { kind: "guest", realm: this, params, body, environment, source });
     }
     createBuiltin(name: string, length: number, invoke: Builtin): GuestObject {
-        const object = new GuestObject(this.functionPrototype, false, { kind: "builtin", realm: this, invoke });
+        nativeFunctionString(name);
+        const object = new GuestObject(this.functionPrototype, false, { kind: "builtin", initialName: name, realm: this, invoke });
         setBuiltinMetadata(object, name, length);
         return object;
     }

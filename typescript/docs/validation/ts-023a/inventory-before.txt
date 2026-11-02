@@ -1,0 +1,46 @@
+src/evaluator.ts:35:         const object = this.context.realm.createGuestFunction(params, body, environment);
+src/realm.ts:29:             kind: "builtin", realm: this, invoke: (_receiver, _args, _context, _loc) => normal(UNDEFINED),
+src/realm.ts:64:     createGuestFunction(params: string[], body: Stmt[], environment: Environment): GuestObject {
+src/realm.ts:65:         return new GuestObject(this.functionPrototype, false, { kind: "guest", realm: this, params, body, environment });
+src/realm.ts:68:         const object = new GuestObject(this.functionPrototype, false, { kind: "builtin", realm: this, invoke });
+src/runtime.ts:37:     | { readonly kind: "guest"; readonly realm: Realm; readonly params: string[]; readonly body: Stmt[]; readonly environment: Environment }
+src/runtime.ts:38:     | { readonly kind: "builtin"; readonly realm: Realm; readonly invoke: Builtin };
+test/addition.ts:16:     const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+test/array-length-coercion.ts:29:     const value = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+test/array-like.ts:168: const method = new GuestObject(null, false, { kind: "builtin", realm: active.context.realm, invoke: (receiver, args, context, _at) => {
+test/array-map.ts:36:     const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+test/array-storage.ts:118:     kind: "builtin",
+test/array-string-conversion.ts:645: expect(toPrimitive(obj(controls.functionPrototype), "default", controlEvaluator.context, loc), str("[object Function]"), "C8 Function");
+test/boolean-string-conversions.ts:106:             obj(a.functionPrototype), obj(a.createGuestFunction([], [], a.global)), obj(a.createNumberObject(2)),
+test/boolean-string-conversions.ts:240:         const tag = isBoolean ? "Boolean" : "String";
+test/boolean-string-conversions.ts:302:         expect(toPrimitive(obj(row.object), "default", evaluator.context, loc), str(row.tag === "Array" ? "" : "[object " + row.tag + "]"), "M8 Array join/retained Function default");
+test/conversion.ts:111: const hook = new GuestObject(null, false, { kind: "builtin", realm: fixtureRealm, invoke: (_receiver, _args, _context, _loc): Completion => { throw new Error("must not call conversion hook"); } });
+test/function-call.ts:63: const low = new GuestObject(null, false, { kind: "builtin", realm: r, invoke: (_receiver, _args, _context, _loc) => normal() });
+test/function-call.ts:118: const opaque = new NoLookup(null, false, {kind: "builtin", realm: r, invoke: (thisArg, _args, _context, _loc) => normal(thisArg)});
+test/key-coercion.ts:16:     const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+test/key-coercion.ts:125:             kind === "function" ? { kind: "builtin", realm: active.context.realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("key called directly"); } } : null);
+test/length-coercion.ts:27:     const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+test/number-conversions.ts:110:         obj(a.createArray()), obj(a.functionPrototype), obj(a.createGuestFunction([], [], a.global)),
+test/numeric-operators.ts:14:     const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+test/object-tostring.ts:87:         this.callable = { kind: "builtin", realm, invoke: (_r, _args, _context, _at) => normal() };
+test/object-tostring.ts:103:         const tag = realm.symbolPrototype.getOwnProperty(wellKnownToStringTag);
+test/object-tostring.ts:272:     const changing = new ClassificationObserver({ kind: "builtin", realm: a, invoke: (_r, _args, _context, _at) => normal() });
+test/object-tostring.ts:274:     expect(evaluator.call(method, obj(changing), [], loc), str("[object Function]"), "next classification observes changed slot");
+test/object-valueof.ts:80:     a.createGuestFunction([], [], a.global), a.createBooleanObject(false), a.createNumberObject(-0),
+test/object-valueof.ts:212:             check((first || callee === (source === "[]" ? local.arrayPrototype : local.objectPrototype).get("toString")) && receiver === operand && args.length === 0, "real inherited method call");
+test/object-valueof.ts:220:     const tag = source === "{}" ? "Object" : source === "[]" ? "Array" : "Function";
+test/object-valueof.ts:223:     check(events === "tick;tick;valueOf;tick;toString;" && active.steps === (source === "[]" ? 5 : 4), "inherited conversion trace");
+test/operation-context.ts:15:     const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+test/operator-coercion.ts:20:     const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+test/operator-coercion.ts:117:             kind === "function" ? { kind: "builtin", realm: active.context.realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("input function called"); } } : null);
+test/operator-coercion.ts:151:     const tag = source === "{}" ? "Object" : source === "[]" ? "Array" : "Function";
+test/primitive-conversion.ts:22:     const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+test/primitive-conversion.ts:178:             kind === "function" ? { kind: "builtin", realm: realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("input called"); } } : null);
+test/property-key-conversion.ts:30:     const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+test/property-key-conversion.ts:269: const callableKey = new GuestObject(null, false, { kind: "builtin", realm: keyEvaluator.context.realm, invoke: (_receiver, _args, _context, _location): Completion => { throw new Error("key itself called"); } });
+test/realms.ts:140:     checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(ar.ownPropertyKeys()).join(",") === "length,join,toString", "G17 exact initial keys");
+test/realms.ts:258:         const tag = name.endsWith("Object") ? "Object" : name.endsWith("Array") ? "Array" : "Function";
+test/realms.ts:296:     checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length,join,toString", "W1 original root keys");
+test/relational.ts:17:     const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+test/relational.ts:153:     const callable = new ObservedObject(null, false, { kind: "builtin", realm, invoke: (_receiver, _args, _context, _loc): Completion => sentinel });
+test/fixtures\object-tostring.js:10: check(function() {} + '' === '[object Function]');

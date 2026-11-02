@@ -1134,8 +1134,27 @@ Coordinator acceptance: TS-023P accepted `cb04609` on 2026-11-02. Reviewed full 
 
 ### TS-023A — Exact Function source retention and toString
 
-Status: **ready**. Owner: next assigned Codex implementation chat, existing `codex/primitive-computed-keys`. Prerequisite accepted TS-023Pcb04609. Implement the atomic contract in docs/function-string-conversion.md and every S/F/R/C row in docs/validation/ts-023p/matrix.md. Own bounded production src/{syntax,lexer,parser,runtime,evaluator,realm,strings}.ts and src/builtins/function.ts, dedicated test/function-string-conversion.ts and runtime-read fixture, necessary existing literal/factory and expectation migrations, minimal runner/build registration and current scope/evidence/task docs. Coordinator owns COORDINATION.md; Claude outputs reserved.
+Status: **review needed**. Owner: Codex implementation chat `01a19a9c-355f-7a23-985d-a5d5749b320d`; assignment base `ecb7e3f`, dispatch `51d48bd`, existing `codex/primitive-computed-keys`. Prerequisite accepted TS-023Pcb04609. Implement the atomic contract in docs/function-string-conversion.md and every S/F/R/C row in docs/validation/ts-023p/matrix.md. Own bounded production src/{syntax,lexer,parser,runtime,evaluator,realm,strings}.ts and src/builtins/function.ts, dedicated test/function-string-conversion.ts and runtime-read fixture, necessary existing literal/factory and expectation migrations, minimal runner/build registration and current scope/evidence/task docs. Coordinator owns COORDINATION.md; Claude outputs reserved.
 
 Retain exact shared immutable input/ranges across parsing, hoisting, expression allocation and nested closure lifetime; source availability never silently lost for parsed functions. Explicit null only for source-less trusted host ASTs. Use original UTF-16 offsets independently of decoded tokens, preserve errors/locations and unsupported syntax, and never regenerate source. Freeze original builtin names separately from guest properties and enforce the reviewed bounded NativeFunction spelling/validation. Exact receiver classification, saved/foreign methods, zero body ticks, shared call guards and Realm restoration must match the design. No host Function.toString/eval or guest execution during stringification. Preserve Object explicit tags, Number formatting limits and diagnostic display.
 
 Run updated caller/migration inventory; preserve existing166 cases/24gates and add independently specified results. Use readable multiline effectful tests and literal source/range oracles, including runtime-read fixtures and host-created lone-surrogate inputs. Validate typecheck, runner/probes, full rebuilt Node/native and every static-only build plus separate parsed coverage gate. Retain failures/minimal reductions before compiler workarounds; no pins/gate relaxation. If a frozen oracle contradicts existing supported syntax or normative semantics, document and ask coordinator instead of silently expanding scope. No unrelated methods/syntax, C++, Claude edits, branch switching/main merge or successor. Commit/push coherent tested milestone, hand back evidence and stop for independent review.
+
+
+TS-023A handoff (2026-11-02): source retention and Function.toString implemented
+atomically. Shared immutable UTF-16 input/ranges flow through parser, hoisting,
+expressions and closure lifetimes. Explicit source-less null, validated source
+ranges and immutable initial native names preserve trusted host distinctions.
+All S1-S19/F1-F15/R1-R12/C1-C15 rows have independent literal assertions in the
+new native/Node driver and runtime-read fixtures. No frozen-oracle exception.
+
+Repeated caller/migration inventory includes three additional operation-context
+closure injections requiring null. Only frozen Function expectations changed;
+Object tags, Number boundary, existing negatives and all166cases/24gates remain.
+Typecheck PASS; runner20/20; probes10/10; rebuilt Node/native167/167 each, no skips;
+all25 static-only builds and separately parsed coverage gates PASS (CLI1437,
+Function driver1750). Retained Zig sandbox failure and test-only PropertyKey[]
+join SC1090 coverage failure/two-statement reduction before direct-key assertion.
+No production workaround, pins, C++, Claude/COORDINATION, branch switch, main
+merge or successor work. Evidence/matrix/migrations: docs/validation/ts-023a/.
+Commit/push tested milestone and stop for independent coordinator review.

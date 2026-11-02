@@ -1,3 +1,5 @@
+export type SourceText = { readonly text: string };
+export type FunctionSource = { readonly source: SourceText; readonly start: number; readonly end: number };
 export type Location = { line: number; column: number };
 export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: string; loc: Location };
 export type Expr =
@@ -11,13 +13,13 @@ export type Expr =
     | { kind: "conditional"; loc: Location; test: Expr; consequent: Expr; alternate: Expr }
     | { kind: "member"; loc: Location; base: Expr; key: Expr }
     | { kind: "call"; loc: Location; callee: Expr; args: Expr[] }
-    | { kind: "function"; loc: Location; params: string[]; body: Stmt[] }
+    | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
     | { kind: "object"; loc: Location; keys: string[]; values: Expr[] };
 export type Stmt =
     | { kind: "empty"; loc: Location }
     | { kind: "expression"; loc: Location; expression: Expr }
     | { kind: "let"; loc: Location; name: string; init: Expr | null }
-    | { kind: "function"; loc: Location; name: string; params: string[]; body: Stmt[] }
+    | { kind: "function"; loc: Location; name: string; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
     | { kind: "block"; loc: Location; body: Stmt[] }
     | { kind: "if"; loc: Location; test: Expr; consequent: Stmt; alternate: Stmt | null }
     | { kind: "while"; loc: Location; test: Expr; body: Stmt }

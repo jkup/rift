@@ -642,7 +642,7 @@ check(controlEvaluator.steps === 0, "C7 no ticks");
 expect(toPrimitive(controlArray, "number", controlEvaluator.context, loc), str(""), "C7 Array default");
 check(controlEvaluator.steps === 5, "C7 conversion steps");
 expect(toPrimitive(obj(controls.createObject()), "default", controlEvaluator.context, loc), str("[object Object]"), "C8 Object");
-expect(toPrimitive(obj(controls.functionPrototype), "default", controlEvaluator.context, loc), str("[object Function]"), "C8 Function");
+expect(toPrimitive(obj(controls.functionPrototype), "default", controlEvaluator.context, loc), str("function () { [native code] }"), "C8 Function");
 expect(toPrimitive(obj(controls.createNumberObject(2)), "default", controlEvaluator.context, loc), num(2), "C8 Number default");
 expect(toPrimitive(obj(controls.createNumberObject(2)), "string", controlEvaluator.context, loc), str("[object Number]"), "C8 Number string");
 for (const object of [new GuestObject(), ordinary]) error(toPrimitive(obj(object), "string", controlEvaluator.context, loc), "cannot convert object to primitive");

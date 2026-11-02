@@ -1,4 +1,4 @@
-import type { Expr, Location, Stmt } from "./syntax.js";
+import type { Expr, Location, Stmt, FunctionSource } from "./syntax.js";
 import { Environment, GuestObject, UNDEFINED, equal, failure, getValue, normal, putValue, truthy, type Completion, type ReferenceResult, type Value, type OperationContext, type ValueCompletion } from "./runtime.js";
 import type { Realm } from "./realm.js";
 import { stringConcat, stringCompare } from "./strings.js";
@@ -31,8 +31,8 @@ export class Evaluator {
         if (++this.steps > this.maxSteps) return failure("RangeError", "execution step limit exceeded", loc);
         return normal();
     }
-    closure(params: string[], body: Stmt[], environment: Environment): Value {
-        const object = this.context.realm.createGuestFunction(params, body, environment);
+    closure(params: string[], body: Stmt[], environment: Environment, source: FunctionSource | null): Value {
+        const object = this.context.realm.createGuestFunction(params, body, environment, source);
         return { kind: "object", object };
     }
     block(body: Stmt[], env: Environment, receiver: Value): Completion {
@@ -46,7 +46,7 @@ export class Evaluator {
         for (const stmt of body) {
             if (stmt.kind === "let" || stmt.kind === "function") {
                 env.bindings.set(stmt.name, { initialized: stmt.kind === "function", mutable: true,
-                    value: stmt.kind === "function" ? this.closure(stmt.params, stmt.body, env) : UNDEFINED });
+                    value: stmt.kind === "function" ? this.closure(stmt.params, stmt.body, env, stmt.source) : UNDEFINED });
             }
         }
         for (const stmt of body) {
@@ -152,7 +152,7 @@ export class Evaluator {
                 if (value.type !== "normal") return value;
                 return putValue(ref.reference, value.value, this.context, expr.loc);
             }
-            case "function": return normal(this.closure(expr.params, expr.body, env));
+            case "function": return normal(this.closure(expr.params, expr.body, env, expr.source));
             case "array": {
                 const object = this.context.realm.createArray();
                 for (let i = 0; i < expr.elements.length; i++) {

@@ -17,7 +17,7 @@ function binding(active: Evaluator, name: string): Value {
     return entry.value;
 }
 function builtin(realm: Realm, invoke: Builtin): Value {
-    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+    const object = new GuestObject(null, false, { kind: "builtin", initialName: null, realm, invoke });
     return { kind: "object", object };
 }
 function run(active: Evaluator, source: string): Completion {
@@ -114,7 +114,7 @@ for (const kind of ["ordinary", "array", "function"]) {
     for (const expression of ["+operand", "-operand", ...operators.map(op => "operand " + op + " 2")]) {
         const active = setup();
         const object = kind === "array" ? new GuestArray() : new GuestObject(null, false,
-            kind === "function" ? { kind: "builtin", realm: active.context.realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("input function called"); } } : null);
+            kind === "function" ? { kind: "builtin", initialName: null, realm: active.context.realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("input function called"); } } : null);
         const input: Value = { kind: "object", object };
         const proto = new GuestObject();
         check(object.setPrototypeOf(proto).value, "install inherited method");
@@ -144,14 +144,14 @@ for (const row of primitiveRows) {
         expect(active, "+operand", row.numeric);
     }
 }
-// Object/Function retain interim tags; Array now converts through join.
+// Object retains its tag; Function uses source and Array uses join.
 for (const source of ["{}", "function() {}"]) {
     const active = setup();
     run(active, "let operand = " + source + ";");
     const tag = source === "{}" ? "Object" : source === "[]" ? "Array" : "Function";
     expect(active, "+operand", NaN);
     expect(active, "-operand", NaN);
-    for (const op of operators) expect(active, "operand " + op + " 2", op === "+" ? "[object " + tag + "]2" : ["<", ">", "<=", ">="].includes(op) ? false : NaN);
+    for (const op of operators) expect(active, "operand " + op + " 2", op === "+" ? (source === "{}" ? "[object " + tag + "]2" : "function() {}2") : ["<", ">", "<=", ">="].includes(op) ? false : NaN);
 }
 const emptyArray = setup();
 run(emptyArray, "let operand = [];");

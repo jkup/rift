@@ -11,7 +11,7 @@ function seed(realm: Realm, name: string, value: Value): void {
     realm.global.bindings.set(name, { initialized: true, mutable: true, value });
 }
 function builtin(realm: Realm, invoke: Builtin): Value {
-    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+    const object = new GuestObject(null, false, { kind: "builtin", initialName: null, realm, invoke });
     return { kind: "object", object };
 }
 function execute(source: string, realm: Realm): Completion {

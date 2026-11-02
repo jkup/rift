@@ -12,7 +12,7 @@ const other = new Realm((_line) => {});
 const host = new GuestObject();
 realm.global.bindings.set("host", { initialized: true, mutable: true, value: { kind: "object", object: host } });
 function builtin(realm: Realm, invoke: Builtin): Value {
-    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+    const object = new GuestObject(null, false, { kind: "builtin", initialName: null, realm, invoke });
     return { kind: "object", object };
 }
 function program(source: string, evaluator: Evaluator): Completion {
@@ -146,7 +146,7 @@ for (const type of ["return", "break", "continue"] as const) {
 }
 for (const type of ["break", "continue"] as const) {
     // Parser excludes these; inject impossible guest bodies to test the boundary.
-    const invalid = faults.closure([], [{ kind: type, loc }], new Environment(null));
+    const invalid = faults.closure([], [{ kind: type, loc }], new Environment(null), null);
     let escaped = false;
     try { faults.call(invalid, UNDEFINED, [], loc); }
     catch (error) { escaped = error instanceof Error && error.message === "invalid completion escaped call boundary: " + type; }
@@ -370,7 +370,7 @@ for (const type of ["return", "break", "continue"] as const) {
     idle(entry, a);
 }
 for (const type of ["break", "continue"] as const) {
-    const invalid = defining.closure([], [{ kind: type, loc }], new Environment(null));
+    const invalid = defining.closure([], [{ kind: type, loc }], new Environment(null), null);
     let caught = false;
     try {
         entry.call(invalid, UNDEFINED, [], loc);
@@ -380,7 +380,7 @@ for (const type of ["break", "continue"] as const) {
     check(caught, "R10 illegal foreign guest completion");
     idle(entry, a);
 }
-const foreignEmpty = defining.closure([], [], new Environment(null));
+const foreignEmpty = defining.closure([], [], new Environment(null), null);
 check(returnedValue(entry.call(foreignEmpty, UNDEFINED, [], loc)) === UNDEFINED, "R10 foreign fallthrough");
 idle(entry, a);
 const guard = new Evaluator(a, 10, 0);

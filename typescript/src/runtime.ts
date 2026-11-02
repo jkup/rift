@@ -1,6 +1,6 @@
 import { GuestSymbol, formatPropertyKey, symbolDescriptiveString } from "./symbols.js";
 import { toPropertyKey } from "./conversion.js";
-import type { Diagnostic, Location, Stmt } from "./syntax.js";
+import type { Diagnostic, Location, Stmt, FunctionSource } from "./syntax.js";
 import type { GuestString } from "./strings.js";
 import type { Realm } from "./realm.js";
 import { arrayIndex } from "./property-keys.js";
@@ -34,8 +34,8 @@ export type OperationContext = {
 };
 export type Builtin = (receiver: Value, args: Value[], context: OperationContext, loc: Location) => Completion;
 export type Callable =
-    | { readonly kind: "guest"; readonly realm: Realm; readonly params: string[]; readonly body: Stmt[]; readonly environment: Environment }
-    | { readonly kind: "builtin"; readonly realm: Realm; readonly invoke: Builtin };
+    | { readonly kind: "guest"; readonly realm: Realm; readonly params: string[]; readonly body: Stmt[]; readonly environment: Environment; readonly source: FunctionSource | null }
+    | { readonly kind: "builtin"; readonly realm: Realm; readonly invoke: Builtin; readonly initialName: string | null };
 export class GuestObject {
     private propertyStorage: Map<PropertyKey, DataDescriptor> = new Map();
     private extensible = true;

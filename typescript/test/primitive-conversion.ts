@@ -19,7 +19,7 @@ const evaluator = new Evaluator(realm);
 function objectValue(object: GuestObject): Value { return { kind: "object", object }; }
 function num(value: number): Value { return { kind: "number", value }; }
 function builtin(realm: Realm, invoke: Builtin): Value {
-    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+    const object = new GuestObject(null, false, { kind: "builtin", initialName: null, realm, invoke });
     return objectValue(object);
 }
 function define(object: GuestObject, key: PropertyKey, value: Value): void { object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true }); }
@@ -175,7 +175,7 @@ const argumentLists: Value[][] = [];
 for (const kind of ["ordinary", "array", "function"]) {
     for (const inherited of [false, true]) {
         const object = kind === "array" ? new ObservedArray() : new Observed(null, false,
-            kind === "function" ? { kind: "builtin", realm: realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("input called"); } } : null);
+            kind === "function" ? { kind: "builtin", initialName: null, realm: realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("input called"); } } : null);
         const input = objectValue(object);
         object.expected = input;
         const owner = inherited ? new GuestObject() : object;

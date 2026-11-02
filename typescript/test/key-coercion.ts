@@ -13,7 +13,7 @@ function obj(object: GuestObject): Value { return { kind: "object", object }; }
 function str(value: string): Value { return { kind: "string", value }; }
 function num(value: number): Value { return { kind: "number", value }; }
 function builtin(realm: Realm, invoke: Builtin): Value {
-    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
+    const object = new GuestObject(null, false, { kind: "builtin", initialName: null, realm, invoke });
     return obj(object);
 }
 function seed(active: Evaluator, name: string, value: Value): void {
@@ -122,7 +122,7 @@ for (const kind of ["ordinary", "array", "function"]) {
         for (const fallback of ["first", "noncallable", "object"]) {
             for (const row of primitives) {
                 const object = kind === "array" ? new GuestArray() : new GuestObject(null, false,
-            kind === "function" ? { kind: "builtin", realm: active.context.realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("key called directly"); } } : null);
+            kind === "function" ? { kind: "builtin", initialName: null, realm: active.context.realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("key called directly"); } } : null);
                 const key = obj(object);
                 const owner = inherited ? new GuestObject() : object;
                 if (inherited) object.setPrototypeOf(owner);
