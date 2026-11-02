@@ -1186,3 +1186,13 @@ run. Accepted0de8488 baseline167/167 bothhosts/25gates remains unchanged and is
 not equality evidence. No production/integrated tests/manifests, pins, C++,
 Claude/COORDINATION edits, branch switching/main merge or successor work.
 Commit/push design and stop for independent coordinator review.
+
+Coordinator acceptance: TS-024P accepted1b79203 on 2026-11-02. Reviewed complete algorithm/termination argument and K/V/O/R/P/C matrices, independently checked fixed2025 IsLooselyEqual and equality operand order, inspected existing tick/depth paths and reproduced103-file/8-candidate inventory. No runtime changed or integrated rerun; baseline0de8488 remains167/167/25gates.
+
+### TS-024A — Abstract equality operators
+
+Status: **ready**. Owner: next assigned Codex implementation chat, existing codex/primitive-computed-keys. Prerequisite accepted TS-024P1b79203. Implement exactly docs/abstract-equality.md and all matrices in docs/validation/ts-024p/matrix.md:49 ordered K pairs, V1-V18, O1-O23, R1-R19, P1-P19, C1-C16. Own src/abstract-equality.ts, minimal lexer/parser/evaluator integration, test/abstract-equality.ts and runtime-read fixture, required runner/native registration, precise Array C2 migration and current docs/evidence/task updates. Coordinator owns COORDINATION.md; Claude paths reserved.
+
+Use iterative typed dispatch with documented decreasing measure, existing InternalBooleanCompletion/equal/stringToNumber/toPrimitive interfaces, explicit mirrored conversions and default hints. Preserve captured source-order operand evaluation, fixed2025 helper argument order, original abrupt records, and successful-only != negation. Same/two-object and nullish/object comparisons have no hooks; Symbols are never numerically converted. No changes to strict equality/SameValue/truthiness or primitive converter contracts. Preserve longest-match strict tokens and all unrelated syntax failures.
+
+Require meaningful independent expected booleans/traces/locations and both operators/orders, runtime-read source, exact small guards and native default64 recursive hooks, Realm/host-fault cleanup and monotonic budgets. Keep all167 existing cases/25gates; add tests/gates without denominator reduction. Migrate only current C2 equality rejection to real success while preserving guest-delete C3 and historical evidence. Run typecheck, runner/probes, full rebuilt Node/native, every static-only build AND separate parsed coverage. Retain failures/minimal reductions before workarounds; report any contradictory oracle to coordinator. No pins, BigInt/HTMLDDA, unrelated syntax/methods, C++, Claude edits, branch switching/main merge or successor. Commit/push coherent tested work and stop for independent review.
