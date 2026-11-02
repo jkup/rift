@@ -327,3 +327,9 @@ Accepted pushed `eaf73d4`: reviewed full staged proposal, A/O/P/T matrices, migr
 Next ready TS-019A freezes ordinary symbol identity/key/conversion/boxing only, with complete A1-A24/O1-O6 and observer migration requirements. No protocol exposure or methods yet. CL-004 ready/reserved for Claude; main unchanged at7f7d682.
 
 Acceptance/contract pushed through c80ee2c. Active sole implementation writer: TS-019A chat `01a199e9-c608-7162-952d-a1a1a3465f4d`, host `local`, base `c80ee2c`. Explicit wait confirmed active; saved cursor `3b402379-76f8-47af-9b1c-68302cc0f668:1`. Owns frozen stage A implementation/tests/evidence; coordinator owns this file. No later protocols or methods until review.
+
+## TS-019A acceptance — 2026-11-02 01:53 heartbeat
+
+Accepted `b093e3f`: reviewed symbol identity, mixed-key storage/order/snapshots, exhaustive conversions, diagnostics, boxing and A1-A24/O1-O6 with widened observer assertions. Independently rebuilt Node/native 164/164 each, no skips; all 23 static builds and separate coverage gates pass. Coordinator logs build/ts-019a-review-node.log and build/ts-019a-review-native.log. Producer typecheck/runner20/probes10 evidence reviewed; no compiler workaround or pin change. Completed writer idle, saved cursor `3b402379-76f8-47af-9b1c-68302cc0f668:2`. Delegated push rejected destination authorization; coordinator uses original owner authorization for existing jkup/rift origin.
+
+Frozen next TS-019B1 protocol-only contract, including exact extra object lookup ticks and preservation of existing negative-test intent. B2 methods and C tags remain deferred. CL-004 remains ready/reserved for Claude; main unchanged at 7f7d682. No additional main integration authorized by this heartbeat.
