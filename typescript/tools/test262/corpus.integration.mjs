@@ -6,7 +6,7 @@ import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { frozenManifest, planCorpus, localBytes, verifyBytes, metadata, compareMetadata, REVISION } from './input.mjs';
-import { preflightRecords } from './plan.mjs';
+import { preflightRecords, prepareSelection } from './plan.mjs';
 import { newLedger, appendAttempt, report, persist } from './ledger.mjs';
 const root = process.argv[2];
 if (!root) throw new Error('Explicit external corpus ROOT required');
@@ -45,6 +45,7 @@ test('I17 verified metadata retains pair when missing/corrupt default harness pr
     let selection=await planCorpus({root:temp,revision:REVISION,lane:'node',paths:[s.path]});
     assert.equal(selection.files[0].variants.length,2);
     assert.equal(selection.files[0].inputError.reasonCode,'include-missing');
+    await prepareSelection(selection);
     let records=await preflightRecords(selection);
     assert.equal(records.length,2);
     for(const {record} of records) {
@@ -66,6 +67,7 @@ test('T12 verified local production ledgers retain 33/60 separately for both lan
     const selection=await planCorpus({root,revision:REVISION,lane,paths:manifest.entries.map(e=>e.path)});
     assert.equal(selection.files.length,33);
     assert.deepEqual(selection.files.filter(f=>f.inputError).map(f=>({id:f.id,error:f.inputError})),[]);
+    await prepareSelection(selection);
     const ledger=newLedger(selection);
     if(output) await persist(join(output,`${lane}-initial-ledger.json`),ledger);
     for(const {id,record} of await preflightRecords(selection)) appendAttempt(ledger,id,record);

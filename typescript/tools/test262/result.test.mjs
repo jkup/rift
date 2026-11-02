@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { synthetic, thrown, syntax, neg } from './fixtures.mjs';
+import { synthetic, thrown, syntax, neg, contextFor } from './fixtures.mjs';
 import { classify, validateRecord, parseEnvelope, inspectEnvelope } from './result.mjs';
 
 function expect(options, status, reasonCode) {
@@ -78,21 +78,21 @@ test('H02 H03 H20 synthetic harness outcomes cannot satisfy negatives', () => {
 const transport = (process = { exitCode: 0, signal: null, deadlineExpired: false }, outputBytes = 0) => ({ process, outputBytes, outputLimit: 1024 });
 test('T01 deadline wins even over normal envelope', () => {
   const r = synthetic();
-  assert.deepEqual(inspectEnvelope(JSON.stringify(r), r.identity, transport({ exitCode: null, signal: null, deadlineExpired: true })), { status: 'timeout', reasonCode: 'deadline' });
+  assert.deepEqual(inspectEnvelope(JSON.stringify(r), contextFor(r), transport({ exitCode: null, signal: null, deadlineExpired: true })), { status: 'timeout', reasonCode: 'deadline' });
 });
 test('T02 T03 abnormal termination overrides absent or normal envelope', () => {
   const r = synthetic();
   for (const json of ['undefined',JSON.stringify(r)]) {
     for (const process of [{ exitCode: 127, signal: null, deadlineExpired: false }, { exitCode: null, signal: 'SIGSEGV', deadlineExpired: false }]) {
-      assert.deepEqual(inspectEnvelope(json,r.identity,transport(process)), { status:'host-fault',reasonCode:'crash' });
+      assert.deepEqual(inspectEnvelope(json,contextFor(r),transport(process)), { status:'host-fault',reasonCode:'crash' });
     }
   }
 });
 test('T04 T05 console text is not an envelope; actual throw remains failure', () => {
   const r = synthetic({ observation: thrown() });
-  assert.deepEqual(inspectEnvelope('', r.identity, transport()), { status: 'host-fault', reasonCode: 'protocol' });
-  assert.deepEqual(inspectEnvelope('{"status":"pass"}', r.identity, transport()), { status: 'host-fault', reasonCode: 'protocol' });
-  assert.equal(inspectEnvelope(JSON.stringify(r), r.identity, transport()).classification.reasonCode, 'uncaught-throw');
+  assert.deepEqual(inspectEnvelope('', contextFor(r), transport()), { status: 'host-fault', reasonCode: 'protocol' });
+  assert.deepEqual(inspectEnvelope('{"status":"pass"}', contextFor(r), transport()), { status: 'host-fault', reasonCode: 'protocol' });
+  assert.equal(inspectEnvelope(JSON.stringify(r), contextFor(r), transport()).classification.reasonCode, 'uncaught-throw');
 });
 test('T06 invalid envelopes, duplicate/escaped keys and wrong identity', () => {
   const r = synthetic();
@@ -101,12 +101,12 @@ test('T06 invalid envelopes, duplicate/escaped keys and wrong identity', () => {
   const wrongVariant = structuredClone(r); wrongVariant.identity.variant = 'non-strict';
   for (const invalid of [json.slice(0,-3), json.replace('"schemaVersion":1', '"schemaVersion":1,"schemaVersion":1'),
     json.replace('"schemaVersion":1', '"schemaVersion":1,"schema\\u0056ersion":1'), JSON.stringify(wrongSchema), JSON.stringify(wrongVariant), `${json}\n${json}`]) {
-    assert.deepEqual(inspectEnvelope(invalid,r.identity,transport()), { status:'host-fault',reasonCode:'protocol' });
+    assert.deepEqual(inspectEnvelope(invalid,contextFor(r),transport()), { status:'host-fault',reasonCode:'protocol' });
   }
 });
 test('T07 output cap overrides normal result', () => {
   const r = synthetic();
-  assert.deepEqual(inspectEnvelope(JSON.stringify(r),r.identity,transport(undefined,1025)), { status:'resource-limit',reasonCode:'output' });
+  assert.deepEqual(inspectEnvelope(JSON.stringify(r),contextFor(r),transport(undefined,1025)), { status:'resource-limit',reasonCode:'output' });
 });
 test('T08 host diagnostic SyntaxError remains a host fault', () => {
   expect({ observation: { kind:'host-fault',faultCode:'internal',diagnostic:'SyntaxError' }, negative:neg('parse','SyntaxError') }, 'host-fault','internal');
@@ -140,7 +140,7 @@ test('Contradictory evidence, forgery, null provenance and constructor names fai
     r => { r.observation.constructorName = 'TypeError'; },
   ]) { const r = synthetic(); mutate(r); assert.throws(() => validateRecord(r),/protocol/); }
   const r = synthetic(); r.identity.sourceSha256 = null;
-  assert.equal(classify(r).status,'host-fault');
+  assert.throws(() => classify(r), /protocol/);
   assert.throws(() => validateRecord(r),/protocol/);
   assert.throws(() => synthetic({ observation: thrown('TypeError','string') }),/protocol/);
   assert.throws(() => synthetic({ observation: { ...thrown(), name:'TypeError' } }),/protocol/);

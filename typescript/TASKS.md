@@ -1705,3 +1705,21 @@ real Error object, subprocess supervisor, caching or successor work. Current all
 blocked profiles are enforced even against synthetic success injection. Missing
 includes preserve known variant counts; malformed metadata retains unknown counts.
 Independent acceptance pending; commit/push coherent milestone then stop.
+
+TS-031A correction handoff after independent review of cb7a1bc (2026-11-02):
+R1 binds both inspectEnvelope and appendAttempt to parent-prepared Identity/Inputs,
+expected negative and blockers. Planned metadata remains authoritative; missing,
+null, changed phase/type or altered policy/inputs cannot earn an injected pass.
+Initial ledgers now retain each parent-owned resultContext before terminal records.
+R2 shares all closed-schema/cross-field checks with exported classify, including
+harness validation, goal/stage/body constraints and observation-mode exclusion.
+R3 records actual call depth at the pre-increment guard:64/64 and0/0 are resource-
+limit; other source/parse/steps/evaluation/output guards retain count>limit.
+Known configured limits must match observation limits. Runtime code is unchanged.
+
+Refreshed host tests66/66 (eight new boundary tests), exact local corpus4/4,
+typecheck exit0 and runner20/20. Both verified33/60 ledgers remain19 feature-blocked,
+41 profile-blocked, zero execution/pass/fail.115-row map and evidence refreshed.
+Protected source/guest/build/runner/probe paths unchanged from cb7a1bc and83e0eaa;
+211/32 runtime evidence remains inherited. Coordinator-owned1a082f3 preserved.
+Correction ready for independent re-review; commit/push then stop, no successor.

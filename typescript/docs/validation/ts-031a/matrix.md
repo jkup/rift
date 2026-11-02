@@ -2,6 +2,14 @@
 
 All 115 accepted rows are accounted for. Host assertions are literal tests, not Rift execution. Test filenames are relative to `typescript/tools/test262/`. Production local-byte integration ran separately with an explicit external corpus root. Every H/C semantic claim remains deferred.
 
+Independent-review supplements (R1-R3): `boundary.test.mjs` strengthens O03/O05/O07
+and T06/T17 with parent-owned phase/type/null, blocker and complete Inputs binding
+at both ingestion boundaries. It exercises every shared schema/cross-field
+invariant directly through the exported classifier. O12/O13/O14 additionally cover
+calls at 64/64 and 0/0, below-limit rejection, and unchanged overflow semantics for
+source/parse/steps/evaluation/output guards. These eight named tests supplement
+the same 115 rows; no H/C semantic prerequisite is promoted to executed evidence.
+
 | ID | Scenario | Host evidence / deferred prerequisite |
 |---|---|---|
 | I01 | ExactPin | Exercised: input.test.mjs (I01). Exact production bytes: corpus.integration.mjs. |

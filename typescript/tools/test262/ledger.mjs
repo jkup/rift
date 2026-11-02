@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { open, rename, unlink } from 'node:fs/promises';
-import { STATUSES, validateRecord } from './result.mjs';
+import { STATUSES, validateRecord, assertContext, validateContext } from './result.mjs';
+import { isDeepStrictEqual } from 'node:util';
 
 export function newLedger(selection) {
   const planned = selection.files.flatMap(file => file.variants ?? []);
@@ -19,12 +20,20 @@ export function appendAttempt(ledger, id, record, retryReason = null) {
   if (planned.transformedSourceSha256 !== undefined && record.inputs.transformedSourceSha256 !== planned.transformedSourceSha256) throw new Error('identity');
   if (planned.harness !== undefined && JSON.stringify(record.inputs.harness) !== JSON.stringify(planned.harness)) throw new Error('identity');
   const file = ledger.selection.files.find(f => f.variants?.some(v => v.id === id));
-  if (planned.blockers?.length) {
+  // Metadata and policy belong to the selection, not the received envelope.
+  // Missing metadata/context fails closed even for synthetic admitted plans.
+  const context = validateContext(planned.resultContext);
+  if (!planned.metadata || !Object.hasOwn(planned.metadata, 'negative') || !Array.isArray(planned.blockers) ||
+      !isDeepStrictEqual(context.expectedNegative, planned.metadata.negative) ||
+      !isDeepStrictEqual(context.blockers, file.inputError ? [] : planned.blockers)) throw new Error('context');
+  if (file.inputError || planned.blockers.length) {
     if (record.observation.kind !== 'not-run') throw new Error('profile-not-admitted');
     const expected = file.inputError ? [] : planned.blockers;
-    if (JSON.stringify(record.classification.blockers) !== JSON.stringify(expected) ||
-        record.classification.reasonCode !== (file.inputError?.reasonCode ?? expected[0].reasonCode)) throw new Error('identity');
+    if (record.evidence.stage !== (file.inputError ? 'input' : 'preflight') ||
+        !isDeepStrictEqual(record.classification.blockers, expected) ||
+        record.classification.reasonCode !== (file.inputError?.reasonCode ?? expected[0].reasonCode)) throw new Error('context');
   }
+  assertContext(record, context);
   const prior = ledger.attempts.filter(a => a.id === id);
   if (prior.length && (typeof retryReason !== 'string' || !retryReason.trim())) throw new Error('retry-policy');
   ledger.attempts.push({ id, attempt: prior.length + 1, retryReason, record: structuredClone(record) });

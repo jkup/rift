@@ -43,12 +43,39 @@ files are explicitly tracked without changing the root ignore policy.
 
 The v1 envelope groups the design's fields into `identity`, `inputs`, `evidence`,
 `observation`, and, only in conformance mode, `classification`. All records are
-closed. `inspectEnvelope` takes separately supplied parent transport facts and the
-complete expected identity; it never reads stdout as protocol. Deadline, abnormal
+closed. `inspectEnvelope` takes separately supplied parent transport facts and a
+closed parent-owned context `{identity, inputs, expectedNegative, blockers}`; it
+never reads stdout as protocol. The parent prepares this context from verified
+metadata and configured policy before receiving any envelope. Every Identity and
+Inputs field, including ordered harness inputs and limits, must match it. Expected
+negative phase/type/null and blockers also must match; self-consistent envelope
+classifications do not select their own expectations. The old identity-only call
+fails closed. Deadline, abnormal
 termination and output caps override a nominal envelope. This is a pure boundary,
 not an implemented subprocess supervisor. `parseEnvelope` requires JSON syntax
 and rejects duplicate keys, including equivalent escaped keys. Observation modes
 omit classification and cannot enter a conformance ledger.
+
+`prepareSelection` attaches a parent-owned `resultContext` to each planned variant
+before `newLedger` snapshots the selection and before any result is constructed.
+`appendAttempt` requires that context and checks its expectation/blockers against
+the planned metadata/policy as well as checking the received result against the
+full context. Missing metadata, context or policy fails closed. Known input errors
+and blockers require the corresponding input/preflight not-run stage. The pure
+`classify` API and `validateRecord` share all schema and cross-field validation;
+`classify` rejects observation-only modes and contradictory supplied classifications.
+`parseEnvelope` alone checks self-consistency; ingestion must use `inspectEnvelope`
+or `appendAttempt` to bind the result to its parent-owned plan.
+
+Resource-limit counts describe the actual guard state, not a fabricated attempted
+count. `calls` is the active call depth checked before increment in
+`src/evaluator.ts`: `count >= limit`, including 64/64 and 0/0, is a guard failure.
+`source-units` is measured source length; `parse-depth`, `steps`, and
+`evaluation-depth` count after increment; `output` is measured captured bytes.
+Those guards require `count > limit`. Counts/limits are nonnegative safe integers,
+unknown guard codes are rejected, and any known corresponding Inputs limit must
+equal the observation limit. Every guard remains resource-limit even when negative
+metadata names RangeError or SyntaxError. No runtime guard changed.
 
 A runtime throw contains `valueKind` and a closed `constructor` record with
 `outcome`, `name`, `realmId`, `secondary`. `available` represents evidence that a

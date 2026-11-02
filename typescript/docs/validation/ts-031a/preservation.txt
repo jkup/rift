@@ -10,3 +10,4 @@ typescript/TASKS.md
 typescript/package-lock.json
 typescript/package.json
 COORDINATION.md is a concurrent coordinator-owned edit, preserved and excluded from this commit.
+R1-R3 correction: git diff cb7a1bc --exit-code over the same protected paths returned 0; coordinator commit 1a082f3 preserved. Runtime was not rerun.

@@ -6,22 +6,30 @@ import { planCorpus, sha256, REVISION } from './input.mjs';
 import { terminalRecord } from './result.mjs';
 import { newLedger, appendAttempt, persist, report } from './ledger.mjs';
 
-export async function preflightRecords(selection) {
+export async function prepareSelection(selection) {
   const adapterSha256 = sha256(Buffer.concat(await Promise.all(['input.mjs', 'result.mjs', 'ledger.mjs', 'plan.mjs']
     .map(file => readFile(new URL(file, import.meta.url))))));
   const runId = randomUUID();
-  return selection.files.flatMap(file => (file.variants ?? []).map(v => ({ id: v.id,
-    record: terminalRecord({ schemaVersion: 1, runId, mode: 'conformance',
+  for (const file of selection.files) for (const v of file.variants ?? []) {
+    v.resultContext = { identity: { schemaVersion: 1, runId, mode: 'conformance',
       corpusRevision: REVISION, manifestSha256: selection.manifestSha256,
       path: v.path, blob: v.blob, sourceSha256: v.sourceSha256, variant: v.variant,
       goal: v.goal, lane: v.lane, engineCommit: null, engineBuildSha256: null,
       adapterSha256, policySha256: adapterSha256, dirtySourceSha256: null,
-    }, { harness: v.harness, transformedSourceSha256: v.transformedSourceSha256,
+    }, inputs: { harness: v.harness, transformedSourceSha256: v.transformedSourceSha256,
       profileId: 'rift-current-blocked', capabilityLedgerSha256: null,
       host: process.version, platform: `${process.platform}/${process.arch}`, toolchain: null,
       limits: { sourceUnits: null, parseDepth: null, steps: null, calls: null,
         evaluationDepth: null, wallMs: null, outputBytes: null },
-    }, { stage: file.inputError ? 'input' : 'preflight', harnessValidated: false, bodyEvaluated: false,
+    }, expectedNegative: v.metadata.negative, blockers: file.inputError ? [] : v.blockers };
+  }
+  return selection;
+}
+
+export function preflightRecords(selection) {
+  return selection.files.flatMap(file => (file.variants ?? []).map(v => ({ id: v.id,
+    record: terminalRecord(v.resultContext.identity, v.resultContext.inputs,
+    { stage: file.inputError ? 'input' : 'preflight', harnessValidated: false, bodyEvaluated: false,
       unit: v.path, location: null, process: { exitCode: null, signal: null, deadlineExpired: false },
       stdoutSha256: null, stderrSha256: null, elapsedMs: null,
     }, { kind: 'not-run', reasonCode: file.inputError?.reasonCode ?? v.blockers[0].reasonCode },
@@ -39,6 +47,7 @@ export async function main(args) {
   // an initial failure or masquerade as an explicit retry of the prior ledger.
   await mkdir(output);
   const selection = await planCorpus({ root, revision, lane, paths });
+  await prepareSelection(selection);
   const ledger = newLedger(selection);
   // Preserve the complete selection before recording any terminal outcome.
   await persist(resolve(output, 'ledger.json'), ledger);

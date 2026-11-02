@@ -1,7 +1,8 @@
 # TS-031A host-only milestone evidence
 
 2026-11-02; base `83e0eaa`; branch `codex/test262-classification`.
-Implementation is ready for independent review, not self-accepted.
+Initial implementation `cb7a1bc`; corrected after independent review R1-R3.
+Implementation is ready for re-review, not self-accepted.
 
 Implemented exact-byte local verification, validated YAML metadata, ordered variant
 and harness planning, current-profile blockers, closed result envelopes, pure
@@ -14,7 +15,7 @@ Actual validation:
 
 | Command / evidence | Result |
 |---|---|
-| `npm run test:test262` / [host-tests.txt](host-tests.txt) | 58/58; no skips |
+| `npm run test:test262` / [host-tests.txt](host-tests.txt) | 66/66; no skips |
 | `node tools/test262/corpus.integration.mjs ROOT docs/validation/ts-031a` / [corpus-tests.txt](corpus-tests.txt) | 4/4; no skips |
 | `npm run typecheck` / [typecheck.txt](typecheck.txt) | exit 0 |
 | `npm run test:runner` / [runner.txt](runner.txt) | 20/20 |
@@ -76,6 +77,44 @@ slice. Accepted TS-030A 211/211 per host and 32 native gates remain inherited
 evidence, with exact protected-file preservation verified. No C++, Claude research,
 compiler pin, engine, guest fixture/driver, runner or probe changes are included.
 Coordinator-owned concurrent COORDINATION changes remain outside this commit.
+
+## Independent-review corrections R1-R3
+
+R1: both ingestion boundaries now require parent-owned context. `prepareSelection`
+records each variant's complete Identity and Inputs plus expected negative and
+blockers before the initial ledger snapshot. `appendAttempt` checks that context
+against planned metadata/policy and checks the incoming record against the entire
+context. `inspectEnvelope` takes the closed context instead of only an identity.
+Missing, null, wrong-phase and wrong-type expectations cannot turn an incoming
+normal/throw/parse observation into a pass by choosing its own expected outcome.
+All Inputs fields, including profile, capability ledger, limits and ordered harness,
+are bound as well. Existing blocked profiles and known input errors cannot accept
+an executed result. The revised ledgers persist these parent-owned contexts.
+
+R2: the public classifier and record validator share the same closed-schema and
+cross-field checks. The regression exercises every existing cross-record invariant
+through both APIs, also stripping Classification to ensure rejection does not rely
+on a stale status field. Unvalidated harness evidence, contradictory goal/variant,
+raw harness inputs, invalid stage/body/unit/location combinations, observation
+modes, parse-negative effects and Script resolution negatives all fail closed.
+Self-consistency parsing alone remains distinct from trusted-context ingestion.
+
+R3: `calls` counts active depth before increment (`src/evaluator.ts:283`), so 64/64
+and 0/0 faithfully represent guard failure and remain resource-limit even against a
+runtime RangeError negative. Source length (`src/lexer.ts:31`), post-increment parse
+depth (`src/parser.ts:64,165`), steps (`src/evaluator.ts:34`), evaluation depth
+(`src/evaluator.ts:64,127`) and captured output continue to require count > limit.
+Known Inputs limits must agree with observations; counts are safe integers and
+unknown guard codes fail closed. No engine count was changed or reinterpreted as
+an attempted-call count. Tests cover the boundary, below-boundary rejection and
+the existing overflow controls. These are synthetic guard observations, not new
+native or guest executions.
+
+The eight added named tests in `boundary.test.mjs` cover these corrections with
+literal protocol/resource statuses and unchanged zero-pass/missing-record counts
+after rejected ingestion. Required validations and both 33/60 exact-byte ledgers
+were refreshed. The original 58-test milestone evidence remains in `cb7a1bc`;
+current transcripts contain the corrected 66-test suite.
 
 Limitations: paths are checked against real local containment in a stable external
 corpus directory; this is not an adversarial concurrent-filesystem sandbox. Additional

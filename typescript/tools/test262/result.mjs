@@ -1,9 +1,12 @@
 import { parseDocument } from 'yaml';
+import { isDeepStrictEqual } from 'node:util';
 
 export const STATUSES = ['pass', 'fail', 'unsupported-feature', 'unsupported-profile',
   'harness-error', 'resource-limit', 'timeout', 'host-fault'];
 const RULES = ['assignment-target', 'lexical-declaration-statement', 'return-outside-function',
   'duplicate-strict-parameter', 'duplicate-block-lexical-function'];
+const GUARD_LIMIT = { 'source-units': 'sourceUnits', 'parse-depth': 'parseDepth', steps: 'steps',
+  calls: 'calls', 'evaluation-depth': 'evaluationDepth', output: 'outputBytes' };
 const str = x => typeof x === 'string' && x.length > 0;
 const bool = x => typeof x === 'boolean';
 const number = x => Number.isFinite(x) && x >= 0;
@@ -67,7 +70,7 @@ function observation(x) {
     throw: { phase: one(['runtime']), valueKind: one(['undefined', 'null', 'boolean', 'number', 'string', 'symbol', 'object']), constructor },
     'syntax-error': { phase: one(['parse']), constructorName: one(['SyntaxError']), ruleCode: one(RULES) },
     'unsupported-syntax': { capabilityCode: str },
-    'resource-limit': { guardCode: str, limit: number, count: number },
+    'resource-limit': { guardCode: one(Object.keys(GUARD_LIMIT)), limit: integer, count: integer },
     timeout: { wallMs: number },
     'host-fault': { faultCode: str },
     'not-run': { reasonCode: str },
@@ -77,19 +80,22 @@ function observation(x) {
   if (x.kind !== 'normal' && Object.hasOwn(x, 'diagnostic')) fields.diagnostic = str;
   if (!record(x, fields)) return false;
   if (x.kind === 'throw' && x.valueKind !== 'object' && x.constructor.outcome !== 'absent') return false;
-  return x.kind !== 'resource-limit' || x.count > x.limit;
+  // calls is the active depth inspected BEFORE entry/increment. The other
+  // counters measure the source size or attempted work AFTER increment.
+  return x.kind !== 'resource-limit' || (x.guardCode === 'calls' ? x.count >= x.limit : x.count > x.limit);
 }
 const classification = x => record(x, {
   status: one(STATUSES), reasonCode: str, blockers: array(blocker), expectedNegative: negative,
   observedPhase: nullable(one(['parse', 'resolution', 'runtime'])), observedConstructorName: text,
 });
 
-export function validateRecord(value) {
+function validateCore(value, expectedNegative, blockers) {
   const fields = { identity, inputs, evidence, observation };
-  if (value?.identity?.mode === 'conformance') fields.classification = classification;
-  if (!record(value, fields)) throw new Error('protocol');
+  if (Object.hasOwn(value ?? {}, 'classification')) fields.classification = classification;
+  if (!record(value, fields) || !negative(expectedNegative) || !array(blocker)(blockers)) throw new Error('protocol');
   const { identity: i, inputs: n, evidence: e, observation: o } = value;
-  if ((i.variant === 'module') !== (i.goal === 'Module') ||
+  if ((value.classification && i.mode !== 'conformance') ||
+      (i.variant === 'module') !== (i.goal === 'Module') ||
       (i.variant === 'raw' && n.harness.length) ||
       (e.bodyEvaluated && e.stage !== 'test') ||
       (e.stage === 'test' && !e.harnessValidated && i.variant !== 'raw') ||
@@ -97,14 +103,17 @@ export function validateRecord(value) {
       (o.kind === 'normal' && !['test','harness'].includes(e.stage)) ||
       (o.kind === 'syntax-error' && (e.bodyEvaluated || !['test','harness'].includes(e.stage) || !e.unit || !e.location)) ||
       (o.kind === 'throw' && !['test','harness'].includes(e.stage)) ||
-      (i.mode === 'parser-observation' && e.bodyEvaluated)) throw new Error('protocol');
-  if (value.classification) {
-    const c = value.classification;
-    if (c.expectedNegative?.phase === 'resolution' && i.goal !== 'Module') throw new Error('protocol');
-    if (c.expectedNegative?.phase === 'parse' && e.bodyEvaluated) throw new Error('protocol');
-    const computed = classify(value, c.expectedNegative, c.blockers);
-    if (Object.keys(computed).some(k => JSON.stringify(c[k]) !== JSON.stringify(computed[k]))) throw new Error('protocol');
-  }
+      (i.mode === 'parser-observation' && e.bodyEvaluated) ||
+      (o.kind === 'resource-limit' && n.limits[GUARD_LIMIT[o.guardCode]] !== null && n.limits[GUARD_LIMIT[o.guardCode]] !== o.limit) ||
+      (expectedNegative?.phase === 'resolution' && i.goal !== 'Module') ||
+      (expectedNegative?.phase === 'parse' && e.bodyEvaluated)) throw new Error('protocol');
+}
+
+export function validateRecord(value) {
+  if (value?.identity?.mode === 'conformance') {
+    if (!classification(value.classification)) throw new Error('protocol');
+    classify(value, value.classification.expectedNegative, value.classification.blockers);
+  } else validateCore(value, null, []);
   return value;
 }
 
@@ -123,8 +132,14 @@ function complete(value) {
 // Pure classification of structured observations. It never derives a type from
 // console output, a Diagnostic.name or the file containing a throwing function.
 export function classify(value, expectedNegative = null, blockers = []) {
-  if (!identity(value.identity) || !inputs(value.inputs) || !evidence(value.evidence) ||
-      !observation(value.observation) || !negative(expectedNegative) || !array(blocker)(blockers)) throw new Error('protocol');
+  validateCore(value, expectedNegative, blockers);
+  if (value.identity.mode !== 'conformance') throw new Error('protocol');
+  const computed = classifyValidated(value, expectedNegative, blockers);
+  if (value.classification && !isDeepStrictEqual(value.classification, computed)) throw new Error('protocol');
+  return computed;
+}
+
+function classifyValidated(value, expectedNegative, blockers) {
   const { evidence: e, observation: o } = value;
   const result = (status, reasonCode) => ({ status, reasonCode, blockers, expectedNegative,
     observedPhase: o.kind === 'throw' || o.kind === 'syntax-error' ? o.phase : null,
@@ -151,6 +166,25 @@ export function classify(value, expectedNegative = null, blockers = []) {
   return name === expectedNegative.type ? result('pass', 'negative-match') : result('fail', 'type-mismatch');
 }
 
+// This context must be prepared by the parent from verified metadata and its
+// configured execution policy, BEFORE reading an envelope. It is never inferred
+// from a received classification or a received Inputs record.
+export function validateContext(context) {
+  if (!record(context, { identity, inputs, expectedNegative: negative, blockers: array(blocker) })) throw new Error('context');
+  if (context.expectedNegative?.phase === 'resolution' && context.identity.goal !== 'Module') throw new Error('context');
+  return context;
+}
+
+export function assertContext(value, context) {
+  validateContext(context);
+  validateRecord(value);
+  if (!isDeepStrictEqual(value.identity, context.identity) || !isDeepStrictEqual(value.inputs, context.inputs) ||
+      (value.identity.mode === 'conformance' &&
+       (!isDeepStrictEqual(value.classification.expectedNegative, context.expectedNegative) ||
+        !isDeepStrictEqual(value.classification.blockers, context.blockers)))) throw new Error('context');
+  return value;
+}
+
 export function parseEnvelope(json) {
   // JSON.parse enforces JSON syntax; YAML's JSON-compatible parser supplies the
   // duplicate-key check JSON.parse lacks, including escaped equivalent keys.
@@ -162,16 +196,15 @@ export function parseEnvelope(json) {
 
 // Parent-supplied transport facts are separate from the untrusted envelope.
 // There is no subprocess implementation in this slice. stdout is never an input.
-export function inspectEnvelope(json, expectedIdentity, transport) {
+export function inspectEnvelope(json, expectedContext, transport) {
   if (!record(transport, { process: processValid, outputBytes: integer, outputLimit: integer })) throw new Error('transport');
   const fault = (status, reasonCode) => ({ status, reasonCode });
   if (transport.process.deadlineExpired) return fault('timeout', 'deadline');
   if (transport.process.signal !== null || (transport.process.exitCode !== null && transport.process.exitCode !== 0)) return fault('host-fault', 'crash');
   if (transport.outputBytes > transport.outputLimit) return fault('resource-limit', 'output');
   try {
-    const value = parseEnvelope(json);
-    if (!identity(expectedIdentity) || Object.keys(expectedIdentity).some(k => value.identity[k] !== expectedIdentity[k]) ||
-        JSON.stringify(value.evidence.process) !== JSON.stringify(transport.process) || transport.process.exitCode === null) throw new Error('protocol');
+    const value = assertContext(parseEnvelope(json), expectedContext);
+    if (!isDeepStrictEqual(value.evidence.process, transport.process) || transport.process.exitCode === null) throw new Error('protocol');
     return value;
   } catch { return fault('host-fault', 'protocol'); }
 }

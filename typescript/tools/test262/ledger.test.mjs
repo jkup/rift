@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { newLedger, appendAttempt, report, persist } from './ledger.mjs';
 import { frozenManifest, variants, blockers, fixtureSelection, planCorpus, REVISION } from './input.mjs';
-import { preflightRecords, main } from './plan.mjs';
+import { preflightRecords, prepareSelection, main } from './plan.mjs';
 import { synthetic, thrown, selectionFor, H } from './fixtures.mjs';
 
 function measured(records) {
@@ -63,6 +63,7 @@ test('T12 frozen metadata plan: 33 files / 60 variants independently per lane; n
     assert.equal(all.length,60);
     assert.deepEqual(Object.fromEntries(['strict','non-strict','raw','module'].map(v=>[v,all.filter(x=>x.variant===v).length])),{strict:30,'non-strict':28,raw:1,module:1});
     assert.equal(new Set(all.map(v=>v.id)).size,60);
+    await prepareSelection(selection);
     const ledger = newLedger(selection);
     for (const {id,record} of await preflightRecords(selection)) {
       assert.equal(record.observation.kind,'not-run');
@@ -144,6 +145,7 @@ test('Blocked selection cannot accept a synthetic pass or altered input identity
   const success=synthetic();
   const selection=selectionFor([success]);
   selection.files[0].variants[0].blockers=[{status:'unsupported-profile',reasonCode:'strict-script-contract'}];
+  selection.files[0].variants[0].resultContext.blockers=structuredClone(selection.files[0].variants[0].blockers);
   assert.throws(()=>appendAttempt(newLedger(selection),'synthetic-0',success),/profile-not-admitted/);
   const changed=synthetic({lane:'native'});
   assert.throws(()=>appendAttempt(newLedger(selection),'synthetic-0',changed),/identity/);
