@@ -371,3 +371,9 @@ Accepted pushed `57b6bcb`. Reviewed final production/tag/registration paths, bot
 Frozen TS-020 closes only Boolean/String wrapper conversion overrides, using established slot/method architecture and independently checked fixed2025 receiver rules. Number/Array/Function defaults remain partial; no implicit boxing/globals. CL-004 remains ready/reserved; main unchanged at7f7d682. No further main merge performed.
 
 Acceptance/next contract pushed through dd1bb83. Active sole implementation writer: TS-020 chat `01a19a3c-debb-7261-b869-2b7622488bc0`, host `local`, base `dd1bb83`. Explicit progress wait confirmed active; saved cursor `92d688ed-ab2b-418f-9bd5-57fd8058fdbe:2`. Owns frozen Boolean/String conversion task only; coordinator owns this file. No later methods/globals until review.
+
+## TS-020 acceptance — 2026-11-02 03:23 heartbeat
+
+Accepted `a3d74fd`: reviewed primitive-or-slot extraction, root/Realm registration, full M1-M8 assertions/runtime-read fixture and exact inherited expectation migrations. Independently rebuilt Node/native164/164 each, no skips; all23 static builds/separate coverage gates pass. Coordinator logs build/ts-020-review-node.log and build/ts-020-review-native.log; producer typecheck/runner20/probes10 evidence reviewed. Source diff clean; retained typecheck transcript has an extra EOF blank line only. Completed writer idle, saved cursor `92d688ed-ab2b-418f-9bd5-57fd8058fdbe:3`. Delegated push rejected export authorization; verified original owner's authorization and existing https://github.com/jkup/rift.git origin for coordinator push.
+
+Next TS-021P is bounded Number-method/radix design and compiler evidence, not production expansion: existing decimal backend only takes binary64, effectful radix and nondecimal formatting need a reviewed contract. Number namespace remains noncallable, Array/Function overrides deferred. CL-004 ready/reserved; main unchanged at7f7d682.
