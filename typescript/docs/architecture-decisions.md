@@ -898,3 +898,7 @@ separate coverage gates and the frozen 146-row mapping. Independent coordinator 
 callees use reference/GetValue directly, with no evaluate tick. The historical
 matrix and failures remain retained. Runtime ticks are unchanged; implementation
 acceptance still requires independent review.
+
+## Arithmetic compound assignment (TS-030A, 2026-11-02)
+
+Exactly +=, -=, *=, /= and %= use a separate compound Expr with a binary-op union. Evaluation captures one reference and old Value before the RHS, then calls the existing binary and PutValue helpers. This makes the extra Get visible without lowering to duplicate target evaluation or introducing a fictional binary-node tick. Successful key conversion is reused; primitive boxing is repeated for Put while preserving the original Receiver. Captured object identity preserves later RHS mutations of conversion methods. Other compound families and updates remain excluded. Existing binary/reference/helper semantics are unchanged. See [design](compound-assignment.md) and [implementation evidence](validation/ts-030a/README.md); independent acceptance remains the coordinator's decision.

@@ -1,0 +1,14 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\compound-assignment.ts
+
+  statements analyzed   2709
+  compile statically    2709  (100%)
+    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)
+
+  fully static — all analyzed statements compile to native code.
+
+  dynamic tier   (tier assignment, report-only; --tier=auto)
+    2 functions already operate on dynamic values (1 statement)
+      %dyn.class.properties  C:/Users/jonku/code/rift/typescript/test/compound-assignment.ts:1:1: dynObjLit at C:/Users/jonku/code/rift/typescript/test/compound-assignment.ts:1:1
+      %fn.adapt.55f5213eff1e.impl  C:/Users/jonku/code/rift/typescript/test/compound-assignment.ts:263:53: dyn.this at C:/Users/jonku/code/rift/typescript/test/compound-assignment.ts:263:53
+
+    0 demotion requests (refusals and fences the dynamic tier would replace)
