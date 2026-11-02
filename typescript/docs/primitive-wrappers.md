@@ -334,3 +334,13 @@ Excluded: production implementation in this task; constructors/new/globals,
 implicit member/receiver boxing, wrapper methods, Object toString, symbols,
 accessors/proxies, species, Error objects, async/jobs/generators, full standard
 intrinsics, corpus selection and successor dispatch. Stop for coordinator review.
+
+## C implementation status (2026-11-02)
+
+TS-019C implements the frozen C contract after TS-019B2, including real symbol
+tags. The earlier design's unavailable-Symbol statement is historical: symbols
+and boxes are now represented, with Object fallback supplied by classification
+and Symbol supplied only by the canonical prototype property. Both this document's
+T1-T8 and symbol-foundation's complementary T1-T8 are mapped in
+[TS-019C evidence](validation/ts-019c/README.md). Default Array/Function/Boolean/
+Number/String conversions remain explicitly partial inherited tag strings.

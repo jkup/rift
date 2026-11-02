@@ -137,10 +137,10 @@ for (const realm of [r1, r2]) {
     checkGraph(o.getPrototypeOf() === null && f.getPrototypeOf() === o && ar.getPrototypeOf() === o, "G1 graph");
     checkGraph(o.callable === null && f.callable !== null && ar instanceof GuestArray, "G1 root kinds");
     checkGraph(f.callable !== null && f.callable.realm === realm, "R1 root owner");
-    checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(ar.ownPropertyKeys()).join(",") === "length", "G17 exact initial keys");
+    checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(ar.ownPropertyKeys()).join(",") === "length", "G17 exact initial keys");
     for (const root of [o, f, ar]) {
         checkGraph(root.get("valueOf") === o.get("valueOf"), "G17 inherited valueOf");
-        for (const key of ["constructor", "toString", "join", "map"]) checkGraph(root.get(key).kind === "undefined", "G17 missing methods");
+        for (const key of ["constructor", "join", "map"]) checkGraph(root.get(key).kind === "undefined", "G17 missing methods");
     }
     metadata(f, "", 0);
     for (const name of ["console", "Number"]) {
@@ -231,7 +231,7 @@ for (const name of ["object", "array", "declared"]) {
     r2.global.bindings.set(name, { initialized: true, mutable: true, value });
     checkGraph(graphBinding(r2, name) === value && sameValue(graphObject(value).get("x"), numberValue(7)), "G11 retained foreign identity/inheritance");
 }
-checkGraph(r2.createObject().get("x").kind === "undefined" && stringKeys(r2.objectPrototype.ownPropertyKeys()).join(",") === "valueOf", "G11 independent root mutation");
+checkGraph(r2.createObject().get("x").kind === "undefined" && stringKeys(r2.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString", "G11 independent root mutation");
 const foreignActive = new Evaluator(r2);
 const foreignContext = foreignActive.context;
 const retained = foreignActive.context.call(graphBinding(r1, "declared"), UNDEFINED, [], at);
@@ -239,7 +239,7 @@ checkGraph(retained.type === "normal" && retained.value === graphBinding(r1, "ob
 const foreignAllocation = foreignActive.context.call(graphBinding(r1, "expression"), UNDEFINED, [], at);
 checkGraph(foreignAllocation.type === "normal" && graphObject(foreignAllocation.value).getPrototypeOf() === r1.objectPrototype && foreignActive.calls === 0, "G11 foreign body uses defining Realm");
 checkGraph(foreignActive.context === foreignContext && foreignContext.realm === r2, "R2 stable context restored");
-// G14: a graph does not supply default coercion methods.
+// G14/C: inherited tags provide interim default coercion.
 for (const name of [
     "numericObject", "numericArray", "numericFunction",
     "additionObject", "additionArray", "additionFunction",
@@ -247,7 +247,17 @@ for (const name of [
     "lengthObject", "lengthArray", "lengthFunction",
 ]) {
     const completion = active.context.call(graphBinding(r1, name), UNDEFINED, [], at);
-    checkGraph(completion.type === "throw" && completion.diagnostic.name === "TypeError" && completion.diagnostic.message === "cannot convert object to primitive" && completion.diagnostic.loc.line > 1 && active.calls === 0, "G14 exact located coercion failure " + name);
+    if (name.startsWith("length")) {
+        checkGraph(completion.type === "throw" && completion.diagnostic.name === "RangeError" && completion.diagnostic.message === "invalid array length" && completion.diagnostic.loc.line > 1, "G14 invalid length " + name);
+    } else {
+        checkGraph(completion.type === "normal", "G14 default conversion " + name);
+        if (completion.type !== "normal") throw new Error("G14 completion");
+        const tag = name.endsWith("Object") ? "Object" : name.endsWith("Array") ? "Array" : "Function";
+        if (name.startsWith("numeric")) checkGraph(completion.value.kind === "number" && Number.isNaN(completion.value.value), "G14 numeric NaN");
+        if (name.startsWith("addition")) checkGraph(completion.value.kind === "string" && completion.value.value === "[object " + tag + "]1", "G14 addition tag");
+        if (name.startsWith("key")) checkGraph(completion.value.kind === "undefined", "G14 absent tag key");
+    }
+    checkGraph(active.calls === 0, "G14 cleanup");
 }
 const numberCall = active.context.call(graphBinding(r1, "numberCall"), UNDEFINED, [], at);
 checkGraph(numberCall.type === "throw" && numberCall.diagnostic.name === "TypeError" && numberCall.diagnostic.message === "value is not callable", "G9 Number remains namespace");
@@ -274,13 +284,13 @@ for (const realm of [boxA, boxB]) {
     for (const root of roots) {
         checkGraph(root.getPrototypeOf() === realm.objectPrototype && root.callable === null && root.isExtensible(), "W1 root graph/flags");
         checkGraph(root.get("valueOf") === realm.objectPrototype.get("valueOf"), "W17 inherited Object valueOf");
-        for (const key of ["constructor", "toString"]) {
+        for (const key of ["constructor"]) {
             checkGraph(root.get(key).kind === "undefined", "W17 missing wrapper methods");
         }
     }
     checkGraph(!realm.booleanPrototype.booleanData && 1 / realm.numberPrototype.numberData === Infinity && realm.stringPrototype.stringData === "", "W1 root payloads");
     checkGraph(realm.booleanPrototype.ownPropertyKeys().length === 0 && realm.numberPrototype.ownPropertyKeys().length === 0 && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(",") === "length", "W1 root keys");
-    checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length", "W1 original root keys");
+    checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length", "W1 original root keys");
     for (const name of ["Object", "Boolean", "String"]) checkGraph(!realm.global.bindings.has(name), "W17 no new globals");
     const namespace = graphObject(graphBinding(realm, "Number"));
     checkGraph(namespace !== realm.numberPrototype && namespace.getPrototypeOf() === realm.objectPrototype && namespace.callable === null, "W1 Number namespace preserved");
@@ -334,7 +344,8 @@ checkGraph(!booleanPayload.booleanData && 1 / numberPayload.numberData === -Infi
 for (const wrapper of [boxA.createBooleanObject(false), boxA.createNumberObject(0), boxA.createStringObject("ab")]) {
     const value: Value = { kind: "object", object: wrapper };
     const missing = toPrimitive(value, "number", boxEvaluator.context, at);
-    checkGraph(missing.type === "throw" && missing.diagnostic.message === "cannot convert object to primitive" && missing.diagnostic.loc === at, "W17 no hidden unboxing");
+    const tag = wrapper instanceof GuestBoolean ? "Boolean" : wrapper instanceof GuestNumber ? "Number" : "String";
+    checkGraph(missing.type === "normal" && missing.value.kind === "string" && missing.value.value === "[object " + tag + "]", "W17 inherited tag, no unboxing");
     const hook = boxA.createBuiltin("trap", 0, (_receiver, _args, _context, _loc): ValueCompletion => { throw new Error("W17 direct converter hook"); });
     wrapper.bootstrapDefine("valueOf", { value: { kind: "object", object: hook } });
     wrapper.bootstrapDefine("toString", { value: { kind: "object", object: hook } });

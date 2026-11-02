@@ -9,11 +9,11 @@ claim that all coercion cases are supported.
 |---|---|---|
 | Lexing | ASCII identifiers including `$`/`_`; decimal integer/fraction literals starting with a digit; single/double quoted UTF-16 strings; space/tab; CR/LF/CRLF/U+2028/U+2029 line boundaries; line/block comments | No identifier escapes/Unicode identifiers, radix/exponent/separator numbers, leading-zero integers, templates or regex. String escapes only quote, backslash, n/r/t. Raw U+2028/U+2029 are preserved inside strings; raw CR/LF are rejected. |
 | Literals/values | number, string, boolean, null; undefined/NaN/Infinity bindings; ordinary object/function identity | No bigint or symbol. NaN uses strict-equality semantics; console renders signed zero as `0`. |
-| Expressions | parentheses; + - * / % and unary +/-; < <= > >=, === !==, !; short-circuit &&/\|\|; assignment; conditional `test ? consequent : alternate` | Numeric operators use number-hint ordinary conversion; addition converts both operands with default hint before string/numeric selection. Relational operators convert in source order with number hint, compare two strings by UTF-16 code units, otherwise compare numbers with all NaN comparisons false. Own/inherited valueOf/toString methods work on ordinary objects, arrays and functions; default conversion still fails: inherited Object valueOf returns the receiver and toString is absent. Both operand evaluations precede coercion. === !==, truthiness and Number predicates never coerce. Conditional precedence, selected-arm evaluation and existing bounds remain unchanged. No BigInt, symbols, loose equality, comma, bitwise, update, compound assignment, nullish coalescing or optional chaining. |
+| Expressions | parentheses; + - * / % and unary +/-; < <= > >=, === !==, !; short-circuit &&/\|\|; assignment; conditional `test ? consequent : alternate` | Numeric operators use number-hint ordinary conversion; addition converts both operands with default hint before string/numeric selection. Relational operators convert in source order with number hint, compare two strings by UTF-16 code units, otherwise compare numbers with all NaN comparisons false. Own/inherited valueOf/toString methods work on ordinary objects, arrays and functions; default ordinary objects convert through inherited Object valueOf/toString to [object Object] (numeric NaN). Arrays/functions/Boolean/Number/String wrappers temporarily inherit tag strings; their standard conversion overrides remain deferred. Both operand evaluations precede coercion. === !==, truthiness and Number predicates never coerce. Conditional precedence, selected-arm evaluation and existing bounds remain unchanged. No BigInt, loose equality, comma, bitwise, update, compound assignment, nullish coalescing or optional chaining. |
 | Statements | semicolon-terminated expressions and let; blocks, if/else, while, function declarations, return, throw, unlabelled break/continue, empty statement | Semicolons required; no ASI, var/const, for/do, switch, try/catch/finally or labels. Declarations as if/while bodies require braces. Return/throw expressions cannot start on a later line. |
 | Scope | Block lexical bindings, TDZ, mutable captured bindings, function hoisting in their declaration list, recursion, shadowing in nested blocks | One let binding per declaration. Duplicate names/parameters rejected, including function declarations sharing a parameter name. Global builtin names cannot be redeclared. Separate Script global environments and Annex B deferred. |
 | Functions | Declarations and anonymous expressions, simple parameters, left-to-right argument effects, missing args undefined/excess args evaluated, return/fallthrough, own properties | No named function expressions, arrows, rest/default/destructuring parameters, constructors, classes, argument objects, generators/async. Strict-call profile regardless of directives; detached and top-level this are undefined. |
-| Objects | Colon-valued literal entries with word/string keys; dot and computed key get/write; aliases; ordinary methods as function-valued properties; missing properties undefined | Ordinary inherited data properties supported when seeded by the host; production objects inherit their Realm Object root. No accessors, method shorthand, numeric/computed literal keys, spread, guest deletion syntax or enumeration APIs. Literal __proto__ rejected. Primitive keys convert to strings; ordinary object keys use explicit toString/valueOf methods with string hint. Primitive property bases reject. |
+| Objects | Colon-valued literal entries with word/string keys; dot and computed key get/write; aliases; ordinary methods as function-valued properties; missing properties undefined | Ordinary inherited data properties supported when seeded by the host; production objects inherit their Realm Object root. No accessors, method shorthand, numeric/computed literal keys, spread, guest deletion syntax or enumeration APIs. Literal __proto__ rejected. Symbol keys retain identity; other primitive keys convert to strings. Object keys use the symbol protocol then string-hint ordinary conversion; default objects key as [object Object]. Primitive property bases reject. |
 | Bootstrap | Per-realm console object and console.log; undefined/NaN/Infinity bindings; partial Number namespace below | No other standard constructors or globals, eval, Function, filesystem or process in guest code. Console rendering is a host diagnostic convention, not guest ToString. |
 | Data descriptors (TS-004A) | Internal data/generic descriptor validation with explicit absence/defaulting, SameValue, atomic rejection, non-configurable/non-writable invariants, and preventExtensions. Existing writable own properties remain writable on non-extensible objects; new assignment fails. | Host APIs only; no guest Object/Reflect builtins, accessors or proxies. Internal key listing/deletion are described in TS-004C below. Internal false and strict assignment TypeError are distinct. |
 | Prototypes (TS-004B) | Internal get/set with explicit receiver and normal/throw results; iterative inherited data lookup, receiver-own writes, cycle and extensibility checks; strict assignment rejection. Compiled host tests seed guest realms and exercise inherited method this. | TS-016A adds per-Realm Object/Function/Array roots, with an immutable null-root Object prototype. No guest prototype mutation/reflection APIs or accessors. Literal __proto__ still rejected. |
@@ -22,7 +22,7 @@ claim that all coercion cases are supported.
 | Errors | Parse locations, runtime locations, thrown guest values, ReferenceError/TypeError/RangeError diagnostics | Engine errors are string values plus diagnostic records, not Error instances. No guest catch syntax or stack traces. Across-run redeclaration fails at runtime before new declarations are installed. |
 | Primitive conversion (TS-005N) | Internal ToNumber/ToUint32 for existing primitive Value kinds, exact numeric-string scanning and tested binary64 backend, signed-zero preservation/normalization. | Host driver API only; no operator/builtin integration. Objects explicitly throw unsupported-conversion runtime TypeError without guest calls. No symbols/BigInts or ToPrimitive. |
 | Definition dispatch (TS-005D) | Required-location normal/throw definition API; receiver overrides propagate exact guest throws, strict assignment preserves RHS and translates false, bootstrap rejects false/throw as host faults. | Internal prerequisite only; no arrays, generic exotics, guest reflection or conversion integration. |
-| Array storage (TS-005A) | Host-created GuestArray with real own length, canonical index growth, holes, sparse descending truncation, partial failure restoration/delayed freezing, double number-hint length conversion (TS-015B), ordinary prototype reads and receiver-aware assignment. Seeded guest assignments preserve original RHS and report runtime errors at the assignment. | Array literals are supported by TS-006 below; no Array constructor, methods, species, symbols, accessors or generic exotics. Explicit ordinary valueOf/toString hooks are supported for length; absent/both-object methods throw TypeError. Low-level host construction defaults to null; production arrays inherit the Realm array root. |
+| Array storage (TS-005A) | Host-created GuestArray with real own length, canonical index growth, holes, sparse descending truncation, partial failure restoration/delayed freezing, double number-hint length conversion (TS-015B), ordinary prototype reads and receiver-aware assignment. Seeded guest assignments preserve original RHS and report runtime errors at the assignment. | Array literals are supported by TS-006 below; no Array constructor, standard conversion overrides, species, accessors or generic exotics. Ordinary symbol properties are supported. Explicit conversion hooks are supported for length. Default Realm objects convert twice then fail with RangeError invalid array length; null-root missing hooks and explicit both-object hooks still throw TypeError. Low-level host construction defaults to null; production arrays inherit the Realm array root. |
 | Resources | Source, parser, step, call and frame bounds; independent realm state | No heap quota, suspension, jobs or security isolation guarantees; see architecture decisions. |
 
 `test/fixtures/semantics.js`, `order.js`, `examples/counter.js`, and the realm driver
@@ -72,8 +72,7 @@ Internal ordinaryToPrimitive and partial toPrimitive support explicit own or
 inherited callable valueOf/toString methods, original receivers, fresh fallback
 lookups and shared active evaluation budgets. A compiled test bridge exercises
 real guest methods; TS-018B later registers Object.prototype.valueOf. TS-012 connects the helper to existing numeric, addition and relational operators.
-TS-013 connects computed keys and required-context reference consumption. TS-014 connects array-like length and internal map. TS-015B connects semantic array length definitions through two separate number-hint conversions. Direct numeric/string converters and bootstrap array length remain primitive-only. Object.prototype.toString and wrapper conversion methods, symbol hooks, Date, accessors/proxies
-and full ToPrimitive remain unsupported. Evidence: [TS-011](validation/ts-011/README.md).
+TS-013 connects computed keys and required-context reference consumption. TS-014 connects array-like length and internal map. TS-015B connects semantic array length definitions through two separate number-hint conversions. Direct numeric/string converters and bootstrap array length remain primitive-only. Later TS-019B1/C add the real symbol hook and Object toString. Wrapper conversion overrides, Date and accessors/proxies remain unsupported. Evidence: [TS-011](validation/ts-011/README.md).
 
 TS-015A requires OperationContext on semantic Set/Define and replaces host setup
 `define` with validated descriptor-form `bootstrapDefine`. Constructor and setup
@@ -132,8 +131,7 @@ explicit String object; neither performs implicit boxing.
 These are host/internal APIs. Primitive member access still fails, receivers stay
 unchanged, Number remains a noncallable namespace, and no wrapper globals,
 constructors or conversion methods are installed. Direct primitive converters
-still reject every object, and ordinary ToPrimitive still needs explicit hooks.
-Symbols, accessors, proxies and Object.prototype.toString remain deferred; TS-018B below installs Object.prototype.valueOf. Keys and
+still reject every object. TS-018B installs Object.valueOf and TS-019C installs Object.toString; wrappers temporarily inherit tag-string defaults. Symbols are covered by TS-019A/B/C; accessors and proxies remain deferred. Keys and
 snapshots allocate proportional to string length; no huge-string resource claim
 is made. [Acceptance evidence and W1-W19 map](validation/ts-018a/README.md).
 
@@ -144,8 +142,7 @@ returns an object receiver unchanged or explicitly boxes a supported primitive
 in the method's defining Realm; null/undefined throw a located TypeError. Extra
 arguments are ignored after ordinary call-site evaluation. Saved and borrowed
 methods use existing call context, Realm restoration and shared budgets.
-Default ordinary coercion still fails: inherited valueOf returns an object, and
-toString is absent. The new inherited call counts against call depth; it adds
+Inherited valueOf returns an object; TS-019C now supplies the second ordinary hook, Object.toString. The new inherited call counts against call depth; it adds
 no synthetic ticks. Primitive member access and direct primitive converters keep
 their existing rejection boundaries. No Object global, wrapper conversion
 methods, constructors, implicit boxing, toString or symbols are introduced.
@@ -163,8 +160,7 @@ operator, array-like length/map and double array-length conversions all consume
 this protocol with shared budgets and callable-Realm restoration.
 
 This is an internal/host-bridge surface. There is no guest Symbol global,
-registry, toStringTag, Object toString,
-accessor/proxy or implicit boxing expansion. Earlier TS-011 exclusions of symbol
+registry, accessor/proxy or implicit boxing expansion. TS-019C subsequently adds toStringTag and Object toString. Earlier TS-011 exclusions of symbol
 hooks are superseded only by this bounded stage. [P1-P9 evidence](validation/ts-019b1/README.md).
 
 ### Symbol prototype conversion methods (TS-019B2)
@@ -181,5 +177,21 @@ can be deleted, exposing fresh ordinary method lookup in the usual hint order.
 This supersedes earlier missing-Symbol-method limits only. Direct converters
 still reject objects without invoking hooks, and Object `valueOf` still boxes
 symbol primitives. No Symbol global/factory/registry, description accessor,
-constructor backlink, tag, Object toString, or implicit member boxing is added.
+constructor backlink or implicit member boxing is added. TS-019C below adds the tag and Object toString.
 [P10/P11 evidence and expectation audit](validation/ts-019b2/README.md).
+
+### Object toString and canonical symbol tags (TS-019C)
+
+Object.prototype.toString now uses explicit defining-Realm boxing, classification
+before one tick and one real-symbol Get, and an uncoerced string tag or builtin
+fallback. Null/undefined return immediately without boxing or lookup. Symbol
+prototype has a configurable readonly canonical tag; Symbol boxes have Object
+fallback if that tag is missing/nonstring. Data-only Get remains the boundary.
+
+Ordinary defaults now produce [object Object], numeric NaN and that computed key.
+Array-like length={} becomes 0; array length={} makes two full conversions and
+throws RangeError without changing length. Array/Function/Boolean/Number/String
+wrappers inherit interim tag defaults, **not complete standard conversion**.
+Symbol wrappers retain their B2 payload protocol. No global/constructor, accessor,
+proxy, wrapper override or implicit member boxing expansion.
+[Both C matrices, migrations and retained validation](validation/ts-019c/README.md).

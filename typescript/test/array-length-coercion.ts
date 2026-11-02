@@ -186,7 +186,7 @@ for (const mode of ["noncallable", "object", "missing", "both-object"]) {
     if (mode === "both-object") put(rhs, "toString", binding(active, "objectResult"));
     const result = define(active, { value: obj(rhs) });
     if (mode === "missing" || mode === "both-object") {
-        error(result, "TypeError", "cannot convert object to primitive");
+        error(result, mode === "missing" ? "RangeError" : "TypeError", mode === "missing" ? "invalid array length" : "cannot convert object to primitive");
         length(object(binding(active, "target")), 3);
         hits(active, 0, mode === "missing" ? "" : "oo");
     } else {

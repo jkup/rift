@@ -901,7 +901,7 @@ Coordinator acceptance: TS-019B2 accepted `0127007` on 2026-11-02. Reviewed slot
 
 ### TS-019C — Object toString and real symbol tags
 
-Status: **ready for assignment**. Prerequisite TS-019B2 accepted `0127007`. Implement C/T1-T8 in both docs/symbol-foundation.md and docs/primitive-wrappers.md (their T identifiers describe complementary matrices). Own src/builtins/object.ts, minimal symbols.ts/Realm/Symbol registration changes, affected compiled drivers/runtime-read fixtures, scoped documentation and docs/validation/ts-019c/. Coordinator owns COORDINATION.md; Claude assistance queue remains reserved.
+Status: **in progress**. Owner: Codex TS-019C implementation chat; accepted base `eced90f`, branch `codex/primitive-computed-keys`. Prerequisite TS-019B2 accepted `0127007`. Implement C/T1-T8 in both docs/symbol-foundation.md and docs/primitive-wrappers.md (their T identifiers describe complementary matrices). Own src/builtins/object.ts, minimal symbols.ts/Realm/Symbol registration changes, affected compiled drivers/runtime-read fixtures, scoped documentation and docs/validation/ts-019c/. Coordinator owns COORDINATION.md; Claude assistance queue remains reserved.
 
 Export shared immutable wellKnownToStringTag with description Symbol.toStringTag. Install fresh per-Realm Object.prototype.toString through registerObjectToString, name toString/length0, W/E/C true/false/true; standard function metadata/ownership/prototype unchanged. Register after existing Object valueOf, preserving that key then toString. Install Symbol prototype canonical tag string Symbol with false/false/true attributes after its conversion methods. No guest global/well-known static properties, registry or other tags/methods.
 
@@ -914,3 +914,25 @@ Freeze the interim exposure explicitly: ordinary objects now coerce to [object O
 Before edits, inventory all missing-toString/root-own-key/default-object-error assertions, exact traces/tight budgets and negative fixtures across the entire suite. Replace obsolete missing-method expectations with specific new results, while retaining former negative intent using explicit failing methods or null roots where appropriate and documenting why. No blanket expected-output replacement, denominator reduction, suppressed ticks or weakened observers. Count one additional tick per Object toString tag Get, in addition to existing protocol/ordinary lookup ticks and actual calls. Preserve existing tests,164cases/23gates; add a focused driver only if useful and register it fail-closed. Keep code readable and evidence mapped to every matrix row.
 
 Consult fixed ECMA-2622025 Object.prototype.toString20.1.3.6 and Symbol tag20.4.3.6 plus pinned engine source. Require typecheck, runner/probes, full rebuilt Node/native and all static-only builds/separate coverage gates. Retain compiler failures/reductions before workarounds; no pin changes. No C++/Claude/COORDINATION edits, branch switch, main merge, guest Symbol/Object constructors, accessors/proxies, implicit boxing, unrelated builtin expansion or successor dispatch. Commit/push tested coherent work and stop for independent review.
+
+TS-019C handoff (2026-11-02): implementation complete, awaiting independent
+coordinator acceptance. Added registerObjectToString, canonical wellKnownToStringTag,
+and per-Realm Symbol tag. Classification precedes charged Get; nullish paths
+skip boxing/lookup; Symbol fallback remains Object. Both complementary T1-T8
+matrices, default-object expectation migrations and exact budgets/completions
+are covered by the existing compiled drivers plus runtime-read fixture.
+Typecheck PASS, runner 20/20, probes 10/10, rebuilt Node/native 164/164 each with no
+skips; all 23 static-only builds and separate coverage gates PASS (CLI 1314,
+object-valueof 2040). Retained two minimal SC1090 reductions before local
+test-only changes (host class reflection replaced by callable-slot observer;
+inherited field given explicit initializer). Zig sandbox failure and successful
+authorized validation retained. No production compiler workaround, pin/gate
+change, C++/Claude/COORDINATION edit, branch switch or merge. Arrays/functions/
+Boolean/Number/String defaults remain explicitly partial inherited tag strings;
+Symbol B2 protocol, direct-converter and primitive-member boundaries preserved.
+Evidence: docs/validation/ts-019c/README.md. Commit/push bounded work and stop.
+
+Pre-handoff coordinator readability request applied: expanded only new C fixture
+functions and multi-effect callbacks/try branches; typed PrimitiveHint list.
+Updated four fixed guest diagnostic positions. Final rebuilt Node/native 164/164
+and all 23 static/coverage gates pass again; typecheck passes. Evidence refreshed.

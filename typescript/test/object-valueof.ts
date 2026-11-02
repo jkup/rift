@@ -1,5 +1,6 @@
 import { GuestSymbol } from "../src/symbols.js";
 import { testSymbolConversions } from "./symbol-conversions.js";
+import { testObjectToString } from "./object-tostring.js";
 import { GuestSymbolObject } from "../src/primitive-objects.js";
 import { toObject } from "../src/object-conversion.js";
 import { stringKeys } from "./key-assertions.js";
@@ -62,7 +63,7 @@ check(sameValue(fn.get("name"), { kind: "string", value: "valueOf" }), "method n
 check(sameValue(fn.get("length"), { kind: "number", value: 0 }), "method length");
 const d = b.objectPrototype.getOwnProperty("valueOf");
 check(d !== undefined && d.writable && !d.enumerable && d.configurable, "method flags");
-check(stringKeys(b.objectPrototype.ownPropertyKeys()).join(",") === "valueOf" && !b.global.bindings.has("Object"), "bounded installation");
+check(stringKeys(b.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && !b.global.bindings.has("Object"), "bounded installation");
 
 // V1: ToObject must neither inspect the receiver nor invoke its methods.
 class NoReads extends GuestObject {
@@ -191,7 +192,7 @@ for (const mode of ["null", "guest", "host", "steps"]) {
     check(escaped === (mode === "host") && active.context.realm === a && active.calls === 0 && active.depth === 0, "all abrupt cleanup");
 }
 
-// V6: observe the actual inherited call and both lookup ticks; no toString exists.
+// V6/C: actual inherited calls plus the new tag lookup tick.
 for (const source of ["{}", "[]", "function() {}"] ) {
     const active = new Evaluator(a);
     const parsed = parse("let operand = " + source + ";");
@@ -205,15 +206,19 @@ for (const source of ["{}", "[]", "function() {}"] ) {
         realm: a,
         tick: (at) => { events += "tick;"; return active.tick(at); },
         call: (callee, receiver, args, at) => {
-            check(callee === local.objectPrototype.get("valueOf") && receiver === operand && args.length === 0, "real inherited valueOf call");
-            events += "valueOf;";
+            const first = callee === local.objectPrototype.get("valueOf");
+            check((first || callee === local.objectPrototype.get("toString")) && receiver === operand && args.length === 0, "real inherited method call");
+            events += first ? "valueOf;" : "toString;";
             const completion = active.call(callee, receiver, args, at);
-            check(object(result(completion)) === object(operand), "inherited method returns object");
+            if (first) check(object(result(completion)) === object(operand), "inherited method returns object");
             return completion;
         },
     };
-    error(toPrimitive(operand, "number", context, loc), "TypeError", "cannot convert object to primitive", loc);
-    check(events === "tick;tick;valueOf;tick;" && active.steps === 3, "inherited conversion trace");
+    const converted = result(toPrimitive(operand, "number", context, loc));
+    const tag = source === "{}" ? "Object" : source === "[]" ? "Array" : "Function";
+    check(converted.kind === "string" && converted.value === "[object " + tag + "]", "inherited default result");
+    // The method body uses the active evaluator context, not this observer adapter.
+    check(events === "tick;tick;valueOf;tick;toString;" && active.steps === 4, "inherited conversion trace");
     const tight = new Evaluator(a, 2, 0);
     error(toPrimitive(operand, "number", tight.context, loc), "RangeError", "call depth limit exceeded", loc);
     check(tight.steps === 2 && tight.calls === 0 && tight.context.realm === a, "new inherited call participates in limit");
@@ -274,7 +279,7 @@ check(symbolEvaluator.steps === 0 && symbolEvaluator.context.realm === a, "A16 n
 const transported = new Evaluator(c);
 check(object(result(transported.call(symbolMethod, value(symbolBox), [], loc))) === symbolBox, "A2/A16 foreign existing box unchanged");
 check(symbolB.symbolPrototype !== a.symbolPrototype && !(symbolB.symbolPrototype instanceof GuestSymbolObject), "A17 root has no payload");
-check(symbolB.symbolPrototype.ownPropertyKeys().length === 3 && symbolB.symbolPrototype.getPrototypeOf() === symbolB.objectPrototype && symbolB.symbolPrototype.isExtensible() && symbolB.symbolPrototype.callable === null, "A17/B2 exact root graph");
+check(symbolB.symbolPrototype.ownPropertyKeys().length === 4 && symbolB.symbolPrototype.getPrototypeOf() === symbolB.objectPrototype && symbolB.symbolPrototype.isExtensible() && symbolB.symbolPrototype.callable === null, "A17/B2 exact root graph");
 const lookalike = new GuestObject(symbolB.symbolPrototype);
 check(!(lookalike instanceof GuestSymbolObject), "A17 prototype is not a slot");
 symbolBox.setPrototypeOf(null);
@@ -330,8 +335,9 @@ for (const mode of ["normal", "guest", "host", "steps"]) {
 const symbolLimit = new Evaluator(a, 0, 1);
 error(symbolLimit.call(forwarded, symbolMethod, [symbolValue], loc), "RangeError", "call depth limit exceeded", loc);
 check(symbolLimit.calls === 0 && symbolLimit.context.realm === a && symbolLimit.steps === 0, "A18 shared call limit cleanup");
-check(!symbolB.global.bindings.has("Symbol") && symbolB.symbolPrototype.ownPropertyKeys().length === 3, "A24/B2 methods without Symbol global");
+check(!symbolB.global.bindings.has("Symbol") && symbolB.symbolPrototype.ownPropertyKeys().length === 4, "A24/B2 methods without Symbol global");
 
 testSymbolConversions();
+testObjectToString();
 
 console.log("object valueOf passed");

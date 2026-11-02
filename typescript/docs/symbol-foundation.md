@@ -466,3 +466,12 @@ order. Method bodies perform only slot validation and primitive result creation;
 existing context calls, conversion lookups and budgets remain authoritative.
 The extended P10/P11 matrix, negative-expectation audit and validation records are
 in [TS-019B2 evidence](validation/ts-019b2/README.md). C remains unimplemented.
+
+## C implementation status (2026-11-02)
+
+TS-019C now implements the frozen canonical tag and Object toString contract;
+this supersedes the historical C-unimplemented note above. Symbol fallback is
+Object, with the real property alone supplying Symbol. Both complementary T
+matrices, deliberate default-object expectation migrations and validation are in
+[TS-019C evidence](validation/ts-019c/README.md). No Symbol global, registry,
+accessor, implicit boxing or standard wrapper/Array/Function override is added.

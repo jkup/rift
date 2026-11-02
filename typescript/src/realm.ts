@@ -3,7 +3,7 @@ import { GuestArray } from "./array-object.js";
 import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value } from "./runtime.js";
 import { registerNumber } from "./builtins/number.js";
 import { registerFunction } from "./builtins/function.js";
-import { registerObjectValueOf } from "./builtins/object.js";
+import { registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
 import { registerSymbolConversions } from "./builtins/symbol.js";
 import type { Stmt } from "./syntax.js";
 import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
@@ -32,6 +32,7 @@ export class Realm {
         this.stringPrototype = new GuestStringObject("", this.objectPrototype);
         this.symbolPrototype = new GuestObject(this.objectPrototype);
         registerObjectValueOf(this);
+        registerObjectToString(this);
         registerFunction(this);
         registerSymbolConversions(this);
         this.global.bindings.set("undefined", { initialized: true, mutable: false, value: UNDEFINED });

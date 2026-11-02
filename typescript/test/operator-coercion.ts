@@ -144,7 +144,16 @@ for (const row of primitiveRows) {
         expect(active, "+operand", row.numeric);
     }
 }
-for (const object of ["{}", "[]", "function() {}", "{valueOf: function() { return {}; }, toString: function() { return []; }}"]) {
+// C defaults are interim tags for arrays/functions; explicit both-object hooks still fail.
+for (const source of ["{}", "[]", "function() {}"]) {
+    const active = setup();
+    run(active, "let operand = " + source + ";");
+    const tag = source === "{}" ? "Object" : source === "[]" ? "Array" : "Function";
+    expect(active, "+operand", NaN);
+    expect(active, "-operand", NaN);
+    for (const op of operators) expect(active, "operand " + op + " 2", op === "+" ? "[object " + tag + "]2" : ["<", ">", "<=", ">="].includes(op) ? false : NaN);
+}
+for (const object of ["{valueOf: function() { return {}; }, toString: function() { return []; }}"]) {
     for (const expression of ["+operand", "-operand", ...operators.map(op => "operand " + op + " 2")]) {
         const active = setup();
         run(active, "let operand = " + object + ";");

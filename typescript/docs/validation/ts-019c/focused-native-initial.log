@@ -1,0 +1,18 @@
+C:/Users/jonku/code/rift/typescript/test/object-tostring.ts:237:41 - error SC1090: class prototype reflection and accessor replacement (named prototype data and methods compile) is not supported yet
+
+  236 |     const changing = new Observed((_key, _receiver, _at) => {
+  237 |         Object.setPrototypeOf(changing, GuestNumber.prototype);
+      |                                         ^~~~~~~~~~~~~~~~~~~~~
+  238 |         return normal(UNDEFINED);
+
+1 error.
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\object-valueof.ts
+
+  statements analyzed   2011
+  compile statically    2010  (99%)
+    in dynamic tier     402  (operate on values typed only at runtime; --explain-dynamic lists them)
+
+  blockers:
+      ×1  SC1090  class prototype reflection and accessor replacement (named prototype data and methods compile)
+          at C:/Users/jonku/code/rift/typescript/test/object-tostring.ts:237:41
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)

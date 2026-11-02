@@ -712,3 +712,29 @@ still have no methods. Stage A's direct converter, primitive reference, wrapper
 storage and strict receiver boundaries remain intact. Only O's initial own keys
 change to `[valueOf]`; all other roots keep their own keys and inherit this method.
 See [validation and migration audit](validation/ts-018b/README.md).
+
+## Object toString and canonical tag lookup (TS-019C)
+
+`registerObjectToString` installs after valueOf. Its body handles nullish values
+first, then uses the existing defining-Realm ToObject boundary. It classifies
+Array before callable objects and Boolean/Number/String slots before ordinary
+Object fallback. Classification finishes before one charged canonical-symbol Get.
+The returned tag is used only if it is already a string; tag values never undergo
+conversion. Exact throw completions propagate through existing call cleanup.
+
+The shared `wellKnownToStringTag` identity is installed on each Symbol root after
+its B2 methods, with false/false/true attributes. Symbol has no builtin fallback
+tag: deleting or shadowing that property can expose Object. Mutable tag properties
+belong to Realms; the key identity belongs to the runtime module instance.
+
+This follows fixed [ECMA-262 2025 Object toString and Symbol tag](https://tc39.es/ecma262/2025/multipage/fundamental-objects.html#sec-object.prototype.tostring)
+and the inspected [engine262 ObjectPrototype at d553e7b](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/intrinsics/ObjectPrototype.mts).
+No engine source is copied. Existing data-only Get and explicit context/completion
+interfaces remain; observer reentry tests do not imply accessor/proxy support.
+
+This supersedes the earlier default-object failure in TS-018B. Ordinary objects
+now convert to a tag string, numeric NaN and the corresponding computed key.
+Array/Function/Boolean/Number/String default conversion remains deliberately
+partial until separate standard overrides are implemented. Symbol boxes retain
+B2 behavior. Primitive-only converters and implicit-member-boxing rejection stay.
+See [both T matrices, migration inventory and validation](validation/ts-019c/README.md).

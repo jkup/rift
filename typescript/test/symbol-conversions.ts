@@ -8,7 +8,7 @@ import { GuestSymbolObject } from "../src/primitive-objects.js";
 import { toPrimitive, type PrimitiveHint } from "../src/primitive-conversion.js";
 import { Realm } from "../src/realm.js";
 import { GuestObject, UNDEFINED, normal, sameValue, type Value, type ValueCompletion, type PropertyKey, type OperationContext } from "../src/runtime.js";
-import { GuestSymbol, wellKnownToPrimitive } from "../src/symbols.js";
+import { GuestSymbol, wellKnownToPrimitive, wellKnownToStringTag } from "../src/symbols.js";
 import type { Location } from "../src/syntax.js";
 
 const loc: Location = { line: 83, column: 9 };
@@ -69,7 +69,7 @@ export function testSymbolConversions(): void {
 
     // P10 metadata, exact canonical key, and per-Realm function ownership.
     for (const realm of [a, b, c]) {
-        keys(realm.symbolPrototype.ownPropertyKeys(), methodKeys, "root keys");
+        keys(realm.symbolPrototype.ownPropertyKeys(), [...methodKeys, wellKnownToStringTag], "root keys");
         check(!(realm.symbolPrototype instanceof GuestSymbolObject), "root lacks payload");
         check(!realm.global.bindings.has("Symbol"), "no global");
         for (const absent of ["constructor", "description", "Symbol.toPrimitive", "@@toPrimitive"]) {
@@ -207,7 +207,7 @@ export function testSymbolConversions(): void {
     check(removeShadow.type === "normal" && removeShadow.value, "remove own shadow");
     const deleted = b.symbolPrototype.internalDelete(wellKnownToPrimitive);
     check(deleted.type === "normal" && deleted.value, "configurable hook deletion");
-    keys(a.symbolPrototype.ownPropertyKeys(), methodKeys, "other Realm unchanged");
+    keys(a.symbolPrototype.ownPropertyKeys(), [...methodKeys, wellKnownToStringTag], "other Realm unchanged");
     check(sameValue(result(evaluator.call(methods[2], boxed, [ignored], loc)), payload), "saved deleted hook works");
     for (const hint of hints) {
         box.reads = [];

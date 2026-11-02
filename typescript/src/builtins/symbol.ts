@@ -1,7 +1,7 @@
 import type { Realm } from "../realm.js";
 import { GuestSymbolObject } from "../primitive-objects.js";
 import { failure, normal, type ThrowCompletion, type Value } from "../runtime.js";
-import { symbolDescriptiveString, wellKnownToPrimitive, type GuestSymbol } from "../symbols.js";
+import { symbolDescriptiveString, wellKnownToPrimitive, wellKnownToStringTag, type GuestSymbol } from "../symbols.js";
 import type { Location } from "../syntax.js";
 
 export type SymbolCompletion = { type: "normal"; value: GuestSymbol } | ThrowCompletion;
@@ -33,6 +33,10 @@ export function registerSymbolConversions(realm: Realm): void {
     });
     realm.symbolPrototype.bootstrapDefine(wellKnownToPrimitive, {
         value: { kind: "object", object: toPrimitive },
+        writable: false, enumerable: false, configurable: true,
+    });
+    realm.symbolPrototype.bootstrapDefine(wellKnownToStringTag, {
+        value: { kind: "string", value: "Symbol" },
         writable: false, enumerable: false, configurable: true,
     });
 }
