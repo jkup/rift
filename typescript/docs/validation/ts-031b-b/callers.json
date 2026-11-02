@@ -7516,12 +7516,12 @@
   },
   {
     "path": "tools/test262/observe.mjs",
-    "line": 130,
+    "line": 136,
     "source": "saved.resultPath, binding.nonce, String(limits.steps), String(limits.calls)], { windowsHide: true, stdio: ['ignore','pipe','pipe'] });"
   },
   {
     "path": "tools/test262/observe.mjs",
-    "line": 174,
+    "line": 180,
     "source": "mode, archiveRoot, limits: JSON.parse(await readFile(limitsPath, 'utf8')) });"
   },
   {
@@ -7536,7 +7536,7 @@
   },
   {
     "path": "tools/test262/driver-result.mjs",
-    "line": 34,
+    "line": 50,
     "source": "const value = JSON.parse(json);"
   }
 ]
