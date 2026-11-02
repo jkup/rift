@@ -68,3 +68,8 @@ merge or successor task was touched by this implementation.
    zero dynamic. Both reductions retain build, Node/native and coverage evidence.
    The driver uses that explicit narrowing without changing the required same
    Error-instance assertion. Production code is unchanged.
+
+Readability follow-up: [test-only cleanup and preservation audit](readability/README.md)
+expands statements/blocks and four resource selections. Rebuilt Node/native189/189
+and29 static/coverage gates pass again (driver2215); all702 string literal
+occurrences, assertions, prior189 expected records and29 entries are preserved.

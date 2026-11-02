@@ -1,0 +1,15 @@
+{
+  "baseline": "987d83b",
+  "driver": "test/in-operator.ts",
+  "formatter": "3.6.2",
+  "formattingOnlyOutsideSelections": true,
+  "exactSelectionEdits": [
+    "conversion tick selection",
+    "conversion call selection",
+    "conversion trace selection",
+    "recursive tick selection"
+  ],
+  "stringLiteralOccurrencesPreserved": 702,
+  "assertionsUnchanged": true,
+  "productionChanges": ""
+}

@@ -1,0 +1,193 @@
+{
+  "gates": [
+    {
+      "entry": "src/cli.ts",
+      "verdict": "PASS",
+      "staticStatements": 1530,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/realms.ts",
+      "verdict": "PASS",
+      "staticStatements": 1877,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-descriptors.ts",
+      "verdict": "PASS",
+      "staticStatements": 1321,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-prototypes.ts",
+      "verdict": "PASS",
+      "staticStatements": 1642,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-keys.ts",
+      "verdict": "PASS",
+      "staticStatements": 1326,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 853,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/definition-dispatch.ts",
+      "verdict": "PASS",
+      "staticStatements": 1668,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-storage.ts",
+      "verdict": "PASS",
+      "staticStatements": 1810,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-like.ts",
+      "verdict": "PASS",
+      "staticStatements": 1279,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/operation-context.ts",
+      "verdict": "PASS",
+      "staticStatements": 1850,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-map.ts",
+      "verdict": "PASS",
+      "staticStatements": 1996,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-literals.ts",
+      "verdict": "PASS",
+      "staticStatements": 1581,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/property-key-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1841,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/numeric-operators.ts",
+      "verdict": "PASS",
+      "staticStatements": 1614,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/addition.ts",
+      "verdict": "PASS",
+      "staticStatements": 1628,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/relational.ts",
+      "verdict": "PASS",
+      "staticStatements": 1659,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/primitive-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 2024,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/operator-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1661,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/key-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1678,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/length-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1801,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-length-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 2021,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/function-call.ts",
+      "verdict": "PASS",
+      "staticStatements": 1700,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-valueof.ts",
+      "verdict": "PASS",
+      "staticStatements": 2813,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-string-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 2027,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/function-string-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1843,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/abstract-equality.ts",
+      "verdict": "PASS",
+      "staticStatements": 1929,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/delete-operator.ts",
+      "verdict": "PASS",
+      "staticStatements": 2306,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/typeof-void.ts",
+      "verdict": "PASS",
+      "staticStatements": 2050,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/in-operator.ts",
+      "verdict": "PASS",
+      "staticStatements": 2215,
+      "dynamic": 0
+    }
+  ],
+  "baselineGatesPreserved": 29,
+  "lanes": [
+    {
+      "lane": "node",
+      "passed": 189,
+      "baselinePreserved": 189,
+      "added": []
+    },
+    {
+      "lane": "native",
+      "passed": 189,
+      "baselinePreserved": 189,
+      "added": []
+    }
+  ]
+}

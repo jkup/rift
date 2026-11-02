@@ -1403,3 +1403,15 @@ accepted matrix unchanged; reviewer should confirm the two suffix corrections.
 No production workaround, migration, pin/C++/Claude/COORDINATION change, branch
 switch, main merge or successor. Commit/push authorized milestone; stop for
 independent review, not self-accepted.
+
+TS-027A readability follow-up (2026-11-02, review base987d83b): after coordinator
+build clearance, expanded test/in-operator.ts to one statement per line and
+consistent braced blocks; replaced four nested resource selections with clear
+branches. No production/fixture/scenario/assertion/oracle changes. Source audit
+preserves all702 raw string literal occurrences and proves formatting-only
+outside the four recorded selections. Typecheck and rebuilt Node/native189/189
+pass; all29 static-only/separate coverage gates pass, zero dynamic (CLI1530,
+driver2215). Audit preserves all189 prior expected records and29 gate entries.
+Evidence: docs/validation/ts-027a/readability/README.md. Independent acceptance
+pending; coordinator can push the local commit because delegated push was blocked
+by automatic approval review. No successor or other ownership changes.
