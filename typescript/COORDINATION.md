@@ -640,3 +640,7 @@ Accepted c51d056 after actual production diff and parallel read-only test/eviden
 PR79 changed to d532a1422f02332f8919fed25d56483f4561a8ae. Existing read-only review chat01a19bda-2fd8-7e41-a44d-ad4e3b074d28 asked to independently review correction; no merge/acceptance yet. Shared checkout remains codex/test262-classification; main unchanged64bf139. Previous maintenance complete.
 
 Acceptance/next contract pushed71e4b63. Active sole TS-031B-B writer chat `01a19c73-66b4-7fa0-967e-1ca76fa6f66c`, hostlocal, base71e4b63; explicit wait confirmed active, saved cursore9eaa601-d7de-44a2-a8dc-d3d8c96302e3:2. PR79 read-only reviewer active, saved cursor0f150c52-8a07-4420-aec6-9d234073e38d:3. No competing runtime writes or builds.
+
+## Claude revised PR identification — owner follow-up
+
+The revised submission is PR80 https://github.com/jkup/rift/pull/80 (only open PR), head d532a1422f02332f8919fed25d56483f4561a8ae, same CL-005 branch. Earlier references to updated PR79 meant this branch head; use PR80 for integration. Read-only reviewer completed, cursor0f150c52-8a07-4420-aec6-9d234073e38d:4: reports21 malformed/noncanonical and7 invalid-radix rejections,1022 canonical candidates,13350-case reproduction matching results.json,334 retained lane verdicts unchanged. No actionable findings; root final diff/evidence/integration review pending. Do not switch branches beneath active TS-031B-B writer. Existing owner authorization covers merging good Claude PRs after review.
