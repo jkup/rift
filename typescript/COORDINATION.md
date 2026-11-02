@@ -491,3 +491,5 @@ Acceptance/next contract pushed through80204eb, resolving delegated export rejec
 Accepted pushed5dd652a after full contract/named-matrix review, independent fixed2025 operand/typecheck/key order and actual parser/descriptor-presence/resource path inspection. Reproduced117-file/118-candidate audit unchanged; diff check clean. No runtime/integrated rerun; baseline5cdf9e4 stays182/182/28gates. Designer idle, cursor `64a1353a-fe0c-4835-9fcc-09ff19ab5085:2`.
 
 Frozen TS-027A minimal in implementation with full matrices, native default64 recursion and preserved baseline. CL-004/005 ready/reserved; main unchanged7f7d682. Next implementation pending dispatch.
+
+Acceptance/next contract pushed throughf3b962f. Active sole implementation writer: TS-027A chat `01a19b33-64da-7ca1-a6dc-1b1c26e92f23`, host `local`, base `f3b962f`. Explicit wait confirmed active; saved cursor `5e008785-fa4c-4de9-9a01-6e51ec93b9e6:1`. Owns frozen in-operator implementation/tests; coordinator owns this file. No successor before independent review.
