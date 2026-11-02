@@ -1728,6 +1728,24 @@ Coordinator acceptance: TS-031A accepted500d09a, 2026-11-02. Reviewed correction
 
 ### TS-031B-P — Structured engine outcome and driver design
 
-Status: **ready**. Owner: unclaimed. Prerequisites accepted TS-031P/031A. Design only. Own docs/structured-engine-outcomes.md, docs/validation/ts-031b-p/ evidence and TASKS handoff; coordinator owns COORDINATION. Inspect every lexer/parser/runtime guard/diagnostic/throw construction site and caller. Freeze explicit unsupported/indeterminate syntax versus audited early-error rule tags, resource provenance/counts (including pre-increment call guard), source-unit/stage identity and diagnostic compatibility. Map smallest candidate certified rules to valid/invalid whole-source neighbors and context restrictions. Do not upgrade existing generic parser errors merely from message text or expected tests.
+Status: **review needed**. Owner: Codex design chat `01a19c39-2d1f-7613-ae72-08071a76a217`, base `a87e86c`, 2026-11-02. Prerequisites accepted TS-031P/031A. Design only. Own docs/structured-engine-outcomes.md, docs/validation/ts-031b-p/ evidence and TASKS handoff; coordinator owns COORDINATION. Inspect every lexer/parser/runtime guard/diagnostic/throw construction site and caller. Freeze explicit unsupported/indeterminate syntax versus audited early-error rule tags, resource provenance/counts (including pre-increment call guard), source-unit/stage identity and diagnostic compatibility. Map smallest candidate certified rules to valid/invalid whole-source neighbors and context restrictions. Do not upgrade existing generic parser errors merely from message text or expected tests.
 
 Specify narrow separate static-native-compatible batch-driver boundary for parser/body observation only, and its parent-owned Identity/Inputs/expectedNegative/policy binding to accepted host tools. All conformance profile/harness gates stay blocked; real Error object extraction, Script semantics, harness execution and profile admission remain deferred. Clarify trusted child evidence versus parent process/deadline/output-cap facts; guest stdout must not forge results. Preserve CLI behavior and existing211 guest cases32 native gates. Audit migration surface and literal acceptance matrix including source caps, parser/evaluator budgets, guest throws vs host faults, exact phase/location, seeded cleanup and actual native limits. Probes only for concrete uncertainty; no runtime/adapter implementation, new syntax/builtins, pins/C++/Claude changes or main merge. Recommend smallest separately reviewable implementation slice and exact owned files/interfaces, then commit/push design and stop.
+
+TS-031B-P handoff (2026-11-02): docs/structured-engine-outcomes.md and
+docs/validation/ts-031b-p/ freeze95 construction-site candidates,1390 caller
+matches, ten manual throw-shape migrations and124 literal acceptance rows.
+Reproducible audit confirms180 protected source/test/tool/probe/config files
+unchanged froma87e86c, contiguous matrix IDs and valid local links. No runtime,
+corpus guest or compiler probe run; inherited211/32 baseline is unchanged.
+Smallest recommended slice is provenance/in-process observation only; separate
+driver/parent transport follows independent review. Audited emitting syntax-rule
+set is explicitly empty initially; all five reserved candidate rules have
+whole-source/context and valid-neighbor requirements, strict cases deferred.
+Review this conservative split explicitly, rather than treating schema RULES as
+implemented certifications. Driver design binds parent Identity/Inputs/negative/
+policy, captures counts before cleanup, prevents stdout forgery and fixes the
+accepted host schema's observation-mode harness invariant only in a later slice.
+All conformance profiles/harness, real Error extraction and Script semantics
+stay blocked. No expected-record migrations, pins/C++/Claude/PR79 changes,
+branch switch/main merge or successor. Await independent coordinator review.
