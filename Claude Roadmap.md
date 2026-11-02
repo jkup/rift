@@ -87,7 +87,7 @@ Handoff: pending.
 
 ## CL-005 — Research a faithful nondecimal number formatter
 
-Status: **ready**. Owner: unclaimed. Dependencies: accepted TS-021P evidence.
+Status: **in progress**. Owner: Claude Code session, branch `claude/cl-005-radix-formatter-options` (separate worktree), base `36fc2be`. Dependencies: accepted TS-021P evidence.
 
 Purpose: investigate the concrete Number.toString blocker without changing the engine. Read typescript/docs/number-prototype-conversions.md and docs/validation/ts-021p/: both hosts fail seven exact rounding-interval cases, including0.3/base3. Static compilation and host agreement alone are insufficient. Number valueOf proceeds independently.
 
