@@ -1,0 +1,212 @@
+[
+  {
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "100000",
+      "64"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "100000",
+      "64",
+      "extra"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "bad",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "100000",
+      "64"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\missing.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "100000",
+      "64"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "-1",
+      "64"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "NaN",
+      "64"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "1.5",
+      "64"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "9007199254740992",
+      "64"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "",
+      "64"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "100000",
+      "-1"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "100000",
+      "NaN"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "100000",
+      "1.5"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "100000",
+      "9007199254740992"
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  },
+  {
+    "args": [
+      "body-observation",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\source.js",
+      "test/synthetic.js",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\arguments-VV8GZl\\result.json",
+      "nonce",
+      "100000",
+      ""
+    ],
+    "status": 70,
+    "signal": null,
+    "stdout": "",
+    "stderr": "observation driver fault\n"
+  }
+]

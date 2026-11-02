@@ -1,0 +1,12 @@
+✔ I01 I05 exact pinned 33 files and all 3 harness blobs; original bytes untouched (27.2213ms)
+✔ I02 I04 exact S01 corruption and U11 CR rewrite fail identity; I05 code points preserved (1.2114ms)
+✔ I17 verified metadata retains pair when missing/corrupt default harness precedes profile skip (10.0685ms)
+✔ T12 verified local production ledgers retain 33/60 separately for both lanes, all blocked (109.9924ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 151.1262

@@ -1,0 +1,17 @@
+{
+  "process": {
+    "exitCode": null,
+    "signal": "SIGTERM",
+    "deadlineExpired": false
+  },
+  "outputBytes": 187,
+  "outputLimit": 100,
+  "capCount": 110,
+  "capKilled": true,
+  "crashBeforeCap": false,
+  "elapsedMs": 69.0293999999999,
+  "stdoutSha256": "d9b1f63b732cd4cd844381d79e5f5be23ef0747d5d5bb080a1ca8732c57e4b79",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "spawnError": null,
+  "cancelled": false
+}

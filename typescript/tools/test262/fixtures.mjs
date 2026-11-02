@@ -17,7 +17,7 @@ export function synthetic({ observation = { kind: 'normal' }, negative = null,
   }, { harness: [], transformedSourceSha256: H, profileId: 'synthetic-admitted',
     capabilityLedgerSha256: H, host: 'synthetic', platform: 'synthetic', toolchain: 'synthetic',
     limits,
-  }, { stage, harnessValidated: stage === 'test', bodyEvaluated: body ??
+  }, { stage, harnessValidated: stage === 'test' && mode === 'conformance', bodyEvaluated: body ??
       (observation.kind === 'normal' && stage === 'test' && negative?.phase !== 'parse' && mode !== 'parser-observation'), unit: 'test/synthetic.js',
     location: { line: 1, column: 1 }, process, stdoutSha256: H, stderrSha256: H, elapsedMs: 1,
   }, observation, negative, blockers);

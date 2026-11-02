@@ -98,7 +98,8 @@ function validateCore(value, expectedNegative, blockers) {
       (i.variant === 'module') !== (i.goal === 'Module') ||
       (i.variant === 'raw' && n.harness.length) ||
       (e.bodyEvaluated && e.stage !== 'test') ||
-      (e.stage === 'test' && !e.harnessValidated && i.variant !== 'raw') ||
+      (i.mode === 'conformance' && e.stage === 'test' && !e.harnessValidated && i.variant !== 'raw') ||
+      (i.mode !== 'conformance' && (n.harness.length !== 0 || e.harnessValidated)) ||
       (o.kind === 'not-run' && (e.bodyEvaluated || !['input','preflight'].includes(e.stage))) ||
       (o.kind === 'normal' && !['test','harness'].includes(e.stage)) ||
       (o.kind === 'syntax-error' && (e.bodyEvaluated || !['test','harness'].includes(e.stage) || !e.unit || !e.location)) ||

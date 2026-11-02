@@ -1,0 +1,18 @@
+{
+  "entry": "test/observation-serialization.ts",
+  "build": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\observation-serialization.exe\n",
+    "stderr": ""
+  },
+  "coverage": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\observation-serialization.ts\n\n  statements analyzed   1601\n  compile statically    1601  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+    "stderr": ""
+  },
+  "verdict": "PASS"
+}

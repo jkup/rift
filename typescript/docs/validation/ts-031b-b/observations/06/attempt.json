@@ -1,0 +1,165 @@
+{
+  "kind": "observation-attempt",
+  "state": "complete",
+  "plan": {
+    "context": {
+      "identity": {
+        "schemaVersion": 1,
+        "runId": "4abfb513-7617-4cdb-99a2-974b6789bd39",
+        "mode": "body-observation",
+        "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "path": "test/synthetic.js",
+        "blob": "3c2026484b9f7cdd0656569615cd157e2e7cea5f",
+        "sourceSha256": "902669008e141ccba8f35d478915374b5e32b51a0344e9b56bf4cdf6480bdfa3",
+        "variant": "non-strict",
+        "goal": "Script",
+        "lane": "node",
+        "engineCommit": "4e01bf63e3c78a43c49496a71811280b98b47a72",
+        "engineBuildSha256": "cc97d0c4a764d092faf55116caa6c2d639a005e6ca90e781c5acd7ce7013020c",
+        "adapterSha256": "927bdf48763dec0f7c6ae9e93c9b220cc65fc3d81f12469a57a6026430be2503",
+        "policySha256": "f473295aca370db30a22499864f26a08e3e582aa2b86160a7acb591fd93941f5",
+        "dirtySourceSha256": "0abad61bfe94c2ed14ff00aa86531fe1e75ed2dbc53671a1dc72510b691b677c"
+      },
+      "inputs": {
+        "harness": [],
+        "transformedSourceSha256": "902669008e141ccba8f35d478915374b5e32b51a0344e9b56bf4cdf6480bdfa3",
+        "profileId": "rift-subset-observation-v1",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "evaluationDepth": 256,
+          "steps": 100000,
+          "calls": 64,
+          "wallMs": 10000,
+          "outputBytes": 1048576
+        }
+      },
+      "expectedNegative": null,
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "synthetic-profile"
+        }
+      ]
+    },
+    "binding": {
+      "nonce": "590c63fa-c9e1-475c-8ed2-82608510c0b9",
+      "mode": "body-observation",
+      "unit": "test/synthetic.js"
+    },
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\a4547f7b-9bb2-4651-add4-54d663264240",
+    "sourcePath": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\a4547f7b-9bb2-4651-add4-54d663264240\\source.js",
+    "resultPath": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\a4547f7b-9bb2-4651-add4-54d663264240\\child.json",
+    "build": {
+      "entry": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\node\\src\\observation-driver.js",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "C:\\Users\\jonku\\code\\rift\\typescript\\build\\node\\src\\observation-driver.js"
+      ],
+      "hash": "cc97d0c4a764d092faf55116caa6c2d639a005e6ca90e781c5acd7ce7013020c"
+    },
+    "selection": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "variant": {
+        "id": "synthetic-node",
+        "path": "test/synthetic.js",
+        "lane": "node",
+        "variant": "non-strict",
+        "goal": "Script",
+        "blob": "3c2026484b9f7cdd0656569615cd157e2e7cea5f",
+        "sourceSha256": "902669008e141ccba8f35d478915374b5e32b51a0344e9b56bf4cdf6480bdfa3",
+        "transformedSourceSha256": "902669008e141ccba8f35d478915374b5e32b51a0344e9b56bf4cdf6480bdfa3",
+        "metadata": {
+          "negative": null
+        },
+        "harness": [
+          {
+            "path": "harness/assert.js",
+            "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "synthetic-profile"
+          }
+        ]
+      }
+    }
+  },
+  "record": {
+    "identity": {
+      "schemaVersion": 1,
+      "runId": "4abfb513-7617-4cdb-99a2-974b6789bd39",
+      "mode": "body-observation",
+      "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "path": "test/synthetic.js",
+      "blob": "3c2026484b9f7cdd0656569615cd157e2e7cea5f",
+      "sourceSha256": "902669008e141ccba8f35d478915374b5e32b51a0344e9b56bf4cdf6480bdfa3",
+      "variant": "non-strict",
+      "goal": "Script",
+      "lane": "node",
+      "engineCommit": "4e01bf63e3c78a43c49496a71811280b98b47a72",
+      "engineBuildSha256": "cc97d0c4a764d092faf55116caa6c2d639a005e6ca90e781c5acd7ce7013020c",
+      "adapterSha256": "927bdf48763dec0f7c6ae9e93c9b220cc65fc3d81f12469a57a6026430be2503",
+      "policySha256": "f473295aca370db30a22499864f26a08e3e582aa2b86160a7acb591fd93941f5",
+      "dirtySourceSha256": "0abad61bfe94c2ed14ff00aa86531fe1e75ed2dbc53671a1dc72510b691b677c"
+    },
+    "inputs": {
+      "harness": [],
+      "transformedSourceSha256": "902669008e141ccba8f35d478915374b5e32b51a0344e9b56bf4cdf6480bdfa3",
+      "profileId": "rift-subset-observation-v1",
+      "capabilityLedgerSha256": null,
+      "host": "v26.13.0",
+      "platform": "win32/x64",
+      "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "evaluationDepth": 256,
+        "steps": 100000,
+        "calls": 64,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      }
+    },
+    "evidence": {
+      "stage": "test",
+      "harnessValidated": false,
+      "bodyEvaluated": true,
+      "unit": "test/synthetic.js",
+      "location": {
+        "line": 1,
+        "column": 1
+      },
+      "process": {
+        "exitCode": 0,
+        "signal": null,
+        "deadlineExpired": false
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsedMs": 52.35330000000022
+    },
+    "observation": {
+      "kind": "throw",
+      "phase": "runtime",
+      "valueKind": "object",
+      "constructor": {
+        "outcome": "unsupported",
+        "name": null,
+        "realmId": null,
+        "secondary": null
+      },
+      "diagnostic": "guest throw"
+    }
+  }
+}

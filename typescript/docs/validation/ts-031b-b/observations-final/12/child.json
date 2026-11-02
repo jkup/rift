@@ -1,0 +1,1 @@
+{"driverVersion":1,"nonce":"a4d0ee9f-ae0c-4f3a-a6c2-f3b38e5c6969","mode":"body-observation","unit":"test/synthetic.js","stage":"test","bodyEvaluated":true,"location":{"line":1,"column":69},"observation":{"kind":"throw","phase":"runtime","valueKind":"number","constructor":{"outcome":"absent","name":null,"realmId":null,"secondary":null},"diagnostic":"guest throw"}}

@@ -1,0 +1,38 @@
+✔ node T01 T02 T03 T22 T24 actual parser/body/forgery/strict coordinates (1144.9322ms)
+✔ node actual default guards, throw and no constructor claim (915.4201ms)
+✔ node T17 T18 invalid argument and every numeric input fault (707.9318ms)
+✔ node T23 T32 exact encoder roundtrip and observable getter effects excluded (50.401ms)
+✔ node actual timeout and combined output cap terminate process and archive real counts (646.0845ms)
+✔ native T01 T02 T03 T22 T24 actual parser/body/forgery/strict coordinates (382.3168ms)
+✔ native actual default guards, throw and no constructor claim (281.3945ms)
+✔ native T17 T18 invalid argument and every numeric input fault (124.5315ms)
+✔ native T23 T32 exact encoder roundtrip and observable getter effects excluded (51.1105ms)
+✔ native actual timeout and combined output cap terminate process and archive real counts (279.8221ms)
+✔ T19 fixed caps are rejected before any launch (0.281ms)
+✔ T21 every prepared Identity/Inputs mutation is rejected before launch (302.6133ms)
+✔ T30 cancellation retains unfinished archive without terminal success (268.7481ms)
+✖ T31 preexisting result and symlink attempt roots rejected, prior bytes preserved (274.5914ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 13
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5484.6672
+
+✖ failing tests:
+
+test at tools\test262\observation.integration.mjs:156:1
+✖ T31 preexisting result and symlink attempt roots rejected, prior bytes preserved (274.5914ms)
+  Error: EPERM: operation not permitted, symlink 'C:\Users\jonku\code\rift\typescript\build\observations\ae3f49fa-e14e-4b5f-b791-d14ea16b349b\source.js' -> 'C:\Users\jonku\code\rift\typescript\build\observations\ae3f49fa-e14e-4b5f-b791-d14ea16b349b\child.json'
+      at async symlink (node:internal/fs/promises:1843:10)
+      at async TestContext.<anonymous> (file:///C:/Users/jonku/code/rift/typescript/tools/test262/observation.integration.mjs:163:34)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'symlink',
+    path: 'C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\ae3f49fa-e14e-4b5f-b791-d14ea16b349b\\source.js',
+    dest: 'C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\ae3f49fa-e14e-4b5f-b791-d14ea16b349b\\child.json'
+  }

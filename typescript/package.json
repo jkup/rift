@@ -12,6 +12,7 @@
     "yaml": "2.8.3"
   },
   "scripts": {
+    "test:observations": "node tools/test262/observation.integration.mjs",
     "test:test262": "node --test tools/test262/*.test.mjs",
     "test:runner": "node --test tools/probe-verdict.test.mjs",
     "typecheck": "tsc -p tsconfig.json",

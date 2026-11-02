@@ -1,0 +1,152 @@
+{
+  "kind": "observation-attempt",
+  "state": "complete",
+  "plan": {
+    "context": {
+      "identity": {
+        "schemaVersion": 1,
+        "runId": "e23e3e5a-5d92-4af5-abed-bbb3dd3e2748",
+        "mode": "body-observation",
+        "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "path": "test/synthetic.js",
+        "blob": "1ba88f82051f20de68b0b3e6c317f92b85afa0c9",
+        "sourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+        "variant": "non-strict",
+        "goal": "Script",
+        "lane": "native",
+        "engineCommit": "4e01bf63e3c78a43c49496a71811280b98b47a72",
+        "engineBuildSha256": "e2ce8457caa180a2e9b2f1ecc507953396f427272170bda7f9f1063d0f88c444",
+        "adapterSha256": "927bdf48763dec0f7c6ae9e93c9b220cc65fc3d81f12469a57a6026430be2503",
+        "policySha256": "98bc079db1e831de27b219691533fa931993341625447560511fd0f920358171",
+        "dirtySourceSha256": "0abad61bfe94c2ed14ff00aa86531fe1e75ed2dbc53671a1dc72510b691b677c"
+      },
+      "inputs": {
+        "harness": [],
+        "transformedSourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+        "profileId": "rift-subset-observation-v1",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "evaluationDepth": 256,
+          "steps": 9007199254740991,
+          "calls": 64,
+          "wallMs": 100,
+          "outputBytes": 1048576
+        }
+      },
+      "expectedNegative": null,
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "synthetic-profile"
+        }
+      ]
+    },
+    "binding": {
+      "nonce": "a878bb2a-edd8-4409-9105-93eff2031cc9",
+      "mode": "body-observation",
+      "unit": "test/synthetic.js"
+    },
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\09a612de-238b-437f-a332-02df895169fb",
+    "sourcePath": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\09a612de-238b-437f-a332-02df895169fb\\source.js",
+    "resultPath": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\09a612de-238b-437f-a332-02df895169fb\\child.json",
+    "build": {
+      "entry": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\observation-driver.exe",
+      "executable": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\observation-driver.exe",
+      "args": [],
+      "hash": "e2ce8457caa180a2e9b2f1ecc507953396f427272170bda7f9f1063d0f88c444"
+    },
+    "selection": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "variant": {
+        "id": "synthetic-native",
+        "path": "test/synthetic.js",
+        "lane": "native",
+        "variant": "non-strict",
+        "goal": "Script",
+        "blob": "1ba88f82051f20de68b0b3e6c317f92b85afa0c9",
+        "sourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+        "transformedSourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+        "metadata": {
+          "negative": null
+        },
+        "harness": [
+          {
+            "path": "harness/assert.js",
+            "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "synthetic-profile"
+          }
+        ]
+      }
+    }
+  },
+  "record": {
+    "identity": {
+      "schemaVersion": 1,
+      "runId": "e23e3e5a-5d92-4af5-abed-bbb3dd3e2748",
+      "mode": "body-observation",
+      "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "path": "test/synthetic.js",
+      "blob": "1ba88f82051f20de68b0b3e6c317f92b85afa0c9",
+      "sourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+      "variant": "non-strict",
+      "goal": "Script",
+      "lane": "native",
+      "engineCommit": "4e01bf63e3c78a43c49496a71811280b98b47a72",
+      "engineBuildSha256": "e2ce8457caa180a2e9b2f1ecc507953396f427272170bda7f9f1063d0f88c444",
+      "adapterSha256": "927bdf48763dec0f7c6ae9e93c9b220cc65fc3d81f12469a57a6026430be2503",
+      "policySha256": "98bc079db1e831de27b219691533fa931993341625447560511fd0f920358171",
+      "dirtySourceSha256": "0abad61bfe94c2ed14ff00aa86531fe1e75ed2dbc53671a1dc72510b691b677c"
+    },
+    "inputs": {
+      "harness": [],
+      "transformedSourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+      "profileId": "rift-subset-observation-v1",
+      "capabilityLedgerSha256": null,
+      "host": "v26.13.0",
+      "platform": "win32/x64",
+      "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "evaluationDepth": 256,
+        "steps": 9007199254740991,
+        "calls": 64,
+        "wallMs": 100,
+        "outputBytes": 1048576
+      }
+    },
+    "evidence": {
+      "stage": "driver",
+      "harnessValidated": false,
+      "bodyEvaluated": false,
+      "unit": "test/synthetic.js",
+      "location": null,
+      "process": {
+        "exitCode": null,
+        "signal": "SIGTERM",
+        "deadlineExpired": true
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsedMs": 116.52729999999974
+    },
+    "observation": {
+      "kind": "timeout",
+      "wallMs": 100
+    }
+  }
+}
