@@ -1,0 +1,47 @@
+typescript/src\array-map.ts:13:        const constructor = object.internalGet("constructor", input, loc);
+typescript/src\array-map.ts:18:    const result = context.realm.createArray();
+typescript/src\array-map.ts:27:        const present = object.internalHasProperty(key, loc);
+typescript/src\array-map.ts:30:        const element = object.internalGet(key, input, loc);
+typescript/src\array-like.ts:8:    const length = object.internalGet("length", { kind: "object", object }, loc);
+typescript/src\array-object.ts:37:        const length = this.getOwnProperty("length");
+typescript/src\array-object.ts:97:        const old = this.getOwnProperty("length");
+typescript/src\array-object.ts:108:        const keys = this.ownPropertyKeys();
+typescript/src\array-object.ts:114:            const deleted = this.internalDelete(key);
+typescript/src\builtins\number.ts:6:    const namespace = realm.createObject();
+typescript/src\evaluator.ts:35:        const object = this.context.realm.createGuestFunction(params, body, environment);
+typescript/src\evaluator.ts:157:                const object = this.context.realm.createArray();
+typescript/src\evaluator.ts:181:                const object = this.context.realm.createObject();
+typescript/src\evaluator.ts:242:        const callerRealm = this.activeContext.realm;
+typescript/src\evaluator.ts:245:            this.activeContext.realm = fn.realm;
+typescript/src\evaluator.ts:266:            this.activeContext.realm = callerRealm;
+typescript/src\primitive-conversion.ts:18:        const method = input.object.internalGet(name, input, loc);
+typescript/src\realm.ts:25:        const consoleObject = this.createObject();
+typescript/src\realm.ts:35:    createObject(): GuestObject { return new GuestObject(this.objectPrototype); }
+typescript/src\realm.ts:36:    createArray(): GuestArray { return new GuestArray(this.arrayPrototype); }
+typescript/src\realm.ts:37:    createGuestFunction(params: string[], body: Stmt[], environment: Environment): GuestObject {
+typescript/src\realm.ts:40:    createBuiltin(name: string, length: number, invoke: Builtin): GuestObject {
+typescript/src\runtime.ts:38:    private propertyStorage: Map<PropertyKey, DataDescriptor> = new Map();
+typescript/src\runtime.ts:47:    get properties(): Map<PropertyKey, DataDescriptor> {
+typescript/src\runtime.ts:49:        for (const [key, d] of this.propertyStorage) {
+typescript/src\runtime.ts:54:    getOwnProperty(key: PropertyKey): DataDescriptor | undefined {
+typescript/src\runtime.ts:55:        const d = this.propertyStorage.get(key);
+typescript/src\runtime.ts:58:    internalDelete(key: PropertyKey): InternalBooleanCompletion {
+typescript/src\runtime.ts:59:        const current = this.propertyStorage.get(key);
+typescript/src\runtime.ts:62:        this.propertyStorage.delete(key);
+typescript/src\runtime.ts:66:    ownPropertyKeys(): PropertyKey[] {
+typescript/src\runtime.ts:69:        for (const key of this.propertyStorage.keys()) {
+typescript/src\runtime.ts:94:        const current = this.propertyStorage.get(key);
+typescript/src\runtime.ts:97:            this.propertyStorage.set(key, {
+typescript/src\runtime.ts:113:        this.propertyStorage.set(key, {
+typescript/src\runtime.ts:136:    internalHasProperty(key: PropertyKey, _loc: Location): InternalBooleanCompletion {
+typescript/src\runtime.ts:139:            if (object.propertyStorage.has(key)) return { type: "normal", value: true };
+typescript/src\runtime.ts:144:    internalGet(key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+typescript/src\runtime.ts:147:            const descriptor = object.propertyStorage.get(key);
+typescript/src\runtime.ts:153:    internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, loc: Location): InternalBooleanCompletion {
+typescript/src\runtime.ts:158:            const descriptor = object.propertyStorage.get(key);
+typescript/src\runtime.ts:167:        const existing = target.getOwnProperty(key);
+typescript/src\runtime.ts:176:        const result = this.internalGet(key, { kind: "object", object: this }, { line: 1, column: 1 });
+typescript/src\runtime.ts:181:        const result = this.internalSet(key, value, { kind: "object", object: this }, context, loc);
+typescript/src\runtime.ts:214:        return ref.base.object.internalGet(key.value, ref.base, loc);
+typescript/src\strings.ts:4:export function stringLength(value: GuestString): number { return value.length; }
+typescript/src\strings.ts:5:export function stringUnit(value: GuestString, index: number): GuestString { return value.charAt(index); }

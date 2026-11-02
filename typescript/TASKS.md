@@ -722,8 +722,20 @@ Coordinator acceptance: TS-017A accepted final `b02cfc3` (production `9a66cd7`) 
 
 ### TS-018P — Primitive wrappers and default object conversion design
 
-Status: **ready**. Prerequisite TS-017A accepted `b02cfc3`. Design only. Own docs/primitive-wrappers.md, docs/validation/ts-018p/, optional isolated probes for observed uncertainty, and this task's claim/handoff. Coordinator owns COORDINATION.md; Claude queue is reserved.
+Status: **in progress**. Owner: Codex design chat `01a199b3-8329-7563-9a5b-9ee9c06aa9d6`; assigned base `d2c6087`, branch `codex/primitive-computed-keys`. Prerequisite TS-017A accepted `b02cfc3`. Design only. Own docs/primitive-wrappers.md, docs/validation/ts-018p/, optional isolated probes for observed uncertainty, and this task's claim/handoff. Coordinator owns COORDINATION.md; Claude queue is reserved.
 
 Resolve the next dependency for real Object.prototype.valueOf/toString: ToObject and meaningful Boolean/Number/String wrapper representation, internal slots, intrinsic prototype graph/bootstrap and defining-Realm allocation. Inspect actual runtime/property/string/call/coercion code and the future-method requirements in realm-intrinsic-prototypes.md. Consult fixed ECMAScript and pinned relevant engine sources. Specify exact APIs, object identity versus fresh primitive boxing, null/undefined errors and readonly internal primitive data; do not fabricate empty wrappers or return raw primitives as standard valueOf. Decide bounded stages before implementation, including what String exotic indexed properties/length require and which existing object operations must participate. Address UTF-16, surrogate indices, descriptor compatibility, own keys/order and extensibility. Distinguish explicit ToObject from implicit member access, receiver boxing and constructor/global exposure; do not implicitly authorize those features.
 
 For eventual Object toString, inventory representable tags and real symbol/toStringTag dependency; state any deliberately restricted profile as a decision requiring coordinator review. Do not use a string key pretending to be a symbol or diagnostic display as conversion. Specify receiver behavior, borrowed cross-Realm calls, zero-hook conversion boundaries and observable ordering. Identify exact current no-method expectations that later batches would change, preserving null-root negatives and direct primitive-only converter contracts. Produce fixed expected-result tests for each proposed atomic stage, complete caller/fixture migration inventory, native risks, explicit exclusions and smallest next implementation assignment. Prefer a coherent small dependency step over implementing wrappers and all methods at once. No production/test/manifest/pin/C++/Claude changes, branch switching, main merge or successor dispatch. Record evidence versus inference, commit/push design, stop for review.
+
+TS-018P handoff (2026-11-02): design candidate complete, awaiting coordinator
+review. See [primitive wrappers](docs/primitive-wrappers.md) and
+[inspection evidence](docs/validation/ts-018p/README.md). Recommends one atomic
+wrapper/String-dispatch/Realm/explicit-ToObject batch (W1-W19), then a separate
+Object valueOf batch (V1-V8). Object toString remains blocked on real symbol/tag
+design, with T1-T8 future requirements; no restricted tag approximation is
+authorized. Includes exact APIs, dispatch and bootstrap invariants, defining-Realm
+allocation, caller/fixture migrations and preserved zero-hook/null-root boundaries.
+Documentation checks only; no production change, compiler probes or new native
+claim. TS-017A's 163/163 both-host and 22 gates are inherited evidence. No successor
+or CL-004 work started. Status remains in progress until coordinator acceptance.
