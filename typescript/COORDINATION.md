@@ -457,3 +457,9 @@ Writer active, saved cursor `74a4113d-4d33-483b-b347-ada0da169ab4:2`. Reviewed c
 ## TS-025A review follow-up — 2026-11-02 06:23 heartbeat
 
 Reviewed pushed4592311 production, complete driver/fixtures/migrations and retained compiler reductions. Independently rebuilt Node/native177/177 each, no skips; all27 static-only builds/separate parsed coverage gates PASS. Logs build/ts-025a-review-node.log and build/ts-025a-review-native.log. No production semantic defect found. Acceptance remains pending bounded test readability correction: dense combined statements/nested loops/inconsistent spacing and unexplained numbered scenarios impede auditing; scenario28 duplicates success0. Requested named scenarios/clear mapping and formatting without losing any assertions/oracles. Writer cleared after coordinator builds finished; active sole follow-up writer same chat, saved cursor `74a4113d-4d33-483b-b347-ada0da169ab4:4`. No successor until fix reviewed. CL-004/005 reserved; main unchanged7f7d682.
+
+## TS-025A acceptance — 2026-11-02 06:38 heartbeat
+
+Accepted pushed27e5b27 including production4592311 and named/braced readability correction. Reviewed actual test diff, scenario mappings/resource branches and preservation evidence; no production changes in follow-up. Independently rebuilt final Node/native177/177 each, no skips; all27 static-only builds/separate coverage gates PASS. Logs build/ts-025a-readable-review-node.log and build/ts-025a-readable-review-native.log. Producer typecheck and earlier runner20/probes10 reviewed. Completed writer idle, cursor `74a4113d-4d33-483b-b347-ada0da169ab4:5`. Strict-delete remains limited profile, not full strict Scripts or general primitive reads/writes.
+
+Frozen next TS-026P typeof/void design, based on existing reserved syntax and Reference/environment TDZ distinction. No runtime implementation before review. CL-004/005 ready/reserved; main unchanged7f7d682. Next designer pending dispatch.
