@@ -17,6 +17,7 @@ export type Expr =
     | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
     | { kind: "object"; loc: Location; keys: string[]; values: Expr[] };
 export type Stmt =
+    | { kind: "var"; loc: Location; declarations: { name: string; init: Expr | null }[] }
     | { kind: "empty"; loc: Location }
     | { kind: "expression"; loc: Location; expression: Expr }
     | { kind: "let"; loc: Location; name: string; init: Expr | null }

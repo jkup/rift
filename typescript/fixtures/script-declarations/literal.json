@@ -1,0 +1,6261 @@
+[
+  {
+    "id": "G01",
+    "text": "\"use strict\";let x=1;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "x"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 21,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 21,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "x"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 19,
+            "end": 20
+          },
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G01-var",
+    "text": "\"use strict\";var x=1;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 21,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 21,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 19,
+            "end": 20
+          },
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G02",
+    "text": "\"use strict\";var x=1,y=x,z; var x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x",
+          "y",
+          "z",
+          "x"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 34,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 34,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x",
+            "y",
+            "z",
+            "x"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 19,
+            "end": 20
+          },
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "y",
+            "start": 21,
+            "end": 22,
+            "loc": {
+              "line": 1,
+              "column": 22
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 23,
+            "end": 24
+          },
+          "id": 1
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "z",
+            "start": 25,
+            "end": 26,
+            "loc": {
+              "line": 1,
+              "column": 26
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 2
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 32,
+            "end": 33,
+            "loc": {
+              "line": 1,
+              "column": 33
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 3
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G02-trailing",
+    "text": "\"use strict\";var x,;",
+    "kind": "blocked",
+    "detail": "parse.binding-identifier"
+  },
+  {
+    "id": "G02-let-list",
+    "text": "\"use strict\";let x,y;",
+    "kind": "blocked",
+    "detail": "parse.expected-token"
+  },
+  {
+    "id": "G03",
+    "text": "\"use strict\";function f(){return 1;} var f; function g(){} function f(){return 2;}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "f",
+          "f",
+          "g",
+          "f"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      2,
+      3
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 82,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 82,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "f",
+            "f",
+            "g",
+            "f"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 25,
+          "end": 36,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        },
+        {
+          "id": 2,
+          "kind": "function",
+          "parent": 0,
+          "start": 56,
+          "end": 58,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        },
+        {
+          "id": 3,
+          "kind": "function",
+          "parent": 0,
+          "start": 71,
+          "end": 82,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "f",
+            "start": 41,
+            "end": 42,
+            "loc": {
+              "line": 1,
+              "column": 42
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "g",
+            "start": 53,
+            "end": 54,
+            "loc": {
+              "line": 1,
+              "column": 54
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 2,
+          "initializer": null,
+          "id": 2
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 68,
+            "end": 69,
+            "loc": {
+              "line": 1,
+              "column": 69
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 3,
+          "initializer": null,
+          "id": 3
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 36,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        },
+        {
+          "scope": 2,
+          "declaration": 2,
+          "start": 44,
+          "end": 58,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        },
+        {
+          "scope": 3,
+          "declaration": 3,
+          "start": 59,
+          "end": 82,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "G04",
+    "text": "\"use strict\";let x; var x;",
+    "kind": "conflict",
+    "detail": "lexical-var"
+  },
+  {
+    "id": "G04-reversed",
+    "text": "\"use strict\";var x; let x;",
+    "kind": "conflict",
+    "detail": "lexical-var"
+  },
+  {
+    "id": "G04-nested",
+    "text": "\"use strict\";let x; {var x;}",
+    "kind": "conflict",
+    "detail": "lexical-var"
+  },
+  {
+    "id": "G05",
+    "text": "\"use strict\";let x; let x;",
+    "kind": "conflict",
+    "detail": "duplicate-lexical"
+  },
+  {
+    "id": "G05-shadow",
+    "text": "\"use strict\";let x; {let x;}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "x"
+        ],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "block",
+        "parent": 0,
+        "lex": [
+          "x"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 28,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 28,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "x"
+          ],
+          "varNames": []
+        },
+        {
+          "id": 1,
+          "kind": "block",
+          "parent": 0,
+          "start": 20,
+          "end": 28,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            1
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "x"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 25,
+            "end": 26,
+            "loc": {
+              "line": 1,
+              "column": 26
+            }
+          },
+          "scope": 1,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G06-A",
+    "text": "\"use strict\";var x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G06-B",
+    "text": "\"use strict\";let x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "x"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "x"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G07-A",
+    "text": "\"use strict\";let x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "x"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "x"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G07-B-var",
+    "text": "\"use strict\";var x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G07-B-function",
+    "text": "\"use strict\";function x(){}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 27,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 27,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 25,
+          "end": 27,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "x",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 27,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "G07-B-let",
+    "text": "\"use strict\";let x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "x"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "x"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G07-neighbor",
+    "text": "\"use strict\";let y;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "y"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "y"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "y",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G08-function",
+    "text": "\"use strict\";function x(){}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 27,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 27,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 25,
+          "end": 27,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "x",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 27,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "G08-var",
+    "text": "\"use strict\";var x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G09-var",
+    "text": "\"use strict\";var x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G09-function",
+    "text": "\"use strict\";function x(){}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 27,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 27,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 25,
+          "end": 27,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "x",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 27,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "G09-let",
+    "text": "\"use strict\";let x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "x"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "x"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G10-var",
+    "text": "\"use strict\";var x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G10-function",
+    "text": "\"use strict\";function x(){}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 27,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 27,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 25,
+          "end": 27,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "x",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 27,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "G10-fresh-var",
+    "text": "\"use strict\";var y;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "y"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "y"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "y",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G10-fresh-function",
+    "text": "\"use strict\";function y(){}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "y"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 27,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 27,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "y"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 25,
+          "end": 27,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "y",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 27,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "G10-let",
+    "text": "\"use strict\";let y;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "y"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 19,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 19,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "y"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "y",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G11",
+    "text": "\"use strict\";let fresh; var x; function f(){}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "fresh"
+        ],
+        "vars": [
+          "x",
+          "f"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      2
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 45,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 45,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [
+            1,
+            2
+          ],
+          "lexicalNames": [
+            "fresh"
+          ],
+          "varNames": [
+            "x",
+            "f"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 43,
+          "end": 45,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "fresh",
+            "start": 17,
+            "end": 22,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 28,
+            "end": 29,
+            "loc": {
+              "line": 1,
+              "column": 29
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 40,
+            "end": 41,
+            "loc": {
+              "line": 1,
+              "column": 41
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 2
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 2,
+          "start": 31,
+          "end": 45,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "G12-let",
+    "text": "\"use strict\";let Infinity;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "Infinity"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 26,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 26,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "Infinity"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "Infinity",
+            "start": 17,
+            "end": 25,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G12-var",
+    "text": "\"use strict\";var Infinity;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "Infinity"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 26,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 26,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "Infinity"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "Infinity",
+            "start": 17,
+            "end": 25,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G12-function",
+    "text": "\"use strict\";function Infinity(){}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "Infinity"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 34,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 34,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "Infinity"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 32,
+          "end": 34,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "Infinity",
+            "start": 22,
+            "end": 30,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 34,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "G12-neighbor",
+    "text": "\"use strict\";let Number;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "Number"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 24,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 24,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "Number"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "Number",
+            "start": 17,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G13",
+    "text": "\"use strict\";var x; var x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x",
+          "x"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 26,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 26,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0,
+            1
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x",
+            "x"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 24,
+            "end": 25,
+            "loc": {
+              "line": 1,
+              "column": 25
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "G13-neighbor",
+    "text": "\"use strict\";var x; function x(){}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x",
+          "x"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      1
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 34,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 34,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0,
+            1
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x",
+            "x"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 32,
+          "end": 34,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "x",
+            "start": 29,
+            "end": 30,
+            "loc": {
+              "line": 1,
+              "column": 30
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 1
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 1,
+          "start": 20,
+          "end": 34,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "G14",
+    "text": "\"use strict\";let l; var x; function f(){}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "l"
+        ],
+        "vars": [
+          "x",
+          "f"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      2
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 41,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 41,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [
+            1,
+            2
+          ],
+          "lexicalNames": [
+            "l"
+          ],
+          "varNames": [
+            "x",
+            "f"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 39,
+          "end": 41,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "l",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 24,
+            "end": 25,
+            "loc": {
+              "line": 1,
+              "column": 25
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 36,
+            "end": 37,
+            "loc": {
+              "line": 1,
+              "column": 37
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 2
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 2,
+          "start": 27,
+          "end": 41,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "G16",
+    "text": "\"use strict\";var x=sideEffect(); function f(){sideEffect();}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x",
+          "f"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      1
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 60,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 60,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0,
+            1
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x",
+            "f"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 45,
+          "end": 60,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 19,
+            "end": 31
+          },
+          "id": 0
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 42,
+            "end": 43,
+            "loc": {
+              "line": 1,
+              "column": 43
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 1
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 1,
+          "start": 33,
+          "end": 60,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "G15",
+    "text": "\"use strict\";function f(){return 1;} var f; function g(){} function f(){return 2;}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "f",
+          "f",
+          "g",
+          "f"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      2,
+      3
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 82,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 82,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "f",
+            "f",
+            "g",
+            "f"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 25,
+          "end": 36,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        },
+        {
+          "id": 2,
+          "kind": "function",
+          "parent": 0,
+          "start": 56,
+          "end": 58,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        },
+        {
+          "id": 3,
+          "kind": "function",
+          "parent": 0,
+          "start": 71,
+          "end": 82,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "f",
+            "start": 41,
+            "end": 42,
+            "loc": {
+              "line": 1,
+              "column": 42
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "g",
+            "start": 53,
+            "end": 54,
+            "loc": {
+              "line": 1,
+              "column": 54
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 2,
+          "initializer": null,
+          "id": 2
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 68,
+            "end": 69,
+            "loc": {
+              "line": 1,
+              "column": 69
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 3,
+          "initializer": null,
+          "id": 3
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 36,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        },
+        {
+          "scope": 2,
+          "declaration": 2,
+          "start": 44,
+          "end": 58,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        },
+        {
+          "scope": 3,
+          "declaration": 3,
+          "start": 59,
+          "end": 82,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "L01",
+    "text": "\"use strict\";{var x;} if(false){var y;} while(false){var z;} function f(){var inner;}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x",
+          "y",
+          "z",
+          "f"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "block",
+        "parent": 0,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "block",
+        "parent": 0,
+        "lex": [],
+        "vars": [
+          "y"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "block",
+        "parent": 0,
+        "lex": [],
+        "vars": [
+          "z"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [
+          "inner"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [
+      3
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 85,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 85,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x",
+            "y",
+            "z",
+            "f"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "block",
+          "parent": 0,
+          "start": 13,
+          "end": 21,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        },
+        {
+          "id": 2,
+          "kind": "block",
+          "parent": 0,
+          "start": 31,
+          "end": 39,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            1
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "y"
+          ]
+        },
+        {
+          "id": 3,
+          "kind": "block",
+          "parent": 0,
+          "start": 52,
+          "end": 60,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            2
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "z"
+          ]
+        },
+        {
+          "id": 4,
+          "kind": "function",
+          "parent": 0,
+          "start": 73,
+          "end": 85,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            4
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "inner"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 18,
+            "end": 19,
+            "loc": {
+              "line": 1,
+              "column": 19
+            }
+          },
+          "scope": 1,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "y",
+            "start": 36,
+            "end": 37,
+            "loc": {
+              "line": 1,
+              "column": 37
+            }
+          },
+          "scope": 2,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "z",
+            "start": 57,
+            "end": 58,
+            "loc": {
+              "line": 1,
+              "column": 58
+            }
+          },
+          "scope": 3,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 2
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 70,
+            "end": 71,
+            "loc": {
+              "line": 1,
+              "column": 71
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 4,
+          "initializer": null,
+          "id": 3
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "inner",
+            "start": 78,
+            "end": 83,
+            "loc": {
+              "line": 1,
+              "column": 79
+            }
+          },
+          "scope": 4,
+          "variableScope": 4,
+          "functionScope": null,
+          "initializer": null,
+          "id": 4
+        }
+      ],
+      "functions": [
+        {
+          "scope": 4,
+          "declaration": 3,
+          "start": 61,
+          "end": 85,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "L02",
+    "text": "\"use strict\";{let x; {var x;}}",
+    "kind": "conflict",
+    "detail": "lexical-var"
+  },
+  {
+    "id": "L02-neighbor",
+    "text": "\"use strict\";{let x;} var x;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "block",
+        "parent": 0,
+        "lex": [
+          "x"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 28,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 28,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            1
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "block",
+          "parent": 0,
+          "start": 13,
+          "end": 21,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "x"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 18,
+            "end": 19,
+            "loc": {
+              "line": 1,
+              "column": 19
+            }
+          },
+          "scope": 1,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 26,
+            "end": 27,
+            "loc": {
+              "line": 1,
+              "column": 27
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "L03",
+    "text": "\"use strict\";{function f(){} function f(){}}",
+    "kind": "conflict",
+    "detail": "duplicate-lexical"
+  },
+  {
+    "id": "L03-let",
+    "text": "\"use strict\";{let f; function f(){}}",
+    "kind": "conflict",
+    "detail": "duplicate-lexical"
+  },
+  {
+    "id": "L03-function",
+    "text": "\"use strict\";function f(){function g(){} function g(){}}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "f"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [
+          "g",
+          "g"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 1,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 1,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 56,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 56,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "f"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 25,
+          "end": 56,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            1,
+            2
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "g",
+            "g"
+          ]
+        },
+        {
+          "id": 2,
+          "kind": "function",
+          "parent": 1,
+          "start": 38,
+          "end": 40,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        },
+        {
+          "id": 3,
+          "kind": "function",
+          "parent": 1,
+          "start": 53,
+          "end": 55,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "g",
+            "start": 35,
+            "end": 36,
+            "loc": {
+              "line": 1,
+              "column": 36
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": 2,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "g",
+            "start": 50,
+            "end": 51,
+            "loc": {
+              "line": 1,
+              "column": 51
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": 3,
+          "initializer": null,
+          "id": 2
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 56,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        },
+        {
+          "scope": 2,
+          "declaration": 1,
+          "start": 26,
+          "end": 40,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        },
+        {
+          "scope": 3,
+          "declaration": 2,
+          "start": 41,
+          "end": 55,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "L04",
+    "text": "\"use strict\";function f(a){var a; function a(){} let b;}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "f"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [
+          "b"
+        ],
+        "vars": [
+          "a",
+          "a"
+        ],
+        "formals": [
+          "a"
+        ]
+      },
+      {
+        "kind": "function",
+        "parent": 1,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 56,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 56,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "f"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 26,
+          "end": 56,
+          "strict": true,
+          "formals": [
+            {
+              "name": "a",
+              "start": 24,
+              "end": 25,
+              "loc": {
+                "line": 1,
+                "column": 25
+              }
+            }
+          ],
+          "lexicalDeclarations": [
+            3
+          ],
+          "varDeclarations": [
+            1,
+            2
+          ],
+          "lexicalNames": [
+            "b"
+          ],
+          "varNames": [
+            "a",
+            "a"
+          ]
+        },
+        {
+          "id": 2,
+          "kind": "function",
+          "parent": 1,
+          "start": 46,
+          "end": 48,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "a",
+            "start": 31,
+            "end": 32,
+            "loc": {
+              "line": 1,
+              "column": 32
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "a",
+            "start": 43,
+            "end": 44,
+            "loc": {
+              "line": 1,
+              "column": 44
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": 2,
+          "initializer": null,
+          "id": 2
+        },
+        {
+          "kind": "let",
+          "site": {
+            "name": "b",
+            "start": 53,
+            "end": 54,
+            "loc": {
+              "line": 1,
+              "column": 54
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": null,
+          "initializer": null,
+          "id": 3
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 56,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        },
+        {
+          "scope": 2,
+          "declaration": 2,
+          "start": 34,
+          "end": 48,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "L04-neighbor",
+    "text": "\"use strict\";function f(a){let a;}",
+    "kind": "conflict",
+    "detail": "formal-lexical"
+  },
+  {
+    "id": "L05",
+    "text": "\"use strict\";function f(a){{let a;}{function a(){}} var a;}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "f"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [
+          "a"
+        ],
+        "formals": [
+          "a"
+        ]
+      },
+      {
+        "kind": "block",
+        "parent": 1,
+        "lex": [
+          "a"
+        ],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "block",
+        "parent": 1,
+        "lex": [
+          "a"
+        ],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 3,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 59,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 59,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "f"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 26,
+          "end": 59,
+          "strict": true,
+          "formals": [
+            {
+              "name": "a",
+              "start": 24,
+              "end": 25,
+              "loc": {
+                "line": 1,
+                "column": 25
+              }
+            }
+          ],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            3
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "a"
+          ]
+        },
+        {
+          "id": 2,
+          "kind": "block",
+          "parent": 1,
+          "start": 27,
+          "end": 35,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            1
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "a"
+          ],
+          "varNames": []
+        },
+        {
+          "id": 3,
+          "kind": "block",
+          "parent": 1,
+          "start": 35,
+          "end": 51,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            2
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "a"
+          ],
+          "varNames": []
+        },
+        {
+          "id": 4,
+          "kind": "function",
+          "parent": 3,
+          "start": 48,
+          "end": 50,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "let",
+          "site": {
+            "name": "a",
+            "start": 32,
+            "end": 33,
+            "loc": {
+              "line": 1,
+              "column": 33
+            }
+          },
+          "scope": 2,
+          "variableScope": 1,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "a",
+            "start": 45,
+            "end": 46,
+            "loc": {
+              "line": 1,
+              "column": 46
+            }
+          },
+          "scope": 3,
+          "variableScope": 1,
+          "functionScope": 4,
+          "initializer": null,
+          "id": 2
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "a",
+            "start": 56,
+            "end": 57,
+            "loc": {
+              "line": 1,
+              "column": 57
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": null,
+          "initializer": null,
+          "id": 3
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 59,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        },
+        {
+          "scope": 4,
+          "declaration": 2,
+          "start": 36,
+          "end": 50,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "L06",
+    "text": "\"use strict\";function f(){let x; {var x;}}",
+    "kind": "conflict",
+    "detail": "lexical-var"
+  },
+  {
+    "id": "L06-neighbor",
+    "text": "\"use strict\";function f(){let x; function g(){var x;}}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "f"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [
+          "x"
+        ],
+        "vars": [
+          "g"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 1,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 54,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 54,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "f"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 25,
+          "end": 54,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            1
+          ],
+          "varDeclarations": [
+            2
+          ],
+          "lexicalNames": [
+            "x"
+          ],
+          "varNames": [
+            "g"
+          ]
+        },
+        {
+          "id": 2,
+          "kind": "function",
+          "parent": 1,
+          "start": 45,
+          "end": 53,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            3
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 30,
+            "end": 31,
+            "loc": {
+              "line": 1,
+              "column": 31
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "g",
+            "start": 42,
+            "end": 43,
+            "loc": {
+              "line": 1,
+              "column": 43
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": 2,
+          "initializer": null,
+          "id": 2
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 50,
+            "end": 51,
+            "loc": {
+              "line": 1,
+              "column": 51
+            }
+          },
+          "scope": 2,
+          "variableScope": 2,
+          "functionScope": null,
+          "initializer": null,
+          "id": 3
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 54,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        },
+        {
+          "scope": 2,
+          "declaration": 2,
+          "start": 33,
+          "end": 53,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "L07",
+    "text": "\"use strict\";let f=function(a){var a; let x;}; let g=function(){var x;};",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "f",
+          "g"
+        ],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [
+          "x"
+        ],
+        "vars": [
+          "a"
+        ],
+        "formals": [
+          "a"
+        ]
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 72,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 72,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0,
+            3
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "f",
+            "g"
+          ],
+          "varNames": []
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 30,
+          "end": 45,
+          "strict": true,
+          "formals": [
+            {
+              "name": "a",
+              "start": 28,
+              "end": 29,
+              "loc": {
+                "line": 1,
+                "column": 29
+              }
+            }
+          ],
+          "lexicalDeclarations": [
+            2
+          ],
+          "varDeclarations": [
+            1
+          ],
+          "lexicalNames": [
+            "x"
+          ],
+          "varNames": [
+            "a"
+          ]
+        },
+        {
+          "id": 2,
+          "kind": "function",
+          "parent": 0,
+          "start": 63,
+          "end": 71,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            4
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "f",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 19,
+            "end": 45
+          },
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "a",
+            "start": 35,
+            "end": 36,
+            "loc": {
+              "line": 1,
+              "column": 36
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 42,
+            "end": 43,
+            "loc": {
+              "line": 1,
+              "column": 43
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": null,
+          "initializer": null,
+          "id": 2
+        },
+        {
+          "kind": "let",
+          "site": {
+            "name": "g",
+            "start": 51,
+            "end": 52,
+            "loc": {
+              "line": 1,
+              "column": 52
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 53,
+            "end": 71
+          },
+          "id": 3
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 68,
+            "end": 69,
+            "loc": {
+              "line": 1,
+              "column": 69
+            }
+          },
+          "scope": 2,
+          "variableScope": 2,
+          "functionScope": null,
+          "initializer": null,
+          "id": 4
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": null,
+          "start": 19,
+          "end": 45,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        },
+        {
+          "scope": 2,
+          "declaration": null,
+          "start": 53,
+          "end": 71,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "L07-sibling",
+    "text": "let f=function(){\"use strict\";var a;}; let g=function(){var x;};",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [
+          "f",
+          "g"
+        ],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [
+          "a"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [
+          "x"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 64,
+      "strictness": {
+        "ownStrict": false,
+        "inheritedStrict": false,
+        "strict": false,
+        "directives": []
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 64,
+          "strict": false,
+          "formals": [],
+          "lexicalDeclarations": [
+            0,
+            2
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "f",
+            "g"
+          ],
+          "varNames": []
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 16,
+          "end": 37,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            1
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "a"
+          ]
+        },
+        {
+          "id": 2,
+          "kind": "function",
+          "parent": 0,
+          "start": 55,
+          "end": 63,
+          "strict": false,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            3
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "f",
+            "start": 4,
+            "end": 5,
+            "loc": {
+              "line": 1,
+              "column": 5
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 6,
+            "end": 37
+          },
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "a",
+            "start": 34,
+            "end": 35,
+            "loc": {
+              "line": 1,
+              "column": 35
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "let",
+          "site": {
+            "name": "g",
+            "start": 43,
+            "end": 44,
+            "loc": {
+              "line": 1,
+              "column": 44
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 45,
+            "end": 63
+          },
+          "id": 2
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 60,
+            "end": 61,
+            "loc": {
+              "line": 1,
+              "column": 61
+            }
+          },
+          "scope": 2,
+          "variableScope": 2,
+          "functionScope": null,
+          "initializer": null,
+          "id": 3
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": null,
+          "start": 6,
+          "end": 37,
+          "strictness": {
+            "ownStrict": true,
+            "inheritedStrict": false,
+            "strict": true,
+            "directives": [
+              {
+                "start": 17,
+                "end": 29,
+                "statementEnd": 30,
+                "loc": {
+                  "line": 1,
+                  "column": 18
+                },
+                "raw": "\"use strict\"",
+                "useStrict": true
+              }
+            ]
+          }
+        },
+        {
+          "scope": 2,
+          "declaration": null,
+          "start": 45,
+          "end": 63,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": false,
+            "strict": false,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "L08-duplicate",
+    "text": "\"use strict\";function f(a,a){}",
+    "kind": "blocked",
+    "detail": "parse.duplicate-parameter"
+  },
+  {
+    "id": "L08-default",
+    "text": "\"use strict\";function f(a=1){}",
+    "kind": "blocked",
+    "detail": "parse.expected-token"
+  },
+  {
+    "id": "L08-pattern",
+    "text": "\"use strict\";var {x}=o;",
+    "kind": "blocked",
+    "detail": "parse.binding-identifier"
+  },
+  {
+    "id": "L08-const",
+    "text": "\"use strict\";const x=1;",
+    "kind": "blocked",
+    "detail": "parse.unexpected"
+  },
+  {
+    "id": "L08-neighbor",
+    "text": "\"use strict\";function f(a){} var x=o;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "f",
+          "x"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": [
+          "a"
+        ]
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 37,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 37,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0,
+            1
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "f",
+            "x"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 26,
+          "end": 28,
+          "strict": true,
+          "formals": [
+            {
+              "name": "a",
+              "start": 24,
+              "end": 25,
+              "loc": {
+                "line": 1,
+                "column": 25
+              }
+            }
+          ],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 22,
+            "end": 23,
+            "loc": {
+              "line": 1,
+              "column": 23
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 33,
+            "end": 34,
+            "loc": {
+              "line": 1,
+              "column": 34
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 35,
+            "end": 36
+          },
+          "id": 1
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 13,
+          "end": 28,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "L09",
+    "text": "\"use strict\";{let x=1; function f(){return x;}}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "block",
+        "parent": 0,
+        "lex": [
+          "x",
+          "f"
+        ],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 1,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 47,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 47,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        },
+        {
+          "id": 1,
+          "kind": "block",
+          "parent": 0,
+          "start": 13,
+          "end": 47,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0,
+            1
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "x",
+            "f"
+          ],
+          "varNames": []
+        },
+        {
+          "id": 2,
+          "kind": "function",
+          "parent": 1,
+          "start": 35,
+          "end": 46,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 18,
+            "end": 19,
+            "loc": {
+              "line": 1,
+              "column": 19
+            }
+          },
+          "scope": 1,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 20,
+            "end": 21
+          },
+          "id": 0
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 32,
+            "end": 33,
+            "loc": {
+              "line": 1,
+              "column": 33
+            }
+          },
+          "scope": 1,
+          "variableScope": 0,
+          "functionScope": 2,
+          "initializer": null,
+          "id": 1
+        }
+      ],
+      "functions": [
+        {
+          "scope": 2,
+          "declaration": 1,
+          "start": 23,
+          "end": 46,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "L10",
+    "text": "{function f(){}}",
+    "kind": "blocked",
+    "detail": "parse.declaration-statement"
+  },
+  {
+    "id": "L10-nested",
+    "text": "function outer(){\"use strict\"; {function f(){}}}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "outer"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "block",
+        "parent": 1,
+        "lex": [
+          "f"
+        ],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 2,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [
+      0
+    ],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 48,
+      "strictness": {
+        "ownStrict": false,
+        "inheritedStrict": false,
+        "strict": false,
+        "directives": []
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 48,
+          "strict": false,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "outer"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 16,
+          "end": 48,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        },
+        {
+          "id": 2,
+          "kind": "block",
+          "parent": 1,
+          "start": 31,
+          "end": 47,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            1
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "f"
+          ],
+          "varNames": []
+        },
+        {
+          "id": 3,
+          "kind": "function",
+          "parent": 2,
+          "start": 44,
+          "end": 46,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "outer",
+            "start": 9,
+            "end": 14,
+            "loc": {
+              "line": 1,
+              "column": 10
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": 1,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 41,
+            "end": 42,
+            "loc": {
+              "line": 1,
+              "column": 42
+            }
+          },
+          "scope": 2,
+          "variableScope": 1,
+          "functionScope": 3,
+          "initializer": null,
+          "id": 1
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": 0,
+          "start": 0,
+          "end": 48,
+          "strictness": {
+            "ownStrict": true,
+            "inheritedStrict": false,
+            "strict": true,
+            "directives": [
+              {
+                "start": 17,
+                "end": 29,
+                "statementEnd": 30,
+                "loc": {
+                  "line": 1,
+                  "column": 18
+                },
+                "raw": "\"use strict\"",
+                "useStrict": true
+              }
+            ]
+          }
+        },
+        {
+          "scope": 3,
+          "declaration": 1,
+          "start": 32,
+          "end": 46,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "L10-strict",
+    "text": "\"use strict\";{function f(){}}",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "block",
+        "parent": 0,
+        "lex": [
+          "f"
+        ],
+        "vars": [],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 1,
+        "lex": [],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 29,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 29,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        },
+        {
+          "id": 1,
+          "kind": "block",
+          "parent": 0,
+          "start": 13,
+          "end": 29,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            0
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "f"
+          ],
+          "varNames": []
+        },
+        {
+          "id": 2,
+          "kind": "function",
+          "parent": 1,
+          "start": 26,
+          "end": 28,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [],
+          "lexicalNames": [],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "function",
+          "site": {
+            "name": "f",
+            "start": 23,
+            "end": 24,
+            "loc": {
+              "line": 1,
+              "column": 24
+            }
+          },
+          "scope": 1,
+          "variableScope": 0,
+          "functionScope": 2,
+          "initializer": null,
+          "id": 0
+        }
+      ],
+      "functions": [
+        {
+          "scope": 2,
+          "declaration": 0,
+          "start": 14,
+          "end": 28,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "T01",
+    "text": "\"use strict\";let x; let x; const tail=0;",
+    "kind": "blocked",
+    "detail": "parse.unexpected"
+  },
+  {
+    "id": "T01-nested",
+    "text": "\"use strict\";let x; var x; function f(){const tail=0;}",
+    "kind": "blocked",
+    "detail": "parse.unexpected"
+  },
+  {
+    "id": "T01-removed",
+    "text": "\"use strict\";let x; var x; function f(){}",
+    "kind": "conflict",
+    "detail": "lexical-var"
+  },
+  {
+    "id": "T02-lex",
+    "text": "\"use strict\";var x=function(){return 1;}; @",
+    "kind": "blocked",
+    "detail": "lex.character"
+  },
+  {
+    "id": "T02-return",
+    "text": "\"use strict\";var x; return 1;",
+    "kind": "blocked",
+    "detail": "parse.return-context"
+  },
+  {
+    "id": "preorder",
+    "text": "\"use strict\";var a=function(){let x;},b;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "a",
+          "b"
+        ],
+        "formals": []
+      },
+      {
+        "kind": "function",
+        "parent": 0,
+        "lex": [
+          "x"
+        ],
+        "vars": [],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 40,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 40,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0,
+            2
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "a",
+            "b"
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "function",
+          "parent": 0,
+          "start": 29,
+          "end": 37,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [
+            1
+          ],
+          "varDeclarations": [],
+          "lexicalNames": [
+            "x"
+          ],
+          "varNames": []
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "a",
+            "start": 17,
+            "end": 18,
+            "loc": {
+              "line": 1,
+              "column": 18
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": {
+            "start": 19,
+            "end": 37
+          },
+          "id": 0
+        },
+        {
+          "kind": "let",
+          "site": {
+            "name": "x",
+            "start": 34,
+            "end": 35,
+            "loc": {
+              "line": 1,
+              "column": 35
+            }
+          },
+          "scope": 1,
+          "variableScope": 1,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "b",
+            "start": 38,
+            "end": 39,
+            "loc": {
+              "line": 1,
+              "column": 39
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 2
+        }
+      ],
+      "functions": [
+        {
+          "scope": 1,
+          "declaration": null,
+          "start": 19,
+          "end": 37,
+          "strictness": {
+            "ownStrict": false,
+            "inheritedStrict": true,
+            "strict": true,
+            "directives": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "branches",
+    "text": "\"use strict\";if(false)var x;else var y; while(false)var z;",
+    "scopes": [
+      {
+        "kind": "script",
+        "parent": null,
+        "lex": [],
+        "vars": [
+          "x",
+          "y",
+          "z"
+        ],
+        "formals": []
+      }
+    ],
+    "winners": [],
+    "expected": {
+      "kind": "complete",
+      "goal": "Script",
+      "consumedUnits": 58,
+      "strictness": {
+        "ownStrict": true,
+        "inheritedStrict": false,
+        "strict": true,
+        "directives": [
+          {
+            "start": 0,
+            "end": 12,
+            "statementEnd": 13,
+            "loc": {
+              "line": 1,
+              "column": 1
+            },
+            "raw": "\"use strict\"",
+            "useStrict": true
+          }
+        ]
+      },
+      "scopes": [
+        {
+          "id": 0,
+          "kind": "script",
+          "parent": null,
+          "start": 0,
+          "end": 58,
+          "strict": true,
+          "formals": [],
+          "lexicalDeclarations": [],
+          "varDeclarations": [
+            0,
+            1,
+            2
+          ],
+          "lexicalNames": [],
+          "varNames": [
+            "x",
+            "y",
+            "z"
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "kind": "var",
+          "site": {
+            "name": "x",
+            "start": 26,
+            "end": 27,
+            "loc": {
+              "line": 1,
+              "column": 27
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 0
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "y",
+            "start": 37,
+            "end": 38,
+            "loc": {
+              "line": 1,
+              "column": 38
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 1
+        },
+        {
+          "kind": "var",
+          "site": {
+            "name": "z",
+            "start": 56,
+            "end": 57,
+            "loc": {
+              "line": 1,
+              "column": 57
+            }
+          },
+          "scope": 0,
+          "variableScope": 0,
+          "functionScope": null,
+          "initializer": null,
+          "id": 2
+        }
+      ],
+      "functions": []
+    }
+  },
+  {
+    "id": "let-branch",
+    "text": "\"use strict\";if(true)let x;",
+    "kind": "blocked",
+    "detail": "parse.declaration-statement"
+  },
+  {
+    "id": "function-branch",
+    "text": "\"use strict\";if(true)function f(){}",
+    "kind": "blocked",
+    "detail": "parse.declaration-statement"
+  },
+  {
+    "id": "reserved",
+    "text": "\"use strict\";var arguments;",
+    "kind": "blocked",
+    "detail": "parse.binding-identifier"
+  },
+  {
+    "id": "delete",
+    "text": "\"use strict\";var x=delete y;",
+    "kind": "blocked",
+    "detail": "parse.delete-identifier"
+  }
+]

@@ -368,3 +368,22 @@ retain defining-Realm allocation, strict receivers and finally restoration.
 This adds no parser/Reference integration, declaration instantiation, Script
 execution session, strictness semantics, observation schema or conformance
 admission. See [implementation and validation](validation/ts-033c/README.md).
+### Non-executing Script declaration plans (TS-033D1)
+
+`planScriptDeclarations(unit)` returns detached flat scope, declaration, function
+and strictness records, or a whole-source blocked/conflict result. Plan-only var
+statements support simple identifier lists and initializer spans. Script/function
+functions are var-scoped; strict block functions are lexical. Nested block var
+summaries stop at functions. Conflicts are checked after complete grammar and
+resource validation, in deterministic scope/check/list order. A pure selector
+returns last function declarations in winning source order.
+
+The parser retains separate legacy, return-audit and declaration-plan purposes.
+Public parse/audit/inspectScript behavior is preserved, including their existing
+var/repeated-binding rejection and return certification. Plans expose no AST,
+create no bindings or guest functions and evaluate no source. Non-strict block
+function planning is unsupported; no Annex B approximation or new certification
+is introduced. Global instantiation and executable Script records remain separate,
+unimplemented assignments. All Realm/profile guards remain closed.
+
+See [literal controls and validation](validation/ts-033d1/README.md).

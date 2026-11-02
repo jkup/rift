@@ -77,6 +77,7 @@ export class Evaluator {
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
+            case "var": throw new Error("Script var AST requires Script execution");
             case "empty": case "function": return normal();
             case "expression": return this.evaluate(stmt.expression, env, receiver);
             case "let": {

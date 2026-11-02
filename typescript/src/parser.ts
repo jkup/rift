@@ -1,3 +1,5 @@
+import { collectDeclarationPlan, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
+import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
 import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource } from "./syntax.js";
@@ -41,7 +43,7 @@ function blockedReturnCoverage(rejection: Rejection | null, error: Diagnostic | 
 export function auditScriptReturns(source: string): ReturnCoverage {
     const result = lex(source);
     if (result.error !== null) return blockedReturnCoverage(result.rejection, result.error);
-    const parser = new Parser(result.tokens, { text: source }, true);
+    const parser = new Parser(result.tokens, { text: source }, "return-audit");
     parser.program();
     if (parser.error !== null) return blockedReturnCoverage(parser.rejection, parser.error);
     const end = parser.current();
@@ -52,7 +54,25 @@ export function auditScriptReturns(source: string): ReturnCoverage {
     return { kind: "complete", goal: "Script", sourceUnits: source.length,
         consumedUnits: end.end, candidates: parser.returnCandidates };
 }
+// Internal plan entry: even this parser seam returns no executable body.
+export function parseDeclarationPlan(unit: ScriptSourceUnit): DeclarationPlanResult {
+    const source = { id: unit.id, text: unit.text };
+    const lexical = lex(source.text);
+    if (lexical.error !== null) {
+        if (lexical.rejection === null) throw new Error("missing lexer rejection");
+        return { kind: "blocked", goal: "Script", unit: source, rejection: lexical.rejection, diagnostic: lexical.error };
+    }
+    const parser = new Parser(lexical.tokens, source, "declaration-plan");
+    const parsed = parser.program();
+    if (parsed.error !== null) {
+        if (parsed.rejection === null) throw new Error("missing parser rejection");
+        return { kind: "blocked", goal: "Script", unit: source, rejection: parsed.rejection, diagnostic: parsed.error };
+    }
+    if (parser.current().kind !== "eof" || parser.current().end !== source.text.length) throw new Error("declaration plan did not reach EOF");
+    return collectDeclarationPlan(source, parsed.body, lexical.tokens, parser.bindings);
+}
 class Parser {
+    readonly bindings = new Map<number, ParsedBinding[]>();
     index = 0;
     depth = 0;
     functions = 0;
@@ -60,7 +80,7 @@ class Parser {
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
     readonly returnCandidates: ReturnCandidate[] = [];
-    constructor(public tokens: Token[], readonly source: SourceText, private readonly auditReturns: boolean = false) {}
+    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" = "legacy") {}
     current(): Token { return this.tokens[this.index]; }
     at(text: string): boolean {
         const t = this.current();
@@ -99,7 +119,7 @@ class Parser {
         const names = parameters.slice();
         while (this.error === null && this.current().kind !== "eof" && !(braced && this.at("}"))) {
             const stmt = this.statement();
-            if (stmt.kind === "let" || stmt.kind === "function") {
+            if (this.purpose !== "declaration-plan" && (stmt.kind === "let" || stmt.kind === "function")) {
                 if (names.includes(stmt.name)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-binding" }, "duplicate binding: " + stmt.name, stmt.loc);
                 names.push(stmt.name);
             }
@@ -129,13 +149,22 @@ class Parser {
         if (this.eat(";")) return { kind: "empty", loc };
         if (this.eat("{")) return { kind: "block", loc, body: this.list(true, []) };
         if (this.eat("let")) {
-            const name = this.name();
-            const init = this.eat("=") ? this.expression(0) : null;
+            const binding = this.binding(0);
             this.expect(";");
-            return { kind: "let", loc, name, init };
+            if (this.purpose === "declaration-plan") this.bindings.set(start, [binding]);
+            return { kind: "let", loc, name: binding.site.name, init: binding.init };
+        }
+        if (this.purpose === "declaration-plan" && this.eat("var")) {
+            const bindings: ParsedBinding[] = [];
+            do { bindings.push(this.binding(1)); } while (this.error === null && this.eat(","));
+            this.expect(";");
+            this.bindings.set(start, bindings);
+            return { kind: "var", loc, declarations: bindings.map(binding => ({ name: binding.site.name, init: binding.init })) };
         }
         if (this.eat("function")) {
+            const token = this.current();
             const name = this.name();
+            if (this.purpose === "declaration-plan") this.bindings.set(start, [{ site: { name, start: token.start, end: token.end, loc: token.loc }, init: null, initializer: null }]);
             const fn = this.functionTail(loc, start);
             return { kind: "function", loc, name, params: fn.params, body: fn.body, source: fn.source };
         }
@@ -160,7 +189,7 @@ class Parser {
             const keyword = this.take();
             const kind = keyword.text === "return" ? "return" : "throw";
             if (kind === "return" && this.functions === 0) {
-                if (this.auditReturns) {
+                if (this.purpose === "return-audit") {
                     this.returnCandidates.push({ ruleCode: "return-outside-function", loc, start: keyword.start, end: keyword.end });
                 } else this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.return-context" }, "return outside function", loc);
             }
@@ -182,6 +211,18 @@ class Parser {
         const expression = this.expression(0);
         this.expect(";");
         return { kind: "expression", loc, expression };
+    }
+    binding(min: number): ParsedBinding {
+        const token = this.current();
+        const name = this.name();
+        let init: Expr | null = null;
+        let initializer: { start: number; end: number } | null = null;
+        if (this.eat("=")) {
+            const start = this.current().start;
+            init = this.expression(min);
+            initializer = { start, end: this.tokens[this.index - 1].end };
+        }
+        return { site: { name, start: token.start, end: token.end, loc: token.loc }, init, initializer };
     }
     functionTail(loc: Location, start: number): { params: string[]; body: Stmt[]; source: FunctionSource } {
         this.expect("(");

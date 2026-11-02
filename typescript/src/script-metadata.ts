@@ -1,3 +1,4 @@
+import { scriptPrologue } from "./script-prologue.js";
 import { lex, type Token } from "./lexer.js";
 import { parse } from "./parser.js";
 import type { Rejection } from "./outcomes.js";
@@ -74,21 +75,7 @@ class MetadataCollector {
     }
 
     prologue(index: number, inheritedStrict: boolean): StrictnessMetadata {
-        const directives: DirectiveMetadata[] = [];
-        let ownStrict = false;
-        // In the admitted grammar an unparenthesized StringLiteral immediately
-        // followed by ';' is exactly a directive ExpressionStatement. ASI and
-        // unsupported escapes have already failed the whole-source parser gate.
-        while (this.tokens[index].kind === "string" && this.tokens[index + 1].text === ";" && this.tokens[index + 1].kind === "punct") {
-            const token = this.tokens[index];
-            const raw = this.text.slice(token.start, token.end);
-            const useStrict = raw === '"use strict"' || raw === "'use strict'";
-            directives.push({ start: token.start, end: token.end, statementEnd: this.tokens[index + 1].end,
-                loc: token.loc, raw, useStrict });
-            ownStrict = ownStrict || useStrict;
-            index += 2;
-        }
-        return { ownStrict, inheritedStrict, strict: ownStrict || inheritedStrict, directives };
+        return scriptPrologue(this.text, this.tokens, index, inheritedStrict);
     }
 
     functionBody(source: FunctionSource | null, loc: Location, body: Stmt[], inherited: boolean, parent: number | null): void {
@@ -121,6 +108,7 @@ class MetadataCollector {
     }
     visitStatement(stmt: Stmt, strict: boolean, parent: number | null): void {
         switch (stmt.kind) {
+            case "var": throw new Error("Script var AST requires Script execution");
             case "function": this.functionBody(stmt.source, stmt.loc, stmt.body, strict, parent); break;
             case "block": this.statements(stmt.body, strict, parent); break;
             case "expression": this.expression(stmt.expression, strict, parent); break;
