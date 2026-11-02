@@ -686,3 +686,7 @@ Accepted contract pushed802f595. Prior writer confirmed idle cursorec9b6279-30bb
 ## TS-031C-B progress — 2026-11-02 15:23 heartbeat
 
 Writer active, saved cursord0909a4c-1948-4182-b608-4d6823dc6609:3. Native static builds/coverage underway; corpus4 reportedly passes with all conformance plans blocked. Full matrix/transport/metadata/preservation checks pending before handoff. No independent acceptance, competing build, successor or main merge.
+
+## TS-031C-B acceptance — 2026-11-02 15:38 heartbeat
+
+Acceptede58c7b0 after actual source/decoder/assertion review and independent full212/212 lanes36 static gates,host73,94-row dual-lane matrix/CLI and preservation audit. Exactly21 literal eligible return tag deltas; no other runtime behavior changed. Logs build/ts031cb-review-*.log. Writer idle cursord0909a4c-1948-4182-b608-4d6823dc6609:4; root original user authorization covers publication. Conformance remains blocked. Retained cancellation test race assigned as ready Claude CL-006, independent of next core work. Next TS-032P freezes exact nondecimal backend design from already-accepted CL005; no repeated research survey or builtin implementation yet. Main remains78811ec; no merge authorized/requested here.

@@ -107,3 +107,11 @@ Revision (2026-11-02, commit `f063ab8`, branch merged with main at `64bf139`): a
 - Parser/evaluator refactoring: owned by the integration task until the foundation is accepted.
 - Performance tuning and compiler/toolchain changes: require measured need and explicit coordination.
 - Broad documentation of implemented behavior: wait for actual interfaces and validation; do not document planned features as shipped.
+
+## CL-006 — Make observation cancellation controls deterministic
+
+Status: **ready**. Owner: unclaimed, for Claude Code. Independent of the TS-032 formatter work. Concrete evidence: typescript/docs/validation/ts-031c-b/README.md and cancellation-attempt/. The current100ms abort can occur during validateLaunch under load, before child spawn; the test then incorrectly assumes transport.json exists. Preserve this retained failure.
+
+Own only typescript/tools/test262/observation.integration.mjs, a minimal host-only test synchronization seam in observe.mjs if essential, dedicated evidence under typescript/docs/assistance/cancellation-controls/, and this entry's handoff. Do not change engine, classifier/result/driver schemas, timers/limits semantics, core TASKS or COORDINATION. Use an isolated branch/PR; coordinator reviews before integration.
+
+Add deterministic coverage for already-aborted/pre-launch cancellation and cancellation after actual child launch. Assert unfinished attempt/no terminal record, correct transport presence for each lifecycle stage, child termination where launched, and no false success. Synchronize on actual lifecycle evidence rather than increasing sleep or retrying until green. Prefer test-only changes; if a seam is necessary keep it narrow and observational, with unchanged production defaults and document the rationale. Preserve timeout/output-cap precedence, snapshot binding, all existing assertions and public behavior. Run host and real Node/native observation controls including repeated deterministic cases; no native semantic/build claim unless actually rebuilt. Report exact changes/checks and limitations in PR, never weaken the oracle or silently skip a lifecycle stage.
