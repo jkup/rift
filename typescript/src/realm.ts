@@ -1,7 +1,8 @@
 import { GuestArray } from "./array-object.js";
-import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Callable, type Value } from "./runtime.js";
+import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value } from "./runtime.js";
 import { registerNumber } from "./builtins/number.js";
 import { registerFunction } from "./builtins/function.js";
+import type { Stmt } from "./syntax.js";
 
 export type Output = (line: string) => void;
 export class Realm {
@@ -12,8 +13,9 @@ export class Realm {
     constructor(output: Output) {
         // Bootstrap dependencies directly, before factories or global installation.
         this.objectPrototype = new GuestObject(null, true);
-        this.functionPrototype = new GuestObject(this.objectPrototype);
-        this.functionPrototype.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc) => normal(UNDEFINED) };
+        this.functionPrototype = new GuestObject(this.objectPrototype, false, {
+            kind: "builtin", realm: this, invoke: (_receiver, _args, _context, _loc) => normal(UNDEFINED),
+        });
         setBuiltinMetadata(this.functionPrototype, "", 0);
         this.arrayPrototype = new GuestArray(this.objectPrototype);
         registerFunction(this);
@@ -32,13 +34,11 @@ export class Realm {
     }
     createObject(): GuestObject { return new GuestObject(this.objectPrototype); }
     createArray(): GuestArray { return new GuestArray(this.arrayPrototype); }
-    createFunction(callable: Callable): GuestObject {
-        const object = new GuestObject(this.functionPrototype);
-        object.callable = callable;
-        return object;
+    createGuestFunction(params: string[], body: Stmt[], environment: Environment): GuestObject {
+        return new GuestObject(this.functionPrototype, false, { kind: "guest", realm: this, params, body, environment });
     }
     createBuiltin(name: string, length: number, invoke: Builtin): GuestObject {
-        const object = this.createFunction({ kind: "builtin", invoke });
+        const object = new GuestObject(this.functionPrototype, false, { kind: "builtin", realm: this, invoke });
         setBuiltinMetadata(object, name, length);
         return object;
     }

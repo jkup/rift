@@ -9,9 +9,8 @@ function check(ok: boolean, label: string): void { if (!ok) throw new Error(labe
 function seed(realm: Realm, name: string, value: Value): void {
     realm.global.bindings.set(name, { initialized: true, mutable: true, value });
 }
-function builtin(invoke: Builtin): Value {
-    const object = new GuestObject();
-    object.callable = { kind: "builtin", invoke };
+function builtin(realm: Realm, invoke: Builtin): Value {
+    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
     return { kind: "object", object };
 }
 function execute(source: string, realm: Realm): Completion {
@@ -110,15 +109,15 @@ for (const expression of ["+operand", "-operand", "operand - 2", "2 - operand", 
 for (const op of ["-", "*", "/", "%"]) {
     const realm = new Realm((line) => console.log(line));
     let order = "";
-    seed(realm, "left", builtin((_receiver, _args, _context, _loc) => {
+    seed(realm, "left", builtin(realm, (_receiver, _args, _context, _loc) => {
         order += "L";
         return normal({ kind: "string", value: "6" });
     }));
-    seed(realm, "right", builtin((_receiver, _args, _context, _loc) => {
+    seed(realm, "right", builtin(realm, (_receiver, _args, _context, _loc) => {
         order += "R";
         return normal({ kind: "string", value: "2" });
     }));
-    seed(realm, "stop", builtin((_receiver, _args, _context, _loc): Completion => sentinel));
+    seed(realm, "stop", builtin(realm, (_receiver, _args, _context, _loc): Completion => sentinel));
     check(execute("left() " + op + " right();", realm).type === "normal" && order === "LR", op + " order exactly once");
     order = "";
     check(execute("stop() " + op + " right();", realm) === sentinel && order === "", op + " left throw skips RHS");
@@ -136,7 +135,7 @@ for (const op of ["-", "*", "/", "%"]) {
 }
 for (const op of ["+", "-"]) {
     const realm = new Realm((line) => console.log(line));
-    seed(realm, "stop", builtin((_receiver, _args, _context, _loc): Completion => sentinel));
+    seed(realm, "stop", builtin(realm, (_receiver, _args, _context, _loc): Completion => sentinel));
     check(execute(op + "stop();", realm) === sentinel, "exact unary throw " + op);
 }
 

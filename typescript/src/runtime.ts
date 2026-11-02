@@ -32,18 +32,17 @@ export type OperationContext = {
 };
 export type Builtin = (receiver: Value, args: Value[], context: OperationContext, loc: Location) => Completion;
 export type Callable =
-    | { kind: "guest"; params: string[]; body: Stmt[]; environment: Environment }
-    | { kind: "builtin"; invoke: Builtin };
+    | { readonly kind: "guest"; readonly realm: Realm; readonly params: string[]; readonly body: Stmt[]; readonly environment: Environment }
+    | { readonly kind: "builtin"; readonly realm: Realm; readonly invoke: Builtin };
 export class GuestObject {
     private propertyStorage: Map<PropertyKey, DataDescriptor> = new Map();
     private extensible = true;
     private prototypeSlot: GuestObject | null;
     private readonly immutablePrototypeSlot: boolean;
-    constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false) {
+    constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false, readonly callable: Callable | null = null) {
         this.prototypeSlot = proto;
         this.immutablePrototypeSlot = immutablePrototype;
     }
-    callable: Callable | null = null;
     // Compatibility inspection snapshot, never a mutable view of internal slots.
     get properties(): Map<PropertyKey, DataDescriptor> {
         const snapshot = new Map<PropertyKey, DataDescriptor>();

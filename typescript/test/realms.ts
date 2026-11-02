@@ -130,6 +130,7 @@ for (const realm of [r1, r2]) {
     const ar = realm.arrayPrototype;
     checkGraph(o.getPrototypeOf() === null && f.getPrototypeOf() === o && ar.getPrototypeOf() === o, "G1 graph");
     checkGraph(o.callable === null && f.callable !== null && ar instanceof GuestArray, "G1 root kinds");
+    checkGraph(f.callable !== null && f.callable.realm === realm, "R1 root owner");
     checkGraph(o.ownPropertyKeys().length === 0 && f.ownPropertyKeys().join(",") === "name,length,call" && ar.ownPropertyKeys().join(",") === "length", "G17 exact initial keys");
     for (const root of [o, f, ar]) {
         for (const key of ["constructor", "toString", "valueOf", "join", "map"]) checkGraph(root.get(key).kind === "undefined", "G17 missing methods");
@@ -144,6 +145,7 @@ for (const realm of [r1, r2]) {
             checkGraph(method !== undefined && method.writable && !method.enumerable && method.configurable, "G5 installation descriptor");
             const fn = graphObject(namespace.get(key));
             checkGraph(fn.getPrototypeOf() === f && fn.callable !== null, "G9 builtin chain");
+            checkGraph(fn.callable !== null && fn.callable.realm === realm, "R1 builtin owner");
             metadata(fn, key, key === "log" ? 0 : 1);
         }
     }
@@ -216,7 +218,7 @@ checkGraph(literalObject.ownPropertyKeys().join(",") === "x" && !declared.proper
 checkGraph(literalObject.internalDelete("x").type === "normal" && sameValue(literalObject.get("x"), numberValue(7)), "G10 delete restores inheritance");
 const readonlyWrite = active.context.call(graphBinding(r1, "readonlyWrite"), UNDEFINED, [], at);
 checkGraph(readonlyWrite.type === "throw" && readonlyWrite.diagnostic.name === "TypeError" && sameValue(graphBinding(r1, "effects"), numberValue(1)) && !literalObject.properties.has("fixed"), "G10 readonly write after RHS effect");
-// G11: transfer Values verbatim; the existing foreign-call context policy stays explicit.
+// G11: transfer Values verbatim; defining-Realm entry preserves lexical ownership.
 for (const name of ["object", "array", "declared"]) {
     const value = graphBinding(r1, name);
     r2.global.bindings.set(name, { initialized: true, mutable: true, value });
@@ -224,10 +226,12 @@ for (const name of ["object", "array", "declared"]) {
 }
 checkGraph(r2.createObject().get("x").kind === "undefined" && r2.objectPrototype.ownPropertyKeys().length === 0, "G11 independent root mutation");
 const foreignActive = new Evaluator(r2);
+const foreignContext = foreignActive.context;
 const retained = foreignActive.context.call(graphBinding(r1, "declared"), UNDEFINED, [], at);
 checkGraph(retained.type === "normal" && retained.value === graphBinding(r1, "object"), "G11 lexical environment retained");
 const foreignAllocation = foreignActive.context.call(graphBinding(r1, "expression"), UNDEFINED, [], at);
-checkGraph(foreignAllocation.type === "normal" && graphObject(foreignAllocation.value).getPrototypeOf() === r2.objectPrototype && foreignActive.calls === 0, "G11 foreign body uses caller Realm limitation");
+checkGraph(foreignAllocation.type === "normal" && graphObject(foreignAllocation.value).getPrototypeOf() === r1.objectPrototype && foreignActive.calls === 0, "G11 foreign body uses defining Realm");
+checkGraph(foreignActive.context === foreignContext && foreignContext.realm === r2, "R2 stable context restored");
 // G14: a graph does not supply default coercion methods.
 for (const name of [
     "numericObject", "numericArray", "numericFunction",

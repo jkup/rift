@@ -596,10 +596,9 @@ Function root's empty name/zero length until own metadata is separately designed
 
 Internal map selects the supplied context Realm for results, preserving exact
 returned Values, holes, order and the existing constructor/species rejection.
-Transferred values retain identities and chains. Foreign guest functions still
-execute with the caller evaluator's context and original lexical environment;
-body allocations therefore use the caller Realm. No owner-Realm switching is
-claimed. No constructor bindings/back-links or standard prototype methods are
+Transferred values retain identities and chains. TS-017A supersedes the original
+caller-Realm allocation limitation: foreign functions enter their defining Realm
+using the caller evaluator's stable context and original lexical environment. No constructor bindings/back-links or standard prototype methods are
 installed, so existing no-method coercion failures remain intentional.
 
 The accepted [design](realm-intrinsic-prototypes.md) records fixed ECMA-262 2025
@@ -619,13 +618,42 @@ Argument expressions have already evaluated before this check, as for other call
 The evaluator boundary is unchanged. Both the builtin and target occupy active
 call slots: proper tail calls (the specification's PrepareForTailCall) are not
 implemented. All guest functions retain Rift's existing strict receiver profile.
-Foreign functions keep their lexical environments and object identities but run
-in the caller's context; body allocations use the caller Realm. This method does
-not add standard foreign-function Realm entry, sloppy this substitution, Function
-constructors, apply/bind/toString, or ordinary guest function metadata inference.
+TS-017A adds defining-Realm entry for the intrinsic and target independently,
+while preserving lexical environments and object identities. Neither task adds
+sloppy this substitution, Function constructors, apply/bind/toString, or ordinary
+guest function metadata inference.
 
 Sources consulted on 2026-11-01: [ECMA-262 2025, 20.2.3.3](https://tc39.es/ecma262/2025/multipage/fundamental-objects.html#sec-function.prototype.call)
 and [engine262 FunctionPrototype.mts at d553e7b52501fbc47eae981c8d0fa7a5c26d0171](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/intrinsics/FunctionPrototype.mts).
 Adopted callable validation and ordered unchanged Value forwarding; no source
 copied, no generator execution machinery or tail-call emulation adopted.
 [Validation and scope](validation/ts-016b/README.md).
+
+## Synchronous defining-Realm entry (TS-017A)
+
+Callable records require a readonly defining Realm; GuestObject installs its
+readonly callable slot at construction. createGuestFunction captures the active
+Realm and lexical Environment separately. createBuiltin and Function root
+bootstrap stamp the creating Realm without executing guest code. Null-root host
+fixtures remain null-root and explicitly supply their owner.
+
+An evaluator exposes one stable OperationContext, backed by a private mutable
+Realm view. After callable and call-budget validation, call saves the active
+Realm, enters the callable's owner and dispatches with the same context, budgets,
+receiver, arguments and location. Finally restores the previous Realm and call
+count. Admitted statement/expression frames also release their depth in finally;
+a host fault cannot strand frames or erase still-active caller frames. Entry and
+restoration add no semantic ticks, and exhausted steps never reset.
+
+A saved context is a live view, not a Realm snapshot. Save context.realm separately
+when a host algorithm needs a fixed origin. Nested calls must use context.call;
+run remains an independent top-level execution with a new evaluator. Internal map
+allocates in its supplied context's active Realm; coercion calls freshly read
+hooks through the same evaluator. Objects and transferred Values are not copied
+or reparented, and prototype/name/length mutation never changes function ownership.
+
+This is synchronous entry only, with strict receiver forwarding and string-valued
+error diagnostics. It adds no suspension model, jobs, modules, constructors,
+species, boxing, Error objects, bound/proxy functions or standard methods.
+The [accepted contract](function-realm-entry.md) records the fixed specification
+and engine sources and rationale. See [validation](validation/ts-017a/README.md).

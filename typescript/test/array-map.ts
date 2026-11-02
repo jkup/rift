@@ -27,9 +27,8 @@ function num(value: number): Value {
 function put(object: GuestObject, key: string, value: Value): void {
     object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true });
 }
-function builtin(invoke: Builtin): Value {
-    const object = new GuestObject();
-    object.callable = { kind: "builtin", invoke };
+function builtin(realm: Realm, invoke: Builtin): Value {
+    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
     return obj(object);
 }
 function error(completion: Completion, name: string, at: Location = loc): void {
@@ -232,7 +231,7 @@ const elementPrototype = new GuestObject();
 put(elementPrototype, "2", num(7));
 sparse.setPrototypeOf(elementPrototype);
 let visits = 0;
-const observe = builtin((_receiver, args, _context, at) => {
+const observe = builtin(realm, (_receiver, args, _context, at) => {
     check(
         at === loc && args.length === 3 && args[1].kind === "number" &&
         args[1].value === (visits === 0 ? 0 : 2) &&
@@ -274,7 +273,7 @@ for (const inherited of [false, true]) {
         put(deletionPrototype, "1", num(9));
         deletionInput.setPrototypeOf(deletionPrototype);
     }
-    const deleting = builtin((_receiver, args, _context, _at) => {
+    const deleting = builtin(realm, (_receiver, args, _context, _at) => {
         if (sameValue(args[1], num(0))) {
             const deleted = deletionInput.internalDelete("1");
             check(deleted.type === "normal" && deleted.value, "delete");
@@ -344,7 +343,7 @@ put(throwing, "0", num(10));
 put(throwing, "1", num(11));
 put(throwing, "2", num(12));
 let effects = 0;
-const tracedCallback = builtin((_receiver, args, _context, _at) => {
+const tracedCallback = builtin(realm, (_receiver, args, _context, _at) => {
     trace.push("Call");
     effects++;
     return normal(args[0]);
@@ -378,12 +377,12 @@ check(
     "guest throw value/location",
 );
 traceIs("Get length,Has 0,Get 0,Effect 0,Has 1,Get 1,Effect 1");
-const bridge = builtin((_receiver, _args, _context, _at) => sentinel);
+const bridge = builtin(realm, (_receiver, _args, _context, _at) => sentinel);
 check(map(singleElement, bridge) === sentinel, "callback exact record");
 
 // Pure builtin callbacks are bounded even when they spend no guest AST ticks.
 let constants = 0;
-const constant = builtin((_receiver, _args, _context, _at) => {
+const constant = builtin(realm, (_receiver, _args, _context, _at) => {
     constants++;
     return normal(num(42));
 });
@@ -399,7 +398,7 @@ check(constants === 3 && builtinBudget.steps === 4 && builtinBudget.calls === 0,
 const inner = new Traced();
 put(inner, "length", num(3));
 const nestedBudget = new Evaluator(realm, 3);
-const reenter = builtin((_receiver, _args, context, at) => {
+const reenter = builtin(realm, (_receiver, _args, context, at) => {
     check(context === nestedBudget.context && nestedBudget.calls === 2, "nested same context");
     return context.call(adapter, UNDEFINED, [obj(inner), constant], at);
 });
@@ -422,7 +421,7 @@ check(
 for (const kind of ["fault", "return", "break", "continue", "output"]) {
     const faultEvaluator = new Evaluator(realm);
     let escaped = false;
-    const faultCallback = kind === "output" ? binding("output") : builtin((_receiver, _args, _context, _at): Completion => {
+    const faultCallback = kind === "output" ? binding("output") : builtin(realm, (_receiver, _args, _context, _at): Completion => {
         if (kind === "fault") throw fault;
         if (kind === "return") return { type: "return", value: UNDEFINED };
         if (kind === "break") return { type: "break", value: UNDEFINED };
@@ -444,11 +443,16 @@ for (const kind of ["fault", "return", "break", "continue", "output"]) {
 // A second realm has its own active context and independent result storage.
 const otherRealm = new Realm((_line) => {});
 const otherEvaluator = new Evaluator(otherRealm);
-const otherCallback = builtin((_receiver, args, context, _at) => {
-    check(context.realm === otherRealm && context === otherEvaluator.context, "other active realm");
+let expectedOtherContext = otherEvaluator.context;
+const otherCallback = builtin(otherRealm, (_receiver, args, context, _at) => {
+    check(context.realm === otherRealm && context === expectedOtherContext, "other active realm");
     return normal(args[0]);
 });
-const otherResult = result(map(singleElement, otherCallback, UNDEFINED, otherEvaluator), 1, otherRealm);
+const otherResult = result(map(singleElement, otherCallback, UNDEFINED, otherEvaluator), 1, realm);
+const foreignCallbackEvaluator = new Evaluator(realm);
+expectedOtherContext = foreignCallbackEvaluator.context;
+const foreignCallbackResult = foreignCallbackEvaluator.call(otherCallback, UNDEFINED, [singleElement.get("0")], loc);
+check(foreignCallbackResult.type === "normal" && foreignCallbackResult.value === singleElement.get("0") && foreignCallbackEvaluator.context.realm === realm, "explicit callback owner from foreign evaluator");
 put(otherResult, "0", num(8));
 element(secondResult, "0", singleElement.get("0"));
 check(!otherRealm.global.bindings.has("host") && firstRun.context !== otherEvaluator.context, "realm independent storage/registration");
@@ -466,7 +470,7 @@ check(
 traceIs("Get length");
 const convertibleLength = new GuestObject();
 let lengthHooks = 0;
-put(convertibleLength, "valueOf", builtin((_receiver, _args, _context, _at) => {
+put(convertibleLength, "valueOf", builtin(realm, (_receiver, _args, _context, _at) => {
     lengthHooks++;
     return normal(num(0));
 }));
@@ -482,7 +486,7 @@ element(result(map(inheritedUndefined), 1), "0", UNDEFINED);
 
 // Capture the actual guest throw to assert record and diagnostic identity.
 let captured: ValueCompletion = normal();
-const captureGuest = builtin((receiver, args, context, at) => {
+const captureGuest = builtin(realm, (receiver, args, context, at) => {
     captured = context.call(binding("throwing"), receiver, args, at);
     return captured;
 });
@@ -496,10 +500,10 @@ traceIs("Get length,Has 0,Get 0,Effect 0,Has 1,Get 1,Effect 1");
 
 // Recovery inside an outer call restores its prior active count, not just zero.
 const recoveryEvaluator = new Evaluator(realm);
-const hostFaultCallback = builtin((_receiver, _args, _context, _at): Completion => {
+const hostFaultCallback = builtin(realm, (_receiver, _args, _context, _at): Completion => {
     throw fault;
 });
-const recovery = builtin((_receiver, _args, context, at) => {
+const recovery = builtin(realm, (_receiver, _args, context, at) => {
     let caught = false;
     try {
         context.call(adapter, UNDEFINED, [obj(singleElement), hostFaultCallback], at);
@@ -563,3 +567,71 @@ element(inheritedResult, "1", num(8));
 hole(inheritedResult, "0");
 check(sourceRealm.arrayPrototype.internalDelete("1").type === "normal" && inheritedHoles.get("1").kind === "undefined" && resultRealm.arrayPrototype.get("1").kind === "undefined", "G16 deletion/isolation");
 check(resultActive.calls === 0 && holeActive.calls === 0, "G15 map call cleanup");
+
+// R17/R18: helper allocation uses its supplied active Realm; callbacks enter C.
+const mapA = new Realm((_line) => {});
+const mapB = new Realm((_line) => {});
+const mapC = new Realm((_line) => {});
+const mapEntry = new Evaluator(mapA);
+class SparseInput extends GuestArray {
+    override internalHasProperty(key: string, at: Location): InternalBooleanCompletion {
+        check(mapEntry.context.realm === mapA, "R17 restored A between callbacks");
+        return super.internalHasProperty(key, at);
+    }
+}
+const sparseB = new SparseInput(mapB.arrayPrototype);
+const firstElement = obj(mapB.createObject());
+const lastElement = obj(mapA.createObject());
+put(sparseB, "0", firstElement);
+put(sparseB, "2", lastElement);
+const callbackReceiver = obj(mapA.createObject());
+const callbackIndices: number[] = [];
+const identityC = builtin(mapC, (receiver, args, context, at) => {
+    check(context === mapEntry.context && context.realm === mapC && at === loc, "R17 C callback stable context");
+    check(receiver === callbackReceiver && args.length === 3 && args[2].kind === "object" && args[2].object === sparseB, "R17 exact receiver/input");
+    if (args[1].kind !== "number") throw new Error("R17 index");
+    callbackIndices.push(args[1].value);
+    return normal(args[0]);
+});
+const directA = result(mapObjectDefaultArray(sparseB, identityC, callbackReceiver, mapEntry.context, loc), 3, mapA);
+check(directA.get("0") === firstElement && directA.get("2") === lastElement && callbackIndices.join(",") === "0,2", "R17 values and indices");
+hole(directA, "1");
+check(sparseB.getPrototypeOf() === mapB.arrayPrototype && mapEntry.context.realm === mapA && mapEntry.calls === 0, "R17 input and restoration");
+class MapInput extends GuestObject {
+    override internalHasProperty(key: string, at: Location): InternalBooleanCompletion {
+        check(mapEntry.context.realm === mapB, "R18 restored B between callbacks");
+        return super.internalHasProperty(key, at);
+    }
+}
+const genericA = new MapInput(mapA.objectPrototype);
+put(genericA, "0", firstElement);
+put(genericA, "1", lastElement);
+const lengthA = mapA.createObject();
+const mapTrace: string[] = [];
+put(lengthA, "valueOf", builtin(mapA, (receiver, args, context, at) => {
+    check(context === mapEntry.context && context.realm === mapA && at === loc && args.length === 0 && receiver.kind === "object" && receiver.object === lengthA, "R18 A length hook");
+    mapTrace.push("A length");
+    return normal(num(2));
+}));
+put(genericA, "length", obj(lengthA));
+const callbackResults: Value[] = [];
+const allocateC = builtin(mapC, (receiver, args, context, at) => {
+    check(context === mapEntry.context && context.realm === mapC && at === loc && receiver === callbackReceiver, "R18 C allocation callback");
+    check(args[2].kind === "object" && args[2].object === genericA && sameValue(args[1], num(callbackResults.length)), "R18 input/index");
+    mapTrace.push("C callback");
+    const allocated = obj(context.realm.createObject());
+    callbackResults.push(allocated);
+    return normal(allocated);
+});
+const mapInB = builtin(mapB, (_receiver, _args, context, at) => {
+    check(context.realm === mapB, "R18 B helper entry");
+    const mapped = mapObjectDefaultArray(genericA, allocateC, callbackReceiver, context, at);
+    check(context.realm === mapB, "R18 B helper continuation");
+    return mapped;
+});
+const allocatedB = result(mapEntry.call(mapInB, UNDEFINED, [], loc), 2, mapB);
+check(allocatedB.get("0") === callbackResults[0] && allocatedB.get("1") === callbackResults[1], "R18 exact callback Values");
+for (const value of callbackResults) {
+    check(value.kind === "object" && value.object.getPrototypeOf() === mapC.objectPrototype, "R18 C element prototype");
+}
+check(mapTrace.join(",") === "A length,C callback,C callback" && mapEntry.context.realm === mapA && mapEntry.calls === 0 && mapEntry.depth === 0, "R18 ordering and restoration");

@@ -1,7 +1,9 @@
 # Synchronous function Realm entry (TS-017P)
 
 Design for coordinator review against `e515e7bc00633f3932eb8f11b9b142cf5ba7eaf8`.
-No runtime implementation or new native evidence is supplied by this document.
+TS-017A implements this accepted contract; implementation evidence and the R1-R22
+test mapping are retained in [TS-017A validation](validation/ts-017a/README.md).
+The original TS-017P design itself supplied no runtime/native evidence.
 The accepted baseline is TS-016B `59bd44e`: 163/163 Node and native cases,
 22 static gates. See [review evidence](validation/ts-017p/README.md).
 

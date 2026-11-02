@@ -58,8 +58,7 @@ const method = r.functionPrototype.getOwnProperty("call");
 check(method !== undefined && method.writable && !method.enumerable && method.configurable, "method flags");
 check(!r.global.bindings.has("Function") && r.functionPrototype.get("constructor").kind === "undefined", "no constructor");
 check(r.createObject().get("call").kind === "undefined" && r.createArray().get("call").kind === "undefined", "O/A do not inherit call");
-const low = new GuestObject();
-low.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc) => normal() };
+const low = new GuestObject(null, false, { kind: "builtin", realm: r, invoke: (_receiver, _args, _context, _loc) => normal() });
 check(low.get("call").kind === "undefined", "null-root callable stays bare");
 const linked = low.setPrototypeOf(r.functionPrototype);
 check(linked.type === "normal" && low.get("call") === call, "deliberate linking");
@@ -114,8 +113,7 @@ check(result(emptyCall) === UNDEFINED, "missing this/rest builtin");
 class NoLookup extends GuestObject {
     override internalGet(_key: string, _receiver: Value, _loc: Location): ValueCompletion { throw new Error("target property lookup"); }
 }
-const opaque = new NoLookup();
-opaque.callable = {kind: "builtin", invoke: (thisArg, _args, _context, _loc) => normal(thisArg)};
+const opaque = new NoLookup(null, false, {kind: "builtin", realm: r, invoke: (thisArg, _args, _context, _loc) => normal(thisArg)});
 const opaqueCall = e.call(call, value(opaque), [token], loc);
 check(result(opaqueCall) === token, "no target property lookup/coercion");
 const invalid: Value[] = [UNDEFINED, {kind: "null"}, {kind: "boolean", value: false}, number(1), text("call"), value(r.createObject()), value(r.createArray())];
@@ -213,19 +211,20 @@ check(budget.steps === 2 && budget.calls === 0, "shared monotonic tick budget");
 const stillExhausted = budget.call(call, tickTarget, [], loc);
 error(stillExhausted, "RangeError", "execution step limit exceeded", 77, 9);
 check(budget.steps === 3 && budget.calls === 0, "no fresh budget on reentry");
-// Foreign origin keeps lexical identity, but existing execution uses caller Realm.
+// Foreign origin keeps lexical identity, and execution uses defining Realm.
 const foreignEval = new Evaluator(other);
 const foreignCall = foreignEval.call(call, binding(r, "foreign"), [token], loc);
 const foreignResult = object(result(foreignCall));
-check(foreignResult.getPrototypeOf() === other.objectPrototype && foreignResult.get("captured") === token && foreignResult.get("receiver") === token, "foreign lexical identity/caller allocation");
-check(object(foreignResult.get("array")).getPrototypeOf() === other.arrayPrototype && object(foreignResult.get("fn")).getPrototypeOf() === other.functionPrototype, "foreign nested allocations use caller");
+check(foreignResult.getPrototypeOf() === r.objectPrototype && foreignResult.get("captured") === token && foreignResult.get("receiver") === token, "foreign lexical identity/defining allocation");
+check(object(foreignResult.get("array")).getPrototypeOf() === r.arrayPrototype && object(foreignResult.get("fn")).getPrototypeOf() === r.functionPrototype, "foreign nested allocations use defining Realm");
 check(object(binding(r, "foreign")).getPrototypeOf() === r.functionPrototype && object(token).getPrototypeOf() === r.objectPrototype, "transferred Values not reparented");
 const foreignBuiltin = value(r.createBuiltin("foreign", 0, (thisArg, _args, context, actualLoc) => {
-    check(context === foreignEval.context && actualLoc === loc && thisArg === token, "foreign builtin gets caller context");
+    check(context === foreignEval.context && context.realm === r && actualLoc === loc && thisArg === token, "foreign builtin gets stable context with defining Realm");
     return normal(thisArg);
 }));
 const foreignBuiltinCall = foreignEval.call(call, foreignBuiltin, [token], loc);
 check(result(foreignBuiltinCall) === token, "foreign intrinsic and target");
+check(foreignEval.context.realm === other, "R2 foreign call restores entry Realm");
 // Mutate only R1, while saved intrinsic identity remains usable.
 const otherCall = other.functionPrototype.get("call");
 const replaced = r.functionPrototype.set("call", number(7), e.context, loc);

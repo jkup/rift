@@ -12,9 +12,8 @@ function check(ok: boolean, label: string): void {
 function seed(realm: Realm, name: string, value: Value): void {
     realm.global.bindings.set(name, { initialized: true, mutable: true, value });
 }
-function builtin(invoke: Builtin): Value {
-    const object = new GuestObject();
-    object.callable = { kind: "builtin", invoke };
+function builtin(realm: Realm, invoke: Builtin): Value {
+    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
     return { kind: "object", object };
 }
 function execute(source: string, realm: Realm): Completion {
@@ -150,23 +149,23 @@ for (const expression of objectExpressions) {
     seed(realm, "operand", { kind: "object", object: array });
     const arrayResult = execute(expression + ";", realm);
     check(arrayResult === sentinel && array.reads === 1, expression + " array exact hook Get throw");
-    object.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc): Completion => sentinel };
-    seed(realm, "operand", { kind: "object", object });
+    const callable = new ObservedObject(null, false, { kind: "builtin", realm, invoke: (_receiver, _args, _context, _loc): Completion => sentinel });
+    seed(realm, "operand", { kind: "object", object: callable });
     const functionResult = execute(expression + ";", realm);
-    check(functionResult === sentinel && object.reads === 2, expression + " function exact hook Get throw");
+    check(functionResult === sentinel && callable.reads === 1, expression + " function exact hook Get throw");
 }
 for (const op of ["<", ">", "<=", ">="]) {
     const realm = new Realm((line) => console.log(line));
     let order = "";
-    seed(realm, "left", builtin((_receiver, _args, _context, _loc) => {
+    seed(realm, "left", builtin(realm, (_receiver, _args, _context, _loc) => {
         order += "L";
         return normal({ kind: "string", value: "6" });
     }));
-    seed(realm, "right", builtin((_receiver, _args, _context, _loc) => {
+    seed(realm, "right", builtin(realm, (_receiver, _args, _context, _loc) => {
         order += "R";
         return normal({ kind: "string", value: "2" });
     }));
-    seed(realm, "stop", builtin((_receiver, _args, _context, _loc): Completion => sentinel));
+    seed(realm, "stop", builtin(realm, (_receiver, _args, _context, _loc): Completion => sentinel));
     check(execute("left() " + op + " right();", realm).type === "normal" && order === "LR", op + " order exactly once");
     order = "";
     check(execute("stop() " + op + " right();", realm) === sentinel && order === "", op + " left throw skips RHS");

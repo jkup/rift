@@ -163,12 +163,11 @@ if (abrupt.type !== "throw") throw new Error("expected Get throw");
 check(abrupt.value === thrown.value && abrupt.diagnostic === thrown.diagnostic && abrupt.diagnostic.loc === loc, "throw payload/diagnostic/location identity");
 check(observed.calls === 2, "one abrupt Get");
 let hooks = 0;
-const method = new GuestObject();
-method.callable = { kind: "builtin", invoke: (receiver, args, context, _at) => {
+const method = new GuestObject(null, false, { kind: "builtin", realm: active.context.realm, invoke: (receiver, args, context, _at) => {
     hooks++;
     check(receiver.kind === "object" && receiver.object === parent && args.length === 0 && context === active.context, "length hook receiver/context");
     return { type: "normal", value: n(4.9) };
-} };
+} });
 parent.bootstrapDefine("valueOf", { value: o(method), writable: true, enumerable: true, configurable: true });
 ordinary.bootstrapDefine("length", { value: o(parent), writable: true, enumerable: true, configurable: true });
 numeric(lengthOfArrayLike(ordinary, active.context, loc), 4);

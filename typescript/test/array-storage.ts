@@ -112,14 +112,14 @@ for (const value of invalidInputs) {
 }
 const coercible = new GuestObject();
 let hookCalls = 0;
-const hook = new GuestObject();
-hook.callable = {
+const hook = new GuestObject(null, false, {
+    realm: keyContext.realm,
     kind: "builtin",
     invoke: (_receiver, _args, _context, _loc): Completion => {
         hookCalls++;
         return { type: "normal", value: num(2) };
     },
-};
+});
 coercible.bootstrapDefine("valueOf", { value: obj(hook), writable: true, enumerable: true, configurable: true });
 coercible.bootstrapDefine("toString", { value: obj(hook), writable: true, enumerable: true, configurable: true });
 const converted = three();

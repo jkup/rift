@@ -21,9 +21,8 @@ function num(value: number): Value {
 function put(object: GuestObject, key: string, value: Value): void {
     object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true });
 }
-function builtin(invoke: Builtin): Value {
-    const object = new GuestObject();
-    object.callable = { kind: "builtin", invoke };
+function builtin(realm: Realm, invoke: Builtin): Value {
+    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
     return obj(object);
 }
 function seed(active: Evaluator, key: string, value: Value): void {
@@ -161,7 +160,7 @@ for (const stop of ["", "get1", "get2", "call1", "call2", "tick1", "tick2"]) {
         call: (callee, receiver, args, at) => active.context.call(callee, receiver, args, at),
     };
     for (const name of ["valueOf", "toString"]) {
-        put(hook, name, builtin((receiver, args, _context, at) => {
+        put(hook, name, builtin(active.context.realm, (receiver, args, _context, at) => {
             calls++;
             check(receiver === hook.original && args.length === 0 && at === loc, "hook call receiver/args/location");
             put(hook, "effect", num(calls));
@@ -199,11 +198,11 @@ const fresh = setup();
 const savedHook = new GuestObject();
 const replacedSource = input(obj(savedHook));
 let oldCalls = 0;
-put(savedHook, "toString", builtin((_receiver, _args, _context, _at) => {
+put(savedHook, "toString", builtin(fresh.context.realm, (_receiver, _args, _context, _at) => {
     oldCalls++;
     return normal(num(99));
 }));
-put(savedHook, "valueOf", builtin((_receiver, _args, _context, _at) => {
+put(savedHook, "valueOf", builtin(fresh.context.realm, (_receiver, _args, _context, _at) => {
     put(replacedSource, "length", num(100));
     put(savedHook, "toString", binding(fresh, "fallback"));
     return normal(obj(new GuestObject()));
@@ -229,7 +228,7 @@ for (const succeeds of [false, true]) {
     const active = setup();
     const source = new ObservedLength();
     const hook = new GuestObject();
-    put(hook, "valueOf", builtin((_receiver, _args, _context, _at) => {
+    put(hook, "valueOf", builtin(active.context.realm, (_receiver, _args, _context, _at) => {
         put(source, "effect", num(1));
         return succeeds ? normal(num(Infinity)) : sentinel;
     }));
@@ -257,7 +256,7 @@ for (const invalidCallback of [false, true]) {
     const array = new ArrayObserver();
     const hook = new GuestObject();
     array.lengthValue = obj(hook);
-    put(hook, "valueOf", builtin((_receiver, _args, _context, _at) => {
+    put(hook, "valueOf", builtin(active.context.realm, (_receiver, _args, _context, _at) => {
         array.trace.push("hook");
         put(array, "constructor", num(7));
         return normal(num(0));
@@ -296,7 +295,7 @@ for (const method of ["loop", "recursive"]) {
 // Huge sparse maps spend bounded ticks after their single conversion.
 const sparseActive = setup();
 const sparse = input(obj(new GuestObject()));
-put(object(sparse.get("length")), "valueOf", builtin((_receiver, _args, _context, _at) => normal(num(4294967295))));
+put(object(sparse.get("length")), "valueOf", builtin(sparseActive.context.realm, (_receiver, _args, _context, _at) => normal(num(4294967295))));
 const budget = new Evaluator(sparseActive.context.realm, 3);
 error(mapObjectDefaultArray(sparse, binding(budget, "identity"), UNDEFINED, budget.context, loc), "RangeError");
 check(budget.steps === 4 && budget.calls === 0, "one hook tick plus bounded sparse scan");
@@ -341,7 +340,7 @@ check(forbidden.reads === 2, "two semantic lookups total");
 const exact = setup();
 const hook = new GuestObject();
 let captured: ValueCompletion = normal();
-put(hook, "valueOf", builtin((receiver, args, context, at) => {
+put(hook, "valueOf", builtin(exact.context.realm, (receiver, args, context, at) => {
     captured = context.call(binding(exact, "throwing"), receiver, args, at);
     return captured;
 }));
@@ -349,7 +348,7 @@ const exactResult = lengthOfArrayLike(input(obj(hook)), exact.context, loc);
 check(exactResult.type === "throw" && captured.type === "throw" && exactResult === captured && captured.value === object(binding(exact, "host")).get("payload"), "exact guest throw");
 for (const mode of ["fault", "break"]) {
     const fault = new Error("length host fault");
-    put(hook, "valueOf", builtin((_receiver, _args, _context, _at): Completion => {
+    put(hook, "valueOf", builtin(exact.context.realm, (_receiver, _args, _context, _at): Completion => {
         if (mode === "fault") throw fault;
         return { type: "break", value: UNDEFINED };
     }));

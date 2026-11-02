@@ -15,9 +15,8 @@ function binding(active: Evaluator, name: string): Value {
     if (entry === undefined) throw new Error("missing " + name);
     return entry.value;
 }
-function builtin(invoke: Builtin): Value {
-    const object = new GuestObject();
-    object.callable = { kind: "builtin", invoke };
+function builtin(realm: Realm, invoke: Builtin): Value {
+    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
     return { kind: "object", object };
 }
 function run(active: Evaluator, source: string): Completion {
@@ -35,7 +34,7 @@ function expect(active: Evaluator, source: string, expected: number | string | b
 const fixture = readFileSync("test/fixtures/operator-coercion.js", "utf8");
 function setup(): Evaluator {
     const active = new Evaluator(new Realm((_line) => {}), 100000, 12);
-    seed(active, "verify", builtin((_receiver, args, context, _loc) => {
+    seed(active, "verify", builtin(active.context.realm, (_receiver, args, context, _loc) => {
         check(context === active.context && args[0].kind === "boolean" && args[0].value, "guest receiver/argument/context");
         return normal();
     }));
@@ -91,7 +90,7 @@ class ThrowingGet extends GuestObject {
 for (const op of operators) {
     for (const phase of ["L", "R", "P", "Q", "GetP", "GetQ"]) {
         const active = setup();
-        seed(active, "stop", builtin((_r, _a, _c, _l): Completion => sentinel));
+        seed(active, "stop", builtin(active.context.realm, (_r, _a, _c, _l): Completion => sentinel));
         if (phase === "L" || phase === "R") run(active, (phase === "L" ? "left" : "right") + " = function() { trace = trace + '" + phase + "'; return stop(); };");
         if (phase === "P" || phase === "Q") run(active, (phase === "P" ? "leftObject" : "rightObject") + ".valueOf = function() { trace = trace + '" + phase + "'; return stop(); };");
         const trap = new ThrowingGet();
@@ -105,7 +104,7 @@ for (const op of operators) {
         const active = setup();
         const trap = new ThrowingGet();
         seed(active, "trap", { kind: "object", object: trap });
-        seed(active, "stop", builtin((_r, _a, _c, _l): Completion => sentinel));
+        seed(active, "stop", builtin(active.context.realm, (_r, _a, _c, _l): Completion => sentinel));
         check(run(active, "(" + left + ") " + op + " stop();") === sentinel && trap.reads === 0, "R wins before conversion");
     }
 }
@@ -113,13 +112,13 @@ for (const op of operators) {
 for (const kind of ["ordinary", "array", "function"]) {
     for (const expression of ["+operand", "-operand", ...operators.map(op => "operand " + op + " 2")]) {
         const active = setup();
-        const object = kind === "array" ? new GuestArray() : new GuestObject();
-        if (kind === "function") object.callable = { kind: "builtin", invoke: (_r, _a, _c, _l): Completion => { throw new Error("input function called"); } };
+        const object = kind === "array" ? new GuestArray() : new GuestObject(null, false,
+            kind === "function" ? { kind: "builtin", realm: active.context.realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("input function called"); } } : null);
         const input: Value = { kind: "object", object };
         const proto = new GuestObject();
         check(object.setPrototypeOf(proto).value, "install inherited method");
         let calls = 0;
-        proto.bootstrapDefine("valueOf", { value: builtin((receiver, args, context, _loc) => {
+        proto.bootstrapDefine("valueOf", { value: builtin(active.context.realm, (receiver, args, context, _loc) => {
             check(receiver === input && args.length === 0 && context === active.context, "inherited method receiver/args");
             calls++;
             return normal({ kind: "number", value: 6 });
@@ -192,7 +191,7 @@ for (const mode of ["host", "break", "continue"] as const) {
     const active = setup();
     const object = new GuestObject();
     const fault = new Error("host operator fault");
-    object.bootstrapDefine("valueOf", { value: builtin((_r, _a, _c, _l): Completion => {
+    object.bootstrapDefine("valueOf", { value: builtin(active.context.realm, (_r, _a, _c, _l): Completion => {
         if (mode === "host") throw fault;
         return { type: mode, value: UNDEFINED };
     }), writable: true, enumerable: true, configurable: true });

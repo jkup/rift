@@ -23,9 +23,8 @@ function binding(realm: Realm, name: string): Value {
     if (entry === undefined) throw new Error("missing binding: " + name);
     return entry.value;
 }
-function builtin(invoke: Builtin): Value {
-    const object = new GuestObject();
-    object.callable = { kind: "builtin", invoke };
+function builtin(realm: Realm, invoke: Builtin): Value {
+    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
     return obj(object);
 }
 function execute(source: string, evaluator: Evaluator): Completion {
@@ -177,7 +176,7 @@ class Scenario {
     constructor(inherited: boolean = false) {
         seed(this.realm, "selectedBase", this.originalValue);
         seed(this.realm, "selectedKey", this.keyValue);
-        const method = builtin((receiver, args, context, _location) => {
+        const method = builtin(this.realm, (receiver, args, context, _location) => {
             this.original.trace += "M";
             check(receiver === this.originalValue && context === this.evaluator.context, "exact original receiver/context");
             check(args.length === 2 && args[0] === this.rhsValue && args[1] === this.rhsValue, "argument identities");
@@ -188,20 +187,20 @@ class Scenario {
             parent.bootstrapDefine("1", { value: method, writable: true, enumerable: true, configurable: true });
             this.original.setPrototypeOf(parent);
         } else this.original.bootstrapDefine("1", { value: method, writable: true, enumerable: true, configurable: true });
-        seed(this.realm, "base", builtin((_receiver, _args, _context, _location) => {
+        seed(this.realm, "base", builtin(this.realm, (_receiver, _args, _context, _location) => {
             this.original.trace += "B";
             return this.stop === "B" ? this.original.sentinel : normal(this.replace ? binding(this.realm, "selectedBase") : this.baseValue);
         }));
-        seed(this.realm, "key", builtin((_receiver, _args, _context, _location) => {
+        seed(this.realm, "key", builtin(this.realm, (_receiver, _args, _context, _location) => {
             this.original.trace += "K";
             return this.stop === "K" ? this.original.sentinel : normal(this.replace ? binding(this.realm, "selectedKey") : this.keyValue);
         }));
-        seed(this.realm, "rhs", builtin((_receiver, _args, _context, _location) => {
+        seed(this.realm, "rhs", builtin(this.realm, (_receiver, _args, _context, _location) => {
             this.original.trace += "R";
             if (this.replace) this.replaceBindings();
             return this.stop === "R" ? this.original.sentinel : normal(this.rhsValue);
         }));
-        seed(this.realm, "arg", builtin((_receiver, _args, _context, _location) => {
+        seed(this.realm, "arg", builtin(this.realm, (_receiver, _args, _context, _location) => {
             this.original.trace += "A";
             this.args++;
             if (this.replace) this.replaceBindings();
@@ -261,17 +260,16 @@ for (const base of primitiveBases) {
     exact(abrupt.run("write"), abrupt.original.sentinel);
     check(abrupt.original.trace === "BKR", "RHS dominates invalid base/key");
 }
-const callableKey = new GuestObject();
-callableKey.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _location): Completion => { throw new Error("key itself called"); } };
+const callableKey = new GuestObject(null, false, { kind: "builtin", realm: keyEvaluator.context.realm, invoke: (_receiver, _args, _context, _location): Completion => { throw new Error("key itself called"); } });
 for (const object of [new GuestObject(), new GuestArray(), callableKey]) {
     let calls = 0;
     const keyValue = obj(object);
-    object.bootstrapDefine("toString", { value: builtin((receiver, args, _context, _location) => {
+    object.bootstrapDefine("toString", { value: builtin(keyEvaluator.context.realm, (receiver, args, _context, _location) => {
         check(receiver === keyValue && args.length === 0, "key receiver/arguments");
         calls++;
         return normal(str("1"));
     }), writable: true, enumerable: true, configurable: true });
-    object.bootstrapDefine("valueOf", { value: builtin((_r, _a, _c, _l): Completion => { throw new Error("wrong hint"); }), writable: true, enumerable: true, configurable: true });
+    object.bootstrapDefine("valueOf", { value: builtin(keyEvaluator.context.realm, (_r, _a, _c, _l): Completion => { throw new Error("wrong hint"); }), writable: true, enumerable: true, configurable: true });
     const directString = toString(keyValue, loc);
     check(directString.type === "throw" && directString.diagnostic.message === "object-to-primitive conversion unsupported" && directString.diagnostic.loc === loc && calls === 0, "direct ToString stays primitive-only");
     const directKey = toPropertyKey(keyValue, keyContext, loc);

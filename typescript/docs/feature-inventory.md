@@ -95,8 +95,25 @@ Saved methods can be borrowed and used after target.call is shadowed. Method
 and metadata descriptors use the existing standard builtin registration flags.
 No ordinary/array instance inherits call, and null-root host functions remain bare.
 
-Existing strict receiver behavior applies. Proper tail calls and function-Realm
-entry remain unsupported: forwarding occupies both builtin and target call slots,
-and foreign targets execute in the caller context with their original lexical
-environment. No constructors, apply/bind/toString, boxing or conversion methods
+Existing strict receiver behavior applies. Proper tail calls remain unsupported:
+forwarding occupies both builtin and target call slots. TS-017A enters each
+function's defining Realm while retaining its original lexical environment. No constructors, apply/bind/toString, boxing or conversion methods
 are added. See [TS-016B evidence](validation/ts-016b/README.md).
+
+### Synchronous function Realm entry (TS-017A)
+
+Guest functions and builtins, including Function.prototype, retain an immutable
+explicit defining Realm. Calls temporarily enter that Realm using the same
+stable evaluator context and shared budgets, then restore the caller even after
+host faults. Guest lexical environments, receiver/argument/result identities and
+throw locations remain intact. Object, array and nested-function allocations
+inside a foreign body use its defining Realm. A saved context observes the live
+active Realm; a separately saved Realm remains a fixed snapshot.
+
+Borrowed call intrinsics enter their own Realm before the target's Realm. Internal
+map allocates in the supplied context's active Realm, independently of callback
+and source ownership. Coercion hooks enter and restore independently. Prototype
+and metadata mutations do not alter function ownership. This adds no methods,
+constructors, suspension support or Error objects; strict receiver behavior and
+resource limits remain the existing bounded profile.
+See [TS-017A evidence](validation/ts-017a/README.md).

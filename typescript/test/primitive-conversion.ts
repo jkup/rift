@@ -1,3 +1,4 @@
+import { lengthOfArrayLike } from "../src/array-like.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
@@ -14,13 +15,12 @@ const realm = new Realm((_line) => {});
 const evaluator = new Evaluator(realm);
 function objectValue(object: GuestObject): Value { return { kind: "object", object }; }
 function num(value: number): Value { return { kind: "number", value }; }
-function builtin(invoke: Builtin): Value {
-    const object = new GuestObject();
-    object.callable = { kind: "builtin", invoke };
+function builtin(realm: Realm, invoke: Builtin): Value {
+    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
     return objectValue(object);
 }
 function define(object: GuestObject, key: string, value: Value): void { object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true }); }
-function returns(value: Value): Value { return builtin((_receiver, _args, _context, _loc) => normal(value)); }
+function returns(value: Value): Value { return builtin(realm, (_receiver, _args, _context, _loc) => normal(value)); }
 function numberResult(result: ValueCompletion, expected: number, label: string): void {
     check(result.type === "normal" && result.value.kind === "number" && result.value.value === expected, label);
 }
@@ -132,8 +132,8 @@ for (const hint of ["default", "number", "string"] as const) {
     }
     for (const mode of ["replace", "delete", "prototype"]) {
         const item = observed();
-        define(item, second, builtin((_r, _a, _c, _l): Completion => { throw new Error("stale method called"); }));
-        define(item, first, builtin((_r, _a, _c, _l) => {
+        define(item, second, builtin(realm, (_r, _a, _c, _l): Completion => { throw new Error("stale method called"); }));
+        define(item, first, builtin(realm, (_r, _a, _c, _l) => {
             if (mode === "replace") define(item, second, returns(num(11)));
             else {
                 const deleted = item.internalDelete(second);
@@ -165,13 +165,13 @@ class ObservedArray extends GuestArray {
 const argumentLists: Value[][] = [];
 for (const kind of ["ordinary", "array", "function"]) {
     for (const inherited of [false, true]) {
-        const object = kind === "array" ? new ObservedArray() : new Observed();
-        if (kind === "function") object.callable = { kind: "builtin", invoke: (_r, _a, _c, _l): Completion => { throw new Error("input called"); } };
+        const object = kind === "array" ? new ObservedArray() : new Observed(null, false,
+            kind === "function" ? { kind: "builtin", realm: realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("input called"); } } : null);
         const input = objectValue(object);
         object.expected = input;
         const owner = inherited ? new GuestObject() : object;
         if (inherited) check(object.setPrototypeOf(owner).value, "inherit method");
-        define(owner, "valueOf", builtin((receiver, args, context, location) => {
+        define(owner, "valueOf", builtin(realm, (receiver, args, context, location) => {
             check(receiver === input && args.length === 0 && context === evaluator.context && location === loc, "all kinds original receiver");
             for (const previous of argumentLists) check(previous !== args, "fresh argument lists");
             argumentLists.push(args);
@@ -187,11 +187,11 @@ for (const stage of ["get1", "get2", "call1", "call2", "tick1", "tick2"]) {
     const object = observed();
     let mutations = 0;
     object.failAt = stage === "get1" ? 1 : stage === "get2" ? 2 : 0;
-    define(object, "valueOf", builtin((_r, _a, _c, _l) => {
+    define(object, "valueOf", builtin(realm, (_r, _a, _c, _l) => {
         mutations++;
         return stage === "call1" ? sentinel : normal(object.expected);
     }));
-    define(object, "toString", builtin((_r, _a, _c, _l) => sentinel));
+    define(object, "toString", builtin(realm, (_r, _a, _c, _l) => sentinel));
     const result = toPrimitive(object.expected, "number", tracedContext(object, stage === "tick1" ? 1 : stage === "tick2" ? 2 : 0), loc);
     check(result === sentinel && result.value === sentinel.value && result.diagnostic === sentinel.diagnostic && result.diagnostic.loc === sentinel.diagnostic.loc, "exact abrupt " + stage);
     const expected = stage === "tick1" ? "tick;" : stage === "get1" ? "tick;Get valueOf;" : stage === "call1" ? "tick;Get valueOf;Call;" : stage === "tick2" ? "tick;Get valueOf;Call;tick;" : stage === "get2" ? "tick;Get valueOf;Call;tick;Get toString;" : "tick;Get valueOf;Call;tick;Get toString;Call;";
@@ -203,7 +203,7 @@ for (const mode of ["finite", "steps", "calls"]) {
     const object = new GuestObject();
     const input = objectValue(object);
     let visits = 0;
-    define(object, "valueOf", builtin((_r, _a, context, location) => {
+    define(object, "valueOf", builtin(realm, (_r, _a, context, location) => {
         check(context === active.context && active.calls === visits + 1, "nested active context/depth");
         visits++;
         if (mode === "finite" && visits === 3) return normal(num(13));
@@ -232,7 +232,7 @@ const retained: Evaluator[] = [];
 for (const target of realms) {
     const active = new Evaluator(target, 10000, 12);
     retained.push(active);
-    seed(target, "bridge", builtin((_receiver, args, context, location) => {
+    seed(target, "bridge", builtin(target, (_receiver, args, context, location) => {
         check(context === active.context && context.realm === target, "guest bridge active realm/context");
         return toPrimitive(args[0], "default", context, location);
     }));
@@ -257,7 +257,7 @@ for (const name of ["looping", "recursive"]) {
 for (const mode of ["host", "break", "continue"] as const) {
     const object = observed();
     const fault = new Error("host sentinel");
-    define(object, "valueOf", builtin((_r, _a, _c, _l): Completion => {
+    define(object, "valueOf", builtin(realm, (_r, _a, _c, _l): Completion => {
         if (mode === "host") throw fault;
         return { type: mode, value: UNDEFINED };
     }));
@@ -295,3 +295,120 @@ for (let i = 0; i < expressions.length; i++) {
     check(boundary.trace === "Get valueOf;", "one operator lookup");
 }
 console.log("primitive conversion passed");
+
+// R19: each freshly read hook enters its defining Realm and restores A before Get.
+const conversionA = new Realm((_line) => {});
+const conversionB = new Realm((_line) => {});
+const conversionC = new Realm((_line) => {});
+const conversionEntry = new Evaluator(conversionA);
+class RealmObserved extends GuestObject {
+    override internalGet(key: string, receiver: Value, at: Location): ValueCompletion {
+        check(conversionEntry.context.realm === conversionA, "R19/R20 Get runs in caller Realm");
+        return super.internalGet(key, receiver, at);
+    }
+}
+const conversionObject = new RealmObserved(conversionA.objectPrototype);
+const conversionToken = objectValue(conversionObject);
+const realmTrace: Realm[] = [];
+const replacementC = builtin(conversionC, (receiver, args, context, at) => {
+    check(receiver === conversionToken && args.length === 0 && context === conversionEntry.context && context.realm === conversionC && at === loc, "R19 C hook identities");
+    realmTrace.push(context.realm);
+    return normal(num(7));
+});
+define(conversionObject, "toString", builtin(conversionA, (_receiver, _args, _context, _at): Completion => {
+    throw new Error("stale toString called");
+}));
+define(conversionObject, "valueOf", builtin(conversionB, (receiver, args, context, at) => {
+    check(receiver === conversionToken && args.length === 0 && context === conversionEntry.context && context.realm === conversionB && at === loc, "R19 B hook identities");
+    realmTrace.push(context.realm);
+    define(conversionObject, "toString", replacementC);
+    return normal(conversionToken);
+}));
+numberResult(ordinaryToPrimitive(conversionToken, "number", conversionEntry.context, loc), 7, "R19 fresh replacement result");
+check(realmTrace.length === 2 && realmTrace[0] === conversionB && realmTrace[1] === conversionC && conversionEntry.context.realm === conversionA, "R19 B C trace and restoration");
+
+// R20: foreign abrupt hooks preserve exact records/faults and suppress later work.
+const foreignSentinel = failure("Sentinel", "foreign conversion", loc);
+foreignSentinel.value = conversionToken;
+const conversionFault = new Error("foreign conversion fault");
+for (const path of ["key", "operator", "length", "array length"]) {
+    for (const mode of ["throw", "fault"]) {
+        const source = new RealmObserved(conversionA.objectPrototype);
+        const input = objectValue(source);
+        let hooks = 0;
+        const abruptB = builtin(conversionB, (receiver, args, context, at): Completion => {
+            hooks++;
+            check(receiver === input && args.length === 0 && context === conversionEntry.context && context.realm === conversionB && at === loc, "R20 foreign hook identities");
+            if (mode === "fault") throw conversionFault;
+            return foreignSentinel;
+        });
+        const later = builtin(conversionC, (_receiver, _args, _context, _at): Completion => {
+            throw new Error("later hook must be suppressed");
+        });
+        define(source, path === "key" ? "toString" : "valueOf", abruptB);
+        define(source, path === "key" ? "valueOf" : "toString", later);
+        const target = conversionA.createArray();
+        define(target, "0", num(12));
+        const lengthInput = conversionA.createObject();
+        define(lengthInput, "length", input);
+        let caught = false;
+        try {
+            if (path === "key") {
+                conversionA.global.bindings.set("foreignKey", { initialized: true, mutable: true, value: input });
+                const computed = conversionEntry.evaluate({
+                    kind: "member", loc,
+                    base: { kind: "object", loc, keys: [], values: [] },
+                    key: { kind: "identifier", loc, name: "foreignKey" },
+                }, conversionA.global, UNDEFINED);
+                check(computed === foreignSentinel, "R20 exact computed key throw");
+            } else if (path === "operator") {
+                check(conversionEntry.binary("+", input, num(1), loc) === foreignSentinel, "R20 exact operator throw");
+            } else if (path === "length") {
+                check(lengthOfArrayLike(lengthInput, conversionEntry.context, loc) === foreignSentinel, "R20 exact length throw");
+            } else {
+                check(target.defineOwnProperty("length", { value: input }, conversionEntry.context, loc) === foreignSentinel, "R20 exact array length throw");
+            }
+        } catch (error) {
+            if (!(error instanceof Error) || error !== conversionFault) throw error;
+            caught = true;
+        }
+        check(caught === (mode === "fault") && hooks === 1, "R20 exact fault and one hook");
+        check(conversionEntry.context.realm === conversionA && conversionEntry.calls === 0 && conversionEntry.depth === 0, "R20 restore caller");
+        const unchangedLength = target.get("length");
+        check(unchangedLength.kind === "number" && unchangedLength.value === 1 && target.getOwnProperty("0") !== undefined, "R20 no array writes");
+    }
+}
+const doubleSource = new RealmObserved(conversionA.objectPrototype);
+let doubleCalls = 0;
+define(doubleSource, "valueOf", builtin(conversionB, (_receiver, _args, context, _at) => {
+    check(context.realm === conversionB, "R20 double conversion owner");
+    doubleCalls++;
+    return normal(num(2));
+}));
+const doubleArray = conversionA.createArray();
+const doubleResult = doubleArray.defineOwnProperty("length", { value: objectValue(doubleSource) }, conversionEntry.context, loc);
+check(doubleResult.type === "normal" && doubleResult.value && doubleCalls === 2 && conversionEntry.context.realm === conversionA, "R20 two conversions with caller Get between entries");
+for (const mode of ["throw", "fault"]) {
+    const secondSource = new RealmObserved(conversionA.objectPrototype);
+    let calls = 0;
+    define(secondSource, "valueOf", builtin(conversionB, (_receiver, _args, context, at): Completion => {
+        check(context.realm === conversionB && at === loc, "R20 second conversion owner/location");
+        calls++;
+        if (calls === 1) return normal(num(0));
+        if (mode === "fault") throw conversionFault;
+        return foreignSentinel;
+    }));
+    const unchanged = conversionA.createArray();
+    define(unchanged, "0", conversionToken);
+    let caught = false;
+    try {
+        const secondResult = unchanged.defineOwnProperty("length", { value: objectValue(secondSource) }, conversionEntry.context, loc);
+        check(secondResult === foreignSentinel, "R20 exact second conversion throw");
+    } catch (error) {
+        if (!(error instanceof Error) || error !== conversionFault) throw error;
+        caught = true;
+    }
+    const length = unchanged.get("length");
+    check(caught === (mode === "fault") && calls === 2 && length.kind === "number" && length.value === 1 && unchanged.get("0") === conversionToken, "R20 second failure precedes writes/deletion");
+    check(conversionEntry.context.realm === conversionA && conversionEntry.calls === 0 && conversionEntry.depth === 0, "R20 second failure restoration");
+}

@@ -1,3 +1,4 @@
+import { Realm } from "../src/realm.js";
 // scriptc 0.4.7 needs this runtime class reachable when analyzing Realm's types.
 // See docs/validation/ts-016a/coverage-notes.md for the reduced failure.
 import "../src/array-object.js";
@@ -103,8 +104,8 @@ primitive({ kind: "string", value: "x" }, NaN, 0, "invalid string modulo");
 primitive({ kind: "string", value: "0x100000001" }, 4294967297, 1, "radix modulo");
 
 const object = new GuestObject();
-const hook = new GuestObject();
-hook.callable = { kind: "builtin", invoke: (_receiver, _args, _context, _loc): Completion => { throw new Error("must not call conversion hook"); } };
+const fixtureRealm = new Realm((_line) => {});
+const hook = new GuestObject(null, false, { kind: "builtin", realm: fixtureRealm, invoke: (_receiver, _args, _context, _loc): Completion => { throw new Error("must not call conversion hook"); } });
 object.bootstrapDefine("valueOf", { value: { kind: "object", object: hook }, writable: true, enumerable: true, configurable: true });
 object.bootstrapDefine("toString", { value: { kind: "object", object: hook }, writable: true, enumerable: true, configurable: true });
 for (const result of [toNumber({ kind: "object", object }, loc), toUint32({ kind: "object", object }, loc)]) {

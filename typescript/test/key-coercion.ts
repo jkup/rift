@@ -10,9 +10,8 @@ function check(ok: boolean, label: string): void { if (!ok) throw new Error(labe
 function obj(object: GuestObject): Value { return { kind: "object", object }; }
 function str(value: string): Value { return { kind: "string", value }; }
 function num(value: number): Value { return { kind: "number", value }; }
-function builtin(invoke: Builtin): Value {
-    const object = new GuestObject();
-    object.callable = { kind: "builtin", invoke };
+function builtin(realm: Realm, invoke: Builtin): Value {
+    const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
     return obj(object);
 }
 function seed(active: Evaluator, name: string, value: Value): void {
@@ -70,7 +69,7 @@ for (const path of ["read", "write", "call"]) {
         seed(active, "target", target.original);
         const key = binding(active, "key");
         if (key.kind !== "object") throw new Error("key");
-        key.object.bootstrapDefine("toString", { value: builtin((receiver, args, context, _location) => {
+        key.object.bootstrapDefine("toString", { value: builtin(active.context.realm, (receiver, args, context, _location) => {
             target.mark("C");
             check(receiver === key && args.length === 0 && context === active.context, "original key/context/zero args");
             return stop === "C" ? sentinel : normal(str("x"));
@@ -78,12 +77,12 @@ for (const path of ["read", "write", "call"]) {
         const rhs = obj(new GuestObject());
         for (const stage of ["B", "K", "R", "A"]) {
             const name = stage === "B" ? "base" : stage === "K" ? "keyExpression" : stage === "R" ? "rhs" : "argument";
-            seed(active, name, builtin((_receiver, _args, _context, _location) => {
+            seed(active, name, builtin(active.context.realm, (_receiver, _args, _context, _location) => {
                 target.mark(stage);
                 return stop === stage ? sentinel : normal(stage === "B" ? target.original : stage === "K" ? key : rhs);
             }));
         }
-        target.bootstrapDefine("x", { value: builtin((receiver, args, _context, _location) => {
+        target.bootstrapDefine("x", { value: builtin(active.context.realm, (receiver, args, _context, _location) => {
             target.mark("M");
             check(receiver === target.original && args.length === 2 && args[0] === rhs && args[1] === rhs, "method receiver/args");
             return stop === "M" ? sentinel : normal(receiver);
@@ -120,18 +119,18 @@ for (const kind of ["ordinary", "array", "function"]) {
     for (const inherited of [false, true]) {
         for (const fallback of ["first", "noncallable", "object"]) {
             for (const row of primitives) {
-                const object = kind === "array" ? new GuestArray() : new GuestObject();
-                if (kind === "function") object.callable = { kind: "builtin", invoke: (_r, _a, _c, _l): Completion => { throw new Error("key called directly"); } };
+                const object = kind === "array" ? new GuestArray() : new GuestObject(null, false,
+            kind === "function" ? { kind: "builtin", realm: active.context.realm, invoke: (_r, _a, _c, _l): Completion => { throw new Error("key called directly"); } } : null);
                 const key = obj(object);
                 const owner = inherited ? new GuestObject() : object;
                 if (inherited) object.setPrototypeOf(owner);
                 let calls = 0;
-                const method = builtin((receiver, args, context, _location) => {
+                const method = builtin(active.context.realm, (receiver, args, context, _location) => {
                     check(receiver === key && args.length === 0 && context === active.context, "inherited original key receiver");
                     calls++;
                     return normal(row.value);
                 });
-                owner.bootstrapDefine("toString", { value: fallback === "first" ? method : fallback === "noncallable" ? num(8) : builtin((_r, _a, _c, _l) => normal(key)), writable: true, enumerable: true, configurable: true });
+                owner.bootstrapDefine("toString", { value: fallback === "first" ? method : fallback === "noncallable" ? num(8) : builtin(active.context.realm, (_r, _a, _c, _l) => normal(key)), writable: true, enumerable: true, configurable: true });
                 owner.bootstrapDefine("valueOf", { value: fallback === "first" ? UNDEFINED : method, writable: true, enumerable: true, configurable: true });
                 const result = toPropertyKey(key, active.context, loc);
                 check(result.type === "normal" && result.value === row.key && calls === 1, "primitive spelling/hint/fallback " + kind);
@@ -148,7 +147,7 @@ for (const kind of ["ordinary", "array", "function"]) {
 for (const both of [false, true]) {
     const object = new GuestObject();
     const key = obj(object);
-    if (both) for (const name of ["toString", "valueOf"]) object.bootstrapDefine(name, { value: builtin((_r, _a, _c, _l) => normal(key)), writable: true, enumerable: true, configurable: true });
+    if (both) for (const name of ["toString", "valueOf"]) object.bootstrapDefine(name, { value: builtin(active.context.realm, (_r, _a, _c, _l) => normal(key)), writable: true, enumerable: true, configurable: true });
     const result = toPropertyKey(key, active.context, loc);
     check(result.type === "throw" && result.diagnostic.message === "cannot convert object to primitive" && result.diagnostic.loc === loc, "located no primitive result");
 }
@@ -164,7 +163,7 @@ for (const stop of ["toString", "valueOf"]) {
     const object = new ThrowingKey(); object.stop = stop;
     check(toPropertyKey(obj(object), active.context, loc) === sentinel && object.reads === (stop === "toString" ? "toString;" : "toString;valueOf;"), "exact first/second Get throw");
     const callKey = new GuestObject();
-    callKey.bootstrapDefine(stop, { value: builtin((_r, _a, _c, _l) => sentinel), writable: true, enumerable: true, configurable: true });
+    callKey.bootstrapDefine(stop, { value: builtin(active.context.realm, (_r, _a, _c, _l) => sentinel), writable: true, enumerable: true, configurable: true });
     check(toPropertyKey(obj(callKey), active.context, loc) === sentinel, "exact first/second call throw");
 }
 // Active ticks propagate unchanged, before either candidate lookup.
@@ -189,7 +188,7 @@ for (const name of ["looping", "recursive"]) {
 }
 for (const mode of ["host", "break", "continue"] as const) {
     const key = new GuestObject();
-    key.bootstrapDefine("toString", { value: builtin((_r, _a, _c, _l): Completion => { if (mode === "host") throw new Error("host fault"); return { type: mode, value: UNDEFINED }; }), writable: true, enumerable: true, configurable: true });
+    key.bootstrapDefine("toString", { value: builtin(active.context.realm, (_r, _a, _c, _l): Completion => { if (mode === "host") throw new Error("host fault"); return { type: mode, value: UNDEFINED }; }), writable: true, enumerable: true, configurable: true });
     let escaped = false;
     try { toPropertyKey(obj(key), active.context, loc); } catch { escaped = true; }
     check(escaped && active.calls === 0, "call cleanup " + mode);

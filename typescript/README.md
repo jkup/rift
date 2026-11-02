@@ -78,8 +78,13 @@ TS-016A supplies per-Realm Object, Function and Array prototype roots and explic
 allocation factories. Builtin name/length metadata is centralized. These are
 partial roots: no constructor globals/back-links are installed. TS-016B adds only
 Function.prototype.call (name call, length 1), preserving strict receivers and
-shared budgets without proper tail calls. Host low-level objects still default to null prototypes; foreign
-function execution still uses the caller context. See the
+shared budgets without proper tail calls. TS-017A enters each function's immutable
+defining Realm through one stable evaluator context and restores the caller in
+finally, including host faults. Lexical environments and transferred Values retain
+identity. Host low-level objects still default to null prototypes; callable host
+fixtures require an explicit owner. See the
+[Realm entry contract](docs/function-realm-entry.md),
+[Realm entry validation](docs/validation/ts-017a/README.md), the
 [graph contract](docs/realm-intrinsic-prototypes.md) and
 [graph validation](docs/validation/ts-016a/README.md) and
 [call validation](docs/validation/ts-016b/README.md).

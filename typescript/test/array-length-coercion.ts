@@ -21,9 +21,8 @@ function object(value: Value): GuestObject {
 function put(target: GuestObject, key: string, value: Value): void {
     target.bootstrapDefine(key, { value, writable: true, enumerable: true, configurable: true });
 }
-function builtin(invoke: Builtin): Value {
-    const value = new GuestObject();
-    value.callable = { kind: "builtin", invoke };
+function builtin(realm: Realm, invoke: Builtin): Value {
+    const value = new GuestObject(null, false, { kind: "builtin", realm, invoke });
     return obj(value);
 }
 function seed(active: Evaluator, key: string, value: Value): void {
@@ -60,7 +59,7 @@ const fixture = readFileSync("test/fixtures/array-length-coercion.js", "utf8");
 function setup(): Evaluator {
     const active = new Evaluator(new Realm((_line) => {}), 100000, 12);
     const host = new GuestObject();
-    put(host, "effect", builtin((_receiver, _args, _context, _at) => normal()));
+    put(host, "effect", builtin(active.context.realm, (_receiver, _args, _context, _at) => normal()));
     put(host, "payload", obj(new GuestObject()));
     seed(active, "host", obj(host));
     seed(active, "target", obj(three()));
@@ -82,7 +81,7 @@ function define(active: Evaluator, desc: DataDescriptorUpdate): InternalBooleanC
     return result;
 }
 function effect(active: Evaluator, invoke: Builtin): void {
-    put(object(binding(active, "host")), "effect", builtin(invoke));
+    put(object(binding(active, "host")), "effect", builtin(active.context.realm, invoke));
 }
 
 // L1, L2: real assignments return the original object; mismatches never shrink.
@@ -215,7 +214,7 @@ for (const stage of ["get", "call", "tick"]) {
         rhs.failAt = stage === "get" ? failAt : 0;
         let calls = 0;
         let ticks = 0;
-        put(rhs, "valueOf", builtin((receiver, args, context, at) => {
+        put(rhs, "valueOf", builtin(active.context.realm, (receiver, args, context, at) => {
             calls++;
             check(receiver === original && args.length === 0 && context === active.context && at === loc, "call identity/zero args");
             put(target, "note", num(calls));
@@ -417,7 +416,7 @@ for (const name of ["nested", "reentrant", "compound"]) {
     const other = three();
     const inner = new GuestObject();
     let innerCalls = 0;
-    put(inner, "valueOf", builtin((_receiver, _args, context, _at) => {
+    put(inner, "valueOf", builtin(active.context.realm, (_receiver, _args, context, _at) => {
         check(context === active.context, "nested context identity");
         innerCalls++;
         return normal(num(1));
@@ -426,11 +425,11 @@ for (const name of ["nested", "reentrant", "compound"]) {
     seed(active, "other", obj(other));
     put(object(binding(active, "rhs")), "valueOf", binding(active, name));
     let mapCalls = 0;
-    put(object(binding(active, "host")), "map", builtin((_receiver, _args, context, at) => {
+    put(object(binding(active, "host")), "map", builtin(active.context.realm, (_receiver, _args, context, at) => {
         mapCalls++;
         const input = new GuestObject();
         put(input, "length", obj(inner));
-        return mapObjectDefaultArray(input, builtin((_this, _values, _ctx, _loc) => normal()), UNDEFINED, context, at);
+        return mapObjectDefaultArray(input, builtin(active.context.realm, (_this, _values, _ctx, _loc) => normal()), UNDEFINED, context, at);
     }));
     const before = active.steps;
     bool(define(active, { value: binding(active, "rhs") }), true);
@@ -487,7 +486,7 @@ for (const mode of ["guest", "fault", "break"]) {
     const rhs = object(binding(active, "rhs"));
     const fault = new Error("array length host fault");
     let captured: ValueCompletion = normal();
-    put(rhs, "valueOf", builtin((receiver, args, context, at): Completion => {
+    put(rhs, "valueOf", builtin(active.context.realm, (receiver, args, context, at): Completion => {
         if (mode === "fault") throw fault;
         if (mode === "break") return { type: "break", value: UNDEFINED };
         captured = context.call(binding(active, "throwing"), receiver, args, at);
@@ -549,7 +548,7 @@ for (const stage of ["get", "tick", "call"]) {
         let ticks = 0;
         let calls = 0;
         put(rhs, "valueOf", num(9));
-        put(rhs, "toString", builtin((receiver, args, context, at) => {
+        put(rhs, "toString", builtin(active.context.realm, (receiver, args, context, at) => {
             calls++;
             check(receiver === original && args.length === 0 && context === active.context && at === loc, "fallback call identity");
             put(target, "note", num(calls));

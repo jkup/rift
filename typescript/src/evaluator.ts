@@ -6,24 +6,33 @@ import { GuestArray } from "./array-object.js";
 import { toPrimitive } from "./primitive-conversion.js";
 import { toNumber, toString } from "./conversion.js";
 
+// The public context is a stable readonly view of this evaluator-owned state.
+type ActiveOperationContext = {
+    realm: Realm;
+    call: (callee: Value, receiver: Value, args: Value[], loc: Location) => ValueCompletion;
+    tick: (loc: Location) => ValueCompletion;
+};
+
 export class Evaluator {
     steps = 0;
     calls = 0;
     depth = 0;
+    private readonly activeContext: ActiveOperationContext;
     readonly context: OperationContext;
     constructor(realm: Realm, public maxSteps: number = 100000, public maxCalls: number = 64) {
-        this.context = {
+        this.activeContext = {
             realm,
             call: (callee, receiver, args, loc) => this.call(callee, receiver, args, loc),
             tick: (loc) => this.tick(loc),
         };
+        this.context = this.activeContext;
     }
     tick(loc: Location): ValueCompletion {
         if (++this.steps > this.maxSteps) return failure("RangeError", "execution step limit exceeded", loc);
         return normal();
     }
     closure(params: string[], body: Stmt[], environment: Environment): Value {
-        const object = this.context.realm.createFunction({ kind: "guest", params, body, environment });
+        const object = this.context.realm.createGuestFunction(params, body, environment);
         return { kind: "object", object };
     }
     block(body: Stmt[], env: Environment, receiver: Value): Completion {
@@ -53,9 +62,11 @@ export class Evaluator {
             this.depth--;
             return failure("RangeError", "evaluation nesting limit exceeded", stmt.loc);
         }
-        const result = this.statementInner(stmt, env, receiver);
-        this.depth--;
-        return result;
+        try {
+            return this.statementInner(stmt, env, receiver);
+        } finally {
+            this.depth--;
+        }
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
@@ -114,9 +125,11 @@ export class Evaluator {
             this.depth--;
             return failure("RangeError", "evaluation nesting limit exceeded", expr.loc);
         }
-        const result = this.expression(expr, env, receiver);
-        this.depth--;
-        return result;
+        try {
+            return this.expression(expr, env, receiver);
+        } finally {
+            this.depth--;
+        }
     }
     expression(expr: Expr, env: Environment, receiver: Value): Completion {
         switch (expr.kind) {
@@ -224,10 +237,12 @@ export class Evaluator {
     }
     call(callee: Value, receiver: Value, args: Value[], loc: Location): ValueCompletion {
         if (callee.kind !== "object" || callee.object.callable === null) return failure("TypeError", "value is not callable", loc);
+        const fn = callee.object.callable;
         if (this.calls >= this.maxCalls) return failure("RangeError", "call depth limit exceeded", loc);
+        const callerRealm = this.activeContext.realm;
         this.calls++;
         try {
-            const fn = callee.object.callable;
+            this.activeContext.realm = fn.realm;
             let result: Completion;
             if (fn.kind === "builtin") result = fn.invoke(receiver, args, this.context, loc);
             else {
@@ -247,7 +262,8 @@ export class Evaluator {
             if (result.type === "normal") return normal(result.value);
             throw new Error("invalid completion escaped call boundary: " + result.type);
         } finally {
-            // Release active calls even when a host fault escapes.
+            // Restore the caller even when a host fault escapes.
+            this.activeContext.realm = callerRealm;
             this.calls--;
         }
     }
