@@ -832,7 +832,7 @@ Coordinator acceptance: TS-019A accepted `b093e3f` on 2026-11-02. Reviewed produ
 
 ### TS-019B1 — Real symbol primitive-conversion protocol
 
-Status: **ready for assignment**. Prerequisite TS-019A accepted `b093e3f`. Implement only B1/P1-P9 in docs/symbol-foundation.md. Own src/symbols.ts and src/primitive-conversion.ts, affected compiled drivers/runtime-read fixtures, scoped feature documentation and docs/validation/ts-019b1/. Coordinator owns COORDINATION.md; Claude corpus queue/assistance remains reserved.
+Status: **in progress**. Owner: Codex TS-019B1 implementation chat `01a199f9-8e1b-7ce1-a6d2-c2d5b23f1585`; accepted base `aab04a2`, existing branch `codex/primitive-computed-keys`. Prerequisite TS-019A accepted `b093e3f`. Implement only B1/P1-P9 in docs/symbol-foundation.md. Own src/symbols.ts and src/primitive-conversion.ts, affected compiled drivers/runtime-read fixtures, scoped feature documentation and docs/validation/ts-019b1/. Coordinator owns COORDINATION.md; Claude corpus queue/assistance remains reserved.
 
 Export one immutable canonical wellKnownToPrimitive GuestSymbol with description Symbol.toPrimitive, shared across all Realms/evaluators in this runtime. No host Symbol, registry, per-Realm minting or guest global. Change only object ToPrimitive: tick once before one internalGet of that exact key with original input Receiver; propagate abrupt unchanged; null/undefined alone mean absent; other noncallable values fail with located TypeError `symbol toPrimitive method is not callable`. Call callable through existing context.call with original receiver and one exact hint string. Return any primitive unchanged; object result fails with located `cannot convert object to primitive`, without fallback. Absent hook alone uses ordinaryToPrimitive with default mapped to number. Primitive fast path and direct ordinary helper retain their existing ticks and behavior. No context/Get signature redesign, accessor claim or hidden evaluator.
 
@@ -841,3 +841,16 @@ Implement P1-P9 using readable expected-result tests and runtime-read guest cons
 Before migrating expectations, inventory every ToPrimitive consumer, narrow observer, recorded lookup trace and tight step/call budget. Each object conversion now adds exactly one lookup tick, even when absent; direct ordinary conversion and primitives do not. Preserve original negative intent: ordinary-method-specific observers should explicitly report absent for the new key, while generic throwing-Get observers still fail on the first lookup. Explain each changed exact budget/trace in retained evidence; never loosen assertions or suppress legitimate ticks to pass. Retain all 164 cases and 23 gates; prefer extending existing compiled drivers and runtime-read fixtures, register any genuinely needed extra driver fail-closed.
 
 Consult fixed specification and pinned relevant engine evidence. Require typecheck, runner/probes, rebuilt Node/native and every static-only build plus separate coverage gate. Retain actual compiler failures/reductions before any workaround; preserve toolchain pins and accepted isolated imports/annotations. Document partial support: no Symbol prototype methods, toStringTag, Object toString, guest Symbol global/registry, accessors/proxies, implicit boxing or async work. Commit/push tested coherent work, then stop for coordinator review. No C++/Claude/COORDINATION edits, branch switching, main merge or successor dispatch.
+
+TS-019B1 handoff (2026-11-02): implementation complete, awaiting coordinator review.
+Shared canonical wellKnownToPrimitive and one budgeted real-key Get/Call path
+implemented; nullish fallback, exact errors and primitive/ordinary boundaries
+preserved. P1-P9 extend the existing compiled driver and a runtime-read fixture;
+key/operator/length/map consumers and exact observer/budget migrations are mapped
+in docs/validation/ts-019b1/README.md. Typecheck PASS, runner 20/20, probes 10/10,
+rebuilt Node/native 164/164 each with no skips, all 23 static builds/separate
+coverage gates PASS (CLI 1260, primitive-conversion 1760). No new compiler
+workaround or pin/import/annotation changes. Initial Zig sandbox failure retained
+alongside successful authorized native validation. No B2/C, Symbol methods/tag/
+global/registry, Object toString, accessors or implicit boxing expansion. No C++,
+Claude, COORDINATION, branch switch, main merge or successor work. Stop for review.

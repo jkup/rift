@@ -449,3 +449,10 @@ before choosing a local workaround. No new probe was needed for this design:
 existing isolated map evidence supports trying this representation, not declaring
 the integrated program supported. No production implementation, compiler success,
 performance measurement, corpus research or successor assignment is delivered here.
+
+## B1 implementation status (2026-11-02)
+
+B1 is implemented for coordinator review. The canonical identity and protocol
+follow the frozen boundary above; P1-P9 and consumer/observer/budget migrations
+are recorded in [TS-019B1 evidence](validation/ts-019b1/README.md).
+This does not assign or implement B2 or C.

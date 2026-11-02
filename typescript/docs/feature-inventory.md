@@ -150,3 +150,19 @@ no synthetic ticks. Primitive member access and direct primitive converters keep
 their existing rejection boundaries. No Object global, wrapper conversion
 methods, constructors, implicit boxing, toString or symbols are introduced.
 [V1-V8 evidence and expectation audit](validation/ts-018b/README.md).
+
+### Internal symbol primitive-conversion protocol (TS-019B1)
+
+Following the ordinary symbol foundation, `toPrimitive` now checks the shared
+canonical `wellKnownToPrimitive` identity before ordinary methods. The lookup
+costs one tick and uses the original receiver; a callable receives exactly one
+hint string (`default`, `number` or `string`). Nullish absence alone falls back.
+Other noncallables and object results throw located TypeErrors. Primitive inputs
+and direct `ordinaryToPrimitive` retain their old behavior. Existing key,
+operator, array-like length/map and double array-length conversions all consume
+this protocol with shared budgets and callable-Realm restoration.
+
+This is an internal/host-bridge surface. There is no guest Symbol global,
+registry, Symbol prototype conversion method, toStringTag, Object toString,
+accessor/proxy or implicit boxing expansion. Earlier TS-011 exclusions of symbol
+hooks are superseded only by this bounded stage. [P1-P9 evidence](validation/ts-019b1/README.md).

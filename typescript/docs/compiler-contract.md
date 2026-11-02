@@ -132,3 +132,14 @@ Zig installation-access failure is retained separately from the successful
 approved run. See [TS-019A evidence](validation/ts-019a/README.md) for the complete
 migration inventory and A1-A24/O1-O6 matrix. This does not establish symbol
 protocols, a guest Symbol factory/registry, other platforms or performance.
+
+## Symbol primitive-conversion protocol (TS-019B1, 2026-11-02)
+
+The shared canonical symbol and completion-aware protocol build with the pinned
+toolchain without a new workaround. All 23 static-only builds and separately
+parsed coverage gates pass (CLI 1260/1260; primitive-conversion 1760/1760).
+Rebuilt Node/native each pass 164/164, runner 20/20, probes 10/10 and typecheck.
+The initial Zig sandbox installation-access failure is retained separately from
+the successful authorized run. [P1-P9 evidence and exact budget migrations](validation/ts-019b1/README.md).
+No Symbol methods/global/registry, tag consumer, accessor or implicit boxing
+support is implied; this is the frozen B1 protocol only.

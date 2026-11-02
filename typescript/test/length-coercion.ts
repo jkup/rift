@@ -157,7 +157,7 @@ for (const stop of ["", "get1", "get2", "call1", "call2", "tick1", "tick2"]) {
         realm: active.context.realm,
         tick: (_at) => {
             ticks++;
-            return stop === "tick" + ticks ? sentinel : normal();
+            return stop === "tick" + (ticks - 1) ? sentinel : normal();
         },
         call: (callee, receiver, args, at) => active.context.call(callee, receiver, args, at),
     };
@@ -179,8 +179,8 @@ for (const stop of ["", "get1", "get2", "call1", "call2", "tick1", "tick2"]) {
         check(result === sentinel, "exact abrupt " + stop);
     }
     const second = stop === "" || stop.endsWith("2");
-    check(ticks === (second ? 2 : 1) && source.gets === 1, "exact ticks/Get");
-    check(hook.reads.join(",") === (stop === "tick1" ? "" : second && stop !== "tick2" ? "valueOf,toString" : "valueOf"), "lookup prefix");
+    check(ticks === (second ? 3 : 2) && source.gets === 1, "exact ticks/Get");
+    check(hook.reads.join(",") === "Symbol(Symbol.toPrimitive)" + (stop === "tick1" ? "" : ",") + (stop === "tick1" ? "" : second && stop !== "tick2" ? "valueOf,toString" : "valueOf"), "lookup prefix");
     check(calls === (stop === "tick1" || stop === "get1" ? 0 : stop === "" || stop === "call2" ? 2 : 1), "call prefix");
     if (calls > 0) check(sameValue(hook.getOwnProperty("effect")!.value, num(calls)), "effects survive failure");
     check(active.calls === 0, "abrupt call unwind");
@@ -300,7 +300,7 @@ const sparse = input(obj(new GuestObject()));
 put(object(sparse.get("length")), "valueOf", builtin(sparseActive.context.realm, (_receiver, _args, _context, _at) => normal(num(4294967295))));
 const budget = new Evaluator(sparseActive.context.realm, 3);
 error(mapObjectDefaultArray(sparse, binding(budget, "identity"), UNDEFINED, budget.context, loc), "RangeError");
-check(budget.steps === 4 && budget.calls === 0, "one hook tick plus bounded sparse scan");
+check(budget.steps === 4 && budget.calls === 0, "protocol and ordinary lookup ticks plus bounded sparse scan");
 // Direct converters remain zero-hook boundaries; semantic storage converts twice.
 const excluded = setup();
 const value = binding(excluded, "lengthValue");

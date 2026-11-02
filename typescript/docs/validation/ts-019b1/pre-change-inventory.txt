@@ -1,0 +1,123 @@
+typescript/src\array-object.ts:6:import { toPrimitive } from "./primitive-conversion.js";
+typescript/src\array-object.ts:57:        const first = toPrimitive(savedValue, "number", context, loc);
+typescript/src\array-object.ts:61:        const second = toPrimitive(savedValue, "number", context, loc);
+typescript/src\array-like.ts:2:import { toPrimitive } from "./primitive-conversion.js";
+typescript/src\array-like.ts:11:    const primitive = toPrimitive(length.value, "number", context, loc);
+typescript/test\array-like.ts:143:    override internalGet(key: PropertyKey, receiver: Value, actualLoc: Location): ValueCompletion {
+typescript/test\array-length-coercion.ts:306:    check(active.steps === before, "readonly Set zero helper ticks");
+typescript/test\array-length-coercion.ts:379:    check(active.steps === before, "absent value adds no ticks");
+typescript/test\array-length-coercion.ts:448:    active.maxSteps = active.steps + 1000;
+typescript/test\addition.ts:119:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+typescript/test\array-literals.ts:89:    check(evaluator.steps === 5, "three holes cost five total ticks");
+typescript/test\array-literals.ts:100:check(nestedBudget.type === "throw" && nestedBudget.diagnostic.name === "RangeError" && nestedBudget.diagnostic.loc.column === 13 && nestedEval.steps === 7, "nested slots share budget");
+typescript/test\array-literals.ts:102:check(program("let a = [1];", presentEval).type === "throw" && presentEval.steps === 4, "present slot charged before expression");
+typescript/test\array-literals.ts:104:check(program("let a = [" + ",".repeat(50000) + "];", largeEval).type === "throw" && largeEval.steps === 21, "large sparse literal bounded");
+typescript/src\conversion.ts:1:import { toPrimitive } from "./primitive-conversion.js";
+typescript/src\conversion.ts:132:    const primitive = toPrimitive(value, "string", context, loc);
+typescript/test\array-map.ts:184:check(firstEmptyResult !== secondEmptyResult && zeroBudget.steps === 0, "fresh empty/no ticks");
+typescript/test\array-map.ts:230:check(sparseBudget.steps === 4 && sparseBudget.calls === 0, "huge budget");
+typescript/test\array-map.ts:400:check(constants === 3 && builtinBudget.steps === 4 && builtinBudget.calls === 0, "builtin loop bounded");
+typescript/test\array-map.ts:412:check(nestedBudget.steps === 4 && nestedBudget.calls === 0 && constants === 3, "nested exact ticks");
+typescript/src\evaluator.ts:6:import { toPrimitive } from "./primitive-conversion.js";
+typescript/src\evaluator.ts:22:    constructor(realm: Realm, public maxSteps: number = 100000, public maxCalls: number = 64) {
+typescript/src\evaluator.ts:31:        if (++this.steps > this.maxSteps) return failure("RangeError", "execution step limit exceeded", loc);
+typescript/src\evaluator.ts:213:                const primitive = toPrimitive(result.value, "number", this.context, expr.loc);
+typescript/src\evaluator.ts:273:            const leftPrimitive = toPrimitive(left, "default", this.context, loc);
+typescript/src\evaluator.ts:275:            const rightPrimitive = toPrimitive(right, "default", this.context, loc);
+typescript/src\evaluator.ts:295:            const leftPrimitive = toPrimitive(left, "number", this.context, loc);
+typescript/src\evaluator.ts:299:            const rightPrimitive = toPrimitive(right, "number", this.context, loc);
+typescript/src\evaluator.ts:312:            const leftPrimitive = toPrimitive(left, "number", this.context, loc);
+typescript/src\evaluator.ts:314:            const rightPrimitive = toPrimitive(right, "number", this.context, loc);
+typescript/src\primitive-conversion.ts:7:export function ordinaryToPrimitive(
+typescript/src\primitive-conversion.ts:11:    if (input.kind !== "object") throw new Error("ordinaryToPrimitive requires an object");
+typescript/src\primitive-conversion.ts:30:export function toPrimitive(
+typescript/src\primitive-conversion.ts:35:    return ordinaryToPrimitive(input, hint === "default" ? "number" : hint, context, loc);
+typescript/test\definition-dispatch.ts:170:check(active.steps === 0 && active.calls === 0 && keyEvaluator.steps === 0, "ordinary writes add no ticks or calls");
+typescript/test\definition-dispatch.ts:186:check(keyEvaluator.steps === 0 && keyEvaluator.calls === 0, "W18 no execution work");
+typescript/test\function-call.ts:106:check(result(inspected) === second && visits === 1 && e.steps === before && e.calls === 0, "builtin forwarding adds zero ticks");
+typescript/test\function-call.ts:116:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion { throw new Error("target property lookup"); }
+typescript/test\function-call.ts:187:check(result(withoutSteps) === UNDEFINED && zeroSteps.steps === 0, "no synthetic tick");
+typescript/test\function-call.ts:193:check(oneCall.calls === 0 && oneCall.steps === 0, "depth rejection cleanup and validation order");
+typescript/test\function-call.ts:197:check(noCalls.calls === 0 && noCalls.steps === 0, "outer call guard before entry");
+typescript/test\function-call.ts:201:check(recursive.calls === 0 && recursive.steps === 10, "recursive .call exact depth/ticks");
+typescript/test\function-call.ts:212:check(budget.steps === 2 && budget.calls === 0, "shared monotonic tick budget");
+typescript/test\function-call.ts:215:check(budget.steps === 3 && budget.calls === 0, "no fresh budget on reentry");
+typescript/test\key-coercion.ts:186:    const limited = setup(); limited.maxSteps = limited.steps + 250;
+typescript/test\length-coercion.ts:303:check(budget.steps === 4 && budget.calls === 0, "one hook tick plus bounded sparse scan");
+typescript/test\numeric-operators.ts:98:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+typescript/test\object-valueof.ts:11:import { toPrimitive } from "../src/primitive-conversion.js";
+typescript/test\object-valueof.ts:84:check(e.steps === 0 && e.calls === 0 && e.context.realm === a, "no hidden work/restoration");
+typescript/test\object-valueof.ts:156:check(trace === "C;B;C;" && budget.context.realm === a && budget.calls === 0 && budget.steps === 0, "restore A/no added ticks");
+typescript/test\object-valueof.ts:159:check(short.context.realm === a && short.calls === 0 && short.steps === 0, "forwarding budget cleanup");
+typescript/test\object-valueof.ts:182:            check(active.steps === 2, "shared step budget");
+typescript/test\object-valueof.ts:184:            check(active.steps === 3, "no budget reset");
+typescript/test\object-valueof.ts:214:    error(toPrimitive(operand, "number", context, loc), "TypeError", "cannot convert object to primitive", loc);
+typescript/test\object-valueof.ts:215:    check(events === "tick;valueOf;tick;" && active.steps === 2, "inherited conversion trace");
+typescript/test\object-valueof.ts:217:    error(toPrimitive(operand, "number", tight.context, loc), "RangeError", "call depth limit exceeded", loc);
+typescript/test\object-valueof.ts:218:    check(tight.steps === 1 && tight.calls === 0 && tight.context.realm === a, "new inherited call participates in limit");
+typescript/test\object-valueof.ts:226:error(toPrimitive(value(bare), "number", zeroCalls.context, loc), "TypeError", "cannot convert object to primitive", loc);
+typescript/test\object-valueof.ts:227:check(zeroCalls.steps === 2 && bare.get("valueOf").kind === "undefined", "null root missing-method budget unchanged");
+typescript/test\object-valueof.ts:271:check(symbolEvaluator.steps === 0 && symbolEvaluator.context.realm === a, "A16 no ticks and restoration");
+typescript/test\object-valueof.ts:288:    check(symbolEvaluator.steps === before, "A19 direct zero hooks/ticks");
+typescript/test\object-valueof.ts:289:    error(toPrimitive(value(box), "default", symbolEvaluator.context, loc), "TypeError", "cannot convert object to primitive", loc);
+typescript/test\object-valueof.ts:315:            check(active.steps === 2, "A18 shared steps");
+typescript/test\object-valueof.ts:325:check(symbolLimit.calls === 0 && symbolLimit.context.realm === a && symbolLimit.steps === 0, "A18 shared call limit cleanup");
+typescript/test\operation-context.ts:100:check(visits === 2 && budget.steps === 4 && budget.calls === 0 && budget.context.realm === realm, "shared ticks exact total");
+typescript/test\operation-context.ts:102:check(budget.steps === 5 && evalB.steps === 0, "monotonic independent steps");
+typescript/test\operation-context.ts:115:check(reentries === 2 && recursive.calls === 0 && recursive.steps === 11, "deterministic guest ticks/call depth");
+typescript/test\operation-context.ts:126:check(limited.steps === 3 && limited.calls === 0, "AST tick total");
+typescript/test\operation-context.ts:165:check(zero.calls === 0 && zero.steps === 0, "guard before increment");
+typescript/test\operation-context.ts:227:    check(entry.steps === 0, "R1 borrowed roots add no ticks");
+typescript/test\operation-context.ts:304:check(observer.before[0] === c && observer.after[0] === c && observer.steps === 0, "R6 intermediate C and zero ticks");
+typescript/test\operation-context.ts:309:check(targetEffects === 1 && observer.steps === 0, "R7 target guard no effects/ticks");
+typescript/test\operation-context.ts:389:check(guard.steps === 0, "R11 guards do not tick");
+typescript/test\operation-context.ts:413:check(alternation.length === 3 && alternation[0] === a && alternation[1] === b && alternation[2] === a && alternating.steps === 0, "R12 shared call slots");
+typescript/test\operation-context.ts:430:check(firstBudget.steps === 2 && separate.steps === 1 && sharedCount === 3 && tickContexts[0] !== tickContexts[1] && tickContexts[0] === tickContexts[2], "R14 independent evaluator budgets");
+typescript/test\operation-context.ts:437:check(deep.depth === 256 && deep.steps === 2 && deep.calls === 0 && deep.context.realm === a, "R15 guard releases only attempted depth");
+typescript/test\operator-coercion.ts:86:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+typescript/test\operator-coercion.ts:183:    active.maxSteps = before + 300;
+typescript/test\primitive-conversion.ts:10:import { ordinaryToPrimitive, toPrimitive } from "../src/primitive-conversion.js";
+typescript/test\primitive-conversion.ts:42:    override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+typescript/test\primitive-conversion.ts:79:        const result = toPrimitive(primitive, hint, tracedContext(object), loc);
+typescript/test\primitive-conversion.ts:83:    try { ordinaryToPrimitive(primitive, "number", evaluator.context, loc); }
+typescript/test\primitive-conversion.ts:84:    catch (error) { escaped = error instanceof Error && error.message === "ordinaryToPrimitive requires an object"; }
+typescript/test\primitive-conversion.ts:94:    const result = toPrimitive(object.expected, hint, tracedContext(object), loc);
+typescript/test\primitive-conversion.ts:101:        numberResult(toPrimitive(skip.expected, hint, tracedContext(skip), loc), 9, "skip noncallable");
+typescript/test\primitive-conversion.ts:109:            const result = toPrimitive(item.expected, hint, tracedContext(item), loc);
+typescript/test\primitive-conversion.ts:117:    numberResult(toPrimitive(missing.expected, hint, tracedContext(missing), loc), 9, "missing candidate fallback");
+typescript/test\primitive-conversion.ts:122:    numberResult(toPrimitive(fallback.expected, hint, tracedContext(fallback), loc), 9, "object fallback");
+typescript/test\primitive-conversion.ts:131:        typeError(toPrimitive(bad.expected, hint, tracedContext(bad), loc));
+typescript/test\primitive-conversion.ts:151:        const result = toPrimitive(item.expected, hint, tracedContext(item), loc);
+typescript/test\primitive-conversion.ts:160:    override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+typescript/test\primitive-conversion.ts:183:        numberResult(toPrimitive(input, "number", evaluator.context, loc), 7, "all kinds conversion");
+typescript/test\primitive-conversion.ts:197:    const result = toPrimitive(object.expected, "number", tracedContext(object, stage === "tick1" ? 1 : stage === "tick2" ? 2 : 0), loc);
+typescript/test\primitive-conversion.ts:212:        return toPrimitive(input, "default", context, location);
+typescript/test\primitive-conversion.ts:214:    const result = toPrimitive(input, "number", active.context, loc);
+typescript/test\primitive-conversion.ts:217:    check(active.calls === 0 && active.steps === (mode === "finite" ? 3 : mode === "steps" ? 4 : 5), "shared steps and cleanup");
+typescript/test\primitive-conversion.ts:239:        return toPrimitive(args[0], "default", context, location);
+typescript/test\primitive-conversion.ts:242:    numberResult(toPrimitive(binding(target, "counter"), "default", active.context, loc), 1, "first closure count");
+typescript/test\primitive-conversion.ts:243:    numberResult(toPrimitive(binding(target, "counter"), "default", active.context, loc), 2, "second closure count");
+typescript/test\primitive-conversion.ts:244:    numberResult(toPrimitive(binding(target, "mutating"), "default", active.context, loc), 11, "guest mutation fallback");
+typescript/test\primitive-conversion.ts:245:    numberResult(toPrimitive(binding(target, "nested"), "default", active.context, loc), 13, "guest bridge nesting");
+typescript/test\primitive-conversion.ts:249:numberResult(toPrimitive(binding(realms[0], "counter"), "number", retained[0].context, loc), 3, "first realm advances");
+typescript/test\primitive-conversion.ts:250:numberResult(toPrimitive(binding(realms[1], "counter"), "number", retained[1].context, loc), 3, "second realm independent");
+typescript/test\primitive-conversion.ts:253:    active.maxSteps = active.steps + 150;
+typescript/test\primitive-conversion.ts:254:    const result = toPrimitive(binding(realms[0], name), "default", active.context, loc);
+typescript/test\primitive-conversion.ts:267:    try { toPrimitive(object.expected, "number", tracedContext(object), loc); }
+typescript/test\primitive-conversion.ts:306:    override internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+typescript/test\primitive-conversion.ts:328:numberResult(ordinaryToPrimitive(conversionToken, "number", conversionEntry.context, loc), 7, "R19 fresh replacement result");
+typescript/test\property-key-conversion.ts:340:budget.evaluator.maxSteps = budget.evaluator.steps;
+typescript/test\property-key-conversion.ts:343:budget.evaluator.maxSteps += 100;
+typescript/test\property-key-conversion.ts:439:check(repeatSymbolKey.type === "normal" && repeatSymbolKey.value === symbolKey && keyEvaluator.steps === primitiveSteps, "A13 primitive symbol has zero ticks");
+typescript/test\relational.ts:131:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+typescript/test\relational.ts:138:    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+typescript/test\realms.ts:13:import { toPrimitive } from "../src/primitive-conversion.js";
+typescript/test\realms.ts:173:    checkGraph(called.type === "normal" && called.value.kind === "undefined" && active.calls === 0 && active.steps === 0, "G4 no-op callable cleanup/no ticks");
+typescript/test\realms.ts:196:checkGraph(active.steps === 0 && active.calls === 0, "G15 allocation and primitive definitions add no ticks");
+typescript/test\realms.ts:326:checkGraph(boxEvaluator.steps === 0 && boxEvaluator.calls === 0 && boxEvaluator.depth === 0 && boxEvaluator.context.realm === boxA, "W3/W4 no execution work");
+typescript/test\realms.ts:336:    const missing = toPrimitive(value, "number", boxEvaluator.context, at);
+typescript/test\realms.ts:345:    checkGraph(boxEvaluator.steps === before && boxEvaluator.calls === 0, "W17 direct conversion zero hooks");
+typescript/test\realms.ts:379:checkGraph(entry.context.realm === boxA && entry.calls === 0 && entry.depth === 0 && entry.steps === 0, "W15 normal cleanup/no boxing ticks");
+typescript/test\realms.ts:398:    checkGraph(hostEscaped === (mode === "host") && entry.context.realm === boxA && entry.calls === 0 && entry.depth === 0 && entry.steps === 0, "W15 abrupt cleanup");
+typescript/test\realms.ts:407:checkGraph(limitedBoxes.steps === 0 && limitedBoxes.calls === 0 && limitedBoxes.context.realm === boxA, "W15 limited cleanup");
+typescript/test\realms.ts:413:checkGraph(exhaustedStep.type === "throw" && exhaustedStep.diagnostic.message === "execution step limit exceeded" && limitedBoxes.steps === 1 && limitedBoxes.context.realm === boxA && limitedBoxes.calls === 0, "W15 monotonic step budget");

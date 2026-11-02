@@ -1,3 +1,4 @@
+import { wellKnownToPrimitive } from "../src/symbols.js";
 import { GuestSymbol } from "../src/symbols.js";
 import { stringKeys } from "./key-assertions.js";
 import type { PropertyKey } from "../src/runtime.js";
@@ -201,6 +202,7 @@ class Observed extends GuestObject {
     failAt = 0;
     original: Value = UNDEFINED;
     internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+        if (key === wellKnownToPrimitive) return normal(UNDEFINED);
         this.reads++;
         check(receiver === this.original && at === loc && key === "valueOf", "lookup original receiver/location/hint");
         if (this.reads === this.failAt) return sentinel;
@@ -228,12 +230,12 @@ for (const stage of ["get", "call", "tick"]) {
             call: (callee, receiver, args, at) => active.context.call(callee, receiver, args, at),
             tick: (_at) => {
                 ticks++;
-                return stage === "tick" && ticks === failAt ? sentinel : normal();
+                return stage === "tick" && ticks === failAt * 2 ? sentinel : normal();
             },
         };
         const result = target.defineOwnProperty("length", { value: original, writable: false }, context, loc);
         check(result === sentinel, "exact abrupt record " + stage);
-        check(ticks === failAt && rhs.reads === (stage === "tick" ? failAt - 1 : failAt), "no later ticks or reads");
+        check(ticks === failAt * 2 && rhs.reads === (stage === "tick" ? failAt - 1 : failAt), "no later ticks or reads");
         check(calls === (stage === "call" ? failAt : failAt - 1), "no later calls");
         length(target, 3);
         if (calls > 0) check(sameValue(target.get("note"), num(calls)), "hook mutations survive throw");
@@ -534,6 +536,7 @@ class FallbackObserver extends GuestObject {
     reads = 0;
     failAt = 0;
     internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+        if (key === wellKnownToPrimitive) return normal(UNDEFINED);
         this.reads++;
         check(key === (this.reads % 2 === 1 ? "valueOf" : "toString"), "fallback lookup order");
         if (this.reads === this.failAt) return sentinel;
@@ -562,12 +565,12 @@ for (const stage of ["get", "tick", "call"]) {
             call: (callee, receiver, args, at) => active.context.call(callee, receiver, args, at),
             tick: (_at) => {
                 ticks++;
-                return stage === "tick" && ticks === failAt ? sentinel : normal();
+                return stage === "tick" && ticks === conversion * 3 ? sentinel : normal();
             },
         };
         const result = target.defineOwnProperty("length", { value: original, writable: false }, context, loc);
         check(result === sentinel, "fallback exact abrupt record");
-        check(ticks === failAt && rhs.reads === (stage === "tick" ? failAt - 1 : failAt), "fallback stops at failing lookup/tick");
+        check(ticks === conversion * 3 && rhs.reads === (stage === "tick" ? failAt - 1 : failAt), "fallback stops at failing lookup/tick");
         check(calls === (stage === "call" ? conversion : conversion - 1), "fallback stops calls");
         length(target, 3);
         if (calls > 0) check(sameValue(target.get("note"), num(calls)), "fallback prior effects remain");

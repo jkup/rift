@@ -1,3 +1,4 @@
+import { wellKnownToPrimitive } from "../src/symbols.js";
 import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
@@ -156,6 +157,7 @@ class ThrowingKey extends GuestObject {
     stop = "toString";
     reads = "";
     internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+        if (key === wellKnownToPrimitive) return normal(UNDEFINED);
         this.reads += key + ";";
         return key === this.stop ? sentinel : super.internalGet(key, receiver, location);
     }
@@ -171,7 +173,7 @@ for (const stop of ["toString", "valueOf"]) {
 for (const second of [false, true]) {
     const object = new ThrowingKey(); object.stop = "never";
     let ticks = 0;
-    const context = { realm: active.context.realm, call: active.context.call, tick: (_location: Location): ValueCompletion => { ticks++; return ticks === (second ? 2 : 1) ? sentinel : normal(); } };
+    const context = { realm: active.context.realm, call: active.context.call, tick: (_location: Location): ValueCompletion => { ticks++; return ticks === (second ? 3 : 2) ? sentinel : normal(); } };
     check(toPropertyKey(obj(object), context, loc) === sentinel && object.reads === (second ? "toString;" : ""), "exact tick throw");
 }
 // Object keys may name array indices/length; length values remain primitive-only.

@@ -212,19 +212,19 @@ for (const source of ["{}", "[]", "function() {}"] ) {
         },
     };
     error(toPrimitive(operand, "number", context, loc), "TypeError", "cannot convert object to primitive", loc);
-    check(events === "tick;valueOf;tick;" && active.steps === 2, "inherited conversion trace");
+    check(events === "tick;tick;valueOf;tick;" && active.steps === 3, "inherited conversion trace");
     const tight = new Evaluator(a, 2, 0);
     error(toPrimitive(operand, "number", tight.context, loc), "RangeError", "call depth limit exceeded", loc);
-    check(tight.steps === 1 && tight.calls === 0 && tight.context.realm === a, "new inherited call participates in limit");
+    check(tight.steps === 2 && tight.calls === 0 && tight.context.realm === a, "new inherited call participates in limit");
 }
 
 // V7: direct converters reject objects without consulting methods. Null roots
 // retain two missing lookups even with no call budget; borrowing never relinks.
 const bare = new GuestObject();
 check(object(result(e.call(method, value(bare), [], loc))) === bare && bare.getPrototypeOf() === null, "borrow does not relink null root");
-const zeroCalls = new Evaluator(a, 2, 0);
+const zeroCalls = new Evaluator(a, 3, 0);
 error(toPrimitive(value(bare), "number", zeroCalls.context, loc), "TypeError", "cannot convert object to primitive", loc);
-check(zeroCalls.steps === 2 && bare.get("valueOf").kind === "undefined", "null root missing-method budget unchanged");
+check(zeroCalls.steps === 3 && bare.get("valueOf").kind === "undefined", "null root protocol lookup plus two missing ordinary methods");
 for (const v of [value(new NoReads()), value(a.createBooleanObject(false)), value(a.createNumberObject(0)), value(a.createStringObject("ab"))]) {
     for (const conversion of [toNumber(v, loc), toString(v, loc), toUint32(v, loc), toIntegerOrInfinity(v, loc), toLength(v, loc)]) {
         if (conversion.type !== "throw") throw new Error("direct converter accepted object");

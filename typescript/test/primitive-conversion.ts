@@ -1,4 +1,5 @@
-import { formatPropertyKey } from "../src/symbols.js";
+import { mapObjectDefaultArray } from "../src/array-map.js";
+import { formatPropertyKey, GuestSymbol, wellKnownToPrimitive } from "../src/symbols.js";
 import type { PropertyKey } from "../src/runtime.js";
 import { lengthOfArrayLike } from "../src/array-like.js";
 import { readFileSync } from "node:fs";
@@ -21,7 +22,7 @@ function builtin(realm: Realm, invoke: Builtin): Value {
     const object = new GuestObject(null, false, { kind: "builtin", realm, invoke });
     return objectValue(object);
 }
-function define(object: GuestObject, key: string, value: Value): void { object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true }); }
+function define(object: GuestObject, key: PropertyKey, value: Value): void { object.bootstrapDefine(key, { value: value, writable: true, enumerable: true, configurable: true }); }
 function returns(value: Value): Value { return builtin(realm, (_receiver, _args, _context, _loc) => normal(value)); }
 function numberResult(result: ValueCompletion, expected: number, label: string): void {
     check(result.type === "normal" && result.value.kind === "number" && result.value.value === expected, label);
@@ -38,9 +39,11 @@ class Observed extends GuestObject {
     requireLocation = true;
     reads = 0;
     failAt = 0;
+    protocolReads = 0;
     expected: Value = UNDEFINED;
     override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
         check(receiver === this.expected && (!this.requireLocation || location === loc), "exact Get receiver/location");
+        if (key === wellKnownToPrimitive) { this.protocolReads++; return normal(UNDEFINED); }
         this.reads++;
         this.trace += "Get " + formatPropertyKey(key) + ";";
         if (this.reads === this.failAt) return sentinel;
@@ -93,13 +96,13 @@ for (const hint of ["default", "number", "string"] as const) {
     define(object, first, returns(expected));
     const result = toPrimitive(object.expected, hint, tracedContext(object), loc);
     check(result.type === "normal" && result.value === expected, "first result");
-    check(object.trace === "tick;Get " + first + ";Call;", "first trace");
+    check(object.trace === "tick;tick;Get " + first + ";Call;", "first trace");
     for (const candidate of [...primitives, objectValue(new GuestObject())]) {
         const skip = observed();
         define(skip, first, candidate);
         define(skip, second, returns(num(9)));
         numberResult(toPrimitive(skip.expected, hint, tracedContext(skip), loc), 9, "skip noncallable");
-        check(skip.trace === "tick;Get " + first + ";tick;Get " + second + ";Call;", "skip trace");
+        check(skip.trace === "tick;tick;Get " + first + ";tick;Get " + second + ";Call;", "skip trace");
     }
     for (const primitive of primitives) {
         for (const fallback of [false, true]) {
@@ -108,19 +111,19 @@ for (const hint of ["default", "number", "string"] as const) {
             define(item, second, returns(primitive));
             const result = toPrimitive(item.expected, hint, tracedContext(item), loc);
             check(result.type === "normal" && result.value === primitive, "all primitive returns exact");
-            const trace = "tick;Get " + first + ";Call;" + (fallback ? "tick;Get " + second + ";Call;" : "");
+            const trace = "tick;tick;Get " + first + ";Call;" + (fallback ? "tick;Get " + second + ";Call;" : "");
             check(item.trace === trace, "primitive return trace");
         }
     }
     const missing = observed();
     define(missing, second, returns(num(9)));
     numberResult(toPrimitive(missing.expected, hint, tracedContext(missing), loc), 9, "missing candidate fallback");
-    check(missing.trace === "tick;Get " + first + ";tick;Get " + second + ";Call;", "missing trace");
+    check(missing.trace === "tick;tick;Get " + first + ";tick;Get " + second + ";Call;", "missing trace");
     const fallback = observed();
     define(fallback, first, returns(objectValue(new GuestObject())));
     define(fallback, second, returns(num(9)));
     numberResult(toPrimitive(fallback.expected, hint, tracedContext(fallback), loc), 9, "object fallback");
-    check(fallback.trace === "tick;Get " + first + ";Call;tick;Get " + second + ";Call;", "fallback trace");
+    check(fallback.trace === "tick;tick;Get " + first + ";Call;tick;Get " + second + ";Call;", "fallback trace");
     // H7-H9: no prefetch; replacement/deletion/prototype mutation in either order.
     for (const mode of ["missing", "noncallable", "objects"]) {
         const bad = observed();
@@ -130,7 +133,7 @@ for (const hint of ["default", "number", "string"] as const) {
         }
         typeError(toPrimitive(bad.expected, hint, tracedContext(bad), loc));
         const callTrace = mode === "objects" ? "Call;" : "";
-        check(bad.trace === "tick;Get " + first + ";" + callTrace + "tick;Get " + second + ";" + callTrace, "two failed lookup groups");
+        check(bad.trace === "tick;tick;Get " + first + ";" + callTrace + "tick;Get " + second + ";" + callTrace, "two failed lookup groups");
     }
     for (const mode of ["replace", "delete", "prototype"]) {
         const item = observed();
@@ -158,6 +161,7 @@ class ObservedArray extends GuestArray {
     expected: Value = UNDEFINED;
     reads = 0;
     override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+        if (key === wellKnownToPrimitive) return normal(UNDEFINED);
         check(receiver === this.expected && location === loc && key === "valueOf", "array Get receiver/key/location");
         this.reads++;
         return super.internalGet(key, receiver, location);
@@ -194,10 +198,10 @@ for (const stage of ["get1", "get2", "call1", "call2", "tick1", "tick2"]) {
         return stage === "call1" ? sentinel : normal(object.expected);
     }));
     define(object, "toString", builtin(realm, (_r, _a, _c, _l) => sentinel));
-    const result = toPrimitive(object.expected, "number", tracedContext(object, stage === "tick1" ? 1 : stage === "tick2" ? 2 : 0), loc);
+    const result = toPrimitive(object.expected, "number", tracedContext(object, stage === "tick1" ? 2 : stage === "tick2" ? 3 : 0), loc);
     check(result === sentinel && result.value === sentinel.value && result.diagnostic === sentinel.diagnostic && result.diagnostic.loc === sentinel.diagnostic.loc, "exact abrupt " + stage);
     const expected = stage === "tick1" ? "tick;" : stage === "get1" ? "tick;Get valueOf;" : stage === "call1" ? "tick;Get valueOf;Call;" : stage === "tick2" ? "tick;Get valueOf;Call;tick;" : stage === "get2" ? "tick;Get valueOf;Call;tick;Get toString;" : "tick;Get valueOf;Call;tick;Get toString;Call;";
-    check(object.trace === expected && mutations === (stage === "tick1" || stage === "get1" ? 0 : 1), "abrupt trace/mutation " + stage);
+    check(object.trace === "tick;" + expected && mutations === (stage === "tick1" || stage === "get1" ? 0 : 1), "abrupt trace/mutation " + stage);
 }
 // H13: builtin-only nested coercion shares both limits.
 for (const mode of ["finite", "steps", "calls"]) {
@@ -214,7 +218,7 @@ for (const mode of ["finite", "steps", "calls"]) {
     const result = toPrimitive(input, "number", active.context, loc);
     if (mode === "finite") numberResult(result, 13, "finite nesting");
     else check(result.type === "throw" && result.diagnostic.name === "RangeError" && result.diagnostic.loc === loc, "bounded builtin nesting");
-    check(active.calls === 0 && active.steps === (mode === "finite" ? 3 : mode === "steps" ? 4 : 5), "shared steps and cleanup");
+    check(active.calls === 0 && active.steps === (mode === "finite" ? 6 : mode === "steps" ? 4 : 10), "shared steps and cleanup");
 }
 function seed(target: Realm, name: string, value: Value): void { target.global.bindings.set(name, { initialized: true, mutable: true, value }); }
 function binding(target: Realm, name: string): Value {
@@ -268,7 +272,7 @@ for (const mode of ["host", "break", "continue"] as const) {
     catch (error) {
         escaped = error instanceof Error && (mode === "host" ? error === fault : error.message === "invalid completion escaped call boundary: " + mode);
     }
-    check(escaped && evaluator.calls === 0 && object.trace === "tick;Get valueOf;Call;", "host fault cleanup/no fallback");
+    check(escaped && evaluator.calls === 0 && object.trace === "tick;tick;Get valueOf;Call;", "host fault cleanup/no fallback");
 }
 // H17: direct numeric/string converters remain primitive-only; keys and operators integrate.
 const boundary = observed();
@@ -413,4 +417,206 @@ for (const mode of ["throw", "fault"]) {
     check(caught === (mode === "fault") && calls === 2 && length.kind === "number" && length.value === 1 && unchanged.get("0") === conversionToken, "R20 second failure precedes writes/deletion");
     check(conversionEntry.context.realm === conversionA && conversionEntry.calls === 0 && conversionEntry.depth === 0, "R20 second failure restoration");
 }
+
+
+// TS-019B1 P1-P5: protocol-only observer rejects accidental ordinary fallback.
+class ProtocolObserved extends GuestObject {
+    expected: Value = UNDEFINED;
+    events = "";
+    getFailure = false;
+    override internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+        check(key === wellKnownToPrimitive && receiver === this.expected && at === loc, "P2 exact protocol Get");
+        this.events += "Get;";
+        return this.getFailure ? sentinel : super.internalGet(key, receiver, at);
+    }
+}
+const symbolResult: Value = { kind: "symbol", value: new GuestSymbol("result") };
+for (const hint of ["default", "number", "string"] as const) {
+    for (const inherited of [false, true]) {
+        for (const returned of [...primitives, symbolResult]) {
+            const source = new ProtocolObserved();
+            source.expected = objectValue(source);
+            const owner = inherited ? new GuestObject() : source;
+            if (inherited) check(source.setPrototypeOf(owner).value, "P2 inheritance");
+            define(owner, wellKnownToPrimitive, builtin(realm, (receiver, args, context, at) => {
+                check(receiver === source.expected && args.length === 1 && args[0].kind === "string" && args[0].value === hint
+                    && context === evaluator.context && at === loc, "P2 exact Call");
+                source.events += "Call;";
+                return normal(returned);
+            }));
+            const context: OperationContext = {
+                realm,
+                tick: (at) => { source.events += "tick;"; return evaluator.tick(at); },
+                call: (callee, receiver, args, at) => evaluator.call(callee, receiver, args, at),
+            };
+            const result = toPrimitive(source.expected, hint, context, loc);
+            check(result.type === "normal" && result.value === returned && source.events === "tick;Get;Call;", "P2 exact result/order");
+        }
+    }
+}
+// Nullish fallback and impostors never mask the ordinary number/string order.
+for (const hint of ["default", "number", "string"] as const) {
+    for (const absent of ["missing", "undefined", "null"]) {
+        const source = new GuestObject();
+        define(source, new GuestSymbol("Symbol.toPrimitive"), num(99));
+        define(source, "@@toPrimitive", num(99));
+        define(source, "Symbol.toPrimitive", num(99));
+        if (absent !== "missing") define(source, wellKnownToPrimitive, absent === "null" ? { kind: "null" } : UNDEFINED);
+        define(source, "valueOf", returns(num(1)));
+        define(source, "toString", returns(num(2)));
+        const active = new Evaluator(new Realm((_line) => {}));
+        numberResult(toPrimitive(objectValue(source), hint, active.context, loc), hint === "string" ? 2 : 1, "P1/P3 canonical versus impostors");
+        check(active.steps === 2 && active.calls === 0, "P3 absent lookup charged across independent evaluator");
+    }
+}
+for (const invalid of [{ kind: "boolean", value: false } as Value, { kind: "boolean", value: true } as Value,
+    num(0), num(NaN), { kind: "string", value: "" } as Value, symbolResult, objectValue(new GuestObject())]) {
+    const source = new ProtocolObserved(); source.expected = objectValue(source);
+    define(source, wellKnownToPrimitive, invalid);
+    const result = toPrimitive(source.expected, "default", evaluator.context, loc);
+    check(result.type === "throw" && result.diagnostic.phase === "runtime" && result.diagnostic.name === "TypeError"
+        && result.diagnostic.message === "symbol toPrimitive method is not callable" && result.diagnostic.loc === loc
+        && source.events === "Get;", "P4 noncallable category/no fallback");
+}
+for (const stage of ["object", "get", "call", "tick"]) {
+    const source = new ProtocolObserved(); source.expected = objectValue(source);
+    source.getFailure = stage === "get";
+    define(source, wellKnownToPrimitive, builtin(realm, (_receiver, _args, _context, _at) => {
+        source.events += "Call;";
+        return stage === "call" ? sentinel : normal(source.expected);
+    }));
+    const context: OperationContext = {
+        realm,
+        tick: (_at) => stage === "tick" ? sentinel : normal(),
+        call: (callee, receiver, args, at) => evaluator.call(callee, receiver, args, at),
+    };
+    const result = toPrimitive(source.expected, "number", context, loc);
+    if (stage === "object") typeError(result);
+    else check(result === sentinel && result.value === sentinel.value && result.diagnostic.loc === sentinel.diagnostic.loc, "P5 exact abrupt identity");
+    check(source.events === (stage === "tick" ? "" : stage === "get" ? "Get;" : "Get;Call;"), "P4/P5 no later work");
+}
+// P7: the direct ordinary helper does not even read the canonical key.
+const ordinaryOnly = observed();
+define(ordinaryOnly, wellKnownToPrimitive, num(0));
+define(ordinaryOnly, "valueOf", returns(num(21)));
+numberResult(ordinaryToPrimitive(ordinaryOnly.expected, "number", tracedContext(ordinaryOnly), loc), 21, "P7 direct ordinary");
+check(ordinaryOnly.trace === "tick;Get valueOf;Call;" && ordinaryOnly.reads === 1 && ordinaryOnly.protocolReads === 0, "P7 unchanged tick/read trace");
+const primitiveOnly = new Evaluator(realm, 0, 0);
+const unchangedSymbol = toPrimitive(symbolResult, "string", primitiveOnly.context, loc);
+check(unchangedSymbol.type === "normal" && unchangedSymbol.value === symbolResult && primitiveOnly.steps === 0, "P1 symbol fast path");
+
+// P6: A -> B hook -> C hook -> B -> A, through one context and budget.
+for (const mode of ["normal", "throw", "fault"]) {
+    const active = new Evaluator(conversionA);
+    let trace = "";
+    const outer = new GuestObject(); const inner = new GuestObject();
+    const outerValue = objectValue(outer); const innerValue = objectValue(inner);
+    define(inner, wellKnownToPrimitive, builtin(conversionC, (receiver, args, context, at): Completion => {
+        trace += "C;";
+        check(context === active.context && context.realm === conversionC && active.calls === 2 && active.steps === 2
+            && receiver === innerValue && args.length === 1 && args[0].kind === "string" && args[0].value === "string" && at === loc, "P6 C shared state");
+        if (mode === "fault") throw conversionFault;
+        return mode === "throw" ? foreignSentinel : normal(symbolResult);
+    }));
+    define(outer, wellKnownToPrimitive, builtin(conversionB, (receiver, args, context, at): Completion => {
+        trace += "B;";
+        check(context.realm === conversionB && active.calls === 1 && active.steps === 1 && receiver === outerValue
+            && args.length === 1 && args[0].kind === "string" && args[0].value === "default", "P6 B entry");
+        try { return toPrimitive(innerValue, "string", context, at); }
+        finally {
+            check(context.realm === conversionB && active.calls === 1 && active.steps === 2, "P6 B restored in finally");
+            trace += "B;";
+        }
+    }));
+    let escaped = false;
+    try {
+        const result = toPrimitive(outerValue, "default", active.context, loc);
+        check(mode === "throw" ? result === foreignSentinel : result.type === "normal" && result.value === symbolResult, "P6 result identity");
+    } catch (error) {
+        if (!(error instanceof Error) || error !== conversionFault) throw error;
+        escaped = true;
+    }
+    check(escaped === (mode === "fault") && trace === "B;C;B;" && active.context.realm === conversionA
+        && active.calls === 0 && active.depth === 0 && active.steps === 2, "P6 all exits restore caller");
+    numberResult(active.call(returns(num(22)), UNDEFINED, [], loc), 22, "P6 later bounded call");
+}
+// P9: recursive exotic calls consume shared slots; absent lookup consumes a step.
+for (const limit of ["calls", "steps"]) {
+    const active = new Evaluator(realm, limit === "steps" ? 2 : 100, limit === "calls" ? 3 : 20);
+    const source = new GuestObject(); const input = objectValue(source); let visits = 0;
+    define(source, wellKnownToPrimitive, builtin(realm, (_receiver, _args, context, at) => {
+        visits++;
+        return toPrimitive(input, "number", context, at);
+    }));
+    const result = toPrimitive(input, "number", active.context, loc);
+    check(result.type === "throw" && result.diagnostic.name === "RangeError" && result.diagnostic.loc === loc
+        && result.diagnostic.message === (limit === "calls" ? "call depth limit exceeded" : "execution step limit exceeded"), "P9 exact limit");
+    check(visits === (limit === "calls" ? 3 : 2) && active.steps === (limit === "calls" ? 4 : 3)
+        && active.calls === 0 && active.context.realm === realm, "P9 recursive budget/cleanup");
+    numberResult(active.call(returns(num(23)), UNDEFINED, [], loc), 23, "P9 released call slots without resetting steps");
+}
+const absentBudget = new Evaluator(realm, 1);
+const absentSource = observed();
+define(absentSource, "valueOf", returns(num(24)));
+const exhaustedAbsent = toPrimitive(absentSource.expected, "number", absentBudget.context, loc);
+check(exhaustedAbsent.type === "throw" && exhaustedAbsent.diagnostic.message === "execution step limit exceeded"
+    && exhaustedAbsent.diagnostic.loc === loc && absentBudget.steps === 2 && absentSource.reads === 0, "P9 absent lookup prevents ordinary Get at tight limit");
+
+// P8: the saved length Value gets two complete conversions and a fresh hook.
+for (const mode of ["normal", "first throw", "second throw", "mismatch"]) {
+    const active = new Evaluator(realm);
+    const array = realm.createArray(); define(array, "4", num(40));
+    const source = new ProtocolObserved(); source.expected = objectValue(source);
+    let calls = "";
+    define(source, wellKnownToPrimitive, builtin(realm, (receiver, args, context, at) => {
+        check(receiver === source.expected && args.length === 1 && args[0].kind === "string" && args[0].value === "number", "P8 first hint");
+        calls += "first;";
+        define(array, "6", num(60));
+        define(source, wellKnownToPrimitive, builtin(realm, (secondReceiver, secondArgs, secondContext, secondLoc) => {
+            check(secondReceiver === receiver && secondArgs.length === 1 && secondArgs[0].kind === "string" && secondArgs[0].value === "number"
+                && secondContext === context && secondLoc === at, "P8 fresh second conversion");
+            calls += "second;";
+            const grown = array.get("length");
+            check(grown.kind === "number" && grown.value === 7, "P8 prior mutation visible");
+            return mode === "second throw" ? sentinel : normal(num(mode === "mismatch" ? 3 : 2));
+        }));
+        return mode === "first throw" ? sentinel : normal(num(2));
+    }));
+    const result = array.defineOwnProperty("length", { value: source.expected }, active.context, loc);
+    if (mode === "normal") check(result.type === "normal" && result.value, "P8 length succeeds");
+    else if (mode === "mismatch") check(result.type === "throw" && result.diagnostic.name === "RangeError" && result.diagnostic.loc === loc, "P8 mismatch");
+    else check(result === sentinel, "P8 exact conversion throw");
+    const firstOnly = mode === "first throw";
+    check(calls === (firstOnly ? "first;" : "first;second;") && source.events === (firstOnly ? "Get;" : "Get;Get;")
+        && active.steps === (firstOnly ? 1 : 2), "P8 complete conversion counts");
+    const length = array.get("length");
+    check(length.kind === "number" && length.value === (mode === "normal" ? 2 : 7)
+        && (array.getOwnProperty("6") === undefined) === (mode === "normal"), "P8 post-hook length and abrupt writes");
+}
+// Runtime-read consumers retain reference/call order and exercise every integration path.
+const protocolRealm = new Realm((_line) => {});
+const protocolEvaluator = new Evaluator(protocolRealm);
+seed(protocolRealm, "protocolKey", { kind: "symbol", value: wellKnownToPrimitive });
+seed(protocolRealm, "resultSymbol", symbolResult);
+seed(protocolRealm, "protocolMap", builtin(protocolRealm, (_receiver, args, context, at) => {
+    if (args[0].kind !== "object") throw new Error("map bridge object required");
+    return mapObjectDefaultArray(args[0].object, args[1], UNDEFINED, context, at);
+}));
+check(program(readFileSync("test/fixtures/symbol-primitive-conversion.js", "utf8"), protocolEvaluator).type === "normal", "P1/P2 guest consumers");
+for (const row of [{ name: "protocolRead", value: 17 }, { name: "protocolSum", value: 5 },
+    { name: "protocolNegated", value: -3 }, { name: "protocolProduct", value: 6 }, { name: "protocolCalled", value: 19 }]) {
+    const value = binding(protocolRealm, row.name);
+    check(value.kind === "number" && value.value === row.value, "P2 exact guest result " + row.name);
+}
+const less = binding(protocolRealm, "protocolLess");
+check(less.kind === "boolean" && less.value, "P2 relational result");
+const mapped = binding(protocolRealm, "protocolMapped");
+check(mapped.kind === "object" && mapped.object.get("0").kind === "number" && mapped.object.getOwnProperty("1") === undefined, "P2 map hole preserved");
+if (mapped.kind !== "object") throw new Error("missing mapped object");
+numberResult(normal(mapped.object.get("0")), 10, "P2 map first");
+numberResult(normal(mapped.object.get("2")), 14, "P2 map last");
+numberResult(normal(mapped.object.get("length")), 3, "P2 map converted length");
+const protocolTrace = binding(protocolRealm, "protocolTrace");
+check(protocolTrace.kind === "string" && protocolTrace.value === "B;K;R;string;string;default;number;number;number;number;number;number;B;K;string;A;M;", "P2 exact consumer hints/reference/call order");
+
 console.log("primitive conversion passed");
