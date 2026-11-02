@@ -1,0 +1,29 @@
+[
+  {
+    "lane": "node",
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build/node/test/number-radix.js",
+      "decimal",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-032a\\decimal-controls.txt"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.000001\n1e-7\n100000000000000000000\n1e+21\n5e-324\n1.7976931348623157e+308\n0.1\n0\n0\nNaN\nInfinity\n-Infinity\n0.3\n1.0000000000000002\n0.9999999999999999\n2.2250738585072014e-308\n11\n0.5\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build/native/number-radix.exe",
+    "args": [
+      "decimal",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-032a\\decimal-controls.txt"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "0.000001\n1e-7\n100000000000000000000\n1e+21\n5e-324\n1.7976931348623157e+308\n0.1\n0\n0\nNaN\nInfinity\n-Infinity\n0.3\n1.0000000000000002\n0.9999999999999999\n2.2250738585072014e-308\n11\n0.5\n",
+    "stderr": ""
+  }
+]

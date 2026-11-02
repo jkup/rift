@@ -1858,8 +1858,26 @@ Coordinator acceptance (2026-11-02): accepted fe167f6 after full design/evidence
 
 ### TS-032A — Exact positive-finite nondecimal backend
 
-Status: **ready**. Prerequisite accepted TS-032Pfe167f6. Implement only src/number-radix.ts numberToStringRadix(value,radix): GuestString and minimal typed runtime-input backend driver/host oracle validation. Own backend/private numerical helper or test seam only if needed for synthetic controls, test/number-radix.ts, additive build/test orchestration, docs/validation/ts-032a/, TASKS/feature scope handoff. No builtin registration, decimal conversion, coercion, Realm/evaluator, parser/protocol, CL006 transport or compiler/C++ changes. Coordinator owns COORDINATION.
+Status: **in progress** (implementation complete; independent acceptance pending). Owner: Codex implementation chat `01a19d08-c2e8-7300-a0a1-2f7869186600`; base `9c39011d50f9acf2864f9ae0f360910f4165daac`, branch `codex/test262-classification`, 2026-11-02. Prerequisite accepted TS-032Pfe167f6. Implement only src/number-radix.ts numberToStringRadix(value,radix): GuestString and minimal typed runtime-input backend driver/host oracle validation. Own backend/private numerical helper or test seam only if needed for synthetic controls, test/number-radix.ts, additive build/test orchestration, docs/validation/ts-032a/, TASKS/feature scope handoff. No builtin registration, decimal conversion, coercion, Realm/evaluator, parser/protocol, CL006 transport or compiler/C++ changes. Coordinator owns COORDINATION.
 
 Frozen algorithm/interfaces/proofs/bounds and B01-B11 are docs/radix-formatter-backend.md. Positive finite input, integer radix2-36 except10; invalid inputs host-fault before extraction. Exact bigint half-gap setup, iterative scale/digit termination, three-exponent at-most-six-candidate closest/even selector and canonical rendering; no host formatting/parser or approximate fallback. Preserve oracle/research files unchanged and separate from backend; input bytes/order must match frozen13350-pair corpus SHA256 and24 vectors, extend boundary supplementation without dropping cases. Both lanes receive bit-pattern inputs after compilation and must pass independent whole-string/interval/minimality/Note2 checks. Exercise endpoint/tie/synthetic odd-radix parity/preconditions, resource guards and literal rendering. Measure bounded iterations,width,length and timing honestly in both lanes; max57digits/1076unsigned units/16384intermediate bits, no corpus-driven relaxation. Handle practical batch transport without embedding answers.
 
 Require static-only build and separately parsed zero-dynamic coverage for backend runtime-input driver, full preserved212 guest cases36 old gates plus additive gate, typecheck/runner/probes,18 decimal controls and relevant regressions. Keep every timeout/crash/failure in denominator; native agreement alone insufficient. If compiler failure reduce it, do not change pins or switch to limb implementation without separate review. No production number method yet. Document decisions/retained failures and stop at tested commit/push for independent acceptance; no main merge or integration successor.
+
+TS-032A handoff (2026-11-02): backend and private numerical seams implemented
+from the frozen design; runtime-input driver uses actual production logic.
+Final Node/native14768/14768 each independently pass canonical/interval/minimum-k/
+Note2 checks: unchanged frozen13350 plus1394 all-radix boundary supplements and24
+literal vectors. Observed maxima53digits/1073scale/1075power/2159bits/1076units;
+limits unchanged. Final backend driver220/220 static, zero dynamic; all36 old
+build gates plus additive backend gate pass, full212/212 guest cases each lane,
+runner20/probes10/typecheck and18 original decimal controls each lane pass.
+Five warm batch timing and runtime RSS snapshots retained, with native timer
+quantization and non-peak memory limitations. Source/evidence preservation audit
+passes. Native Zig sandbox failure, initial corpus-label assertion, coordinator
+metadata audit, unsupported decimal CLI transport and reduced unrelated-import
+coverage failure retained in docs/validation/ts-032a/README.md. No compiler/pin/
+limb changes or backend fallback; unchanged original decimal probe used separately.
+Only assigned backend/helper/test/orchestration/evidence/status files changed.
+No builtin integration, CL006 edits, successor or main merge. Stop for independent
+review; finite Windows-x64 evidence is not exhaustive binary64 conformance.

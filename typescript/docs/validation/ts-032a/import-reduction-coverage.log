@@ -1,0 +1,21 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\docs\validation\ts-032a\import-reduction.ts
+
+  statements analyzed   368
+  compile statically    364  (98%)
+
+  in unreached code   (never lowered — cannot fail a build)
+      ×1  SC1090  method calls like 'context.realm.createBooleanObject'
+          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:10:57
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×1  SC1090  method calls like 'context.realm.createNumberObject'
+          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:11:56
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×1  SC1090  method calls like 'context.realm.createSymbolObject'
+          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:12:56
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×1  SC1090  method calls like 'context.realm.createStringObject'
+          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:13:56
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×1  SC1090  this parameter form
+          at C:/Users/jonku/code/rift/typescript/src/runtime.ts:54:88
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
