@@ -441,3 +441,9 @@ Acceptedfc19afe with R18 corrected to column128, independently reproduced for bo
 Frozen next TS-025P deletion/reference design, addressing existing C3 gap with explicit strictness and primitive-base policy review before implementation. CL-004/005 reserved; main unchanged7f7d682. No repeat merge. Next writer pending dispatch.
 
 Acceptance/next contract pushed through1bb6ed8, resolving delegated export rejection. Active sole design writer: TS-025P chat `01a19ac6-358d-76a2-99ae-d966e5fa8f04`, host `local`, base `1bb6ed8`. Explicit progress wait confirmed active; saved cursor `3214643e-933f-415e-a0df-6be6e30cf23d:1`. Owns frozen delete/reference design only; coordinator owns this file. No implementation before review.
+
+## TS-025P acceptance — 2026-11-02 05:53 heartbeat
+
+Accepted pushed1ff5fe5 after complete contract/matrix/diff review, independent fixed2025 ToObject-before-key-conversion and identifier early-error check, evaluator depth/tick inspection and reproduced109-file/117-candidate inventory. R6 peak depth3 includes the statement frame and is correct. Explicit unconditional strict-delete policy accepted for limited profile, not a full strict-Script claim. No runtime edits/integrated rerun; baselinefc19afe remains172/172/26gates. Completed designer idle; cursor `3214643e-933f-415e-a0df-6be6e30cf23d:2`.
+
+Frozen next atomic TS-025A including full matrices, native default64 recursion, explicit scope and precise C3 migration. CL-004/005 remain ready/reserved; main unchanged7f7d682. Next implementation writer pending dispatch.
