@@ -1,0 +1,13 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\docs\validation\ts-027a\catch-identity-before.ts
+
+  statements analyzed   8
+  compile statically    8  (100%)
+    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)
+
+  fully static — all analyzed statements compile to native code.
+
+  dynamic tier   (tier assignment, report-only; --tier=auto)
+    1 function already operates on dynamic values (1 statement)
+      <top level>  C:/Users/jonku/code/rift/typescript/docs/validation/ts-027a/catch-identity-before.ts:1:1: dynScalarEq at C:/Users/jonku/code/rift/typescript/docs/validation/ts-027a/catch-identity-before.ts:3:50
+
+    0 demotion requests (refusals and fences the dynamic tier would replace)

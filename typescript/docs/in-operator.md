@@ -1,6 +1,6 @@
 # Guest in operator: bounded design (TS-027P)
 
-Proposed for independent review, 2026-11-02. Dispatch base `80204eb`, inspected
+Design accepted at `5dd652a`, 2026-11-02. TS-027A implementation is pending independent review; see [evidence](validation/ts-027a/README.md). Dispatch base `80204eb`, inspected
 checkout `66046b8`, accepted runtime `5cdf9e4`: 182 cases per host / 28 gates.
 This is a design, not a new support claim. The [named matrix](validation/ts-027p/matrix.md)
 and [evidence and migration audit](validation/ts-027p/README.md) are normative

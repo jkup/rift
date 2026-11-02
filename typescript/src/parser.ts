@@ -155,7 +155,7 @@ class Parser {
         if (op === "||") return 3;
         if (op === "&&") return 4;
         if (op === "===" || op === "!==" || op === "==" || op === "!=") return 5;
-        if (op === "<" || op === ">" || op === "<=" || op === ">=") return 6;
+        if (op === "<" || op === ">" || op === "<=" || op === ">=" || op === "in") return 6;
         if (op === "+" || op === "-") return 7;
         if (op === "*" || op === "/" || op === "%") return 8;
         return 0;
@@ -193,7 +193,8 @@ class Parser {
                 continue;
             }
             const op = this.current().text;
-            const precedence = this.current().kind === "punct" ? this.precedence(op) : 0;
+            const operator = this.current().kind === "punct" || (this.current().kind === "word" && op === "in");
+            const precedence = operator ? this.precedence(op) : 0;
             if (precedence === 0 || precedence < min) break;
             this.take();
             if (op === "?") {

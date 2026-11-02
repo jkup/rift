@@ -159,3 +159,18 @@ adapter; declaring its Completion return type preserves the test's host throw
 and removes the adapter. The minimal before/after reduction and failed attempts
 are retained alongside the final evidence in [TS-026A](validation/ts-026a/README.md).
 This is bounded Windows x64 evidence; no new platform or performance claim.
+
+## In operator integration (TS-027A, 2026-11-02)
+
+The minimal parser admission and binary branch pass rebuilt Node/native189/189,
+runner20/20 and probes10/10. All29 static-only builds and independently parsed
+coverage reports pass (CLI1530/1530, in-operator2185/2185, zero dynamic).
+All182 baseline case names/expected records and28 gates are preserved.
+Actual default64 host/guest recursive keys stop at261/325 ticks with original
+Realm and calls/depth restored; guest peak depth131. No production workaround.
+
+A test-only unknown catch-value identity comparison lowered to dynScalarEq even
+though static-only build succeeded. Explicit instanceof Error narrowing preserves
+same-instance assertion and removes the dynamic operation. Eight-statement
+before/after reductions, both executions, coverage and the rejected initial gate
+are retained in [TS-027A evidence](validation/ts-027a/README.md).

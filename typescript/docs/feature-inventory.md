@@ -252,3 +252,21 @@ Member operands still use the existing object-only read path and key conversion;
 strict-delete's explicit boxing exception is unchanged. No BigInt or HTMLDDA
 support is implied. See [contract](typeof-void.md) and
 [implementation evidence](validation/ts-026a/README.md).
+
+### Guest in operator (TS-027A)
+
+Ordinary `left in right` is supported at relational precedence with left
+associativity. Both operand evaluations/GetValue complete before the RHS object
+check; a primitive RHS raises a located TypeError before left key conversion.
+Object keys use existing string-hint ToPropertyKey, preserving symbol identity,
+then existing iterative internalHasProperty checks own/inherited descriptors.
+Undefined-valued/nonenumerable data, array holes/length and virtual String wrapper
+indices retain their existing semantics. The target is never boxed or read with
+semantic Get. Key hooks can mutate the captured target before presence is tested;
+rebinding either operand cannot replace its captured Value.
+
+`in` remains reserved for bindings and valid as an ordinary property name. No
+for-in, private membership, instanceof, proxies/accessors, reflection API or new
+boxing support is implied. Existing resource guards and defining-Realm hook
+entry apply unchanged. [Implementation evidence](validation/ts-027a/README.md)
+records the complete named matrix, runtime fixtures and retained failures.

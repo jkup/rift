@@ -9,6 +9,15 @@ const suffix = process.platform === "win32" ? ".exe" : "";
 const command = lane === "node" ? process.execPath : join(root, "build/native/rift" + suffix);
 const prefix = lane === "node" ? [join(root, "build/node/src/cli.js")] : [];
 const cases = JSON.parse(readFileSync(join(root, "test/cases.json"), "utf8"));
+// TS-027A C1/C2/C4-C7: literal CLI expectations for committed runtime files.
+cases.push(
+    { file: "test/fixtures/in-success.js", stdout: "true false true\n" },
+    { file: "test/fixtures/in-effects.js", stdout: "true LRC 1 1 1\n" },
+    { file: "test/fixtures/in-parse.js", status: 2, error: "1:7: parse SyntaxError: unsupported or unexpected syntax: ;" },
+    { file: "test/fixtures/in-runtime.js", status: 1, error: "1:1: runtime TypeError: right operand of in must be an object" },
+    { file: "test/fixtures/in-competing.js", status: 1, error: "1:1: runtime ReferenceError: missing is not defined" },
+    { file: "test/fixtures/in-parse-before-effects.js", status: 2, error: "1:17: parse SyntaxError: unsupported or unexpected syntax: ;" },
+);
 const generated = [
     ["delete-success", "let o={x:1}; console.log(delete o.x, o.x);", 0, "", "true undefined\n"],
     ["delete-identifier", "console.log('no'); delete x;", 2, "1:20: parse SyntaxError: delete of an identifier is not allowed"],
@@ -261,6 +270,9 @@ execute("delete-operator", deleteCommand, deleteArgs, { stdout: "delete-operator
 const typeofCommand = lane === "node" ? process.execPath : join(root, "build/native/typeof-void" + suffix);
 const typeofArgs = lane === "node" ? [join(root, "build/node/test/typeof-void.js")] : [];
 execute("typeof-void", typeofCommand, typeofArgs, { stdout: "typeof-void ok\n" });
+const inCommand = lane === "node" ? process.execPath : join(root, "build/native/in-operator" + suffix);
+const inArgs = lane === "node" ? [join(root, "build/node/test/in-operator.js")] : [];
+execute("in-operator", inCommand, inArgs, { stdout: "in-operator ok\n" });
 const equalityCommand = lane === "node" ? process.execPath : join(root, "build/native/abstract-equality" + suffix);
 const equalityArgs = lane === "node" ? [join(root, "build/node/test/abstract-equality.js")] : [];
 execute("abstract-equality", equalityCommand, equalityArgs, { stdout: "abstract-equality ok\n" });

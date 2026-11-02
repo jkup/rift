@@ -7,7 +7,7 @@ import { isLooselyEqual } from "./abstract-equality.js";
 import { deleteReference } from "./delete-reference.js";
 import { typeOfValue } from "./typeof.js";
 import { toPrimitive } from "./primitive-conversion.js";
-import { toNumber, toString } from "./conversion.js";
+import { toNumber, toString, toPropertyKey } from "./conversion.js";
 
 // The public context is a stable readonly view of this evaluator-owned state.
 type ActiveOperationContext = {
@@ -299,6 +299,21 @@ export class Evaluator {
         }
     }
     binary(op: string, left: Value, right: Value, loc: Location): Completion {
+        if (op === "in") {
+            // Both operands are captured; reject a primitive RHS before key hooks.
+            if (right.kind !== "object") {
+                return failure("TypeError", "right operand of in must be an object", loc);
+            }
+            const key = toPropertyKey(left, this.context, loc);
+            if (key.type === "throw") {
+                return key;
+            }
+            const present = right.object.internalHasProperty(key.value, loc);
+            if (present.type === "throw") {
+                return present;
+            }
+            return normal({ kind: "boolean", value: present.value });
+        }
         if (op === "+") {
             // Convert both captured Values before selecting concatenation.
             const leftPrimitive = toPrimitive(left, "default", this.context, loc);
