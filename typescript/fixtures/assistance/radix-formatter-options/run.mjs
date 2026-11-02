@@ -23,6 +23,22 @@ for (const [x, radix, text] of expectExact) {
     if (got !== text) throw new Error(`oracle self-check ${x} base ${radix}: ${got}`);
 }
 if (judge(0.5, 2, '0.01').inInterval) throw new Error('oracle accepted a wrong value');
+// Step 6 text must be judged as a whole string, not just its leading digits.
+const malformed = [[0.5, 2, '0.1.garbage'], [0.5, 2, '0.1.'], [0.5, 2, '0.10'], [1, 2, '1.'], [0.5, 2, '00.1'],
+    [0.5, 2, '.1'], [0.5, 2, '0.1.0'], [0.5, 2, '+0.1'], [0.5, 2, ' 0.1'], [0.5, 2, ''], [255, 16, 'FF'], [255, 16, 'ff.0'],
+    [255, 16, '0ff'], [256, 16, '100.'], [2 ** 60, 2, '1' + '0'.repeat(60) + '.0']];
+for (const [x, radix, text] of malformed) {
+    const verdict = judge(x, radix, text);
+    if (verdict.wellFormed || verdict.inInterval) throw new Error(`oracle accepted malformed ${JSON.stringify(text)} for ${x} base ${radix}`);
+}
+// Dropping integer padding leaves a well-formed string for a different value.
+for (const [x, radix, text] of [[256, 16, '1'], [2 ** 60, 2, '1']]) {
+    if (judge(x, radix, text).inInterval) throw new Error(`oracle accepted unpadded ${text} for ${x} base ${radix}`);
+}
+// Integer padding zeros are part of the step 6 output and stay accepted.
+for (const [x, radix, text] of [[256, 16, '100'], [2 ** 60, 2, '1' + '0'.repeat(60)], [0.5, 2, '0.1'], [0.75, 4, '0.3']]) {
+    if (!judge(x, radix, text).recommended) throw new Error(`oracle rejected canonical ${text} for ${x} base ${radix}`);
+}
 if (!roundsTo(roundingInterval(5e-324), roundingInterval(5e-324).value)) throw new Error('interval self-check');
 
 // --- corpus ---
@@ -104,7 +120,7 @@ function quickjsModel(x, radix) {
 // SpiderMonkey js_dtobasestr integer branch: every integer digit of floor(x) exactly.
 const exactIntegerDigits = (x, radix) => BigInt(x).toString(radix);
 
-const tally = () => ({ cases: 0, inInterval: 0, shortest: 0, recommended: 0 });
+const tally = () => ({ cases: 0, wellFormed: 0, inInterval: 0, shortest: 0, recommended: 0 });
 const summary = { node: tally(), freeFormat: tally(), quickjsModel: tally(), spiderMonkeyIntegerModel: tally() };
 const perRadixNode = {};
 const perBandNode = {};
@@ -112,7 +128,7 @@ const failures = { node: [], quickjsModel: [], spiderMonkeyIntegerModel: [] };
 const maxLength = {};
 let maxBits = 0, crossCheckFailures = 0;
 const freeFormatNoteTwoDifferences = [];
-const count = (bucket, verdict) => { bucket.cases++; for (const key of ['inInterval', 'shortest', 'recommended']) if (verdict[key]) bucket[key]++; };
+const count = (bucket, verdict) => { bucket.cases++; for (const key of ['wellFormed', 'inInterval', 'shortest', 'recommended']) if (verdict[key]) bucket[key]++; };
 
 for (const { x, radix, origin } of cases) {
     const answer = shortest(x, radix);

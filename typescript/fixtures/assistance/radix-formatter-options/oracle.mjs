@@ -118,7 +118,11 @@ export function format(s, n, k, radix) {
 }
 
 // Parse a positional radix string (no sign) back to (s, n, k) with trailing zeros removed.
+// The whole text must be digits of this radix with at most one interior '.'; anything else is
+// null. It accepts noncanonical spellings such as '0.10'; judge rejects those separately.
 export function parsePositional(text, radix) {
+    const digit = `[${DIGITS.slice(0, radix)}]`;
+    if (!new RegExp(`^${digit}+(\\.${digit}+)?$`).test(text)) return null;
     const [whole, fraction = ''] = text.split('.');
     let digits = (whole + fraction).replace(/^0+/, '');
     let n = whole === '0' ? -(fraction.length - fraction.replace(/^0+/, '').length) : whole.length;
@@ -134,13 +138,17 @@ export function parsePositional(text, radix) {
     return { s, n, k: stripped.length };
 }
 
-// Classify any produced string for finite x > 0 against step 5 and Note 2.
+// Classify any produced string for finite x > 0 against step 5 and Note 2. A string counts only
+// when it is exactly the step 6 rendering of its own (s, n, k): no stray or trailing '.', no
+// leading zeros or fraction trailing zeros, but integer padding zeros (n > k) are required.
 export function judge(x, radix, text, answer = shortest(x, radix)) {
     const parsed = parsePositional(text, radix);
-    if (!parsed) return { inInterval: false, shortest: false, recommended: false, k: null, minimalK: answer.k };
+    if (!parsed || text !== format(parsed.s, parsed.n, parsed.k, radix)) {
+        return { wellFormed: false, inInterval: false, shortest: false, recommended: false, k: null, minimalK: answer.k };
+    }
     const v = power(radix, parsed.n - parsed.k);
     const inInterval = roundsTo(roundingInterval(x), rational(parsed.s * v.num, v.den));
     const isShortest = inInterval && parsed.k === answer.k;
     const recommended = isShortest && parsed.s === answer.recommended.s && parsed.n === answer.recommended.n;
-    return { inInterval, shortest: isShortest, recommended, k: parsed.k, minimalK: answer.k };
+    return { wellFormed: true, inInterval, shortest: isShortest, recommended, k: parsed.k, minimalK: answer.k };
 }

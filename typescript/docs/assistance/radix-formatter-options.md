@@ -137,8 +137,12 @@ The random values come from a fixed xorshift seed, so reruns are identical.
 
 Every output is judged by `oracle.mjs`. For each k = 1, 2, … it enumerates every (s, n) whose exact
 value lies in the rounding interval, using BigInt rationals only. It never generates digits and
-never calls a host formatter. `free-format.mjs` generates digits by a different method. The run
-fails if the two disagree on interval membership or minimal k; they never did.
+never calls a host formatter. It judges the whole output string: the text must contain only
+digits of the radix, with at most one interior point, and must equal the step 6 rendering of its
+own (s, n, k). So `0.1.`, `0.10`, `00.1` and `1.` are rejected as malformed, while the zero
+padding of a large integer (n > k) is required. `free-format.mjs` generates digits by a different
+method. The run fails if the two disagree on interval membership or minimal k; they never did.
+Every string judged in the corpus, from all four sources, was well formed (all cases for each).
 
 | Formatter | In the interval | Shortest (required) | Note 2 choice |
 |---|---|---|---|
@@ -227,7 +231,7 @@ rates. The 7 Note 2 differences for free-format are subnormal inputs such as 1e-
 | A2 | Step 5 on a fixed corpus | At least this CL-005 corpus (13,350 pairs, fixed seed) in both lanes: every output in the interval with minimal k, judged by an exact oracle that shares no code with the backend |
 | A3 | Note 2 | Matches the oracle's closest/even choice. This includes the 7 cross-power subnormal cases and odd-radix parity of s |
 | A4 | Boundaries | 5e-324, the largest subnormal, the smallest normal, MAX_VALUE, 2^k and their neighbours, radix powers ± 1 ulp, 1 ± ulp, 2^53, 2^60, 1e21, in every radix 2–36 except 10 |
-| A5 | Positional output | n ≥ k zero padding, interior point, leading `0.` and zeros; never exponential for radix ≠ 10; length ≤ 1,077 |
+| A5 | Positional output | The whole string equals the oracle's step 6 rendering of its (s, n, k): n ≥ k zero padding, interior point, leading `0.` and zeros, no fraction trailing zeros or stray point; never exponential for radix ≠ 10; length ≤ 1,077 |
 | A6 | Callers' special values | NaN, ±0, ±∞ and negatives are still handled by the TS-021P steps, not by the backend |
 | A7 | Radix 10 | Unchanged backend; the existing 18 decimal cases and all guest suites pass |
 | A8 | Static compilation | static-only build plus separate coverage at 100% for the CLI and drivers; Node and native byte-identical |
@@ -238,7 +242,13 @@ rates. The 7 Note 2 differences for free-format are subnormal inputs such as 1e-
 
 - **Ran** [measured]:
   - `run.mjs`, exit 0, writing `results.json`. It includes oracle self-checks such as 0.5→`0.1`
-    in base 2, 255→`ff`, 2^60 in base 2, and rejection of a wrong value.
+    in base 2, 255→`ff`, 2^60 in base 2, and rejection of a wrong value. It also checks that
+    the judge rejects malformed or noncanonical text (`0.1.garbage`, `0.1.`, `0.10`, `1.`,
+    `00.1`, `.1`, uppercase digits, a trailing `.0`) and unpadded integers, and still accepts
+    canonical padded output such as 256→`100` in base 16.
+  - After that oracle fix, the stored Node and native outputs in `probe-results.json` were
+    re-judged with the stricter oracle: 334 of 334 lane verdicts unchanged. The probe was not
+    rebuilt; it renders its text through the oracle's own `format`, so the fix cannot change it.
   - `probe-run.mjs`, exit 0, writing `probe-results.json`, with the pinned Zig 0.17.0 directory on
     PATH. Native linking worked without extra approval in this session.
 - **Not run:** SpiderMonkey, QuickJS-ng, Boa and engine262. Their rows are static readings or
