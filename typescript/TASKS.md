@@ -1664,3 +1664,9 @@ Baseline remains accepted TS030A211/211 both hosts/32gates, Windows x64 only.
 Historical CL004 measurements stay labeled as inherited research. Only owned
 docs/TASKS changed; coordinator's concurrent dispatch8f61e91 preserved.
 Commit/push design then stop for independent review; no self-acceptance or successor.
+
+TS-031P delivery: local design commit `6faae58`. Automatic approval review
+rejected `git push origin codex/test262-classification`, stating that repository
+documentation/task metadata export lacked trusted authorization for this payload
+and destination. No bypass or alternate export attempted. Publication requires
+approval/coordinator resolution; independent design acceptance remains pending.
