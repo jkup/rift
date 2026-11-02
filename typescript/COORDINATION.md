@@ -585,3 +585,6 @@ Reviewer idle, cursor0f150c52-8a07-4420-aec6-9d234073e38d:2. Accepted PR78 head8
 PR79 head6c5ff97 NOT accepted. Reviewer reproduced13350 mathematical cases and167 Node/native outputs with78 static statements, but judge accepts malformed/noncanonical strings. Coordinator reproduced judge(0.5,2,'0.1.garbage') falsely passing all verdicts. Feedback posted https://github.com/jkup/rift/pull/79#issuecomment-6575188844. Claude owns bounded fix and negative self-checks; preserve unmerged branch. No formatter implementation until corrected research review.
 
 Next evidence-backed slice: TS-031P test262 adapter classification design, based on accepted CL002/004. Design only, freeze trustworthy statuses/variants/phase boundaries and engine prerequisites before implementation. Existing runtime remains independently validated211/211 both lanes32 gates.
+
+PR78 merged/pushed main64bf139; its fully merged local/remote branch removed. PR79 remains open/unmerged pending Claude fix. New integration branch codex/test262-classification, task contract19f2529 pushed. TS-031P sole design writer chat01a19bf5-589e-7b32-a605-f2c419837724, hostlocal; explicit progress wait issued. No runtime implementation authorized; coordinator owns this file. Main maintenance is complete and must not be repeated.
+TS-031P active confirmed; saved cursor `7e25bdaa-f946-4476-b41f-a95dc92adf05:1`.
