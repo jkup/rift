@@ -1,0 +1,3235 @@
+{
+  "base": "4be5c6e7207fd3a7b3018f8d976c12d886975230",
+  "node": "v26.13.0",
+  "v8": "14.6.202.34-node.40",
+  "revision": "91c70759363c46557b694792bf34a2551a7af5ba",
+  "note": "Existing binaries, no rebuild. Reference Script compilation only; no guest evaluation, harness loading, admission or conformance classification.",
+  "artifacts": {
+    "native": "6002636da8da4d82a41cd5a8498e4eb16809f56d82ad5bd1dfbf8446bb50cc18",
+    "node": {
+      "abstract-equality.js": "a0280b9251776d99ee335f96a751e82493ffa0f2774bf430584d05b67e227772",
+      "array-like.js": "7d4f56119cad4154080dc9818605f377c2d72d7c19102712a33e409d8b97283a",
+      "array-map.js": "e03a34f6858809824ef4db0f4c82014bdeb9635e04bf72ce6a0f1d9b4ba58116",
+      "array-object.js": "53c9739fe98f3ffcccac685ca3a477babab033b3679d8b7d93fbce453249220f",
+      "cli.js": "b4f76fd4f109d07f2b0cc6bb29ed74fe201dba5dcc26847a1eedad80e86dd1f3",
+      "conversion.js": "83f10b07d5559c8948d427ee2ce8a06efdb6d78e37c3a59a962e9f0fe9a7d345",
+      "delete-reference.js": "508160e0ce64e68b79408eac096a74c0c4a9451fcbe49bf2ee6307459c64d2ae",
+      "evaluator.js": "d07196c6f82972e78c29359f1e5605bbcc5e15a6cb643bc9e14f001bda239aa6",
+      "interpreter.js": "f6ca09579ed3fe409cb68b38feedd20f0d6f65eb68b29474684393d48496029c",
+      "lexer.js": "56006b3572d32f661020f3f4e15b7d68196f4261a4140188d810deae909ae27e",
+      "object-conversion.js": "debe1247907eec538c99f93e97297f929f63759ad90b6652851d6d5b3be1e6b5",
+      "observation-driver.js": "98e168a2450a9ef1f5c3255f1233ffe4c0bc7d49b0d6e6eccf3c59fbb1d145a2",
+      "observation-json.js": "f07dbaa2099b1c1dabd926e071f049a2f8fd723d036bc9bee6bd115388b3a69a",
+      "observation.js": "07c729b102c32ded862696fa5d30d47d9150f1e600613508cd4cd208d1c46619",
+      "outcomes.js": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "parser.js": "370b3d3723395c0fe07aba8519859f172d50ab70a7d43e6a0f0b7dd2d8f06f12",
+      "primitive-conversion.js": "9bca7d8f2ba6ea8b0ef162a1d2d753910a6d0c6835745872fa3a72516c091c48",
+      "primitive-objects.js": "0e2a922ef9ccd090a5d2b2007476e75857906d8246c50482acba6a49b6bdd293",
+      "property-keys.js": "29e0fe3132d04cf234d3f067e5d5715e037beab5a83c65fff070832c88b2ce49",
+      "realm.js": "148868668a4de335d7f453cd507726d83817565f1b225595963239625c6e99be",
+      "runtime.js": "58785bacd28cee9d22daeb8c690553d07eab756a77457c59285b315adc58556f",
+      "strings.js": "b1827b79fe0a4db8dce8ccbd14d546f3bba239a2873cb631c2d66c1ad111fa2c",
+      "symbols.js": "7aa638dc4602969342944afd821b5fb19b856dbfb1b4e889aa3911f534d88e73",
+      "syntax.js": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "typeof.js": "1889fc81b6ae1a9b22a8401e3bfc319728bb22593577b5c750e190a3add6c241"
+    }
+  },
+  "rows": [
+    {
+      "id": "A01",
+      "capability": "parse.assignment-target",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Invalid left-hand side in assignment"
+      },
+      "synthetic": true,
+      "transformedSha256": "81894ebfdb1257e73890551b015fab40a7d95a6ff9bfb8cff4b433025b79e8e1",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A01",
+            "mode": "parser-observation",
+            "unit": "A01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A01",
+            "mode": "parser-observation",
+            "unit": "A01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "A02",
+      "capability": null,
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "6460ccdfe2d771b2dadec0505c6f55da8004f81c599a47fe6e4671f48f110211",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A02",
+            "mode": "parser-observation",
+            "unit": "A02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A02",
+            "mode": "parser-observation",
+            "unit": "A02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "A03",
+      "capability": "parse.assignment-target",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "fcac793d12d61a24fadb6d2db6cb6164cfca8f11d594930fc6e5b75e2e573e7a",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A03",
+            "mode": "parser-observation",
+            "unit": "A03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A03",
+            "mode": "parser-observation",
+            "unit": "A03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "A04",
+      "capability": "parse.assignment-target",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Invalid destructuring assignment target"
+      },
+      "synthetic": true,
+      "transformedSha256": "b8c0433f703db421d1e69e65bc012a5bb0f4cde5903f3fbdc60617a247537692",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A04",
+            "mode": "parser-observation",
+            "unit": "A04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 2
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A04",
+            "mode": "parser-observation",
+            "unit": "A04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 2
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "A05",
+      "capability": "parse.assignment-target",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "141abfb9732a30f2ce1e21ef97a737b72ab74e2514618470115163b27e80d6ab",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A05",
+            "mode": "parser-observation",
+            "unit": "A05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 2
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A05",
+            "mode": "parser-observation",
+            "unit": "A05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 2
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "A06",
+      "capability": "parse.assignment-target",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "025d204a4b09069b5d4d7d1e8ff7fc8bb56fddbb71f42ecf108de86d2e0321aa",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A06",
+            "mode": "parser-observation",
+            "unit": "A06",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A06",
+            "mode": "parser-observation",
+            "unit": "A06",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "A07",
+      "capability": "parse.assignment-target",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "56e8afac9e33b8eee2b74b7aaa5b8df4b3cb3b35c8b5d86bb2afc1db96cbb7cf",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A07",
+            "mode": "parser-observation",
+            "unit": "A07",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 15
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A07",
+            "mode": "parser-observation",
+            "unit": "A07",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 15
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "A08",
+      "capability": null,
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "1343ec82c4a59a7de0b3e3c3d6757bf90f6546a413b200b9568769d4fb397330",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A08",
+            "mode": "parser-observation",
+            "unit": "A08",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A08",
+            "mode": "parser-observation",
+            "unit": "A08",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "A09",
+      "capability": "parse.assignment-target",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Invalid left-hand side in assignment"
+      },
+      "synthetic": true,
+      "transformedSha256": "87d1a441bd7d5a596d0367d137a8b954ba03f9af3160704925893e3ef5f376b4",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A09",
+            "mode": "parser-observation",
+            "unit": "A09",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A09",
+            "mode": "parser-observation",
+            "unit": "A09",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "A10",
+      "capability": "parse.assignment-target",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Invalid left-hand side in assignment"
+      },
+      "synthetic": true,
+      "transformedSha256": "29987c09d2916b16081aac4420d3c8c9b130fc0b74bf1530731ac61096dd779f",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A10",
+            "mode": "parser-observation",
+            "unit": "A10",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-A10",
+            "mode": "parser-observation",
+            "unit": "A10",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "D01",
+      "capability": "parse.declaration-statement",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Lexical declaration cannot appear in a single-statement context"
+      },
+      "synthetic": true,
+      "transformedSha256": "822d62bf07ac2d4430abde6d92b5c75bad6789b42b5897a0532539ab732f76bf",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D01",
+            "mode": "parser-observation",
+            "unit": "D01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D01",
+            "mode": "parser-observation",
+            "unit": "D01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "D02",
+      "capability": null,
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "9864d61459e4a072f69edf3dc4856bbbb9f2cc06586e80dcc5e89b8c5c14b88e",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D02",
+            "mode": "parser-observation",
+            "unit": "D02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D02",
+            "mode": "parser-observation",
+            "unit": "D02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "D03",
+      "capability": "parse.declaration-statement",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "777ed52ad3a029f162fd3340d7bcaa24841ec0c61b25d9af6fa9625c8bf0305b",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D03",
+            "mode": "parser-observation",
+            "unit": "D03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 11
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D03",
+            "mode": "parser-observation",
+            "unit": "D03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 11
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "D04",
+      "capability": "parse.declaration-statement",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "In strict mode code, functions can only be declared at top level or inside a block."
+      },
+      "synthetic": true,
+      "transformedSha256": "27ae54c8a05e9cfd58d8e7ff93010f48a20f09467a19ab0465cc77d78d920abd",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D04",
+            "mode": "parser-observation",
+            "unit": "D04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 25
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D04",
+            "mode": "parser-observation",
+            "unit": "D04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 25
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "D05",
+      "capability": "parse.declaration-statement",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "In non-strict mode code, functions can only be declared at top level, inside a block, or as the body of an if statement."
+      },
+      "synthetic": true,
+      "transformedSha256": "e0512775b871549ceb029980135419740d605a4a76bc588ed257c938d0ac7f45",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D05",
+            "mode": "parser-observation",
+            "unit": "D05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D05",
+            "mode": "parser-observation",
+            "unit": "D05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "D06",
+      "capability": "parse.declaration-statement",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "6401921f0eb297d9cd4353fd924eed7223ba75db22f07ab9776670fc0343956d",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D06",
+            "mode": "parser-observation",
+            "unit": "D06",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-D06",
+            "mode": "parser-observation",
+            "unit": "D06",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "R01",
+      "capability": "parse.return-context",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": true,
+      "transformedSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-R01",
+            "mode": "parser-observation",
+            "unit": "R01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-R01",
+            "mode": "parser-observation",
+            "unit": "R01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "R02",
+      "capability": null,
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "402b71fa6ad4a27ab9184e0d681fafa1abd5a7cccfe250f9f05b7186bdd3d21b",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-R02",
+            "mode": "parser-observation",
+            "unit": "R02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-R02",
+            "mode": "parser-observation",
+            "unit": "R02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "R03",
+      "capability": "parse.return-context",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": true,
+      "transformedSha256": "b3ec6e23aa03d9dc1b6b6d6ebc42a97d8a74c729dcfc8073c9836ff8a22c6956",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-R03",
+            "mode": "parser-observation",
+            "unit": "R03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 2
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-R03",
+            "mode": "parser-observation",
+            "unit": "R03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 2
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "R04",
+      "capability": "parse.return-context",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": true,
+      "transformedSha256": "73ead4e83847f66f30abb8198e557da85d90bec166a43ecab0f06d5ace6ced66",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-R04",
+            "mode": "parser-observation",
+            "unit": "R04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 16
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-R04",
+            "mode": "parser-observation",
+            "unit": "R04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 16
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "R05",
+      "capability": "parse.line-terminator",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "6856489a60dca250480196f0b0af7aac4fce72674b281f48379aa4c907654315",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-R05",
+            "mode": "parser-observation",
+            "unit": "R05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.line-terminator",
+              "diagnostic": "newline after return/throw is unsupported"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-R05",
+            "mode": "parser-observation",
+            "unit": "R05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.line-terminator",
+              "diagnostic": "newline after return/throw is unsupported"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "P01",
+      "capability": "parse.duplicate-parameter",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "6d7cdc2bad6622a500976d825a06877b156d328dfd79462402b7396e517de3a3",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P01",
+            "mode": "parser-observation",
+            "unit": "P01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P01",
+            "mode": "parser-observation",
+            "unit": "P01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "P02",
+      "capability": "parse.duplicate-parameter",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Duplicate parameter name not allowed in this context"
+      },
+      "synthetic": true,
+      "transformedSha256": "be095b72222acfd3d13f340b11e61a9b4e96b012e3a2e2fb665e631232e4e62e",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P02",
+            "mode": "parser-observation",
+            "unit": "P02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 15
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P02",
+            "mode": "parser-observation",
+            "unit": "P02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 15
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "P03",
+      "capability": "parse.duplicate-parameter",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Duplicate parameter name not allowed in this context"
+      },
+      "synthetic": true,
+      "transformedSha256": "b66813fe7f04a95b9efa03a35c38af332861aabd47f3722127b92d569a1a30af",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P03",
+            "mode": "parser-observation",
+            "unit": "P03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P03",
+            "mode": "parser-observation",
+            "unit": "P03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "P04",
+      "capability": null,
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "bdb62a36c135e2098eab13ebce481fc23ae650145ce93df00530d26301e8297e",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P04",
+            "mode": "parser-observation",
+            "unit": "P04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P04",
+            "mode": "parser-observation",
+            "unit": "P04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "P05",
+      "capability": "parse.duplicate-parameter",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "3cd875abec84892885631ece4f3fd1788f52eaed1fc4d057af978c55704b6a21",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P05",
+            "mode": "parser-observation",
+            "unit": "P05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 17
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P05",
+            "mode": "parser-observation",
+            "unit": "P05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 17
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "P06",
+      "capability": "parse.duplicate-parameter",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "c2bf496e269198a020ec6a243b1d26891ab86b314cd71a82521d209f3a6250ee",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P06",
+            "mode": "parser-observation",
+            "unit": "P06",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 18
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P06",
+            "mode": "parser-observation",
+            "unit": "P06",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 18
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "P07",
+      "capability": "parse.duplicate-parameter",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "7a591e0c97a8d74092933e8bef3ba7d49800c9d9af2d04959a367a3c16391a3e",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P07",
+            "mode": "parser-observation",
+            "unit": "P07",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P07",
+            "mode": "parser-observation",
+            "unit": "P07",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "P08",
+      "capability": "parse.duplicate-parameter",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Duplicate parameter name not allowed in this context"
+      },
+      "synthetic": true,
+      "transformedSha256": "8625c099ddab17513f460f538c3568875cfa9088246202fb1a95786fd3350fa0",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P08",
+            "mode": "parser-observation",
+            "unit": "P08",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 32
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-P08",
+            "mode": "parser-observation",
+            "unit": "P08",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 32
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "B01",
+      "capability": "parse.duplicate-binding",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Identifier 'f' has already been declared"
+      },
+      "synthetic": true,
+      "transformedSha256": "24e11729ae05eead3b658e30571a61955e73e796d6bd870eac0d6a70ccaec484",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B01",
+            "mode": "parser-observation",
+            "unit": "B01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 31
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B01",
+            "mode": "parser-observation",
+            "unit": "B01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 31
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "B02",
+      "capability": "parse.duplicate-binding",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "56a834b37a84e924840b17df118c1cd359b6800391ee830ff8d69c78f988f4fb",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B02",
+            "mode": "parser-observation",
+            "unit": "B02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 17
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B02",
+            "mode": "parser-observation",
+            "unit": "B02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 17
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "B03",
+      "capability": "parse.duplicate-binding",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "e9f0e3f0b8b8a90a7e4581ecedbe2ca11aa451da0d10bbdf5abe1677d34ebed9",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B03",
+            "mode": "parser-observation",
+            "unit": "B03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 30
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B03",
+            "mode": "parser-observation",
+            "unit": "B03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 30
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "B04",
+      "capability": "parse.duplicate-binding",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "8a21b33406f7acab957ff9a8ddd319727bf37414c62708116c824086eecaaf36",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B04",
+            "mode": "parser-observation",
+            "unit": "B04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 47
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B04",
+            "mode": "parser-observation",
+            "unit": "B04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 47
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "B05",
+      "capability": null,
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "7e60028eacec685649c2c647c892ba1ef1af53a21e1283493dfb68fa3a7167c2",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B05",
+            "mode": "parser-observation",
+            "unit": "B05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B05",
+            "mode": "parser-observation",
+            "unit": "B05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": null,
+            "observation": {
+              "kind": "normal"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "B06",
+      "capability": "parse.duplicate-binding",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "856caee18b1029f32eaefb1fba5a23407d103a0b5893df81d5b59f5f63704147",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B06",
+            "mode": "parser-observation",
+            "unit": "B06",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 31
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B06",
+            "mode": "parser-observation",
+            "unit": "B06",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 31
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "B07",
+      "capability": "parse.duplicate-binding",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Identifier 'f' has already been declared"
+      },
+      "synthetic": true,
+      "transformedSha256": "e501397d519240b90f00a051280759d308a9d1a2159531042589016f9d2da8eb",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B07",
+            "mode": "parser-observation",
+            "unit": "B07",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 23
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-B07",
+            "mode": "parser-observation",
+            "unit": "B07",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 23
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T01",
+      "capability": "parse.return-context",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": true,
+      "transformedSha256": "2105908b3c50bce5be2f34cd70c5eadda32193d85008ceefd2fbb67bf948ccad",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T01",
+            "mode": "parser-observation",
+            "unit": "T01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T01",
+            "mode": "parser-observation",
+            "unit": "T01",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T02",
+      "capability": "lex.character",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": true,
+      "transformedSha256": "c12ee97794bd46cad29a732a927c6e47e7d6c633160897dfb31ad8a024f63200",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T02",
+            "mode": "parser-observation",
+            "unit": "T02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 11
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "lex.character",
+              "diagnostic": "unsupported character: `"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T02",
+            "mode": "parser-observation",
+            "unit": "T02",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 11
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "lex.character",
+              "diagnostic": "unsupported character: `"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T03",
+      "capability": "parse.assignment-target",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Invalid left-hand side in assignment"
+      },
+      "synthetic": true,
+      "transformedSha256": "6f1883bbc7b884088050e172a106a6e5083b70a9ca379462940e9508247264b9",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T03",
+            "mode": "parser-observation",
+            "unit": "T03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T03",
+            "mode": "parser-observation",
+            "unit": "T03",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T04",
+      "capability": "lex.character",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Invalid left-hand side in assignment"
+      },
+      "synthetic": true,
+      "transformedSha256": "b90ff80d844377dd6d9aa0d6cc2f3579032c15f4c6dad873dae5c9332ef3ece9",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T04",
+            "mode": "parser-observation",
+            "unit": "T04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 7
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "lex.character",
+              "diagnostic": "unsupported character: `"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T04",
+            "mode": "parser-observation",
+            "unit": "T04",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 7
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "lex.character",
+              "diagnostic": "unsupported character: `"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T05",
+      "capability": "parse.unexpected",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "002a6b65efae415111d247b01e950f26d4f1dfacc0362b28435ade27974125f9",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T05",
+            "mode": "parser-observation",
+            "unit": "T05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.unexpected",
+              "diagnostic": "unsupported or unexpected syntax: class"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T05",
+            "mode": "parser-observation",
+            "unit": "T05",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.unexpected",
+              "diagnostic": "unsupported or unexpected syntax: class"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T06",
+      "capability": "lex.character",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "52ab222d10e929f7104bc501d0c182640ae18bc16e7174bf40af5109db8ac2bb",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T06",
+            "mode": "parser-observation",
+            "unit": "T06",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "lex.character",
+              "diagnostic": "unsupported character: `"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T06",
+            "mode": "parser-observation",
+            "unit": "T06",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 14
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "lex.character",
+              "diagnostic": "unsupported character: `"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T07",
+      "capability": "parse.duplicate-parameter",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Duplicate parameter name not allowed in this context"
+      },
+      "synthetic": true,
+      "transformedSha256": "2ff0c86fd588f2aef8e81dfb171354731ab8626ae507a8970b376ebf20100a36",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T07",
+            "mode": "parser-observation",
+            "unit": "T07",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T07",
+            "mode": "parser-observation",
+            "unit": "T07",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T08",
+      "capability": "parse.return-context",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": true,
+      "transformedSha256": "9ba6191872dc543783f2e4ee173873c10f544a9da4c7cfbad1547008e39e65c1",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T08",
+            "mode": "parser-observation",
+            "unit": "T08",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T08",
+            "mode": "parser-observation",
+            "unit": "T08",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T09",
+      "capability": "parse.unexpected",
+      "reference": {
+        "outcome": "accepted"
+      },
+      "synthetic": true,
+      "transformedSha256": "a3f1ef798797235b35529af5dd58800d76e10d3c0481078d9ca1be151183c02a",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T09",
+            "mode": "parser-observation",
+            "unit": "T09",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 25
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.unexpected",
+              "diagnostic": "unsupported or unexpected syntax: /"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T09",
+            "mode": "parser-observation",
+            "unit": "T09",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 25
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.unexpected",
+              "diagnostic": "unsupported or unexpected syntax: /"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T10",
+      "capability": "parse.return-context",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": true,
+      "transformedSha256": "b074ffdcdb6900b33c30a4c36c562d78b20a537dbb3733652a0837a84f857cac",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T10",
+            "mode": "parser-observation",
+            "unit": "T10",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T10",
+            "mode": "parser-observation",
+            "unit": "T10",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T11",
+      "capability": "parse.return-context",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": true,
+      "transformedSha256": "8e453ed3621d1d3669292f6ab59b7b543d8f36cdd0ec236685dc7b4644cbd5d8",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T11",
+            "mode": "parser-observation",
+            "unit": "T11",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T11",
+            "mode": "parser-observation",
+            "unit": "T11",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T12",
+      "capability": "parse.return-context",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": true,
+      "transformedSha256": "e47284d7bc749aa061bff65867f480e9e56fba85bcd1dd98615e5b75c8fcd898",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T12",
+            "mode": "parser-observation",
+            "unit": "T12",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T12",
+            "mode": "parser-observation",
+            "unit": "T12",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T13",
+      "capability": "lex.indeterminate-string-end",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": true,
+      "transformedSha256": "04094a70f0754bd076e402d14eebaf93c8d9ccd71626a51fb35cba51fdfcee19",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T13",
+            "mode": "parser-observation",
+            "unit": "T13",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 11
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "lex.indeterminate-string-end",
+              "diagnostic": "unterminated string"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T13",
+            "mode": "parser-observation",
+            "unit": "T13",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 11
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "lex.indeterminate-string-end",
+              "diagnostic": "unterminated string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "T14",
+      "capability": "parse.duplicate-parameter",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Unexpected end of input"
+      },
+      "synthetic": true,
+      "transformedSha256": "7dc8c6c9b5cb37c3c9dee992dcdf74154d538bb42f3c6238cc92150a96f538a6",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T14",
+            "mode": "parser-observation",
+            "unit": "T14",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-T14",
+            "mode": "parser-observation",
+            "unit": "T14",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 1,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: a"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "S18/non-strict",
+      "capability": "parse.assignment-target",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Invalid left-hand side in assignment"
+      },
+      "synthetic": false,
+      "path": "test/language/expressions/assignment/target-number.js",
+      "blob": "326043282e5f676c607dae1390fa036d347191e1",
+      "sourceSha256": "891e96b9bc7e14fe5546973e8c07a7ce0d8a24edfbb0f32c01b364a5503f6a23",
+      "variant": "non-strict",
+      "transformedSha256": "891e96b9bc7e14fe5546973e8c07a7ce0d8a24edfbb0f32c01b364a5503f6a23",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S18/non-strict",
+            "mode": "parser-observation",
+            "unit": "S18/non-strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 22,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S18/non-strict",
+            "mode": "parser-observation",
+            "unit": "S18/non-strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 22,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "S18/strict",
+      "capability": "parse.assignment-target",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Invalid left-hand side in assignment"
+      },
+      "synthetic": false,
+      "path": "test/language/expressions/assignment/target-number.js",
+      "blob": "326043282e5f676c607dae1390fa036d347191e1",
+      "sourceSha256": "891e96b9bc7e14fe5546973e8c07a7ce0d8a24edfbb0f32c01b364a5503f6a23",
+      "variant": "strict",
+      "transformedSha256": "d832a0d672fd8e05b90c889e56643d61adc1fc39629604e996eeb0b952a4ef3b",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S18/strict",
+            "mode": "parser-observation",
+            "unit": "S18/strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 23,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S18/strict",
+            "mode": "parser-observation",
+            "unit": "S18/strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 23,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.assignment-target",
+              "diagnostic": "invalid assignment target"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "S19/non-strict",
+      "capability": "parse.declaration-statement",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Lexical declaration cannot appear in a single-statement context"
+      },
+      "synthetic": false,
+      "path": "test/language/statements/while/decl-let.js",
+      "blob": "d3def7e4460140e731a6bd9bbded8ecc4e1df4ad",
+      "sourceSha256": "ea12bdecc6ead9f1166d0156ef75173e8ea72fd6d2d8bc696e22906189ff423f",
+      "variant": "non-strict",
+      "transformedSha256": "ea12bdecc6ead9f1166d0156ef75173e8ea72fd6d2d8bc696e22906189ff423f",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S19/non-strict",
+            "mode": "parser-observation",
+            "unit": "S19/non-strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 14,
+              "column": 15
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S19/non-strict",
+            "mode": "parser-observation",
+            "unit": "S19/non-strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 14,
+              "column": 15
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "S19/strict",
+      "capability": "parse.declaration-statement",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Lexical declaration cannot appear in a single-statement context"
+      },
+      "synthetic": false,
+      "path": "test/language/statements/while/decl-let.js",
+      "blob": "d3def7e4460140e731a6bd9bbded8ecc4e1df4ad",
+      "sourceSha256": "ea12bdecc6ead9f1166d0156ef75173e8ea72fd6d2d8bc696e22906189ff423f",
+      "variant": "strict",
+      "transformedSha256": "c58ee0194bddbaa3206b6851cf60cde4750153ba1c0d6c6eaeb86c9fda775406",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S19/strict",
+            "mode": "parser-observation",
+            "unit": "S19/strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 15,
+              "column": 15
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S19/strict",
+            "mode": "parser-observation",
+            "unit": "S19/strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 15,
+              "column": 15
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.declaration-statement",
+              "diagnostic": "declarations require a block"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "S20/non-strict",
+      "capability": "parse.return-context",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": false,
+      "path": "test/language/statements/return/S12.9_A1_T4.js",
+      "blob": "6b80e161111a8c6416400cb2d659e2b7f6451a8e",
+      "sourceSha256": "fd1138f446a9cbfc5a8c384446c202c12b13f7373254620eec2323c9c66f94d0",
+      "variant": "non-strict",
+      "transformedSha256": "fd1138f446a9cbfc5a8c384446c202c12b13f7373254620eec2323c9c66f94d0",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S20/non-strict",
+            "mode": "parser-observation",
+            "unit": "S20/non-strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 17,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S20/non-strict",
+            "mode": "parser-observation",
+            "unit": "S20/non-strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 17,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "S20/strict",
+      "capability": "parse.return-context",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Illegal return statement"
+      },
+      "synthetic": false,
+      "path": "test/language/statements/return/S12.9_A1_T4.js",
+      "blob": "6b80e161111a8c6416400cb2d659e2b7f6451a8e",
+      "sourceSha256": "fd1138f446a9cbfc5a8c384446c202c12b13f7373254620eec2323c9c66f94d0",
+      "variant": "strict",
+      "transformedSha256": "d929159a5e8f528f7ae0d0c337708284f2c332ebd54a4c223449160d81c8c0d2",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S20/strict",
+            "mode": "parser-observation",
+            "unit": "S20/strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 18,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S20/strict",
+            "mode": "parser-observation",
+            "unit": "S20/strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 18,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.return-context",
+              "diagnostic": "return outside function"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "S21/strict",
+      "capability": "parse.duplicate-parameter",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Duplicate parameter name not allowed in this context"
+      },
+      "synthetic": false,
+      "path": "test/language/statements/function/param-duplicated-strict-1.js",
+      "blob": "69dc995f6fd6a07f9a5c3c5c16d50e2c5f88537b",
+      "sourceSha256": "3a4a4b5e3d70da582993165ab4592c7616abb528c864e022f4fd82ac26ee56aa",
+      "variant": "strict",
+      "transformedSha256": "844d7a7bf6ed4d78ee87bbd6941f698ab88dbf1dc57ef815df0f7d819ba7e81f",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S21/strict",
+            "mode": "parser-observation",
+            "unit": "S21/strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 23,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: param"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S21/strict",
+            "mode": "parser-observation",
+            "unit": "S21/strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 23,
+              "column": 1
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-parameter",
+              "diagnostic": "duplicate parameter: param"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "S22/strict",
+      "capability": "parse.duplicate-binding",
+      "reference": {
+        "outcome": "SyntaxError",
+        "message": "Identifier 'f' has already been declared"
+      },
+      "synthetic": false,
+      "path": "test/language/block-scope/syntax/redeclaration/function-name-redeclaration-attempt-with-function.js",
+      "blob": "4f7d8a286e48845b974535159a434ca407f8889d",
+      "sourceSha256": "84bdc0294cf54ec63d473962f2c41411677b1888b71f8095d60941f9f399cd30",
+      "variant": "strict",
+      "transformedSha256": "e8fca95c56872aba424aff79e8873eaf2b17b6803d80d0e4e6a12541df02a0be",
+      "lanes": {
+        "node": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S22/strict",
+            "mode": "parser-observation",
+            "unit": "S22/strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 23,
+              "column": 19
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        },
+        "native": {
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "record": {
+            "driverVersion": 1,
+            "nonce": "audit-S22/strict",
+            "mode": "parser-observation",
+            "unit": "S22/strict",
+            "stage": "test",
+            "bodyEvaluated": false,
+            "location": {
+              "line": 23,
+              "column": 19
+            },
+            "observation": {
+              "kind": "unsupported-syntax",
+              "capabilityCode": "parse.duplicate-binding",
+              "diagnostic": "duplicate binding: f"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

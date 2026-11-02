@@ -1,0 +1,29 @@
+// Actual parent transport, synthetic bytes, no conformance admission.
+import { prepareObservation, launchObservation } from '../../../tools/test262/observe.mjs';
+import { blobHash, sha256 } from '../../../tools/test262/input.mjs';
+import { mkdir, writeFile, rm } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import assert from 'node:assert/strict';
+const here=fileURLToPath(new URL('.',import.meta.url));
+const archiveRoot=join(here,'metadata-scratch');
+await mkdir(archiveRoot);
+const rows=[];
+try {
+ for(const lane of ['node','native']) for(const negative of [null,{phase:'parse',type:'SyntaxError'},{phase:'runtime',type:'TypeError'}]){
+  const sourceBytes=Buffer.from('return 1;');
+  const variant={id:'C08-'+lane,path:'test/synthetic.js',lane,variant:'non-strict',goal:'Script',blob:blobHash(sourceBytes),sourceSha256:sha256(sourceBytes),transformedSourceSha256:sha256(sourceBytes),metadata:{negative},harness:[],blockers:[{status:'unsupported-profile',reasonCode:'synthetic-profile'}]};
+  const plan=await prepareObservation({selection:{revision:'b'.repeat(40),manifestSha256:'a'.repeat(64),files:[{path:variant.path,inputError:null,variants:[variant]}]},variantId:variant.id,sourceBytes,mode:'parser-observation',archiveRoot});
+  const result=await launchObservation(plan);
+  assert.equal(result.state,'complete');
+  assert.equal(result.record.observation.kind,'unsupported-syntax');
+  assert.equal(result.record.observation.capabilityCode,'parse.return-context');
+  assert.equal(result.record.evidence.bodyEvaluated,false);
+  assert.equal(result.record.evidence.harnessValidated,false);
+  assert.equal(Object.hasOwn(result.record,'classification'),false);
+  rows.push({lane,negative,record:result.record});
+ }
+ for(const row of rows) assert.deepEqual(row.record.observation,rows[0].record.observation);
+ await writeFile(join(here,'metadata-results.json'),JSON.stringify(rows,null,2)+'\n');
+ console.log('C08: 6 actual parent/child observations unchanged across null, parse/SyntaxError, runtime/TypeError metadata.');
+} finally {await rm(archiveRoot,{recursive:true});}

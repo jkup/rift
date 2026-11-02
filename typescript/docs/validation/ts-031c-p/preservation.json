@@ -1,0 +1,50 @@
+{
+  "head": "4be5c6e7207fd3a7b3018f8d976c12d886975230",
+  "acceptedTransport": "5b42393",
+  "protectedPaths": [
+    "src",
+    "test",
+    "tools",
+    "fixtures",
+    "probes",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json"
+  ],
+  "engineChanges": "",
+  "srcSha256": {
+    "abstract-equality.ts": "8f45db12de1248c7b1bfdfe086d145e7b4a6e44dce1bcfde177b0ca34f125d3c",
+    "array-like.ts": "304791502dd5652f97234a15cb3b63db4e0202f354cac50c57bebdc94eb7d053",
+    "array-map.ts": "2715ad3fde451297725d479b0a49950fdeb8093a6de411030c3035cdc1e84b38",
+    "array-object.ts": "01b95682a1da934695ee38989480c27f6b01d15e26d65b99339c42d8c8264502",
+    "cli.ts": "d7188e812ed578b413450b638e1819a256f3e3acabd93be9b9c6fbbca14234e5",
+    "conversion.ts": "9e55f6f0a96b4d69b1edef55c64ea483ac495be368f2339addcf4256011b90e1",
+    "delete-reference.ts": "e5ca3a39540c0c6c06d51b927b1fafec7ef0968d20936483281a5aaf1ecaef3a",
+    "evaluator.ts": "809734963fd0d8b988ca4866097316590cce191102ae3e19dd9f38f032dd6339",
+    "interpreter.ts": "997425b4a2f6cb1d228c669c9feb10addbd523cde1ad0b952229d0d3bfbf3aa0",
+    "lexer.ts": "633923a226025b210a6bf93ae1f61de9bd9d59d972a48dd45ff08b332f435338",
+    "object-conversion.ts": "e8cf0bde1618ce02dd4c894337b12adc9f9e8da85dfde449e71b94f92f7256de",
+    "observation-driver.ts": "12e75a4efc158f6373828c9dca52e17ad9d694fd7ebc079faccfcea0359b444d",
+    "observation-json.ts": "26aa29158da9714e2dcc4de72c64635ed355edcf3d8add067e12a551dd397c32",
+    "observation.ts": "ec1cd6003b991d42d8c8ee08905807077286a4ca9722ac1e597901a553f5ccaf",
+    "outcomes.ts": "ac0e100ac4de91ee224e101b0c104d94b961759e8fd1d411b41218c83dc68582",
+    "parser.ts": "f4c62bb284f4ca35d0e54926d18ad4d49fbe727dfed16807c369bd89929d4191",
+    "primitive-conversion.ts": "e74ec5f796a12e8a2e5ff489c629a8253924db33b6adee4d2b4e4e7f9ebafbab",
+    "primitive-objects.ts": "40def8dc0e0700d9cf4767ed024d66e8d2a7c7ddc8b6a505113a8e054200cf0d",
+    "property-keys.ts": "2e415f1a442a73b028b0bc8c6bc10f2ce9c7455ab047f42e2f424fac840a67d8",
+    "realm.ts": "229550e0d715c72e42eaca23b5c57e985dc0ade1f147a65546610a5bc8dc2d62",
+    "runtime.ts": "fc4f64aab3894f6e540204b6c045b0e74b549711585599fe144879fb65f5cefb",
+    "strings.ts": "eb6d5210faec12d6afa4fab570988beac1d98d2ec00ec6b97a3ebb9eed3aa6cb",
+    "symbols.ts": "e7eb9fe24f384aeb9f2fde7d3c4bdad634ab67cd129cf63fa14ac58fc70634a5",
+    "syntax.ts": "0aa405a9673f4fb72b33b5e6bb93ed6f65e429dbefa71273224d2b84a30bfa0d",
+    "typeof.ts": "351562610b28a9460d50d11fa8fffce5bc989f0438d1a18d553cc2731546e849"
+  },
+  "counts": {
+    "synthetic": 50,
+    "pinnedVariants": 8,
+    "riftParserObservations": 116,
+    "referenceCompilations": 58,
+    "metadataObservations": 6
+  },
+  "limitations": "Existing binaries; no rebuild/full guest/probe run; no admission or conformance claims"
+}

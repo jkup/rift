@@ -1776,6 +1776,29 @@ Coordinator acceptance (2026-11-02): accepted5b42393 after reviewing preparation
 
 ### TS-031C-P — Bounded syntax certification feasibility and design
 
-Status: **ready**. Design/audit only; prerequisite accepted TS-031B-B5b42393. Evaluate C01-C08 of docs/validation/ts-031b-p/matrix.md against actual whole-source lexer/parser behavior and pinned corpus S18-S22. Own docs/syntax-certification.md, reproducible research/audit files under docs/validation/ts-031c-p/, TASKS handoff. No production source, classifier, conformance policy/ledger, fixtures, toolchain, or companion edits. Coordinator owns COORDINATION.
+Status: **review needed**. Owner: Codex design chat `01a19ca7-a0ab-7fc2-8648-c1bcc97910ae`, base `c4c2488`, 2026-11-02. Design/audit only; prerequisite accepted TS-031B-B5b42393. Evaluate C01-C08 of docs/validation/ts-031b-p/matrix.md against actual whole-source lexer/parser behavior and pinned corpus S18-S22. Own docs/syntax-certification.md, reproducible research/audit files under docs/validation/ts-031c-p/, TASKS handoff. No production source, classifier, conformance policy/ledger, fixtures, toolchain, or companion edits. Coordinator owns COORDINATION.
 
 Determine whether any of the five reserved rules can be emitted soundly without claiming unsupported syntax was parsed. Use exact pinned ECMA-262 clauses and relevant engine source as evidence; distinguish strict Script, sloppy, function/block and Annex B contexts. Include assignment/destructuring/call-target ambiguity, late unsupported lex/grammar, genuine error plus unsupported tail, whole-source context and unedited source requirements. Preserve independence from expected-negative metadata. Reproduce current behavior and literal valid/invalid/unsupported neighbors in both existing Rift lanes where practical; label reference-engine checks as references. Recommend the smallest defensible implementation slice or explicitly conclude none is ready and identify a bounded prerequisite. Provide types/interface implications, ordered tasks, explicit non-goals and literal acceptance matrix sufficient for an agent; no implementation until independent design review. No conformance execution/admission/pass claim, no runtime expansion. Commit/push design then stop; no successor or main merge.
+
+TS-031C-P handoff (2026-11-02): docs/syntax-certification.md and
+validation/ts-031c-p/ audit C01-C08, all five reserved rules and exact pinned
+S18-S22. Conclusion: no rule ready to emit with current short-circuit parsing.
+Recommend a bounded non-emitting Script-return EOF coverage prerequisite, then
+separate independent review before return-only emission. Explicit types, ordered
+tasks, 29 future acceptance rows and exclusions; no successor started.
+
+Measured at coordinator tracking successor a814e18 (engine unchanged from
+accepted5b42393): 50 synthetic inputs plus8 verified pinned variants;116 existing
+Node/native parser observations and58 separately labelled V8 Script compilations
+all match literal expectations;6 real metadata-swap transport controls unchanged.
+No guest body/harness execution, conformance admission/classification/pass claim,
+or syntax-error emission. Exact clauses use ECMA-2622025; V8 source tag14.6.202.34
+and two Git blobs recorded. Current matrix and raw records are reproducible.
+
+Preservation audit proves src/test/tools/probes/config unchanged from5b42393 and
+fixtures/accepted companion files unchanged fromc4c2488; whitespace check passes.
+Existing binaries hashed, not rebuilt; full212/35/72/16 baseline remains inherited,
+not rerun. Windows x64 only. Material blocker: no complete structural evidence
+past an early parser rejection; strict/scope/target rules have additional gaps.
+Only owned docs/research/TASKS changed; coordinator a814e18 preserved. Commit/push
+and stop for independent review, no main merge or runtime implementation.
