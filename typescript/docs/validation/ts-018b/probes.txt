@@ -1,0 +1,14 @@
+
+> test:probes
+> node tools/run-probes.mjs
+
+PASS         control  (build 1399ms)
+PASS         dispatch  (build 1235ms)
+PASS         host  (build 1178ms)
+PASS         interpreter  (build 1226ms)
+PASS         memory  (build 1124ms)
+PASS         numbers  (build 1241ms)
+PASS         objects  (build 1197ms)
+PASS         strings  (build 1191ms)
+PASS         suspension  (build 1182ms)
+PASS         values  (build 1130ms)

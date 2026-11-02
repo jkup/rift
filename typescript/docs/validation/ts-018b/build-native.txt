@@ -1,0 +1,27 @@
+
+> build:native
+> node tools/build-native.mjs
+
+PASS src/cli.ts
+PASS test/realms.ts
+PASS test/object-descriptors.ts
+PASS test/object-prototypes.ts
+PASS test/object-keys.ts
+PASS test/conversion.ts
+PASS test/definition-dispatch.ts
+PASS test/array-storage.ts
+PASS test/array-like.ts
+PASS test/operation-context.ts
+PASS test/array-map.ts
+PASS test/array-literals.ts
+PASS test/property-key-conversion.ts
+PASS test/numeric-operators.ts
+PASS test/addition.ts
+PASS test/relational.ts
+PASS test/primitive-conversion.ts
+PASS test/operator-coercion.ts
+PASS test/key-coercion.ts
+PASS test/length-coercion.ts
+PASS test/array-length-coercion.ts
+PASS test/function-call.ts
+PASS test/object-valueof.ts

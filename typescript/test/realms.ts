@@ -134,9 +134,10 @@ for (const realm of [r1, r2]) {
     checkGraph(o.getPrototypeOf() === null && f.getPrototypeOf() === o && ar.getPrototypeOf() === o, "G1 graph");
     checkGraph(o.callable === null && f.callable !== null && ar instanceof GuestArray, "G1 root kinds");
     checkGraph(f.callable !== null && f.callable.realm === realm, "R1 root owner");
-    checkGraph(o.ownPropertyKeys().length === 0 && f.ownPropertyKeys().join(",") === "name,length,call" && ar.ownPropertyKeys().join(",") === "length", "G17 exact initial keys");
+    checkGraph(o.ownPropertyKeys().join(",") === "valueOf" && f.ownPropertyKeys().join(",") === "name,length,call" && ar.ownPropertyKeys().join(",") === "length", "G17 exact initial keys");
     for (const root of [o, f, ar]) {
-        for (const key of ["constructor", "toString", "valueOf", "join", "map"]) checkGraph(root.get(key).kind === "undefined", "G17 missing methods");
+        checkGraph(root.get("valueOf") === o.get("valueOf"), "G17 inherited valueOf");
+        for (const key of ["constructor", "toString", "join", "map"]) checkGraph(root.get(key).kind === "undefined", "G17 missing methods");
     }
     metadata(f, "", 0);
     for (const name of ["console", "Number"]) {
@@ -227,7 +228,7 @@ for (const name of ["object", "array", "declared"]) {
     r2.global.bindings.set(name, { initialized: true, mutable: true, value });
     checkGraph(graphBinding(r2, name) === value && sameValue(graphObject(value).get("x"), numberValue(7)), "G11 retained foreign identity/inheritance");
 }
-checkGraph(r2.createObject().get("x").kind === "undefined" && r2.objectPrototype.ownPropertyKeys().length === 0, "G11 independent root mutation");
+checkGraph(r2.createObject().get("x").kind === "undefined" && r2.objectPrototype.ownPropertyKeys().join(",") === "valueOf", "G11 independent root mutation");
 const foreignActive = new Evaluator(r2);
 const foreignContext = foreignActive.context;
 const retained = foreignActive.context.call(graphBinding(r1, "declared"), UNDEFINED, [], at);
@@ -269,13 +270,14 @@ for (const realm of [boxA, boxB]) {
     const roots: GuestObject[] = [realm.booleanPrototype, realm.numberPrototype, realm.stringPrototype];
     for (const root of roots) {
         checkGraph(root.getPrototypeOf() === realm.objectPrototype && root.callable === null && root.isExtensible(), "W1 root graph/flags");
-        for (const key of ["constructor", "valueOf", "toString"]) {
+        checkGraph(root.get("valueOf") === realm.objectPrototype.get("valueOf"), "W17 inherited Object valueOf");
+        for (const key of ["constructor", "toString"]) {
             checkGraph(root.get(key).kind === "undefined", "W17 missing wrapper methods");
         }
     }
     checkGraph(!realm.booleanPrototype.booleanData && 1 / realm.numberPrototype.numberData === Infinity && realm.stringPrototype.stringData === "", "W1 root payloads");
     checkGraph(realm.booleanPrototype.ownPropertyKeys().length === 0 && realm.numberPrototype.ownPropertyKeys().length === 0 && realm.stringPrototype.ownPropertyKeys().join(",") === "length", "W1 root keys");
-    checkGraph(realm.objectPrototype.ownPropertyKeys().length === 0 && realm.functionPrototype.ownPropertyKeys().join(",") === "name,length,call" && realm.arrayPrototype.ownPropertyKeys().join(",") === "length", "W1 original root keys");
+    checkGraph(realm.objectPrototype.ownPropertyKeys().join(",") === "valueOf" && realm.functionPrototype.ownPropertyKeys().join(",") === "name,length,call" && realm.arrayPrototype.ownPropertyKeys().join(",") === "length", "W1 original root keys");
     for (const name of ["Object", "Boolean", "String"]) checkGraph(!realm.global.bindings.has(name), "W17 no new globals");
     const namespace = graphObject(graphBinding(realm, "Number"));
     checkGraph(namespace !== realm.numberPrototype && namespace.getPrototypeOf() === realm.objectPrototype && namespace.callable === null, "W1 Number namespace preserved");

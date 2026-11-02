@@ -2,6 +2,7 @@ import { GuestArray } from "./array-object.js";
 import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value } from "./runtime.js";
 import { registerNumber } from "./builtins/number.js";
 import { registerFunction } from "./builtins/function.js";
+import { registerObjectValueOf } from "./builtins/object.js";
 import type { Stmt } from "./syntax.js";
 import { GuestBoolean, GuestNumber, GuestStringObject } from "./primitive-objects.js";
 import type { GuestString } from "./strings.js";
@@ -26,6 +27,7 @@ export class Realm {
         this.booleanPrototype = new GuestBoolean(false, this.objectPrototype);
         this.numberPrototype = new GuestNumber(0, this.objectPrototype);
         this.stringPrototype = new GuestStringObject("", this.objectPrototype);
+        registerObjectValueOf(this);
         registerFunction(this);
         this.global.bindings.set("undefined", { initialized: true, mutable: false, value: UNDEFINED });
         this.global.bindings.set("NaN", { initialized: true, mutable: false, value: { kind: "number", value: NaN } });

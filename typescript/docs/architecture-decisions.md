@@ -688,3 +688,27 @@ No source was copied. No implicit member/receiver boxing, constructors, globals,
 wrapper conversion methods or Object valueOf/toString are added. Direct primitive
 converters still reject wrappers; ordinary conversion requires explicit hooks.
 See [W1-W19 validation](validation/ts-018a/README.md).
+
+## Object.prototype.valueOf (TS-018B)
+
+Stage B adds the first production caller of ToObject in `builtins/object.ts`.
+`registerObjectValueOf` runs after all roots exist and uses `registerBuiltin`;
+the existing factory supplies metadata, Function root and defining Realm.
+The body propagates ToObject failure and wraps a successful object in a normal
+Value completion. Arguments are unused. Existing evaluator entry/finally controls
+Realm and depth, so borrowing B's method from A allocates primitive boxes in B
+without creating an evaluator or budget. No conversion logic or reference
+semantics changes are needed.
+
+This follows fixed [ECMA-262 2025 section 20.1.3.7](https://tc39.es/ecma262/2025/multipage/fundamental-objects.html#sec-object.prototype.valueof)
+and the separately inspected [engine262 ObjectProto_valueOf at d553e7b](https://github.com/engine262/engine262/blob/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/intrinsics/ObjectPrototype.mts).
+Both delegate to ToObject; no engine source was copied. Rift retains explicit
+completion/context plumbing instead of the reference engine's ambient machinery.
+
+Inherited valueOf returns an object, so ordinary coercion still fails when no
+explicit primitive-returning hook exists. Its call is real work and can exhaust
+call depth, between the existing two method lookup ticks. Null-root objects
+still have no methods. Stage A's direct converter, primitive reference, wrapper
+storage and strict receiver boundaries remain intact. Only O's initial own keys
+change to `[valueOf]`; all other roots keep their own keys and inherit this method.
+See [validation and migration audit](validation/ts-018b/README.md).

@@ -9,7 +9,7 @@ claim that all coercion cases are supported.
 |---|---|---|
 | Lexing | ASCII identifiers including `$`/`_`; decimal integer/fraction literals starting with a digit; single/double quoted UTF-16 strings; space/tab; CR/LF/CRLF/U+2028/U+2029 line boundaries; line/block comments | No identifier escapes/Unicode identifiers, radix/exponent/separator numbers, leading-zero integers, templates or regex. String escapes only quote, backslash, n/r/t. Raw U+2028/U+2029 are preserved inside strings; raw CR/LF are rejected. |
 | Literals/values | number, string, boolean, null; undefined/NaN/Infinity bindings; ordinary object/function identity | No bigint or symbol. NaN uses strict-equality semantics; console renders signed zero as `0`. |
-| Expressions | parentheses; + - * / % and unary +/-; < <= > >=, === !==, !; short-circuit &&/\|\|; assignment; conditional `test ? consequent : alternate` | Numeric operators use number-hint ordinary conversion; addition converts both operands with default hint before string/numeric selection. Relational operators convert in source order with number hint, compare two strings by UTF-16 code units, otherwise compare numbers with all NaN comparisons false. Own/inherited valueOf/toString methods work on ordinary objects, arrays and functions; absent methods fail because the prototype roots have no conversion methods. Both operand evaluations precede coercion. === !==, truthiness and Number predicates never coerce. Conditional precedence, selected-arm evaluation and existing bounds remain unchanged. No BigInt, symbols, loose equality, comma, bitwise, update, compound assignment, nullish coalescing or optional chaining. |
+| Expressions | parentheses; + - * / % and unary +/-; < <= > >=, === !==, !; short-circuit &&/\|\|; assignment; conditional `test ? consequent : alternate` | Numeric operators use number-hint ordinary conversion; addition converts both operands with default hint before string/numeric selection. Relational operators convert in source order with number hint, compare two strings by UTF-16 code units, otherwise compare numbers with all NaN comparisons false. Own/inherited valueOf/toString methods work on ordinary objects, arrays and functions; default conversion still fails: inherited Object valueOf returns the receiver and toString is absent. Both operand evaluations precede coercion. === !==, truthiness and Number predicates never coerce. Conditional precedence, selected-arm evaluation and existing bounds remain unchanged. No BigInt, symbols, loose equality, comma, bitwise, update, compound assignment, nullish coalescing or optional chaining. |
 | Statements | semicolon-terminated expressions and let; blocks, if/else, while, function declarations, return, throw, unlabelled break/continue, empty statement | Semicolons required; no ASI, var/const, for/do, switch, try/catch/finally or labels. Declarations as if/while bodies require braces. Return/throw expressions cannot start on a later line. |
 | Scope | Block lexical bindings, TDZ, mutable captured bindings, function hoisting in their declaration list, recursion, shadowing in nested blocks | One let binding per declaration. Duplicate names/parameters rejected, including function declarations sharing a parameter name. Global builtin names cannot be redeclared. Separate Script global environments and Annex B deferred. |
 | Functions | Declarations and anonymous expressions, simple parameters, left-to-right argument effects, missing args undefined/excess args evaluated, return/fallthrough, own properties | No named function expressions, arrows, rest/default/destructuring parameters, constructors, classes, argument objects, generators/async. Strict-call profile regardless of directives; detached and top-level this are undefined. |
@@ -71,8 +71,8 @@ The readable `test/fixtures/array-literals.js` also serves as a CLI example.
 Internal ordinaryToPrimitive and partial toPrimitive support explicit own or
 inherited callable valueOf/toString methods, original receivers, fresh fallback
 lookups and shared active evaluation budgets. A compiled test bridge exercises
-real guest methods; no guest intrinsic is registered. TS-012 connects the helper to existing numeric, addition and relational operators.
-TS-013 connects computed keys and required-context reference consumption. TS-014 connects array-like length and internal map. TS-015B connects semantic array length definitions through two separate number-hint conversions. Direct numeric/string converters and bootstrap array length remain primitive-only. Standard conversion methods, symbol hooks, Date/wrappers, accessors/proxies
+real guest methods; TS-018B later registers Object.prototype.valueOf. TS-012 connects the helper to existing numeric, addition and relational operators.
+TS-013 connects computed keys and required-context reference consumption. TS-014 connects array-like length and internal map. TS-015B connects semantic array length definitions through two separate number-hint conversions. Direct numeric/string converters and bootstrap array length remain primitive-only. Object.prototype.toString and wrapper conversion methods, symbol hooks, Date, accessors/proxies
 and full ToPrimitive remain unsupported. Evidence: [TS-011](validation/ts-011/README.md).
 
 TS-015A requires OperationContext on semantic Set/Define and replaces host setup
@@ -133,6 +133,20 @@ These are host/internal APIs. Primitive member access still fails, receivers sta
 unchanged, Number remains a noncallable namespace, and no wrapper globals,
 constructors or conversion methods are installed. Direct primitive converters
 still reject every object, and ordinary ToPrimitive still needs explicit hooks.
-Symbols, accessors, proxies and Object.valueOf/toString remain deferred. Keys and
+Symbols, accessors, proxies and Object.prototype.toString remain deferred; TS-018B below installs Object.prototype.valueOf. Keys and
 snapshots allocate proportional to string length; no huge-string resource claim
 is made. [Acceptance evidence and W1-W19 map](validation/ts-018a/README.md).
+
+### Object.prototype.valueOf (TS-018B)
+
+Every Realm installs one fresh `valueOf` method on its Object root. Calling it
+returns an object receiver unchanged or explicitly boxes a supported primitive
+in the method's defining Realm; null/undefined throw a located TypeError. Extra
+arguments are ignored after ordinary call-site evaluation. Saved and borrowed
+methods use existing call context, Realm restoration and shared budgets.
+Default ordinary coercion still fails: inherited valueOf returns an object, and
+toString is absent. The new inherited call counts against call depth; it adds
+no synthetic ticks. Primitive member access and direct primitive converters keep
+their existing rejection boundaries. No Object global, wrapper conversion
+methods, constructors, implicit boxing, toString or symbols are introduced.
+[V1-V8 evidence and expectation audit](validation/ts-018b/README.md).
