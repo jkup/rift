@@ -1551,8 +1551,31 @@ Coordinator acceptance: TS-029A accepted5169978 (delivery noteb8d0a64), 2026-11-
 
 ### TS-030P — Arithmetic compound assignment design
 
-Status: **ready**. Prerequisite accepted TS-029A5169978. Design only for +=, -=, *=, /= and %=, reusing existing binary semantics and Reference/GetValue/PutValue. Own docs/compound-assignment.md, docs/validation/ts-030p/ and TASKS claim/handoff; coordinator owns COORDINATION.md; Claude work reserved.
+Status: **review needed**. Owner: sole Codex design chat `01a19ba2-6311-7151-a25c-ae793e03d320`, existing `codex/primitive-computed-keys`, dispatch/inspection base `fae6ef9` (2026-11-02). Prerequisite accepted TS-029A5169978. Design only for +=, -=, *=, /= and %=, reusing existing binary semantics and Reference/GetValue/PutValue. Own docs/compound-assignment.md, docs/validation/ts-030p/ and TASKS claim/handoff; coordinator owns COORDINATION.md; Claude work reserved.
 
 Inspect lexer longest-match rejection, parser assignment precedence/right associativity/target validation, AST representation and evaluator binary helpers. Freeze smallest readable extension: capture one reference, GetValue before RHS, evaluate RHS once, apply existing operator semantics, PutValue once, return resulting Value. Never desugar by duplicating the target; successful key memoization must suppress repeated hooks. Preserve += default-hint/string behavior versus numeric conversion for others, original base/value capture, coercion ordering and abrupt/host-fault/Realm cleanup. Consult fixed2025 specification and revision-pinned engine evidence. Explicitly handle TDZ/unresolvable/immutable bindings, primitive writes, readonly properties and Array definition effects. Determine exact source/error locations and guard charges; no fabricated extra AST evaluation ticks.
 
 Deliver named literal matrices for each operator, strings/NaN/infinities/signed zero/symbol errors, RHS mutation/rebinding, key/conversion hooks, competing Get/RHS/coercion/Set failures, associativity/conditional integration and invalid targets. Include exact small budgets, actual native default64 recursion and precise existing rejection migrations. Preserve203 baseline names/31 gates, explaining unavoidable obsolete fixture source migrations while retaining parse-before-effects coverage through still-unsupported syntax. Historical evidence stays immutable. Exclude update operators, logical assignments, exponentiation/bitwise/shift assignments, new binary operators, parser unrelated expansion, implementation/pins/C++/Claude edits, branch switch/main merge and successor. Probes only for concrete uncertainty. Commit/push design and stop for independent review.
+
+TS-030P handoff (2026-11-02): docs/compound-assignment.md freezes a separate
+compound Expr for exactly five arithmetic assignments, one reference/Get before
+RHS/binary/Put, existing successful key caching and original Receiver, no synthetic
+AST/tick or helper semantic change. Fixed2025 and two revision-pinned engine262
+files inspected; source/blob provenance recorded.
+
+Evidence: docs/validation/ts-030p/ has178 named literal semantic, parse, location,
+resource and cleanup rows plus explicit five-operator/other variants. Covers
+captured Values/keys, binding failures, primitive/readonly/Array writes, foreign
+Realm and host faults. Derived native default64 key recursion261/325 differs
+from operand recursion326/390; identifier RHS callee costs no extra tick.
+Eight migration entries identify all obsolete sites: preserve203 baseline case
+names/31 gates, only two top-level parse expected-record changes, two exact
+fixture source changes to still-unsupported **=, and three host-row migrations.
+Historical evidence immutable; no existing source/test/helper edits made.
+
+check.mjs PASS:141-file/161-candidate inventory reproduced,178 contiguous unique
+row IDs and local links. Diff whitespace checked. No runtime/probe/build/coverage
+run or new support claim; baseline5169978 remains previously independently
+accepted203/203 per host/31 gates. Native implementation evidence remains pending.
+Commit/push coherent design on existing branch then stop for independent review;
+no self-acceptance, COORDINATION/Claude edits, main merge or successor.
