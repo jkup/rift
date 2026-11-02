@@ -702,3 +702,7 @@ Designer active, saved cursor2081f43a-25d9-4a72-9a2b-35c4bf7d94d9:2. Reviewing c
 Acceptedfe167f6 after full design/evidence/source review and parallel independent mathematical review (no blocking interval/scale/minimum-k/selector/resource-bound error). Reproduced13350 selector matches24 literal vectors and corpus SHA2569102f9fe83fc37b2b883a55e29c9ec173e4c0d54118eaf96113a166702dc1c6d. Normative ECMA-2622025 rounding/Note2 checked. Paper byte-level hash remains unverified and clearly disclosed; derived equations reviewed independently. No production/native/resource claim. Designer idle cursor2081f43a-25d9-4a72-9a2b-35c4bf7d94d9:3. TS-032A backend-only contract frozen; no method registration until separate acceptance. CL006 remains ready/unclaimed for Claude, no duplicate assignment. Main unchanged78811ec.
 
 Acceptance/next contract pushed9c39011. Active sole TS-032A writer chat `01a19d08-c2e8-7300-a0a1-2f7869186600`, hostlocal, base9c39011; explicit wait confirmed active, saved cursor9837901c-d18f-4f49-aa7c-5b194d9901fd:1. Backend-only; preserve CL006 ownership, no builtin integration before acceptance.
+
+## TS-032A progress — 2026-11-02 16:23 heartbeat
+
+Writer active, saved cursor9837901c-d18f-4f49-aa7c-5b194d9901fd:2. Reports full212/212 Node/native and36 old static gates plus backend gate passing; finishing probes, timing/RSS, decimal preservation and failure/limitation evidence. Claims not independently accepted. No competing builds/edits or successor; CL006 remains Claude-owned. Await coherent handoff before numerical implementation review.
