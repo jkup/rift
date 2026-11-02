@@ -143,3 +143,19 @@ The initial Zig sandbox installation-access failure is retained separately from
 the successful authorized run. [P1-P9 evidence and exact budget migrations](validation/ts-019b1/README.md).
 No Symbol methods/global/registry, tag consumer, accessor or implicit boxing
 support is implied; this is the frozen B1 protocol only.
+
+## Typeof and void integration (TS-026A, 2026-11-02)
+
+The pure Value classifier and guarded optional unresolved-identifier evaluation
+compile with the pinned toolchain. Both measured evaluator overrides explicitly
+forward the flag. Rebuilt Node/native182/182 each pass; all28 static-only builds
+and separate parsed coverage gates pass (CLI1519, typeof-void2039, delete2295;
+zero dynamic). Runner20/20 and probes10/10 pass. Baseline177cases/27gates remain.
+Native actual default64 host/guest key recursion returns guest call-limit errors
+at326/390 steps with restored state. No production workaround was needed.
+
+A reduced inferred-never throwing callback in test setup produced one dynamic
+adapter; declaring its Completion return type preserves the test's host throw
+and removes the adapter. The minimal before/after reduction and failed attempts
+are retained alongside the final evidence in [TS-026A](validation/ts-026a/README.md).
+This is bounded Windows x64 evidence; no new platform or performance claim.

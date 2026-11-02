@@ -1319,8 +1319,29 @@ Coordinator acceptance: TS-026P accepted3192a7e on 2026-11-02. Reviewed complete
 
 ### TS-026A — Typeof and void implementation
 
-Status: **ready**. Owner: next assigned Codex implementation chat, existing codex/primitive-computed-keys. Prerequisite accepted TS-026P3192a7e. Implement docs/typeof-void.md and all named V1-V17/B1-B20/E1-E24/P1-P26/R1-R25/C1-C8 rows and variants. Own src/typeof.ts, minimal parser/evaluator integration, test/typeof-void.ts and runtime-read fixtures, required runner/native registration, precise delete-test migrations and scope/evidence/task updates. Coordinator owns COORDINATION.md; Claude outputs reserved.
+Status: **review needed**. Owner: assigned Codex TS-026A sole implementation chat, dispatch base `01c2ab8`, existing codex/primitive-computed-keys (2026-11-02). Prerequisite accepted TS-026P3192a7e. Implement docs/typeof-void.md and all named V1-V17/B1-B20/E1-E24/P1-P26/R1-R25/C1-C8 rows and variants. Own src/typeof.ts, minimal parser/evaluator integration, test/typeof-void.ts and runtime-read fixtures, required runner/native registration, precise delete-test migrations and scope/evidence/task updates. Coordinator owns COORDINATION.md; Claude outputs reserved.
 
 Keep pure exhaustive classification and localized direct-identifier unresolved exception inside existing evaluate guards. No swallowing ReferenceError, flag propagation into children, coercion, broad scope/reference changes or boxing expansion. Preserve abrupt identity, TDZ, callable-slot classification, no hooks during classification, source spans and unrelated unary paths. Audit evaluate overrides and forward the new optional flag explicitly, including delete test MeasuredEvaluator; test missing/TDZ identifiers through measured evaluators so instrumentation cannot drop semantics. Use named readable scenarios/braced control flow from the start.
 
 Require literal values/traces/locations, exact resource boundaries, runtime-read tests, native actual default64 recursive host/guest key hooks, Realm/host-fault cleanup and monotonic budgets. Preserve177 cases/27 gates, migrating only named current typeof/void rejections while retaining history. Run typecheck, runner/probes, full rebuilt Node/native, all static-only builds AND separately parsed coverage gates. Retain failures/reductions before workarounds; report contradictory oracles before adjustment. No pins, C++, Claude edits, branch switching/main merge or successor. Commit/push tested milestone and stop for independent review.
+
+TS-026A handoff (2026-11-02): pure exhaustive typeof classification and bounded
+parser/evaluator integration implemented. Direct unresolved identifiers retain
+all evaluate guards; TDZ and nested references are ordinary failures. Void
+obtains its operand Value exactly once without coercion. Evaluate overrides,
+including delete MeasuredEvaluator, explicitly forward the optional flag and
+have missing/TDZ/guard regressions. Complete120-row named mapping, runtime-read
+fixtures, exact effects/locations/resources and native actual default64 host and
+guest recursion (326/390 ticks) are retained.
+
+Typecheck PASS; runner20/20; probes10/10; final rebuilt Node/native182/182 each,
+no skips. All28 static-only builds and separate parsed coverage gates PASS
+(CLI1519, typeof-void2039, delete2295; zero dynamic). Independent inventory
+preserves all177 prior case names/expected records and27 gate entries. Only
+current delete P23/P24 rejection expectations migrated; history and all other
+assertions retained. Initial Zig access failure and inferred-never callback
+adapter reductions are retained. Explicit test callback Completion annotations
+remove dynamic adaptation; no production workaround, pin/gate change or frozen
+semantic oracle adjustment. Windows x64 and represented Value subset only.
+Evidence: docs/validation/ts-026a/README.md. Commit/push tested milestone and stop
+for independent coordinator review; no self-acceptance or successor work.

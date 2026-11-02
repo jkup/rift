@@ -1,6 +1,6 @@
 # Typeof and void: bounded design (TS-026P)
 
-Design for review, 2026-11-02; not implemented. Dispatch base `b856f28`,
+Accepted design, 2026-11-02; TS-026A implementation is awaiting independent review. Dispatch base `b856f28`,
 accepted runtime through `27e5b27`: 177 cases in each host, 27 native gates.
 [Named acceptance matrices](validation/ts-026p/matrix.md) and
 [sources, migration inventory and validation limits](validation/ts-026p/README.md)
@@ -115,3 +115,13 @@ chains, scope overhaul, sloppy-delete, full strict Scripts, new unary operators,
 general implicit boxing, source normalization, formatter support or pin changes.
 No production or integrated tests are changed in this design task. No probe is
 justified by the already demonstrated boolean parameter, switch and Value paths.
+
+## TS-026A implementation
+
+Implemented for independent review on 2026-11-02. The frozen design above and
+its acceptance matrix remain unchanged. `src/typeof.ts` performs the pure
+classification; `Evaluator.evaluate` owns the guarded optional
+`allowUnresolvable` exception. All evaluate overrides explicitly forward it.
+The delete driver's only expectation migrations are P23/P24, now tested for
+initialized, missing and TDZ bindings through its measured evaluator.
+[Evidence and complete named matrix mapping](validation/ts-026a/README.md).

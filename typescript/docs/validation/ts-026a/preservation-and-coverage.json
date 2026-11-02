@@ -1,0 +1,199 @@
+{
+  "gates": [
+    {
+      "entry": "src/cli.ts",
+      "verdict": "PASS",
+      "staticStatements": 1519,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/realms.ts",
+      "verdict": "PASS",
+      "staticStatements": 1866,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-descriptors.ts",
+      "verdict": "PASS",
+      "staticStatements": 1311,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-prototypes.ts",
+      "verdict": "PASS",
+      "staticStatements": 1631,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-keys.ts",
+      "verdict": "PASS",
+      "staticStatements": 1316,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 853,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/definition-dispatch.ts",
+      "verdict": "PASS",
+      "staticStatements": 1657,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-storage.ts",
+      "verdict": "PASS",
+      "staticStatements": 1799,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-like.ts",
+      "verdict": "PASS",
+      "staticStatements": 1269,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/operation-context.ts",
+      "verdict": "PASS",
+      "staticStatements": 1839,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-map.ts",
+      "verdict": "PASS",
+      "staticStatements": 1985,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-literals.ts",
+      "verdict": "PASS",
+      "staticStatements": 1570,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/property-key-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1830,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/numeric-operators.ts",
+      "verdict": "PASS",
+      "staticStatements": 1603,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/addition.ts",
+      "verdict": "PASS",
+      "staticStatements": 1617,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/relational.ts",
+      "verdict": "PASS",
+      "staticStatements": 1648,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/primitive-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 2013,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/operator-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1650,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/key-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1667,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/length-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1790,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-length-coercion.ts",
+      "verdict": "PASS",
+      "staticStatements": 2010,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/function-call.ts",
+      "verdict": "PASS",
+      "staticStatements": 1689,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-valueof.ts",
+      "verdict": "PASS",
+      "staticStatements": 2802,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-string-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 2016,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/function-string-conversion.ts",
+      "verdict": "PASS",
+      "staticStatements": 1832,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/abstract-equality.ts",
+      "verdict": "PASS",
+      "staticStatements": 1918,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/delete-operator.ts",
+      "verdict": "PASS",
+      "staticStatements": 2295,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/typeof-void.ts",
+      "verdict": "PASS",
+      "staticStatements": 2039,
+      "dynamic": 0
+    }
+  ],
+  "baselineGatesPreserved": 27,
+  "lanes": [
+    {
+      "lane": "node",
+      "passed": 182,
+      "baselinePreserved": 177,
+      "added": [
+        "build/guest-fixtures/typeof-void-success.js",
+        "build/guest-fixtures/typeof-operand.js",
+        "build/guest-fixtures/void-missing.js",
+        "build/guest-fixtures/typeof-tdz.js",
+        "typeof-void"
+      ]
+    },
+    {
+      "lane": "native",
+      "passed": 182,
+      "baselinePreserved": 177,
+      "added": [
+        "build/guest-fixtures/typeof-void-success.js",
+        "build/guest-fixtures/typeof-operand.js",
+        "build/guest-fixtures/void-missing.js",
+        "build/guest-fixtures/typeof-tdz.js",
+        "typeof-void"
+      ]
+    }
+  ]
+}

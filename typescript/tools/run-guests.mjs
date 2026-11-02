@@ -60,6 +60,10 @@ function lineCase(name, source, expected) {
     writeFileSync(join(root, file), source);
     cases.push({ file, ...expected });
 }
+lineCase("typeof-void-success", "console.log(typeof missing, typeof null, void 0);", { stdout: "undefined object undefined\n" });
+lineCase("typeof-operand", "typeof;", { status: 2, error: "1:7: parse SyntaxError: unsupported or unexpected syntax: ;" });
+lineCase("void-missing", "void missing;", { status: 1, error: "1:6: runtime ReferenceError: missing is not defined" });
+lineCase("typeof-tdz", "typeof x; let x;", { status: 1, error: "1:8: runtime ReferenceError: x is not initialized" });
 lineCase("numeric-key", "let o={}; o[1]=2; console.log(o[1], o['1']);", { stdout: "2 2\n" });
 // Array literal parser boundaries retain exact phases and located diagnostics.
 for (const [name, source, expected] of [
@@ -254,6 +258,9 @@ execute("function-string-conversion", functionStringCommand, functionStringArgs,
 const deleteCommand = lane === "node" ? process.execPath : join(root, "build/native/delete-operator" + suffix);
 const deleteArgs = lane === "node" ? [join(root, "build/node/test/delete-operator.js")] : [];
 execute("delete-operator", deleteCommand, deleteArgs, { stdout: "delete-operator ok\n" });
+const typeofCommand = lane === "node" ? process.execPath : join(root, "build/native/typeof-void" + suffix);
+const typeofArgs = lane === "node" ? [join(root, "build/node/test/typeof-void.js")] : [];
+execute("typeof-void", typeofCommand, typeofArgs, { stdout: "typeof-void ok\n" });
 const equalityCommand = lane === "node" ? process.execPath : join(root, "build/native/abstract-equality" + suffix);
 const equalityArgs = lane === "node" ? [join(root, "build/node/test/abstract-equality.js")] : [];
 execute("abstract-equality", equalityCommand, equalityArgs, { stdout: "abstract-equality ok\n" });

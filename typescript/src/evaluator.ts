@@ -5,6 +5,7 @@ import { stringConcat, stringCompare } from "./strings.js";
 import { GuestArray } from "./array-object.js";
 import { isLooselyEqual } from "./abstract-equality.js";
 import { deleteReference } from "./delete-reference.js";
+import { typeOfValue } from "./typeof.js";
 import { toPrimitive } from "./primitive-conversion.js";
 import { toNumber, toString } from "./conversion.js";
 
@@ -120,7 +121,7 @@ export class Evaluator {
         }
         throw new Error("parser admitted a non-reference target");
     }
-    evaluate(expr: Expr, env: Environment, receiver: Value): Completion {
+    evaluate(expr: Expr, env: Environment, receiver: Value, allowUnresolvable = false): Completion {
         const budget = this.tick(expr.loc);
         if (budget.type !== "normal") return budget;
         if (++this.depth > 256) {
@@ -128,6 +129,18 @@ export class Evaluator {
             return failure("RangeError", "evaluation nesting limit exceeded", expr.loc);
         }
         try {
+            // Only the direct typeof identifier may bypass GetValue, and only
+            // when resolution found no binding. TDZ and resource guards remain.
+            if (allowUnresolvable && expr.kind === "identifier") {
+                const ref = this.reference(expr, env, receiver);
+                if (ref.type === "abrupt") {
+                    return ref.completion;
+                }
+                if (ref.reference.kind === "binding" && ref.reference.environment === null) {
+                    return normal();
+                }
+                return getValue(ref.reference, this.context, expr.loc);
+            }
             return this.expression(expr, env, receiver);
         } finally {
             this.depth--;
@@ -219,8 +232,14 @@ export class Evaluator {
                     const value = this.evaluate(expr.operand, env, receiver);
                     return value.type === "normal" ? normal({ kind: "boolean", value: true }) : value;
                 }
-                const result = this.evaluate(expr.operand, env, receiver);
+                const result = this.evaluate(expr.operand, env, receiver, expr.op === "typeof");
                 if (result.type !== "normal") return result;
+                if (expr.op === "typeof") {
+                    return normal({ kind: "string", value: typeOfValue(result.value) });
+                }
+                if (expr.op === "void") {
+                    return normal();
+                }
                 if (expr.op === "!") return normal({ kind: "boolean", value: !truthy(result.value) });
                 const primitive = toPrimitive(result.value, "number", this.context, expr.loc);
                 if (primitive.type === "throw") return primitive;

@@ -29,9 +29,10 @@ class MeasuredEvaluator extends Evaluator {
         expr: import("../src/syntax.js").Expr,
         env: import("../src/runtime.js").Environment,
         receiver: Value,
+        allowUnresolvable = false,
     ): Completion {
         this.peakDepth = Math.max(this.peakDepth, this.depth + 1);
-        return super.evaluate(expr, env, receiver);
+        return super.evaluate(expr, env, receiver, allowUnresolvable);
     }
     call(callee: Value, receiver: Value, args: Value[], at: Location): ValueCompletion {
         if (
@@ -125,13 +126,11 @@ const badSources = [
     "delete o.x = 1;",
     "delete;",
     "let delete = 1;",
-    "delete typeof x;",
-    "delete void x;",
     "delete super.x;",
     "delete (o.x, o.y);",
     "delete " + "(".repeat(127) + "1" + ")".repeat(127) + ";",
 ];
-const columns = [1, 1, 11, 14, 17, 15, 1, 7, 5, 8, 8, 8, 12, 134];
+const columns = [1, 1, 11, 14, 17, 15, 1, 7, 5, 8, 12, 134];
 const messages = [
     "delete of an identifier is not allowed",
     "delete of an identifier is not allowed",
@@ -142,8 +141,6 @@ const messages = [
     "invalid assignment target",
     "unsupported or unexpected syntax: ;",
     "expected binding identifier",
-    "unsupported or unexpected syntax: typeof",
-    "unsupported or unexpected syntax: void",
     "unsupported or unexpected syntax: super",
     "expected ')', found ','",
     "syntax nesting limit exceeded",
@@ -1480,4 +1477,27 @@ for (const method of [ConversionMethod.Canonical, ConversionMethod.ToString, Con
     expect(helper(e, o(a.createObject()), s("x")));
     check(e.steps === 1, "R21 subsequent remaining budget");
 }
+
+
+// TS-026A C5: migrate only P23/P24; instrumentation forwards typeof mode.
+for (const source of ["delete typeof x;", "delete void x;"]) {
+    const realm = new Realm((_line) => {});
+    const measured = new MeasuredEvaluator(realm);
+    bind(realm, "x", n(7));
+    expect(run(measured, source));
+    check(realm.global.bindings.get("x")!.value.kind === "number", "C5 binding retained");
+}
+{
+    const realm = new Realm((_line) => {});
+    const measured = new MeasuredEvaluator(realm);
+    expect(run(measured, "delete typeof x;"));
+    error(run(measured, "delete void x;"), "x is not defined", 1, 13);
+    realm.global.bindings.set("x", { initialized: false, mutable: true, value: U });
+    error(run(measured, "typeof x;"), "x is not initialized", 1, 8);
+    check(measured.calls === 0 && measured.depth === 0, "C5 measured cleanup");
+    const guarded = new MeasuredEvaluator(realm, 2);
+    error(run(guarded, "typeof x;"), "execution step limit exceeded", 1, 8);
+    check(guarded.steps === 3 && guarded.depth === 0, "C5 measured guards");
+}
+
 console.log("delete-operator ok");
