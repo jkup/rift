@@ -1,0 +1,84 @@
+109 files inspected; 83 candidate lines.
+docs/architecture-decisions.md:819:## Abstract equality (TS-024A, pending independent review)
+docs/feature-inventory.md:12:| Expressions | parentheses; + - * / % and unary +/-; < <= > >=, == != === !==, !; short-circuit &&/\|\|; assignment; conditional `test ? consequent : alternate` | Numeric operators use number-hint ordinary conversion; addition converts both operands with default hint before string/numeric selection. Relational operators convert in source order with number hint, compare two strings by UTF-16 code units, otherwise compare numbers with all NaN comparisons false. Own/inherited valueOf/toString methods work on ordinary objects, arrays and functions; default ordinary objects convert through inherited Object valueOf/toString to [object Object] (numeric NaN). Boolean/String wrappers use their standard payload methods. Number wrappers return numeric payloads for default/number hints and inherited tag strings for string hints. Arrays convert through join; functions convert to exact retained source or the native form. Both operand evaluations precede coercion. === !==, truthiness and Number predicates never coerce. Conditional precedence, selected-arm evaluation and existing bounds remain unchanged. Abstract equality selectively converts at most one object with the default hint; nullish/object and object/object comparisons never coerce. No BigInt, comma, bitwise, update, compound assignment, nullish coalescing or optional chaining. |
+src/evaluator.ts:311:        if (op === "==" || op === "!=") {
+src/evaluator.ts:316:            return normal({ kind: "boolean", value: op === "!=" ? !result.value : result.value });
+src/lexer.ts:106:        } else if (two === "==" || two === "!=" || two === "<=" || two === ">=" || two === "&&" || two === "||") {
+src/parser.ts:157:        if (op === "===" || op === "!==" || op === "==" || op === "!=") return 5;
+test/abstract-equality.ts:50:    const result = e.binary(mode === 1 ? "==" : "!=", x, y, loc);
+test/abstract-equality.ts:359:    for (const op of ["==", "!="]) {
+test/abstract-equality.ts:377:        const result = evaluate(e, effectSources[op === "==" ? 0 : 1]);
+test/abstract-equality.ts:384:for (const kind of ["primitive", "protocol", "ordinary"]) for (const op of ["==", "!="]) {
+test/abstract-equality.ts:398:        if (budget === cost) check(result.type === "normal" && sameValue(result.value, b(op === "==")), "R15-17 success");
+test/abstract-equality.ts:404:const nested = parse("(".repeat(129) + "1 == 1" + ")".repeat(129) + ";");
+test/abstract-equality.ts:407:for (const op of ["==", "!="]) {
+test/abstract-equality.ts:421:for (const op of ["==", "!="]) {
+test/abstract-equality.ts:425:    const parsed = parse(readFileSync("test/fixtures/abstract-equality-recursion.js", "utf8").replaceAll("==", op));
+test/abstract-equality.ts:435:    ["1 == '1';", b(true)], ["1 != '1';", b(false)], ["1 === '1';", b(false)], ["1 !== '1';", b(true)],
+test/abstract-equality.ts:436:    ["1 == 1 == true;", b(true)], ["0 == 0 !== false;", b(true)], ["1 + 1 == 2 < 3;", b(false)],
+test/abstract-equality.ts:437:    ["false == 0 && true;", b(true)], ["true || missing == 0;", b(true)],
+test/abstract-equality.ts:438:    ["0 == false ? 7 : missing;", n(7)], ["!0 == true;", b(true)], ["1/*a*/==/*b*/'1';", b(true)], ["1 != !0;", b(false)],
+test/abstract-equality.ts:445:    ["1 == 1 == true;", "==", "==", ""], ["0 == 0 !== false;", "!==", "==", ""],
+test/abstract-equality.ts:446:    ["1 + 1 == 2 < 3;", "==", "+", "<"], ["false == 0 && true;", "&&", "==", ""],
+test/abstract-equality.ts:447:    ["true || missing == 0;", "||", "", "=="],
+test/abstract-equality.ts:459:for (const op of ["===", "!==", "==", "!="]) {
+test/abstract-equality.ts:463:const commentToken = lex("1/*a*/==/*b*/'1';").tokens[1];
+test/abstract-equality.ts:466:    ["1 ==;", "unsupported or unexpected syntax: ;", 5], ["1 !=;", "unsupported or unexpected syntax: ;", 5],
+test/abstract-equality.ts:468:    ["1 = = 1;", "unsupported or unexpected syntax: =", 5], ["1 == 1 = 2;", "invalid assignment target", 1],
+test/abstract-equality.ts:469:    ["1 == 1, 2;", "expected ';', found ','", 7], ["1 += 1;", "unsupported operator: +=", 3],
+test/abstract-equality.ts:471:    ["1 << 1;", "unsupported operator: <<", 3], ["1 == == 1;", "unsupported or unexpected syntax: ==", 6],
+test/abstract-equality.ts:541:const conditional = parse("0 == false ? 7 : missing;").body[0];
+test/abstract-equality.ts:543:    && conditional.expression.test.kind === "binary" && conditional.expression.test.op === "==", "P8 AST");
+test/abstract-equality.ts:544:const assignment = parse("x = 0 == false;").body[0];
+test/abstract-equality.ts:546:    && assignment.expression.value.kind === "binary" && assignment.expression.value.op === "==", "P9 AST");
+test/abstract-equality.ts:547:const unary = parse("!0 == true;").body[0];
+test/abstract-equality.ts:551:for (const op of ["==", "!="]) {
+test/array-string-conversion.ts:588:const equality = parse("let empty = []; if (!(empty == 0)) throw 'C2'; if (empty != 0) throw 'C2';");
+test/fixtures/abstract-equality-effects.js:1:L() == R();
+test/fixtures/abstract-equality-effects.js:2:L() != R();
+test/fixtures/abstract-equality-pairs.js:1:x == y;
+test/fixtures/abstract-equality-pairs.js:2:x != y;
+test/fixtures/abstract-equality-recursion.js:2:    return o == 1;
+test/fixtures/abstract-equality-recursion.js:4:o == 1;
+test/fixtures/abstract-equality.js:6:    check((x == y) === answer);
+test/fixtures/abstract-equality.js:7:    check((y == x) === answer);
+test/fixtures/abstract-equality.js:8:    check((x != y) === !answer);
+test/fixtures/abstract-equality.js:9:    check((y != x) === !answer);
+test/fixtures/abstract-equality.js:31:check(1 == '1');
+test/fixtures/abstract-equality.js:32:check(!(1 != '1'));
+test/fixtures/abstract-equality.js:35:check(1 == 1 == true);
+test/fixtures/abstract-equality.js:36:check(0 == 0 !== false);
+test/fixtures/abstract-equality.js:37:check(!(1 + 1 == 2 < 3));
+test/fixtures/abstract-equality.js:38:check(false == 0 && true);
+test/fixtures/abstract-equality.js:39:check(true || missing == 0);
+test/fixtures/abstract-equality.js:40:check((0 == false ? 7 : missing) === 7);
+test/fixtures/abstract-equality.js:42:assigned = 0 == false;
+test/fixtures/abstract-equality.js:44:check(!0 == true);
+test/fixtures/abstract-equality.js:45:check(1/*a*/==/*b*/'1');
+test/fixtures/abstract-equality.js:46:check(!(1 != !0));
+test/fixtures/abstract-equality.js:70:check(leftObject() == rightNumber());
+test/fixtures/abstract-equality.js:73:check(!(leftObject() != rightNumber()));
+test/fixtures/abstract-equality.js:76:check(leftNumber() == rightObject());
+test/fixtures/abstract-equality.js:79:check(!(leftNumber() != rightObject()));
+test/fixtures/abstract-equality.js:91:check(leftObject() == replace());
+test/fixtures/abstract-equality.js:94:check(!(leftObject() != replace()));
+test/fixtures/abstract-equality.js:103:check(captured == changeBinding());
+test/fixtures/abstract-equality.js:107:check(!(captured != changeBinding()));
+test/fixtures/abstract-equality.js:116:check(leftObject() == rebind());
+test/fixtures/abstract-equality.js:120:check(!(leftObject() != rebind()));
+test/fixtures/abstract-equality.js:135:check(container[key] == rightNumber());
+test/fixtures/abstract-equality.js:138:check(!(container[key] != rightNumber()));
+test/fixtures/abstract-equality.js:141:check(leftNumber() == container[key]);
+test/fixtures/abstract-equality.js:144:check(!(leftNumber() != container[key]));
+test/fixtures/abstract-equality.js:157:check(replaceLeft() == rightObject());
+test/fixtures/abstract-equality.js:160:check(!(replaceLeft() != rightObject()));
+test/fixtures/abstract-equality.js:164:check(!(changeBinding() == captured));
+test/fixtures/abstract-equality.js:168:check(changeBinding() != captured);
+test/fixtures/abstract-equality.js:177:check(!(rebindLeft() == rightObject()));
+test/fixtures/abstract-equality.js:181:check(rebindLeft() != rightObject());
+test/fixtures/array-string-conversion.js:14:check(empty == 0);
+test/fixtures/array-string-conversion.js:15:check(!(empty != 0));
+tools/probe-verdict.mjs:4:    return result != null && result.error == null && result.signal == null
+tools/run-guests.mjs:145:for (const op of ["==", "!="]) {
+tools/run-guests.mjs:146:    lineCase("equality-typeerror-" + (op === "==" ? "equal" : "unequal"),
+tools/run-guests.mjs:150:    lineCase("equality-syntax-" + (op === "==" ? "equal" : "unequal"), "1 " + op + ";", {

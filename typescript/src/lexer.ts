@@ -101,9 +101,9 @@ export function lex(source: string): LexResult {
             advance();
             advance();
             tokens.push({ kind: "punct", text: three, loc, start, end: i });
-        } else if (["++", "--", "==", "!=", "=>", "+=", "-=", "*=", "/=", "%=", "**", "<<", ">>", "?."].includes(two)) {
+        } else if (["++", "--", "=>", "+=", "-=", "*=", "/=", "%=", "**", "<<", ">>", "?."].includes(two)) {
             fail("unsupported operator: " + two, loc);
-        } else if (two === "<=" || two === ">=" || two === "&&" || two === "||") {
+        } else if (two === "==" || two === "!=" || two === "<=" || two === ">=" || two === "&&" || two === "||") {
             advance();
             advance();
             tokens.push({ kind: "punct", text: two, loc, start, end: i });

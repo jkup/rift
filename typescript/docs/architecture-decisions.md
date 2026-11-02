@@ -779,11 +779,11 @@ new accessor/proxy, constructor/species, implicit member boxing, Array method or
 Number formatting support. Array's former default tag conversion is superseded;
 explicit Object.toString Array tags and Function/Number stage controls remain.
 
-The frozen consumer matrix has two pre-existing syntax gaps: abstract equality
-(`==`) and guest `delete` remain rejected. C2's equality expectation cannot be
-accepted within this task's scope; C3 deletion is covered only through the
-existing internal interface after effectful key conversion. These are retained
-review exceptions, not passing conformance claims. See the [matrix, migrations
+At TS-022A acceptance the frozen consumer matrix had two syntax gaps: abstract
+equality and guest delete. TS-024A now implements C2 equality; its original
+rejection transcript remains historical evidence. C3 guest delete is still
+rejected and covered only through the existing internal interface after
+effectful key conversion. See the [matrix, migrations
 and evidence](validation/ts-022a/README.md).
 
 ## Function source and string conversion (TS-023A, pending independent review)
@@ -814,3 +814,22 @@ per input by the existing 100000-unit limit, not by an aggregate heap quota.
 The accepted [design](function-string-conversion.md) supplies normative and pinned
 engine evidence. [Implementation matrix and validation](validation/ts-023a/README.md)
 record both host lanes, migrations, and the test-only compiler reduction.
+
+
+## Abstract equality (TS-024A, pending independent review)
+
+The iterative isLooselyEqual operation reduces only represented Value kinds.
+Same-kind identity returns before hooks; null/undefined match each other,
+while nullish/object pairs remain false without conversion. Booleans reduce
+to numbers, string/number pairs use the existing numeric-string scanner, and
+only string/number/symbol against an object invokes default-hint ToPrimitive.
+Every continuation decreases a documented weight; guest reentry uses existing
+shared guards. Symbols never undergo numeric conversion.
+
+The evaluator captures both operands in source order before passing right/left
+to the fixed-2025 algorithm. Inequality negates only successful results. Strict
+equality, SameValue, truthiness and primitive-only converters are unchanged.
+No BigInt, HTMLDDA, implicit boxing, other syntax or methods are added.
+The existing parser nesting diagnostic is preserved at 1:128 for R18, correcting
+the proposal's 1:129 oracle; acceptance of this documented correction is pending.
+See [matrix mapping and validation](validation/ts-024a/README.md).

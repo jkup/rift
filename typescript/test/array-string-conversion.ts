@@ -585,10 +585,10 @@ reads(sharedInner, [wellKnownToPrimitive, "toString", "join", "length", "0", wel
 // C1-C3 use a guest fixture, with operands read from mutable bindings.
 const consumerRealm = new Realm((_line) => {});
 const consumer = new Evaluator(consumerRealm);
-const equality = parse("let empty = []; empty == 0;");
-check(equality.error !== null && equality.error.phase === "parse"
-    && equality.error.message === "unsupported operator: ==" && equality.error.loc.line === 1
-    && equality.error.loc.column === 23, "C2 retained unsupported equality boundary");
+const equality = parse("let empty = []; if (!(empty == 0)) throw 'C2'; if (empty != 0) throw 'C2';");
+check(equality.error === null, "C2 equality parse");
+const equalityRealm = new Realm((_line) => {});
+check(new Evaluator(equalityRealm).block(equality.body, equalityRealm.global, UNDEFINED).type === "normal", "C2 equality success");
 const fixture = parse(readFileSync("test/fixtures/array-string-conversion.js", "utf8"));
 check(fixture.error === null, "C fixture parse");
 const executed = consumer.block(fixture.body, consumerRealm.global, UNDEFINED);

@@ -3,6 +3,7 @@ import { Environment, GuestObject, UNDEFINED, equal, failure, getValue, normal, 
 import type { Realm } from "./realm.js";
 import { stringConcat, stringCompare } from "./strings.js";
 import { GuestArray } from "./array-object.js";
+import { isLooselyEqual } from "./abstract-equality.js";
 import { toPrimitive } from "./primitive-conversion.js";
 import { toNumber, toString } from "./conversion.js";
 
@@ -306,6 +307,13 @@ export class Evaluator {
                 case "/": return normal({ kind: "number", value: a.value / b.value });
                 case "%": return normal({ kind: "number", value: a.value % b.value });
             }
+        }
+        if (op === "==" || op === "!=") {
+            // Values were captured in source order; fixed 2025 13.11.1 reverses
+            // helper arguments, without reevaluating either operand.
+            const result = isLooselyEqual(right, left, this.context, loc);
+            if (result.type === "throw") return result;
+            return normal({ kind: "boolean", value: op === "!=" ? !result.value : result.value });
         }
         if (op === "===" || op === "!==") return normal({ kind: "boolean", value: op === "===" ? equal(left, right) : !equal(left, right) });
         if (op === "<" || op === ">" || op === "<=" || op === ">=") {

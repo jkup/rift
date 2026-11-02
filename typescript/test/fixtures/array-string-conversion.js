@@ -11,7 +11,8 @@ check(+empty === 0);
 check(1 / +empty === Infinity);
 check(+two === 2);
 check(Number.isNaN(+pair));
-// C2 abstract equality remains unsupported by the existing parser.
+check(empty == 0);
+check(!(empty != 0));
 check(two * 3 === 6);
 check(two < three);
 let object = {};

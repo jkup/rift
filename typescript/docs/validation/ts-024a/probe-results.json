@@ -1,0 +1,372 @@
+[
+  {
+    "name": "control",
+    "verdict": "PASS",
+    "expectedStatus": 0,
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "propagated: throw(from depth 0)\nfinally normal keeps throw: throw(t)\nfinally return wins: return(f)\nhost returned: try try > finally\nfault caught: true\ndepth 5000: 5000\n",
+      "stderr": "",
+      "ms": 43
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\control.exe\n",
+      "stderr": "",
+      "ms": 1520
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\control.ts\n\n  statements analyzed   27\n  compile statically    27  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": "",
+      "ms": 390
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "propagated: throw(from depth 0)\nfinally normal keeps throw: throw(t)\nfinally return wins: return(f)\nhost returned: try try > finally\nfault caught: true\ndepth 5000: 5000\n",
+      "stderr": "",
+      "ms": 45
+    }
+  },
+  {
+    "name": "dispatch",
+    "verdict": "PASS",
+    "expectedStatus": 0,
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "max 2 7\nmissing arg: NaN\n\"a1b\"\ncounter: 12\nidentity: true true\nby id: 4 -2 5\n",
+      "stderr": "",
+      "ms": 30
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\dispatch.exe\n",
+      "stderr": "",
+      "ms": 1536
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\dispatch.ts\n\n  statements analyzed   44\n  compile statically    44  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": "",
+      "ms": 433
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "max 2 7\nmissing arg: NaN\n\"a1b\"\ncounter: 12\nidentity: true true\nby id: 4 -2 5\n",
+      "stderr": "",
+      "ms": 48
+    }
+  },
+  {
+    "name": "host",
+    "verdict": "PASS",
+    "expectedStatus": 3,
+    "node": {
+      "status": 3,
+      "signal": null,
+      "error": null,
+      "stdout": "chars: 92 lines: 4\nfirst line: // sample guest source — ünïcödé and an emoji 😀\nhas escaped lone surrogate text: true\n",
+      "stderr": "this goes to stderr\n",
+      "ms": 31
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\host.exe\n",
+      "stderr": "",
+      "ms": 1483
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\host.ts\n\n  statements analyzed   10\n  compile statically    10  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": "",
+      "ms": 415
+    },
+    "native": {
+      "status": 3,
+      "signal": null,
+      "error": null,
+      "stdout": "chars: 92 lines: 4\nfirst line: // sample guest source — ünïcödé and an emoji 😀\nhas escaped lone surrogate text: true\n",
+      "stderr": "this goes to stderr\n",
+      "ms": 55
+    }
+  },
+  {
+    "name": "interpreter",
+    "verdict": "PASS",
+    "expectedStatus": 0,
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "1\n2\n3\n6765\n499500\ncaught: ReferenceError: missing is not defined\n",
+      "stderr": "",
+      "ms": 37
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\interpreter.exe\n",
+      "stderr": "",
+      "ms": 1677
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\interpreter.ts\n\n  statements analyzed   83\n  compile statically    83  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": "",
+      "ms": 486
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "1\n2\n3\n6765\n499500\ncaught: ReferenceError: missing is not defined\n",
+      "stderr": "",
+      "ms": 57
+    }
+  },
+  {
+    "name": "memory",
+    "verdict": "PASS",
+    "expectedStatus": 0,
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "total: 12800000\n",
+      "stderr": "rss before=40MB after=42MB iterations=200000\n",
+      "ms": 47
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\memory.exe\n",
+      "stderr": "",
+      "ms": 1597
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\memory.ts\n\n  statements analyzed   17\n  compile statically    17  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": "",
+      "ms": 410
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "total: 12800000\n",
+      "stderr": "rss before=6MB after=6MB iterations=200000\n",
+      "ms": 106
+    }
+  },
+  {
+    "name": "numbers",
+    "verdict": "PASS",
+    "expectedStatus": 0,
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "signed zero: false -Infinity true\nNaN: false true true\ninfinities: Infinity -Infinity NaN\nremainder: 1.5 -1 true NaN\nint32: -2147483648 4294967295 5 1 -1\nshifts: -2147483648 1 -4 15\nmax safe: 9007199254740992 5e-324 1.7976931348623157e+308\ntoString: 0.30000000000000004 1e+21 1e-7 123.456 5e-324 9007199254740992 -1e-7 100 0.000001\ntoString(-0): 0 0\nradix: ff 11111111 0.1 -73\ntoFixed: 1.00 1e+21 0.0\ntoPrecision: 123.5 0.000012\nNumber(): 42 31 5 15 1000 0.5 5 0 0 NaN 0 Infinity NaN\nObject.is(Number('-0'), -0): true\nparseFloat: 3.14 -5 8 255\nMath: -0 3 -Infinity -0 -0\npow: 1.4142135623730951 NaN 1 1\n",
+      "stderr": "",
+      "ms": 34
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\numbers.exe\n",
+      "stderr": "",
+      "ms": 1585
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\numbers.ts\n\n  statements analyzed   21\n  compile statically    21  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": "",
+      "ms": 432
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "signed zero: false -Infinity true\nNaN: false true true\ninfinities: Infinity -Infinity NaN\nremainder: 1.5 -1 true NaN\nint32: -2147483648 4294967295 5 1 -1\nshifts: -2147483648 1 -4 15\nmax safe: 9007199254740992 5e-324 1.7976931348623157e+308\ntoString: 0.30000000000000004 1e+21 1e-7 123.456 5e-324 9007199254740992 -1e-7 100 0.000001\ntoString(-0): 0 0\nradix: ff 11111111 0.1 -73\ntoFixed: 1.00 1e+21 0.0\ntoPrecision: 123.5 0.000012\nNumber(): 42 31 5 15 1000 0.5 5 0 0 NaN 0 Infinity NaN\nObject.is(Number('-0'), -0): true\nparseFloat: 3.14 -5 8 255\nMath: -0 3 -Infinity -0 -0\npow: 1.4142135623730951 NaN 1 1\n",
+      "stderr": "",
+      "ms": 46
+    }
+  },
+  {
+    "name": "objects",
+    "verdict": "PASS",
+    "expectedStatus": 0,
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "own keys: 2,10,b,a\ninherited: 1\nmissing: undefined\nafter alias write: 100\nb: 2 true\nsymbol vs string: 99 4 undefined\nreinserted order: 2,10,a,b\n",
+      "stderr": "",
+      "ms": 35
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\objects.exe\n",
+      "stderr": "",
+      "ms": 1609
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\objects.ts\n\n  statements analyzed   61\n  compile statically    61  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": "",
+      "ms": 432
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "own keys: 2,10,b,a\ninherited: 1\nmissing: undefined\nafter alias write: 100\nb: 2 true\nsymbol vs string: 99 4 undefined\nreinserted order: 2,10,a,b\n",
+      "stderr": "",
+      "ms": 50
+    }
+  },
+  {
+    "name": "strings",
+    "verdict": "PASS",
+    "expectedStatus": 0,
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "pair length: 2 d83d de00\npair codePointAt: 1f600\nlone high: 1 d83d\nlone low: 1 de00\nsplit pair: d83d | de00\nrejoined equals: true\nnul: 3 61 0 62\nfromCharCode lone: d800 41\ncompare units: true true true\nindexOf lone low in pair: 1\nconcat lone halves: 2 true\nspread pair: 1\ntoUpperCase: STRASSE 2\njson lone: \"\\ud83d\"\nbuilt: 5 48 d83d de00 dc00 21\n",
+      "stderr": "",
+      "ms": 37
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\strings.exe\n",
+      "stderr": "",
+      "ms": 1559
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\strings.ts\n\n  statements analyzed   26\n  compile statically    26  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": "",
+      "ms": 426
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "pair length: 2 d83d de00\npair codePointAt: 1f600\nlone high: 1 d83d\nlone low: 1 de00\nsplit pair: d83d | de00\nrejoined equals: true\nnul: 3 61 0 62\nfromCharCode lone: d800 41\ncompare units: true true true\nindexOf lone low in pair: 1\nconcat lone halves: 2 true\nspread pair: 1\ntoUpperCase: STRASSE 2\njson lone: \"\\ud83d\"\nbuilt: 5 48 d83d de00 dc00 21\n",
+      "stderr": "",
+      "ms": 50
+    }
+  },
+  {
+    "name": "suspension",
+    "verdict": "PASS",
+    "expectedStatus": 0,
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "yielded 3\n  resumed at depth 3 with 100\nyielded 2\n  resumed at depth 2 with 101\nyielded 1\n  resumed at depth 1 with 102\n1\n  generator finally\nreturn(): {\"value\":\"early\",\"done\":true}\nframe yields: 1,3,6,10 final: 10\n",
+      "stderr": "",
+      "ms": 31
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\suspension.exe\n",
+      "stderr": "",
+      "ms": 1568
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\suspension.ts\n\n  statements analyzed   42\n  compile statically    42  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": "",
+      "ms": 416
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "yielded 3\n  resumed at depth 3 with 100\nyielded 2\n  resumed at depth 2 with 101\nyielded 1\n  resumed at depth 1 with 102\n1\n  generator finally\nreturn(): {\"value\":\"early\",\"done\":true}\nframe yields: 1,3,6,10 final: 10\n",
+      "stderr": "",
+      "ms": 48
+    }
+  },
+  {
+    "name": "values",
+    "verdict": "PASS",
+    "expectedStatus": 0,
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "undefined undefined false\nnull object false\nbool(true) boolean true\nnum(0) number false\nnum(0) number false\nnum(NaN) number false\nnum(42) number true\nstr(\"\") string false\nstr(\"hi\") string true\nobj(Point) object true\nafter replace: str(\"replaced\")\nshared identity: Renamed true\n",
+      "stderr": "",
+      "ms": 30
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\values.exe\n",
+      "stderr": "",
+      "ms": 1517
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\probes\\values.ts\n\n  statements analyzed   39\n  compile statically    39  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": "",
+      "ms": 425
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "undefined undefined false\nnull object false\nbool(true) boolean true\nnum(0) number false\nnum(0) number false\nnum(NaN) number false\nnum(42) number true\nstr(\"\") string false\nstr(\"hi\") string true\nobj(Point) object true\nafter replace: str(\"replaced\")\nshared identity: Renamed true\n",
+      "stderr": "",
+      "ms": 48
+    }
+  }
+]

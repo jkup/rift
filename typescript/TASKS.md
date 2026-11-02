@@ -1191,8 +1191,32 @@ Coordinator acceptance: TS-024P accepted1b79203 on 2026-11-02. Reviewed complete
 
 ### TS-024A — Abstract equality operators
 
-Status: **ready**. Owner: next assigned Codex implementation chat, existing codex/primitive-computed-keys. Prerequisite accepted TS-024P1b79203. Implement exactly docs/abstract-equality.md and all matrices in docs/validation/ts-024p/matrix.md:49 ordered K pairs, V1-V18, O1-O23, R1-R19, P1-P19, C1-C16. Own src/abstract-equality.ts, minimal lexer/parser/evaluator integration, test/abstract-equality.ts and runtime-read fixture, required runner/native registration, precise Array C2 migration and current docs/evidence/task updates. Coordinator owns COORDINATION.md; Claude paths reserved.
+Status: **review needed**. Owner: assigned Codex TS-024A implementation chat, existing codex/primitive-computed-keys; dispatch base `d6ba7f952a40c1d49ca2318e6555507de822cab8` (2026-11-02). Prerequisite accepted TS-024P1b79203. Implement exactly docs/abstract-equality.md and all matrices in docs/validation/ts-024p/matrix.md:49 ordered K pairs, V1-V18, O1-O23, R1-R19, P1-P19, C1-C16. Own src/abstract-equality.ts, minimal lexer/parser/evaluator integration, test/abstract-equality.ts and runtime-read fixture, required runner/native registration, precise Array C2 migration and current docs/evidence/task updates. Coordinator owns COORDINATION.md; Claude paths reserved.
 
 Use iterative typed dispatch with documented decreasing measure, existing InternalBooleanCompletion/equal/stringToNumber/toPrimitive interfaces, explicit mirrored conversions and default hints. Preserve captured source-order operand evaluation, fixed2025 helper argument order, original abrupt records, and successful-only != negation. Same/two-object and nullish/object comparisons have no hooks; Symbols are never numerically converted. No changes to strict equality/SameValue/truthiness or primitive converter contracts. Preserve longest-match strict tokens and all unrelated syntax failures.
 
 Require meaningful independent expected booleans/traces/locations and both operators/orders, runtime-read source, exact small guards and native default64 recursive hooks, Realm/host-fault cleanup and monotonic budgets. Keep all167 existing cases/25gates; add tests/gates without denominator reduction. Migrate only current C2 equality rejection to real success while preserving guest-delete C3 and historical evidence. Run typecheck, runner/probes, full rebuilt Node/native, every static-only build AND separate parsed coverage. Retain failures/minimal reductions before workarounds; report any contradictory oracle to coordinator. No pins, BigInt/HTMLDDA, unrelated syntax/methods, C++, Claude edits, branch switching/main merge or successor. Commit/push coherent tested work and stop for independent review.
+
+
+TS-024A handoff (2026-11-02): iterative abstract equality and minimal ==/!=
+frontend/evaluator integration implemented. All K/V/O/R/P/C groups map to
+independent literal assertions, readable runtime-read fixtures, exact effects,
+completion identities, resource counts and Realm/host-fault cleanup. Strict
+semantics and primitive converters unchanged; native actual default64 recursive
+host and guest hooks return call-limit errors without a crash.
+
+One frozen-oracle correction requires review: R18's exact nesting input fails
+at1:128, not1:129, because the unchanged parser counts statement nesting too.
+Retained equality/strict control reduction; no parser-limit change. Cross-chat
+notification was blocked by automatic approval review requiring direct human
+messaging authorization; local handoff records the discrepancy for coordinator.
+
+Typecheck PASS; runner20/20; probes10/10; final rebuilt Node/native172/172 each,
+no skips. All26 static-only builds and separately parsed coverage gates PASS
+(CLI1474, equality1873). Original167cases/25gates preserved; added driver and
+four CLI phase/status cases. Only existing Array C2 expectations migrated;
+C3 delete rejection and historical evidence remain. Initial Zig PATH/sandbox
+failures retained; no compiler workaround or pin/gate relaxation required.
+Evidence/matrix/migrations: docs/validation/ts-024a/README.md. No C++, reserved
+Claude/COORDINATION edits, branch switch/main merge or successor. Commit/push
+this tested milestone and stop for independent review, including R18 correction.

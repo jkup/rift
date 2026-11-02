@@ -141,6 +141,16 @@ for (const [name, separator] of [["ls", "\u2028"], ["ps", "\u2029"]]) {
 lineCase("mixed-line-positions", "/*\r\n\u2028\u2029*/missing;", {
     status: 1, error: "4:3: runtime ReferenceError: missing is not defined",
 });
+// Equality diagnostics exercise real CLI exit phases as well as the host matrix.
+for (const op of ["==", "!="]) {
+    lineCase("equality-typeerror-" + (op === "==" ? "equal" : "unequal"),
+        "let o = {valueOf: 0, toString: 0};\no " + op + " 1;", {
+            status: 1, error: "2:1: runtime TypeError: cannot convert object to primitive",
+        });
+    lineCase("equality-syntax-" + (op === "==" ? "equal" : "unequal"), "1 " + op + ";", {
+        status: 2, error: "1:5: parse SyntaxError: unsupported or unexpected syntax: ;",
+    });
+}
 const results = [];
 function execute(name, executable, args, expected) {
     const r = spawnSync(executable, args, { cwd: root, encoding: "utf8", timeout: 10000 });
@@ -237,6 +247,9 @@ execute("array-string-conversion", arrayStringCommand, arrayStringArgs, { stdout
 const functionStringCommand = lane === "node" ? process.execPath : join(root, "build/native/function-string-conversion" + suffix);
 const functionStringArgs = lane === "node" ? [join(root, "build/node/test/function-string-conversion.js")] : [];
 execute("function-string-conversion", functionStringCommand, functionStringArgs, { stdout: "function-string-conversion ok\n" });
+const equalityCommand = lane === "node" ? process.execPath : join(root, "build/native/abstract-equality" + suffix);
+const equalityArgs = lane === "node" ? [join(root, "build/node/test/abstract-equality.js")] : [];
+execute("abstract-equality", equalityCommand, equalityArgs, { stdout: "abstract-equality ok\n" });
 writeFileSync(join(root, `build/guest-${lane}-results.json`), JSON.stringify(results, null, 2));
 console.log(`${results.filter(r => r.verdict === "PASS").length}/${results.length} passed; no skips`);
 process.exitCode = results.every(r => r.verdict === "PASS") ? 0 : 1;
