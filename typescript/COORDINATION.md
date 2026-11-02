@@ -485,3 +485,9 @@ Accepted5cdf9e4 after complete production/test/fixture/migration review, overrid
 Frozen next TS-027P in-operator design using existing internalHasProperty; no implementation before review. CL-004/005 reserved; main unchanged7f7d682. Next designer pending dispatch.
 
 Acceptance/next contract pushed through80204eb, resolving delegated export rejection. Active sole design writer: TS-027P chat `01a19b26-9e7e-7271-9031-5f9c3c16bad0`, host `local`, base `80204eb`. Explicit wait confirmed active; saved cursor `64a1353a-fe0c-4835-9fcc-09ff19ab5085:1`. Owns frozen in-operator design only; coordinator owns this file. No implementation before review.
+
+## TS-027P acceptance — 2026-11-02 07:38 heartbeat
+
+Accepted pushed5dd652a after full contract/named-matrix review, independent fixed2025 operand/typecheck/key order and actual parser/descriptor-presence/resource path inspection. Reproduced117-file/118-candidate audit unchanged; diff check clean. No runtime/integrated rerun; baseline5cdf9e4 stays182/182/28gates. Designer idle, cursor `64a1353a-fe0c-4835-9fcc-09ff19ab5085:2`.
+
+Frozen TS-027A minimal in implementation with full matrices, native default64 recursion and preserved baseline. CL-004/005 ready/reserved; main unchanged7f7d682. Next implementation pending dispatch.

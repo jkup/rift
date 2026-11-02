@@ -1374,3 +1374,13 @@ probe run, and no new runtime support claim. No concrete compiler uncertainty
 warranted a probe. No production/tests/manifests/pins/C++/Claude/COORDINATION edits,
 branch switching/main merge or successor. Commit/push coherent design as authorized
 and stop for independent coordinator review; not self-accepted.
+
+Coordinator acceptance: TS-027P accepted5dd652a on 2026-11-02. Reviewed complete design/named matrices, independently checked fixed2025 operand/typecheck/key order and actual parser/presence/resource paths; reproduced117-file/118-candidate audit unchanged. No runtime changed or integrated rerun; baseline5cdf9e4 remains182/182/28gates.
+
+### TS-027A — Guest in operator implementation
+
+Status: **ready**. Owner: next assigned Codex implementation chat, existing codex/primitive-computed-keys. Prerequisite accepted TS-027P5dd652a. Implement docs/in-operator.md and all named V1-V32/E1-E32/P1-P28/R1-R25/C1-C8 matrix rows/variants. Own minimal parser/evaluator integration, test/in-operator.ts, runtime-read fixtures, required runner/native registration and scope/evidence/task updates. Coordinator owns COORDINATION.md; Claude outputs reserved.
+
+Preserve captured left/right evaluations then RHS object validation before string-hint ToPropertyKey and exactly one internalHasProperty. No RHS boxing, target semantic Get, new presence implementation or unrelated interfaces. Admit only word-token in at relational precedence6; preserve left associativity, reserved bindings/property names, source offsets and unrelated failures. Test inherited/undefined/holes/String virtual properties, symbols, competing errors, captured references and mutations with literal independent oracles and named readable scenarios.
+
+Require full matrices, runtime-read cases, exact small guard counts and actual default64 native host/guest recursion, Realm/host-fault/abrupt identity and monotonic budgets. Preserve182 case names/expectations and28 gates, including all existing raw presence/map controls; no current rejection migration needed. Run typecheck, runner/probes, full rebuilt Node/native, all static-only builds AND separately parsed coverage. Retain failures/reductions before workarounds; report contradictory oracles before adjustment. No pins, C++, Claude edits, branch switch/main merge or successor. Commit/push tested milestone and stop for independent review.
