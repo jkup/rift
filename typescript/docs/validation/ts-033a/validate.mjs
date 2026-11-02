@@ -6,6 +6,7 @@ import {createHash} from 'node:crypto';
 import {inputs,root} from './baseline.mjs';
 import {cases} from './cases.mjs';
 const here=import.meta.dirname, scratch=join(root,'build/ts033a-input'); mkdirSync(scratch,{recursive:true});
+const evidence=process.env.RIFT_METADATA_EVIDENCE??here;
 const baseline=JSON.parse(readFileSync(join(here,'baseline.json')));
 const lanes=process.argv.slice(2); assert.ok(lanes.length && lanes.every(x=>['node','native'].includes(x)));
 const results=[];
@@ -14,7 +15,7 @@ for(const lane of lanes){
   const [id,source]=inputs[i]; const file=join(scratch,'source.js');writeFileSync(file,source);
   const r=spawnSync(lane==='node'?process.execPath:join(root,'build/native/script-metadata.exe'),lane==='node'?['build/node/test/script-metadata.js',file,id]:[file,id],{cwd:root,encoding:'utf8',timeout:10000,maxBuffer:8*1024*1024});
   results.push({lane,id,status:r.status,signal:r.signal,error:r.error?.message??null,stdout:r.stdout,stderr:r.stderr});
-  writeFileSync(join(here,'metadata-'+lane+'.json'),JSON.stringify(results.filter(x=>x.lane===lane),null,2)+'\n');
+  writeFileSync(join(evidence,'metadata-'+lane+'.json'),JSON.stringify(results.filter(x=>x.lane===lane),null,2)+'\n');
   assert.equal(r.status,0,id);assert.equal(r.signal,null,id);assert.equal(r.error,undefined,id);assert.equal(r.stderr,'',id);
   const record=JSON.parse(r.stdout), old=baseline[i];assert.equal(old.id,id);
   assert.deepEqual(record.parse,old.parse,id+' exact full legacy parse');assert.deepEqual(record.audit,old.audit,id+' exact return audit');
@@ -48,4 +49,4 @@ for(const lane of lanes){
  }
  console.log(lane+': '+inputs.length+' exact legacy parse/audit records; '+cases.length+' literal metadata cases passed');
 }
-writeFileSync(join(here,'matrix-summary.json'),JSON.stringify({base:'1f81bb2f6eae3ffe9efad8e051599db739ef3f71',lanes,rows:inputs.length,metadataCases:cases.length,inputSha256:createHash('sha256').update(JSON.stringify(inputs)).digest('hex')},null,2)+'\n');
+writeFileSync(join(evidence,'matrix-summary.json'),JSON.stringify({base:'1f81bb2f6eae3ffe9efad8e051599db739ef3f71',lanes,rows:inputs.length,metadataCases:cases.length,inputSha256:createHash('sha256').update(JSON.stringify(inputs)).digest('hex')},null,2)+'\n');

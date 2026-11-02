@@ -9,6 +9,9 @@ It returns no AST or execution eligibility. Legacy parser, return certification,
 interpreter and observation behavior remain unchanged; strict=true grants no new
 early-error certification or Script execution support. See
 [TS-033A evidence](validation/ts-033a/README.md).
+The [review correction](validation/ts-033a/stack-fix/README.md) replaces recursive
+metadata traversal with an explicit work stack: long binary/member/call chains
+accepted by the parser no longer overflow the host stack during inspection.
 Diagnostics reject unsupported syntax before executing any of the program.
 Unsupported operand combinations fail at runtime; parsing an operator is not a
 claim that all coercion cases are supported.

@@ -1935,3 +1935,16 @@ syntax, evaluator/Realm/protocol/classifier/pins/C++/historical/CL006 edits; no
 successor/main merge. Coordinator-only29f418b advanced the shared branch during
 validation; its file is excluded and hash-recorded. Commit/push and stop for
 independent acceptance; no scope decision needed.
+
+TS-033A review correction (2026-11-02): independent review reproduced a host
+stack overflow in recursive metadata traversal on a valid30002-unit binary
+chain. Replaced recursion with an explicit typed work stack preserving source
+preorder, strictness inheritance and enclosing-function identity, with no new
+grammar/resource rejection. Eight runtime-input stress controls pass in Node
+and native (binary/member/call chains, buried/far-end/nested/sibling functions,
+no effects, exact review input and100000-unit boundary). All136 original full
+metadata/parse/audit records remain identical per lane; original baseline/cases
+and evidence preserved. Full212 guest records per lane,38 static gates (metadata
+driver500/500), typecheck, runner20, probes10, host73 and observation16 pass.
+Failure reproduction and fresh evidence: docs/validation/ts-033a/stack-fix/.
+Commit/push correction and stop for independent re-review; no successor.

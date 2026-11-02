@@ -4,7 +4,7 @@ import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {root} from './baseline.mjs';
-const here=import.meta.dirname, base='1f81bb2f6eae3ffe9efad8e051599db739ef3f71';
+const here=process.env.RIFT_METADATA_EVIDENCE??import.meta.dirname, base='1f81bb2f6eae3ffe9efad8e051599db739ef3f71';
 const git=(...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8'});
 const allowed=['typescript/TASKS.md','typescript/docs/feature-inventory.md','typescript/tools/build-native.mjs','typescript/src/script-metadata.ts','typescript/test/script-metadata.ts'];
 const changes=git('diff','--name-only',base).trim().split('\n').filter(Boolean);

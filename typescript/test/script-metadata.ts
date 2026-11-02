@@ -13,4 +13,8 @@ unit.text = "changed by host";
 if (metadata.unit.id !== process.argv[3] || metadata.unit.text !== text) throw new Error("source snapshot");
 const next = inspectScript({ id: "separate unit", text: "function f(){}" });
 if (next.kind !== "complete" || next.strictness.strict || next.functions[0].strictness.strict) throw new Error("strictness leaked between units");
-console.log(JSON.stringify({ metadata, parse: parse(text), audit: auditScriptReturns(text) }));
+if (process.argv[4] === "summary") {
+    // Deep-chain stress cases must not recursively stringify the legacy AST.
+    // Preserve full AST equality output for the unchanged baseline matrix.
+    console.log(JSON.stringify({ metadata, parseError: parse(text).error, audit: auditScriptReturns(text) }));
+} else console.log(JSON.stringify({ metadata, parse: parse(text), audit: auditScriptReturns(text) }));

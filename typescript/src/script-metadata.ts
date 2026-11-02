@@ -44,14 +44,34 @@ export function inspectScript(unit: ScriptSourceUnit): ScriptInspection {
     const tokens = lex(source.text).tokens;
     const collector = new MetadataCollector(source.text, tokens);
     const strictness = collector.prologue(0, false);
-    collector.statements(parsed.body, strictness.strict, null);
+    collector.collect(parsed.body, strictness.strict);
     return { kind: "complete", goal: "Script", unit: source,
         consumedUnits: source.text.length, strictness, functions: collector.functions };
 }
 
+type MetadataWork =
+    | { kind: "statement"; node: Stmt; strict: boolean; parent: number | null }
+    | { kind: "expression"; node: Expr; strict: boolean; parent: number | null };
+
 class MetadataCollector {
     readonly functions: FunctionMetadata[] = [];
+    readonly work: MetadataWork[] = [];
     constructor(readonly text: string, readonly tokens: Token[]) {}
+
+    collect(body: Stmt[], strict: boolean): void {
+        this.statements(body, strict, null);
+        // Parser depth bounds recursive grammar, not AST height: left-associated
+        // binary/member/call chains can be arbitrarily tall within the source cap.
+        // Queue children in reverse source order for a non-recursive preorder walk.
+        // Each item owns its enclosing context, so siblings cannot inherit a
+        // preceding function's directive or parent identity.
+        while (this.work.length > 0) {
+            const item = this.work.pop();
+            if (item === undefined) throw new Error("missing metadata work");
+            if (item.kind === "statement") this.visitStatement(item.node, item.strict, item.parent);
+            else this.visitExpression(item.node, item.strict, item.parent);
+        }
+    }
 
     prologue(index: number, inheritedStrict: boolean): StrictnessMetadata {
         const directives: DirectiveMetadata[] = [];
@@ -91,9 +111,15 @@ class MetadataCollector {
     }
 
     statements(body: Stmt[], strict: boolean, parent: number | null): void {
-        for (const statement of body) this.statement(statement, strict, parent);
+        for (let i = body.length - 1; i >= 0; i--) this.statement(body[i], strict, parent);
     }
     statement(stmt: Stmt, strict: boolean, parent: number | null): void {
+        this.work.push({ kind: "statement", node: stmt, strict, parent });
+    }
+    expression(expr: Expr, strict: boolean, parent: number | null): void {
+        this.work.push({ kind: "expression", node: expr, strict, parent });
+    }
+    visitStatement(stmt: Stmt, strict: boolean, parent: number | null): void {
         switch (stmt.kind) {
             case "function": this.functionBody(stmt.source, stmt.loc, stmt.body, strict, parent); break;
             case "block": this.statements(stmt.body, strict, parent); break;
@@ -101,26 +127,34 @@ class MetadataCollector {
             case "let": if (stmt.init !== null) this.expression(stmt.init, strict, parent); break;
             case "return": case "throw": if (stmt.value !== null) this.expression(stmt.value, strict, parent); break;
             case "if":
-                this.expression(stmt.test, strict, parent);
-                this.statement(stmt.consequent, strict, parent);
                 if (stmt.alternate !== null) this.statement(stmt.alternate, strict, parent);
+                this.statement(stmt.consequent, strict, parent);
+                this.expression(stmt.test, strict, parent);
                 break;
-            case "while": this.expression(stmt.test, strict, parent); this.statement(stmt.body, strict, parent); break;
+            case "while": this.statement(stmt.body, strict, parent); this.expression(stmt.test, strict, parent); break;
             case "empty": case "break": case "continue": break;
         }
     }
-    expression(expr: Expr, strict: boolean, parent: number | null): void {
+    visitExpression(expr: Expr, strict: boolean, parent: number | null): void {
         switch (expr.kind) {
             case "function": this.functionBody(expr.source, expr.loc, expr.body, strict, parent); break;
-            case "array": for (const item of expr.elements) if (item !== null) this.expression(item, strict, parent); break;
-            case "object": for (const value of expr.values) this.expression(value, strict, parent); break;
+            case "array":
+                for (let i = expr.elements.length - 1; i >= 0; i--) {
+                    const item = expr.elements[i];
+                    if (item !== null) this.expression(item, strict, parent);
+                }
+                break;
+            case "object": for (let i = expr.values.length - 1; i >= 0; i--) this.expression(expr.values[i], strict, parent); break;
             case "unary": this.expression(expr.operand, strict, parent); break;
-            case "binary": this.expression(expr.left, strict, parent); this.expression(expr.right, strict, parent); break;
-            case "assign": case "compound": this.expression(expr.target, strict, parent); this.expression(expr.value, strict, parent); break;
+            case "binary": this.expression(expr.right, strict, parent); this.expression(expr.left, strict, parent); break;
+            case "assign": case "compound": this.expression(expr.value, strict, parent); this.expression(expr.target, strict, parent); break;
             case "conditional":
-                this.expression(expr.test, strict, parent); this.expression(expr.consequent, strict, parent); this.expression(expr.alternate, strict, parent); break;
-            case "member": this.expression(expr.base, strict, parent); this.expression(expr.key, strict, parent); break;
-            case "call": this.expression(expr.callee, strict, parent); for (const arg of expr.args) this.expression(arg, strict, parent); break;
+                this.expression(expr.alternate, strict, parent); this.expression(expr.consequent, strict, parent); this.expression(expr.test, strict, parent); break;
+            case "member": this.expression(expr.key, strict, parent); this.expression(expr.base, strict, parent); break;
+            case "call":
+                for (let i = expr.args.length - 1; i >= 0; i--) this.expression(expr.args[i], strict, parent);
+                this.expression(expr.callee, strict, parent);
+                break;
             case "literal": case "identifier": case "this": break;
         }
     }
