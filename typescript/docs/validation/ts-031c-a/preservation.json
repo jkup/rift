@@ -1,0 +1,154 @@
+{
+  "baseline": "38d1d9e",
+  "protectedFiles": 211,
+  "guestRecordsPerLane": 212,
+  "oldGates": 35,
+  "additiveGates": 1,
+  "coverage": [
+    {
+      "entry": "src/cli.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\src\\cli.ts\n\n  statements analyzed   1594\n  compile statically    1594  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/realms.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\realms.ts\n\n  statements analyzed   1950\n  compile statically    1950  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/object-descriptors.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\object-descriptors.ts\n\n  statements analyzed   1350\n  compile statically    1350  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/object-prototypes.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\object-prototypes.ts\n\n  statements analyzed   1706\n  compile statically    1706  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/object-keys.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\object-keys.ts\n\n  statements analyzed   1355\n  compile statically    1355  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/conversion.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\conversion.ts\n\n  statements analyzed   866\n  compile statically    866  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/definition-dispatch.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\definition-dispatch.ts\n\n  statements analyzed   1732\n  compile statically    1732  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/array-storage.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-storage.ts\n\n  statements analyzed   1874\n  compile statically    1874  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/array-like.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-like.ts\n\n  statements analyzed   1308\n  compile statically    1308  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/operation-context.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\operation-context.ts\n\n  statements analyzed   1914\n  compile statically    1914  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/array-map.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-map.ts\n\n  statements analyzed   2058\n  compile statically    2058  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/array-literals.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-literals.ts\n\n  statements analyzed   1645\n  compile statically    1645  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/property-key-conversion.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\property-key-conversion.ts\n\n  statements analyzed   1918\n  compile statically    1918  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/numeric-operators.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\numeric-operators.ts\n\n  statements analyzed   1676\n  compile statically    1676  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/addition.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\addition.ts\n\n  statements analyzed   1690\n  compile statically    1690  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/relational.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\relational.ts\n\n  statements analyzed   1721\n  compile statically    1721  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/primitive-conversion.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\primitive-conversion.ts\n\n  statements analyzed   2086\n  compile statically    2086  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/operator-coercion.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\operator-coercion.ts\n\n  statements analyzed   1723\n  compile statically    1723  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/key-coercion.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\key-coercion.ts\n\n  statements analyzed   1748\n  compile statically    1748  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/length-coercion.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\length-coercion.ts\n\n  statements analyzed   1863\n  compile statically    1863  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/array-length-coercion.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-length-coercion.ts\n\n  statements analyzed   2083\n  compile statically    2083  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/function-call.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\function-call.ts\n\n  statements analyzed   1762\n  compile statically    1762  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/object-valueof.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\object-valueof.ts\n\n  statements analyzed   2892\n  compile statically    2892  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/array-string-conversion.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-string-conversion.ts\n\n  statements analyzed   2089\n  compile statically    2089  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/function-string-conversion.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\function-string-conversion.ts\n\n  statements analyzed   1905\n  compile statically    1905  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/abstract-equality.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\abstract-equality.ts\n\n  statements analyzed   1991\n  compile statically    1991  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/delete-operator.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\delete-operator.ts\n\n  statements analyzed   2368\n  compile statically    2368  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/typeof-void.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\typeof-void.ts\n\n  statements analyzed   2117\n  compile statically    2117  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/in-operator.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\in-operator.ts\n\n  statements analyzed   2279\n  compile statically    2279  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/primitive-reads.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\primitive-reads.ts\n\n  statements analyzed   2359\n  compile statically    2359  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/property-assignment.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\property-assignment.ts\n\n  statements analyzed   2655\n  compile statically    2655  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/compound-assignment.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\compound-assignment.ts\n\n  statements analyzed   2784\n  compile statically    2784  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/structured-outcomes.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\structured-outcomes.ts\n\n  statements analyzed   1932\n  compile statically    1932  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "src/observation-driver.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\src\\observation-driver.ts\n\n  statements analyzed   1632\n  compile statically    1632  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/observation-serialization.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\observation-serialization.ts\n\n  statements analyzed   1619\n  compile statically    1619  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    },
+    {
+      "entry": "test/return-audit.ts",
+      "report": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\return-audit.ts\n\n  statements analyzed   1170\n  compile statically    1170  (100%)\n\n  fully static — all analyzed statements compile to native code.\n"
+    }
+  ],
+  "publicRows": 94
+}

@@ -1,4 +1,4 @@
-import type { Rejection } from "./outcomes.js";
+import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
 import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource } from "./syntax.js";
 
@@ -9,6 +9,40 @@ export function parse(source: string): ParseResult {
     if (result.error !== null) return { body: [], error: result.error, rejection: result.rejection };
     return new Parser(result.tokens, { text: source }).program();
 }
+// Internal structural evidence only: this entry point never returns an executable body.
+export type ReturnCandidate = {
+    readonly ruleCode: "return-outside-function";
+    readonly loc: Location;
+    readonly start: number;
+    readonly end: number;
+};
+export type ReturnCoverage =
+    | { readonly kind: "complete"; readonly goal: "Script";
+        readonly sourceUnits: number; readonly consumedUnits: number;
+        readonly candidates: readonly ReturnCandidate[] }
+    | { readonly kind: "blocked"; readonly goal: "Script";
+        readonly rejection: { readonly kind: "unsupported-syntax";
+            readonly capabilityCode: SyntaxCapability } | ResourceOrigin; readonly loc: Location };
+function blockedReturnCoverage(rejection: Rejection | null, error: Diagnostic | null): ReturnCoverage {
+    if (error === null || rejection === null || rejection.kind === "syntax-error") {
+        throw new Error("invalid return audit rejection");
+    }
+    return { kind: "blocked", goal: "Script", rejection, loc: error.loc };
+}
+export function auditScriptReturns(source: string): ReturnCoverage {
+    const result = lex(source);
+    if (result.error !== null) return blockedReturnCoverage(result.rejection, result.error);
+    const parser = new Parser(result.tokens, { text: source }, true);
+    parser.program();
+    if (parser.error !== null) return blockedReturnCoverage(parser.rejection, parser.error);
+    const end = parser.current();
+    // EOF comes from the lexer after trailing trivia, not the last statement span.
+    if (end.kind !== "eof" || end.start !== source.length || end.end !== source.length) {
+        throw new Error("return audit did not reach source EOF");
+    }
+    return { kind: "complete", goal: "Script", sourceUnits: source.length,
+        consumedUnits: end.end, candidates: parser.returnCandidates };
+}
 class Parser {
     index = 0;
     depth = 0;
@@ -16,7 +50,8 @@ class Parser {
     loops = 0;
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
-    constructor(public tokens: Token[], readonly source: SourceText) {}
+    readonly returnCandidates: ReturnCandidate[] = [];
+    constructor(public tokens: Token[], readonly source: SourceText, private readonly auditReturns: boolean = false) {}
     current(): Token { return this.tokens[this.index]; }
     at(text: string): boolean {
         const t = this.current();
@@ -113,8 +148,13 @@ class Parser {
             return { kind: "while", loc, test, body };
         }
         if (this.at("return") || this.at("throw")) {
-            const kind = this.take().text === "return" ? "return" : "throw";
-            if (kind === "return" && this.functions === 0) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.return-context" }, "return outside function", loc);
+            const keyword = this.take();
+            const kind = keyword.text === "return" ? "return" : "throw";
+            if (kind === "return" && this.functions === 0) {
+                if (this.auditReturns) {
+                    this.returnCandidates.push({ ruleCode: "return-outside-function", loc, start: keyword.start, end: keyword.end });
+                } else this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.return-context" }, "return outside function", loc);
+            }
             // Token locations include line terminators hidden inside comments.
             if (this.current().loc.line !== loc.line && !this.at(";")) {
                 this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.line-terminator" }, "newline after return/throw is unsupported", loc);

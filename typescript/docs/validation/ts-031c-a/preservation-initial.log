@@ -1,0 +1,14 @@
+node:internal/bootstrap/switches/does_own_process_state:127
+  validateString(directory, 'directory');
+  ^
+
+TypeError [ERR_INVALID_ARG_TYPE]: The "directory" argument must be of type string. Received an instance of URL
+    at process.wrappedChdir [as chdir] (node:internal/bootstrap/switches/does_own_process_state:127:3)
+    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-031c-a/preservation.mjs:5:58
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5) {
+  code: 'ERR_INVALID_ARG_TYPE'
+}
+
+Node.js v26.13.0
