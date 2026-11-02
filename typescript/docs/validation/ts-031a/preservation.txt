@@ -1,0 +1,12 @@
+TS-031A preservation verification, 2026-11-02
+Base: 83e0eaa
+Command: git diff 83e0eaa --exit-code -- typescript/src typescript/test typescript/probes typescript/tools/build-native.mjs typescript/tools/run-guests.mjs typescript/tools/run-probes.mjs typescript/tools/probe-verdict.mjs typescript/tools/probe-verdict.test.mjs typescript/tsconfig.json src include test CMakeLists.txt
+Exit: 0; no protected-path changes
+Native build entry count: 32
+Guest baseline: inherited accepted TS-030A 211/211 per lane; not rerun.
+Tracked changes before adding new owned files:
+typescript/COORDINATION.md
+typescript/TASKS.md
+typescript/package-lock.json
+typescript/package.json
+COORDINATION.md is a concurrent coordinator-owned edit, preserved and excluded from this commit.

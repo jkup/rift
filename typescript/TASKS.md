@@ -1675,8 +1675,33 @@ Coordinator acceptance: TS-031P accepted6faae58 (deliverybd1390a), 2026-11-02. F
 
 ### TS-031A — Host-only test262 planning and pure classification
 
-Status: **ready**. Owner: unclaimed. Prerequisite accepted TS-031P. Implement only first slice in docs/test262-classification.md: exact local corpus bytes/hash/UTF-8 and metadata validation, variant planning, preflight blockers, closed structured-record validation and pure classifier, ledger/report counts. No guest subprocess launching or engine integration. Production host tooling belongs tools/test262/; meaningful Node test files alongside it; own additive package script and evidence docs/validation/ts-031a/ plus TASKS handoff. No src/, guest fixtures/drivers, existing runner/probe changes, C++, pins or Claude outputs. Coordinator owns COORDINATION.
+Status: **review needed**. Owner: Codex implementation chat `01a19c10-69ec-7811-81b1-12f12cf8d344`, base `83e0eaa`, 2026-11-02. Prerequisite accepted TS-031P. Implement only first slice in docs/test262-classification.md: exact local corpus bytes/hash/UTF-8 and metadata validation, variant planning, preflight blockers, closed structured-record validation and pure classifier, ledger/report counts. No guest subprocess launching or engine integration. Production host tooling belongs tools/test262/; meaningful Node test files alongside it; own additive package script and evidence docs/validation/ts-031a/ plus TASKS handoff. No src/, guest fixtures/drivers, existing runner/probe changes, C++, pins or Claude outputs. Coordinator owns COORDINATION.
 
 Use external local corpus root at exact revision, explicit input paths and verified blobs; never execute upstream code with host eval/Function/vm. No implicit downloads or checked-in upstream corpus. If YAML library needed, use a narrowly scoped pinned host-only dependency with recorded provenance/license/choice; preserve existing pinned toolchains and keep it out of native engine imports. Do not invent an incomplete YAML parser that silently accepts ambiguous input. Fail closed for unknown/malformed execution metadata and result fields, duplicate keys, invalid identities and contradictory results. Restrict production selection to frozen33 entries; synthetic fixtures exercise faults independently without weakening production identity checks. All current profiles remain blocked: no corpus pass claims.
 
 Implement all applicable I/V/T rows and synthetic O classifier rows with literal expected statuses/reasons/effects/counts. H/C semantic rows remain pending engine/harness prerequisites; map each115 row explicitly to exercised host assertion or honest deferred prerequisite. A synthetic success is never an executed corpus result. Validate same33-file60-variant ledger separately for both lane identities, preserve unknown denominators/cancellation/retries, no denominator shrink. Tests must catch malformed UTF-8/BOM preservation, path escapes, metadata drift, forged output/envelopes, wrong phases/types, guards, crashes after nominal success and harness-stage failures. No caching, profile admission, real Error-object claim, runner spawning, or support expansion. Run additive tests and typecheck/existing runner regressions; runtime/native rebuild not needed if engine/build/guest paths are unchanged, but prove that exact preservation and leave211/32 evidence unchanged. Commit/push tested host-only milestone and stop for independent review; no main merge/successor.
+
+TS-031A handoff (2026-11-02): host-only tools/test262 implements frozen local
+byte/blob/UTF-8 verification, YAML metadata and ordered variants/harness planning,
+closed structured envelopes and pure classification, immutable selection and
+explicit retry records, atomic persistence and separate lane reports. Exact
+host-only yaml@2.8.3 dependency (ISC; lock integrity; zero install audit findings)
+adds no native imports or toolchain changes. CLI never downloads or launches code.
+
+Validation: additive host suite58/58, explicit local corpus integration4/4,
+typecheck exit0, existing runner20/20. Manually prepared external pinned36-file
+export; all33 tests plus3 harness blobs verified. Actual production preflight
+retains33 files/60 variants independently per lane (30 strict,28 non-strict,1 raw,
+1 module):19 unsupported-feature,41 unsupported-profile, zero executed/pass/fail,
+zero input errors. Pass/planned0/60; conditional0/0 undefined; adapter report exit1.
+All115 accepted matrix rows mapped to host assertions or explicit deferred H/C
+semantic prerequisites. Full evidence/initial and final ledgers/report vectors:
+docs/validation/ts-031a/. Synthetic successes are not corpus executions.
+
+Protected runtime/guest/build/runner/probe paths unchanged from83e0eaa;32 native
+entries preserved. Accepted211/211 per lane remains inherited evidence, not a
+new native/probe/guest run. No C++, Claude research, PR79, engine, profile admission,
+real Error object, subprocess supervisor, caching or successor work. Current all-
+blocked profiles are enforced even against synthetic success injection. Missing
+includes preserve known variant counts; malformed metadata retains unknown counts.
+Independent acceptance pending; commit/push coherent milestone then stop.
