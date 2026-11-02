@@ -9,7 +9,7 @@ claim that all coercion cases are supported.
 |---|---|---|
 | Lexing | ASCII identifiers including `$`/`_`; decimal integer/fraction literals starting with a digit; single/double quoted UTF-16 strings; space/tab; CR/LF/CRLF/U+2028/U+2029 line boundaries; line/block comments | No identifier escapes/Unicode identifiers, radix/exponent/separator numbers, leading-zero integers, templates or regex. String escapes only quote, backslash, n/r/t. Raw U+2028/U+2029 are preserved inside strings; raw CR/LF are rejected. |
 | Literals/values | number, string, boolean, null; undefined/NaN/Infinity bindings; ordinary object/function identity | No bigint or symbol. NaN uses strict-equality semantics; console renders signed zero as `0`. |
-| Expressions | parentheses; + - * / % and unary +/-; < <= > >=, === !==, !; short-circuit &&/\|\|; assignment; conditional `test ? consequent : alternate` | Numeric operators use number-hint ordinary conversion; addition converts both operands with default hint before string/numeric selection. Relational operators convert in source order with number hint, compare two strings by UTF-16 code units, otherwise compare numbers with all NaN comparisons false. Own/inherited valueOf/toString methods work on ordinary objects, arrays and functions; default ordinary objects convert through inherited Object valueOf/toString to [object Object] (numeric NaN). Boolean/String wrappers use their standard payload methods. Arrays/functions/Number wrappers temporarily inherit tag strings; their standard conversion overrides remain deferred. Both operand evaluations precede coercion. === !==, truthiness and Number predicates never coerce. Conditional precedence, selected-arm evaluation and existing bounds remain unchanged. No BigInt, loose equality, comma, bitwise, update, compound assignment, nullish coalescing or optional chaining. |
+| Expressions | parentheses; + - * / % and unary +/-; < <= > >=, === !==, !; short-circuit &&/\|\|; assignment; conditional `test ? consequent : alternate` | Numeric operators use number-hint ordinary conversion; addition converts both operands with default hint before string/numeric selection. Relational operators convert in source order with number hint, compare two strings by UTF-16 code units, otherwise compare numbers with all NaN comparisons false. Own/inherited valueOf/toString methods work on ordinary objects, arrays and functions; default ordinary objects convert through inherited Object valueOf/toString to [object Object] (numeric NaN). Boolean/String wrappers use their standard payload methods. Number wrappers return numeric payloads for default/number hints and inherited tag strings for string hints. Arrays/functions retain interim tag defaults. Both operand evaluations precede coercion. === !==, truthiness and Number predicates never coerce. Conditional precedence, selected-arm evaluation and existing bounds remain unchanged. No BigInt, loose equality, comma, bitwise, update, compound assignment, nullish coalescing or optional chaining. |
 | Statements | semicolon-terminated expressions and let; blocks, if/else, while, function declarations, return, throw, unlabelled break/continue, empty statement | Semicolons required; no ASI, var/const, for/do, switch, try/catch/finally or labels. Declarations as if/while bodies require braces. Return/throw expressions cannot start on a later line. |
 | Scope | Block lexical bindings, TDZ, mutable captured bindings, function hoisting in their declaration list, recursion, shadowing in nested blocks | One let binding per declaration. Duplicate names/parameters rejected, including function declarations sharing a parameter name. Global builtin names cannot be redeclared. Separate Script global environments and Annex B deferred. |
 | Functions | Declarations and anonymous expressions, simple parameters, left-to-right argument effects, missing args undefined/excess args evaluated, return/fallthrough, own properties | No named function expressions, arrows, rest/default/destructuring parameters, constructors, classes, argument objects, generators/async. Strict-call profile regardless of directives; detached and top-level this are undefined. |
@@ -131,7 +131,7 @@ explicit String object; neither performs implicit boxing.
 These are host/internal APIs. Primitive member access still fails, receivers stay
 unchanged, Number remains a noncallable namespace, and no wrapper globals,
 constructors are installed; TS-020 adds Boolean/String conversion methods. Direct primitive converters
-still reject every object. TS-018B installs Object.valueOf and TS-019C installs Object.toString; Number wrappers temporarily inherit tag-string defaults; TS-020 adds Boolean/String payload methods. Symbols are covered by TS-019A/B/C; accessors and proxies remain deferred. Keys and
+still reject every object. TS-018B installs Object.valueOf and TS-019C installs Object.toString; Number wrappers use TS-021A numeric valueOf but retain inherited string-hint tags; TS-020 adds Boolean/String payload methods. Symbols are covered by TS-019A/B/C; accessors and proxies remain deferred. Keys and
 snapshots allocate proportional to string length; no huge-string resource claim
 is made. [Acceptance evidence and W1-W19 map](validation/ts-018a/README.md).
 
@@ -207,3 +207,15 @@ continues boxing and Object.toString continues tag lookup. Direct converters
 reject objects and primitive member access remains unsupported. No constructors,
 globals, backlinks, Number/Array/Function overrides or other String methods.
 [M1-M8 evidence and migrations](validation/ts-020/README.md).
+
+### Number valueOf (TS-021A)
+
+Fresh per-Realm valueOf extracts number primitives or genuine GuestNumber slots,
+including root +0 and foreign/relinked boxes, preserving -0 and NaN. Its body
+has no property reads, coercion or ticks. Default/number conversion uses actual
+lookup (two ticks, one call); string hints and computed keys still use inherited
+Object.toString and [object Number] (three ticks, one call). Deletion exposes
+Object.valueOf and fresh fallback lookup. Direct converters still reject boxes.
+The existing Number namespace remains noncallable; no constructors or implicit
+boxing are added. Number.toString and radix formatting remain blocked by the
+accepted TS-021P semantic evidence. [N matrices and validation](validation/ts-021a/README.md).

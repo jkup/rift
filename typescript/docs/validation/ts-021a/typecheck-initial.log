@@ -1,0 +1,5 @@
+
+> typecheck
+> tsc -p tsconfig.json
+
+test/number-conversions.ts(69,97): error TS2341: Property 'extensible' is private and only accessible within class 'GuestObject'.

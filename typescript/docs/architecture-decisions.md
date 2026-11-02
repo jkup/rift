@@ -738,3 +738,20 @@ Array/Function/Boolean/Number/String default conversion remains deliberately
 partial until separate standard overrides are implemented. Symbol boxes retain
 B2 behavior. Primitive-only converters and implicit-member-boxing rejection stay.
 See [both T matrices, migration inventory and validation](validation/ts-019c/README.md).
+
+## Number slot extraction without formatting (TS-021A)
+
+thisNumberValue returns NumberCompletion from a number Value or genuine
+GuestNumber.numberData; prototype ancestry and guest properties cannot supply a
+slot. registerNumberConversions installs only valueOf using registerBuiltin.
+The existing root retains +0 and gains exactly one own key, valueOf. No helper
+or body tick is added. The shared ToPrimitive algorithm remains unchanged:
+numeric/default hints find the payload method, while string hints still find
+Object.toString. Deleted/shadowed/replaced methods therefore retain ordinary
+observable lookup and fallback behavior, without a slot shortcut in coercion.
+
+This implements the accepted fixed-2025/pinned-engine design in
+[number-prototype-conversions.md](number-prototype-conversions.md), limited to
+valueOf. Full Number.toString remains blocked on a separately validated radix
+backend. No production compiler workaround or primitive-converter contract change.
+[Validation and migration audit](validation/ts-021a/README.md).

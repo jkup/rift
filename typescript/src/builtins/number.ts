@@ -1,5 +1,8 @@
+import { GuestNumber } from "../primitive-objects.js";
+import type { NumberCompletion } from "../conversion.js";
+import type { Location } from "../syntax.js";
 import type { Realm } from "../realm.js";
-import { GuestObject, normal, UNDEFINED, type Builtin } from "../runtime.js";
+import { GuestObject, failure, normal, UNDEFINED, type Builtin, type Value } from "../runtime.js";
 
 // A deliberately partial namespace: Number conversion and construction are deferred.
 export function registerNumber(realm: Realm): void {
@@ -25,4 +28,21 @@ export function registerNumber(realm: Realm): void {
 
 function registerPredicate(realm: Realm, namespace: GuestObject, name: string, invoke: Builtin): void {
     realm.registerBuiltin(namespace, name, 1, invoke);
+}
+
+// Slots survive prototype relinking; Number.prototype itself holds genuine +0.
+export function thisNumberValue(input: Value, loc: Location): NumberCompletion {
+    if (input.kind === "number") return { type: "normal", value: input.value };
+    if (input.kind === "object" && input.object instanceof GuestNumber) {
+        return { type: "normal", value: input.object.numberData };
+    }
+    return failure("TypeError", "receiver is not a number", loc);
+}
+
+export function registerNumberConversions(realm: Realm): void {
+    realm.registerBuiltin(realm.numberPrototype, "valueOf", 0, (receiver, _args, _context, loc) => {
+        const result = thisNumberValue(receiver, loc);
+        if (result.type === "throw") return result;
+        return normal({ kind: "number", value: result.value });
+    });
 }

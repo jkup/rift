@@ -1006,7 +1006,7 @@ Coordinator acceptance: TS-021P accepted `b27d756` on 2026-11-02. Reviewed full 
 
 ### TS-021A — Number.prototype.valueOf only
 
-Status: **ready for assignment**. Prerequisite accepted TS-021P `b27d756`. Implement only its smallest next atomic assignment in docs/number-prototype-conversions.md, N1-N8 plus metadata, budgets/mutation, runtime-consumer and migration matrices for the valueOf-only stage. Own src/builtins/number.ts, minimal Realm registration, new test/number-conversions.ts imported by existing object-valueof driver, runtime-read fixture, precise affected realms/Boolean-String tests and scoped docs/validation/ts-021a/. Coordinator owns COORDINATION.md; Claude paths reserved.
+Status: **in progress**. Owner: Codex TS-021A chat `01a19a57-fdc2-7892-a80c-5e94042d6d78`, branch `codex/primitive-computed-keys`, accepted base `5d57374`, dispatch checkout `9352a9f`. Prerequisite accepted TS-021P `b27d756`. Implement only its smallest next atomic assignment in docs/number-prototype-conversions.md, N1-N8 plus metadata, budgets/mutation, runtime-consumer and migration matrices for the valueOf-only stage. Own src/builtins/number.ts, minimal Realm registration, new test/number-conversions.ts imported by existing object-valueof driver, runtime-read fixture, precise affected realms/Boolean-String tests and scoped docs/validation/ts-021a/. Coordinator owns COORDINATION.md; Claude paths reserved.
 
 Use thisNumberValue returning existing NumberCompletion and registerNumberConversions installing only valueOf/name valueOf/length0 using registerBuiltin. Primitive or genuine GuestNumber payload accepted, including root+0, foreign/relinked/subclass boxes; preserve SameValue -0/NaN/infinities. Other receivers fail with located TypeError `receiver is not a number` without Get/coercion/boxing/ticks. No guest property/prototype can forge a slot. Ignore argument values while preserving normal expression evaluation before invocation. Number root keys exactly valueOf; namespace constants/predicates/noncallability/global binding untouched. Metadata, defining-Realm ownership/freshness/functionPrototype follow established methods.
 
@@ -1015,3 +1015,21 @@ Implement all valueOf-stage expected results from design: N1-N8, no receiver rea
 Repeat and record the design migration inventory before editing expectations. Change only Number root/inherited-method/numeric-hint sites; retain Array/Function interim tags and precise prior negatives/budgets. Preserve164cases/23gates using existing driver; no denominator reduction or gate relaxation. Readable multiline setup/effectful bodies and typed tables, fixed diagnostic positions, meaningful independent expected outcomes required.
 
 No Number toString/radix backend/decimal formatter changes: full formatting remains blocked by confirmed exact-rational failures. No other Number methods, globals/constructors/backlinks, Array/Function overrides, implicit boxing, accessors/proxies, parser or async expansion. Consult fixed spec/pinned engine evidence as needed; require typecheck, runner/probes, full rebuilt Node/native and every static-only/separate coverage gate. Retain compiler failures/reductions before workarounds; preserve pins/import/annotations. No C++/Claude/COORDINATION edits, branch switching/main merge/successors. Commit/push tested coherent work and stop for independent review.
+
+
+TS-021A handoff (2026-11-02): implementation complete, awaiting independent
+coordinator acceptance. Added thisNumberValue/NumberCompletion and only fresh
+per-Realm Number valueOf. Genuine +0 root and all exact payloads preserved;
+no body ticks/reads/coercion, namespace unchanged. Existing object-valueof driver
+now includes N1-N8, metadata/Realm/budget/mutation/consumer matrices and readable
+runtime-read fixture. Only the four frozen Number expectation sites migrated;
+Array/Function tags and previous negatives remain. String hints/keys intentionally
+retain inherited [object Number]. Typecheck PASS, runner20/20, probes10/10,
+rebuilt Node/native164/164 each, no skips; all23 static-only/separate coverage
+gates PASS (CLI1357, object-valueof2647). Retained Zig sandbox failure and the
+separate-coverage failure for an inferred-never throwing test hook. Three-statement
+reduction retained before explicit ValueCompletion annotation; no production
+workaround/pin/gate changes. Final full lanes rebuilt after that annotation.
+Evidence/migrations: docs/validation/ts-021a/README.md. No C++/Claude/COORDINATION
+edit, branch switch/main merge, formatting backend or successor implementation.
+Commit/push bounded milestone and stop for review; Number.toString remains blocked.

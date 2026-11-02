@@ -295,13 +295,13 @@ function testLookupAndBoundaries(): void {
     const realm = new Realm((_line) => {});
     const evaluator = new Evaluator(realm);
     const rows: { object: GuestObject; tag: string }[] = [
-        { object: realm.createNumberObject(2), tag: "Number" },
         { object: realm.createArray(), tag: "Array" },
         { object: realm.functionPrototype, tag: "Function" },
     ];
     for (const row of rows) {
         expect(toPrimitive(obj(row.object), "default", evaluator.context, loc), str("[object " + row.tag + "]"), "M8 retained interim defaults");
     }
+    expect(toPrimitive(obj(realm.createNumberObject(2)), "default", evaluator.context, loc), num(2), "N Number default payload");
     const identity = new GuestSymbol("boundary");
     const symbolBox = obj(realm.createSymbolObject(identity));
     expect(toPrimitive(symbolBox, "default", evaluator.context, loc), { kind: "symbol", value: identity }, "M8 Symbol protocol retained");

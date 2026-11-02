@@ -1,0 +1,579 @@
+typescript/test\array-literals.ts:89:    check(evaluator.steps === 5, "three holes cost five total ticks");
+typescript/test\array-literals.ts:100:check(nestedBudget.type === "throw" && nestedBudget.diagnostic.name === "RangeError" && nestedBudget.diagnostic.loc.column === 13 && nestedEval.steps === 7, "nested slots share budget");
+typescript/test\array-literals.ts:102:check(program("let a = [1];", presentEval).type === "throw" && presentEval.steps === 4, "present slot charged before expression");
+typescript/test\array-literals.ts:104:check(program("let a = [" + ",".repeat(50000) + "];", largeEval).type === "throw" && largeEval.steps === 21, "large sparse literal bounded");
+typescript/test\array-storage.ts:84:const inherited = new GuestArray(); bool(inherited.setPrototypeOf(parent), true);
+typescript/test\array-storage.ts:85:bool(defineLength(inherited, { value: num(6) }), true);
+typescript/test\array-storage.ts:86:check(inherited.getOwnProperty("4") === undefined && inherited.get("4") === parentValue, "inherited hole read");
+typescript/test\array-storage.ts:87:bool(defineLength(inherited, { value: num(0) }), true);
+typescript/test\array-storage.ts:88:check(inherited.get("4") === parentValue && parent.getOwnProperty("4") !== undefined, "shrink ignores inherited index");
+typescript/test\array-storage.ts:124:coercible.bootstrapDefine("valueOf", { value: obj(hook), writable: true, enumerable: true, configurable: true });
+typescript/test\array-storage.ts:125:coercible.bootstrapDefine("toString", { value: obj(hook), writable: true, enumerable: true, configurable: true });
+typescript/test\array-length-coercion.ts:114:for (const inherited of [false, true]) {
+typescript/test\array-length-coercion.ts:118:    put(parent, "valueOf", binding(active, "replacement"));
+typescript/test\array-length-coercion.ts:122:        if (inherited) bool(rhs.internalDelete("valueOf"), true);
+typescript/test\array-length-coercion.ts:123:        else put(rhs, "valueOf", binding(active, "replacement"));
+typescript/test\array-length-coercion.ts:149:    for (const inherited of [false, true]) {
+typescript/test\array-length-coercion.ts:153:            if (inherited) {
+typescript/test\array-length-coercion.ts:155:                put(parent, "valueOf", object(rhs).get("valueOf"));
+typescript/test\array-length-coercion.ts:156:                bool(object(rhs).internalDelete("valueOf"), true);
+typescript/test\array-length-coercion.ts:180:    if (mode === "noncallable") put(rhs, "valueOf", num(1));
+typescript/test\array-length-coercion.ts:181:    else put(rhs, "valueOf", binding(active, "objectResult"));
+typescript/test\array-length-coercion.ts:183:        bool(rhs.internalDelete("valueOf"), true);
+typescript/test\array-length-coercion.ts:184:        bool(rhs.internalDelete("toString"), true);
+typescript/test\array-length-coercion.ts:186:    if (mode === "both-object") put(rhs, "toString", binding(active, "objectResult"));
+typescript/test\array-length-coercion.ts:189:        error(result, mode === "missing" ? "RangeError" : "TypeError", mode === "missing" ? "invalid array length" : "cannot convert object to primitive");
+typescript/test\array-length-coercion.ts:207:        check(receiver === this.original && at === loc && key === "valueOf", "lookup original receiver/location/hint");
+typescript/test\array-length-coercion.ts:222:        put(rhs, "valueOf", builtin(active.context.realm, (receiver, args, context, at) => {
+typescript/test\array-length-coercion.ts:281:    check(sameValue(target.get("note"), num(9)) && sameValue(parent.get("8"), num(88)), "nonindex/inherited indices retained");
+typescript/test\array-length-coercion.ts:305:    const before = active.steps;
+typescript/test\array-length-coercion.ts:308:    check(active.steps === before, "readonly Set zero helper ticks");
+typescript/test\array-length-coercion.ts:378:    const before = active.steps;
+typescript/test\array-length-coercion.ts:381:    check(active.steps === before, "absent value adds no ticks");
+typescript/test\array-length-coercion.ts:424:    put(inner, "valueOf", builtin(active.context.realm, (_receiver, _args, context, _at) => {
+typescript/test\array-length-coercion.ts:431:    put(object(binding(active, "rhs")), "valueOf", binding(active, name));
+typescript/test\array-length-coercion.ts:439:    const before = active.steps;
+typescript/test\array-length-coercion.ts:443:    check(active.steps > before && active.calls === 0 && active.depth === 0, "shared steps and cleanup");
+typescript/test\array-length-coercion.ts:450:    active.maxSteps = active.steps + 1000;
+typescript/test\array-length-coercion.ts:451:    put(object(binding(active, "rhs")), "valueOf", binding(active, name));
+typescript/test\array-length-coercion.ts:474:    put(badKey, "toString", binding(active, "throwing"));
+typescript/test\array-length-coercion.ts:494:    put(rhs, "valueOf", builtin(active.context.realm, (receiver, args, context, at): Completion => {
+typescript/test\array-length-coercion.ts:541:        check(key === (this.reads % 2 === 1 ? "valueOf" : "toString"), "fallback lookup order");
+typescript/test\array-length-coercion.ts:556:        put(rhs, "valueOf", num(9));
+typescript/test\array-length-coercion.ts:557:        put(rhs, "toString", builtin(active.context.realm, (receiver, args, context, at) => {
+typescript/test\addition.ts:158:// Hook-bearing ordinary objects, arrays and functions convert with exactly one valueOf call.
+typescript/test\addition.ts:164:operand.valueOf = function() {
+typescript/test\addition.ts:168:operand.toString = function() {
+typescript/test\addition.ts:201:        operand.bootstrapDefine("valueOf", { value: builtin(symbolRealm, (_r, _args, _context, _at) => {
+typescript/test\boolean-string-conversions.ts:7:import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from "../src/conversion.js";
+typescript/test\boolean-string-conversions.ts:78:        const methods = [family.root.get("toString"), family.root.get("valueOf")];
+typescript/test\boolean-string-conversions.ts:80:            keys(roots[r].ownPropertyKeys(), family.label === "string" ? ["length", "toString", "valueOf"] : ["toString", "valueOf"]);
+typescript/test\boolean-string-conversions.ts:81:            check(!sameValue(roots[r].get("toString"), roots[r].get("valueOf")), "distinct methods");
+typescript/test\boolean-string-conversions.ts:82:            for (const name of ["toString", "valueOf"]) {
+typescript/test\boolean-string-conversions.ts:107:            obj(a.createSymbolObject(new GuestSymbol("x"))), obj(a.symbolPrototype), obj(a.numberPrototype), obj(a.objectPrototype)];
+typescript/test\boolean-string-conversions.ts:131:                check(active.context.realm === a && active.calls === 0 && active.depth === 0 && active.steps === 0, "M4 cleanup/zero ticks");
+typescript/test\boolean-string-conversions.ts:134:                check(active.context.realm === a && active.calls === 0 && active.steps === 0, "M4 shared call guard");
+typescript/test\boolean-string-conversions.ts:138:        for (const mode of ["steps", "host"]) {
+typescript/test\boolean-string-conversions.ts:156:            check(hostFault === (mode === "host") && shared.steps === 2 && shared.context.realm === a
+typescript/test\boolean-string-conversions.ts:170:            expect(evaluator.call(b.booleanPrototype.get("valueOf"), receiver, [ignored], loc), { kind: "boolean", value: payload }, "M2 Boolean payload");
+typescript/test\boolean-string-conversions.ts:171:            expect(evaluator.call(b.booleanPrototype.get("toString"), receiver, [ignored], loc), str(payload ? "true" : "false"), "M2 Boolean text");
+typescript/test\boolean-string-conversions.ts:183:            for (const name of ["toString", "valueOf"]) expect(evaluator.call(b.stringPrototype.get(name), receiver, [ignored], loc), str(payload), "M2 UTF-16 payload");
+typescript/test\boolean-string-conversions.ts:202:        const saved = [root.get("toString"), root.get("valueOf")];
+typescript/test\boolean-string-conversions.ts:215:            const before = evaluator.steps;
+typescript/test\boolean-string-conversions.ts:217:            keys(box.reads, [wellKnownToPrimitive, hint === "string" ? "toString" : "valueOf"]);
+typescript/test\boolean-string-conversions.ts:218:            check(calls === 1 && evaluator.steps === before + 2, "M5 exact work");
+typescript/test\boolean-string-conversions.ts:222:        const beforeLength = evaluator.steps;
+typescript/test\boolean-string-conversions.ts:226:        keys(box.reads, [wellKnownToPrimitive, "valueOf", wellKnownToPrimitive, "valueOf"]);
+typescript/test\boolean-string-conversions.ts:227:        check(evaluator.steps === beforeLength + 4, "M6 two uncached conversions");
+typescript/test\boolean-string-conversions.ts:229:        for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {
+typescript/test\boolean-string-conversions.ts:231:            error(converted, "object-to-primitive conversion unsupported");
+typescript/test\boolean-string-conversions.ts:236:        check(noSteps.steps === 1 && box.reads.length === 0, "M5 guard before Get");
+typescript/test\boolean-string-conversions.ts:237:        expect(evaluator.call(realm.objectPrototype.get("valueOf"), boxed, [], loc), boxed, "M8 Object valueOf identity");
+typescript/test\boolean-string-conversions.ts:238:        const boxedAgain = result(evaluator.call(realm.objectPrototype.get("valueOf"), payload, [], loc));
+typescript/test\boolean-string-conversions.ts:241:        expect(evaluator.call(realm.objectPrototype.get("toString"), boxed, [], loc), str("[object " + tag + "]"), "M8 Object tag unchanged");
+typescript/test\boolean-string-conversions.ts:243:        expect(evaluator.call(realm.objectPrototype.get("toString"), boxed, [], loc), str("[object Custom]"), "M8 tag property");
+typescript/test\boolean-string-conversions.ts:245:        root.internalDelete("toString");
+typescript/test\boolean-string-conversions.ts:247:        check(untouchedRoot.getOwnProperty("toString") !== undefined, "M1 mutation isolation");
+typescript/test\boolean-string-conversions.ts:250:        let before = evaluator.steps;
+typescript/test\boolean-string-conversions.ts:251:        expect(toPrimitive(boxed, "string", context, loc), str("[object " + tag + "]"), "M5 deleted toString exposes Object");
+typescript/test\boolean-string-conversions.ts:252:        keys(box.reads, [wellKnownToPrimitive, "toString", wellKnownToStringTag]);
+typescript/test\boolean-string-conversions.ts:253:        check(calls === 1 && evaluator.steps === before + 3, "M5 deleted toString work");
+typescript/test\boolean-string-conversions.ts:255:        put(root, "toString", saved[0]);
+typescript/test\boolean-string-conversions.ts:256:        root.internalDelete("valueOf");
+typescript/test\boolean-string-conversions.ts:259:        before = evaluator.steps;
+typescript/test\boolean-string-conversions.ts:260:        expect(toPrimitive(boxed, "number", context, loc), text, "M5 inherited Object valueOf falls back");
+typescript/test\boolean-string-conversions.ts:261:        keys(box.reads, [wellKnownToPrimitive, "valueOf", "toString"]);
+typescript/test\boolean-string-conversions.ts:262:        check(calls === 2 && evaluator.steps === before + 3, "M5 deletion fallback work");
+typescript/test\boolean-string-conversions.ts:264:        put(box, "valueOf", obj(realm.createBuiltin("replaceNext", 0, (receiver, _args, _c, _at) => {
+typescript/test\boolean-string-conversions.ts:265:            put(box, "toString", replacement);
+typescript/test\boolean-string-conversions.ts:270:        before = evaluator.steps;
+typescript/test\boolean-string-conversions.ts:272:        keys(box.reads, [wellKnownToPrimitive, "valueOf", "toString"]);
+typescript/test\boolean-string-conversions.ts:273:        check(calls === 2 && evaluator.steps === before + 3, "M5 fresh lookup work");
+typescript/test\boolean-string-conversions.ts:274:        expect(evaluator.call(saved[1], boxed, [], loc), payload, "M4 saved valueOf");
+typescript/test\boolean-string-conversions.ts:276:        put(box, "valueOf", objectResult);
+typescript/test\boolean-string-conversions.ts:277:        put(box, "toString", objectResult);
+typescript/test\boolean-string-conversions.ts:280:        before = evaluator.steps;
+typescript/test\boolean-string-conversions.ts:281:        error(toPrimitive(boxed, "number", context, loc), "cannot convert object to primitive");
+typescript/test\boolean-string-conversions.ts:282:        keys(box.reads, [wellKnownToPrimitive, "valueOf", "toString"]);
+typescript/test\boolean-string-conversions.ts:283:        check(calls === 2 && evaluator.steps === before + 3, "M5 both-object exact work");
+typescript/test\boolean-string-conversions.ts:290:        box.internalDelete("valueOf");
+typescript/test\boolean-string-conversions.ts:291:        box.internalDelete("toString");
+typescript/test\boolean-string-conversions.ts:293:        error(toPrimitive(boxed, "number", context, loc), "cannot convert object to primitive");
+typescript/test\boolean-string-conversions.ts:308:    expect(evaluator.call(realm.objectPrototype.get("toString"), symbolBox, [], loc), str("[object Symbol]"), "M8 Symbol tag retained");
+typescript/test\array-like.ts:25:    check(result.diagnostic.message === "object-to-primitive conversion unsupported", "explicit boundary");
+typescript/test\array-like.ts:57:check(array.getOwnProperty("1") === undefined, "inherited index stays hole");
+typescript/test\array-like.ts:125:const inherited = new GuestObject();
+typescript/test\array-like.ts:126:boolean(inherited.setPrototypeOf(ordinary), true);
+typescript/test\array-like.ts:128:numeric(lengthOfArrayLike(inherited, active.context, loc), 8);
+typescript/test\array-like.ts:129:inherited.bootstrapDefine("length", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
+typescript/test\array-like.ts:130:numeric(lengthOfArrayLike(inherited, active.context, loc), 0);
+typescript/test\array-like.ts:131:boolean(inherited.internalDelete("length"), true);
+typescript/test\array-like.ts:132:numeric(lengthOfArrayLike(inherited, active.context, loc), 8);
+typescript/test\array-like.ts:137:check(missing.type === "throw" && missing.diagnostic.message === "cannot convert object to primitive" && missing.diagnostic.loc === loc, "no-method length failure");
+typescript/test\array-like.ts:173:parent.bootstrapDefine("valueOf", { value: o(method), writable: true, enumerable: true, configurable: true });
+typescript/test\definition-dispatch.ts:90:const inherited = new DefinitionObject();
+typescript/test\definition-dispatch.ts:91:boolean(inherited.setPrototypeOf(base), true);
+typescript/test\definition-dispatch.ts:92:inherited.mode = "throw";
+typescript/test\definition-dispatch.ts:93:boolean(inherited.internalSet("locked", rhs, obj(inherited), keyContext, loc), false);
+typescript/test\definition-dispatch.ts:95:    boolean(inherited.internalSet("new", rhs, primitive, keyContext, loc), false);
+typescript/test\definition-dispatch.ts:97:check(inherited.calls === 0, "inherited readonly and primitive rejection before definition");
+typescript/test\definition-dispatch.ts:154:// P1/P3: setup bypasses semantics, inherited Set retains context, and ordinary
+typescript/test\definition-dispatch.ts:165:const inheritedWrite = child.set("x", rhs, active.context, loc);
+typescript/test\definition-dispatch.ts:166:check(inheritedWrite.type === "normal" && inheritedWrite.value === rhs, "inherited write original RHS");
+typescript/test\definition-dispatch.ts:167:check(child.calls === 1 && child.seenContext === active.context && child.seenLocation === loc, "inherited context and location");
+typescript/test\definition-dispatch.ts:170:check(active.steps === 0 && active.calls === 0 && keyEvaluator.steps === 0, "ordinary writes add no ticks or calls");
+typescript/test\definition-dispatch.ts:186:check(keyEvaluator.steps === 0 && keyEvaluator.calls === 0, "W18 no execution work");
+typescript/test\conversion.ts:3:import { toString, toIntegerOrInfinity, toLength } from "../src/conversion.js";
+typescript/test\conversion.ts:112:object.bootstrapDefine("valueOf", { value: { kind: "object", object: hook }, writable: true, enumerable: true, configurable: true });
+typescript/test\conversion.ts:113:object.bootstrapDefine("toString", { value: { kind: "object", object: hook }, writable: true, enumerable: true, configurable: true });
+typescript/test\conversion.ts:118:        check(result.diagnostic.message === "object-to-primitive conversion unsupported", "explicit unsupported boundary");
+typescript/test\conversion.ts:130:const symbolString = toString(symbolValue, loc);
+typescript/test\function-call.ts:104:const before = e.steps;
+typescript/test\function-call.ts:106:check(result(inspected) === second && visits === 1 && e.steps === before && e.calls === 0, "builtin forwarding adds zero ticks");
+typescript/test\function-call.ts:184:// Forwarding itself consumes no steps, even with a zero step budget.
+typescript/test\function-call.ts:187:check(result(withoutSteps) === UNDEFINED && zeroSteps.steps === 0, "no synthetic tick");
+typescript/test\function-call.ts:193:check(oneCall.calls === 0 && oneCall.steps === 0, "depth rejection cleanup and validation order");
+typescript/test\function-call.ts:197:check(noCalls.calls === 0 && noCalls.steps === 0, "outer call guard before entry");
+typescript/test\function-call.ts:201:check(recursive.calls === 0 && recursive.steps === 10, "recursive .call exact depth/ticks");
+typescript/test\function-call.ts:212:check(budget.steps === 2 && budget.calls === 0, "shared monotonic tick budget");
+typescript/test\function-call.ts:215:check(budget.steps === 3 && budget.calls === 0, "no fresh budget on reentry");
+typescript/test\array-map.ts:184:check(firstEmptyResult !== secondEmptyResult && zeroBudget.steps === 0, "fresh empty/no ticks");
+typescript/test\array-map.ts:192:for (const inherited of [false, true]) {
+typescript/test\array-map.ts:194:    if (inherited) {
+typescript/test\array-map.ts:230:check(sparseBudget.steps === 4 && sparseBudget.calls === 0, "huge budget");
+typescript/test\array-map.ts:232:// Presence distinguishes own undefined, a hole, and an inherited element.
+typescript/test\array-map.ts:271:// Deletion skips an absent future index or exposes its inherited fallback.
+typescript/test\array-map.ts:272:for (const inherited of [false, true]) {
+typescript/test\array-map.ts:276:    if (inherited) {
+typescript/test\array-map.ts:289:    if (inherited) {
+typescript/test\array-map.ts:296:// Shrinking the source array still leaves inherited future elements visible.
+typescript/test\array-map.ts:400:check(constants === 3 && builtinBudget.steps === 4 && builtinBudget.calls === 0, "builtin loop bounded");
+typescript/test\array-map.ts:412:check(nestedBudget.steps === 4 && nestedBudget.calls === 0 && constants === 3, "nested exact ticks");
+typescript/test\array-map.ts:472:    conversionError.type === "throw" && conversionError.diagnostic.message === "cannot convert object to primitive",
+typescript/test\array-map.ts:478:put(convertibleLength, "valueOf", builtin(realm, (_receiver, _args, _context, _at) => {
+typescript/test\array-map.ts:486:const inheritedUndefined = ordinary(num(1));
+typescript/test\array-map.ts:489:inheritedUndefined.setPrototypeOf(undefinedPrototype);
+typescript/test\array-map.ts:490:element(result(map(inheritedUndefined), 1), "0", UNDEFINED);
+typescript/test\array-map.ts:544:// G13 extends the existing traced ordering tests to inherited Realm roots.
+typescript/test\array-map.ts:549:        check(result(mapped, 3, resultRealm).getPrototypeOf() === resultRealm.arrayPrototype, "G13 inherited undefined constructor");
+typescript/test\array-map.ts:551:        check(mapped.type === "throw" && mapped.diagnostic.name === "TypeError" && mapped.diagnostic.message === "unsupported map constructor/species" && mapped.diagnostic.loc === loc, "G13 exact inherited species rejection");
+typescript/test\array-map.ts:557:const holeProgram = parse("let inheritedHoles = [,,];");
+typescript/test\array-map.ts:561:const holesBinding = sourceRealm.global.bindings.get("inheritedHoles");
+typescript/test\array-map.ts:563:const inheritedHoles = holesBinding.value.object;
+typescript/test\array-map.ts:565:hole(inheritedHoles, "0");
+typescript/test\array-map.ts:566:hole(inheritedHoles, "1");
+typescript/test\array-map.ts:567:check(sameValue(inheritedHoles.get("1"), num(8)), "G16 inherited index read");
+typescript/test\array-map.ts:568:const inheritedResult = result(mapObjectDefaultArray(inheritedHoles, identity, UNDEFINED, resultActive.context, loc), 2, resultRealm);
+typescript/test\array-map.ts:569:check(inheritedResult.getPrototypeOf() === resultRealm.arrayPrototype, "G16 result Realm");
+typescript/test\array-map.ts:570:element(inheritedResult, "1", num(8));
+typescript/test\array-map.ts:571:hole(inheritedResult, "0");
+typescript/test\array-map.ts:572:check(sourceRealm.arrayPrototype.internalDelete("1").type === "normal" && inheritedHoles.get("1").kind === "undefined" && resultRealm.arrayPrototype.get("1").kind === "undefined", "G16 deletion/isolation");
+typescript/test\array-map.ts:615:put(lengthA, "valueOf", builtin(mapA, (receiver, args, context, at) => {
+typescript/test\key-coercion.ts:7:import { toPropertyKey, toString, toNumber } from "../src/conversion.js";
+typescript/test\key-coercion.ts:74:        key.object.bootstrapDefine("toString", { value: builtin(active.context.realm, (receiver, args, context, _location) => {
+typescript/test\key-coercion.ts:106:check(run(capture, "let oldBase = target; let oldKey = key; function replace() { trace = trace + 'R'; oldKey.toString = function() { trace = trace + 'C'; return 'y'; }; target = {}; key = {}; return 11; } let assigned = base()[keyExpression()] = replace();").type === "normal", "capture write");
+typescript/test\key-coercion.ts:111:check(run(capture, "oldKey.toString = function() { oldBase.z = 12; return 'z'; }; let mutated = oldBase[oldKey];").type === "normal" && payload(binding(capture, "mutated")) === 12, "conversion mutation visible to Get");
+typescript/test\key-coercion.ts:121:    for (const inherited of [false, true]) {
+typescript/test\key-coercion.ts:127:                const owner = inherited ? new GuestObject() : object;
+typescript/test\key-coercion.ts:128:                if (inherited) object.setPrototypeOf(owner);
+typescript/test\key-coercion.ts:131:                    check(receiver === key && args.length === 0 && context === active.context, "inherited original key receiver");
+typescript/test\key-coercion.ts:135:                owner.bootstrapDefine("toString", { value: fallback === "first" ? method : fallback === "noncallable" ? num(8) : builtin(active.context.realm, (_r, _a, _c, _l) => normal(key)), writable: true, enumerable: true, configurable: true });
+typescript/test\key-coercion.ts:136:                owner.bootstrapDefine("valueOf", { value: fallback === "first" ? UNDEFINED : method, writable: true, enumerable: true, configurable: true });
+typescript/test\key-coercion.ts:152:    if (both) for (const name of ["toString", "valueOf"]) object.bootstrapDefine(name, { value: builtin(active.context.realm, (_r, _a, _c, _l) => normal(key)), writable: true, enumerable: true, configurable: true });
+typescript/test\key-coercion.ts:154:    check(result.type === "throw" && result.diagnostic.message === "cannot convert object to primitive" && result.diagnostic.loc === loc, "located no primitive result");
+typescript/test\key-coercion.ts:157:    stop = "toString";
+typescript/test\key-coercion.ts:165:for (const stop of ["toString", "valueOf"]) {
+typescript/test\key-coercion.ts:167:    check(toPropertyKey(obj(object), active.context, loc) === sentinel && object.reads === (stop === "toString" ? "toString;" : "toString;valueOf;"), "exact first/second Get throw");
+typescript/test\key-coercion.ts:177:    check(toPropertyKey(obj(object), context, loc) === sentinel && object.reads === (second ? "toString;" : ""), "exact tick throw");
+typescript/test\key-coercion.ts:181:check(run(arrays, "let a = []; let index = { toString: function() { return 2; } }; a[index] = 8; let lengthKey = { toString: function() { return 'length'; } }; a[lengthKey] = 2; let nonindex = { toString: function() { return '01'; } }; a[nonindex] = 9;").type === "normal", "array keys");
+typescript/test\key-coercion.ts:188:    const limited = setup(); limited.maxSteps = limited.steps + 250;
+typescript/test\key-coercion.ts:194:    key.bootstrapDefine("toString", { value: builtin(active.context.realm, (_r, _a, _c, _l): Completion => { if (mode === "host") throw new Error("host fault"); return { type: mode, value: UNDEFINED }; }), writable: true, enumerable: true, configurable: true });
+typescript/test\key-coercion.ts:201:const steps = first.steps;
+typescript/test\key-coercion.ts:202:check(run(first, "target[key];").type === "normal" && first.steps > steps && payload(binding(first, "trace")) === "CCC", "retained monotonic context");
+typescript/test\key-coercion.ts:204:check(toString(boundary, loc).type === "throw" && toNumber(boundary, loc).type === "throw" && payload(binding(second, "trace")) === "", "direct converters stay primitive-only");
+typescript/test\key-coercion.ts:207:check(run(mutation, "key.toString = function() { key.valueOf = function() { return 'x'; }; return {}; }; let changed = target[key];").type === "normal" && payload(binding(mutation, "changed")) === 7, "fresh fallback after mutation");
+typescript/test\numeric-operators.ts:143:// Hook-bearing ordinary objects, arrays and functions convert with exactly one valueOf call.
+typescript/test\numeric-operators.ts:147:        check(execute("let operand = " + objectSource + ";\nlet hooks = 0;\noperand.valueOf = function() { hooks = hooks + 1; return 6; };\noperand.toString = function() { hooks = hooks + 1; return '6'; };", realm).type === "normal", "hook setup");
+typescript/test\numeric-operators.ts:185:        operand.bootstrapDefine("valueOf", { value: builtin(symbolRealm, (_r, _args, _context, _at) => {
+typescript/test\fixtures\boolean-string-conversions.js:37:check(booleanRoot.toString.call(falseBox, argument(), argument()) === "false");
+typescript/test\fixtures\boolean-string-conversions.js:38:check(stringRoot.valueOf.call(stringBox, argument()) === "2");
+typescript/test\fixtures\boolean-string-conversions.js:40:let saved = stringRoot.valueOf;
+typescript/test\fixtures\boolean-string-conversions.js:41:stringRoot.valueOf = function() {
+typescript/test\fixtures\boolean-string-conversions.js:47:stringRoot.valueOf = saved;
+typescript/test\fixtures\boolean-string-conversions.js:50:let operand = {toString: function() {
+typescript/test\fixtures\boolean-string-conversions.js:66:    return booleanRoot.valueOf.call(stringBox);
+typescript/test\fixtures\boolean-string-conversions.js:69:    return stringRoot.toString.call(falseBox);
+typescript/test\fixtures\boolean-string-conversions.js:72:    return "x".toString;
+typescript/test\object-tostring.ts:82:    // Explicit initializer avoids the pinned compiler's inherited-field SC1090;
+typescript/test\object-tostring.ts:96:    const method = b.objectPrototype.get("toString");
+typescript/test\object-tostring.ts:101:        keys(realm.objectPrototype.ownPropertyKeys(), ["valueOf", "toString"], "Object keys");
+typescript/test\object-tostring.ts:102:        keys(realm.symbolPrototype.ownPropertyKeys(), ["toString", "valueOf", wellKnownToPrimitive, wellKnownToStringTag], "Symbol keys");
+typescript/test\object-tostring.ts:105:        const descriptor = realm.objectPrototype.getOwnProperty("toString");
+typescript/test\object-tostring.ts:107:        const own = realm.objectPrototype.get("toString");
+typescript/test\object-tostring.ts:112:        check(sameValue(own.object.get("name"), str("toString")) && sameValue(own.object.get("length"), num(0)), "metadata values");
+typescript/test\object-tostring.ts:122:        obj(a.objectPrototype), obj(a.functionPrototype), obj(a.arrayPrototype), obj(a.booleanPrototype), obj(a.numberPrototype), obj(a.stringPrototype), obj(a.symbolPrototype),
+typescript/test\object-tostring.ts:127:        const before = evaluator.steps;
+typescript/test\object-tostring.ts:129:        check(evaluator.steps - before === (i < 2 ? 0 : 1), "one tag tick or nullish fast path");
+typescript/test\object-tostring.ts:131:    for (const root of [a.arrayPrototype, a.functionPrototype, a.booleanPrototype, a.numberPrototype, a.stringPrototype]) {
+typescript/test\object-tostring.ts:145:    for (const key of ["toStringTag", "@@toStringTag", "Symbol.toStringTag", new GuestSymbol("Symbol.toStringTag")]) put(child, key, str("Impostor"));
+typescript/test\object-tostring.ts:149:        expect(evaluator.call(method, obj(child), [], loc), str("[object " + text + "]"), "inherited exact tag");
+typescript/test\object-tostring.ts:157:    for (const key of ["valueOf", "toString", wellKnownToPrimitive]) put(hooked, key, throwing);
+typescript/test\object-tostring.ts:173:    const forwardingSteps = evaluator.steps;
+typescript/test\object-tostring.ts:175:    check(evaluator.steps === forwardingSteps + 1 && evaluator.context.realm === a && evaluator.calls === 0, "forwarded shared tick/cleanup");
+typescript/test\object-tostring.ts:178:    check(limited.steps === 0 && limited.calls === 0 && limited.context.realm === a, "forwarded target limit");
+typescript/test\object-tostring.ts:196:    put(b.objectPrototype, "toString", num(9));
+typescript/test\object-tostring.ts:197:    check(!sameValue(a.objectPrototype.get("toString"), num(9)), "method isolation");
+typescript/test\object-tostring.ts:198:    b.objectPrototype.internalDelete("toString");
+typescript/test\object-tostring.ts:213:            check(evaluator.context.realm === b && evaluator.steps === reads, "B active and charged before Get");
+typescript/test\object-tostring.ts:249:    check(zero.steps === 1 && zero.calls === 0 && zero.context.realm === a, "step exhaustion cleanup");
+typescript/test\object-tostring.ts:250:    expect(zero.call(method, UNDEFINED, [], loc), str("[object Undefined]"), "undefined after exhausted steps");
+typescript/test\object-tostring.ts:251:    expect(zero.call(method, { kind: "null" }, [], loc), str("[object Null]"), "null after exhausted steps");
+typescript/test\object-tostring.ts:252:    check(zero.steps === 1, "nullish zero ticks");
+typescript/test\object-tostring.ts:255:    check(noCalls.steps === 0 && noCalls.calls === 0 && noCalls.context.realm === a, "call failure before body");
+typescript/test\object-tostring.ts:282:    seed(realm, "savedToString", realm.objectPrototype.get("toString"));
+typescript/test\object-tostring.ts:303:        { name: "bothObjects", line: 79, column: 12, error: "TypeError", message: "cannot convert object to primitive" },
+typescript/test\object-tostring.ts:304:        { name: "nullRoot", line: 85, column: 12, error: "TypeError", message: "cannot convert object to primitive" },
+typescript/test\object-tostring.ts:314:    error(toPrimitive(obj(bare), "number", evaluator.context, loc), "TypeError", "cannot convert object to primitive");
+typescript/test\object-tostring.ts:327:        const before = active.steps;
+typescript/test\object-tostring.ts:329:        keys(reads, hint === "string" ? [wellKnownToPrimitive, "toString", wellKnownToStringTag] : [wellKnownToPrimitive, "valueOf", "toString", wellKnownToStringTag], "default lookup sequence");
+typescript/test\object-tostring.ts:330:        check(active.steps - before === (hint === "string" ? 3 : 4), "exact default ticks");
+typescript/test\object-tostring.ts:337:    const before = active.steps;
+typescript/test\object-tostring.ts:341:    keys(reads, [wellKnownToPrimitive, "valueOf", "toString", wellKnownToStringTag, wellKnownToPrimitive, "valueOf", "toString", wellKnownToStringTag], "two full length conversions");
+typescript/test\object-tostring.ts:342:    check(active.steps - before === 8 && sameValue(array.get("length"), num(3)), "two conversions and no length write");
+typescript/test\object-tostring.ts:346:    put(mutation, "valueOf", obj(fresh.createBuiltin("changeNext", 0, (_r, _args, _context, _at) => {
+typescript/test\object-tostring.ts:349:            put(mutation, "toString", obj(fresh.createBuiltin("numericSecond", 0, (_rr, _aa, _cc, _ll) => normal(num(0)))));
+typescript/test\object-tostring.ts:353:    const beforeMutation = active.steps;
+typescript/test\object-tostring.ts:356:    check(conversions === 2 && active.steps - beforeMutation === 7, "first default tag tick, second explicit hook has no tag tick");
+typescript/test\object-tostring.ts:359:    check(tight.steps === 4 && tight.calls === 0 && tight.context.realm === fresh, "default tag lookup is fourth tick");
+typescript/test\object-keys.ts:73:result(child.internalDelete("locked"), true, "inherited nonconfigurable is absent own");
+typescript/test\object-keys.ts:74:result(child.internalDelete("shared"), true, "inherited configurable untouched");
+typescript/test\object-keys.ts:75:list(child.ownPropertyKeys(), [], "no inherited keys");
+typescript/test\object-keys.ts:79:check(sameValue(child.get("shared"), { kind: "number", value: 4 }), "deletion exposes inherited value");
+typescript/test\object-prototypes.ts:66:result(child.internalSet("fixed", num(2), obj(child), keyContext, loc), false, "inherited readonly");
+typescript/test\object-prototypes.ts:106:check(rejected.phase === "runtime" && rejected.completion.type === "throw" && rejected.completion.diagnostic.name === "TypeError", "guest inherited strict failure");
+typescript/test\object-prototypes.ts:110:check(detached.phase === "runtime" && detached.completion.type === "throw" && detached.completion.diagnostic.name === "TypeError", "detached inherited method");
+typescript/test\object-prototypes.ts:120:result(textLeaf.internalHasProperty("0", loc), true, "W12 inherited virtual presence");
+typescript/test\object-prototypes.ts:122:result(textChild.internalSet("0", aUnit, obj(textChild), keyContext, loc), false, "W12 inherited readonly Set");
+typescript/test\object-prototypes.ts:138:const symbolKey = new GuestSymbol("inherited");
+typescript/test\object-prototypes.ts:142:result(symbolChild.internalHasProperty(symbolKey, loc), true, "A8 inherited undefined presence");
+typescript/test\object-prototypes.ts:143:check(symbolChild.get(symbolKey) === UNDEFINED, "A8 inherited undefined read");
+typescript/test\object-prototypes.ts:144:result(symbolChild.internalSet(symbolKey, num(1), obj(symbolChild), keyContext, loc), false, "A8 inherited readonly");
+typescript/test\object-prototypes.ts:149:result(symbolChild.internalSet(symbolKey, num(3), obj(symbolReceiver), keyContext, loc), false, "A9 inherited readonly wins over Receiver writable");
+typescript/test\fixtures\array-map\callbacks.js:28:// Shrinking removes own elements, but inherited elements remain visible.
+typescript/test\fixtures\object-tostring.js:3:check(ordinary.toString() === '[object Object]');
+typescript/test\fixtures\object-tostring.js:65:check(ordinary.toString() === '[object ]');
+typescript/test\fixtures\object-tostring.js:67:check(ordinary.toString() === '[object Object]');
+typescript/test\fixtures\object-tostring.js:69:let changing = {valueOf: function() {
+typescript/test\fixtures\object-tostring.js:70:    this.toString = function() { return 'changed'; };
+typescript/test\fixtures\object-tostring.js:74:objectRoot.toString = function() { return 'replacement'; };
+typescript/test\fixtures\object-tostring.js:76:objectRoot.toString = savedToString;
+typescript/test\fixtures\object-tostring.js:80:        valueOf: function() { return {}; },
+typescript/test\fixtures\object-tostring.js:81:        toString: function() { return []; }
+typescript/test\fixtures\object-tostring.js:92:    return 'x'.toString();
+typescript/test\object-valueof.ts:15:import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from "../src/conversion.js";
+typescript/test\object-valueof.ts:52:const method = b.objectPrototype.get("valueOf");
+typescript/test\object-valueof.ts:56:check(method !== a.objectPrototype.get("valueOf") && fn.getPrototypeOf() === b.functionPrototype, "fresh method/defining prototype");
+typescript/test\object-valueof.ts:63:check(sameValue(fn.get("name"), { kind: "string", value: "valueOf" }), "method name");
+typescript/test\object-valueof.ts:65:const d = b.objectPrototype.getOwnProperty("valueOf");
+typescript/test\object-valueof.ts:67:check(stringKeys(b.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && !b.global.bindings.has("Object"), "bounded installation");
+typescript/test\object-valueof.ts:87:check(e.steps === 0 && e.calls === 0 && e.context.realm === a, "no hidden work/restoration");
+typescript/test\object-valueof.ts:101:        check(first instanceof GuestNumber && sameValue({ kind: "number", value: first.numberData }, primitive) && first.getPrototypeOf() === b.numberPrototype, "Number payload/root including signed zero/NaN");
+typescript/test\object-valueof.ts:136:// V4/V8: observe the real A -> C.call -> B.valueOf dispatch, using one context.
+typescript/test\object-valueof.ts:148:const allocationMethod = allocationRealm.objectPrototype.get("valueOf");
+typescript/test\object-valueof.ts:158:check(boxed instanceof GuestNumber && 1 / boxed.numberData === -Infinity && boxed.getPrototypeOf() === allocationRealm.numberPrototype, "C.call forwards unchanged receiver, B allocation");
+typescript/test\object-valueof.ts:159:check(trace === "C;B;C;" && budget.context.realm === a && budget.calls === 0 && budget.steps === 0, "restore A/no added ticks");
+typescript/test\object-valueof.ts:162:check(short.context.realm === a && short.calls === 0 && short.steps === 0, "forwarding budget cleanup");
+typescript/test\object-valueof.ts:166:for (const mode of ["null", "guest", "host", "steps"]) {
+typescript/test\object-valueof.ts:183:        if (mode === "steps") {
+typescript/test\object-valueof.ts:185:            check(active.steps === 2, "shared step budget");
+typescript/test\object-valueof.ts:187:            check(active.steps === 3, "no budget reset");
+typescript/test\object-valueof.ts:196:// V6/C: actual inherited calls plus the new tag lookup tick.
+typescript/test\object-valueof.ts:210:            const first = callee === local.objectPrototype.get("valueOf");
+typescript/test\object-valueof.ts:211:            check((first || callee === local.objectPrototype.get("toString")) && receiver === operand && args.length === 0, "real inherited method call");
+typescript/test\object-valueof.ts:212:            events += first ? "valueOf;" : "toString;";
+typescript/test\object-valueof.ts:214:            if (first) check(object(result(completion)) === object(operand), "inherited method returns object");
+typescript/test\object-valueof.ts:220:    check(converted.kind === "string" && converted.value === "[object " + tag + "]", "inherited default result");
+typescript/test\object-valueof.ts:222:    check(events === "tick;tick;valueOf;tick;toString;" && active.steps === 4, "inherited conversion trace");
+typescript/test\object-valueof.ts:225:    check(tight.steps === 2 && tight.calls === 0 && tight.context.realm === a, "new inherited call participates in limit");
+typescript/test\object-valueof.ts:234:error(toPrimitive(value(bare), "number", zeroCalls.context, loc), "TypeError", "cannot convert object to primitive", loc);
+typescript/test\object-valueof.ts:235:check(zeroCalls.steps === 3 && bare.get("valueOf").kind === "undefined", "null root protocol lookup plus two missing ordinary methods");
+typescript/test\object-valueof.ts:237:    for (const conversion of [toNumber(v, loc), toString(v, loc), toUint32(v, loc), toIntegerOrInfinity(v, loc), toLength(v, loc)]) {
+typescript/test\object-valueof.ts:239:        error(conversion, "TypeError", "object-to-primitive conversion unsupported", loc);
+typescript/test\object-valueof.ts:245:    valueOf: function() {
+typescript/test\object-valueof.ts:249:    toString: function() {
+typescript/test\object-valueof.ts:254:error(run("+x;", explicit), "TypeError", "cannot convert object to primitive", { line: 1, column: 1 });
+typescript/test\object-valueof.ts:258:const otherMethod = a.objectPrototype.get("valueOf");
+typescript/test\object-valueof.ts:259:check(b.objectPrototype.set("valueOf", { kind: "number", value: 7 }, e.context, loc).type === "normal", "replace method");
+typescript/test\object-valueof.ts:260:check(sameValue(b.createArray().get("valueOf"), { kind: "number", value: 7 }) && a.objectPrototype.get("valueOf") === otherMethod, "replacement inheritance/isolation");
+typescript/test\object-valueof.ts:262:const deleted = b.objectPrototype.internalDelete("valueOf");
+typescript/test\object-valueof.ts:263:check(deleted.type === "normal" && deleted.value && b.createObject().get("valueOf").kind === "undefined", "deletion visible");
+typescript/test\object-valueof.ts:264:check(a.objectPrototype.get("valueOf") === otherMethod, "deletion isolation");
+typescript/test\object-valueof.ts:266:check(sameValue(fn.get("name"), { kind: "string", value: "renamed" }) && sameValue(object(otherMethod).get("name"), { kind: "string", value: "valueOf" }), "metadata isolated");
+typescript/test\object-valueof.ts:273:const symbolMethod = symbolB.objectPrototype.get("valueOf");
+typescript/test\object-valueof.ts:279:check(symbolEvaluator.steps === 0 && symbolEvaluator.context.realm === a, "A16 no ticks and restoration");
+typescript/test\object-valueof.ts:291:    const before = symbolEvaluator.steps;
+typescript/test\object-valueof.ts:292:    for (const conversion of [toNumber(value(box), loc), toString(value(box), loc)]) {
+typescript/test\object-valueof.ts:294:        if (conversion.type === "throw") error(conversion, "TypeError", "object-to-primitive conversion unsupported", loc);
+typescript/test\object-valueof.ts:296:    check(symbolEvaluator.steps === before, "A19 direct zero hooks/ticks");
+typescript/test\object-valueof.ts:299:        error(converted, "TypeError", "cannot convert object to primitive", loc);
+typescript/test\object-valueof.ts:301:        check(sameValue(result(converted), symbolValue), "B2 intact box uses inherited Symbol hook");
+typescript/test\object-valueof.ts:304:for (const mode of ["normal", "guest", "host", "steps"]) {
+typescript/test\object-valueof.ts:314:        if (mode === "steps") {
+typescript/test\object-valueof.ts:326:        if (mode === "steps") {
+typescript/test\object-valueof.ts:328:            check(active.steps === 2, "A18 shared steps");
+typescript/test\object-valueof.ts:338:check(symbolLimit.calls === 0 && symbolLimit.context.realm === a && symbolLimit.steps === 0, "A18 shared call limit cleanup");
+typescript/test\object-valueof.ts:345:console.log("object valueOf passed");
+typescript/test\fixtures\number.js:21:let object = { valueOf: function() { effects = effects + 'v'; throw 'coerced'; }, toString: function() { effects = effects + 's'; throw 'coerced'; } };
+typescript/test\fixtures\operator-coercion.js:6:leftObject.valueOf = function(unused) {
+typescript/test\fixtures\operator-coercion.js:11:leftObject.toString = function() { throw 'wrong hint'; };
+typescript/test\fixtures\operator-coercion.js:12:rightObject.valueOf = function(unused) {
+typescript/test\fixtures\operator-coercion.js:17:rightObject.toString = function() { throw 'wrong hint'; };
+typescript/test\fixtures\operator-coercion.js:27:let counter = {valueOf: function() {
+typescript/test\fixtures\operator-coercion.js:31:let nested = {valueOf: function() { return +counter + 12; }};
+typescript/test\fixtures\operator-coercion.js:32:let looping = {valueOf: function() { while (true) {} }};
+typescript/test\fixtures\operator-coercion.js:33:let recursive = {valueOf: function() { return +recursive; }};
+typescript/test\fixtures\array-length-coercion.js:6:    valueOf: function() {
+typescript/test\fixtures\array-length-coercion.js:13:    toString: function() {
+typescript/test\fixtures\array-length-coercion.js:20:arrayRhs.valueOf = rhs.valueOf;
+typescript/test\fixtures\array-length-coercion.js:21:arrayRhs.toString = rhs.toString;
+typescript/test\fixtures\array-length-coercion.js:25:functionRhs.valueOf = rhs.valueOf;
+typescript/test\fixtures\array-length-coercion.js:26:functionRhs.toString = rhs.toString;
+typescript/test\fixtures\array-length-coercion.js:66:    let key = { toString: function() { return "note"; } };
+typescript/test\fixtures\object-valueof.js:2:let saved = target.valueOf;
+typescript/test\fixtures\object-valueof.js:3:let direct = target.valueOf() === target;
+typescript/test\fixtures\object-valueof.js:5:let arrayIdentity = array.valueOf() === array;
+typescript/test\fixtures\object-valueof.js:9:let functionIdentity = identity.valueOf() === identity;
+typescript/test\fixtures\object-valueof.js:15:let shadow = { valueOf: function() { return 17; } };
+typescript/test\fixtures\object-valueof.js:16:let shadowed = shadow.valueOf() === 17;
+typescript/test\fixtures\primitive-conversion.js:3:    return { valueOf: function() {
+typescript/test\fixtures\primitive-conversion.js:10:    valueOf: function() {
+typescript/test\fixtures\primitive-conversion.js:11:        this.toString = function() { return 11; };
+typescript/test\fixtures\primitive-conversion.js:14:    toString: function() { return 99; }
+typescript/test\fixtures\primitive-conversion.js:16:let inner = { valueOf: function() { return 13; } };
+typescript/test\fixtures\primitive-conversion.js:17:let nested = { valueOf: function() { return bridge(inner); } };
+typescript/test\fixtures\primitive-conversion.js:18:let looping = { valueOf: function() { while (true) {} } };
+typescript/test\fixtures\primitive-conversion.js:19:let recursive = { valueOf: function() { return bridge(this); } };
+typescript/test\fixtures\symbol-conversions.js:3:let text = box.toString(extra());
+typescript/test\fixtures\symbol-conversions.js:4:let unboxed = box.valueOf(extra());
+typescript/test\fixtures\symbol-conversions.js:5:let primitive = symbolRoot.valueOf.call(s);
+typescript/test\fixtures\symbol-conversions.js:18:    return symbolRoot.valueOf();
+typescript/test\fixtures\symbol-conversions.js:21:    return s.valueOf;
+typescript/test\fixtures\symbol-conversions.js:24:    box[hookKey] = symbolRoot.valueOf;
+typescript/test\symbol-conversions.ts:4:import { toNumber, toString, toPropertyKey } from "../src/conversion.js";
+typescript/test\symbol-conversions.ts:65:    const methodKeys: PropertyKey[] = ["toString", "valueOf", wellKnownToPrimitive];
+typescript/test\symbol-conversions.ts:66:    const names = ["toString", "valueOf", "[Symbol.toPrimitive]"];
+typescript/test\symbol-conversions.ts:113:                const before = evaluator.steps;
+typescript/test\symbol-conversions.ts:116:                check(evaluator.steps === before && evaluator.calls === 0 && evaluator.context.realm === a, "zero method ticks/cleanup");
+typescript/test\symbol-conversions.ts:154:            check(calls === 1 && active.context.realm === a && active.calls === 0 && active.depth === 0 && active.steps === 0, "restoration and no body ticks");
+typescript/test\symbol-conversions.ts:159:    check(limited.context.realm === a && limited.calls === 0 && limited.steps === 0, "shared call guard cleanup");
+typescript/test\symbol-conversions.ts:181:        const before = evaluator.steps;
+typescript/test\symbol-conversions.ts:185:        check(evaluator.steps === before + 1 && calls === 1, "intact exact work");
+typescript/test\symbol-conversions.ts:189:    const beforeDirect = evaluator.steps;
+typescript/test\symbol-conversions.ts:191:    for (const converted of [toNumber(boxed, loc), toString(boxed, loc)]) {
+typescript/test\symbol-conversions.ts:193:        error(converted, "object-to-primitive conversion unsupported");
+typescript/test\symbol-conversions.ts:195:    check(box.reads.length === 0 && evaluator.steps === beforeDirect, "direct converters unchanged");
+typescript/test\symbol-conversions.ts:198:    check(box.reads.length === 0 && noSteps.calls === 0 && noSteps.steps === 1, "exhaustion prevents lookup");
+typescript/test\symbol-conversions.ts:202:    check(write.type === "normal" && !write.value && box.getOwnProperty(wellKnownToPrimitive) === undefined, "inherited readonly assignment");
+typescript/test\symbol-conversions.ts:215:        const before = evaluator.steps;
+typescript/test\symbol-conversions.ts:218:        keys(box.reads, [wellKnownToPrimitive, hint === "string" ? "toString" : "valueOf"], "ordinary first lookup");
+typescript/test\symbol-conversions.ts:219:        check(evaluator.steps === before + 2 && calls === 1, "fallback exact work");
+typescript/test\symbol-conversions.ts:224:    put(b.symbolPrototype, "valueOf", obj(b.createBuiltin("replaceNext", 0, (receiver, _args, _context, _loc) => {
+typescript/test\symbol-conversions.ts:225:        put(b.symbolPrototype, "toString", replacement);
+typescript/test\symbol-conversions.ts:230:    const beforeFallback = evaluator.steps;
+typescript/test\symbol-conversions.ts:232:    keys(box.reads, [wellKnownToPrimitive, "valueOf", "toString"], "two-method order");
+typescript/test\symbol-conversions.ts:233:    check(calls === 2 && evaluator.steps === beforeFallback + 3, "two-method exact work");
+typescript/test\symbol-conversions.ts:234:    check(sameValue(result(evaluator.call(methods[0], boxed, [], loc)), str("Symbol(x)")), "saved replaced toString");
+typescript/test\symbol-conversions.ts:235:    check(sameValue(result(evaluator.call(methods[1], boxed, [], loc)), payload), "saved replaced valueOf");
+typescript/test\symbol-conversions.ts:239:    const beforeObject = evaluator.steps;
+typescript/test\symbol-conversions.ts:240:    error(toPrimitive(boxed, "number", context, loc), "cannot convert object to primitive");
+typescript/test\symbol-conversions.ts:242:    check(calls === 1 && evaluator.steps === beforeObject + 1, "object hook exact work");
+typescript/test\primitive-conversion.ts:10:import { toNumber, toString, toPropertyKey } from "../src/conversion.js";
+typescript/test\primitive-conversion.ts:32:        && result.diagnostic.message === "cannot convert object to primitive" && result.diagnostic.loc === loc, "located final TypeError");
+typescript/test\primitive-conversion.ts:95:    const first = hint === "string" ? "toString" : "valueOf";
+typescript/test\primitive-conversion.ts:96:    const second = hint === "string" ? "valueOf" : "toString";
+typescript/test\primitive-conversion.ts:168:        check(receiver === this.expected && location === loc && key === "valueOf", "array Get receiver/key/location");
+typescript/test\primitive-conversion.ts:173:// H10: ordinary, array and callable inputs, own and inherited methods.
+typescript/test\primitive-conversion.ts:176:    for (const inherited of [false, true]) {
+typescript/test\primitive-conversion.ts:181:        const owner = inherited ? new GuestObject() : object;
+typescript/test\primitive-conversion.ts:182:        if (inherited) check(object.setPrototypeOf(owner).value, "inherit method");
+typescript/test\primitive-conversion.ts:183:        define(owner, "valueOf", builtin(realm, (receiver, args, context, location) => {
+typescript/test\primitive-conversion.ts:199:    define(object, "valueOf", builtin(realm, (_r, _a, _c, _l) => {
+typescript/test\primitive-conversion.ts:203:    define(object, "toString", builtin(realm, (_r, _a, _c, _l) => sentinel));
+typescript/test\primitive-conversion.ts:206:    const expected = stage === "tick1" ? "tick;" : stage === "get1" ? "tick;Get valueOf;" : stage === "call1" ? "tick;Get valueOf;Call;" : stage === "tick2" ? "tick;Get valueOf;Call;tick;" : stage === "get2" ? "tick;Get valueOf;Call;tick;Get toString;" : "tick;Get valueOf;Call;tick;Get toString;Call;";
+typescript/test\primitive-conversion.ts:210:for (const mode of ["finite", "steps", "calls"]) {
+typescript/test\primitive-conversion.ts:211:    const active = new Evaluator(realm, mode === "steps" ? 3 : 1000, mode === "calls" ? 4 : 20);
+typescript/test\primitive-conversion.ts:215:    define(object, "valueOf", builtin(realm, (_r, _a, context, location) => {
+typescript/test\primitive-conversion.ts:224:    check(active.calls === 0 && active.steps === (mode === "finite" ? 6 : mode === "steps" ? 4 : 10), "shared steps and cleanup");
+typescript/test\primitive-conversion.ts:260:    active.maxSteps = active.steps + 150;
+typescript/test\primitive-conversion.ts:269:    define(object, "valueOf", builtin(realm, (_r, _a, _c, _l): Completion => {
+typescript/test\primitive-conversion.ts:278:    check(escaped && evaluator.calls === 0 && object.trace === "tick;tick;Get valueOf;Call;", "host fault cleanup/no fallback");
+typescript/test\primitive-conversion.ts:283:define(boundary, "valueOf", returns(num(6)));
+typescript/test\primitive-conversion.ts:284:define(boundary, "toString", returns({ kind: "string", value: "x" }));
+typescript/test\primitive-conversion.ts:285:for (const result of [toNumber(boundary.expected, loc), toString(boundary.expected, loc)]) {
+typescript/test\primitive-conversion.ts:290:check(convertedKey.type === "normal" && convertedKey.value === "x" && boundary.trace === "Get toString;", "integrated direct key");
+typescript/test\primitive-conversion.ts:295:check(boundary.trace === "Get toString;", "one parsed key lookup");
+typescript/test\primitive-conversion.ts:304:    check(boundary.trace === "Get valueOf;", "one operator lookup");
+typescript/test\primitive-conversion.ts:326:define(conversionObject, "toString", builtin(conversionA, (_receiver, _args, _context, _at): Completion => {
+typescript/test\primitive-conversion.ts:327:    throw new Error("stale toString called");
+typescript/test\primitive-conversion.ts:329:define(conversionObject, "valueOf", builtin(conversionB, (receiver, args, context, at) => {
+typescript/test\primitive-conversion.ts:332:    define(conversionObject, "toString", replacementC);
+typescript/test\primitive-conversion.ts:356:        define(source, path === "key" ? "toString" : "valueOf", abruptB);
+typescript/test\primitive-conversion.ts:357:        define(source, path === "key" ? "valueOf" : "toString", later);
+typescript/test\primitive-conversion.ts:391:define(doubleSource, "valueOf", builtin(conversionB, (_receiver, _args, context, _at) => {
+typescript/test\primitive-conversion.ts:402:    define(secondSource, "valueOf", builtin(conversionB, (_receiver, _args, context, at): Completion => {
+typescript/test\primitive-conversion.ts:438:    for (const inherited of [false, true]) {
+typescript/test\primitive-conversion.ts:442:            const owner = inherited ? new GuestObject() : source;
+typescript/test\primitive-conversion.ts:443:            if (inherited) check(source.setPrototypeOf(owner).value, "P2 inheritance");
+typescript/test\primitive-conversion.ts:471:        define(source, "valueOf", returns(num(1)));
+typescript/test\primitive-conversion.ts:472:        define(source, "toString", returns(num(2)));
+typescript/test\primitive-conversion.ts:475:        check(active.steps === 2 && active.calls === 0, "P3 absent lookup charged across independent evaluator");
+typescript/test\primitive-conversion.ts:517:define(ordinaryOnly, "valueOf", returns(num(21)));
+typescript/test\primitive-conversion.ts:519:check(ordinaryOnly.trace === "tick;Get valueOf;Call;" && ordinaryOnly.reads === 1 && ordinaryOnly.protocolReads === 0, "P7 unchanged tick/read trace");
+typescript/test\primitive-conversion.ts:522:check(unchangedSymbol.type === "normal" && unchangedSymbol.value === symbolResult && primitiveOnly.steps === 0, "P1 symbol fast path");
+typescript/test\primitive-conversion.ts:534:        check(context === active.context && context.realm === conversionC && active.calls === 2 && active.steps === 2
+typescript/test\primitive-conversion.ts:541:        check(context.realm === conversionB && active.calls === 1 && active.steps === 1 && receiver === outerValue
+typescript/test\primitive-conversion.ts:546:            check(context.realm === conversionB && active.calls === 1 && active.steps === 2, "P6 B restored in finally");
+typescript/test\primitive-conversion.ts:559:        && active.calls === 0 && active.depth === 0 && active.steps === 2, "P6 all exits restore caller");
+typescript/test\primitive-conversion.ts:563:for (const limit of ["calls", "steps"]) {
+typescript/test\primitive-conversion.ts:564:    const active = new Evaluator(realm, limit === "steps" ? 2 : 100, limit === "calls" ? 3 : 20);
+typescript/test\primitive-conversion.ts:575:    check(visits === (limit === "calls" ? 3 : 2) && active.steps === (limit === "calls" ? 4 : 3)
+typescript/test\primitive-conversion.ts:577:    numberResult(active.call(returns(num(23)), UNDEFINED, [], loc), 23, "P9 released call slots without resetting steps");
+typescript/test\primitive-conversion.ts:581:define(absentSource, "valueOf", returns(num(24)));
+typescript/test\primitive-conversion.ts:584:    && exhaustedAbsent.diagnostic.loc === loc && absentBudget.steps === 2 && absentSource.reads === 0, "P9 absent lookup prevents ordinary Get at tight limit");
+typescript/test\primitive-conversion.ts:614:        && active.steps === (firstOnly ? 1 : 2), "P8 complete conversion counts");
+typescript/test\operator-coercion.ts:71:leftObject.valueOf = function() {
+typescript/test\operator-coercion.ts:73:    saved.valueOf = function() { trace = trace + 'Q'; return 2; };
+typescript/test\operator-coercion.ts:96:        if (phase === "P" || phase === "Q") run(active, (phase === "P" ? "leftObject" : "rightObject") + ".valueOf = function() { trace = trace + '" + phase + "'; return stop(); };");
+typescript/test\operator-coercion.ts:112:// All object kinds, inherited methods, original Value receiver and zero arguments.
+typescript/test\operator-coercion.ts:120:        check(object.setPrototypeOf(proto).value, "install inherited method");
+typescript/test\operator-coercion.ts:122:        proto.bootstrapDefine("valueOf", { value: builtin(active.context.realm, (receiver, args, context, _loc) => {
+typescript/test\operator-coercion.ts:123:            check(receiver === input && args.length === 0 && context === active.context, "inherited method receiver/args");
+typescript/test\operator-coercion.ts:130:        check(calls === 1, "one inherited call");
+typescript/test\operator-coercion.ts:143:        run(active, "let operand = {valueOf: " + first + ", toString: function() { return " + row.source + "; }};");
+typescript/test\operator-coercion.ts:156:for (const object of ["{valueOf: function() { return {}; }, toString: function() { return []; }}"]) {
+typescript/test\operator-coercion.ts:161:        check(result.type === "throw" && result.diagnostic.name === "TypeError" && result.diagnostic.message === "cannot convert object to primitive"
+typescript/test\operator-coercion.ts:191:    const before = active.steps;
+typescript/test\operator-coercion.ts:195:    check(active.steps > before && active.calls === 0, "shared counter and unwind");
+typescript/test\operator-coercion.ts:196:    const after = active.steps;
+typescript/test\operator-coercion.ts:198:    check(active.steps > after, "counter never reset");
+typescript/test\operator-coercion.ts:204:    object.bootstrapDefine("valueOf", { value: builtin(active.context.realm, (_r, _a, _c, _l): Completion => {
+typescript/test\relational.ts:185:// Hook-bearing ordinary objects, arrays and functions convert with exactly one valueOf call.
+typescript/test\relational.ts:191:operand.valueOf = function() {
+typescript/test\relational.ts:195:operand.toString = function() {
+typescript/test\relational.ts:229:        operand.bootstrapDefine("valueOf", { value: builtin(symbolRealm, (_r, _args, _context, _at) => {
+typescript/test\realms.ts:12:import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from "../src/conversion.js";
+typescript/test\realms.ts:140:    checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(ar.ownPropertyKeys()).join(",") === "length", "G17 exact initial keys");
+typescript/test\realms.ts:142:        checkGraph(root.get("valueOf") === o.get("valueOf"), "G17 inherited valueOf");
+typescript/test\realms.ts:173:    checkGraph(called.type === "normal" && called.value.kind === "undefined" && active.calls === 0 && active.steps === 0, "G4 no-op callable cleanup/no ticks");
+typescript/test\realms.ts:196:checkGraph(active.steps === 0 && active.calls === 0, "G15 allocation and primitive definitions add no ticks");
+typescript/test\realms.ts:197:// G8/G10: parsed allocations, inherited lookup and own shadowing.
+typescript/test\realms.ts:211:checkGraph(!declared.properties.has("name") && !declared.properties.has("length") && sameValue(declared.get("length"), numberValue(0)), "G8 partial inherited function metadata");
+typescript/test\realms.ts:223:checkGraph(sameValue(graphBinding(r1, "inheritedX"), numberValue(7)) && sameValue(graphBinding(r1, "inheritedY"), numberValue(8)) && sameValue(graphBinding(r1, "inheritedZ"), numberValue(9)) && sameValue(graphBinding(r1, "shadow"), numberValue(10)), "G10 inherited values/shadow");
+typescript/test\realms.ts:234:checkGraph(r2.createObject().get("x").kind === "undefined" && stringKeys(r2.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString", "G11 independent root mutation");
+typescript/test\realms.ts:242:// G14/C: inherited tags provide interim default coercion.
+typescript/test\realms.ts:283:    const roots: GuestObject[] = [realm.booleanPrototype, realm.numberPrototype, realm.stringPrototype];
+typescript/test\realms.ts:286:        checkGraph((root.get("valueOf") === realm.objectPrototype.get("valueOf")) === (root === realm.numberPrototype), "M1 only Number inherits Object valueOf");
+typescript/test\realms.ts:291:    checkGraph(!realm.booleanPrototype.booleanData && 1 / realm.numberPrototype.numberData === Infinity && realm.stringPrototype.stringData === "", "W1 root payloads");
+typescript/test\realms.ts:292:    checkGraph(stringKeys(realm.booleanPrototype.ownPropertyKeys()).join(",") === "toString,valueOf" && realm.numberPrototype.ownPropertyKeys().length === 0 && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(",") === "length,toString,valueOf", "M1 root keys");
+typescript/test\realms.ts:293:    checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length", "W1 original root keys");
+typescript/test\realms.ts:296:    checkGraph(namespace !== realm.numberPrototype && namespace.getPrototypeOf() === realm.objectPrototype && namespace.callable === null, "W1 Number namespace preserved");
+typescript/test\realms.ts:298:checkGraph(boxA.booleanPrototype !== boxB.booleanPrototype && boxA.numberPrototype !== boxB.numberPrototype && boxA.stringPrototype !== boxB.stringPrototype, "W1 independent roots");
+typescript/test\realms.ts:311:        checkGraph(firstBox instanceof GuestNumber && sameValue(numberValue(firstBox.numberData), primitive) && firstBox.getPrototypeOf() === boxA.numberPrototype, "W2 Number payload/root");
+typescript/test\realms.ts:336:checkGraph(boxEvaluator.steps === 0 && boxEvaluator.calls === 0 && boxEvaluator.depth === 0 && boxEvaluator.context.realm === boxA, "W3/W4 no execution work");
+typescript/test\realms.ts:348:        : wrapper instanceof GuestNumber ? { kind: "string", value: "[object Number]" } : { kind: "string", value: "ab" };
+typescript/test\realms.ts:351:    wrapper.bootstrapDefine("valueOf", { value: { kind: "object", object: hook } });
+typescript/test\realms.ts:352:    wrapper.bootstrapDefine("toString", { value: { kind: "object", object: hook } });
+typescript/test\realms.ts:353:    const before = boxEvaluator.steps;
+typescript/test\realms.ts:354:    for (const converted of [toNumber(value, at), toUint32(value, at), toIntegerOrInfinity(value, at), toLength(value, at), toString(value, at)]) {
+typescript/test\realms.ts:355:        checkGraph(converted.type === "throw" && converted.diagnostic.message === "object-to-primitive conversion unsupported" && converted.diagnostic.loc === at, "W17 direct converter rejects wrapper");
+typescript/test\realms.ts:357:    checkGraph(boxEvaluator.steps === before && boxEvaluator.calls === 0, "W17 direct conversion zero hooks");
+typescript/test\realms.ts:390:checkGraph(boxTrace.join(",") === "B,C,B" && boxes[0].getPrototypeOf() === boxB.numberPrototype && boxes[1].getPrototypeOf() === boxC.stringPrototype && boxes[2].getPrototypeOf() === boxB.booleanPrototype, "W15 allocation roots");
+typescript/test\realms.ts:391:checkGraph(entry.context.realm === boxA && entry.calls === 0 && entry.depth === 0 && entry.steps === 0, "W15 normal cleanup/no boxing ticks");
+typescript/test\realms.ts:395:        checkGraph(box(numberValue(1), context).getPrototypeOf() === boxB.numberPrototype, "W15 abrupt allocation root");
+typescript/test\realms.ts:410:    checkGraph(hostEscaped === (mode === "host") && entry.context.realm === boxA && entry.calls === 0 && entry.depth === 0 && entry.steps === 0, "W15 abrupt cleanup");
+typescript/test\realms.ts:414:    checkGraph(box(numberValue(1), context).getPrototypeOf() === boxB.numberPrototype, "W15 boxing with exhausted step budget");
+typescript/test\realms.ts:419:checkGraph(limitedBoxes.steps === 0 && limitedBoxes.calls === 0 && limitedBoxes.context.realm === boxA, "W15 limited cleanup");
+typescript/test\realms.ts:425:checkGraph(exhaustedStep.type === "throw" && exhaustedStep.diagnostic.message === "execution step limit exceeded" && limitedBoxes.steps === 1 && limitedBoxes.context.realm === boxA && limitedBoxes.calls === 0, "W15 monotonic step budget");
+typescript/test\operation-context.ts:100:check(visits === 2 && budget.steps === 4 && budget.calls === 0 && budget.context.realm === realm, "shared ticks exact total");
+typescript/test\operation-context.ts:102:check(budget.steps === 5 && evalB.steps === 0, "monotonic independent steps");
+typescript/test\operation-context.ts:115:check(reentries === 2 && recursive.calls === 0 && recursive.steps === 11, "deterministic guest ticks/call depth");
+typescript/test\operation-context.ts:126:check(limited.steps === 3 && limited.calls === 0, "AST tick total");
+typescript/test\operation-context.ts:165:check(zero.calls === 0 && zero.steps === 0, "guard before increment");
+typescript/test\operation-context.ts:227:    check(entry.steps === 0, "R1 borrowed roots add no ticks");
+typescript/test\operation-context.ts:304:check(observer.before[0] === c && observer.after[0] === c && observer.steps === 0, "R6 intermediate C and zero ticks");
+typescript/test\operation-context.ts:309:check(targetEffects === 1 && observer.steps === 0, "R7 target guard no effects/ticks");
+typescript/test\operation-context.ts:389:check(guard.steps === 0, "R11 guards do not tick");
+typescript/test\operation-context.ts:413:check(alternation.length === 3 && alternation[0] === a && alternation[1] === b && alternation[2] === a && alternating.steps === 0, "R12 shared call slots");
+typescript/test\operation-context.ts:430:check(firstBudget.steps === 2 && separate.steps === 1 && sharedCount === 3 && tickContexts[0] !== tickContexts[1] && tickContexts[0] === tickContexts[2], "R14 independent evaluator budgets");
+typescript/test\operation-context.ts:437:check(deep.depth === 256 && deep.steps === 2 && deep.calls === 0 && deep.context.realm === a, "R15 guard releases only attempted depth");
+typescript/test\fixtures\realm-intrinsics.js:9:let inheritedX = object.x;
+typescript/test\fixtures\realm-intrinsics.js:10:let inheritedY = declared.y;
+typescript/test\fixtures\realm-intrinsics.js:11:let inheritedZ = array.z;
+typescript/test\fixtures\key-coercion.js:2:let key = { toString: function() { trace = trace + 'C'; return 'x'; }, valueOf: function() { throw 'wrong hint'; } };
+typescript/test\fixtures\key-coercion.js:8:let nested = { toString: function() { return target[key]; } };
+typescript/test\fixtures\key-coercion.js:9:let looping = { toString: function() { while (true) {} } };
+typescript/test\fixtures\key-coercion.js:10:let recursive = { toString: function() { return target[recursive]; } };
+typescript/test\fixtures\length-coercion.js:4:    valueOf: function() {
+typescript/test\fixtures\length-coercion.js:8:    toString: function() {
+typescript/test\fixtures\length-coercion.js:13:arrayLengthValue.valueOf = lengthValue.valueOf;
+typescript/test\fixtures\length-coercion.js:14:arrayLengthValue.toString = lengthValue.toString;
+typescript/test\fixtures\length-coercion.js:18:functionLengthValue.valueOf = lengthValue.valueOf;
+typescript/test\fixtures\length-coercion.js:19:functionLengthValue.toString = lengthValue.toString;
+typescript/test\property-key-conversion.ts:5:import { toString, toPropertyKey, numberToString } from "../src/conversion.js";
+typescript/test\property-key-conversion.ts:93:    const string = toString(num(row.input), loc);
+typescript/test\property-key-conversion.ts:110:    const string = toString(row.value, loc);
+typescript/test\property-key-conversion.ts:182:    constructor(inherited: boolean = false) {
+typescript/test\property-key-conversion.ts:191:        if (inherited) {
+typescript/test\property-key-conversion.ts:230:for (const inherited of [false, true]) {
+typescript/test\property-key-conversion.ts:231:    const call = new Scenario(inherited);
+typescript/test\property-key-conversion.ts:273:    object.bootstrapDefine("toString", { value: builtin(keyEvaluator.context.realm, (receiver, args, _context, _location) => {
+typescript/test\property-key-conversion.ts:278:    object.bootstrapDefine("valueOf", { value: builtin(keyEvaluator.context.realm, (_r, _a, _c, _l): Completion => { throw new Error("wrong hint"); }), writable: true, enumerable: true, configurable: true });
+typescript/test\property-key-conversion.ts:279:    const directString = toString(keyValue, loc);
+typescript/test\property-key-conversion.ts:280:    check(directString.type === "throw" && directString.diagnostic.message === "object-to-primitive conversion unsupported" && directString.diagnostic.loc === loc && calls === 0, "direct ToString stays primitive-only");
+typescript/test\property-key-conversion.ts:307:for (const inherited of [false, true]) {
+typescript/test\property-key-conversion.ts:309:    const owner = inherited ? new GuestObject() : readonly.original;
+typescript/test\property-key-conversion.ts:311:    if (inherited) readonly.original.setPrototypeOf(owner);
+typescript/test\property-key-conversion.ts:314:    check(read.type === "normal" && readonly.original.trace === "BKG", "inherited numeric read");
+typescript/test\property-key-conversion.ts:316:    check(ref.type === "normal" && isNumber(ref.value, 42), "inherited read value");
+typescript/test\property-key-conversion.ts:338:const steps = budget.evaluator.steps;
+typescript/test\property-key-conversion.ts:339:check(budget.run("read").type === "normal" && budget.evaluator.steps > steps, "monotonic reference ticks");
+typescript/test\property-key-conversion.ts:340:budget.evaluator.maxSteps = budget.evaluator.steps;
+typescript/test\property-key-conversion.ts:369:        hook.bootstrapDefine("toString", { value: builtin(scenario.realm, (_receiver, _args, _context, _at) => {
+typescript/test\property-key-conversion.ts:374:        hook.bootstrapDefine("valueOf", { value: builtin(scenario.realm, (_receiver, _args, _context, _at): Completion => {
+typescript/test\property-key-conversion.ts:396:    hook.bootstrapDefine("toString", { value: builtin(scenario.realm, (_r, _a, _c, _l) => {
+typescript/test\property-key-conversion.ts:437:const primitiveSteps = keyEvaluator.steps;
+typescript/test\property-key-conversion.ts:439:check(repeatSymbolKey.type === "normal" && repeatSymbolKey.value === symbolKey && keyEvaluator.steps === primitiveSteps, "A13 primitive symbol has zero ticks");
+typescript/test\property-key-conversion.ts:443:    fallback.bootstrapDefine("toString", { value: builtin(keyContext.realm, (_r, _a, _c, _l) => {
+typescript/test\property-key-conversion.ts:447:    fallback.bootstrapDefine("valueOf", { value: builtin(keyContext.realm, (_r, _a, _c, _l) => {
+typescript/test\property-key-conversion.ts:454:    else check(converted.type === "throw" && converted.diagnostic.message === "cannot convert object to primitive" && converted.diagnostic.loc === loc, "A13 both objects retain located negative");
+typescript/test\length-coercion.ts:10:import { toNumber, toString, toIntegerOrInfinity, toLength, type NumberCompletion } from "../src/conversion.js";
+typescript/test\length-coercion.ts:113:    for (const inherited of [false, true]) {
+typescript/test\length-coercion.ts:118:            const methods = inherited ? new GuestObject() : target;
+typescript/test\length-coercion.ts:119:            if (inherited) {
+typescript/test\length-coercion.ts:120:                target.internalDelete("valueOf");
+typescript/test\length-coercion.ts:121:                target.internalDelete("toString");
+typescript/test\length-coercion.ts:124:            put(methods, "valueOf", mode === "noncallable" ? num(9) : binding(active, mode === "object" ? "objectResult" : "fallback"));
+typescript/test\length-coercion.ts:125:            put(methods, "toString", mode === "first" ? binding(active, "throwing") : binding(active, "fallback"));
+typescript/test\length-coercion.ts:153:    hook.stop = stop === "get1" ? "valueOf" : stop === "get2" ? "toString" : "";
+typescript/test\length-coercion.ts:164:    for (const name of ["valueOf", "toString"]) {
+typescript/test\length-coercion.ts:170:            return normal(name === "valueOf" ? obj(new GuestObject()) : num(2.9));
+typescript/test\length-coercion.ts:184:        : second && stop !== "tick2" ? ",valueOf,toString" : ",valueOf";
+typescript/test\length-coercion.ts:194:        put(hook, "valueOf", binding(active, "objectResult"));
+typescript/test\length-coercion.ts:195:        put(hook, "toString", binding(active, "objectResult"));
+typescript/test\length-coercion.ts:198:    check(result.type === "throw" && result.diagnostic.message === "cannot convert object to primitive" && result.diagnostic.loc === loc, "located final failure");
+typescript/test\length-coercion.ts:205:put(savedHook, "toString", builtin(fresh.context.realm, (_receiver, _args, _context, _at) => {
+typescript/test\length-coercion.ts:209:put(savedHook, "valueOf", builtin(fresh.context.realm, (_receiver, _args, _context, _at) => {
+typescript/test\length-coercion.ts:211:    put(savedHook, "toString", binding(fresh, "fallback"));
+typescript/test\length-coercion.ts:220:put(object(saved), "valueOf", binding(mutation, "mutate"));
+typescript/test\length-coercion.ts:235:    put(hook, "valueOf", builtin(active.context.realm, (_receiver, _args, _context, _at) => {
+typescript/test\length-coercion.ts:263:    put(hook, "valueOf", builtin(active.context.realm, (_receiver, _args, _context, _at) => {
+typescript/test\length-coercion.ts:278:put(outerHook, "valueOf", binding(nested, "nestedLength"));
+typescript/test\length-coercion.ts:283:check(nested.steps > 0 && nested.calls === 0, "shared nested ticks/unwind");
+typescript/test\length-coercion.ts:288:    put(hook, "valueOf", binding(active, method));
+typescript/test\length-coercion.ts:297:    check(active.calls === 0 && active.depth === 0 && active.steps > 0, "runaway unwind " + method);
+typescript/test\length-coercion.ts:302:put(object(sparse.get("length")), "valueOf", builtin(sparseActive.context.realm, (_receiver, _args, _context, _at) => normal(num(4294967295))));
+typescript/test\length-coercion.ts:305:check(budget.steps === 4 && budget.calls === 0, "protocol and ordinary lookup ticks plus bounded sparse scan");
+typescript/test\length-coercion.ts:310:const stringResult = toString(value, loc);
+typescript/test\length-coercion.ts:335:check(toString(forbiddenValue, loc).type === "throw", "string zero-read boundary");
+typescript/test\length-coercion.ts:347:put(hook, "valueOf", builtin(exact.context.realm, (receiver, args, context, at) => {
+typescript/test\length-coercion.ts:355:    put(hook, "valueOf", builtin(exact.context.realm, (_receiver, _args, _context, _at): Completion => {
