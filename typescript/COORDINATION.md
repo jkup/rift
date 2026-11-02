@@ -614,3 +614,5 @@ Reviewed cb7a1bc input/planning, tests/map/dependency diff; independent58 host t
 Accepted500d09a after actual correction/source/test review; all three reported gaps fixed with shared invariants and parent-owned context. Independently66 host tests4 exact-corpus checks pass, protected runtime/guest/build/probe paths unchanged. Logs build/ts031a-rereview-{tests,corpus}.log and build/ts031a-rereview artifacts. Prior independent typecheck/runner20 plus producer correction recheck reviewed. No native rerun; unchanged211/32 engine baseline inherited. Writer idle cursor ae992a7a-a611-4692-b533-b847b8c37bca:5. PR79 remote unchanged6c5ff975, Claude fix pending. Main unchanged64bf139.
 
 Next frozen TS-031B-P: audit and design structured engine outcomes and observation driver, preserving all conformance blockers. No runtime implementation until review; next designer pending dispatch.
+
+Acceptance/next contract pusheda87e86c. Active sole TS-031B-P designer chat `01a19c39-2d1f-7613-ae72-08071a76a217`, hostlocal, basea87e86c. Explicit wait confirmed active; saved cursor `0ffd9238-d75f-4f19-961a-f0c687c2b694:1`. No implementation before independent design review.
