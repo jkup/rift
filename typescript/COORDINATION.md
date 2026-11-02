@@ -628,3 +628,7 @@ Accepteda122735 after full design124-row matrix/audit review. Reproduced audit18
 Frozen next TS-031B-A scope A only: no host classifier change/subprocess driver or conformance admission; full runtime/native validation required. Main unchanged64bf139. Next writer pending dispatch.
 
 Acceptance/next contract pushed6f86657. Active sole TS-031B-A writer chat `01a19c54-953b-7851-b5ca-4ca85bb5aecf`, hostlocal, base6f86657; explicit wait confirmed active, saved cursor `96241604-45a3-4cb2-a232-090934ef20d2:1`. Scope A only; no successor before independent runtime/native review.
+
+## TS-031B-A native discrepancy — 2026-11-02 13:08 heartbeat
+
+Writer active, saved cursor96241604-45a3-4cb2-a232-090934ef20d2:2. Reports33 native static gates pass and211 existing native cases pass; new R27 seeded-binding assertion differs from Node. Retaining failure/splitting assertions, no acceptance. Coordinator inspected R27 and observation path, requested reduction distinguishing host Binding record identity from frozen retained state/guest identity and proposal before oracle changes. No competing builds or runtime edits. PR79 remote unchanged6c5ff975; Claude correction pending.
