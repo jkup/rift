@@ -1953,10 +1953,28 @@ Coordinator acceptance (2026-11-02): accepted15bf2dd after actual explicit-stack
 
 ### TS-033B — Composite global environment operations (P2 foundation)
 
-Status: **ready** for one assigned writer. Subset of accepted Script design P2, prerequisite TS033A15bf2dd. Implement host-tested composite global environment primitives in a focused module, reusing GuestObject, Value and explicit completions. Own new global environment module, additive runtime-input host driver/native gate and literal fixtures, docs/validation/ts-033b/, TASKS/feature-scope. Coordinator owns COORDINATION. No Realm profile/bootstrap installation yet: that follows review of these primitives. Do not wire interpreter/evaluator/observation or replace legacy Environment/Reference.
+Status: **in progress** — Codex chat 01a19d77-3192-72d1-9ccd-d1226c59f040, sole writer, base f9073a7, 2026-11-02. Subset of accepted Script design P2, prerequisite TS033A15bf2dd. Implement host-tested composite global environment primitives in a focused module, reusing GuestObject, Value and explicit completions. Own new global environment module, additive runtime-input host driver/native gate and literal fixtures, docs/validation/ts-033b/, TASKS/feature-scope. Coordinator owns COORDINATION. No Realm profile/bootstrap installation yet: that follows review of these primitives. Do not wire interpreter/evaluator/observation or replace legacy Environment/Reference.
 
 Use fixed ECMA2622025 Global/Object/Declarative Environment operations and retained pinned engine source; record exact supported operation interfaces before edits. Persistent declarative lexical record takes precedence over ordinary global object bindings; TDZ/initialization/mutable let state and global-this identity explicit. Provide needed HasBinding/GetBindingValue/SetMutableBinding and restricted-global/CanDeclareGlobalVar/CanDeclareGlobalFunction/CreateGlobalVarBinding/CreateGlobalFunctionBinding primitives. Preserve ordinary own/inherited property and descriptor semantics, abrupt completions and call-site locations through existing property APIs; do not use host JS properties as guest globals. New var/function properties W/E true C false, repeat var preserves existing values, allowed nonconfigurable function replacement preserves descriptor flags. Keep 2025 algorithm semantics, not obsolete VarNames bookkeeping. No accessors/proxies/exotic global support claim or language Error objects.
 
 Provide a narrowly scoped host-only strict binding-reference wrapper for future entry use: resolve before effects, retain unresolved reference rather than re-resolve after a new global property appears, and ensure lexical precedence/TDZ. Unresolvable strict write still fails after RHS-equivalent host mutation; direct property creation remains observable. Clearly distinguish captured environment references from property references and avoid changing legacy runtime getValue/putValue. No source declaration instantiation, parser grammar, sloppy execution or global built-in installation in this slice. Operations alone do not claim atomic multi-name declaration prechecks; P3 orchestrates these later.
 
 Freeze named literal host-operation rows for G01-G08 prerequisites, configurable property versus lexical shadowing, own/inherited/missing globals, nonextensible globals, writable/enumerable/configurable combinations, var reuse/function replacement, TDZ and initialization, captured-unresolved and captured-resolved mutations, context/Realm isolation and abrupt identity. Source-based G/L rows remain future requirements, not tests claimed here. Use runtime inputs in both lanes; fixed expected values/flags/traces/errors, no oracle from implementation. Preserve existing212 guest records38 gate entries, all old parser/metadata/stress controls and historical evidence. Full Node/native rebuilt suites plus additive static-only/separate-coverage gate, typecheck/runner/probes/relevant host tests. No pins/C++/CL006, main merge or successor. Commit/push tested milestone then stop for independent review; report any interface conflict before broadening ownership.
+
+Handoff (2026-11-02): implementation complete, **independent review pending**;
+status remains in progress until coordinator acceptance. New
+src/global-environment.ts implements the frozen ordinary-object/mutable-let
+composite and captured strict host binding references without touching legacy
+Environment/Reference or entry/Realm/evaluator wiring. Interfaces were recorded
+before implementation in docs/validation/ts-033b/interfaces.md; fixed2025 and
+pinned engine evidence retained/read, plus hash-verified supplemental clauses.
+Both lanes pass15 named host rows with literal and renamed runtime inputs;
+all212 old guest records and38 old gates preserved, plus the additive driver
+gate1331/1331 static, zero dynamic. Metadata136/42 and deep-chain8 per lane,
+typecheck, runner20, probes10, host73 and observation16 pass, no skips.
+Evidence docs/validation/ts-033b/README.md includes original environment failures
+(Zig sandbox access, temp rename/symlink), a corrected test-only type diagnostic,
+and exact source hashes. No compiler workaround, source G/L execution,
+multi-name instantiation, exotic globals, Error objects or conformance claim.
+COORDINATION and CL006 remain their owners' files. Commit/push this bounded
+milestone, then stop; no successor or main merge.

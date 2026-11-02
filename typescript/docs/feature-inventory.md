@@ -330,3 +330,18 @@ now use decimal payload strings. Saved/borrowed methods retain slot semantics;
 Object methods, namespace properties and primitive-only converter boundaries
 are unchanged. No constructors, additional Number methods or conformance admission.
 See [validation and exact expectation migrations](validation/ts-032b/README.md).
+
+### Host-only composite global environment (TS-033B)
+
+`GlobalEnvironment` combines persistent mutable lexical bindings (including TDZ)
+with an ordinary guest global object. It exposes strict binding access, global
+this identity, restricted-property and var/function declaration checks, and
+individual var/function creation primitives. Captured strict host references
+retain their environment or unresolved base across mutations. Existing property
+dispatch preserves original abrupt records and locations.
+
+This module is not installed in any Realm or called by the parser, evaluator,
+entry points or observation adapter. It does not implement declaration
+instantiation, multi-name atomic checks, source G/L scenarios, sloppy execution,
+accessors/exotic globals or Error objects. Legacy behavior and all conformance
+admission blockers remain. See [interfaces and evidence](validation/ts-033b/README.md).

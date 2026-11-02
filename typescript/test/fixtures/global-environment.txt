@@ -1,0 +1,15 @@
+H01|lexical|7|17|9
+H02|variable|7|17|9
+H03|functionValue|7|17|9
+H04|priorLexical|7|17|9
+H05|restricted|7|17|9
+H06|shadowed|7|17|9
+H07|existing|7|17|9
+H08|flags|7|17|9
+H09|inherited|7|17|9
+H10|unresolved|7|17|9
+H11|captured|7|17|9
+H12|isolated|7|17|9
+H13|fault|7|17|9
+H14|hostFault|7|17|9
+H15|initialize|7|17|9
