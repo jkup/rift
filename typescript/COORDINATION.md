@@ -620,3 +620,9 @@ Acceptance/next contract pusheda87e86c. Active sole TS-031B-P designer chat `01a
 ## TS-031B-P progress — 2026-11-02 12:38 heartbeat
 
 Designer active; saved cursor0ffd9238-d75f-4f19-961a-f0c687c2b694:2. Audit distinguishes semantic RangeError from resource provenance, capturing counters before cleanup; call guard64/64 versus post-increment step/nesting. Proposed smallest slice keeps candidate syntax tags non-emitting until certification. Full final design/matrix/source audit review pending; no implementation or acceptance. PR79 remote still6c5ff975; Claude correction pending. No branch/main changes or competing writer.
+
+## TS-031B-P acceptance — 2026-11-02 12:53 heartbeat
+
+Accepteda122735 after full design124-row matrix/audit review. Reproduced audit180 protected files95 sites10 manual throws124 rows; checked source producers/propagation, map subset versus semantic errors, guard snapshot positions. Current Node parser reproduced P04/P10/P12/R05/R06 locations/limits. No full runtime/native rerun; baseline unchanged. Approved conservative provenance-only slice with empty emitting syntax certification; separate driver/parent work deferred. Designer idle cursor0ffd9238-d75f-4f19-961a-f0c687c2b694:3. PR79 still6c5ff975, Claude correction pending. Coordinator original owner authorization covers publishing reviewed design after delegated rejection.
+
+Frozen next TS-031B-A scope A only: no host classifier change/subprocess driver or conformance admission; full runtime/native validation required. Main unchanged64bf139. Next writer pending dispatch.
