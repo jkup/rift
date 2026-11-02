@@ -1983,10 +1983,27 @@ Coordinator acceptance:7183015 accepted after actual source/test/retained-spec r
 
 ### TS-033C-P — Freeze Script Realm bootstrap and profile boundary
 
-Status: **ready** for one design writer. Prerequisite accepted TS033B7183015, remaining P2 in docs/script-execution.md. Design only: exact integration is needed because legacy run and observe directly construct Evaluator/block with realm.global, and callable entry switches to the defining Realm. Own docs/script-realm-bootstrap.md, reproducible source audit/matrix under docs/validation/ts-033c-p/, TASKS handoff. Coordinator owns COORDINATION; Claude CL006 preserved.
+Status: **in progress** — Codex chat 01a19d84-b13d-7bb0-8106-47499a7d4b5c, sole design writer, observed base c15f27b (assignment base a4680f3), 2026-11-02. Prerequisite accepted TS033B7183015, remaining P2 in docs/script-execution.md. Design only: exact integration is needed because legacy run and observe directly construct Evaluator/block with realm.global, and callable entry switches to the defining Realm. Own docs/script-realm-bootstrap.md, reproducible source audit/matrix under docs/validation/ts-033c-p/, TASKS handoff. Coordinator owns COORDINATION; Claude CL006 preserved.
 
 Freeze concrete Realm construction/profile APIs, ordinary global object and same-object globalThis, composite GlobalEnvironment ownership, profile-aware installation of exactly existing globals (undefined/NaN/Infinity/console/Number with fixed standard or documented host descriptors), intrinsic ownership and host seeding/read APIs. Default legacy Realm/.global.bindings behavior remains exactly unchanged. Decide explicit treatment of legacy global storage in Script Realms rather than accidental dual semantic sources. No Script source execution or source declaration instantiation yet.
 
 Audit all entry paths run/observe/Evaluator constructor/block/call/createGuestFunction and host callable transfer, including saved builtins and Function.call forwarding. Freeze where profile mismatch and premature Script execution are rejected as host API errors, not guest errors, without adding side effects, leaked Realm/frame state or new observation schema. Preserve parser-observation meaning explicitly; do not relabel the current strict-call profile as Script. Distinguish safe bootstrap/internal builtin construction from unsupported guest function execution, and specify how same-profile cross-Realm calls remain possible later. Do not introduce a general scheduler or duplicate interpreter. Initial global/globalThis must be one ordinary object; exotic or distinct host globals stay out of scope.
 
 Produce literal matrix covering both profiles, exact global descriptors/order/identity, per-Realm isolation, wrong-profile paths before mutation/calls, same-profile legacy behavior, captured references and host seeding, and exact eventual migration inventory. Give smallest single implementation assignment/files with guards and tests; identify later P3/P4 dependencies without implementing them. Consult fixed spec and pinned engine evidence, inspect actual call sites, record source identities and preserved212records39gates. Design-only/source audit evidence, no runtime/native/conformance claim without execution. No production/tests/manifests/pins/historical evidence/C++ edits; commit/push coherent design then stop for review, no successor/main merge.
+
+TS-033C-P handoff (2026-11-02): design complete, independent review pending;
+status remains in progress until coordinator acceptance. Frozen API/guard and
+18-row future host matrix in docs/script-realm-bootstrap.md; reproducible source
+audit in docs/validation/ts-033c-p/. Default legacy storage preserved; Script
+owns one ordinary global/same-object this/composite record, exactly five current
+globals and no legacy Map. Script source and builtin invocation remain closed;
+profile checks cover run/body observation, constructor/block/closure/factory,
+saved/direct builtin invoke and Function.call forwarding. Parser-only observation
+stays non-executing and profile-neutral. Small single implementation assignment
+and explicit P3/P4 guard replacement dependencies proposed, not started.
+Audit:2387 protected tracked files unchanged,159 source/test identities and1002
+migration occurrences; inherited212 records per lane/39 gates unchanged and all60
+variants blocked. Hash-verified fixed2025 bootstrap clauses and retained pinned
+engine evidence consulted. Source audit only; no runtime/native/conformance claim.
+No implementation/tests/manifests/pins/historical evidence/C++/COORDINATION/CL006
+edits. Stop for review after bounded commit/publication attempt; no successor.
