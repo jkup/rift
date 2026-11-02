@@ -379,3 +379,9 @@ Accepted `a3d74fd`: reviewed primitive-or-slot extraction, root/Realm registrati
 Next TS-021P is bounded Number-method/radix design and compiler evidence, not production expansion: existing decimal backend only takes binary64, effectful radix and nondecimal formatting need a reviewed contract. Number namespace remains noncallable, Array/Function overrides deferred. CL-004 ready/reserved; main unchanged at7f7d682.
 
 Acceptance/next contract pushed through051c88b, resolving delegated export rejection. Active sole design writer: TS-021P chat `01a19a4a-9a99-7ac3-a256-4d843a992fa1`, host `local`, base `051c88b`. Explicit progress wait confirmed active; saved cursor `ae96e434-2c4c-44b6-92dd-c19a9f5d2a0c:2`. Owns frozen Number conversion design/probe evidence only; coordinator owns this file. No Number implementation until reviewed contract.
+
+## TS-021P acceptance — 2026-11-02 03:38 heartbeat
+
+Accepted pushed `b27d756`. Reviewed full design, fixed2025 Number::toString step5, exact-rational oracle and independent reduced0.3/base3 counterexample. Independently rebuilt isolated probes:84/84 radix and18/18 decimal fixed cases, both static build/coverage gates pass. Fresh exploratory output matches retained output; checker reproduces7/23 interval failures, and hardcoded-rational reduction confirms positive difference1872103533741581. Local review artifacts in build/ts-021p-review-results.json, review-fractions.log and review-generated/. Design adds no runtime; integrated accepted baseline a3d74fd remains164/164/23gates, not rerun. Completed writer idle; saved cursor `ae96e434-2c4c-44b6-92dd-c19a9f5d2a0c:3`.
+
+Frozen TS-021A valueOf-only contract. Full Number toString remains blocked on faithful radix formatting/shortestness evidence, not merely static support or Node agreement. No owner decision needed for this safe next stage. CL-004 remains ready/reserved; main unchanged at7f7d682.
