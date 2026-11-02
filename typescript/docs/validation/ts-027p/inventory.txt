@@ -1,0 +1,119 @@
+117 files inspected; 118 candidate lines.
+docs/architecture-decisions.md:4:design to populate in advance. Source is original; no upstream code was copied.
+docs/architecture-decisions.md:57:cannot invoke guest code in this profile. No map implementation or standard API
+docs/architecture-decisions.md:76:alive through host-managed memory. Global builtins currently live in that same map;
+docs/architecture-decisions.md:121:strings and host-managed cycles. No compiler workaround was needed in the first
+docs/architecture-decisions.md:138:returns normal boolean or throw (signature widened in TS-005D). The payload is a host boolean, not a guest
+docs/architecture-decisions.md:159:Sources and test evidence are in [TS-004A validation](validation/ts-004a/README.md).
+docs/architecture-decisions.md:197:in a seeded realm. Source references, design comparison and validation are in
+docs/architecture-decisions.md:220:no array semantics are implemented here. Source revisions and validation are in
+docs/architecture-decisions.md:242:The design follows the versioned specification and engine262 analysis in
+docs/architecture-decisions.md:264:remain in array-prerequisites.md; actual-runtime compiled tests and gate transcripts
+docs/architecture-decisions.md:265:are in [TS-005D validation](validation/ts-005d/README.md).
+docs/architecture-decisions.md:269:`GuestArray` in `src/array-object.ts` subclasses GuestObject and overrides only
+docs/architecture-decisions.md:304:`GuestObject.internalHasProperty(key, loc): InternalBooleanCompletion` traverses
+docs/architecture-decisions.md:316:`lengthOfArrayLike(object: GuestObject, context: OperationContext, loc)` in `src/array-like.ts` calls
+docs/architecture-decisions.md:349:Each evaluation allocates a fresh GuestArray and visits slots in source order.
+docs/architecture-decisions.md:361:in order. Rift follows that decomposition using existing explicit completions,
+docs/architecture-decisions.md:403:The order is also explicit in engine262 revision
+docs/architecture-decisions.md:436:The relational path in Evaluator.binary receives already evaluated source-left
+docs/architecture-decisions.md:438:boundary. Two strings use stringCompare in strings.ts, an explicit charCodeAt
+docs/architecture-decisions.md:454:Fixed surrogate, NUL and prefix assertions execute through parsed expressions in
+docs/architecture-decisions.md:558:adds effectful conversion in the separately assigned batch. See [the frozen contract](array-length-context.md)
+docs/architecture-decisions.md:572:on 2026-11-01 and follows the engine262 comparison retained in
+docs/architecture-decisions.md:581:Each Realm bootstraps three fresh, extensible roots in dependency order: immutable
+docs/architecture-decisions.md:612:in order, and forwards through the supplied OperationContext.call with the same
+docs/architecture-decisions.md:644:count. Admitted statement/expression frames also release their depth in finally;
+docs/architecture-decisions.md:651:allocates in its supplied context's active Realm; coercion calls freshly read
+docs/architecture-decisions.md:668:primitive wrappers in the live context Realm, and returns a located TypeError
+docs/architecture-decisions.md:672:unit descriptors. The readonly length lives in validated ordinary storage.
+docs/architecture-decisions.md:694:Stage B adds the first production caller of ToObject in `builtins/object.ts`.
+docs/architecture-decisions.md:697:The body propagates ToObject failure and wraps a successful object in a normal
+docs/architecture-decisions.md:699:Realm and depth, so borrowing B's method from A allocates primitive boxes in B
+docs/architecture-decisions.md:735:This supersedes the earlier default-object failure in TS-018B. Ordinary objects
+docs/architecture-decisions.md:751:observable lookup and fallback behavior, without a slot shortcut in coercion.
+docs/architecture-decisions.md:753:This implements the accepted fixed-2025/pinned-engine design in
+docs/architecture-decisions.md:762:converts the separator, then Gets and converts each indexed element in order.
+docs/architecture-decisions.md:829:The evaluator captures both operands in source order before passing right/left
+docs/architecture-decisions.md:839:Delete uses unconditional strict-delete semantics in the limited language profile:
+docs/architecture-decisions.md:851:The fixed 2025 order and pinned engine evidence in [the accepted design](delete-operator.md)
+docs/feature-inventory.md:12:| Expressions | parentheses; + - * / % and unary +/-, strict-delete, typeof, void; < <= > >=, == != === !==, !; short-circuit &&/\|\|; assignment; conditional `test ? consequent : alternate` | Numeric operators use number-hint ordinary conversion; addition converts both operands with default hint before string/numeric selection. Relational operators convert in source order with number hint, compare two strings by UTF-16 code units, otherwise compare numbers with all NaN comparisons false. Own/inherited valueOf/toString methods work on ordinary objects, arrays and functions; default ordinary objects convert through inherited Object valueOf/toString to [object Object] (numeric NaN). Boolean/String wrappers use their standard payload methods. Number wrappers return numeric payloads for default/number hints and inherited tag strings for string hints. Arrays convert through join; functions convert to exact retained source or the native form. Both operand evaluations precede coercion. === !==, truthiness and Number predicates never coerce. Conditional precedence, selected-arm evaluation and existing bounds remain unchanged. Abstract equality selectively converts at most one object with the default hint; nullish/object and object/object comparisons never coerce. No BigInt, comma, bitwise, update, compound assignment, nullish coalescing or optional chaining. |
+docs/feature-inventory.md:14:| Scope | Block lexical bindings, TDZ, mutable captured bindings, function hoisting in their declaration list, recursion, shadowing in nested blocks | One let binding per declaration. Duplicate names/parameters rejected, including function declarations sharing a parameter name. Global builtin names cannot be redeclared. Separate Script global environments and Annex B deferred. |
+docs/feature-inventory.md:17:| Bootstrap | Per-realm console object and console.log; undefined/NaN/Infinity bindings; partial Number namespace below | No other standard constructors or globals, eval, Function, filesystem or process in guest code. Console rendering is a host diagnostic convention, not guest ToString. |
+docs/feature-inventory.md:18:| Data descriptors (TS-004A) | Internal data/generic descriptor validation with explicit absence/defaulting, SameValue, atomic rejection, non-configurable/non-writable invariants, and preventExtensions. Existing writable own properties remain writable on non-extensible objects; new assignment fails. | Host APIs only; no guest Object/Reflect builtins, accessors or proxies. Internal key listing/deletion are described in TS-004C below. Internal false and strict assignment TypeError are distinct. |
+docs/feature-inventory.md:20:| Number (TS-003) | Per-realm, mutable global binding to a non-callable namespace. Constants NaN, POSITIVE_INFINITY, NEGATIVE_INFINITY, MAX_VALUE, MIN_VALUE, EPSILON, MAX_SAFE_INTEGER, MIN_SAFE_INTEGER have non-writable/non-enumerable/non-configurable own properties. isNaN/isFinite never coerce, ignore receivers and excess argument values, and have writable/non-enumerable/configurable namespace properties. Each predicate has its correct name and length 1, both non-writable/non-enumerable/configurable. | Intentionally partial intermediate namespace, not complete Number support. No Number conversion/call/constructor, guest prototype exposure, formatting, integer predicates, parsing methods or guest reflection APIs. Extra argument expressions still evaluate normally. Builtin metadata is centralized in Realm registration; guest function own name/arity inference remains deferred. |
+docs/feature-inventory.md:32:Line-terminator regressions write actual LF, CR, CRLF, U+2028 and U+2029 into runtime files and assert comment termination, exact line/column diagnostics, whitespace, and return/throw restrictions including block comments. Every fixture is tested by the same compiled interpreter in Node and native lanes.
+docs/feature-inventory.md:36:TS-001. Existing C++ tests and test262 are not counted in the foundation test total.
+docs/feature-inventory.md:38:TS-005H adds internal ordinary `internalHasProperty`, primitive
+docs/feature-inventory.md:113:map allocates in the supplied context's active Realm, independently of callback
+docs/feature-inventory.md:124:boxes supported primitives freshly in the active Realm and rejects nullish values
+docs/feature-inventory.md:142:in the method's defining Realm; null/undefined throw a located TypeError. Extra
+docs/feature-inventory.md:175:can be deleted, exposing fresh ordinary method lookup in the usual hint order.
+src/array-map.ts:27:        const present = object.internalHasProperty(key, loc);
+src/array-object.ts:13:// Length lives in the base property storage, so inspection and receiver Set see
+src/array-object.ts:30:        if (desc.value !== undefined && desc.value.kind === "object") throw new Error("object array length in bootstrap");
+src/array-object.ts:67:        // Read old length only in the shared storage phase, after both calls.
+src/array-object.ts:107:        // descending; holes have no delete effects in this ordinary-delete model.
+src/evaluator.ts:42:        // Instantiate before execution: let bindings start in the TDZ; functions
+src/evaluator.ts:342:            // Values were captured in source order; fixed 2025 13.11.1 reverses
+src/lexer.ts:78:                // Unlike CR/LF, raw U+2028/U+2029 are allowed in modern JS strings.
+src/lexer.ts:80:                    fail("newline in string", loc);
+src/parser.ts:4:const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
+src/parser.ts:41:        if (t.kind !== "word" || RESERVED.includes(" " + t.text + " ")) this.fail("expected binding identifier", t.loc);
+src/parser.ts:237:            // in this profile, independently of inert directive strings.
+src/parser.ts:274:        if (t.kind === "word" && !RESERVED.includes(" " + t.text + " ")) return { kind: "identifier", loc, name: t.text };
+src/runtime.ts:141:    internalHasProperty(key: PropertyKey, _loc: Location): InternalBooleanCompletion {
+src/symbols.ts:8:// Shared semantic identity across every Realm in this runtime module instance.
+test/abstract-equality.ts:56:// Each pair runs in both orders, through the direct API and both actual operators.
+test/addition.ts:185:check(trace.kind === "string" && trace.value === "LRLR", "closure effects once in order");
+test/array-length-coercion.ts:534:// Fallback lookup/tick failures also retain identity in either conversion.
+test/array-like.ts:36:boolean(child.internalHasProperty("x", loc), true);
+test/array-like.ts:37:boolean(child.internalHasProperty("missing", loc), false);
+test/array-like.ts:39:boolean(child.internalHasProperty("x", loc), true);
+test/array-like.ts:41:boolean(child.internalHasProperty("x", loc), true);
+test/array-like.ts:43:boolean(child.internalHasProperty("x", loc), false);
+test/array-like.ts:45:boolean(child.internalHasProperty("x", loc), true);
+test/array-like.ts:47:boolean(child.internalHasProperty("x", loc), true);
+test/array-like.ts:51:boolean(array.internalHasProperty("0", loc), false);
+test/array-like.ts:52:boolean(array.internalHasProperty("2", loc), true);
+test/array-like.ts:53:boolean(array.internalHasProperty("length", loc), true);
+test/array-like.ts:56:boolean(array.internalHasProperty("1", loc), true);
+test/array-like.ts:59:boolean(array.internalHasProperty("1", loc), true);
+test/array-like.ts:61:boolean(array.internalHasProperty("2", loc), false);
+test/array-like.ts:73:boolean(head.internalHasProperty("deep", loc), true);
+test/array-like.ts:74:boolean(head.internalHasProperty("absent", loc), false);
+test/array-like.ts:76:boolean(head.internalHasProperty("deep", loc), false);
+test/array-like.ts:83:boolean(a.value.object.internalHasProperty("onlyFirst", loc), true);
+test/array-like.ts:84:boolean(b.value.object.internalHasProperty("onlyFirst", loc), false);
+test/array-like.ts:155:boolean(observed.internalHasProperty("length", loc), true);
+test/array-like.ts:156:boolean(observed.internalHasProperty("absent", loc), false);
+test/array-map.ts:82:    internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
+test/array-map.ts:85:        return key === this.failHas ? sentinel : super.internalHasProperty(key, at);
+test/array-map.ts:581:    override internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
+test/array-map.ts:583:        return super.internalHasProperty(key, at);
+test/array-map.ts:605:    override internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
+test/array-map.ts:607:        return super.internalHasProperty(key, at);
+test/array-string-conversion.ts:54:    internalHasProperty(_key: PropertyKey, _at: Location): InternalBooleanCompletion {
+test/boolean-string-conversions.ts:1:// M1-M8 extend the existing object-valueof driver in both compiled lanes.
+test/fixtures/object-tostring.js:1:// Read at runtime in both lanes. No guest Object/Symbol globals are required.
+test/function-call.ts:114:// No Get on the target, even for names usually used in call dispatch/metadata.
+test/key-coercion.ts:217:// Invalid bases reject before a key lookup in direct reference APIs too.
+test/number-conversions.ts:1:// N1-N8 and staged consumers extend the existing object-valueof driver in both compiled lanes.
+test/object-prototypes.ts:120:result(textLeaf.internalHasProperty("0", loc), true, "W12 inherited virtual presence");
+test/object-prototypes.ts:121:result(textLeaf.internalHasProperty("2", loc), false, "W12 missing index");
+test/object-prototypes.ts:142:result(symbolChild.internalHasProperty(symbolKey, loc), true, "A8 inherited undefined presence");
+test/object-tostring.ts:195:    // Saved method survives replacement/deletion; mutations stay in B.
+test/object-valueof.ts:90:// V2: boxes are fresh, meaningful, and allocated in B even when A calls.
+test/object-valueof.ts:226:    check(tight.steps === 2 && tight.calls === 0 && tight.context.realm === a, "new inherited call participates in limit");
+test/operator-coercion.ts:53:// F2/F3: both objects convert before string/numeric selection, in source order.
+test/primitive-conversion.ts:130:    // H7-H9: no prefetch; replacement/deletion/prototype mutation in either order.
+test/primitive-conversion.ts:314:        check(conversionEntry.context.realm === conversionA, "R19/R20 Get runs in caller Realm");
+test/primitive-conversion.ts:546:            check(context.realm === conversionB && active.calls === 1 && active.steps === 2, "P6 B restored in finally");
+test/relational.ts:213:check(trace.kind === "string" && trace.value === "LRLRLRLR", "closure effects once in order");
+test/symbol-conversions.ts:1:// Included by object-valueof.ts in both compiled lanes; not a separate driver.
+test/typeof-void.ts:147:// V1-V17 and R25: every classification uses a literal oracle, in both Realms.
+test/typeof-void.ts:1301:// C1-C3: source is read at runtime in each executable, with literal guest oracles.
+tools/probe-verdict.mjs:15:    const dynamic = report.match(/in dynamic tier\s+(\d+)/);
+tools/probe-verdict.test.mjs:52:    for (const report of ["", "new format", "in dynamic tier 0",
+tools/probe-verdict.test.mjs:64:    f.coverage.stdout += "\n  in dynamic tier   1";
+tools/run-probes.mjs:1:// Runs every probe in two lanes and compares them:
