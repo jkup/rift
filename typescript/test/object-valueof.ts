@@ -1,6 +1,7 @@
 import { GuestSymbol } from "../src/symbols.js";
 import { testSymbolConversions } from "./symbol-conversions.js";
 import { testObjectToString } from "./object-tostring.js";
+import { testBooleanStringConversions } from "./boolean-string-conversions.js";
 import { GuestSymbolObject } from "../src/primitive-objects.js";
 import { toObject } from "../src/object-conversion.js";
 import { stringKeys } from "./key-assertions.js";
@@ -339,5 +340,6 @@ check(!symbolB.global.bindings.has("Symbol") && symbolB.symbolPrototype.ownPrope
 
 testSymbolConversions();
 testObjectToString();
+testBooleanStringConversions();
 
 console.log("object valueOf passed");

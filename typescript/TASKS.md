@@ -941,7 +941,7 @@ Coordinator acceptance: TS-019C accepted `57b6bcb` on 2026-11-02. Reviewed produ
 
 ### TS-020 — Boolean and String prototype conversion methods
 
-Status: **ready for assignment**. Prerequisite accepted TS-019C `57b6bcb`. Close the documented Boolean/String inherited-tag limitation only. Own new src/builtins/boolean.ts and string.ts, minimal Realm registration, affected existing compiled test modules/runtime-read fixtures and scoped docs/validation/ts-020/. Coordinator owns COORDINATION.md; Claude paths reserved. No Number/Array/Function overrides in this task.
+Status: **in progress**. Owner: Codex TS-020 implementation chat `01a19a3c-debb-7261-b869-2b7622488bc0`, branch `codex/primitive-computed-keys`; accepted base `dd1bb83`, dispatch checkout `f2a3c5d`. Prerequisite accepted TS-019C `57b6bcb`. Close the documented Boolean/String inherited-tag limitation only. Own new src/builtins/boolean.ts and string.ts, minimal Realm registration, affected existing compiled test modules/runtime-read fixtures and scoped docs/validation/ts-020/. Coordinator owns COORDINATION.md; Claude paths reserved. No Number/Array/Function overrides in this task.
 
 Implement explicit thisBooleanValue/thisStringValue slot helpers, following existing Symbol extraction/completion conventions. Accept corresponding primitive or genuine GuestBoolean/GuestStringObject regardless of Realm/prototype, otherwise located TypeError `receiver is not a boolean` / `receiver is not a string`. Roots ARE genuine slot-bearing instances (false/empty string), unlike Symbol root. No coercion, property Get, prototype-based slot inference or new ticks in these helpers/bodies. Ignore extra args without inspecting them.
 
@@ -952,3 +952,19 @@ Required matrix: M1 exact metadata/order/freshness across three Realms; M2 primi
 Do not implement protocol shortcuts: deleting methods must expose actual inherited methods and their current semantics. Both Boolean/String ordinary number/default conversion uses valueOf; string hint uses toString. For intact wrappers this needs protocol lookup plus one ordinary lookup and one call, with no Object tag tick. Preserve symbol-hook overrides and exact abrupt records/budgets. Audit all previous root-key/inherited-valueOf/default-tag expectations before changing them, particularly realms, object-valueof, object-tostring and String exotic drivers. Record each migration and preserve negative intent, denominator and precise resource assertions. Number/Array/Function continue explicit interim tag defaults.
 
 Consult fixed ECMA-2622025 Boolean methods20.3.3.2–3 and String toString/valueOf22.1.3 plus pinned engine source; record evidence. Readable code and tests required: expand multi-effect bodies/setup, use typed test tables and fixed expected outcomes. Preserve164cases/23gates; extend current drivers or register any necessary new driver fail-closed. Require typecheck, runner/probes, full rebuilt Node/native and all static-only builds/separate coverage gates; retain reductions before compiler workarounds, no pin changes. No C++/Claude/COORDINATION edits, globals/constructors/backlinks, other String methods, implicit boxing, accessors/proxies, parser/async expansion, branch switch, main merge or successor dispatch. Commit/push tested coherent work then stop for independent review.
+
+TS-020 handoff (2026-11-02): implementation complete, awaiting independent
+coordinator acceptance. Added slot helpers and fresh per-Realm Boolean/String
+toString/valueOf; roots retain genuine false/empty payloads. No body ticks,
+coercion or property reads. Extended object-valueof with M1-M8 compiled tests
+and runtime-read fixture. Deliberately migrated realms root keys, inherited
+valueOf and payload-conversion expectations; all prior negative intent retained.
+Typecheck PASS, runner20/20, probes10/10, rebuilt Node/native164/164 each,
+no skips; all23 static-only builds/separate coverage gates PASS (CLI1346,
+object-valueof2337). Final test additions were rebuilt in both complete lanes.
+Retained initial Zig sandbox linker failure and successful authorized rerun.
+No compiler lowering failure/workaround, pin/import workaround/gate change,
+C++/Claude/COORDINATION edit, branch switch or main merge. Number/Array/Function
+interim defaults, Symbol protocol and primitive-only/member boundaries retained.
+Evidence and exact M1-M8/migration map: docs/validation/ts-020/README.md.
+Commit/push this bounded work and stop for review; no successors dispatched.

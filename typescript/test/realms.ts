@@ -283,13 +283,13 @@ for (const realm of [boxA, boxB]) {
     const roots: GuestObject[] = [realm.booleanPrototype, realm.numberPrototype, realm.stringPrototype];
     for (const root of roots) {
         checkGraph(root.getPrototypeOf() === realm.objectPrototype && root.callable === null && root.isExtensible(), "W1 root graph/flags");
-        checkGraph(root.get("valueOf") === realm.objectPrototype.get("valueOf"), "W17 inherited Object valueOf");
+        checkGraph((root.get("valueOf") === realm.objectPrototype.get("valueOf")) === (root === realm.numberPrototype), "M1 only Number inherits Object valueOf");
         for (const key of ["constructor"]) {
             checkGraph(root.get(key).kind === "undefined", "W17 missing wrapper methods");
         }
     }
     checkGraph(!realm.booleanPrototype.booleanData && 1 / realm.numberPrototype.numberData === Infinity && realm.stringPrototype.stringData === "", "W1 root payloads");
-    checkGraph(realm.booleanPrototype.ownPropertyKeys().length === 0 && realm.numberPrototype.ownPropertyKeys().length === 0 && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(",") === "length", "W1 root keys");
+    checkGraph(stringKeys(realm.booleanPrototype.ownPropertyKeys()).join(",") === "toString,valueOf" && realm.numberPrototype.ownPropertyKeys().length === 0 && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(",") === "length,toString,valueOf", "M1 root keys");
     checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(",") === "name,length,call" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(",") === "length", "W1 original root keys");
     for (const name of ["Object", "Boolean", "String"]) checkGraph(!realm.global.bindings.has(name), "W17 no new globals");
     const namespace = graphObject(graphBinding(realm, "Number"));
@@ -344,8 +344,9 @@ checkGraph(!booleanPayload.booleanData && 1 / numberPayload.numberData === -Infi
 for (const wrapper of [boxA.createBooleanObject(false), boxA.createNumberObject(0), boxA.createStringObject("ab")]) {
     const value: Value = { kind: "object", object: wrapper };
     const missing = toPrimitive(value, "number", boxEvaluator.context, at);
-    const tag = wrapper instanceof GuestBoolean ? "Boolean" : wrapper instanceof GuestNumber ? "Number" : "String";
-    checkGraph(missing.type === "normal" && missing.value.kind === "string" && missing.value.value === "[object " + tag + "]", "W17 inherited tag, no unboxing");
+    const expected: Value = wrapper instanceof GuestBoolean ? { kind: "boolean", value: false }
+        : wrapper instanceof GuestNumber ? { kind: "string", value: "[object Number]" } : { kind: "string", value: "ab" };
+    checkGraph(missing.type === "normal" && sameValue(missing.value, expected), "M5 Boolean/String payload; Number interim tag");
     const hook = boxA.createBuiltin("trap", 0, (_receiver, _args, _context, _loc): ValueCompletion => { throw new Error("W17 direct converter hook"); });
     wrapper.bootstrapDefine("valueOf", { value: { kind: "object", object: hook } });
     wrapper.bootstrapDefine("toString", { value: { kind: "object", object: hook } });

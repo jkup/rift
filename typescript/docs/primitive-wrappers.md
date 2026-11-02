@@ -344,3 +344,13 @@ and Symbol supplied only by the canonical prototype property. Both this document
 T1-T8 and symbol-foundation's complementary T1-T8 are mapped in
 [TS-019C evidence](validation/ts-019c/README.md). Default Array/Function/Boolean/
 Number/String conversions remain explicitly partial inherited tag strings.
+
+## TS-020 implementation status (2026-11-02)
+
+Boolean/String toString and valueOf now close their inherited-tag limitation.
+Both roots are genuine slot-bearing objects, unlike the Symbol root. Helpers
+accept only matching primitives or genuine slots; methods use ordinary per-Realm
+registration and have zero body ticks. Default/number conversion uses valueOf;
+string conversion uses toString. Deletion exposes inherited Object methods and
+ordinary fallback, without hidden unboxing. Number/Array/Function interim tag
+defaults remain. See [M1-M8 validation and migration audit](validation/ts-020/README.md).
