@@ -57,7 +57,9 @@ for (let i = 0; i < sources.length; i++) {
     check(!realm.global.bindings.has("x") && !realm.global.bindings.has("f") && !realm.global.bindings.has("o"), label + " no binding effects");
     if (codes[i] === "") check(result.observation.kind === "normal" && result.location === null && result.diagnostic === null, label + " normal");
     else {
-        check(result.observation.kind === "unsupported-syntax" && result.observation.capabilityCode === codes[i], label + " code");
+        if (i === 5 || i === 36 || i === 37) {
+            check(result.observation.kind === "syntax-error" && result.observation.phase === "parse" && result.observation.constructorName === "SyntaxError" && result.observation.ruleCode === "return-outside-function", label + " certified return code");
+        } else check(result.observation.kind === "unsupported-syntax" && result.observation.capabilityCode === codes[i], label + " code");
         check(result.location !== null && result.location.line === lines[i] && result.location.column === columns[i], label + " location");
         check(result.diagnostic !== null && result.diagnostic.phase === "parse" && result.diagnostic.name === "SyntaxError" && result.diagnostic.loc === result.location, label + " diagnostic");
     }

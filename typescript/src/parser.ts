@@ -7,7 +7,16 @@ export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: R
 export function parse(source: string): ParseResult {
     const result = lex(source);
     if (result.error !== null) return { body: [], error: result.error, rejection: result.rejection };
-    return new Parser(result.tokens, { text: source }).program();
+    const parsed = new Parser(result.tokens, { text: source }).program();
+    // Preserve the ordinary parser's first error and partial body. Only this
+    // rejection can request a fresh, source-only audit of the entire input.
+    if (parsed.rejection?.kind === "unsupported-syntax" && parsed.rejection.capabilityCode === "parse.return-context") {
+        const coverage = auditScriptReturns(source);
+        if (coverage.kind === "complete" && coverage.candidates.length > 0) {
+            parsed.rejection = { kind: "syntax-error", ruleCode: "return-outside-function" };
+        }
+    }
+    return parsed;
 }
 // Internal structural evidence only: this entry point never returns an executable body.
 export type ReturnCandidate = {

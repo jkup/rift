@@ -292,3 +292,19 @@ Delete, binding reads, parser syntax and built-in inventory are unchanged.
 Number.toString remains the inherited Object method (`[object Number]`); decimal
 and radix Number formatting are not added. The [implementation evidence](validation/ts-028a/README.md)
 maps all 144 named rows and records precise expectation migrations and preservation.
+
+### Return-only parse certification (TS-031C-B)
+
+An ordinary `parse.return-context` failure can carry the structured
+`syntax-error/return-outside-function` tag only when a fresh internal audit of
+the same unedited source reaches EOF with a Script-level return candidate.
+Unsupported tails and resource guards veto certification and preserve the
+ordinary parser's original rejection. Diagnostics, locations, partial bodies,
+CLI results and effects are unchanged. Observation transport carries parse phase,
+SyntaxError constructorName and that one rule, with bodyEvaluated false; it does
+not create a guest Error object. All other syntax rules remain non-emitting.
+
+This adds no grammar, ASI or strict Script execution. All conformance profiles
+remain blocked with zero conformance execution; observations do not admit a
+profile, validate a harness or classify a test. See the bounded
+[implementation evidence](validation/ts-031c-b/README.md).

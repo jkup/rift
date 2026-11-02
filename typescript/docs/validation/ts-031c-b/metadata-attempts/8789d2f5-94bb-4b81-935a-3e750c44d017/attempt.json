@@ -1,0 +1,158 @@
+{
+  "kind": "observation-attempt",
+  "state": "complete",
+  "plan": {
+    "context": {
+      "identity": {
+        "schemaVersion": 1,
+        "runId": "e151d0ad-4e46-4438-b229-f546584867c1",
+        "mode": "body-observation",
+        "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "path": "test/synthetic.js",
+        "blob": "eb224e0951e68d0a2a227db556041c655c0e17ed",
+        "sourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+        "variant": "non-strict",
+        "goal": "Script",
+        "lane": "native",
+        "engineCommit": "4947d9aed4c64b80244983079ac169065c41a03c",
+        "engineBuildSha256": "10ee69e602e9821762c0d4e70dc17422749924df62db74972d1a4ead68156ac3",
+        "adapterSha256": "cbe348354035382e13e5814b0925684886faffe9db46d86b970bddc50a40bfb3",
+        "policySha256": "f473295aca370db30a22499864f26a08e3e582aa2b86160a7acb591fd93941f5",
+        "dirtySourceSha256": "745d23d7e3d60d7456ddc51d1253966bb14d4d6bdd5c6ece11d78577050d4cef"
+      },
+      "inputs": {
+        "harness": [],
+        "transformedSourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+        "profileId": "rift-subset-observation-v1",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "evaluationDepth": 256,
+          "steps": 100000,
+          "calls": 64,
+          "wallMs": 10000,
+          "outputBytes": 1048576
+        }
+      },
+      "expectedNegative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "synthetic-profile"
+        }
+      ]
+    },
+    "binding": {
+      "nonce": "d51a722b-ed56-429e-8ae1-2af2f1a450f7",
+      "mode": "body-observation",
+      "unit": "test/synthetic.js"
+    },
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-031c-b\\metadata-attempts\\8789d2f5-94bb-4b81-935a-3e750c44d017",
+    "sourcePath": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-031c-b\\metadata-attempts\\8789d2f5-94bb-4b81-935a-3e750c44d017\\source.js",
+    "resultPath": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-031c-b\\metadata-attempts\\8789d2f5-94bb-4b81-935a-3e750c44d017\\child.json",
+    "build": {
+      "entry": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\observation-driver.exe",
+      "executable": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\observation-driver.exe",
+      "args": [],
+      "hash": "10ee69e602e9821762c0d4e70dc17422749924df62db74972d1a4ead68156ac3"
+    },
+    "selection": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "variant": {
+        "id": "C08-native",
+        "path": "test/synthetic.js",
+        "lane": "native",
+        "variant": "non-strict",
+        "goal": "Script",
+        "blob": "eb224e0951e68d0a2a227db556041c655c0e17ed",
+        "sourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+        "transformedSourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+        "metadata": {
+          "negative": {
+            "phase": "parse",
+            "type": "SyntaxError"
+          }
+        },
+        "harness": [],
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "synthetic-profile"
+          }
+        ]
+      }
+    }
+  },
+  "record": {
+    "identity": {
+      "schemaVersion": 1,
+      "runId": "e151d0ad-4e46-4438-b229-f546584867c1",
+      "mode": "body-observation",
+      "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "path": "test/synthetic.js",
+      "blob": "eb224e0951e68d0a2a227db556041c655c0e17ed",
+      "sourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+      "variant": "non-strict",
+      "goal": "Script",
+      "lane": "native",
+      "engineCommit": "4947d9aed4c64b80244983079ac169065c41a03c",
+      "engineBuildSha256": "10ee69e602e9821762c0d4e70dc17422749924df62db74972d1a4ead68156ac3",
+      "adapterSha256": "cbe348354035382e13e5814b0925684886faffe9db46d86b970bddc50a40bfb3",
+      "policySha256": "f473295aca370db30a22499864f26a08e3e582aa2b86160a7acb591fd93941f5",
+      "dirtySourceSha256": "745d23d7e3d60d7456ddc51d1253966bb14d4d6bdd5c6ece11d78577050d4cef"
+    },
+    "inputs": {
+      "harness": [],
+      "transformedSourceSha256": "f58b7c3af621b52a2bb7dc67d4491f9ab6c6d16e3cfa1e46e670ff4f9a301fdc",
+      "profileId": "rift-subset-observation-v1",
+      "capabilityLedgerSha256": null,
+      "host": "v26.13.0",
+      "platform": "win32/x64",
+      "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "evaluationDepth": 256,
+        "steps": 100000,
+        "calls": 64,
+        "wallMs": 10000,
+        "outputBytes": 1048576
+      }
+    },
+    "evidence": {
+      "stage": "test",
+      "harnessValidated": false,
+      "bodyEvaluated": false,
+      "unit": "test/synthetic.js",
+      "location": {
+        "line": 1,
+        "column": 1
+      },
+      "process": {
+        "exitCode": 0,
+        "signal": null,
+        "deadlineExpired": false
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsedMs": 34.33869999999979
+    },
+    "observation": {
+      "kind": "syntax-error",
+      "phase": "parse",
+      "constructorName": "SyntaxError",
+      "ruleCode": "return-outside-function",
+      "diagnostic": "return outside function"
+    }
+  }
+}

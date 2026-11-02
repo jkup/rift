@@ -13,10 +13,11 @@ const capabilities = new Set(['lex.indeterminate-comment','lex.leading-zero','le
   'parse.prototype-literal','parse.unexpected','runtime.object-to-number','runtime.object-to-string','runtime.map-species']);
 function strictObservation(o) {
   if (!o || typeof o !== 'object') return false;
-  const fields = { normal: [], throw: ['phase','valueKind','constructor'], 'unsupported-syntax': ['capabilityCode'],
+  const fields = { normal: [], throw: ['phase','valueKind','constructor'], 'syntax-error': ['phase','constructorName','ruleCode'], 'unsupported-syntax': ['capabilityCode'],
     'resource-limit': ['guardCode','count','limit'], 'host-fault': ['faultCode'] }[o.kind];
   if (!fields || !keys(o, ['kind', ...fields, ...(Object.hasOwn(o, 'diagnostic') && o.kind !== 'normal' ? ['diagnostic'] : [])]) ||
       (Object.hasOwn(o, 'diagnostic') && (typeof o.diagnostic !== 'string' || !o.diagnostic))) return false;
+  if (o.kind === 'syntax-error') return o.phase === 'parse' && o.constructorName === 'SyntaxError' && o.ruleCode === 'return-outside-function';
   if (o.kind === 'throw') return o.phase === 'runtime' && ['undefined','null','boolean','number','string','symbol','object'].includes(o.valueKind) &&
     keys(o.constructor, ['outcome','name','realmId','secondary']) &&
     o.constructor.outcome === (o.valueKind === 'object' ? 'unsupported' : 'absent') &&

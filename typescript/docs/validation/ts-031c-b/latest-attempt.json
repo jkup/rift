@@ -1,0 +1,20 @@
+{
+  "id": "F24-S22/strict",
+  "expected": "blocked parse.duplicate-binding\n23 19\n",
+  "lanes": {
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "blocked parse.duplicate-binding\n23 19\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "blocked parse.duplicate-binding\n23 19\n",
+      "stderr": ""
+    }
+  }
+}

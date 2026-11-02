@@ -8,6 +8,7 @@ import type { Rejection, ResourceOrigin, RuntimeCapability, SyntaxCapability } f
 export type ObservationMode = "parser-observation" | "body-observation";
 export type Observation =
     | { readonly kind: "normal" }
+    | { readonly kind: "syntax-error"; readonly phase: "parse"; readonly constructorName: "SyntaxError"; readonly ruleCode: "return-outside-function" }
     | { readonly kind: "throw"; readonly phase: "runtime"; readonly valueKind: Value["kind"]; readonly constructor: {
         readonly outcome: "absent" | "unsupported"; readonly name: null; readonly realmId: null; readonly secondary: null;
     } }
@@ -35,7 +36,10 @@ export function projectThrow(result: ThrowCompletion): Observation {
     } };
 }
 function projectRejection(rejection: Rejection): Observation {
-    if (rejection.kind === "syntax-error") throw new Error("syntax certification is not implemented");
+    if (rejection.kind === "syntax-error") {
+        if (rejection.ruleCode !== "return-outside-function") throw new Error("unsupported syntax certification rule");
+        return { kind: "syntax-error", phase: "parse", constructorName: "SyntaxError", ruleCode: rejection.ruleCode };
+    }
     return rejection;
 }
 export function observe(source: string, realm: Realm, mode: ObservationMode, unit: string,

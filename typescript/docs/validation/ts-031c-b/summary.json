@@ -1,0 +1,214 @@
+{
+  "baseline": "802f595",
+  "rows": 94,
+  "certifiedRows": [
+    "F01",
+    "F02",
+    "F04",
+    "F05",
+    "F06",
+    "F07",
+    "F19",
+    "F22",
+    "F26",
+    "X01",
+    "X02",
+    "X03",
+    "X07",
+    "X09",
+    "C-R01",
+    "C-R03",
+    "C-R04",
+    "C-T11",
+    "C-T12",
+    "F23-S20/non-strict",
+    "F23-S20/strict"
+  ],
+  "unchangedRows": 73,
+  "auditExecutions": 188,
+  "observationExecutions": 352,
+  "cliExecutions": 164,
+  "metadataExecutions": 12,
+  "gates": [
+    {
+      "entry": "src/cli.ts",
+      "verdict": "PASS",
+      "static": 1599
+    },
+    {
+      "entry": "test/realms.ts",
+      "verdict": "PASS",
+      "static": 1955
+    },
+    {
+      "entry": "test/object-descriptors.ts",
+      "verdict": "PASS",
+      "static": 1350
+    },
+    {
+      "entry": "test/object-prototypes.ts",
+      "verdict": "PASS",
+      "static": 1711
+    },
+    {
+      "entry": "test/object-keys.ts",
+      "verdict": "PASS",
+      "static": 1355
+    },
+    {
+      "entry": "test/conversion.ts",
+      "verdict": "PASS",
+      "static": 866
+    },
+    {
+      "entry": "test/definition-dispatch.ts",
+      "verdict": "PASS",
+      "static": 1737
+    },
+    {
+      "entry": "test/array-storage.ts",
+      "verdict": "PASS",
+      "static": 1879
+    },
+    {
+      "entry": "test/array-like.ts",
+      "verdict": "PASS",
+      "static": 1308
+    },
+    {
+      "entry": "test/operation-context.ts",
+      "verdict": "PASS",
+      "static": 1919
+    },
+    {
+      "entry": "test/array-map.ts",
+      "verdict": "PASS",
+      "static": 2063
+    },
+    {
+      "entry": "test/array-literals.ts",
+      "verdict": "PASS",
+      "static": 1650
+    },
+    {
+      "entry": "test/property-key-conversion.ts",
+      "verdict": "PASS",
+      "static": 1923
+    },
+    {
+      "entry": "test/numeric-operators.ts",
+      "verdict": "PASS",
+      "static": 1681
+    },
+    {
+      "entry": "test/addition.ts",
+      "verdict": "PASS",
+      "static": 1695
+    },
+    {
+      "entry": "test/relational.ts",
+      "verdict": "PASS",
+      "static": 1726
+    },
+    {
+      "entry": "test/primitive-conversion.ts",
+      "verdict": "PASS",
+      "static": 2091
+    },
+    {
+      "entry": "test/operator-coercion.ts",
+      "verdict": "PASS",
+      "static": 1728
+    },
+    {
+      "entry": "test/key-coercion.ts",
+      "verdict": "PASS",
+      "static": 1753
+    },
+    {
+      "entry": "test/length-coercion.ts",
+      "verdict": "PASS",
+      "static": 1868
+    },
+    {
+      "entry": "test/array-length-coercion.ts",
+      "verdict": "PASS",
+      "static": 2088
+    },
+    {
+      "entry": "test/function-call.ts",
+      "verdict": "PASS",
+      "static": 1767
+    },
+    {
+      "entry": "test/object-valueof.ts",
+      "verdict": "PASS",
+      "static": 2897
+    },
+    {
+      "entry": "test/array-string-conversion.ts",
+      "verdict": "PASS",
+      "static": 2094
+    },
+    {
+      "entry": "test/function-string-conversion.ts",
+      "verdict": "PASS",
+      "static": 1910
+    },
+    {
+      "entry": "test/abstract-equality.ts",
+      "verdict": "PASS",
+      "static": 1996
+    },
+    {
+      "entry": "test/delete-operator.ts",
+      "verdict": "PASS",
+      "static": 2373
+    },
+    {
+      "entry": "test/typeof-void.ts",
+      "verdict": "PASS",
+      "static": 2122
+    },
+    {
+      "entry": "test/in-operator.ts",
+      "verdict": "PASS",
+      "static": 2284
+    },
+    {
+      "entry": "test/primitive-reads.ts",
+      "verdict": "PASS",
+      "static": 2364
+    },
+    {
+      "entry": "test/property-assignment.ts",
+      "verdict": "PASS",
+      "static": 2660
+    },
+    {
+      "entry": "test/compound-assignment.ts",
+      "verdict": "PASS",
+      "static": 2789
+    },
+    {
+      "entry": "test/structured-outcomes.ts",
+      "verdict": "PASS",
+      "static": 1941
+    },
+    {
+      "entry": "src/observation-driver.ts",
+      "verdict": "PASS",
+      "static": 1641
+    },
+    {
+      "entry": "test/observation-serialization.ts",
+      "verdict": "PASS",
+      "static": 1628
+    },
+    {
+      "entry": "test/return-audit.ts",
+      "verdict": "PASS",
+      "static": 1624
+    }
+  ]
+}

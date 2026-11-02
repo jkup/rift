@@ -29,6 +29,7 @@ test('T07 mode, body, stage and location must describe a possible driver operati
     ...['runtime.object-to-number','runtime.object-to-string','runtime.map-species'].map(capabilityCode => ({ kind: 'unsupported-syntax', capabilityCode })),
   ];
   const parsing = [
+    { kind: 'syntax-error', phase: 'parse', constructorName: 'SyntaxError', ruleCode: 'return-outside-function' },
     { kind: 'unsupported-syntax', capabilityCode: 'lex.character' },
     { kind: 'unsupported-syntax', capabilityCode: 'parse.return-context' },
     { kind: 'resource-limit', guardCode: 'source-units', count: 100001, limit: 100000 },
@@ -70,6 +71,34 @@ test('T07 mode, body, stage and location must describe a possible driver operati
     assert.deepEqual(parseDriverResult(bytes(candidate), b), candidate);
     const c = structuredClone(context); c.identity.mode = candidate.mode;
     assert.deepEqual(composeObservation(c, b, bytes(candidate), facts).observation, candidate.observation);
+  }
+});
+
+test('certified return has a closed rule and consistent operation and binding in both modes', () => {
+  const certified = { kind: 'syntax-error', phase: 'parse', constructorName: 'SyntaxError', ruleCode: 'return-outside-function', diagnostic: 'return outside function' };
+  for (const mode of ['parser-observation','body-observation']) {
+    const b = { ...binding, mode };
+    const c = structuredClone(context); c.identity.mode = mode;
+    const good = { ...child, mode, location: { line: 2, column: 3 }, observation: certified };
+    const accepted = composeObservation(c, b, bytes(good), facts);
+    assert.deepEqual(parseDriverResult(bytes(good), b), good);
+    assert.deepEqual(accepted.observation, certified);
+    assert.deepEqual(accepted.evidence.location, good.location);
+    assert.equal(accepted.evidence.harnessValidated, false);
+    assert.equal(accepted.evidence.bodyEvaluated, false);
+    assert.deepEqual(accepted.inputs.harness, []);
+    assert.equal(Object.hasOwn(accepted, 'classification'), false);
+    const bad = [];
+    for (const ruleCode of ['assignment-target','lexical-declaration-statement','duplicate-strict-parameter','duplicate-block-lexical-function','unknown','',null]) bad.push({ ...good, observation: { ...certified, ruleCode } });
+    for (const field of Object.keys(certified).filter(x => x !== 'diagnostic')) {
+      const observation = { ...certified }; delete observation[field]; bad.push({ ...good, observation });
+    }
+    for (const change of [{ phase: 'runtime' }, { constructorName: 'TypeError' }, { capabilityCode: 'parse.return-context' }, { candidates: [] }, { complete: true }, { diagnostic: '' }]) bad.push({ ...good, observation: { ...certified, ...change } });
+    for (const change of [{ bodyEvaluated: true }, { stage: 'driver' }, { stage: 'harness' }, { location: null }, { location: { line: 0, column: 1 } }, { mode: 'conformance' }, { mode: mode === 'parser-observation' ? 'body-observation' : 'parser-observation' }, { nonce: 'stale' }, { unit: 'test/wrong.js' }, { harnessValidated: true }, { sourceSha256: 'a'.repeat(64) }]) bad.push({ ...good, ...change });
+    for (const candidate of bad) {
+      assert.throws(() => parseDriverResult(bytes(candidate), b), /protocol/);
+      assert.deepEqual(composeObservation(c, b, bytes(candidate), facts).observation, { kind: 'host-fault', faultCode: 'protocol' });
+    }
   }
 });
 

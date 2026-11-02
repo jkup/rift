@@ -95,7 +95,7 @@ for (const lane of ['node','native']) {
     assert.deepEqual(archived.plan, plan);
     await validateLaunch(plan);
     const result = await launchObservation(plan);
-    assert.equal(result.record.observation.capabilityCode, 'parse.return-context');
+    assert.deepEqual(result.record.observation, { kind: 'syntax-error', phase: 'parse', constructorName: 'SyntaxError', ruleCode: 'return-outside-function', diagnostic: 'return outside function' });
     assert.deepEqual(result.record.evidence.location, { line: 1, column: 1 });
     assert.equal(result.record.identity.variant, 'non-strict');
   });
@@ -111,8 +111,7 @@ for (const lane of ['node','native']) {
     assert.equal(forge.record.observation.kind, 'throw'); assert.equal(forge.record.observation.valueKind, 'number');
     assert.match(forge.stdout, /driverVersion/);
     const strict = await run(lane, 'return 1;', 'parser-observation', 'strict');
-    assert.equal(strict.record.observation.kind, 'unsupported-syntax');
-    assert.equal(strict.record.observation.capabilityCode, 'parse.return-context');
+    assert.deepEqual(strict.record.observation, { kind: 'syntax-error', phase: 'parse', constructorName: 'SyntaxError', ruleCode: 'return-outside-function', diagnostic: 'return outside function' });
     assert.deepEqual(strict.record.evidence.location, { line: 2, column: 1 });
     assert.notEqual(strict.record.identity.sourceSha256, strict.record.inputs.transformedSourceSha256);
     assert.equal(strict.record.identity.variant, 'strict');

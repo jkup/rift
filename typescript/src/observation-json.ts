@@ -17,6 +17,7 @@ export function jsonString(value: string): string {
 }
 function observationJSON(value: Observation): string {
     if (value.kind === "normal") return '{"kind":"normal"}';
+    if (value.kind === "syntax-error") return '{"kind":"syntax-error","phase":"parse","constructorName":"SyntaxError","ruleCode":' + jsonString(value.ruleCode) + '}';
     if (value.kind === "unsupported-syntax") return '{"kind":"unsupported-syntax","capabilityCode":' + jsonString(value.capabilityCode) + '}';
     if (value.kind === "resource-limit") return '{"kind":"resource-limit","guardCode":' + jsonString(value.guardCode) + ',"count":' + value.count + ',"limit":' + value.limit + '}';
     return '{"kind":"throw","phase":"runtime","valueKind":' + jsonString(value.valueKind) + ',"constructor":{"outcome":' + jsonString(value.constructor.outcome) + ',"name":null,"realmId":null,"secondary":null}}';
