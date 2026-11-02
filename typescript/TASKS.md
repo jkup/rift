@@ -1314,3 +1314,13 @@ compiler uncertainty warranted a probe. Prior accepted177/177bothhosts/27gates
 is baseline only, not typeof/void support. No production/tests/manifests/pins/C++,
 Claude/COORDINATION edits, branch switch/main merge or successor. Commit/push
 coherent design and stop for independent coordinator review; not self-accepted.
+
+Coordinator acceptance: TS-026P accepted3192a7e on 2026-11-02. Reviewed complete contract/matrices, independently checked fixed2025 typeof/void and reference/TDZ/guards; reproduced113-file/183-candidate inventory. No runtime changed or rerun; baseline27e5b27 remains177/177/27gates.
+
+### TS-026A — Typeof and void implementation
+
+Status: **ready**. Owner: next assigned Codex implementation chat, existing codex/primitive-computed-keys. Prerequisite accepted TS-026P3192a7e. Implement docs/typeof-void.md and all named V1-V17/B1-B20/E1-E24/P1-P26/R1-R25/C1-C8 rows and variants. Own src/typeof.ts, minimal parser/evaluator integration, test/typeof-void.ts and runtime-read fixtures, required runner/native registration, precise delete-test migrations and scope/evidence/task updates. Coordinator owns COORDINATION.md; Claude outputs reserved.
+
+Keep pure exhaustive classification and localized direct-identifier unresolved exception inside existing evaluate guards. No swallowing ReferenceError, flag propagation into children, coercion, broad scope/reference changes or boxing expansion. Preserve abrupt identity, TDZ, callable-slot classification, no hooks during classification, source spans and unrelated unary paths. Audit evaluate overrides and forward the new optional flag explicitly, including delete test MeasuredEvaluator; test missing/TDZ identifiers through measured evaluators so instrumentation cannot drop semantics. Use named readable scenarios/braced control flow from the start.
+
+Require literal values/traces/locations, exact resource boundaries, runtime-read tests, native actual default64 recursive host/guest key hooks, Realm/host-fault cleanup and monotonic budgets. Preserve177 cases/27 gates, migrating only named current typeof/void rejections while retaining history. Run typecheck, runner/probes, full rebuilt Node/native, all static-only builds AND separately parsed coverage gates. Retain failures/reductions before workarounds; report contradictory oracles before adjustment. No pins, C++, Claude edits, branch switching/main merge or successor. Commit/push tested milestone and stop for independent review.
