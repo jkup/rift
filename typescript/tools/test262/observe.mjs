@@ -60,10 +60,16 @@ async function sourceDigest() {
 // The selection is retained as evidence; its harness is REQUIRED metadata, never
 // a claim that the observation driver loaded or validated those files.
 export async function prepareObservation({ selection, variantId, sourceBytes, mode, archiveRoot, limits = {} }) {
+  // Take ownership before any asynchronous work. The caller may mutate its
+  // selection (including nested metadata) or byte buffer as soon as we yield.
+  selection = structuredClone(selection);
+  if (!Buffer.isBuffer(sourceBytes)) throw new Error('source-identity');
+  sourceBytes = Buffer.from(sourceBytes);
   if (!['parser-observation','body-observation'].includes(mode)) throw new Error('mode');
   const file = selection.files.find(f => f.variants?.some(v => v.id === variantId));
   const v = file?.variants.find(v => v.id === variantId);
-  if (!v || file.inputError || v.goal !== 'Script' || !['node','native'].includes(v.lane)) throw new Error('selection');
+  if (!v || file.inputError || v.goal !== 'Script' || !['node','native'].includes(v.lane) ||
+      !['strict','non-strict','raw'].includes(v.variant)) throw new Error('selection');
   safePath(v.path, 'test/');
   const verified = verifyBytes(sourceBytes, v.blob);
   const transformed = transform(sourceBytes, v.variant);

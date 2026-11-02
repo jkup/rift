@@ -1,0 +1,152 @@
+{
+  "kind": "observation-attempt",
+  "state": "complete",
+  "plan": {
+    "context": {
+      "identity": {
+        "schemaVersion": 1,
+        "runId": "2caf62cb-776e-4003-b8f7-a965850c79ef",
+        "mode": "body-observation",
+        "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "path": "test/synthetic.js",
+        "blob": "1ba88f82051f20de68b0b3e6c317f92b85afa0c9",
+        "sourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+        "variant": "non-strict",
+        "goal": "Script",
+        "lane": "native",
+        "engineCommit": "f4546bc4093f5e3d42b5ff21cb67b57c1dba96b7",
+        "engineBuildSha256": "973d2b528237d371a1b10f36b78f32afa7714384e9a97a40444d6591d4ac8ecb",
+        "adapterSha256": "e44dce313555f9011fb97294ba334045088c446e66b95fe2b1e57afb12131a18",
+        "policySha256": "98bc079db1e831de27b219691533fa931993341625447560511fd0f920358171",
+        "dirtySourceSha256": null
+      },
+      "inputs": {
+        "harness": [],
+        "transformedSourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+        "profileId": "rift-subset-observation-v1",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "evaluationDepth": 256,
+          "steps": 9007199254740991,
+          "calls": 64,
+          "wallMs": 100,
+          "outputBytes": 1048576
+        }
+      },
+      "expectedNegative": null,
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "synthetic-profile"
+        }
+      ]
+    },
+    "binding": {
+      "nonce": "1a6df19c-9628-4040-b3d4-6b6b45b2b1c4",
+      "mode": "body-observation",
+      "unit": "test/synthetic.js"
+    },
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\0d1d3455-5972-4b84-9edd-5ab5bb13c900",
+    "sourcePath": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\0d1d3455-5972-4b84-9edd-5ab5bb13c900\\source.js",
+    "resultPath": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\observations\\0d1d3455-5972-4b84-9edd-5ab5bb13c900\\child.json",
+    "build": {
+      "entry": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\observation-driver.exe",
+      "executable": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\observation-driver.exe",
+      "args": [],
+      "hash": "973d2b528237d371a1b10f36b78f32afa7714384e9a97a40444d6591d4ac8ecb"
+    },
+    "selection": {
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "variant": {
+        "id": "synthetic-native",
+        "path": "test/synthetic.js",
+        "lane": "native",
+        "variant": "non-strict",
+        "goal": "Script",
+        "blob": "1ba88f82051f20de68b0b3e6c317f92b85afa0c9",
+        "sourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+        "transformedSourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+        "metadata": {
+          "negative": null
+        },
+        "harness": [
+          {
+            "path": "harness/assert.js",
+            "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "blockers": [
+          {
+            "status": "unsupported-profile",
+            "reasonCode": "synthetic-profile"
+          }
+        ]
+      }
+    }
+  },
+  "record": {
+    "identity": {
+      "schemaVersion": 1,
+      "runId": "2caf62cb-776e-4003-b8f7-a965850c79ef",
+      "mode": "body-observation",
+      "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "path": "test/synthetic.js",
+      "blob": "1ba88f82051f20de68b0b3e6c317f92b85afa0c9",
+      "sourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+      "variant": "non-strict",
+      "goal": "Script",
+      "lane": "native",
+      "engineCommit": "f4546bc4093f5e3d42b5ff21cb67b57c1dba96b7",
+      "engineBuildSha256": "973d2b528237d371a1b10f36b78f32afa7714384e9a97a40444d6591d4ac8ecb",
+      "adapterSha256": "e44dce313555f9011fb97294ba334045088c446e66b95fe2b1e57afb12131a18",
+      "policySha256": "98bc079db1e831de27b219691533fa931993341625447560511fd0f920358171",
+      "dirtySourceSha256": null
+    },
+    "inputs": {
+      "harness": [],
+      "transformedSourceSha256": "2855affb89580b3e5eb6efa91a86e168cc24730878d704c5028775c19477fa6d",
+      "profileId": "rift-subset-observation-v1",
+      "capabilityLedgerSha256": null,
+      "host": "v26.13.0",
+      "platform": "win32/x64",
+      "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+      "limits": {
+        "sourceUnits": 100000,
+        "parseDepth": 128,
+        "evaluationDepth": 256,
+        "steps": 9007199254740991,
+        "calls": 64,
+        "wallMs": 100,
+        "outputBytes": 1048576
+      }
+    },
+    "evidence": {
+      "stage": "driver",
+      "harnessValidated": false,
+      "bodyEvaluated": false,
+      "unit": "test/synthetic.js",
+      "location": null,
+      "process": {
+        "exitCode": null,
+        "signal": "SIGTERM",
+        "deadlineExpired": true
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsedMs": 117.51659999999993
+    },
+    "observation": {
+      "kind": "timeout",
+      "wallMs": 100
+    }
+  }
+}

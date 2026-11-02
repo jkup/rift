@@ -4,6 +4,12 @@ Implementation on `codex/test262-classification`, assignment base `71e4b63`.
 Scope B only; independent review is required. No syntax certification, Error
 extraction, harness execution, profile admission or conformance execution was added.
 
+Independent review identified a preparation-time caller mutation race and missing
+child operation-consistency checks. Both are corrected; latest affected checks
+are host72/72 and actual observations16/16. See [review corrections](review-corrections.md)
+for reproductions, exact changes and the newer `observations-review/` archives.
+The table below retains the original milestone's full validation record.
+
 `src/observation-driver.ts` is a separate entry point. It validates all seven
 arguments before creating a Realm, observes one source unit, and writes only the
 fixed child schema. Guest stdout stays on its own pipe. Host failures exit 70.

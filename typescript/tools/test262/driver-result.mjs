@@ -28,6 +28,22 @@ function strictObservation(o) {
   return true;
 }
 
+// Shape alone is insufficient: a parser cannot report runtime work, and a body
+// that never started cannot complete normally. Locations belong to the active
+// parse/runtime operation, not to normal completion or driver infrastructure.
+function consistentOperation(value) {
+  const o = value.observation;
+  if (o.kind === 'host-fault') return value.stage === 'driver' && !value.bodyEvaluated && value.location === null;
+  if (value.stage !== 'test') return false;
+  if (o.kind === 'normal') return value.location === null &&
+    value.bodyEvaluated === (value.mode === 'body-observation');
+  if (value.location === null) return false;
+  const runtime = o.kind === 'throw' ||
+    (o.kind === 'resource-limit' && ['steps','calls','evaluation-depth'].includes(o.guardCode)) ||
+    (o.kind === 'unsupported-syntax' && o.capabilityCode.startsWith('runtime.'));
+  return runtime ? value.mode === 'body-observation' && value.bodyEvaluated : !value.bodyEvaluated;
+}
+
 export function parseDriverResult(bytes, binding) {
   if (!Buffer.isBuffer(bytes) || bytes.length > RESULT_LIMIT) throw new Error('protocol');
   const json = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
@@ -36,15 +52,12 @@ export function parseDriverResult(bytes, binding) {
   if (doc.errors.length || doc.warnings.length ||
       !keys(value, ['driverVersion','nonce','mode','unit','stage','bodyEvaluated','location','observation']) ||
       value.driverVersion !== 1 || value.nonce !== binding.nonce || value.mode !== binding.mode || value.unit !== binding.unit ||
+      !['parser-observation','body-observation'].includes(value.mode) ||
       !['test','driver'].includes(value.stage) || typeof value.bodyEvaluated !== 'boolean') throw new Error('protocol');
   const o = value.observation;
   if (!strictObservation(o) ||
       (value.location !== null && (!keys(value.location, ['line','column']) || !integer(value.location.line) || value.location.line < 1 || !integer(value.location.column) || value.location.column < 1)) ||
-      (value.mode === 'parser-observation' && value.bodyEvaluated) ||
-      (o.kind === 'resource-limit' && o.guardCode === 'output') ||
-      (o.kind === 'throw' && (o.constructor?.outcome !== (o.valueKind === 'object' ? 'unsupported' : 'absent') ||
-        o.constructor.name !== null || o.constructor.realmId !== null || o.constructor.secondary !== null)) ||
-      (value.stage === 'driver' && o.kind !== 'host-fault')) throw new Error('protocol');
+      !consistentOperation(value)) throw new Error('protocol');
   return value;
 }
 

@@ -14,7 +14,7 @@ use `test/observation-serialization.ts`, separately compiled and coverage-gated.
 | T04 | Null child bytes with exit0 gives protocol |
 | T05 | Truncated JSON, concatenated documents and trailing document give protocol |
 | T06 | Repeated and escaped-equivalent driverVersion keys give protocol |
-| T07 | Extra field, conformance mode, driverVersion2 rejected; missing fields also rejected |
+| T07 | Extra field, conformance mode, driverVersion2 rejected; missing fields also rejected. Review table rejects impossible mode/body/stage/location combinations at decoder and composition, with positive controls for each legitimate outcome |
 | T08 | Wrong nonce/unit/mode rejected; a consumed actual plan cannot be relaunched |
 | T09 | Normal child plus exit70 gives crash |
 | T10 | Normal child plus deadline gives timeout; actual timeouts in both lanes |
@@ -28,7 +28,7 @@ use `test/observation-serialization.ts`, separately compiled and coverage-gated.
 | T18 | Both lanes: each of steps/calls independently rejects -1, NaN, 1.5, 9007199254740992 and empty before output |
 | T19 | Each fixed source/parse/evaluation cap mismatch rejected before creating attempt |
 | T20 | Child identity/inputs/process/hash/classification fields rejected |
-| T21 | Every Identity/Inputs field and individual limit bound by assertContext; every prepared field mutation rejected; asynchronous validation mutation rejected |
+| T21 | Every Identity/Inputs field and individual limit bound by assertContext; every prepared field mutation rejected; asynchronous validation mutation rejected. Both lanes additionally mutate caller selection/blob/path/variant/hashes/lane/negative/blocker/harness metadata, revision/manifest, source bytes and limits while preparation awaits; original snapshot remains consistent through execution |
 | T22 | Both lanes: strict return at2:1; original/transformed hashes differ; variant remains strict |
 | T23 | Both lanes: exact quote, slash, backslash, CR/LF, NUL, separate lone high/low surrogates, pair and LS/PS diagnostic roundtrip; 1601 static statements |
 | T24 | Non-strict parser observation accepted with false harnessValidated and no Classification |
@@ -44,6 +44,10 @@ use `test/observation-serialization.ts`, separately compiled and coverage-gated.
 | V02 | Baseline-built CLI comparisons for usage/file/-e/throw/parse and Node output-host-fault injection; cli.json |
 | V03 | Typecheck,runner20,probes10,full rebuilt212 per lane,35 static/coverage gates,host71,observations14,corpus4 |
 | V04 | inventory.json and callers.json regenerated; all existing producers/semantic sources unchanged by exact preservation audit |
+
+Review corrections retain the initial full check record above. Latest affected
+checks are host72/72 and observations16/16; see review-host.log,
+review-protocol-after.log, review-observations.log and review-corrections.md.
 
 C01–C08 remain non-emitting/unsupported. Existing A source and all its assertions
 are unchanged; the full guest suites run them in both hosts.

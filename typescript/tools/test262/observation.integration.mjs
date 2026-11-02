@@ -52,6 +52,53 @@ async function run(lane, source, mode = 'parser-observation', variant = 'non-str
   return { ...result, stdout: await readFile(join(result.directory, 'stdout.bin'), 'utf8'), plan };
 }
 for (const lane of ['node','native']) {
+  test(`${lane} T21 preparation snapshots caller selection, nested metadata and source before yielding`, async () => {
+    const input = options(lane, 'return 1;', 'parser-observation', 'non-strict', { steps: 1234 });
+    const variant = input.selection.files[0].variants[0];
+    variant.metadata.negative = { phase: 'parse', type: 'SyntaxError' };
+    const originalSelection = structuredClone(input.selection);
+    const originalVariant = originalSelection.files[0].variants[0];
+    const originalBytes = Buffer.from(input.sourceBytes);
+    const pending = prepareObservation(input);
+    // Literal independent-review reproducer plus all other retained metadata.
+    variant.variant = 'strict';
+    variant.path = 'test/mutated.js';
+    variant.blob = 'c'.repeat(40);
+    variant.sourceSha256 = 'd'.repeat(64);
+    variant.transformedSourceSha256 = 'e'.repeat(64);
+    variant.lane = lane === 'node' ? 'native' : 'node';
+    variant.metadata.negative.type = 'TypeError';
+    variant.blockers[0].reasonCode = 'mutated-blocker';
+    variant.harness[0].path = 'harness/mutated.js';
+    input.selection.revision = 'f'.repeat(40);
+    input.selection.manifestSha256 = 'f'.repeat(64);
+    input.sourceBytes.fill(32);
+    input.limits.steps = 0;
+    const plan = await pending;
+    artifacts.push(plan.directory);
+    assert.deepEqual(plan.selection, { revision: originalSelection.revision,
+      manifestSha256: originalSelection.manifestSha256, variant: originalVariant });
+    assert.equal(plan.context.identity.variant, 'non-strict');
+    assert.equal(plan.context.identity.path, originalVariant.path);
+    assert.equal(plan.context.identity.blob, blobHash(originalBytes));
+    assert.equal(plan.context.identity.sourceSha256, sha256(originalBytes));
+    assert.equal(plan.context.identity.corpusRevision, originalSelection.revision);
+    assert.equal(plan.context.identity.manifestSha256, originalSelection.manifestSha256);
+    assert.equal(plan.context.identity.lane, lane);
+    assert.equal(plan.binding.unit, originalVariant.path);
+    assert.deepEqual(plan.context.expectedNegative, { phase: 'parse', type: 'SyntaxError' });
+    assert.deepEqual(plan.context.blockers, originalVariant.blockers);
+    assert.equal(plan.context.inputs.limits.steps, 1234);
+    assert.deepEqual(await readFile(plan.sourcePath), originalBytes);
+    assert.equal(plan.context.inputs.transformedSourceSha256, sha256(originalBytes));
+    const archived = JSON.parse(await readFile(join(plan.directory, 'attempt.json'), 'utf8'));
+    assert.deepEqual(archived.plan, plan);
+    await validateLaunch(plan);
+    const result = await launchObservation(plan);
+    assert.equal(result.record.observation.capabilityCode, 'parse.return-context');
+    assert.deepEqual(result.record.evidence.location, { line: 1, column: 1 });
+    assert.equal(result.record.identity.variant, 'non-strict');
+  });
   test(`${lane} T01 T02 T03 T22 T24 actual parser/body/forgery/strict coordinates`, async () => {
     const parser = await run(lane, "console.log('no');");
     assert.deepEqual(parser.record.observation, { kind: 'normal' });

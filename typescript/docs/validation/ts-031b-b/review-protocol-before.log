@@ -1,0 +1,32 @@
+✖ T07 mode, body, stage and location must describe a possible driver operation (3.4859ms)
+✔ T04 T05 T06 T07 T08 T16 T20 T29 strict child framing, identity and closed schema (16.7893ms)
+✔ T09 T10 T11 T12 T13 T14 T15 exact transport precedence and counts (0.6759ms)
+✔ T12 T13 combined pipe byte chunks preserve exactly 1048600 at first crossing (0.14ms)
+✔ T21 all parent Identity and Inputs fields remain context-bound (1.6049ms)
+✔ T24 T25 T26 T27 observation invariant and conformance ledger remain separate (0.9612ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 136.7014
+
+✖ failing tests:
+
+test at tools\test262\driver-result.test.mjs:23:1
+✖ T07 mode, body, stage and location must describe a possible driver operation (3.4859ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception: {"driverVersion":1,"nonce":"fresh-nonce","mode":"body-observation","unit":"test/synthetic.js","stage":"test","bodyEvaluated":false,"location":null,"observation":{"kind":"normal"}}
+      at TestContext.<anonymous> (file:///C:/Users/jonku/code/rift/typescript/tools/test262/driver-result.test.mjs:60:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /protocol/,
+    operator: 'throws',
+    diff: 'simple'
+  }

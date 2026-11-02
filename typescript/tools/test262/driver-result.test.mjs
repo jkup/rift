@@ -20,6 +20,59 @@ const facts = { process: { exitCode: 0, signal: null, deadlineExpired: false }, 
 const compose = (payload = bytes(child), changes = {}) => composeObservation(context, binding, payload, { ...facts, ...changes });
 const fault = (payload, code = 'protocol', changes = {}) => assert.deepEqual(compose(payload, changes).observation, { kind: 'host-fault', faultCode: code });
 
+test('T07 mode, body, stage and location must describe a possible driver operation', () => {
+  const location = { line: 1, column: 1 };
+  const runtime = [
+    { kind: 'throw', phase: 'runtime', valueKind: 'number', constructor: { outcome: 'absent', name: null, realmId: null, secondary: null } },
+    ...[['steps',100001,100000],['calls',64,64],['evaluation-depth',257,256]]
+      .map(([guardCode,count,limit]) => ({ kind: 'resource-limit', guardCode, count, limit })),
+    ...['runtime.object-to-number','runtime.object-to-string','runtime.map-species'].map(capabilityCode => ({ kind: 'unsupported-syntax', capabilityCode })),
+  ];
+  const parsing = [
+    { kind: 'unsupported-syntax', capabilityCode: 'lex.character' },
+    { kind: 'unsupported-syntax', capabilityCode: 'parse.return-context' },
+    { kind: 'resource-limit', guardCode: 'source-units', count: 100001, limit: 100000 },
+    { kind: 'resource-limit', guardCode: 'parse-depth', count: 129, limit: 128 },
+  ];
+  const invalid = [
+    { ...child, mode: 'body-observation' },
+    { ...child, mode: 'body-observation', bodyEvaluated: true, location },
+    { ...child, observation: runtime[0] },
+    { ...child, stage: 'driver' },
+    { ...child, stage: 'test', observation: { kind: 'host-fault', faultCode: 'read' } },
+    { ...child, stage: 'driver', location, observation: { kind: 'host-fault', faultCode: 'read' } },
+    { ...child, mode: 'body-observation', stage: 'driver', bodyEvaluated: true, observation: { kind: 'host-fault', faultCode: 'read' } },
+  ];
+  const valid = [child, { ...child, mode: 'body-observation', bodyEvaluated: true },
+    { ...child, stage: 'driver', observation: { kind: 'host-fault', faultCode: 'read' } }];
+  for (const observation of runtime) {
+    valid.push({ ...child, mode: 'body-observation', bodyEvaluated: true, location, observation });
+    for (const mode of ['parser-observation','body-observation']) {
+      invalid.push({ ...child, mode, location, observation });
+    }
+    invalid.push({ ...child, mode: 'body-observation', bodyEvaluated: true, observation });
+  }
+  for (const observation of parsing) for (const mode of ['parser-observation','body-observation']) {
+    valid.push({ ...child, mode, location, observation });
+    invalid.push({ ...child, mode, location, bodyEvaluated: true, observation }, { ...child, mode, observation });
+  }
+  for (const candidate of invalid) {
+    const b = { ...binding, mode: candidate.mode };
+    assert.throws(() => parseDriverResult(bytes(candidate), b), /protocol/, JSON.stringify(candidate));
+    const c = structuredClone(context); c.identity.mode = candidate.mode;
+    const result = composeObservation(c, b, bytes(candidate), facts);
+    assert.deepEqual(result.observation, { kind: 'host-fault', faultCode: 'protocol' });
+    assert.equal(result.evidence.stage, 'driver');
+    assert.equal(result.evidence.bodyEvaluated, false); assert.equal(result.evidence.location, null);
+  }
+  for (const candidate of valid) {
+    const b = { ...binding, mode: candidate.mode };
+    assert.deepEqual(parseDriverResult(bytes(candidate), b), candidate);
+    const c = structuredClone(context); c.identity.mode = candidate.mode;
+    assert.deepEqual(composeObservation(c, b, bytes(candidate), facts).observation, candidate.observation);
+  }
+});
+
 test('T04 T05 T06 T07 T08 T16 T20 T29 strict child framing, identity and closed schema', () => {
   for (const payload of [null, bytes('{'), bytes('{}{}'), bytes(JSON.stringify(child) + 'null'),
     bytes(JSON.stringify(child).replace('"driverVersion":1', '"driverVersion":1,"driverVersion":1')),
