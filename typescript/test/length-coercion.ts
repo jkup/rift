@@ -180,7 +180,9 @@ for (const stop of ["", "get1", "get2", "call1", "call2", "tick1", "tick2"]) {
     }
     const second = stop === "" || stop.endsWith("2");
     check(ticks === (second ? 3 : 2) && source.gets === 1, "exact ticks/Get");
-    check(hook.reads.join(",") === "Symbol(Symbol.toPrimitive)" + (stop === "tick1" ? "" : ",") + (stop === "tick1" ? "" : second && stop !== "tick2" ? "valueOf,toString" : "valueOf"), "lookup prefix");
+    const ordinaryLookupPrefix = stop === "tick1" ? ""
+        : second && stop !== "tick2" ? ",valueOf,toString" : ",valueOf";
+    check(hook.reads.join(",") === "Symbol(Symbol.toPrimitive)" + ordinaryLookupPrefix, "lookup prefix");
     check(calls === (stop === "tick1" || stop === "get1" ? 0 : stop === "" || stop === "call2" ? 2 : 1), "call prefix");
     if (calls > 0) check(sameValue(hook.getOwnProperty("effect")!.value, num(calls)), "effects survive failure");
     check(active.calls === 0, "abrupt call unwind");

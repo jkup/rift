@@ -124,3 +124,24 @@ reports are retained in JSON. No final timeouts, crashes, harness failures or
 unsupported omissions. Text log trailing whitespace is normalized; subprocess
 streams remain in JSON. sha256.txt hashes source/tests and evidence with CRLF
 normalized to LF for reproducibility across checkouts.
+
+## Readability review follow-up
+
+Coordinator requested a bounded test-only pass after cfe56bb; their intervening
+ca2cce1 coordination commit is preserved. Split B1 declarations/setup, expanded
+P6 try/finally and tick/guest function bodies, replaced repeated Value assertions
+with a typed invalidHooks array, named the ordinary lookup prefix, and clarified
+V7's one protocol plus two ordinary lookups. All semantic assertions, exact
+traces and budget expectations are unchanged. No production changes.
+
+Re-ran typecheck and the full rebuilt Node suite: PASS, 164/164. Rebuilt each
+affected driver with `scriptc build test/<name>.ts --tier static-only -o
+build/native/<name>.exe`, then `scriptc coverage test/<name>.ts`, using the
+unchanged fail-closed probeVerdict parser. Names: primitive-conversion,
+length-coercion, object-valueof. All three pass, respectively 1761/1761,
+1538/1538 and 1471/1471 static statements. The other 20 entrypoints are unchanged
+from the complete 23-gate run above. Full native guest suite after rebuilding
+these drivers: 164/164, no skips. Final transcripts: readability-native.log,
+readability-native-build-results.json, refreshed node.log/typecheck.log and both
+guest result JSON files. Runner/probes are unchanged since their successful runs.
+No compiler failure or workaround was introduced by this follow-up.

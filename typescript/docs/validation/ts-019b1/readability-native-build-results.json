@@ -1,0 +1,56 @@
+[
+  {
+    "entry": "test/primitive-conversion.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\primitive-conversion.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\primitive-conversion.ts\n\n  statements analyzed   1761\n  compile statically    1761  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/length-coercion.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\length-coercion.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\length-coercion.ts\n\n  statements analyzed   1538\n  compile statically    1538  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/object-valueof.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\object-valueof.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\object-valueof.ts\n\n  statements analyzed   1471\n  compile statically    1471  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  }
+]

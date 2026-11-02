@@ -219,7 +219,8 @@ for (const source of ["{}", "[]", "function() {}"] ) {
 }
 
 // V7: direct converters reject objects without consulting methods. Null roots
-// retain two missing lookups even with no call budget; borrowing never relinks.
+// perform one protocol lookup and two missing ordinary lookups even with no call
+// budget; borrowing never relinks.
 const bare = new GuestObject();
 check(object(result(e.call(method, value(bare), [], loc))) === bare && bare.getPrototypeOf() === null, "borrow does not relink null root");
 const zeroCalls = new Evaluator(a, 3, 0);

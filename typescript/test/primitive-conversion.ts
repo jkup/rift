@@ -43,7 +43,10 @@ class Observed extends GuestObject {
     expected: Value = UNDEFINED;
     override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
         check(receiver === this.expected && (!this.requireLocation || location === loc), "exact Get receiver/location");
-        if (key === wellKnownToPrimitive) { this.protocolReads++; return normal(UNDEFINED); }
+        if (key === wellKnownToPrimitive) {
+            this.protocolReads++;
+            return normal(UNDEFINED);
+        }
         this.reads++;
         this.trace += "Get " + formatPropertyKey(key) + ";";
         if (this.reads === this.failAt) return sentinel;
@@ -446,7 +449,10 @@ for (const hint of ["default", "number", "string"] as const) {
             }));
             const context: OperationContext = {
                 realm,
-                tick: (at) => { source.events += "tick;"; return evaluator.tick(at); },
+                tick: (at) => {
+                    source.events += "tick;";
+                    return evaluator.tick(at);
+                },
                 call: (callee, receiver, args, at) => evaluator.call(callee, receiver, args, at),
             };
             const result = toPrimitive(source.expected, hint, context, loc);
@@ -469,9 +475,18 @@ for (const hint of ["default", "number", "string"] as const) {
         check(active.steps === 2 && active.calls === 0, "P3 absent lookup charged across independent evaluator");
     }
 }
-for (const invalid of [{ kind: "boolean", value: false } as Value, { kind: "boolean", value: true } as Value,
-    num(0), num(NaN), { kind: "string", value: "" } as Value, symbolResult, objectValue(new GuestObject())]) {
-    const source = new ProtocolObserved(); source.expected = objectValue(source);
+const invalidHooks: Value[] = [
+    { kind: "boolean", value: false },
+    { kind: "boolean", value: true },
+    num(0),
+    num(NaN),
+    { kind: "string", value: "" },
+    symbolResult,
+    objectValue(new GuestObject()),
+];
+for (const invalid of invalidHooks) {
+    const source = new ProtocolObserved();
+    source.expected = objectValue(source);
     define(source, wellKnownToPrimitive, invalid);
     const result = toPrimitive(source.expected, "default", evaluator.context, loc);
     check(result.type === "throw" && result.diagnostic.phase === "runtime" && result.diagnostic.name === "TypeError"
@@ -479,7 +494,8 @@ for (const invalid of [{ kind: "boolean", value: false } as Value, { kind: "bool
         && source.events === "Get;", "P4 noncallable category/no fallback");
 }
 for (const stage of ["object", "get", "call", "tick"]) {
-    const source = new ProtocolObserved(); source.expected = objectValue(source);
+    const source = new ProtocolObserved();
+    source.expected = objectValue(source);
     source.getFailure = stage === "get";
     define(source, wellKnownToPrimitive, builtin(realm, (_receiver, _args, _context, _at) => {
         source.events += "Call;";
@@ -509,8 +525,10 @@ check(unchangedSymbol.type === "normal" && unchangedSymbol.value === symbolResul
 for (const mode of ["normal", "throw", "fault"]) {
     const active = new Evaluator(conversionA);
     let trace = "";
-    const outer = new GuestObject(); const inner = new GuestObject();
-    const outerValue = objectValue(outer); const innerValue = objectValue(inner);
+    const outer = new GuestObject();
+    const inner = new GuestObject();
+    const outerValue = objectValue(outer);
+    const innerValue = objectValue(inner);
     define(inner, wellKnownToPrimitive, builtin(conversionC, (receiver, args, context, at): Completion => {
         trace += "C;";
         check(context === active.context && context.realm === conversionC && active.calls === 2 && active.steps === 2
@@ -522,8 +540,9 @@ for (const mode of ["normal", "throw", "fault"]) {
         trace += "B;";
         check(context.realm === conversionB && active.calls === 1 && active.steps === 1 && receiver === outerValue
             && args.length === 1 && args[0].kind === "string" && args[0].value === "default", "P6 B entry");
-        try { return toPrimitive(innerValue, "string", context, at); }
-        finally {
+        try {
+            return toPrimitive(innerValue, "string", context, at);
+        } finally {
             check(context.realm === conversionB && active.calls === 1 && active.steps === 2, "P6 B restored in finally");
             trace += "B;";
         }
@@ -543,7 +562,9 @@ for (const mode of ["normal", "throw", "fault"]) {
 // P9: recursive exotic calls consume shared slots; absent lookup consumes a step.
 for (const limit of ["calls", "steps"]) {
     const active = new Evaluator(realm, limit === "steps" ? 2 : 100, limit === "calls" ? 3 : 20);
-    const source = new GuestObject(); const input = objectValue(source); let visits = 0;
+    const source = new GuestObject();
+    const input = objectValue(source);
+    let visits = 0;
     define(source, wellKnownToPrimitive, builtin(realm, (_receiver, _args, context, at) => {
         visits++;
         return toPrimitive(input, "number", context, at);
@@ -565,8 +586,10 @@ check(exhaustedAbsent.type === "throw" && exhaustedAbsent.diagnostic.message ===
 // P8: the saved length Value gets two complete conversions and a fresh hook.
 for (const mode of ["normal", "first throw", "second throw", "mismatch"]) {
     const active = new Evaluator(realm);
-    const array = realm.createArray(); define(array, "4", num(40));
-    const source = new ProtocolObserved(); source.expected = objectValue(source);
+    const array = realm.createArray();
+    define(array, "4", num(40));
+    const source = new ProtocolObserved();
+    source.expected = objectValue(source);
     let calls = "";
     define(source, wellKnownToPrimitive, builtin(realm, (receiver, args, context, at) => {
         check(receiver === source.expected && args.length === 1 && args[0].kind === "string" && args[0].value === "number", "P8 first hint");

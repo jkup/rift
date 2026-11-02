@@ -137,7 +137,7 @@ protocols, a guest Symbol factory/registry, other platforms or performance.
 
 The shared canonical symbol and completion-aware protocol build with the pinned
 toolchain without a new workaround. All 23 static-only builds and separately
-parsed coverage gates pass (CLI 1260/1260; primitive-conversion 1760/1760).
+parsed coverage gates pass (CLI 1260/1260; primitive-conversion 1761/1761 after the test readability review).
 Rebuilt Node/native each pass 164/164, runner 20/20, probes 10/10 and typecheck.
 The initial Zig sandbox installation-access failure is retained separately from
 the successful authorized run. [P1-P9 evidence and exact budget migrations](validation/ts-019b1/README.md).
