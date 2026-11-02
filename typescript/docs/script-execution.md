@@ -119,8 +119,13 @@ Proposed names describe interfaces for future review, not exported APIs today:
   normal completion. A declaration-instantiation SyntaxError is **runtime**,
   with `bodyEvaluated=false`; intra-unit grammar/early errors are **parse**.
   Resource origins stay resource limits even if a diagnostic says RangeError.
-* Carry explicit empty statement completion internally. `1; let x;` returns 1;
-  an empty Script returns undefined. Preserve last non-empty value through lists
+* Carry explicit empty statement completion internally. Strict `1; let x;`
+  returns 1. The internal empty StatementList yields an empty completion, which
+  ScriptEvaluation normalizes to undefined. This does not admit empty source:
+  it has no strict directive and is initially profile-blocked before evaluation.
+  A directive-only Script (`"use strict";`) instead returns the string
+  `"use strict"`, because directive ExpressionStatements evaluate normally.
+  Preserve last non-empty value through lists
   and block/if/loop UpdateEmpty rules; do not use guest undefined as an empty
   sentinel. Function fallthrough still returns undefined. Return/break/continue
   escaping the Script boundary is an implementation fault after valid parsing.
@@ -273,7 +278,7 @@ proposals, not ready TASKS entries or authority to start successors.
 
 | Order | Proposed scope / owned production files | Acceptance boundary |
 |---|---|---|
-| P1 | Source-unit/strictness parsing metadata: syntax.ts, lexer.ts, parser.ts; additive parser host test and gate | D01–D09, V01–V03. No executable new entry, no additional certified errors without whole-source proof. Legacy parser outputs preserved. |
+| P1 | Source-unit/strictness parsing metadata: syntax.ts, lexer.ts, parser.ts; additive parser host test and gate | D01–D09, V01–V03 parser metadata/rejection aspects only; no execution outputs or profile admission. No new strict early-error certification is implied or authorized. Preserve legacy parser outputs and existing return certification; new rule emission requires a separate whole-source audit and review. |
 | P2 | Global environment operations and Script Realm bootstrap: runtime.ts or focused environment module, realm.ts, number.ts global installer only; additive host driver | G01–G08 descriptor/reference controls via host operations (source integration awaits P3/P4), realm isolation. Legacy Realm behavior preserved; no conformance entry. |
 | P3 | Scope summaries, global/function/block instantiation, minimal var declarations: parser/syntax/evaluator and focused instantiation module | G/L matrix including nested var collection and repeat functions. Own formal/lexical conflicts; leave const/Annex B unsupported. Bound to existing statement grammar plus simple var lists. |
 | P4 | Script entry and completions/context: interpreter or script module, evaluator, runtime, realm; additive host driver | T/C/R matrix, strict bare/member/call behavior, all abrupt cleanup paths, exact source provenance. No sloppy execution yet. |
@@ -295,6 +300,10 @@ exact numeric/string/identity assertions, not an assertion shim for corpus runs.
 Host descriptor setup is stated explicitly. All rows are future requirements.
 `strict` means literal prefix `"use strict";` unless shown. Sloppy rows test
 parse metadata first and remain execution-blocked until P5.
+For P1, D/V rows assert only directive/context metadata where parsing supports it
+and current unsupported/resource/certified-return rejection boundaries. D08's
+eventual strict SyntaxError and the D/V execution outcomes belong to later
+separately reviewed work, not P1 acceptance.
 
 | ID | Literal source / setup | Expected outcome |
 |---|---|---|
@@ -329,7 +338,9 @@ parse metadata first and remain execution-blocked until P5.
 | T03 | A non-strict `function f(){return this;}`; B strict `out(f());` | P5: A global object, despite strict caller; before P5 A execution rejected. |
 | T04 | A strict `function f(){return this;}`; B non-strict `out(f());` | P5: undefined, despite sloppy caller; no strictness leak into B. |
 | T05 | strict `missing=(this.missing=5);` | runtime ReferenceError, property remains5; unresolved LHS not resolved again. |
-| C01 | strict `1; let x;` / empty source | normal1 / normal undefined; empty is not undefined internally. |
+| C01 | strict `1; let x;` | runtime normal1 at test body evaluation. |
+| C01a | Exact source `"use strict";` | runtime normal string "use strict" at test body evaluation; directive is not an empty statement. |
+| C01b | Exact empty source (zero code units, no prefix) | Parsing succeeds with strict=false; initial entry returns unsupported-profile at preflight, no semantic error phase and bodyEvaluated=false. No runtime completion is produced. |
 | C02 | strict `1; {2;} ;` / `1; if(false){2;}` | normal2 / normal undefined (if supplies undefined via UpdateEmpty). |
 | C03 | strict `let x=0; while(x<2){x+=1; x;}` | normal2; retained loop value. |
 | C04 | A strict `let x=1; throw 7;`; B strict `out(x);` | A guest throw7; B outputs1; context restored, mutations retained. |
@@ -347,6 +358,12 @@ parse metadata first and remain execution-blocked until P5.
 | U02 | H1 `throw 7;`; T strict `out(9);` | harness-origin throw, no test body, no negative match; original H1 unit/location. |
 | U03 | H1 defines function throwing7; T strict invokes it | stage=test, defining source H1, guest throw7; both identities retained. |
 | U04 | Same H unit `let x;` loaded twice | second instantiation runtime SyntaxError, not deduplicated. |
+
+Separate internal completion control (P4 host test, not an admitted source unit):
+
+| ID | Internal setup | Expected outcome and boundary |
+|---|---|---|
+| I01 | Evaluate an empty StatementList directly, then exercise the ScriptEvaluation completion-normalization operation on its normal empty result. | Internal statement-evaluation stage yields normal/empty; internal Script-boundary normalization yields normal/undefined. This has no external parse/runtime observation phase or harness/test stage and produces no conformance record. It must not bypass profile admission to execute C01b. |
 
 P2–P4 may validate engine failures as internal completions while Error objects are
 pending, but must label that evidence as non-conformance. Final runtime-negative
