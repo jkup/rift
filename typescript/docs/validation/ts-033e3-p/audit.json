@@ -3345,6 +3345,56 @@
     "P02",
     "P03"
   ],
+  "sliceRows": [
+    {
+      "slice": "E3A",
+      "ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "N01",
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "S05"
+      ]
+    },
+    {
+      "slice": "E3B",
+      "ids": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S06",
+        "S07",
+        "B01",
+        "B02",
+        "B03",
+        "G01",
+        "G02",
+        "G03",
+        "P02",
+        "P03"
+      ]
+    },
+    {
+      "slice": "E3A and E3B, separately bounded",
+      "ids": [
+        "P01"
+      ]
+    }
+  ],
   "literalColumns": {
     "functionText": "\"use strict\";function f(a,b){var a;var x;function g(){}let z;}",
     "functionColumns": [
@@ -3394,6 +3444,6 @@
   "coordinator": {
     "path": "typescript/COORDINATION.md",
     "excluded": true,
-    "sha256": "58d8da258c5837dea7c4c28fd0f67393af10a015f6613bc9c18acf4b76d415fc"
+    "sha256": "ff65dd8dbe05faed0acf4f8a8c759f193537bbe2b52a81def96a71f3c9202ad9"
   }
 }

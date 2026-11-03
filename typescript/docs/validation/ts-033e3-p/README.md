@@ -67,3 +67,27 @@ production test callback or retention of unreachable closures.
 
 Stop for independent review. No production implementation, ER omission, grammar
 widening, Script execution, test262 admission or main publication by this writer.
+
+## Independent-review correction to 8e69fc0
+
+The reviewer found that the proposed record-owned activation Map would strongly
+retain every transient frame, and that E3A's E2 fixture/F09 needed an allocation
+API whose ownership was ambiguous. The corrected contract eliminates the Map:
+each record holds one private ActivationKey with no backreferences; module-local
+activation subclasses hold their owner key/scope/phase on the activation itself.
+There are no record-to-activation references, weak collections or finalizers.
+Validation rejects wrong brands/scopes before ticks; setup marks started before
+its first tick and leaves started on any abrupt exit, preventing retries.
+This is an ownership design, not measured GC or new compiler evidence.
+
+E3A now explicitly owns ActivationKey, FunctionActivation, its brand/phase
+methods and createFunctionEnvironment. Its migrated E2 fixture creates a genuine
+empty activation, with no FDI/body execution. E3B owns BlockActivation, block
+allocation, both setup methods and the D2 adapter; no E2 module/fixture change
+is deferred to that slice. Every one of the33 rows is mapped to a slice; P01's
+allocation/factory and setup traces are explicitly split. F09/F10 now include
+the successful/failed A allocation controls, S06/B03 cover activation brand and
+phase failures. Audit verifies exhaustive, nonoverlapping row assignment except
+the explicitly shared P01 row. All prior source/gate/blocked counts and literal
+trace columns remain unchanged. Re-ran offline audit, script syntax checks and
+git diff --check. No implementation, native run, successor or publication.

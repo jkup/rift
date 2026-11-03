@@ -42,6 +42,12 @@ for(const f of engine.files){assert.equal(sha(f.text),f.sha256);assert.equal(Buf
 const matrix=read('typescript/docs/validation/ts-033e3-p/matrix.md').toString('utf8');
 const ids=[...matrix.matchAll(/^\| ([FNSBGP]\d\d) \|/gm)].map(m=>m[1]);
 assert.deepEqual(ids,Object.entries({F:12,N:5,S:7,B:3,G:3,P:3}).flatMap(([p,n])=>Array.from({length:n},(_,i)=>p+String(i+1).padStart(2,'0'))));
+const sliceRows=[...matrix.matchAll(/^\| (E3A|E3B|E3A and E3B, separately bounded) \| ([FNSBGP0-9, ]+) \|/gm)].map(m=>({slice:m[1],ids:m[2].split(',').map(s=>s.trim())}));
+assert.equal(sliceRows.length,3);
+assert.deepEqual(sliceRows.flatMap(r=>r.ids).sort(),ids.slice().sort());
+assert.deepEqual(sliceRows[2].ids,['P01']);
+assert.ok(sliceRows[0].ids.includes('F09')&&sliceRows[0].ids.includes('S05'));
+assert.ok(sliceRows[1].ids.includes('S06'));
 const functionText='"use strict";function f(a,b){var a;var x;function g(){}let z;}';
 const column=(s,needle,offset=0)=>{const i=s.indexOf(needle);assert.ok(i>=0);return i+offset+1;};
 const f=column(functionText,'function f'),a=column(functionText,'(a',1),b=column(functionText,',b',1),va=column(functionText,'var a',4),x=column(functionText,'var x',4),g=column(functionText,'function g',9),mg=column(functionText,'function g'),z=column(functionText,'let z',4);
@@ -51,5 +57,5 @@ const ba=column(blockText,'{'),bx=column(blockText,'let x',4),bg=column(blockTex
 const blockColumns=[ba,bx,bg,bm,bg,by];
 const d2Columns=[19,26,38,38,26,26,38,19,38,29,38,26];
 const retained=tracked.filter(p=>p.startsWith('typescript/docs/validation/ts-033e2/')).map(path=>({path,sha256:sha(read(path))}));
-writeFileSync(new URL('audit.json',import.meta.url),JSON.stringify({base:git('rev-parse',base),kind:'design source identity audit; no runtime or native validation',protectedFiles:protectedPaths.length,sources,inventory,inheritedOnly:historical.map(path=>({path,records:json(path).length,sha256:sha(read(path))})),retained,research:research.map(path=>({path,sha256:sha(read(path))})),variants,proposedMatrixIds:ids,literalColumns:{functionText,functionColumns,blockText,blockColumns,d2Columns},coordinator:{path:coordinator,excluded:true,sha256:sha(read(coordinator))}},null,2)+'\n');
+writeFileSync(new URL('audit.json',import.meta.url),JSON.stringify({base:git('rev-parse',base),kind:'design source identity audit; no runtime or native validation',protectedFiles:protectedPaths.length,sources,inventory,inheritedOnly:historical.map(path=>({path,records:json(path).length,sha256:sha(read(path))})),retained,research:research.map(path=>({path,sha256:sha(read(path))})),variants,proposedMatrixIds:ids,sliceRows,literalColumns:{functionText,functionColumns,blockText,blockColumns,d2Columns},coordinator:{path:coordinator,excluded:true,sha256:sha(read(coordinator))}},null,2)+'\n');
 console.log(JSON.stringify({protectedFiles:protectedPaths.length,sources:sources.length,seams:inventory.length,proposedRows:ids.length,inherited:[212,212,44],blocked:variants.length,functionColumns,blockColumns}));

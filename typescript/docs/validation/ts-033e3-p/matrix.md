@@ -7,6 +7,28 @@ unit id/text. Use exact Value/record/environment/throw identity assertions, not
 only printed pass labels. Host contexts have throwing `call` sentinels: any
 invocation is a failure. No source body or initializer is executed.
 
+## Slice allocation
+
+This table assigns every row below. E3B replays E3A controls without changing
+their expectations. E3A's createFunctionEnvironment is real empty allocation,
+not a stub for E3B setup. E3A has neither instantiateFunction/instantiateBlock nor
+a D2 adapter. NamedEvaluation's future source-execution results in N01–N04 are
+E4 obligations, not E3A passes; E3A tests the stated private projections and
+explicit host factory metadata only.
+
+| Slice | Row IDs | API/coverage boundary |
+|---|---|---|
+| E3A | F01,F02,F03,F04,F05,F06,F07,F08,F09,F10,F11,F12,N01,N02,N03,N04,N05,S05 | factory/inspection, closed guards, naming metadata, genuine empty function activation and exact receiver/outer; no declaration setup |
+| E3B | S01,S02,S03,S04,S06,S07,B01,B02,B03,G01,G02,G03,P02,P03 | function/block setup and D2 adapter using E3A brands and allocation |
+| E3A and E3B, separately bounded | P01 | E3A exhausts M and function-allocation A (one tick each); E3B exhausts the complete18/6/12-tick traces below, including rechecking A; no claim E3A ran those setup traces |
+
+Both slice reviews inspect the ownership graph: ExecutableScript retains one
+ActivationKey and zero activation containers/references; activations hold the
+key, scope and phase. E3A checks FunctionActivation, E3B additionally checks
+BlockActivation. No weak-collection/GC test or heap-collection claim substitutes
+for this source invariant. Repeated allocations must be distinct, and only the
+test's explicitly retained references can be used to inspect prior frames.
+
 | ID | Literal input/action | Required observation |
 |---|---|---|
 | F01 | R in A: `"use strict";function f(a){return a;}`; scope1, global A, null name | M once at1:14; text `function f(a){return a;}`, range[13,37), formal[24,25), length1/name f; record R and Realm A |
@@ -17,8 +39,8 @@ invocation is a failure. No source body or initializer is executed.
 | F06 | mutate inspect()/inspectNodes()/inspectFormals()/inspectNamingSites() snapshots and original input unit | subsequent materialization/source/plan unchanged; no mutable AST/map/body API |
 | F07 | legacy Realm wrapper; wrong Realm/context; foreign global or foreign-terminal local | host invariant throw, ticks0, no allocation or binding/property change |
 | F08 | scope0, block scope, -1, 1.5, NaN, missing99; declaration with nonnull inferredName | host invariant throw, ticks0; an in-range scope in R always selects R's node, never R2's |
-| F09 | fabricated script-guest structural payload or R2 callable supplied to R.createFunctionEnvironment | host invariant throw, ticks0; no accepted plan/node argument or raw callable constructor |
-| F10 | M returns sentinel ThrowCompletion; separately M throws Error sentinel | original object escapes; no F/P/binding created; saved Realm/calls/depth unchanged, steps1 |
+| F09 | genuine R callable to R.createFunctionEnvironment, then fabricated script-guest structural payload or R2 callable to R | genuine case: exactly one A tick at function keyword, fresh empty env with exact outer/callable/receiver, no declarations initialized; negative cases: host invariant throw, ticks0; no accepted plan/node argument or raw callable constructor |
+| F10 | separately M or allocation A returns sentinel ThrowCompletion, or throws Error sentinel | original object escapes; failed M creates no F/P; failed A returns no activation and leaves existing F intact; no binding change; saved Realm/calls/depth unchanged, steps1 |
 | F11 | legacy Evaluator.call with F; Script builtin direct invoke with arbitrary matching host context | cross-profile error for legacy call; `Script execution unavailable` for builtin; no call callback, counter increment, body or output |
 | F12 | functionSourceString on legacy sourced/null-source, builtin and F | original legacy slices/native fallback preserved; builtin original name text preserved; F exact source; registered Script toString still closed |
 | N01 | `"use strict";let x;x=function(){};x=(function(){});(x)=function(){};((x))=(function(){});` | inspectNamingSites eligible `[true,true,false,false]`; RHS anonymous eligible in all four; future names `[x,x,"",""]` |
@@ -31,11 +53,11 @@ invocation is a failure. No source body or initializer is executed.
 | S03 | `"use strict";function f(a){var a;function a(){}function g(){}function a(){return 2;}}` | reverse selection chooses last a, winners in order g,a; parameter a overwritten by last-a closure; loser never materialized; var a never reinitialized to undefined |
 | S04 | `"use strict";function f(){function g(){}function h(){}}` twice | siblings g/h capture same invocation environment; next invocation has fresh env/g/h/P identities; closures retain R and correct scope IDs |
 | S05 | receiver undefined/null/number7/object O; outer local from another record in same A | exact receiver Value and outer accepted, no boxing/substitution; foreign B terminal rejected |
-| S06 | setup reentry on complete or failed env; external fresh E2 env not registered by R | invariant throw before tick; no duplicate creation/retry after partial mutation |
+| S06 | setup reentry on complete or failed env; external E2 base env; R2 activation or copied public fields; wrong scope | invariant throw before tick; no duplicate creation/retry after partial mutation; first resource/host failure leaves phase started, normal completion leaves complete; fresh owner-key/scope mismatch does not consume phase |
 | S07 | body let/formal/var collision, e.g. `"use strict";function f(a){let a;}` | preparation conflict; no callable/setup ticks; duplicate var declarations preserve first binding and tick all occurrences |
 | B01 | block fixture below | exact6 ticks; g initialized before y created; g captures new block env; x/y TDZ |
 | B02 | block helper never called (untaken-block projection) | zero ticks, bindings and allocations; this is host projection, actual untaken source execution reserved for E4 |
-| B03 | repeat block entry with same outer, then nested block entry | distinct sibling block envs/functions; nested env.outer exact parent; unrelated registered scope cannot be substituted |
+| B03 | repeat block entry with same outer, then nested block entry; R2 block or incorrect scope supplied to R | distinct sibling block envs/functions; nested env.outer exact parent; private owner-key/scope mismatch rejected before tick; no record-to-activation registry |
 | G01 | D2 fixture below | original11 marker ticks unchanged; real adapter12 ticks with M at column29; l TDZ, f real F, x undefined |
 | G02 | repeat G01 after host changes current globals (make f nonconfigurable nonwritable data) | fresh D2 admission fails before M; does not reuse cached success/F; original global property retained |
 | G03 | mutate detached plan/unit/function copies; attempt wrong unit/context/environment/declaration via adapter validation controls | copies never used by production wrapper; private callback rejects any substituted identity before M; unchanged five-arg D2 signature |

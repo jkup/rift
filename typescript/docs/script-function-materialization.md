@@ -40,13 +40,50 @@ instantiateBlock(scopeId: number, environment: ScriptDeclarativeEnvironment,
 The two environment completions are `{type:"normal", environment: ...}` or the
 existing `ThrowCompletion`; do not widen `Value`. Separate allocation/setup lets
 host controls retain the partially initialized environment after a failure.
-Setup is single-use: a private record-owned map brands newly created environments
-with scope and phase (`fresh`, `started`, `complete`); mark started before the
-first setup tick. A failed or completed environment cannot be retried. This is
-host misuse detection, not rollback. New environments allow new invocations.
-No maps are exposed. A function environment can be associated with the record of
-its callable while capturing an outer environment created by another record in
-the **same Realm**, as required by later multi-unit sessions.
+Setup is single-use, with ownership and phase stored **on each activation**, not
+in a record-owned collection. Implement module-local `FunctionActivation extends
+ScriptFunctionEnvironment` and `BlockActivation extends
+ScriptDeclarativeEnvironment` in script-record.ts. These class values and their
+constructors are not exported; methods above return the existing base types.
+Each ExecutableScript owns one private `#activationKey` instance of a module-local
+empty `ActivationKey` class. The key has no backreference or activation collection.
+Each activation has ECMAScript-private fields `#ownerKey`, `#scopeId` and `#phase`
+(`fresh`, `started`, `complete`), plus the inherited outer/callable/receiver fields.
+The record constructs it with its key and the validated private scope ID.
+
+Record consumers first narrow with `instanceof FunctionActivation` or
+`instanceof BlockActivation`, then call module-local-class methods
+`checkFresh(key, scopeId): void`, `begin(key, scopeId): void` and
+`complete(key, scopeId): void`. These methods compare key identity and scope
+before touching phase; checkFresh requires fresh, begin requires fresh and sets
+started, complete requires started and sets complete. No method returns a key
+or changes owner/scope. Even recovering a class constructor through host
+reflection cannot forge the record's private key. An ordinary E2 base instance,
+an object with copied public fields or another record's activation fails before
+ticks. Function setup additionally verifies its callable/outer against the
+private record's function association; block setup checks scope kind and outer
+terminal as before. Do all input validation and argument-list copying before
+begin, then begin immediately before the first setup tick. Complete only after
+all setup operations succeed. Guest/resource throws and host faults leave phase
+started; do not reset it in finally. Failed/completed frames cannot be retried.
+
+E3A introduces ActivationKey, FunctionActivation (including its unused-until-E3B
+phase methods), and createFunctionEnvironment. E3B introduces BlockActivation
+and uses both activation classes for setup. No activation registry, WeakMap,
+WeakRef, finalizer, exposed token or cleanup list is involved. The record retains
+only its single key; it has no edge to these activation instances. Live closures
+and host references can retain an activation through ordinary environment links;
+dropping them leaves no extra record-to-frame root. This is a source-level
+ownership invariant, not a claim of measured collection or bounded live heap.
+Local subclasses, private fields and class identity follow existing language
+mechanisms, but this exact combination still needs E3A's pinned static-only and
+separate zero-dynamic coverage plus both-host validation. No weak-collection
+compiler support is assumed. Stop for bounded redesign if lowering fails.
+
+A function activation may capture an outer environment created by another record
+in the **same Realm**, as required by later multi-unit sessions; its own owner
+key and scope nevertheless belong to the callable's record. This is host misuse
+detection, not rollback. New activations allow new invocations.
 
 Add detached host inspection `inspectMaterializations(): {completed: number}`.
 Increment its private monotonic counter only when a factory has fully built F/P,
@@ -75,8 +112,8 @@ scope/body association. Walk the captured environment chain to its global
 terminal: it must be the defining Realm's `globalEnvironment`; reject cycles,
 legacy/foreign terminals and malformed tags. This does not require outer scopes
 to come from this record. Function setup additionally checks branded callable,
-record/scope/outer identity and a fresh registered environment; block setup
-checks the registered block scope and outer identity. Wrong inputs throw host
+record/scope/outer identity and a fresh activation brand; block setup
+checks its activation's owner key, block scope and outer identity. Wrong inputs throw host
 invariant errors, consume zero ticks and make zero guest changes. Copy incoming
 argument list before ticking, preserving Value identities, so a trusted tick
 callback cannot change which arguments will initialize later formals.
@@ -117,7 +154,12 @@ E2 `ScriptFunctionEnvironment` currently accepts any Callable and its test uses
 Function.prototype's builtin callable. Narrow its constructor/property to
 ScriptGuestCallable and validate that tag/record brand via record allocation.
 Keep strict receiver Value and outer identity exact. Migrate that E2 host fixture
-to a genuinely prepared/materialized function; retain all original receiver and
+to a genuinely prepared/materialized function and call E3A's
+`record.createFunctionEnvironment` to allocate its empty FunctionActivation;
+do not invoke instantiateFunction or a body. This allocation consumes the A tick
+specified below and initializes no parameter/var/lexical bindings. Preserve any
+existing direct host binding operations in the fixture as E2 helper controls;
+they are not declaration setup. Retain all original receiver and
 reference/completion assertions and output records. Do not retain a production
 fake builtin exception for the old fixture.
 
@@ -223,7 +265,7 @@ argument value absent a winning function, and body let/formal/var conflicts are
 preparation failures before setup. Extra arguments are ignored.
 
 Block allocation A ticks at the block's opening-brace location, makes a fresh
-ScriptDeclarativeEnvironment linked to outer, and privately registers its scope.
+BlockActivation linked to outer, with private owner key/scope and fresh phase.
 Setup visits direct lexical declarations in source order: L tick/create binding;
 for a function immediately M tick/materialize capturing this new environment,
 then I tick/initialize that binding, before the next declaration's L. Lets stay
@@ -284,8 +326,16 @@ document assigns neither and starts no successor.
 
 | Slice | Exact production ownership | Exact tests/tools/docs ownership |
 |---|---|---|
-| E3A factory and closed union migration | src/script-record.ts, src/runtime.ts (Callable type only), src/realm.ts (bounded wrapper only), src/builtins/function.ts (pure source helper/exhaustive arms), src/evaluator.ts (closed explicit branch only), src/script-environment.ts (callable typing/validation only), src/parser.ts and src/script-declarations.ts (private assignment eligibility seam only) | new test/script-function-materialization.ts; test/script-environment.ts fixture migration; new fixtures/script-function-materialization/a.txt and b.txt; tools/build-native.mjs additive gate only; docs/validation/ts-033e3a/; this design's implementation notes and own TASKS entry |
-| E3B setup and bound D2 adapter, after E3A acceptance | src/script-record.ts only (private setup/registration/adapter) | new test/script-function-setup.ts; new fixtures/script-function-setup/a.txt and b.txt; tools/build-native.mjs additive gate only; docs/validation/ts-033e3b/; this design's implementation notes and own TASKS entry |
+| E3A factory, empty function activation and closed union migration | src/script-record.ts (materialization, inspections, ActivationKey, FunctionActivation with brand/phase methods, createFunctionEnvironment), src/runtime.ts (Callable type only), src/realm.ts (bounded wrapper only), src/builtins/function.ts (pure source helper/exhaustive arms), src/evaluator.ts (closed explicit branch only), src/script-environment.ts (callable typing/validation only), src/parser.ts and src/script-declarations.ts (private assignment eligibility seam only) | new test/script-function-materialization.ts; test/script-environment.ts genuine factory/empty-activation fixture migration; new fixtures/script-function-materialization/a.txt and b.txt; tools/build-native.mjs additive gate only; docs/validation/ts-033e3a/; this design's implementation notes and own TASKS entry |
+| E3B setup and bound D2 adapter, after E3A acceptance | src/script-record.ts only (BlockActivation, createBlockEnvironment, instantiateFunction, instantiateBlock, createGlobalMaterializer, instantiateGlobals; invoke E3A phase methods) | new test/script-function-setup.ts; new fixtures/script-function-setup/a.txt and b.txt; tools/build-native.mjs additive gate only; docs/validation/ts-033e3b/; this design's implementation notes and own TASKS entry |
+
+E3A implements **no** function/block declaration setup and no D2 adapter; those
+methods from the combined API list are absent until E3B, not callable stubs or
+temporary bypasses. Its fixture and F09 have their real allocation API in E3A.
+E3B changes no E2 fixture or environment module and does not need an activation
+registration API. Matrix slice allocation is exhaustive in matrix.md; E3A runs
+factory/empty-activation prefixes only, E3B runs declaration-setup prefixes and
+replays E3A. All source-execution observations remain E4-only.
 
 If actual registration lives elsewhere, or compiler constraints require exported
 private state/new core modules, revise ownership before implementation; do not
