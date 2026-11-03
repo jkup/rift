@@ -363,3 +363,21 @@ See [reductions and resumable candidate](validation/ts-033e3a/README.md).
 The positive private factory/activation E2 entry is fully static; this does not
 satisfy the entire matrix. A bounded validation-lane revision needs independent
 acceptance before resuming. No API, ownership or execution expansion is adopted.
+
+## E3A implementation notes (2026-11-03)
+
+Coordinator `be32514` approved the explicit F07/F09 hostile-cast lane split:
+Node runtime rejection plus native compiler rejection, never a native runtime
+pass. All representable controls still run in both hosts. The original frozen
+matrix and failure evidence remain retained. See [current implementation and
+validation](validation/ts-033e3a/IMPLEMENTATION.md).
+
+The factory and empty activation are implemented inside the private record
+boundary, with no E3B setup/stubs. Callable uses the prescribed type-only import;
+a documented module-only import beside Realm's wrapper keeps the opaque class
+declarations reachable to scriptc. Reduced before/after evidence demonstrates
+the compiler requirement without exporting private classes or changing the API.
+This import runs no preparation, allocation or setup. Tick callbacks receive
+copied locations; callable private source-unit/range identity is checked before
+empty activation allocation. Nonretaining activation ownership and closed
+execution guards remain as specified above.

@@ -12,6 +12,14 @@ import { GlobalEnvironment } from "./global-environment.js";
 import type { Stmt, FunctionSource, Location } from "./syntax.js";
 import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
 import type { GuestString } from "./strings.js";
+import type { ExecutableScript } from "./script-record.js";
+// scriptc follows value-import reachability when lowering opaque class types.
+// Keep the factory's module reachable without exporting its private classes;
+// Callable still imports ScriptGuestCallable as a type only. No setup runs here.
+// Reduced before/after evidence: docs/validation/ts-033e3a/reachability-*.ts.
+import "./script-record.js";
+import type { ScriptEnvironment } from "./script-environment.js";
+import type { OperationContext } from "./runtime.js";
 
 export type Output = (line: string) => void;
 export type RealmProfile = "legacy" | "script";
@@ -99,6 +107,12 @@ export class Realm {
         };
     }
     createObject(): GuestObject { return new GuestObject(this.objectPrototype); }
+    createScriptFunction(record: ExecutableScript, scopeId: number, environment: ScriptEnvironment,
+        inferredName: string | null, context: OperationContext): ValueCompletion {
+        if (this.profile !== "script" || context.realm !== this || !record.belongsTo(this))
+            throw new Error("invalid Script factory Realm");
+        return record.materializeFunction(scopeId, environment, inferredName, context);
+    }
     createArray(): GuestArray { return new GuestArray(this.arrayPrototype); }
     createBooleanObject(value: boolean): GuestBoolean { return new GuestBoolean(value, this.booleanPrototype); }
     createNumberObject(value: number): GuestNumber { return new GuestNumber(value, this.numberPrototype); }

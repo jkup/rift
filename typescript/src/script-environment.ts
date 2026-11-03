@@ -1,7 +1,8 @@
 import { GlobalEnvironment } from "./global-environment.js";
-import { UNDEFINED, failure, normal, type Callable, type Value, type ValueCompletion,
+import { UNDEFINED, failure, normal, type Value, type ValueCompletion,
     type InternalBooleanCompletion, type OperationContext, type ThrowCompletion } from "./runtime.js";
 import type { Location } from "./syntax.js";
+import type { ScriptGuestCallable } from "./script-record.js";
 
 export type ScriptEnvironment = ScriptDeclarativeEnvironment | ScriptFunctionEnvironment
     | { readonly kind: "global"; readonly record: GlobalEnvironment };
@@ -47,7 +48,7 @@ export class ScriptDeclarativeEnvironment extends ScriptLocalBindings {
 export class ScriptFunctionEnvironment extends ScriptLocalBindings {
     readonly kind = "function";
     // Host metadata only. This record neither creates nor invokes a callable.
-    constructor(outer: ScriptEnvironment, readonly thisValue: Value, readonly callable: Callable) { super(outer); }
+    constructor(outer: ScriptEnvironment, readonly thisValue: Value, readonly callable: ScriptGuestCallable) { super(outer); }
 }
 export type ScriptBindingReference = {
     readonly base: ScriptEnvironment | null;

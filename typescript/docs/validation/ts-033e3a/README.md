@@ -1,5 +1,10 @@
 # E3A compiler feasibility stop — not an accepted implementation
 
+Historical stop record. The coordinator subsequently approved the narrow lane
+split in `be32514`; see [resumed implementation and validation](IMPLEMENTATION.md)
+for current status. The failed driver, reductions and original results below are
+preserved unchanged.
+
 2026-11-03, assigned base 6638b2b. E3A was claimed and the copied matrix frozen
 before editing. Production files and the E2 fixture are now restored to that
 accepted base. This milestone contains evidence and a resumable candidate only.

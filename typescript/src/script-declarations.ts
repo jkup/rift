@@ -61,6 +61,7 @@ export function planScriptDeclarations(unit: ScriptSourceUnit): DeclarationPlanR
 
 // Internal parser/collector bridge. Ordinary plan callers receive no nodes.
 export type DeclarationNodes = {
+    assignmentNameEligible: Map<Expr, boolean>;
     source: SourceText;
     body: Stmt[];
     scopes: Map<number, { node: Stmt | Expr | null; body: Stmt[] }>;

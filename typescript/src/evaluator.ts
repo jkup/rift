@@ -288,6 +288,7 @@ export class Evaluator {
         const fn = callee.object.callable;
         if (fn.realm.profile !== this.context.realm.profile) throw new Error("cross-profile callable invocation");
         if (this.context.realm.profile !== "legacy") throw new Error("Script execution unavailable");
+        if (fn.kind === "script-guest") throw new Error("Script execution unavailable");
         if (this.calls >= this.maxCalls) return resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
         const callerRealm = this.activeContext.realm;
         this.calls++;
@@ -295,7 +296,7 @@ export class Evaluator {
             this.activeContext.realm = fn.realm;
             let result: Completion;
             if (fn.kind === "builtin") result = fn.invoke(receiver, args, this.context, loc);
-            else {
+            else if (fn.kind === "guest") {
                 const env = new Environment(fn.environment);
                 for (let i = 0; i < fn.params.length; i++) {
                     env.bindings.set(fn.params[i], {
@@ -307,7 +308,7 @@ export class Evaluator {
                 result = this.block(fn.body, env, receiver);
                 if (result.type === "return") return normal(result.value);
                 if (result.type === "normal") return normal();
-            }
+            } else { const unreachable: never = fn; throw new Error("invalid callable"); }
             if (result.type === "throw") return result;
             if (result.type === "normal") return normal(result.value);
             throw new Error("invalid completion escaped call boundary: " + result.type);

@@ -3,6 +3,59 @@ import type { Realm } from "./realm.js";
 import type { DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
 import type { Location } from "./syntax.js";
+import { GuestObject, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext } from "./runtime.js";
+import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment } from "./script-environment.js";
+
+class ActivationKey {}
+type CallableState = { key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
+    environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
+export type { ScriptGuestCallable };
+class ScriptGuestCallable {
+    #state: CallableState;
+    private constructor(state: CallableState) { this.#state = state; }
+    static create(state: CallableState): ScriptGuestCallable { return new ScriptGuestCallable(state); }
+    static check(callable: ScriptGuestCallable, key: ActivationKey, record: ExecutableScript): CallableState {
+        if (!(callable instanceof ScriptGuestCallable) || callable.#state.key !== key || callable.#state.record !== record)
+            throw new Error("invalid Script callable brand");
+        return callable.#state;
+    }
+    get kind(): "script-guest" { return "script-guest"; }
+    get realm(): Realm { return this.#state.realm; }
+    get record(): ExecutableScript { return this.#state.record; }
+    get scopeId(): number { return this.#state.scopeId; }
+    get environment(): ScriptEnvironment { return this.#state.environment; }
+    get strict(): true { return true; }
+    get thisMode(): "strict" { return "strict"; }
+    get privateEnvironment(): null { return null; }
+    sourceText(): string { return this.#state.text; }
+    inspectFormals(): string[] { return this.#state.formals.slice(); }
+}
+// The record owns only a key. Each transient activation owns its phase and key;
+// no registry on the record keeps completed or abandoned activations alive.
+class FunctionActivation extends ScriptFunctionEnvironment {
+    #ownerKey: ActivationKey;
+    #scopeId: number;
+    #phase: "fresh" | "started" | "complete" = "fresh";
+    constructor(key: ActivationKey, scopeId: number, outer: ScriptEnvironment, callable: ScriptGuestCallable, receiver: Value) {
+        super(outer, receiver, callable);
+        this.#ownerKey = key;
+        this.#scopeId = scopeId;
+    }
+    checkFresh(key: ActivationKey, scopeId: number): void {
+        if (key !== this.#ownerKey || scopeId !== this.#scopeId || this.#phase !== "fresh")
+            throw new Error("invalid fresh Script activation");
+    }
+    begin(key: ActivationKey, scopeId: number): void {
+        this.checkFresh(key, scopeId);
+        this.#phase = "started";
+    }
+    complete(key: ActivationKey, scopeId: number): void {
+        if (key !== this.#ownerKey || scopeId !== this.#scopeId || this.#phase !== "started")
+            throw new Error("invalid started Script activation");
+        this.#phase = "complete";
+    }
+}
+export type ScriptFunctionEnvironmentCompletion = { type: "normal"; environment: ScriptFunctionEnvironment } | ThrowCompletion;
 
 export type ScriptPreparation =
     | { readonly kind: "ready"; readonly record: ExecutableScript }
@@ -20,10 +73,12 @@ type ScriptState = { realm: Realm; plan: ScriptDeclarationPlan; nodes: Declarati
 export type { ExecutableScript };
 class ExecutableScript {
     #state: ScriptState | null = null;
+    #activationKey = new ActivationKey();
+    #completedMaterializations = 0;
     private constructor() {}
     static prepare(unit: ScriptSourceUnit, realm: Realm): ScriptPreparation {
         if (realm.profile !== "script") return { kind: "profile-rejected", reason: "realm" };
-        const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map() };
+        const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map() };
         const plan = parseDeclarationPlan(unit, nodes);
         if (plan.kind !== "complete") return plan;
         if (!plan.strictness.strict) return { kind: "profile-rejected", reason: "strict" };
@@ -56,6 +111,85 @@ class ExecutableScript {
         return this.#state;
     }
     belongsTo(realm: Realm): boolean { return this.#readState().realm === realm; }
+    #validateEnvironment(environment: ScriptEnvironment, context: OperationContext): void {
+        const state = this.#readState();
+        if (state.realm.profile !== "script" || context.realm !== state.realm) throw new Error("invalid Script context Realm");
+        const seen = new Map<ScriptEnvironment, boolean>();
+        let current = environment;
+        while (true) {
+            if (current === null || typeof current !== "object" || seen.has(current)) throw new Error("invalid Script environment chain");
+            seen.set(current, true);
+            if (current.kind === "global") {
+                if (current.record !== state.realm.globalEnvironment) throw new Error("foreign Script environment terminal");
+                return;
+            }
+            if ((current.kind !== "declarative" || !(current instanceof ScriptDeclarativeEnvironment)) &&
+                (current.kind !== "function" || !(current instanceof ScriptFunctionEnvironment)))
+                throw new Error("invalid Script environment tag");
+            current = current.outer;
+        }
+    }
+    #function(scopeId: number) {
+        const state = this.#readState();
+        if (!Number.isInteger(scopeId) || scopeId < 0 || scopeId >= state.plan.scopes.length)
+            throw new Error("invalid Script function scope");
+        const scope = state.plan.scopes[scopeId];
+        const entry = state.nodes.scopes.get(scopeId);
+        const fn = state.plan.functions.find(candidate => candidate.scope === scopeId);
+        if (scope.kind !== "function" || !scope.strict || fn === undefined || !fn.strictness.strict ||
+            entry === undefined || entry.node === null || entry.node.kind !== "function")
+            throw new Error("invalid Script function association");
+        const node = entry.node;
+        const source = node.source;
+        if (source === null || source.source !== state.nodes.source || source.source.text !== state.plan.unit.text ||
+            source.start !== fn.start || source.end !== fn.end || entry.body !== node.body)
+            throw new Error("invalid Script function provenance");
+        return { scope, fn, node, source };
+    }
+    materializeFunction(scopeId: number, environment: ScriptEnvironment, inferredName: string | null, context: OperationContext): ValueCompletion {
+        this.#validateEnvironment(environment, context);
+        const state = this.#readState();
+        const entry = this.#function(scopeId);
+        if ((entry.fn.declaration !== null && inferredName !== null) || (inferredName !== null && typeof inferredName !== "string"))
+            throw new Error("invalid Script inferred name");
+        const name = entry.fn.declaration === null ? (inferredName === null ? "" : inferredName)
+            : state.plan.declarations[entry.fn.declaration].site.name;
+        const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
+        if (budget.type === "throw") return budget;
+        const callable = ScriptGuestCallable.create({ key: this.#activationKey, record: this, realm: state.realm,
+            scopeId, environment, unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
+            text: entry.source.source.text.slice(entry.source.start, entry.source.end), formals: entry.node.params.slice() });
+        const object = new GuestObject(state.realm.functionPrototype, false, callable);
+        const prototypeObject = new GuestObject(state.realm.objectPrototype);
+        const value: Value = { kind: "object", object };
+        prototypeObject.bootstrapDefine("constructor", { value, writable: true, enumerable: false, configurable: true });
+        object.bootstrapDefine("length", { value: { kind: "number", value: entry.node.params.length }, writable: false, enumerable: false, configurable: true });
+        object.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: false, enumerable: false, configurable: true });
+        object.bootstrapDefine("prototype", { value: { kind: "object", object: prototypeObject }, writable: true, enumerable: false, configurable: false });
+        this.#completedMaterializations++;
+        return normal(value);
+    }
+    createFunctionEnvironment(callable: ScriptGuestCallable, receiver: Value, context: OperationContext): ScriptFunctionEnvironmentCompletion {
+        const metadata = ScriptGuestCallable.check(callable, this.#activationKey, this);
+        this.#validateEnvironment(metadata.environment, context);
+        const state = this.#readState();
+        const entry = this.#function(metadata.scopeId);
+        if (metadata.unit !== state.plan.unit || metadata.start !== entry.source.start || metadata.end !== entry.source.end ||
+            callable.record !== this || callable.realm !== state.realm || callable.scopeId !== metadata.scopeId || callable.environment !== metadata.environment ||
+            callable.kind !== "script-guest" || !callable.strict || callable.thisMode !== "strict" || callable.privateEnvironment !== null)
+            throw new Error("invalid Script callable metadata");
+        const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
+        if (budget.type === "throw") { const abrupt: ThrowCompletion = budget; return abrupt; }
+        return { type: "normal", environment: new FunctionActivation(this.#activationKey, metadata.scopeId, metadata.environment, callable, receiver) };
+    }
+    inspectMaterializations(): { completed: number } { return { completed: this.#completedMaterializations }; }
+    inspectNamingSites(): { loc: Location; eligible: boolean }[] {
+        const result: { loc: Location; eligible: boolean }[] = [];
+        for (const [expr, eligible] of this.#readState().nodes.assignmentNameEligible)
+            result.push({ loc: { line: expr.loc.line, column: expr.loc.column }, eligible });
+        result.sort((a, b) => a.loc.line - b.loc.line || a.loc.column - b.loc.column);
+        return result;
+    }
     inspect(): ScriptDeclarationPlan {
         const plan = this.#readState().plan;
         return { kind: "complete", goal: "Script", unit: { id: plan.unit.id, text: plan.unit.text },

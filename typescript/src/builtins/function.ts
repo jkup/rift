@@ -1,5 +1,5 @@
 import type { Realm } from "../realm.js";
-import { UNDEFINED, failure, normal, type Value } from "../runtime.js";
+import { UNDEFINED, failure, normal, type Value, type Callable } from "../runtime.js";
 import { stringSlice, type GuestString } from "../strings.js";
 
 export function nativeFunctionString(initialName: string | null): GuestString {
@@ -14,6 +14,16 @@ export function nativeFunctionString(initialName: string | null): GuestString {
     return "function " + name + "() { [native code] }";
 }
 
+export function functionSourceString(callable: Callable): string {
+    switch (callable.kind) {
+        case "guest": {
+            const source = callable.source;
+            return source === null ? nativeFunctionString(null) : stringSlice(source.source.text, source.start, source.end);
+        }
+        case "builtin": return nativeFunctionString(callable.initialName);
+        case "script-guest": return callable.sourceText();
+    }
+}
 export function registerFunction(realm: Realm): void {
     realm.registerBuiltin(realm.functionPrototype, "call", 1, (receiver, args, context, loc) => {
         if (receiver.kind !== "object" || receiver.object.callable === null) {
@@ -30,12 +40,6 @@ export function registerFunction(realm: Realm): void {
         if (receiver.kind !== "object" || receiver.object.callable === null) {
             return failure("TypeError", "Function.prototype.toString receiver is not callable", loc);
         }
-        const callable = receiver.object.callable;
-        if (callable.kind === "guest") {
-            const source = callable.source;
-            return normal({ kind: "string", value: source === null ? nativeFunctionString(null)
-                : stringSlice(source.source.text, source.start, source.end) });
-        }
-        return normal({ kind: "string", value: nativeFunctionString(callable.initialName) });
+        return normal({ kind: "string", value: functionSourceString(receiver.object.callable) });
     });
 }

@@ -5,6 +5,7 @@ import { updateScriptEmpty, scriptExpressionCompletion, type ScriptStatementComp
 import { GuestObject, UNDEFINED, normal, failure, resourceFailure, sameValue, type Value, type ValueCompletion, type InternalBooleanCompletion, type OperationContext, type PropertyKey, type ThrowCompletion } from "../src/runtime.js";
 import { Realm } from "../src/realm.js";
 import type { Location } from "../src/syntax.js";
+import { prepareStrictScript } from "../src/script-record.js";
 function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
 function num(value: number): Value { return { kind: "number", value }; }
 function value(r: ValueCompletion, v: Value): void { check(r.type === "normal" && sameValue(r.value, v), "value"); }
@@ -18,10 +19,10 @@ function invariant(action: () => void, message: string): void {
     check(caught, "host invariant " + message);
 }
 const loc: Location = { line: 3, column: 9 };
-const realm = new Realm((_line: string) => {});
+const realm = new Realm((_line: string) => {}, "script");
 const context: OperationContext = { realm, call: (_c: Value, _r: Value, _a: Value[], _l: Location): ValueCompletion => { throw new Error("no calls"); }, tick: (_l: Location): ValueCompletion => { throw new Error("no ticks"); } };
-const object = new GuestObject();
-const globalRecord = new GlobalEnvironment(object, object);
+const object = realm.globalObject;
+const globalRecord = realm.globalEnvironment;
 const global: ScriptEnvironment = { kind: "global", record: globalRecord };
 function define(name: string, v: Value, writable: boolean = true): void { object.bootstrapDefine(name, { value: v, writable, enumerable: true, configurable: true }); }
 const local = new ScriptDeclarativeEnvironment(global);
@@ -50,12 +51,19 @@ let deep: ScriptEnvironment = global;
 for (let i = 0; i < 20000; i++) deep = new ScriptDeclarativeEnvironment(deep);
 value(getScriptBinding(capture(deep, "deep")), num(7)); check(capture(deep, "absent").base === null, "deep absent");
 console.log("L03 PASS");
-// Actual existing builtin metadata, never a synthetic Script callable.
-const callable = realm.functionPrototype.callable;
-if (callable === null) throw new Error("builtin metadata");
+// Genuine prepared closure and empty activation; no declaration/body execution.
+const prepared = prepareStrictScript({ id: "E2 fixture", text: '"use strict";function f(){}' }, realm);
+if (prepared.kind !== "ready") throw new Error("fixture preparation");
+const allocationContext: OperationContext = { realm, call: context.call, tick: (_loc: Location): ValueCompletion => normal() };
+const materialized = prepared.record.materializeFunction(1, local, null, allocationContext);
+if (materialized.type !== "normal" || materialized.value.kind !== "object") throw new Error("fixture materialization");
+const callable = materialized.value.object.callable;
+if (callable === null || callable.kind !== "script-guest") throw new Error("fixture callable");
 const receivers: Value[] = [UNDEFINED, { kind: "null" }, num(0), { kind: "object", object }];
 for (const receiver of receivers) {
-    const f = new ScriptFunctionEnvironment(local, receiver, callable);
+    const allocated = prepared.record.createFunctionEnvironment(callable, receiver, allocationContext);
+    if (allocated.type !== "normal") throw new Error("fixture allocation");
+    const f = allocated.environment;
     check(sameValue(f.thisValue, receiver) && f.callable === callable && f.outer === local, "host function metadata");
     value(normal(scriptIdentifierReceiver(capture(f, "x"))), UNDEFINED);
 }

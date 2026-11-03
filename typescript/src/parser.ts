@@ -72,9 +72,12 @@ export function parseDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationN
         return { kind: "blocked", goal: "Script", unit: source, rejection: parsed.rejection, diagnostic: parsed.error };
     }
     if (parser.current().kind !== "eof" || parser.current().end !== source.text.length) throw new Error("declaration plan did not reach EOF");
+    if (nodes !== null) nodes.assignmentNameEligible = parser.assignmentNameEligible;
     return collectDeclarationPlan(source, parsed.body, lexical.tokens, parser.bindings, nodes);
 }
 class Parser {
+    readonly assignmentNameEligible = new Map<Expr, boolean>();
+    private readonly parenthesized = new Map<Expr, boolean>();
     readonly bindings = new Map<number, ParsedBinding[]>();
     index = 0;
     depth = 0;
@@ -307,7 +310,11 @@ class Parser {
             const right = this.expression(precedence === 1 ? precedence : precedence + 1);
             if (precedence === 1) {
                 if (left.kind !== "identifier" && left.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid assignment target", loc);
-                if (op === "=") left = { kind: "assign", loc, target: left, value: right };
+                if (op === "=") {
+                    const eligible = left.kind === "identifier" && !this.parenthesized.has(left);
+                    left = { kind: "assign", loc, target: left, value: right };
+                    if (this.purpose === "declaration-plan") this.assignmentNameEligible.set(left, eligible);
+                }
                 else {
                     let binaryOp: "+" | "-" | "*" | "/" | "%" = "+";
                     if (op === "-=") binaryOp = "-";
@@ -336,6 +343,7 @@ class Parser {
         if (t.text === "(") {
             const expr = this.expression(0);
             this.expect(")");
+            if (this.purpose === "declaration-plan") this.parenthesized.set(expr, true);
             return expr;
         }
         if (t.text === "!" || t.text === "-" || t.text === "+" || t.text === "delete" || t.text === "typeof" || t.text === "void") {

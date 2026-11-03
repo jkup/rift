@@ -432,3 +432,25 @@ preserves valued and abrupt records; the explicit expression adapter preserves
 throw identity. These are pure data helpers, not statement/loop/if execution.
 Legacy runtime, evaluator, Realm, parser, record and entry guards are unchanged.
 See [E2 validation](validation/ts-033e2/README.md).
+
+### Script function materialization and empty activation (TS-033E3A)
+
+Prepared strict Script records can now materialize opaque branded function
+metadata and fresh ordinary function/prototype pairs with exact defining-Realm
+identity, descriptors, source and formal metadata. Host allocation preserves the
+captured Script chain and strict receiver in a fresh empty FunctionActivation.
+The record holds no activation collection; private owner/scope/phase stay on each
+activation. M and A each consume one tick after invariant validation.
+
+Private parser metadata distinguishes parenthesized identifier assignment targets
+without changing legacy AST output. Detached naming inspections expose no AST.
+The Callable union includes script-guest and the pure source-string helper handles
+all variants; shared invocation guards still reject Script execution. E2's fixture
+uses genuine preparation/materialization/allocation with original assertions.
+
+No function/block/global declaration setup, arguments object, restricted accessor
+migration, execution, constructor admission or conformance/profile admission is
+claimed. E3B, ER and E4 remain separate. Two impossible hostile typed casts use
+explicit Node runtime negatives and native compile-rejection evidence, as approved
+by the coordinator. See [E3A implementation and validation](validation/ts-033e3a/IMPLEMENTATION.md)
+for the exact split and isolated static compiler module-reachability workaround.
