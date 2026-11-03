@@ -1,0 +1,10 @@
+{
+  "kind": "offline source/IR/provenance consistency; not cryptographic signature verification or E4 acceptance",
+  "revision": "6c60b0bcbfc6edd34ce5c1cdb588d42bdb7171ff",
+  "sourceFiles": 6,
+  "runtimeBlobMatches": true,
+  "packageDigestsMatch": true,
+  "protectedBaseline": "7db0b45",
+  "changedTrackedPaths": [],
+  "originalEvidenceUnchanged": true
+}

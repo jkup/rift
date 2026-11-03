@@ -1,0 +1,13 @@
+Initial diagnostic collector failed before the JS native build (exit1).
+receiver-minimal: expected receiver IR verified
+method-getter-view: expected receiver IR verified
+AssertionError [ERR_ASSERTION]:
+  assert.ok(calls.some(c=>c.receiver!==null))
+  at diagnose-ir.mjs:32:16
+Actual false, expected true; Node.js v26.13.0.
+
+Cause: collector visited callValue/dynCall, not dynInvoke. The JS IR actually
+uses dynInvoke with recv=%g.e.view (kind dyn). Retained original collector as
+diagnose-ir-first.mjs. Corrected collector includes dynInvoke/recv. This is a
+collector assumption failure, not a compiler failure, and shows that this JS
+control uses a different representation as well as a different source kind.

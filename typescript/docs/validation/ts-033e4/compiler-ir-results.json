@@ -1,0 +1,523 @@
+[
+  {
+    "name": "receiver-minimal",
+    "emit": {
+      "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+      "args": [
+        "build",
+        "docs/validation/ts-033e4/receiver-minimal.ts",
+        "--tier",
+        "static-only",
+        "--emit",
+        "ir",
+        "-o",
+        "docs/validation/ts-033e4/receiver-minimal.ir.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e4\\receiver-minimal.ir.json\n",
+      "stderr": ""
+    },
+    "irVersion": 17,
+    "calls": [
+      {
+        "function": "%init.0",
+        "kind": "callValue",
+        "receiver": null,
+        "callee": {
+          "kind": "recordGet",
+          "obj": {
+            "kind": "varRef",
+            "localId": "%g.e.view",
+            "type": {
+              "kind": "record",
+              "shapeId": "r035ff0debe1f"
+            },
+            "loc": {
+              "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-minimal.ts",
+              "start": 155,
+              "end": 159
+            }
+          },
+          "shapeId": "r035ff0debe1f",
+          "field": "check",
+          "type": {
+            "kind": "func",
+            "params": [],
+            "ret": {
+              "kind": "bool"
+            }
+          },
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-minimal.ts",
+            "start": 155,
+            "end": 165
+          }
+        },
+        "loc": {
+          "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-minimal.ts",
+          "start": 155,
+          "end": 167
+        }
+      }
+    ],
+    "receiverReads": [
+      {
+        "function": "%fn.d4bc831b4ff4",
+        "expr": {
+          "kind": "libCall",
+          "fn": "dyn.this",
+          "args": [],
+          "type": {
+            "kind": "dyn"
+          },
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-minimal.ts",
+            "start": 68,
+            "end": 123
+          }
+        }
+      }
+    ],
+    "globals": [
+      {
+        "id": "%g.e.view",
+        "name": "view",
+        "type": {
+          "kind": "record",
+          "shapeId": "r035ff0debe1f"
+        },
+        "mutable": true,
+        "source": {
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-minimal.ts",
+            "start": 42,
+            "end": 46
+          },
+          "scope": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-minimal.ts",
+            "start": 0,
+            "end": 170
+          }
+        }
+      },
+      {
+        "id": "%g.e.check",
+        "name": "check",
+        "type": {
+          "kind": "func",
+          "params": [],
+          "ret": {
+            "kind": "bool"
+          }
+        },
+        "mutable": false,
+        "tdz": true,
+        "source": {
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-minimal.ts",
+            "start": 60,
+            "end": 65
+          },
+          "scope": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-minimal.ts",
+            "start": 0,
+            "end": 170
+          }
+        }
+      },
+      {
+        "id": "%g.e.%loaded",
+        "name": "%loaded",
+        "type": {
+          "kind": "bool"
+        },
+        "mutable": true
+      }
+    ]
+  },
+  {
+    "name": "method-getter-view",
+    "emit": {
+      "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+      "args": [
+        "build",
+        "docs/validation/ts-033e4/method-getter-view.ts",
+        "--tier",
+        "static-only",
+        "--emit",
+        "ir",
+        "-o",
+        "docs/validation/ts-033e4/method-getter-view.ir.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e4\\method-getter-view.ir.json\n",
+      "stderr": ""
+    },
+    "irVersion": 17,
+    "calls": [
+      {
+        "function": "%init.0",
+        "kind": "dynCall",
+        "receiver": {
+          "kind": "varRef",
+          "localId": "%dynCallReceiver.0",
+          "type": {
+            "kind": "dyn"
+          },
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 870,
+            "end": 885
+          }
+        },
+        "callee": {
+          "kind": "varRef",
+          "localId": "%dynCallCallee.0",
+          "type": {
+            "kind": "dyn"
+          },
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 870,
+            "end": 885
+          }
+        },
+        "loc": {
+          "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+          "start": 870,
+          "end": 885
+        }
+      },
+      {
+        "function": "%init.0",
+        "kind": "dynCall",
+        "receiver": {
+          "kind": "varRef",
+          "localId": "%dynCallReceiver.1",
+          "type": {
+            "kind": "dyn"
+          },
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 1042,
+            "end": 1057
+          }
+        },
+        "callee": {
+          "kind": "varRef",
+          "localId": "%dynCallCallee.1",
+          "type": {
+            "kind": "dyn"
+          },
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 1042,
+            "end": 1057
+          }
+        },
+        "loc": {
+          "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+          "start": 1042,
+          "end": 1057
+        }
+      }
+    ],
+    "receiverReads": [
+      {
+        "function": "%method.value:%View.invokeCall",
+        "expr": {
+          "kind": "libCall",
+          "fn": "dyn.this",
+          "args": [],
+          "type": {
+            "kind": "dyn"
+          },
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 361,
+            "end": 376
+          }
+        }
+      },
+      {
+        "function": "%method.value:%View.invokeTick",
+        "expr": {
+          "kind": "libCall",
+          "fn": "dyn.this",
+          "args": [],
+          "type": {
+            "kind": "dyn"
+          },
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 432,
+            "end": 447
+          }
+        }
+      }
+    ],
+    "globals": [
+      {
+        "id": "%g.e.exactView",
+        "name": "exactView",
+        "type": {
+          "kind": "object",
+          "className": "View"
+        },
+        "mutable": true,
+        "source": {
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 250,
+            "end": 259
+          },
+          "scope": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 160,
+            "end": 1248
+          }
+        }
+      },
+      {
+        "id": "%g.e.calls",
+        "name": "calls",
+        "type": {
+          "kind": "f64"
+        },
+        "mutable": true,
+        "source": {
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 271,
+            "end": 276
+          },
+          "scope": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 160,
+            "end": 1248
+          }
+        }
+      },
+      {
+        "id": "%g.e.steps",
+        "name": "steps",
+        "type": {
+          "kind": "f64"
+        },
+        "mutable": true,
+        "source": {
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 286,
+            "end": 291
+          },
+          "scope": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 160,
+            "end": 1248
+          }
+        }
+      },
+      {
+        "id": "%g.e.context",
+        "name": "context",
+        "type": {
+          "kind": "dyn"
+        },
+        "mutable": false,
+        "source": {
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 826,
+            "end": 833
+          },
+          "scope": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/method-getter-view.ts",
+            "start": 160,
+            "end": 1248
+          }
+        }
+      },
+      {
+        "id": "%g.e.%loaded",
+        "name": "%loaded",
+        "type": {
+          "kind": "bool"
+        },
+        "mutable": true
+      }
+    ]
+  },
+  {
+    "name": "receiver-source-kind",
+    "emit": {
+      "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+      "args": [
+        "build",
+        "docs/validation/ts-033e4/receiver-source-kind.js",
+        "--tier",
+        "static-only",
+        "--emit",
+        "ir",
+        "-o",
+        "docs/validation/ts-033e4/receiver-source-kind.ir.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e4\\receiver-source-kind.ir.json\n",
+      "stderr": ""
+    },
+    "irVersion": 17,
+    "calls": [
+      {
+        "function": "%init.0",
+        "kind": "dynInvoke",
+        "receiver": {
+          "kind": "varRef",
+          "localId": "%g.e.view",
+          "type": {
+            "kind": "dyn"
+          },
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-source-kind.js",
+            "start": 174,
+            "end": 178
+          }
+        },
+        "callee": "check",
+        "loc": {
+          "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-source-kind.js",
+          "start": 174,
+          "end": 186
+        }
+      }
+    ],
+    "receiverReads": [
+      {
+        "function": "%fn.39625937f337",
+        "expr": {
+          "kind": "libCall",
+          "fn": "dyn.this",
+          "args": [],
+          "type": {
+            "kind": "dyn"
+          },
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-source-kind.js",
+            "start": 106,
+            "end": 142
+          }
+        }
+      }
+    ],
+    "globals": [
+      {
+        "id": "%g.e.view",
+        "name": "view",
+        "type": {
+          "kind": "dyn"
+        },
+        "mutable": true,
+        "source": {
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-source-kind.js",
+            "start": 86,
+            "end": 90
+          },
+          "scope": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-source-kind.js",
+            "start": 82,
+            "end": 189
+          }
+        }
+      },
+      {
+        "id": "%g.e.check",
+        "name": "check",
+        "type": {
+          "kind": "func",
+          "params": [],
+          "ret": {
+            "kind": "bool"
+          }
+        },
+        "mutable": false,
+        "tdz": true,
+        "source": {
+          "loc": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-source-kind.js",
+            "start": 98,
+            "end": 103
+          },
+          "scope": {
+            "file": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-source-kind.js",
+            "start": 82,
+            "end": 189
+          }
+        }
+      },
+      {
+        "id": "%g.e.%loaded",
+        "name": "%loaded",
+        "type": {
+          "kind": "bool"
+        },
+        "mutable": true
+      }
+    ],
+    "node": {
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "docs/validation/ts-033e4/receiver-source-kind.js"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "true\n",
+      "stderr": ""
+    },
+    "build": {
+      "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+      "args": [
+        "build",
+        "docs/validation/ts-033e4/receiver-source-kind.js",
+        "--tier",
+        "static-only",
+        "-o",
+        "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-method\\receiver-source-kind.exe"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-method\\receiver-source-kind.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+      "args": [
+        "coverage",
+        "docs/validation/ts-033e4/receiver-source-kind.js",
+        "--explain-dynamic"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e4\\receiver-source-kind.js\n\n  statements analyzed   5\n  compile statically    5  (100%)\n    in dynamic tier     4  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    2 functions already operate on dynamic values (4 statements)\n      <top level>  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-source-kind.js:1:1: dynObjLit at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-source-kind.js:4:8\n      %fn.39625937f337  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-source-kind.js:3:15: dyn.this at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/receiver-source-kind.js:3:15\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+      "stderr": ""
+    },
+    "native": {
+      "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-method\\receiver-source-kind.exe",
+      "args": [],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "true\n",
+      "stderr": ""
+    }
+  }
+]
