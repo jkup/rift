@@ -1,0 +1,726 @@
+
+> build:native
+> node tools/build-native.mjs
+
+PASS src/cli.ts
+PASS test/realms.ts
+PASS test/object-descriptors.ts
+PASS test/object-prototypes.ts
+PASS test/object-keys.ts
+PASS test/conversion.ts
+BUILD-FAIL test/definition-dispatch.ts
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:25:5 - error SC1090: overriding a method with a different signature (parameter types must match the base declaration exactly; returns may narrow to a subclass) is not supported yet
+
+  24 |     thrown: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value: obj(new GuestObject()), diagnostic: { phase: "runtime", name: "RangeError", message: "definition sentinel", loc } };
+  25 |     defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, location: Location): InternalBooleanCompletion {
+     |     ^~~~~~~~~~~~~~~~~
+  26 |         this.calls++;
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:40:17 - error SC1090: reading 'thrown' from a value of type 'DefinitionObject' is not supported yet
+
+  39 | function exact(r: Completion | InternalBooleanCompletion, target: DefinitionObject): void {
+  40 |     check(r === target.thrown, "exact throw record");
+     |                 ^~~~~~~~~~~~~
+  41 |     if (r.type !== "throw") throw new Error("expected throw");
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:42:23 - error SC1090: reading 'thrown' from a value of type 'DefinitionObject' is not supported yet
+
+  41 |     if (r.type !== "throw") throw new Error("expected throw");
+  42 |     check(r.value === target.thrown.value && r.diagnostic === target.thrown.diagnostic, "throw payload identities");
+     |                       ^~~~~~~~~~~~~
+  43 |     check(r.diagnostic.loc === target.seenLocation, "throw location identity");
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:43:32 - error SC1090: reading 'seenLocation' from a value of type 'DefinitionObject' is not supported yet
+
+  42 |     check(r.value === target.thrown.value && r.diagnostic === target.thrown.diagnostic, "throw payload identities");
+  43 |     check(r.diagnostic.loc === target.seenLocation, "throw location identity");
+     |                                ^~~~~~~~~~~~~~~~~~~
+  44 | }
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:50:26 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet
+
+  49 |         base.bootstrapDefine("x", { value: UNDEFINED, writable: true, enumerable: false, configurable: false });
+  50 |         const receiver = new DefinitionObject();
+     |                          ^~~~~~~~~~~~~~~~~~~~~~
+  51 |         if (own) receiver.bootstrapDefine("x", { value: UNDEFINED, writable: true, enumerable: false, configurable: false });
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:51:18 - error SC1090: method calls like 'receiver.bootstrapDefine' is not supported yet
+
+  50 |         const receiver = new DefinitionObject();
+  51 |         if (own) receiver.bootstrapDefine("x", { value: UNDEFINED, writable: true, enumerable: false, configurable: false });
+     |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  52 |         receiver.calls = 0;
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:52:9 - error SC1090: assignment to non-variables are not supported yet
+
+  51 |         if (own) receiver.bootstrapDefine("x", { value: UNDEFINED, writable: true, enumerable: false, configurable: false });
+  52 |         receiver.calls = 0;
+     |         ^~~~~~~~~~~~~~
+  53 |         receiver.mode = mode;
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:53:9 - error SC1090: assignment to non-variables are not supported yet
+
+  52 |         receiver.calls = 0;
+  53 |         receiver.mode = mode;
+     |         ^~~~~~~~~~~~~
+  54 |         const r = base.internalSet("x", rhs, obj(receiver), keyContext, loc);
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:54:50 - error SC1090: 'DefinitionObject' values where 'm2994262258.GuestObject' is expected is not supported yet
+
+  53 |         receiver.mode = mode;
+  54 |         const r = base.internalSet("x", rhs, obj(receiver), keyContext, loc);
+     |                                                  ^~~~~~~~
+  55 |         check(receiver.calls === 1 && receiver.seenContext === keyContext && receiver.seenLocation === loc && receiver.seenKey === "x", "receiver dispatch once with source");
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:55:15 - error SC2004: uses of 'receiver' inherit the blocker on its declaration
+
+  54 |         const r = base.internalSet("x", rhs, obj(receiver), keyContext, loc);
+  55 |         check(receiver.calls === 1 && receiver.seenContext === keyContext && receiver.seenLocation === loc && receiver.seenKey === "x", "receiver dispatch once with source");
+     |               ^~~~~~~~~~~~~~
+  56 |         check(receiver.seenDescriptor.value === rhs, "unconverted RHS");
+
+  hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:56:15 - error SC2004: uses of 'receiver' inherit the blocker on its declaration
+
+  55 |         check(receiver.calls === 1 && receiver.seenContext === keyContext && receiver.seenLocation === loc && receiver.seenKey === "x", "receiver dispatch once with source");
+  56 |         check(receiver.seenDescriptor.value === rhs, "unconverted RHS");
+     |               ^~~~~~~~~~~~~~~~~~~~~~~
+  57 |         check(receiver.seenDescriptor.writable === (own ? undefined : true), "update versus creation descriptor");
+
+  hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:57:15 - error SC2004: uses of 'receiver' inherit the blocker on its declaration
+
+  56 |         check(receiver.seenDescriptor.value === rhs, "unconverted RHS");
+  57 |         check(receiver.seenDescriptor.writable === (own ? undefined : true), "update versus creation descriptor");
+     |               ^~~~~~~~~~~~~~~~~~~~~~~
+  58 |         check(receiver.seenDescriptor.enumerable === (own ? undefined : true) && receiver.seenDescriptor.configurable === (own ? undefined : true), "descriptor flags");
+
+  hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:58:15 - error SC2004: uses of 'receiver' inherit the blocker on its declaration
+
+  57 |         check(receiver.seenDescriptor.writable === (own ? undefined : true), "update versus creation descriptor");
+  58 |         check(receiver.seenDescriptor.enumerable === (own ? undefined : true) && receiver.seenDescriptor.configurable === (own ? undefined : true), "descriptor flags");
+     |               ^~~~~~~~~~~~~~~~~~~~~~~
+  59 |         if (mode === "throw") exact(r, receiver);
+
+  hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:61:19 - error SC1090: method calls like 'receiver.getOwnProperty' is not supported yet
+
+  60 |         else boolean(r, mode === "success");
+  61 |         const d = receiver.getOwnProperty("x");
+     |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  62 |         if (mode === "success") check(d !== undefined && d.kind === "data" && d.value === rhs && d.writable && d.enumerable === !own && d.configurable === !own, "successful receiver state");
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:70:28 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet
+
+  69 |         for (const viaReference of [false, true]) {
+  70 |             const target = new DefinitionObject();
+     |                            ^~~~~~~~~~~~~~~~~~~~~~
+  71 |             if (own) target.bootstrapDefine("x", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:71:22 - error SC1090: method calls like 'target.bootstrapDefine' is not supported yet
+
+  70 |             const target = new DefinitionObject();
+  71 |             if (own) target.bootstrapDefine("x", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
+     |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  72 |             target.calls = 0; target.mode = mode;
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:72:13 - error SC1090: assignment to non-variables are not supported yet
+
+  71 |             if (own) target.bootstrapDefine("x", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
+  72 |             target.calls = 0; target.mode = mode;
+     |             ^~~~~~~~~~~~
+  73 |             const r = viaReference ? putValue({ kind: "property", base: { kind: "object", object: target }, key: { kind: "string", value: "x" }, loc }, rhs, keyContext, loc) : target.set("x", rhs, keyContext, loc);
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:72:31 - error SC1090: assignment to non-variables are not supported yet
+
+  71 |             if (own) target.bootstrapDefine("x", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
+  72 |             target.calls = 0; target.mode = mode;
+     |                               ^~~~~~~~~~~
+  73 |             const r = viaReference ? putValue({ kind: "property", base: { kind: "object", object: target }, key: { kind: "string", value: "x" }, loc }, rhs, keyContext, loc) : target.set("x", rhs, keyContext, loc);
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:73:99 - error SC1090: 'DefinitionObject' values where 'm2994262258.GuestObject' is expected is not supported yet
+
+  72 |             target.calls = 0; target.mode = mode;
+  73 |             const r = viaReference ? putValue({ kind: "property", base: { kind: "object", object: target }, key: { kind: "string", value: "x" }, loc }, rhs, keyContext, loc) : target.set("x", rhs, keyContext, loc);
+     |                                                                                                   ^~~~~~
+  74 |             check(target.calls === 1 && target.seenContext === keyContext && target.seenLocation === loc, "strict dispatch once");
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:74:19 - error SC2004: uses of 'target' inherit the blocker on its declaration
+
+  73 |             const r = viaReference ? putValue({ kind: "property", base: { kind: "object", object: target }, key: { kind: "string", value: "x" }, loc }, rhs, keyContext, loc) : target.set("x", rhs, keyContext, loc);
+  74 |             check(target.calls === 1 && target.seenContext === keyContext && target.seenLocation === loc, "strict dispatch once");
+     |                   ^~~~~~~~~~~~
+  75 |             if (mode === "throw") exact(r, target);
+
+  hint: the declaration of 'target' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:83:18 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet
+
+  82 | base.bootstrapDefine("locked", { value: UNDEFINED, writable: false, enumerable: true, configurable: true });
+  83 | const receiver = new DefinitionObject();
+     |                  ^~~~~~~~~~~~~~~~~~~~~~
+  84 | receiver.bootstrapDefine("locked", { value: rhs, writable: true, enumerable: true, configurable: true });
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:84:1 - error SC2004: uses of 'receiver' inherit the blocker on its declaration
+
+  83 | const receiver = new DefinitionObject();
+  84 | receiver.bootstrapDefine("locked", { value: rhs, writable: true, enumerable: true, configurable: true });
+     | ^~~~~~~~
+  85 | receiver.bootstrapDefine("ownLocked", { value: rhs, writable: false, enumerable: true, configurable: true });
+
+  hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:85:1 - error SC2004: uses of 'receiver' inherit the blocker on its declaration
+
+  84 | receiver.bootstrapDefine("locked", { value: rhs, writable: true, enumerable: true, configurable: true });
+  85 | receiver.bootstrapDefine("ownLocked", { value: rhs, writable: false, enumerable: true, configurable: true });
+     | ^~~~~~~~
+  86 | receiver.calls = 0; receiver.mode = "throw";
+
+  hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:86:1 - error SC2004: uses of 'receiver' inherit the blocker on its declaration
+
+  85 | receiver.bootstrapDefine("ownLocked", { value: rhs, writable: false, enumerable: true, configurable: true });
+  86 | receiver.calls = 0; receiver.mode = "throw";
+     | ^~~~~~~~
+  87 | boolean(base.internalSet("locked", UNDEFINED, obj(receiver), keyContext, loc), false);
+
+  hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:86:21 - error SC2004: uses of 'receiver' inherit the blocker on its declaration
+
+  85 | receiver.bootstrapDefine("ownLocked", { value: rhs, writable: false, enumerable: true, configurable: true });
+  86 | receiver.calls = 0; receiver.mode = "throw";
+     |                     ^~~~~~~~
+  87 | boolean(base.internalSet("locked", UNDEFINED, obj(receiver), keyContext, loc), false);
+
+  hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:87:51 - error SC2004: uses of 'receiver' inherit the blocker on its declaration
+
+  86 | receiver.calls = 0; receiver.mode = "throw";
+  87 | boolean(base.internalSet("locked", UNDEFINED, obj(receiver), keyContext, loc), false);
+     |                                                   ^~~~~~~~
+  88 | boolean(base.internalSet("ownLocked", UNDEFINED, obj(receiver), keyContext, loc), false);
+
+  hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:88:54 - error SC2004: uses of 'receiver' inherit the blocker on its declaration
+
+  87 | boolean(base.internalSet("locked", UNDEFINED, obj(receiver), keyContext, loc), false);
+  88 | boolean(base.internalSet("ownLocked", UNDEFINED, obj(receiver), keyContext, loc), false);
+     |                                                      ^~~~~~~~
+  89 | check(receiver.calls === 0 && receiver.get("locked", keyContext, loc) === rhs && receiver.get("ownLocked", keyContext, loc) === rhs, "readonly rejection before override");
+
+  hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:89:7 - error SC2004: uses of 'receiver' inherit the blocker on its declaration
+
+  88 | boolean(base.internalSet("ownLocked", UNDEFINED, obj(receiver), keyContext, loc), false);
+  89 | check(receiver.calls === 0 && receiver.get("locked", keyContext, loc) === rhs && receiver.get("ownLocked", keyContext, loc) === rhs, "readonly rejection before override");
+     |       ^~~~~~~~
+  90 | const inherited = new DefinitionObject();
+
+  hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:90:19 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet
+
+  89 | check(receiver.calls === 0 && receiver.get("locked", keyContext, loc) === rhs && receiver.get("ownLocked", keyContext, loc) === rhs, "readonly rejection before override");
+  90 | const inherited = new DefinitionObject();
+     |                   ^~~~~~~~~~~~~~~~~~~~~~
+  91 | boolean(inherited.setPrototypeOf(base), true);
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:91:9 - error SC2004: uses of 'inherited' inherit the blocker on its declaration
+
+  90 | const inherited = new DefinitionObject();
+  91 | boolean(inherited.setPrototypeOf(base), true);
+     |         ^~~~~~~~~
+  92 | inherited.mode = "throw";
+
+  hint: the declaration of 'inherited' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:92:1 - error SC2004: uses of 'inherited' inherit the blocker on its declaration
+
+  91 | boolean(inherited.setPrototypeOf(base), true);
+  92 | inherited.mode = "throw";
+     | ^~~~~~~~~
+  93 | boolean(inherited.internalSet("locked", rhs, obj(inherited), keyContext, loc), false);
+
+  hint: the declaration of 'inherited' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:93:9 - error SC2004: uses of 'inherited' inherit the blocker on its declaration
+
+  92 | inherited.mode = "throw";
+  93 | boolean(inherited.internalSet("locked", rhs, obj(inherited), keyContext, loc), false);
+     |         ^~~~~~~~~
+  94 | for (const primitive of [UNDEFINED, { kind: "null" } as const, { kind: "number", value: 1 } as const, { kind: "boolean", value: true } as const, { kind: "string", value: "s" } as const]) {
+
+  hint: the declaration of 'inherited' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:95:13 - error SC2004: uses of 'inherited' inherit the blocker on its declaration
+
+  94 | for (const primitive of [UNDEFINED, { kind: "null" } as const, { kind: "number", value: 1 } as const, { kind: "boolean", value: true } as const, { kind: "string", value: "s" } as const]) {
+  95 |     boolean(inherited.internalSet("new", rhs, primitive, keyContext, loc), false);
+     |             ^~~~~~~~~
+  96 | }
+
+  hint: the declaration of 'inherited' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:97:7 - error SC2004: uses of 'inherited' inherit the blocker on its declaration
+
+  96 | }
+  97 | check(inherited.calls === 0, "inherited readonly and primitive rejection before definition");
+     |       ^~~~~~~~~
+  98 | const closed = new DefinitionObject();
+
+  hint: the declaration of 'inherited' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:98:16 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet
+
+  97 | check(inherited.calls === 0, "inherited readonly and primitive rejection before definition");
+  98 | const closed = new DefinitionObject();
+     |                ^~~~~~~~~~~~~~~~~~~~~~
+  99 | closed.bootstrapDefine("existing", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:99:1 - error SC2004: uses of 'closed' inherit the blocker on its declaration
+
+   98 | const closed = new DefinitionObject();
+   99 | closed.bootstrapDefine("existing", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
+      | ^~~~~~
+  100 | boolean(closed.preventExtensions(), true);
+
+  hint: the declaration of 'closed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:100:9 - error SC2004: uses of 'closed' inherit the blocker on its declaration
+
+   99 | closed.bootstrapDefine("existing", { value: UNDEFINED, writable: true, enumerable: true, configurable: true });
+  100 | boolean(closed.preventExtensions(), true);
+      |         ^~~~~~
+  101 | closed.calls = 0;
+
+  hint: the declaration of 'closed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:101:1 - error SC2004: uses of 'closed' inherit the blocker on its declaration
+
+  100 | boolean(closed.preventExtensions(), true);
+  101 | closed.calls = 0;
+      | ^~~~~~
+  102 | boolean(base.internalSet("missing", rhs, obj(closed), keyContext, loc), false);
+
+  hint: the declaration of 'closed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:102:46 - error SC2004: uses of 'closed' inherit the blocker on its declaration
+
+  101 | closed.calls = 0;
+  102 | boolean(base.internalSet("missing", rhs, obj(closed), keyContext, loc), false);
+      |                                              ^~~~~~
+  103 | check(closed.calls === 1 && closed.getOwnProperty("missing") === undefined, "extensibility checked inside ordinary definition");
+
+  hint: the declaration of 'closed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:103:7 - error SC2004: uses of 'closed' inherit the blocker on its declaration
+
+  102 | boolean(base.internalSet("missing", rhs, obj(closed), keyContext, loc), false);
+  103 | check(closed.calls === 1 && closed.getOwnProperty("missing") === undefined, "extensibility checked inside ordinary definition");
+      |       ^~~~~~
+  104 | boolean(base.internalSet("existing", rhs, obj(closed), keyContext, loc), true);
+
+  hint: the declaration of 'closed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:104:47 - error SC2004: uses of 'closed' inherit the blocker on its declaration
+
+  103 | check(closed.calls === 1 && closed.getOwnProperty("missing") === undefined, "extensibility checked inside ordinary definition");
+  104 | boolean(base.internalSet("existing", rhs, obj(closed), keyContext, loc), true);
+      |                                               ^~~~~~
+  105 | check(closed.calls === 2 && closed.get("existing", keyContext, loc) === rhs, "nonextensible own update dispatch");
+
+  hint: the declaration of 'closed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:105:7 - error SC2004: uses of 'closed' inherit the blocker on its declaration
+
+  104 | boolean(base.internalSet("existing", rhs, obj(closed), keyContext, loc), true);
+  105 | check(closed.calls === 2 && closed.get("existing", keyContext, loc) === rhs, "nonextensible own update dispatch");
+      |       ^~~~~~
+  106 | closed.mode = "throw";
+
+  hint: the declaration of 'closed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:106:1 - error SC2004: uses of 'closed' inherit the blocker on its declaration
+
+  105 | check(closed.calls === 2 && closed.get("existing", keyContext, loc) === rhs, "nonextensible own update dispatch");
+  106 | closed.mode = "throw";
+      | ^~~~~~
+  107 | exact(base.internalSet("missing", rhs, obj(closed), keyContext, loc), closed);
+
+  hint: the declaration of 'closed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:107:44 - error SC2004: uses of 'closed' inherit the blocker on its declaration
+
+  106 | closed.mode = "throw";
+  107 | exact(base.internalSet("missing", rhs, obj(closed), keyContext, loc), closed);
+      |                                            ^~~~~~
+  108 | check(closed.calls === 3, "nonextensibility does not bypass override");
+
+  hint: the declaration of 'closed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:108:7 - error SC2004: uses of 'closed' inherit the blocker on its declaration
+
+  107 | exact(base.internalSet("missing", rhs, obj(closed), keyContext, loc), closed);
+  108 | check(closed.calls === 3, "nonextensibility does not bypass override");
+      |       ^~~~~~
+  109 | 
+
+  hint: the declaration of 'closed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:114:20 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet
+
+  113 |     const realm = new Realm((line) => { output += line + "\n"; });
+  114 |     const target = new DefinitionObject(); target.mode = mode;
+      |                    ^~~~~~~~~~~~~~~~~~~~~~
+  115 |     realm.global.bindings.set("target", { initialized: true, mutable: true, value: obj(target) });
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:114:44 - error SC1090: assignment to non-variables are not supported yet
+
+  113 |     const realm = new Realm((line) => { output += line + "\n"; });
+  114 |     const target = new DefinitionObject(); target.mode = mode;
+      |                                            ^~~~~~~~~~~
+  115 |     realm.global.bindings.set("target", { initialized: true, mutable: true, value: obj(target) });
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:115:88 - error SC1090: 'DefinitionObject' values where 'm2994262258.GuestObject' is expected is not supported yet
+
+  114 |     const target = new DefinitionObject(); target.mode = mode;
+  115 |     realm.global.bindings.set("target", { initialized: true, mutable: true, value: obj(target) });
+      |                                                                                        ^~~~~~
+  116 |     realm.global.bindings.set("rhs", { initialized: true, mutable: true, value: rhs });
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:120:33 - error SC2004: uses of 'target' inherit the blocker on its declaration
+
+  119 |     if (r.phase !== "runtime") throw new Error("unexpected parse failure");
+  120 |     check(output === "rhs\n" && target.calls === 1, "RHS effect before definition exactly once");
+      |                                 ^~~~~~~~~~~~
+  121 |     check(target.seenContext !== null && target.seenContext.realm === realm, "guest active realm context");
+
+  hint: the declaration of 'target' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:121:11 - error SC2004: uses of 'target' inherit the blocker on its declaration
+
+  120 |     check(output === "rhs\n" && target.calls === 1, "RHS effect before definition exactly once");
+  121 |     check(target.seenContext !== null && target.seenContext.realm === realm, "guest active realm context");
+      |           ^~~~~~~~~~~~~~~~~~
+  122 |     check(target.seenLocation.line === 2 && target.seenLocation.column === 18, "guest source location");
+
+  hint: the declaration of 'target' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:122:11 - error SC2004: uses of 'target' inherit the blocker on its declaration
+
+  121 |     check(target.seenContext !== null && target.seenContext.realm === realm, "guest active realm context");
+  122 |     check(target.seenLocation.line === 2 && target.seenLocation.column === 18, "guest source location");
+      |           ^~~~~~~~~~~~~~~~~~~
+  123 |     if (mode === "throw") exact(r.completion, target);
+
+  hint: the declaration of 'target' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:124:151 - error SC2004: uses of 'target' inherit the blocker on its declaration
+
+  123 |     if (mode === "throw") exact(r.completion, target);
+  124 |     else if (mode === "false") check(r.completion.type === "throw" && r.completion.diagnostic.name === "TypeError" && r.completion.diagnostic.loc === target.seenLocation, "guest false translation location");
+      |                                                                                                                                                       ^~~~~~~~~~~~~~~~~~~
+  125 |     else check(r.completion.type === "normal" && realm.global.bindings.get("assigned")?.value === rhs && target.get("x", keyContext, loc) === rhs, "guest assignment RHS identity");
+
+  hint: the declaration of 'target' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:125:106 - error SC1090: method calls like 'target.get' is not supported yet
+
+  124 |     else if (mode === "false") check(r.completion.type === "throw" && r.completion.diagnostic.name === "TypeError" && r.completion.diagnostic.loc === target.seenLocation, "guest false translation location");
+  125 |     else check(r.completion.type === "normal" && realm.global.bindings.get("assigned")?.value === rhs && target.get("x", keyContext, loc) === rhs, "guest assignment RHS identity");
+      |                                                                                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 |     const before = target.calls;
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:126:20 - error SC2004: uses of 'target' inherit the blocker on its declaration
+
+  125 |     else check(r.completion.type === "normal" && realm.global.bindings.get("assigned")?.value === rhs && target.get("x", keyContext, loc) === rhs, "guest assignment RHS identity");
+  126 |     const before = target.calls;
+      |                    ^~~~~~~~~~~~
+  127 |     const abrupt = run("target.x = missing;", realm);
+
+  hint: the declaration of 'target' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:129:11 - error SC2004: uses of 'target' inherit the blocker on its declaration
+
+  128 |     check(abrupt.phase === "runtime" && abrupt.completion.type === "throw" && abrupt.completion.diagnostic.name === "ReferenceError", "abrupt RHS");
+  129 |     check(target.calls === before, "abrupt RHS skips definition");
+      |           ^~~~~~~~~~~~
+  130 |     const stopped = run("target.y = effect(); console.log('after');", realm);
+
+  hint: the declaration of 'target' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:138:15 - error SC1090: overriding a method with a different signature (parameter types must match the base declaration exactly; returns may narrow to a subclass) is not supported yet
+
+  137 |     seenLocation: Location = { line: 0, column: 0 };
+  138 |     protected bootstrapDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, location: Location): InternalBooleanCompletion {
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |         this.calls++;
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:147:20 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet
+
+  146 | for (const mode of ["false", "throw"]) {
+  147 |     const target = new BootstrapObserver(); target.mode = mode;
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~
+  148 |     let hostFault = false;
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:147:45 - error SC1090: assignment to non-variables are not supported yet
+
+  146 | for (const mode of ["false", "throw"]) {
+  147 |     const target = new BootstrapObserver(); target.mode = mode;
+      |                                             ^~~~~~~~~~~
+  148 |     let hostFault = false;
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:149:11 - error SC1090: method calls like 'target.bootstrapDefine' is not supported yet
+
+  148 |     let hostFault = false;
+  149 |     try { target.bootstrapDefine("x", { value: rhs, writable: true, enumerable: true, configurable: true }); }
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  150 |     catch (error) { hostFault = error instanceof Error; }
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:151:24 - error SC2004: uses of 'target' inherit the blocker on its declaration
+
+  150 |     catch (error) { hostFault = error instanceof Error; }
+  151 |     check(hostFault && target.calls === 1 && target.getOwnProperty("x") === undefined, "bootstrap host initialization fault");
+      |                        ^~~~~~~~~~~~
+  152 |     check(target.seenLocation.line === 1 && target.seenLocation.column === 1, "bootstrap synthetic location");
+
+  hint: the declaration of 'target' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:152:11 - error SC2004: uses of 'target' inherit the blocker on its declaration
+
+  151 |     check(hostFault && target.calls === 1 && target.getOwnProperty("x") === undefined, "bootstrap host initialization fault");
+  152 |     check(target.seenLocation.line === 1 && target.seenLocation.column === 1, "bootstrap synthetic location");
+      |           ^~~~~~~~~~~~~~~~~~~
+  153 | }
+
+  hint: the declaration of 'target' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:156:19 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet
+
+  155 | // data definitions spend no execution budget even for an object-valued RHS.
+  156 | const setupOnly = new DefinitionObject();
+      |                   ^~~~~~~~~~~~~~~~~~~~~~
+  157 | setupOnly.mode = "throw";
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:157:1 - error SC2004: uses of 'setupOnly' inherit the blocker on its declaration
+
+  156 | const setupOnly = new DefinitionObject();
+  157 | setupOnly.mode = "throw";
+      | ^~~~~~~~~
+  158 | setupOnly.bootstrapDefine("length", { value: rhs, writable: true });
+
+  hint: the declaration of 'setupOnly' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:158:1 - error SC2004: uses of 'setupOnly' inherit the blocker on its declaration
+
+  157 | setupOnly.mode = "throw";
+  158 | setupOnly.bootstrapDefine("length", { value: rhs, writable: true });
+      | ^~~~~~~~~
+  159 | check(setupOnly.calls === 0 && setupOnly.get("length", keyContext, loc) === rhs, "bootstrap excludes semantic override");
+
+  hint: the declaration of 'setupOnly' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:159:7 - error SC2004: uses of 'setupOnly' inherit the blocker on its declaration
+
+  158 | setupOnly.bootstrapDefine("length", { value: rhs, writable: true });
+  159 | check(setupOnly.calls === 0 && setupOnly.get("length", keyContext, loc) === rhs, "bootstrap excludes semantic override");
+      |       ^~~~~~~~~
+  160 | const active = new Evaluator(new Realm((_line) => {}), 0);
+
+  hint: the declaration of 'setupOnly' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:161:15 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet
+
+  160 | const active = new Evaluator(new Realm((_line) => {}), 0);
+  161 | const child = new DefinitionObject();
+      |               ^~~~~~~~~~~~~~~~~~~~~~
+  162 | const parent = new GuestObject();
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:164:9 - error SC2004: uses of 'child' inherit the blocker on its declaration
+
+  163 | parent.bootstrapDefine("x", { value: UNDEFINED, writable: true });
+  164 | boolean(child.setPrototypeOf(parent), true);
+      |         ^~~~~
+  165 | const inheritedWrite = child.set("x", rhs, active.context, loc);
+
+  hint: the declaration of 'child' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:165:24 - error SC2004: uses of 'child' inherit the blocker on its declaration
+
+  164 | boolean(child.setPrototypeOf(parent), true);
+  165 | const inheritedWrite = child.set("x", rhs, active.context, loc);
+      |                        ^~~~~
+  166 | check(inheritedWrite.type === "normal" && inheritedWrite.value === rhs, "inherited write original RHS");
+
+  hint: the declaration of 'child' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:167:7 - error SC2004: uses of 'child' inherit the blocker on its declaration
+
+  166 | check(inheritedWrite.type === "normal" && inheritedWrite.value === rhs, "inherited write original RHS");
+  167 | check(child.calls === 1 && child.seenContext === active.context && child.seenLocation === loc, "inherited context and location");
+      |       ^~~~~
+  168 | boolean(child.defineOwnProperty("length", { value: rhs }, active.context, loc), true);
+
+  hint: the declaration of 'child' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:168:9 - error SC2004: uses of 'child' inherit the blocker on its declaration
+
+  167 | check(child.calls === 1 && child.seenContext === active.context && child.seenLocation === loc, "inherited context and location");
+  168 | boolean(child.defineOwnProperty("length", { value: rhs }, active.context, loc), true);
+      |         ^~~~~
+  169 | check(child.calls === 2 && child.seenContext === active.context && child.get("length", keyContext, loc) === rhs, "direct Define identity");
+
+  hint: the declaration of 'child' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:169:7 - error SC2004: uses of 'child' inherit the blocker on its declaration
+
+  168 | boolean(child.defineOwnProperty("length", { value: rhs }, active.context, loc), true);
+  169 | check(child.calls === 2 && child.seenContext === active.context && child.get("length", keyContext, loc) === rhs, "direct Define identity");
+      |       ^~~~~
+  170 | check(active.steps === 0 && active.calls === 0 && keyEvaluator.steps === 0, "ordinary writes add no ticks or calls");
+
+  hint: the declaration of 'child' did not compile — fix the diagnostic reported there and these sites clear with it
+
+71 errors.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\definition-dispatch.ts
+
+  statements analyzed   2791
+  compile statically    2704  (96%)
+  (2 functions not analyzed — signature blocked; their statements count as not static)
+
+  blockers:
+     ×11  SC2004  uses of 'receiver' inherit the blocker on its declaration
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:55:15, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:56:15, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:57:15 (+8 more)
+          hint: the declaration of 'receiver' did not compile — fix the diagnostic reported there and these sites clear with it
+     ×10  SC2004  uses of 'closed' inherit the blocker on its declaration
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:99:1, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:100:9, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:101:1 (+7 more)
+          hint: the declaration of 'closed' did not compile — fix the diagnostic reported there and these sites clear with it
+      ×9  SC1090  constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic)
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:50:26, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:70:28, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:83:18 (+6 more)
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×9  SC2004  uses of 'target' inherit the blocker on its declaration
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:74:19, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:120:33, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:121:11 (+6 more)
+          hint: the declaration of 'target' did not compile — fix the diagnostic reported there and these sites clear with it
+      ×6  SC1090  assignment to non-variables
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:52:9, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:53:9, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:72:13 (+3 more)
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×5  SC2004  uses of 'inherited' inherit the blocker on its declaration
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:91:9, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:92:1, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:93:9 (+2 more)
+          hint: the declaration of 'inherited' did not compile — fix the diagnostic reported there and these sites clear with it
+      ×5  SC2004  uses of 'child' inherit the blocker on its declaration
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:164:9, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:165:24, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:167:7 (+2 more)
+          hint: the declaration of 'child' did not compile — fix the diagnostic reported there and these sites clear with it
+      ×3  SC1090  'DefinitionObject' values where 'm2994262258.GuestObject' is expected
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:54:50, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:73:99, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:115:88
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×3  SC2004  uses of 'setupOnly' inherit the blocker on its declaration
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:157:1, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:158:1, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:159:7
+          hint: the declaration of 'setupOnly' did not compile — fix the diagnostic reported there and these sites clear with it
+      ×2  SC1090  overriding a method with a different signature (parameter types must match the base declaration exactly; returns may narrow to a subclass)
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:25:5, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:138:15
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×2  SC1090  method calls like 'target.bootstrapDefine'
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:71:22, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:149:11
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×2  SC1090  reading 'thrown' from a value of type 'DefinitionObject'
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:40:17, C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:42:23
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×1  SC1090  method calls like 'receiver.bootstrapDefine'
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:51:18
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×1  SC1090  method calls like 'receiver.getOwnProperty'
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:61:19
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×1  SC1090  method calls like 'target.get'
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:125:106
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×1  SC1090  reading 'seenLocation' from a value of type 'DefinitionObject'
+          at C:/Users/jonku/code/rift/typescript/test/definition-dispatch.ts:43:32
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+ 
+BUILD-FAIL test/array-storage.ts
+C:/Users/jonku/code/rift/typescript/test/array-storage.ts:246:15 - error SC1090: overriding a method with a different signature (parameter types must match the base declaration exactly; returns may narrow to a subclass) is not supported yet
+
+  245 | class SetupArray extends GuestArray {
+  246 |     protected ordinaryDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate): BooleanCompletion {
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~
+  247 |         constructionDispatches++;
+
+C:/Users/jonku/code/rift/typescript/test/array-storage.ts:263:21 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet
+
+  262 | }
+  263 | const constructed = new SetupArray();
+      |                     ^~~~~~~~~~~~~~~~
+  264 | length(constructed, 0);
+
+C:/Users/jonku/code/rift/typescript/test/array-storage.ts:264:8 - error SC2004: uses of 'constructed' inherit the blocker on its declaration
+
+  263 | const constructed = new SetupArray();
+  264 | length(constructed, 0);
+      |        ^~~~~~~~~~~
+  265 | check(constructionDispatches === 0, "constructor bypasses subclass dispatch");
+
+  hint: the declaration of 'constructed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/array-storage.ts:266:1 - error SC2004: uses of 'constructed' inherit the blocker on its declaration
+
+  265 | check(constructionDispatches === 0, "constructor bypasses subclass dispatch");
+  266 | constructed.bootstrapDefine("2", { value: UNDEFINED, configurable: true });
+      | ^~~~~~~~~~~
+  267 | length(constructed, 3);
+
+  hint: the declaration of 'constructed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/array-storage.ts:267:8 - error SC2004: uses of 'constructed' inherit the blocker on its declaration
+
+  266 | constructed.bootstrapDefine("2", { value: UNDEFINED, configurable: true });
+  267 | length(constructed, 3);
+      |        ^~~~~~~~~~~
+  268 | check(constructed.bootstrapCalls === 1 && constructed.semanticCalls === 0, "array setup dispatch excludes semantics");
+
+  hint: the declaration of 'constructed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+C:/Users/jonku/code/rift/typescript/test/array-storage.ts:268:7 - error SC2004: uses of 'constructed' inherit the blocker on its declaration
+
+  267 | length(constructed, 3);
+  268 | check(constructed.bootstrapCalls === 1 && constructed.semanticCalls === 0, "array setup dispatch excludes semantics");
+      |       ^~~~~~~~~~~
+  269 | 
+
+  hint: the declaration of 'constructed' did not compile — fix the diagnostic reported there and these sites clear with it
+
+6 errors.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\array-storage.ts
+
+  statements analyzed   2944
+  compile statically    2931  (99%)
+  (1 function not analyzed — signature blocked; their statements count as not static)
+
+  blockers:
+      ×4  SC2004  uses of 'constructed' inherit the blocker on its declaration
+          at C:/Users/jonku/code/rift/typescript/test/array-storage.ts:264:8, C:/Users/jonku/code/rift/typescript/test/array-storage.ts:266:1, C:/Users/jonku/code/rift/typescript/test/array-storage.ts:267:8 (+1 more)
+          hint: the declaration of 'constructed' did not compile — fix the diagnostic reported there and these sites clear with it
+      ×1  SC1090  constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic)
+          at C:/Users/jonku/code/rift/typescript/test/array-storage.ts:263:21
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+      ×1  SC1090  overriding a method with a different signature (parameter types must match the base declaration exactly; returns may narrow to a subclass)
+          at C:/Users/jonku/code/rift/typescript/test/array-storage.ts:246:15
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)
+ 
+PASS test/array-like.ts
+PASS test/operation-context.ts
+PASS test/array-map.ts
+PASS test/array-literals.ts
