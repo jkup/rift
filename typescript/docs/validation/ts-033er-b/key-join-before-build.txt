@@ -1,0 +1,8 @@
+C:/Users/jonku/code/rift/typescript/docs/validation/ts-033er-b/key-join-before.ts:3:13 - error SC1090: '.join()' on arrays of this element type (number, string, boolean and Date arrays join — unions of those with undefined/null arms too, the units printing empty like JS) is not supported yet
+
+  2 | const keys: (string | Key)[] = ["name", "length"];
+  3 | console.log(keys.join());
+    |             ^~~~~~~~~~~
+  4 | 
+
+1 error.

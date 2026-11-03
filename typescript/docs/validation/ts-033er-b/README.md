@@ -51,3 +51,8 @@ with exact B01–B18 output, the full 212-record suites, 47 retained plus one ne
 static-only/separate zero-dynamic gates, the new runtime-selected ER-B inputs,
 and all inherited acceptance controls from the assignment. No runtime, native
 or implementation success is claimed at this documentation-only boundary.
+
+Resumption: the coordinator approved this exact B03/B04 migration before code
+edits. Implementation and completed producer evidence are now recorded in
+[IMPLEMENTATION.md](IMPLEMENTATION.md). This proposal remains as the original
+ownership-review record.

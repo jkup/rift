@@ -1,0 +1,22 @@
+C:/Users/jonku/code/rift/typescript/test/script-restricted-properties.ts:43:7 - error SC1090: '.join()' on arrays of this element type (number, string, boolean and Date arrays join — unions of those with undefined/null arms too, the units printing empty like JS) is not supported yet
+
+  42 | check(thrower.callable !== null && thrower.callable.kind === "builtin" && thrower.callable.realm === a && thrower.getPrototypeOf() === a.functionPrototype && !thrower.isExtensible(), "thrower identity");
+  43 | check(thrower.ownPropertyKeys().join() === "name,length", "exact keys");
+     |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  44 | for (const key of ["name", "length"]) {
+
+C:/Users/jonku/code/rift/typescript/test/script-restricted-properties.ts:105:155 - error SC1090: '.join()' on arrays of this element type (number, string, boolean and Date arrays join — unions of those with undefined/null arms too, the units printing empty like JS) is not supported yet
+
+  104 | const added = thrower.defineOwnProperty("extra", { value: seven }, context, loc);
+  105 | check(added.type === "normal" && !added.value && !thrower.setPrototypeOf(a.objectPrototype).value && thrower.setPrototypeOf(a.functionPrototype).value && thrower.ownPropertyKeys().join() === "name,length", "frozen shape");
+      |                                                                                                                                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  106 | a.functionPrototype.bootstrapDefine("arguments", { get: t, set: t });
+
+C:/Users/jonku/code/rift/typescript/test/script-restricted-properties.ts:120:7 - error SC1090: '.join()' on arrays of this element type (number, string, boolean and Date arrays join — unions of those with undefined/null arms too, the units printing empty like JS) is not supported yet
+
+  119 | check(evaluator.steps === 5 && evaluator.calls === 2 && evaluator.depth === 3 && evaluator.context.realm === legacy && ticks === 2 && calls === 11, "guards before effects");
+  120 | check(legacy.functionPrototype.ownPropertyKeys().join() === "name,length,call,toString" && legacy.functionPrototype.getOwnProperty("caller") === undefined && legacy.functionPrototype.getOwnProperty("arguments") === undefined, "legacy exact surface");
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  121 | console.log("R35 guarded invocation PASS");
+
+3 errors.

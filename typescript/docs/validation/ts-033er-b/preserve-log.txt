@@ -1,0 +1,4 @@
+warning: in the working copy of 'typescript/COORDINATION.md', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/TASKS.md', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/docs/feature-inventory.md', CRLF will be replaced by LF the next time Git touches it
+PASS 212 exact records/lane,47+1 static gates,2885 protected files,60 blocked variants

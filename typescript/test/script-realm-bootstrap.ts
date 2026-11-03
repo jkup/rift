@@ -46,10 +46,15 @@ function inventory(a: Realm): void {
     keys(num,[...names,"isNaN","isFinite"]); for(let i=0;i<names.length;i++) desc(num,names[i],n(values[i]),false,false,false);
     method(a,num,"isNaN","isNaN",1); method(a,num,"isFinite","isFinite",1);
     const prototypes=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype];
-    const lists: PropertyKey[][]=[["valueOf","toString"],["name","length","call","toString"],["length","join","toString"],["toString","valueOf"],["toString","valueOf"],["length","toString","valueOf"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
+    const lists: PropertyKey[][]=[["valueOf","toString"],["name","length","caller","arguments","call","toString"],["length","join","toString"],["toString","valueOf"],["toString","valueOf"],["length","toString","valueOf"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
     for(let i=0;i<prototypes.length;i++) {
         const p=prototypes[i]; keys(p,lists[i]); check(p.getPrototypeOf()===(i===0?null:a.objectPrototype),"prototype chain");
-        for(const k of lists[i]) if(typeof k==="string" && k!=="name" && k!=="length") method(a,p,k,k,k==="call"||k==="join"||(i===4&&k==="toString")?1:0);
+        for(const k of lists[i]) if(typeof k==="string" && k!=="name" && k!=="length") {
+            if (i===1 && (k==="caller" || k==="arguments")) {
+                const d=p.getOwnProperty(k), other=p.getOwnProperty("caller");
+                check(d!==undefined && d.kind==="accessor" && !d.enumerable && d.configurable && d.get.kind==="object" && d.set===d.get && other!==undefined && other.kind==="accessor" && d.get===other.get,"restricted descriptors");
+            } else method(a,p,k,k,k==="call"||k==="join"||(i===4&&k==="toString")?1:0);
+        }
     }
     desc(a.functionPrototype,"name",{kind:"string",value:""},false,false,true); desc(a.functionPrototype,"length",n(0),false,false,true);
     check(a.functionPrototype.callable!==null && a.functionPrototype.callable.realm===a,"inline owner");
@@ -84,7 +89,14 @@ function row(id: string,name: string,initial: number): void {
     case "B04": {
         const left=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype,a.globalObject,object(own(a.globalObject,"console")),object(own(a.globalObject,"Number")),x.objectPrototype,x.functionPrototype,x.arrayPrototype,x.booleanPrototype,x.numberPrototype,x.stringPrototype,x.symbolPrototype,object(x.global.bindings.get("console")!.value),object(x.global.bindings.get("Number")!.value)];
         const right=[b.objectPrototype,b.functionPrototype,b.arrayPrototype,b.booleanPrototype,b.numberPrototype,b.stringPrototype,b.symbolPrototype,b.globalObject,object(own(b.globalObject,"console")),object(own(b.globalObject,"Number")),y.objectPrototype,y.functionPrototype,y.arrayPrototype,y.booleanPrototype,y.numberPrototype,y.stringPrototype,y.symbolPrototype,object(y.global.bindings.get("console")!.value),object(y.global.bindings.get("Number")!.value)];
-        for(let i=0;i<left.length;i++) { check(left[i]!==right[i],"fresh objects"); for(const key of left[i].ownPropertyKeys()) { const l=own(left[i],key),r=own(right[i],key); if(l.kind==="object") check(r.kind==="object" && l.object!==r.object,"fresh methods"); } }
+        for(let i=0;i<left.length;i++) { check(left[i]!==right[i],"fresh objects"); for(const key of left[i].ownPropertyKeys()) {
+            const ld=left[i].getOwnProperty(key), rd=right[i].getOwnProperty(key);
+            if (ld!==undefined && ld.kind==="accessor") {
+                check(i===1 && (key==="caller" || key==="arguments"),"only restricted accessors");
+                const lc=left[i].getOwnProperty("caller"), rc=right[i].getOwnProperty("caller");
+                check(rd!==undefined && rd.kind==="accessor" && !ld.enumerable && ld.configurable && !rd.enumerable && rd.configurable && ld.get.kind==="object" && rd.get.kind==="object" && ld.get.object!==rd.get.object && ld.set===ld.get && rd.set===rd.get && lc!==undefined && lc.kind==="accessor" && lc.get===ld.get && rc!==undefined && rc.kind==="accessor" && rc.get===rd.get,"fresh restricted endpoints");
+            } else { const l=own(left[i],key),r=own(right[i],key); if(l.kind==="object") check(r.kind==="object" && l.object!==r.object,"fresh methods"); }
+        } }
         check(a.symbolPrototype.ownPropertyKeys()[2]===b.symbolPrototype.ownPropertyKeys()[2],"canonical symbol"); seed(a,name,first); guestError(b.readScriptGlobal(name, context,loc),"ReferenceError"); break;
     }
     case "B05": error(()=>{a.global;},legacyError); error(()=>{a.global=x.global;},legacyError); error(()=>{x.globalObject;},"Script Realm required"); error(()=>{x.globalEnvironment;},"Script Realm required"); error(()=>{x.globalThisValue;},"Script Realm required"); break;

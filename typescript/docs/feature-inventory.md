@@ -486,5 +486,19 @@ indices retain immutable data semantics. Global/E2 binding reads and explicit ho
 inspections forward context, including all conversion/map/join/tag consumers.
 
 There is no guest descriptor reflection or accessor syntax, no Proxy, and no
-restricted-function bootstrap or Script execution admission. Legacy bootstrap and
+Script execution admission. ER-A alone did not install restricted properties;
+the separate ER-B slice below supplies that bootstrap. Legacy bootstrap and
 closed Script guards remain unchanged. See [ER-A implementation and validation](validation/ts-033er-a/IMPLEMENTATION.md).
+
+### Guarded restricted function properties (TS-033ER-B)
+
+Each Script Realm installs caller and arguments accessors on Function.prototype,
+sharing one guarded, nonextensible thrower with frozen empty name and zero length.
+Genuine E3 functions inherit these configurable accessors; ordinary deletion,
+redefinition and own data shadows retain their ordinary semantics. Distinct Realms
+have distinct throwers, and the legacy prototype inventory is unchanged.
+
+Host recording contexts prove receiver/argument/endpoint dispatch and abrupt-record
+identity. Actual invocation still fails the existing Script or cross-profile host
+guards. This is not execution of ThrowTypeError or Script source: E4/R36 and actual
+diagnostic TypeError execution remain blocked. See [ER-B validation](validation/ts-033er-b/IMPLEMENTATION.md).

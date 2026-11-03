@@ -3,6 +3,7 @@ import { GuestArray } from "./array-object.js";
 import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value, validatePropertyDescriptorUpdate, type PropertyDescriptorUpdate, type ValueCompletion } from "./runtime.js";
 import { registerNumber, registerNumberConversions } from "./builtins/number.js";
 import { registerFunction, nativeFunctionString } from "./builtins/function.js";
+import { registerRestrictedFunctionProperties } from "./builtins/restricted-function.js";
 import { registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
 import { registerSymbolConversions } from "./builtins/symbol.js";
 import { registerBooleanConversions } from "./builtins/boolean.js";
@@ -41,6 +42,7 @@ export class Realm {
             kind: "builtin", initialName: "", realm: this, invoke: this.guardBuiltin((_receiver, _args, _context, _loc) => normal(UNDEFINED)),
         });
         setBuiltinMetadata(this.functionPrototype, "", 0);
+        if (profile === "script") registerRestrictedFunctionProperties(this);
         this.arrayPrototype = new GuestArray(this.objectPrototype);
         this.booleanPrototype = new GuestBoolean(false, this.objectPrototype);
         this.numberPrototype = new GuestNumber(0, this.objectPrototype);
