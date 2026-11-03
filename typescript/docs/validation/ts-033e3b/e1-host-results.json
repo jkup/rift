@@ -1,0 +1,38 @@
+[
+  {
+    "lane": "node",
+    "input": "seed",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "P01 PASS\nP02 PASS\nP03 PASS\nP04 PASS\nP05 PASS\nU01 PASS\nNESTED PASS\nR06 PASS\nBOUNDARY PASS\nINPUT PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "input": "other",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "P01 PASS\nP02 PASS\nP03 PASS\nP04 PASS\nP05 PASS\nU01 PASS\nNESTED PASS\nR06 PASS\nBOUNDARY PASS\nINPUT PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "input": "seed",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "P01 PASS\nP02 PASS\nP03 PASS\nP04 PASS\nP05 PASS\nU01 PASS\nNESTED PASS\nR06 PASS\nBOUNDARY PASS\nINPUT PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "input": "other",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "P01 PASS\nP02 PASS\nP03 PASS\nP04 PASS\nP05 PASS\nU01 PASS\nNESTED PASS\nR06 PASS\nBOUNDARY PASS\nINPUT PASS\n",
+    "stderr": ""
+  }
+]

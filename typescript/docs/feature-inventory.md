@@ -454,3 +454,19 @@ claimed. E3B, ER and E4 remain separate. Two impossible hostile typed casts use
 explicit Node runtime negatives and native compile-rejection evidence, as approved
 by the coordinator. See [E3A implementation and validation](validation/ts-033e3a/IMPLEMENTATION.md)
 for the exact split and isolated static compiler module-reachability workaround.
+
+### Script declaration setup (TS-033E3B)
+
+Prepared records now provide host-only function and block declaration setup plus
+an identity-bound global adapter to the unchanged D2 orchestrator. Activations
+own their private key, scope and single-use phase. Function arguments are copied
+before ticks, var/function collisions preserve last-winner semantics, lexical
+bindings stay TDZ, and closures capture the exact fresh local environment.
+Blocks initialize functions immediately in lexical order. Global admission checks
+current state on every invocation; private plan identities never come from public
+inspection snapshots.
+
+The function18/block6/global12 prefixes and original11 D2 marker replay are
+covered with resource and host failures. This does not execute initializers or
+bodies, activate frames, change guards, create arguments objects, or admit Script
+execution. ER and E4 remain separate. See [E3B validation](validation/ts-033e3b/README.md).

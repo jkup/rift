@@ -381,3 +381,13 @@ This import runs no preparation, allocation or setup. Tick callbacks receive
 copied locations; callable private source-unit/range identity is checked before
 empty activation allocation. Nonretaining activation ownership and closed
 execution guards remain as specified above.
+
+## E3B implementation notes (2026-11-03)
+
+The bounded setup slice now lives in script-record.ts: private BlockActivation,
+empty block allocation, function/block single-use setup and the five-argument
+identity-bound global adapter/wrapper. E3A's private key/callable/phase mechanism
+is reused. No record-to-activation collection or executable snapshot API was
+introduced. D2, E2 helpers, parser, Realm, evaluator and closed execution guards
+are unchanged. Arguments objects, ER and execution remain separate obligations.
+See [E3B evidence and exact coverage boundaries](validation/ts-033e3b/README.md).

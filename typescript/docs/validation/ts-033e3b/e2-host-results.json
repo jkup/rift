@@ -1,0 +1,38 @@
+[
+  {
+    "lane": "node",
+    "input": "seed",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "L01 PASS\nL02 PASS\nL03 PASS\nL04 PASS\nT01 PASS\nT02 PASS\nT03 PASS\nC01 PASS\nC02 PASS\nC03 PASS\nC04 PASS\nINPUT seed 7 PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "input": "other",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "L01 PASS\nL02 PASS\nL03 PASS\nL04 PASS\nT01 PASS\nT02 PASS\nT03 PASS\nC01 PASS\nC02 PASS\nC03 PASS\nC04 PASS\nINPUT other 11 PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "input": "seed",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "L01 PASS\nL02 PASS\nL03 PASS\nL04 PASS\nT01 PASS\nT02 PASS\nT03 PASS\nC01 PASS\nC02 PASS\nC03 PASS\nC04 PASS\nINPUT seed 7 PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "input": "other",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "L01 PASS\nL02 PASS\nL03 PASS\nL04 PASS\nT01 PASS\nT02 PASS\nT03 PASS\nC01 PASS\nC02 PASS\nC03 PASS\nC04 PASS\nINPUT other 11 PASS\n",
+    "stderr": ""
+  }
+]
