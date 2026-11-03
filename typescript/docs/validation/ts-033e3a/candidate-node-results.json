@@ -1,0 +1,18 @@
+[
+  {
+    "file": "a",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "F01 PASS\nF02 PASS\nF03 PASS\nF04 PASS\nF05 PASS\nF06 PASS\nF07 PASS\nF08 PASS\nF09 PASS\nF10 P01 PASS\nF11 PASS\nF12 PASS\nN01 PASS\nN02 PASS\nN03 PASS\nN04 PASS\nN05 PASS\nS05 PASS\nINPUT seed 7 PASS\n",
+    "stderr": ""
+  },
+  {
+    "file": "b",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "F01 PASS\nF02 PASS\nF03 PASS\nF04 PASS\nF05 PASS\nF06 PASS\nF07 PASS\nF08 PASS\nF09 PASS\nF10 P01 PASS\nF11 PASS\nF12 PASS\nN01 PASS\nN02 PASS\nN03 PASS\nN04 PASS\nN05 PASS\nS05 PASS\nINPUT other 11 PASS\n",
+    "stderr": ""
+  }
+]

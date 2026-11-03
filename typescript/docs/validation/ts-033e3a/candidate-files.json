@@ -1,0 +1,11 @@
+[
+  "src/script-record.ts",
+  "src/runtime.ts",
+  "src/realm.ts",
+  "src/builtins/function.ts",
+  "src/evaluator.ts",
+  "src/script-environment.ts",
+  "src/parser.ts",
+  "src/script-declarations.ts",
+  "test/script-environment.ts"
+]

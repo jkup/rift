@@ -354,3 +354,12 @@ runtime or conformance result. ER accessor/context migration remains separate;
 F.caller/F.arguments are not solved by omitting the arguments environment. E4
 must wait for independent E1/E2/E3/ER acceptance and full restricted-property
 execution controls. Closed guards protect the interim incomplete prototypes.
+
+## E3A compiler feasibility stop (2026-11-03)
+
+The first candidate was restored out of production after the pinned compiler
+rejected deliberate F07/F09 invalid-input casts at the frozen typed boundaries.
+See [reductions and resumable candidate](validation/ts-033e3a/README.md).
+The positive private factory/activation E2 entry is fully static; this does not
+satisfy the entire matrix. A bounded validation-lane revision needs independent
+acceptance before resuming. No API, ownership or execution expansion is adopted.
