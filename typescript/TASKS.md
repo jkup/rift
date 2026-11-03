@@ -2167,3 +2167,12 @@ Freeze literal S01-S04/S06-S07/B01-B03/G01-G03/P01-P03 expected values, descript
 No initializer/body evaluation, frame activation/call/guard removal, ER accessors, E4, profile/CLI/observation/conformance admission. Arguments environment omission stays explicit subset debt; inherited restricted function properties still await ER. Preserve212 old records45 old gates, all E3A/E2/E1 two-input controls,D1 135/207,metadata136/42/stress8,global15/bootstrap18/D2. Full Node/native rebuild plus additive static-only and independently parsed zero-dynamic coverage,typecheck/runner20/probes10/host73/observations22/60blocked. No C++/pins/historical evidence changes. Commit coherent tested milestone, stop for independent review; coordinator publishes accepted work. No successor/main merge by writer.
 
 E3B handoff: private activation-owned block setup, function setup and identity-bound D2 adapter implemented only in src/script-record.ts. Both-input literal18/6/12 prefix controls plus original11 marker pass in both hosts; all required S/B/G/P rows covered, P02 explicitly tick-boundary coverage. Full212/212 lanes46static gates (45 preserved), typecheck/runner20/probes10/host73/observations22 and every inherited replay pass. Preservation2727protected/60blocked, unchanged exact212 records/lane. Test-only parameter-property SC1090 reduced and explicit this.realm passes native/zero-dynamic; no production workaround or pin change. Evidence docs/validation/ts-033e3b/README.md. Stop for independent review; no ER/E4/execution/admission, successor or main publication.
+
+E3B independent-review correction: candidate9d28df0 rejected for missing original
+block outer identity. The activation now retains private original outer and
+validates it before phase/ticks. Both-host regression rejects same-Realm outer
+replacement with zero setup effects, restores original and succeeds from fresh
+phase, then verifies the closure's original-chain binding identity. G03 docs now
+explicitly distinguish detached-unit rejection from individually reaching later
+private declaration/function identity clauses. Full revalidation passes:212/212 Node/native,46static gates,runner20/probes10/host73/observations22, all E3A/E2/E1/D1/metadata/global/bootstrap/D2 replays and2727protected/60blocked preservation. Ready for independent re-review; no
+private-state exposure, successor or publication.

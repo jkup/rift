@@ -41,7 +41,11 @@ foreign records/contexts/scopes and retries; mismatch checks leave fresh ownersh
 usable. B01-B03 cover lexical publication prefixes, untaken host projection,
 sibling and nested block identity. G01-G03 cover marker/real adapters, current
 admission after nonwritable global changes, detached inspection mutations and
-rejection of substituted public identities. A function-only neighbor tests G02's
+rejection of substituted public identities. G03's detached unit fails the unit
+identity check before declaration/function checks: these negatives do not
+individually exercise every private identity clause. Those clauses are verified
+by source review; no private state is exposed to force otherwise unreachable
+injections. A function-only neighbor tests G02's
 function admission specifically because repeating G01's let would fail earlier.
 
 P02 is explicitly **tick-boundary coverage**, not environment-subclass injection:
@@ -86,9 +90,9 @@ non-owned tracked path (including C++, pins and earlier evidence).
 Full rebuilt Node/native guest lanes each pass212/212 with no skips; every old
 result object is unchanged. All46 static-only builds and separate coverage gates
 pass (45 inherited plus setup); independently parsed coverage is zero dynamic
-throughout: CLI2622, E3A2851, E3B2484 static statements. Runner20, probes10,
+throughout: CLI2623, E3A2852, E3B2508 static statements. Runner20, probes10,
 host73, observations22 and typecheck pass. `suite-typecheck.json` retains the full
-suite. The final explicit numeric S02 and adapter-copy additions were followed
+suite. The explicit numeric S02, adapter-copy and block-outer review regression were followed
 by `refresh-driver.mjs`: it typechecks, rebuilds the affected native driver,
 parses its separate coverage and reruns both inputs in both hosts, replacing only
 that additive gate's record. `final-driver-results.json` includes its source hash.
@@ -104,3 +108,34 @@ property spelling described above.
 
 Implementation is complete for independent review; it is not coordinator
 acceptance. No successor, main merge or publication was performed.
+
+## Independent review correction
+
+The coordinator rejected candidate `9d28df0`: BlockActivation verified its owner,
+scope and phase but not the identity of its originally allocated outer. A host
+could replace the readonly public field with a different valid same-Realm chain.
+The source fix stores `#originalOuter` on the activation and compares it in
+`checkFresh`, before phase change or setup ticks. The record gains no activation
+reference or registry. This enforces the existing frozen contract, not a scope
+expansion.
+
+The shared B03 regression intentionally assigns the readonly field with an
+explicit test-only TypeScript expected-error annotation. Native lowering supports
+this ordinary field write, so no new cast, compiler workaround or lane split is
+needed. Replacement is rejected with zero setup ticks, no g binding, no completed
+materialization and unchanged outer bindings/counters/Realm. Restoring the original
+outer permits all three setup ticks, proving the failed validation retained fresh
+phase. The genuine closure then resolves the original outer's binding by exact
+reference and Value identity. Existing prefix and identity assertions remain.
+
+G03 evidence is also clarified above: detached unit identity rejection precedes
+declaration/function validation, so the test does not separately reach those
+private identity clauses. No private-state test escape hatch was introduced.
+
+The corrected candidate passes a fresh full Node/native rebuild:212/212 exact
+records each,46 static gates with separate zero-dynamic reports (CLI2623,
+E3A2852, setup2508), typecheck/runner20/probes10/host73/observations22. All required
+inherited replays pass again. Preservation still verifies2727 protected files,
+all60 blocked variants and45 inherited gates. `final-driver-results.json` retains
+the focused both-host regression run; the full suite and replay transcripts now
+reflect the corrected source. Ready for independent re-review, not acceptance.

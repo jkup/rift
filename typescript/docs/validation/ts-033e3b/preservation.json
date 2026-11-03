@@ -5,7 +5,62 @@
     "typescript/TASKS.md",
     "typescript/docs/feature-inventory.md",
     "typescript/docs/script-function-materialization.md",
+    "typescript/docs/validation/ts-033e3b/README.md",
+    "typescript/docs/validation/ts-033e3b/base-comparison.json",
+    "typescript/docs/validation/ts-033e3b/base-records.json",
+    "typescript/docs/validation/ts-033e3b/bootstrap-rows.json",
+    "typescript/docs/validation/ts-033e3b/d2-host-results.json",
+    "typescript/docs/validation/ts-033e3b/e1-host-results.json",
+    "typescript/docs/validation/ts-033e3b/e2-host-results.json",
+    "typescript/docs/validation/ts-033e3b/e3a-host-results.json",
+    "typescript/docs/validation/ts-033e3b/e3a-reachability-results.json",
+    "typescript/docs/validation/ts-033e3b/e3a-reachability-typecheck.json",
+    "typescript/docs/validation/ts-033e3b/e3a-reduction-results.json",
+    "typescript/docs/validation/ts-033e3b/final-driver-results.json",
+    "typescript/docs/validation/ts-033e3b/frozen-matrix.md",
+    "typescript/docs/validation/ts-033e3b/guest-native-results.json",
+    "typescript/docs/validation/ts-033e3b/guest-node-results.json",
+    "typescript/docs/validation/ts-033e3b/host-results.json",
+    "typescript/docs/validation/ts-033e3b/host-rows.json",
+    "typescript/docs/validation/ts-033e3b/initial-build.txt",
+    "typescript/docs/validation/ts-033e3b/initial-coverage.txt",
+    "typescript/docs/validation/ts-033e3b/metadata-complete/matrix-summary.json",
+    "typescript/docs/validation/ts-033e3b/metadata-complete/metadata-native.json",
+    "typescript/docs/validation/ts-033e3b/metadata-complete/metadata-node.json",
+    "typescript/docs/validation/ts-033e3b/native-build-results.json",
+    "typescript/docs/validation/ts-033e3b/node-host-negative-results.json",
+    "typescript/docs/validation/ts-033e3b/node-host-negatives.mjs",
+    "typescript/docs/validation/ts-033e3b/parameter-after.ts",
+    "typescript/docs/validation/ts-033e3b/parameter-before.ts",
+    "typescript/docs/validation/ts-033e3b/plans-results.json",
+    "typescript/docs/validation/ts-033e3b/preservation.json",
+    "typescript/docs/validation/ts-033e3b/preserve.mjs",
+    "typescript/docs/validation/ts-033e3b/probe-results.json",
+    "typescript/docs/validation/ts-033e3b/reduce.mjs",
+    "typescript/docs/validation/ts-033e3b/reduction-results.json",
+    "typescript/docs/validation/ts-033e3b/refresh-driver.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-baseline.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-bootstrap.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-d2.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-e1.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-e2.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-e3a-reachability.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-e3a-reduce.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-e3a.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-global.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-metadata.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-plans.mjs",
+    "typescript/docs/validation/ts-033e3b/replay-stress.mjs",
+    "typescript/docs/validation/ts-033e3b/replays-results.json",
+    "typescript/docs/validation/ts-033e3b/replays.mjs",
+    "typescript/docs/validation/ts-033e3b/stress-results.json",
+    "typescript/docs/validation/ts-033e3b/suite-typecheck.json",
+    "typescript/docs/validation/ts-033e3b/suites.mjs",
+    "typescript/docs/validation/ts-033e3b/validate.mjs",
+    "typescript/fixtures/script-function-setup/a.txt",
+    "typescript/fixtures/script-function-setup/b.txt",
     "typescript/src/script-record.ts",
+    "typescript/test/script-function-setup.ts",
     "typescript/tools/build-native.mjs"
   ],
   "coordinatorOwnedExceptions": [
@@ -18,182 +73,182 @@
   "coverage": [
     {
       "entry": "src/cli.ts",
-      "static": 2622,
+      "static": 2623,
       "dynamic": 0
     },
     {
       "entry": "test/realms.ts",
-      "static": 2978,
+      "static": 2979,
       "dynamic": 0
     },
     {
       "entry": "test/object-descriptors.ts",
-      "static": 2752,
+      "static": 2753,
       "dynamic": 0
     },
     {
       "entry": "test/object-prototypes.ts",
-      "static": 2734,
+      "static": 2735,
       "dynamic": 0
     },
     {
       "entry": "test/object-keys.ts",
-      "static": 2757,
+      "static": 2758,
       "dynamic": 0
     },
     {
       "entry": "test/conversion.ts",
-      "static": 2252,
+      "static": 2253,
       "dynamic": 0
     },
     {
       "entry": "test/definition-dispatch.ts",
-      "static": 2760,
+      "static": 2761,
       "dynamic": 0
     },
     {
       "entry": "test/array-storage.ts",
-      "static": 2902,
+      "static": 2903,
       "dynamic": 0
     },
     {
       "entry": "test/array-like.ts",
-      "static": 2710,
+      "static": 2711,
       "dynamic": 0
     },
     {
       "entry": "test/operation-context.ts",
-      "static": 2942,
+      "static": 2943,
       "dynamic": 0
     },
     {
       "entry": "test/array-map.ts",
-      "static": 3084,
+      "static": 3085,
       "dynamic": 0
     },
     {
       "entry": "test/array-literals.ts",
-      "static": 2673,
+      "static": 2674,
       "dynamic": 0
     },
     {
       "entry": "test/property-key-conversion.ts",
-      "static": 2944,
+      "static": 2945,
       "dynamic": 0
     },
     {
       "entry": "test/numeric-operators.ts",
-      "static": 2702,
+      "static": 2703,
       "dynamic": 0
     },
     {
       "entry": "test/addition.ts",
-      "static": 2716,
+      "static": 2717,
       "dynamic": 0
     },
     {
       "entry": "test/relational.ts",
-      "static": 2747,
+      "static": 2748,
       "dynamic": 0
     },
     {
       "entry": "test/primitive-conversion.ts",
-      "static": 3112,
+      "static": 3113,
       "dynamic": 0
     },
     {
       "entry": "test/operator-coercion.ts",
-      "static": 2749,
+      "static": 2750,
       "dynamic": 0
     },
     {
       "entry": "test/key-coercion.ts",
-      "static": 2774,
+      "static": 2775,
       "dynamic": 0
     },
     {
       "entry": "test/length-coercion.ts",
-      "static": 2889,
+      "static": 2890,
       "dynamic": 0
     },
     {
       "entry": "test/array-length-coercion.ts",
-      "static": 3109,
+      "static": 3110,
       "dynamic": 0
     },
     {
       "entry": "test/function-call.ts",
-      "static": 2788,
+      "static": 2789,
       "dynamic": 0
     },
     {
       "entry": "test/object-valueof.ts",
-      "static": 4158,
+      "static": 4159,
       "dynamic": 0
     },
     {
       "entry": "test/array-string-conversion.ts",
-      "static": 3115,
+      "static": 3116,
       "dynamic": 0
     },
     {
       "entry": "test/function-string-conversion.ts",
-      "static": 2931,
+      "static": 2932,
       "dynamic": 0
     },
     {
       "entry": "test/abstract-equality.ts",
-      "static": 3017,
+      "static": 3018,
       "dynamic": 0
     },
     {
       "entry": "test/delete-operator.ts",
-      "static": 3394,
+      "static": 3395,
       "dynamic": 0
     },
     {
       "entry": "test/typeof-void.ts",
-      "static": 3145,
+      "static": 3146,
       "dynamic": 0
     },
     {
       "entry": "test/in-operator.ts",
-      "static": 3307,
+      "static": 3308,
       "dynamic": 0
     },
     {
       "entry": "test/primitive-reads.ts",
-      "static": 3385,
+      "static": 3386,
       "dynamic": 0
     },
     {
       "entry": "test/property-assignment.ts",
-      "static": 3681,
+      "static": 3682,
       "dynamic": 0
     },
     {
       "entry": "test/compound-assignment.ts",
-      "static": 3810,
+      "static": 3811,
       "dynamic": 0
     },
     {
       "entry": "test/structured-outcomes.ts",
-      "static": 2966,
+      "static": 2967,
       "dynamic": 0
     },
     {
       "entry": "src/observation-driver.ts",
-      "static": 2664,
+      "static": 2665,
       "dynamic": 0
     },
     {
       "entry": "test/observation-serialization.ts",
-      "static": 2651,
+      "static": 2652,
       "dynamic": 0
     },
     {
       "entry": "test/return-audit.ts",
-      "static": 2647,
+      "static": 2648,
       "dynamic": 0
     },
     {
@@ -208,12 +263,12 @@
     },
     {
       "entry": "test/global-environment.ts",
-      "static": 2480,
+      "static": 2481,
       "dynamic": 0
     },
     {
       "entry": "test/script-realm-bootstrap.ts",
-      "static": 3024,
+      "static": 3025,
       "dynamic": 0
     },
     {
@@ -223,27 +278,27 @@
     },
     {
       "entry": "test/script-global-declarations.ts",
-      "static": 2575,
+      "static": 2576,
       "dynamic": 0
     },
     {
       "entry": "test/script-record.ts",
-      "static": 2287,
+      "static": 2288,
       "dynamic": 0
     },
     {
       "entry": "test/script-environment.ts",
-      "static": 2349,
+      "static": 2350,
       "dynamic": 0
     },
     {
       "entry": "test/script-function-materialization.ts",
-      "static": 2851,
+      "static": 2852,
       "dynamic": 0
     },
     {
       "entry": "test/script-function-setup.ts",
-      "static": 2484,
+      "static": 2508,
       "dynamic": 0
     }
   ],

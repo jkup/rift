@@ -1,5 +1,5 @@
 {
-  "sha256": "5859d4984e26cb63b58b4999f66539b208335931a5d6354e49bfc84d50948228",
+  "sha256": "06db4af54f03fb66ba2bdb3970c3ce40330f7b871141d2e970ab82179774f457",
   "typecheck": {
     "status": 0,
     "signal": null,
@@ -18,7 +18,7 @@
     "status": 0,
     "signal": null,
     "error": null,
-    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\script-function-setup.ts\n\n  statements analyzed   2484\n  compile statically    2484  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\script-function-setup.ts\n\n  statements analyzed   2508\n  compile statically    2508  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
     "stderr": ""
   },
   "verdict": "PASS",

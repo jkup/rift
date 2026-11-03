@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { Realm } from "../src/realm.js";
 import { prepareStrictScript, type ExecutableScript, type ScriptGuestCallable } from "../src/script-record.js";
-import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment } from "../src/script-environment.js";
+import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, resolveScriptBinding, getScriptBinding, type ScriptEnvironment } from "../src/script-environment.js";
 import { instantiateGlobalDeclarations } from "../src/script-global-declarations.js";
 import { GuestObject, UNDEFINED, normal, resourceFailure, type Value, type ValueCompletion, type OperationContext, type ThrowCompletion } from "../src/runtime.js";
 import type { GlobalEnvironment } from "../src/global-environment.js";
@@ -225,6 +225,27 @@ check(blocks.instantiateBlock(1,b1,bb.context).type === "normal" && blocks.insta
 const bg1=closure(b1,"g",blocks,2,b1), bg2=closure(b2,"g",blocks,2,b2);
 const nested=block(blocks,3,b1,bb);check(blocks.instantiateBlock(3,nested,bb.context).type === "normal", "nested setup");closure(nested,"h",blocks,4,nested);
 check(b1 !== b2 && bg1 !== bg2 && prototype(bg1) !== prototype(bg2) && nested.outer === b1, "block identities");
+// Readonly is a TypeScript constraint, not a runtime ownership check. A hostile
+// host can replace that public field with another valid same-Realm chain.
+const originalOuter = new ScriptDeclarativeEnvironment(outer), replacementOuter = new ScriptDeclarativeEnvironment(outer);
+originalOuter.createMutableBinding("captured",loc); originalOuter.initializeBinding("captured",input,b.context,loc);
+replacementOuter.createMutableBinding("captured",loc); replacementOuter.initializeBinding("captured",second,b.context,loc);
+const outerRecord = prepared('"use strict";{function g(){}}',A);
+const originalBlock = block(outerRecord,1,originalOuter,b), outerBudget = new Budget(A);
+// @ts-expect-error Deliberate host mutation of the readonly public field.
+originalBlock.outer = replacementOuter;
+invalid(() => { outerRecord.instantiateBlock(1,originalBlock,outerBudget.context); },outerBudget,outerRecord);
+check(outerBudget.steps === 0 && outerRecord.inspectMaterializations().completed === 0, "outer rejection has no setup effects");
+state(originalBlock,"g","absent"); state(originalOuter,"captured","value",input); state(replacementOuter,"captured","value",second);
+// @ts-expect-error Restore the original field to prove rejection kept phase fresh.
+originalBlock.outer = originalOuter;
+check(outerRecord.instantiateBlock(1,originalBlock,outerBudget.context).type === "normal" && outerBudget.steps === 3, "restored outer succeeds from fresh phase");
+const capturedFunction = closure(originalBlock,"g",outerRecord,2,originalBlock);
+const resolvedCapture = resolveScriptBinding(callable(capturedFunction).environment,"captured",loc);
+if (resolvedCapture.type !== "normal") throw new Error("capture reference");
+check(resolvedCapture.reference.base === originalOuter, "closure original outer chain");
+const capturedValue = getScriptBinding(resolvedCapture.reference);
+check(capturedValue.type === "normal" && capturedValue.value === input && originalBlock.outer === originalOuter, "closure original binding");
 console.log("B02 B03 PASS");
 // The original D2 marker oracle remains exactly eleven ticks.
 const markerRealm=realm(), marker=prepared(globalSource,markerRealm), mb=new Budget(markerRealm);

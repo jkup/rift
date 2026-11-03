@@ -61,14 +61,16 @@ export type ScriptFunctionEnvironmentCompletion = { type: "normal"; environment:
 class BlockActivation extends ScriptDeclarativeEnvironment {
     #ownerKey: ActivationKey;
     #scopeId: number;
+    #originalOuter: ScriptEnvironment;
     #phase: "fresh" | "started" | "complete" = "fresh";
     constructor(key: ActivationKey, scopeId: number, outer: ScriptEnvironment) {
         super(outer);
         this.#ownerKey = key;
         this.#scopeId = scopeId;
+        this.#originalOuter = outer;
     }
     checkFresh(key: ActivationKey, scopeId: number): void {
-        if (key !== this.#ownerKey || scopeId !== this.#scopeId || this.#phase !== "fresh")
+        if (key !== this.#ownerKey || scopeId !== this.#scopeId || this.outer !== this.#originalOuter || this.#phase !== "fresh")
             throw new Error("invalid fresh Script block activation");
     }
     begin(key: ActivationKey, scopeId: number): void {
