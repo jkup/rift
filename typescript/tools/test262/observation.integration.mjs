@@ -2,8 +2,9 @@
 // the pinned corpus. Run after both builds: node .../observation.integration.mjs
 import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdir, readFile, writeFile, mkdtemp, symlink, link, readdir, copyFile } from 'node:fs/promises';
-import { spawnSync } from 'node:child_process';
+import { mkdir, readFile, writeFile, mkdtemp, symlink, link, readdir, copyFile, lstat } from 'node:fs/promises';
+import childProcess, { spawnSync } from 'node:child_process';
+import { syncBuiltinESMExports } from 'node:module';
 import { resolve, join } from 'node:path';
 import { blobHash, sha256, transform } from './input.mjs';
 import { prepareObservation, launchObservation, validateLaunch } from './observe.mjs';
@@ -50,6 +51,80 @@ async function run(lane, source, mode = 'parser-observation', variant = 'non-str
   assert.equal(result.record.evidence.process.signal, null);
   assert.equal(result.record.evidence.process.deadlineExpired, false);
   return { ...result, stdout: await readFile(join(result.directory, 'stdout.bin'), 'utf8'), plan };
+}
+// Test-only observer for cancellation lifecycle stages. It forwards observe.mjs's
+// exact spawn call and returns the same ChildProcess, adding only listeners for the
+// real 'spawn' event and the child's own first stdout line. Production code is unchanged.
+async function observingSpawn(body) {
+  const original = childProcess.spawn, children = [];
+  let resolveFirst;
+  children.first = new Promise(r => { resolveFirst = r; });
+  childProcess.spawn = (...args) => {
+    const child = original(...args);
+    let text = '';
+    const started = new Promise((resolveStarted, rejectStarted) => {
+      child.once('error', rejectStarted);
+      child.stdout.on('data', chunk => { text += chunk; if (text.includes('started')) resolveStarted(); });
+    });
+    const spawned = new Promise((resolveSpawned, rejectSpawned) => { child.once('spawn', resolveSpawned); child.once('error', rejectSpawned); });
+    started.catch(() => {}); spawned.catch(() => {});
+    children.push({ child, spawned, started });
+    resolveFirst(children[0]);
+    return child;
+  };
+  syncBuiltinESMExports();
+  try { return await body(children); } finally { childProcess.spawn = original; syncBuiltinESMExports(); }
+}
+const exists = path => lstat(path).then(() => true, e => { if (e.code === 'ENOENT') return false; throw e; });
+async function assertUnfinished(plan, result) {
+  artifacts.push(result.directory);
+  assert.equal(result.state, 'unfinished');
+  assert.equal(result.directory, plan.directory);
+  assert.equal(Object.hasOwn(result, 'record'), false);
+  const saved = JSON.parse(await readFile(join(plan.directory, 'attempt.json'), 'utf8'));
+  assert.equal(saved.state, 'unfinished'); assert.equal(Object.hasOwn(saved, 'record'), false);
+  assert.equal(await exists(plan.resultPath), false);
+  // A cancelled plan is consumed: it cannot be relaunched into a terminal record.
+  await assert.rejects(launchObservation(plan), /context/);
+}
+// Cancels only after observe.mjs's own child has spawned and evaluated its first line.
+async function cancelLaunchedChild(lane) {
+  const plan = await prepareObservation(options(lane, "console.log('started'); while(true){}", 'body-observation', 'non-strict',
+    { steps: Number.MAX_SAFE_INTEGER }));
+  const controller = new AbortController();
+  return observingSpawn(async children => {
+    const promise = launchObservation(plan, { signal: controller.signal });
+    const closed = promise.then(() => 'closed', () => 'closed');
+    assert.equal(await Promise.race([children.first.then(() => 'launched'), closed]), 'launched');
+    const { child, spawned, started } = children[0];
+    assert.equal(await Promise.race([spawned.then(() => 'spawned'), closed]), 'spawned');
+    assert.equal(await Promise.race([started.then(() => 'started'), closed]), 'started');
+    assert.equal(child.exitCode, null); assert.equal(child.signalCode, null);
+    controller.abort();
+    const result = await promise;
+    assert.equal(children.length, 1);
+    return { plan, result, child };
+  });
+}
+async function assertLaunchedCancellation({ plan, result, child }) {
+  await assertUnfinished(plan, result);
+  const transport = JSON.parse(await readFile(join(plan.directory, 'transport.json'), 'utf8'));
+  assert.equal(transport.cancelled, true);
+  assert.equal(transport.spawnError, null);
+  assert.equal(transport.process.deadlineExpired, false);
+  assert.equal(transport.capCount, null); assert.equal(transport.capKilled, false);
+  assert.equal(transport.process.exitCode, null); assert.equal(transport.process.signal, 'SIGTERM');
+  assert.equal(child.exitCode, null); assert.equal(child.signalCode, 'SIGTERM'); assert.equal(child.killed, true);
+  assert.throws(() => process.kill(child.pid, 0), { code: 'ESRCH' });
+  const out = await readFile(join(plan.directory, 'stdout.bin'));
+  assert.equal(sha256(out), transport.stdoutSha256);
+  assert.match(out.toString('utf8'), /^started\r?\n/);
+}
+async function assertNoLaunch(plan, result, children) {
+  await assertUnfinished(plan, result);
+  assert.equal(children.length, 0);
+  // No child means no transport facts; the attempt holds only its prepared inputs.
+  assert.deepEqual((await readdir(plan.directory)).sort(), ['attempt.json', 'source.js']);
 }
 for (const lane of ['node','native']) {
   test(`${lane} T21 preparation snapshots caller selection, nested metadata and source before yielding`, async () => {
@@ -172,6 +247,27 @@ for (const lane of ['node','native']) {
     assert.equal(capped.facts.capKilled, true);
     assert.deepEqual(capped.record.evidence.process, capped.facts.process);
   });
+  test(`${lane} T30 prelaunch cancellation with an already-aborted signal spawns nothing`, async () => {
+    const plan = await prepareObservation(options(lane, "console.log('started'); while(true){}", 'body-observation'));
+    const controller = new AbortController();
+    controller.abort();
+    await observingSpawn(async children => assertNoLaunch(plan, await launchObservation(plan, { signal: controller.signal }), children));
+  });
+  test(`${lane} T30 prelaunch cancellation during launch validation spawns nothing`, async () => {
+    // The retained ts-031c-b failure stage, made deterministic: the signal is live
+    // when launch starts and aborts before validateLaunch can settle (it awaits I/O).
+    const plan = await prepareObservation(options(lane, "console.log('started'); while(true){}", 'body-observation'));
+    const controller = new AbortController();
+    await observingSpawn(async children => {
+      const promise = launchObservation(plan, { signal: controller.signal });
+      assert.equal(controller.signal.aborted, false);
+      controller.abort();
+      await assertNoLaunch(plan, await promise, children);
+    });
+  });
+  test(`${lane} T30 cancellation after actual child launch terminates the child`, async () => {
+    await assertLaunchedCancellation(await cancelLaunchedChild(lane));
+  });
 }
 test('T19 fixed caps are rejected before any launch', async () => {
   for (const key of ['sourceUnits','parseDepth','evaluationDepth']) await assert.rejects(prepareObservation(options('node','1;',undefined,undefined,{ [key]: 1 })), /limits/);
@@ -188,17 +284,16 @@ test('T21 every prepared Identity/Inputs mutation is rejected before launch', as
   await assert.rejects(pending, /context/);
 });
 test('T30 cancellation retains unfinished archive without terminal success', async () => {
-  const plan = await prepareObservation(options('node','while(true){}','body-observation','non-strict',{ steps: Number.MAX_SAFE_INTEGER }));
-  const controller = new AbortController();
-  const promise = launchObservation(plan, { signal: controller.signal });
-  setTimeout(() => controller.abort(), 100);
-  const result = await promise;
-  artifacts.push(result.directory);
+  // Aborts on the running child's own first output instead of a 100ms timer, which
+  // under load could fire during validateLaunch (see the per-lane prelaunch tests).
+  const cancelled = await cancelLaunchedChild('node');
+  const { plan, result } = cancelled;
   assert.equal(result.state, 'unfinished');
   const saved = JSON.parse(await readFile(join(plan.directory, 'attempt.json'), 'utf8'));
   assert.equal(saved.state, 'unfinished'); assert.equal(Object.hasOwn(saved, 'record'), false);
   const transport = JSON.parse(await readFile(join(plan.directory, 'transport.json'), 'utf8'));
   assert.equal(transport.cancelled, true);
+  await assertLaunchedCancellation(cancelled);
 });
 test('T31 preexisting result and symlink attempt roots rejected, prior bytes preserved', async () => {
   const plan = await prepareObservation(options('node','1;'));

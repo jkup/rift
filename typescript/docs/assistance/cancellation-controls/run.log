@@ -1,0 +1,38 @@
+{
+ "reproduce": [
+  "ENOENT",
+  "ENOENT",
+  "ENOENT",
+  "ENOENT",
+  "ENOENT"
+ ],
+ "mutants": [
+  "control: status 0, failed 0",
+  "cancel-does-not-kill: status 1, failed 3",
+  "no-prelaunch-abort-check: status 1, failed 4",
+  "cancel-completes-record: status 1, failed 3",
+  "cancel-skips-transport: status 1, failed 3"
+ ],
+ "idle": [
+  "22/22",
+  "22/22",
+  "22/22",
+  "22/22",
+  "22/22",
+  "22/22",
+  "22/22",
+  "22/22",
+  "22/22",
+  "22/22"
+ ],
+ "loaded": [
+  "22/22",
+  "22/22",
+  "22/22",
+  "22/22",
+  "22/22"
+ ],
+ "burners": 24,
+ "failures": []
+}
+exit=0
