@@ -383,8 +383,7 @@ Public parse/audit/inspectScript behavior is preserved, including their existing
 var/repeated-binding rejection and return certification. Plans expose no AST,
 create no bindings or guest functions and evaluate no source. Non-strict block
 function planning is unsupported; no Annex B approximation or new certification
-is introduced. Global instantiation and executable Script records remain separate,
-unimplemented assignments. All Realm/profile guards remain closed.
+is introduced. Global instantiation and executable Script records are separate stages described below. All Realm/profile guards remain closed.
 
 See [literal controls and validation](validation/ts-033d1/README.md).
 ### Host-only global declaration instantiation (TS-033D2)
@@ -402,3 +401,19 @@ Realm, interpreter, observation or existing global primitive was changed. Script
 execution and P4 remain unavailable behind the existing guards. Synthetic fault
 environments establish internal propagation only, not exotic global support.
 See [D2 evidence](validation/ts-033d2/README.md).
+
+### Private Script executable records (TS-033E1)
+
+Internal `prepareStrictScript` binds a successful strict declaration-mode parse
+and its complete plan to one Realm and copied source unit. The record retains
+private original body/function/block/declaration associations from the same
+iterative collector pass. Detached flat inspection copies every nested mutable
+metadata container; no writable AST or arbitrary AST/plan constructor is exposed.
+Realm rejection precedes parsing; whole-source grammar/resource/conflict checks
+precede strict-profile rejection. Empty source is profile-rejected; strict
+directive-only source is eligible. Equal IDs/text still create independent records.
+
+This is preparation only: no Script source execution, allocation of guest
+functions, declaration instantiation, runtime/Realm/evaluator behavior or guard
+changes. No observation/harness/profile admission. See [E1 evidence and compiler
+identity boundary](validation/ts-033e1/README.md).

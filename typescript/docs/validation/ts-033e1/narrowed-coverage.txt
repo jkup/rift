@@ -1,0 +1,16 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\script-record.ts
+
+  statements analyzed   1843
+  compile statically    1843  (100%)
+
+  fully static — all analyzed statements compile to native code.
+
+  differs from Node   1 site (compiles; the native program can behave differently)
+      ×1  SC6001  storing a 'ScriptSourceUnit' in a 'SourceText' binding copies the object (converting to a record type with other properties compiles as a field copy): 'source.source !== sourceUnit' compares the copy…
+          at C:/Users/jonku/code/rift/typescript/src/script-record.ts:41:44
+          hint: declare the parameter or binding with the value's full type ('ScriptSourceUnit'), or make the shape a class — class instances keep their identity when passed as a base class
+
+  dynamic tier   (tier assignment, report-only; --tier=auto)
+    0 functions already operate on dynamic values (0 statements)
+
+    0 demotion requests (refusals and fences the dynamic tier would replace)

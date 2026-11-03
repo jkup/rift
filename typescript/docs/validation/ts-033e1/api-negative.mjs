@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {writeFileSync} from 'node:fs';
+import {resolve,join} from 'node:path';
+const root=resolve(import.meta.dirname,'../../..');
+const r=spawnSync(process.execPath,['node_modules/typescript/bin/tsc','--ignoreConfig','--types','node','--target','ES2024','--module','NodeNext','--strict','--noEmit','docs/validation/ts-033e1/constructor-negative.ts'],{cwd:root,encoding:'utf8'});
+assert.notEqual(r.status,0);assert.match(r.stdout,/TS1362|TS2673/);
+const api=await import('../../../build/node/src/script-record.js');
+assert.deepEqual(Object.keys(api),['prepareStrictScript']);
+const {Realm}=await import('../../../build/node/src/realm.js');
+const result=api.prepareStrictScript({id:'negative',text:'"use strict";'},new Realm(()=>{},'script'));
+assert.equal(result.kind,'ready');
+const forged=new result.record.constructor({body:[]},{kind:'complete'});
+assert.throws(()=>forged.inspect(),/unprepared Script record/);
+assert.deepEqual(Object.keys(result.record),[]);
+writeFileSync(join(import.meta.dirname,'api-negative.json'),JSON.stringify({status:r.status,stdout:r.stdout,stderr:r.stderr,exports:Object.keys(api),forgedPairRejected:true,privateFieldsNotEnumerable:true},null,2)+'\n');
+console.log('PASS: no exported runtime constructor; TypeScript construction rejected; reflective forged pair cannot inspect a record');

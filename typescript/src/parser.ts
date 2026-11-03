@@ -1,4 +1,4 @@
-import { collectDeclarationPlan, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
+import { collectDeclarationPlan, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
@@ -54,22 +54,25 @@ export function auditScriptReturns(source: string): ReturnCoverage {
     return { kind: "complete", goal: "Script", sourceUnits: source.length,
         consumedUnits: end.end, candidates: parser.returnCandidates };
 }
-// Internal plan entry: even this parser seam returns no executable body.
-export function parseDeclarationPlan(unit: ScriptSourceUnit): DeclarationPlanResult {
+// Internal handoff: only a fresh parse can populate retained nodes.
+// The public planner supplies no retention object.
+export function parseDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null = null): DeclarationPlanResult {
     const source = { id: unit.id, text: unit.text };
     const lexical = lex(source.text);
     if (lexical.error !== null) {
         if (lexical.rejection === null) throw new Error("missing lexer rejection");
         return { kind: "blocked", goal: "Script", unit: source, rejection: lexical.rejection, diagnostic: lexical.error };
     }
-    const parser = new Parser(lexical.tokens, source, "declaration-plan");
+    const parserSource: SourceText = { text: source.text };
+    if (nodes !== null) nodes.source = parserSource;
+    const parser = new Parser(lexical.tokens, parserSource, "declaration-plan");
     const parsed = parser.program();
     if (parsed.error !== null) {
         if (parsed.rejection === null) throw new Error("missing parser rejection");
         return { kind: "blocked", goal: "Script", unit: source, rejection: parsed.rejection, diagnostic: parsed.error };
     }
     if (parser.current().kind !== "eof" || parser.current().end !== source.text.length) throw new Error("declaration plan did not reach EOF");
-    return collectDeclarationPlan(source, parsed.body, lexical.tokens, parser.bindings);
+    return collectDeclarationPlan(source, parsed.body, lexical.tokens, parser.bindings, nodes);
 }
 class Parser {
     readonly bindings = new Map<number, ParsedBinding[]>();

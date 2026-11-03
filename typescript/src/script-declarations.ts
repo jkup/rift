@@ -1,7 +1,7 @@
 import { parseDeclarationPlan } from "./parser.js";
 import { scriptPrologue } from "./script-prologue.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Diagnostic, Location, Expr, Stmt, FunctionSource } from "./syntax.js";
+import type { Diagnostic, Location, Expr, Stmt, SourceText, FunctionSource } from "./syntax.js";
 import type { Token } from "./lexer.js";
 import type { Rejection } from "./outcomes.js";
 
@@ -59,7 +59,13 @@ export function planScriptDeclarations(unit: ScriptSourceUnit): DeclarationPlanR
     return parseDeclarationPlan(unit);
 }
 
-// Internal parser/collector bridge. No body escapes through either plan entry.
+// Internal parser/collector bridge. Ordinary plan callers receive no nodes.
+export type DeclarationNodes = {
+    source: SourceText;
+    body: Stmt[];
+    scopes: Map<number, { node: Stmt | Expr | null; body: Stmt[] }>;
+    declarations: Map<number, { node: Stmt; initializer: Expr | null }>;
+};
 export type ParsedBinding = {
     site: DeclarationSite; init: Expr | null;
     initializer: { start: number; end: number } | null;
@@ -74,10 +80,10 @@ type Work =
     | { kind: "block-end"; scope: number }
     | { kind: "statement"; node: Stmt; scope: number; variableScope: number }
     | { kind: "expression"; node: Expr; scope: number; variableScope: number }
-    | { kind: "binding"; binding: ParsedBinding; declarationKind: "let" | "var"; scope: number; variableScope: number };
+    | { kind: "binding"; binding: ParsedBinding; node: Stmt; declarationKind: "let" | "var"; scope: number; variableScope: number };
 
-export function collectDeclarationPlan(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>): DeclarationPlanResult {
-    return new DeclarationCollector(unit, tokens, bindings).collect(body);
+export function collectDeclarationPlan(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes | null = null): DeclarationPlanResult {
+    return new DeclarationCollector(unit, tokens, bindings, nodes).collect(body);
 }
 
 class DeclarationCollector {
@@ -90,7 +96,7 @@ class DeclarationCollector {
     readonly strictness: StrictnessMetadata;
     unsupportedBlock: Location | null = null;
 
-    constructor(readonly unit: ScriptSourceUnit, readonly tokens: Token[], readonly bindings: Map<number, ParsedBinding[]>) {
+    constructor(readonly unit: ScriptSourceUnit, readonly tokens: Token[], readonly bindings: Map<number, ParsedBinding[]>, readonly nodes: DeclarationNodes | null) {
         const braces: number[] = [];
         for (let i = 0; i < tokens.length; i++) {
             const token = tokens[i];
@@ -145,7 +151,7 @@ class DeclarationCollector {
         }
         return id;
     }
-    functionBody(source: FunctionSource | null, loc: Location, body: Stmt[], scope: number, declaration: number | null): void {
+    functionBody(source: FunctionSource | null, loc: Location, body: Stmt[], scope: number, declaration: number | null, node: Stmt | Expr): void {
         if (source === null) throw new Error("parsed function missing source");
         let index = this.tokenIndex(loc) + 1;
         if (this.tokens[index].text !== "(") index++;
@@ -158,6 +164,7 @@ class DeclarationCollector {
         const brace = index + 1;
         const strictness = scriptPrologue(this.unit.text, this.tokens, brace + 1, this.scopes[scope].strict);
         const id = this.scope("function", scope, this.tokens[brace].start, source.end, strictness.strict, formals);
+        if (this.nodes !== null) this.nodes.scopes.set(id, { node, body });
         this.functions.push({ scope: id, declaration, start: source.start, end: source.end, strictness });
         this.statements(body, id, id);
     }
@@ -166,7 +173,7 @@ class DeclarationCollector {
             case "let": case "var": {
                 const bindings = this.bindings.get(this.tokens[this.tokenIndex(node.loc)].start);
                 if (bindings === undefined) throw new Error("missing binding spans");
-                for (let i = bindings.length - 1; i >= 0; i--) this.work.push({ kind: "binding", binding: bindings[i], declarationKind: node.kind, scope, variableScope });
+                for (let i = bindings.length - 1; i >= 0; i--) this.work.push({ kind: "binding", binding: bindings[i], node, declarationKind: node.kind, scope, variableScope });
                 break;
             }
             case "function": {
@@ -174,7 +181,8 @@ class DeclarationCollector {
                 if (bindings === undefined) throw new Error("missing function name span");
                 if (this.scopes[scope].kind === "block" && !this.scopes[scope].strict && this.unsupportedBlock === null) this.unsupportedBlock = node.loc;
                 const declaration = this.declare("function", bindings[0], scope, variableScope, this.scopes.length);
-                this.functionBody(node.source, node.loc, node.body, scope, declaration);
+                if (this.nodes !== null) this.nodes.declarations.set(declaration, { node, initializer: null });
+                this.functionBody(node.source, node.loc, node.body, scope, declaration, node);
                 break;
             }
             case "block": {
@@ -182,6 +190,7 @@ class DeclarationCollector {
                 const end = this.closingBraces.get(index);
                 if (end === undefined) throw new Error("missing closing brace");
                 const id = this.scope("block", scope, this.tokens[index].start, end, this.scopes[scope].strict, []);
+                if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: node.body });
                 this.work.push({ kind: "block-end", scope: id });
                 this.statements(node.body, id, variableScope);
                 break;
@@ -198,7 +207,7 @@ class DeclarationCollector {
     }
     visitExpression(node: Expr, scope: number, variableScope: number): void {
         switch (node.kind) {
-            case "function": this.functionBody(node.source, node.loc, node.body, scope, null); break;
+            case "function": this.functionBody(node.source, node.loc, node.body, scope, null, node); break;
             case "array":
                 for (let i = node.elements.length - 1; i >= 0; i--) {
                     const item = node.elements[i];
@@ -218,6 +227,10 @@ class DeclarationCollector {
         }
     }
     collect(body: Stmt[]): DeclarationPlanResult {
+        if (this.nodes !== null) {
+            this.nodes.body = body;
+            this.nodes.scopes.set(0, { node: null, body });
+        }
         this.statements(body, 0, 0);
         while (this.work.length > 0) {
             const item = this.work.pop();
@@ -237,7 +250,8 @@ class DeclarationCollector {
             else if (item.kind === "statement") this.visitStatement(item.node, item.scope, item.variableScope);
             else if (item.kind === "expression") this.visitExpression(item.node, item.scope, item.variableScope);
             else {
-                this.declare(item.declarationKind, item.binding, item.scope, item.variableScope, null);
+                const id = this.declare(item.declarationKind, item.binding, item.scope, item.variableScope, null);
+                if (this.nodes !== null) this.nodes.declarations.set(id, { node: item.node, initializer: item.binding.init });
                 if (item.binding.init !== null) this.expression(item.binding.init, item.scope, item.variableScope);
             }
         }

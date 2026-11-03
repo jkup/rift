@@ -1,0 +1,10 @@
+{
+  "status": 1,
+  "stdout": "docs/validation/ts-033e1/constructor-negative.ts(2,1): error TS2673: Constructor of class 'ExecutableScript' is private and only accessible within the class declaration.\ndocs/validation/ts-033e1/constructor-negative.ts(2,5): error TS1362: 'ExecutableScript' cannot be used as a value because it was exported using 'export type'.\n",
+  "stderr": "",
+  "exports": [
+    "prepareStrictScript"
+  ],
+  "forgedPairRejected": true,
+  "privateFieldsNotEnumerable": true
+}
