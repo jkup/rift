@@ -110,7 +110,7 @@ Revision (2026-11-02, commit `f063ab8`, branch merged with main at `64bf139`): a
 
 ## CL-006 — Make observation cancellation controls deterministic
 
-Status: **ready**. Owner: unclaimed, for Claude Code. Independent of the TS-032 formatter work. Concrete evidence: typescript/docs/validation/ts-031c-b/README.md and cancellation-attempt/. The current100ms abort can occur during validateLaunch under load, before child spawn; the test then incorrectly assumes transport.json exists. Preserve this retained failure.
+Status: **in progress**. Owner: Claude Code session, branch `claude/cl-006-cancellation-controls` (separate worktree), base `ffcf7f0`. Independent of the TS-032 formatter work. Concrete evidence: typescript/docs/validation/ts-031c-b/README.md and cancellation-attempt/. The current100ms abort can occur during validateLaunch under load, before child spawn; the test then incorrectly assumes transport.json exists. Preserve this retained failure.
 
 Own only typescript/tools/test262/observation.integration.mjs, a minimal host-only test synchronization seam in observe.mjs if essential, dedicated evidence under typescript/docs/assistance/cancellation-controls/, and this entry's handoff. Do not change engine, classifier/result/driver schemas, timers/limits semantics, core TASKS or COORDINATION. Use an isolated branch/PR; coordinator reviews before integration.
 
