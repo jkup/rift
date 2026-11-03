@@ -417,3 +417,18 @@ This is preparation only: no Script source execution, allocation of guest
 functions, declaration instantiation, runtime/Realm/evaluator behavior or guard
 changes. No observation/harness/profile admission. See [E1 evidence and compiler
 identity boundary](validation/ts-033e1/README.md).
+
+### Script binding and statement-completion helpers (TS-033E2)
+
+Additive host-only local/function environment records link iteratively to the
+accepted composite global terminal. Strict references retain their resolved base
+and copied site; TDZ shadows outer bindings and unresolved references remain
+unresolved after effects. Global operations recheck current state. Function
+records retain exact this/callable host metadata without creating or calling a
+Script function. No FDI or standard arguments behavior is claimed.
+
+Separate statement payloads distinguish empty from guest undefined. UpdateEmpty
+preserves valued and abrupt records; the explicit expression adapter preserves
+throw identity. These are pure data helpers, not statement/loop/if execution.
+Legacy runtime, evaluator, Realm, parser, record and entry guards are unchanged.
+See [E2 validation](validation/ts-033e2/README.md).

@@ -1,0 +1,9 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\script-environment.ts
+
+  statements analyzed   1273
+  compile statically    1272  (99%)
+
+  blockers:
+      ×1  SC2003  union conversion has no unambiguous layout mapping: expected '{ payload: { kind: string; value: { kind: string; value: boolean } | { kind: string; value: m482616785.GuestSymbol } | { kind: string; ob…
+          at C:/Users/jonku/code/rift/typescript/src/script-completion.ts:17:45
+          hint: narrow the value to a SINGLE arm first (a discriminant check, or '!== undefined'/'!== null' for unit arms); a plain arm value widens into any union that contains it, and a whole union widens into any union whose arms include the source's
