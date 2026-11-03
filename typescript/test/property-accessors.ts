@@ -421,4 +421,52 @@ for (const setterPath of [false, true]) {
     target.bootstrapDefine("legacy", { get: legacyFunction }); accessor(target, "legacy", legacyFunction, UNDEFINED, false, false);
     check(ticks === before, "R34 no endpoint invocation");
 }
+// Runtime input selects actual lookup keys, Value wrappers and receiver identities.
+// Both alternatives exist before selection; neither is baked into the native build.
+check(input.length === 2 && ((input[0] === "seed" && input[1] === "7") || (input[0] === "other" && input[1] === "11")), "runtime input pair");
+const runtimeParent = new GuestObject();
+const runtimeLeft = new GuestObject(runtimeParent), runtimeRight = new GuestObject(runtimeParent);
+const runtimeLeftValue = o(runtimeLeft), runtimeRightValue = o(runtimeRight);
+const runtimeKey = input[0] === "seed" ? "alpha" : "beta";
+const runtimeValue = input[1] === "7" ? seven : eleven;
+const runtimeReceiver = input[0] === "seed" ? runtimeLeftValue : runtimeRightValue;
+const runtimeOther = input[0] === "seed" ? runtimeRight : runtimeLeft;
+let runtimeTrace = "";
+function installRuntimeAccessor(key: string, initial: Value): void {
+    const get = o(realm.createBuiltin("runtimeGetter", 0, (receiver, args, active, at) => {
+        check(receiver === runtimeReceiver && args.length === 0 && active === context && at === loc, "runtime getter receiver/context");
+        runtimeTrace += "get:" + key + ";";
+        return normal(initial);
+    }));
+    const set = o(realm.createBuiltin("runtimeSetter", 1, (receiver, args, active, at) => {
+        check(receiver === runtimeReceiver && args.length === 1 && args[0] === runtimeValue && active === context && at === loc, "runtime setter receiver/value/context");
+        runtimeTrace += "set:" + key + ";";
+        if (receiver.kind !== "object") throw new Error("runtime object receiver");
+        boolean(receiver.object.defineOwnProperty("stored", { value: args[0], writable: true, configurable: true }, active, at), true);
+        return normal(UNDEFINED);
+    }));
+    runtimeParent.bootstrapDefine(key, { get, set });
+}
+installRuntimeAccessor("alpha", seven);
+installRuntimeAccessor("beta", eleven);
+if (runtimeReceiver.kind !== "object") throw new Error("runtime selected receiver");
+const runtimeStartSteps = evaluator.steps;
+const runtimeRead = runtimeReceiver.object.internalGet(runtimeKey, runtimeReceiver, context, loc);
+check(runtimeRead.type === "normal" && runtimeRead.value === runtimeValue, "runtime selected getter Value identity");
+boolean(runtimeReceiver.object.internalSet(runtimeKey, runtimeValue, runtimeReceiver, context, loc), true);
+const runtimeExpectedTrace = input[0] === "seed" ? "get:alpha;set:alpha;" : "get:beta;set:beta;";
+check(runtimeTrace === runtimeExpectedTrace, "runtime exact key dispatch trace");
+const runtimeStored = runtimeReceiver.object.getOwnProperty("stored");
+check(runtimeStored !== undefined && runtimeStored.kind === "data" && runtimeStored.value === runtimeValue, "runtime stored Value identity");
+check(runtimeOther.ownPropertyKeys().length === 0 && runtimeReceiver.object.ownPropertyKeys().length === 1 && runtimeReceiver.object.getOwnProperty(runtimeKey) === undefined && runtimeParent.getOwnProperty("stored") === undefined, "runtime receiver storage/no shadow");
+// Nearby missing endpoints and receiver accessors must not invoke either callback.
+const runtimeAbsent = runtimeKey + "-absent";
+value(runtimeReceiver.object.internalGet(runtimeAbsent, runtimeReceiver, context, loc), UNDEFINED, "runtime missing key");
+runtimeParent.bootstrapDefine(runtimeAbsent, { get: UNDEFINED, set: UNDEFINED });
+value(runtimeReceiver.object.internalGet(runtimeAbsent, runtimeReceiver, context, loc), UNDEFINED, "runtime absent getter");
+boolean(runtimeReceiver.object.internalSet(runtimeAbsent, runtimeValue, runtimeReceiver, context, loc), false);
+const runtimeData = new GuestObject();
+runtimeData.bootstrapDefine(runtimeKey, { value: runtimeValue, writable: true });
+boolean(runtimeData.internalSet(runtimeKey, runtimeValue, o(runtimeParent), context, loc), false);
+check(runtimeTrace === runtimeExpectedTrace && runtimeReceiver.object.getOwnProperty(runtimeAbsent) === undefined && runtimeOther.ownPropertyKeys().length === 0 && evaluator.steps === runtimeStartSteps, "runtime negative neighbors/no calls or ticks");
 console.log("R01-R28 R33-R34 PASS " + input[0] + "|" + input[1]);

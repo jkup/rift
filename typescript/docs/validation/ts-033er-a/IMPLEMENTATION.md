@@ -125,5 +125,25 @@ checks them. `host-migration-literals.json` confirms each of the45 original host
 files retains its string-token sequence and check count (a supplementary lexical
 check, not a substitute for executable expected records or source review).
 
+## Runtime-input acceptance follow-up
+
+Independent review identified that the two inputs previously affected Symbol
+descriptions and unexecuted Script preparation, but did not select actual accessor
+keys, values or receivers. The additive driver now validates the exact input pair
+and selects `alpha`/the seven Value/left receiver for `seed|7`, or `beta`/the eleven
+Value/right receiver for `other|11`. Both accessor endpoints are installed, and
+literal expected traces prove which key lookup dispatched. Getter results, setter
+arguments, receiver wrappers and stored Values are checked by identity. Storage
+must occur only on the selected receiver, with no accessor shadow or mutation of
+the other receiver. Missing keys, absent endpoints and a data-Set targeting a
+receiver accessor are negative neighbors with no extra callback or wrapper tick.
+
+Only the new driver changed. `refresh-driver.mjs` passed typecheck, rebuilt that
+driver static-only, independently collected coverage (3236/3236 static), and ran
+both inputs on Node and native. The additive gate, source hashes and preservation
+evidence are refreshed; unchanged full-suite results above remain applicable.
+All previous assertions and original failure evidence remain intact. Coordinator
+will finish independent inherited replay and re-review this follow-up.
+
 Implementation is ready for independent review. No successor or publication was
 performed by this writer.
