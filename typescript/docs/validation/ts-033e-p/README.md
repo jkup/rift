@@ -3,7 +3,7 @@
 Design only, 2026-11-03, assigned/source base `043fdb4` on
 `codex/test262-classification`. The writer claimed TASKS before design work.
 [Integration design](../../script-execution-integration.md) and
-[49 literal proposed acceptance rows](matrix.md) are for independent review.
+[55 literal proposed acceptance rows](matrix.md) are for independent review.
 No implementation or successor was started. Coordinator owns COORDINATION.
 
 Read the TypeScript AGENTS instructions, project goals, compiler contract,
@@ -23,7 +23,7 @@ git diff --check
 ```
 
 Actual offline result: 2542 protected tracked files unchanged; 165 source/test
-hashes and1374 numbered seam occurrences;49 matrix IDs inventoried;60/60 selected
+hashes and1374 numbered seam occurrences;55 matrix IDs inventoried;60/60 selected
 variants still blocked. `audit.json` binds these observations to the full base
 commit and hashes accepted evidence. This is a lexical inventory and identity
 check, not a reachability proof or semantic matrix execution. Only the existing
@@ -45,7 +45,7 @@ Research reproduction (network required, writes only this directory):
 node typescript/docs/validation/ts-033e-p/research.mjs
 ```
 
-`spec.json` retains14 clauses from fixed edition16,8169822 bytes, SHA256
+`spec.json` retains19 clauses from fixed edition16,8169822 bytes, SHA256
 `6a28f9423133ed7b7c59a40baf620c2740f12f0bc9c251042f2a85b9cc5ed713`.
 This matches the accepted research pin. `engine.json` retains pinned engine262
 sources and MIT license with source URLs, sizes and SHA256 hashes; audit rehashes
@@ -73,3 +73,22 @@ parser-body handoff and scope/node association. It leaves every Script factory,
 Evaluator and builtin-call guard closed. E2 host environment/completion helpers,
 E3 real factory/setup and E4 atomic entry/call wiring each require separate
 assignment and independent acceptance. No main merge or public profile admission.
+
+Review correction after `81e6e20`: the FDI arguments-binding omission is separate
+from already-parsed f.arguments/f.caller property access. Verified five additional
+fixed2025 clauses: CreateIntrinsics §9.3.2 step3, AddRestrictedFunctionProperties
+§10.2.4, %ThrowTypeError% §10.2.4.1, Function.prototype §20.2.3 and forbidden
+extensions §17.1. Current runtime descriptors are data-only and Realm bootstrap
+does not install the inherited accessors; the unchanged numbered source inventory
+retains that evidence. Newly retained pinned FunctionPrototype/function-operations
+source supplies additional context, but the fixed clauses govern the restricted
+bootstrap decision (no claim those two files alone implement the restriction).
+
+E4 now explicitly depends on separate ER accessor/restricted-intrinsic work,
+including descriptor/context caller migration and independent review. E1 remains
+unchanged. F04–F09 add inherited/own descriptors, thrower identity/attributes,
+dot/computed reads and writes, RHS order, ordinary object neighbors, configurable
+prototype mutation and cross-Realm/budget cleanup. All55 rows remain proposed;
+no accessors were implemented and no guards opened. Research retrieval and offline
+audit were repeated, with19 retained spec clauses; source/test/gate/blocked counts
+remain unchanged. Stop for re-review.

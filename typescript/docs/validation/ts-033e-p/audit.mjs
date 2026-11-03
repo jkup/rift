@@ -31,12 +31,12 @@ const manifest=json('typescript/fixtures/assistance/test262-starter-corpus/manif
 const variants=manifest.entries.flatMap(e=>e.variants.map(variant=>({id:e.id,variant,blockers:blockers({flags:e.flags,features:e.features,negative:e.negative??null,locale:[]},variant,e.id)})));
 assert.equal(variants.length,60);assert.ok(variants.every(v=>v.blockers.length>0));
 const spec=json('typescript/docs/validation/ts-033e-p/spec.json');
-assert.equal(spec.sha256,'6a28f9423133ed7b7c59a40baf620c2740f12f0bc9c251042f2a85b9cc5ed713');assert.equal(spec.excerpts.length,14);
+assert.equal(spec.sha256,'6a28f9423133ed7b7c59a40baf620c2740f12f0bc9c251042f2a85b9cc5ed713');assert.equal(spec.excerpts.length,19);
 const engine=json('typescript/docs/validation/ts-033e-p/engine.json');assert.equal(engine.pin,'d553e7b52501fbc47eae981c8d0fa7a5c26d0171');
 for(const f of engine.files){assert.equal(sha(f.text),f.sha256);assert.equal(Buffer.byteLength(f.text),f.bytes);}assert.ok(engine.files.some(f=>f.path==='LICENSE'));
 const matrix=read('typescript/docs/validation/ts-033e-p/matrix.md').toString('utf8');
 const ids=[...matrix.matchAll(/^\| ([PGLTFCRU]\d\d) \|/gm)].map(m=>m[1]);
-const expected=Object.entries({P:5,G:8,L:10,T:5,F:3,C:7,R:7,U:4}).flatMap(([k,n])=>Array.from({length:n},(_,i)=>k+String(i+1).padStart(2,'0')));
+const expected=Object.entries({P:5,G:8,L:10,T:5,F:9,C:7,R:7,U:4}).flatMap(([k,n])=>Array.from({length:n},(_,i)=>k+String(i+1).padStart(2,'0')));
 assert.deepEqual(ids,expected);
 const literal='"use strict";function f(a){return a;}';
 assert.equal(literal.length,37);assert.equal(literal.slice(13,37),'function f(a){return a;}');assert.equal(literal.slice(24,25),'a');

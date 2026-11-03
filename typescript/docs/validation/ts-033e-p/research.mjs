@@ -8,6 +8,7 @@ const url='https://262.ecma-international.org/16.0/';
 const bytes=await get(url),html=bytes.toString('utf8');
 if(hash(bytes)!=='6a28f9423133ed7b7c59a40baf620c2740f12f0bc9c251042f2a85b9cc5ed713')throw Error('fixed edition bytes changed');
 const ids=['sec-updateempty','sec-getidentifierreference','sec-putvalue','sec-functiondeclarationinstantiation','sec-blockdeclarationinstantiation','sec-runtime-semantics-scriptevaluation','sec-ordinarycallbindthis','sec-ordinaryfunctioncreate','sec-setfunctionname','sec-makeconstructor','sec-variable-statement','sec-block-runtime-semantics-evaluation','sec-if-statement-runtime-semantics-evaluation','sec-while-statement'];
+ids.push('sec-addrestrictedfunctionproperties','sec-%throwtypeerror%','sec-properties-of-the-function-prototype-object','sec-createintrinsics','sec-forbidden-extensions');
 const excerpts=ids.map(id=>{
  const at=html.indexOf(`id="${id}"`);if(at<0)throw Error(`missing ${id}`);
  const start=html.lastIndexOf('<emu-clause',at),tags=/<emu-clause\b|<\/emu-clause>/g;tags.lastIndex=start;
@@ -16,7 +17,7 @@ const excerpts=ids.map(id=>{
 });
 writeFileSync(new URL('spec.json',import.meta.url),JSON.stringify({url,sha256:hash(bytes),bytes:bytes.length,excerpts},null,2)+'\n');
 const tree=JSON.parse((await get(`https://api.github.com/repos/engine262/engine262/git/trees/${pin}?recursive=1`)).toString('utf8'));
-const paths=tree.tree.map(e=>e.path).filter(p=>p.startsWith('src/')&&/(Block|StatementList|WhileStatement|IfStatement|FunctionExpression|FunctionDeclaration|VariableStatement|completion\.mts$)/.test(p));
+const paths=tree.tree.map(e=>e.path).filter(p=>p.startsWith('src/')&&(/(Block|StatementList|WhileStatement|IfStatement|FunctionExpression|FunctionDeclaration|VariableStatement|completion\.mts$)/.test(p)||p==='src/abstract-ops/function-operations.mts'||p==='src/intrinsics/FunctionPrototype.mts'));
 const files=[];
 for(const path of [...paths,'LICENSE']) {const url=`https://raw.githubusercontent.com/engine262/engine262/${pin}/${path}`,b=await get(url);files.push({path,url,sha256:hash(b),bytes:b.length,text:b.toString('utf8')});}
 writeFileSync(new URL('engine.json',import.meta.url),JSON.stringify({pin,files},null,2)+'\n');

@@ -47,6 +47,7 @@ clauses remain in `../ts-033d-p/spec.json` and environment/context evidence in
 | §10.2.1.2 OrdinaryCallBindThis; §10.2.3; §10.2.5; §10.2.11 | Defining Realm, source, strict receiver, function metadata and strict simple-parameter FDI are separate obligations. |
 | §14.2.3 BlockDeclarationInstantiation; §14.3.2.1 | Interleave block binding creation/function initialization in lexical source order; var initializer resolves in current lexical environment before RHS. |
 | §16.1.6–7 | Bind Script record to Realm, instantiate before body, normalize only normal empty at Script exit, restore caller. |
+| §9.3.2 step3; §10.2.4 steps3–4; §10.2.4.1; §17.1 | Function.prototype receives inherited caller/arguments accessors using the Realm's thrower. Strict syntactic functions are not created with own caller/arguments properties. This is independent of the FDI arguments binding. |
 
 Pinned [engine262 d553e7b52501fbc47eae981c8d0fa7a5c26d0171](https://github.com/engine262/engine262/tree/d553e7b52501fbc47eae981c8d0fa7a5c26d0171)
 source and MIT license are retained with byte hashes. `Block.mts`'s
@@ -192,12 +193,77 @@ or undefined, then initializes it; a failed initializer leaves TDZ.
 arguments binding before parameter initialization where required. Initial E3
 omits that object/binding only while all identifier references/bindings to
 arguments/eval and direct/indirect eval entry remain unavailable. Host inspection
-must not be advertised as full FDI. Member strings such as `o.arguments` are
-ordinary properties, not access to a function arguments environment. Implement
+must not be advertised as full FDI. Ordinary-object `o.arguments` is independent
+of a function arguments environment, but function `f.arguments` and `f.caller`
+already parse, including computed keys, and require restricted-property semantics.
+The FDI omission does **not** justify omitting those accessors. Implement
 the standard object/binding before relaxing reserved identifiers, adding eval,
 or exposing environment introspection. No fake undefined arguments binding and
 no claim of full FDI. Preserve the parser's reserved-word rejection in unreachable
 bodies too. Sloppy FDI/parameter environments remain separate future work.
+
+### ER prerequisite: inherited restricted function properties
+
+Review of `81e6e20` identified an execution blocker omitted from the initial
+design. Current `runtime.ts:18–23,159–187` stores only data descriptors, reads
+descriptor.value and writes through data-property paths. `realm.ts:32–35` and
+`builtins/function.ts:17–44` install no caller/arguments accessors on
+functionPrototype. Source inspection therefore predicts incorrect undefined
+reads and own data-property creation on writes if E4 were activated as drafted.
+This is a source finding, not an observed Script execution (guards remain closed).
+
+**E4 is blocked until a separately assigned and independently accepted ER
+accessor/restricted-intrinsic prerequisite is complete.** E1 stays private records
+only. E2/E3 host-only work is not evidence that functions may execute without ER.
+No token blacklist, special property-name rejection, undefined substitute, own
+poison data property, or function-only Get shortcut discharges this prerequisite.
+Dynamic keys and prototype mutation require actual descriptor semantics. No ER
+implementation is authorized by this design correction.
+
+The fixed2025 contract is explicit: CreateIntrinsics §9.3.2 step3 invokes
+AddRestrictedFunctionProperties on that Realm's Function.prototype. §10.2.4
+defines own accessor descriptors there for caller and arguments, both get/set
+equal to the same Realm-local %ThrowTypeError%, enumerable=false,
+configurable=true, with no value/writable fields. A newly created strict guest
+function inherits them and has neither own property (§17.1). Ordinary [[Get]]
+and [[Set]] must dispatch the accessor with the original receiver via the shared
+operation context; setter throw must prevent creating an own data property.
+The thrower is a per-Realm anonymous builtin, nonextensible; name empty and
+length0 both have W/E/C=false/false/false. It throws TypeError (§10.2.4.1), with
+callee Realm and shared-budget cleanup. Until genuine Error objects are accepted,
+internal diagnostic TypeError checks remain explicitly non-conformance evidence.
+
+The descriptors are configurable: host controls must be able to delete/redefine
+them and observe ordinary lookup afterward, rather than hard-coded name poisoning.
+Initial absence of own properties is a creation rule, not a prohibition on a host
+explicitly defining an own data property later. Ordinary object arguments/caller
+properties retain ordinary data semantics, even with equal computed key strings.
+
+Future ER ownership is a separate contract: core data/accessor descriptor union,
+validation and receiver-preserving Get/Set in `src/runtime.ts`; Script-only
+restricted intrinsic bootstrap in `src/realm.ts` and a new
+`src/builtins/restricted-function.ts`; descriptor/context migrations in the current
+production consumers `src/array-object.ts`, `src/primitive-objects.ts`,
+`src/global-environment.ts`, `src/array-like.ts`, `src/array-map.ts`,
+`src/primitive-conversion.ts`, `src/builtins/object.ts`, `src/builtins/array.ts`.
+`internalGet` currently lacks OperationContext, so freeze a complete caller and
+override migration before assigning implementation, including the accepted host
+inspection APIs; do not silently call getters through a fresh session. Newly
+introduced E2/E3 consumers must be inventoried at that future base. If this exact
+ownership needs expansion, revise ER's assignment first; E1 must not absorb it.
+
+ER owns additive `test/script-restricted-properties.ts`, its input fixtures,
+dedicated validation evidence and additive native gate, with necessary existing
+host-test signature migrations preserving every expected record. Keep legacy
+bootstrap behavior exact; these new intrinsic properties belong to Script Realms
+until separately approved migration. The prerequisite requires general descriptor
+and subclass regression controls plus F04–F09 below in both hosts, with independent
+static-only/zero-dynamic checks. While calls remain closed, validate descriptor
+storage and generic accessor dispatch using trusted host controls, explicitly not
+Script source execution or permission to bypass builtin guards. Actual thrower
+invocation through authorized Script context, computed source cases, cross-Realm
+and budget cleanup are additionally mandatory in E4's atomic acceptance. ER
+acceptance alone must not open evaluateScript or relax any guard.
 
 Strict block entry creates a fresh record linked to current lexical environment.
 For each direct lexical declaration in source order, create binding; if function,
@@ -214,7 +280,8 @@ restore caller lexical context; no rollback or execution of initializer/body.
 
 ## E4 atomic internal entry/call activation
 
-Only after E1–E3 independent acceptance, assign atomic wiring of internal
+Only after E1–E3 and the separate ER prerequisite's independent acceptance,
+assign atomic wiring of internal
 evaluateScript, Script statement/list dispatch in the shared Evaluator, Script
 closure factory/call dispatch, and Script builtin guard replacement. Preserve
 legacy constructor/entry behavior through an explicit internal Script session
@@ -267,7 +334,8 @@ counts; this design does not invent unmeasured native integrated totals.
 | E1 (recommended first) | New `src/script-record.ts`; minimal parser internal successful-body handoff and declaration collector scope/node association. Private metadata only; no evaluator/runtime/Realm behavior change. | Flat snapshot controls for P01–P05/U01; D1 full projections and deep-chain controls; preserve parser/metadata outcomes. One additive host driver/fixtures/static gate, TASKS and own evidence. No real factories, environment helpers or callability. Stop for review. |
 | E2 | New Script local/reference helper and statement-completion helper modules; types only where needed. No entry or evaluator dispatch migration. | Host literal L/T reference and C completion controls, TDZ/strict failure/abrupt identity. No source-execution claims. Add dedicated gates; preserve all E1/old gates. Stop for review. |
 | E3 | New record-bound function materializer and local/block/FDI helpers; tagged runtime callable, bounded Realm factory and exhaustive function-toString type handling as needed, while execution guards stay closed. | Host factory descriptors/source/Realm tests; declaration setup order and every prefix; no source body execution, no synthetic production callable. Standard arguments omission explicitly retained. Stop for review. |
-| E4 | Internal Script entry/session plus shared Evaluator profile dispatch and Realm builtin call authorization, atomically with factories/closures/call guards. | Entire literal execution matrix in rebuilt Node/native lanes, all prior host controls and shared budget/abrupt cleanup cases. No public CLI/observation integration. Stop for review; no successor assigned here. |
+| ER (separate prerequisite, not part of E1) | Accessor descriptor/context migration and Script restricted-intrinsic bootstrap with exact ownership and migration review specified above. | Both-host descriptor/accessor host controls and F04–F09 host projections, additive static gate; all execution guards remain closed. Independently accept before assigning E4. |
+| E4 (blocked on ER as well as E1–E3) | Internal Script entry/session plus shared Evaluator profile dispatch and Realm builtin call authorization, atomically with factories/closures/call guards. | Entire literal execution matrix including restricted-property source controls in rebuilt Node/native lanes, all prior host controls and shared budget/abrupt cleanup cases. No public CLI/observation integration. Stop for review; no successor assigned here. |
 
 Do not expand E1's ownership merely because a helper seems convenient. If private
 AST publication cannot fit without runtime work, report a contract conflict and
