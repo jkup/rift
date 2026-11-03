@@ -47,6 +47,14 @@ for(const dir of ['ts-033e-p','ts-033er-p']){
 }
 const traces=json('typescript/docs/validation/ts-033e4-p/restricted-traces.json');assert.equal(traces.rows.length,13);
 for(const row of traces.rows){assert.equal(row.ticks,row.columns.length);assert.ok(row.columns.every(c=>c>=1&&c<=row.source.length));if(row.events)assert.equal(row.events.length,row.ticks);}
-const result={base:git('rev-parse',base),kind:'offline source/preservation audit; no guest/native execution',protectedFiles:protectedPaths.length,sources,seams,inheritedEvidenceOnly:inherited,variants,research,matrixCopies:copies,restrictedTraces:13};
+// Review correction must preserve the originally frozen literal oracle.
+const reviewBase='87acb25', evidenceRoot='typescript/docs/validation/ts-033e4-p/';
+for(const file of ['restricted-traces.json','freeze-traces.mjs'])assert.equal(read(evidenceRoot+file).toString().replaceAll('\r\n','\n').trimEnd(),git('show',reviewBase+':'+evidenceRoot+file));
+const literalRows=text=>text.split(/\r?\n/).filter(line=>/^\| [QGWK] \|/.test(line));
+assert.deepEqual(literalRows(read(evidenceRoot+'activation-matrix.md').toString()),literalRows(git('show',reviewBase+':'+evidenceRoot+'activation-matrix.md')));
+const callbackConsumers=[];
+for(const path of sourcePaths.filter(p=>p.includes('/src/')))read(path).toString().split(/\r?\n/).forEach((text,i)=>{if(/context\.(call|tick)\(/.test(text))callbackConsumers.push({path,line:i+1,text});});
+const revision={reviewBase,unchangedRestrictedTraceSha256:hash(read(evidenceRoot+'restricted-traces.json')),unchangedMinimalTraceRows:4,callbackConsumers,status:'source inventory and literal preservation only; callback authentication and fault cleanup not implemented or tested'};
+const result={base:git('rev-parse',base),kind:'offline source/preservation audit; no guest/native execution',protectedFiles:protectedPaths.length,sources,seams,inheritedEvidenceOnly:inherited,variants,research,matrixCopies:copies,restrictedTraces:13,revision};
 writeFileSync(new URL('audit.json',import.meta.url),JSON.stringify(result,null,2)+'\n');
 console.log(`PASS ${protectedPaths.length} protected files, ${sources.length} source/test hashes, ${seams.length} seams; inherited212/212/48; 60blocked; 13proposed traces`);

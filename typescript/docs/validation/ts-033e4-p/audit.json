@@ -3230,5 +3230,138 @@
       "ts-033er-p/matrix.md"
     ]
   ],
-  "restrictedTraces": 13
+  "restrictedTraces": 13,
+  "revision": {
+    "reviewBase": "87acb25",
+    "unchangedRestrictedTraceSha256": "549e33d54b1c466e8b6b42005440ad78935cfdd67f858f5ab390513d74de7142",
+    "unchangedMinimalTraceRows": 4,
+    "callbackConsumers": [
+      {
+        "path": "typescript/src/array-map.ts",
+        "line": 24,
+        "text": "        const tick = context.tick(loc);"
+      },
+      {
+        "path": "typescript/src/array-map.ts",
+        "line": 32,
+        "text": "        const mapped = context.call(callback, thisArg, [element.value, { kind: \"number\", value: k }, input], loc);"
+      },
+      {
+        "path": "typescript/src/builtins/array.ts",
+        "line": 20,
+        "text": "        const tick = context.tick(loc);"
+      },
+      {
+        "path": "typescript/src/builtins/array.ts",
+        "line": 33,
+        "text": "            const iteration = context.tick(loc);"
+      },
+      {
+        "path": "typescript/src/builtins/array.ts",
+        "line": 49,
+        "text": "        const tick = context.tick(loc);"
+      },
+      {
+        "path": "typescript/src/builtins/array.ts",
+        "line": 56,
+        "text": "        return context.call(method, value, [], loc);"
+      },
+      {
+        "path": "typescript/src/builtins/function.ts",
+        "line": 37,
+        "text": "        return context.call(receiver, thisArg, rest, loc);"
+      },
+      {
+        "path": "typescript/src/builtins/object.ts",
+        "line": 31,
+        "text": "        const tick = context.tick(loc);"
+      },
+      {
+        "path": "typescript/src/primitive-conversion.ts",
+        "line": 15,
+        "text": "        const tick = context.tick(loc);"
+      },
+      {
+        "path": "typescript/src/primitive-conversion.ts",
+        "line": 22,
+        "text": "        const result = context.call(method.value, input, [], loc);"
+      },
+      {
+        "path": "typescript/src/primitive-conversion.ts",
+        "line": 35,
+        "text": "    const tick = context.tick(loc);"
+      },
+      {
+        "path": "typescript/src/primitive-conversion.ts",
+        "line": 45,
+        "text": "        const result = context.call(method.value, input, [{ kind: \"string\", value: hint }], loc);"
+      },
+      {
+        "path": "typescript/src/runtime.ts",
+        "line": 202,
+        "text": "                return context.call(descriptor.get, receiver, [], loc);"
+      },
+      {
+        "path": "typescript/src/runtime.ts",
+        "line": 217,
+        "text": "                    const called = context.call(descriptor.set, receiver, [value], loc);"
+      },
+      {
+        "path": "typescript/src/script-global-declarations.ts",
+        "line": 58,
+        "text": "        const tick = context.tick(site.loc);"
+      },
+      {
+        "path": "typescript/src/script-global-declarations.ts",
+        "line": 67,
+        "text": "        const tick = context.tick(site.loc);"
+      },
+      {
+        "path": "typescript/src/script-global-declarations.ts",
+        "line": 75,
+        "text": "        const tick = context.tick(d.site.loc);"
+      },
+      {
+        "path": "typescript/src/script-global-declarations.ts",
+        "line": 89,
+        "text": "        const tick = context.tick(d.site.loc);"
+      },
+      {
+        "path": "typescript/src/script-global-declarations.ts",
+        "line": 99,
+        "text": "        const tick = context.tick(site.loc);"
+      },
+      {
+        "path": "typescript/src/script-global-declarations.ts",
+        "line": 105,
+        "text": "        const tick = context.tick(d.site.loc);"
+      },
+      {
+        "path": "typescript/src/script-global-declarations.ts",
+        "line": 112,
+        "text": "        const creationTick = context.tick(d.site.loc);"
+      },
+      {
+        "path": "typescript/src/script-global-declarations.ts",
+        "line": 118,
+        "text": "        const tick = context.tick(d.site.loc);"
+      },
+      {
+        "path": "typescript/src/script-record.ts",
+        "line": 185,
+        "text": "        const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });"
+      },
+      {
+        "path": "typescript/src/script-record.ts",
+        "line": 209,
+        "text": "        const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });"
+      },
+      {
+        "path": "typescript/src/script-record.ts",
+        "line": 286,
+        "text": "        return context.tick({ line: loc.line, column: loc.column });"
+      }
+    ],
+    "status": "source inventory and literal preservation only; callback authentication and fault cleanup not implemented or tested"
+  }
 }

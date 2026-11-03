@@ -138,9 +138,49 @@ call/tick returning private, fixed callbacks (no writable data fields). Freeze
 the view after construction so own-property definition cannot shadow the getters;
 private engine state remains mutable behind it. Do not freeze Realm or guest
 objects. Host freeze/private-getter compilation belongs in the bounded reduction
-if needed, not an assumed native capability. Callbacks
-check that their own session has an active frame. Captured idle views cannot
-execute; cloning/spreading/proxying the view does not acquire authority. Legacy
+if needed, not an assumed native capability. Both callbacks are **ordinary,
+unbound functions with an explicit invocation receiver**, never arrows or
+functions pre-bound to the engine/view. Their first operation compares `this`
+by identity with the captured authentic view, then checks that its owning session
+has an active frame. Only after both checks may call dispatch or tick proceed.
+Thus authentication precedes argument dispatch, step/call/depth changes and permit
+creation/consumption; failed authentication throws a host invariant error with
+no such effects. Proposed private callback shape:
+
+```ts
+const call = function(this: OperationContext, callee: Value, receiver: Value,
+                      args: Value[], loc: Location): ValueCompletion {
+  if (this !== exactView) throw new Error("invalid Script context receiver");
+  requireActiveSession();
+  return engineCall(callee, receiver, args, loc);
+};
+const tick = function(this: OperationContext, loc: Location): ValueCompletion {
+  if (this !== exactView) throw new Error("invalid Script context receiver");
+  requireActiveSession();
+  return engineTick(loc);
+};
+```
+
+Here exactView/session/engine callbacks are private lexical captures, never
+supplied by a host caller. The view is assigned once before publication; the
+callbacks cannot be called during construction. Existing production consumers
+use `context.call(...)` / `context.tick(...)`, preserving that receiver. No
+runtime.ts type change or legacy callback behavior change is required.
+
+During a live callback, clone.call/tick, spread.call/tick, proxy.call/tick,
+detached invocation and rebinding to any clone/proxy/other session's view fail
+this identity check even though the underlying function was copied from the real
+view. A forwarding proxy that returns the function unchanged still supplies the
+proxy receiver and fails. Property definition/assignment cannot replace the
+frozen callbacks or realm getter. Captured idle views also fail the active check.
+An authentic active view remains a trusted-host capability: explicit
+`copiedCall.call(exactView, ...)` or binding to that exact view is equivalent to
+`exactView.call(...)` and is permitted. A host that possesses the authentic view
+can deliberately forward it; claiming to reject that forwarding would exceed
+this identity boundary. It does not authorize direct builtin.invoke, which still
+requires its one-use permit. A copied callback alone with a copied/forged receiver
+cannot mint authority. Test both this boundary and its exact-view positives.
+Legacy
 context shape/behavior remains unchanged. Host contexts remain accepted by E2/E3
 setup for host projections, but cannot enter bodies or invoke Script builtins.
 
@@ -187,6 +227,23 @@ the next root evaluation with no pending abrupt capture; retain only the latest
 completed result snapshot, never a registry of all failures. Do not widen
 outcomes/observation schema. A host sentinel
 escapes unchanged and does not become a diagnostic. No guest try/finally support.
+
+The cleanup contract covers all exit kinds, but evidence must distinguish which
+faults are reachable through the API. Real engine-owned ticks are fixed and have
+no injection hook: test every resource-limit prefix with session limits, including
+GDI, factory allocation/publication, block setup, FDI and body. Test host-sentinel
+cleanup through real registered builtin callbacks reached by guest calls,
+accessors or coercion hooks, with real nested calls establishing nonzero saved
+state. This exercises callback, call, expression, statement, enclosing block and
+root unwind; a callback that catches the sentinel around context.call can compare
+the restored nonzero caller frame before returning. Then test an uncaught path
+to root and the same sentinel identity. Such callbacks do not occur at every
+GDI/FDI/setup tick: do not claim host-fault injection coverage there. Existing E3
+host setup tests separately inject host/guest failures using their supplied host
+contexts, preserving their labels and expectations. They prove setup-helper
+propagation, not engine-owned tick injection or integrated session restoration at
+every setup instruction. No hidden fault hook, mutable tick override or authority
+bypass is part of E4.
 
 ## Shared dispatch and statement rules
 
@@ -295,7 +352,8 @@ historical failures. New driver must fail on absent/skipped controls.
 If co-location, facade reachability, private context getters or dispatch union
 fails scriptc: retain exact failing build/coverage first; propose a bounded
 standalone reduction with two facade imports, one private record/node, one
-authenticated builtin with nested callback, one Script/legacy reference union
+authenticated builtin with nested callback, exact-view invocation-receiver
+checks (including copied/detached callbacks), one Script/legacy reference union
 and finally from seeded counters. Compare literal Node/native results and static
 coverage. No full engine fork, compiler workaround, dynamic tier or pin change
 before separate review. This design does not itself run that feasibility probe.

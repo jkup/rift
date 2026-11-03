@@ -66,3 +66,25 @@ not assert feasibility or authorize a compiler workaround. No new artifacts are
 claimed to satisfy actual R36 or Script execution. Error objects, standard
 arguments, nonstrict execution and harness/transport/admission remain separate
 blocked capabilities. Stop at independent design review.
+
+## Review correction to 87acb25
+
+The initial design was not accepted. Two design-only corrections address root
+and independent review:
+
+- call/tick are ordinary unbound functions that authenticate the exact invocation
+  receiver before checking active state or performing effects. A08 now explicitly
+  covers clone/spread/proxy, detached/wrongly rebound calls, authentic active-view
+  positives, idle views and frozen-view mutation. Deliberate forwarding with an
+  authentic active view is precisely identified as existing capability use.
+- Engine-owned ticks have no fault-injection API. A10/A11 and the prefix contract
+  separate every real execution resource-limit prefix from reachable builtin,
+  accessor and coercion callback host-error cleanup. Inherited per-tick injection
+  remains host-helper evidence, never evidence of arbitrary engine-tick faults.
+
+No hidden test hook, callback override, authority bypass or production change was
+added. All13 literal restricted traces, the four minimal Q/G/W/K rows and the
+three historical matrix copies remain unchanged. The audit additionally checks
+the literal oracles against87acb25 and inventories production context.call/tick
+receiver-preserving callsites. These are source checks, not execution of the
+proposed authentication or cleanup. Compiler feasibility remains unmeasured.
