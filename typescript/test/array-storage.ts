@@ -1,8 +1,14 @@
+import { validatePropertyDescriptorUpdate } from "../src/runtime.js";
+import type { DataDescriptor as InspectionDataDescriptor, PropertyDescriptor as InspectionDescriptor } from "../src/runtime.js";
+function dataDescriptor(d: InspectionDescriptor | undefined): InspectionDataDescriptor | undefined {
+    if (d !== undefined && d.kind !== "data") throw new Error("expected data descriptor");
+    return d;
+}
 import { stringKeys } from "./key-assertions.js";
 import { Evaluator } from "../src/evaluator.js";
 import { GuestArray } from "../src/array-object.js";
 import { GuestObject, UNDEFINED } from "../src/runtime.js";
-import type { BooleanCompletion, Completion, DataDescriptorUpdate, InternalBooleanCompletion, OperationContext, PropertyKey, Value, ValueCompletion } from "../src/runtime.js";
+import type { BooleanCompletion, Completion, PropertyDescriptorUpdate, InternalBooleanCompletion, OperationContext, PropertyKey, Value, ValueCompletion } from "../src/runtime.js";
 import type { Location } from "../src/syntax.js";
 import { Realm } from "../src/realm.js";
 import { run } from "../src/interpreter.js";
@@ -24,8 +30,8 @@ function error(r: InternalBooleanCompletion | Completion, name: string): void {
 }
 function length(a: GuestArray, expected: number, writable = true): void {
     const d = a.getOwnProperty("length");
-    check(d !== undefined && d.value.kind === "number" && Object.is(d.value.value, expected), "length value");
-    check(d !== undefined && d.writable === writable && !d.enumerable && !d.configurable, "length flags");
+    check(d !== undefined && d.kind === "data" && d.value.kind === "number" && Object.is(d.value.value, expected), "length value");
+    check(d !== undefined && d.kind === "data" && d.writable === writable && !d.enumerable && !d.configurable, "length flags");
 }
 function element(a: GuestArray, key: string, configurable = true): void {
     bool(a.defineOwnProperty(key, { value: UNDEFINED, writable: true, enumerable: true, configurable }, keyContext, loc), true);
@@ -42,7 +48,7 @@ function partial(): GuestArray {
 }
 // Every caller descriptor is checked after every outcome, including delayed
 // freezing and conversion rejection; the contained original Value stays intact.
-function defineLength(a: GuestArray, d: DataDescriptorUpdate): InternalBooleanCompletion {
+function defineLength(a: GuestArray, d: PropertyDescriptorUpdate): InternalBooleanCompletion {
     const value = d.value;
     const writable = d.writable;
     const enumerable = d.enumerable;
@@ -58,11 +64,11 @@ check(empty.getPrototypeOf() === null && stringKeys(empty.ownPropertyKeys()).joi
 bool(empty.internalDelete("length"), false);
 element(empty, "2"); length(empty, 3);
 check(empty.getOwnProperty("0") === undefined && empty.getOwnProperty("1") === undefined, "holes absent");
-check(empty.getOwnProperty("2")?.value === UNDEFINED, "present undefined");
+check(dataDescriptor(empty.getOwnProperty("2"))?.value === UNDEFINED, "present undefined");
 element(empty, "note"); element(empty, "1");
 check(stringKeys(empty.ownPropertyKeys()).join(",") === "1,2,length,note", "own numeric order before real length");
 const snapshot = empty.getOwnProperty("length");
-if (snapshot === undefined) throw new Error("snapshot missing");
+if (snapshot === undefined || snapshot.kind !== "data") throw new Error("snapshot missing");
 snapshot.value = num(99); snapshot.writable = false;
 const keys = empty.ownPropertyKeys(); keys.push("fake");
 length(empty, 3);
@@ -72,20 +78,20 @@ bool(empty.internalDelete("2"), true); length(empty, 3);
 const parent = new GuestObject(); parent.bootstrapDefine("4", { value: num(7), writable: true, enumerable: true, configurable: true });
 const receiver = new GuestArray();
 bool(parent.internalSet("4", num(9), obj(receiver), keyContext, loc), true); length(receiver, 5);
-check(receiver.get("4").kind === "number" && parent.getOwnProperty("4")?.value.kind === "number", "receiver created");
-const parentValue = parent.get("4");
+check(receiver.get("4", keyContext, loc).kind === "number" && dataDescriptor(parent.getOwnProperty("4"))?.value.kind === "number", "receiver created");
+const parentValue = parent.get("4", keyContext, loc);
 check(parentValue.kind === "number" && parentValue.value === 7, "ordinary lookup parent unchanged");
 const ordinary = new GuestObject();
 bool(receiver.internalSet("8", num(11), obj(ordinary), keyContext, loc), true); length(receiver, 5);
 check(receiver.getOwnProperty("8") === undefined && ordinary.getOwnProperty("8") !== undefined, "array base ordinary receiver");
 bool(receiver.internalSet("4", num(12), obj(ordinary), keyContext, loc), true); length(receiver, 5);
-const retained = receiver.get("4");
+const retained = receiver.get("4", keyContext, loc);
 check(retained.kind === "number" && retained.value === 9, "array base existing index unchanged");
 const inherited = new GuestArray(); bool(inherited.setPrototypeOf(parent), true);
 bool(defineLength(inherited, { value: num(6) }), true);
-check(inherited.getOwnProperty("4") === undefined && inherited.get("4") === parentValue, "inherited hole read");
+check(inherited.getOwnProperty("4") === undefined && inherited.get("4", keyContext, loc) === parentValue, "inherited hole read");
 bool(defineLength(inherited, { value: num(0) }), true);
-check(inherited.get("4") === parentValue && parent.getOwnProperty("4") !== undefined, "shrink ignores inherited index");
+check(inherited.get("4", keyContext, loc) === parentValue && parent.getOwnProperty("4") !== undefined, "shrink ignores inherited index");
 
 const high = new GuestArray(); element(high, "4294967294"); length(high, 4294967295);
 for (const key of ["4294967295", "01", "-0", "1e0"]) { element(high, key); length(high, 4294967295); }
@@ -147,7 +153,7 @@ bool(frozen.defineOwnProperty("3", { value: num(1) }, keyContext, loc), false);
 bool(frozen.defineOwnProperty("1", { value: num(2) }, keyContext, loc), true);
 element(frozen, "0"); length(frozen, 3, false);
 check(frozen.getOwnProperty("3") === undefined, "frozen extension absent");
-const updatedElement = frozen.get("1");
+const updatedElement = frozen.get("1", keyContext, loc);
 check(updatedElement.kind === "number" && updatedElement.value === 2, "frozen length existing element updates");
 
 const closed = new GuestArray(); element(closed, "1"); bool(closed.preventExtensions(), true);
@@ -156,11 +162,11 @@ bool(closed.defineOwnProperty("2", { value: UNDEFINED }, keyContext, loc), false
 bool(closed.defineOwnProperty("1", { value: num(4) }, keyContext, loc), true);
 bool(defineLength(closed, { value: num(7) }), true); length(closed, 7);
 check(stringKeys(closed.ownPropertyKeys()).join(",") === "1,length", "nonextensible grow only holes");
-const closedValue = closed.get("1"); check(closedValue.kind === "number" && closedValue.value === 4, "nonextensible update");
+const closedValue = closed.get("1", keyContext, loc); check(closedValue.kind === "number" && closedValue.value === 4, "nonextensible update");
 
 for (const freeze of [false, true]) {
     const a = partial(); length(a, 6);
-    const d: DataDescriptorUpdate = { value: num(1) };
+    const d: PropertyDescriptorUpdate = { value: num(1) };
     if (freeze) d.writable = false;
     bool(defineLength(a, d), false); length(a, 4, !freeze);
     check(stringKeys(a.ownPropertyKeys()).join(",") === "1,3,length", "descending partial deletion stops at blocker");
@@ -171,7 +177,7 @@ check(stringKeys(shrunk.ownPropertyKeys()).join(",") === "0,length", "successful
 bool(defineLength(shrunk, { value: num(2) }), false);
 for (const flag of ["enumerable", "configurable"]) {
     const a = three();
-    const d: DataDescriptorUpdate = { value: num(1), writable: false };
+    const d: PropertyDescriptorUpdate = { value: num(1), writable: false };
     if (flag === "enumerable") d.enumerable = true;
     else d.configurable = true;
     bool(defineLength(a, d), false); length(a, 3);
@@ -230,7 +236,7 @@ for (const mode of ["invalid", "readonly", "partial", "object"]) {
 }
 // P2-P5: trusted setup is validated, uses array storage rules, and never
 // dispatches semantic hooks. These cases intentionally exercise host faults.
-function bootstrapFault(target: GuestObject, key: string, desc: DataDescriptorUpdate): void {
+function bootstrapFault(target: GuestObject, key: string, desc: PropertyDescriptorUpdate): void {
     let fault = false;
     try { target.bootstrapDefine(key, desc); }
     catch (error) { fault = error instanceof Error; }
@@ -238,18 +244,21 @@ function bootstrapFault(target: GuestObject, key: string, desc: DataDescriptorUp
 }
 let constructionDispatches = 0;
 class SetupArray extends GuestArray {
-    protected ordinaryDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate): BooleanCompletion {
+    protected ordinaryDefineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate): BooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         constructionDispatches++;
         return super.ordinaryDefineOwnProperty(key, desc);
     }
     semanticCalls = 0;
     bootstrapCalls = 0;
-    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+    defineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         constructionDispatches++;
         this.semanticCalls++;
         return super.defineOwnProperty(key, desc, context, at);
     }
-    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, at: Location): InternalBooleanCompletion {
+    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, at: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         constructionDispatches++;
         this.bootstrapCalls++;
         return super.bootstrapDefineOwnProperty(key, desc, at);
@@ -296,7 +305,7 @@ check(stringKeys(bootstrapClosed.ownPropertyKeys()).join(",") === "0,1,2,length"
 
 class BootstrapValue extends GuestObject {
     reads = 0;
-    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
         this.reads++;
         throw new Error("bootstrap must not inspect object length");
     }
@@ -310,10 +319,10 @@ check(stringKeys(objectLength.ownPropertyKeys()).join(",") === "0,1,2,length" &&
 const ordinaryLength = new GuestObject();
 ordinaryLength.bootstrapDefine("length", { value: untouched });
 objectLength.bootstrapDefine("0", { value: untouched });
-check(ordinaryLength.get("length") === untouched && objectLength.get("0") === untouched && untouchedObject.reads === 0, "ordinary length and element preserve object identity");
+check(ordinaryLength.get("length", keyContext, loc) === untouched && objectLength.get("0", keyContext, loc) === untouched && untouchedObject.reads === 0, "ordinary length and element preserve object identity");
 
 const bootstrapPartial = partial();
-const partialDescriptor: DataDescriptorUpdate = { value: num(1), writable: false };
+const partialDescriptor: PropertyDescriptorUpdate = { value: num(1), writable: false };
 const originalValue = partialDescriptor.value;
 bootstrapFault(bootstrapPartial, "length", partialDescriptor);
 length(bootstrapPartial, 4, false);

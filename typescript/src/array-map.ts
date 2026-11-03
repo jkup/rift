@@ -10,7 +10,7 @@ export function mapObjectDefaultArray(object: GuestObject, callback: Value, this
     if (callback.kind !== "object" || callback.object.callable === null) return failure("TypeError", "map callback is not callable", loc);
     const input: Value = { kind: "object", object };
     if (object instanceof GuestArray) {
-        const constructor = object.internalGet("constructor", input, loc);
+        const constructor = object.internalGet("constructor", input, context, loc);
         if (constructor.type === "throw") return constructor;
         if (constructor.value.kind !== "undefined") return unsupportedFailure("runtime.map-species", "TypeError", "unsupported map constructor/species", loc);
     }
@@ -27,7 +27,7 @@ export function mapObjectDefaultArray(object: GuestObject, callback: Value, this
         const present = object.internalHasProperty(key, loc);
         if (present.type === "throw") return present;
         if (!present.value) continue;
-        const element = object.internalGet(key, input, loc);
+        const element = object.internalGet(key, input, context, loc);
         if (element.type === "throw") return element;
         const mapped = context.call(callback, thisArg, [element.value, { kind: "number", value: k }, input], loc);
         if (mapped.type === "throw") return mapped;

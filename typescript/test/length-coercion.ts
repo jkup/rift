@@ -1,3 +1,8 @@
+import type { DataDescriptor as InspectionDataDescriptor, PropertyDescriptor as InspectionDescriptor } from "../src/runtime.js";
+function dataDescriptor(d: InspectionDescriptor | undefined): InspectionDataDescriptor | undefined {
+    if (d !== undefined && d.kind !== "data") throw new Error("expected data descriptor");
+    return d;
+}
 import { formatPropertyKey } from "../src/symbols.js";
 import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
@@ -50,10 +55,10 @@ function number(result: NumberCompletion, expected: number): void {
 function error(result: NumberCompletion | Completion, name: string): void {
     check(result.type === "throw" && result.diagnostic.name === name, "expected " + name);
 }
-function mapped(result: ValueCompletion, length: number): GuestObject {
+function mapped(result: ValueCompletion, length: number, context: OperationContext): GuestObject {
     if (result.type !== "normal") throw new Error("map threw");
     const value = object(result.value);
-    check(value instanceof GuestArray && sameValue(value.get("length"), num(length)), "mapped length");
+    check(value instanceof GuestArray && sameValue(value.get("length", context, loc), num(length)), "mapped length");
     return value;
 }
 const fixture = readFileSync("test/fixtures/length-coercion.js", "utf8");
@@ -85,7 +90,7 @@ const sentinel = failure("Sentinel", "length boundary", loc);
 class ObservedLength extends GuestObject {
     gets = 0;
     constructorReads = 0;
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         if (key === "length") {
             this.gets++;
             check(receiver.kind === "object" && receiver.object === this && at === loc, "length Get receiver/location");
@@ -94,7 +99,7 @@ class ObservedLength extends GuestObject {
             this.constructorReads++;
             return sentinel;
         }
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 // Primitive returns, object kinds, inheritance and both fallback routes use parsed methods.
@@ -140,10 +145,10 @@ class ObservedHook extends GuestObject {
     reads: string[] = [];
     original: Value = UNDEFINED;
     stop = "";
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.reads.push(formatPropertyKey(key));
         check(receiver === this.original && at === loc, "hook original receiver/location");
-        return key === this.stop ? sentinel : super.internalGet(key, receiver, at);
+        return key === this.stop ? sentinel : super.internalGet(key, receiver, context, at);
     }
 }
 for (const stop of ["", "get1", "get2", "call1", "call2", "tick1", "tick2"]) {
@@ -184,7 +189,7 @@ for (const stop of ["", "get1", "get2", "call1", "call2", "tick1", "tick2"]) {
         : second && stop !== "tick2" ? ",valueOf,toString" : ",valueOf";
     check(hook.reads.join(",") === "Symbol(Symbol.toPrimitive)" + ordinaryLookupPrefix, "lookup prefix");
     check(calls === (stop === "tick1" || stop === "get1" ? 0 : stop === "" || stop === "call2" ? 2 : 1), "call prefix");
-    if (calls > 0) check(sameValue(hook.getOwnProperty("effect")!.value, num(calls)), "effects survive failure");
+    if (calls > 0) check(sameValue(dataDescriptor(hook.getOwnProperty("effect"))!.value, num(calls)), "effects survive failure");
     check(active.calls === 0, "abrupt call unwind");
 }
 for (const bothObjects of [false, true]) {
@@ -212,7 +217,7 @@ put(savedHook, "valueOf", builtin(fresh.context.realm, (_receiver, _args, _conte
     return normal(obj(new GuestObject()));
 }));
 number(lengthOfArrayLike(replacedSource, fresh.context, loc), 2);
-check(oldCalls === 0 && sameValue(replacedSource.get("length"), num(100)) && sameValue(binding(fresh, "hits"), num(1)), "saved length and fresh second method");
+check(oldCalls === 0 && sameValue(replacedSource.get("length", fresh.context, loc), num(100)) && sameValue(binding(fresh, "hits"), num(1)), "saved length and fresh second method");
 // F12/F14: saved length survives binding/property replacement; elements remain live.
 const mutation = setup();
 const source = new ObservedLength();
@@ -224,8 +229,8 @@ const parent = new GuestObject();
 put(parent, "2", num(20));
 source.setPrototypeOf(parent);
 seed(mutation, "input", obj(source));
-const changed = mapped(mapObjectDefaultArray(source, binding(mutation, "identity"), UNDEFINED, mutation.context, loc), 3);
-check(sameValue(changed.get("0"), num(10)) && changed.getOwnProperty("1") === undefined && sameValue(changed.get("2"), num(20)) && changed.getOwnProperty("3") === undefined, "live elements/holes, saved bound");
+const changed = mapped(mapObjectDefaultArray(source, binding(mutation, "identity"), UNDEFINED, mutation.context, loc), 3, mutation.context);
+check(sameValue(changed.get("0", mutation.context, loc), num(10)) && changed.getOwnProperty("1") === undefined && sameValue(changed.get("2", mutation.context, loc), num(20)) && changed.getOwnProperty("3") === undefined, "live elements/holes, saved bound");
 check(source.gets === 1 && source.constructorReads === 0 && sameValue(binding(mutation, "hits"), num(3)) && binding(mutation, "lengthValue") !== saved, "saved value, generic skips changed constructor");
 // F13 and allocation ordering: conversion errors precede invalid callbacks.
 for (const succeeds of [false, true]) {
@@ -243,16 +248,16 @@ for (const succeeds of [false, true]) {
     } else {
         check(result === sentinel, "length throw beats callback");
     }
-    check(source.gets === 1 && source.constructorReads === 0 && sameValue(source.get("effect"), num(1)), "failure retains mutation");
+    check(source.gets === 1 && source.constructorReads === 0 && sameValue(source.get("effect", active.context, loc), num(1)), "failure retains mutation");
     if (succeeds) error(mapObjectDefaultArray(source, binding(active, "identity"), UNDEFINED, active.context, loc), "RangeError");
 }
 // Actual array storage remains numeric; only this observer synthesizes object Get.
 class ArrayObserver extends GuestArray {
     lengthValue: Value = UNDEFINED;
     trace: string[] = [];
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.trace.push(formatPropertyKey(key));
-        return key === "length" ? normal(this.lengthValue) : super.internalGet(key, receiver, at);
+        return key === "length" ? normal(this.lengthValue) : super.internalGet(key, receiver, context, at);
     }
 }
 for (const invalidCallback of [false, true]) {
@@ -267,7 +272,7 @@ for (const invalidCallback of [false, true]) {
     }));
     const result = mapObjectDefaultArray(array, invalidCallback ? UNDEFINED : binding(active, "identity"), UNDEFINED, active.context, loc);
     check(result.type === "throw" && result.diagnostic.message === (invalidCallback ? "map callback is not callable" : "unsupported map constructor/species"), "array constructor after length/callback");
-    check(array.trace.join(",") === (invalidCallback ? "length,hook" : "length,hook,constructor") && sameValue(array.getOwnProperty("length")!.value, num(0)), "observer ordering; numeric storage");
+    check(array.trace.join(",") === (invalidCallback ? "length,hook" : "length,hook,constructor") && sameValue(dataDescriptor(array.getOwnProperty("length"))!.value, num(0)), "observer ordering; numeric storage");
 }
 // Guest nested length and map callbacks retain the active evaluator's budgets.
 const nested = setup();
@@ -279,7 +284,7 @@ put(outerHook, "valueOf", binding(nested, "nestedLength"));
 number(lengthOfArrayLike(input(obj(outerHook)), nested.context, loc), 2);
 const outer = input(num(1));
 put(outer, "0", num(8));
-check(sameValue(mapped(mapObjectDefaultArray(outer, binding(nested, "nestedMap"), UNDEFINED, nested.context, loc), 1).get("0"), num(2)), "guest nested map");
+check(sameValue(mapped(mapObjectDefaultArray(outer, binding(nested, "nestedMap"), UNDEFINED, nested.context, loc), 1, nested.context).get("0", nested.context, loc), num(2)), "guest nested map");
 check(nested.steps > 0 && nested.calls === 0, "shared nested ticks/unwind");
 for (const method of ["loop", "recursive"]) {
     const initial = setup();
@@ -299,7 +304,7 @@ for (const method of ["loop", "recursive"]) {
 // Huge sparse maps spend bounded ticks after their single conversion.
 const sparseActive = setup();
 const sparse = input(obj(new GuestObject()));
-put(object(sparse.get("length")), "valueOf", builtin(sparseActive.context.realm, (_receiver, _args, _context, _at) => normal(num(4294967295))));
+put(object(sparse.get("length", nested.context, loc)), "valueOf", builtin(sparseActive.context.realm, (_receiver, _args, _context, _at) => normal(num(4294967295))));
 const budget = new Evaluator(sparseActive.context.realm, 3);
 error(mapObjectDefaultArray(sparse, binding(budget, "identity"), UNDEFINED, budget.context, loc), "RangeError");
 check(budget.steps === 4 && budget.calls === 0, "protocol and ordinary lookup ticks plus bounded sparse scan");
@@ -321,10 +326,10 @@ const assigned = storage.set("length", value, excluded.context, loc);
 check(assigned.type === "normal" && assigned.value === value, "storage assignment original RHS");
 const defined = storage.defineOwnProperty("length", { value }, excluded.context, loc);
 check(defined.type === "normal" && defined.value, "array define success");
-check(sameValue(storage.get("length"), num(2)) && sameValue(binding(excluded, "hits"), num(4)), "storage calls each convert twice");
+check(sameValue(storage.get("length", excluded.context, loc), num(2)) && sameValue(binding(excluded, "hits"), num(4)), "storage calls each convert twice");
 class ForbiddenHooks extends GuestObject {
     reads = 0;
-    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
         this.reads++;
         return sentinel;
     }
@@ -349,7 +354,7 @@ put(hook, "valueOf", builtin(exact.context.realm, (receiver, args, context, at) 
     return captured;
 }));
 const exactResult = lengthOfArrayLike(input(obj(hook)), exact.context, loc);
-check(exactResult.type === "throw" && captured.type === "throw" && exactResult === captured && captured.value === object(binding(exact, "host")).get("payload"), "exact guest throw");
+check(exactResult.type === "throw" && captured.type === "throw" && exactResult === captured && captured.value === object(binding(exact, "host")).get("payload", exact.context, loc), "exact guest throw");
 for (const mode of ["fault", "break"]) {
     const fault = new Error("length host fault");
     put(hook, "valueOf", builtin(exact.context.realm, (_receiver, _args, _context, _at): Completion => {

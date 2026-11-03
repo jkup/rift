@@ -31,7 +31,7 @@ export class GlobalEnvironment {
         }
         return this.setObjectBinding(name, value, false, context, loc);
     }
-    getBindingValue(name: string, loc: Location): ValueCompletion {
+    getBindingValue(name: string, context: OperationContext, loc: Location): ValueCompletion {
         const binding = this.lexicals.get(name);
         if (binding !== undefined) {
             if (!binding.initialized) return failure("ReferenceError", name + " is not initialized", loc);
@@ -40,7 +40,7 @@ export class GlobalEnvironment {
         const present = this.globalObject.internalHasProperty(name, loc);
         if (present.type === "throw") return present;
         if (!present.value) return failure("ReferenceError", name + " is not defined", loc);
-        return this.globalObject.internalGet(name, { kind: "object", object: this.globalObject }, loc);
+        return this.globalObject.internalGet(name, { kind: "object", object: this.globalObject }, context, loc);
     }
     setMutableBinding(name: string, value: Value, context: OperationContext, loc: Location): ValueCompletion {
         const binding = this.lexicals.get(name);
@@ -74,7 +74,7 @@ export class GlobalEnvironment {
     }
     canDeclareGlobalFunction(name: string): InternalBooleanCompletion {
         const own = this.globalObject.getOwnProperty(name);
-        return { type: "normal", value: own === undefined ? this.globalObject.isExtensible() : own.configurable || (own.writable && own.enumerable) };
+        return { type: "normal", value: own === undefined ? this.globalObject.isExtensible() : own.configurable || (own.kind === "data" && own.writable && own.enumerable) };
     }
     createGlobalVarBinding(name: string, context: OperationContext, loc: Location): ValueCompletion {
         const own = this.globalObject.getOwnProperty(name);
@@ -117,9 +117,9 @@ export function resolveStrictGlobalBinding(environment: GlobalEnvironment, name:
     if (present.type === "throw") return present;
     return { type: "normal", reference: { environment: present.value ? environment : null, name, loc: { line: loc.line, column: loc.column } } };
 }
-export function getStrictGlobalBinding(reference: StrictGlobalReference): ValueCompletion {
+export function getStrictGlobalBinding(reference: StrictGlobalReference, context: OperationContext): ValueCompletion {
     if (reference.environment === null) return failure("ReferenceError", reference.name + " is not defined", reference.loc);
-    return reference.environment.getBindingValue(reference.name, reference.loc);
+    return reference.environment.getBindingValue(reference.name, context, reference.loc);
 }
 export function putStrictGlobalBinding(reference: StrictGlobalReference, value: Value, context: OperationContext): ValueCompletion {
     if (reference.environment === null) return failure("ReferenceError", reference.name + " is not defined", reference.loc);

@@ -1,0 +1,848 @@
+[
+  {
+    "entry": "src/cli.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\rift.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\src\\cli.ts\n\n  statements analyzed   2665\n  compile statically    2665  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/realms.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\realms.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\realms.ts\n\n  statements analyzed   3027\n  compile statically    3027  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/object-descriptors.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\object-descriptors.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\object-descriptors.ts\n\n  statements analyzed   2799\n  compile statically    2799  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/object-prototypes.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\object-prototypes.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\object-prototypes.ts\n\n  statements analyzed   2777\n  compile statically    2777  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/object-keys.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\object-keys.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\object-keys.ts\n\n  statements analyzed   2805\n  compile statically    2805  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/conversion.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\conversion.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\conversion.ts\n\n  statements analyzed   2295\n  compile statically    2295  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/definition-dispatch.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\definition-dispatch.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\definition-dispatch.ts\n\n  statements analyzed   2805\n  compile statically    2805  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/array-storage.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\array-storage.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-storage.ts\n\n  statements analyzed   2951\n  compile statically    2951  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/array-like.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\array-like.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-like.ts\n\n  statements analyzed   2753\n  compile statically    2753  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/operation-context.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\operation-context.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\operation-context.ts\n\n  statements analyzed   2985\n  compile statically    2985  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/array-map.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\array-map.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-map.ts\n\n  statements analyzed   3127\n  compile statically    3127  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/array-literals.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\array-literals.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-literals.ts\n\n  statements analyzed   2719\n  compile statically    2719  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/property-key-conversion.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\property-key-conversion.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\property-key-conversion.ts\n\n  statements analyzed   2990\n  compile statically    2990  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/numeric-operators.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\numeric-operators.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\numeric-operators.ts\n\n  statements analyzed   2745\n  compile statically    2745  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/addition.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\addition.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\addition.ts\n\n  statements analyzed   2759\n  compile statically    2759  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/relational.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\relational.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\relational.ts\n\n  statements analyzed   2790\n  compile statically    2790  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/primitive-conversion.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\primitive-conversion.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\primitive-conversion.ts\n\n  statements analyzed   3155\n  compile statically    3155  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/operator-coercion.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\operator-coercion.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\operator-coercion.ts\n\n  statements analyzed   2792\n  compile statically    2792  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/key-coercion.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\key-coercion.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\key-coercion.ts\n\n  statements analyzed   2820\n  compile statically    2820  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/length-coercion.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\length-coercion.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\length-coercion.ts\n\n  statements analyzed   2935\n  compile statically    2935  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/array-length-coercion.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\array-length-coercion.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-length-coercion.ts\n\n  statements analyzed   3152\n  compile statically    3152  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/function-call.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\function-call.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\function-call.ts\n\n  statements analyzed   2831\n  compile statically    2831  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/object-valueof.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\object-valueof.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\object-valueof.ts\n\n  statements analyzed   4210\n  compile statically    4210  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/array-string-conversion.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\array-string-conversion.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\array-string-conversion.ts\n\n  statements analyzed   3158\n  compile statically    3158  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/function-string-conversion.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\function-string-conversion.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\function-string-conversion.ts\n\n  statements analyzed   2974\n  compile statically    2974  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/abstract-equality.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\abstract-equality.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\abstract-equality.ts\n\n  statements analyzed   3063\n  compile statically    3063  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/delete-operator.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\delete-operator.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\delete-operator.ts\n\n  statements analyzed   3439\n  compile statically    3439  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/typeof-void.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\typeof-void.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\typeof-void.ts\n\n  statements analyzed   3191\n  compile statically    3191  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/in-operator.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\in-operator.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\in-operator.ts\n\n  statements analyzed   3354\n  compile statically    3354  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/primitive-reads.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\primitive-reads.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\primitive-reads.ts\n\n  statements analyzed   3428\n  compile statically    3428  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/property-assignment.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\property-assignment.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\property-assignment.ts\n\n  statements analyzed   3732\n  compile statically    3732  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/compound-assignment.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\compound-assignment.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\compound-assignment.ts\n\n  statements analyzed   3858\n  compile statically    3858  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/structured-outcomes.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\structured-outcomes.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\structured-outcomes.ts\n\n  statements analyzed   3012\n  compile statically    3012  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "src/observation-driver.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\observation-driver.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\src\\observation-driver.ts\n\n  statements analyzed   2707\n  compile statically    2707  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/observation-serialization.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\observation-serialization.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\observation-serialization.ts\n\n  statements analyzed   2694\n  compile statically    2694  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/return-audit.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\return-audit.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\return-audit.ts\n\n  statements analyzed   2690\n  compile statically    2690  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/number-radix.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\number-radix.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\number-radix.ts\n\n  statements analyzed   220\n  compile statically    220  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/script-metadata.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\script-metadata.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\script-metadata.ts\n\n  statements analyzed   751\n  compile statically    751  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/global-environment.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\global-environment.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\global-environment.ts\n\n  statements analyzed   2524\n  compile statically    2524  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/script-realm-bootstrap.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\script-realm-bootstrap.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\script-realm-bootstrap.ts\n\n  statements analyzed   3067\n  compile statically    3067  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/script-declarations.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\script-declarations.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\script-declarations.ts\n\n  statements analyzed   763\n  compile statically    763  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/script-global-declarations.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\script-global-declarations.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\script-global-declarations.ts\n\n  statements analyzed   2620\n  compile statically    2620  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/script-record.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\script-record.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\script-record.ts\n\n  statements analyzed   2330\n  compile statically    2330  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/script-environment.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\script-environment.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\script-environment.ts\n\n  statements analyzed   2392\n  compile statically    2392  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/script-function-materialization.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\script-function-materialization.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\script-function-materialization.ts\n\n  statements analyzed   2894\n  compile statically    2894  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/script-function-setup.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\script-function-setup.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\script-function-setup.ts\n\n  statements analyzed   2551\n  compile statically    2551  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  },
+  {
+    "entry": "test/property-accessors.ts",
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\property-accessors.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\property-accessors.ts\n\n  statements analyzed   3193\n  compile statically    3193  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "verdict": "PASS"
+  }
+]

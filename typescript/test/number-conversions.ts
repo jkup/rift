@@ -41,15 +41,15 @@ function keys(actual: PropertyKey[], expected: PropertyKey[]): void {
     for (let i = 0; i < expected.length; i++) check(actual[i] === expected[i], "key identity/order");
 }
 class NoReads extends GuestObject {
-    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
         throw new Error("N unexpected receiver/argument read");
     }
 }
 class ObservedNumber extends GuestNumber {
     reads: PropertyKey[] = [];
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.reads.push(key);
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 
@@ -59,7 +59,7 @@ export function testNumberConversions(): void {
     const c = new Realm((_line) => {});
     const evaluator = new Evaluator(a);
     const ignored = obj(new NoReads());
-    const method = b.numberPrototype.get("valueOf");
+    const method = b.numberPrototype.get("valueOf", evaluator.context, loc);
     const realms = [a, b, c];
     for (let i = 0; i < realms.length; i++) {
         const realm = realms[i];
@@ -67,31 +67,31 @@ export function testNumberConversions(): void {
         keys(root.ownPropertyKeys(), ["toString", "valueOf"]);
         check(root.getPrototypeOf() === realm.objectPrototype && root.callable === null && root.isExtensible(), "root invariants");
         const descriptor = root.getOwnProperty("valueOf");
-        check(descriptor !== undefined && descriptor.writable && !descriptor.enumerable && descriptor.configurable, "method flags");
-        const value = root.get("valueOf");
+        check(descriptor !== undefined && descriptor.kind === "data" && descriptor.writable && !descriptor.enumerable && descriptor.configurable, "method flags");
+        const value = root.get("valueOf", evaluator.context, loc);
         if (value.kind !== "object") throw new Error("N missing method");
         check(value.object.callable !== null && value.object.callable.realm === realm
             && value.object.getPrototypeOf() === realm.functionPrototype, "owner/function root");
         keys(value.object.ownPropertyKeys(), ["name", "length"]);
-        check(sameValue(value.object.get("name"), str("valueOf")) && sameValue(value.object.get("length"), num(0)), "metadata");
+        check(sameValue(value.object.get("name", evaluator.context, loc), str("valueOf")) && sameValue(value.object.get("length", evaluator.context, loc), num(0)), "metadata");
         for (const key of ["name", "length"]) {
             const metadata = value.object.getOwnProperty(key);
-            check(metadata !== undefined && !metadata.writable && !metadata.enumerable && metadata.configurable, "metadata flags");
+            check(metadata !== undefined && metadata.kind === "data" && !metadata.writable && !metadata.enumerable && metadata.configurable, "metadata flags");
         }
-        for (let j = 0; j < i; j++) check(!sameValue(value, realms[j].numberPrototype.get("valueOf")), "fresh methods");
+        for (let j = 0; j < i; j++) check(!sameValue(value, realms[j].numberPrototype.get("valueOf", evaluator.context, loc)), "fresh methods");
         expect(evaluator.call(method, obj(root), [ignored], loc), num(0), "N1 real +0 root");
-        const text = root.get("toString");
+        const text = root.get("toString", evaluator.context, loc);
         const descriptorText = root.getOwnProperty("toString");
-        check(descriptorText !== undefined && descriptorText.writable && !descriptorText.enumerable && descriptorText.configurable, "toString flags");
+        check(descriptorText !== undefined && descriptorText.kind === "data" && descriptorText.writable && !descriptorText.enumerable && descriptorText.configurable, "toString flags");
         if (text.kind !== "object") throw new Error("missing toString");
         check(text.object.callable !== null && text.object.callable.realm === realm && text.object.getPrototypeOf() === realm.functionPrototype, "toString owner");
         keys(text.object.ownPropertyKeys(), ["name", "length"]);
-        check(sameValue(text.object.get("name"), str("toString")) && sameValue(text.object.get("length"), num(1)), "toString metadata");
+        check(sameValue(text.object.get("name", evaluator.context, loc), str("toString")) && sameValue(text.object.get("length", evaluator.context, loc), num(1)), "toString metadata");
         for (const key of ["name", "length"]) {
             const metadata = text.object.getOwnProperty(key);
-            check(metadata !== undefined && !metadata.writable && !metadata.enumerable && metadata.configurable, "toString metadata flags");
+            check(metadata !== undefined && metadata.kind === "data" && !metadata.writable && !metadata.enumerable && metadata.configurable, "toString metadata flags");
         }
-        for (let j = 0; j < i; j++) check(!sameValue(text, realms[j].numberPrototype.get("toString")), "fresh toString");
+        for (let j = 0; j < i; j++) check(!sameValue(text, realms[j].numberPrototype.get("toString", evaluator.context, loc)), "fresh toString");
         expect(evaluator.call(text, obj(root), [], loc), str("0"), "N1 root string");
     }
     for (const payload of [0, -0, NaN, Infinity, -Infinity, 10.5, -255]) {
@@ -107,8 +107,8 @@ export function testNumberConversions(): void {
             check(extracted.type === "normal" && sameValue(num(extracted.value), num(payload)), "N1-N4/N8 helper payload");
             expect(evaluator.call(method, receiver, [ignored, ignored], loc), num(payload), "N1-N4/N8 exact payload");
             const expected = payload === 0 ? "0" : Number.isNaN(payload) ? "NaN" : payload === Infinity ? "Infinity" : payload === -Infinity ? "-Infinity" : payload === 10.5 ? "10.5" : "-255";
-            expect(evaluator.call(b.numberPrototype.get("toString"), receiver, [UNDEFINED, ignored], loc), str(expected), "N1-N4/N8 string");
-            if (payload === 10.5 || payload === -255) expect(evaluator.call(b.numberPrototype.get("toString"), receiver, [num(16)], loc), str(payload === 10.5 ? "a.8" : "-ff"), "N4 radix");
+            expect(evaluator.call(b.numberPrototype.get("toString", evaluator.context, loc), receiver, [UNDEFINED, ignored], loc), str(expected), "N1-N4/N8 string");
+            if (payload === 10.5 || payload === -255) expect(evaluator.call(b.numberPrototype.get("toString", evaluator.context, loc), receiver, [num(16)], loc), str(payload === 10.5 ? "a.8" : "-ff"), "N4 radix");
         }
         check(observed.reads.length === 0, "N8 no receiver reads");
     }
@@ -133,7 +133,7 @@ export function testNumberConversions(): void {
         check(extracted.diagnostic.loc === loc, "helper location identity");
         error(extracted, "receiver is not a number");
         error(evaluator.call(method, receiver, [ignored], loc), "receiver is not a number");
-        const rejected = evaluator.call(b.numberPrototype.get("toString"), receiver, [ignored], loc);
+        const rejected = evaluator.call(b.numberPrototype.get("toString", evaluator.context, loc), receiver, [ignored], loc);
         error(rejected, "receiver is not a number");
         check(rejected.type === "throw" && rejected.diagnostic.loc === loc, "N5-N7/R16 location identity");
     }
@@ -141,7 +141,7 @@ export function testNumberConversions(): void {
         const active = new Evaluator(a, 0, 3);
         const bridge = obj(c.createBuiltin("bridge", 0, (_r, _args, context, at) => {
             check(context.realm === c && active.calls === 1, "C entry");
-            const returned = context.call(c.functionPrototype.get("call"), method, [receiver, ignored], at);
+            const returned = context.call(c.functionPrototype.get("call", active.context, loc), method, [receiver, ignored], at);
             check(context.realm === c && active.calls === 1, "C restoration");
             return returned;
         }));
@@ -156,7 +156,7 @@ export function testNumberConversions(): void {
     const shared = new Evaluator(a, 1, 3);
     for (const mode of ["steps", "host"]) {
         const bridge = obj(c.createBuiltin("cleanup", 0, (_r, _args, context, at) => {
-            expect(context.call(c.functionPrototype.get("call"), method, [num(2)], at), num(2), "nested success");
+            expect(context.call(c.functionPrototype.get("call", shared.context, loc), method, [num(2)], at), num(2), "nested success");
             check(context.realm === c, "C restored before abrupt");
             if (mode === "host") throw new Error("N host sentinel");
             const tick = context.tick(at);
@@ -190,7 +190,7 @@ function testLookupAndLengths(): void {
     const evaluator = new Evaluator(realm);
     const box = new ObservedNumber(2, realm.numberPrototype);
     const boxed = obj(box);
-    const saved = realm.numberPrototype.get("valueOf");
+    const saved = realm.numberPrototype.get("valueOf", evaluator.context, loc);
     let calls = 0;
     const context: OperationContext = {
         realm,
@@ -218,12 +218,12 @@ function testLookupAndLengths(): void {
     const tight = new Evaluator(realm, 0);
     error(toPrimitive(boxed, "number", tight.context, loc), "execution step limit exceeded", loc, "RangeError");
     check(tight.steps === 1 && box.reads.length === 0 && tight.calls === 0, "guard before Get");
-    expect(evaluator.call(realm.objectPrototype.get("valueOf"), boxed, [], loc), boxed, "Object identity");
-    const fresh = result(evaluator.call(realm.objectPrototype.get("valueOf"), num(-0), [], loc));
+    expect(evaluator.call(realm.objectPrototype.get("valueOf", tight.context, loc), boxed, [], loc), boxed, "Object identity");
+    const fresh = result(evaluator.call(realm.objectPrototype.get("valueOf", tight.context, loc), num(-0), [], loc));
     check(fresh.kind === "object" && fresh.object instanceof GuestNumber && 1 / fresh.object.numberData === -Infinity
         && fresh.object.getPrototypeOf() === realm.numberPrototype, "Object boxes rather than extracts");
-    expect(evaluator.call(realm.objectPrototype.get("toString"), boxed, [], loc), str("[object Number]"), "borrowed Object tag");
-    for (const method of [realm.booleanPrototype.get("valueOf"), realm.booleanPrototype.get("toString"), realm.stringPrototype.get("valueOf"), realm.stringPrototype.get("toString"), realm.symbolPrototype.get("valueOf")]) {
+    expect(evaluator.call(realm.objectPrototype.get("toString", tight.context, loc), boxed, [], loc), str("[object Number]"), "borrowed Object tag");
+    for (const method of [realm.booleanPrototype.get("valueOf", tight.context, loc), realm.booleanPrototype.get("toString", tight.context, loc), realm.stringPrototype.get("valueOf", tight.context, loc), realm.stringPrototype.get("toString", tight.context, loc), realm.symbolPrototype.get("valueOf", tight.context, loc)]) {
         const returned = evaluator.call(method, boxed, [], loc);
         check(returned.type === "throw", "other families reject Number slot");
     }
@@ -293,11 +293,11 @@ function testLengths(realm: Realm): void {
         const returned = target.defineOwnProperty("length", { value: obj(box) }, evaluator.context, loc);
         if (payload === 2 || payload === 0) {
             check(returned.type === "normal" && returned.value, "valid length");
-            check(sameValue(target.get("length"), num(payload === 0 ? 0 : 2)) && target.getOwnProperty("2") === undefined, "truncated storage/+0");
+            check(sameValue(target.get("length", evaluator.context, loc), num(payload === 0 ? 0 : 2)) && target.getOwnProperty("2") === undefined, "truncated storage/+0");
         } else {
             if (returned.type !== "throw") throw new Error("N invalid length accepted");
             error(returned, "invalid array length", loc, "RangeError");
-            check(sameValue(target.get("length"), num(3)) && sameValue(target.get("2"), num(30)), "invalid length atomicity");
+            check(sameValue(target.get("length", evaluator.context, loc), num(3)) && sameValue(target.get("2", evaluator.context, loc), num(30)), "invalid length atomicity");
         }
         keys(box.reads, [wellKnownToPrimitive, "valueOf", wellKnownToPrimitive, "valueOf"]);
         check(evaluator.steps === 4, "two uncached length conversions");
@@ -318,8 +318,8 @@ function testLengths(realm: Realm): void {
     const changed = target.defineOwnProperty("length", { value: obj(box) }, evaluator.context, loc);
     if (changed.type !== "throw") throw new Error("N cached length result");
     error(changed, "invalid array length", loc, "RangeError");
-    check(calls === 2 && evaluator.steps === 4 && sameValue(target.get("length"), num(3))
-        && sameValue(target.get("2"), num(30)), "fresh method/result and atomicity");
+    check(calls === 2 && evaluator.steps === 4 && sameValue(target.get("length", evaluator.context, loc), num(3))
+        && sameValue(target.get("2", evaluator.context, loc), num(30)), "fresh method/result and atomicity");
     for (const payload of [2.9, -1]) {
         const active = new Evaluator(realm);
         const holder = realm.createObject();
@@ -361,7 +361,7 @@ function testGuestConsumers(): void {
     const primitiveMember = realm.global.bindings.get("primitiveMember");
     if (primitiveMember === undefined) throw new Error("missing primitiveMember");
     const primitiveRead = evaluator.call(primitiveMember.value, UNDEFINED, [], loc);
-    check(primitiveRead.type === "normal" && sameValue(primitiveRead.value, realm.numberPrototype.get("valueOf")), "primitiveMember positive read");
+    check(primitiveRead.type === "normal" && sameValue(primitiveRead.value, realm.numberPrototype.get("valueOf", evaluator.context, loc)), "primitiveMember positive read");
     const negatives: { name: string; line: number; column: number; message: string; errorName: string }[] = [
         { name: "invalidLength", line: 75, column: 5, message: "invalid array length", errorName: "RangeError" },
         { name: "invalidReceiver", line: 78, column: 12, message: "receiver is not a number", errorName: "TypeError" },
@@ -379,8 +379,8 @@ function testGuestConsumers(): void {
     check(thrown.type === "throw" && sameValue(thrown.value, str("argument sentinel"))
         && thrown.diagnostic.loc.line === 87 && thrown.diagnostic.loc.column === 5, "argument abrupt before receiver validation");
     const target = realm.global.bindings.get("target");
-    check(target !== undefined && target.value.kind === "object" && sameValue(target.value.object.get("length"), num(3))
-        && sameValue(target.value.object.get("2"), num(3)), "fixture invalid length preserves storage");
+    check(target !== undefined && target.value.kind === "object" && sameValue(target.value.object.get("length", evaluator.context, loc), num(3))
+        && sameValue(target.value.object.get("2", evaluator.context, loc), num(3)), "fixture invalid length preserves storage");
 }
 
 
@@ -400,8 +400,8 @@ function testMapLimits(): void {
     }));
     const evaluator = new Evaluator(realm);
     const mapped = result(mapObjectDefaultArray(input, callback, UNDEFINED, evaluator.context, loc));
-    check(mapped.kind === "object" && sameValue(mapped.object.get("0"), num(11))
-        && sameValue(mapped.object.get("1"), num(21)) && sameValue(mapped.object.get("length"), num(2))
+    check(mapped.kind === "object" && sameValue(mapped.object.get("0", evaluator.context, loc), num(11))
+        && sameValue(mapped.object.get("1", evaluator.context, loc), num(21)) && sameValue(mapped.object.get("length", evaluator.context, loc), num(2))
         && order === "01" && evaluator.steps === 4, "map exact values/order/work");
     order = "";
     const tight = new Evaluator(realm, 2);
@@ -421,11 +421,11 @@ class RadixReads extends GuestObject {
     reads: PropertyKey[] = [];
     abrupt: ValueCompletion | null = null;
     fault: Error | null = null;
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.reads.push(key);
         if (this.fault !== null) throw this.fault;
         if (this.abrupt !== null) return this.abrupt;
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 function testNumberToString(): void {
@@ -433,7 +433,8 @@ function testNumberToString(): void {
     const b = new Realm((_line) => {});
     const c = new Realm((_line) => {});
     const d = new Realm((_line) => {});
-    const method = b.numberPrototype.get("toString");
+    const hostContext: OperationContext = { realm: b, call: (_callee, _receiver, _args, _loc): ValueCompletion => { throw new Error("unexpected inspection call"); }, tick: (_loc): ValueCompletion => { throw new Error("unexpected inspection tick"); } };
+    const method = b.numberPrototype.get("toString", hostContext, loc);
     const e = new Evaluator(a);
     const range = "radix must be between 2 and 36";
     const symbol: Value = { kind: "symbol", value: new GuestSymbol("radix") };
@@ -503,7 +504,8 @@ function testNumberToString(): void {
 }
 
 function testRadixAbrupt(a: Realm, b: Realm, c: Realm, d: Realm): void {
-    const method = b.numberPrototype.get("toString");
+    const hostContext: OperationContext = { realm: b, call: (_callee, _receiver, _args, _loc): ValueCompletion => { throw new Error("unexpected inspection call"); }, tick: (_loc): ValueCompletion => { throw new Error("unexpected inspection tick"); } };
+    const method = b.numberPrototype.get("toString", hostContext, loc);
     const sentinel = failure("RangeError", "radix sentinel", { line: 22, column: 3 });
     const hostFault = new Error("radix host sentinel");
     for (const mode of ["normal", "get", "call", "hostGet", "hostCall", "tick", "callGuard"]) {
@@ -520,7 +522,7 @@ function testRadixAbrupt(a: Realm, b: Realm, c: Realm, d: Realm): void {
         })));
         const bridge = obj(c.createBuiltin("bridge", 0, (_r, _args, context, at) => {
             check(context.realm === c && active.calls === 1, "C bridge entry");
-            const returned = context.call(c.functionPrototype.get("call"), method, [num(255), obj(radix)], at);
+            const returned = context.call(c.functionPrototype.get("call", active.context, loc), method, [num(255), obj(radix)], at);
             check(context.realm === c && active.calls === 1, "C forwarding restored");
             return returned;
         }));
@@ -598,19 +600,20 @@ function testNumberStringRuntime(): void {
 class RadixBoundary extends RadixReads {
     target = 1;
     sentinel: ValueCompletion = normal();
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         if (this.reads.length + 1 === this.target) {
             this.reads.push(key);
             return this.sentinel;
         }
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 function testRadixBoundaries(): void {
     const a = new Realm((_line) => {});
     const b = new Realm((_line) => {});
     const d = new Realm((_line) => {});
-    const method = b.numberPrototype.get("toString");
+    const hostContext: OperationContext = { realm: b, call: (_callee, _receiver, _args, _loc): ValueCompletion => { throw new Error("unexpected inspection call"); }, tick: (_loc): ValueCompletion => { throw new Error("unexpected inspection tick"); } };
+    const method = b.numberPrototype.get("toString", hostContext, loc);
     const sentinel = failure("TypeError", "boundary sentinel", loc);
     for (const boundary of [1, 2, 3]) {
         for (const mode of ["get", "tick", "call"]) {

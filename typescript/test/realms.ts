@@ -29,14 +29,14 @@ const av = a.global.bindings.get("console");
 const bv = b.global.bindings.get("console");
 if (av === undefined || bv === undefined || av.value.kind !== "object" || bv.value.kind !== "object") throw new Error("missing console");
 if (av.value.object === bv.value.object) throw new Error("shared console");
-const al = av.value.object.get("log"); const bl = bv.value.object.get("log");
+const al = av.value.object.get("log", aContext, { line: 1, column: 1 }); const bl = bv.value.object.get("log", bContext, { line: 1, column: 1 });
 if (al.kind !== "object" || bl.kind !== "object" || al.object === bl.object) throw new Error("shared builtin");
 const target = new GuestObject();
 target.bootstrapDefine("fixed", { value: { kind: "number", value: 1 }, writable: false, enumerable: false, configurable: false });
 const write = target.set("fixed", UNDEFINED, aContext, { line: 1, column: 1 });
-if (write.type !== "throw" || target.get("fixed").kind !== "number") throw new Error("descriptor write check failed");
+if (write.type !== "throw" || target.get("fixed", aContext, { line: 1, column: 1 }).kind !== "number") throw new Error("descriptor write check failed");
 const d = target.properties.get("fixed");
-if (d === undefined || d.writable || d.enumerable || d.configurable) throw new Error("descriptor flags failed");
+if (d === undefined || d.kind !== "data" || d.writable || d.enumerable || d.configurable) throw new Error("descriptor flags failed");
 a.registerBuiltin(target, "test", 1, (receiver, args, _context, _loc) => {
     if (receiver.kind !== "object" || receiver.object !== target || args.length !== 1) throw new Error("builtin call boundary failed");
     return normal(args[0]);
@@ -66,26 +66,26 @@ for (let i = 0; i < constantNames.length; i++) {
     const key = constantNames[i];
     for (const namespace of [an, bn]) {
         const descriptor = namespace.properties.get(key);
-        if (descriptor === undefined || descriptor.writable || descriptor.enumerable || descriptor.configurable || descriptor.value.kind !== "number") throw new Error("Number constant flags: " + formatPropertyKey(key));
+        if (descriptor === undefined || descriptor.kind !== "data" || descriptor.writable || descriptor.enumerable || descriptor.configurable || descriptor.value.kind !== "number") throw new Error("Number constant flags: " + formatPropertyKey(key));
         const actual = descriptor.value.value;
         const expected = constantValues[i];
         if (!(Number.isNaN(expected) ? Number.isNaN(actual) : actual === expected)) throw new Error("Number constant value: " + formatPropertyKey(key));
-        if (namespace.set(key, UNDEFINED, (namespace === an ? aContext : bContext), { line: 1, column: 1 }).type !== "throw" || namespace.get(key) !== descriptor.value) throw new Error("Number constant write: " + formatPropertyKey(key));
+        if (namespace.set(key, UNDEFINED, (namespace === an ? aContext : bContext), { line: 1, column: 1 }).type !== "throw" || namespace.get(key, namespace === an ? aContext : bContext, { line: 1, column: 1 }) !== descriptor.value) throw new Error("Number constant write: " + formatPropertyKey(key));
     }
 }
 for (const key of ["isNaN", "isFinite"]) {
-    const ap = an.get(key);
-    const bp = bn.get(key);
+    const ap = an.get(key, aContext, { line: 1, column: 1 });
+    const bp = bn.get(key, bContext, { line: 1, column: 1 });
     if (ap.kind !== "object" || bp.kind !== "object" || ap.object === bp.object) throw new Error("Number predicate identity");
     for (const namespace of [an, bn]) {
         const descriptor = namespace.properties.get(key);
-        if (descriptor === undefined || !descriptor.writable || descriptor.enumerable || !descriptor.configurable || descriptor.value.kind !== "object") throw new Error("Number predicate flags");
+        if (descriptor === undefined || descriptor.kind !== "data" || !descriptor.writable || descriptor.enumerable || !descriptor.configurable || descriptor.value.kind !== "object") throw new Error("Number predicate flags");
         const predicate = descriptor.value.object;
         if (predicate.callable === null || predicate.callable.kind !== "builtin") throw new Error("Number predicate callable");
         const name = predicate.properties.get("name");
         const length = predicate.properties.get("length");
-        if (name === undefined || name.writable || name.enumerable || !name.configurable || name.value.kind !== "string" || name.value.value !== key) throw new Error("Number predicate name");
-        if (length === undefined || length.writable || length.enumerable || !length.configurable || length.value.kind !== "number" || length.value.value !== 1) throw new Error("Number predicate length");
+        if (name === undefined || name.kind !== "data" || name.writable || name.enumerable || !name.configurable || name.value.kind !== "string" || name.value.value !== key) throw new Error("Number predicate name");
+        if (length === undefined || length.kind !== "data" || length.writable || length.enumerable || !length.configurable || length.value.kind !== "number" || length.value.value !== 1) throw new Error("Number predicate length");
         for (const receiver of [UNDEFINED, { kind: "null" } as const, { kind: "number", value: NaN } as const, { kind: "object", object: namespace } as const]) {
             const result = new Evaluator(namespace === an ? a : b).call(descriptor.value, receiver, [{ kind: "number", value: key === "isNaN" ? NaN : 1 }], { line: 1, column: 1 });
             if (result.type !== "normal" || result.value.kind !== "boolean" || !result.value.value) throw new Error("Number predicate receiver");
@@ -93,7 +93,7 @@ for (const key of ["isNaN", "isFinite"]) {
     }
     if (ap.object.set("realmMarker", UNDEFINED, aContext, { line: 1, column: 1 }).type !== "normal") throw new Error("realm marker write failed");
     if (bp.object.properties.has("realmMarker")) throw new Error("Number shared predicate state");
-    if (an.set(key, UNDEFINED, aContext, { line: 1, column: 1 }).type !== "normal" || bn.get(key) !== bp) throw new Error("Number shared namespace state");
+    if (an.set(key, UNDEFINED, aContext, { line: 1, column: 1 }).type !== "normal" || bn.get(key, bContext, { line: 1, column: 1 }) !== bp) throw new Error("Number shared namespace state");
 }
 const rebind = run("Number = 5;", a);
 if (rebind.phase !== "runtime" || rebind.completion.type !== "normal" || numberNamespace(b) !== bn) throw new Error("Number realm binding isolation");
@@ -118,8 +118,8 @@ function graphPut(object: GuestObject, key: string, value: Value): void {
 function metadata(object: GuestObject, expectedName: string, expectedLength: number): void {
     const name = object.getOwnProperty("name");
     const length = object.getOwnProperty("length");
-    checkGraph(name !== undefined && sameValue(name.value, { kind: "string", value: expectedName }) && !name.writable && !name.enumerable && name.configurable, "G5 name descriptor");
-    checkGraph(length !== undefined && sameValue(length.value, numberValue(expectedLength)) && !length.writable && !length.enumerable && length.configurable, "G5 length descriptor, including positive zero");
+    checkGraph(name !== undefined && name.kind === "data" && sameValue(name.value, { kind: "string", value: expectedName }) && !name.writable && !name.enumerable && name.configurable, "G5 name descriptor");
+    checkGraph(length !== undefined && length.kind === "data" && sameValue(length.value, numberValue(expectedLength)) && !length.writable && !length.enumerable && length.configurable, "G5 length descriptor, including positive zero");
 }
 const at = { line: 19, column: 4 };
 // G7: no evaluator exists while bootstrap runs; output would be a host fault.
@@ -131,6 +131,7 @@ for (let i = 0; i < roots.length; i++) {
     for (let j = i + 1; j < roots.length; j++) checkGraph(roots[i] !== roots[j], "G1 six distinct roots");
 }
 for (const realm of [r1, r2]) {
+    const hostContext: OperationContext = { realm, call: (_c, _r, _a, _l): ValueCompletion => { throw new Error("unexpected inspection call"); }, tick: (_l): ValueCompletion => { throw new Error("unexpected inspection tick"); } };
     const o = realm.objectPrototype;
     const f = realm.functionPrototype;
     const ar = realm.arrayPrototype;
@@ -139,9 +140,9 @@ for (const realm of [r1, r2]) {
     checkGraph(f.callable !== null && f.callable.realm === realm, "R1 root owner");
     checkGraph(stringKeys(o.ownPropertyKeys()).join(",") === "valueOf,toString" && stringKeys(f.ownPropertyKeys()).join(",") === "name,length,call,toString" && stringKeys(ar.ownPropertyKeys()).join(",") === "length,join,toString", "G17 exact initial keys");
     for (const root of [o, f, ar]) {
-        checkGraph(root.get("valueOf") === o.get("valueOf"), "G17 inherited valueOf");
-        checkGraph(root.get("join").kind === (root === ar ? "object" : "undefined"), "G17 Array join only");
-        for (const key of ["constructor", "map"]) checkGraph(root.get(key).kind === "undefined", "G17 missing methods");
+        checkGraph(root.get("valueOf", hostContext, at) === o.get("valueOf", hostContext, at), "G17 inherited valueOf");
+        checkGraph(root.get("join", hostContext, at).kind === (root === ar ? "object" : "undefined"), "G17 Array join only");
+        for (const key of ["constructor", "map"]) checkGraph(root.get(key, hostContext, at).kind === "undefined", "G17 missing methods");
     }
     metadata(f, "", 0);
     for (const name of ["console", "Number"]) {
@@ -150,8 +151,8 @@ for (const realm of [r1, r2]) {
         const names = name === "console" ? ["log"] : ["isNaN", "isFinite"];
         for (const key of names) {
             const method = namespace.getOwnProperty(key);
-            checkGraph(method !== undefined && method.writable && !method.enumerable && method.configurable, "G5 installation descriptor");
-            const fn = graphObject(namespace.get(key));
+            checkGraph(method !== undefined && method.kind === "data" && method.writable && !method.enumerable && method.configurable, "G5 installation descriptor");
+            const fn = graphObject(namespace.get(key, hostContext, at));
             checkGraph(fn.getPrototypeOf() === f && fn.callable !== null, "G9 builtin chain");
             checkGraph(fn.callable !== null && fn.callable.realm === realm, "R1 builtin owner");
             metadata(fn, key, key === "log" ? 0 : 1);
@@ -161,10 +162,11 @@ for (const realm of [r1, r2]) {
 }
 // G2/G3: immutable slot is independent from property extensibility.
 const immutableRealm = new Realm((_line) => {});
+const immutableContext: OperationContext = { realm: immutableRealm, call: (_c, _r, _a, _l): ValueCompletion => { throw new Error("unexpected inspection call"); }, tick: (_l): ValueCompletion => { throw new Error("unexpected inspection tick"); } };
 const immutable = immutableRealm.objectPrototype;
 checkGraph(immutable.setPrototypeOf(null).value && !immutable.setPrototypeOf(new GuestObject()).value, "G2 immutable prototype");
 graphPut(immutable, "x", numberValue(7));
-checkGraph(sameValue(immutable.get("x"), numberValue(7)) && immutable.getPrototypeOf() === null, "G2 mutable properties");
+checkGraph(sameValue(immutable.get("x", immutableContext, at), numberValue(7)) && immutable.getPrototypeOf() === null, "G2 mutable properties");
 immutable.preventExtensions();
 checkGraph(immutable.setPrototypeOf(null).value && !immutable.setPrototypeOf(r1.objectPrototype).value, "G2 frozen same slot");
 checkGraph(r1.createObject().getPrototypeOf() === r1.objectPrototype && new GuestObject().getPrototypeOf() === null && new GuestArray().getPrototypeOf() === null, "G3 explicit null defaults");
@@ -187,13 +189,13 @@ metadata(r1.createBuiltin("zero", -0, (_receiver, _args, _context, _loc) => norm
 let bootstrapFault = false;
 try { r1.arrayPrototype.bootstrapDefine("length", { value: objectValue(r1.createObject()) }); }
 catch (error) { bootstrapFault = error instanceof Error; }
-checkGraph(bootstrapFault && sameValue(r1.arrayPrototype.get("length"), numberValue(0)), "G7 invalid bootstrap length host fault");
+checkGraph(bootstrapFault && sameValue(r1.arrayPrototype.get("length", limited.context, at), numberValue(0)), "G7 invalid bootstrap length host fault");
 const initialLength = r1.arrayPrototype.getOwnProperty("length");
-checkGraph(initialLength !== undefined && sameValue(initialLength.value, numberValue(0)) && initialLength.writable && !initialLength.enumerable && !initialLength.configurable, "G6 array root length");
+checkGraph(initialLength !== undefined && initialLength.kind === "data" && sameValue(initialLength.value, numberValue(0)) && initialLength.writable && !initialLength.enumerable && !initialLength.configurable, "G6 array root length");
 const growth = r1.arrayPrototype.defineOwnProperty("2", { value: numberValue(9), writable: true, enumerable: true, configurable: true }, active.context, at);
-checkGraph(growth.type === "normal" && growth.value && sameValue(r1.arrayPrototype.get("length"), numberValue(3)), "G6 exotic growth");
+checkGraph(growth.type === "normal" && growth.value && sameValue(r1.arrayPrototype.get("length", active.context, at), numberValue(3)), "G6 exotic growth");
 const shrink = r1.arrayPrototype.defineOwnProperty("length", { value: numberValue(1) }, active.context, at);
-checkGraph(shrink.type === "normal" && shrink.value && sameValue(r1.arrayPrototype.get("length"), numberValue(1)) && !r1.arrayPrototype.properties.has("2"), "G6 exotic shrink");
+checkGraph(shrink.type === "normal" && shrink.value && sameValue(r1.arrayPrototype.get("length", active.context, at), numberValue(1)) && !r1.arrayPrototype.properties.has("2"), "G6 exotic shrink");
 checkGraph(active.steps === 0 && active.calls === 0, "G15 allocation and primitive definitions add no ticks");
 // G8/G10: parsed allocations, inherited lookup and own shadowing.
 graphPut(r1.objectPrototype, "x", numberValue(7));
@@ -209,30 +211,30 @@ const literalArray = graphObject(graphBinding(r1, "array"));
 const declared = graphObject(graphBinding(r1, "declared"));
 checkGraph(literalObject.getPrototypeOf() === r1.objectPrototype && literalArray.getPrototypeOf() === r1.arrayPrototype && declared.getPrototypeOf() === r1.functionPrototype && graphObject(graphBinding(r1, "expression")).getPrototypeOf() === r1.functionPrototype, "G8 literal/declaration/expression roots");
 checkGraph(declared.callable !== null && declared.callable.kind === "guest" && declared.callable.environment === r1.global, "G8 captured environment");
-checkGraph(!declared.properties.has("name") && !declared.properties.has("length") && sameValue(declared.get("length"), numberValue(0)), "G8 partial inherited function metadata");
+checkGraph(!declared.properties.has("name") && !declared.properties.has("length") && sameValue(declared.get("length", active.context, at), numberValue(0)), "G8 partial inherited function metadata");
 const nested = graphObject(graphBinding(r1, "nested"));
-checkGraph(nested.get("object") === graphBinding(r1, "object") && nested.get("fn") === graphBinding(r1, "declared") && graphObject(nested.get("array")).get("0") === graphBinding(r1, "object"), "G8 retained nested Values");
+checkGraph(nested.get("object", active.context, at) === graphBinding(r1, "object") && nested.get("fn", active.context, at) === graphBinding(r1, "declared") && graphObject(nested.get("array", active.context, at)).get("0", active.context, at) === graphBinding(r1, "object"), "G8 retained nested Values");
 const firstFresh = graphObject(graphBinding(r1, "first"));
 const secondFresh = graphObject(graphBinding(r1, "second"));
 checkGraph(firstFresh !== secondFresh, "G8 fresh outer arrays");
 for (const key of ["0", "1", "2"]) {
-    const left = graphObject(firstFresh.get(key));
-    const right = graphObject(secondFresh.get(key));
+    const left = graphObject(firstFresh.get(key, active.context, at));
+    const right = graphObject(secondFresh.get(key, active.context, at));
     const expected = key === "0" ? r1.objectPrototype : key === "1" ? r1.arrayPrototype : r1.functionPrototype;
     checkGraph(left !== right && left.getPrototypeOf() === expected && right.getPrototypeOf() === expected, "G8 repeated nested allocations");
 }
 checkGraph(sameValue(graphBinding(r1, "inheritedX"), numberValue(7)) && sameValue(graphBinding(r1, "inheritedY"), numberValue(8)) && sameValue(graphBinding(r1, "inheritedZ"), numberValue(9)) && sameValue(graphBinding(r1, "shadow"), numberValue(10)), "G10 inherited values/shadow");
 checkGraph(stringKeys(literalObject.ownPropertyKeys()).join(",") === "x" && !declared.properties.has("y") && !literalArray.properties.has("z"), "G10 reads do not define");
-checkGraph(literalObject.internalDelete("x").type === "normal" && sameValue(literalObject.get("x"), numberValue(7)), "G10 delete restores inheritance");
+checkGraph(literalObject.internalDelete("x").type === "normal" && sameValue(literalObject.get("x", active.context, at), numberValue(7)), "G10 delete restores inheritance");
 const readonlyWrite = active.context.call(graphBinding(r1, "readonlyWrite"), UNDEFINED, [], at);
 checkGraph(readonlyWrite.type === "throw" && readonlyWrite.diagnostic.name === "TypeError" && sameValue(graphBinding(r1, "effects"), numberValue(1)) && !literalObject.properties.has("fixed"), "G10 readonly write after RHS effect");
 // G11: transfer Values verbatim; defining-Realm entry preserves lexical ownership.
 for (const name of ["object", "array", "declared"]) {
     const value = graphBinding(r1, name);
     r2.global.bindings.set(name, { initialized: true, mutable: true, value });
-    checkGraph(graphBinding(r2, name) === value && sameValue(graphObject(value).get("x"), numberValue(7)), "G11 retained foreign identity/inheritance");
+    checkGraph(graphBinding(r2, name) === value && sameValue(graphObject(value).get("x", active.context, at), numberValue(7)), "G11 retained foreign identity/inheritance");
 }
-checkGraph(r2.createObject().get("x").kind === "undefined" && stringKeys(r2.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString", "G11 independent root mutation");
+checkGraph(r2.createObject().get("x", active.context, at).kind === "undefined" && stringKeys(r2.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString", "G11 independent root mutation");
 const foreignActive = new Evaluator(r2);
 const foreignContext = foreignActive.context;
 const retained = foreignActive.context.call(graphBinding(r1, "declared"), UNDEFINED, [], at);
@@ -249,7 +251,7 @@ for (const name of [
 ]) {
     const completion = active.context.call(graphBinding(r1, name), UNDEFINED, [], at);
     if (name === "lengthArray") {
-        checkGraph(completion.type === "normal" && sameValue(graphObject(graphBinding(r1, "array")).get("length"), numberValue(0)), "G14 Array length zero");
+        checkGraph(completion.type === "normal" && sameValue(graphObject(graphBinding(r1, "array")).get("length", active.context, at), numberValue(0)), "G14 Array length zero");
     } else if (name.startsWith("length")) {
         checkGraph(completion.type === "throw" && completion.diagnostic.name === "RangeError" && completion.diagnostic.message === "invalid array length" && completion.diagnostic.loc.line > 1, "G14 invalid length " + name);
     } else {
@@ -286,9 +288,9 @@ for (const realm of [boxA, boxB]) {
     const roots: GuestObject[] = [realm.booleanPrototype, realm.numberPrototype, realm.stringPrototype];
     for (const root of roots) {
         checkGraph(root.getPrototypeOf() === realm.objectPrototype && root.callable === null && root.isExtensible(), "W1 root graph/flags");
-        checkGraph(root.get("valueOf") !== realm.objectPrototype.get("valueOf"), "N roots own payload valueOf");
+        checkGraph(root.get("valueOf", zeroHookContext, at) !== realm.objectPrototype.get("valueOf", zeroHookContext, at), "N roots own payload valueOf");
         for (const key of ["constructor"]) {
-            checkGraph(root.get(key).kind === "undefined", "W17 missing wrapper methods");
+            checkGraph(root.get(key, zeroHookContext, at).kind === "undefined", "W17 missing wrapper methods");
         }
     }
     checkGraph(!realm.booleanPrototype.booleanData && 1 / realm.numberPrototype.numberData === Infinity && realm.stringPrototype.stringData === "", "W1 root payloads");
@@ -317,7 +319,7 @@ for (const primitive of primitives) {
     }
 }
 class NoBoxReads extends GuestObject {
-    internalGet(_key: PropertyKey, _receiver: Value, _loc: { line: number; column: number }): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _loc: { line: number; column: number }): ValueCompletion {
         throw new Error("W3 boxing read an object");
     }
 }

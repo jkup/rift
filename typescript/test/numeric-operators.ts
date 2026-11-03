@@ -1,3 +1,4 @@
+import type { OperationContext } from "../src/runtime.js";
 import { GuestSymbol } from "../src/symbols.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
@@ -95,7 +96,7 @@ const sentinel: ThrowCompletion = {
 };
 class ObservedObject extends GuestObject {
     reads = 0;
-    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+    override internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _loc: Location): ValueCompletion {
         this.reads++;
         return sentinel;
     }

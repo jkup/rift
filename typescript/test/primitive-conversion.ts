@@ -41,7 +41,7 @@ class Observed extends GuestObject {
     failAt = 0;
     protocolReads = 0;
     expected: Value = UNDEFINED;
-    override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, context: OperationContext, location: Location): ValueCompletion {
         check(receiver === this.expected && (!this.requireLocation || location === loc), "exact Get receiver/location");
         if (key === wellKnownToPrimitive) {
             this.protocolReads++;
@@ -50,7 +50,7 @@ class Observed extends GuestObject {
         this.reads++;
         this.trace += "Get " + formatPropertyKey(key) + ";";
         if (this.reads === this.failAt) return sentinel;
-        return super.internalGet(key, receiver, location);
+        return super.internalGet(key, receiver, context, location);
     }
 }
 function observed(): Observed {
@@ -163,11 +163,11 @@ for (const hint of ["default", "number", "string"] as const) {
 class ObservedArray extends GuestArray {
     expected: Value = UNDEFINED;
     reads = 0;
-    override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, context: OperationContext, location: Location): ValueCompletion {
         if (key === wellKnownToPrimitive) return normal(UNDEFINED);
         check(receiver === this.expected && location === loc && key === "valueOf", "array Get receiver/key/location");
         this.reads++;
-        return super.internalGet(key, receiver, location);
+        return super.internalGet(key, receiver, context, location);
     }
 }
 // H10: ordinary, array and callable inputs, own and inherited methods.
@@ -310,9 +310,9 @@ const conversionB = new Realm((_line) => {});
 const conversionC = new Realm((_line) => {});
 const conversionEntry = new Evaluator(conversionA);
 class RealmObserved extends GuestObject {
-    override internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         check(conversionEntry.context.realm === conversionA, "R19/R20 Get runs in caller Realm");
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 const conversionObject = new RealmObserved(conversionA.objectPrototype);
@@ -382,7 +382,7 @@ for (const path of ["key", "operator", "length", "array length"]) {
         }
         check(caught === (mode === "fault") && hooks === 1, "R20 exact fault and one hook");
         check(conversionEntry.context.realm === conversionA && conversionEntry.calls === 0 && conversionEntry.depth === 0, "R20 restore caller");
-        const unchangedLength = target.get("length");
+        const unchangedLength = target.get("length", conversionEntry.context, loc);
         check(unchangedLength.kind === "number" && unchangedLength.value === 1 && target.getOwnProperty("0") !== undefined, "R20 no array writes");
     }
 }
@@ -416,8 +416,8 @@ for (const mode of ["throw", "fault"]) {
         if (!(error instanceof Error) || error !== conversionFault) throw error;
         caught = true;
     }
-    const length = unchanged.get("length");
-    check(caught === (mode === "fault") && calls === 2 && length.kind === "number" && length.value === 1 && unchanged.get("0") === conversionToken, "R20 second failure precedes writes/deletion");
+    const length = unchanged.get("length", conversionEntry.context, loc);
+    check(caught === (mode === "fault") && calls === 2 && length.kind === "number" && length.value === 1 && unchanged.get("0", conversionEntry.context, loc) === conversionToken, "R20 second failure precedes writes/deletion");
     check(conversionEntry.context.realm === conversionA && conversionEntry.calls === 0 && conversionEntry.depth === 0, "R20 second failure restoration");
 }
 
@@ -427,10 +427,10 @@ class ProtocolObserved extends GuestObject {
     expected: Value = UNDEFINED;
     events = "";
     getFailure = false;
-    override internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         check(key === wellKnownToPrimitive && receiver === this.expected && at === loc, "P2 exact protocol Get");
         this.events += "Get;";
-        return this.getFailure ? sentinel : super.internalGet(key, receiver, at);
+        return this.getFailure ? sentinel : super.internalGet(key, receiver, context, at);
     }
 }
 const symbolResult: Value = { kind: "symbol", value: new GuestSymbol("result") };
@@ -599,7 +599,7 @@ for (const mode of ["normal", "first throw", "second throw", "mismatch"]) {
             check(secondReceiver === receiver && secondArgs.length === 1 && secondArgs[0].kind === "string" && secondArgs[0].value === "number"
                 && secondContext === context && secondLoc === at, "P8 fresh second conversion");
             calls += "second;";
-            const grown = array.get("length");
+            const grown = array.get("length", active.context, loc);
             check(grown.kind === "number" && grown.value === 7, "P8 prior mutation visible");
             return mode === "second throw" ? sentinel : normal(num(mode === "mismatch" ? 3 : 2));
         }));
@@ -612,7 +612,7 @@ for (const mode of ["normal", "first throw", "second throw", "mismatch"]) {
     const firstOnly = mode === "first throw";
     check(calls === (firstOnly ? "first;" : "first;second;") && source.events === (firstOnly ? "Get;" : "Get;Get;")
         && active.steps === (firstOnly ? 1 : 2), "P8 complete conversion counts");
-    const length = array.get("length");
+    const length = array.get("length", active.context, loc);
     check(length.kind === "number" && length.value === (mode === "normal" ? 2 : 7)
         && (array.getOwnProperty("6") === undefined) === (mode === "normal"), "P8 post-hook length and abrupt writes");
 }
@@ -634,11 +634,11 @@ for (const row of [{ name: "protocolRead", value: 17 }, { name: "protocolSum", v
 const less = binding(protocolRealm, "protocolLess");
 check(less.kind === "boolean" && less.value, "P2 relational result");
 const mapped = binding(protocolRealm, "protocolMapped");
-check(mapped.kind === "object" && mapped.object.get("0").kind === "number" && mapped.object.getOwnProperty("1") === undefined, "P2 map hole preserved");
+check(mapped.kind === "object" && mapped.object.get("0", protocolEvaluator.context, loc).kind === "number" && mapped.object.getOwnProperty("1") === undefined, "P2 map hole preserved");
 if (mapped.kind !== "object") throw new Error("missing mapped object");
-numberResult(normal(mapped.object.get("0")), 10, "P2 map first");
-numberResult(normal(mapped.object.get("2")), 14, "P2 map last");
-numberResult(normal(mapped.object.get("length")), 3, "P2 map converted length");
+numberResult(normal(mapped.object.get("0", protocolEvaluator.context, loc)), 10, "P2 map first");
+numberResult(normal(mapped.object.get("2", protocolEvaluator.context, loc)), 14, "P2 map last");
+numberResult(normal(mapped.object.get("length", protocolEvaluator.context, loc)), 3, "P2 map converted length");
 const protocolTrace = binding(protocolRealm, "protocolTrace");
 check(protocolTrace.kind === "string" && protocolTrace.value === "B;K;R;string;string;default;number;number;number;number;number;number;B;K;string;A;M;", "P2 exact consumer hints/reference/call order");
 

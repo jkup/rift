@@ -19,14 +19,14 @@ function error(r: ValueCompletion, name: string, column: number): void {
 }
 function desc(o: GuestObject, name: string, value: Value, w: boolean = true, e: boolean = true, c: boolean = false): void {
     const d = o.getOwnProperty(name);
-    check(d !== undefined && sameValue(d.value, value) && d.writable === w && d.enumerable === e && d.configurable === c, "descriptor " + name);
+    check(d !== undefined && d.kind === "data" && sameValue(d.value, value) && d.writable === w && d.enumerable === e && d.configurable === c, "descriptor " + name);
 }
 function seed(o: GuestObject, name: string, w: boolean = true, e: boolean = true, c: boolean = true): void {
     o.bootstrapDefine(name, { value: num(7), writable: w, enumerable: e, configurable: c });
 }
-function tdz(e: GlobalEnvironment, name: string): void {
+function tdz(e: GlobalEnvironment, name: string, context: OperationContext): void {
     check(e.hasLexicalDeclaration(name), "lexical " + name);
-    error(e.getBindingValue(name, { line: 1, column: 99 }), "ReferenceError", 99);
+    error(e.getBindingValue(name, context, { line: 1, column: 99 }), "ReferenceError", 99);
 }
 function absent(e: GlobalEnvironment, name: string): void { check(!e.hasLexicalDeclaration(name) && e.globalObject.getOwnProperty(name) === undefined, "absent " + name); }
 
@@ -103,7 +103,7 @@ const duplicate = 'function f(){return 1;} var f; function g(){} function f(){re
 
 // G01: direct lexicals stay TDZ; initializer values are never installed.
 {
-    const h = new Harness(); unused(h.run(plan("let x=1;"))); tdz(h.env,"x"); check(h.env.globalObject.getOwnProperty("x") === undefined,"no lexical property");
+    const h = new Harness(); unused(h.run(plan("let x=1;"))); tdz(h.env,"x",h.context); check(h.env.globalObject.getOwnProperty("x") === undefined,"no lexical property");
     const v = new Harness(); unused(v.run(plan("var x=1;"))); desc(v.env.globalObject,"x",UNDEFINED);
 }
 console.log("G01 PASS");
@@ -125,12 +125,12 @@ console.log("G03 PASS");
 const conflicts: [string, string[]][] = [["G04",["let x; var x;","var x; let x;","let x; {var x;}"]],["G05",["let x; let x;"]]];
 for (const [id,texts] of conflicts) {
     for (const text of texts) check(planScriptDeclarations({id,text:'"use strict"; '+text}).kind === "conflict",id+" no plan");
-    if (id === "G05") { const h = new Harness(); unused(h.run(plan("let x; {let x;}"))); tdz(h.env,"x"); }
+    if (id === "G05") { const h = new Harness(); unused(h.run(plan("let x; {let x;}"))); tdz(h.env,"x",h.context); }
     console.log(id + " PASS");
 }
 {
     const h = new Harness(); unused(h.run(plan("var x;"))); error(h.run(plan("let x;")),"SyntaxError",19); desc(h.env.globalObject,"x",UNDEFINED);
-    const v = new Harness(); seed(v.env.globalObject,"x"); unused(v.run(plan("let x;"))); tdz(v.env,"x"); desc(v.env.globalObject,"x",num(7),true,true,true);
+    const v = new Harness(); seed(v.env.globalObject,"x"); unused(v.run(plan("let x;"))); tdz(v.env,"x",v.context); desc(v.env.globalObject,"x",num(7),true,true,true);
 }
 console.log("G06 PASS");
 {
@@ -157,7 +157,7 @@ console.log("G08 PASS");
         const h = new Harness(new GuestObject(proto)); if (!ext) h.env.globalObject.preventExtensions();
         const r = h.run(plan(kind === "function" ? "function x(){}" : kind + " x;"));
         if (!ext && kind !== "let") { error(r,"TypeError",kind === "function" ? 24 : 19); absent(h.env,"x"); }
-        else { unused(r); if (kind === "let") { tdz(h.env,"x"); check(h.env.globalObject.getOwnProperty("x") === undefined,"inherited lexical"); } else desc(h.env.globalObject,"x",kind === "var" ? UNDEFINED : h.markers[0]); }
+        else { unused(r); if (kind === "let") { tdz(h.env,"x",h.context); check(h.env.globalObject.getOwnProperty("x") === undefined,"inherited lexical"); } else desc(h.env.globalObject,"x",kind === "var" ? UNDEFINED : h.markers[0]); }
         desc(proto,"x",num(7),false,false,false);
     }
 }
@@ -167,14 +167,14 @@ console.log("G09 PASS");
         const h = new Harness(); seed(h.env.globalObject,"x"); h.env.globalObject.preventExtensions();
         const r = h.run(plan(kind === "function" ? "function "+name+"(){}" : kind+" "+name+";"));
         if (name === "y" && kind !== "let") error(r,"TypeError",kind === "function" ? 24 : 19);
-        else { unused(r); if (kind === "let") tdz(h.env,name); else desc(h.env.globalObject,name,kind === "var" ? num(7) : h.markers[0],true,true,kind === "var"); }
+        else { unused(r); if (kind === "let") tdz(h.env,name,h.context); else desc(h.env.globalObject,name,kind === "var" ? num(7) : h.markers[0],true,true,kind === "var"); }
     }
 }
 console.log("G10 PASS");
 {
     const p = plan("let fresh; var x; function f(){}");
     const h = new Harness(); unused(h.env.createMutableBinding("x",{line:1,column:1})); error(h.run(p),"SyntaxError",30); absent(h.env,"fresh"); absent(h.env,"f"); check(h.markers.length === 0,"prechecks no callbacks");
-    const ok = new Harness(); unused(ok.run(p)); tdz(ok.env,"fresh");
+    const ok = new Harness(); unused(ok.run(p)); tdz(ok.env,"fresh",ok.context);
     const restricted = new Harness(); seed(restricted.env.globalObject,"fresh",true,true,false); error(restricted.run(p),"SyntaxError",19); check(restricted.ticks.join(",") === "19","restricted earlier");
 }
 console.log("G11 PASS");
@@ -188,8 +188,11 @@ console.log("G11 PASS");
         else unused(r);
         const name = text === "let Number;" ? "Number" : "Infinity";
         check(before !== undefined,"builtin before");
-        if (before !== undefined) desc(h.realm.globalObject,name,before.value,before.writable,before.enumerable,before.configurable);
-        if (name === "Number") tdz(h.realm.globalEnvironment,name);
+        if (before !== undefined) {
+            if (before.kind !== "data") throw new Error("expected data descriptor");
+            desc(h.realm.globalObject,name,before.value,before.writable,before.enumerable,before.configurable);
+        }
+        if (name === "Number") tdz(h.realm.globalEnvironment,name,h.context);
         check(h.markers.length === 0,"builtin no materialization");
     }
 }
@@ -207,7 +210,7 @@ console.log("G13 PASS");
         if (budget < 11) {
             check(r.type === "throw" && h.tickAbrupt !== null && r === h.tickAbrupt && r.origin.kind === "resource-limit" && r.origin.guardCode === "steps" && r.origin.count === budget+1 && r.origin.limit === budget && r.diagnostic.loc.column === expected[budget],"original resource result");
         } else unused(r);
-        if (budget >= 8) tdz(h.env,"l"); else absent(h.env,"l");
+        if (budget >= 8) tdz(h.env,"l",h.context); else absent(h.env,"l");
         check(h.markers.length === (budget >= 9 ? 1 : 0),"allocation prefix");
         if (budget >= 10) desc(h.env.globalObject,"f",h.markers[0]); else absent(h.env,"f");
         if (budget >= 11) desc(h.env.globalObject,"x",UNDEFINED); else absent(h.env,"x");
@@ -243,7 +246,7 @@ for (const host of [false,true]) for (const op of ["R:l","V?:x","L+:l","F?:f","M
     try { const r = h.run(plan("let l; var x; function f(){}")); check(!host && r === h.env.abrupt,"additional abrupt identity"); }
     catch (e) { check(host && e instanceof Error && e === h.env.sentinel,"additional host identity"); caught = true; }
     check(caught === host && h.env.trace[h.env.trace.length-1] === op,"additional stop");
-    if (op === "M:f" || op === "F+:f" || op === "V+:x") tdz(h.env,"l"); else absent(h.env,"l");
+    if (op === "M:f" || op === "F+:f" || op === "V+:x") tdz(h.env,"l",h.context); else absent(h.env,"l");
     if (op === "V+:x") desc(h.env.globalObject,"f",h.markers[0]); else absent(h.env,"f");
     absent(h.env,"x");
 }
@@ -309,7 +312,7 @@ for (let stop = 1; stop <= 11; stop++) {
     let caught = false;
     try { h.run(p); } catch(e) { check(e instanceof Error && e === sentinel,"tick sentinel identity"); caught = true; }
     check(caught && h.ticks.length === stop && h.context.realm === realm && h.calls === 0,"host tick state");
-    if(stop > 8) tdz(h.env,"l"); else absent(h.env,"l");
+    if(stop > 8) tdz(h.env,"l",h.context); else absent(h.env,"l");
     if(stop > 10) desc(h.env.globalObject,"f",h.markers[0]); else absent(h.env,"f");
     absent(h.env,"x");
 }
@@ -319,7 +322,7 @@ for (const kind of ["let","var","function"]) {
     const h = new Harness();
     const p = plan(kind === "function" ? "function "+runtimeName+"(){}" : kind+" "+runtimeName+";");
     unused(h.run(p));
-    if(kind === "let") tdz(h.env,runtimeName);
+    if(kind === "let") tdz(h.env,runtimeName,h.context);
     else desc(h.env.globalObject,runtimeName,kind === "var" ? UNDEFINED : h.markers[0]);
 }
 // More than one lexical/function verifies source-order creation within each phase.
@@ -327,7 +330,7 @@ for (const kind of ["let","var","function"]) {
     const h = new Harness();
     unused(h.run(plan("let a; let b; var x; var y; function f(){} function g(){}")));
     check(h.env.trace.join("|") === "L:a|R:a|L:b|R:b|L:x|L:y|L:f|L:g|F?:g|F?:f|V?:x|V?:y|L+:a|L+:b|M:f|F+:f|M:g|F+:g|V+:x|V+:y","multiple creation order");
-    tdz(h.env,"a"); tdz(h.env,"b");
+    tdz(h.env,"a",h.context); tdz(h.env,"b",h.context);
 }
 {
     const h = new Harness(); unused(h.run(plan("{var x;} if(false){var y;} while(false){var z;} function f(){var inner;}")));

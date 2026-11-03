@@ -1,3 +1,4 @@
+import type { OperationContext } from "../src/runtime.js";
 import { stringKeys } from "./key-assertions.js";
 import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
@@ -43,27 +44,27 @@ function error(c: Completion, name: string, message: string, line: number, colum
 const loc: Location = { line: 77, column: 9 };
 const r = new Realm((_line) => { throw new Error("unexpected output"); });
 const e = new Evaluator(r);
-const call = r.functionPrototype.get("call");
+const call = r.functionPrototype.get("call", e.context, loc);
 const callObject = object(call);
 const other = new Realm((_line) => {});
-check(callObject !== object(other.functionPrototype.get("call")) && callObject.getPrototypeOf() === r.functionPrototype, "per-Realm method and prototype");
+check(callObject !== object(other.functionPrototype.get("call", e.context, loc)) && callObject.getPrototypeOf() === r.functionPrototype, "per-Realm method and prototype");
 check(stringKeys(callObject.ownPropertyKeys()).join(",") === "name,length", "method own metadata only");
 for (const key of ["name", "length"]) {
     const d = callObject.getOwnProperty(key);
-    check(d !== undefined && !d.writable && !d.enumerable && d.configurable, "metadata flags");
+    check(d !== undefined && d.kind === "data" && !d.writable && !d.enumerable && d.configurable, "metadata flags");
 }
-const name = callObject.get("name");
+const name = callObject.get("name", e.context, loc);
 check(name.kind === "string" && name.value === "call", "name call");
-const length = callObject.get("length");
+const length = callObject.get("length", e.context, loc);
 check(length.kind === "number" && length.value === 1, "length one");
 const method = r.functionPrototype.getOwnProperty("call");
-check(method !== undefined && method.writable && !method.enumerable && method.configurable, "method flags");
-check(!r.global.bindings.has("Function") && r.functionPrototype.get("constructor").kind === "undefined", "no constructor");
-check(r.createObject().get("call").kind === "undefined" && r.createArray().get("call").kind === "undefined", "O/A do not inherit call");
+check(method !== undefined && method.kind === "data" && method.writable && !method.enumerable && method.configurable, "method flags");
+check(!r.global.bindings.has("Function") && r.functionPrototype.get("constructor", e.context, loc).kind === "undefined", "no constructor");
+check(r.createObject().get("call", e.context, loc).kind === "undefined" && r.createArray().get("call", e.context, loc).kind === "undefined", "O/A do not inherit call");
 const low = new GuestObject(null, false, { kind: "builtin", initialName: null, realm: r, invoke: (_receiver, _args, _context, _loc) => normal() });
-check(low.get("call").kind === "undefined", "null-root callable stays bare");
+check(low.get("call", e.context, loc).kind === "undefined", "null-root callable stays bare");
 const linked = low.setPrototypeOf(r.functionPrototype);
-check(linked.type === "normal" && low.get("call") === call, "deliberate linking");
+check(linked.type === "normal" && low.get("call", e.context, loc) === call, "deliberate linking");
 const fixture = readFileSync("test/fixtures/function-call.js", "utf8");
 const setup = program(fixture, e);
 check(setup.type === "normal", "runtime-read fixture");
@@ -113,7 +114,7 @@ const emptyCall = e.call(call, empty, [], loc);
 check(result(emptyCall) === UNDEFINED, "missing this/rest builtin");
 // No Get on the target, even for names usually used in call dispatch/metadata.
 class NoLookup extends GuestObject {
-    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion { throw new Error("target property lookup"); }
+    override internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _loc: Location): ValueCompletion { throw new Error("target property lookup"); }
 }
 const opaque = new NoLookup(null, false, {kind: "builtin", initialName: null, realm: r, invoke: (thisArg, _args, _context, _loc) => normal(thisArg)});
 const opaqueCall = e.call(call, value(opaque), [token], loc);
@@ -217,8 +218,8 @@ check(budget.steps === 3 && budget.calls === 0, "no fresh budget on reentry");
 const foreignEval = new Evaluator(other);
 const foreignCall = foreignEval.call(call, binding(r, "foreign"), [token], loc);
 const foreignResult = object(result(foreignCall));
-check(foreignResult.getPrototypeOf() === r.objectPrototype && foreignResult.get("captured") === token && foreignResult.get("receiver") === token, "foreign lexical identity/defining allocation");
-check(object(foreignResult.get("array")).getPrototypeOf() === r.arrayPrototype && object(foreignResult.get("fn")).getPrototypeOf() === r.functionPrototype, "foreign nested allocations use defining Realm");
+check(foreignResult.getPrototypeOf() === r.objectPrototype && foreignResult.get("captured", foreignEval.context, loc) === token && foreignResult.get("receiver", foreignEval.context, loc) === token, "foreign lexical identity/defining allocation");
+check(object(foreignResult.get("array", foreignEval.context, loc)).getPrototypeOf() === r.arrayPrototype && object(foreignResult.get("fn", foreignEval.context, loc)).getPrototypeOf() === r.functionPrototype, "foreign nested allocations use defining Realm");
 check(object(binding(r, "foreign")).getPrototypeOf() === r.functionPrototype && object(token).getPrototypeOf() === r.objectPrototype, "transferred Values not reparented");
 const foreignBuiltin = value(r.createBuiltin("foreign", 0, (thisArg, _args, context, actualLoc) => {
     check(context === foreignEval.context && context.realm === r && actualLoc === loc && thisArg === token, "foreign builtin gets stable context with defining Realm");
@@ -228,18 +229,18 @@ const foreignBuiltinCall = foreignEval.call(call, foreignBuiltin, [token], loc);
 check(result(foreignBuiltinCall) === token, "foreign intrinsic and target");
 check(foreignEval.context.realm === other, "R2 foreign call restores entry Realm");
 // Mutate only R1, while saved intrinsic identity remains usable.
-const otherCall = other.functionPrototype.get("call");
+const otherCall = other.functionPrototype.get("call", foreignEval.context, loc);
 const replaced = r.functionPrototype.set("call", number(7), e.context, loc);
 check(replaced.type === "normal", "replace method");
-check(other.functionPrototype.get("call") === otherCall && object(receiver).get("call").kind === "number", "replacement isolation/inheritance");
+check(other.functionPrototype.get("call", e.context, loc) === otherCall && object(receiver).get("call", e.context, loc).kind === "number", "replacement isolation/inheritance");
 const savedCall = e.call(call, receiver, [token], loc);
 check(result(savedCall) === token, "saved intrinsic after replacement");
 const deleted = r.functionPrototype.internalDelete("call");
-check(deleted.type === "normal" && object(receiver).get("call").kind === "undefined" && other.functionPrototype.get("call") === otherCall, "deletion isolation");
+check(deleted.type === "normal" && object(receiver).get("call", e.context, loc).kind === "undefined" && other.functionPrototype.get("call", e.context, loc) === otherCall, "deletion isolation");
 const renamed = callObject.defineOwnProperty("name", {value: text("changed")}, e.context, loc);
-const otherName = object(otherCall).get("name");
+const otherName = object(otherCall).get("name", e.context, loc);
 check(renamed.type === "normal" && otherName.kind === "string", "metadata mutation independent");
-const changedName = callObject.get("name");
+const changedName = callObject.get("name", e.context, loc);
 check(changedName.kind === "string" && changedName.value === "changed", "metadata mutation took effect");
 check(otherName.kind === "string" && otherName.value === "call", "other metadata unchanged");
 console.log("function call passed");

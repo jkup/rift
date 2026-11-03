@@ -1,3 +1,9 @@
+import { validatePropertyDescriptorUpdate } from "../src/runtime.js";
+import type { DataDescriptor as InspectionDataDescriptor, PropertyDescriptor as InspectionDescriptor } from "../src/runtime.js";
+function dataDescriptor(d: InspectionDescriptor | undefined): InspectionDataDescriptor | undefined {
+    if (d !== undefined && d.kind !== "data") throw new Error("expected data descriptor");
+    return d;
+}
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
@@ -9,7 +15,7 @@ import { toNumber } from "../src/conversion.js";
 import {
     GuestObject, Environment, UNDEFINED as U, normal, failure, sameValue, getValue, putValue,
     type Value, type Completion, type ValueCompletion, type ThrowCompletion, type InternalBooleanCompletion,
-    type PropertyKey, type Builtin, type Reference, type OperationContext, type DataDescriptorUpdate,
+    type PropertyKey, type Builtin, type Reference, type OperationContext, type PropertyDescriptorUpdate,
 } from "../src/runtime.js";
 import type { Expr, Stmt, Location } from "../src/syntax.js";
 
@@ -83,7 +89,7 @@ function saved(ref: Reference, base: Value, key: Value, name: string): void {
 }
 function descriptor(target: GuestObject, key: PropertyKey, value: Value, writable: boolean, enumerable: boolean, configurable: boolean, name: string): void {
     const d = target.getOwnProperty(key);
-    check(d !== undefined && sameValue(d.value, value) && d.writable === writable && d.enumerable === enumerable && d.configurable === configurable, name);
+    check(d !== undefined && d.kind === "data" && sameValue(d.value, value) && d.writable === writable && d.enumerable === enumerable && d.configurable === configurable, name);
 }
 function prototype(realm: Realm, value: Value): GuestObject {
     switch (value.kind) {
@@ -143,13 +149,14 @@ class BooleanBox extends GuestBoolean {
         if (observed.type === "throw" || !observed.value) return observed;
         return super.internalSet(key, value, receiver, context, at);
     }
-    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+    defineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         this.observation.definitions++;
         return super.defineOwnProperty(key, desc, context, at);
     }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.observation.reads++;
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 class NumberBox extends GuestNumber {
@@ -160,13 +167,14 @@ class NumberBox extends GuestNumber {
         if (observed.type === "throw" || !observed.value) return observed;
         return super.internalSet(key, value, receiver, context, at);
     }
-    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+    defineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         this.observation.definitions++;
         return super.defineOwnProperty(key, desc, context, at);
     }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.observation.reads++;
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 class StringBox extends GuestStringObject {
@@ -177,13 +185,14 @@ class StringBox extends GuestStringObject {
         if (observed.type === "throw" || !observed.value) return observed;
         return super.internalSet(key, value, receiver, context, at);
     }
-    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+    defineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         this.observation.definitions++;
         return super.defineOwnProperty(key, desc, context, at);
     }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.observation.reads++;
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 class SymbolBox extends GuestSymbolObject {
@@ -194,13 +203,14 @@ class SymbolBox extends GuestSymbolObject {
         if (observed.type === "throw" || !observed.value) return observed;
         return super.internalSet(key, value, receiver, context, at);
     }
-    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+    defineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         this.observation.definitions++;
         return super.defineOwnProperty(key, desc, context, at);
     }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.observation.reads++;
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 class ObservedRealm extends Realm {
@@ -242,11 +252,12 @@ class Target extends GuestObject {
         if (observed.type === "throw" || !observed.value) return observed;
         return super.internalSet(key, value, receiver, context, at);
     }
-    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
         this.observation.reads++;
         throw F;
     }
-    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+    defineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, context: OperationContext, at: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         this.observation.definitions++;
         if (this.definitionMode === "false") return { type: "normal", value: false };
         if (this.definitionMode === "abrupt") return Q;
@@ -255,10 +266,10 @@ class Target extends GuestObject {
 }
 class Key extends GuestObject {
     mode = "success";
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         if (this.mode === "fault") throw F;
         if (this.mode === "abrupt") return Q;
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 function slot(box: GuestObject): Value {
@@ -460,7 +471,7 @@ for (const name of ["E18 RHSChangesPrototype", "E19 HookUnlocksTarget", "E20 Hoo
     }
     if (name === "E18 RHSChangesPrototype") descriptor(parent, "x", n(1), false, false, false, name + " parent");
     if (name === "E20 HookClosesTarget") check(!target.isExtensible(), name + " closed");
-    if (name === "E21 HookMutatesRHS") check(sameValue(rhsObject.get("m"), n(2)) && binding(realm, "r") !== rhs && result.value === rhs, name + " mutation/identity");
+    if (name === "E21 HookMutatesRHS") check(sameValue(rhsObject.get("m", e.context, loc), n(2)) && binding(realm, "r") !== rhs && result.value === rhs, name + " mutation/identity");
     check(forbidden === 0 && realm.observation.reads === 0 && realm.observation.boxes.length === 0, name + " no coercion/Get/box");
 }
 
@@ -606,8 +617,8 @@ for (const stage of [0, 1, 2]) {
         if (stage === 0) error(result, "property is not writable: length", "E34 FrozenArrayRHS");
         else if (faultMode) check(escaped, "E35 ArrayRHSFailure F");
         else exact(result, "E35 ArrayRHSFailure Q");
-        check(calls === stage && sameValue(target.get("length"), n(3)), "E34/E35 calls/length");
-        if (stage > 0) check(sameValue(target.get("effect"), n(stage)), "E35 retained mutation");
+        check(calls === stage && sameValue(target.get("length", e.context, loc), n(3)), "E34/E35 calls/length");
+        if (stage > 0) check(sameValue(target.get("effect", e.context, loc), n(stage)), "E35 retained mutation");
         saved(ref, base, s("length"), "E34/E35 cache");
         clean(e, realm, "E34/E35");
     }
@@ -752,7 +763,7 @@ for (const name of ["V19 ObjectNew", "V20 ObjectUpdate", "V21 InheritedWritable"
     if (name.startsWith("V36")) check(realm.observation.definitions === 1, name + " definition dispatch once");
     if (name === "V21 InheritedWritable" || name === "V22 InheritedLocked") descriptor(parent, "x", n(1), name === "V21 InheritedWritable", false, false, name + " unchanged parent");
     if (name === "V22 InheritedLocked" || name === "V23 Nonextensible absent" || name === "V36 DefinitionBoundary false" || name === "V36 DefinitionBoundary abrupt") check(target.getOwnProperty("x") === undefined, name + " no own x");
-    if (name === "V33 SymbolObjectKeys") check(sameValue(target.getOwnProperty(s2)!.value, n(2)) && target.getOwnProperty("Symbol(x)") === undefined, name + " symbol identities");
+    if (name === "V33 SymbolObjectKeys") check(sameValue(dataDescriptor(target.getOwnProperty(s2))!.value, n(2)) && target.getOwnProperty("Symbol(x)") === undefined, name + " symbol identities");
 }
 {
     const realm = new Realm((_line) => {});
@@ -806,18 +817,18 @@ for (const name of ["V27 ArrayIndex", "V28 ArrayFrozenLength", "V29 ArrayLength"
     check(realm.observation.boxes.length === 0, name + " no boxing");
     if (name === "V28 ArrayFrozenLength") {
         error(result, "property is not writable: 0", name);
-        check(sameValue(target.get("length"), n(0)) && target.getOwnProperty("0") === undefined, name + " unchanged");
+        check(sameValue(target.get("length", e.context, loc), n(0)) && target.getOwnProperty("0") === undefined, name + " unchanged");
     } else if (name === "V30 InvalidLength") {
         error(result, "invalid array length", name, opLoc, "RangeError");
-        check(sameValue(target.get("length"), n(3)) && sameValue(target.get("2"), n(3)), name + " unchanged");
+        check(sameValue(target.get("length", e.context, loc), n(3)) && sameValue(target.get("2", e.context, loc), n(3)), name + " unchanged");
     } else if (name === "V31 ArrayBlockedShrink") {
         error(result, "property is not writable: length", name);
-        check(sameValue(target.get("length"), n(2)) && sameValue(target.get("0"), n(1)) && sameValue(target.get("1"), n(2)) && target.getOwnProperty("2") === undefined, name + " partial shrink");
+        check(sameValue(target.get("length", e.context, loc), n(2)) && sameValue(target.get("0", e.context, loc), n(1)) && sameValue(target.get("1", e.context, loc), n(2)) && target.getOwnProperty("2") === undefined, name + " partial shrink");
     } else {
         expect(result, rhs, name);
-        if (name === "V27 ArrayIndex") check(sameValue(target.get("length"), n(3)) && sameValue(target.get("2"), n(7)) && target.getOwnProperty("0") === undefined && target.getOwnProperty("1") === undefined, name + " holes");
-        if (name === "V29 ArrayLength") check(sameValue(target.get("length"), n(1)) && sameValue(target.get("0"), n(1)) && target.getOwnProperty("1") === undefined && target.getOwnProperty("2") === undefined, name + " shrink");
-        if (name === "V32 ArrayRHSIdentity") check(trace === "NN" && sameValue(target.get("length"), n(2)) && result.value === rhs, name + " exact RHS/two conversions");
+        if (name === "V27 ArrayIndex") check(sameValue(target.get("length", e.context, loc), n(3)) && sameValue(target.get("2", e.context, loc), n(7)) && target.getOwnProperty("0") === undefined && target.getOwnProperty("1") === undefined, name + " holes");
+        if (name === "V29 ArrayLength") check(sameValue(target.get("length", e.context, loc), n(1)) && sameValue(target.get("0", e.context, loc), n(1)) && target.getOwnProperty("1") === undefined && target.getOwnProperty("2") === undefined, name + " shrink");
+        if (name === "V32 ArrayRHSIdentity") check(trace === "NN" && sameValue(target.get("length", e.context, loc), n(2)) && result.value === rhs, name + " exact RHS/two conversions");
     }
 }
 for (const receiver of [...primitives, nil, U]) {
@@ -844,7 +855,7 @@ for (const receiver of [...primitives, nil, U]) {
 
     check(result.type === "normal" && result.value && realm.observation.definitions === 1, "V35 DistinctObjectReceiver");
     descriptor(receiver, "x", rhs, true, true, true, "V35 receiver");
-    check(sameValue(base.get("x"), n(1)), "V35 base unchanged");
+    check(sameValue(base.get("x", e.context, loc), n(1)), "V35 base unchanged");
 }
 
 // K1-K18: each attempt uses the same held Reference unless named otherwise.
@@ -928,7 +939,7 @@ for (const name of ["K1 PutPut", "K2 PutGet", "K3 GetPut", "K5 FalseRetry", "K6 
     expect(run(c.e, "p[k] = 7;"), n(7), "K4 SeparateReferences first");
     expect(run(c.e, "p[k] = 8;"), n(8), "K4 SeparateReferences second");
 
-    check(c.hooks === 2 && sameValue(c.target.get("x"), n(7)) && sameValue(c.target.get("y"), n(8)), "K4 separate keys");
+    check(c.hooks === 2 && sameValue(c.target.get("x", c.e.context, loc), n(7)) && sameValue(c.target.get("y", c.e.context, loc), n(8)), "K4 separate keys");
 }
 for (const name of ["K10 PrimitiveRetry", "K11 PrimitiveGetAfterFailure", "K12 NullishRetry null", "K12 NullishRetry undefined", "K17 NoBoxCache"]) {
     const c = new CacheScenario();
@@ -1002,7 +1013,7 @@ for (const key of [s("x"), sym(s1)]) {
 
     expect(first, rhsValue, "K15 first exact RHS");
     expect(second, n(1), "K15 second");
-    check(calls === 2 && c.hooks === 1 && sameValue(target.get("length"), n(1)) && target.getOwnProperty("other") === undefined, "K15 saved key through RHS effects");
+    check(calls === 2 && c.hooks === 1 && sameValue(target.get("length", c.e.context, loc), n(1)) && target.getOwnProperty("other") === undefined, "K15 saved key through RHS effects");
 }
 for (const mode of ["nullish", "key", "false", "abrupt"]) {
     const c = new CacheScenario();
@@ -1052,7 +1063,7 @@ for (const symbolFailure of [false, true]) {
     else exact(result, "K20 ReadBeforeFailure RHS");
     check(puts === 0 && c.hooks === 1, "K20 no Put/retained read effects");
     saved(c.ref, c.base, s("x"), "K20 saved read key");
-    check(sameValue(c.target.get("x"), symbolFailure ? sym(s1) : n(1)), "K20 unchanged target");
+    check(sameValue(c.target.get("x", c.e.context, loc), symbolFailure ? sym(s1) : n(1)), "K20 unchanged target");
 }
 
 // F1-F9/F11: wrapper Realm is observed before entering the foreign hook.
@@ -1194,7 +1205,7 @@ for (const stage of ["factory", "keyGet", "keyCall", "Set"]) {
     const result = putValue(reference(base), n(7), e.context, opLoc);
 
     error(result, "property is not writable: x", "F12 LongPrototypeChain");
-    check(e.steps === 0 && e.calls === 0 && sameValue(parent.get("x"), n(1)), "F12 iterative/no ticks");
+    check(e.steps === 0 && e.calls === 0 && sameValue(parent.get("x", e.context, loc), n(1)), "F12 iterative/no ticks");
     primitiveState(a, base, "F12");
 }
 

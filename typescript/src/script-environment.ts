@@ -28,7 +28,7 @@ class ScriptLocalBindings {
         binding.initialized = true;
         return normal();
     }
-    getBindingValue(name: string, loc: Location): ValueCompletion {
+    getBindingValue(name: string, _context: OperationContext, loc: Location): ValueCompletion {
         const binding = this.bindings.get(name);
         if (binding === undefined) throw new Error("missing binding: " + name);
         if (!binding.initialized) return failure("ReferenceError", name + " is not initialized", loc);
@@ -67,11 +67,11 @@ export function resolveScriptBinding(environment: ScriptEnvironment, name: strin
     }
     return { type: "normal", reference: { base: current, name, strict: true, loc: { line: loc.line, column: loc.column } } };
 }
-export function getScriptBinding(reference: ScriptBindingReference): ValueCompletion {
+export function getScriptBinding(reference: ScriptBindingReference, context: OperationContext): ValueCompletion {
     const base = reference.base;
     if (base === null) return failure("ReferenceError", reference.name + " is not defined", reference.loc);
-    return base.kind === "global" ? base.record.getBindingValue(reference.name, reference.loc)
-        : base.getBindingValue(reference.name, reference.loc);
+    return base.kind === "global" ? base.record.getBindingValue(reference.name, context, reference.loc)
+        : base.getBindingValue(reference.name, context, reference.loc);
 }
 export function putScriptBinding(reference: ScriptBindingReference, value: Value, context: OperationContext): ValueCompletion {
     const base = reference.base;

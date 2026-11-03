@@ -44,7 +44,7 @@ function callable(fn: GuestObject): ScriptGuestCallable {
     return fn.callable;
 }
 function property(fn: GuestObject, key: string): Value {
-    const d = fn.getOwnProperty(key); if (d === undefined) throw new Error("missing property " + key); return d.value;
+    const d = fn.getOwnProperty(key); if (d === undefined || d.kind !== "data") throw new Error("missing property " + key); return d.value;
 }
 function prototype(fn: GuestObject): GuestObject {
     const value = property(fn, "prototype"); if (value.kind !== "object") throw new Error("prototype"); return value.object;
@@ -83,9 +83,9 @@ const backlink = property(P, "constructor"); check(backlink.kind === "object" &&
 console.log("F02 PASS");
 check(F.ownPropertyKeys().map(key => typeof key === "string" ? key : "symbol").join() === "length,name,prototype" && P.ownPropertyKeys().map(key => typeof key === "string" ? key : "symbol").join() === "constructor" && F.isExtensible() && P.isExtensible(), "F03 keys");
 for (const key of ["length", "name", "prototype"]) {
-    const d = F.getOwnProperty(key); check(d !== undefined && d.writable === (key === "prototype") && !d.enumerable && d.configurable === (key !== "prototype"), "descriptor " + key);
+    const d = F.getOwnProperty(key); check(d !== undefined && d.kind === "data" && d.writable === (key === "prototype") && !d.enumerable && d.configurable === (key !== "prototype"), "descriptor " + key);
 }
-const pd = P.getOwnProperty("constructor"); check(pd !== undefined && pd.writable && !pd.enumerable && pd.configurable && F.getOwnProperty("caller") === undefined && F.getOwnProperty("arguments") === undefined, "restricted absent");
+const pd = P.getOwnProperty("constructor"); check(pd !== undefined && pd.kind === "data" && pd.writable && !pd.enumerable && pd.configurable && F.getOwnProperty("caller") === undefined && F.getOwnProperty("arguments") === undefined, "restricted absent");
 console.log("F03 PASS");
 const RB = prepared(source, B); const FB = object(RB.materializeFunction(1, foreign, null, new Budget(B).context));
 check(FB.getPrototypeOf() === B.functionPrototype && prototype(FB).getPrototypeOf() === B.objectPrototype && FB.getPrototypeOf() !== F.getPrototypeOf(), "F04 Realm graph");
@@ -176,7 +176,7 @@ try { evaluator.call({ kind: "object", object: F }, UNDEFINED, [], { line: 1, co
 catch (e) { if (e instanceof Error) cross = e.message === "cross-profile callable invocation"; }
 check(cross && evaluator.calls === 2 && evaluator.depth === 3 && evaluator.steps === 0 && evaluator.context.realm === legacy, "legacy guard");
 const toString = A.functionPrototype.getOwnProperty("toString");
-if (toString === undefined || toString.value.kind !== "object") throw new Error("toString");
+if (toString === undefined || toString.kind !== "data" || toString.value.kind !== "object") throw new Error("toString");
 const builtin = toString.value.object.callable;
 if (builtin === null || builtin.kind !== "builtin") throw new Error("builtin");
 let closed = false;

@@ -1,6 +1,6 @@
 import type { GuestSymbol } from "./symbols.js";
-import { GuestObject, sameValue } from "./runtime.js";
-import type { DataDescriptor, DataDescriptorUpdate, InternalBooleanCompletion, OperationContext, PropertyKey } from "./runtime.js";
+import { GuestObject, validatePropertyDescriptor, validatePropertyDescriptorUpdate } from "./runtime.js";
+import type { PropertyDescriptor, PropertyDescriptorUpdate, InternalBooleanCompletion, OperationContext, PropertyKey } from "./runtime.js";
 import { stringIndex } from "./property-keys.js";
 import { stringLength, stringUnit, type GuestString } from "./strings.js";
 import type { Location } from "./syntax.js";
@@ -22,33 +22,33 @@ export class GuestStringObject extends GuestObject {
         });
     }
 
-    getOwnProperty(key: PropertyKey): DataDescriptor | undefined {
+    getOwnProperty(key: PropertyKey): PropertyDescriptor | undefined {
         const stored = super.getOwnProperty(key);
         if (stored !== undefined) return stored;
         const index = stringIndex(key, stringLength(this.stringData));
         if (index === undefined) return undefined;
         return {
-            value: { kind: "string", value: stringUnit(this.stringData, index) },
+            kind: "data", value: { kind: "string", value: stringUnit(this.stringData, index) },
             writable: false, enumerable: true, configurable: false,
         };
     }
 
-    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _context: OperationContext, _loc: Location): InternalBooleanCompletion {
+    defineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, _context: OperationContext, _loc: Location): InternalBooleanCompletion {
         return this.defineStringProperty(key, desc);
     }
 
-    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _loc: Location): InternalBooleanCompletion {
+    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, _loc: Location): InternalBooleanCompletion {
         return this.defineStringProperty(key, desc);
     }
 
-    private defineStringProperty(key: PropertyKey, desc: DataDescriptorUpdate): InternalBooleanCompletion {
+    private defineStringProperty(key: PropertyKey, desc: PropertyDescriptorUpdate): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         const index = stringIndex(key, stringLength(this.stringData));
         if (index === undefined) return super.ordinaryDefineOwnProperty(key, desc);
         // A compatible update succeeds without materializing a virtual index,
         // even after extensions have been prevented.
-        const compatible = desc.writable !== true && desc.enumerable !== false && desc.configurable !== true
-            && (desc.value === undefined || sameValue(desc.value, { kind: "string", value: stringUnit(this.stringData, index) }));
-        return { type: "normal", value: compatible };
+        const compatible = validatePropertyDescriptor(this.getOwnProperty(key), this.isExtensible(), desc);
+        return { type: "normal", value: compatible.valid };
     }
 
     internalDelete(key: PropertyKey): InternalBooleanCompletion {
@@ -65,8 +65,8 @@ export class GuestStringObject extends GuestObject {
         return keys;
     }
 
-    get properties(): Map<PropertyKey, DataDescriptor> {
-        const snapshot = new Map<PropertyKey, DataDescriptor>();
+    get properties(): Map<PropertyKey, PropertyDescriptor> {
+        const snapshot = new Map<PropertyKey, PropertyDescriptor>();
         for (const key of this.ownPropertyKeys()) {
             const descriptor = this.getOwnProperty(key);
             if (descriptor !== undefined) snapshot.set(key, descriptor);

@@ -14,7 +14,7 @@ function result(actual: InternalBooleanCompletion, expected: boolean, label: str
 function num(value: number): Value { return { kind: "number", value }; }
 function state(o: GuestObject, key: string, value: Value, w: boolean, e: boolean, c: boolean): void {
     const d = o.getOwnProperty(key);
-    check(d !== undefined && sameValue(d.value, value) && d.writable === w && d.enumerable === e && d.configurable === c, "state: " + key);
+    check(d !== undefined && d.kind === "data" && sameValue(d.value, value) && d.writable === w && d.enumerable === e && d.configurable === c, "state: " + key);
 }
 const loc = { line: 1, column: 1 };
 const o = new GuestObject();
@@ -62,10 +62,10 @@ const input: DataDescriptorUpdate = { value: num(8), writable: false, enumerable
 result(o.defineOwnProperty("copied", input, keyContext, loc), true, "input copied");
 input.value = num(9); input.writable = true; input.enumerable = true; input.configurable = true;
 const exposed = o.getOwnProperty("copied");
-if (exposed === undefined) throw new Error("missing descriptor");
+if (exposed === undefined || exposed.kind !== "data") throw new Error("missing descriptor");
 exposed.value = num(10); exposed.writable = true; exposed.enumerable = true; exposed.configurable = true;
 const snapshot = o.properties;
-snapshot.set("copied", { value: num(11), writable: true, enumerable: true, configurable: true });
+snapshot.set("copied", { kind: "data", value: num(11), writable: true, enumerable: true, configurable: true });
 snapshot.clear();
 state(o, "copied", num(8), false, false, false);
 check(o.set("copied", num(12), keyContext, loc).type === "throw", "mutation cannot bypass flags");
@@ -149,14 +149,16 @@ check(stringKeys(frozenText.ownPropertyKeys()).join(",") === "0,1,length", "W11 
 state(frozenText, "0", aUnit, false, true, false);
 const detachedUnit = text.getOwnProperty("0");
 const detachedLength = text.getOwnProperty("length");
-if (detachedUnit === undefined || detachedLength === undefined) throw new Error("W14 missing descriptors");
+if (detachedUnit === undefined || detachedUnit.kind !== "data" || detachedLength === undefined) throw new Error("W14 missing descriptors");
 detachedUnit.value = num(99);
 detachedUnit.writable = true;
+if (detachedLength.kind !== "data") throw new Error("expected data descriptor");
 detachedLength.value = num(99);
 const stringSnapshot = text.properties;
 check(stringKeys(Array.from(stringSnapshot.keys())).join(",") === "0,1,2,length", "W14 snapshot order");
 const snapshotUnit = stringSnapshot.get("1");
 if (snapshotUnit === undefined) throw new Error("W14 missing snapshot unit");
+if (snapshotUnit.kind !== "data") throw new Error("expected data descriptor");
 snapshotUnit.value = num(99);
 stringSnapshot.clear();
 const detachedKeys = text.ownPropertyKeys();
@@ -178,6 +180,6 @@ symbolObject.bootstrapDefine(symbolKey, { value: symbolValue });
 result(symbolObject.defineOwnProperty(symbolKey, { value: sameSymbol }, keyContext, loc), true, "A6 SameValue accepts same payload");
 result(symbolObject.defineOwnProperty(symbolKey, { value: otherSymbol }, keyContext, loc), false, "A6 distinct payload rejected");
 result(symbolObject.internalSet(symbolKey, sameSymbol, { kind: "object", object: symbolObject }, keyContext, loc), false, "A6 readonly Set rejects identical payload");
-check(symbolObject.get(symbolKey) === symbolValue, "A6 rejection atomic");
+check(symbolObject.get(symbolKey, keyContext, loc) === symbolValue, "A6 rejection atomic");
 
 console.log("object descriptors passed");

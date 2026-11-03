@@ -30,7 +30,7 @@ export function registerObjectToString(realm: Realm): Value {
         else if (object instanceof GuestStringObject) tag = "String";
         const tick = context.tick(loc);
         if (tick.type === "throw") return tick;
-        const custom = object.internalGet(wellKnownToStringTag, { kind: "object", object }, loc);
+        const custom = object.internalGet(wellKnownToStringTag, { kind: "object", object }, context, loc);
         if (custom.type === "throw") return custom;
         if (custom.value.kind === "string") tag = custom.value.value;
         return normal({ kind: "string", value: "[object " + tag + "]" });

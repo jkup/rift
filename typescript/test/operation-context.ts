@@ -220,7 +220,7 @@ check(program(`
 const retainedFunction = realmBinding(b, "retained");
 for (const owner of [a, b, c]) {
     check(owner.functionPrototype.callable !== null && owner.functionPrototype.callable.realm === owner, "R1 F owner");
-    const intrinsic = objectOf(owner.functionPrototype.get("call"));
+    const intrinsic = objectOf(owner.functionPrototype.get("call", entry.context, loc));
     check(intrinsic.callable !== null && intrinsic.callable.realm === owner, "R1 call owner");
     check(returnedValue(entry.call(objectValue(owner.functionPrototype), token, [], loc)) === UNDEFINED, "R1 F result");
     idle(entry, a);
@@ -232,13 +232,13 @@ for (const fn of [retainedFunction, realmBinding(b, "expression")]) {
 }
 for (let i = 0; i < 2; i++) {
     const allocated = objectOf(returnedValue(entry.call(retainedFunction, UNDEFINED, [], loc)));
-    check(allocated.getPrototypeOf() === b.objectPrototype && objectOf(allocated.get("o")).getPrototypeOf() === b.objectPrototype, "R2 defining objects");
-    check(objectOf(allocated.get("a")).getPrototypeOf() === b.arrayPrototype, "R2 defining array");
-    const nested = objectOf(allocated.get("f"));
+    check(allocated.getPrototypeOf() === b.objectPrototype && objectOf(allocated.get("o", entry.context, loc)).getPrototypeOf() === b.objectPrototype, "R2 defining objects");
+    check(objectOf(allocated.get("a", entry.context, loc)).getPrototypeOf() === b.arrayPrototype, "R2 defining array");
+    const nested = objectOf(allocated.get("f", entry.context, loc));
     check(nested.getPrototypeOf() === b.functionPrototype && nested.callable !== null && nested.callable.realm === b, "R2 nested owner");
-    const later = returnedValue(third.call(allocated.get("f"), UNDEFINED, [], loc));
+    const later = returnedValue(third.call(allocated.get("f", entry.context, loc), UNDEFINED, [], loc));
     check(objectOf(later).getPrototypeOf() === b.objectPrototype, "R2 later allocation");
-    check(allocated.get("token") === token, "R3 lexical token identity");
+    check(allocated.get("token", entry.context, loc) === token, "R3 lexical token identity");
     idle(entry, a);
     idle(third, c);
 }
@@ -289,7 +289,7 @@ class EntryObserver extends Evaluator {
         return result;
     }
 }
-const borrowed = c.functionPrototype.get("call");
+const borrowed = c.functionPrototype.get("call", entry.context, loc);
 const observer = new EntryObserver(a);
 const argument = objectValue(c.createObject());
 let targetEffects = 0;
@@ -440,7 +440,7 @@ for (const proto of [c.functionPrototype, null]) {
     objectOf(retainedFunction).bootstrapDefine("name", { value: { kind: "string", value: "changed" }, configurable: true });
     objectOf(retainedFunction).bootstrapDefine("length", { value: { kind: "number", value: 99 }, configurable: true });
     const allocated = objectOf(returnedValue(entry.call(retainedFunction, UNDEFINED, [], loc)));
-    check(allocated.getPrototypeOf() === b.objectPrototype && allocated.get("token") === token, "R16 owner independent from metadata/prototype");
+    check(allocated.getPrototypeOf() === b.objectPrototype && allocated.get("token", deep.context, loc) === token, "R16 owner independent from metadata/prototype");
     idle(entry, a);
 }
 check(objectOf(middleB).getPrototypeOf() === null && objectOf(middleB).ownPropertyKeys().length === 0, "R16 explicit null-root fixture remains bare");

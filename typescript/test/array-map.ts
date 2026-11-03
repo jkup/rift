@@ -50,7 +50,7 @@ function result(completion: Completion, length: number, expectedRealm: Realm = r
     const object = completion.value.object;
     const descriptor = object.getOwnProperty("length");
     check(
-        object instanceof GuestArray && descriptor !== undefined &&
+        object instanceof GuestArray && descriptor !== undefined && descriptor.kind === "data" &&
         sameValue(descriptor.value, num(length)) && descriptor.writable &&
         !descriptor.enumerable && !descriptor.configurable,
         "result array length/flags",
@@ -61,7 +61,7 @@ function result(completion: Completion, length: number, expectedRealm: Realm = r
 function element(object: GuestObject, key: string, value: Value): void {
     const descriptor = object.getOwnProperty(key);
     check(
-        descriptor !== undefined && sameValue(descriptor.value, value) &&
+        descriptor !== undefined && descriptor.kind === "data" && sameValue(descriptor.value, value) &&
         descriptor.writable && descriptor.enumerable && descriptor.configurable,
         "own element " + formatPropertyKey(key),
     );
@@ -74,10 +74,10 @@ function hole(object: GuestObject, key: string): void {
 class Traced extends GuestObject {
     failGet = "";
     failHas = "";
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         trace.push("Get " + formatPropertyKey(key));
         check(receiver.kind === "object" && receiver.object === this && at === loc, "Get receiver/location");
-        return key === this.failGet ? sentinel : super.internalGet(key, receiver, at);
+        return key === this.failGet ? sentinel : super.internalGet(key, receiver, context, at);
     }
     internalHasProperty(key: PropertyKey, at: Location): InternalBooleanCompletion {
         trace.push("Has " + formatPropertyKey(key));
@@ -87,10 +87,10 @@ class Traced extends GuestObject {
 }
 class TracedArray extends GuestArray {
     failConstructor = false;
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         trace.push("Get " + formatPropertyKey(key));
         check(receiver.kind === "object" && receiver.object === this && at === loc, "array receiver/location");
-        return key === "constructor" && this.failConstructor ? sentinel : super.internalGet(key, receiver, at);
+        return key === "constructor" && this.failConstructor ? sentinel : super.internalGet(key, receiver, context, at);
     }
 }
 function traceIs(expected: string): void {
@@ -302,7 +302,7 @@ shrinking.setPrototypeOf(elementPrototype);
 const shrinkResult = result(map(shrinking, binding("shrink")), 3);
 hole(shrinkResult, "1");
 element(shrinkResult, "2", num(7));
-check(sameValue(shrinking.get("length"), num(1)), "shrink source");
+check(sameValue(shrinking.get("length", sparseBudget.context, loc), num(1)), "shrink source");
 
 // Guest callbacks receive the exact strict thisArg, including omitted undefined.
 const singleElement = ordinary(num(1));
@@ -320,7 +320,7 @@ let observed = 0;
 realm.registerBuiltin(host, "observe", 5, (_receiver, args, context, _at) => {
     observed++;
     check(
-        args[0] === singleElement.get("0") && sameValue(args[1], num(0)) &&
+        args[0] === singleElement.get("0", sparseBudget.context, loc) && sameValue(args[1], num(0)) &&
         args[2].kind === "object" && args[2].object === singleElement &&
         args[3] === UNDEFINED && sameValue(args[4], num(observed)),
         "guest retained closure args",
@@ -332,14 +332,14 @@ const firstRun = new Evaluator(realm);
 const secondRun = new Evaluator(realm);
 const firstResult = result(map(singleElement, binding("saved"), UNDEFINED, firstRun), 1);
 const secondResult = result(map(singleElement, binding("saved"), UNDEFINED, secondRun), 1);
-element(firstResult, "0", singleElement.get("0"));
+element(firstResult, "0", singleElement.get("0", secondRun.context, loc));
 check(
     firstResult !== secondResult && observed === 2 &&
     contexts[0] === firstRun.context && contexts[1] === secondRun.context,
     "current run retained closure",
 );
 put(firstResult, "0", num(99));
-element(secondResult, "0", singleElement.get("0"));
+element(secondResult, "0", singleElement.get("0", secondRun.context, loc));
 
 // Has/Get throws preserve the exact record and stop after prior callback effects.
 const throwing = new Traced();
@@ -376,7 +376,7 @@ realm.registerBuiltin(host, "effect", 1, (_receiver, args, _context, _at) => {
 });
 const thrown = map(throwing, binding("throwing"));
 check(
-    thrown.type === "throw" && thrown.value === host.get("sentinel") &&
+    thrown.type === "throw" && thrown.value === host.get("sentinel", secondRun.context, loc) &&
     thrown.diagnostic.phase === "runtime" && thrown.diagnostic.name === "Uncaught" &&
     thrown.diagnostic.loc.line === 50 && thrown.diagnostic.loc.column === 9,
     "guest throw value/location",
@@ -456,10 +456,10 @@ const otherCallback = builtin(otherRealm, (_receiver, args, context, _at) => {
 const otherResult = result(map(singleElement, otherCallback, UNDEFINED, otherEvaluator), 1, realm);
 const foreignCallbackEvaluator = new Evaluator(realm);
 expectedOtherContext = foreignCallbackEvaluator.context;
-const foreignCallbackResult = foreignCallbackEvaluator.call(otherCallback, UNDEFINED, [singleElement.get("0")], loc);
-check(foreignCallbackResult.type === "normal" && foreignCallbackResult.value === singleElement.get("0") && foreignCallbackEvaluator.context.realm === realm, "explicit callback owner from foreign evaluator");
+const foreignCallbackResult = foreignCallbackEvaluator.call(otherCallback, UNDEFINED, [singleElement.get("0", foreignCallbackEvaluator.context, loc)], loc);
+check(foreignCallbackResult.type === "normal" && foreignCallbackResult.value === singleElement.get("0", foreignCallbackEvaluator.context, loc) && foreignCallbackEvaluator.context.realm === realm, "explicit callback owner from foreign evaluator");
 put(otherResult, "0", num(8));
-element(secondResult, "0", singleElement.get("0"));
+element(secondResult, "0", singleElement.get("0", foreignCallbackEvaluator.context, loc));
 check(!otherRealm.global.bindings.has("host") && firstRun.context !== otherEvaluator.context, "realm independent storage/registration");
 
 // Same-name errors still identify the earlier no-method conversion boundary.
@@ -537,7 +537,7 @@ put(sourceGeneric, "2", num(12));
 for (const input of [sourceArray, sourceGeneric]) {
     const mapped = result(mapObjectDefaultArray(input, identity, UNDEFINED, resultActive.context, loc), 3, resultRealm);
     check(mapped.getPrototypeOf() === resultRealm.arrayPrototype, "G12 supplied context result prototype");
-    check(mapped.get("0") === savedElement && mapped.get("2") === input.get("2"), "G12 exact returned Values");
+    check(mapped.get("0", resultActive.context, loc) === savedElement && mapped.get("2", resultActive.context, loc) === input.get("2", resultActive.context, loc), "G12 exact returned Values");
     hole(mapped, "1");
 }
 check(sourceArray.getPrototypeOf() === sourceRealm.arrayPrototype && sourceGeneric.getPrototypeOf() === sourceRealm.objectPrototype, "G12 input chains unchanged");
@@ -564,12 +564,12 @@ const inheritedHoles = holesBinding.value.object;
 put(sourceRealm.arrayPrototype, "1", num(8));
 hole(inheritedHoles, "0");
 hole(inheritedHoles, "1");
-check(sameValue(inheritedHoles.get("1"), num(8)), "G16 inherited index read");
+check(sameValue(inheritedHoles.get("1", holeActive.context, loc), num(8)), "G16 inherited index read");
 const inheritedResult = result(mapObjectDefaultArray(inheritedHoles, identity, UNDEFINED, resultActive.context, loc), 2, resultRealm);
 check(inheritedResult.getPrototypeOf() === resultRealm.arrayPrototype, "G16 result Realm");
 element(inheritedResult, "1", num(8));
 hole(inheritedResult, "0");
-check(sourceRealm.arrayPrototype.internalDelete("1").type === "normal" && inheritedHoles.get("1").kind === "undefined" && resultRealm.arrayPrototype.get("1").kind === "undefined", "G16 deletion/isolation");
+check(sourceRealm.arrayPrototype.internalDelete("1").type === "normal" && inheritedHoles.get("1", resultActive.context, loc).kind === "undefined" && resultRealm.arrayPrototype.get("1", resultActive.context, loc).kind === "undefined", "G16 deletion/isolation");
 check(resultActive.calls === 0 && holeActive.calls === 0, "G15 map call cleanup");
 
 // R17/R18: helper allocation uses its supplied active Realm; callbacks enter C.
@@ -598,7 +598,7 @@ const identityC = builtin(mapC, (receiver, args, context, at) => {
     return normal(args[0]);
 });
 const directA = result(mapObjectDefaultArray(sparseB, identityC, callbackReceiver, mapEntry.context, loc), 3, mapA);
-check(directA.get("0") === firstElement && directA.get("2") === lastElement && callbackIndices.join(",") === "0,2", "R17 values and indices");
+check(directA.get("0", mapEntry.context, loc) === firstElement && directA.get("2", mapEntry.context, loc) === lastElement && callbackIndices.join(",") === "0,2", "R17 values and indices");
 hole(directA, "1");
 check(sparseB.getPrototypeOf() === mapB.arrayPrototype && mapEntry.context.realm === mapA && mapEntry.calls === 0, "R17 input and restoration");
 class MapInput extends GuestObject {
@@ -634,7 +634,7 @@ const mapInB = builtin(mapB, (_receiver, _args, context, at) => {
     return mapped;
 });
 const allocatedB = result(mapEntry.call(mapInB, UNDEFINED, [], loc), 2, mapB);
-check(allocatedB.get("0") === callbackResults[0] && allocatedB.get("1") === callbackResults[1], "R18 exact callback Values");
+check(allocatedB.get("0", mapEntry.context, loc) === callbackResults[0] && allocatedB.get("1", mapEntry.context, loc) === callbackResults[1], "R18 exact callback Values");
 for (const value of callbackResults) {
     check(value.kind === "object" && value.object.getPrototypeOf() === mapC.objectPrototype, "R18 C element prototype");
 }
@@ -643,10 +643,10 @@ check(mapTrace.join(",") === "A length,C callback,C callback" && mapEntry.contex
 // W16: String objects are explicit array-like inputs, never implicit boxes.
 class ObservedString extends GuestStringObject {
     reads: string[] = [];
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.reads.push(formatPropertyKey(key));
         if (key === "constructor") throw new Error("W16 String constructor read");
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 const stringInput = new ObservedString("ab", mapA.stringPrototype);
@@ -685,6 +685,6 @@ const symbolCallback = builtin(symbolMapRealm, (_receiver, args, _context, _at) 
     return normal(args[0]);
 });
 const symbolMapped = mapObjectDefaultArray(symbolInput, symbolCallback, UNDEFINED, symbolMapEvaluator.context, loc);
-check(symbolMapped.type === "normal" && symbolMapped.value.kind === "object" && symbolMapped.value.object.get("0") === symbolElement && symbolVisits === 1, "A23 symbol element preserved");
+check(symbolMapped.type === "normal" && symbolMapped.value.kind === "object" && symbolMapped.value.object.get("0", symbolMapEvaluator.context, loc) === symbolElement && symbolVisits === 1, "A23 symbol element preserved");
 
 console.log("array map passed");

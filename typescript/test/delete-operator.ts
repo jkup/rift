@@ -1,3 +1,4 @@
+import type { OperationContext } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { mapObjectDefaultArray } from "../src/array-map.js";
 import { deleteReference } from "../src/delete-reference.js";
@@ -187,12 +188,12 @@ class Observed extends GuestObject {
     onDelete: () => void = () => {};
     refuse = false;
     hostFault: Error | null = null;
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.reads++;
         if (this.getFailure !== null) {
             return this.getFailure;
         }
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
     internalDelete(key: PropertyKey): InternalBooleanCompletion {
         this.trace += "D";
@@ -297,13 +298,13 @@ for (const writable of [false, true]) {
             const result = run(e, "delete o.x;");
             if (configurable) {
                 expect(result);
-                check(target.getOwnProperty("x") === undefined && sameValue(target.get("x"), n(9)), "D3 reveal");
+                check(target.getOwnProperty("x") === undefined && sameValue(target.get("x", e.context, loc), n(9)), "D3 reveal");
                 expect(run(e, "delete o.x;"));
             } else {
                 error(result, "property is not configurable: x");
                 const d = target.getOwnProperty("x");
                 check(
-                    d !== undefined &&
+                    d !== undefined && d.kind === "data" &&
                         sameValue(d.value, n(7)) &&
                         d.writable === writable &&
                         d.enumerable === enumerable &&
@@ -316,8 +317,8 @@ for (const writable of [false, true]) {
             }
             check(
                 target.getPrototypeOf() === parent &&
-                    sameValue(parent.get("x"), n(9)) &&
-                    sameValue(target.get("z"), n(8)),
+                    sameValue(parent.get("x", e.context, loc), n(9)) &&
+                    sameValue(target.get("z", e.context, loc), n(8)),
                 "D unchanged",
             );
         }
@@ -330,8 +331,9 @@ for (const inheritedConfigurable of [false, true]) {
     const t = new GuestObject(p);
     t.preventExtensions();
     put(p, "y", n(2));
-    expect(helper(new Evaluator(r), o(t), s("x")));
-    check(t.getOwnProperty("x") === undefined && sameValue(p.get("x"), n(9)) && !t.isExtensible(), "D2/D6 inherited");
+    const inheritedEvaluator = new Evaluator(r);
+    expect(helper(inheritedEvaluator, o(t), s("x")));
+    check(t.getOwnProperty("x") === undefined && sameValue(p.get("x", inheritedEvaluator.context, loc), n(9)) && !t.isExtensible(), "D2/D6 inherited");
     const own = new GuestObject();
     put(own, "x", n(7));
     own.preventExtensions();
@@ -383,7 +385,7 @@ for (const source of ["delete 'ab'[2];", "delete 'ab'['01'];", "delete 'ab'['-0'
             a.ownPropertyKeys()[0] === "0" &&
             a.ownPropertyKeys()[1] === "2" &&
             a.ownPropertyKeys()[2] === "length" &&
-            sameValue(a.get("length"), n(3)),
+            sameValue(a.get("length", e.context, loc), n(3)),
         "D8",
     );
     expect(run(e, "delete a[1];"));
@@ -391,7 +393,7 @@ for (const source of ["delete 'ab'[2];", "delete 'ab'['01'];", "delete 'ab'['-0'
     error(run(e, "delete a.length;"), "property is not configurable: length");
     a.defineOwnProperty("0", { configurable: false }, e.context, loc);
     error(run(e, "delete a[0];"), "property is not configurable: 0");
-    check(sameValue(a.get("length"), n(3)) && sameValue(a.get("0"), n(1)), "D9 D10");
+    check(sameValue(a.get("length", e.context, loc), n(3)) && sameValue(a.get("0", e.context, loc), n(1)), "D9 D10");
     const t = r.createObject();
     for (const k of ["9", "2", "a", "b", "c"]) {
         put(t, k, n(1));
@@ -409,7 +411,7 @@ for (const source of ["delete 'ab'[2];", "delete 'ab'['01'];", "delete 'ab'['-0'
     bind(r, "o", o(t));
     bind(r, "s", { kind: "symbol", value: sym });
     expect(run(e, "delete o[s];"));
-    check(t.getOwnProperty(sym) === undefined && sameValue(t.get(other), n(5)) && sameValue(t.get("x"), n(6)), "D12");
+    check(t.getOwnProperty(sym) === undefined && sameValue(t.get(other, e.context, loc), n(5)) && sameValue(t.get("x", e.context, loc), n(6)), "D12");
     put(t, sym, n(7));
     const reordered = t.ownPropertyKeys();
     check(reordered[reordered.length - 2] === other && reordered[reordered.length - 1] === sym, "D12 order");
@@ -808,7 +810,7 @@ class LookupFailure extends GuestObject {
     constructor(readonly thrown: ThrowCompletion) {
         super(null);
     }
-    internalGet(key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
         return key === wellKnownToPrimitive ? normal() : this.thrown;
     }
 }
@@ -1296,10 +1298,11 @@ for (const guest of [false, true]) {
     put(unrelated, "x", n(2));
     bind(a, "o", o(target));
     bind(bRealm, "o", o(target));
-    expect(run(new Evaluator(bRealm), "delete o.x;"));
+    const aliasEvaluator = new Evaluator(bRealm);
+    expect(run(aliasEvaluator, "delete o.x;"));
     check(
         target.getOwnProperty("x") === undefined &&
-            sameValue(unrelated.get("x"), n(2)) &&
+            sameValue(unrelated.get("x", aliasEvaluator.context, loc), n(2)) &&
             target.getPrototypeOf() === a.objectPrototype &&
             fresh.objectPrototype !== a.objectPrototype,
         "D26/C8",
@@ -1343,7 +1346,7 @@ for (const inherited of [false, true]) {
     check(
         mapped.type === "normal" &&
             mapped.value.kind === "object" &&
-            sameValue(mapped.value.object.get("length"), n(3)),
+            sameValue(mapped.value.object.get("length", e.context, loc), n(3)),
         "C3 map length",
     );
     check(visited === (inherited ? "012" : "02"), "C3 hole/inherited map");

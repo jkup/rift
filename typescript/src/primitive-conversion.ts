@@ -16,7 +16,7 @@ export function ordinaryToPrimitive(
         if (tick.type === "throw") return tick;
         // Lookup stays inside the loop: the preceding call may replace the method
         // or prototype. Preserve the original Value as both Get and Call receiver.
-        const method = input.object.internalGet(name, input, loc);
+        const method = input.object.internalGet(name, input, context, loc);
         if (method.type === "throw") return method;
         if (method.value.kind !== "object" || method.value.object.callable === null) continue;
         const result = context.call(method.value, input, [], loc);
@@ -34,7 +34,7 @@ export function toPrimitive(
     if (input.kind !== "object") return normal(input);
     const tick = context.tick(loc);
     if (tick.type === "throw") return tick;
-    const method = input.object.internalGet(wellKnownToPrimitive, input, loc);
+    const method = input.object.internalGet(wellKnownToPrimitive, input, context, loc);
     if (method.type === "throw") return method;
     // Only nullish methods are absent; unlike ordinary methods, other
     // noncallable values stop conversion rather than being skipped.

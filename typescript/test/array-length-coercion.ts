@@ -1,3 +1,4 @@
+import type { PropertyDescriptor } from "../src/runtime.js";
 import { wellKnownToPrimitive } from "../src/symbols.js";
 import { GuestSymbol } from "../src/symbols.js";
 import { stringKeys } from "./key-assertions.js";
@@ -45,8 +46,8 @@ function error(result: InternalBooleanCompletion | Completion, name: string, mes
 }
 function length(target: GuestObject, expected: number, writable = true): void {
     const desc = target.getOwnProperty("length");
-    check(desc !== undefined && sameValue(desc.value, num(expected)), "length " + expected);
-    check(desc !== undefined && desc.writable === writable && !desc.enumerable && !desc.configurable, "length flags");
+    check(desc !== undefined && desc.kind === "data" && sameValue(desc.value, num(expected)), "length " + expected);
+    check(desc !== undefined && desc.kind === "data" && desc.writable === writable && !desc.enumerable && !desc.configurable, "length flags");
 }
 function hits(active: Evaluator, expected: number, trace: string): void {
     check(sameValue(binding(active, "hits"), num(expected)), "hook count " + expected);
@@ -152,7 +153,7 @@ for (const name of ["rhs", "arrayRhs", "functionRhs"]) {
             const rhs = binding(active, name);
             if (inherited) {
                 const parent = new GuestObject();
-                put(parent, "valueOf", object(rhs).get("valueOf"));
+                put(parent, "valueOf", object(rhs).get("valueOf", active.context, loc));
                 bool(object(rhs).internalDelete("valueOf"), true);
                 bool(object(rhs).setPrototypeOf(parent), true);
             }
@@ -201,12 +202,12 @@ class Observed extends GuestObject {
     reads = 0;
     failAt = 0;
     original: Value = UNDEFINED;
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         if (key === wellKnownToPrimitive) return normal(UNDEFINED);
         this.reads++;
         check(receiver === this.original && at === loc && key === "valueOf", "lookup original receiver/location/hint");
         if (this.reads === this.failAt) return sentinel;
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 for (const stage of ["get", "call", "tick"]) {
@@ -238,7 +239,7 @@ for (const stage of ["get", "call", "tick"]) {
         check(ticks === failAt * 2 && rhs.reads === (stage === "tick" ? failAt - 1 : failAt), "no later ticks or reads");
         check(calls === (stage === "call" ? failAt : failAt - 1), "no later calls");
         length(target, 3);
-        if (calls > 0) check(sameValue(target.get("note"), num(calls)), "hook mutations survive throw");
+        if (calls > 0) check(sameValue(target.get("note", context, loc), num(calls)), "hook mutations survive throw");
         check(active.calls === 0, "abrupt call cleanup");
     }
 }
@@ -278,7 +279,7 @@ for (const mode of ["grow", "shrink", "freeze-same", "freeze-lower", "freeze-tha
     const abrupt = mode === "throw-first" || mode === "throw-second" || mode === "mismatch";
     length(target, abrupt ? 6 : 2, !mode.startsWith("freeze"));
     check((target.getOwnProperty("5") !== undefined) === abrupt, "hook index persists until outer successful shrink");
-    check(sameValue(target.get("note"), num(9)) && sameValue(parent.get("8"), num(88)), "nonindex/inherited indices retained");
+    check(sameValue(target.get("note", active.context, loc), num(9)) && sameValue(parent.get("8", active.context, loc), num(88)), "nonindex/inherited indices retained");
     if (mode === "shrink") check(target.getOwnProperty("1") === undefined && target.getOwnProperty("2") === undefined, "growth never resurrects deleted indices");
     hits(active, mode === "throw-first" ? 1 : 2, mode === "throw-first" ? "v" : "vv");
 }
@@ -411,7 +412,7 @@ for (const writable of [undefined, true, false]) {
     hits(active, 2, "vv");
     const ordinary = new GuestObject();
     bool(receiver.internalSet("length", rhs, obj(ordinary), active.context, loc), true);
-    check(ordinary.get("length") === rhs, "array base ordinary receiver stores original RHS");
+    check(ordinary.get("length", active.context, loc) === rhs, "array base ordinary receiver stores original RHS");
     length(receiver, 2);
     hits(active, 2, "vv");
 }
@@ -443,7 +444,7 @@ for (const name of ["nested", "reentrant", "compound"]) {
     check(active.steps > before && active.calls === 0 && active.depth === 0, "shared steps and cleanup");
     if (name === "nested") length(other, 1);
     if (name === "reentrant") check(object(binding(active, "target")).getOwnProperty("1") === undefined, "reentrant deletion survives outer growth");
-    if (name === "compound") check(mapCalls === 2 && sameValue(object(binding(active, "target")).get("note"), num(1)), "nested key/operator/map effects");
+    if (name === "compound") check(mapCalls === 2 && sameValue(object(binding(active, "target")).get("note", active.context, loc), num(1)), "nested key/operator/map effects");
 }
 for (const name of ["loop", "recursive"]) {
     const active = setup();
@@ -474,7 +475,7 @@ for (const name of ["rhsFailure", "keyFailure"]) {
     put(badKey, "toString", binding(active, "throwing"));
     seed(active, "badKey", obj(badKey));
     const result = call(active, name);
-    check(result.type === "throw" && result.value === object(binding(active, "host")).get("payload"), "earlier guest throw payload");
+    check(result.type === "throw" && result.value === object(binding(active, "host")).get("payload", active.context, loc), "earlier guest throw payload");
     hits(active, 0, "");
     length(object(binding(active, "target")), 3);
     const rhs = binding(active, "rhs");
@@ -482,7 +483,7 @@ for (const name of ["rhsFailure", "keyFailure"]) {
     const target = object(binding(active, "target"));
     check(ordinary.set("length", rhs, active.context, loc).type === "normal", "ordinary storage");
     check(target.set("0", rhs, active.context, loc).type === "normal", "element storage");
-    check(ordinary.get("length") === rhs && target.get("0") === rhs, "data RHS identity");
+    check(ordinary.get("length", active.context, loc) === rhs && target.get("0", active.context, loc) === rhs, "data RHS identity");
     hits(active, 0, "");
 }
 // L21: exact guest throw record capture, host faults and illegal completions.
@@ -510,7 +511,7 @@ for (const mode of ["guest", "fault", "break"]) {
 // Direct definition must not inspect old length before either conversion.
 class LengthReadObserver extends GuestArray {
     observations = "";
-    getOwnProperty(key: PropertyKey): DataDescriptor | undefined {
+    getOwnProperty(key: PropertyKey): PropertyDescriptor | undefined {
         if (key === "length") this.observations += "L";
         return super.getOwnProperty(key);
     }
@@ -535,12 +536,12 @@ for (const mismatch of [false, true]) {
 class FallbackObserver extends GuestObject {
     reads = 0;
     failAt = 0;
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         if (key === wellKnownToPrimitive) return normal(UNDEFINED);
         this.reads++;
         check(key === (this.reads % 2 === 1 ? "valueOf" : "toString"), "fallback lookup order");
         if (this.reads === this.failAt) return sentinel;
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 for (const stage of ["get", "tick", "call"]) {
@@ -573,7 +574,7 @@ for (const stage of ["get", "tick", "call"]) {
         check(ticks === conversion * 3 && rhs.reads === (stage === "tick" ? failAt - 1 : failAt), "fallback stops at failing lookup/tick");
         check(calls === (stage === "call" ? conversion : conversion - 1), "fallback stops calls");
         length(target, 3);
-        if (calls > 0) check(sameValue(target.get("note"), num(calls)), "fallback prior effects remain");
+        if (calls > 0) check(sameValue(target.get("note", context, loc), num(calls)), "fallback prior effects remain");
         check(active.calls === 0, "fallback cleanup");
     }
 }
@@ -590,7 +591,7 @@ for (const secondConversion of [false, true]) {
     check(completion.type === "throw" && completion.diagnostic.loc.line === 37 && completion.diagnostic.loc.column === 12, "O6 assignment error location");
     hits(active, secondConversion ? 2 : 1, secondConversion ? "vv" : "v");
     length(target, 3);
-    check(sameValue(target.get("2"), num(12)), "O6 no storage commit");
+    check(sameValue(target.get("2", active.context, loc), num(12)), "O6 no storage commit");
 }
 const directSymbolArray = three();
 const directSymbolFailure = directSymbolArray.defineOwnProperty("length", { value: symbolLength }, new Evaluator(new Realm((_line) => {})).context, loc);

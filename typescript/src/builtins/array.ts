@@ -33,7 +33,7 @@ export function registerArrayConversions(realm: Realm, objectToString: Value): v
             const iteration = context.tick(loc);
             if (iteration.type === "throw") return iteration;
             if (k > 0) text = stringConcat(text, separatorText);
-            const element = boxed.value.internalGet(numberToString(k), { kind: "object", object: boxed.value }, loc);
+            const element = boxed.value.internalGet(numberToString(k), { kind: "object", object: boxed.value }, context, loc);
             if (element.type === "throw") return element;
             if (element.value.kind !== "null" && element.value.kind !== "undefined") {
                 const converted = toElementString(element.value, context, loc);
@@ -49,7 +49,7 @@ export function registerArrayConversions(realm: Realm, objectToString: Value): v
         const tick = context.tick(loc);
         if (tick.type === "throw") return tick;
         const value: Value = { kind: "object", object: boxed.value };
-        const join = boxed.value.internalGet("join", value, loc);
+        const join = boxed.value.internalGet("join", value, context, loc);
         if (join.type === "throw") return join;
         const method = join.value.kind === "object" && join.value.object.callable !== null
             ? join.value : objectToString;

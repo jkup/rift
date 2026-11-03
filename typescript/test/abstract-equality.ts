@@ -1,3 +1,4 @@
+import type { OperationContext } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { isLooselyEqual } from "../src/abstract-equality.js";
 import { Evaluator } from "../src/evaluator.js";
@@ -244,9 +245,9 @@ for (const row of scenarios) for (const variant of [0, 1, 2, 3]) {
 // Original internal Get failures, before either protocol or ordinary calls.
 class BrokenGet extends GuestObject {
     constructor(readonly brokenKey: PropertyKey, readonly marker: ThrowCompletion) { super(); }
-    override internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         if (key === this.brokenKey) return this.marker;
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 for (const key of [wellKnownToPrimitive, "valueOf", "toString"]) for (const reverse of [false, true]) {
@@ -490,11 +491,12 @@ const consumers: [Value, Value, boolean][] = [
     [o(realm.arrayPrototype), s(""), true], [o(realm.objectPrototype), L, false],
 ];
 for (const [x, y, answer] of consumers) pair(x, y, answer, "C8-C16");
+const hostContext: OperationContext = { realm, call: (_c, _r, _a, _l): ValueCompletion => { throw new Error("unexpected inspection call"); }, tick: (_l): ValueCompletion => { throw new Error("unexpected inspection tick"); } };
 const inherited = realm.createArray();
 const proto = realm.createObject();
 put(proto, "0", n(2));
-put(proto, "toString", realm.arrayPrototype.get("toString"));
-put(proto, "join", realm.arrayPrototype.get("join"));
+put(proto, "toString", realm.arrayPrototype.get("toString", hostContext, loc));
+put(proto, "join", realm.arrayPrototype.get("join", hostContext, loc));
 inherited.setPrototypeOf(proto);
 inherited.defineOwnProperty("length", { value: n(1) }, new Evaluator(realm).context, loc);
 pair(o(inherited), n(2), true, "C3 inherited");
@@ -514,7 +516,7 @@ const numberBox = o(realm.createNumberObject(2));
 const tag = toPrimitive(numberBox, "string", control.context, loc);
 check(tag.type === "normal" && sameValue(tag.value, s("2")), "C14 Number string payload");
 for (const [value, expected] of [[o(realm.createArray()), "[object Array]"], [o(realm.functionPrototype), "[object Function]"]] as [Value, string][]) {
-    const result = control.call(realm.objectPrototype.get("toString"), value, [], loc);
+    const result = control.call(realm.objectPrototype.get("toString", control.context, loc), value, [], loc);
     check(result.type === "normal" && sameValue(result.value, s(expected)), "C15 explicit tags");
 }
 check(equal(o(identity), o(identity)) && !equal(o(identity), n(0)) && truthy(o(identity)), "C15 strict/truthy");

@@ -1,3 +1,4 @@
+import type { OperationContext } from "../src/runtime.js";
 import { GuestSymbol } from "../src/symbols.js";
 import { Evaluator } from "../src/evaluator.js";
 import { readFileSync } from "node:fs";
@@ -15,7 +16,7 @@ function result(r: InternalBooleanCompletion, expected: boolean, message: string
     check(r.type === "normal" && r.value === expected, message);
 }
 function read(o: GuestObject, key: string, expected: Value): void {
-    const r = o.internalGet(key, UNDEFINED, loc);
+    const r = o.internalGet(key, UNDEFINED, keyContext, loc);
     check(r.type === "normal" && sameValue(r.value, expected), "read " + key);
 }
 const root = new GuestObject();
@@ -43,12 +44,12 @@ const receiver = new GuestObject();
 result(root.internalSet("x", num(3), obj(receiver), keyContext, loc), true, "distinct receiver creation");
 read(root, "x", num(1)); read(receiver, "x", num(3));
 const created = receiver.getOwnProperty("x");
-check(created !== undefined && created.writable && created.enumerable && created.configurable, "creation flags");
+check(created !== undefined && created.kind === "data" && created.writable && created.enumerable && created.configurable, "creation flags");
 receiver.bootstrapDefine("own", { value: num(4), writable: true, enumerable: false, configurable: false });
 receiver.preventExtensions();
 result(root.internalSet("own", num(5), obj(receiver), keyContext, loc), true, "missing base updates receiver own");
 const updated = receiver.getOwnProperty("own");
-check(updated !== undefined && updated.writable && !updated.enumerable && !updated.configurable, "preserve flags");
+check(updated !== undefined && updated.kind === "data" && updated.writable && !updated.enumerable && !updated.configurable, "preserve flags");
 read(receiver, "own", num(5));
 result(root.internalSet("new", num(6), obj(receiver), keyContext, loc), false, "nonextensible receiver missing");
 result(root.internalSet("x", num(7), obj(receiver), keyContext, loc), true, "nonextensible existing");
@@ -140,16 +141,16 @@ const symbolParent = new GuestObject();
 symbolParent.bootstrapDefine(symbolKey, { value: UNDEFINED, writable: false });
 const symbolChild = new GuestObject(symbolParent);
 result(symbolChild.internalHasProperty(symbolKey, loc), true, "A8 inherited undefined presence");
-check(symbolChild.get(symbolKey) === UNDEFINED, "A8 inherited undefined read");
+check(symbolChild.get(symbolKey, keyContext, loc) === UNDEFINED, "A8 inherited undefined read");
 result(symbolChild.internalSet(symbolKey, num(1), obj(symbolChild), keyContext, loc), false, "A8 inherited readonly");
 result(symbolChild.internalDelete(symbolKey), true, "A8 own absent deletion");
 check(symbolParent.getOwnProperty(symbolKey) !== undefined, "A8 parent not deleted");
 const symbolReceiver = new GuestObject();
 symbolReceiver.bootstrapDefine(symbolKey, { value: num(2), writable: true });
 result(symbolChild.internalSet(symbolKey, num(3), obj(symbolReceiver), keyContext, loc), false, "A9 inherited readonly wins over Receiver writable");
-check(sameValue(symbolReceiver.get(symbolKey), num(2)), "A9 Receiver unchanged");
+check(sameValue(symbolReceiver.get(symbolKey, keyContext, loc), num(2)), "A9 Receiver unchanged");
 result(symbolChild.defineOwnProperty(symbolKey, { value: num(4), writable: true }, keyContext, loc), true, "A8 direct shadow allowed");
 result(symbolChild.internalSet(symbolKey, num(5), obj(symbolReceiver), keyContext, loc), true, "A9 writable path");
-check(sameValue(symbolReceiver.get(symbolKey), num(5)) && sameValue(symbolChild.get(symbolKey), num(4)), "A9 exact Receiver key");
+check(sameValue(symbolReceiver.get(symbolKey, keyContext, loc), num(5)) && sameValue(symbolChild.get(symbolKey, keyContext, loc), num(4)), "A9 exact Receiver key");
 
 console.log("object prototypes passed");

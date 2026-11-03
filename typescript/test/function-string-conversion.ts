@@ -56,7 +56,7 @@ const a = new Realm((_line) => {});
 const b = new Realm((_line) => {});
 const c = new Realm((_line) => {});
 const active = new Evaluator(c);
-const T = a.functionPrototype.get("toString");
+const T = a.functionPrototype.get("toString", active.context, loc);
 function text(value: Value, expected: string, label: string): void {
     expect(active.call(T, value, [], loc), str(expected), label);
     check(active.calls === 0 && active.context.realm === c, label + " cleanup");
@@ -283,25 +283,25 @@ for (const row of negatives) {
 // F1-F8: installation and immutable internal names are independent of descriptors.
 for (const realm of [a, b]) {
     const descriptor = realm.functionPrototype.getOwnProperty("toString");
-    check(descriptor !== undefined && descriptor.writable && !descriptor.enumerable && descriptor.configurable, "F1 method descriptor");
-    const method = object(realm.functionPrototype.get("toString"));
+    check(descriptor !== undefined && descriptor.kind === "data" && descriptor.writable && !descriptor.enumerable && descriptor.configurable, "F1 method descriptor");
+    const method = object(realm.functionPrototype.get("toString", active.context, loc));
     check(method.getPrototypeOf() === realm.functionPrototype && method.callable !== null && method.callable.realm === realm, "F1 ownership");
     for (const key of ["name", "length"]) {
         const metadata = method.getOwnProperty(key);
-        check(metadata !== undefined && !metadata.writable && !metadata.enumerable && metadata.configurable
+        check(metadata !== undefined && metadata.kind === "data" && !metadata.writable && !metadata.enumerable && metadata.configurable
             && sameValue(metadata.value, key === "name" ? str("toString") : num(0)), "F1 metadata");
     }
     const keys = realm.functionPrototype.ownPropertyKeys();
     check(keys.length === 4 && keys[0] === "name" && keys[1] === "length" && keys[2] === "call" && keys[3] === "toString", "F2 root keys");
     check(!realm.global.bindings.has("Function") && realm.functionPrototype.getOwnProperty("constructor") === undefined, "F2 bounded root");
 }
-check(T !== b.functionPrototype.get("toString") && object(T) !== object(b.functionPrototype.get("toString")), "F1 fresh methods");
+check(T !== b.functionPrototype.get("toString", active.context, loc) && object(T) !== object(b.functionPrototype.get("toString", active.context, loc)), "F1 fresh methods");
 text(obj(b.functionPrototype), "function () { [native code] }", "F3 root");
 text(T, "function toString() { [native code] }", "F3 method");
-text(b.functionPrototype.get("call"), "function call() { [native code] }", "F3 call");
-text(object(binding(b, "console")).get("log"), "function log() { [native code] }", "F4 log");
-text(object(binding(b, "Number")).get("isFinite"), "function isFinite() { [native code] }", "F4 isFinite");
-text(b.symbolPrototype.get(wellKnownToPrimitive), "function [Symbol.toPrimitive]() { [native code] }", "F4 symbol");
+text(b.functionPrototype.get("call", active.context, loc), "function call() { [native code] }", "F3 call");
+text(object(binding(b, "console")).get("log", active.context, loc), "function log() { [native code] }", "F4 log");
+text(object(binding(b, "Number")).get("isFinite", active.context, loc), "function isFinite() { [native code] }", "F4 isFinite");
+text(b.symbolPrototype.get(wellKnownToPrimitive, active.context, loc), "function [Symbol.toPrimitive]() { [native code] }", "F4 symbol");
 const names: (string | null)[] = [null, "", "$x_2", "throw"];
 const nativeTexts = ["function () { [native code] }", "function () { [native code] }", "function $x_2() { [native code] }", "function throw() { [native code] }"];
 for (let i = 0; i < names.length; i++) {
@@ -340,10 +340,10 @@ text(obj(b.functionPrototype), "function () { [native code] }", "F7 root initial
 put(object(old), "toString", throwing);
 put(object(old), wellKnownToStringTag, str("Custom"));
 text(old, "function f(){return 1;}", "F8 saved source");
-expect(active.call(a.objectPrototype.get("toString"), old, [], loc), str("[object Custom]"), "F8 explicit tag");
+expect(active.call(a.objectPrototype.get("toString", active.context, loc), old, [], loc), str("[object Custom]"), "F8 explicit tag");
 check(effects === 0, "F7/F8 no coercion");
 class NoReads extends GuestObject {
-    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
         throw new Error("unexpected receiver read");
     }
 }
@@ -399,7 +399,7 @@ check(zeroSteps.steps === 0, "R3 no ticks");
 idle(zeroSteps);
 for (const maxCalls of [1, 2]) {
     const borrowed = new Evaluator(c, 0, maxCalls);
-    const completion = borrowed.call(b.functionPrototype.get("call"), T, [f, obj(poison)], loc);
+    const completion = borrowed.call(b.functionPrototype.get("call", borrowed.context, loc), T, [f, obj(poison)], loc);
     if (maxCalls === 2) expect(completion, str("function() {}"), "R4 borrowed call");
     else error(completion, "call depth limit exceeded", "RangeError");
     check(borrowed.steps === 0, "R4 steps");
@@ -409,7 +409,7 @@ for (const maxCalls of [1, 2]) {
 const foreignRows: { receiver: Value; expected: string }[] = [
     { receiver: f, expected: "function() {}" },
     { receiver: obj(b.functionPrototype), expected: "function () { [native code] }" },
-    { receiver: object(binding(b, "console")).get("log"), expected: "function log() { [native code] }" },
+    { receiver: object(binding(b, "console")).get("log", zeroSteps.context, loc), expected: "function log() { [native code] }" },
 ];
 check(object(T).callable !== null && object(T).callable!.realm === a, "R5 saved method defining Realm");
 for (const row of foreignRows) {
@@ -435,8 +435,8 @@ for (const hint of ["default", "number", "string"] as const) {
     };
     expect(toPrimitive(f, hint, observedContext, loc), str("function() {}"), "R6/R7 source");
     check(callees.length === (hint === "string" ? 1 : 2)
-        && callees[callees.length - 1] === budgetRealm.functionPrototype.get("toString"), "R6/R7 candidates");
-    if (hint !== "string") check(callees[0] === budgetRealm.objectPrototype.get("valueOf"), "R6 first candidate");
+        && callees[callees.length - 1] === budgetRealm.functionPrototype.get("toString", observedContext, loc), "R6/R7 candidates");
+    if (hint !== "string") check(callees[0] === budgetRealm.objectPrototype.get("valueOf", observedContext, loc), "R6 first candidate");
     check(evaluator.steps === (hint === "string" ? 2 : 3), "R6/R7 exact steps");
     idle(evaluator);
     const exhausted = new Evaluator(c, hint === "string" ? 1 : 2, 1);
@@ -457,14 +457,14 @@ expect(zeroSteps.call(T, f, [], loc), str("function() {}"), "R11 already exhaust
 check(zeroSteps.steps === 10, "R11 unchanged");
 idle(zeroSteps);
 const explicitTag = new Evaluator(c, 1, 1);
-expect(explicitTag.call(a.objectPrototype.get("toString"), f, [], loc), str("[object Function]"), "R12 explicit tag");
+expect(explicitTag.call(a.objectPrototype.get("toString", explicitTag.context, loc), f, [], loc), str("[object Function]"), "R12 explicit tag");
 check(explicitTag.steps === 1, "R12 one body tick");
 idle(explicitTag);
 
 // C5: saved join uses the element's source through ordinary string conversion.
 const elementArray = a.createArray();
 put(elementArray, "0", f);
-expect(active.call(a.arrayPrototype.get("join"), obj(elementArray), [], loc), str("function() {}"), "C5 saved join");
+expect(active.call(a.arrayPrototype.get("join", explicitTag.context, loc), obj(elementArray), [], loc), str("function() {}"), "C5 saved join");
 // C7-C13: mutation is observed by ordinary conversion, not saved stringification.
 put(object(f), wellKnownToPrimitive, throwing);
 for (const completion of [toNumber(f, loc), toString(f, loc), toLength(f, loc)]) {
@@ -564,7 +564,7 @@ const lengthResult = active.call(binding(fixtureRealm, "invalidLength"), UNDEFIN
 check(lengthResult.type === "throw" && lengthResult.diagnostic.phase === "runtime"
     && lengthResult.diagnostic.name === "RangeError" && lengthResult.diagnostic.message === "invalid array length"
     && lengthResult.diagnostic.loc.line === 32 && lengthResult.diagnostic.loc.column === 27, "C6 assignment location");
-check(sameValue(object(binding(fixtureRealm, "array")).get("length"), num(2)), "C6 atomic length");
+check(sameValue(object(binding(fixtureRealm, "array")).get("length", detached.context, loc), num(2)), "C6 atomic length");
 const failingRealm = new Realm((_line) => {});
 failingRealm.global.bindings.set("T", { initialized: true, mutable: true, value: T });
 const failing = parse(readFileSync("test/fixtures/function-string-invalid.js", "utf8"));

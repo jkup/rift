@@ -1,3 +1,4 @@
+import type { OperationContext } from "../src/runtime.js";
 import { observationJSONRecord } from "../src/observation-json.js";
 import { observe, type ObservationResult } from "../src/observation.js";
 import { Realm } from "../src/realm.js";
@@ -6,7 +7,7 @@ import type { Location } from "../src/syntax.js";
 
 class Poison extends GuestObject {
     reads = 0;
-    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+    override internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _loc: Location): ValueCompletion {
         this.reads++;
         throw new Error("constructor/name getter effect");
     }

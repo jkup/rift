@@ -1,3 +1,4 @@
+import type { OperationContext } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
@@ -116,7 +117,7 @@ class Observation {
     abrupt: ThrowCompletion | null = null;
     fault: Error | null = null;
     factoryFault: Error | null = null;
-    get(target: GuestObject, key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    get(target: GuestObject, key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.trace += "G";
         this.reads++;
         this.receiver = receiver;
@@ -130,31 +131,31 @@ class Observation {
         }
         // A separate ordinary object with the wrapper as prototype uses the same
         // descriptor walk, including String virtual own properties.
-        return new GuestObject(target).internalGet(key, receiver, at);
+        return new GuestObject(target).internalGet(key, receiver, context, at);
     }
 }
 class BooleanBox extends GuestBoolean {
     constructor(value: boolean, proto: GuestObject, public observation: Observation) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
-        return this.observation.get(this, key, receiver, at);
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+        return this.observation.get(this, key, receiver, context, at);
     }
 }
 class NumberBox extends GuestNumber {
     constructor(value: number, proto: GuestObject, public observation: Observation) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
-        return this.observation.get(this, key, receiver, at);
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+        return this.observation.get(this, key, receiver, context, at);
     }
 }
 class StringBox extends GuestStringObject {
     constructor(value: string, proto: GuestObject, public observation: Observation) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
-        return this.observation.get(this, key, receiver, at);
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+        return this.observation.get(this, key, receiver, context, at);
     }
 }
 class SymbolBox extends GuestSymbolObject {
     constructor(value: GuestSymbol, proto: GuestObject, public observation: Observation) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
-        return this.observation.get(this, key, receiver, at);
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+        return this.observation.get(this, key, receiver, context, at);
     }
 }
 class ObservedRealm extends Realm {
@@ -248,8 +249,8 @@ for (const value of primitives) {
 }
 class ObservedObject extends GuestObject {
     observation = new Observation();
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
-        return this.observation.get(this, key, receiver, at);
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
+        return this.observation.get(this, key, receiver, context, at);
     }
 }
 {
@@ -272,7 +273,7 @@ class ObservedObject extends GuestObject {
     expect(run(e, "f.name;"), s("hook"), "V17 CallableControl");
     error(run(e, "null.x;"), nullish, "V18 Null");
     error(run(e, "undefined.x;"), nullish, "V19 Undefined");
-    expect(run(e, "true.valueOf;"), realm.booleanPrototype.get("valueOf"), "V21 BooleanMethodIdentity");
+    expect(run(e, "true.valueOf;"), realm.booleanPrototype.get("valueOf", e.context, loc), "V21 BooleanMethodIdentity");
 }
 // S1-S12: literal UTF-16 oracles, independent of host property reads.
 const stringRows: { name: string; payload: string; key: Value; expected: Value }[] = [
@@ -317,18 +318,18 @@ for (const key of [s("-0"), s("01"), s("1.0"), s("1e0"), s(""), n(-1), n(0.5), n
     expect(run(e, "'ab'[2];"), s("z"), "S10 MissingInherits");
     expect(run(e, "'ab'['-0'];"), s("z"), "S11 NoncanonicalInherits");
     expect(run(e, "'ab'.length;"), n(2), "S12 LengthOwn");
-    check(sameValue(realm.stringPrototype.get("length"), n(0)), "S12 prototype length");
+    check(sameValue(realm.stringPrototype.get("length", e.context, loc), n(0)), "S12 prototype length");
     const box = realm.observation.boxes[0];
     const index = box.getOwnProperty("0");
     const length = box.getOwnProperty("length");
-    check(index !== undefined && sameValue(index.value, s("a")) && !index.writable && index.enumerable && !index.configurable, "S13 index descriptor");
-    check(length !== undefined && sameValue(length.value, n(2)) && !length.writable && !length.enumerable && !length.configurable, "S13 length descriptor");
+    check(index !== undefined && index.kind === "data" && sameValue(index.value, s("a")) && !index.writable && index.enumerable && !index.configurable, "S13 index descriptor");
+    check(length !== undefined && length.kind === "data" && sameValue(length.value, n(2)) && !length.writable && !length.enumerable && !length.configurable, "S13 length descriptor");
     box.preventExtensions();
     const defined = box.defineOwnProperty("0", { value: s("a") }, e.context, loc);
     const snapshot = box.properties;
     snapshot.delete("0");
     check(defined.type === "normal" && defined.value && box.ownPropertyKeys().length === 3 && box instanceof GuestStringObject && box.stringData === "ab", "S14 NoMaterialization");
-    expect(box.internalGet("0", o(box), loc), s("a"), "S14 virtual survives");
+    expect(box.internalGet("0", o(box), e.context, loc), s("a"), "S14 virtual survives");
 }
 // E1-E23/E30 share explicit scenario names and literal trace oracles.
 function effects(name: string, value: Value, expectedTrace: string): void {
@@ -569,7 +570,7 @@ for (const mode of ["normal", "abrupt", "fault"]) {
             expect(result, value, "M10 ForeignMethod");
         }
     }
-    check(sameValue(effectsObject.get("changed"), n(3)), "M17 mutation retained");
+    check(sameValue(effectsObject.get("changed", foreignEvaluator.context, loc), n(3)), "M17 mutation retained");
     clean(e, a, "M17");
     expect(program(foreignEvaluator, "function foreignMethod() { return this.x; }"), U, "M11 setup");
     put(a.booleanPrototype, "m", binding(foreign, "foreignMethod"));
@@ -591,7 +592,7 @@ for (const mode of ["normal", "abrupt", "fault"]) {
     const boxes = a.observation.boxes;
     check(boxes.length === count + 2 && boxes[count] !== boxes[count + 1] && boxes[count].getPrototypeOf() === a.booleanPrototype && boxes[count + 1].getPrototypeOf() === a.booleanPrototype, "M13 SeparateReads");
     check(a.observation.receiver === value && a.observation.at.line === 1 && a.observation.at.column === 1, "M14 ReceiverObservation");
-    put(a.booleanPrototype, "m", foreign.objectPrototype.get("valueOf"));
+    put(a.booleanPrototype, "m", foreign.objectPrototype.get("valueOf", foreignEvaluator.context, loc));
     const boxed = run(e, "p.m();");
     check(boxed.type === "normal" && boxed.value.kind === "object" && boxed.value.object instanceof GuestBoolean && boxed.value.object.booleanData && boxed.value.object.getPrototypeOf() === foreign.booleanPrototype && boxed.value.object !== boxes[boxes.length - 1], "M15 BoxingInsideMethod");
     bind(a, "detached", binding(foreign, "foreignMethod"));
@@ -677,7 +678,7 @@ for (const name of reuseNames) {
         expect(putValue(ref, n(3), e.context, opLoc), n(3), name + " write");
         const changed: PropertyKey = name === "W5 SymbolCache" ? identity : "x";
         const unchanged: PropertyKey = name === "W5 SymbolCache" ? otherIdentity : "y";
-        check(sameValue(target.get(changed), n(3)) && sameValue(target.get(unchanged), n(2)), name + " properties");
+        check(sameValue(target.get(changed, e.context, loc), n(3)) && sameValue(target.get(unchanged, e.context, loc), n(2)), name + " properties");
     } else if (name === "W2 FreshReferences") {
         expect(getValue({ kind: "property", base: ref.base, key: rawKey, loc: refLoc }, e.context, opLoc), n(2), name + " fresh");
     } else {
@@ -718,7 +719,7 @@ for (const value of [...primitives, nil, U]) {
     }
     check(hooks === (isNullish ? 0 : 1), "W6/W7 hook count");
     if (!isNullish) {
-        check(sameValue(prototype(realm, value).get("x"), n(1)), "W6 prototype unchanged");
+        check(sameValue(prototype(realm, value).get("x", e.context, loc), n(1)), "W6 prototype unchanged");
     }
 }
 for (const name of ["W13 SimplePrimitiveWrite", "W14 RHSAbrupt", "W15 SimpleObjectWrite"]) {
@@ -747,7 +748,7 @@ for (const name of ["W13 SimplePrimitiveWrite", "W14 RHSAbrupt", "W15 SimpleObje
             exact(result, name);
         } else if (name === "W15 SimpleObjectWrite") {
             expect(result, n(3), name);
-            check(sameValue(target.get("y"), n(3)) && target.getOwnProperty("x") === undefined, name + " deferred key");
+            check(sameValue(target.get("y", e.context, loc), n(3)) && target.getOwnProperty("x") === undefined, name + " deferred key");
         } else {
             error(result, "property is not writable: y", name);
         }
@@ -789,7 +790,7 @@ for (const name of ["W17 ReadBeforeNumericFailure", "W18 ReadBeforeRHSFailure"])
     } else {
         check(next === Q, name);
     }
-    check(hooks === 1 && sameValue(realm.booleanPrototype.get("x"), sym(identity)), name + " retained state/no Put");
+    check(hooks === 1 && sameValue(realm.booleanPrototype.get("x", e.context, loc), sym(identity)), name + " retained state/no Put");
 }
 {
     const e = new Evaluator(fresh());

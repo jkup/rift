@@ -46,17 +46,17 @@ function binding(realm: Realm, name: string): Value {
     if (found === undefined) throw new Error("C missing " + name);
     return found.value;
 }
-type GetObserver = (key: PropertyKey, receiver: Value, at: Location) => ValueCompletion;
+type GetObserver = (key: PropertyKey, receiver: Value, context: OperationContext, at: Location) => ValueCompletion;
 class Observed extends GuestObject {
     constructor(readonly observe: GetObserver, proto: GuestObject | null = null) { super(proto); }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion { return this.observe(key, receiver, at); }
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion { return this.observe(key, receiver, context, at); }
 }
 class ObservedSymbol extends GuestSymbolObject {
     reads = 0;
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         check(key === wellKnownToStringTag && receiver.kind === "object" && receiver.object === this && at === loc, "boxed Get receiver/key/location");
         this.reads++;
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 class BoxingRealm extends Realm {
@@ -72,7 +72,7 @@ class BoxingRealm extends Realm {
 class ClassificationObserver extends GuestObject {
     callable: Callable | null = null;
     constructor(readonly replacement: Callable) { super(); }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         check(key === wellKnownToStringTag && receiver.kind === "object" && receiver.object === this && at === loc, "classification observer boundary");
         this.callable = this.replacement;
         return normal(UNDEFINED);
@@ -93,7 +93,7 @@ export function testObjectToString(): void {
     const b = new BoxingRealm((_line) => {});
     const c = new Realm((_line) => {});
     const evaluator = new Evaluator(a);
-    const method = b.objectPrototype.get("toString");
+    const method = b.objectPrototype.get("toString", evaluator.context, loc);
     const symbol: Value = { kind: "symbol", value: new GuestSymbol("transported") };
 
     // Metadata, canonical key order and independent mutable Realm properties.
@@ -101,18 +101,18 @@ export function testObjectToString(): void {
         keys(realm.objectPrototype.ownPropertyKeys(), ["valueOf", "toString"], "Object keys");
         keys(realm.symbolPrototype.ownPropertyKeys(), ["toString", "valueOf", wellKnownToPrimitive, wellKnownToStringTag], "Symbol keys");
         const tag = realm.symbolPrototype.getOwnProperty(wellKnownToStringTag);
-        check(tag !== undefined && !tag.writable && !tag.enumerable && tag.configurable && sameValue(tag.value, str("Symbol")), "tag descriptor");
+        check(tag !== undefined && tag.kind === "data" && !tag.writable && !tag.enumerable && tag.configurable && sameValue(tag.value, str("Symbol")), "tag descriptor");
         const descriptor = realm.objectPrototype.getOwnProperty("toString");
-        check(descriptor !== undefined && descriptor.writable && !descriptor.enumerable && descriptor.configurable, "method descriptor");
-        const own = realm.objectPrototype.get("toString");
+        check(descriptor !== undefined && descriptor.kind === "data" && descriptor.writable && !descriptor.enumerable && descriptor.configurable, "method descriptor");
+        const own = realm.objectPrototype.get("toString", evaluator.context, loc);
         if (own.kind !== "object") throw new Error("C missing method");
         check(own.object.callable !== null && own.object.callable.realm === realm && own.object.getPrototypeOf() === realm.functionPrototype, "method ownership");
         if (realm !== b) check(!sameValue(own, method), "fresh method");
         keys(own.object.ownPropertyKeys(), ["name", "length"], "metadata keys");
-        check(sameValue(own.object.get("name"), str("toString")) && sameValue(own.object.get("length"), num(0)), "metadata values");
+        check(sameValue(own.object.get("name", evaluator.context, loc), str("toString")) && sameValue(own.object.get("length", evaluator.context, loc), num(0)), "metadata values");
         for (const key of ["name", "length"]) {
             const d = own.object.getOwnProperty(key);
-            check(d !== undefined && !d.writable && !d.enumerable && d.configurable, "metadata flags");
+            check(d !== undefined && d.kind === "data" && !d.writable && !d.enumerable && d.configurable, "metadata flags");
         }
         check(!realm.global.bindings.has("Object") && !realm.global.bindings.has("Symbol"), "no globals");
     }
@@ -151,7 +151,7 @@ export function testObjectToString(): void {
         expect(evaluator.call(method, obj(child), [], loc), str("[object Own]"), "own tag wins");
         child.internalDelete(wellKnownToStringTag);
     }
-    const trap = obj(new Observed((_key, _receiver, _at): ValueCompletion => { throw new Error("tag value converted"); }));
+    const trap = obj(new Observed((_key, _receiver, _context, _at): ValueCompletion => { throw new Error("tag value converted"); }));
     const throwing = obj(a.createBuiltin("throwing", 0, (_receiver, _args, _context, _at): ValueCompletion => { throw new Error("tag hook called"); }));
     const hooked = a.createObject();
     for (const key of ["valueOf", "toString", wellKnownToPrimitive]) put(hooked, key, throwing);
@@ -169,7 +169,7 @@ export function testObjectToString(): void {
     check(b.boxes.length === boxesBefore + 2 && b.boxes[boxesBefore] !== b.boxes[boxesBefore + 1], "fresh boxes");
     for (const box of b.boxes) check(box.reads === 1 && box.symbolData === symbol.value && box.getPrototypeOf() === b.symbolPrototype, "actual boxed receiver");
     expect(evaluator.call(method, obj(existing), [], loc), str("[object A]"), "existing A box retains chain");
-    const forwarded = c.functionPrototype.get("call");
+    const forwarded = c.functionPrototype.get("call", evaluator.context, loc);
     const forwardingSteps = evaluator.steps;
     expect(evaluator.call(forwarded, method, [symbol], loc), str("[object B]"), "A through C.call to B boxing");
     check(evaluator.steps === forwardingSteps + 1 && evaluator.context.realm === a && evaluator.calls === 0, "forwarded shared tick/cleanup");
@@ -194,7 +194,7 @@ export function testObjectToString(): void {
 
     // Saved method survives replacement/deletion; mutations stay in B.
     put(b.objectPrototype, "toString", num(9));
-    check(!sameValue(a.objectPrototype.get("toString"), num(9)), "method isolation");
+    check(!sameValue(a.objectPrototype.get("toString", evaluator.context, loc), num(9)), "method isolation");
     b.objectPrototype.internalDelete("toString");
     expect(evaluator.call(method, obj(a.createObject()), [], loc), str("[object Object]"), "saved method after deletion");
     check(evaluator.context.realm === a && evaluator.calls === 0 && evaluator.depth === 0, "final cleanup");
@@ -207,7 +207,7 @@ function testTagCompletions(a: Realm, b: Realm, c: Realm, method: Value): void {
         const evaluator = new Evaluator(a, 20, 3);
         let reads = 0;
         let observer: GuestObject = new GuestObject();
-        observer = new Observed((key, receiver, at): ValueCompletion => {
+        observer = new Observed((key, receiver, context, at): ValueCompletion => {
             reads++;
             check(key === wellKnownToStringTag && receiver.kind === "object" && receiver.object === observer && at === loc, "exact Get boundary");
             check(evaluator.context.realm === b && evaluator.steps === reads, "B active and charged before Get");
@@ -244,7 +244,7 @@ function testTagCompletions(a: Realm, b: Realm, c: Realm, method: Value): void {
         expect(evaluator.call(method, { kind: "null" }, [], loc), str("[object Null]"), "later bounded call");
     }
     const zero = new Evaluator(a, 0, 1);
-    const noGet = obj(new Observed((_key, _receiver, _at): ValueCompletion => { throw new Error("exhaustion reached Get"); }));
+    const noGet = obj(new Observed((_key, _receiver, _context, _at): ValueCompletion => { throw new Error("exhaustion reached Get"); }));
     error(zero.call(method, noGet, [], loc), "RangeError", "execution step limit exceeded");
     check(zero.steps === 1 && zero.calls === 0 && zero.context.realm === a, "step exhaustion cleanup");
     expect(zero.call(method, UNDEFINED, [], loc), str("[object Undefined]"), "undefined after exhausted steps");
@@ -279,7 +279,7 @@ function testDefaultConsumers(): void {
     const evaluator = new Evaluator(realm);
     const source = readFileSync("test/fixtures/object-tostring.js", "utf8");
     seed(realm, "tagKey", { kind: "symbol", value: wellKnownToStringTag });
-    seed(realm, "savedToString", realm.objectPrototype.get("toString"));
+    seed(realm, "savedToString", realm.objectPrototype.get("toString", evaluator.context, loc));
     seed(realm, "objectRoot", obj(realm.objectPrototype));
     const bare = new GuestObject();
     seed(realm, "bare", obj(bare));
@@ -313,16 +313,16 @@ function testDefaultConsumers(): void {
         error(completion, row.error, row.message, { line: row.line, column: row.column });
     }
     const lengthTarget = binding(realm, "lengthTarget");
-    check(lengthTarget.kind === "object" && sameValue(lengthTarget.object.get("length"), num(3)), "guest failed length assignment preserves storage");
+    check(lengthTarget.kind === "object" && sameValue(lengthTarget.object.get("length", evaluator.context, loc), num(3)), "guest failed length assignment preserves storage");
     error(toPrimitive(obj(bare), "number", evaluator.context, loc), "TypeError", "cannot convert object to primitive");
 
     // W-T6/T7/T8: fixed lookup sequences, ticks and two uncached conversions.
     const fresh = new Realm((_line) => {});
     const active = new Evaluator(fresh);
     let reads: PropertyKey[] = [];
-    const operand = new Observed((key, receiver, at) => {
+    const operand = new Observed((key, receiver, context, at) => {
         reads.push(key);
-        return fresh.objectPrototype.internalGet(key, receiver, at);
+        return fresh.objectPrototype.internalGet(key, receiver, context, at);
     }, fresh.objectPrototype);
     const hints: PrimitiveHint[] = ["default", "number", "string"];
     for (const hint of hints) {
@@ -342,7 +342,7 @@ function testDefaultConsumers(): void {
     check(changed.type === "throw", "invalid array length completion");
     if (changed.type === "throw") error(changed, "RangeError", "invalid array length");
     keys(reads, [wellKnownToPrimitive, "valueOf", "toString", wellKnownToStringTag, wellKnownToPrimitive, "valueOf", "toString", wellKnownToStringTag], "two full length conversions");
-    check(active.steps - before === 8 && sameValue(array.get("length"), num(3)), "two conversions and no length write");
+    check(active.steps - before === 8 && sameValue(array.get("length", active.context, loc), num(3)), "two conversions and no length write");
     // The second conversion sees a changed method, not a cached first result.
     const mutation = fresh.createObject();
     let conversions = 0;
@@ -355,7 +355,7 @@ function testDefaultConsumers(): void {
     })));
     const beforeMutation = active.steps;
     const uncached = array.defineOwnProperty("length", { value: obj(mutation) }, active.context, loc);
-    check(uncached.type === "normal" && uncached.value && sameValue(array.get("length"), num(0)), "fresh second hook changes NaN/Uint32 zero into valid zero length");
+    check(uncached.type === "normal" && uncached.value && sameValue(array.get("length", active.context, loc), num(0)), "fresh second hook changes NaN/Uint32 zero into valid zero length");
     check(conversions === 2 && active.steps - beforeMutation === 7, "first default tag tick, second explicit hook has no tag tick");
     const tight = new Evaluator(fresh, 3);
     error(toPrimitive(obj(fresh.createObject()), "number", tight.context, loc), "RangeError", "execution step limit exceeded");

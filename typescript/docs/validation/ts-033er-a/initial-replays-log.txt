@@ -1,0 +1,29 @@
+replay-e3b: 0
+replay-e3a: 0
+node-host-negatives: 0
+replay-e3a-reduce: 0
+replay-e3a-reachability: 0
+replay-e2: 0
+replay-e1: 0
+replay-plans: 0
+replay-baseline: 0
+replay-metadata: 0
+replay-stress: 1
+node: 8 deep-chain runtime-source controls pass; no source effects or truncation
+ node:fs:3028
+    return binding.writeFileUtf8(
+                   ^
+
+Error: UNKNOWN: unknown error, open 'C:\Users\jonku\code\rift\typescript\docs\validation\ts-033er-a\stress-results.json'
+    at writeFileSync (node:fs:3028:20)
+    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-033er-a/replay-stress.mjs:44:3
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5) {
+  errno: -4094,
+  code: 'UNKNOWN',
+  syscall: 'open',
+  path: 'C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033er-a\\stress-results.json'
+}
+
+Node.js v26.13.0

@@ -1,0 +1,32 @@
+{
+  "sha256": "a6ac20af433bf7ac7028396ad18fe11895599368aefd435aab68dca8a9b91f19",
+  "typecheck": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": ""
+  },
+  "build": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\property-accessors.exe\n",
+    "stderr": ""
+  },
+  "coverage": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\property-accessors.ts\n\n  statements analyzed   3193\n  compile statically    3193  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+    "stderr": ""
+  },
+  "verdict": "PASS",
+  "validate": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node seed|7: accessor controls PASS\nnode other|11: accessor controls PASS\nnative seed|7: accessor controls PASS\nnative other|11: accessor controls PASS\n",
+    "stderr": ""
+  }
+}

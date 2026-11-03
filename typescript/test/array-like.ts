@@ -1,3 +1,4 @@
+import type { OperationContext } from "../src/runtime.js";
 import { GuestSymbol } from "../src/symbols.js";
 import type { PropertyKey } from "../src/runtime.js";
 import { Evaluator } from "../src/evaluator.js";
@@ -140,7 +141,7 @@ numeric(lengthOfArrayLike(new GuestArray(), active.context, loc), 0);
 class ObservedGet extends GuestObject {
     calls = 0;
     result: ValueCompletion = { type: "normal", value: s("12.9") };
-    override internalGet(key: PropertyKey, receiver: Value, actualLoc: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, context: OperationContext, actualLoc: Location): ValueCompletion {
         this.calls++;
         check(key === "length", "exact Get key");
         check(receiver.kind === "object" && receiver.object === this, "exact Get receiver");

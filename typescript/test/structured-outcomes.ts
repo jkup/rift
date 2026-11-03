@@ -1,3 +1,9 @@
+import type { DataDescriptor as InspectionDataDescriptor, PropertyDescriptor as InspectionDescriptor } from "../src/runtime.js";
+function dataDescriptor(d: InspectionDescriptor | undefined): InspectionDataDescriptor | undefined {
+    if (d !== undefined && d.kind !== "data") throw new Error("expected data descriptor");
+    return d;
+}
+import type { OperationContext } from "../src/runtime.js";
 import { GuestArray } from "../src/array-object.js";
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
@@ -191,7 +197,7 @@ for (const source of ["throw 'RangeError: call depth limit exceeded';", "throw {
     object.bootstrapDefine("retained", { value: { kind: "number", value: 17 } });
     if (retained.value.kind === "object") {
         const property = retained.value.object.getOwnProperty("retained");
-        check(property?.value.kind === "number" && property.value.value === 17, "R27 observable alias mutation");
+        check(property?.kind === "data" && property.value.kind === "number" && property.value.value === 17, "R27 observable alias mutation");
     }
 }
 // R28-R34: semantic RangeErrors, unsupported subset APIs, propagation and effects.
@@ -200,21 +206,21 @@ for (const source of ["throw 'RangeError: call depth limit exceeded';", "throw {
     array.bootstrapDefine("0", { value: { kind: "number", value: 9 }, writable: true, configurable: true, enumerable: true });
     const r = array.defineOwnProperty("length", { value: { kind: "number", value: -1 } }, e.context, loc);
     check(r.type === "throw" && r.origin.kind === "engine-diagnostic" && r.diagnostic.name === "RangeError", "R28");
-    check(array.getOwnProperty("0")?.value.kind === "number" && array.getOwnProperty("length")?.value.kind === "number", "R28 retention");
-    const element = array.getOwnProperty("0"); check(element?.value.kind === "number" && element.value.value === 9, "R28 element");
-    const length = array.getOwnProperty("length"); check(length?.value.kind === "number" && length.value.value === 1, "R28 length");
+    check(dataDescriptor(array.getOwnProperty("0"))?.value.kind === "number" && dataDescriptor(array.getOwnProperty("length"))?.value.kind === "number", "R28 retention");
+    const element = array.getOwnProperty("0"); check(element?.kind === "data" && element.value.kind === "number" && element.value.value === 9, "R28 element");
+    const length = array.getOwnProperty("length"); check(length?.kind === "data" && length.value.kind === "number" && length.value.value === 1, "R28 length");
 }
 class ObservedArray extends GuestArray {
     gets = "";
-    override internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, context: OperationContext, location: Location): ValueCompletion {
         if (key === "length") this.gets += "L";
         if (key === "constructor") this.gets += "C";
-        return super.internalGet(key, receiver, location);
+        return super.internalGet(key, receiver, context, location);
     }
 }
 class NoReadObject extends GuestObject {
     reads = 0;
-    override internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion { this.reads++; throw new Error("unexpected property read"); }
+    override internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _loc: Location): ValueCompletion { this.reads++; throw new Error("unexpected property read"); }
 }
 {
     const object = new NoReadObject(); const input: Value = { kind: "object", object };
@@ -243,8 +249,8 @@ class NoReadObject extends GuestObject {
     check(oversized.origin.kind === "engine-diagnostic" && oversized.diagnostic.name === "RangeError" && callbacks === 0, "R32 length semantic");
     const sparse = realm.createArray(); sparse.bootstrapDefine("length", { value: { kind: "number", value: 3 } }); const zero = new Evaluator(realm, 0);
     resource(mapObjectDefaultArray(sparse, callback, UNDEFINED, zero.context, loc), "steps", 1, 0, "R33");
-    check(callbacks === 0 && sparse.ownPropertyKeys().length === 1 && sparse.getOwnProperty("length")?.value.kind === "number", "R33 no mutation");
-    const length = sparse.getOwnProperty("length"); check(length?.value.kind === "number" && length.value.value === 3, "R33 length");
+    check(callbacks === 0 && sparse.ownPropertyKeys().length === 1 && dataDescriptor(sparse.getOwnProperty("length"))?.value.kind === "number", "R33 no mutation");
+    const length = sparse.getOwnProperty("length"); check(length?.kind === "data" && length.value.kind === "number" && length.value.value === 3, "R33 length");
     const noReads = new NoReadObject(); const exhausted = new Evaluator(realm, 0);
     let sentinel: ThrowCompletion = resourceFailure("steps", 0, 0, "unreached", loc);
     const context = { realm, call: (_c: Value, _r: Value, _a: Value[], _l: Location): ValueCompletion => { throw new Error("unexpected call"); }, tick: (location: Location): ValueCompletion => { sentinel = thrown(exhausted.tick(location), "R34 tick"); return sentinel; } };

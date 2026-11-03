@@ -1,3 +1,8 @@
+import type { DataDescriptor as InspectionDataDescriptor, PropertyDescriptor as InspectionDescriptor } from "../src/runtime.js";
+function dataDescriptor(d: InspectionDescriptor | undefined): InspectionDataDescriptor | undefined {
+    if (d !== undefined && d.kind !== "data") throw new Error("expected data descriptor");
+    return d;
+}
 import { GuestSymbol, formatPropertyKey } from "../src/symbols.js";
 import { sameValue } from "../src/runtime.js";
 import type { PropertyKey } from "../src/runtime.js";
@@ -99,7 +104,7 @@ for (const row of cases) {
     const write = putValue(ref, rhs, keyContext, loc);
     const read = getValue(ref, keyContext, loc);
     check(write.type === "normal" && write.value === rhs && read.type === "normal" && read.value === rhs, row.label + " reference");
-    check(target.kind === "object" && target.object.get(row.expected) === rhs, row.label + " exact property name");
+    check(target.kind === "object" && target.object.get(row.expected, keyContext, loc) === rhs, row.label + " exact property name");
 }
 const primitives: { value: Value; expected: string }[] = [
     { value: UNDEFINED, expected: "undefined" }, { value: { kind: "null" }, expected: "null" },
@@ -115,7 +120,7 @@ for (const row of primitives) {
         const ref = { kind: "property" as const, base: obj(target), key: row.value, loc };
         const write = putValue(ref, rhs, keyContext, loc);
         const read = getValue(ref, keyContext, loc);
-        check(write.type === "normal" && write.value === rhs && read.type === "normal" && read.value === rhs && target.get(row.expected) === rhs, "primitive key on ordinary/array");
+        check(write.type === "normal" && write.value === rhs && read.type === "normal" && read.value === rhs && target.get(row.expected, keyContext, loc) === rhs, "primitive key on ordinary/array");
     }
 }
 const accessRealm = new Realm((_line) => {});
@@ -124,19 +129,19 @@ const ordinary = binding(accessRealm, "o");
 const array = binding(accessRealm, "a");
 if (ordinary.kind !== "object" || array.kind !== "object") throw new Error("fixture objects");
 for (const row of [{ key: "1", value: 2 }, { key: "0", value: 3 }, { key: "-0", value: 4 }, { key: "01", value: 5 }, { key: "1.5", value: 6 }, { key: "-1", value: 7 }, { key: "NaN", value: 8 }, { key: "Infinity", value: 9 }, { key: "-Infinity", value: 10 }]) {
-    check(isNumber(ordinary.object.get(row.key), row.value), "distinct name " + row.key);
+    check(isNumber(ordinary.object.get(row.key, keyContext, loc), row.value), "distinct name " + row.key);
 }
-check(isNumber(array.object.get("0"), 1) && isNumber(array.object.get("length"), 4) && array.object.getOwnProperty("1") === undefined && array.object.getOwnProperty("2")?.value === UNDEFINED && isNumber(array.object.get("3"), 4), "holes and explicit undefined");
+check(isNumber(array.object.get("0", keyContext, loc), 1) && isNumber(array.object.get("length", keyContext, loc), 4) && array.object.getOwnProperty("1") === undefined && dataDescriptor(array.object.getOwnProperty("2"))?.value === UNDEFINED && isNumber(array.object.get("3", keyContext, loc), 4), "holes and explicit undefined");
 const sparse = new GuestArray();
 for (const value of [4294967295, -1, 1.5, 1e21]) {
     check(putValue({ kind: "property", base: obj(sparse), key: num(value), loc }, num(8), keyContext, loc).type === "normal", "nonindex write");
-    check(isNumber(sparse.get("length"), 0) && isNumber(sparse.get(numberToString(value)), 8), "nonindex does not grow");
+    check(isNumber(sparse.get("length", keyContext, loc), 0) && isNumber(sparse.get(numberToString(value), keyContext, loc), 8), "nonindex does not grow");
 }
 check(putValue({ kind: "property", base: obj(sparse), key: num(4294967294), loc }, num(9), keyContext, loc).type === "normal", "max index");
-check(isNumber(sparse.get("length"), 4294967295) && sparse.getOwnProperty("0") === undefined, "sparse maximum length");
+check(isNumber(sparse.get("length", keyContext, loc), 4294967295) && sparse.getOwnProperty("0") === undefined, "sparse maximum length");
 const small = new GuestArray();
 putValue({ kind: "property", base: obj(small), key: num(2), loc }, num(9), keyContext, loc);
-check(isNumber(small.get("length"), 3) && small.getOwnProperty("1") === undefined, "numeric index growth");
+check(isNumber(small.get("length", keyContext, loc), 3) && small.getOwnProperty("1") === undefined, "numeric index growth");
 
 // Synthetic operations observe order and exact completion identity, without
 // claiming guest accessors.
@@ -149,11 +154,11 @@ class ObservedObject extends GuestObject {
     expectedReceiver: Value = UNDEFINED;
     observedKey: PropertyKey = "";
     sentinel: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value: obj(new GuestObject()), diagnostic: { phase: "runtime", name: "RangeError", message: "sentinel", loc } };
-    internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, location: Location): ValueCompletion {
         this.observedKey = key;
         this.trace += "G";
         this.receiver = receiver;
-        return this.getThrow ? this.sentinel : super.internalGet(key, receiver, location);
+        return this.getThrow ? this.sentinel : super.internalGet(key, receiver, context, location);
     }
     internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, location: Location): InternalBooleanCompletion {
         check(receiver === this.expectedReceiver, "original Set Receiver on every object write");
@@ -165,8 +170,8 @@ class ObservedObject extends GuestObject {
     }
 }
 class ForbiddenKey extends GuestObject {
-    internalGet(_key: PropertyKey, _receiver: Value, _location: Location): ValueCompletion { throw new Error("object key read"); }
-    get(_key: PropertyKey): Value { throw new Error("object key get"); }
+    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _location: Location): ValueCompletion { throw new Error("object key read"); }
+    get(_key: PropertyKey, _context: OperationContext, _location: Location): Value { throw new Error("object key get"); }
 }
 
 
@@ -229,7 +234,7 @@ const write = new Scenario();
 write.replace = true;
 check(write.run("write").type === "normal" && write.original.trace === "BKRS", "one-time write order");
 check(write.original.seenContext === write.evaluator.context && write.original.receiver === write.originalValue, "Set context and original Receiver identity");
-check(write.original.get("1") === write.rhsValue && write.original.getOwnProperty("2") === undefined && write.replacement.getOwnProperty("1") === undefined && write.replacement.getOwnProperty("2") === undefined, "original write base and key");
+check(write.original.get("1", keyContext, loc) === write.rhsValue && write.original.getOwnProperty("2") === undefined && write.replacement.getOwnProperty("1") === undefined && write.replacement.getOwnProperty("2") === undefined, "original write base and key");
 check(binding(write.realm, "assigned") === write.rhsValue, "assignment result exact RHS");
 for (const inherited of [false, true]) {
     const call = new Scenario(inherited);
@@ -331,7 +336,7 @@ for (const inherited of [false, true]) {
     check(ref.type === "normal" && isNumber(ref.value, 42), "inherited read value");
     readonly.original.trace = "";
     typeError(readonly.run("write"), "property is not writable: 2", 16);
-    check(readonly.original.trace === "BKRS" && isNumber(owner.get("2"), 42), "readonly Set after RHS");
+    check(readonly.original.trace === "BKRS" && isNumber(owner.get("2", keyContext, loc), 42), "readonly Set after RHS");
 }
 const closed = new Scenario();
 closed.original.preventExtensions();
@@ -366,7 +371,7 @@ check(calls.run("read").type === "normal", "call limit recovery");
 const independent = new Realm((_line) => {});
 check(execute(fixture("access"), new Evaluator(independent)).type === "normal", "second realm fixture");
 const otherObject = binding(independent, "o");
-check(otherObject.kind === "object" && otherObject.object !== ordinary.object && otherObject.object.get("1") !== ordinary.object.get("1"), "realm property state independent");
+check(otherObject.kind === "object" && otherObject.object !== ordinary.object && otherObject.object.get("1", keyContext, loc) !== ordinary.object.get("1", keyContext, loc), "realm property state independent");
 
 // A13/A20-A22/O5: host bridges supply identity to existing runtime-read fixtures.
 const symbolKey = new GuestSymbol("x");
@@ -376,7 +381,7 @@ check(primitiveKey.type === "normal" && primitiveKey.value === symbolKey, "A13 p
 for (const path of ["read", "write", "call", "detached"]) {
     for (const useHook of [false, true]) {
         const scenario = new Scenario();
-        const savedMethod = scenario.original.get("1");
+        const savedMethod = scenario.original.get("1", keyContext, loc);
         scenario.original.trace = "";
         scenario.original.bootstrapDefine(symbolKey, { value: savedMethod, writable: true, configurable: true });
         let hookTrace = "";
@@ -402,7 +407,7 @@ for (const path of ["read", "write", "call", "detached"]) {
         check(hookTrace === (useHook ? "s" : ""), "O5 one string-hint conversion");
         const conversion = useHook ? "H" : "";
         check(scenario.original.trace === (path === "write" ? "BKR" + conversion + "S" : "BK" + conversion + (path === "call" ? "GAAM" : "G")), "A21/O5 reference order");
-        if (path === "write") check(scenario.original.get(symbolKey) === scenario.rhsValue, "A21 exact write");
+        if (path === "write") check(scenario.original.get(symbolKey, keyContext, loc) === scenario.rhsValue, "A21 exact write");
     }
 }
 for (const path of ["read", "write", "call"]) {
@@ -478,7 +483,7 @@ const hostInspection = new Scenario();
 hostInspection.original.getThrow = true;
 let inspectionFault = false;
 try {
-    hostInspection.original.get(symbolKey);
+    hostInspection.original.get(symbolKey, keyContext, loc);
 } catch (fault) {
     check(fault instanceof Error && fault.message === "abrupt host inspection: Symbol(x)", "A20 host inspection diagnostic");
     inspectionFault = true;

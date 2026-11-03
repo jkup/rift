@@ -1,6 +1,7 @@
+import { validatePropertyDescriptorUpdate } from "../src/runtime.js";
 import { Evaluator } from "../src/evaluator.js";
 import { GuestObject, UNDEFINED, putValue } from "../src/runtime.js";
-import type { OperationContext, Completion, DataDescriptorUpdate, InternalBooleanCompletion, PropertyKey, ThrowCompletion, Value } from "../src/runtime.js";
+import type { OperationContext, Completion, PropertyDescriptorUpdate, InternalBooleanCompletion, PropertyKey, ThrowCompletion, Value } from "../src/runtime.js";
 import type { Location } from "../src/syntax.js";
 import { Realm } from "../src/realm.js";
 import { run } from "../src/interpreter.js";
@@ -20,9 +21,10 @@ class DefinitionObject extends GuestObject {
     seenLocation: Location = { line: 0, column: 0 };
     seenContext: OperationContext | null = null;
     seenKey: PropertyKey = "";
-    seenDescriptor: DataDescriptorUpdate = {};
+    seenDescriptor: PropertyDescriptorUpdate = {};
     thrown: ThrowCompletion = { type: "throw", origin: { kind: "guest" }, value: obj(new GuestObject()), diagnostic: { phase: "runtime", name: "RangeError", message: "definition sentinel", loc } };
-    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, location: Location): InternalBooleanCompletion {
+    defineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, context: OperationContext, location: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         this.calls++;
         this.seenContext = context;
         this.seenLocation = location;
@@ -59,9 +61,9 @@ for (const own of [false, true]) {
         if (mode === "throw") exact(r, receiver);
         else boolean(r, mode === "success");
         const d = receiver.getOwnProperty("x");
-        if (mode === "success") check(d !== undefined && d.value === rhs && d.writable && d.enumerable === !own && d.configurable === !own, "successful receiver state");
-        else check(own ? d !== undefined && d.value === UNDEFINED : d === undefined, "failure preserves receiver");
-        check(base.get("x") === UNDEFINED, "lookup base unchanged");
+        if (mode === "success") check(d !== undefined && d.kind === "data" && d.value === rhs && d.writable && d.enumerable === !own && d.configurable === !own, "successful receiver state");
+        else check(own ? d !== undefined && d.kind === "data" && d.value === UNDEFINED : d === undefined, "failure preserves receiver");
+        check(base.get("x", keyContext, loc) === UNDEFINED, "lookup base unchanged");
     }
 }
 for (const own of [false, true]) {
@@ -86,7 +88,7 @@ receiver.bootstrapDefine("ownLocked", { value: rhs, writable: false, enumerable:
 receiver.calls = 0; receiver.mode = "throw";
 boolean(base.internalSet("locked", UNDEFINED, obj(receiver), keyContext, loc), false);
 boolean(base.internalSet("ownLocked", UNDEFINED, obj(receiver), keyContext, loc), false);
-check(receiver.calls === 0 && receiver.get("locked") === rhs && receiver.get("ownLocked") === rhs, "readonly rejection before override");
+check(receiver.calls === 0 && receiver.get("locked", keyContext, loc) === rhs && receiver.get("ownLocked", keyContext, loc) === rhs, "readonly rejection before override");
 const inherited = new DefinitionObject();
 boolean(inherited.setPrototypeOf(base), true);
 inherited.mode = "throw";
@@ -102,7 +104,7 @@ closed.calls = 0;
 boolean(base.internalSet("missing", rhs, obj(closed), keyContext, loc), false);
 check(closed.calls === 1 && closed.getOwnProperty("missing") === undefined, "extensibility checked inside ordinary definition");
 boolean(base.internalSet("existing", rhs, obj(closed), keyContext, loc), true);
-check(closed.calls === 2 && closed.get("existing") === rhs, "nonextensible own update dispatch");
+check(closed.calls === 2 && closed.get("existing", keyContext, loc) === rhs, "nonextensible own update dispatch");
 closed.mode = "throw";
 exact(base.internalSet("missing", rhs, obj(closed), keyContext, loc), closed);
 check(closed.calls === 3, "nonextensibility does not bypass override");
@@ -122,7 +124,7 @@ for (const mode of ["success", "false", "throw"]) {
     check(target.seenLocation.line === 2 && target.seenLocation.column === 18, "guest source location");
     if (mode === "throw") exact(r.completion, target);
     else if (mode === "false") check(r.completion.type === "throw" && r.completion.diagnostic.name === "TypeError" && r.completion.diagnostic.loc === target.seenLocation, "guest false translation location");
-    else check(r.completion.type === "normal" && realm.global.bindings.get("assigned")?.value === rhs && target.get("x") === rhs, "guest assignment RHS identity");
+    else check(r.completion.type === "normal" && realm.global.bindings.get("assigned")?.value === rhs && target.get("x", keyContext, loc) === rhs, "guest assignment RHS identity");
     const before = target.calls;
     const abrupt = run("target.x = missing;", realm);
     check(abrupt.phase === "runtime" && abrupt.completion.type === "throw" && abrupt.completion.diagnostic.name === "ReferenceError", "abrupt RHS");
@@ -135,7 +137,8 @@ class BootstrapObserver extends GuestObject {
     mode = "false";
     calls = 0;
     seenLocation: Location = { line: 0, column: 0 };
-    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, location: Location): InternalBooleanCompletion {
+    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, location: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         this.calls++;
         this.seenLocation = location;
         if (this.mode === "false") return { type: "normal", value: false };
@@ -156,7 +159,7 @@ for (const mode of ["false", "throw"]) {
 const setupOnly = new DefinitionObject();
 setupOnly.mode = "throw";
 setupOnly.bootstrapDefine("length", { value: rhs, writable: true });
-check(setupOnly.calls === 0 && setupOnly.get("length") === rhs, "bootstrap excludes semantic override");
+check(setupOnly.calls === 0 && setupOnly.get("length", keyContext, loc) === rhs, "bootstrap excludes semantic override");
 const active = new Evaluator(new Realm((_line) => {}), 0);
 const child = new DefinitionObject();
 const parent = new GuestObject();
@@ -166,7 +169,7 @@ const inheritedWrite = child.set("x", rhs, active.context, loc);
 check(inheritedWrite.type === "normal" && inheritedWrite.value === rhs, "inherited write original RHS");
 check(child.calls === 1 && child.seenContext === active.context && child.seenLocation === loc, "inherited context and location");
 boolean(child.defineOwnProperty("length", { value: rhs }, active.context, loc), true);
-check(child.calls === 2 && child.seenContext === active.context && child.get("length") === rhs, "direct Define identity");
+check(child.calls === 2 && child.seenContext === active.context && child.get("length", keyContext, loc) === rhs, "direct Define identity");
 check(active.steps === 0 && active.calls === 0 && keyEvaluator.steps === 0, "ordinary writes add no ticks or calls");
 // W18: bootstrap dispatch validates virtual indices without a context.
 const silentRealm = new Realm((_line) => { throw new Error("W18 bootstrap output"); });
@@ -182,6 +185,6 @@ check(invalidIndexEscaped, "W18 invalid bootstrap index invariant");
 bootstrapText.preventExtensions();
 bootstrapText.bootstrapDefine("0", {});
 const bootstrapUnit = bootstrapText.getOwnProperty("0");
-check(bootstrapUnit !== undefined && !bootstrapUnit.writable && bootstrapUnit.enumerable && !bootstrapUnit.configurable, "W18 bootstrap flags unchanged");
+check(bootstrapUnit !== undefined && bootstrapUnit.kind === "data" && !bootstrapUnit.writable && bootstrapUnit.enumerable && !bootstrapUnit.configurable, "W18 bootstrap flags unchanged");
 check(keyEvaluator.steps === 0 && keyEvaluator.calls === 0, "W18 no execution work");
 console.log("definition dispatch passed");

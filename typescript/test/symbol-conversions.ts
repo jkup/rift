@@ -41,15 +41,15 @@ function binding(realm: Realm, name: string): Value {
 }
 
 class NoReads extends GuestObject {
-    internalGet(_key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _loc: Location): ValueCompletion {
         throw new Error("B2 receiver or argument property read");
     }
 }
 class ObservedSymbol extends GuestSymbolObject {
     reads: PropertyKey[] = [];
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.reads.push(key);
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 function keys(actual: PropertyKey[], expected: PropertyKey[], label: string): void {
@@ -65,7 +65,7 @@ export function testSymbolConversions(): void {
     const methodKeys: PropertyKey[] = ["toString", "valueOf", wellKnownToPrimitive];
     const names = ["toString", "valueOf", "[Symbol.toPrimitive]"];
     const lengths = [0, 0, 1];
-    const methods = methodKeys.map((key) => b.symbolPrototype.get(key));
+    const methods = methodKeys.map((key) => b.symbolPrototype.get(key, evaluator.context, loc));
 
     // P10 metadata, exact canonical key, and per-Realm function ownership.
     for (const realm of [a, b, c]) {
@@ -73,24 +73,24 @@ export function testSymbolConversions(): void {
         check(!(realm.symbolPrototype instanceof GuestSymbolObject), "root lacks payload");
         check(!realm.global.bindings.has("Symbol"), "no global");
         for (const absent of ["constructor", "description", "Symbol.toPrimitive", "@@toPrimitive"]) {
-            check(realm.symbolPrototype.get(absent).kind === "undefined", "partial surface " + absent);
+            check(realm.symbolPrototype.get(absent, evaluator.context, loc).kind === "undefined", "partial surface " + absent);
         }
-        check(realm.symbolPrototype.get(new GuestSymbol("Symbol.toPrimitive")).kind === "undefined", "no description matching");
+        check(realm.symbolPrototype.get(new GuestSymbol("Symbol.toPrimitive"), evaluator.context, loc).kind === "undefined", "no description matching");
         for (let i = 0; i < methodKeys.length; i++) {
             const descriptor = realm.symbolPrototype.getOwnProperty(methodKeys[i]);
-            check(descriptor !== undefined && descriptor.writable === (i < 2)
+            check(descriptor !== undefined && descriptor.kind === "data" && descriptor.writable === (i < 2)
                 && !descriptor.enumerable && descriptor.configurable, "method flags");
-            const method = realm.symbolPrototype.get(methodKeys[i]);
+            const method = realm.symbolPrototype.get(methodKeys[i], evaluator.context, loc);
             if (method.kind !== "object") throw new Error("B2 missing function");
             check(method.object.getPrototypeOf() === realm.functionPrototype
                 && method.object.callable !== null && method.object.callable.realm === realm, "method ownership");
             if (realm !== b) check(!sameValue(method, methods[i]), "fresh methods");
             keys(method.object.ownPropertyKeys(), ["name", "length"], "function metadata keys");
-            check(sameValue(method.object.get("name"), str(names[i]))
-                && sameValue(method.object.get("length"), { kind: "number", value: lengths[i] }), "metadata values");
+            check(sameValue(method.object.get("name", evaluator.context, loc), str(names[i]))
+                && sameValue(method.object.get("length", evaluator.context, loc), { kind: "number", value: lengths[i] }), "metadata values");
             for (const key of ["name", "length"]) {
                 const metadata = method.object.getOwnProperty(key);
-                check(metadata !== undefined && !metadata.writable && !metadata.enumerable && metadata.configurable, "metadata flags");
+                check(metadata !== undefined && metadata.kind === "data" && !metadata.writable && !metadata.enumerable && metadata.configurable, "metadata flags");
             }
         }
     }
@@ -136,7 +136,7 @@ export function testSymbolConversions(): void {
     for (const args of [[], [UNDEFINED], [{ kind: "null" } as Value], [str("invalid hint")], [payload], [ignored, ignored]]) {
         check(sameValue(result(evaluator.call(methods[2], payload, args, loc)), payload), "hook ignores any hint and arity");
     }
-    const forwarded = c.functionPrototype.get("call");
+    const forwarded = c.functionPrototype.get("call", evaluator.context, loc);
     for (const receiver of [payload, obj(c.createSymbolObject(identity)), obj(b.symbolPrototype)]) {
         for (let i = 0; i < methods.length; i++) {
             const active = new Evaluator(a, 0, 3);
@@ -264,7 +264,7 @@ function testGuestCalls(realm: Realm, identity: GuestSymbol): void {
     check(sameValue(binding(realm, "effects"), { kind: "number", value: 4 }), "ignored arguments evaluated exactly once");
     check(sameValue(binding(realm, "keyResult"), { kind: "number", value: 17 }), "guest box key matches symbol");
     const implicitRead = evaluator.call(binding(realm, "implicitMember"), UNDEFINED, [], loc);
-    check(implicitRead.type === "normal" && sameValue(implicitRead.value, realm.symbolPrototype.get("valueOf")), "implicitMember positive read");
+    check(implicitRead.type === "normal" && sameValue(implicitRead.value, realm.symbolPrototype.get("valueOf", evaluator.context, loc)), "implicitMember positive read");
     const names = ["numeric", "implicitString", "invalidRoot", "readonlyHook"];
     const messages = ["cannot convert symbol to number", "cannot convert symbol to string", "receiver is not a symbol",
         "property is not writable: Symbol(Symbol.toPrimitive)"];

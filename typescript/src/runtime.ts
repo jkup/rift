@@ -21,7 +21,60 @@ export type BooleanCompletion = { type: "normal"; value: boolean };
 export type ThrowCompletion = { type: "throw"; value: Value; diagnostic: Diagnostic; readonly origin: ThrowOrigin };
 export type ValueCompletion = { type: "normal"; value: Value } | ThrowCompletion;
 export type InternalBooleanCompletion = BooleanCompletion | ThrowCompletion;
-export type DataDescriptor = { value: Value; writable: boolean; enumerable: boolean; configurable: boolean };
+export type DataDescriptor = { kind: "data"; value: Value; writable: boolean; enumerable: boolean; configurable: boolean };
+export type AccessorDescriptor = { kind: "accessor"; get: Value; set: Value; enumerable: boolean; configurable: boolean };
+export type PropertyDescriptor = DataDescriptor | AccessorDescriptor;
+export type PropertyDescriptorUpdate = DataDescriptorUpdate & { get?: Value; set?: Value };
+export type DescriptorValidation = { valid: false } | { valid: true; descriptor: PropertyDescriptor };
+
+// Trusted internal records are checked before any exotic coercion or storage.
+export function validatePropertyDescriptorUpdate(desc: PropertyDescriptorUpdate): void {
+    const data = desc.value !== undefined || desc.writable !== undefined;
+    const accessor = desc.get !== undefined || desc.set !== undefined;
+    if (data && accessor) throw new Error("mixed property descriptor");
+    for (const endpoint of [desc.get, desc.set]) {
+        if (endpoint !== undefined && endpoint.kind !== "undefined"
+            && (endpoint.kind !== "object" || endpoint.object.callable === null))
+            throw new Error("invalid accessor endpoint");
+    }
+}
+function copyDescriptor(desc: PropertyDescriptor): PropertyDescriptor {
+    if (desc.kind === "data") return { kind: "data", value: desc.value, writable: desc.writable, enumerable: desc.enumerable, configurable: desc.configurable };
+    return { kind: "accessor", get: desc.get, set: desc.set, enumerable: desc.enumerable, configurable: desc.configurable };
+}
+// Pure ValidateAndApplyPropertyDescriptor construction. The caller commits once.
+export function validatePropertyDescriptor(current: PropertyDescriptor | undefined, extensible: boolean, desc: PropertyDescriptorUpdate): DescriptorValidation {
+    const data = desc.value !== undefined || desc.writable !== undefined;
+    const accessor = desc.get !== undefined || desc.set !== undefined;
+    if (current === undefined && !extensible) return { valid: false };
+    if (current !== undefined && !current.configurable) {
+        if (desc.configurable === true || (desc.enumerable !== undefined && desc.enumerable !== current.enumerable)) return { valid: false };
+        if ((current.kind === "data" && accessor) || (current.kind === "accessor" && data)) return { valid: false };
+        if (current.kind === "accessor") {
+            if (desc.get !== undefined && !sameValue(desc.get, current.get)) return { valid: false };
+            if (desc.set !== undefined && !sameValue(desc.set, current.set)) return { valid: false };
+        } else if (!current.writable) {
+            if (desc.writable === true || (desc.value !== undefined && !sameValue(desc.value, current.value))) return { valid: false };
+            // A SameValue request on frozen data is a successful no-op, including
+            // the stored Value wrapper identity (2025 10.1.6.3 step 5.e.iii).
+            if (desc.value !== undefined) return { valid: true, descriptor: copyDescriptor(current) };
+        }
+    }
+    const enumerable = desc.enumerable === undefined ? (current === undefined ? false : current.enumerable) : desc.enumerable;
+    const configurable = desc.configurable === undefined ? (current === undefined ? false : current.configurable) : desc.configurable;
+    if (accessor || (!data && current !== undefined && current.kind === "accessor")) {
+        const previous = current !== undefined && current.kind === "accessor" ? current : undefined;
+        return { valid: true, descriptor: { kind: "accessor",
+            get: desc.get === undefined ? (previous === undefined ? UNDEFINED : previous.get) : desc.get,
+            set: desc.set === undefined ? (previous === undefined ? UNDEFINED : previous.set) : desc.set,
+            enumerable, configurable } };
+    }
+    const previous = current !== undefined && current.kind === "data" ? current : undefined;
+    return { valid: true, descriptor: { kind: "data",
+        value: desc.value === undefined ? (previous === undefined ? UNDEFINED : previous.value) : desc.value,
+        writable: desc.writable === undefined ? (previous === undefined ? false : previous.writable) : desc.writable,
+        enumerable, configurable } };
+}
 export type Completion =
     | { type: "normal" | "return"; value: Value }
     | ThrowCompletion
@@ -49,7 +102,7 @@ export type Callable =
     | { readonly kind: "guest"; readonly realm: Realm; readonly params: string[]; readonly body: Stmt[]; readonly environment: Environment; readonly source: FunctionSource | null }
     | { readonly kind: "builtin"; readonly realm: Realm; readonly invoke: Builtin; readonly initialName: string | null };
 export class GuestObject {
-    private propertyStorage: Map<PropertyKey, DataDescriptor> = new Map();
+    private propertyStorage: Map<PropertyKey, PropertyDescriptor> = new Map();
     private extensible = true;
     private prototypeSlot: GuestObject | null;
     private readonly immutablePrototypeSlot: boolean;
@@ -58,16 +111,16 @@ export class GuestObject {
         this.immutablePrototypeSlot = immutablePrototype;
     }
     // Compatibility inspection snapshot, never a mutable view of internal slots.
-    get properties(): Map<PropertyKey, DataDescriptor> {
-        const snapshot = new Map<PropertyKey, DataDescriptor>();
+    get properties(): Map<PropertyKey, PropertyDescriptor> {
+        const snapshot = new Map<PropertyKey, PropertyDescriptor>();
         for (const [key, d] of this.propertyStorage) {
-            snapshot.set(key, { value: d.value, writable: d.writable, enumerable: d.enumerable, configurable: d.configurable });
+            snapshot.set(key, copyDescriptor(d));
         }
         return snapshot;
     }
-    getOwnProperty(key: PropertyKey): DataDescriptor | undefined {
+    getOwnProperty(key: PropertyKey): PropertyDescriptor | undefined {
         const d = this.propertyStorage.get(key);
-        return d === undefined ? undefined : { value: d.value, writable: d.writable, enumerable: d.enumerable, configurable: d.configurable };
+        return d === undefined ? undefined : copyDescriptor(d);
     }
     internalDelete(key: PropertyKey): InternalBooleanCompletion {
         const current = this.propertyStorage.get(key);
@@ -99,40 +152,21 @@ export class GuestObject {
         this.extensible = false;
         return { type: "normal", value: true };
     }
-    // Ordinary [[DefineOwnProperty]], restricted to data/generic descriptors.
+    // Ordinary [[DefineOwnProperty]] for complete data/accessor storage.
     // Rejection is normal(false), not a guest exception. Validate before committing.
-    defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _context: OperationContext, _loc: Location): InternalBooleanCompletion {
+    defineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, _context: OperationContext, _loc: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         return this.ordinaryDefineOwnProperty(key, desc);
     }
-    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, _loc: Location): InternalBooleanCompletion {
+    protected bootstrapDefineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, _loc: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         return this.ordinaryDefineOwnProperty(key, desc);
     }
-    protected ordinaryDefineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate): BooleanCompletion {
-        const current = this.propertyStorage.get(key);
-        if (current === undefined) {
-            if (!this.extensible) return { type: "normal", value: false };
-            this.propertyStorage.set(key, {
-                value: desc.value === undefined ? UNDEFINED : desc.value,
-                writable: desc.writable === undefined ? false : desc.writable,
-                enumerable: desc.enumerable === undefined ? false : desc.enumerable,
-                configurable: desc.configurable === undefined ? false : desc.configurable,
-            });
-            return { type: "normal", value: true };
-        }
-        if (!current.configurable) {
-            if (desc.configurable === true) return { type: "normal", value: false };
-            if (desc.enumerable !== undefined && desc.enumerable !== current.enumerable) return { type: "normal", value: false };
-            if (!current.writable) {
-                if (desc.writable === true) return { type: "normal", value: false };
-                if (desc.value !== undefined) return { type: "normal", value: sameValue(desc.value, current.value) };
-            }
-        }
-        this.propertyStorage.set(key, {
-            value: desc.value === undefined ? current.value : desc.value,
-            writable: desc.writable === undefined ? current.writable : desc.writable,
-            enumerable: desc.enumerable === undefined ? current.enumerable : desc.enumerable,
-            configurable: desc.configurable === undefined ? current.configurable : desc.configurable,
-        });
+    protected ordinaryDefineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate): BooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
+        const result = validatePropertyDescriptor(this.propertyStorage.get(key), this.extensible, desc);
+        if (!result.valid) return { type: "normal", value: false };
+        this.propertyStorage.set(key, result.descriptor);
         return { type: "normal", value: true };
     }
     getPrototypeOf(): GuestObject | null { return this.prototypeSlot; }
@@ -148,7 +182,7 @@ export class GuestObject {
         this.prototypeSlot = prototype;
         return { type: "normal", value: true };
     }
-    // Data-only presence through descriptor dispatch, including inherited
+    // Presence through descriptor dispatch, including inherited
     // undefined and virtual String indices. Never invoke semantic Get here.
     internalHasProperty(key: PropertyKey, _loc: Location): InternalBooleanCompletion {
         let object: GuestObject | null = this;
@@ -158,11 +192,15 @@ export class GuestObject {
         }
         return { type: "normal", value: false };
     }
-    internalGet(key: PropertyKey, _receiver: Value, _loc: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, loc: Location): ValueCompletion {
         let object: GuestObject | null = this;
         while (object !== null) {
             const descriptor = object.getOwnProperty(key);
-            if (descriptor !== undefined) return { type: "normal", value: descriptor.value };
+            if (descriptor !== undefined) {
+                if (descriptor.kind === "data") return normal(descriptor.value);
+                if (descriptor.get.kind === "undefined") return normal();
+                return context.call(descriptor.get, receiver, [], loc);
+            }
             object = object.prototypeSlot;
         }
         return { type: "normal", value: UNDEFINED };
@@ -174,6 +212,12 @@ export class GuestObject {
         while (object !== null) {
             const descriptor = object.getOwnProperty(key);
             if (descriptor !== undefined) {
+                if (descriptor.kind === "accessor") {
+                    if (descriptor.set.kind === "undefined") return { type: "normal", value: false };
+                    const called = context.call(descriptor.set, receiver, [value], loc);
+                    if (called.type === "throw") return called;
+                    return { type: "normal", value: true };
+                }
                 if (!descriptor.writable) return { type: "normal", value: false };
                 break;
             }
@@ -183,14 +227,14 @@ export class GuestObject {
         const target = receiver.object;
         const existing = target.getOwnProperty(key);
         if (existing !== undefined) {
-            if (!existing.writable) return { type: "normal", value: false };
+            if (existing.kind === "accessor" || !existing.writable) return { type: "normal", value: false };
             return target.defineOwnProperty(key, { value }, context, loc);
         }
         return target.defineOwnProperty(key, { value, writable: true, enumerable: true, configurable: true }, context, loc);
     }
     // Trusted host-test inspection only; semantic reads propagate completions.
-    get(key: PropertyKey): Value {
-        const result = this.internalGet(key, { kind: "object", object: this }, { line: 1, column: 1 });
+    get(key: PropertyKey, context: OperationContext, loc: Location): Value {
+        const result = this.internalGet(key, { kind: "object", object: this }, context, loc);
         if (result.type === "throw") throw new Error("abrupt host inspection: " + formatPropertyKey(key));
         return result.value;
     }
@@ -201,7 +245,8 @@ export class GuestObject {
         return normal(value);
     }
     // Trusted setup uses separate validated dispatch, with no execution context.
-    bootstrapDefine(key: PropertyKey, desc: DataDescriptorUpdate): void {
+    bootstrapDefine(key: PropertyKey, desc: PropertyDescriptorUpdate): void {
+        validatePropertyDescriptorUpdate(desc);
         const result = this.bootstrapDefineOwnProperty(key, desc, { line: 1, column: 1 });
         if (result.type === "throw" || !result.value) throw new Error("invalid internal property definition: " + formatPropertyKey(key));
     }
@@ -234,7 +279,7 @@ export function getValue(ref: Reference, context: OperationContext, loc: Locatio
         ref.key = typeof key.value === "string"
             ? { kind: "string", value: key.value }
             : { kind: "symbol", value: key.value };
-        return object.value.internalGet(key.value, ref.base, loc);
+        return object.value.internalGet(key.value, ref.base, context, loc);
     }
     const binding = ref.environment === null ? undefined : ref.environment.bindings.get(ref.name);
     if (binding === undefined) return failure("ReferenceError", ref.name + " is not defined", loc);

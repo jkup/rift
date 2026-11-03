@@ -47,7 +47,7 @@ function callable(fn: GuestObject): ScriptGuestCallable {
     return fn.callable;
 }
 function prototype(fn: GuestObject): GuestObject {
-    const d = fn.getOwnProperty("prototype"); if (d === undefined || d.value.kind !== "object") throw new Error("prototype"); return d.value.object;
+    const d = fn.getOwnProperty("prototype"); if (d === undefined || d.kind !== "data" || d.value.kind !== "object") throw new Error("prototype"); return d.value.object;
 }
 function factory(r: ExecutableScript, scope: number, outer: ScriptEnvironment, b: Budget): ScriptGuestCallable {
     return callable(object(r.materializeFunction(scope, outer, null, b.context)));
@@ -58,27 +58,27 @@ function activation(r: ExecutableScript, c: ScriptGuestCallable, b: Budget, rece
 function block(r: ExecutableScript, scope: number, outer: ScriptEnvironment, b: Budget): ScriptDeclarativeEnvironment {
     const a = r.createBlockEnvironment(scope, outer, b.context); if (a.type !== "normal") throw new Error("block"); return a.environment;
 }
-function value(e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | GlobalEnvironment, name: string): Value {
-    const result = e.getBindingValue(name, loc); if (result.type !== "normal") throw new Error("binding " + name); return result.value;
+function value(context: OperationContext, e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | GlobalEnvironment, name: string): Value {
+    const result = e.getBindingValue(name, context, loc); if (result.type !== "normal") throw new Error("binding " + name); return result.value;
 }
-function state(e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | GlobalEnvironment, name: string, expected: string, identity: Value = UNDEFINED): void {
+function state(context: OperationContext, e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | GlobalEnvironment, name: string, expected: string, identity: Value = UNDEFINED): void {
     const present = e.hasBinding(name, loc); check(present.type === "normal" && present.value === (expected !== "absent"), "presence " + name + " " + expected);
     if (expected === "absent") return;
-    const result = e.getBindingValue(name, loc);
+    const result = e.getBindingValue(name, context, loc);
     if (expected === "tdz") { check(result.type === "throw" && result.diagnostic.name === "ReferenceError", "TDZ " + name); return; }
     if (result.type !== "normal") throw new Error("normal " + name);
     if (expected === "value") check(result.value === identity, "Value identity " + name);
     else if (expected === "undefined") check(result.value.kind === "undefined", "undefined " + name);
     else check(result.value.kind === "object" && result.value.object.callable?.kind === "script-guest", "real closure " + name);
 }
-function closure(e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | GlobalEnvironment, name: string, r: ExecutableScript, scope: number, outer: ScriptEnvironment): GuestObject {
-    const v = value(e, name); if (v.kind !== "object") throw new Error("closure object");
+function closure(context: OperationContext, e: ScriptFunctionEnvironment | ScriptDeclarativeEnvironment | GlobalEnvironment, name: string, r: ExecutableScript, scope: number, outer: ScriptEnvironment): GuestObject {
+    const v = value(context,e, name); if (v.kind !== "object") throw new Error("closure object");
     const c = callable(v.object);
     check(c.record === r && c.realm === rRealm && c.scopeId === scope && c.environment === outer && c.strict && c.thisMode === "strict", "closure capture " + name);
     const n = v.object.getOwnProperty("name"), len = v.object.getOwnProperty("length"), p = v.object.getOwnProperty("prototype"), back = prototype(v.object).getOwnProperty("constructor");
-    check(n !== undefined && n.value.kind === "string" && n.value.value === name && !n.writable && !n.enumerable && n.configurable, "name descriptor");
-    check(len !== undefined && !len.writable && !len.enumerable && len.configurable && p !== undefined && p.writable && !p.enumerable && !p.configurable, "descriptors");
-    check(back !== undefined && back.value.kind === "object" && back.value.object === v.object && back.writable && !back.enumerable && back.configurable, "backlink");
+    check(n !== undefined && n.kind === "data" && n.value.kind === "string" && n.value.value === name && !n.writable && !n.enumerable && n.configurable, "name descriptor");
+    check(len !== undefined && len.kind === "data" && !len.writable && !len.enumerable && len.configurable && p !== undefined && p.kind === "data" && p.writable && !p.enumerable && !p.configurable, "descriptors");
+    check(back !== undefined && back.kind === "data" && back.value.kind === "object" && back.value.object === v.object && back.writable && !back.enumerable && back.configurable, "backlink");
     return v.object;
 }
 function invalid(action: () => void, b: Budget, r: ExecutableScript): void {
@@ -123,12 +123,12 @@ for (const host of [false, true]) for (let limit = 0; limit <= 18; limit++) {
     if (env !== null) {
         const e: ScriptFunctionEnvironment = env;
         check(e.outer === outer && e.callable === c && e.thisValue.kind === "null", "activation identity");
-        state(e,"a",limit < 5 ? "absent" : limit < 7 ? "tdz" : "value", input);
-        state(e,"b",limit < 6 ? "absent" : limit < 8 ? "tdz" : "undefined");
-        state(e,"x",limit < 11 ? "absent" : limit < 12 ? "tdz" : "undefined");
-        state(e,"g",limit < 14 ? "absent" : limit < 15 ? "tdz" : limit < 18 ? "undefined" : "closure");
-        state(e,"z",limit < 16 ? "absent" : "tdz"); state(e,"arguments","absent");
-        if (limit === 18) closure(e,"g",R,2,e);
+        state(b.context,e,"a",limit < 5 ? "absent" : limit < 7 ? "tdz" : "value", input);
+        state(b.context,e,"b",limit < 6 ? "absent" : limit < 8 ? "tdz" : "undefined");
+        state(b.context,e,"x",limit < 11 ? "absent" : limit < 12 ? "tdz" : "undefined");
+        state(b.context,e,"g",limit < 14 ? "absent" : limit < 15 ? "tdz" : limit < 18 ? "undefined" : "closure");
+        state(b.context,e,"z",limit < 16 ? "absent" : "tdz"); state(b.context,e,"arguments","absent");
+        if (limit === 18) closure(b.context,e,"g",R,2,e);
         invalid(() => { R.instantiateFunction(e, [input], b.context); }, b, R);
     } else check(limit === 0, "allocation failed only at A");
 }
@@ -144,8 +144,8 @@ for (const host of [false, true]) for (let limit = 0; limit <= 6; limit++) {
     check(R.inspectMaterializations().completed === (limit >= 4 ? 1 : 0), "block allocation");
     if (env !== null) {
         const e: ScriptDeclarativeEnvironment = env; check(e.outer === outer, "block outer");
-        state(e,"x",limit < 2 ? "absent" : "tdz"); state(e,"g",limit < 3 ? "absent" : limit < 5 ? "tdz" : "closure"); state(e,"y",limit < 6 ? "absent" : "tdz");
-        if (limit >= 5) closure(e,"g",R,2,e);
+        state(b.context,e,"x",limit < 2 ? "absent" : "tdz"); state(b.context,e,"g",limit < 3 ? "absent" : limit < 5 ? "tdz" : "closure"); state(b.context,e,"y",limit < 6 ? "absent" : "tdz");
+        if (limit >= 5) closure(b.context,e,"g",R,2,e);
         invalid(() => { R.instantiateBlock(1,e,b.context); },b,R);
     } else check(limit === 0, "block A");
 }
@@ -154,13 +154,13 @@ for (const host of [false, true]) for (let limit = 0; limit <= 12; limit++) {
     const A = realm(); rRealm = A; const R = prepared(globalSource,A), b = new Budget(A,limit,host), e = A.globalEnvironment;
     run(() => R.instantiateGlobals(e,b.context),b,limit === 12);
     check(b.steps === Math.min(limit+1,12) && b.trace.join() === globalTrace.slice(0,b.steps).join(), "global trace");
-    state(e,"l",limit < 8 ? "absent" : "tdz"); state(e,"f",limit < 11 ? "absent" : "closure"); state(e,"x",limit < 12 ? "absent" : "undefined");
+    state(b.context,e,"l",limit < 8 ? "absent" : "tdz"); state(b.context,e,"f",limit < 11 ? "absent" : "closure"); state(b.context,e,"x",limit < 12 ? "absent" : "undefined");
     check(R.inspectMaterializations().completed === (limit >= 10 ? 1 : 0), "global allocation");
     if (limit >= 11) {
-        const f = value(e,"f"); if (f.kind !== "object") throw new Error("f"); const c = callable(f.object);
+        const f = value(b.context,e,"f"); if (f.kind !== "object") throw new Error("f"); const c = callable(f.object);
         check(c.environment.kind === "global" && c.environment.record === e && c.record === R && c.scopeId === 1, "global capture");
         const descriptor = A.globalObject.getOwnProperty("f");
-        check(descriptor !== undefined && descriptor.writable && descriptor.enumerable && !descriptor.configurable, "global function flags");
+        check(descriptor !== undefined && descriptor.kind === "data" && descriptor.writable && descriptor.enumerable && !descriptor.configurable, "global function flags");
     }
 }
 console.log("G01 P01 GLOBAL PASS");
@@ -169,37 +169,37 @@ const c = factory(R,1,outer,b), e = activation(R,c,b);
 const numericBudget = new Budget(A), numericReceiver: Value = { kind: "number", value: 7 };
 const numeric = activation(R,c,numericBudget,numericReceiver), eleven: Value = { kind: "number", value: 11 };
 check(R.instantiateFunction(numeric,[input,eleven,{kind:"number",value:99}],numericBudget.context).type === "normal", "numeric extra arguments");
-state(numeric,"a","value",input); state(numeric,"b","value",eleven);
-state(numeric,"arguments","absent"); state(numeric,"99","absent");
+state(numericBudget.context,numeric,"a","value",input); state(numericBudget.context,numeric,"b","value",eleven);
+state(numericBudget.context,numeric,"arguments","absent"); state(numericBudget.context,numeric,"99","absent");
 check(numeric.thisValue === numericReceiver && numericBudget.trace.join() === functionTrace.join(), "numeric receiver and eighteen ticks");
 const second: Value = { kind: "object", object: new GuestObject(A.objectPrototype) };
 const args = [input,second,{ kind: "number", value: 99 } as Value];
 const copied = new Budget(A); copied.mutate = args;
 check(R.instantiateFunction(e,args,copied.context).type === "normal", "copied setup");
-check(value(e,"a") === input && value(e,"b") === second && args.length === 1 && args[0] === UNDEFINED, "S02 copied arguments");
+check(value(b.context,e,"a") === input && value(b.context,e,"b") === second && args.length === 1 && args[0] === UNDEFINED, "S02 copied arguments");
 check(copied.trace.join() === functionTrace.slice(1).join(), "S02 trace");
-state(e,"arguments","absent"); state(e,"99","absent");
-const missing = activation(R,c,b); check(R.instantiateFunction(missing,[],b.context).type === "normal", "all missing"); state(missing,"a","undefined"); state(missing,"b","undefined");
+state(b.context,e,"arguments","absent"); state(b.context,e,"99","absent");
+const missing = activation(R,c,b); check(R.instantiateFunction(missing,[],b.context).type === "normal", "all missing"); state(b.context,missing,"a","undefined"); state(b.context,missing,"b","undefined");
 console.log("S02 PASS");
 const collision = prepared('"use strict";function f(a){var a;function a(){}function g(){}function a(){return 2;}}',A);
 const ce = activation(collision,factory(collision,1,outer,b),b);
 const cb = new Budget(A); check(collision.instantiateFunction(ce,[input],cb.context).type === "normal", "collision setup");
-const ca = closure(ce,"a",collision,4,ce); closure(ce,"g",collision,3,ce);
+const ca = closure(b.context,ce,"a",collision,4,ce); closure(b.context,ce,"g",collision,3,ce);
 check(callable(ca).sourceText() === "function a(){return 2;}" && collision.inspectMaterializations().completed === 3, "last winner only");
 check(cb.trace.slice(-4).join() === "48,57,62,71", "winner source order g,a");
 const duplicate = prepared('"use strict";function f(a){var a;var a;var x;var x;}',A);
 const de = activation(duplicate,factory(duplicate,1,outer,b),b); const db = new Budget(A);
 check(duplicate.instantiateFunction(de,[input],db.context).type === "normal", "duplicates");
-state(de,"a","value",input);state(de,"x","undefined"); check(db.steps === 12, "all var occurrences");
+state(db.context,de,"a","value",input);state(db.context,de,"x","undefined"); check(db.steps === 12, "all var occurrences");
 console.log("S03 S07 PASS");
 const sibling = prepared('"use strict";function f(){function g(){}function h(){}}',A), sc = factory(sibling,1,outer,b);
 const s1 = activation(sibling,sc,b), s2 = activation(sibling,sc,b);
 check(sibling.instantiateFunction(s1,[],b.context).type === "normal" && sibling.instantiateFunction(s2,[],b.context).type === "normal", "sibling setups");
-const g1=closure(s1,"g",sibling,2,s1), h1=closure(s1,"h",sibling,3,s1), g2=closure(s2,"g",sibling,2,s2), h2=closure(s2,"h",sibling,3,s2);
+const g1=closure(b.context,s1,"g",sibling,2,s1), h1=closure(b.context,s1,"h",sibling,3,s1), g2=closure(b.context,s2,"g",sibling,2,s2), h2=closure(b.context,s2,"h",sibling,3,s2);
 check(s1 !== s2 && g1 !== g2 && h1 !== h2 && g1 !== h1 && prototype(g1) !== prototype(g2) && prototype(h1) !== prototype(h2), "fresh invocations");
 // Closures keep the actual environment alive and see subsequent host binding changes.
 s1.createMutableBinding("captured",loc); s1.initializeBinding("captured",input,b.context,loc);
-const capture = callable(g1).environment; check(capture.kind !== "global" && value(capture,"captured") === input, "live capture");
+const capture = callable(g1).environment; check(capture.kind !== "global" && value(b.context,capture,"captured") === input, "live capture");
 const cross = activation(R,factory(R,1,s1,b),b,second); check(cross.outer === s1 && cross.thisValue === second && R.instantiateFunction(cross,[input],b.context).type === "normal", "same Realm cross-record outer");
 console.log("S04 PASS");
 for (const source of ['"use strict";function f(a){let a;}', '"use strict";function f(){var a;let a;}', '"use strict";function f(a,a){}']) check(prepareStrictScript({id:"bad",text:source},A).kind !== "ready", "preparation collision");
@@ -222,8 +222,8 @@ for (const scope of [0,2,3,-1,1.5,99]) invalid(() => { blocks.instantiateBlock(s
 invalid(() => { blocks.instantiateBlock(1,new ScriptDeclarativeEnvironment(outer),bb.context); },bb,blocks);
 invalid(() => { blocks.createBlockEnvironment(1,global(foreign),bb.context); },bb,blocks);
 check(blocks.instantiateBlock(1,b1,bb.context).type === "normal" && blocks.instantiateBlock(1,b2,bb.context).type === "normal", "block entries");
-const bg1=closure(b1,"g",blocks,2,b1), bg2=closure(b2,"g",blocks,2,b2);
-const nested=block(blocks,3,b1,bb);check(blocks.instantiateBlock(3,nested,bb.context).type === "normal", "nested setup");closure(nested,"h",blocks,4,nested);
+const bg1=closure(b.context,b1,"g",blocks,2,b1), bg2=closure(b.context,b2,"g",blocks,2,b2);
+const nested=block(blocks,3,b1,bb);check(blocks.instantiateBlock(3,nested,bb.context).type === "normal", "nested setup");closure(b.context,nested,"h",blocks,4,nested);
 check(b1 !== b2 && bg1 !== bg2 && prototype(bg1) !== prototype(bg2) && nested.outer === b1, "block identities");
 // Readonly is a TypeScript constraint, not a runtime ownership check. A hostile
 // host can replace that public field with another valid same-Realm chain.
@@ -236,15 +236,15 @@ const originalBlock = block(outerRecord,1,originalOuter,b), outerBudget = new Bu
 originalBlock.outer = replacementOuter;
 invalid(() => { outerRecord.instantiateBlock(1,originalBlock,outerBudget.context); },outerBudget,outerRecord);
 check(outerBudget.steps === 0 && outerRecord.inspectMaterializations().completed === 0, "outer rejection has no setup effects");
-state(originalBlock,"g","absent"); state(originalOuter,"captured","value",input); state(replacementOuter,"captured","value",second);
+state(b.context,originalBlock,"g","absent"); state(b.context,originalOuter,"captured","value",input); state(b.context,replacementOuter,"captured","value",second);
 // @ts-expect-error Restore the original field to prove rejection kept phase fresh.
 originalBlock.outer = originalOuter;
 check(outerRecord.instantiateBlock(1,originalBlock,outerBudget.context).type === "normal" && outerBudget.steps === 3, "restored outer succeeds from fresh phase");
-const capturedFunction = closure(originalBlock,"g",outerRecord,2,originalBlock);
+const capturedFunction = closure(b.context,originalBlock,"g",outerRecord,2,originalBlock);
 const resolvedCapture = resolveScriptBinding(callable(capturedFunction).environment,"captured",loc);
 if (resolvedCapture.type !== "normal") throw new Error("capture reference");
 check(resolvedCapture.reference.base === originalOuter, "closure original outer chain");
-const capturedValue = getScriptBinding(resolvedCapture.reference);
+const capturedValue = getScriptBinding(resolvedCapture.reference, outerBudget.context);
 check(capturedValue.type === "normal" && capturedValue.value === input && originalBlock.outer === originalOuter, "closure original binding");
 console.log("B02 B03 PASS");
 // The original D2 marker oracle remains exactly eleven ticks.
@@ -255,9 +255,9 @@ check(mb.trace.join() === "19,26,38,38,26,26,38,19,38,38,26" && marker.inspectMa
 // Use a function-only record for repeat admission: a repeated let would fail earlier.
 const gr=realm(), grRecord=prepared('"use strict";function f(){}',gr), gb=new Budget(gr);
 check(grRecord.instantiateGlobals(gr.globalEnvironment,gb.context).type === "normal", "first globals");
-const old=value(gr.globalEnvironment,"f"); gr.globalObject.bootstrapDefine("f",{value:old,writable:false,configurable:false});
+const old=value(gb.context,gr.globalEnvironment,"f"); gr.globalObject.bootstrapDefine("f",{value:old,writable:false,configurable:false});
 const before=grRecord.inspectMaterializations().completed;
-check(grRecord.instantiateGlobals(gr.globalEnvironment,gb.context).type === "throw" && value(gr.globalEnvironment,"f") === old && grRecord.inspectMaterializations().completed === before, "fresh admission");
+check(grRecord.instantiateGlobals(gr.globalEnvironment,gb.context).type === "throw" && value(gb.context,gr.globalEnvironment,"f") === old && grRecord.inspectMaterializations().completed === before, "fresh admission");
 const adapter=grRecord.createGlobalMaterializer(gr.globalEnvironment,gb.context), plan=grRecord.inspect(), d=plan.declarations[0], fn=plan.functions[0];
 invalid(() => { adapter(d,fn,gr.globalEnvironment,plan.unit,gb.context); },gb,grRecord);
 invalid(() => { adapter({...d},fn,gr.globalEnvironment,plan.unit,gb.context); },gb,grRecord);
@@ -270,12 +270,13 @@ invalid(() => { grRecord.instantiateGlobals(gr.globalEnvironment,b.context); },b
 const detached=grRecord.inspect(); (detached.unit as {text:string}).text="wrong"; (detached.declarations[0].site as {name:string}).name="wrong";
 const cleanRealm=realm(), cleanRecord=prepared(globalSource,cleanRealm), cleanPlan=cleanRecord.inspect();
 (cleanPlan.unit as {text:string}).text="wrong"; (cleanPlan.functions[0] as {scope:number}).scope=99;
-check(cleanRecord.instantiateGlobals(cleanRealm.globalEnvironment,new Budget(cleanRealm).context).type === "normal", "private originals");state(cleanRealm.globalEnvironment,"f","closure");
-const previous = value(cleanRealm.globalEnvironment,"f");
+const cleanBudget = new Budget(cleanRealm);
+check(cleanRecord.instantiateGlobals(cleanRealm.globalEnvironment,cleanBudget.context).type === "normal", "private originals");state(cleanBudget.context,cleanRealm.globalEnvironment,"f","closure");
+const previous = value(cleanBudget.context,cleanRealm.globalEnvironment,"f");
 cleanRealm.globalObject.bootstrapDefine("f",{value:previous,writable:false,configurable:false});
 const repeat = new Budget(cleanRealm);
 check(cleanRecord.instantiateGlobals(cleanRealm.globalEnvironment,repeat.context).type === "throw" &&
-    repeat.trace.join() === "19" && value(cleanRealm.globalEnvironment,"f") === previous && cleanRecord.inspectMaterializations().completed === 1, "G01 repeated lexical admission first");
+    repeat.trace.join() === "19" && value(cleanBudget.context,cleanRealm.globalEnvironment,"f") === previous && cleanRecord.inspectMaterializations().completed === 1, "G01 repeated lexical admission first");
 console.log("G01 MARKER G02 G03 PASS");
 // A private activation cannot be subclass-injected; P02 uses the reachable tick
 // boundary (all prefixes above), not a claimed environment override test.

@@ -1,3 +1,8 @@
+import type { DataDescriptor as InspectionDataDescriptor, PropertyDescriptor as InspectionDescriptor } from "../src/runtime.js";
+function dataDescriptor(d: InspectionDescriptor | undefined): InspectionDataDescriptor | undefined {
+    if (d !== undefined && d.kind !== "data") throw new Error("expected data descriptor");
+    return d;
+}
 import { stringKeys } from "./key-assertions.js";
 import { readFileSync } from "node:fs";
 import { GuestArray } from "../src/array-object.js";
@@ -24,13 +29,13 @@ function number(value: Value, expected: number): boolean {
 }
 function shape(object: GuestArray, length: number, keys: string, realm: Realm): void {
     const desc = object.getOwnProperty("length");
-    check(desc !== undefined && number(desc.value, length) && desc.writable && !desc.enumerable && !desc.configurable, "length and flags");
+    check(desc !== undefined && desc.kind === "data" && number(desc.value, length) && desc.writable && !desc.enumerable && !desc.configurable, "length and flags");
     check(stringKeys(object.ownPropertyKeys()).join(",") === keys, "own keys and holes");
     check(object.getPrototypeOf() === realm.arrayPrototype, "Realm array prototype");
     for (const key of object.ownPropertyKeys()) {
         if (key === "length") continue;
         const element = object.getOwnProperty(key);
-        check(element !== undefined && element.writable && element.enumerable && element.configurable, "element W/E/C");
+        check(element !== undefined && element.kind === "data" && element.writable && element.enumerable && element.configurable, "element W/E/C");
     }
 }
 function program(source: string, evaluator: Evaluator): Completion {
@@ -50,13 +55,13 @@ shape(array(binding(realm, "trailingHole")), 2, "0,length", realm);
 const mixed = array(binding(realm, "mixed"));
 shape(mixed, 4, "1,2,length", realm);
 check(mixed.getOwnProperty("0") === undefined && mixed.getOwnProperty("3") === undefined, "holes absent");
-check(mixed.getOwnProperty("1")?.value.kind === "undefined", "explicit undefined present");
-check(mixed.getOwnProperty("2")?.value.kind === "null", "guest null is present");
+check(dataDescriptor(mixed.getOwnProperty("1"))?.value.kind === "undefined", "explicit undefined present");
+check(dataDescriptor(mixed.getOwnProperty("2"))?.value.kind === "null", "guest null is present");
 const first = array(binding(realm, "first"));
 const second = array(binding(realm, "second"));
 check(first !== second, "repeated evaluation freshness");
-check(first.getOwnProperty("0")?.value === binding(realm, "shared"), "shared Value identity");
-check(second.getOwnProperty("0")?.value === binding(realm, "shared"), "shared nested identity");
+check(dataDescriptor(first.getOwnProperty("0"))?.value === binding(realm, "shared"), "shared Value identity");
+check(dataDescriptor(second.getOwnProperty("0"))?.value === binding(realm, "shared"), "shared nested identity");
 shape(array(binding(realm, "grown")), 5, "0,4,length", realm);
 shape(array(binding(realm, "shrunk")), 1, "0,length", realm);
 shape(array(binding(realm, "nested")), 3, "0,1,2,length", realm);

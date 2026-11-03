@@ -1,3 +1,8 @@
+import type { DataDescriptor as InspectionDataDescriptor, PropertyDescriptor as InspectionDescriptor } from "../src/runtime.js";
+function dataDescriptor(d: InspectionDescriptor | undefined): InspectionDataDescriptor | undefined {
+    if (d !== undefined && d.kind !== "data") throw new Error("expected data descriptor");
+    return d;
+}
 import { readFileSync } from "node:fs";
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
@@ -124,7 +129,7 @@ class Observed extends GuestObject {
     lastKey: PropertyKey = "";
     abrupt: ValueCompletion | null = null;
     hostFault: Error | null = null;
-    internalGet(key: PropertyKey, receiver: Value, loc: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, loc: Location): ValueCompletion {
         this.reads++;
         this.trace += "G";
         this.lastKey = key;
@@ -140,7 +145,7 @@ class Observed extends GuestObject {
         if (this.abrupt !== null) {
             return this.abrupt;
         }
-        return super.internalGet(key, receiver, loc);
+        return super.internalGet(key, receiver, context, loc);
     }
 }
 
@@ -221,8 +226,8 @@ for (const foreign of [false, true]) {
     if (consoleValue.kind !== "object" || numberValue.kind !== "object") {
         throw new Error("namespace");
     }
-    add("V12 Builtin log", consoleValue.object.getOwnProperty("log")!.value, "function");
-    add("V12 Builtin finite", numberValue.object.getOwnProperty("isFinite")!.value, "function");
+    add("V12 Builtin log", dataDescriptor(consoleValue.object.getOwnProperty("log"))!.value, "function");
+    add("V12 Builtin finite", dataDescriptor(numberValue.object.getOwnProperty("isFinite"))!.value, "function");
     add(
         "V12 Builtin unnamed",
         o(
@@ -679,7 +684,7 @@ for (const op of ["typeof", "void"]) {
             "E17 AssignmentEffects",
         );
         check(
-            target.writes === 1 && sameValue(target.getOwnProperty("x")!.value, n(9)),
+            target.writes === 1 && sameValue(dataDescriptor(target.getOwnProperty("x"))!.value, n(9)),
             "E17 retained single write",
         );
     }

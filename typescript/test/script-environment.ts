@@ -29,27 +29,27 @@ const local = new ScriptDeclarativeEnvironment(global);
 value(local.createMutableBinding("x", loc), UNDEFINED);
 const x = capture(local, "x");
 check(x.base === local && x.strict, "TDZ resolved");
-error(getScriptBinding(x), "ReferenceError"); error(putScriptBinding(x, num(1), context), "ReferenceError");
-value(local.initializeBinding("x", num(7), context, loc), UNDEFINED); value(getScriptBinding(x), num(7));
-value(putScriptBinding(x, num(11), context), UNDEFINED); value(getScriptBinding(x), num(11));
+error(getScriptBinding(x, context), "ReferenceError"); error(putScriptBinding(x, num(1), context), "ReferenceError");
+value(local.initializeBinding("x", num(7), context, loc), UNDEFINED); value(getScriptBinding(x, context), num(7));
+value(putScriptBinding(x, num(11), context), UNDEFINED); value(getScriptBinding(x, context), num(11));
 invariant(() => { local.createMutableBinding("x", loc); }, "binding already exists: x");
 invariant(() => { local.initializeBinding("x", num(0), context, loc); }, "binding already initialized: x");
 invariant(() => { local.initializeBinding("missing", num(0), context, loc); }, "missing binding: missing");
-invariant(() => { local.getBindingValue("missing", loc); }, "missing binding: missing");
+invariant(() => { local.getBindingValue("missing", context, loc); }, "missing binding: missing");
 invariant(() => { local.setMutableBinding("missing", num(0), context, loc); }, "missing binding: missing");
 console.log("L01 PASS");
 value(putScriptBinding(x, num(7), context), UNDEFINED);
 const child = new ScriptDeclarativeEnvironment(local), sibling = new ScriptDeclarativeEnvironment(local);
 const before = capture(child, "x");
-child.createMutableBinding("x", loc); error(getScriptBinding(capture(child, "x")), "ReferenceError");
+child.createMutableBinding("x", loc); error(getScriptBinding(capture(child, "x"), context), "ReferenceError");
 child.initializeBinding("x", num(0), context, loc);
-value(getScriptBinding(capture(child, "x")), num(0)); value(getScriptBinding(capture(sibling, "x")), num(7));
-putScriptBinding(before, num(11), context); value(getScriptBinding(before), num(11)); value(getScriptBinding(capture(child, "x")), num(0));
+value(getScriptBinding(capture(child, "x"), context), num(0)); value(getScriptBinding(capture(sibling, "x"), context), num(7));
+putScriptBinding(before, num(11), context); value(getScriptBinding(before, context), num(11)); value(getScriptBinding(capture(child, "x"), context), num(0));
 console.log("L02 PASS");
 define("deep", num(7));
 let deep: ScriptEnvironment = global;
 for (let i = 0; i < 20000; i++) deep = new ScriptDeclarativeEnvironment(deep);
-value(getScriptBinding(capture(deep, "deep")), num(7)); check(capture(deep, "absent").base === null, "deep absent");
+value(getScriptBinding(capture(deep, "deep"), context), num(7)); check(capture(deep, "absent").base === null, "deep absent");
 console.log("L03 PASS");
 // Genuine prepared closure and empty activation; no declaration/body execution.
 const prepared = prepareStrictScript({ id: "E2 fixture", text: '"use strict";function f(){}' }, realm);
@@ -71,15 +71,15 @@ value(normal(scriptIdentifierReceiver(capture(global, "deep"))), UNDEFINED);
 console.log("L04 PASS");
 const site = { line: 3, column: 9 }; const missing = capture(child, "late", site); site.line = 99;
 define("late", num(7)); child.createMutableBinding("late", loc); child.initializeBinding("late", num(0), context, loc);
-const missingPut = putScriptBinding(missing, num(11), context); error(missingPut, "ReferenceError"); error(getScriptBinding(missing), "ReferenceError");
+const missingPut = putScriptBinding(missing, num(11), context); error(missingPut, "ReferenceError"); error(getScriptBinding(missing, context), "ReferenceError");
 check(missingPut.type === "throw" && missingPut.diagnostic.loc.line === 3 && missingPut.diagnostic.loc.column === 9, "copied site");
-value(getScriptBinding(capture(global, "late")), num(7));
+value(getScriptBinding(capture(global, "late"), context), num(7));
 console.log("T01 PASS");
-define("live", num(7)); const live = capture(child, "live"); define("live", num(11)); value(getScriptBinding(live), num(11));
+define("live", num(7)); const live = capture(child, "live"); define("live", num(11)); value(getScriptBinding(live, context), num(11));
 define("live", num(11), false); error(putScriptBinding(live, num(0), context), "TypeError");
-object.internalDelete("live"); error(getScriptBinding(live), "ReferenceError"); error(putScriptBinding(live, num(0), context), "ReferenceError");
-define("live", num(7)); globalRecord.createMutableBinding("live", loc); error(getScriptBinding(live), "ReferenceError");
-globalRecord.initializeBinding("live", num(0), context, loc); value(getScriptBinding(live), num(0));
+object.internalDelete("live"); error(getScriptBinding(live, context), "ReferenceError"); error(putScriptBinding(live, num(0), context), "ReferenceError");
+define("live", num(7)); globalRecord.createMutableBinding("live", loc); error(getScriptBinding(live, context), "ReferenceError");
+globalRecord.initializeBinding("live", num(0), context, loc); value(getScriptBinding(live, context), num(0));
 console.log("T02 PASS");
 class FaultObject extends GuestObject {
     trace = ""; mode = "";
@@ -89,9 +89,9 @@ class FaultObject extends GuestObject {
         this.trace += "H"; if (this.mode === "host") throw this.sentinel;
         return this.mode === "H" ? this.abrupt : super.internalHasProperty(k, l);
     }
-    override internalGet(k: PropertyKey, r: Value, l: Location): ValueCompletion {
+    override internalGet(k: PropertyKey, r: Value, context: OperationContext, l: Location): ValueCompletion {
         this.trace += "G"; check(r.kind === "object" && r.object === this && l.line === 3 && l.column === 9, "get receiver/site");
-        return this.mode === "G" ? this.abrupt : super.internalGet(k, r, l);
+        return this.mode === "G" ? this.abrupt : super.internalGet(k, r, context, l);
     }
     override internalSet(k: PropertyKey, v: Value, r: Value, c: OperationContext, l: Location): InternalBooleanCompletion {
         this.trace += "S"; check(c === context && r.kind === "object" && r.object === this && l.line === 3 && l.column === 9, "set context/receiver/site");
@@ -106,14 +106,14 @@ const resource = resourceFailure("steps", 2, 1, "limit", loc);
 for (const abrupt of [failure("Sentinel", "original", loc), resource]) {
     fault.abrupt = abrupt; fault.mode = "H"; fault.trace = "";
     const h = resolveScriptBinding(faultLocal, "x", loc); check(h.type === "throw" && h === abrupt && fault.trace === "H", "Has identity/trace");
-    fault.mode = "G"; fault.trace = ""; const g = getScriptBinding(faultRef); check(g.type === "throw" && g === abrupt && fault.trace === "HG", "Get identity/trace");
+    fault.mode = "G"; fault.trace = ""; const g = getScriptBinding(faultRef, context); check(g.type === "throw" && g === abrupt && fault.trace === "HG", "Get identity/trace");
     fault.mode = "S"; fault.trace = ""; const s = putScriptBinding(faultRef, num(0), context); check(s.type === "throw" && s === abrupt && fault.trace === "HS", "Set identity/trace");
 }
 fault.mode = "host"; let hostCaught = false;
 try { resolveScriptBinding(faultLocal, "x", loc); } catch (e) { if (e instanceof Error) hostCaught = e === fault.sentinel; }
 check(hostCaught, "host identity");
 faultLocal.createMutableBinding("own", loc); faultLocal.initializeBinding("own", num(7), context, loc);
-const own = capture(faultLocal, "own"); fault.trace = ""; value(getScriptBinding(own), num(7)); putScriptBinding(own, num(11), context); check(fault.trace === "", "captured local no outer lookup");
+const own = capture(faultLocal, "own"); fault.trace = ""; value(getScriptBinding(own, context), num(7)); putScriptBinding(own, num(11), context); check(fault.trace === "", "captured local no outer lookup");
 console.log("T03 PASS");
 const empty: ScriptStatementPayload = { kind: "empty" }, seven: ScriptStatementPayload = { kind: "value", value: num(7) };
 const initial: ScriptStatementCompletion = { type: "normal", payload: empty };
@@ -143,5 +143,5 @@ const input = readFileSync(process.argv[2], "utf8").trim().split("|");
 check(input.length === 2 && (input[0] === "seed" || input[0] === "other"), "input");
 const runtime = new ScriptDeclarativeEnvironment(global); runtime.createMutableBinding(input[0], loc); runtime.initializeBinding(input[0], num(0), context, loc);
 const ref = capture(runtime, input[0]); putScriptBinding(ref, num(Number(input[1])), context);
-value(getScriptBinding(ref), input[0] === "seed" ? num(7) : num(11));
+value(getScriptBinding(ref, context), input[0] === "seed" ? num(7) : num(11));
 console.log("INPUT " + input[0] + " " + input[1] + " PASS");

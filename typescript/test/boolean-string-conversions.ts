@@ -42,22 +42,22 @@ function keys(actual: PropertyKey[], expected: PropertyKey[]): void {
     for (let i = 0; i < expected.length; i++) check(actual[i] === expected[i], "key identity/order");
 }
 class NoReads extends GuestObject {
-    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
         throw new Error("M unexpected receiver/argument read");
     }
 }
 class ObservedBoolean extends GuestBoolean {
     reads: PropertyKey[] = [];
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.reads.push(key);
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 class ObservedString extends GuestStringObject {
     reads: PropertyKey[] = [];
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.reads.push(key);
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 type Family = { root: GuestObject; otherRoots: GuestObject[]; payload: Value; text: Value; label: string };
@@ -75,24 +75,24 @@ export function testBooleanStringConversions(): void {
     for (const family of families) {
         const roots = [family.otherRoots[0], family.root, family.otherRoots[1]];
         const realms = [a, b, c];
-        const methods = [family.root.get("toString"), family.root.get("valueOf")];
+        const methods = [family.root.get("toString", evaluator.context, loc), family.root.get("valueOf", evaluator.context, loc)];
         for (let r = 0; r < roots.length; r++) {
             keys(roots[r].ownPropertyKeys(), family.label === "string" ? ["length", "toString", "valueOf"] : ["toString", "valueOf"]);
-            check(!sameValue(roots[r].get("toString"), roots[r].get("valueOf")), "distinct methods");
+            check(!sameValue(roots[r].get("toString", evaluator.context, loc), roots[r].get("valueOf", evaluator.context, loc)), "distinct methods");
             for (const name of ["toString", "valueOf"]) {
                 const descriptor = roots[r].getOwnProperty(name);
-                check(descriptor !== undefined && descriptor.writable && !descriptor.enumerable && descriptor.configurable, "M1 method flags");
-                const method = roots[r].get(name);
+                check(descriptor !== undefined && descriptor.kind === "data" && descriptor.writable && !descriptor.enumerable && descriptor.configurable, "M1 method flags");
+                const method = roots[r].get(name, evaluator.context, loc);
                 if (method.kind !== "object") throw new Error("M missing method");
                 check(method.object.callable !== null && method.object.callable.realm === realms[r]
                     && method.object.getPrototypeOf() === realms[r].functionPrototype, "M1 owner/prototype");
                 keys(method.object.ownPropertyKeys(), ["name", "length"]);
-                check(sameValue(method.object.get("name"), str(name)) && sameValue(method.object.get("length"), num(0)), "M1 metadata");
+                check(sameValue(method.object.get("name", evaluator.context, loc), str(name)) && sameValue(method.object.get("length", evaluator.context, loc), num(0)), "M1 metadata");
                 for (const key of ["name", "length"]) {
                     const metadata = method.object.getOwnProperty(key);
-                    check(metadata !== undefined && !metadata.writable && !metadata.enumerable && metadata.configurable, "M1 metadata flags");
+                    check(metadata !== undefined && metadata.kind === "data" && !metadata.writable && !metadata.enumerable && metadata.configurable, "M1 metadata flags");
                 }
-                for (let other = 0; other < r; other++) check(!sameValue(method, roots[other].get(name)), "M1 three-Realm freshness");
+                for (let other = 0; other < r; other++) check(!sameValue(method, roots[other].get(name, evaluator.context, loc)), "M1 three-Realm freshness");
             }
         }
         expect(evaluator.call(methods[0], obj(family.root), [ignored], loc), family.text, "M2 root text");
@@ -121,7 +121,7 @@ export function testBooleanStringConversions(): void {
                 const valid = receiver !== ignored;
                 const bridge = obj(c.createBuiltin("bridge", 0, (_receiver, _args, context, at) => {
                     check(context.realm === c && active.calls === 1, "M4 C entry");
-                    const returned = context.call(c.functionPrototype.get("call"), methods[i], [receiver, ignored], at);
+                    const returned = context.call(c.functionPrototype.get("call", active.context, loc), methods[i], [receiver, ignored], at);
                     check(context.realm === c && active.calls === 1, "M4 C restoration");
                     return returned;
                 }));
@@ -137,7 +137,7 @@ export function testBooleanStringConversions(): void {
         const shared = new Evaluator(a, 1, 3);
         for (const mode of ["steps", "host"]) {
             const bridge = obj(c.createBuiltin("cleanup", 0, (_r, _args, context, at) => {
-                const returned = context.call(c.functionPrototype.get("call"), methods[1], [family.payload], at);
+                const returned = context.call(c.functionPrototype.get("call", shared.context, loc), methods[1], [family.payload], at);
                 expect(returned, family.payload, "M4 nested success before abrupt");
                 check(context.realm === c, "M4 owner restored before abrupt");
                 if (mode === "host") throw new Error("M host sentinel");
@@ -167,8 +167,8 @@ export function testBooleanStringConversions(): void {
         for (const receiver of receivers) {
             const extracted = thisBooleanValue(receiver, loc);
             check(extracted.type === "normal" && extracted.value === payload, "M2 Boolean helper");
-            expect(evaluator.call(b.booleanPrototype.get("valueOf"), receiver, [ignored], loc), { kind: "boolean", value: payload }, "M2 Boolean payload");
-            expect(evaluator.call(b.booleanPrototype.get("toString"), receiver, [ignored], loc), str(payload ? "true" : "false"), "M2 Boolean text");
+            expect(evaluator.call(b.booleanPrototype.get("valueOf", evaluator.context, loc), receiver, [ignored], loc), { kind: "boolean", value: payload }, "M2 Boolean payload");
+            expect(evaluator.call(b.booleanPrototype.get("toString", evaluator.context, loc), receiver, [ignored], loc), str(payload ? "true" : "false"), "M2 Boolean text");
         }
         check(observed.reads.length === 0, "M2 Boolean no reads");
     }
@@ -180,7 +180,7 @@ export function testBooleanStringConversions(): void {
         for (const receiver of [str(payload), obj(a.createStringObject(payload)), obj(foreign), obj(observed)]) {
             const extracted = thisStringValue(receiver, loc);
             check(extracted.type === "normal" && extracted.value === payload, "M2 String helper");
-            for (const name of ["toString", "valueOf"]) expect(evaluator.call(b.stringPrototype.get(name), receiver, [ignored], loc), str(payload), "M2 UTF-16 payload");
+            for (const name of ["toString", "valueOf"]) expect(evaluator.call(b.stringPrototype.get(name, evaluator.context, loc), receiver, [ignored], loc), str(payload), "M2 UTF-16 payload");
         }
         check(observed.reads.length === 0, "M2 String no reads");
     }
@@ -199,7 +199,7 @@ function testLookupAndBoundaries(): void {
         const boxed = obj(box);
         const payload: Value = isBoolean ? { kind: "boolean", value: false } : str("12");
         const text = isBoolean ? str("false") : payload;
-        const saved = [root.get("toString"), root.get("valueOf")];
+        const saved = [root.get("toString", evaluator.context, loc), root.get("valueOf", evaluator.context, loc)];
         let calls = 0;
         const context: OperationContext = {
             realm,
@@ -222,7 +222,7 @@ function testLookupAndBoundaries(): void {
         const beforeLength = evaluator.steps;
         const lengthWrite = target.defineOwnProperty("length", { value: boxed }, evaluator.context, loc);
         check(lengthWrite.type === "normal" && lengthWrite.value, "M6 wrapper length write");
-        check(sameValue(target.get("length"), num(isBoolean ? 0 : 12)), "M6 exact wrapper length");
+        check(sameValue(target.get("length", evaluator.context, loc), num(isBoolean ? 0 : 12)), "M6 exact wrapper length");
         keys(box.reads, [wellKnownToPrimitive, "valueOf", wellKnownToPrimitive, "valueOf"]);
         check(evaluator.steps === beforeLength + 4, "M6 two uncached conversions");
         box.reads = [];
@@ -234,13 +234,13 @@ function testLookupAndBoundaries(): void {
         const noSteps = new Evaluator(realm, 0);
         error(toPrimitive(boxed, "number", noSteps.context, loc), "execution step limit exceeded", loc, "RangeError");
         check(noSteps.steps === 1 && box.reads.length === 0, "M5 guard before Get");
-        expect(evaluator.call(realm.objectPrototype.get("valueOf"), boxed, [], loc), boxed, "M8 Object valueOf identity");
-        const boxedAgain = result(evaluator.call(realm.objectPrototype.get("valueOf"), payload, [], loc));
+        expect(evaluator.call(realm.objectPrototype.get("valueOf", noSteps.context, loc), boxed, [], loc), boxed, "M8 Object valueOf identity");
+        const boxedAgain = result(evaluator.call(realm.objectPrototype.get("valueOf", noSteps.context, loc), payload, [], loc));
         check(boxedAgain.kind === "object" && boxedAgain.object !== box && boxedAgain.object.getPrototypeOf() === root, "M8 explicit fresh box");
         const tag = isBoolean ? "Boolean" : "String";
-        expect(evaluator.call(realm.objectPrototype.get("toString"), boxed, [], loc), str("[object " + tag + "]"), "M8 Object tag unchanged");
+        expect(evaluator.call(realm.objectPrototype.get("toString", noSteps.context, loc), boxed, [], loc), str("[object " + tag + "]"), "M8 Object tag unchanged");
         put(box, wellKnownToStringTag, str("Custom"));
-        expect(evaluator.call(realm.objectPrototype.get("toString"), boxed, [], loc), str("[object Custom]"), "M8 tag property");
+        expect(evaluator.call(realm.objectPrototype.get("toString", noSteps.context, loc), boxed, [], loc), str("[object Custom]"), "M8 tag property");
         box.internalDelete(wellKnownToStringTag);
         root.internalDelete("toString");
         const untouchedRoot = isBoolean ? untouched.booleanPrototype : untouched.stringPrototype;
@@ -305,7 +305,7 @@ function testLookupAndBoundaries(): void {
     const identity = new GuestSymbol("boundary");
     const symbolBox = obj(realm.createSymbolObject(identity));
     expect(toPrimitive(symbolBox, "default", evaluator.context, loc), { kind: "symbol", value: identity }, "M8 Symbol protocol retained");
-    expect(evaluator.call(realm.objectPrototype.get("toString"), symbolBox, [], loc), str("[object Symbol]"), "M8 Symbol tag retained");
+    expect(evaluator.call(realm.objectPrototype.get("toString", evaluator.context, loc), symbolBox, [], loc), str("[object Symbol]"), "M8 Symbol tag retained");
 }
 
 function seed(realm: Realm, name: string, value: Value): void {
@@ -339,7 +339,7 @@ function testGuestConsumers(): void {
     const primitiveMember = realm.global.bindings.get("primitiveMember");
     if (primitiveMember === undefined) throw new Error("missing primitiveMember");
     const primitiveRead = evaluator.call(primitiveMember.value, UNDEFINED, [], loc);
-    check(primitiveRead.type === "normal" && sameValue(primitiveRead.value, realm.stringPrototype.get("toString")), "primitiveMember positive read");
+    check(primitiveRead.type === "normal" && sameValue(primitiveRead.value, realm.stringPrototype.get("toString", evaluator.context, loc)), "primitiveMember positive read");
     const negatives: { name: string; line: number; column: number; message: string; errorName: string }[] = [
         { name: "invalidLength", line: 63, column: 5, message: "invalid array length", errorName: "RangeError" },
         { name: "invalidBoolean", line: 66, column: 12, message: "receiver is not a boolean", errorName: "TypeError" },
@@ -351,5 +351,5 @@ function testGuestConsumers(): void {
         error(evaluator.call(binding.value, UNDEFINED, [], loc), row.message, { line: row.line, column: row.column }, row.errorName);
     }
     const target = realm.global.bindings.get("lengthTarget");
-    check(target !== undefined && target.value.kind === "object" && sameValue(target.value.object.get("length"), num(3)), "M6 failed length preserves storage");
+    check(target !== undefined && target.value.kind === "object" && sameValue(target.value.object.get("length", evaluator.context, loc), num(3)), "M6 failed length preserves storage");
 }

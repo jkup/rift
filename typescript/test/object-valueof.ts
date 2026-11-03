@@ -50,26 +50,26 @@ const a = new Realm((_line) => { throw new Error("bootstrap output"); });
 const b = new Realm((_line) => {});
 const c = new Realm((_line) => {});
 const e = new Evaluator(a);
-const method = b.objectPrototype.get("valueOf");
+const method = b.objectPrototype.get("valueOf", e.context, loc);
 const fn = object(method);
 
 // V5: installation and immutable callable ownership use the existing factory.
-check(method !== a.objectPrototype.get("valueOf") && fn.getPrototypeOf() === b.functionPrototype, "fresh method/defining prototype");
+check(method !== a.objectPrototype.get("valueOf", e.context, loc) && fn.getPrototypeOf() === b.functionPrototype, "fresh method/defining prototype");
 check(fn.callable !== null && fn.callable.realm === b, "defining Realm");
 check(stringKeys(fn.ownPropertyKeys()).join(",") === "name,length", "only metadata");
 for (const key of ["name", "length"]) {
     const d = fn.getOwnProperty(key);
-    check(d !== undefined && !d.writable && !d.enumerable && d.configurable, "metadata flags");
+    check(d !== undefined && d.kind === "data" && !d.writable && !d.enumerable && d.configurable, "metadata flags");
 }
-check(sameValue(fn.get("name"), { kind: "string", value: "valueOf" }), "method name");
-check(sameValue(fn.get("length"), { kind: "number", value: 0 }), "method length");
+check(sameValue(fn.get("name", e.context, loc), { kind: "string", value: "valueOf" }), "method name");
+check(sameValue(fn.get("length", e.context, loc), { kind: "number", value: 0 }), "method length");
 const d = b.objectPrototype.getOwnProperty("valueOf");
-check(d !== undefined && d.writable && !d.enumerable && d.configurable, "method flags");
+check(d !== undefined && d.kind === "data" && d.writable && !d.enumerable && d.configurable, "method flags");
 check(stringKeys(b.objectPrototype.ownPropertyKeys()).join(",") === "valueOf,toString" && !b.global.bindings.has("Object"), "bounded installation");
 
 // V1: ToObject must neither inspect the receiver nor invoke its methods.
 class NoReads extends GuestObject {
-    internalGet(_key: PropertyKey, _receiver: Value, _at: Location): ValueCompletion {
+    internalGet(_key: PropertyKey, _receiver: Value, context: OperationContext, _at: Location): ValueCompletion {
         throw new Error("unexpected receiver Get");
     }
 }
@@ -103,11 +103,11 @@ for (const primitive of primitives) {
     } else if (primitive.kind === "string") {
         check(first instanceof GuestStringObject && first.stringData === primitive.value && first.getPrototypeOf() === b.stringPrototype, "String payload/root");
         const length = first.getOwnProperty("length");
-        check(length !== undefined && !length.writable && !length.enumerable && !length.configurable
+        check(length !== undefined && length.kind === "data" && !length.writable && !length.enumerable && !length.configurable
             && sameValue(length.value, { kind: "number", value: primitive.value.length }), "String length");
         for (let i = 0; i < primitive.value.length; i++) {
             const unit = first.getOwnProperty(String(i));
-            check(unit !== undefined && !unit.writable && unit.enumerable && !unit.configurable
+            check(unit !== undefined && unit.kind === "data" && !unit.writable && unit.enumerable && !unit.configurable
                 && sameValue(unit.value, { kind: "string", value: primitive.value.charAt(i) }), "UTF-16 unit descriptor");
         }
         check(stringKeys(first.ownPropertyKeys()).join(",") === (primitive.value.length === 0 ? "length" : "0,1,2,3,4,length"), "String key order");
@@ -135,7 +135,7 @@ check(e.call(binding(a, "abruptArgument"), UNDEFINED, [], loc) === sentinel, "ar
 check(sameValue(binding(a, "trace"), { kind: "string", value: "abcde" }), "abrupt argument skips later args");
 
 // V4/V8: observe the real A -> C.call -> B.valueOf dispatch, using one context.
-const forwarded = c.functionPrototype.get("call");
+const forwarded = c.functionPrototype.get("call", e.context, loc);
 const budget = new Evaluator(a, 1, 3);
 let trace = "";
 class AllocationRealm extends Realm {
@@ -146,7 +146,7 @@ class AllocationRealm extends Realm {
     }
 }
 const allocationRealm = new AllocationRealm((_line) => {});
-const allocationMethod = allocationRealm.objectPrototype.get("valueOf");
+const allocationMethod = allocationRealm.objectPrototype.get("valueOf", budget.context, loc);
 const bridge = value(c.createBuiltin("bridge", 0, (receiver, _args, context, at) => {
     check(context === budget.context && context.realm === c && budget.calls === 1, "C entry/shared context");
     trace += "C;";
@@ -208,8 +208,8 @@ for (const source of ["{}", "[]", "function() {}"] ) {
         realm: a,
         tick: (at) => { events += "tick;"; return active.tick(at); },
         call: (callee, receiver, args, at) => {
-            const first = callee === local.objectPrototype.get("valueOf");
-            check((first || callee === (source === "[]" ? local.arrayPrototype : source === "{}" ? local.objectPrototype : local.functionPrototype).get("toString")) && receiver === operand && args.length === 0, "real inherited method call");
+            const first = callee === local.objectPrototype.get("valueOf", context, loc);
+            check((first || callee === (source === "[]" ? local.arrayPrototype : source === "{}" ? local.objectPrototype : local.functionPrototype).get("toString", context, loc)) && receiver === operand && args.length === 0, "real inherited method call");
             events += first ? "valueOf;" : "toString;";
             const completion = active.call(callee, receiver, args, at);
             if (first) check(object(result(completion)) === object(operand), "inherited method returns object");
@@ -233,7 +233,7 @@ const bare = new GuestObject();
 check(object(result(e.call(method, value(bare), [], loc))) === bare && bare.getPrototypeOf() === null, "borrow does not relink null root");
 const zeroCalls = new Evaluator(a, 3, 0);
 error(toPrimitive(value(bare), "number", zeroCalls.context, loc), "TypeError", "cannot convert object to primitive", loc);
-check(zeroCalls.steps === 3 && bare.get("valueOf").kind === "undefined", "null root protocol lookup plus two missing ordinary methods");
+check(zeroCalls.steps === 3 && bare.get("valueOf", zeroCalls.context, loc).kind === "undefined", "null root protocol lookup plus two missing ordinary methods");
 for (const v of [value(new NoReads()), value(a.createBooleanObject(false)), value(a.createNumberObject(0)), value(a.createStringObject("ab"))]) {
     for (const conversion of [toNumber(v, loc), toString(v, loc), toUint32(v, loc), toIntegerOrInfinity(v, loc), toLength(v, loc)]) {
         if (conversion.type !== "throw") throw new Error("direct converter accepted object");
@@ -256,22 +256,22 @@ error(run("+x;", explicit), "TypeError", "cannot convert object to primitive", {
 check(sameValue(binding(explicit.context.realm, "hooks"), { kind: "string", value: "vs" }), "explicit negative trace preserved");
 
 // V5: shadow/replace/delete are ordinary, Realm-local mutations; saved method survives.
-const otherMethod = a.objectPrototype.get("valueOf");
+const otherMethod = a.objectPrototype.get("valueOf", explicit.context, loc);
 check(b.objectPrototype.set("valueOf", { kind: "number", value: 7 }, e.context, loc).type === "normal", "replace method");
-check(sameValue(b.createArray().get("valueOf"), { kind: "number", value: 7 }) && a.objectPrototype.get("valueOf") === otherMethod, "replacement inheritance/isolation");
+check(sameValue(b.createArray().get("valueOf", e.context, loc), { kind: "number", value: 7 }) && a.objectPrototype.get("valueOf", e.context, loc) === otherMethod, "replacement inheritance/isolation");
 check(object(result(e.call(method, value(bare), [], loc))) === bare, "saved method survives replacement");
 const deleted = b.objectPrototype.internalDelete("valueOf");
-check(deleted.type === "normal" && deleted.value && b.createObject().get("valueOf").kind === "undefined", "deletion visible");
-check(a.objectPrototype.get("valueOf") === otherMethod, "deletion isolation");
+check(deleted.type === "normal" && deleted.value && b.createObject().get("valueOf", e.context, loc).kind === "undefined", "deletion visible");
+check(a.objectPrototype.get("valueOf", e.context, loc) === otherMethod, "deletion isolation");
 check(fn.defineOwnProperty("name", { value: { kind: "string", value: "renamed" } }, e.context, loc).type === "normal", "metadata configurable");
-check(sameValue(fn.get("name"), { kind: "string", value: "renamed" }) && sameValue(object(otherMethod).get("name"), { kind: "string", value: "valueOf" }), "metadata isolated");
+check(sameValue(fn.get("name", e.context, loc), { kind: "string", value: "renamed" }) && sameValue(object(otherMethod).get("name", e.context, loc), { kind: "string", value: "valueOf" }), "metadata isolated");
 check(object(result(e.call(method, { kind: "boolean", value: false }, [], loc))).getPrototypeOf() === b.booleanPrototype, "saved defining Realm survives deletion");
 
 // A2/A16-A19/A24: explicit Symbol boxing follows defining Realm, not payload origin.
 const symbol = new GuestSymbol("x");
 const symbolValue: Value = { kind: "symbol", value: symbol };
 const symbolB = new Realm((_line) => {});
-const symbolMethod = symbolB.objectPrototype.get("valueOf");
+const symbolMethod = symbolB.objectPrototype.get("valueOf", e.context, loc);
 const symbolEvaluator = new Evaluator(a);
 const symbolBox = object(result(symbolEvaluator.call(symbolMethod, symbolValue, [], loc)));
 const anotherBox = object(result(symbolEvaluator.call(symbolMethod, symbolValue, [], loc)));

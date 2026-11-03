@@ -1,3 +1,8 @@
+import type { DataDescriptor as InspectionDataDescriptor, PropertyDescriptor as InspectionDescriptor } from "../src/runtime.js";
+function dataDescriptor(d: InspectionDescriptor | undefined): InspectionDataDescriptor | undefined {
+    if (d !== undefined && d.kind !== "data") throw new Error("expected data descriptor");
+    return d;
+}
 import { wellKnownToPrimitive } from "../src/symbols.js";
 import type { PropertyKey } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
@@ -48,10 +53,10 @@ class Observed extends GuestObject {
     original: Value = UNDEFINED;
     constructor(active: Evaluator) { super(); this.active = active; }
     mark(letter: string): void { seed(this.active, "trace", str(payload(binding(this.active, "trace")) + letter)); }
-    internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, location: Location): ValueCompletion {
         this.mark("G");
         check(receiver === this.original, "original base Get receiver");
-        return this.stop === "G" ? sentinel : super.internalGet(key, receiver, location);
+        return this.stop === "G" ? sentinel : super.internalGet(key, receiver, context, location);
     }
     internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, location: Location): InternalBooleanCompletion {
         check(context === this.active.context, "Set active context identity");
@@ -97,7 +102,7 @@ for (const path of ["read", "write", "call"]) {
         if (stop !== "") check(result === sentinel, "exact abrupt record " + stop);
         else {
             check(result.type === "normal", "successful reference");
-            if (path === "write") check(binding(active, "result") === rhs && target.getOwnProperty("x")?.value === rhs, "RHS identity");
+            if (path === "write") check(binding(active, "result") === rhs && dataDescriptor(target.getOwnProperty("x"))?.value === rhs, "RHS identity");
         }
         check(active.calls === 0 && active.depth === 0, "reference unwind");
     }
@@ -107,7 +112,7 @@ const capture = setup();
 check(run(capture, "let oldBase = target; let oldKey = key; function replace() { trace = trace + 'R'; oldKey.toString = function() { trace = trace + 'C'; return 'y'; }; target = {}; key = {}; return 11; } let assigned = base()[keyExpression()] = replace();").type === "normal", "capture write");
 const oldBase = binding(capture, "oldBase");
 const newBase = binding(capture, "target");
-check(oldBase.kind === "object" && newBase.kind === "object" && payload(oldBase.object.get("y")) === 11 && newBase.object.getOwnProperty("y") === undefined && payload(binding(capture, "trace")) === "BKRC", "saved references and delayed lookup");
+check(oldBase.kind === "object" && newBase.kind === "object" && payload(oldBase.object.get("y", capture.context, loc)) === 11 && newBase.object.getOwnProperty("y") === undefined && payload(binding(capture, "trace")) === "BKRC", "saved references and delayed lookup");
 // Conversion itself mutates the base before its Get.
 check(run(capture, "oldKey.toString = function() { oldBase.z = 12; return 'z'; }; let mutated = oldBase[oldKey];").type === "normal" && payload(binding(capture, "mutated")) === 12, "conversion mutation visible to Get");
 const active = setup();
@@ -157,10 +162,10 @@ for (const both of [false, true]) {
 class ThrowingKey extends GuestObject {
     stop = "toString";
     reads = "";
-    internalGet(key: PropertyKey, receiver: Value, location: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, location: Location): ValueCompletion {
         if (key === wellKnownToPrimitive) return normal(UNDEFINED);
         this.reads += key + ";";
-        return key === this.stop ? sentinel : super.internalGet(key, receiver, location);
+        return key === this.stop ? sentinel : super.internalGet(key, receiver, context, location);
     }
 }
 for (const stop of ["toString", "valueOf"]) {
@@ -181,7 +186,7 @@ for (const second of [false, true]) {
 const arrays = setup();
 check(run(arrays, "let a = []; let index = { toString: function() { return 2; } }; a[index] = 8; let lengthKey = { toString: function() { return 'length'; } }; a[lengthKey] = 2; let nonindex = { toString: function() { return '01'; } }; a[nonindex] = 9;").type === "normal", "array keys");
 const array = binding(arrays, "a");
-check(array.kind === "object" && payload(array.object.get("length")) === 2 && array.object.getOwnProperty("2") === undefined && payload(array.object.get("01")) === 9, "index/length/nonindex distinctions");
+check(array.kind === "object" && payload(array.object.get("length", arrays.context, loc)) === 2 && array.object.getOwnProperty("2") === undefined && payload(array.object.get("01", arrays.context, loc)) === 9, "index/length/nonindex distinctions");
 check(run(arrays, "a[lengthKey] = key;").type === "throw" && payload(binding(arrays, "trace")) === "", "array length value skips hooks");
 const nested = setup();
 check(run(nested, "let answer = target[nested];").type === "normal" && payload(binding(nested, "trace")) === "C", "nested parsed key coercion");
@@ -213,7 +218,7 @@ for (const closed of [false, true]) {
     const key = binding(second, "key");
     const result = putValue({ kind: "property", base: obj(target), key, loc }, num(9), second.context, loc);
     check(result.type === "throw" && result.diagnostic.message === "property is not writable: x" && result.diagnostic.loc === loc, "object key strict false Set");
-    check(closed ? target.getOwnProperty("x") === undefined : payload(target.get("x")) === 4, "rejected write preserves state");
+    check(closed ? target.getOwnProperty("x") === undefined : payload(target.get("x", second.context, loc)) === 4, "rejected write preserves state");
 }
 // Nullish reads/writes reject before key lookup; other primitives reach coercion.
 for (const base of [UNDEFINED, { kind: "null" } as Value, num(1), str("text"), { kind: "boolean", value: false } as Value]) {

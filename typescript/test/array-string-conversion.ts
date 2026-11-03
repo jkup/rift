@@ -1,3 +1,4 @@
+import type { OperationContext } from "../src/runtime.js";
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
 import { GuestObject, UNDEFINED, normal, failure, sameValue, type Value, type ValueCompletion, type PropertyKey, type Builtin, type InternalBooleanCompletion } from "../src/runtime.js";
@@ -43,13 +44,13 @@ class Observed extends GuestObject {
     hostFault = false;
     readonly fault = new Error("host sentinel");
     readonly abrupt = failure("Sentinel", "read", loc);
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.reads.push(key);
         if (key === this.failKey) {
             if (this.hostFault) throw this.fault;
             return this.abrupt;
         }
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
     internalHasProperty(_key: PropertyKey, _at: Location): InternalBooleanCompletion {
         throw new Error("join must use Get, never HasProperty");
@@ -64,8 +65,8 @@ const a = new Realm((_line) => {});
 const b = new Realm((_line) => {});
 const c = new Realm((_line) => {});
 const active = new Evaluator(a);
-const join = b.arrayPrototype.get("join");
-const stringify = b.arrayPrototype.get("toString");
+const join = b.arrayPrototype.get("join", active.context, loc);
+const stringify = b.arrayPrototype.get("toString", active.context, loc);
 function j(receiver: Value, args: Value[] = []): ValueCompletion {
     return active.call(join, receiver, args, loc);
 }
@@ -312,7 +313,7 @@ class CallObserver extends Evaluator {
         return result;
     }
 }
-const captured = b.objectPrototype.get("toString");
+const captured = b.objectPrototype.get("toString", active.context, loc);
 for (const owner of [a, b]) {
     for (const mode of ["replace", "delete"]) {
         if (mode === "replace") put(owner.objectPrototype, "toString", fn(owner, (_receiver, _args, _context, _at) => sentinel));
@@ -328,11 +329,11 @@ for (const owner of [a, b]) {
 }
 // Restore public methods for later controls; captured identity never changed.
 put(b.objectPrototype, "toString", captured);
-const freshObjectToString = new Realm((_line) => {}).objectPrototype.get("toString");
+const freshObjectToString = new Realm((_line) => {}).objectPrototype.get("toString", active.context, loc);
 put(a.objectPrototype, "toString", freshObjectToString);
 const savedRealm = new Realm((_line) => {});
-const savedJ = savedRealm.arrayPrototype.get("join");
-const savedT = savedRealm.arrayPrototype.get("toString");
+const savedJ = savedRealm.arrayPrototype.get("join", active.context, loc);
+const savedT = savedRealm.arrayPrototype.get("toString", active.context, loc);
 const savedInput = array(savedRealm, [num(2)]);
 put(savedRealm.arrayPrototype, "join", fn(savedRealm, (_receiver, _args, _context, _at) => normal(str("replacement"))));
 savedRealm.arrayPrototype.internalDelete("toString");
@@ -343,13 +344,13 @@ expect(active.call(savedT, obj(savedInput), [], loc), str("[object Array]"), "T1
 class ChangingJoin extends GuestObject {
     first: Value = UNDEFINED;
     second: Value = UNDEFINED;
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         if (key === "join") {
             const fetched = this.first;
             this.first = this.second;
             return normal(fetched);
         }
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 const changing = new ChangingJoin();
@@ -373,22 +374,22 @@ for (let r = 0; r < roots.length; r++) {
     const keys = root.ownPropertyKeys();
     check(keys.length === 3 && keys[0] === "length" && keys[1] === "join" && keys[2] === "toString", "R1 key order");
     const length = root.getOwnProperty("length");
-    check(length !== undefined && sameValue(length.value, num(0)) && length.writable && !length.enumerable && !length.configurable, "R1 root length");
+    check(length !== undefined && length.kind === "data" && sameValue(length.value, num(0)) && length.writable && !length.enumerable && !length.configurable, "R1 root length");
     for (const name of ["join", "toString"]) {
         const property = root.getOwnProperty(name);
-        check(property !== undefined && property.writable && !property.enumerable && property.configurable, "R1 property flags");
-        const method = root.get(name);
+        check(property !== undefined && property.kind === "data" && property.writable && !property.enumerable && property.configurable, "R1 property flags");
+        const method = root.get(name, active.context, loc);
         if (method.kind !== "object") throw new Error("missing Array method");
         check(method.object.getPrototypeOf() === realms[r].functionPrototype && method.object.callable !== null && method.object.callable.realm === realms[r], "R1 defining function");
         check(method.object.ownPropertyKeys().length === 2 && method.object.getOwnProperty("prototype") === undefined, "R1 no prototype");
-        check(sameValue(method.object.get("name"), str(name)) && sameValue(method.object.get("length"), num(name === "join" ? 1 : 0)), "R1 metadata");
+        check(sameValue(method.object.get("name", active.context, loc), str(name)) && sameValue(method.object.get("length", active.context, loc), num(name === "join" ? 1 : 0)), "R1 metadata");
         for (const key of ["name", "length"]) {
             const metadata = method.object.getOwnProperty(key);
-            check(metadata !== undefined && !metadata.writable && !metadata.enumerable && metadata.configurable, "R1 metadata flags");
+            check(metadata !== undefined && metadata.kind === "data" && !metadata.writable && !metadata.enumerable && metadata.configurable, "R1 metadata flags");
         }
-        for (let previous = 0; previous < r; previous++) check(!sameValue(method, roots[previous].get(name)), "R1 fresh intrinsic");
+        for (let previous = 0; previous < r; previous++) check(!sameValue(method, roots[previous].get(name, active.context, loc)), "R1 fresh intrinsic");
     }
-    check(!sameValue(root.get("join"), root.get("toString")), "R1 distinct methods");
+    check(!sameValue(root.get("join", active.context, loc), root.get("toString", active.context, loc)), "R1 distinct methods");
 }
 const frozenRealm = new Realm((_line) => {});
 const frozen = array(frozenRealm, [num(1)]);
@@ -411,10 +412,10 @@ for (let i = 1; i < transitions.stepCounts.length; i++) check(transitions.stepCo
 // Observe boxing and indexed reads through the wrapper factory without changing Get.
 class ReadString extends GuestStringObject {
     reads: PropertyKey[] = [];
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         check(receiver.kind === "object" && receiver.object === this, "R5 Get receiver identity");
         this.reads.push(key);
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
 }
 class BoxingRealm extends Realm {
@@ -426,7 +427,7 @@ class BoxingRealm extends Realm {
     }
 }
 const boxingRealm = new BoxingRealm((_line) => {});
-const boxingJ = boxingRealm.arrayPrototype.get("join");
+const boxingJ = boxingRealm.arrayPrototype.get("join", active.context, loc);
 expect(active.call(boxingJ, str("ab"), [], loc), str("a,b"), "R5 first box");
 expect(active.call(boxingJ, str("ab"), [], loc), str("a,b"), "R5 second box");
 check(boxingRealm.boxes.length === 2 && boxingRealm.boxes[0] !== boxingRealm.boxes[1]
@@ -546,7 +547,7 @@ for (const mutual of [false, true]) {
     for (const limit of [1, 2, 4, 64]) {
         const evaluator = limit === 64 ? new Evaluator(realm) : new Evaluator(realm, 100000, limit);
         check(evaluator.maxCalls === limit, "R12 default call guard");
-        depthError(evaluator.call(realm.arrayPrototype.get("join"), obj(a), [], loc));
+        depthError(evaluator.call(realm.arrayPrototype.get("join", oneCall.context, loc), obj(a), [], loc));
         check(evaluator.calls === 0 && evaluator.context.realm === realm, "cycle cleanup");
         check(evaluator.steps === (limit % 2 === 0 ? limit / 2 * 5 : (limit - 1) / 2 * 5 + 4), "cycle steps");
         console.log("cycle", mutual, limit, evaluator.steps);
@@ -616,16 +617,16 @@ for (const length of [array(a, []), array(a, [num(2)])]) {
     const receiver = a.createObject();
     put(receiver, "length", obj(length));
     const completion = lengthOfArrayLike(receiver, active.context, loc);
-    check(completion.type === "normal" && completion.value === (length.get("0").kind === "undefined" ? 0 : 2), "C4");
+    check(completion.type === "normal" && completion.value === (length.get("0", active.context, loc).kind === "undefined" ? 0 : 2), "C4");
 }
 for (const values of [[], [num(2)], [num(1), num(2)]]) {
     const target = array(a, [num(7), num(8), num(9)]);
     const completion = target.defineOwnProperty("length", { value: obj(array(a, values)) }, active.context, loc);
     if (values.length === 2) {
         check(completion.type === "throw" && completion.diagnostic.name === "RangeError" && completion.diagnostic.message === "invalid array length", "C5 invalid");
-        check(sameValue(target.get("length"), num(3)) && sameValue(target.get("2"), num(9)), "C5 unchanged storage");
+        check(sameValue(target.get("length", active.context, loc), num(3)) && sameValue(target.get("2", active.context, loc), num(9)), "C5 unchanged storage");
     } else {
-        check(completion.type === "normal" && completion.value && sameValue(target.get("length"), num(values.length === 0 ? 0 : 2)), "C5 valid");
+        check(completion.type === "normal" && completion.value && sameValue(target.get("length", active.context, loc), num(values.length === 0 ? 0 : 2)), "C5 valid");
     }
 }
 const changingLength = a.createArray();
@@ -637,11 +638,11 @@ put(changingLength, "join", fn(a, (_receiver, _args, _context, _at) => {
 const target = array(a, [num(7), num(8), num(9)]);
 const invalid = target.defineOwnProperty("length", { value: obj(changingLength) }, active.context, loc);
 check(invalid.type === "throw" && invalid.diagnostic.name === "RangeError" && invalid.diagnostic.message === "invalid array length"
-    && conversions === 2 && sameValue(target.get("length"), num(3)) && sameValue(target.get("2"), num(9)), "C6 fresh conversions/no write");
+    && conversions === 2 && sameValue(target.get("length", active.context, loc), num(3)) && sameValue(target.get("2", active.context, loc), num(9)), "C6 fresh conversions/no write");
 const controls = new Realm((_line) => {});
 const controlEvaluator = new Evaluator(controls);
 const controlArray = obj(controls.createArray());
-expect(controlEvaluator.call(controls.objectPrototype.get("valueOf"), controlArray, [], loc), controlArray, "C7 identity");
+expect(controlEvaluator.call(controls.objectPrototype.get("valueOf", controlEvaluator.context, loc), controlArray, [], loc), controlArray, "C7 identity");
 check(controlEvaluator.steps === 0, "C7 no ticks");
 expect(toPrimitive(controlArray, "number", controlEvaluator.context, loc), str(""), "C7 Array default");
 check(controlEvaluator.steps === 5, "C7 conversion steps");

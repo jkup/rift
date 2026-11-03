@@ -1,6 +1,7 @@
+import { validatePropertyDescriptorUpdate } from "../src/runtime.js";
 import { readFileSync } from "node:fs";
 import { GlobalEnvironment, resolveStrictGlobalBinding, getStrictGlobalBinding, putStrictGlobalBinding, type StrictGlobalReference } from "../src/global-environment.js";
-import { GuestObject, UNDEFINED, failure, normal, sameValue, type Value, type ValueCompletion, type InternalBooleanCompletion, type OperationContext, type PropertyKey, type DataDescriptorUpdate, type ThrowCompletion } from "../src/runtime.js";
+import { GuestObject, UNDEFINED, failure, normal, sameValue, type Value, type ValueCompletion, type InternalBooleanCompletion, type OperationContext, type PropertyKey, type PropertyDescriptorUpdate, type ThrowCompletion } from "../src/runtime.js";
 import { Realm } from "../src/realm.js";
 import type { Location } from "../src/syntax.js";
 
@@ -20,7 +21,7 @@ function error(result: ValueCompletion, name: string, loc: Location): void {
 }
 function descriptor(object: GuestObject, name: string, expected: Value, w: boolean, e: boolean, c: boolean): void {
     const d = object.getOwnProperty(name);
-    check(d !== undefined && sameValue(d.value, expected) && d.writable === w && d.enumerable === e && d.configurable === c, "descriptor mismatch");
+    check(d !== undefined && d.kind === "data" && sameValue(d.value, expected) && d.writable === w && d.enumerable === e && d.configurable === c, "descriptor mismatch");
 }
 function capture(env: GlobalEnvironment, name: string, loc: Location): StrictGlobalReference {
     const result = resolveStrictGlobalBinding(env, name, loc);
@@ -51,10 +52,10 @@ class FaultObject extends GuestObject {
         this.visit("H", loc);
         return this.mode === "H" ? this.abrupt : super.internalHasProperty(key, loc);
     }
-    override internalGet(key: PropertyKey, receiver: Value, loc: Location): ValueCompletion {
+    override internalGet(key: PropertyKey, receiver: Value, context: OperationContext, loc: Location): ValueCompletion {
         this.visit("G", loc);
         check(receiver.kind === "object" && receiver.object === this, "get receiver");
-        return this.mode === "G" ? this.abrupt : super.internalGet(key, receiver, loc);
+        return this.mode === "G" ? this.abrupt : super.internalGet(key, receiver, context, loc);
     }
     override internalSet(key: PropertyKey, v: Value, receiver: Value, context: OperationContext, loc: Location): InternalBooleanCompletion {
         this.visit("S", loc);
@@ -63,7 +64,8 @@ class FaultObject extends GuestObject {
         if (this.mode === "falseS") return { type: "normal", value: false };
         return super.internalSet(key, v, receiver, context, loc);
     }
-    override defineOwnProperty(key: PropertyKey, desc: DataDescriptorUpdate, context: OperationContext, loc: Location): InternalBooleanCompletion {
+    override defineOwnProperty(key: PropertyKey, desc: PropertyDescriptorUpdate, context: OperationContext, loc: Location): InternalBooleanCompletion {
+        validatePropertyDescriptorUpdate(desc);
         this.visit("D", loc);
         check(context === this.context, "define context");
         if (this.mode === "D") return this.abrupt;
@@ -98,13 +100,13 @@ for (const line of lines) {
             bool(env.hasBinding(name, loc), true);
             check(env.hasLexicalDeclaration(name), "lexical presence");
             const ref = capture(env, name, loc);
-            error(getStrictGlobalBinding(ref), "ReferenceError", loc);
+            error(getStrictGlobalBinding(ref, context), "ReferenceError", loc);
             error(putStrictGlobalBinding(ref, input, context), "ReferenceError", loc);
-            error(env.getBindingValue(name, loc), "ReferenceError", loc);
+            error(env.getBindingValue(name, context, loc), "ReferenceError", loc);
             unused(env.initializeBinding(name, input, context, loc));
-            value(getStrictGlobalBinding(ref), number(7));
+            value(getStrictGlobalBinding(ref, context), number(7));
             unused(putStrictGlobalBinding(ref, number(8), context));
-            value(env.getBindingValue(name, loc), number(8));
+            value(env.getBindingValue(name, context, loc), number(8));
             check(object.getOwnProperty(name) === undefined, "lexical leaked to object");
             break;
         }
@@ -129,7 +131,7 @@ for (const line of lines) {
             descriptor(object, name, first, true, true, false);
             unused(env.createGlobalFunctionBinding(name, second, context, loc));
             descriptor(object, name, second, true, true, false);
-            value(env.getBindingValue(name, loc), second);
+            value(env.getBindingValue(name, context, loc), second);
             break;
         }
         case "H04": {
@@ -140,7 +142,7 @@ for (const line of lines) {
             // lexical conflicts first. No multi-name atomicity claim here.
             bool(env.canDeclareGlobalVar(name), true);
             bool(env.canDeclareGlobalFunction(name), true);
-            value(env.getBindingValue(name, loc), number(7));
+            value(env.getBindingValue(name, context, loc), number(7));
             check(object.getOwnProperty(name) === undefined, "prechecks changed state");
             break;
         }
@@ -162,9 +164,9 @@ for (const line of lines) {
             define(object, name, input);
             bool(env.hasRestrictedGlobalProperty(name), false);
             unused(env.createMutableBinding(name, loc));
-            error(env.getBindingValue(name, loc), "ReferenceError", loc);
+            error(env.getBindingValue(name, context, loc), "ReferenceError", loc);
             unused(env.initializeBinding(name, number(2), context, loc));
-            value(env.getBindingValue(name, loc), number(2));
+            value(env.getBindingValue(name, context, loc), number(2));
             descriptor(object, name, number(7), true, true, true);
             unused(env.setMutableBinding(name, number(3), context, loc));
             descriptor(object, name, number(7), true, true, true);
@@ -220,8 +222,8 @@ for (const line of lines) {
             define(proto, "readonly", input, false);
             bool(object.setPrototypeOf(proto), true);
             bool(env.hasBinding("undefinedValue", loc), true);
-            value(env.getBindingValue("undefinedValue", loc), UNDEFINED);
-            value(env.getBindingValue(name, loc), number(7));
+            value(env.getBindingValue("undefinedValue", context, loc), UNDEFINED);
+            value(env.getBindingValue(name, context, loc), number(7));
             unused(env.setMutableBinding(name, number(8), context, loc));
             descriptor(object, name, number(8), true, true, true);
             descriptor(proto, name, number(7), true, true, true);
@@ -238,14 +240,14 @@ for (const line of lines) {
             check(ref.environment === null, "unresolved capture");
             bool(object.internalSet(name, input, { kind: "object", object }, context, loc), true);
             error(putStrictGlobalBinding(ref, number(8), context), "ReferenceError", loc);
-            error(getStrictGlobalBinding(ref), "ReferenceError", loc);
+            error(getStrictGlobalBinding(ref, context), "ReferenceError", loc);
             descriptor(object, name, number(7), true, true, true);
             const lexical = capture(env, "laterLexical", loc);
             unused(env.createMutableBinding("laterLexical", loc));
             unused(env.initializeBinding("laterLexical", input, context, loc));
             error(putStrictGlobalBinding(lexical, number(8), context), "ReferenceError", loc);
-            value(env.getBindingValue("laterLexical", loc), number(7));
-            value(getStrictGlobalBinding(capture(env, name, loc)), number(7));
+            value(env.getBindingValue("laterLexical", context, loc), number(7));
+            value(getStrictGlobalBinding(capture(env, name, loc), context), number(7));
             break;
         }
         case "H11": {
@@ -255,15 +257,15 @@ for (const line of lines) {
             mutableLoc.line = 88;
             check(ref.environment === env, "resolved composite base");
             bool(object.internalDelete(name), true);
-            error(getStrictGlobalBinding(ref), "ReferenceError", loc);
+            error(getStrictGlobalBinding(ref, context), "ReferenceError", loc);
             error(putStrictGlobalBinding(ref, number(8), context), "ReferenceError", loc);
             define(object, name, number(9));
-            value(getStrictGlobalBinding(ref), number(9));
+            value(getStrictGlobalBinding(ref, context), number(9));
             unused(env.createMutableBinding(name, loc));
-            error(getStrictGlobalBinding(ref), "ReferenceError", loc);
+            error(getStrictGlobalBinding(ref, context), "ReferenceError", loc);
             unused(env.initializeBinding(name, number(2), context, loc));
             unused(putStrictGlobalBinding(ref, number(3), context));
-            value(getStrictGlobalBinding(ref), number(3));
+            value(getStrictGlobalBinding(ref, context), number(3));
             descriptor(object, name, number(9), true, true, true);
             break;
         }
@@ -279,7 +281,7 @@ for (const line of lines) {
             bool(envB.hasBinding(name, loc), false);
             unused(envB.createGlobalVarBinding(name, contextB, loc));
             unused(envB.setMutableBinding(name, number(2), contextB, loc));
-            value(env.getBindingValue(name, loc), number(7));
+            value(env.getBindingValue(name, context, loc), number(7));
             descriptor(other, name, number(2), true, true, false);
             check(realmA.global.resolve(name) === null && realmB.global.resolve(name) === null, "legacy Realm changed");
             check(context.realm === realmA && contextB.realm === realmB, "Realm context identity");
@@ -298,7 +300,7 @@ for (const line of lines) {
                     check(resolution === obj.abrupt, "resolve abrupt identity");
                     check(obj.trace === "H", "resolve abrupt trace"); obj.trace = "";
                     result = putStrictGlobalBinding(ref, number(8), context);
-                } else if (mode === "G") result = getStrictGlobalBinding(ref);
+                } else if (mode === "G") result = getStrictGlobalBinding(ref, context);
                 else if (mode === "S") result = putStrictGlobalBinding(ref, number(8), context);
                 else result = e.createGlobalFunctionBinding(name, number(8), context, loc);
                 check(result === obj.abrupt, "original abrupt identity");
@@ -325,7 +327,7 @@ for (const line of lines) {
             check(obj.trace === "D", "failed definition stops Set");
             obj.mode = "H"; obj.trace = "";
             unused(e.createMutableBinding(name, loc));
-            error(e.getBindingValue(name, loc), "ReferenceError", loc);
+            error(e.getBindingValue(name, context, loc), "ReferenceError", loc);
             error(e.setMutableBinding(name, input, context, loc), "ReferenceError", loc);
             bool(e.hasBinding(name, loc), true);
             check(obj.trace === "", "lexical precedence avoids object dispatch");
@@ -340,7 +342,7 @@ for (const line of lines) {
                 let caught = false;
                 try {
                     if (operation === "H") resolveStrictGlobalBinding(e, name, loc);
-                    else if (operation === "G") e.getBindingValue(name, loc);
+                    else if (operation === "G") e.getBindingValue(name, context, loc);
                     else if (operation === "S") e.setMutableBinding(name, input, context, loc);
                     else e.createGlobalFunctionBinding(name, input, context, loc);
                 } catch (fault) { caught = fault instanceof Error && fault === obj.hostFault; }
@@ -351,17 +353,17 @@ for (const line of lines) {
         case "H15": {
             unused(env.createMutableBinding(name, loc));
             error(env.createMutableBinding(name, loc), "TypeError", loc);
-            error(env.getBindingValue(name, loc), "ReferenceError", loc);
+            error(env.getBindingValue(name, context, loc), "ReferenceError", loc);
             unused(env.initializeBinding(name, input, context, loc));
             let caught = false;
             try { env.initializeBinding(name, number(8), context, loc); }
             catch (fault) { caught = fault instanceof Error && fault.message === "binding already initialized: " + name; }
             check(caught, "double initialization invariant");
-            value(env.getBindingValue(name, loc), number(7));
+            value(env.getBindingValue(name, context, loc), number(7));
             define(object, "readonly", input, false);
             unused(env.initializeBinding("readonly", number(8), context, loc));
             descriptor(object, "readonly", number(7), false, true, true);
-            error(env.getBindingValue("missing", loc), "ReferenceError", loc);
+            error(env.getBindingValue("missing", context, loc), "ReferenceError", loc);
             error(env.setMutableBinding("missing", input, context, loc), "ReferenceError", loc);
             break;
         }

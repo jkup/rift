@@ -1,3 +1,8 @@
+import type { DataDescriptor as InspectionDataDescriptor, PropertyDescriptor as InspectionDescriptor } from "../src/runtime.js";
+function dataDescriptor(d: InspectionDescriptor | undefined): InspectionDataDescriptor | undefined {
+    if (d !== undefined && d.kind !== "data") throw new Error("expected data descriptor");
+    return d;
+}
 import { Evaluator } from "../src/evaluator.js";
 import { Realm } from "../src/realm.js";
 import { parse } from "../src/parser.js";
@@ -57,14 +62,14 @@ class Events {
 }
 class Target extends GuestObject {
     constructor(public events: Events, public evaluator: Evaluator) { super(); }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.events.getKeys.push(key);
         this.events.receivers.push(receiver);
         this.events.locations.push(at);
         const stage = this.events.stage("G", this.evaluator.context.realm);
         if (stage.type === "throw") return stage;
         if (this.events.afterGet !== null) this.events.afterGet();
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
     internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, at: Location): InternalBooleanCompletion {
         this.events.setKeys.push(key);
@@ -155,6 +160,7 @@ function seed(object: GuestObject, key: PropertyKey, value: Value, writable = tr
 }
 function own(object: GuestObject, key: PropertyKey): Value {
     const desc = object.getOwnProperty(key);
+    if (desc !== undefined && desc.kind !== "data") throw new Error("expected data descriptor");
     return desc === undefined ? U : desc.value;
 }
 function fn(realm: Realm, body: Builtin): Value { return o(realm.createBuiltin("hook", 0, body)); }
@@ -416,10 +422,10 @@ for (let i = 0; i < ops.length; i++) {
         check(sameValue(own(replacement, "x"), n(99)) && sameValue(own(q.target, "y"), n(77)), name + " unrelated properties");
         if (row === 20) {
             const desc = q.target.getOwnProperty("x");
-            check(desc !== undefined && desc.writable && desc.enumerable && desc.configurable, name + " recreated descriptor");
+            check(desc !== undefined && desc.kind === "data" && desc.writable && desc.enumerable && desc.configurable, name + " recreated descriptor");
         }
         if (row === 21 || row === 22) {
-            check(q.target.getOwnProperty("x")?.writable === false, name + " freeze persists");
+            check(dataDescriptor(q.target.getOwnProperty("x"))?.writable === false, name + " freeze persists");
             check(sameValue(own(q.target, "x"), n(12)), name + " frozen value retained");
         }
         for (const hint of q.hints) check(sameValue(hint, s(i === 0 ? "default" : "number")), name + " hint");
@@ -512,9 +518,9 @@ class Boxes {
 }
 class BooleanBox extends GuestBoolean {
     constructor(value: boolean, proto: GuestObject, public boxes: Boxes) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.boxes.gets.push(receiver);
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
     internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, at: Location): InternalBooleanCompletion {
         this.boxes.sets.push(receiver);
@@ -524,9 +530,9 @@ class BooleanBox extends GuestBoolean {
 }
 class NumberBox extends GuestNumber {
     constructor(value: number, proto: GuestObject, public boxes: Boxes) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.boxes.gets.push(receiver);
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
     internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, at: Location): InternalBooleanCompletion {
         this.boxes.sets.push(receiver);
@@ -536,9 +542,9 @@ class NumberBox extends GuestNumber {
 }
 class StringBox extends GuestStringObject {
     constructor(value: string, proto: GuestObject, public boxes: Boxes) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.boxes.gets.push(receiver);
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
     internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, at: Location): InternalBooleanCompletion {
         this.boxes.sets.push(receiver);
@@ -548,9 +554,9 @@ class StringBox extends GuestStringObject {
 }
 class SymbolBox extends GuestSymbolObject {
     constructor(value: GuestSymbol, proto: GuestObject, public boxes: Boxes) { super(value, proto); }
-    internalGet(key: PropertyKey, receiver: Value, at: Location): ValueCompletion {
+    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion {
         this.boxes.gets.push(receiver);
-        return super.internalGet(key, receiver, at);
+        return super.internalGet(key, receiver, context, at);
     }
     internalSet(key: PropertyKey, value: Value, receiver: Value, context: OperationContext, at: Location): InternalBooleanCompletion {
         this.boxes.sets.push(receiver);
@@ -775,7 +781,7 @@ for (const source of ["p.length -= 2;", "p.length /= 2;", "p.length *= -1;", "p.
     const result = run(new Measured(realm), "p.length -= 3;");
     error(result, "property is not writable: length", "W22 ArrayPartialShrink");
     check(array.getOwnProperty("3") === undefined && array.getOwnProperty("2") !== undefined, "W22 partial deletion");
-    check(sameValue(own(array, "length"), n(3)) && array.getOwnProperty("length")?.writable === true, "W22 length repaired");
+    check(sameValue(own(array, "length"), n(3)) && dataDescriptor(array.getOwnProperty("length"))?.writable === true, "W22 length repaired");
 }
 function parseError(source: string, message: string, column: number, name: string): void {
     for (const prefix of ["", "effect(); "]) {

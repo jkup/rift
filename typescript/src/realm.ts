@@ -1,6 +1,6 @@
 import type { GuestSymbol } from "./symbols.js";
 import { GuestArray } from "./array-object.js";
-import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value, type DataDescriptor, type ValueCompletion } from "./runtime.js";
+import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value, validatePropertyDescriptorUpdate, type PropertyDescriptorUpdate, type ValueCompletion } from "./runtime.js";
 import { registerNumber, registerNumberConversions } from "./builtins/number.js";
 import { registerFunction, nativeFunctionString } from "./builtins/function.js";
 import { registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
@@ -92,13 +92,15 @@ export class Realm {
         if (this.profile === "legacy") this.global.bindings.set(name, { initialized: true, mutable, value });
         else this.globalObject.bootstrapDefine(name, { value, writable: mutable, enumerable: false, configurable: mutable });
     }
-    defineScriptGlobal(name: string, descriptor: DataDescriptor): void {
+    defineScriptGlobal(name: string, descriptor: PropertyDescriptorUpdate): void {
         const object = this.globalObject;
-        const value = descriptor.value;
-        if (value.kind === "object" && value.object.callable !== null && value.object.callable.realm.profile !== this.profile) throw new Error("cross-profile callable transfer");
+        validatePropertyDescriptorUpdate(descriptor);
+        for (const value of [descriptor.value, descriptor.get, descriptor.set]) {
+            if (value !== undefined && value.kind === "object" && value.object.callable !== null && value.object.callable.realm.profile !== this.profile) throw new Error("cross-profile callable transfer");
+        }
         object.bootstrapDefine(name, descriptor);
     }
-    readScriptGlobal(name: string, loc: Location): ValueCompletion { return this.globalEnvironment.getBindingValue(name, loc); }
+    readScriptGlobal(name: string, context: OperationContext, loc: Location): ValueCompletion { return this.globalEnvironment.getBindingValue(name, context, loc); }
     private guardBuiltin(invoke: Builtin): Builtin {
         return (receiver, args, context, loc) => {
             if (context.realm.profile !== this.profile) throw new Error("cross-profile callable invocation");
