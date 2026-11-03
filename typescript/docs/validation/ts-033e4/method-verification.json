@@ -1,0 +1,90 @@
+[
+  {
+    "name": "method-minimal",
+    "kind": "retained compiler diagnostic assertions; NOT E4 acceptance",
+    "typecheck": {
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "--ignoreConfig",
+        "--noEmit",
+        "--strict",
+        "--target",
+        "ES2024",
+        "--module",
+        "nodenext",
+        "docs/validation/ts-033e4/method-minimal.ts"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "name": "method-direct-control",
+    "kind": "retained compiler diagnostic assertions; NOT E4 acceptance",
+    "typecheck": {
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "--ignoreConfig",
+        "--noEmit",
+        "--strict",
+        "--target",
+        "ES2024",
+        "--module",
+        "nodenext",
+        "docs/validation/ts-033e4/method-direct-control.ts"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "name": "method-call-tick",
+    "kind": "retained compiler diagnostic assertions; NOT E4 acceptance",
+    "typecheck": {
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "--ignoreConfig",
+        "--noEmit",
+        "--strict",
+        "--target",
+        "ES2024",
+        "--module",
+        "nodenext",
+        "docs/validation/ts-033e4/method-call-tick.ts"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "name": "method-getter-view",
+    "kind": "retained compiler diagnostic assertions; NOT E4 acceptance",
+    "typecheck": {
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "--ignoreConfig",
+        "--noEmit",
+        "--strict",
+        "--target",
+        "ES2024",
+        "--module",
+        "nodenext",
+        "docs/validation/ts-033e4/method-getter-view.ts"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    }
+  }
+]
