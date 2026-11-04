@@ -1,0 +1,66 @@
+[
+  {
+    "name": "replay-erb-reduce",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "key join reduction PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-restricted",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node caller|7|left: accessor controls PASS\nnode arguments|11|right: accessor controls PASS\nnative caller|7|left: accessor controls PASS\nnative arguments|11|right: accessor controls PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-accessors",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node seed|7: accessor controls PASS\nnode other|11: accessor controls PASS\nnative seed|7: accessor controls PASS\nnative other|11: accessor controls PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-e3b",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node seed 7: E3B setup controls PASS\nnode other 11: E3B setup controls PASS\nnative seed 7: E3B setup controls PASS\nnative other 11: E3B setup controls PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-e3a",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node seed 7: E3A runtime controls PASS (host-only casts excluded explicitly)\nnode other 11: E3A runtime controls PASS (host-only casts excluded explicitly)\nnative seed 7: E3A runtime controls PASS (host-only casts excluded explicitly)\nnative other 11: E3A runtime controls PASS (host-only casts excluded explicitly)\n",
+    "stderr": ""
+  },
+  {
+    "name": "node-host-negatives",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "Node-only hostile host negatives: 2 PASS; native compile-rejection controls are separate.\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-e3a-reduce",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "forged-record: Node rejects fake; pinned static build/coverage reject cast SC2002\nforged-class: Node rejects fake; pinned static build/coverage reject cast SC1090\nforeign-union: Node rejects fake; pinned static build/coverage reject cast SC2003\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-e3a-reachability",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "Opaque-class reachability: type-only entry rejected; module import builds with zero dynamic tier.\n",
+    "stderr": ""
+  }
+]

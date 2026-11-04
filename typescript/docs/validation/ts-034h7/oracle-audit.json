@@ -1,0 +1,106 @@
+{
+  "status": "PASS",
+  "rows": 18,
+  "literalThrowSites": [
+    {
+      "id": "B02",
+      "unit": "0:assert.js",
+      "line": 61,
+      "column": 3
+    },
+    {
+      "id": "B03",
+      "unit": "0:assert.js",
+      "line": 61,
+      "column": 3
+    },
+    {
+      "id": "B04",
+      "unit": "0:assert.js",
+      "line": 92,
+      "column": 3
+    },
+    {
+      "id": "B06",
+      "unit": "0:assert.js",
+      "line": 144,
+      "column": 3
+    },
+    {
+      "id": "B07",
+      "unit": "0:assert.js",
+      "line": 129,
+      "column": 7
+    },
+    {
+      "id": "B08",
+      "unit": "0:assert.js",
+      "line": 138,
+      "column": 7
+    },
+    {
+      "id": "B09",
+      "unit": "0:assert.js",
+      "line": 138,
+      "column": 7
+    },
+    {
+      "id": "B10",
+      "unit": "0:assert.js",
+      "line": 114,
+      "column": 5
+    },
+    {
+      "id": "B12",
+      "unit": "1:sta.js",
+      "line": 23,
+      "column": 3
+    },
+    {
+      "id": "B13",
+      "unit": "0:assert.js",
+      "line": 80,
+      "column": 5
+    },
+    {
+      "id": "B14",
+      "unit": "0:assert.js",
+      "line": 61,
+      "column": 3
+    },
+    {
+      "id": "B15",
+      "unit": "0:assert.js",
+      "line": 92,
+      "column": 3
+    },
+    {
+      "id": "B16",
+      "unit": "0:assert.js",
+      "line": 49,
+      "column": 5
+    },
+    {
+      "id": "N02",
+      "unit": "0:assert.js",
+      "line": 108,
+      "column": 3
+    }
+  ],
+  "prefixLines": [
+    16,
+    20,
+    24,
+    40,
+    53,
+    166,
+    166,
+    53,
+    40,
+    24,
+    20,
+    16
+  ],
+  "negativeMutations": 3,
+  "driverSha256": "b1adbde9b46a5644d8f9108f803d7c04c2894577ef2cc37bd01e19d2f601d0e4"
+}

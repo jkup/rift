@@ -749,3 +749,20 @@ H6-C candidate validation passes 212 exact records per host and 58 static-only/
 separatezero-dynamic gates (C 4181), all inherited checks, runner20/probes10/
 host73/observations22. See the candidate completion record; independent actual
 and second review remain pending.
+
+### TS-034H7 unchanged bundle validation candidate
+
+The dedicated internal harness-bundle driver reads the original pinned assert.js
+and sta.js as separate ordered Script units. H7 adds validation only. Candidate
+controls cover B01-B16, both notSameValue neighbors, actual constructor/message
+identities, source occurrence provenance, isolated preflight/reload, fault
+priority and shared budgets. See `validation/ts-034h7/README.md` for the exact
+validation status and limitations; this candidate still requires independent review.
+
+The whole original source parses, including dormant helpers. Runtime capability
+is limited to the named controls: compareArray/compareArray.format, Array global
+and map/join formatting, JSON, BigInt, Symbol factory/methods, async/$DONE and
+unknown includes/helpers remain unsupported or unvalidated. Existing internal
+map evidence does not certify harness compareArray. No arbitrary helper is
+assumed supported because its source parses. All 60 corpus variants remain
+blocked; no public admission, observation transport, CLI or profile change.

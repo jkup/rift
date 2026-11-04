@@ -1,0 +1,26 @@
+[
+  {
+    "id": "harness/assert.js",
+    "preparation": {
+      "kind": "ready"
+    },
+    "evaluation": {
+      "phase": "body",
+      "type": "normal",
+      "valueKind": "object",
+      "steps": 88
+    }
+  },
+  {
+    "id": "harness/sta.js",
+    "preparation": {
+      "kind": "ready"
+    },
+    "evaluation": {
+      "phase": "body",
+      "type": "normal",
+      "valueKind": "object",
+      "steps": 116
+    }
+  }
+]

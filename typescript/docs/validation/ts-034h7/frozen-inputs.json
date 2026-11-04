@@ -1,0 +1,14 @@
+[
+  {
+    "id": "input-a",
+    "text": "\"use strict\"; assert.sameValue(7,7); throw 7;\n",
+    "sha256": "72eb30de6d3fd5fd23c0259732a47394bf6937a78917e656870a819b2526fb20",
+    "expectedThrow": 7
+  },
+  {
+    "id": "input-b",
+    "text": "\"use strict\"; assert.sameValue(11,11); throw 11;\n",
+    "sha256": "4862944cc52af69cbfebf9f93a95f162bfca23bff13d2801ebf59073e9ad1bf2",
+    "expectedThrow": 11
+  }
+]
