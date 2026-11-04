@@ -1,0 +1,16 @@
+{
+  "base": "b8baf44",
+  "path": "typescript/test/script-execution.ts",
+  "status": "proposal only; do not apply before review",
+  "edits": [
+    {
+      "old": "const cases: { id: string; source: string; expected: number | string | undefined }[] = [",
+      "new": "const cases: { id: string; source: string; expected: number | string | undefined }[] = [\n    { id: \"H2-empty\", source: '\"use strict\";switch(1){}', expected: undefined },"
+    },
+    {
+      "old": "    '\"use strict\";switch(1){}',",
+      "new": "    '\"use strict\";switch(1){default:const x=0;}',"
+    }
+  ],
+  "expectedWholeFileSha256LF": "8ad9be4b359d7b722e31ddc0dcebad7f68a281174143932140f0aee7c6eac5d9"
+}
