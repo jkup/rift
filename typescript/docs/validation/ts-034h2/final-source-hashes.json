@@ -1,0 +1,30 @@
+[
+  {
+    "path": "typescript/src/syntax.ts",
+    "sha256": "c05a872a7db64b1d28e5b308365ac0e437cb0a87c2c7cab950339a38850a292d"
+  },
+  {
+    "path": "typescript/src/parser.ts",
+    "sha256": "771e55c792d27013ef7c74799967a73d65ca1819f356c95aa0b5d114c8a4780c"
+  },
+  {
+    "path": "typescript/src/script-declarations.ts",
+    "sha256": "4ec45e41154f692483a9a212e70d938a97461d6f98ec242b86ef10e2663c0e8e"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "sha256": "a34984036b2423d534e03b2ff201ffcb431f5b7fc9f81cb97c9da2889e5f3fa9"
+  },
+  {
+    "path": "typescript/test/harness-switch.ts",
+    "sha256": "998819c42031ede1829c43968d9898dac16698bb3d38179282ba2a0f719d68d4"
+  },
+  {
+    "path": "typescript/tools/build-native.mjs",
+    "sha256": "a12b3f18edfe976fe752619b1ae45511f1f3a812665b97eb4ad1621bea6619af"
+  },
+  {
+    "path": "typescript/test/script-execution.ts",
+    "sha256": "8ad9be4b359d7b722e31ddc0dcebad7f68a281174143932140f0aee7c6eac5d9"
+  }
+]

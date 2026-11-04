@@ -1,7 +1,7 @@
 import { parseDeclarationPlan } from "./parser.js";
 import { scriptPrologue } from "./script-prologue.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Diagnostic, Location, Expr, Stmt, SourceText, FunctionSource, DeclarationSite, TryCatchStmt } from "./syntax.js";
+import type { Diagnostic, Location, Expr, Stmt, SourceText, FunctionSource, DeclarationSite, TryCatchStmt, SwitchStmt } from "./syntax.js";
 import type { Token } from "./lexer.js";
 import type { Rejection } from "./outcomes.js";
 
@@ -16,7 +16,7 @@ export type Declaration = {
   readonly initializer: { readonly start: number; readonly end: number } | null;
 };
 export type DeclarationScope = {
-  readonly id: number; readonly kind: "script" | "function" | "block" | "catch";
+  readonly id: number; readonly kind: "script" | "function" | "block" | "catch" | "switch";
   readonly catchParameter: DeclarationSite | null;
   readonly parent: number | null;
   readonly start: number; readonly end: number;
@@ -69,13 +69,14 @@ export type ParsedBinding = {
     initializer: { start: number; end: number } | null;
 };
 type MutableScope = {
-    id: number; kind: "script" | "function" | "block" | "catch"; parent: number | null;
+    id: number; kind: "script" | "function" | "block" | "catch" | "switch"; parent: number | null;
     catchParameter: DeclarationSite | null;
     start: number; end: number; strict: boolean; formals: DeclarationSite[];
     lexicalDeclarations: number[]; varDeclarations: number[];
     lexicalNames: string[]; varNames: string[];
 };
 type Work =
+    | { kind: "switch"; node: SwitchStmt; scope: number; variableScope: number }
     | { kind: "catch"; node: TryCatchStmt; scope: number; variableScope: number }
     | { kind: "block-end"; scope: number }
     | { kind: "statement"; node: Stmt; scope: number; variableScope: number }
@@ -112,7 +113,7 @@ class DeclarationCollector {
         this.strictness = scriptPrologue(unit.text, tokens, 0, false);
         this.scope("script", null, 0, unit.text.length, this.strictness.strict, []);
     }
-    scope(kind: "script" | "function" | "block" | "catch", parent: number | null, start: number, end: number, strict: boolean, formals: DeclarationSite[]): number {
+    scope(kind: "script" | "function" | "block" | "catch" | "switch", parent: number | null, start: number, end: number, strict: boolean, formals: DeclarationSite[]): number {
         const id = this.scopes.length;
         this.scopes.push({ id, kind, parent, start, end, strict, formals, catchParameter: null,
             lexicalDeclarations: [], varDeclarations: [], lexicalNames: [], varNames: [] });
@@ -142,7 +143,7 @@ class DeclarationCollector {
         this.declarations.push({ id, kind, site: { name: site.name, start: site.start, end: site.end,
             loc: { line: site.loc.line, column: site.loc.column } }, scope, variableScope, functionScope,
             initializer: binding.initializer === null ? null : { start: binding.initializer.start, end: binding.initializer.end } });
-        if (kind === "let" || (kind === "function" && this.scopes[scope].kind === "block")) {
+        if (kind === "let" || (kind === "function" && (this.scopes[scope].kind === "block" || this.scopes[scope].kind === "switch"))) {
             this.scopes[scope].lexicalDeclarations.push(id);
             this.scopes[scope].lexicalNames.push(site.name);
         } else {
@@ -170,6 +171,10 @@ class DeclarationCollector {
     }
     visitStatement(node: Stmt, scope: number, variableScope: number): void {
         switch (node.kind) {
+            case "switch":
+                this.work.push({ kind: "switch", node, scope, variableScope });
+                this.expression(node.discriminant, scope, variableScope);
+                break;
             case "try-catch":
                 this.work.push({ kind: "catch", node, scope, variableScope });
                 this.statement(node.block, scope, variableScope);
@@ -183,7 +188,7 @@ class DeclarationCollector {
             case "function": {
                 const bindings = this.bindings.get(this.tokens[this.tokenIndex(node.loc)].start);
                 if (bindings === undefined) throw new Error("missing function name span");
-                if (this.scopes[scope].kind === "block" && !this.scopes[scope].strict && this.unsupportedBlock === null) this.unsupportedBlock = node.loc;
+                if ((this.scopes[scope].kind === "block" || this.scopes[scope].kind === "switch") && !this.scopes[scope].strict && this.unsupportedBlock === null) this.unsupportedBlock = node.loc;
                 const declaration = this.declare("function", bindings[0], scope, variableScope, this.scopes.length);
                 if (this.nodes !== null) this.nodes.declarations.set(declaration, { node, initializer: null });
                 this.functionBody(node.source, node.loc, node.body, scope, declaration, node);
@@ -254,6 +259,17 @@ class DeclarationCollector {
                 for (const id of scope.varDeclarations) {
                     parent.varDeclarations.push(id);
                     parent.varNames.push(this.declarations[id].site.name);
+                }
+            }
+            else if (item.kind === "switch") {
+                const node = item.node;
+                const id = this.scope("switch", item.scope, node.caseBlock.start, node.caseBlock.end, this.scopes[item.scope].strict, []);
+                if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: node.caseBlock.body });
+                this.work.push({ kind: "block-end", scope: id });
+                for (let i = node.caseBlock.clauses.length - 1; i >= 0; i--) {
+                    const clause = node.caseBlock.clauses[i];
+                    this.statements(clause.body, id, item.variableScope);
+                    if (clause.test !== null) this.expression(clause.test, id, item.variableScope);
                 }
             }
             else if (item.kind === "catch") {

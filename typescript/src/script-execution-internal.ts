@@ -157,6 +157,28 @@ class ExecutableScript {
             if (entry === undefined) throw new Error("missing Script scope association");
             if (scope.id === 0) {
                 if (scope.kind !== "script" || entry.node !== null || entry.body !== nodes.body) throw new Error("invalid Script root");
+            } else if (scope.kind === "switch") {
+                if (entry.node === null || entry.node.kind !== "switch" || scopes.has(entry.node))
+                    throw new Error("invalid switch owner");
+                const block = entry.node.caseBlock;
+                if (entry.body !== block.body || scope.start !== block.start || scope.end !== block.end ||
+                    scope.parent === null || scope.strict !== plan.scopes[scope.parent].strict || scope.formals.length !== 0)
+                    throw new Error("invalid CaseBlock association");
+                let previous = block.start, offset = 0, defaults = 0;
+                const statements = new Map<Stmt, boolean>();
+                for (const clause of block.clauses) {
+                    if (clause.start <= previous || clause.end <= clause.start || clause.end >= block.end)
+                        throw new Error("invalid switch clause range");
+                    previous = clause.end - 1;
+                    if (clause.test === null) defaults++;
+                    for (const statement of clause.body) {
+                        if (block.body[offset++] !== statement || statements.has(statement))
+                            throw new Error("invalid CaseBlock body identity");
+                        statements.set(statement, true);
+                    }
+                }
+                if (defaults > 1 || offset !== block.body.length) throw new Error("invalid CaseBlock flattening");
+                scopes.set(entry.node, scope.id);
             } else if (scope.kind === "catch") {
                 if (entry.node === null || entry.node.kind !== "try-catch" || entry.body !== entry.node.handler.body || scopes.has(entry.node))
                     throw new Error("invalid catch node identity");
@@ -174,6 +196,14 @@ class ExecutableScript {
                 scopes.set(entry.node, scope.id);
             }
             if (scope.kind !== "catch" && scope.catchParameter !== null) throw new Error("foreign catch parameter");
+            if (scope.parent !== null) {
+                const parent = plan.scopes[scope.parent];
+                if (scope.kind === "switch" || parent.kind === "switch") {
+                    if (scope.parent >= scope.id || scope.start < parent.start || scope.end > parent.end ||
+                        (scope.kind !== "function" && scope.strict !== parent.strict))
+                        throw new Error("invalid CaseBlock child scope");
+                }
+            }
         }
         for (const scope of plan.scopes) {
             if (scope.kind !== "catch") continue;
@@ -396,14 +426,18 @@ class ExecutableScript {
             throw new Error("invalid Script block scope");
         const scope = state.plan.scopes[scopeId];
         const entry = state.nodes.scopes.get(scopeId);
-        if (scope.kind !== "block" || !scope.strict || entry === undefined || entry.node === null || entry.node.kind !== "block" || entry.body !== entry.node.body)
+        if (!scope.strict || entry === undefined || entry.node === null)
             throw new Error("invalid Script block association");
-        return { scope, node: entry.node };
+        if (scope.kind === "block" && entry.node.kind === "block" && entry.body === entry.node.body)
+            return { scope, node: entry.node, loc: entry.node.loc };
+        if (scope.kind === "switch" && entry.node.kind === "switch" && entry.body === entry.node.caseBlock.body)
+            return { scope, node: entry.node, loc: entry.node.caseBlock.loc };
+        throw new Error("invalid Script block association");
     }
     createBlockEnvironment(scopeId: number, outer: ScriptEnvironment, context: OperationContext): ScriptBlockEnvironmentCompletion {
         this.#validateEnvironment(outer, context);
         const entry = this.#block(scopeId);
-        const tick = this.#setupTick(context, entry.node.loc);
+        const tick = this.#setupTick(context, entry.loc);
         if (tick.type === "throw") { const abrupt: ThrowCompletion = tick; return abrupt; }
         return { type: "normal", environment: new BlockActivation(this.#activationKey, scopeId, outer) };
     }
@@ -651,6 +685,7 @@ class ExecutionEngine {
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
             case "var": throw new Error("Script var AST requires Script execution");
+            case "switch": throw new Error("Script switch AST requires Script execution");
             case "try-catch": throw new Error("Script try-catch AST requires Script execution");
             case "empty": case "function": return normal();
             case "expression": return this.evaluate(stmt.expression, env, receiver);
@@ -1123,6 +1158,39 @@ class ExecutionEngine {
     }
     #scriptStatement(stmt: Stmt): ScriptStatementCompletion {
         switch (stmt.kind) {
+            case "switch": {
+                // The discriminant belongs to the surrounding environment; all
+                // selectors and clause bodies share one initialized CaseBlock.
+                const discriminant = this.#value(stmt.discriminant);
+                if (discriminant.type === "throw") { const abrupt: ThrowCompletion = discriminant; return abrupt; }
+                const saved = this.#active();
+                const scopeId = ExecutableScript.scopeOfNode(saved.record, stmt, executionKey);
+                const created = saved.record.createBlockEnvironment(scopeId, saved.lexical, this.context);
+                if (created.type === "throw") return created;
+                this.#frame = { ...saved, scopeId, lexical: created.environment };
+                try {
+                    const setup = saved.record.instantiateBlock(scopeId, created.environment, this.context);
+                    if (setup.type === "throw") { this.#capture(setup); const abrupt: ThrowCompletion = setup; return abrupt; }
+                    const clauses = stmt.caseBlock.clauses;
+                    let selected = -1, fallback = -1;
+                    for (let i = 0; i < clauses.length; i++) {
+                        const test = clauses[i].test;
+                        if (test === null) { fallback = i; continue; }
+                        const selector = this.#value(test);
+                        if (selector.type === "throw") { const abrupt: ThrowCompletion = selector; return abrupt; }
+                        if (equal(discriminant.value, selector.value)) { selected = i; break; }
+                    }
+                    if (selected < 0) selected = fallback;
+                    let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
+                    if (selected >= 0) for (let i = selected; i < clauses.length; i++) {
+                        const result = updateScriptEmpty(this.#list(clauses[i].body), value);
+                        if (result.type === "break") return { type: "normal", payload: result.payload };
+                        if (result.type !== "normal") return result;
+                        if (result.payload.kind !== "empty") value = result.payload;
+                    }
+                    return { type: "normal", payload: value };
+                } finally { this.#frame = saved; }
+            }
             case "try-catch": {
                 const result = this.#statement(stmt.block);
                 if (result.type !== "throw" || (result.origin.kind !== "guest" && result.origin.kind !== "engine-diagnostic"))

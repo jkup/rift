@@ -2,7 +2,7 @@ import { collectDeclarationPlan, type DeclarationNodes, type DeclarationPlanResu
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource } from "./syntax.js";
+import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource, SwitchClause } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
@@ -83,6 +83,7 @@ class Parser {
     depth = 0;
     functions = 0;
     loops = 0;
+    switches = 0;
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
     readonly returnCandidates: ReturnCandidate[] = [];
@@ -154,6 +155,38 @@ class Parser {
         const loc = this.current().loc;
         if (this.eat(";")) return { kind: "empty", loc };
         if (this.eat("{")) return { kind: "block", loc, body: this.list(true, []) };
+        if (this.purpose === "declaration-plan" && this.eat("switch")) {
+            this.expect("(");
+            const discriminant = this.expression(0);
+            this.expect(")");
+            const brace = this.current();
+            this.expect("{");
+            const clauses: SwitchClause[] = [], body: Stmt[] = [];
+            let hasDefault = false;
+            this.switches++;
+            while (this.error === null && this.current().kind !== "eof" && !this.at("}")) {
+                const keyword = this.current();
+                let test: Expr | null = null;
+                if (this.eat("case")) test = this.expression(0);
+                else if (this.eat("default") && !hasDefault) hasDefault = true;
+                else {
+                    this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "expected case or unique default", keyword.loc);
+                    break;
+                }
+                this.expect(":");
+                const statements: Stmt[] = [];
+                while (this.error === null && this.current().kind !== "eof" && !this.at("case") && !this.at("default") && !this.at("}")) {
+                    const statement = this.statement();
+                    statements.push(statement);
+                    body.push(statement);
+                }
+                clauses.push({ loc: keyword.loc, start: keyword.start, end: this.tokens[this.index - 1].end, test, body: statements });
+            }
+            this.switches--;
+            this.expect("}");
+            return { kind: "switch", loc, discriminant, caseBlock: { loc: brace.loc, start: brace.start,
+                end: this.tokens[this.index - 1].end, clauses, body } };
+        }
         if (this.purpose === "declaration-plan" && this.eat("try")) {
             const block = this.statement();
             const catchToken = this.current();
@@ -227,7 +260,7 @@ class Parser {
         }
         if (this.at("break") || this.at("continue")) {
             const kind = this.take().text === "break" ? "break" : "continue";
-            if (this.loops === 0) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.loop-context" }, kind + " outside loop", loc);
+            if (this.loops === 0 && (kind === "continue" || this.switches === 0)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.loop-context" }, kind + " outside loop", loc);
             this.expect(";");
             return { kind, loc };
         }
@@ -260,11 +293,14 @@ class Parser {
         this.expect(")");
         this.expect("{");
         const loops = this.loops;
+        const switches = this.switches;
         this.loops = 0;
+        this.switches = 0;
         this.functions++;
         const body = this.list(true, params);
         this.functions--;
         this.loops = loops;
+        this.switches = switches;
         return { params, body, source: { source: this.source, start, end: this.tokens[this.index - 1].end } };
     }
     precedence(op: string): number {

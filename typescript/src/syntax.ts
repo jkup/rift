@@ -3,6 +3,9 @@ export type FunctionSource = { readonly source: SourceText; readonly start: numb
 export type Location = { line: number; column: number };
 export type DeclarationSite = { readonly name: string; readonly start: number; readonly end: number; readonly loc: Readonly<Location> };
 export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[] };
+export type SwitchClause = { loc: Location; start: number; end: number; test: Expr | null; body: Stmt[] };
+export type CaseBlock = { loc: Location; start: number; end: number; clauses: SwitchClause[]; body: Stmt[] };
+export type SwitchStmt = { kind: "switch"; loc: Location; discriminant: Expr; caseBlock: CaseBlock };
 export type TryCatchStmt = { kind: "try-catch"; loc: Location; block: BlockStmt; parameter: DeclarationSite;
     catchLoc: Location; catchStart: number; catchEnd: number; handler: BlockStmt };
 export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: string; loc: Location };
@@ -27,6 +30,7 @@ export type Stmt =
     | { kind: "let"; loc: Location; name: string; init: Expr | null }
     | { kind: "function"; loc: Location; name: string; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
     | BlockStmt
+    | SwitchStmt
     | TryCatchStmt
     | { kind: "if"; loc: Location; test: Expr; consequent: Stmt; alternate: Stmt | null }
     | { kind: "while"; loc: Location; test: Expr; body: Stmt }

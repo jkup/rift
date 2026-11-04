@@ -1,0 +1,36 @@
+[
+  {
+    "input": "seven",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS runtime source\nPASS S01-S30 literal semantics\nPASS N01-N10 whole-source boundaries and neighbors\nPASS 208 fresh/seven-seeded prefixes\nPASS X01 exact throw origins at three stages\nPASS X02 consumed throw history same/cross Realm\nPASS X03 nested B host fault restores active A and permits\nPASS X04 exact legacy guards and audit closure\nPASS X05 ownership inspection and retained closure\nPASS S07 host symbol/object identity without coercion\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS runtime source\nPASS S01-S30 literal semantics\nPASS N01-N10 whole-source boundaries and neighbors\nPASS 208 fresh/seven-seeded prefixes\nPASS X01 exact throw origins at three stages\nPASS X02 consumed throw history same/cross Realm\nPASS X03 nested B host fault restores active A and permits\nPASS X04 exact legacy guards and audit closure\nPASS X05 ownership inspection and retained closure\nPASS S07 host symbol/object identity without coercion\n",
+      "stderr": ""
+    }
+  },
+  {
+    "input": "eleven",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS runtime source\nPASS S01-S30 literal semantics\nPASS N01-N10 whole-source boundaries and neighbors\nPASS 208 fresh/seven-seeded prefixes\nPASS X01 exact throw origins at three stages\nPASS X02 consumed throw history same/cross Realm\nPASS X03 nested B host fault restores active A and permits\nPASS X04 exact legacy guards and audit closure\nPASS X05 ownership inspection and retained closure\nPASS S07 host symbol/object identity without coercion\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS runtime source\nPASS S01-S30 literal semantics\nPASS N01-N10 whole-source boundaries and neighbors\nPASS 208 fresh/seven-seeded prefixes\nPASS X01 exact throw origins at three stages\nPASS X02 consumed throw history same/cross Realm\nPASS X03 nested B host fault restores active A and permits\nPASS X04 exact legacy guards and audit closure\nPASS X05 ownership inspection and retained closure\nPASS S07 host symbol/object identity without coercion\n",
+      "stderr": ""
+    }
+  }
+]

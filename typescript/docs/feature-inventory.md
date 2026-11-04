@@ -553,3 +553,27 @@ Legacy grammar and public entry remain unchanged. Finally, optional/destructured
 catch, sloppy catch, catch-var collisions/Annex B and genuine Error objects remain
 outside this slice. The unchanged pinned harness and all 60 selected corpus
 variants remain blocked; this candidate awaits independent review.
+
+### Internal strict switch (TS-034H2 candidate)
+
+Strict Script preparation admits switch with case clauses and at most one default.
+The discriminant runs in the surrounding environment. Selectors and clause bodies
+share one CaseBlock environment: let bindings begin in TDZ, block functions are
+initialized before selection, and vars propagate to their enclosing Script/function.
+Selectors use strict equality and stop at the first match. A default in the middle
+is selected only after all applicable selectors fail; fallthrough executes bodies
+without re-evaluating selectors. Unlabelled break exits this switch, continue can
+reach an enclosing loop, and return/throw retain their original completion data.
+Empty switch completion is undefined; preceding clause values survive empty
+statements and abrupt control flow through UpdateEmpty.
+
+Original owner/body associations remain private. The existing BlockActivation,
+shared evaluator and setup ticks are reused, with frame restoration on language
+throws, resource limits and host faults. No public switch API or alternate
+interpreter is introduced. See the [accepted contract](harness-switch.md) and
+[implementation evidence](validation/ts-034h2/README.md).
+
+Legacy parsing/return audit, public CLI and corpus admission remain unchanged.
+Labels, sloppy block functions, additional grammar and genuine Error objects
+remain excluded. All 60 selected corpus variants remain blocked. This candidate
+requires actual and independent second review before integration.

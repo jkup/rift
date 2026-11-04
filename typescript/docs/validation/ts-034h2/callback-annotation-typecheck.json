@@ -1,0 +1,10 @@
+[
+  {
+    "name": "typecheck",
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "\n> typecheck\n> tsc -p tsconfig.json\n\ntest/harness-switch.ts(40,97): error TS2322: Type '(_callee: Value, _receiver: Value, _args: Value[], _loc: Location) => Completion' is not assignable to type '(callee: Value, receiver: Value, args: Value[], loc: Location) => ValueCompletion'.\n  Type 'Completion' is not assignable to type 'ValueCompletion'.\n    Type '{ type: \"normal\" | \"return\"; value: Value; }' is not assignable to type 'ValueCompletion'.\n      Type '{ type: \"normal\" | \"return\"; value: Value; }' is not assignable to type '{ type: \"normal\"; value: Value; }'.\n        Types of property 'type' are incompatible.\n          Type '\"normal\" | \"return\"' is not assignable to type '\"normal\"'.\n            Type '\"return\"' is not assignable to type '\"normal\"'.\n",
+    "stderr": ""
+  }
+]
