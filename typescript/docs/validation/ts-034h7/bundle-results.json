@@ -43,12 +43,30 @@
     "stderr": ""
   },
   {
+    "id": "timeout-preparation-negative",
+    "lane": "node",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS B01\nPASS B02\nPASS B03\nPASS B04\nPASS B05\nPASS B06\nPASS B07\nPASS B08\nPASS B09\nPASS B10\nPASS B11\nPASS B12\nPASS B13\nPASS B14\nPASS B15\nPASS B16\nPASS N01\nPASS N02\nPASS runtime 7\nPASS fresh/seeded cross-Realm prefixes=24\nPASS repeated occurrence identity\nPASS retained message identity\nPASS stage/failure priority controls=7\nPASS timeout preparation negative no entry no readiness\n",
+    "stderr": ""
+  },
+  {
     "id": "timeout",
     "lane": "native",
     "status": null,
     "signal": "SIGTERM",
     "error": "ETIMEDOUT",
     "stdout": "PASS B01\nPASS B02\nPASS B03\nPASS B04\nPASS B05\nPASS B06\nPASS B07\nPASS B08\nPASS B09\nPASS B10\nPASS B11\nPASS B12\nPASS B13\nPASS B14\nPASS B15\nPASS B16\nPASS N01\nPASS N02\nPASS runtime 7\nPASS fresh/seeded cross-Realm prefixes=24\nPASS repeated occurrence identity\nPASS retained message identity\nPASS stage/failure priority controls=7\nREADY timeout stage=test harnessValidated=true\n",
+    "stderr": ""
+  },
+  {
+    "id": "timeout-preparation-negative",
+    "lane": "native",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS B01\nPASS B02\nPASS B03\nPASS B04\nPASS B05\nPASS B06\nPASS B07\nPASS B08\nPASS B09\nPASS B10\nPASS B11\nPASS B12\nPASS B13\nPASS B14\nPASS B15\nPASS B16\nPASS N01\nPASS N02\nPASS runtime 7\nPASS fresh/seeded cross-Realm prefixes=24\nPASS repeated occurrence identity\nPASS retained message identity\nPASS stage/failure priority controls=7\nPASS timeout preparation negative no entry no readiness\n",
     "stderr": ""
   }
 ]

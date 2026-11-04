@@ -1,0 +1,37 @@
+{
+  "status": "tested candidate, pending actual and second independent review",
+  "base": "f58693f",
+  "productionChanges": 0,
+  "recordsPerLane": 212,
+  "oldGates": 58,
+  "addedGates": 1,
+  "h7Static": 3827,
+  "dynamic": 0,
+  "inputs": 2,
+  "rows": 18,
+  "throwSites": 14,
+  "resourcePrefixes": 24,
+  "stageFaultControls": 7,
+  "actualTimeouts": 2,
+  "inheritedGroups": 17,
+  "protectedFiles": 4347,
+  "oldTests": 146,
+  "variantsBlocked": 60,
+  "suites": [
+    "H1-H6/M",
+    "E4",
+    "both Node boundaries",
+    "slots",
+    "typecheck",
+    "runner20",
+    "host73",
+    "observations22",
+    "probes10"
+  ],
+  "retainedEnvironmentFailures": [
+    "gate-sandbox-access.json",
+    "suite-results.json"
+  ],
+  "historicalEvidenceRestored": true,
+  "published": false
+}

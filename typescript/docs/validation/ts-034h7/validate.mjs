@@ -17,6 +17,9 @@ const frozen=JSON.parse(readFileSync(here+'/frozen-rows.json'));assert.equal(fro
 const driver=readFileSync('test/harness-bundle.ts','utf8');assert.ok(driver.includes('const rows: Row[] = '+JSON.stringify(frozen,null,2)+';'));
 const gate=JSON.parse(readFileSync(here+'/gate.json'));assert.equal(gate.verdict,'PASS');
 const results=[];
+const marker='READY timeout stage=test harnessValidated=true';
+const readyCount=row=>row.stdout.split(/\r?\n/).filter(line=>line===marker).length;
+const acceptedTimeout=row=>row.error==='ETIMEDOUT'&&row.status!==0&&readyCount(row)===1;
 try{for(const input of JSON.parse(readFileSync(here+'/frozen-inputs.json'))){
  const path=fixture+input.id+'.js';assert.equal(hash(readFileSync(path)),input.sha256);
  const expected=frozen.map(r=>'PASS '+r.id+'\n').join('')+`PASS runtime ${input.expectedThrow}\nPASS fresh/seeded cross-Realm prefixes=24\nPASS repeated occurrence identity\nPASS retained message identity\nPASS stage/failure priority controls=7\n`;
@@ -28,7 +31,14 @@ for(const lane of ['node','native']){
  const file=fixture+'input-a.js',args=lane==='node'?['build/node/test/harness-bundle.js',file,'timeout-control']:[file,'timeout-control'];
  const r=spawnSync(lane==='node'?process.execPath:'build/native/harness-bundle.exe',args,{encoding:'utf8',timeout:2000});
  const row={id:'timeout',lane,status:r.status,signal:r.signal,error:r.error?.code??null,stdout:r.stdout,stderr:r.stderr};results.push(row);
- assert.equal(row.error,'ETIMEDOUT');assert.ok(row.stdout.includes('READY timeout stage=test harnessValidated=true'));assert.notEqual(row.status,0);
+ assert.ok(acceptedTimeout(row),JSON.stringify(row));assert.equal(row.stderr,'');
+ const negativeArgs=lane==='node'?['build/node/test/harness-bundle.js',file,'timeout-preparation-negative']:[file,'timeout-preparation-negative'];
+ const negative=spawnSync(lane==='node'?process.execPath:'build/native/harness-bundle.exe',negativeArgs,{encoding:'utf8',timeout:2000});
+ const rejected={id:'timeout-preparation-negative',lane,status:negative.status,signal:negative.signal,error:negative.error?.code??null,stdout:negative.stdout,stderr:negative.stderr};results.push(rejected);
+ assert.equal(rejected.status,0);assert.equal(rejected.error,null);assert.equal(rejected.signal,null);assert.equal(rejected.stderr,'');assert.equal(readyCount(rejected),0);assert.ok(rejected.stdout.includes('PASS timeout preparation negative no entry no readiness'));assert.ok(!acceptedTimeout(rejected));
+ // Even timeout metadata cannot rescue a process that never signaled guest entry.
+ assert.ok(!acceptedTimeout({...rejected,status:null,error:'ETIMEDOUT'}));
+ assert.ok(!acceptedTimeout({...row,stdout:row.stdout+'\n'+marker+'\n'}));
 }
 }finally{writeFileSync(here+'/bundle-results.json',JSON.stringify(results,null,2)+'\n');}
 console.log('PASS verified original bytes/blob/license/order; two inputs both hosts; timeout precedence');

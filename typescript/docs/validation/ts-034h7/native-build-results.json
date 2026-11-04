@@ -1056,7 +1056,7 @@
       "status": 0,
       "signal": null,
       "error": null,
-      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\harness-bundle.ts\n\n  statements analyzed   3827\n  compile statically    3827  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\harness-bundle.ts\n\n  statements analyzed   3847\n  compile statically    3847  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
       "stderr": ""
     },
     "verdict": "PASS"

@@ -254,10 +254,30 @@ const languageAttempt=attempt("language",false);
 check(languageAttempt.status==="language-throw"&&languageAttempt.stage==="test"&&languageAttempt.harnessValidated&&languageAttempt.source==="attempt/reloaded/0:assert.js","test stage differs from assertion defining source");
 console.log("PASS stage/failure priority controls=7");
 
-// Supervisor-only timeout control. The same verified bundle loads before a
-// bounded guest loop whose resource cap is intentionally much later than timeout.
-if(process.argv[3]==="timeout-control"){
- const r=fresh(),s=createScriptSession({maxSteps:1000000000,maxCalls:64});load(r,s,"timeout/harness");
- console.log("READY timeout stage=test harnessValidated=true");
- run('while(true){}',r,s,"timeout/test");throw new Error("timeout control completed unexpectedly");
+// Readiness is emitted only by the ordinary guarded builtin reached from the
+// first guest loop iteration, after checking the original active record/Realm.
+if(process.argv[3]==="timeout-control"||process.argv[3]==="timeout-preparation-negative"){
+ const r=fresh(),s=createScriptSession({maxSteps:1000000000,maxCalls:64});
+ let stage="harness",record:ExecutableScript|null=null,signaled=false;
+ load(r,s,"timeout/harness");
+ const ready=r.createBuiltin("timeoutReady",0,(_receiver,_args,context,_loc):ValueCompletion=>{
+  const active=s.inspect().active;
+  check(!signaled&&stage==="test"&&record!==null&&active!==null&&active.record===record&&active.realm===r&&active.phase==="body"&&context.realm===r,"timeout reached original test activation");
+  signaled=true;
+  console.log("READY timeout stage=test harnessValidated=true");
+  return normal();
+ });
+ r.defineScriptGlobal("timeoutReady",{value:{kind:"object",object:ready},writable:true,configurable:true});
+ const source="var entered=false; while(true){if(!entered){entered=true;timeoutReady();}}";
+ const negative=process.argv[3]==="timeout-preparation-negative",before=s.inspect().steps;
+ const prepared=prepareBoundedScript({id:"timeout/test",text:negative?source+"\nclass Unsupported {}":source},r);
+ if(negative){
+  check(prepared.kind!=="ready"&&!signaled&&s.inspect().steps===before,"whole-unit preparation failure cannot signal readiness");idle(s);
+  console.log("PASS timeout preparation negative no entry no readiness");
+ }else{
+  if(prepared.kind!=="ready")throw new Error("timeout preparation failed");
+  record=prepared.record;stage="test";
+  try{evaluateScript(s,record);}finally{idle(s);}
+  throw new Error("timeout control completed unexpectedly");
+ }
 }

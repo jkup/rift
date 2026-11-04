@@ -48,8 +48,8 @@ consume these as expected language throws. Preflight failure retains stage
 harness/harnessValidated=false; post-preflight failure retains test/true. Host
 exceptions are compared by exact identity, and both original sessions restore in finally and execute a fresh-Realm reuse unit at exactly two additional ticks. A language-failure neighbor explicitly retains stage=test while its defining source is the reloaded assert.js; unsupported and resource controls also check their exact source occurrence IDs.
 The supervisor additionally kills each host while an actual guest loop is
-running after verified harness load, requires ETIMEDOUT and the test/validated
-readiness marker, and does not accept a negative expectation instead of timeout.
+running after verified harness load, requires ETIMEDOUT and exactly one test/validated
+readiness marker emitted by a guarded builtin from the first guest loop iteration, and does not accept a negative expectation instead of timeout.
 These stage checks are private test orchestration, not new observation transport.
 
 Private record, captured-owner, one-use call/construct permit, first-abrupt and
@@ -99,7 +99,7 @@ Final completion status is recorded below after preservation checks finish. No p
 ## Completed candidate validation
 
 All required checks pass: Node/native212/212 exact old records,58+1 native
-static gates, H7 final3827static/zero dynamic, both semantic inputs,14literal
+static gates, H7 corrected3847static/zero dynamic, both semantic inputs,14literal
 throw sites,24resource prefixes, sevenstage/fault controls, same-owner reuse,
 message/occurrence identities and two actual subprocess timeouts. H1-H6/M/E4,
 all17inherited groups, both Node boundaries/slots, typecheck, runner20, host73,
@@ -107,3 +107,28 @@ observations22 and probes10 pass. Preservation protects4347files including146
 old test files. All60variants remain blocked. The prior C producer tree is
 restored. This is a tested candidate awaiting actual and second independent
 review, not acceptance or permission to publish/start a successor.
+
+## Timeout readiness review correction
+
+Candidate e1b909b was not accepted: its readiness marker was emitted before
+preparation/evaluation, so that marker plus a timeout did not prove loop entry.
+The original gate/results/oracle/completion/preservation evidence is retained in
+`correction/previous/`; the original source remains at that commit.
+
+The corrected test source calls an ordinary guarded builtin only from its first
+loop iteration. The callback checks the active original record, Realm, body
+phase, operation-context Realm and test stage before emitting readiness once.
+The supervisor requires exactly one marker plus ETIMEDOUT and nonzero status in
+both hosts. A whole-unit preparation rejection leaves steps unchanged, never
+invokes the callback, exits normally and cannot satisfy timeout acceptance.
+Negative validator mutations also reject timeout metadata without readiness
+and duplicate readiness markers. No production/harness source or authority seam
+changed; immutable caps are retained.
+
+Node compilation, the H7-only native static/coverage gate (3847/3847), both
+semantic inputs, both reached-loop timeouts, both preparation negatives, frozen
+row/source audit and preservation pass. The unchanged 58 prior gates and all
+inherited suite evidence are reused, not rebuilt/replayed. See
+`correction/timeout-contract.json`, `correction/audit.json`, `bundle-results.json`
+and `completion.json`. Stop for actual and second independent re-review; no
+acceptance, publication or successor is claimed.
