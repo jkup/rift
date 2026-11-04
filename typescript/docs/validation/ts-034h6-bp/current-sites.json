@@ -1,0 +1,2246 @@
+[
+  {
+    "path": "typescript/src/array-like.ts",
+    "line": 4,
+    "name": "toLength",
+    "text": "import { toLength, type NumberCompletion } from \"./conversion.js\";"
+  },
+  {
+    "path": "typescript/src/array-like.ts",
+    "line": 13,
+    "name": "toLength",
+    "text": "return toLength(primitive.value, loc);"
+  },
+  {
+    "path": "typescript/src/array-map.ts",
+    "line": 3,
+    "name": "failure",
+    "text": "import { failure, unsupportedFailure, normal, type GuestObject, type OperationContext, type Value, type ValueCompletion } from \"./runtime.js\";"
+  },
+  {
+    "path": "typescript/src/array-map.ts",
+    "line": 10,
+    "name": "failure",
+    "text": "if (callback.kind !== \"object\" || callback.object.callable === null) return failure(\"TypeError\", \"map callback is not callable\", loc);"
+  },
+  {
+    "path": "typescript/src/array-map.ts",
+    "line": 17,
+    "name": "failure",
+    "text": "if (length.value > 4294967295) return failure(\"RangeError\", \"map result length exceeds array limit\", loc);"
+  },
+  {
+    "path": "typescript/src/array-object.ts",
+    "line": 1,
+    "name": "failure",
+    "text": "import { GuestObject, failure, validatePropertyDescriptorUpdate } from \"./runtime.js\";"
+  },
+  {
+    "path": "typescript/src/array-object.ts",
+    "line": 5,
+    "name": "toNumber",
+    "text": "import { toNumber, toUint32 } from \"./conversion.js\";"
+  },
+  {
+    "path": "typescript/src/array-object.ts",
+    "line": 5,
+    "name": "toUint32",
+    "text": "import { toNumber, toUint32 } from \"./conversion.js\";"
+  },
+  {
+    "path": "typescript/src/array-object.ts",
+    "line": 61,
+    "name": "toUint32",
+    "text": "const uint32 = toUint32(first.value, loc);"
+  },
+  {
+    "path": "typescript/src/array-object.ts",
+    "line": 65,
+    "name": "toNumber",
+    "text": "const number = toNumber(second.value, loc);"
+  },
+  {
+    "path": "typescript/src/array-object.ts",
+    "line": 67,
+    "name": "failure",
+    "text": "if (uint32.value !== number.value) return failure(\"RangeError\", \"invalid array length\", loc);"
+  },
+  {
+    "path": "typescript/src/array-object.ts",
+    "line": 80,
+    "name": "toUint32",
+    "text": "const uint32 = toUint32(desc.value, loc);"
+  },
+  {
+    "path": "typescript/src/array-object.ts",
+    "line": 82,
+    "name": "toNumber",
+    "text": "const number = toNumber(desc.value, loc);"
+  },
+  {
+    "path": "typescript/src/array-object.ts",
+    "line": 85,
+    "name": "failure",
+    "text": "if (uint32.value !== number.value) return failure(\"RangeError\", \"invalid array length\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/array.ts",
+    "line": 5,
+    "name": "toString",
+    "text": "import { toString, numberToString, type StringCompletion } from \"../conversion.js\";"
+  },
+  {
+    "path": "typescript/src/builtins/array.ts",
+    "line": 13,
+    "name": "toString",
+    "text": "return toString(primitive.value, loc);"
+  },
+  {
+    "path": "typescript/src/builtins/boolean.ts",
+    "line": 3,
+    "name": "failure",
+    "text": "import { failure, normal, type ThrowCompletion, type Value } from \"../runtime.js\";"
+  },
+  {
+    "path": "typescript/src/builtins/boolean.ts",
+    "line": 8,
+    "name": "thisBooleanValue",
+    "text": "export function thisBooleanValue(input: Value, loc: Location): BooleanCompletion {"
+  },
+  {
+    "path": "typescript/src/builtins/boolean.ts",
+    "line": 14,
+    "name": "failure",
+    "text": "return failure(\"TypeError\", \"receiver is not a boolean\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/boolean.ts",
+    "line": 19,
+    "name": "thisBooleanValue",
+    "text": "const result = thisBooleanValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/src/builtins/boolean.ts",
+    "line": 24,
+    "name": "thisBooleanValue",
+    "text": "const result = thisBooleanValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/src/builtins/function.ts",
+    "line": 4,
+    "name": "failure",
+    "text": "import { UNDEFINED, failure, normal, type Value, type Callable, type OperationContext, type ValueCompletion, truthy } from \"../runtime.js\";"
+  },
+  {
+    "path": "typescript/src/builtins/function.ts",
+    "line": 35,
+    "name": "failure",
+    "text": "if (prototype.value.kind !== \"object\") return failure(\"TypeError\", \"constructor prototype is not an object\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/function.ts",
+    "line": 47,
+    "name": "failure",
+    "text": "if (target.kind !== \"object\") return failure(\"TypeError\", \"instanceof target is not an object\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/function.ts",
+    "line": 53,
+    "name": "failure",
+    "text": "if (method.value.kind !== \"object\" || method.value.object.callable === null) return failure(\"TypeError\", \"hasInstance method is not callable\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/function.ts",
+    "line": 58,
+    "name": "failure",
+    "text": "if (target.object.callable === null) return failure(\"TypeError\", \"instanceof target is not callable\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/function.ts",
+    "line": 71,
+    "name": "failure",
+    "text": "return failure(\"TypeError\", \"Function.prototype.call receiver is not callable\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/function.ts",
+    "line": 82,
+    "name": "failure",
+    "text": "return failure(\"TypeError\", \"Function.prototype.toString receiver is not callable\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/number.ts",
+    "line": 2,
+    "name": "toIntegerOrInfinity",
+    "text": "import { numberToString, toIntegerOrInfinity, type NumberCompletion } from \"../conversion.js\";"
+  },
+  {
+    "path": "typescript/src/builtins/number.ts",
+    "line": 7,
+    "name": "failure",
+    "text": "import { GuestObject, failure, normal, UNDEFINED, type Builtin, type Value } from \"../runtime.js\";"
+  },
+  {
+    "path": "typescript/src/builtins/number.ts",
+    "line": 36,
+    "name": "thisNumberValue",
+    "text": "export function thisNumberValue(input: Value, loc: Location): NumberCompletion {"
+  },
+  {
+    "path": "typescript/src/builtins/number.ts",
+    "line": 41,
+    "name": "failure",
+    "text": "return failure(\"TypeError\", \"receiver is not a number\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/number.ts",
+    "line": 46,
+    "name": "thisNumberValue",
+    "text": "const extracted = thisNumberValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/src/builtins/number.ts",
+    "line": 52,
+    "name": "toIntegerOrInfinity",
+    "text": "const integer = toIntegerOrInfinity(primitive.value, loc);"
+  },
+  {
+    "path": "typescript/src/builtins/number.ts",
+    "line": 57,
+    "name": "failure",
+    "text": "if (radix < 2 || radix > 36) return failure(\"RangeError\", \"radix must be between 2 and 36\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/number.ts",
+    "line": 67,
+    "name": "thisNumberValue",
+    "text": "const result = thisNumberValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/src/builtins/restricted-function.ts",
+    "line": 2,
+    "name": "failure",
+    "text": "import { failure, type Value } from \"../runtime.js\";"
+  },
+  {
+    "path": "typescript/src/builtins/restricted-function.ts",
+    "line": 8,
+    "name": "failure",
+    "text": "failure(\"TypeError\", \"restricted function property\", loc));"
+  },
+  {
+    "path": "typescript/src/builtins/string.ts",
+    "line": 3,
+    "name": "failure",
+    "text": "import { failure, normal, type ThrowCompletion, type Value } from \"../runtime.js\";"
+  },
+  {
+    "path": "typescript/src/builtins/string.ts",
+    "line": 9,
+    "name": "thisStringValue",
+    "text": "export function thisStringValue(input: Value, loc: Location): StringCompletion {"
+  },
+  {
+    "path": "typescript/src/builtins/string.ts",
+    "line": 15,
+    "name": "failure",
+    "text": "return failure(\"TypeError\", \"receiver is not a string\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/string.ts",
+    "line": 20,
+    "name": "thisStringValue",
+    "text": "const result = thisStringValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/src/builtins/string.ts",
+    "line": 25,
+    "name": "thisStringValue",
+    "text": "const result = thisStringValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/src/builtins/symbol.ts",
+    "line": 3,
+    "name": "failure",
+    "text": "import { failure, normal, type ThrowCompletion, type Value } from \"../runtime.js\";"
+  },
+  {
+    "path": "typescript/src/builtins/symbol.ts",
+    "line": 9,
+    "name": "thisSymbolValue",
+    "text": "export function thisSymbolValue(input: Value, loc: Location): SymbolCompletion {"
+  },
+  {
+    "path": "typescript/src/builtins/symbol.ts",
+    "line": 15,
+    "name": "failure",
+    "text": "return failure(\"TypeError\", \"receiver is not a symbol\", loc);"
+  },
+  {
+    "path": "typescript/src/builtins/symbol.ts",
+    "line": 20,
+    "name": "thisSymbolValue",
+    "text": "const result = thisSymbolValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/src/builtins/symbol.ts",
+    "line": 25,
+    "name": "thisSymbolValue",
+    "text": "const result = thisSymbolValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/src/builtins/symbol.ts",
+    "line": 30,
+    "name": "thisSymbolValue",
+    "text": "const result = thisSymbolValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 2,
+    "name": "failure",
+    "text": "import { failure, unsupportedFailure } from \"./runtime.js\";"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 72,
+    "name": "toNumber",
+    "text": "export function toNumber(value: Value, loc: Location): NumberCompletion {"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 79,
+    "name": "failure",
+    "text": "case \"symbol\": return failure(\"TypeError\", \"cannot convert symbol to number\", loc);"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 84,
+    "name": "toUint32",
+    "text": "export function toUint32(value: Value, loc: Location): NumberCompletion {"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 85,
+    "name": "toNumber",
+    "text": "const converted = toNumber(value, loc);"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 94,
+    "name": "toIntegerOrInfinity",
+    "text": "export function toIntegerOrInfinity(value: Value, loc: Location): NumberCompletion {"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 95,
+    "name": "toNumber",
+    "text": "const converted = toNumber(value, loc);"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 105,
+    "name": "toLength",
+    "text": "export function toLength(value: Value, loc: Location): NumberCompletion {"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 106,
+    "name": "toIntegerOrInfinity",
+    "text": "const integer = toIntegerOrInfinity(value, loc);"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 118,
+    "name": "toString",
+    "text": "export function toString(value: Value, loc: Location): StringCompletion {"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 125,
+    "name": "failure",
+    "text": "case \"symbol\": return failure(\"TypeError\", \"cannot convert symbol to string\", loc);"
+  },
+  {
+    "path": "typescript/src/conversion.ts",
+    "line": 135,
+    "name": "toString",
+    "text": "return toString(primitive.value, loc);"
+  },
+  {
+    "path": "typescript/src/delete-reference.ts",
+    "line": 1,
+    "name": "failure",
+    "text": "import { failure, normal, type Reference, type OperationContext, type ValueCompletion } from \"./runtime.js\";"
+  },
+  {
+    "path": "typescript/src/delete-reference.ts",
+    "line": 18,
+    "name": "failure",
+    "text": "if (!deleted.value && strict) return failure(\"TypeError\", \"property is not configurable: \" + formatPropertyKey(key.value), loc);"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "line": 2,
+    "name": "failure",
+    "text": "GuestObject, UNDEFINED, failure, normal,"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "line": 19,
+    "name": "createMutableBinding",
+    "text": "createMutableBinding(name: string, loc: Location): ValueCompletion {"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "line": 20,
+    "name": "failure",
+    "text": "if (this.lexicals.has(name)) return failure(\"TypeError\", \"binding already exists: \" + name, loc);"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "line": 37,
+    "name": "failure",
+    "text": "if (!binding.initialized) return failure(\"ReferenceError\", name + \" is not initialized\", loc);"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "line": 42,
+    "name": "failure",
+    "text": "if (!present.value) return strict ? failure(\"ReferenceError\", name + \" is not defined\", loc) : normal();"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "line": 48,
+    "name": "failure",
+    "text": "if (!binding.initialized) return failure(\"ReferenceError\", name + \" is not initialized\", loc);"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "line": 57,
+    "name": "failure",
+    "text": "if (!present.value && strict) return failure(\"ReferenceError\", name + \" is not defined\", loc);"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "line": 63,
+    "name": "failure",
+    "text": "if (!result.value && strict) return failure(\"TypeError\", \"property is not writable: \" + name, loc);"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "line": 109,
+    "name": "failure",
+    "text": "if (!result.value) return failure(\"TypeError\", \"cannot define global property: \" + name, loc);"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "line": 128,
+    "name": "failure",
+    "text": "if (reference.environment === null) return failure(\"ReferenceError\", reference.name + \" is not defined\", reference.loc);"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "line": 132,
+    "name": "failure",
+    "text": "if (reference.environment === null) return failure(\"ReferenceError\", reference.name + \" is not defined\", reference.loc);"
+  },
+  {
+    "path": "typescript/src/object-conversion.ts",
+    "line": 1,
+    "name": "failure",
+    "text": "import { failure, type GuestObject, type OperationContext, type ThrowCompletion, type Value } from \"./runtime.js\";"
+  },
+  {
+    "path": "typescript/src/object-conversion.ts",
+    "line": 14,
+    "name": "failure",
+    "text": "case \"null\": case \"undefined\": return failure(\"TypeError\", \"cannot convert null or undefined to object\", loc);"
+  },
+  {
+    "path": "typescript/src/primitive-conversion.ts",
+    "line": 1,
+    "name": "failure",
+    "text": "import { failure, normal, type OperationContext, type Value, type ValueCompletion } from \"./runtime.js\";"
+  },
+  {
+    "path": "typescript/src/primitive-conversion.ts",
+    "line": 26,
+    "name": "failure",
+    "text": "return failure(\"TypeError\", \"cannot convert object to primitive\", loc);"
+  },
+  {
+    "path": "typescript/src/primitive-conversion.ts",
+    "line": 43,
+    "name": "failure",
+    "text": "return failure(\"TypeError\", \"symbol toPrimitive method is not callable\", loc);"
+  },
+  {
+    "path": "typescript/src/primitive-conversion.ts",
+    "line": 48,
+    "name": "failure",
+    "text": "return failure(\"TypeError\", \"cannot convert object to primitive\", loc);"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "line": 84,
+    "name": "failure",
+    "text": "export function failure(name: string, message: string, loc: Location): ThrowCompletion {"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "line": 88,
+    "name": "failure",
+    "text": "const result = failure(\"RangeError\", message, loc);"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "line": 92,
+    "name": "failure",
+    "text": "const result = failure(name, message, loc);"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "line": 110,
+    "name": "constructorSlot",
+    "text": "constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false, readonly callable: Callable | null = null, readonly constructorSlot: ScriptGuestCallable | null = null) {"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "line": 245,
+    "name": "failure",
+    "text": "if (!result.value) return failure(\"TypeError\", \"property is not writable: \" + formatPropertyKey(key), loc);"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "line": 292,
+    "name": "failure",
+    "text": "if (binding === undefined) return failure(\"ReferenceError\", ref.name + \" is not defined\", loc);"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "line": 293,
+    "name": "failure",
+    "text": "if (!binding.initialized) return failure(\"ReferenceError\", ref.name + \" is not initialized\", loc);"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "line": 309,
+    "name": "failure",
+    "text": "if (!result.value && strict) return failure(\"TypeError\", \"property is not writable: \" + formatPropertyKey(key.value), loc);"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "line": 313,
+    "name": "failure",
+    "text": "if (binding === undefined) return failure(\"ReferenceError\", ref.name + \" is not defined\", loc);"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "line": 314,
+    "name": "failure",
+    "text": "if (!binding.initialized) return failure(\"ReferenceError\", ref.name + \" is not initialized\", loc);"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "line": 315,
+    "name": "failure",
+    "text": "if (!binding.mutable) return failure(\"TypeError\", \"binding is not mutable: \" + ref.name, loc);"
+  },
+  {
+    "path": "typescript/src/script-environment.ts",
+    "line": 2,
+    "name": "failure",
+    "text": "import { UNDEFINED, failure, normal, type Value, type ValueCompletion,"
+  },
+  {
+    "path": "typescript/src/script-environment.ts",
+    "line": 18,
+    "name": "createMutableBinding",
+    "text": "createMutableBinding(name: string, _loc: Location): ValueCompletion {"
+  },
+  {
+    "path": "typescript/src/script-environment.ts",
+    "line": 34,
+    "name": "failure",
+    "text": "if (!binding.initialized) return failure(\"ReferenceError\", name + \" is not initialized\", loc);"
+  },
+  {
+    "path": "typescript/src/script-environment.ts",
+    "line": 40,
+    "name": "failure",
+    "text": "if (!binding.initialized) return failure(\"ReferenceError\", name + \" is not initialized\", loc);"
+  },
+  {
+    "path": "typescript/src/script-environment.ts",
+    "line": 72,
+    "name": "failure",
+    "text": "if (base === null) return failure(\"ReferenceError\", reference.name + \" is not defined\", reference.loc);"
+  },
+  {
+    "path": "typescript/src/script-environment.ts",
+    "line": 78,
+    "name": "failure",
+    "text": "if (base === null) return reference.strict ? failure(\"ReferenceError\", reference.name + \" is not defined\", reference.loc)"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 7,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, failure, resourceFailure, getValue, putValue, truthy } from \"./runtime.js\";"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 271,
+    "name": "createMutableBinding",
+    "text": "const created = activation.createMutableBinding(node.parameter.name, node.parameter.loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 396,
+    "name": "createMutableBinding",
+    "text": "const created = environment.createMutableBinding(formal.name, formal.loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 415,
+    "name": "createMutableBinding",
+    "text": "const created = environment.createMutableBinding(site.name, site.loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 434,
+    "name": "createMutableBinding",
+    "text": "const created = lexicalEnvironment.createMutableBinding(site.name, site.loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 490,
+    "name": "createMutableBinding",
+    "text": "const created = environment.createMutableBinding(declaration.site.name, declaration.site.loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 592,
+    "name": "toNumber",
+    "text": "import { toNumber, toString, toPropertyKey } from \"./conversion.js\";"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 592,
+    "name": "toString",
+    "text": "import { toNumber, toString, toPropertyKey } from \"./conversion.js\";"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 698,
+    "name": "failure",
+    "text": "if (env.bindings.has(stmt.name)) return failure(\"SyntaxError\", \"duplicate binding: \" + stmt.name, stmt.loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 849,
+    "name": "toNumber",
+    "text": "const numeric = toNumber(primitive.value, expr.loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 960,
+    "name": "toNumber",
+    "text": "const number = toNumber(primitive.value, expr.loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 987,
+    "name": "failure",
+    "text": "if (callee.kind !== \"object\" || callee.object.callable === null) return failure(\"TypeError\", \"value is not callable\", loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1026,
+    "name": "failure",
+    "text": "return failure(\"TypeError\", \"right operand of in must be an object\", loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1047,
+    "name": "toString",
+    "text": "const a = toString(left, loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1049,
+    "name": "toString",
+    "text": "const b = toString(right, loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1053,
+    "name": "toNumber",
+    "text": "const a = toNumber(left, loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1055,
+    "name": "toNumber",
+    "text": "const b = toNumber(right, loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1064,
+    "name": "toNumber",
+    "text": "const a = toNumber(leftPrimitive.value, loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1068,
+    "name": "toNumber",
+    "text": "const b = toNumber(rightPrimitive.value, loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1098,
+    "name": "toNumber",
+    "text": "const a = toNumber(left, loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1100,
+    "name": "toNumber",
+    "text": "const b = toNumber(right, loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1382,
+    "name": "constructorSlot",
+    "text": "if (callee.kind !== \"object\" || callee.object.constructorSlot === null) return failure(\"TypeError\", \"value is not a constructor\", loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1382,
+    "name": "failure",
+    "text": "if (callee.kind !== \"object\" || callee.object.constructorSlot === null) return failure(\"TypeError\", \"value is not a constructor\", loc);"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "line": 1383,
+    "name": "constructorSlot",
+    "text": "const fn = callee.object.constructorSlot;"
+  },
+  {
+    "path": "typescript/src/script-global-declarations.ts",
+    "line": 4,
+    "name": "failure",
+    "text": "import { failure, normal, type OperationContext, type ValueCompletion } from \"./runtime.js\";"
+  },
+  {
+    "path": "typescript/src/script-global-declarations.ts",
+    "line": 73,
+    "name": "failure",
+    "text": "if (environment.hasLexicalDeclaration(site.name)) return failure(\"SyntaxError\", \"lexical declaration already exists: \" + site.name, site.loc);"
+  },
+  {
+    "path": "typescript/src/script-global-declarations.ts",
+    "line": 76,
+    "name": "failure",
+    "text": "if (restricted.value) return failure(\"SyntaxError\", \"restricted global property: \" + site.name, site.loc);"
+  },
+  {
+    "path": "typescript/src/script-global-declarations.ts",
+    "line": 82,
+    "name": "failure",
+    "text": "if (environment.hasLexicalDeclaration(site.name)) return failure(\"SyntaxError\", \"lexical declaration already exists: \" + site.name, site.loc);"
+  },
+  {
+    "path": "typescript/src/script-global-declarations.ts",
+    "line": 93,
+    "name": "failure",
+    "text": "if (!allowed.value) return failure(\"TypeError\", \"cannot declare global function: \" + d.site.name, d.site.loc);"
+  },
+  {
+    "path": "typescript/src/script-global-declarations.ts",
+    "line": 107,
+    "name": "failure",
+    "text": "if (!allowed.value) return failure(\"TypeError\", \"cannot declare global var: \" + d.site.name, d.site.loc);"
+  },
+  {
+    "path": "typescript/src/script-global-declarations.ts",
+    "line": 114,
+    "name": "createMutableBinding",
+    "text": "const created = environment.createMutableBinding(site.name, site.loc);"
+  },
+  {
+    "path": "typescript/test/abstract-equality.ts",
+    "line": 8,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, failure, sameValue, equal, truthy, type Value, type ValueCompletion, type InternalBooleanCompletion, type PropertyKey, type Builtin, type ThrowCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/abstract-equality.ts",
+    "line": 131,
+    "name": "failure",
+    "text": "put(identity, wellKnownToPrimitive, fn(realm, (_receiver, _args, _context, at) => failure(\"Error\", \"must not call\", at)));"
+  },
+  {
+    "path": "typescript/test/abstract-equality.ts",
+    "line": 171,
+    "name": "failure",
+    "text": "const marker = failure(\"Error\", \"marker\", loc);"
+  },
+  {
+    "path": "typescript/test/abstract-equality.ts",
+    "line": 256,
+    "name": "failure",
+    "text": "const marker = failure(\"Error\", \"Get marker\", loc);"
+  },
+  {
+    "path": "typescript/test/abstract-equality.ts",
+    "line": 315,
+    "name": "failure",
+    "text": "const marker = failure(\"Error\", \"foreign marker\", loc);"
+  },
+  {
+    "path": "typescript/test/abstract-equality.ts",
+    "line": 363,
+    "name": "failure",
+    "text": "const marker = failure(\"Error\", \"operand marker\", loc);"
+  },
+  {
+    "path": "typescript/test/abstract-equality.ts",
+    "line": 562,
+    "name": "failure",
+    "text": "const poison = fn(realm, (_receiver, _args, _context, at) => failure(\"Error\", \"unexpected identity conversion\", at));"
+  },
+  {
+    "path": "typescript/test/array-length-coercion.ts",
+    "line": 12,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, failure, sameValue, type Builtin, type Completion, type Value, type ValueCompletion, type InternalBooleanCompletion, type DataDescriptor, type DataDescriptorUpdate, type OperationContext } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/array-length-coercion.ts",
+    "line": 200,
+    "name": "failure",
+    "text": "const sentinel = failure(\"Sentinel\", \"array length boundary\", loc);"
+  },
+  {
+    "path": "typescript/test/array-like.ts",
+    "line": 5,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, failure, type Value, type ValueCompletion, type InternalBooleanCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/array-like.ts",
+    "line": 8,
+    "name": "toIntegerOrInfinity",
+    "text": "import { toIntegerOrInfinity, toLength, type NumberCompletion } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/array-like.ts",
+    "line": 8,
+    "name": "toLength",
+    "text": "import { toIntegerOrInfinity, toLength, type NumberCompletion } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/array-like.ts",
+    "line": 121,
+    "name": "toIntegerOrInfinity",
+    "text": "numeric(toIntegerOrInfinity(row.input, loc), row.integer);"
+  },
+  {
+    "path": "typescript/test/array-like.ts",
+    "line": 122,
+    "name": "toLength",
+    "text": "numeric(toLength(row.input, loc), row.length);"
+  },
+  {
+    "path": "typescript/test/array-like.ts",
+    "line": 134,
+    "name": "toIntegerOrInfinity",
+    "text": "unsupported(toIntegerOrInfinity(o(parent), loc));"
+  },
+  {
+    "path": "typescript/test/array-like.ts",
+    "line": 135,
+    "name": "toLength",
+    "text": "unsupported(toLength(o(parent), loc));"
+  },
+  {
+    "path": "typescript/test/array-like.ts",
+    "line": 160,
+    "name": "failure",
+    "text": "const thrown = failure(\"SentinelError\", \"Get failed\", loc);"
+  },
+  {
+    "path": "typescript/test/array-literals.ts",
+    "line": 13,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, failure, type Completion, type Value } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/array-literals.ts",
+    "line": 77,
+    "name": "failure",
+    "text": "const sentinel = failure(\"Sentinel\", \"exact\", { line: 9, column: 7 });"
+  },
+  {
+    "path": "typescript/test/array-map.ts",
+    "line": 13,
+    "name": "failure",
+    "text": "GuestObject, UNDEFINED, failure, normal, sameValue,"
+  },
+  {
+    "path": "typescript/test/array-map.ts",
+    "line": 23,
+    "name": "failure",
+    "text": "const sentinel = failure(\"Sentinel\", \"original\", loc);"
+  },
+  {
+    "path": "typescript/test/array-map.ts",
+    "line": 112,
+    "name": "failure",
+    "text": "if (input.kind !== \"object\") return failure(\"TypeError\", \"object-only test map entry\", at);"
+  },
+  {
+    "path": "typescript/test/array-string-conversion.ts",
+    "line": 4,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, failure, sameValue, type Value, type ValueCompletion, type PropertyKey, type Builtin, type InternalBooleanCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/array-string-conversion.ts",
+    "line": 10,
+    "name": "toString",
+    "text": "import { toString, toNumber, toPropertyKey } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/array-string-conversion.ts",
+    "line": 10,
+    "name": "toNumber",
+    "text": "import { toString, toNumber, toPropertyKey } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/array-string-conversion.ts",
+    "line": 46,
+    "name": "failure",
+    "text": "readonly abrupt = failure(\"Sentinel\", \"read\", loc);"
+  },
+  {
+    "path": "typescript/test/array-string-conversion.ts",
+    "line": 152,
+    "name": "failure",
+    "text": "const sentinel = failure(\"Sentinel\", \"hook\", { line: 47, column: 3 });"
+  },
+  {
+    "path": "typescript/test/array-string-conversion.ts",
+    "line": 655,
+    "name": "toString",
+    "text": "check(toString(obj(object), loc).type === \"throw\" && toNumber(obj(object), loc).type === \"throw\", \"C9 primitive-only converters\");"
+  },
+  {
+    "path": "typescript/test/array-string-conversion.ts",
+    "line": 655,
+    "name": "toNumber",
+    "text": "check(toString(obj(object), loc).type === \"throw\" && toNumber(obj(object), loc).type === \"throw\", \"C9 primitive-only converters\");"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 3,
+    "name": "thisBooleanValue",
+    "text": "import { thisBooleanValue } from \"../src/builtins/boolean.js\";"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 4,
+    "name": "thisStringValue",
+    "text": "import { thisStringValue } from \"../src/builtins/string.js\";"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 7,
+    "name": "toNumber",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 7,
+    "name": "toString",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 7,
+    "name": "toUint32",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 7,
+    "name": "toIntegerOrInfinity",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 7,
+    "name": "toLength",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 13,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, failure, sameValue, type Value, type ValueCompletion, type PropertyKey, type OperationContext } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 111,
+    "name": "thisBooleanValue",
+    "text": "const extracted = family.label === \"boolean\" ? thisBooleanValue(receiver, loc) : thisStringValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 111,
+    "name": "thisStringValue",
+    "text": "const extracted = family.label === \"boolean\" ? thisBooleanValue(receiver, loc) : thisStringValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 168,
+    "name": "thisBooleanValue",
+    "text": "const extracted = thisBooleanValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 181,
+    "name": "thisStringValue",
+    "text": "const extracted = thisStringValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 229,
+    "name": "toNumber",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 229,
+    "name": "toString",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 229,
+    "name": "toUint32",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 229,
+    "name": "toIntegerOrInfinity",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 229,
+    "name": "toLength",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/boolean-string-conversions.ts",
+    "line": 286,
+    "name": "failure",
+    "text": "const sentinel = failure(\"RangeError\", \"sentinel\", loc);"
+  },
+  {
+    "path": "typescript/test/compound-assignment.ts",
+    "line": 13,
+    "name": "failure",
+    "text": "GuestObject, Environment, UNDEFINED as U, normal, failure, sameValue, getValue, putValue,"
+  },
+  {
+    "path": "typescript/test/compound-assignment.ts",
+    "line": 30,
+    "name": "failure",
+    "text": "const Q: ThrowCompletion = failure(\"ReferenceError\", \"sentinel\", sentinelLoc);"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 3,
+    "name": "toString",
+    "text": "import { toString, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 3,
+    "name": "toIntegerOrInfinity",
+    "text": "import { toString, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 3,
+    "name": "toLength",
+    "text": "import { toString, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 8,
+    "name": "toNumber",
+    "text": "import { stringToNumber, toNumber, toUint32 } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 8,
+    "name": "toUint32",
+    "text": "import { stringToNumber, toNumber, toUint32 } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 23,
+    "name": "toNumber",
+    "text": "completion(toNumber(value, loc), expected, label);"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 24,
+    "name": "toUint32",
+    "text": "completion(toUint32(value, loc), uint, label + \" uint32\");"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 34,
+    "name": "toNumber",
+    "text": "completion(toNumber({ kind: \"string\", value }, loc), expected, \"string wrapper \" + JSON.stringify(value));"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 114,
+    "name": "toNumber",
+    "text": "for (const result of [toNumber({ kind: \"object\", object }, loc), toUint32({ kind: \"object\", object }, loc)]) {"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 114,
+    "name": "toUint32",
+    "text": "for (const result of [toNumber({ kind: \"object\", object }, loc), toUint32({ kind: \"object\", object }, loc)]) {"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 126,
+    "name": "toNumber",
+    "text": "for (const converted of [toNumber(symbolValue, loc), toUint32(symbolValue, loc), toIntegerOrInfinity(symbolValue, loc), toLength(symbolValue, loc)]) {"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 126,
+    "name": "toUint32",
+    "text": "for (const converted of [toNumber(symbolValue, loc), toUint32(symbolValue, loc), toIntegerOrInfinity(symbolValue, loc), toLength(symbolValue, loc)]) {"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 126,
+    "name": "toIntegerOrInfinity",
+    "text": "for (const converted of [toNumber(symbolValue, loc), toUint32(symbolValue, loc), toIntegerOrInfinity(symbolValue, loc), toLength(symbolValue, loc)]) {"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 126,
+    "name": "toLength",
+    "text": "for (const converted of [toNumber(symbolValue, loc), toUint32(symbolValue, loc), toIntegerOrInfinity(symbolValue, loc), toLength(symbolValue, loc)]) {"
+  },
+  {
+    "path": "typescript/test/conversion.ts",
+    "line": 130,
+    "name": "toString",
+    "text": "const symbolString = toString(symbolValue, loc);"
+  },
+  {
+    "path": "typescript/test/delete-operator.ts",
+    "line": 12,
+    "name": "failure",
+    "text": "failure,"
+  },
+  {
+    "path": "typescript/test/delete-operator.ts",
+    "line": 274,
+    "name": "failure",
+    "text": "target.getFailure = failure(\"Error\", \"forbidden read\", loc);"
+  },
+  {
+    "path": "typescript/test/delete-operator.ts",
+    "line": 576,
+    "name": "failure",
+    "text": "const thrown = failure(\"Sentinel\", \"original\", loc);"
+  },
+  {
+    "path": "typescript/test/delete-operator.ts",
+    "line": 821,
+    "name": "failure",
+    "text": "const thrown = failure(\"Error\", \"lookup\", loc);"
+  },
+  {
+    "path": "typescript/test/delete-operator.ts",
+    "line": 943,
+    "name": "failure",
+    "text": "const thrown = failure(\"Error\", \"foreign\", loc);"
+  },
+  {
+    "path": "typescript/test/delete-operator.ts",
+    "line": 1378,
+    "name": "failure",
+    "text": "const thrown = failure(\"Sentinel\", \"unchanged\", loc);"
+  },
+  {
+    "path": "typescript/test/function-call.ts",
+    "line": 8,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, failure, normal, type Completion, type Value, type ValueCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/function-call.ts",
+    "line": 145,
+    "name": "failure",
+    "text": "const sentinel = failure(\"Sentinel\", \"original\", loc);"
+  },
+  {
+    "path": "typescript/test/function-string-conversion.ts",
+    "line": 6,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, failure, sameValue, type Value, type ValueCompletion, type PropertyKey, type Builtin, type OperationContext } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/function-string-conversion.ts",
+    "line": 9,
+    "name": "toNumber",
+    "text": "import { toNumber, toString, toLength, toPropertyKey } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/function-string-conversion.ts",
+    "line": 9,
+    "name": "toString",
+    "text": "import { toNumber, toString, toLength, toPropertyKey } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/function-string-conversion.ts",
+    "line": 9,
+    "name": "toLength",
+    "text": "import { toNumber, toString, toLength, toPropertyKey } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/function-string-conversion.ts",
+    "line": 470,
+    "name": "toNumber",
+    "text": "put(elementArray, \"0\", f);"
+  },
+  {
+    "path": "typescript/test/function-string-conversion.ts",
+    "line": 470,
+    "name": "toString",
+    "text": "put(elementArray, \"0\", f);"
+  },
+  {
+    "path": "typescript/test/function-string-conversion.ts",
+    "line": 470,
+    "name": "toLength",
+    "text": "put(elementArray, \"0\", f);"
+  },
+  {
+    "path": "typescript/test/function-string-conversion.ts",
+    "line": 516,
+    "name": "failure",
+    "text": "put(object(f), \"toString\", num(0));"
+  },
+  {
+    "path": "typescript/test/global-environment.ts",
+    "line": 4,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, failure, normal, sameValue, type Value, type ValueCompletion, type InternalBooleanCompletion, type OperationContext, type PropertyKey, type PropertyDescriptorUpdate, type ThrowCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/global-environment.ts",
+    "line": 44,
+    "name": "failure",
+    "text": "this.abrupt = failure(\"Sentinel\", \"original\", { line: 91, column: 23 });"
+  },
+  {
+    "path": "typescript/test/global-environment.ts",
+    "line": 99,
+    "name": "createMutableBinding",
+    "text": "unused(env.createMutableBinding(name, loc));"
+  },
+  {
+    "path": "typescript/test/global-environment.ts",
+    "line": 138,
+    "name": "createMutableBinding",
+    "text": "unused(env.createMutableBinding(name, loc));"
+  },
+  {
+    "path": "typescript/test/global-environment.ts",
+    "line": 166,
+    "name": "createMutableBinding",
+    "text": "unused(env.createMutableBinding(name, loc));"
+  },
+  {
+    "path": "typescript/test/global-environment.ts",
+    "line": 246,
+    "name": "createMutableBinding",
+    "text": "unused(env.createMutableBinding(\"laterLexical\", loc));"
+  },
+  {
+    "path": "typescript/test/global-environment.ts",
+    "line": 264,
+    "name": "createMutableBinding",
+    "text": "unused(env.createMutableBinding(name, loc));"
+  },
+  {
+    "path": "typescript/test/global-environment.ts",
+    "line": 279,
+    "name": "createMutableBinding",
+    "text": "unused(env.createMutableBinding(name, loc));"
+  },
+  {
+    "path": "typescript/test/global-environment.ts",
+    "line": 329,
+    "name": "createMutableBinding",
+    "text": "unused(e.createMutableBinding(name, loc));"
+  },
+  {
+    "path": "typescript/test/global-environment.ts",
+    "line": 354,
+    "name": "createMutableBinding",
+    "text": "unused(env.createMutableBinding(name, loc));"
+  },
+  {
+    "path": "typescript/test/global-environment.ts",
+    "line": 355,
+    "name": "createMutableBinding",
+    "text": "error(env.createMutableBinding(name, loc), \"TypeError\", loc);"
+  },
+  {
+    "path": "typescript/test/harness-construct.ts",
+    "line": 38,
+    "name": "constructorSlot",
+    "text": "const constructorSlot = o.constructorSlot;"
+  },
+  {
+    "path": "typescript/test/harness-construct.ts",
+    "line": 38,
+    "name": "constructorSlot",
+    "text": "const constructorSlot = o.constructorSlot;"
+  },
+  {
+    "path": "typescript/test/harness-construct.ts",
+    "line": 39,
+    "name": "constructorSlot",
+    "text": "if (callable === null || callable.kind !== \"script-guest\" || constructorSlot === null) return false;"
+  },
+  {
+    "path": "typescript/test/harness-construct.ts",
+    "line": 40,
+    "name": "constructorSlot",
+    "text": "return constructorSlot === callable;"
+  },
+  {
+    "path": "typescript/test/harness-construct.ts",
+    "line": 96,
+    "name": "constructorSlot",
+    "text": "for(const r of [a,b]){const c=own(r,\"C\"),o=object(c),d=o.getOwnProperty(\"prototype\");check(matchingConstructorSlot(o)&&d?.kind===\"data\"&&d.writable&&!d.enumerable&&!d.configurable,\"D01 D05\");const m=r.functionPrototype.getOwnProperty(wellKnownHasInstance);check(m?.kind===\"data\"&&!m.writable&&!m.enumerable&&!m.configurable,\"D02 flags\");if(m?.kind!==\"data\")throw new Error(\"method\");const f=object(m.value);check(f.constructorSlot===null&&f.getPrototypeOf()===r.functionPrototype&&f.getOwnProperty(\"prototype\")===undefined,\"D02 callable\");for(const key of [\"name\",\"length\"]){const d=f.getOwnProperty(key);check(d?.kind===\"data\"&&!d.writable&&!d.enumerable&&d.configurable,\"method descriptor\");if(d?.kind===\"data\")check(scalar(d.value)===(key===\"name\"?\"[Symbol.hasInstance]\":\"1\"),\"method metadata\");}expect(run('typeof Symbol;',r),{kind:\"string\",value:\"undefined\"},\"D04\");define(r,\"hasInstanceKey\",{kind:\"symbol\",value:wellKnownHasInstance});throws(run('\"use strict\";C[hasInstanceKey]=7;',r),\"TypeError\");check(run('C[hasInstanceKey]=7;',r).type===\"normal\"&&o.getOwnProperty(wellKnownHasInstance)===undefined,\"D03 sloppy\");}"
+  },
+  {
+    "path": "typescript/test/harness-construct.ts",
+    "line": 103,
+    "name": "constructorSlot",
+    "text": "for(const source of ['\"use strict\";new f();','function f(){return 7;}new C();']){const r=fresh();throws(run(source,r),\"ReferenceError\");if(!source.startsWith('\"'))check(object(own(r,\"f\")).constructorSlot!==null,\"original hoisting\");}"
+  },
+  {
+    "path": "typescript/test/harness-errors-a.ts",
+    "line": 3,
+    "name": "failure",
+    "text": "import { GuestObject, GuestError, UNDEFINED, normal, failure, sameValue, type Value, type ValueCompletion, type Completion, type ErrorName, type Builtin, type OperationContext } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/harness-errors-a.ts",
+    "line": 129,
+    "name": "failure",
+    "text": "const q = failure(\"Sentinel\", \"exact\", loc); q.value = obj(new GuestObject()); let gets = 0;"
+  },
+  {
+    "path": "typescript/test/harness-nonstrict.ts",
+    "line": 591,
+    "name": "createMutableBinding",
+    "text": "define(r,\"seed\",builtin(r,\"seed\",(_t,_a,c,_l): ValueCompletion=>{if(lexical){check(r.globalEnvironment.createMutableBinding(\"ghost\",loc).type===\"normal\",\"late lexical create\");check(r.globalEnvironment.initializeBinding(\"ghost\",number(1),c,loc).type===\"normal\",\"late lexical initialize\");}else property(r,r.globalObject,\"ghost\",{set:builtin(r,\"set\",(_t,_a,_c,_l): ValueCompletion=>{setters++;return q;}),configurable:true});return normal(number(7));}));"
+  },
+  {
+    "path": "typescript/test/in-operator.ts",
+    "line": 19,
+    "name": "failure",
+    "text": "failure,"
+  },
+  {
+    "path": "typescript/test/in-operator.ts",
+    "line": 459,
+    "name": "failure",
+    "text": "sentinel = failure(\"Sentinel\", \"original\", { line: 9, column: 7 });"
+  },
+  {
+    "path": "typescript/test/key-coercion.ts",
+    "line": 12,
+    "name": "toString",
+    "text": "import { toPropertyKey, toString, toNumber } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/key-coercion.ts",
+    "line": 12,
+    "name": "toNumber",
+    "text": "import { toPropertyKey, toString, toNumber } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/key-coercion.ts",
+    "line": 210,
+    "name": "toString",
+    "text": "check(toString(boundary, loc).type === \"throw\" && toNumber(boundary, loc).type === \"throw\" && payload(binding(second, \"trace\")) === \"\", \"direct converters stay primitive-only\");"
+  },
+  {
+    "path": "typescript/test/key-coercion.ts",
+    "line": 210,
+    "name": "toNumber",
+    "text": "check(toString(boundary, loc).type === \"throw\" && toNumber(boundary, loc).type === \"throw\" && payload(binding(second, \"trace\")) === \"\", \"direct converters stay primitive-only\");"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 15,
+    "name": "toNumber",
+    "text": "import { toNumber, toString, toIntegerOrInfinity, toLength, type NumberCompletion } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 15,
+    "name": "toString",
+    "text": "import { toNumber, toString, toIntegerOrInfinity, toLength, type NumberCompletion } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 15,
+    "name": "toIntegerOrInfinity",
+    "text": "import { toNumber, toString, toIntegerOrInfinity, toLength, type NumberCompletion } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 15,
+    "name": "toLength",
+    "text": "import { toNumber, toString, toIntegerOrInfinity, toLength, type NumberCompletion } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 16,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, failure, sameValue, type Builtin, type Completion, type Value, type ValueCompletion, type OperationContext } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 88,
+    "name": "failure",
+    "text": "const sentinel = failure(\"Sentinel\", \"length boundary\", loc);"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 314,
+    "name": "toNumber",
+    "text": "error(toNumber(value, loc), \"TypeError\");"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 315,
+    "name": "toString",
+    "text": "const stringResult = toString(value, loc);"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 317,
+    "name": "toIntegerOrInfinity",
+    "text": "error(toIntegerOrInfinity(value, loc), \"TypeError\");"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 318,
+    "name": "toLength",
+    "text": "error(toLength(value, loc), \"TypeError\");"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 339,
+    "name": "toNumber",
+    "text": "error(toNumber(forbiddenValue, loc), \"TypeError\");"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 340,
+    "name": "toString",
+    "text": "check(toString(forbiddenValue, loc).type === \"throw\", \"string zero-read boundary\");"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 341,
+    "name": "toIntegerOrInfinity",
+    "text": "error(toIntegerOrInfinity(forbiddenValue, loc), \"TypeError\");"
+  },
+  {
+    "path": "typescript/test/length-coercion.ts",
+    "line": 342,
+    "name": "toLength",
+    "text": "error(toLength(forbiddenValue, loc), \"TypeError\");"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 3,
+    "name": "thisNumberValue",
+    "text": "import { thisNumberValue } from \"../src/builtins/number.js\";"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 6,
+    "name": "toNumber",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 6,
+    "name": "toString",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 6,
+    "name": "toUint32",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 6,
+    "name": "toIntegerOrInfinity",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 6,
+    "name": "toLength",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 12,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, failure, sameValue, type Value, type ValueCompletion, type PropertyKey, type OperationContext } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 106,
+    "name": "thisNumberValue",
+    "text": "const extracted = thisNumberValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 131,
+    "name": "thisNumberValue",
+    "text": "const extracted = thisNumberValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 213,
+    "name": "toNumber",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 213,
+    "name": "toString",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 213,
+    "name": "toUint32",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 213,
+    "name": "toIntegerOrInfinity",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 213,
+    "name": "toLength",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 270,
+    "name": "failure",
+    "text": "const sentinel = failure(\"RangeError\", \"sentinel\", loc);"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 509,
+    "name": "failure",
+    "text": "const sentinel = failure(\"RangeError\", \"radix sentinel\", { line: 22, column: 3 });"
+  },
+  {
+    "path": "typescript/test/number-conversions.ts",
+    "line": 617,
+    "name": "failure",
+    "text": "const sentinel = failure(\"TypeError\", \"boundary sentinel\", loc);"
+  },
+  {
+    "path": "typescript/test/object-tostring.ts",
+    "line": 12,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, failure, normal, sameValue, type Callable, type PropertyKey, type Value, type ValueCompletion, type OperationContext } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/object-tostring.ts",
+    "line": 205,
+    "name": "failure",
+    "text": "const sentinel = failure(\"TagSentinel\", \"unchanged\", loc);"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 16,
+    "name": "toNumber",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 16,
+    "name": "toString",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 16,
+    "name": "toUint32",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 16,
+    "name": "toIntegerOrInfinity",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 16,
+    "name": "toLength",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 17,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, failure, normal, sameValue, type Completion, type Value, type ValueCompletion, type OperationContext } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 132,
+    "name": "failure",
+    "text": "const sentinel = failure(\"RangeError\", \"sentinel\", loc);"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 238,
+    "name": "toNumber",
+    "text": "for (const conversion of [toNumber(v, loc), toString(v, loc), toUint32(v, loc), toIntegerOrInfinity(v, loc), toLength(v, loc)]) {"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 238,
+    "name": "toString",
+    "text": "for (const conversion of [toNumber(v, loc), toString(v, loc), toUint32(v, loc), toIntegerOrInfinity(v, loc), toLength(v, loc)]) {"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 238,
+    "name": "toUint32",
+    "text": "for (const conversion of [toNumber(v, loc), toString(v, loc), toUint32(v, loc), toIntegerOrInfinity(v, loc), toLength(v, loc)]) {"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 238,
+    "name": "toIntegerOrInfinity",
+    "text": "for (const conversion of [toNumber(v, loc), toString(v, loc), toUint32(v, loc), toIntegerOrInfinity(v, loc), toLength(v, loc)]) {"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 238,
+    "name": "toLength",
+    "text": "for (const conversion of [toNumber(v, loc), toString(v, loc), toUint32(v, loc), toIntegerOrInfinity(v, loc), toLength(v, loc)]) {"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 293,
+    "name": "toNumber",
+    "text": "for (const conversion of [toNumber(value(box), loc), toString(value(box), loc)]) {"
+  },
+  {
+    "path": "typescript/test/object-valueof.ts",
+    "line": 293,
+    "name": "toString",
+    "text": "for (const conversion of [toNumber(value(box), loc), toString(value(box), loc)]) {"
+  },
+  {
+    "path": "typescript/test/operation-context.ts",
+    "line": 5,
+    "name": "failure",
+    "text": "import { Environment, GuestObject, UNDEFINED, failure, normal, type Builtin, type Completion, type OperationContext, type Value } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/operation-context.ts",
+    "line": 73,
+    "name": "failure",
+    "text": "const sentinel = failure(\"Sentinel\", \"original\", loc);"
+  },
+  {
+    "path": "typescript/test/operation-context.ts",
+    "line": 312,
+    "name": "failure",
+    "text": "const exactThrow = failure(\"Sentinel\", \"foreign\", loc);"
+  },
+  {
+    "path": "typescript/test/operator-coercion.ts",
+    "line": 8,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, failure, normal, type Builtin, type Completion, type Value, type ValueCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/operator-coercion.ts",
+    "line": 83,
+    "name": "failure",
+    "text": "const sentinel = failure(\"Sentinel\", \"operator\", { line: 71, column: 9 });"
+  },
+  {
+    "path": "typescript/test/primitive-conversion.ts",
+    "line": 10,
+    "name": "toNumber",
+    "text": "import { toNumber, toString, toPropertyKey } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/primitive-conversion.ts",
+    "line": 10,
+    "name": "toString",
+    "text": "import { toNumber, toString, toPropertyKey } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/primitive-conversion.ts",
+    "line": 12,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, failure, normal, type Builtin, type Completion, type OperationContext, type Value, type ValueCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/primitive-conversion.ts",
+    "line": 34,
+    "name": "failure",
+    "text": "const sentinel = failure(\"Sentinel\", \"exact\", { line: 88, column: 3 });"
+  },
+  {
+    "path": "typescript/test/primitive-conversion.ts",
+    "line": 285,
+    "name": "toNumber",
+    "text": "for (const result of [toNumber(boundary.expected, loc), toString(boundary.expected, loc)]) {"
+  },
+  {
+    "path": "typescript/test/primitive-conversion.ts",
+    "line": 285,
+    "name": "toString",
+    "text": "for (const result of [toNumber(boundary.expected, loc), toString(boundary.expected, loc)]) {"
+  },
+  {
+    "path": "typescript/test/primitive-conversion.ts",
+    "line": 339,
+    "name": "failure",
+    "text": "const foreignSentinel = failure(\"Sentinel\", \"foreign conversion\", loc);"
+  },
+  {
+    "path": "typescript/test/primitive-reads.ts",
+    "line": 8,
+    "name": "toNumber",
+    "text": "import { toNumber } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/primitive-reads.ts",
+    "line": 10,
+    "name": "failure",
+    "text": "GuestObject, Environment, UNDEFINED as U, normal, failure, sameValue, getValue, putValue,"
+  },
+  {
+    "path": "typescript/test/primitive-reads.ts",
+    "line": 32,
+    "name": "failure",
+    "text": "const Q: ThrowCompletion = failure(\"ReferenceError\", \"sentinel\", refLoc);"
+  },
+  {
+    "path": "typescript/test/primitive-reads.ts",
+    "line": 787,
+    "name": "toNumber",
+    "text": "const next = name === \"W17 ReadBeforeNumericFailure\" ? toNumber(read.value, opLoc) : Q;"
+  },
+  {
+    "path": "typescript/test/property-accessors.ts",
+    "line": 12,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, failure, sameValue, getValue, putValue, type Completion, type ValueCompletion, type ThrowCompletion, type OperationContext, type Value, type PropertyKey, type PropertyDescriptorUpdate, type InternalBooleanCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/property-accessors.ts",
+    "line": 78,
+    "name": "failure",
+    "text": "const abrupt = failure(\"TypeError\", \"sentinel\", loc);"
+  },
+  {
+    "path": "typescript/test/property-accessors.ts",
+    "line": 297,
+    "name": "createMutableBinding",
+    "text": "const local = new ScriptDeclarativeEnvironment({ kind: \"global\", record: global }); local.createMutableBinding(\"x\", loc);"
+  },
+  {
+    "path": "typescript/test/property-accessors.ts",
+    "line": 321,
+    "name": "failure",
+    "text": "const X = failure(\"TypeError\", \"conversion sentinel\", loc); trace = \"\";"
+  },
+  {
+    "path": "typescript/test/property-accessors.ts",
+    "line": 343,
+    "name": "failure",
+    "text": "const array = new GuestArray(); array.bootstrapDefine(\"length\", { value: n(2) }); const X = failure(\"TypeError\", \"constructor sentinel\", loc); target.trace = \"\";"
+  },
+  {
+    "path": "typescript/test/property-accessors.ts",
+    "line": 355,
+    "name": "failure",
+    "text": "const X = failure(\"TypeError\", \"tag sentinel\", loc); trace = \"\";"
+  },
+  {
+    "path": "typescript/test/property-accessors.ts",
+    "line": 363,
+    "name": "failure",
+    "text": "const target = new GuestObject(), receiver = n(3), X = failure(\"TypeError\", \"cleanup sentinel\", loc), Y = new Error(\"host sentinel\");"
+  },
+  {
+    "path": "typescript/test/property-assignment.ts",
+    "line": 14,
+    "name": "toNumber",
+    "text": "import { toNumber } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/property-assignment.ts",
+    "line": 16,
+    "name": "failure",
+    "text": "GuestObject, Environment, UNDEFINED as U, normal, failure, sameValue, getValue, putValue,"
+  },
+  {
+    "path": "typescript/test/property-assignment.ts",
+    "line": 35,
+    "name": "failure",
+    "text": "const Q: ThrowCompletion = failure(\"ReferenceError\", \"sentinel\", refLoc);"
+  },
+  {
+    "path": "typescript/test/property-assignment.ts",
+    "line": 1056,
+    "name": "toNumber",
+    "text": "const numeric = toNumber(read.value, opLoc);"
+  },
+  {
+    "path": "typescript/test/property-key-conversion.ts",
+    "line": 10,
+    "name": "toString",
+    "text": "import { toString, toPropertyKey, numberToString } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/property-key-conversion.ts",
+    "line": 98,
+    "name": "toString",
+    "text": "const string = toString(num(row.input), loc);"
+  },
+  {
+    "path": "typescript/test/property-key-conversion.ts",
+    "line": 115,
+    "name": "toString",
+    "text": "const string = toString(row.value, loc);"
+  },
+  {
+    "path": "typescript/test/property-key-conversion.ts",
+    "line": 299,
+    "name": "toString",
+    "text": "const directString = toString(keyValue, loc);"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 9,
+    "name": "failure",
+    "text": "import { GuestObject, normal, failure, truthy, UNDEFINED, sameValue, type Value, type ValueCompletion, type OperationContext } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 12,
+    "name": "toNumber",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 12,
+    "name": "toString",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 12,
+    "name": "toUint32",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 12,
+    "name": "toIntegerOrInfinity",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 12,
+    "name": "toLength",
+    "text": "import { toNumber, toString, toUint32, toIntegerOrInfinity, toLength } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 359,
+    "name": "toNumber",
+    "text": "for (const converted of [toNumber(value, at), toUint32(value, at), toIntegerOrInfinity(value, at), toLength(value, at), toString(value, at)]) {"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 359,
+    "name": "toUint32",
+    "text": "for (const converted of [toNumber(value, at), toUint32(value, at), toIntegerOrInfinity(value, at), toLength(value, at), toString(value, at)]) {"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 359,
+    "name": "toIntegerOrInfinity",
+    "text": "for (const converted of [toNumber(value, at), toUint32(value, at), toIntegerOrInfinity(value, at), toLength(value, at), toString(value, at)]) {"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 359,
+    "name": "toLength",
+    "text": "for (const converted of [toNumber(value, at), toUint32(value, at), toIntegerOrInfinity(value, at), toLength(value, at), toString(value, at)]) {"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 359,
+    "name": "toString",
+    "text": "for (const converted of [toNumber(value, at), toUint32(value, at), toIntegerOrInfinity(value, at), toLength(value, at), toString(value, at)]) {"
+  },
+  {
+    "path": "typescript/test/realms.ts",
+    "line": 407,
+    "name": "failure",
+    "text": "const boxSentinel = failure(\"Sentinel\", \"boxing guest throw\", at);"
+  },
+  {
+    "path": "typescript/test/script-environment.ts",
+    "line": 5,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, failure, resourceFailure, sameValue, type Value, type ValueCompletion, type InternalBooleanCompletion, type OperationContext, type PropertyKey, type ThrowCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/script-environment.ts",
+    "line": 29,
+    "name": "createMutableBinding",
+    "text": "value(local.createMutableBinding(\"x\", loc), UNDEFINED);"
+  },
+  {
+    "path": "typescript/test/script-environment.ts",
+    "line": 35,
+    "name": "createMutableBinding",
+    "text": "invariant(() => { local.createMutableBinding(\"x\", loc); }, \"binding already exists: x\");"
+  },
+  {
+    "path": "typescript/test/script-environment.ts",
+    "line": 44,
+    "name": "createMutableBinding",
+    "text": "child.createMutableBinding(\"x\", loc); error(getScriptBinding(capture(child, \"x\"), context), \"ReferenceError\");"
+  },
+  {
+    "path": "typescript/test/script-environment.ts",
+    "line": 73,
+    "name": "createMutableBinding",
+    "text": "define(\"late\", num(7)); child.createMutableBinding(\"late\", loc); child.initializeBinding(\"late\", num(0), context, loc);"
+  },
+  {
+    "path": "typescript/test/script-environment.ts",
+    "line": 81,
+    "name": "createMutableBinding",
+    "text": "define(\"live\", num(7)); globalRecord.createMutableBinding(\"live\", loc); error(getScriptBinding(live, context), \"ReferenceError\");"
+  },
+  {
+    "path": "typescript/test/script-environment.ts",
+    "line": 86,
+    "name": "failure",
+    "text": "abrupt: ThrowCompletion = failure(\"Sentinel\", \"original\", loc);"
+  },
+  {
+    "path": "typescript/test/script-environment.ts",
+    "line": 106,
+    "name": "failure",
+    "text": "for (const abrupt of [failure(\"Sentinel\", \"original\", loc), resource]) {"
+  },
+  {
+    "path": "typescript/test/script-environment.ts",
+    "line": 115,
+    "name": "createMutableBinding",
+    "text": "faultLocal.createMutableBinding(\"own\", loc); faultLocal.initializeBinding(\"own\", num(7), context, loc);"
+  },
+  {
+    "path": "typescript/test/script-environment.ts",
+    "line": 138,
+    "name": "failure",
+    "text": "for (const thrown of [failure(\"Sentinel\", \"original\", loc), resource]) {"
+  },
+  {
+    "path": "typescript/test/script-environment.ts",
+    "line": 144,
+    "name": "createMutableBinding",
+    "text": "const runtime = new ScriptDeclarativeEnvironment(global); runtime.createMutableBinding(input[0], loc); runtime.initializeBinding(input[0], num(0), context, loc);"
+  },
+  {
+    "path": "typescript/test/script-execution.ts",
+    "line": 5,
+    "name": "failure",
+    "text": "import { UNDEFINED, GuestObject, normal, failure, type Value, type ValueCompletion, type OperationContext, type ThrowCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/script-execution.ts",
+    "line": 719,
+    "name": "failure",
+    "text": "const original=failure(\"TypeError\",\"exact completion\",at);"
+  },
+  {
+    "path": "typescript/test/script-function-materialization.ts",
+    "line": 178,
+    "name": "toString",
+    "text": "const toString = A.functionPrototype.getOwnProperty(\"toString\");"
+  },
+  {
+    "path": "typescript/test/script-function-materialization.ts",
+    "line": 179,
+    "name": "toString",
+    "text": "if (toString === undefined || toString.kind !== \"data\" || toString.value.kind !== \"object\") throw new Error(\"toString\");"
+  },
+  {
+    "path": "typescript/test/script-function-materialization.ts",
+    "line": 179,
+    "name": "toString",
+    "text": "if (toString === undefined || toString.kind !== \"data\" || toString.value.kind !== \"object\") throw new Error(\"toString\");"
+  },
+  {
+    "path": "typescript/test/script-function-materialization.ts",
+    "line": 179,
+    "name": "toString",
+    "text": "if (toString === undefined || toString.kind !== \"data\" || toString.value.kind !== \"object\") throw new Error(\"toString\");"
+  },
+  {
+    "path": "typescript/test/script-function-materialization.ts",
+    "line": 180,
+    "name": "toString",
+    "text": "const builtin = toString.value.object.callable;"
+  },
+  {
+    "path": "typescript/test/script-function-setup.ts",
+    "line": 201,
+    "name": "createMutableBinding",
+    "text": "s1.createMutableBinding(\"captured\",loc); s1.initializeBinding(\"captured\",input,b.context,loc);"
+  },
+  {
+    "path": "typescript/test/script-function-setup.ts",
+    "line": 231,
+    "name": "createMutableBinding",
+    "text": "originalOuter.createMutableBinding(\"captured\",loc); originalOuter.initializeBinding(\"captured\",input,b.context,loc);"
+  },
+  {
+    "path": "typescript/test/script-function-setup.ts",
+    "line": 232,
+    "name": "createMutableBinding",
+    "text": "replacementOuter.createMutableBinding(\"captured\",loc); replacementOuter.initializeBinding(\"captured\",second,b.context,loc);"
+  },
+  {
+    "path": "typescript/test/script-global-declarations.ts",
+    "line": 6,
+    "name": "failure",
+    "text": "import { GuestObject, normal, failure, resourceFailure, sameValue, UNDEFINED, type Value, type ValueCompletion, type OperationContext, type InternalBooleanCompletion, type ThrowCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/script-global-declarations.ts",
+    "line": 51,
+    "name": "createMutableBinding",
+    "text": "override createMutableBinding(n: string, loc: Location): ValueCompletion { return this.visit(\"L+:\" + n) ? this.abrupt : super.createMutableBinding(n, loc); }"
+  },
+  {
+    "path": "typescript/test/script-global-declarations.ts",
+    "line": 51,
+    "name": "createMutableBinding",
+    "text": "override createMutableBinding(n: string, loc: Location): ValueCompletion { return this.visit(\"L+:\" + n) ? this.abrupt : super.createMutableBinding(n, loc); }"
+  },
+  {
+    "path": "typescript/test/script-global-declarations.ts",
+    "line": 176,
+    "name": "createMutableBinding",
+    "text": "const h = new Harness(); unused(h.env.createMutableBinding(\"x\",{line:1,column:1})); error(h.run(p),\"SyntaxError\",30); absent(h.env,\"fresh\"); absent(h.env,\"f\"); check(h.markers.length === 0,\"prechecks no callbacks\");"
+  },
+  {
+    "path": "typescript/test/script-global-declarations.ts",
+    "line": 258,
+    "name": "createMutableBinding",
+    "text": "unused(h.env.createMutableBinding(\"x\",{line:1,column:1})); error(h.run(p),\"SyntaxError\",19);"
+  },
+  {
+    "path": "typescript/test/script-realm-bootstrap.ts",
+    "line": 7,
+    "name": "failure",
+    "text": "import { Environment, GuestObject, UNDEFINED, normal, failure, sameValue, type Value, type Completion, type ValueCompletion, type OperationContext, type PropertyKey } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/script-realm-bootstrap.ts",
+    "line": 63,
+    "name": "constructorSlot",
+    "text": "check(hasInstanceFunction.getPrototypeOf()===a.functionPrototype && hasInstanceFunction.callable!==null && hasInstanceFunction.callable.realm===a && hasInstanceFunction.constructorSlot===null && hasInstanceFunction.getOwnProperty(\"prototype\")===undefined,\"hasInstance owner and slots\");"
+  },
+  {
+    "path": "typescript/test/script-realm-bootstrap.ts",
+    "line": 112,
+    "name": "createMutableBinding",
+    "text": "case \"B08\": { seed(a,name,first); const r=resolveStrictGlobalBinding(a.globalEnvironment,name,loc); if(r.type===\"throw\") throw new Error(\"resolve\"); value(a.globalEnvironment.createMutableBinding(name,loc),UNDEFINED); guestError(getStrictGlobalBinding(r.reference, context),\"ReferenceError\"); seed(a,name,first); guestError(a.readScriptGlobal(name, context,loc),\"ReferenceError\"); value(a.globalEnvironment.initializeBinding(name,next,context,loc),UNDEFINED); value(getStrictGlobalBinding(r.reference, context),next); desc(a.globalObject,name,first,true,true,true); guestError(b.readScriptGlobal(name, context,loc),\"ReferenceError\"); break; }"
+  },
+  {
+    "path": "typescript/test/script-realm-bootstrap.ts",
+    "line": 125,
+    "name": "failure",
+    "text": "const abrupt=failure(\"Sentinel\",\"original\",loc),sentinel=new Error(\"sentinel\");"
+  },
+  {
+    "path": "typescript/test/script-realm-bootstrap.ts",
+    "line": 166,
+    "name": "createMutableBinding",
+    "text": "value(g.createMutableBinding(name,loc),UNDEFINED); guestError(g.getBindingValue(name, context,loc),\"ReferenceError\"); guestError(g.createMutableBinding(name,loc),\"TypeError\"); value(g.initializeBinding(name,first,context,loc),UNDEFINED); error(()=>{g.initializeBinding(name,next,context,loc);},\"binding already initialized: \"+name); value(g.setMutableBinding(name,next,context,loc),UNDEFINED); value(g.getBindingValue(name, context,loc),next);"
+  },
+  {
+    "path": "typescript/test/script-realm-bootstrap.ts",
+    "line": 166,
+    "name": "createMutableBinding",
+    "text": "value(g.createMutableBinding(name,loc),UNDEFINED); guestError(g.getBindingValue(name, context,loc),\"ReferenceError\"); guestError(g.createMutableBinding(name,loc),\"TypeError\"); value(g.initializeBinding(name,first,context,loc),UNDEFINED); error(()=>{g.initializeBinding(name,next,context,loc);},\"binding already initialized: \"+name); value(g.setMutableBinding(name,next,context,loc),UNDEFINED); value(g.getBindingValue(name, context,loc),next);"
+  },
+  {
+    "path": "typescript/test/script-restricted-properties.ts",
+    "line": 5,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, failure, type Value, type ValueCompletion, type OperationContext, type ThrowCompletion } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/script-restricted-properties.ts",
+    "line": 29,
+    "name": "failure",
+    "text": "const sentinel: ThrowCompletion = { ...failure(\"TypeError\", \"recording projection sentinel\", loc), value: obj(a.createObject()) };"
+  },
+  {
+    "path": "typescript/test/structured-outcomes.ts",
+    "line": 14,
+    "name": "failure",
+    "text": "import { GuestObject, UNDEFINED, normal, failure, resourceFailure, type Binding, type Builtin, type Completion, type ThrowCompletion, type Value, type ValueCompletion, type PropertyKey } from \"../src/runtime.js\";"
+  },
+  {
+    "path": "typescript/test/structured-outcomes.ts",
+    "line": 15,
+    "name": "toNumber",
+    "text": "import { toNumber, toString } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/structured-outcomes.ts",
+    "line": 15,
+    "name": "toString",
+    "text": "import { toNumber, toString } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/structured-outcomes.ts",
+    "line": 227,
+    "name": "toNumber",
+    "text": "const number = toNumber(input, loc); const string = toString(input, loc);"
+  },
+  {
+    "path": "typescript/test/structured-outcomes.ts",
+    "line": 227,
+    "name": "toString",
+    "text": "const number = toNumber(input, loc); const string = toString(input, loc);"
+  },
+  {
+    "path": "typescript/test/symbol-conversions.ts",
+    "line": 3,
+    "name": "thisSymbolValue",
+    "text": "import { thisSymbolValue } from \"../src/builtins/symbol.js\";"
+  },
+  {
+    "path": "typescript/test/symbol-conversions.ts",
+    "line": 4,
+    "name": "toNumber",
+    "text": "import { toNumber, toString, toPropertyKey } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/symbol-conversions.ts",
+    "line": 4,
+    "name": "toString",
+    "text": "import { toNumber, toString, toPropertyKey } from \"../src/conversion.js\";"
+  },
+  {
+    "path": "typescript/test/symbol-conversions.ts",
+    "line": 110,
+    "name": "thisSymbolValue",
+    "text": "const extracted = thisSymbolValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/test/symbol-conversions.ts",
+    "line": 128,
+    "name": "thisSymbolValue",
+    "text": "const extracted = thisSymbolValue(receiver, loc);"
+  },
+  {
+    "path": "typescript/test/symbol-conversions.ts",
+    "line": 191,
+    "name": "toNumber",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/symbol-conversions.ts",
+    "line": 191,
+    "name": "toString",
+    "text": "for (const converted of [toNumber(boxed, loc), toString(boxed, loc)]) {"
+  },
+  {
+    "path": "typescript/test/typeof-void.ts",
+    "line": 17,
+    "name": "failure",
+    "text": "failure,"
+  },
+  {
+    "path": "typescript/test/typeof-void.ts",
+    "line": 284,
+    "name": "failure",
+    "text": "failure(\"ReferenceError\", \"poison\", { line: 9, column: 8 }),"
+  },
+  {
+    "path": "typescript/test/typeof-void.ts",
+    "line": 489,
+    "name": "failure",
+    "text": "const sentinel = failure(\"ReferenceError\", \"sentinel\", { line: 7, column: 9 });"
+  },
+  {
+    "path": "typescript/test/typeof-void.ts",
+    "line": 714,
+    "name": "failure",
+    "text": "const sentinel = failure(\"ReferenceError\", \"foreign sentinel\", { line: 9, column: 4 });"
+  }
+]

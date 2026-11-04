@@ -1,0 +1,818 @@
+{
+  "base": "c8bd4bb5b525bf061eef19141831f0ca79142d6f",
+  "status": "UNAPPLIED; REVIEW REQUIRED",
+  "files": [
+    {
+      "path": "typescript/test/array-like.ts",
+      "beforeSha256": "4b70f3441f893ae8f12becde279f488850573ad74f8b16788751f523fa437fd5",
+      "afterSha256": "9547609102e6462609f5e8b1389e9e9be1720e4aeba247ab3b6bc3031a560e49",
+      "replacements": [
+        {
+          "start": 6808,
+          "end": 6808,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 6860,
+          "end": 6860,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 7667,
+          "end": 7667,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 7706,
+          "end": 7706,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "beforeSha256": "8c5558de35d1248cef230f1170444fe3e5fe26675b6939c854829f814585fa9c",
+      "afterSha256": "5954621ef77a086cfc4c7a7c584268af100131d62ac32a4792c371fd19a5884f",
+      "replacements": [
+        {
+          "start": 36091,
+          "end": 36091,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 36138,
+          "end": 36138,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "beforeSha256": "3beae198323f45befa1b98c0ec4fe72d343b254be0427ad800311c7f5638e5d8",
+      "afterSha256": "0f53ec93d6b569346edede9093e338ccb6effb9ba30d46c9a734aa2252b54ec3",
+      "replacements": [
+        {
+          "start": 7463,
+          "end": 7463,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 7496,
+          "end": 7496,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 11450,
+          "end": 11450,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 12465,
+          "end": 12465,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 15125,
+          "end": 15125,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 15147,
+          "end": 15147,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 15169,
+          "end": 15169,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 15202,
+          "end": 15202,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 15224,
+          "end": 15224,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/conversion.ts",
+      "beforeSha256": "e64be233462da02fe4a9cf24835854b8192a251957557be854ca2405924d92fa",
+      "afterSha256": "bc401b2fed4d0fb940bffebe1c837aafb5c6f83bc556cae7fc1d9bde00a9c086",
+      "replacements": [
+        {
+          "start": 1308,
+          "end": 1308,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 1363,
+          "end": 1363,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 1909,
+          "end": 1909,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 6798,
+          "end": 6798,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 6841,
+          "end": 6841,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 7626,
+          "end": 7626,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 7654,
+          "end": 7654,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 7693,
+          "end": 7693,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 7721,
+          "end": 7721,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 8044,
+          "end": 8044,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/function-string-conversion.ts",
+      "beforeSha256": "1118f7b57241d9d47fd827f642c4208c6ee3847bcf2905e64087f241261e59df",
+      "afterSha256": "5fceaeeaa0560d76892ea0155ff673b0aa2e1a97a7f98aeb18541be799694aa0",
+      "replacements": [
+        {
+          "start": 24061,
+          "end": 24061,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 24079,
+          "end": 24079,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 24097,
+          "end": 24097,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/global-environment.ts",
+      "beforeSha256": "d6af4719865e799da22c86987a7affc31f8b29f472c730962db6aa9b156f1b65",
+      "afterSha256": "c729082a5147e09ff3f5ec289620467a4dcf3824591509219fed420949fe8f36",
+      "replacements": [
+        {
+          "start": 5770,
+          "end": 5770,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 8063,
+          "end": 8063,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 9720,
+          "end": 9720,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 14568,
+          "end": 14568,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 15615,
+          "end": 15615,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 16536,
+          "end": 16536,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 19945,
+          "end": 19945,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 21270,
+          "end": 21270,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 21326,
+          "end": 21326,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/harness-errors-a.ts",
+      "beforeSha256": "f226b1ad6440c5433f139c4b8107913f8ad1a9ece6a4c08bd3445c1362075c46",
+      "afterSha256": "1bf598b42321042a6581213b681de7e67902a50fc762362bb83c4764047e8a76",
+      "replacements": [
+        {
+          "start": 4428,
+          "end": 4574,
+          "old": "check(p !== q && !protos.includes(p) && !(p instanceof GuestError) && !(q instanceof GuestError), \"distinct ordinary prototypes\"); protos.push(p);",
+          "new": "check(p !== q && !protos.includes(p) && !(p instanceof GuestError) && !(q instanceof GuestError), \"distinct ordinary prototypes\"); protos.push(p);\n        check(a.getErrorConstructor(name) !== b.getErrorConstructor(name), \"distinct Realm constructors\");",
+          "reason": "A02 retains every original identity and prototype assertion and adds cross-Realm constructor separation."
+        },
+        {
+          "start": 5276,
+          "end": 5335,
+          "old": "check(keysEqual(p, [\"name\", \"message\"]), \"prototype keys\");",
+          "new": "check(keysEqual(p, name === \"Error\" ? [\"name\", \"message\", \"constructor\", \"toString\"] : [\"name\", \"message\", \"constructor\"]), \"complete prototype keys\");",
+          "reason": "A03 exact keys strengthen to completed B graph; retain existing name/message descriptor checks."
+        },
+        {
+          "start": 5707,
+          "end": 5925,
+          "old": "check(p.getOwnProperty(\"constructor\") === undefined && p.getOwnProperty(\"toString\") === undefined, \"A graph incomplete internally\");\n        check(r.globalObject.getOwnProperty(name) === undefined, \"no Error globals\");",
+          "new": "const ctor = r.getErrorConstructor(name), link = p.getOwnProperty(\"constructor\");\n        check(link !== undefined && link.kind === \"data\" && link.value.kind === \"object\" && link.value.object === ctor && link.writable && !link.enumerable && link.configurable, \"prototype constructor identity/flags\");\n        check(keysEqual(ctor, [\"name\", \"length\", \"prototype\"]), \"constructor keys\");\n        const cp = ctor.getOwnProperty(\"prototype\"), cn = ctor.getOwnProperty(\"name\"), cl = ctor.getOwnProperty(\"length\");\n        check(cp !== undefined && cp.kind === \"data\" && cp.value.kind === \"object\" && cp.value.object === p && !cp.writable && !cp.enumerable && !cp.configurable, \"constructor prototype identity/flags\");\n        check(cn !== undefined && cn.kind === \"data\" && sameValue(cn.value, string(name)) && !cn.writable && !cn.enumerable && cn.configurable, \"constructor name\");\n        check(cl !== undefined && cl.kind === \"data\" && sameValue(cl.value, { kind: \"number\", value: 1 }) && !cl.writable && !cl.enumerable && cl.configurable, \"constructor length\");\n        check(ctor.getPrototypeOf() === (name === \"Error\" ? r.functionPrototype : r.getErrorConstructor(\"Error\")) && ctor.callable !== null && ctor.callable.realm === r && ctor.constructorSlot !== null, \"constructor graph/call/construct\");\n        const format = p.getOwnProperty(\"toString\");\n        if (name === \"Error\") {\n            check(format !== undefined && format.kind === \"data\" && format.value.kind === \"object\" && format.writable && !format.enumerable && format.configurable, \"Error toString descriptor\");\n            if (format === undefined || format.kind !== \"data\" || format.value.kind !== \"object\") throw new Error(\"format object\");\n            const method = format.value.object, mn = method.getOwnProperty(\"name\"), ml = method.getOwnProperty(\"length\");\n            check(keysEqual(method, [\"name\", \"length\"]) && method.getPrototypeOf() === r.functionPrototype && method.callable !== null && method.callable.realm === r && method.constructorSlot === null, \"format metadata/owner/nonconstructor\");\n            check(mn !== undefined && mn.kind === \"data\" && sameValue(mn.value, string(\"toString\")) && !mn.writable && !mn.enumerable && mn.configurable, \"format name\");\n            check(ml !== undefined && ml.kind === \"data\" && sameValue(ml.value, { kind: \"number\", value: 0 }) && !ml.writable && !ml.enumerable && ml.configurable, \"format length\");\n        } else check(format === undefined, \"NativeError inherits formatting\");\n        const global = r.globalObject.getOwnProperty(name);\n        check(global !== undefined && global.kind === \"data\" && global.value.kind === \"object\" && global.value.object === ctor && global.writable && !global.enumerable && global.configurable, \"Error global identity/flags\");",
+          "reason": "Replace absence with exact identity, graph, descriptors, metadata and nonconstructible formatting. Proposal requires actual and independent review."
+        },
+        {
+          "start": 5936,
+          "end": 6044,
+          "old": "check(keysEqual(r.globalObject, [\"undefined\", \"NaN\", \"Infinity\", \"console\", \"Number\"]), \"original globals\");",
+          "new": "check(keysEqual(r.globalObject, [\"undefined\", \"NaN\", \"Infinity\", \"console\", \"Number\", \"Error\", \"TypeError\", \"ReferenceError\", \"RangeError\", \"SyntaxError\"]), \"exact B globals\");",
+          "reason": "Exact append-only Script global keys; legacy exact-five check remains unchanged in A09."
+        },
+        {
+          "start": 14003,
+          "end": 14154,
+          "old": "const c = run(\"missing;\", r); check(c.type === \"throw\" && c.value.kind === \"string\" && c.diagnostic.name === \"ReferenceError\", \"no failure migration\");",
+          "new": "const session = createScriptSession(), c = run(\"missing;\", r, session, \"A09-B\");\n    if (c.type !== \"throw\" || c.value.kind !== \"object\") throw new Error(\"genuine missing ReferenceError\");\n    const e = c.value.object, abrupt = session.inspect().lastAbrupt;\n    check(e instanceof GuestError && e.getPrototypeOf() === r.getErrorPrototype(\"ReferenceError\") && keysEqual(e, [\"message\"]), \"originating error brand/prototype/keys\");\n    descriptor(e, \"message\", \"missing is not defined\");\n    check(c.diagnostic.name === \"ReferenceError\" && c.diagnostic.message === \"missing is not defined\" && c.diagnostic.loc.line === 1 && c.diagnostic.loc.column === 1 && c.origin.kind === \"engine-diagnostic\", \"unchanged diagnostic/location/origin\");\n    check(session.inspect().steps === 2 && abrupt !== null && abrupt.realm === r && abrupt.unitId === \"A09-B\" && abrupt.loc.line === 1 && abrupt.loc.column === 1, \"zero allocation ticks/provenance\");\n    const next = run(\"missing;\", r);\n    check(next.type === \"throw\" && next.value.kind === \"object\" && next.value.object !== e && next.value.object instanceof GuestError && next.value.object.getPrototypeOf() === r.getErrorPrototype(\"ReferenceError\"), \"fresh engine failures\");\n    const synthetic = failure(\"ReferenceError\", \"missing is not defined\", loc);\n    check(synthetic.value.kind === \"string\" && synthetic.value.value === \"ReferenceError: missing is not defined\", \"synthetic diagnostic compatibility\");",
+          "reason": "A09 now proves genuine originating ReferenceError while retaining exact diagnostic, zero allocation ticks, freshness, source, cleanup and synthetic compatibility; all legacy host misuse checks untouched."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "beforeSha256": "66518873f555f75bb92363c5003ae668b0dd61dbf7ceb31b4dfb3fb041ce6757",
+      "afterSha256": "143fa9336a5234522a1f8b9b8aed1ee9a43b3bdb05efcbec3568e35d6679eb87",
+      "replacements": [
+        {
+          "start": 35732,
+          "end": 35732,
+          "old": "",
+          "new": ", c.realm",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/key-coercion.ts",
+      "beforeSha256": "13d46cc996168ebae92d1ffed6f0984dbc7aa66f5349234fcda835a69eb034f8",
+      "afterSha256": "9b45692430e9855366771195749679addedf558e4cb84bf69c88b1bd488e23b0",
+      "replacements": [
+        {
+          "start": 15040,
+          "end": 15040,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 15084,
+          "end": 15084,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/length-coercion.ts",
+      "beforeSha256": "81fad6627c6b6de660c111d492aee7ffe59c79ce19784e2f932834a165eb05ea",
+      "afterSha256": "45b2044cb043b905f8b8cf16d66815c73de3fc0e7f78da162dee58df8cb794d8",
+      "replacements": [
+        {
+          "start": 17105,
+          "end": 17105,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 17162,
+          "end": 17162,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 17265,
+          "end": 17265,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 17307,
+          "end": 17307,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 18517,
+          "end": 18517,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 18568,
+          "end": 18568,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 18663,
+          "end": 18663,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 18714,
+          "end": 18714,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/number-conversions.ts",
+      "beforeSha256": "34dd45506e090717887362f7015700ed7108f62b7ab36a59957614fff02606ef",
+      "afterSha256": "1d24745e7b949c3244c29cb2056a8cea96348337c59f2600ea379aa55c2a015b",
+      "replacements": [
+        {
+          "start": 7009,
+          "end": 7009,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 9143,
+          "end": 9143,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 13690,
+          "end": 13690,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 13712,
+          "end": 13712,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 13734,
+          "end": 13734,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 13767,
+          "end": 13767,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 13789,
+          "end": 13789,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "beforeSha256": "9f06b35c24fdce2f0c266a4f644d02f31f516856b8ed47afcd914535809c8151",
+      "afterSha256": "47493f8dcd9a1350d176fd1741edb4ff4a8e58f03b7ad8e50340e80f4b4fec49",
+      "replacements": [
+        {
+          "start": 15819,
+          "end": 15819,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 15837,
+          "end": 15837,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 15855,
+          "end": 15855,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 15884,
+          "end": 15884,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 15902,
+          "end": 15902,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 20292,
+          "end": 20292,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 20319,
+          "end": 20319,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/primitive-conversion.ts",
+      "beforeSha256": "1953b4f6a47b569730aac0da07349cfbfe6eff6e42d7c0ce3ab38da17a347532",
+      "afterSha256": "29ee71edf5b08e374049aed28e5784f3eb9a5afc42c4d43174474b775f639620",
+      "replacements": [
+        {
+          "start": 17271,
+          "end": 17271,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 17305,
+          "end": 17305,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/primitive-reads.ts",
+      "beforeSha256": "41e61890d76a667d53a2ba57b1e1a3c5f5ebbf1634ba7a515a695e232e4f5afa",
+      "afterSha256": "e880a87bc483057c89ad91b4c8cefc57d176f16d0115e329c66177b326c0917f",
+      "replacements": [
+        {
+          "start": 37161,
+          "end": 37161,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/property-assignment.ts",
+      "beforeSha256": "624f076fbe47d75cda4db7c8f69def789bfd48e18a6df744170c08aabe627c9c",
+      "afterSha256": "eb01886521e8fce22ea8e8db3f733acd835328d317e61980f559b6bc7a126652",
+      "replacements": [
+        {
+          "start": 57179,
+          "end": 57179,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/property-key-conversion.ts",
+      "beforeSha256": "c0eb2d4db9b4dcda6b5459f4d14cded6bc890ccd9268f7e22ef16d17060a6102",
+      "afterSha256": "575acb0c76974244716a0f79aa58a6c6424dbb1970ad3f8952a6dff8494f5913",
+      "replacements": [
+        {
+          "start": 6480,
+          "end": 6480,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 7707,
+          "end": 7707,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 19427,
+          "end": 19427,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "beforeSha256": "bf3144bdc3e0d8701f2504a44fa41e4f30fda723e51620dbfc99b0dabe240ef6",
+      "afterSha256": "8b71616e060633171dcc1b8a8c12840f528ee1d0cbbb6d43661c2c4cc2a69dc5",
+      "replacements": [
+        {
+          "start": 30300,
+          "end": 30300,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 30321,
+          "end": 30321,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 30353,
+          "end": 30353,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 30374,
+          "end": 30374,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 30395,
+          "end": 30395,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-environment.ts",
+      "beforeSha256": "d3f98c167a02a643c25ff8213f3a0c8da746969b71e5abb48e1e3373c854dfdc",
+      "afterSha256": "390a848668d370fc4148230754f9ca442b45b6278482651b15d318b1f2fa5c44",
+      "replacements": [
+        {
+          "start": 6885,
+          "end": 6885,
+          "old": "",
+          "new": ", context.realm",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "beforeSha256": "550a53795b17342342ecb9c075347a1403ac164fc3659803049851e385d4c1c4",
+      "afterSha256": "305e24bf1276c45d52d9b22afe13337ad11bb2dbb111fc0833656dbc62673fe5",
+      "replacements": [
+        {
+          "start": 3782,
+          "end": 3939,
+          "old": "override createMutableBinding(n: string, loc: Location): ValueCompletion { return this.visit(\"L+:\" + n) ? this.abrupt : super.createMutableBinding(n, loc); }",
+          "new": "override createMutableBinding(n: string, loc: Location, realm: Realm | null): ValueCompletion { return this.visit(\"L+:\" + n) ? this.abrupt : super.createMutableBinding(n, loc, realm); }",
+          "reason": "Forward mandatory Realm unchanged; visit and exact abrupt remain in same order."
+        },
+        {
+          "start": 11907,
+          "end": 11907,
+          "old": "",
+          "new": ", h.context.realm",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 17281,
+          "end": 17281,
+          "old": "",
+          "new": ", h.context.realm",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "beforeSha256": "54f3f073b0d1bc90d15374cba969cf9a9b6b824f82c9fd1303aa237161d6bea4",
+      "afterSha256": "ce15be65eb72ee54f149c216844514654ad16566e378118894a54eec42ee8ea6",
+      "replacements": [
+        {
+          "start": 8644,
+          "end": 8708,
+          "old": "const globals=[\"undefined\",\"NaN\",\"Infinity\",\"console\",\"Number\"];",
+          "new": "const legacyGlobals=[\"undefined\",\"NaN\",\"Infinity\",\"console\",\"Number\"];\n    const globals=[...legacyGlobals,\"Error\",\"TypeError\",\"ReferenceError\",\"RangeError\",\"SyntaxError\"];",
+          "reason": "Separate original exact legacy inventory from ten Script globals; B02 descriptor loop remains intact."
+        },
+        {
+          "start": 8968,
+          "end": 9013,
+          "old": "check(key===globals[i] && binding.initialized",
+          "new": "check(key===legacyGlobals[i] && binding.initialized",
+          "reason": "B01 continues asserting original five legacy globals and count."
+        },
+        {
+          "start": 14019,
+          "end": 14019,
+          "old": "",
+          "new": ", context.realm",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 21850,
+          "end": 21850,
+          "old": "",
+          "new": ", context.realm",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 21973,
+          "end": 21973,
+          "old": "",
+          "new": ", context.realm",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/structured-outcomes.ts",
+      "beforeSha256": "2ebb518c6d71ccc2fec7763d0c770b7312a84de192b8185c8f127c2f2e7526a7",
+      "afterSha256": "e697ce3baef4875746a9bb46ab9276d23549da4d709179e99e1b6e9c32ba8f8a",
+      "replacements": [
+        {
+          "start": 18070,
+          "end": 18070,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 18107,
+          "end": 18107,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/symbol-conversions.ts",
+      "beforeSha256": "cc0b335114d4d98dc4b5ac283172669459c70e0a7adc8140e7ea146fc2587120",
+      "afterSha256": "1223b7c0be4dcbb3d76ba57f2c6851dc3df4490bc374e85f8a87df29a2c43b60",
+      "replacements": [
+        {
+          "start": 6771,
+          "end": 6771,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 8060,
+          "end": 8060,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 11794,
+          "end": 11794,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        },
+        {
+          "start": 11816,
+          "end": 11816,
+          "old": "",
+          "new": ", null",
+          "reason": "Mandatory trailing Realm; preserve existing null compatibility or running Script context."
+        }
+      ]
+    }
+  ]
+}

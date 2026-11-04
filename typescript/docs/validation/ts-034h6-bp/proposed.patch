@@ -1,0 +1,562 @@
+--- a/typescript/test/array-like.ts
++++ b/typescript/test/array-like.ts
+@@ -118,8 +118,8 @@
+ const ordinary = new GuestObject();
+ numeric(lengthOfArrayLike(ordinary, active.context, loc), 0);
+ for (const row of rows) {
+-    numeric(toIntegerOrInfinity(row.input, loc), row.integer);
+-    numeric(toLength(row.input, loc), row.length);
++    numeric(toIntegerOrInfinity(row.input, loc, null), row.integer);
++    numeric(toLength(row.input, loc, null), row.length);
+     ordinary.bootstrapDefine("length", { value: row.input, writable: true, enumerable: true, configurable: true });
+     numeric(lengthOfArrayLike(ordinary, active.context, loc), row.length);
+ }
+@@ -131,8 +131,8 @@
+ numeric(lengthOfArrayLike(inherited, active.context, loc), 0);
+ boolean(inherited.internalDelete("length"), true);
+ numeric(lengthOfArrayLike(inherited, active.context, loc), 8);
+-unsupported(toIntegerOrInfinity(o(parent), loc));
+-unsupported(toLength(o(parent), loc));
++unsupported(toIntegerOrInfinity(o(parent), loc, null));
++unsupported(toLength(o(parent), loc, null));
+ ordinary.bootstrapDefine("length", { value: o(parent), writable: true, enumerable: true, configurable: true });
+ const missing = lengthOfArrayLike(ordinary, active.context, loc);
+ check(missing.type === "throw" && missing.diagnostic.message === "cannot convert object to primitive" && missing.diagnostic.loc === loc, "no-method length failure");
+--- a/typescript/test/array-string-conversion.ts
++++ b/typescript/test/array-string-conversion.ts
+@@ -652,6 +652,6 @@
+ expect(toPrimitive(obj(controls.createNumberObject(2)), "string", controlEvaluator.context, loc), str("2"), "C8 Number string");
+ for (const object of [new GuestObject(), ordinary]) error(toPrimitive(obj(object), "string", controlEvaluator.context, loc), "cannot convert object to primitive");
+ for (const object of [controls.createArray(), controls.createObject(), controls.createNumberObject(2)]) {
+-    check(toString(obj(object), loc).type === "throw" && toNumber(obj(object), loc).type === "throw", "C9 primitive-only converters");
++    check(toString(obj(object), loc, null).type === "throw" && toNumber(obj(object), loc, null).type === "throw", "C9 primitive-only converters");
+ }
+ console.log("array-string-conversion ok");
+--- a/typescript/test/boolean-string-conversions.ts
++++ b/typescript/test/boolean-string-conversions.ts
+@@ -108,7 +108,7 @@
+         if (family.label === "boolean") invalid.push(str("false"), obj(a.createStringObject("")), obj(a.stringPrototype));
+         else invalid.push({ kind: "boolean", value: false }, obj(a.createBooleanObject(false)), obj(a.booleanPrototype));
+         for (const receiver of invalid) {
+-            const extracted = family.label === "boolean" ? thisBooleanValue(receiver, loc) : thisStringValue(receiver, loc);
++            const extracted = family.label === "boolean" ? thisBooleanValue(receiver, loc, null) : thisStringValue(receiver, loc, null);
+             if (extracted.type !== "throw") throw new Error("M helper accepted invalid receiver");
+             error(extracted, "receiver is not a " + family.label);
+             for (const method of methods) error(evaluator.call(method, receiver, [ignored], loc), "receiver is not a " + family.label);
+@@ -165,7 +165,7 @@
+         put(foreign, "booleanData", { kind: "boolean", value: !payload });
+         const receivers: Value[] = [{ kind: "boolean", value: payload }, obj(a.createBooleanObject(payload)), obj(foreign), obj(observed)];
+         for (const receiver of receivers) {
+-            const extracted = thisBooleanValue(receiver, loc);
++            const extracted = thisBooleanValue(receiver, loc, null);
+             check(extracted.type === "normal" && extracted.value === payload, "M2 Boolean helper");
+             expect(evaluator.call(b.booleanPrototype.get("valueOf", evaluator.context, loc), receiver, [ignored], loc), { kind: "boolean", value: payload }, "M2 Boolean payload");
+             expect(evaluator.call(b.booleanPrototype.get("toString", evaluator.context, loc), receiver, [ignored], loc), str(payload ? "true" : "false"), "M2 Boolean text");
+@@ -178,7 +178,7 @@
+         foreign.setPrototypeOf(null);
+         put(foreign, "stringData", str("fake"));
+         for (const receiver of [str(payload), obj(a.createStringObject(payload)), obj(foreign), obj(observed)]) {
+-            const extracted = thisStringValue(receiver, loc);
++            const extracted = thisStringValue(receiver, loc, null);
+             check(extracted.type === "normal" && extracted.value === payload, "M2 String helper");
+             for (const name of ["toString", "valueOf"]) expect(evaluator.call(b.stringPrototype.get(name, evaluator.context, loc), receiver, [ignored], loc), str(payload), "M2 UTF-16 payload");
+         }
+@@ -226,7 +226,7 @@
+         keys(box.reads, [wellKnownToPrimitive, "valueOf", wellKnownToPrimitive, "valueOf"]);
+         check(evaluator.steps === beforeLength + 4, "M6 two uncached conversions");
+         box.reads = [];
+-        for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {
++        for (const converted of [toNumber(boxed, loc, null), toString(boxed, loc, null), toUint32(boxed, loc, null), toIntegerOrInfinity(boxed, loc, null), toLength(boxed, loc, null)]) {
+             if (converted.type !== "throw") throw new Error("M direct converter accepted box");
+             error(converted, "object-to-primitive conversion unsupported");
+         }
+--- a/typescript/test/conversion.ts
++++ b/typescript/test/conversion.ts
+@@ -20,8 +20,8 @@
+     if (actual.type === "normal") numeric(actual.value, expected, label);
+ }
+ function primitive(value: Value, expected: number, uint: number, label: string): void {
+-    completion(toNumber(value, loc), expected, label);
+-    completion(toUint32(value, loc), uint, label + " uint32");
++    completion(toNumber(value, loc, null), expected, label);
++    completion(toUint32(value, loc, null), uint, label + " uint32");
+ }
+ primitive(UNDEFINED, NaN, 0, "undefined");
+ primitive({ kind: "null" }, 0, 0, "null");
+@@ -31,7 +31,7 @@
+ 
+ function string(value: string, expected: number): void {
+     numeric(stringToNumber(value), expected, "string " + JSON.stringify(value));
+-    completion(toNumber({ kind: "string", value }, loc), expected, "string wrapper " + JSON.stringify(value));
++    completion(toNumber({ kind: "string", value }, loc, null), expected, "string wrapper " + JSON.stringify(value));
+ }
+ const tokens = ["", "-0", "+0", "-0.0e+9", "Infinity", "+Infinity", "-Infinity", "01", ".5", "5.", "1e+3", "0x1f", "0X1F", "0O17", "0o17", "0B101", "0b101", "+.5", "-.5", "5.e2", "0008", "1E-2"];
+ const expected = [0, -0, 0, -0, Infinity, Infinity, -Infinity, 1, .5, 5, 1000, 31, 31, 15, 15, 5, 5, .5, -.5, 500, 8, .01];
+@@ -111,7 +111,7 @@
+ const hook = new GuestObject(null, false, { kind: "builtin", initialName: null, realm: fixtureRealm, invoke: (_receiver, _args, _context, _loc): Completion => { throw new Error("must not call conversion hook"); } });
+ object.bootstrapDefine("valueOf", { value: { kind: "object", object: hook }, writable: true, enumerable: true, configurable: true });
+ object.bootstrapDefine("toString", { value: { kind: "object", object: hook }, writable: true, enumerable: true, configurable: true });
+-for (const result of [toNumber({ kind: "object", object }, loc), toUint32({ kind: "object", object }, loc)]) {
++for (const result of [toNumber({ kind: "object", object }, loc, null), toUint32({ kind: "object", object }, loc, null)]) {
+     check(result.type === "throw", "unsupported object throws");
+     if (result.type === "throw") {
+         check(result.diagnostic.phase === "runtime" && result.diagnostic.name === "TypeError", "object diagnostic");
+@@ -123,11 +123,11 @@
+ 
+ const symbolValue: Value = { kind: "symbol", value: new GuestSymbol("x") };
+ check(truthy(symbolValue) && display(symbolValue) === "Symbol(x)", "A14/A15/A20 diagnostic versus conversion");
+-for (const converted of [toNumber(symbolValue, loc), toUint32(symbolValue, loc), toIntegerOrInfinity(symbolValue, loc), toLength(symbolValue, loc)]) {
++for (const converted of [toNumber(symbolValue, loc, null), toUint32(symbolValue, loc, null), toIntegerOrInfinity(symbolValue, loc, null), toLength(symbolValue, loc, null)]) {
+     check(converted.type === "throw" && converted.diagnostic.phase === "runtime" && converted.diagnostic.name === "TypeError"
+         && converted.diagnostic.message === "cannot convert symbol to number" && converted.diagnostic.loc === loc, "A14 exact numeric error");
+ }
+-const symbolString = toString(symbolValue, loc);
++const symbolString = toString(symbolValue, loc, null);
+ check(symbolString.type === "throw" && symbolString.diagnostic.name === "TypeError" && symbolString.diagnostic.message === "cannot convert symbol to string" && symbolString.diagnostic.loc === loc, "A14 exact string error");
+ 
+ console.log("primitive conversion passed");
+--- a/typescript/test/function-string-conversion.ts
++++ b/typescript/test/function-string-conversion.ts
+@@ -471,7 +471,7 @@
+ expect(active.call(a.arrayPrototype.get("join", explicitTag.context, loc), obj(elementArray), [], loc), str("function() {}"), "C5 saved join");
+ // C7-C13: mutation is observed by ordinary conversion, not saved stringification.
+ put(object(f), wellKnownToPrimitive, throwing);
+-for (const completion of [toNumber(f, loc), toString(f, loc), toLength(f, loc)]) {
++for (const completion of [toNumber(f, loc, null), toString(f, loc, null), toLength(f, loc, null)]) {
+     check(completion.type === "throw" && completion.diagnostic.name === "TypeError"
+         && completion.diagnostic.message === "object-to-primitive conversion unsupported", "C7 primitive-only boundary");
+ }
+--- a/typescript/test/global-environment.ts
++++ b/typescript/test/global-environment.ts
+@@ -96,7 +96,7 @@
+     switch (id) {
+         case "H01": {
+             bool(env.hasBinding(name, loc), false);
+-            unused(env.createMutableBinding(name, loc));
++            unused(env.createMutableBinding(name, loc, null));
+             bool(env.hasBinding(name, loc), true);
+             check(env.hasLexicalDeclaration(name), "lexical presence");
+             const ref = capture(env, name, loc);
+@@ -135,7 +135,7 @@
+             break;
+         }
+         case "H04": {
+-            unused(env.createMutableBinding(name, loc));
++            unused(env.createMutableBinding(name, loc, null));
+             unused(env.initializeBinding(name, input, context, loc));
+             check(env.hasLexicalDeclaration(name) && !env.hasLexicalDeclaration(name + "other"), "prior lexical conflict inspection");
+             // CanDeclare queries the object only; the future caller must check
+@@ -163,7 +163,7 @@
+         case "H06": {
+             define(object, name, input);
+             bool(env.hasRestrictedGlobalProperty(name), false);
+-            unused(env.createMutableBinding(name, loc));
++            unused(env.createMutableBinding(name, loc, null));
+             error(env.getBindingValue(name, context, loc), "ReferenceError", loc);
+             unused(env.initializeBinding(name, number(2), context, loc));
+             value(env.getBindingValue(name, context, loc), number(2));
+@@ -243,7 +243,7 @@
+             error(getStrictGlobalBinding(ref, context), "ReferenceError", loc);
+             descriptor(object, name, number(7), true, true, true);
+             const lexical = capture(env, "laterLexical", loc);
+-            unused(env.createMutableBinding("laterLexical", loc));
++            unused(env.createMutableBinding("laterLexical", loc, null));
+             unused(env.initializeBinding("laterLexical", input, context, loc));
+             error(putStrictGlobalBinding(lexical, number(8), context), "ReferenceError", loc);
+             value(env.getBindingValue("laterLexical", context, loc), number(7));
+@@ -261,7 +261,7 @@
+             error(putStrictGlobalBinding(ref, number(8), context), "ReferenceError", loc);
+             define(object, name, number(9));
+             value(getStrictGlobalBinding(ref, context), number(9));
+-            unused(env.createMutableBinding(name, loc));
++            unused(env.createMutableBinding(name, loc, null));
+             error(getStrictGlobalBinding(ref, context), "ReferenceError", loc);
+             unused(env.initializeBinding(name, number(2), context, loc));
+             unused(putStrictGlobalBinding(ref, number(3), context));
+@@ -276,7 +276,7 @@
+             value(normal(env.getThisBinding()), { kind: "object", object });
+             value(normal(envB.getThisBinding()), { kind: "object", object: alternateThis });
+             check(env.withBaseObject() === UNDEFINED && envB.withBaseObject() === UNDEFINED, "identifier receiver");
+-            unused(env.createMutableBinding(name, loc));
++            unused(env.createMutableBinding(name, loc, null));
+             unused(env.initializeBinding(name, input, context, loc));
+             bool(envB.hasBinding(name, loc), false);
+             unused(envB.createGlobalVarBinding(name, contextB, loc));
+@@ -326,7 +326,7 @@
+             error(e.createGlobalFunctionBinding(name, input, context, loc), "TypeError", loc);
+             check(obj.trace === "D", "failed definition stops Set");
+             obj.mode = "H"; obj.trace = "";
+-            unused(e.createMutableBinding(name, loc));
++            unused(e.createMutableBinding(name, loc, null));
+             error(e.getBindingValue(name, context, loc), "ReferenceError", loc);
+             error(e.setMutableBinding(name, input, context, loc), "ReferenceError", loc);
+             bool(e.hasBinding(name, loc), true);
+@@ -351,8 +351,8 @@
+             break;
+         }
+         case "H15": {
+-            unused(env.createMutableBinding(name, loc));
+-            error(env.createMutableBinding(name, loc), "TypeError", loc);
++            unused(env.createMutableBinding(name, loc, null));
++            error(env.createMutableBinding(name, loc, null), "TypeError", loc);
+             error(env.getBindingValue(name, context, loc), "ReferenceError", loc);
+             unused(env.initializeBinding(name, input, context, loc));
+             let caught = false;
+--- a/typescript/test/harness-errors-a.ts
++++ b/typescript/test/harness-errors-a.ts
+@@ -74,6 +74,7 @@
+     for (const name of names) {
+         const p = a.getErrorPrototype(name), q = b.getErrorPrototype(name);
+         check(p !== q && !protos.includes(p) && !(p instanceof GuestError) && !(q instanceof GuestError), "distinct ordinary prototypes"); protos.push(p);
++        check(a.getErrorConstructor(name) !== b.getErrorConstructor(name), "distinct Realm constructors");
+         for (const r of [a, b]) {
+             const expected = name === "Error" ? r.objectPrototype : r.getErrorPrototype("Error");
+             check(r.getErrorPrototype(name).getPrototypeOf() === expected && r.objectPrototype.getPrototypeOf() === null, "graph");
+@@ -87,15 +88,32 @@
+     const r = fresh();
+     for (const name of names) {
+         const p = r.getErrorPrototype(name), e = r.createError(name, "x");
+-        check(keysEqual(p, ["name", "message"]), "prototype keys");
++        check(keysEqual(p, name === "Error" ? ["name", "message", "constructor", "toString"] : ["name", "message", "constructor"]), "complete prototype keys");
+         descriptor(p, "name", name); descriptor(p, "message", "");
+         check(keysEqual(e, ["message"]), "private brand has no guest key"); descriptor(e, "message", "x");
+         for (const key of ["name", "constructor", "diagnostic", "stack", "location", "toString", "cause"])
+             check(e.getOwnProperty(key) === undefined, "absent instance " + key);
+-        check(p.getOwnProperty("constructor") === undefined && p.getOwnProperty("toString") === undefined, "A graph incomplete internally");
+-        check(r.globalObject.getOwnProperty(name) === undefined, "no Error globals");
+-    }
+-    check(keysEqual(r.globalObject, ["undefined", "NaN", "Infinity", "console", "Number"]), "original globals");
++        const ctor = r.getErrorConstructor(name), link = p.getOwnProperty("constructor");
++        check(link !== undefined && link.kind === "data" && link.value.kind === "object" && link.value.object === ctor && link.writable && !link.enumerable && link.configurable, "prototype constructor identity/flags");
++        check(keysEqual(ctor, ["name", "length", "prototype"]), "constructor keys");
++        const cp = ctor.getOwnProperty("prototype"), cn = ctor.getOwnProperty("name"), cl = ctor.getOwnProperty("length");
++        check(cp !== undefined && cp.kind === "data" && cp.value.kind === "object" && cp.value.object === p && !cp.writable && !cp.enumerable && !cp.configurable, "constructor prototype identity/flags");
++        check(cn !== undefined && cn.kind === "data" && sameValue(cn.value, string(name)) && !cn.writable && !cn.enumerable && cn.configurable, "constructor name");
++        check(cl !== undefined && cl.kind === "data" && sameValue(cl.value, { kind: "number", value: 1 }) && !cl.writable && !cl.enumerable && cl.configurable, "constructor length");
++        check(ctor.getPrototypeOf() === (name === "Error" ? r.functionPrototype : r.getErrorConstructor("Error")) && ctor.callable !== null && ctor.callable.realm === r && ctor.constructorSlot !== null, "constructor graph/call/construct");
++        const format = p.getOwnProperty("toString");
++        if (name === "Error") {
++            check(format !== undefined && format.kind === "data" && format.value.kind === "object" && format.writable && !format.enumerable && format.configurable, "Error toString descriptor");
++            if (format === undefined || format.kind !== "data" || format.value.kind !== "object") throw new Error("format object");
++            const method = format.value.object, mn = method.getOwnProperty("name"), ml = method.getOwnProperty("length");
++            check(keysEqual(method, ["name", "length"]) && method.getPrototypeOf() === r.functionPrototype && method.callable !== null && method.callable.realm === r && method.constructorSlot === null, "format metadata/owner/nonconstructor");
++            check(mn !== undefined && mn.kind === "data" && sameValue(mn.value, string("toString")) && !mn.writable && !mn.enumerable && mn.configurable, "format name");
++            check(ml !== undefined && ml.kind === "data" && sameValue(ml.value, { kind: "number", value: 0 }) && !ml.writable && !ml.enumerable && ml.configurable, "format length");
++        } else check(format === undefined, "NativeError inherits formatting");
++        const global = r.globalObject.getOwnProperty(name);
++        check(global !== undefined && global.kind === "data" && global.value.kind === "object" && global.value.object === ctor && global.writable && !global.enumerable && global.configurable, "Error global identity/flags");
++    }
++    check(keysEqual(r.globalObject, ["undefined", "NaN", "Infinity", "console", "Number", "Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError"]), "exact B globals");
+ }
+ console.log("PASS A03");
+ function formatter(r: Realm): void {
+@@ -203,6 +221,16 @@
+     }
+     const r = fresh(); hostFault(() => { r.getErrorPrototype("Missing" as ErrorName); }, "Script Error prototype required");
+     hostFault(() => { r.createError("Missing" as ErrorName, "x"); }, "Script Error prototype required");
+-    const c = run("missing;", r); check(c.type === "throw" && c.value.kind === "string" && c.diagnostic.name === "ReferenceError", "no failure migration");
++    const session = createScriptSession(), c = run("missing;", r, session, "A09-B");
++    if (c.type !== "throw" || c.value.kind !== "object") throw new Error("genuine missing ReferenceError");
++    const e = c.value.object, abrupt = session.inspect().lastAbrupt;
++    check(e instanceof GuestError && e.getPrototypeOf() === r.getErrorPrototype("ReferenceError") && keysEqual(e, ["message"]), "originating error brand/prototype/keys");
++    descriptor(e, "message", "missing is not defined");
++    check(c.diagnostic.name === "ReferenceError" && c.diagnostic.message === "missing is not defined" && c.diagnostic.loc.line === 1 && c.diagnostic.loc.column === 1 && c.origin.kind === "engine-diagnostic", "unchanged diagnostic/location/origin");
++    check(session.inspect().steps === 2 && abrupt !== null && abrupt.realm === r && abrupt.unitId === "A09-B" && abrupt.loc.line === 1 && abrupt.loc.column === 1, "zero allocation ticks/provenance");
++    const next = run("missing;", r);
++    check(next.type === "throw" && next.value.kind === "object" && next.value.object !== e && next.value.object instanceof GuestError && next.value.object.getPrototypeOf() === r.getErrorPrototype("ReferenceError"), "fresh engine failures");
++    const synthetic = failure("ReferenceError", "missing is not defined", loc);
++    check(synthetic.value.kind === "string" && synthetic.value.value === "ReferenceError: missing is not defined", "synthetic diagnostic compatibility");
+ }
+ console.log("PASS A09");
+--- a/typescript/test/harness-nonstrict.ts
++++ b/typescript/test/harness-nonstrict.ts
+@@ -588,7 +588,7 @@
+ // adding a lexical name during RHS does not redirect that reference.
+ for(const strict of [false,true])for(const lexical of [false,true]){
+  const r=fresh(),s=createScriptSession(),q=sentinel();let setters=0;
+- define(r,"seed",builtin(r,"seed",(_t,_a,c,_l): ValueCompletion=>{if(lexical){check(r.globalEnvironment.createMutableBinding("ghost",loc).type==="normal","late lexical create");check(r.globalEnvironment.initializeBinding("ghost",number(1),c,loc).type==="normal","late lexical initialize");}else property(r,r.globalObject,"ghost",{set:builtin(r,"set",(_t,_a,_c,_l): ValueCompletion=>{setters++;return q;}),configurable:true});return normal(number(7));}));
++ define(r,"seed",builtin(r,"seed",(_t,_a,c,_l): ValueCompletion=>{if(lexical){check(r.globalEnvironment.createMutableBinding("ghost",loc, c.realm).type==="normal","late lexical create");check(r.globalEnvironment.initializeBinding("ghost",number(1),c,loc).type==="normal","late lexical initialize");}else property(r,r.globalObject,"ghost",{set:builtin(r,"set",(_t,_a,_c,_l): ValueCompletion=>{setters++;return q;}),configurable:true});return normal(number(7));}));
+  const result=run((strict?'"use strict";':'')+'ghost=seed();',r,s);if(strict){throws(result,"ReferenceError");check(setters===0,"strict unresolved ignores late setter");}else if(lexical){expect(result,number(7),"late lexical bypass");expect(r.globalEnvironment.getBindingValue("ghost",context(r),loc),number(1),"late lexical untouched");check(scalar(own(r,"ghost"))==="7","late object created");}else check(result===q && setters===1,"late setter exact abrupt");
+ }
+ // FDI failure never publishes a lexical body environment and cannot be retried.
+--- a/typescript/test/key-coercion.ts
++++ b/typescript/test/key-coercion.ts
+@@ -207,7 +207,7 @@
+ const steps = first.steps;
+ check(run(first, "target[key];").type === "normal" && first.steps > steps && payload(binding(first, "trace")) === "CCC", "retained monotonic context");
+ const boundary = binding(second, "key");
+-check(toString(boundary, loc).type === "throw" && toNumber(boundary, loc).type === "throw" && payload(binding(second, "trace")) === "", "direct converters stay primitive-only");
++check(toString(boundary, loc, null).type === "throw" && toNumber(boundary, loc, null).type === "throw" && payload(binding(second, "trace")) === "", "direct converters stay primitive-only");
+ // A fresh fallback lookup observes mutation by the first method.
+ const mutation = setup();
+ check(run(mutation, "key.toString = function() { key.valueOf = function() { return 'x'; }; return {}; }; let changed = target[key];").type === "normal" && payload(binding(mutation, "changed")) === 7, "fresh fallback after mutation");
+--- a/typescript/test/length-coercion.ts
++++ b/typescript/test/length-coercion.ts
+@@ -311,11 +311,11 @@
+ // Direct converters remain zero-hook boundaries; semantic storage converts twice.
+ const excluded = setup();
+ const value = binding(excluded, "lengthValue");
+-error(toNumber(value, loc), "TypeError");
+-const stringResult = toString(value, loc);
++error(toNumber(value, loc, null), "TypeError");
++const stringResult = toString(value, loc, null);
+ check(stringResult.type === "throw", "direct string boundary");
+-error(toIntegerOrInfinity(value, loc), "TypeError");
+-error(toLength(value, loc), "TypeError");
++error(toIntegerOrInfinity(value, loc, null), "TypeError");
++error(toLength(value, loc, null), "TypeError");
+ check(sameValue(binding(excluded, "hits"), num(0)), "direct converters invoke no hooks");
+ const storage = new GuestArray();
+ error(storage.set("length", value, excluded.context, loc), "RangeError");
+@@ -336,10 +336,10 @@
+ }
+ const forbidden = new ForbiddenHooks();
+ const forbiddenValue = obj(forbidden);
+-error(toNumber(forbiddenValue, loc), "TypeError");
+-check(toString(forbiddenValue, loc).type === "throw", "string zero-read boundary");
+-error(toIntegerOrInfinity(forbiddenValue, loc), "TypeError");
+-error(toLength(forbiddenValue, loc), "TypeError");
++error(toNumber(forbiddenValue, loc, null), "TypeError");
++check(toString(forbiddenValue, loc, null).type === "throw", "string zero-read boundary");
++error(toIntegerOrInfinity(forbiddenValue, loc, null), "TypeError");
++error(toLength(forbiddenValue, loc, null), "TypeError");
+ check(forbidden.reads === 0, "direct converters perform zero reads");
+ check(storage.set("length", forbiddenValue, excluded.context, loc) === sentinel, "Set exact Get sentinel");
+ check(forbidden.reads === 1, "Set one lookup");
+--- a/typescript/test/number-conversions.ts
++++ b/typescript/test/number-conversions.ts
+@@ -103,7 +103,7 @@
+         put(observed, "valueOf", ignored);
+         const receivers: Value[] = [num(payload), obj(a.createNumberObject(payload)), obj(foreign), obj(observed)];
+         for (const receiver of receivers) {
+-            const extracted = thisNumberValue(receiver, loc);
++            const extracted = thisNumberValue(receiver, loc, null);
+             check(extracted.type === "normal" && sameValue(num(extracted.value), num(payload)), "N1-N4/N8 helper payload");
+             expect(evaluator.call(method, receiver, [ignored, ignored], loc), num(payload), "N1-N4/N8 exact payload");
+             const expected = payload === 0 ? "0" : Number.isNaN(payload) ? "NaN" : payload === Infinity ? "Infinity" : payload === -Infinity ? "-Infinity" : payload === 10.5 ? "10.5" : "-255";
+@@ -128,7 +128,7 @@
+         obj(a.createBooleanObject(true)), obj(a.createStringObject("2")), obj(a.createSymbolObject(new GuestSymbol("n"))),
+         obj(lookalike), ignored];
+     for (const receiver of invalid) {
+-        const extracted = thisNumberValue(receiver, loc);
++        const extracted = thisNumberValue(receiver, loc, null);
+         if (extracted.type !== "throw") throw new Error("N invalid helper accepted");
+         check(extracted.diagnostic.loc === loc, "helper location identity");
+         error(extracted, "receiver is not a number");
+@@ -210,7 +210,7 @@
+         check(calls === 1 && evaluator.steps === before + 2, "exact hint work");
+     }
+     box.reads = [];
+-    for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {
++    for (const converted of [toNumber(boxed, loc, null), toString(boxed, loc, null), toUint32(boxed, loc, null), toIntegerOrInfinity(boxed, loc, null), toLength(boxed, loc, null)]) {
+         if (converted.type !== "throw") throw new Error("N direct converter accepted box");
+         error(converted, "object-to-primitive conversion unsupported");
+     }
+--- a/typescript/test/object-valueof.ts
++++ b/typescript/test/object-valueof.ts
+@@ -235,7 +235,7 @@
+ error(toPrimitive(value(bare), "number", zeroCalls.context, loc), "TypeError", "cannot convert object to primitive", loc);
+ check(zeroCalls.steps === 3 && bare.get("valueOf", zeroCalls.context, loc).kind === "undefined", "null root protocol lookup plus two missing ordinary methods");
+ for (const v of [value(new NoReads()), value(a.createBooleanObject(false)), value(a.createNumberObject(0)), value(a.createStringObject("ab"))]) {
+-    for (const conversion of [toNumber(v, loc), toString(v, loc), toUint32(v, loc), toIntegerOrInfinity(v, loc), toLength(v, loc)]) {
++    for (const conversion of [toNumber(v, loc, null), toString(v, loc, null), toUint32(v, loc, null), toIntegerOrInfinity(v, loc, null), toLength(v, loc, null)]) {
+         if (conversion.type !== "throw") throw new Error("direct converter accepted object");
+         error(conversion, "TypeError", "object-to-primitive conversion unsupported", loc);
+     }
+@@ -290,7 +290,7 @@
+ check(direct.type === "normal" && direct.value instanceof GuestSymbolObject && direct.value.symbolData === symbol && direct.value.getPrototypeOf() === c.symbolPrototype, "A2/A16 independent evaluator transport");
+ for (const box of [symbolBox, anotherBox]) {
+     const before = symbolEvaluator.steps;
+-    for (const conversion of [toNumber(value(box), loc), toString(value(box), loc)]) {
++    for (const conversion of [toNumber(value(box), loc, null), toString(value(box), loc, null)]) {
+         check(conversion.type === "throw", "A19 direct box rejection");
+         if (conversion.type === "throw") error(conversion, "TypeError", "object-to-primitive conversion unsupported", loc);
+     }
+--- a/typescript/test/primitive-conversion.ts
++++ b/typescript/test/primitive-conversion.ts
+@@ -282,7 +282,7 @@
+ boundary.requireLocation = false;
+ define(boundary, "valueOf", returns(num(6)));
+ define(boundary, "toString", returns({ kind: "string", value: "x" }));
+-for (const result of [toNumber(boundary.expected, loc), toString(boundary.expected, loc)]) {
++for (const result of [toNumber(boundary.expected, loc, null), toString(boundary.expected, loc, null)]) {
+     check(result.type === "throw" && result.diagnostic.name === "TypeError", "primitive-only converter");
+ }
+ check(boundary.trace === "", "excluded converters perform no hook reads/calls");
+--- a/typescript/test/primitive-reads.ts
++++ b/typescript/test/primitive-reads.ts
+@@ -784,7 +784,7 @@
+     const ref: Reference = { kind: "property", base: b(true), key: o(key), loc: refLoc };
+     const read = getValue(ref, e.context, opLoc);
+     expect(read, sym(identity), name + " read");
+-    const next = name === "W17 ReadBeforeNumericFailure" ? toNumber(read.value, opLoc) : Q;
++    const next = name === "W17 ReadBeforeNumericFailure" ? toNumber(read.value, opLoc, null) : Q;
+     if (name === "W17 ReadBeforeNumericFailure") {
+         check(next.type === "throw" && next.diagnostic.message === "cannot convert symbol to number" && next.diagnostic.loc === opLoc, name);
+     } else {
+--- a/typescript/test/property-assignment.ts
++++ b/typescript/test/property-assignment.ts
+@@ -1053,7 +1053,7 @@
+     let result: Completion = read;
+     if (read.type === "normal") {
+         if (symbolFailure) {
+-            const numeric = toNumber(read.value, opLoc);
++            const numeric = toNumber(read.value, opLoc, null);
+             result = numeric.type === "throw" ? numeric : normal(n(numeric.value));
+         } else result = Q;
+         if (result.type === "normal") { puts++; result = c.put(); }
+--- a/typescript/test/property-key-conversion.ts
++++ b/typescript/test/property-key-conversion.ts
+@@ -95,7 +95,7 @@
+ 
+ for (const row of cases) {
+     check(numberToString(row.input) === row.expected, row.label + " backend");
+-    const string = toString(num(row.input), loc);
++    const string = toString(num(row.input), loc, null);
+     const key = toPropertyKey(num(row.input), keyContext, loc);
+     check(string.type === "normal" && string.value === row.expected && key.type === "normal" && key.value === row.expected, row.label + " conversion");
+     const target = obj(new GuestObject());
+@@ -112,7 +112,7 @@
+     { value: str(""), expected: "" }, { value: str("a\0\ud800\udfff"), expected: "a\0\ud800\udfff" },
+ ];
+ for (const row of primitives) {
+-    const string = toString(row.value, loc);
++    const string = toString(row.value, loc, null);
+     const key = toPropertyKey(row.value, keyContext, loc);
+     check(string.type === "normal" && string.value === row.expected && key.type === "normal" && key.value === row.expected, "primitive exact UTF-16");
+     for (const target of [new GuestObject(), new GuestArray()]) {
+@@ -296,7 +296,7 @@
+         return normal(str("1"));
+     }), writable: true, enumerable: true, configurable: true });
+     object.bootstrapDefine("valueOf", { value: builtin(keyEvaluator.context.realm, (_r, _a, _c, _l): Completion => { throw new Error("wrong hint"); }), writable: true, enumerable: true, configurable: true });
+-    const directString = toString(keyValue, loc);
++    const directString = toString(keyValue, loc, null);
+     check(directString.type === "throw" && directString.diagnostic.message === "object-to-primitive conversion unsupported" && directString.diagnostic.loc === loc && calls === 0, "direct ToString stays primitive-only");
+     const directKey = toPropertyKey(keyValue, keyContext, loc);
+     check(directKey.type === "normal" && directKey.value === "1" && calls === 1, "direct object key");
+--- a/typescript/test/realms.ts
++++ b/typescript/test/realms.ts
+@@ -356,7 +356,7 @@
+     wrapper.bootstrapDefine("valueOf", { value: { kind: "object", object: hook } });
+     wrapper.bootstrapDefine("toString", { value: { kind: "object", object: hook } });
+     const before = boxEvaluator.steps;
+-    for (const converted of [toNumber(value, at), toUint32(value, at), toIntegerOrInfinity(value, at), toLength(value, at), toString(value, at)]) {
++    for (const converted of [toNumber(value, at, null), toUint32(value, at, null), toIntegerOrInfinity(value, at, null), toLength(value, at, null), toString(value, at, null)]) {
+         checkGraph(converted.type === "throw" && converted.diagnostic.message === "object-to-primitive conversion unsupported" && converted.diagnostic.loc === at, "W17 direct converter rejects wrapper");
+     }
+     checkGraph(boxEvaluator.steps === before && boxEvaluator.calls === 0, "W17 direct conversion zero hooks");
+--- a/typescript/test/script-environment.ts
++++ b/typescript/test/script-environment.ts
+@@ -78,7 +78,7 @@
+ define("live", num(7)); const live = capture(child, "live"); define("live", num(11)); value(getScriptBinding(live, context), num(11));
+ define("live", num(11), false); error(putScriptBinding(live, num(0), context), "TypeError");
+ object.internalDelete("live"); error(getScriptBinding(live, context), "ReferenceError"); error(putScriptBinding(live, num(0), context), "ReferenceError");
+-define("live", num(7)); globalRecord.createMutableBinding("live", loc); error(getScriptBinding(live, context), "ReferenceError");
++define("live", num(7)); globalRecord.createMutableBinding("live", loc, context.realm); error(getScriptBinding(live, context), "ReferenceError");
+ globalRecord.initializeBinding("live", num(0), context, loc); value(getScriptBinding(live, context), num(0));
+ console.log("T02 PASS");
+ class FaultObject extends GuestObject {
+--- a/typescript/test/script-global-declarations.ts
++++ b/typescript/test/script-global-declarations.ts
+@@ -48,7 +48,7 @@
+     override hasRestrictedGlobalProperty(n: string): InternalBooleanCompletion { return this.visit("R:" + n) ? this.abrupt : super.hasRestrictedGlobalProperty(n); }
+     override canDeclareGlobalFunction(n: string): InternalBooleanCompletion { return this.visit("F?:" + n) ? this.abrupt : super.canDeclareGlobalFunction(n); }
+     override canDeclareGlobalVar(n: string): InternalBooleanCompletion { return this.visit("V?:" + n) ? this.abrupt : super.canDeclareGlobalVar(n); }
+-    override createMutableBinding(n: string, loc: Location): ValueCompletion { return this.visit("L+:" + n) ? this.abrupt : super.createMutableBinding(n, loc); }
++    override createMutableBinding(n: string, loc: Location, realm: Realm | null): ValueCompletion { return this.visit("L+:" + n) ? this.abrupt : super.createMutableBinding(n, loc, realm); }
+     override createGlobalFunctionBinding(n: string, v: Value, c: OperationContext, loc: Location): ValueCompletion { return this.visit("F+:" + n) ? this.abrupt : super.createGlobalFunctionBinding(n, v, c, loc); }
+     override createGlobalVarBinding(n: string, c: OperationContext, loc: Location): ValueCompletion { return this.visit("V+:" + n) ? this.abrupt : super.createGlobalVarBinding(n, c, loc); }
+ }
+@@ -173,7 +173,7 @@
+ console.log("G10 PASS");
+ {
+     const p = plan("let fresh; var x; function f(){}");
+-    const h = new Harness(); unused(h.env.createMutableBinding("x",{line:1,column:1})); error(h.run(p),"SyntaxError",30); absent(h.env,"fresh"); absent(h.env,"f"); check(h.markers.length === 0,"prechecks no callbacks");
++    const h = new Harness(); unused(h.env.createMutableBinding("x",{line:1,column:1}, h.context.realm)); error(h.run(p),"SyntaxError",30); absent(h.env,"fresh"); absent(h.env,"f"); check(h.markers.length === 0,"prechecks no callbacks");
+     const ok = new Harness(); unused(ok.run(p)); tdz(ok.env,"fresh",ok.context);
+     const restricted = new Harness(); seed(restricted.env.globalObject,"fresh",true,true,false); error(restricted.run(p),"SyntaxError",19); check(restricted.ticks.join(",") === "19","restricted earlier");
+ }
+@@ -255,7 +255,7 @@
+ // Reusing a valid plan never reuses a precheck result across host mutations.
+ {
+     const h = new Harness(), p = plan("var x;"); unused(h.run(p));
+-    unused(h.env.createMutableBinding("x",{line:1,column:1})); error(h.run(p),"SyntaxError",19);
++    unused(h.env.createMutableBinding("x",{line:1,column:1}, h.context.realm)); error(h.run(p),"SyntaxError",19);
+     const f = new Harness(), fp = plan("function x(){}"); unused(f.run(fp)); unused(f.run(fp)); check(f.markers.length === 2,"fresh function each invocation"); desc(f.env.globalObject,"x",f.markers[1]);
+     const v = new Harness(), vp = plan("var x;"); seed(v.env.globalObject,"x"); unused(v.run(vp)); desc(v.env.globalObject,"x",num(7),true,true,true);
+     const closed = new Harness(), cp = plan("var x;"); closed.env.globalObject.preventExtensions(); error(closed.run(cp),"TypeError",19);
+--- a/typescript/test/script-realm-bootstrap.ts
++++ b/typescript/test/script-realm-bootstrap.ts
+@@ -76,11 +76,12 @@
+     const a=new Realm((line:string)=>{output+=line; outputCalls++;},"script"), b=new Realm((line:string)=>{output+=line; outputCalls++;},"script");
+     const x=new Realm((line:string)=>{output+=line; outputCalls++;}), y=new Realm((line:string)=>{output+=line; outputCalls++;},"legacy");
+     const e=new Evaluator(x), context=stub(a), first=n(initial), next=n(initial===7?11:7);
+-    const globals=["undefined","NaN","Infinity","console","Number"];
++    const legacyGlobals=["undefined","NaN","Infinity","console","Number"];
++    const globals=[...legacyGlobals,"Error","TypeError","ReferenceError","RangeError","SyntaxError"];
+     switch(id) {
+     case "B01": {
+         for(const l of [x,y]) check(l.functionPrototype.getOwnProperty(wellKnownHasInstance)===undefined,"legacy hasInstance absent");
+-        for(const l of [x,y]) { let i=0; for(const [key,binding] of l.global.bindings) { check(key===globals[i] && binding.initialized && binding.mutable===(i>=3),"legacy bindings"); if(i===0) check(binding.value.kind==="undefined","undefined"); if(i===1) check(sameValue(binding.value,n(NaN)),"NaN"); if(i===2) check(sameValue(binding.value,n(Infinity)),"Infinity"); i++; } check(i===5,"five legacy globals"); }
++        for(const l of [x,y]) { let i=0; for(const [key,binding] of l.global.bindings) { check(key===legacyGlobals[i] && binding.initialized && binding.mutable===(i>=3),"legacy bindings"); if(i===0) check(binding.value.kind==="undefined","undefined"); if(i===1) check(sameValue(binding.value,n(NaN)),"NaN"); if(i===2) check(sameValue(binding.value,n(Infinity)),"Infinity"); i++; } check(i===5,"five legacy globals"); }
+         const env=new Environment(null); x.global=env; check(x.global===env,"replace global");
+         const r=run("let "+name+"="+initial+";",x); check(r.phase==="runtime" && r.completion.type==="normal","legacy run"); check(sameValue(x.global.bindings.get(name)!.value,first),"legacy binding");
+         error(()=>{new Realm((_line:string)=>{throw new Error("output");},"bad" as RealmProfile);},"invalid Realm profile");
+@@ -109,7 +110,7 @@
+     case "B05": error(()=>{a.global;},legacyError); error(()=>{a.global=x.global;},legacyError); error(()=>{x.globalObject;},"Script Realm required"); error(()=>{x.globalEnvironment;},"Script Realm required"); error(()=>{x.globalThisValue;},"Script Realm required"); break;
+     case "B06": seed(a,name,first); value(a.readScriptGlobal(name, context,loc),first); desc(a.globalObject,name,first,true,true,true); seed(a,name,next); value(a.readScriptGlobal(name, context,loc),next); a.globalObject.preventExtensions(); error(()=>{seed(a,name+"new",first);},"invalid internal property definition: "+name+"new"); check(a.globalObject.getOwnProperty(name+"new")===undefined,"no failed seed"); break;
+     case "B07": { const r=resolveStrictGlobalBinding(a.globalEnvironment,name,loc); if(r.type==="throw") throw new Error("resolve"); seed(a,name,first); guestError(putStrictGlobalBinding(r.reference,next,context),"ReferenceError"); guestError(getStrictGlobalBinding(r.reference, context),"ReferenceError"); value(a.readScriptGlobal(name, context,loc),first); break; }
+-    case "B08": { seed(a,name,first); const r=resolveStrictGlobalBinding(a.globalEnvironment,name,loc); if(r.type==="throw") throw new Error("resolve"); value(a.globalEnvironment.createMutableBinding(name,loc),UNDEFINED); guestError(getStrictGlobalBinding(r.reference, context),"ReferenceError"); seed(a,name,first); guestError(a.readScriptGlobal(name, context,loc),"ReferenceError"); value(a.globalEnvironment.initializeBinding(name,next,context,loc),UNDEFINED); value(getStrictGlobalBinding(r.reference, context),next); desc(a.globalObject,name,first,true,true,true); guestError(b.readScriptGlobal(name, context,loc),"ReferenceError"); break; }
++    case "B08": { seed(a,name,first); const r=resolveStrictGlobalBinding(a.globalEnvironment,name,loc); if(r.type==="throw") throw new Error("resolve"); value(a.globalEnvironment.createMutableBinding(name,loc, context.realm),UNDEFINED); guestError(getStrictGlobalBinding(r.reference, context),"ReferenceError"); seed(a,name,first); guestError(a.readScriptGlobal(name, context,loc),"ReferenceError"); value(a.globalEnvironment.initializeBinding(name,next,context,loc),UNDEFINED); value(getStrictGlobalBinding(r.reference, context),next); desc(a.globalObject,name,first,true,true,true); guestError(b.readScriptGlobal(name, context,loc),"ReferenceError"); break; }
+     case "B09": for(const source of ["let "+name+"="+initial+";","return 1;",""]) error(()=>{run(source,a);},legacyError); check(run("",x).phase==="runtime" && run("return 1;",x).phase==="parse","legacy neighbors"); break;
+     case "B10": for(const source of ["let "+name+"="+initial+";","return 1;",""]) { error(()=>{observe(source,a,"body-observation","unit");},legacyError); const p=observe(source,a,"parser-observation","unit"),q=observe(source,x,"parser-observation","unit"); check(JSON.stringify(p)===JSON.stringify(q) && !p.bodyEvaluated,"neutral parser"); check(p.observation.kind===(source==="return 1;"?"syntax-error":"normal"),"literal parser result"); } for(const mode of ["parser-observation","body-observation"] as const) error(()=>{observe("return 1;",a,mode,"unit",{steps:-1,calls:0});},"observation limits must be nonnegative safe integers"); break;
+     case "B11": error(()=>{new Evaluator(a);},legacyError); error(()=>{a.createGuestFunction([],[],x.global,null);},legacyError); error(()=>{a.createGuestFunction([],[],x.global,{source:{text:""},start:-1,end:0});},legacyError); a.createBuiltin("allowed",0,(_r,_a,_c,_l): Completion=>{throw new Error("callback");}); break;
+@@ -163,7 +164,7 @@
+         a.globalObject.internalDelete(name+"deleted");
+         guestError(getStrictGlobalBinding(captured.reference, context),"ReferenceError");
+         guestError(putStrictGlobalBinding(captured.reference,next,context),"ReferenceError");
+-        value(g.createMutableBinding(name,loc),UNDEFINED); guestError(g.getBindingValue(name, context,loc),"ReferenceError"); guestError(g.createMutableBinding(name,loc),"TypeError"); value(g.initializeBinding(name,first,context,loc),UNDEFINED); error(()=>{g.initializeBinding(name,next,context,loc);},"binding already initialized: "+name); value(g.setMutableBinding(name,next,context,loc),UNDEFINED); value(g.getBindingValue(name, context,loc),next);
++        value(g.createMutableBinding(name,loc, context.realm),UNDEFINED); guestError(g.getBindingValue(name, context,loc),"ReferenceError"); guestError(g.createMutableBinding(name,loc, context.realm),"TypeError"); value(g.initializeBinding(name,first,context,loc),UNDEFINED); error(()=>{g.initializeBinding(name,next,context,loc);},"binding already initialized: "+name); value(g.setMutableBinding(name,next,context,loc),UNDEFINED); value(g.getBindingValue(name, context,loc),next);
+         guestError(g.setMutableBinding(name+"missing",first,context,loc),"ReferenceError"); value(g.createGlobalVarBinding(name+"var",context,loc),UNDEFINED); desc(a.globalObject,name+"var",UNDEFINED,true,true,false);
+         value(g.createGlobalFunctionBinding(name+"fn",first,context,loc),UNDEFINED); desc(a.globalObject,name+"fn",first,true,true,false);
+         guestError(g.setMutableBinding("undefined",first,context,loc),"TypeError"); check(g.hasRestrictedGlobalProperty("undefined").type==="normal","restricted");
+--- a/typescript/test/structured-outcomes.ts
++++ b/typescript/test/structured-outcomes.ts
+@@ -224,7 +224,7 @@
+ }
+ {
+     const object = new NoReadObject(); const input: Value = { kind: "object", object };
+-    const number = toNumber(input, loc); const string = toString(input, loc);
++    const number = toNumber(input, loc, null); const string = toString(input, loc, null);
+     for (const r of [number, string]) {
+         check(r.type === "throw", "R29/R30 throw");
+         if (r.type === "throw") {
+--- a/typescript/test/symbol-conversions.ts
++++ b/typescript/test/symbol-conversions.ts
+@@ -107,7 +107,7 @@
+         const observed = new ObservedSymbol(identity, a.symbolPrototype);
+         const receivers = [sym(identity), obj(a.createSymbolObject(identity)), obj(foreign), obj(observed)];
+         for (const receiver of receivers) {
+-            const extracted = thisSymbolValue(receiver, loc);
++            const extracted = thisSymbolValue(receiver, loc, null);
+             check(extracted.type === "normal" && extracted.value === identity, "helper exact payload");
+             for (let i = 0; i < methods.length; i++) {
+                 const before = evaluator.steps;
+@@ -125,7 +125,7 @@
+         obj(b.symbolPrototype), obj(lookalike), obj(a.createObject()), obj(a.createArray()),
+         obj(a.functionPrototype), obj(a.createBooleanObject(false)), obj(a.createNumberObject(1)), obj(a.createStringObject("x"))];
+     for (const receiver of invalid) {
+-        const extracted = thisSymbolValue(receiver, loc);
++        const extracted = thisSymbolValue(receiver, loc, null);
+         check(extracted.type === "throw", "helper rejects non-slot");
+         for (const method of methods) error(evaluator.call(method, receiver, [ignored], loc), "receiver is not a symbol");
+     }
+@@ -188,7 +188,7 @@
+     check(key.type === "normal" && key.value === identity, "boxed key identity");
+     const beforeDirect = evaluator.steps;
+     box.reads = [];
+-    for (const converted of [toNumber(boxed, loc), toString(boxed, loc)]) {
++    for (const converted of [toNumber(boxed, loc, null), toString(boxed, loc, null)]) {
+         if (converted.type !== "throw") throw new Error("B2 direct converter accepted object");
+         error(converted, "object-to-primitive conversion unsupported");
+     }
