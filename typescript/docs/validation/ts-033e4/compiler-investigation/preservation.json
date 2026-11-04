@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-04",
+  "audit": "PASS 2966 protected files, 175 source/test hashes; 55 inherited rows, A01-A18, 13 traces; retained 212/212/48; 60 blocked",
+  "diagnosis": "PASS pinned-source/package-digest/runtime-blob/IR checks; original evidence unchanged",
+  "diagnosisObservedChangedTrackedPaths": ["typescript/COORDINATION.md"],
+  "note": "Coordinator-owned change left untouched. Original diagnosis verification output restored after replay because it records the coordinator path; no parent evidence changes retained.",
+  "productionTestsRerun": false,
+  "compilerSourceModified": false,
+  "compilerRebuilt": false,
+  "installedToolchainModified": false,
+  "e4Accepted": false
+}

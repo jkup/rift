@@ -1,0 +1,52 @@
+{
+  "name": "getter-nominal-unfrozen",
+  "node": {
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "docs/validation/ts-033e4/compiler-investigation/getter-nominal-unfrozen.ts"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS getter live7/11 steps4\n",
+    "stderr": ""
+  },
+  "build": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+    "args": [
+      "build",
+      "docs/validation/ts-033e4/compiler-investigation/getter-nominal-unfrozen.ts",
+      "--tier",
+      "static-only",
+      "-o",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-investigation\\getter-nominal-unfrozen.exe"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-investigation\\getter-nominal-unfrozen.exe\n",
+    "stderr": ""
+  },
+  "coverage": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+    "args": [
+      "coverage",
+      "docs/validation/ts-033e4/compiler-investigation/getter-nominal-unfrozen.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e4\\compiler-investigation\\getter-nominal-unfrozen.ts\n\n  statements analyzed   18\n  compile statically    18  (100%)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  },
+  "native": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-investigation\\getter-nominal-unfrozen.exe",
+    "args": [],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS getter live7/11 steps4\n",
+    "stderr": ""
+  }
+}

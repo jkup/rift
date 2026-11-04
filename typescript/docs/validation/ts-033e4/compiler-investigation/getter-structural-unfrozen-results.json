@@ -1,0 +1,52 @@
+{
+  "name": "getter-structural-unfrozen",
+  "node": {
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS getter live7/11 steps4\n",
+    "stderr": ""
+  },
+  "build": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+    "args": [
+      "build",
+      "docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts",
+      "--tier",
+      "static-only",
+      "-o",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-investigation\\getter-structural-unfrozen.exe"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-investigation\\getter-structural-unfrozen.exe\n",
+    "stderr": ""
+  },
+  "coverage": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+    "args": [
+      "coverage",
+      "docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e4\\compiler-investigation\\getter-structural-unfrozen.ts\n\n  statements analyzed   18\n  compile statically    18  (100%)\n    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    9 functions already operate on dynamic values (1 statement)\n      use  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:1: js.add at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:46\n      %class.branchPropertiesOrEmpty:View  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:46: dynObjLit at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:46\n      %dyn.class.properties  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:1:1: dynObjLit at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:1:1\n      %dyn.class.property.0  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:46: dyn.hasOwn at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:46\n      %dyn.class.property.1  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:70: dyn.hasOwn at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:70\n      %dyn.class.property.2  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:56: dyn.hasOwn at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:56\n      %dyn.class.protocol.0  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:56: %dyn.class.protocol.fallback at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:56\n      %dyn.class.protocol.fallback.0  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:56: %dyn.class.property at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:56\n      %dyn.class.readPropertiesOrEmpty  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:46: dynObjLit at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e4/compiler-investigation/getter-structural-unfrozen.ts:14:46\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  },
+  "native": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-investigation\\getter-structural-unfrozen.exe",
+    "args": [],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS getter live7/11 steps4\n",
+    "stderr": ""
+  }
+}
