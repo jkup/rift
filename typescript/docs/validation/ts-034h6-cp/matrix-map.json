@@ -1,0 +1,134 @@
+[
+  {
+    "id": "F01",
+    "originalRow": "| F01 | `String();String(undefined);String(null);String(-0);` | \"\", \"undefined\", \"null\", \"0\". |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "\"\", \"undefined\", \"null\", \"0\"",
+      "input-b": "\"\", \"undefined\", \"null\", \"0\""
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  },
+  {
+    "id": "F02",
+    "originalRow": "| F02 | Seed Symbol s with description x; `String(s);new String(s);` | \"Symbol(x)\"; genuine String-Realm TypeError. No Symbol factory introduced. |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "String(s)=\"Symbol(x)\"; new String(s)=TypeError A",
+      "input-b": "String(s)=\"Symbol(x)\"; new String(s)=TypeError A"
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  },
+  {
+    "id": "F03",
+    "originalRow": "| F03 | Symbol wrapper and object with @@toPrimitive returning Symbol | String call and construction both TypeError; special direct-Symbol call path not applied. |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "wrapper call/new and hook-returned Symbol call/new all TypeError A; M once only for hook",
+      "input-b": "wrapper call/new and hook-returned Symbol call/new all TypeError A; M once only for hook"
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  },
+  {
+    "id": "F04",
+    "originalRow": "| F04 | `new String('ab');` | Genuine StringData ab, own keys [0,1,length], index values a,b Wfalse/Etrue/Cfalse; length2 Wfalse/Efalse/Cfalse; exact String.prototype. |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "StringData ab; keys 0,1,length; a,b Wfalse/Etrue/Cfalse; length2 Wfalse/Efalse/Cfalse; prototype A",
+      "input-b": "StringData ab; keys 0,1,length; a,b Wfalse/Etrue/Cfalse; length2 Wfalse/Efalse/Cfalse; prototype A"
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  },
+  {
+    "id": "F05",
+    "originalRow": "| F05 | `String(msg);new String(msg);` with message conversion trace/throw | String hint once; exact q throw; no allocation/prototype lookup after throw. |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "M once with string hint; call=\"seven\"; new StringData seven; abrupt exact q before prototype Get/allocation",
+      "input-b": "M once with string hint; call=\"eleven\"; new StringData eleven; abrupt exact q before prototype Get/allocation"
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  },
+  {
+    "id": "F06",
+    "originalRow": "| F06 | `Object();Object(null);new Object(undefined);` | Distinct fresh ordinary objects, correct builtin Realm Object.prototype, no own keys. |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "each nullish/missing call/new fresh ordinary A object; no own keys; all distinct",
+      "input-b": "each nullish/missing call/new fresh ordinary A object; no own keys; all distinct"
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  },
+  {
+    "id": "F07",
+    "originalRow": "| F07 | `Object(q);new Object(q);` object q | Exact q each, no coercion/Get/prototype lookup, no allocation tick. |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "call/new exact q; no Get/conversion/prototype lookup/allocation tick",
+      "input-b": "call/new exact q; no Get/conversion/prototype lookup/allocation tick"
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  },
+  {
+    "id": "F08",
+    "originalRow": "| F08 | `Object(7);Object(false);Object('a');Object(s);` and new forms | Existing genuine slot wrappers in builtin Realm; no new primitive constructor globals. |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "call/new boxes NumberData7, BooleanDatafalse, StringDataa, SymbolData exact s; prototypes A",
+      "input-b": "call/new boxes NumberData7, BooleanDatafalse, StringDataa, SymbolData exact s; prototypes A"
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  },
+  {
+    "id": "F09",
+    "originalRow": "| F09 | Cross-Realm String/Object transferred from A into B | A boxes/fresh objects; existing object q retains its identity and original prototype. |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "A boxes/fresh objects, exact existing q keeps original prototype; caller B/source input-a restored",
+      "input-b": "A boxes/fresh objects, exact existing q keeps original prototype; caller B/source input-b restored"
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  },
+  {
+    "id": "F10",
+    "originalRow": "| F10 | Constructor and prototype metadata, key order, descriptors | Exact main-contract graph; added constructor keys appended; legacy graphs unchanged. Methods/nonconstructible namespace Number unchanged. |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "name String/Object length1 Wfalse/Efalse/Ctrue; prototype Wfalse/Efalse/Cfalse; constructor/global Wtrue/Efalse/Ctrue; Function prototype; appended keys; five legacy globals unchanged",
+      "input-b": "name String/Object length1 Wfalse/Efalse/Ctrue; prototype Wfalse/Efalse/Cfalse; constructor/global Wtrue/Efalse/Ctrue; Function prototype; appended keys; five legacy globals unchanged"
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  },
+  {
+    "id": "F11",
+    "originalRow": "| F11 | `Object.prototype.toString.call({});` and `String({toString:function(){throw 7;}});` | \"[object Object]\"; exact7. The former is the needed harness fallback. |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "\"[object Object]\"; exact thrown guest number7",
+      "input-b": "\"[object Object]\"; exact thrown guest number7"
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  },
+  {
+    "id": "F12",
+    "originalRow": "| F12 | Runtime files `String(7);` versus `String(11);`; repeat `new String(7);`/eleven and Object(o) alias controls | \"7\" vs \"11\"; boxes differ by data. Fixed rows run for both; fresh/seven-seeded prefixes and cleanup as contract. |",
+    "status": "UNEXECUTED",
+    "expectedByInput": {
+      "input-a": "String(7)=\"7\"; new String(7) data \"7\"; Object(o)/new Object(o) exact o",
+      "input-b": "String(11)=\"11\"; new String(11) data \"11\"; Object(o)/new Object(o) exact o"
+    },
+    "driver": "future test/harness-errors-c.ts",
+    "mandatory": "Every clause in original row; both lanes, both inputs; no H7 bundle claim"
+  }
+]

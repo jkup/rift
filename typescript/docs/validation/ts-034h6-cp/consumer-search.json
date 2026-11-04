@@ -1,0 +1,1606 @@
+{
+  "base": "4eb954daf8ae62f5e2c168df74259a4c6b152edd",
+  "scope": "All tracked test TypeScript files; broad candidate list, not automatic ownership",
+  "matches": [
+    {
+      "path": "typescript/test/abstract-equality.ts",
+      "line": 491,
+      "text": "    [o(realm.arrayPrototype), s(\"\"), true], [o(realm.objectPrototype), L, false],"
+    },
+    {
+      "path": "typescript/test/abstract-equality.ts",
+      "line": 519,
+      "text": "    const result = control.call(realm.objectPrototype.get(\"toString\", control.context, loc), value, [], loc);"
+    },
+    {
+      "path": "typescript/test/array-map.ts",
+      "line": 543,
+      "text": "check(sourceArray.getPrototypeOf() === sourceRealm.arrayPrototype && sourceGeneric.getPrototypeOf() === sourceRealm.objectPrototype, \"G12 input chains unchanged\");"
+    },
+    {
+      "path": "typescript/test/array-map.ts",
+      "line": 610,
+      "text": "const genericA = new MapInput(mapA.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/array-map.ts",
+      "line": 639,
+      "text": "    check(value.kind === \"object\" && value.object.getPrototypeOf() === mapC.objectPrototype, \"R18 C element prototype\");"
+    },
+    {
+      "path": "typescript/test/array-map.ts",
+      "line": 652,
+      "text": "const stringInput = new ObservedString(\"ab\", mapA.stringPrototype);"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 278,
+      "text": "put(b.stringPrototype, \"join\", fn(c, (receiver, args, context, _at) => {"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 281,
+      "text": "    check(receiver.object.getPrototypeOf() === b.stringPrototype && args.length === 0 && context.realm === c, \"T7 defining box\");"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 288,
+      "text": "b.stringPrototype.internalDelete(\"join\");"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 316,
+      "text": "const captured = b.objectPrototype.get(\"toString\", active.context, loc);"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 319,
+      "text": "        if (mode === \"replace\") put(owner.objectPrototype, \"toString\", fn(owner, (_receiver, _args, _context, _at) => sentinel));"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 320,
+      "text": "        else owner.objectPrototype.internalDelete(\"toString\");"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 322,
+      "text": "        const receiver = new Observed(c.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 331,
+      "text": "put(b.objectPrototype, \"toString\", captured);"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 332,
+      "text": "const freshObjectToString = new Realm((_line) => {}).objectPrototype.get(\"toString\", active.context, loc);"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 333,
+      "text": "put(a.objectPrototype, \"toString\", freshObjectToString);"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 424,
+      "text": "        const box = new ReadString(value, this.stringPrototype);"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 434,
+      "text": "    && boxingRealm.boxes[0].getPrototypeOf() === boxingRealm.stringPrototype, \"R5 defining fresh boxes\");"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 440,
+      "text": "check(boxingRealm.boxes.length === 2 && cBox.getPrototypeOf() === c.stringPrototype, \"R5 no reboxing\");"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 446,
+      "text": "        const receiver = new Observed(c.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/array-string-conversion.ts",
+      "line": 645,
+      "text": "expect(controlEvaluator.call(controls.objectPrototype.get(\"valueOf\", controlEvaluator.context, loc), controlArray, [], loc), controlArray, \"C7 identity\");"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 73,
+      "text": "        { root: b.stringPrototype, otherRoots: [a.stringPrototype, c.stringPrototype], payload: str(\"\"), text: str(\"\"), label: \"string\" },"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 107,
+      "text": "            obj(a.createSymbolObject(new GuestSymbol(\"x\"))), obj(a.symbolPrototype), obj(a.numberPrototype), obj(a.objectPrototype)];"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 108,
+      "text": "        if (family.label === \"boolean\") invalid.push(str(\"false\"), obj(a.createStringObject(\"\")), obj(a.stringPrototype));"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 176,
+      "text": "        const observed = new ObservedString(payload, a.stringPrototype);"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 183,
+      "text": "            for (const name of [\"toString\", \"valueOf\"]) expect(evaluator.call(b.stringPrototype.get(name, evaluator.context, loc), receiver, [ignored], loc), str(payload), \"M2 UTF-16 payload\");"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 196,
+      "text": "        const root = isBoolean ? realm.booleanPrototype : realm.stringPrototype;"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 237,
+      "text": "        expect(evaluator.call(realm.objectPrototype.get(\"valueOf\", noSteps.context, loc), boxed, [], loc), boxed, \"M8 Object valueOf identity\");"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 238,
+      "text": "        const boxedAgain = result(evaluator.call(realm.objectPrototype.get(\"valueOf\", noSteps.context, loc), payload, [], loc));"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 240,
+      "text": "        const tag = isBoolean ? \"Boolean\" : \"String\";"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 241,
+      "text": "        expect(evaluator.call(realm.objectPrototype.get(\"toString\", noSteps.context, loc), boxed, [], loc), str(\"[object \" + tag + \"]\"), \"M8 Object tag unchanged\");"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 243,
+      "text": "        expect(evaluator.call(realm.objectPrototype.get(\"toString\", noSteps.context, loc), boxed, [], loc), str(\"[object Custom]\"), \"M8 tag property\");"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 246,
+      "text": "        const untouchedRoot = isBoolean ? untouched.booleanPrototype : untouched.stringPrototype;"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 308,
+      "text": "    expect(evaluator.call(realm.objectPrototype.get(\"toString\", evaluator.context, loc), symbolBox, [], loc), str(\"[object Symbol]\"), \"M8 Symbol tag retained\");"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 322,
+      "text": "    seed(realm, \"stringRoot\", obj(realm.stringPrototype));"
+    },
+    {
+      "path": "typescript/test/boolean-string-conversions.ts",
+      "line": 342,
+      "text": "    check(primitiveRead.type === \"normal\" && sameValue(primitiveRead.value, realm.stringPrototype.get(\"toString\", evaluator.context, loc)), \"primitiveMember positive read\");"
+    },
+    {
+      "path": "typescript/test/compound-assignment.ts",
+      "line": 581,
+      "text": "        const box = new StringBox(value, this.stringPrototype, this.boxes);"
+    },
+    {
+      "path": "typescript/test/compound-assignment.ts",
+      "line": 595,
+      "text": "        case \"string\": return realm.stringPrototype;"
+    },
+    {
+      "path": "typescript/test/compound-assignment.ts",
+      "line": 1282,
+      "text": "        if (row === 5) q.target.setPrototypeOf(q.foreign.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/compound-assignment.ts",
+      "line": 1294,
+      "text": "        if (row === 5) check(q.target.getPrototypeOf() === q.foreign.objectPrototype, name + \" foreign prototype\");"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 448,
+      "text": "const enum StringPrototypeCase {"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 456,
+      "text": "    StringPrototypeCase.Original,"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 457,
+      "text": "    StringPrototypeCase.Null,"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 458,
+      "text": "    StringPrototypeCase.Relinked,"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 459,
+      "text": "    StringPrototypeCase.Foreign,"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 465,
+      "text": "    if (prototypeCase === StringPrototypeCase.Null) {"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 468,
+      "text": "    if (prototypeCase === StringPrototypeCase.Relinked) {"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 471,
+      "text": "    if (prototypeCase === StringPrototypeCase.Foreign) {"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 472,
+      "text": "        box.setPrototypeOf(foreign.stringPrototype);"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 575,
+      "text": "    const key = new Observed(r.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 1306,
+      "text": "            target.getPrototypeOf() === a.objectPrototype &&"
+    },
+    {
+      "path": "typescript/test/delete-operator.ts",
+      "line": 1307,
+      "text": "            fresh.objectPrototype !== a.objectPrototype,"
+    },
+    {
+      "path": "typescript/test/function-call.ts",
+      "line": 221,
+      "text": "check(foreignResult.getPrototypeOf() === r.objectPrototype && foreignResult.get(\"captured\", foreignEval.context, loc) === token && foreignResult.get(\"receiver\", foreignEval.context, loc) === token, \"foreign lexical identity/defining allocation\");"
+    },
+    {
+      "path": "typescript/test/function-call.ts",
+      "line": 223,
+      "text": "check(object(binding(r, \"foreign\")).getPrototypeOf() === r.functionPrototype && object(token).getPrototypeOf() === r.objectPrototype, \"transferred Values not reparented\");"
+    },
+    {
+      "path": "typescript/test/function-string-conversion.ts",
+      "line": 347,
+      "text": "expect(active.call(a.objectPrototype.get(\"toString\", active.context, loc), old, [], loc), str(\"[object Custom]\"), \"F8 explicit tag\");"
+    },
+    {
+      "path": "typescript/test/function-string-conversion.ts",
+      "line": 443,
+      "text": "    if (hint !== \"string\") check(callees[0] === budgetRealm.objectPrototype.get(\"valueOf\", observedContext, loc), \"R6 first candidate\");"
+    },
+    {
+      "path": "typescript/test/function-string-conversion.ts",
+      "line": 464,
+      "text": "expect(explicitTag.call(a.objectPrototype.get(\"toString\", explicitTag.context, loc), f, [], loc), str(\"[object Function]\"), \"R12 explicit tag\");"
+    },
+    {
+      "path": "typescript/test/harness-catch.ts",
+      "line": 31,
+      "text": "    const d = r.globalEnvironment.globalObject.getOwnProperty(name);"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 27,
+      "text": "function own(r: Realm,name: string): Value { const d=r.globalObject.getOwnProperty(name); if(d===undefined || d.kind!==\"data\")throw new Error(\"missing \"+name);return d.value; }"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 55,
+      "text": "  const b=fresh();define(b,\"v\",v);const c=run(p+'function C(){}C.prototype=v;new C();',b);check(c.type===\"normal\" && object(c.value).getPrototypeOf()===b.objectPrototype,\"C05 fallback\");"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 57,
+      "text": " const a=fresh(),b=fresh();constructor(a,p+'function C(){return o;}');for(const o of [new GuestObject(a.objectPrototype),a.createArray(),new GuestNumber(7,a.numberPrototype),object(constructor(b)),new GuestObject(b.objectPrototype)]){define(a,\"o\",obj(o));expect(run('new C();',a),obj(o),\"C03 override\");}"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 67,
+      "text": " const r=fresh(),log:string[]=[],o=new GuestObject(r.objectPrototype);let received:Value=UNDEFINED;"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 78,
+      "text": " const v2=run('new K();',b);check(v2.type===\"normal\"&&object(v2.value).getPrototypeOf()===a.objectPrototype,\"C13 fallback\");"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 466,
+      "text": " const a=fresh(),r=fresh(),s=createScriptSession({maxSteps:seed+k,maxCalls:64}),log:string[]=[],o=new GuestObject(r.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 488,
+      "text": " else {check(completion.type===\"normal\"&&completion.value.kind===\"object\",\"prefix receiver\");if(completion.type===\"normal\"){const receiver=object(completion.value);const d=object(c).getOwnProperty(\"prototype\");check(d?.kind===\"data\",\"helper prototype\");if(d?.kind===\"data\")check(receiver.getPrototypeOf()===(trace.id===7?a.objectPrototype:object(d.value)),\"prefix receiver prototype\");check(receiver.ownPropertyKeys().length===0&&receiver.isExtensible(),\"fresh receiver properties\");}}"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 506,
+      "text": " const c=constructor(r,row===7?'\"use strict\";\\nfunction C(){\\nfault();\\n}':'\"use strict\";\\nfunction C(){}'),o=new GuestObject(r.objectPrototype),k=shell(r,c);define(r,\"o\",obj(o));define(r,\"K\",obj(k));define(r,\"x\",obj(new GuestObject()));"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 520,
+      "text": " const a=fresh(),b=fresh(),s=createScriptSession(),q=obj(new GuestObject());define(a,\"q\",q);run('function getter(){throw q;}',a,createScriptSession(),\"G\");const g=own(a,\"getter\"),c=constructor(b),k=shell(b,c),o=new GuestObject(b.objectPrototype);define(b,\"K\",obj(k));define(b,\"o\",obj(o));define(b,\"x\",obj(new GuestObject()));"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 546,
+      "text": " const callback: Builtin=(_t,_args,ctx,_loc):ValueCompletion=>{calls++;retained=ctx;hostFault(()=>{evaluateScript(s,target);},\"active\");return normal(obj(r.objectPrototype));};"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 565,
+      "text": "  check(s.inspect().steps===before.steps&&s.inspect().calls===before.calls&&s.inspect().active?.record===before.active?.record,\"X07 tuple denied no state\");return normal(obj(r.objectPrototype));"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 569,
+      "text": " const legacy=new Realm((_l:string)=>{}),foreign=obj(legacy.createBuiltin(\"foreign\",0,(_t,_a,_c,_l):ValueCompletion=>normal()));let lookups=0;getter(r,object(foreign),wellKnownHasInstance,(_t,_a,_c,_l):ValueCompletion=>{lookups++;return normal();});property(r,r.globalObject,\"foreign\",{value:foreign,writable:true,configurable:true});define(r,\"method\",m.value);"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 580,
+      "text": " getter(a,k,\"prototype\",(_t,_args,ctx,l):ValueCompletion=>{const result=ctx.call(c,UNDEFINED,[],l);check(result.type===\"normal\",\"X12 ordinary call\");if(result.type===\"normal\")called=result.value;contextRealm=ctx.realm;return normal(number(7));});define(b,\"K\",obj(k));const result=run('new K();',b);check(result.type===\"normal\"&&object(result.value).getPrototypeOf()===a.objectPrototype&&contextRealm===a,\"X12 outer constructor\");check(sameValue(called,strict?UNDEFINED:a.globalThisValue),\"X12 call this binding\");"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 600,
+      "text": " const a=fresh(),b=fresh(),sink=new GuestObject(b.objectPrototype);define(a,\"sink\",obj(sink));let seen:Value=UNDEFINED;"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 602,
+      "text": " constructor(a,'function C(){capture(this);sink.saved=this;throw 7;}');define(b,\"C\",own(a,\"C\"));const c=run('new C();',b);check(c.type===\"throw\"&&sameValue(c.value,number(7)),\"body abrupt\");const saved=sink.getOwnProperty(\"saved\");check(saved?.kind===\"data\"&&sameValue(saved.value,seen)&&seen.kind===\"object\",\"body side effect retained\");check(b.globalObject.getOwnProperty(\"result\")===undefined,\"no instance publication\");"
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "line": 622,
+      "text": " const a=fresh(),r=fresh(),log:string[]=[],p=new GuestObject(a.objectPrototype);let bodyThis:Value=UNDEFINED;"
+    },
+    {
+      "path": "typescript/test/harness-errors-a.ts",
+      "line": 79,
+      "text": "            const expected = name === \"Error\" ? r.objectPrototype : r.getErrorPrototype(\"Error\");"
+    },
+    {
+      "path": "typescript/test/harness-errors-a.ts",
+      "line": 80,
+      "text": "            check(r.getErrorPrototype(name).getPrototypeOf() === expected && r.objectPrototype.getPrototypeOf() === null, \"graph\");"
+    },
+    {
+      "path": "typescript/test/harness-errors-a.ts",
+      "line": 113,
+      "text": "        const global = r.globalObject.getOwnProperty(name);"
+    },
+    {
+      "path": "typescript/test/harness-errors-a.ts",
+      "line": 116,
+      "text": "    check(keysEqual(r.globalObject, [\"undefined\", \"NaN\", \"Infinity\", \"console\", \"Number\", \"Error\", \"TypeError\", \"ReferenceError\", \"RangeError\", \"SyntaxError\"]), \"exact B globals\");"
+    },
+    {
+      "path": "typescript/test/harness-errors-a.ts",
+      "line": 120,
+      "text": "    const d = r.objectPrototype.getOwnProperty(\"toString\");"
+    },
+    {
+      "path": "typescript/test/harness-errors-b.ts",
+      "line": 67,
+      "text": " const branded=a.createError(\"Error\",\"x\");branded.setPrototypeOf(null);const tag=method(a.objectPrototype,\"toString\");alias(b,\"tag\",(_r,args,c,l)=>c.call(tag,args[0],[],l));for(const o of [branded,a.getErrorPrototype(\"Error\"),a.createObject()]){define(b,\"o\",obj(o));check(sameValue(value(run(\"tag(o);\",b)),str(o===branded?\"[object Error]\":\"[object Object]\")),\"ErrorData tag\");}data(branded,wellKnownToStringTag,str(\"Custom\"));define(b,\"o\",obj(branded));check(sameValue(value(run(\"tag(o);\",b)),str(\"[object Custom]\")),\"custom tag\");"
+    },
+    {
+      "path": "typescript/test/harness-errors-b.ts",
+      "line": 81,
+      "text": " run(\"function f(){}\",a);const fn=object(own(a.globalObject,\"f\")).callable;if(fn===null||fn.kind!==\"script-guest\")throw new Error(\"Script function\");const activation=new ScriptFunctionEnvironment({kind:\"global\",record:env},UNDEFINED,fn);activation.createMutableBinding(\"x\",loc);error(activation.getBindingValue(\"x\",c,loc),b,\"ReferenceError\");error(activation.setMutableBinding(\"x\",num(1),c,loc),b,\"ReferenceError\");"
+    },
+    {
+      "path": "typescript/test/harness-errors-b.ts",
+      "line": 95,
+      "text": " for(const prototype of [a.numberPrototype,a.stringPrototype,a.booleanPrototype,a.symbolPrototype]){const target=method(prototype,\"toString\");alias(b,\"m\",(_r,args,c,l)=>c.call(target,args[0],args.slice(1),l));error(run(\"m({},rad);\",b),a,\"TypeError\");}check(radixEffects===0,\"receiver before radix\");"
+    },
+    {
+      "path": "typescript/test/harness-errors-b.ts",
+      "line": 102,
+      "text": " for(const text of [\"let x;\",\"function x(){}\",\"var y;\"]){const r=fresh();r.defineScriptGlobal(\"x\",{value:num(7),writable:false,enumerable:false,configurable:false});r.globalObject.preventExtensions();const s=createScriptSession(),result=evaluateScript(s,prepare(text,r,\"restricted\"));check(result.phase===\"instantiation\",\"restriction phase\");error(result.completion,r,text.startsWith(\"let\")?\"SyntaxError\":\"TypeError\");check(s.inspect().steps===(text.startsWith(\"let\")?1:text.startsWith(\"function\")?2:3),\"only declaration ticks\");idle(s);}"
+    },
+    {
+      "path": "typescript/test/harness-errors-b.ts",
+      "line": 112,
+      "text": " const a=fresh(),b=fresh();const session=createScriptSession();run(\"function f(){missing;}\",a,session,\"H\");define(b,\"f\",own(a.globalObject,\"f\"));const first=run(\"f();\",b,session,\"T\");error(first,a,\"ReferenceError\");check(session.inspect().lastAbrupt?.unitId===\"H\"&&session.inspect().lastAbrupt?.realm===a,\"function source transfer\");const captured=thrown(first);alias(b,\"same\",(_r,_a,_c,_l)=>captured);run(\"try{same();}catch(e){}\",b,session,\"caught\");check(run(\"same();\",b,session,\"again\")===captured&&session.inspect().lastAbrupt?.unitId===\"again\",\"consumed history reset\");const rethrow=thrown(run(\"try{f();}catch(e){throw e;}\",b,session,\"T-rethrow\"));check(object(rethrow.value).getPrototypeOf()===a.getErrorPrototype(\"ReferenceError\")&&rethrow.origin.kind===\"guest\",\"rethrow keeps Error object\");check(session.inspect().lastAbrupt?.unitId===\"T-rethrow\"&&session.inspect().lastAbrupt?.realm===b,\"rethrow source\");"
+    },
+    {
+      "path": "typescript/test/harness-errors-b.ts",
+      "line": 522,
+      "text": " const shell=new GuestObject(a.functionPrototype,false,k.callable,k.constructorSlot);shell.bootstrapDefine(\"prototype\",{get:obj(a.createBuiltin(\"poison\",0,(_r,_a,_c,_l)=>{gets++;return normal(obj(a.objectPrototype));})),enumerable:false,configurable:true});define(a,\"K\",obj(shell));const s=createScriptSession();hostFault(()=>{run(\"new K();\",a,s);},\"invalid builtin constructor metadata\");check(s.inspect().steps===3&&gets===0&&callbacks===0,\"copied slot rejected before Get\");idle(s);"
+    },
+    {
+      "path": "typescript/test/harness-for-update.ts",
+      "line": 33,
+      "text": "    const d = r.globalEnvironment.globalObject.getOwnProperty(name);"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 23,
+      "text": "function own(r: Realm,name: string): Value { const d=r.globalObject.getOwnProperty(name); if(d===undefined || d.kind!==\"data\")throw new Error(\"missing \"+name);return d.value; }"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 43,
+      "text": " const symbol=new GuestSymbol(\"canonical\"),o=new GuestObject(a.objectPrototype);define(b,\"sym\",{kind:\"symbol\",value:symbol});define(b,\"o\",obj(o));"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 49,
+      "text": " check(sv.kind===\"object\" && sv.object instanceof GuestStringObject && sv.object.stringData===\"\" && sv.object.getPrototypeOf()===a.stringPrototype,\"String\");"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 62,
+      "text": " for(const source of [\"out(o.p=7);out(o.p);\",\"out(o.p++);out(o.p);\"]){const r=fresh(),out: Value[]=[];recorder(r,out);const o=new GuestObject(r.objectPrototype);frozen(o,\"p\",number(1));define(r,\"o\",obj(o));const c=run(prefix+source,r);if(strict) throws(c,\"TypeError\");else check(out.map(scalar).join(\",\")===(source.includes(\"++\")?\"1,1\":\"7,1\"),\"R01/R02\");}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 63,
+      "text": " {const r=fresh();const c=run(prefix+\"ghost=7;\",r);if(strict){throws(c,\"ReferenceError\");check(r.globalObject.getOwnProperty(\"ghost\")===undefined,\"no strict property\");}else{expect(c,number(7),\"R03\");const d=r.globalObject.getOwnProperty(\"ghost\");check(d!==undefined && d.kind===\"data\" && d.writable && d.enumerable && d.configurable,\"assignment flags\");}}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 64,
+      "text": " for(const deleted of [false,true]){const r=fresh();if(deleted)define(r,\"x\",number(1));define(r,\"seed\",builtin(r,\"seed\",(_t,_a,_c,_l): ValueCompletion=>{if(deleted)r.globalObject.internalDelete(\"x\");else frozen(r.globalObject,\"x\",number(1));return normal(number(7));}));const c=run(prefix+\"x=seed();\",r);if(strict) throws(c,\"ReferenceError\");else expect(c,number(7),\"R04/R05\");if(!strict)check(scalar(own(r,\"x\"))===(deleted?\"7\":\"1\"),\"captured base\");}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 66,
+      "text": " {const r=fresh();r.globalObject.preventExtensions();const c=run(prefix+\"ghost=7;\",r);if(strict)throws(c,\"ReferenceError\");else expect(c,number(7),\"R07\");check(r.globalObject.getOwnProperty(\"ghost\")===undefined,\"nonextensible\");}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 67,
+      "text": " {const r=fresh();frozen(r.globalObject,\"x\",number(1));const c=run(prefix+\"var x=7;x;\",r);if(strict)throws(c,\"TypeError\");else expect(c,number(1),\"R17\");}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 75,
+      "text": "{const r=fresh(),out: Value[]=[];recorder(r,out);property(r,r.objectPrototype,\"p\",{value:number(1),writable:true,enumerable:true,configurable:true});run(\"out(delete p);out(p);\",r);check(out.map(scalar).join(\",\")===\"true,1\",\"R12\");}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 79,
+      "text": " {const r=fresh(),log: string[]=[],o=new GuestObject(r.objectPrototype);property(r,o,\"p\",{get:builtin(r,\"getter\",(_t,_a,_c,_l): ValueCompletion=>{log.push(\"G\");return normal(number(1));}),configurable:false});define(r,\"o\",obj(o));const c=run(prefix+\"delete o.p;\",r);if(strict)throws(c,\"TypeError\");else expect(c,{kind:\"boolean\",value:false},\"R11\");check(log.length===0,\"delete no getter\");}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 80,
+      "text": " {const r=fresh(),log: string[]=[],o=new GuestObject(r.objectPrototype),k=new GuestObject(r.objectPrototype);const sentinel: ThrowCompletion={type:\"throw\",origin:{kind:\"guest\"},value:obj(new GuestObject()),diagnostic:{phase:\"runtime\",name:\"Error\",message:\"sentinel\",loc:{line:900,column:9}}};"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 83,
+      "text": " {const r=fresh(),log: string[]=[],o=new GuestObject(r.objectPrototype),k=new GuestObject(r.objectPrototype);property(r,k,wellKnownToPrimitive,{value:builtin(r,\"key\",(_t,_a,_c,_l): ValueCompletion=>{log.push(\"K\");return normal({kind:\"string\",value:\"p\"});})});property(r,o,\"p\",{get:builtin(r,\"get\",(_t,_a,_c,_l): ValueCompletion=>{log.push(\"G\");return normal(number(1));}),set:builtin(r,\"set\",(_t,a,_c,_l): ValueCompletion=>{log.push(\"S\"+scalar(a[0]));return normal();})});define(r,\"o\",obj(o));define(r,\"k\",obj(k));define(r,\"out\",builtin(r,\"out\",(_t,a,_c,_l): ValueCompletion=>{log.push(\"out\"+scalar(a[0]));return normal();}));run(prefix+\"out(o[k]++);\",r);check(log.join(\",\")===\"K,G,S2,out1\",\"R15 cached key\");}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 89,
+      "text": " check(scalar(own(r,\"x\"))===\"8\",\"D01 repeated var\");const fd=r.globalObject.getOwnProperty(\"f\");check(fd!==undefined && fd.kind===\"data\" && fd.writable && fd.enumerable && !fd.configurable,\"D01 function flags\");"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 94,
+      "text": " const r2=fresh();frozen(r2.globalObject,\"bad\",number(1));throws(run(prefix+\"function bad(){}\",r2),\"TypeError\");"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 95,
+      "text": " const r3=fresh();r3.defineScriptGlobal(\"f\",{value:number(1),writable:true,enumerable:true,configurable:false});check(run(prefix+\"function f(){}\",r3).type===\"normal\",\"D06 replace\");const d=r3.globalObject.getOwnProperty(\"f\");check(d!==undefined && d.kind===\"data\" && d.writable && d.enumerable && !d.configurable,\"D06 flags\");"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 101,
+      "text": "for(const source of negatives){const r=fresh(),out: Value[]=[];recorder(r,out);const p=prepareBoundedScript({id:\"N\",text:source},r);check(p.kind!==\"ready\" && out.length===0 && r.globalObject.getOwnProperty(\"f\")===undefined,\"negative \"+source);}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 508,
+      "text": " const o=new GuestObject(r.objectPrototype),key=new GuestObject(r.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 529,
+      "text": " if(trace.id===\"P13-sloppy-call\" || trace.id===\"P14-strict-call\"){check(record.inspectMaterializations().completed===(k>=5?1:0),\"materialization threshold\");check((r.globalObject.getOwnProperty(\"f\")!==undefined)===(k>=6),\"publication threshold\");}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 530,
+      "text": " if(trace.id===\"P03-unresolved-write\")check((r.globalObject.getOwnProperty(\"x\")!==undefined)===(k>=3),\"write threshold\");"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 531,
+      "text": " if(trace.id===\"P05-var\")check((r.globalObject.getOwnProperty(\"x\")!==undefined)===(k>=4),\"var threshold\");"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 532,
+      "text": " if(trace.id===\"P02-delete-binding\")check((r.globalObject.getOwnProperty(\"x\")===undefined)===(k>=2),\"delete threshold\");"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 550,
+      "text": " define(a,\"out\",builtin(a,\"out\",(_t,args,c,l): ValueCompletion=>{savedA=c;const before=sa.inspect();const active=before.active;if(active===null)throw new Error(\"active\");check(!active.strict && active.lexical!==active.variable && active.lexical instanceof ScriptDeclarativeEnvironment && active.lexical.outer===active.variable,\"sloppy body environment\");check(args[0].kind===\"object\" && args[0].object instanceof GuestNumber,\"boxed receiver\");const start=sb.inspect().steps;let caught=false;try{const result=evaluateScript(sb,br);expect(result.completion,number(11),\"nested value\");}catch(e){if(!(e instanceof Error) || e!==error)throw e;caught=true;}check(caught===fault,\"host identity\");check(b.globalObject.getOwnProperty(\"caught\")===undefined,\"host bypasses guest catch\");idle(sb);sameFrame(before,sa.inspect());check(sb.inspect().steps>start && c.realm===a,\"independent monotonic budget\");expect(c.call(leaf,UNDEFINED,[],l),number(7),\"permit restored\");return normal();}));"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 563,
+      "text": " const a=fresh(),b=fresh(),s=createScriptSession(),o=new GuestObject(a.objectPrototype),k=new GuestObject(a.objectPrototype);const values: Value[]=[];recorder(a,values);run((strict?'':'\"use strict\";')+'function g(){return this;}',b);const g=own(b,\"g\");let callbacks=0;"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 570,
+      "text": "for(const source of ['function f(){try{while(true){}}catch(e){this.bad=1;}}f();','function f(){return f();}try{f();}catch(e){this.bad=1;}']){const r=fresh(),s=createScriptSession({maxSteps:30,maxCalls:64}),c=run(source,r,s);check(c.type===\"throw\" && c.origin.kind===\"resource-limit\" && r.globalObject.getOwnProperty(\"bad\")===undefined,\"resource bypass catch\");}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 583,
+      "text": " const r=fresh(),c=context(r);define(r,\"x\",number(1));for(const strict of [false,true]){define(r,\"x\",number(1));const ref=resolveScriptBinding({kind:\"global\",record:r.globalEnvironment},\"x\",loc,strict);if(ref.type!==\"normal\")throw new Error(\"reference\");r.globalObject.internalDelete(\"x\");const result=getScriptBinding(ref.reference,c);if(strict)throws(result,\"ReferenceError\");else expect(result,UNDEFINED,\"deleted sloppy read\");}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 591,
+      "text": " define(r,\"seed\",builtin(r,\"seed\",(_t,_a,c,_l): ValueCompletion=>{if(lexical){check(r.globalEnvironment.createMutableBinding(\"ghost\",loc, c.realm).type===\"normal\",\"late lexical create\");check(r.globalEnvironment.initializeBinding(\"ghost\",number(1),c,loc).type===\"normal\",\"late lexical initialize\");}else property(r,r.globalObject,\"ghost\",{set:builtin(r,\"set\",(_t,_a,_c,_l): ValueCompletion=>{setters++;return q;}),configurable:true});return normal(number(7));}));"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 604,
+      "text": " const a=fresh(),b=fresh(),s=createScriptSession(),q=sentinel(),o=new GuestObject(a.objectPrototype),k=new GuestObject(a.objectPrototype);let calls=0;"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 614,
+      "text": " const r=fresh(),o=new GuestObject(r.objectPrototype),sym=new GuestSymbol(\"numeric\");property(r,o,\"p\",{value:{kind:\"symbol\",value:sym},writable:false});define(r,\"o\",obj(o));throws(run((strict?'\"use strict\";':'')+'o.p++;',r),\"TypeError\");"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 615,
+      "text": " const d=fresh();run((strict?'\"use strict\";':'')+'var x;',d);const x=d.globalObject.getOwnProperty(\"x\");check(x!==undefined && x.kind===\"data\" && x.writable && x.enumerable && !x.configurable && x.value.kind===\"undefined\",\"fresh var flags\");"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 622,
+      "text": " if(id===\"R04\"){source=\"ghost=seed();\";define(r,\"seed\",builtin(r,\"seed\",(_t,_a,_c,_l):ValueCompletion=>{frozen(r.globalObject,\"ghost\",number(1));return normal(number(7));}));if(strict)error=\"ReferenceError\";}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 623,
+      "text": " if(id===\"R05\"){source=\"x=zap();\";define(r,\"x\",number(1));define(r,\"zap\",builtin(r,\"zap\",(_t,_a,_c,_l):ValueCompletion=>{r.globalObject.internalDelete(\"x\");return normal(number(7));}));if(strict)error=\"ReferenceError\";}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 625,
+      "text": " if(id===\"R07\"){source=\"out(ghost=7);\";r.globalObject.preventExtensions();expected=\"7\";if(strict)error=\"ReferenceError\";}"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 630,
+      "text": " if(id===\"R17\"){source=\"var x=7;out(x);\";frozen(r.globalObject,\"x\",number(1));expected=\"1\";if(strict)error=\"TypeError\";}"
+    },
+    {
+      "path": "typescript/test/harness-switch.ts",
+      "line": 32,
+      "text": "    const d = r.globalEnvironment.globalObject.getOwnProperty(name);"
+    },
+    {
+      "path": "typescript/test/in-operator.ts",
+      "line": 399,
+      "text": "    const box = new StringTarget(\"\\ud83d\\ude00\", realm.stringPrototype);"
+    },
+    {
+      "path": "typescript/test/in-operator.ts",
+      "line": 407,
+      "text": "    const empty = new StringTarget(\"\", realm.stringPrototype);"
+    },
+    {
+      "path": "typescript/test/in-operator.ts",
+      "line": 410,
+      "text": "    const child = new Target(new Trace(), new StringTarget(\"a\", realm.stringPrototype));"
+    },
+    {
+      "path": "typescript/test/in-operator.ts",
+      "line": 413,
+      "text": "    const ordinary = new StringTarget(\"a\", realm.stringPrototype);"
+    },
+    {
+      "path": "typescript/test/in-operator.ts",
+      "line": 932,
+      "text": "    const ap = t.realm.objectPrototype.getPrototypeOf();"
+    },
+    {
+      "path": "typescript/test/in-operator.ts",
+      "line": 933,
+      "text": "    const bp = t.owner.objectPrototype.getPrototypeOf();"
+    },
+    {
+      "path": "typescript/test/in-operator.ts",
+      "line": 936,
+      "text": "        t.realm.objectPrototype.getPrototypeOf() === ap &&"
+    },
+    {
+      "path": "typescript/test/in-operator.ts",
+      "line": 937,
+      "text": "            t.owner.objectPrototype.getPrototypeOf() === bp,"
+    },
+    {
+      "path": "typescript/test/number-conversions.ts",
+      "line": 68,
+      "text": "        check(root.getPrototypeOf() === realm.objectPrototype && root.callable === null && root.isExtensible(), \"root invariants\");"
+    },
+    {
+      "path": "typescript/test/number-conversions.ts",
+      "line": 127,
+      "text": "        obj(a.objectPrototype), obj(a.booleanPrototype), obj(a.stringPrototype), obj(a.symbolPrototype),"
+    },
+    {
+      "path": "typescript/test/number-conversions.ts",
+      "line": 221,
+      "text": "    expect(evaluator.call(realm.objectPrototype.get(\"valueOf\", tight.context, loc), boxed, [], loc), boxed, \"Object identity\");"
+    },
+    {
+      "path": "typescript/test/number-conversions.ts",
+      "line": 222,
+      "text": "    const fresh = result(evaluator.call(realm.objectPrototype.get(\"valueOf\", tight.context, loc), num(-0), [], loc));"
+    },
+    {
+      "path": "typescript/test/number-conversions.ts",
+      "line": 225,
+      "text": "    expect(evaluator.call(realm.objectPrototype.get(\"toString\", tight.context, loc), boxed, [], loc), str(\"[object Number]\"), \"borrowed Object tag\");"
+    },
+    {
+      "path": "typescript/test/number-conversions.ts",
+      "line": 226,
+      "text": "    for (const method of [realm.booleanPrototype.get(\"valueOf\", tight.context, loc), realm.booleanPrototype.get(\"toString\", tight.context, loc), realm.stringPrototype.get(\"valueOf\", tight.context, loc), realm.stringPrototype.get(\"toString\", tight.context, loc), realm.symbolPrototype.get(\"valueOf\", tight.context, loc)]) {"
+    },
+    {
+      "path": "typescript/test/object-descriptors.ts",
+      "line": 147,
+      "text": "result(frozenText.setPrototypeOf(keyContext.realm.stringPrototype), true, \"W11 same prototype\");"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 96,
+      "text": "    const method = b.objectPrototype.get(\"toString\", evaluator.context, loc);"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 101,
+      "text": "        keys(realm.objectPrototype.ownPropertyKeys(), [\"valueOf\", \"toString\"], \"Object keys\");"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 105,
+      "text": "        const descriptor = realm.objectPrototype.getOwnProperty(\"toString\");"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 107,
+      "text": "        const own = realm.objectPrototype.get(\"toString\", evaluator.context, loc);"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 117,
+      "text": "        check(!realm.global.bindings.has(\"Object\") && !realm.global.bindings.has(\"Symbol\"), \"no globals\");"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 122,
+      "text": "        obj(a.objectPrototype), obj(a.functionPrototype), obj(a.arrayPrototype), obj(a.booleanPrototype), obj(a.numberPrototype), obj(a.stringPrototype), obj(a.symbolPrototype),"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 125,
+      "text": "    const tags = [\"Undefined\", \"Null\", \"Boolean\", \"Number\", \"Number\", \"String\", \"String\", \"Symbol\", \"Object\", \"Function\", \"Array\", \"Boolean\", \"Number\", \"String\", \"Symbol\", \"Object\", \"Array\", \"Boolean\", \"Number\", \"String\", \"Symbol\", \"Object\", \"Object\", \"Object\"];"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 131,
+      "text": "    for (const root of [a.arrayPrototype, a.functionPrototype, a.booleanPrototype, a.numberPrototype, a.stringPrototype]) {"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 135,
+      "text": "    const relinkedTags = [\"Array\", \"Boolean\", \"Number\", \"String\"];"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 196,
+      "text": "    put(b.objectPrototype, \"toString\", num(9));"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 197,
+      "text": "    check(!sameValue(a.objectPrototype.get(\"toString\", evaluator.context, loc), num(9)), \"method isolation\");"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 198,
+      "text": "    b.objectPrototype.internalDelete(\"toString\");"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 282,
+      "text": "    seed(realm, \"savedToString\", realm.objectPrototype.get(\"toString\", evaluator.context, loc));"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 283,
+      "text": "    seed(realm, \"objectRoot\", obj(realm.objectPrototype));"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 325,
+      "text": "        return fresh.objectPrototype.internalGet(key, receiver, context, at);"
+    },
+    {
+      "path": "typescript/test/object-tostring.ts",
+      "line": 326,
+      "text": "    }, fresh.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 53,
+      "text": "const method = b.objectPrototype.get(\"valueOf\", e.context, loc);"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 57,
+      "text": "check(method !== a.objectPrototype.get(\"valueOf\", e.context, loc) && fn.getPrototypeOf() === b.functionPrototype, \"fresh method/defining prototype\");"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 66,
+      "text": "const d = b.objectPrototype.getOwnProperty(\"valueOf\");"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 68,
+      "text": "check(stringKeys(b.objectPrototype.ownPropertyKeys()).join(\",\") === \"valueOf,toString\" && !b.global.bindings.has(\"Object\"), \"bounded installation\");"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 104,
+      "text": "        check(first instanceof GuestStringObject && first.stringData === primitive.value && first.getPrototypeOf() === b.stringPrototype, \"String payload/root\");"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 149,
+      "text": "const allocationMethod = allocationRealm.objectPrototype.get(\"valueOf\", budget.context, loc);"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 211,
+      "text": "            const first = callee === local.objectPrototype.get(\"valueOf\", context, loc);"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 212,
+      "text": "            check((first || callee === (source === \"[]\" ? local.arrayPrototype : source === \"{}\" ? local.objectPrototype : local.functionPrototype).get(\"toString\", context, loc)) && receiver === operand && args.length === 0, \"real inherited method call\");"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 220,
+      "text": "    const tag = source === \"{}\" ? \"Object\" : source === \"[]\" ? \"Array\" : \"Function\";"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 259,
+      "text": "const otherMethod = a.objectPrototype.get(\"valueOf\", explicit.context, loc);"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 260,
+      "text": "check(b.objectPrototype.set(\"valueOf\", { kind: \"number\", value: 7 }, e.context, loc).type === \"normal\", \"replace method\");"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 261,
+      "text": "check(sameValue(b.createArray().get(\"valueOf\", e.context, loc), { kind: \"number\", value: 7 }) && a.objectPrototype.get(\"valueOf\", e.context, loc) === otherMethod, \"replacement inheritance/isolation\");"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 263,
+      "text": "const deleted = b.objectPrototype.internalDelete(\"valueOf\");"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 265,
+      "text": "check(a.objectPrototype.get(\"valueOf\", e.context, loc) === otherMethod, \"deletion isolation\");"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 274,
+      "text": "const symbolMethod = symbolB.objectPrototype.get(\"valueOf\", e.context, loc);"
+    },
+    {
+      "path": "typescript/test/object-valueof.ts",
+      "line": 284,
+      "text": "check(symbolB.symbolPrototype.ownPropertyKeys().length === 4 && symbolB.symbolPrototype.getPrototypeOf() === symbolB.objectPrototype && symbolB.symbolPrototype.isExtensible() && symbolB.symbolPrototype.callable === null, \"A17/B2 exact root graph\");"
+    },
+    {
+      "path": "typescript/test/operation-context.ts",
+      "line": 235,
+      "text": "    check(allocated.getPrototypeOf() === b.objectPrototype && objectOf(allocated.get(\"o\", entry.context, loc)).getPrototypeOf() === b.objectPrototype, \"R2 defining objects\");"
+    },
+    {
+      "path": "typescript/test/operation-context.ts",
+      "line": 240,
+      "text": "    check(objectOf(later).getPrototypeOf() === b.objectPrototype, \"R2 later allocation\");"
+    },
+    {
+      "path": "typescript/test/operation-context.ts",
+      "line": 252,
+      "text": "    check(context.realm.createObject().getPrototypeOf() === owner.objectPrototype, \"R4 active allocation\");"
+    },
+    {
+      "path": "typescript/test/operation-context.ts",
+      "line": 443,
+      "text": "    check(allocated.getPrototypeOf() === b.objectPrototype && allocated.get(\"token\", deep.context, loc) === token, \"R16 owner independent from metadata/prototype\");"
+    },
+    {
+      "path": "typescript/test/operator-coercion.ts",
+      "line": 152,
+      "text": "    const tag = source === \"{}\" ? \"Object\" : source === \"[]\" ? \"Array\" : \"Function\";"
+    },
+    {
+      "path": "typescript/test/primitive-conversion.ts",
+      "line": 318,
+      "text": "const conversionObject = new RealmObserved(conversionA.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/primitive-conversion.ts",
+      "line": 344,
+      "text": "        const source = new RealmObserved(conversionA.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/primitive-conversion.ts",
+      "line": 389,
+      "text": "const doubleSource = new RealmObserved(conversionA.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/primitive-conversion.ts",
+      "line": 400,
+      "text": "    const secondSource = new RealmObserved(conversionA.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/primitive-reads.ts",
+      "line": 90,
+      "text": "        case \"string\": return realm.stringPrototype;"
+    },
+    {
+      "path": "typescript/test/primitive-reads.ts",
+      "line": 181,
+      "text": "        const box = new StringBox(value, this.stringPrototype, this.observation);"
+    },
+    {
+      "path": "typescript/test/primitive-reads.ts",
+      "line": 233,
+      "text": "    put(realm.objectPrototype, \"x\", n(19));"
+    },
+    {
+      "path": "typescript/test/primitive-reads.ts",
+      "line": 314,
+      "text": "    put(realm.stringPrototype, \"0\", s(\"z\"));"
+    },
+    {
+      "path": "typescript/test/primitive-reads.ts",
+      "line": 315,
+      "text": "    put(realm.stringPrototype, \"2\", s(\"z\"));"
+    },
+    {
+      "path": "typescript/test/primitive-reads.ts",
+      "line": 316,
+      "text": "    put(realm.stringPrototype, \"-0\", s(\"z\"));"
+    },
+    {
+      "path": "typescript/test/primitive-reads.ts",
+      "line": 321,
+      "text": "    check(sameValue(realm.stringPrototype.get(\"length\", e.context, loc), n(0)), \"S12 prototype length\");"
+    },
+    {
+      "path": "typescript/test/primitive-reads.ts",
+      "line": 595,
+      "text": "    put(a.booleanPrototype, \"m\", foreign.objectPrototype.get(\"valueOf\", foreignEvaluator.context, loc));"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 269,
+      "text": "    realm.stringPrototype.bootstrapDefine(\"x\", { get: getter, set: setter, configurable: true });"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 276,
+      "text": "    boolean(realm.stringPrototype.internalDelete(\"x\"), true);"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 280,
+      "text": "    const globalObject = new GuestObject(), global = new GlobalEnvironment(globalObject, globalObject);"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 281,
+      "text": "    globalObject.bootstrapDefine(\"x\", { get: getter, set: setter, configurable: true });"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 286,
+      "text": "        check(receiver.kind === \"object\" && receiver.object === globalObject && args.length === 0 && at === captured.reference.loc, \"R22 global receiver/location\");"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 289,
+      "text": "    globalObject.bootstrapDefine(\"x\", { get: globalGetter });"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 291,
+      "text": "    globalObject.bootstrapDefine(\"x\", { value: eleven }); value(getStrictGlobalBinding(captured.reference, context), eleven, \"R22 live data\");"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 292,
+      "text": "    globalObject.internalDelete(\"x\"); referenceError(getStrictGlobalBinding(captured.reference, context));"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 294,
+      "text": "    globalObject.bootstrapDefine(\"late\", { value: seven, writable: true });"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 295,
+      "text": "    referenceError(putStrictGlobalBinding(unresolved.reference, eleven, context)); data(globalObject, \"late\", seven, true, false, false);"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 296,
+      "text": "    globalObject.bootstrapDefine(\"x\", { get: getter, configurable: true });"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 303,
+      "text": "    globalObject.bootstrapDefine(\"frozen\", { get: getter }); boolean(global.canDeclareGlobalFunction(\"frozen\"), false);"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 304,
+      "text": "    globalObject.bootstrapDefine(\"data\", { value: seven, writable: true, enumerable: true }); boolean(global.canDeclareGlobalFunction(\"data\"), true);"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 305,
+      "text": "    globalObject.bootstrapDefine(\"readonly\", { value: seven, enumerable: true }); boolean(global.canDeclareGlobalFunction(\"readonly\"), false);"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 307,
+      "text": "    data(globalObject, \"x\", getter, true, true, false); check(calls === before, \"R23 no old setter\");"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 357,
+      "text": "    check(context.call(realm.objectPrototype.get(\"toString\", context, loc), o(target), [], loc) === X && trace === \"tag\", \"R26 exact tag throw\");"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 414,
+      "text": "        check(A.globalObject.getOwnProperty(\"foreign\") === undefined && ticks === before, \"R34 before storage\");"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 417,
+      "text": "    accessor(A.globalObject, \"same\", scriptValue, scriptValue, false, true);"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 419,
+      "text": "    A.defineScriptGlobal(\"builtin\", { get: builtin }); accessor(A.globalObject, \"builtin\", builtin, UNDEFINED, false, false);"
+    },
+    {
+      "path": "typescript/test/property-assignment.ts",
+      "line": 98,
+      "text": "        case \"string\": return realm.stringPrototype;"
+    },
+    {
+      "path": "typescript/test/property-assignment.ts",
+      "line": 236,
+      "text": "        const box = new StringBox(value, this.stringPrototype, this.observation);"
+    },
+    {
+      "path": "typescript/test/property-assignment.ts",
+      "line": 1077,
+      "text": "    target.setPrototypeOf(home.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/property-assignment.ts",
+      "line": 1127,
+      "text": "        check(target.getPrototypeOf() === home.objectPrototype && a.observation.boxes.length === 0 && home.observation.boxes.length === 0, name + \" identity/prototype/no box\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 128,
+      "text": "const roots = [r1.objectPrototype, r1.functionPrototype, r1.arrayPrototype, r2.objectPrototype, r2.functionPrototype, r2.arrayPrototype];"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 135,
+      "text": "    const o = realm.objectPrototype;"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 161,
+      "text": "    for (const name of [\"Object\", \"Function\", \"Array\"]) checkGraph(!realm.global.bindings.has(name), \"G9 no constructors\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 166,
+      "text": "const immutable = immutableRealm.objectPrototype;"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 171,
+      "text": "checkGraph(immutable.setPrototypeOf(null).value && !immutable.setPrototypeOf(r1.objectPrototype).value, \"G2 frozen same slot\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 172,
+      "text": "checkGraph(r1.createObject().getPrototypeOf() === r1.objectPrototype && new GuestObject().getPrototypeOf() === null && new GuestArray().getPrototypeOf() === null, \"G3 explicit null defaults\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 201,
+      "text": "graphPut(r1.objectPrototype, \"x\", numberValue(7));"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 204,
+      "text": "r1.objectPrototype.bootstrapDefine(\"fixed\", { value: numberValue(3), writable: false });"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 212,
+      "text": "checkGraph(literalObject.getPrototypeOf() === r1.objectPrototype && literalArray.getPrototypeOf() === r1.arrayPrototype && declared.getPrototypeOf() === r1.functionPrototype && graphObject(graphBinding(r1, \"expression\")).getPrototypeOf() === r1.functionPrototype, \"G8 literal/declaration/expression roots\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 223,
+      "text": "    const expected = key === \"0\" ? r1.objectPrototype : key === \"1\" ? r1.arrayPrototype : r1.functionPrototype;"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 237,
+      "text": "checkGraph(r2.createObject().get(\"x\", active.context, at).kind === \"undefined\" && stringKeys(r2.objectPrototype.ownPropertyKeys()).join(\",\") === \"valueOf,toString\", \"G11 independent root mutation\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 243,
+      "text": "checkGraph(foreignAllocation.type === \"normal\" && graphObject(foreignAllocation.value).getPrototypeOf() === r1.objectPrototype && foreignActive.calls === 0, \"G11 foreign body uses defining Realm\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 260,
+      "text": "        const tag = name.endsWith(\"Object\") ? \"Object\" : name.endsWith(\"Array\") ? \"Array\" : \"Function\";"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 288,
+      "text": "    const roots: GuestObject[] = [realm.booleanPrototype, realm.numberPrototype, realm.stringPrototype];"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 290,
+      "text": "        checkGraph(root.getPrototypeOf() === realm.objectPrototype && root.callable === null && root.isExtensible(), \"W1 root graph/flags\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 291,
+      "text": "        checkGraph(root.get(\"valueOf\", zeroHookContext, at) !== realm.objectPrototype.get(\"valueOf\", zeroHookContext, at), \"N roots own payload valueOf\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 296,
+      "text": "    checkGraph(!realm.booleanPrototype.booleanData && 1 / realm.numberPrototype.numberData === Infinity && realm.stringPrototype.stringData === \"\", \"W1 root payloads\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 297,
+      "text": "    checkGraph(stringKeys(realm.booleanPrototype.ownPropertyKeys()).join(\",\") === \"toString,valueOf\" && stringKeys(realm.numberPrototype.ownPropertyKeys()).join(\",\") === \"toString,valueOf\" && stringKeys(realm.stringPrototype.ownPropertyKeys()).join(\",\") === \"length,toString,valueOf\", \"M1 root keys\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 298,
+      "text": "    checkGraph(stringKeys(realm.objectPrototype.ownPropertyKeys()).join(\",\") === \"valueOf,toString\" && stringKeys(realm.functionPrototype.ownPropertyKeys()).join(\",\") === \"name,length,call,toString\" && stringKeys(realm.arrayPrototype.ownPropertyKeys()).join(\",\") === \"length,join,toString\", \"W1 original root keys\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 299,
+      "text": "    for (const name of [\"Object\", \"Boolean\", \"String\"]) checkGraph(!realm.global.bindings.has(name), \"W17 no new globals\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 301,
+      "text": "    checkGraph(namespace !== realm.numberPrototype && namespace.getPrototypeOf() === realm.objectPrototype && namespace.callable === null, \"W1 Number namespace preserved\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 303,
+      "text": "checkGraph(boxA.booleanPrototype !== boxB.booleanPrototype && boxA.numberPrototype !== boxB.numberPrototype && boxA.stringPrototype !== boxB.stringPrototype, \"W1 independent roots\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 318,
+      "text": "        checkGraph(firstBox instanceof GuestStringObject && firstBox.stringData === primitive.value && firstBox.getPrototypeOf() === boxA.stringPrototype, \"W2 String payload/root\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 371,
+      "text": "const stringRootKeysBeforeWrite = boxA.stringPrototype.ownPropertyKeys().length;"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 372,
+      "text": "const stringRootParentBeforeWrite = boxA.stringPrototype.getPrototypeOf();"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 376,
+      "text": "    checkGraph(boxA.stringPrototype.stringData === \"\" && boxA.stringPrototype.ownPropertyKeys().length === stringRootKeysBeforeWrite && boxA.stringPrototype.getPrototypeOf() === stringRootParentBeforeWrite, \"W17 rejected write preserves String root/payload\");"
+    },
+    {
+      "path": "typescript/test/realms.ts",
+      "line": 405,
+      "text": "checkGraph(boxTrace.join(\",\") === \"B,C,B\" && boxes[0].getPrototypeOf() === boxB.numberPrototype && boxes[1].getPrototypeOf() === boxC.stringPrototype && boxes[2].getPrototypeOf() === boxB.booleanPrototype, \"W15 allocation roots\");"
+    },
+    {
+      "path": "typescript/test/script-environment.ts",
+      "line": 24,
+      "text": "const object = realm.globalObject;"
+    },
+    {
+      "path": "typescript/test/script-execution.ts",
+      "line": 67,
+      "text": "    const descriptor = r.globalEnvironment.globalObject.getOwnProperty(name);"
+    },
+    {
+      "path": "typescript/test/script-execution.ts",
+      "line": 143,
+      "text": "    r.globalEnvironment.globalObject.preventExtensions();"
+    },
+    {
+      "path": "typescript/test/script-execution.ts",
+      "line": 529,
+      "text": "                const d = r.globalEnvironment.globalObject.getOwnProperty(\"f\");"
+    },
+    {
+      "path": "typescript/test/script-execution.ts",
+      "line": 693,
+      "text": "    check(object(value(evaluateScript(s,br).completion)).getPrototypeOf()===a.objectPrototype,\"defining Realm allocation\");"
+    },
+    {
+      "path": "typescript/test/script-execution.ts",
+      "line": 761,
+      "text": "    const global=r.globalEnvironment.globalObject;"
+    },
+    {
+      "path": "typescript/test/script-execution.ts",
+      "line": 797,
+      "text": "    const target=new GuestObject(r.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/script-execution.ts",
+      "line": 835,
+      "text": "        check(c.realm===b&&object(value(result)).getPrototypeOf()===b.objectPrototype,\"A07 B allocation restored B caller\");return result;"
+    },
+    {
+      "path": "typescript/test/script-execution.ts",
+      "line": 892,
+      "text": "    const r=fresh();define(r,\"fresh\",{kind:\"number\",value:7});r.globalEnvironment.globalObject.preventExtensions();"
+    },
+    {
+      "path": "typescript/test/script-function-materialization.ts",
+      "line": 80,
+      "text": "check(F !== F2 && P !== P2 && callable(F2).environment === global && F.getPrototypeOf() === A.functionPrototype && P.getPrototypeOf() === A.objectPrototype, \"F02 fresh prototypes\");"
+    },
+    {
+      "path": "typescript/test/script-function-materialization.ts",
+      "line": 91,
+      "text": "check(FB.getPrototypeOf() === B.functionPrototype && prototype(FB).getPrototypeOf() === B.objectPrototype && FB.getPrototypeOf() !== F.getPrototypeOf(), \"F04 Realm graph\");"
+    },
+    {
+      "path": "typescript/test/script-function-materialization.ts",
+      "line": 151,
+      "text": "    const globalKeys = A.globalObject.ownPropertyKeys().length;"
+    },
+    {
+      "path": "typescript/test/script-function-materialization.ts",
+      "line": 170,
+      "text": "    check(A.globalObject.ownPropertyKeys().length === globalKeys && !allocated.environment.hasBinding(\"a\", { line: 1, column: 1 }).value, \"prefix no binding changes\");"
+    },
+    {
+      "path": "typescript/test/script-function-setup.ts",
+      "line": 162,
+      "text": "        const descriptor = A.globalObject.getOwnProperty(\"f\");"
+    },
+    {
+      "path": "typescript/test/script-function-setup.ts",
+      "line": 175,
+      "text": "const second: Value = { kind: \"object\", object: new GuestObject(A.objectPrototype) };"
+    },
+    {
+      "path": "typescript/test/script-function-setup.ts",
+      "line": 252,
+      "text": "const markerObject=new GuestObject(markerRealm.objectPrototype);"
+    },
+    {
+      "path": "typescript/test/script-function-setup.ts",
+      "line": 258,
+      "text": "const old=value(gb.context,gr.globalEnvironment,\"f\"); gr.globalObject.bootstrapDefine(\"f\",{value:old,writable:false,configurable:false});"
+    },
+    {
+      "path": "typescript/test/script-function-setup.ts",
+      "line": 276,
+      "text": "cleanRealm.globalObject.bootstrapDefine(\"f\",{value:previous,writable:false,configurable:false});"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 31,
+      "text": "function absent(e: GlobalEnvironment, name: string): void { check(!e.hasLexicalDeclaration(name) && e.globalObject.getOwnProperty(name) === undefined, \"absent \" + name); }"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 106,
+      "text": "    const h = new Harness(); unused(h.run(plan(\"let x=1;\"))); tdz(h.env,\"x\",h.context); check(h.env.globalObject.getOwnProperty(\"x\") === undefined,\"no lexical property\");"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 107,
+      "text": "    const v = new Harness(); unused(v.run(plan(\"var x=1;\"))); desc(v.env.globalObject,\"x\",UNDEFINED);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 112,
+      "text": "    for (const n of [\"x\",\"y\",\"z\"]) desc(h.env.globalObject,n,UNDEFINED);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 122,
+      "text": "    desc(h.env.globalObject,\"g\",h.markers[0]); desc(h.env.globalObject,\"f\",h.markers[1]);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 132,
+      "text": "    const h = new Harness(); unused(h.run(plan(\"var x;\"))); error(h.run(plan(\"let x;\")),\"SyntaxError\",19); desc(h.env.globalObject,\"x\",UNDEFINED);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 133,
+      "text": "    const v = new Harness(); seed(v.env.globalObject,\"x\"); unused(v.run(plan(\"let x;\"))); tdz(v.env,\"x\",v.context); desc(v.env.globalObject,\"x\",num(7),true,true,true);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 142,
+      "text": "    const h = new Harness(); unused(h.run(plan(\"let y;\"))); unused(h.run(plan(\"var x;\"))); desc(h.env.globalObject,\"x\",UNDEFINED);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 147,
+      "text": "        const h = new Harness(); seed(h.env.globalObject,\"x\",w,e,c); const r = h.run(plan(\"function x(){}\"));"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 148,
+      "text": "        if (c || (w && e)) { unused(r); desc(h.env.globalObject,\"x\",h.markers[0],c || w,c || e,false); }"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 149,
+      "text": "        else { error(r,\"TypeError\",24); desc(h.env.globalObject,\"x\",num(7),w,e,c); check(h.markers.length === 0,\"flag reject\"); }"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 150,
+      "text": "        const v = new Harness(); seed(v.env.globalObject,\"x\",w,e,c); unused(v.run(plan(\"var x;\"))); desc(v.env.globalObject,\"x\",num(7),w,e,c);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 157,
+      "text": "        const h = new Harness(new GuestObject(proto)); if (!ext) h.env.globalObject.preventExtensions();"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 160,
+      "text": "        else { unused(r); if (kind === \"let\") { tdz(h.env,\"x\",h.context); check(h.env.globalObject.getOwnProperty(\"x\") === undefined,\"inherited lexical\"); } else desc(h.env.globalObject,\"x\",kind === \"var\" ? UNDEFINED : h.markers[0]); }"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 167,
+      "text": "        const h = new Harness(); seed(h.env.globalObject,\"x\"); h.env.globalObject.preventExtensions();"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 170,
+      "text": "        else { unused(r); if (kind === \"let\") tdz(h.env,name,h.context); else desc(h.env.globalObject,name,kind === \"var\" ? num(7) : h.markers[0],true,true,kind === \"var\"); }"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 178,
+      "text": "    const restricted = new Harness(); seed(restricted.env.globalObject,\"fresh\",true,true,false); error(restricted.run(p),\"SyntaxError\",19); check(restricted.ticks.join(\",\") === \"19\",\"restricted earlier\");"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 184,
+      "text": "        const before = h.realm.globalObject.getOwnProperty(text === \"let Number;\" ? \"Number\" : \"Infinity\");"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 193,
+      "text": "            desc(h.realm.globalObject,name,before.value,before.writable,before.enumerable,before.configurable);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 215,
+      "text": "        if (budget >= 10) desc(h.env.globalObject,\"f\",h.markers[0]); else absent(h.env,\"f\");"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 216,
+      "text": "        if (budget >= 11) desc(h.env.globalObject,\"x\",UNDEFINED); else absent(h.env,\"x\");"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 227,
+      "text": "        if (op === \"F+:f\") desc(h.env.globalObject,\"g\",h.markers[0]); else absent(h.env,\"g\");"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 234,
+      "text": "    desc(h.env.globalObject,\"x\",UNDEFINED); check(h.calls === 0 && h.markers.length === 1,\"no source effects\");"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 236,
+      "text": "    desc(runtime.env.globalObject,runtimeName,UNDEFINED); desc(runtime.env.globalObject,\"f\",runtime.markers[0]);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 250,
+      "text": "    if (op === \"V+:x\") desc(h.env.globalObject,\"f\",h.markers[0]); else absent(h.env,\"f\");"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 259,
+      "text": "    const f = new Harness(), fp = plan(\"function x(){}\"); unused(f.run(fp)); unused(f.run(fp)); check(f.markers.length === 2,\"fresh function each invocation\"); desc(f.env.globalObject,\"x\",f.markers[1]);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 260,
+      "text": "    const v = new Harness(), vp = plan(\"var x;\"); seed(v.env.globalObject,\"x\"); unused(v.run(vp)); desc(v.env.globalObject,\"x\",num(7),true,true,true);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 261,
+      "text": "    const closed = new Harness(), cp = plan(\"var x;\"); closed.env.globalObject.preventExtensions(); error(closed.run(cp),\"TypeError\",19);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 294,
+      "text": "    const h = new Harness(); const p = plan(\"var x;\".repeat(12000)); unused(h.run(p)); desc(h.env.globalObject,\"x\",UNDEFINED); check(h.ticks.length === 36001,\"large duplicate count\");"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 298,
+      "text": "    for(let i=0;i<6000;i++) desc(distinct.env.globalObject,\"x\"+i,UNDEFINED);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 316,
+      "text": "    if(stop > 10) desc(h.env.globalObject,\"f\",h.markers[0]); else absent(h.env,\"f\");"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 326,
+      "text": "    else desc(h.env.globalObject,runtimeName,kind === \"var\" ? UNDEFINED : h.markers[0]);"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 337,
+      "text": "    for(const n of [\"x\",\"y\",\"z\"]) desc(h.env.globalObject,n,UNDEFINED);"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 33,
+      "text": "function log(a: Realm): Value { return own(object(a.profile === \"legacy\" ? a.global.bindings.get(\"console\")!.value : own(a.globalObject,\"console\")),\"log\"); }"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 41,
+      "text": "    const c=object(own(a.globalObject,\"console\")), num=object(own(a.globalObject,\"Number\"));"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 42,
+      "text": "    check(c.getPrototypeOf()===a.objectPrototype && c.callable===null && num.getPrototypeOf()===a.objectPrototype && num.callable===null && num!==a.numberPrototype,\"namespaces\");"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 48,
+      "text": "    const prototypes=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype];"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 51,
+      "text": "        const p=prototypes[i]; keys(p,lists[i]); check(p.getPrototypeOf()===(i===0?null:a.objectPrototype),\"prototype chain\");"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 67,
+      "text": "    desc(a.arrayPrototype,\"length\",n(0),true,false,false); desc(a.stringPrototype,\"length\",n(0),false,false,false);"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 69,
+      "text": "    check(!a.objectPrototype.setPrototypeOf(a.createObject()).value,\"immutable object root\");"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 70,
+      "text": "    check(!a.booleanPrototype.booleanData && a.numberPrototype.numberData===0 && a.stringPrototype.stringData===\"\",\"primitive slots\");"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 71,
+      "text": "    check(a.createObject().getPrototypeOf()===a.objectPrototype && a.createArray().getPrototypeOf()===a.arrayPrototype && a.createBooleanObject(true).getPrototypeOf()===a.booleanPrototype && a.createNumberObject(1).getPrototypeOf()===a.numberPrototype && a.createStringObject(\"a\").getPrototypeOf()===a.stringPrototype && a.createSymbolObject(wellKnownToPrimitive).getPrototypeOf()===a.symbolPrototype,\"factories\");"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 91,
+      "text": "        keys(a.globalObject,globals); check(a.globalObject.getPrototypeOf()===a.objectPrototype && a.globalObject.callable===null && a.globalObject.isExtensible(),\"global shape\");"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 92,
+      "text": "        check(object(a.globalThisValue)===a.globalObject && object(a.globalEnvironment.getThisBinding())===a.globalObject,\"same this object\");"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 93,
+      "text": "        for(let i=0;i<globals.length;i++) desc(a.globalObject,globals[i],i===0?UNDEFINED:i===1?n(NaN):i===2?n(Infinity):own(a.globalObject,globals[i]),i>=3,false,i>=3);"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 94,
+      "text": "        check(a.globalObject.getOwnProperty(\"globalThis\")===undefined,\"no globalThis property\"); error(()=>{a.installGlobal(name,first,true);},\"invalid bootstrap global\"); break;"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 98,
+      "text": "        const left=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype,a.globalObject,object(own(a.globalObject,\"console\")),object(own(a.globalObject,\"Number\")),x.objectPrototype,x.functionPrototype,x.arrayPrototype,x.booleanPrototype,x.numberPrototype,x.stringPrototype,x.symbolPrototype,object(x.global.bindings.get(\"console\")!.value),object(x.global.bindings.get(\"Number\")!.value)];"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 99,
+      "text": "        const right=[b.objectPrototype,b.functionPrototype,b.arrayPrototype,b.booleanPrototype,b.numberPrototype,b.stringPrototype,b.symbolPrototype,b.globalObject,object(own(b.globalObject,\"console\")),object(own(b.globalObject,\"Number\")),y.objectPrototype,y.functionPrototype,y.arrayPrototype,y.booleanPrototype,y.numberPrototype,y.stringPrototype,y.symbolPrototype,object(y.global.bindings.get(\"console\")!.value),object(y.global.bindings.get(\"Number\")!.value)];"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 110,
+      "text": "    case \"B05\": error(()=>{a.global;},legacyError); error(()=>{a.global=x.global;},legacyError); error(()=>{x.globalObject;},\"Script Realm required\"); error(()=>{x.globalEnvironment;},\"Script Realm required\"); error(()=>{x.globalThisValue;},\"Script Realm required\"); break;"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 111,
+      "text": "    case \"B06\": seed(a,name,first); value(a.readScriptGlobal(name, context,loc),first); desc(a.globalObject,name,first,true,true,true); seed(a,name,next); value(a.readScriptGlobal(name, context,loc),next); a.globalObject.preventExtensions(); error(()=>{seed(a,name+\"new\",first);},\"invalid internal property definition: \"+name+\"new\"); check(a.globalObject.getOwnProperty(name+\"new\")===undefined,\"no failed seed\"); break;"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 113,
+      "text": "    case \"B08\": { seed(a,name,first); const r=resolveStrictGlobalBinding(a.globalEnvironment,name,loc); if(r.type===\"throw\") throw new Error(\"resolve\"); value(a.globalEnvironment.createMutableBinding(name,loc, context.realm),UNDEFINED); guestError(getStrictGlobalBinding(r.reference, context),\"ReferenceError\"); seed(a,name,first); guestError(a.readScriptGlobal(name, context,loc),\"ReferenceError\"); value(a.globalEnvironment.initializeBinding(name,next,context,loc),UNDEFINED); value(getStrictGlobalBinding(r.reference, context),next); desc(a.globalObject,name,first,true,true,true); guestError(b.readScriptGlobal(name, context,loc),\"ReferenceError\"); break; }"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 120,
+      "text": "    case \"B15\": for(const f of [log(x),obj(x.createGuestFunction([],[],x.global,null))]) { error(()=>{seed(a,name,f);},\"cross-profile callable transfer\"); check(a.globalObject.getOwnProperty(name)===undefined,\"no foreign seed\"); } seed(a,name,log(b)); error(()=>{invoke(own(a.globalObject,name),context);},unavailable); x.global.bindings.set(name,{value:log(a),initialized:true,mutable:true}); error(()=>{e.call(x.global.bindings.get(name)!.value,UNDEFINED,[],loc);},crossError); restored(e,x); break;"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 124,
+      "text": "        const alloc=y.createBuiltin(\"alloc\",0,(_r,_a,c,_l)=>normal(obj(c.realm.createObject()))); const allocated=e.call(obj(alloc),UNDEFINED,[],loc); check(allocated.type===\"normal\" && object(allocated.value).getPrototypeOf()===y.objectPrototype,\"defining allocation\"); restored(e,x);"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 129,
+      "text": "        const direct=y.createBuiltin(\"direct\",0,(_r,_a,c,_l)=>normal(obj(c.realm.createObject()))); const d=invoke(obj(direct),stub(x)); check(d.type===\"normal\" && object(d.value).getPrototypeOf()===x.objectPrototype,\"direct context preserved\");"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 150,
+      "text": "            desc(a.globalObject,key,first,flags[0]===\"1\",flags[1]===\"1\",flags[2]===\"1\");"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 153,
+      "text": "                desc(a.globalObject,key,next,true,true,false);"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 156,
+      "text": "        define(a.objectPrototype,name+\"inherited\",first);"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 159,
+      "text": "        desc(a.globalObject,name+\"inherited\",next,true,true,true);"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 160,
+      "text": "        desc(a.objectPrototype,name+\"inherited\",first,true,true,true);"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 164,
+      "text": "        a.globalObject.internalDelete(name+\"deleted\");"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 168,
+      "text": "        guestError(g.setMutableBinding(name+\"missing\",first,context,loc),\"ReferenceError\"); value(g.createGlobalVarBinding(name+\"var\",context,loc),UNDEFINED); desc(a.globalObject,name+\"var\",UNDEFINED,true,true,false);"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 169,
+      "text": "        value(g.createGlobalFunctionBinding(name+\"fn\",first,context,loc),UNDEFINED); desc(a.globalObject,name+\"fn\",first,true,true,false);"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 171,
+      "text": "        a.globalObject.preventExtensions(); value(g.createGlobalVarBinding(name+\"absent\",context,loc),UNDEFINED); check(a.globalObject.getOwnProperty(name+\"absent\")===undefined,\"nonextensible var\"); guestError(g.createGlobalFunctionBinding(name+\"absent\",first,context,loc),\"TypeError\"); break;"
+    },
+    {
+      "path": "typescript/test/script-record.ts",
+      "line": 129,
+      "text": "check(a.globalEnvironment.globalObject.getOwnProperty(\"effect\") === undefined,\"INPUT no effects\");"
+    },
+    {
+      "path": "typescript/test/script-restricted-properties.ts",
+      "line": 115,
+      "text": "check(added.type === \"normal\" && !added.value && !thrower.setPrototypeOf(a.objectPrototype).value && thrower.setPrototypeOf(a.functionPrototype).value && exactKeys(thrower, [\"name\", \"length\"]), \"frozen shape\");"
+    },
+    {
+      "path": "typescript/test/structured-outcomes.ts",
+      "line": 277,
+      "text": "    check(a?.kind === \"object\" && b?.kind === \"object\" && a.object !== b.object && first.objectPrototype !== second.objectPrototype, \"R38 isolation\");"
+    },
+    {
+      "path": "typescript/test/typeof-void.ts",
+      "line": 209,
+      "text": "        owner.objectPrototype,"
+    },
+    {
+      "path": "typescript/test/typeof-void.ts",
+      "line": 212,
+      "text": "        owner.stringPrototype,"
+    }
+  ]
+}

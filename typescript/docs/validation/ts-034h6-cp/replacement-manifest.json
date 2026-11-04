@@ -1,0 +1,54 @@
+{
+  "base": "4eb954daf8ae62f5e2c168df74259a4c6b152edd",
+  "files": [
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "baseSha256": "ce15be65eb72ee54f149c216844514654ad16566e378118894a54eec42ee8ea6",
+      "proposedSha256": "4fe0d83ee810d786428c3bf26ce74a4f2b3163c7bf06d9839ca81b663e22b8d4",
+      "replacements": [
+        {
+          "start": 5268,
+          "end": 5299,
+          "old": "[[\"valueOf\",\"toString\"],[\"name\"",
+          "new": "[[\"valueOf\",\"toString\",\"constructor\"],[\"name\"",
+          "reason": "Append Object constructor without changing existing keys."
+        },
+        {
+          "start": 5445,
+          "end": 5519,
+          "old": "[\"length\",\"toString\",\"valueOf\"],[\"toString\",\"valueOf\",wellKnownToPrimitive",
+          "new": "[\"length\",\"toString\",\"valueOf\",\"constructor\"],[\"toString\",\"valueOf\",wellKnownToPrimitive",
+          "reason": "Append String constructor without changing existing keys."
+        },
+        {
+          "start": 6176,
+          "end": 6263,
+          "old": "            } else method(a,p,k,k,k===\"call\"||k===\"join\"||(i===4&&k===\"toString\")?1:0);",
+          "new": "            } else if (k===\"constructor\") {\n                check(i===0 || i===5,\"only formatting prototype constructors\");\n                const name=i===0?\"Object\":\"String\", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;\n                desc(p,k,v,true,false,true); desc(a.globalObject,name,v,true,false,true);\n                keys(f,[\"name\",\"length\",\"prototype\"]);\n                desc(f,\"name\",{kind:\"string\",value:name},false,false,true); desc(f,\"length\",n(1),false,false,true);\n                desc(f,\"prototype\",obj(p),false,false,false);\n                check(f.getPrototypeOf()===a.functionPrototype && callable!==null && callable.kind===\"builtin\" && callable.realm===a && slot!==null && slot.kind===\"builtin-constructor\" && slot.realm===a && slot.callable===callable,\"formatting constructor graph and matching slots\");\n                check(f.getOwnProperty(\"caller\")===undefined && f.getOwnProperty(\"arguments\")===undefined,\"constructor inherited restrictions\");\n            } else method(a,p,k,k,k===\"call\"||k===\"join\"||(i===4&&k===\"toString\")?1:0);",
+          "reason": "Separate genuine constructor metadata from old method-only checks; preserve all old method/restricted checks."
+        },
+        {
+          "start": 8719,
+          "end": 8816,
+          "old": "const globals=[...legacyGlobals,\"Error\",\"TypeError\",\"ReferenceError\",\"RangeError\",\"SyntaxError\"];",
+          "new": "const globals=[...legacyGlobals,\"Error\",\"TypeError\",\"ReferenceError\",\"RangeError\",\"SyntaxError\",\"String\",\"Object\"];",
+          "reason": "Append C globals; legacy five and B globals retain order and descriptor loop."
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/harness-errors-a.ts",
+      "baseSha256": "1bf598b42321042a6581213b681de7e67902a50fc762362bb83c4764047e8a76",
+      "proposedSha256": "fb5a0a65a2caf8d9e7397ebeab1a1d728f3b0ae8d0e7309daebfdf1ccbfdb2e8",
+      "replacements": [
+        {
+          "start": 8740,
+          "end": 8884,
+          "old": "[\"undefined\", \"NaN\", \"Infinity\", \"console\", \"Number\", \"Error\", \"TypeError\", \"ReferenceError\", \"RangeError\", \"SyntaxError\"]), \"exact B globals\");",
+          "new": "[\"undefined\", \"NaN\", \"Infinity\", \"console\", \"Number\", \"Error\", \"TypeError\", \"ReferenceError\", \"RangeError\", \"SyntaxError\", \"String\", \"Object\"]), \"exact C globals\");\n    for (const name of [\"String\", \"Object\"]) {\n        const global = r.globalObject.getOwnProperty(name), p = name === \"String\" ? r.stringPrototype : r.objectPrototype;\n        check(global !== undefined && global.kind === \"data\" && global.value.kind === \"object\" && global.writable && !global.enumerable && global.configurable, \"formatting global flags\");\n        if (global === undefined || global.kind !== \"data\" || global.value.kind !== \"object\") throw new Error(\"formatting global\");\n        const ctor = global.value.object, link = p.getOwnProperty(\"constructor\"), target = ctor.getOwnProperty(\"prototype\"), callable = ctor.callable, slot = ctor.constructorSlot;\n        check(link !== undefined && link.kind === \"data\" && sameValue(link.value, global.value) && link.writable && !link.enumerable && link.configurable, \"formatting constructor identity/flags\");\n        check(target !== undefined && target.kind === \"data\" && target.value.kind === \"object\" && target.value.object === p && !target.writable && !target.enumerable && !target.configurable, \"formatting prototype identity/flags\");\n        check(ctor.getPrototypeOf() === r.functionPrototype && callable !== null && callable.kind === \"builtin\" && callable.realm === r && slot !== null && slot.kind === \"builtin-constructor\" && slot.realm === r && slot.callable === callable, \"formatting guarded constructor graph\");\n    }",
+          "reason": "Extend exact inherited A inventory and positively check C links/flags/slots; all Error graph/brand/identity/legacy assertions preserved."
+        }
+      ]
+    }
+  ]
+}
