@@ -1,0 +1,6 @@
+{
+  "sha256": "ad5c2b5a3ea0d782e0dbffae43d56d71aff21f41685232c8862bd33418de7898",
+  "note": "Before native execution; literal schedule tables copied before implementation. TypeScript fixture required explicit ScriptLimits fields and existing name-before-length order.",
+  "canonicalSha256": "86891398445dca2ae21b29e4aa4fff242950356059ee5737d03f5f8fe294b87b",
+  "hashNote": "sha256 retains original pre-native bytes; canonicalSha256 differs only by Git core.autocrlf=input CRLF normalization."
+}

@@ -154,7 +154,16 @@ for(const cross of [false,true])for(const empty of [false,true])for(let row=1;ro
     const bad=badValues[(semantic/2|0)%badValues.length];
     const poison=c.createBuiltin("poison",0,(_r,_args,_ctx,_l):ValueCompletion=>{getters++;return f.abrupt;});
     const ctorProto=f.b.createObject(),speciesProto=f.b.createObject();
-    if(row===1){a.internalDelete("constructor");selection="LK";}
+    if(row===1){
+        a.internalDelete("constructor");selection="LK";
+        check(a.getOwnProperty("constructor")===undefined && sameValue(own(f.b.objectPrototype,"constructor"),own(f.b.globalObject,"Object")),"C default array inherits exact Object");
+        // Keep the original genuinely absent-constructor case as a separate control.
+        const missing=fixture(traces[empty?0:1],cross);
+        missing.array.internalDelete("constructor");missing.array.setPrototypeOf(null);
+        const missingSession=createScriptSession();
+        result(run(input,missing.b,missingSession,inputId),missing.a,missing.array,empty?0:1,false);
+        check(missing.effects.text===(empty?"LKA":"LKAHECD") && missing.effects.arrays===1 && missing.effects.callbacks===(empty?0:1),"absent constructor preserved under C");
+    }
     if(row===2||row===3){a.internalDelete("constructor");if(row===2)data(a,"constructor",UNDEFINED);else{data(ctorProto,"constructor",UNDEFINED);a.setPrototypeOf(ctorProto);}selection="LK";}
     if(row===5)data(h,wellKnownSpecies,UNDEFINED);
     if(row===6)data(h,wellKnownSpecies,nullValue);
@@ -338,7 +347,16 @@ for(const scriptOperation of [false,true])for(const scriptObject of [false,true]
     const getter=r.createBuiltin("species",0,(_r,_args,_ctx,_l)=>{species++;return normal();});holder.bootstrapDefine(wellKnownSpecies,{get:obj(getter),configurable:true});if(defined)data(a,"constructor",obj(holder));
     const cb=r.createBuiltin("cb",0,(_r,_args,_ctx,_l)=>normal());const probe=r.createBuiltin("probe",1,(_r,_args,ctx,l)=>mapObjectDefaultArray(a,obj(cb),UNDEFINED,ctx,l));
     let v:ValueCompletion=normal();if(scriptOperation){define(r,"probe",obj(probe));v=run(input,r,createScriptSession(),inputId);}else{const evaluator=new Evaluator(r);v=evaluator.call(obj(probe),UNDEFINED,[num(payload)],loc);check(evaluator.calls===0&&evaluator.depth===0,"legacy cleanup");}
-    if(!scriptOperation&&defined)check(v.type==="throw"&&v.origin.kind==="unsupported-operation"&&species===0,"legacy unchanged");else{result(v,r,a,0,false);check(species===(scriptOperation&&defined?1:0),"running profile policy");}
+    if(!scriptOperation&&(defined||scriptObject))check(v.type==="throw"&&v.origin.kind==="unsupported-operation"&&v.origin.capabilityCode==="runtime.map-species"&&v.value.kind==="string"&&species===0,"legacy unchanged with own or inherited constructor");else{result(v,r,a,0,false);check(species===(scriptOperation&&defined?1:0),"running profile policy");}
+    if(scriptObject&&!defined) {
+        check(sameValue(own(origin.objectPrototype,"constructor"),own(origin.globalObject,"Object")),"Script origin inherits exact Object");
+        // An explicit undefined own property retains the previous default-success case.
+        data(a,"constructor",UNDEFINED);
+        let shadow:ValueCompletion=normal();
+        if(scriptOperation)shadow=run(input,r,createScriptSession(),inputId);
+        else{const evaluator=new Evaluator(r);shadow=evaluator.call(obj(probe),UNDEFINED,[num(payload)],loc);check(evaluator.calls===0&&evaluator.depth===0,"legacy shadow cleanup");}
+        result(shadow,r,a,0,false);check(species===0,"undefined constructor shadow skips species");
+    }
 }
 {
     const f=fixture(traces[1],true);check(wellKnownSpecies.description==="Symbol.species","canonical description");

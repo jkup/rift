@@ -1,0 +1,3272 @@
+{
+  "status": "UNEXECUTED C proposal",
+  "setup": "Own accessor m.toString = g in H; @@toPrimitive absent; getter returns host builtin method that records M and returns seven/eleven with zero arguments and exact m receiver. Setup runs in a separate session; execution still charges function instantiation AND nonstrict lexical setup. No tick for Get itself or host method body. Two nested calls are sequential, not concurrent.",
+  "cleanup": "Every outcome restores full frame, Realm, permit, calls/depth; both original owners reuse with +3 String(7) where immutable budget permits; exhausted owners reject at next guard. Raw call/construct attempts denied inside finally/live/idle. Host/unsupported sentinels at method retain identity and H origin; no later allocation on abrupt.",
+  "traces": [
+    {
+      "id": "call-return",
+      "source": "String(m);",
+      "getterSource": "function g(){return method;}",
+      "sourceTicks": 3,
+      "events": [
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 8,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "A",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "A",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "getter",
+          "realm": "H",
+          "phase": "instantiation",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "getter",
+          "realm": "H",
+          "phase": "instantiation",
+          "effect": ""
+        },
+        {
+          "column": 14,
+          "source": "getter",
+          "realm": "H",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 21,
+          "source": "getter",
+          "realm": "H",
+          "phase": "body",
+          "effect": "M"
+        }
+      ],
+      "inputs": {
+        "input-a": {
+          "expected": "string seven",
+          "prefixes": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 1,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 2,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 3,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 8,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 4,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 4,
+              "steps": 5,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 5,
+              "steps": 6,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 6,
+              "steps": 7,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 21,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 9,
+              "steps": 9,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 0,
+              "limit": 10,
+              "steps": 9,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 7,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 8,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 10,
+              "steps": 11,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 11,
+              "steps": 12,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 12,
+              "steps": 13,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 13,
+              "steps": 14,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 14,
+              "steps": 15,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 15,
+              "steps": 16,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 21,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 16,
+              "steps": 16,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 7,
+              "limit": 17,
+              "steps": 16,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            }
+          ],
+          "calls": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 3,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 5,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 9,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 9,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 7,
+              "limit": 0,
+              "steps": 10,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 1,
+              "steps": 12,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 2,
+              "steps": 16,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 7,
+              "limit": 3,
+              "steps": 16,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            }
+          ]
+        },
+        "input-b": {
+          "expected": "string eleven",
+          "prefixes": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 1,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 2,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 3,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 8,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 4,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 4,
+              "steps": 5,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 5,
+              "steps": 6,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 6,
+              "steps": 7,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 21,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 9,
+              "steps": 9,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 0,
+              "limit": 10,
+              "steps": 9,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 7,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 8,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 10,
+              "steps": 11,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 11,
+              "steps": 12,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 12,
+              "steps": 13,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 13,
+              "steps": 14,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 14,
+              "steps": 15,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 15,
+              "steps": 16,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 21,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 16,
+              "steps": 16,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 7,
+              "limit": 17,
+              "steps": 16,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            }
+          ],
+          "calls": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 3,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 5,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 9,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 9,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 7,
+              "limit": 0,
+              "steps": 10,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 1,
+              "steps": 12,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 2,
+              "steps": 16,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 7,
+              "limit": 3,
+              "steps": 16,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "call-throw",
+      "source": "String(m);",
+      "getterSource": "function g(){throw marker;}",
+      "sourceTicks": 3,
+      "events": [
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 8,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "A",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "A",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "getter",
+          "realm": "H",
+          "phase": "instantiation",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "getter",
+          "realm": "H",
+          "phase": "instantiation",
+          "effect": ""
+        },
+        {
+          "column": 14,
+          "source": "getter",
+          "realm": "H",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 20,
+          "source": "getter",
+          "realm": "H",
+          "phase": "body",
+          "effect": ""
+        }
+      ],
+      "inputs": {
+        "input-a": {
+          "expected": "exact marker; guest throw; no prototype Get or String allocation",
+          "prefixes": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 1,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 2,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 3,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 8,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 4,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 4,
+              "steps": 5,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 5,
+              "steps": 6,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 6,
+              "steps": 7,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 20,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 9,
+              "steps": 9,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 10,
+              "steps": 9,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 8,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 10,
+              "steps": 11,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 11,
+              "steps": 12,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 12,
+              "steps": 13,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 13,
+              "steps": 14,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 14,
+              "steps": 15,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 15,
+              "steps": 16,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 20,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 16,
+              "steps": 16,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 17,
+              "steps": 16,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            }
+          ],
+          "calls": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 3,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 5,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 9,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 9,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 7,
+              "limit": 0,
+              "steps": 10,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 1,
+              "steps": 12,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 2,
+              "steps": 16,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 7,
+              "limit": 3,
+              "steps": 16,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            }
+          ]
+        },
+        "input-b": {
+          "expected": "exact marker; guest throw; no prototype Get or String allocation",
+          "prefixes": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 1,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 2,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 3,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 8,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 4,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 4,
+              "steps": 5,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 5,
+              "steps": 6,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 6,
+              "steps": 7,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 20,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 9,
+              "steps": 9,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 10,
+              "steps": 9,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 8,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 10,
+              "steps": 11,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 11,
+              "steps": 12,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 12,
+              "steps": 13,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 13,
+              "steps": 14,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 14,
+              "steps": 15,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 15,
+              "steps": 16,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 20,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 16,
+              "steps": 16,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 17,
+              "steps": 16,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            }
+          ],
+          "calls": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 3,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 5,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 9,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 9,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 7,
+              "limit": 0,
+              "steps": 10,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 1,
+              "steps": 12,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 2,
+              "steps": 16,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 7,
+              "limit": 3,
+              "steps": 16,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "new-return",
+      "source": "new String(m);",
+      "getterSource": "function g(){return method;}",
+      "sourceTicks": 4,
+      "events": [
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 5,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 12,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "A",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "A",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "getter",
+          "realm": "H",
+          "phase": "instantiation",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "getter",
+          "realm": "H",
+          "phase": "instantiation",
+          "effect": ""
+        },
+        {
+          "column": 14,
+          "source": "getter",
+          "realm": "H",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 21,
+          "source": "getter",
+          "realm": "H",
+          "phase": "body",
+          "effect": "M"
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "A",
+          "phase": "body",
+          "effect": ""
+        }
+      ],
+      "inputs": {
+        "input-a": {
+          "expected": "StringData seven; prototype A",
+          "prefixes": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 1,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 2,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 3,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 5,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 4,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 12,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 4,
+              "steps": 5,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 5,
+              "steps": 6,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 6,
+              "steps": 7,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 21,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 10,
+              "steps": 11,
+              "outcome": "resource steps",
+              "effect": "M",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 11,
+              "steps": 11,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 0,
+              "limit": 12,
+              "steps": 11,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 7,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 5,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 10,
+              "steps": 11,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 12,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 11,
+              "steps": 12,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 12,
+              "steps": 13,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 13,
+              "steps": 14,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 14,
+              "steps": 15,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 15,
+              "steps": 16,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 16,
+              "steps": 17,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 21,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 17,
+              "steps": 18,
+              "outcome": "resource steps",
+              "effect": "M",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 18,
+              "steps": 18,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 7,
+              "limit": 19,
+              "steps": 18,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            }
+          ],
+          "calls": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 4,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 6,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 11,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 11,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 7,
+              "limit": 0,
+              "steps": 11,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 1,
+              "steps": 13,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 2,
+              "steps": 18,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 7,
+              "limit": 3,
+              "steps": 18,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            }
+          ]
+        },
+        "input-b": {
+          "expected": "StringData eleven; prototype A",
+          "prefixes": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 1,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 2,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 3,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 5,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 4,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 12,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 4,
+              "steps": 5,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 5,
+              "steps": 6,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 6,
+              "steps": 7,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 21,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 10,
+              "steps": 11,
+              "outcome": "resource steps",
+              "effect": "M",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 11,
+              "steps": 11,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 0,
+              "limit": 12,
+              "steps": 11,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 7,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 5,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 10,
+              "steps": 11,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 12,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 11,
+              "steps": 12,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 12,
+              "steps": 13,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 13,
+              "steps": 14,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 14,
+              "steps": 15,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 15,
+              "steps": 16,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 16,
+              "steps": 17,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 21,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 17,
+              "steps": 18,
+              "outcome": "resource steps",
+              "effect": "M",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 18,
+              "steps": 18,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            },
+            {
+              "seed": 7,
+              "limit": 19,
+              "steps": 18,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "phase": null,
+              "column": null,
+              "publication": "return value"
+            }
+          ],
+          "calls": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 4,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 6,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 11,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 11,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 7,
+              "limit": 0,
+              "steps": 11,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 1,
+              "steps": 13,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 2,
+              "steps": 18,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            },
+            {
+              "seed": 7,
+              "limit": 3,
+              "steps": 18,
+              "outcome": "normal",
+              "effect": "M",
+              "source": null,
+              "realm": null,
+              "column": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "new-throw",
+      "source": "new String(m);",
+      "getterSource": "function g(){throw marker;}",
+      "sourceTicks": 4,
+      "events": [
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 5,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 12,
+          "source": "input",
+          "realm": "caller",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "A",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "input",
+          "realm": "A",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "getter",
+          "realm": "H",
+          "phase": "instantiation",
+          "effect": ""
+        },
+        {
+          "column": 1,
+          "source": "getter",
+          "realm": "H",
+          "phase": "instantiation",
+          "effect": ""
+        },
+        {
+          "column": 14,
+          "source": "getter",
+          "realm": "H",
+          "phase": "body",
+          "effect": ""
+        },
+        {
+          "column": 20,
+          "source": "getter",
+          "realm": "H",
+          "phase": "body",
+          "effect": ""
+        }
+      ],
+      "inputs": {
+        "input-a": {
+          "expected": "exact marker; guest throw; no prototype Get or String allocation",
+          "prefixes": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 1,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 2,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 3,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 5,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 4,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 12,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 4,
+              "steps": 5,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 5,
+              "steps": 6,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 6,
+              "steps": 7,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 20,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 10,
+              "steps": 10,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 11,
+              "steps": 10,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 5,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 10,
+              "steps": 11,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "phase": "body",
+              "column": 12,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 11,
+              "steps": 12,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 12,
+              "steps": 13,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 13,
+              "steps": 14,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 14,
+              "steps": 15,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 15,
+              "steps": 16,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 16,
+              "steps": 17,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 20,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 17,
+              "steps": 17,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 18,
+              "steps": 17,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            }
+          ],
+          "calls": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 4,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 6,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 10,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 10,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 7,
+              "limit": 0,
+              "steps": 11,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 1,
+              "steps": 13,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-a",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 2,
+              "steps": 17,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 7,
+              "limit": 3,
+              "steps": 17,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            }
+          ]
+        },
+        "input-b": {
+          "expected": "exact marker; guest throw; no prototype Get or String allocation",
+          "prefixes": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 1,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 2,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 3,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 5,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 4,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 12,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 4,
+              "steps": 5,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 5,
+              "steps": 6,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 6,
+              "steps": 7,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 20,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 10,
+              "steps": 10,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 0,
+              "limit": 11,
+              "steps": 10,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 7,
+              "steps": 8,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 8,
+              "steps": 9,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 9,
+              "steps": 10,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 5,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 10,
+              "steps": 11,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "phase": "body",
+              "column": 12,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 11,
+              "steps": 12,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 12,
+              "steps": 13,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "phase": "body",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 13,
+              "steps": 14,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 14,
+              "steps": 15,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "instantiation",
+              "column": 1,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 15,
+              "steps": 16,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 16,
+              "steps": 17,
+              "outcome": "resource steps",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 20,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 17,
+              "steps": 17,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            },
+            {
+              "seed": 7,
+              "limit": 18,
+              "steps": 17,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "phase": "body",
+              "column": 14,
+              "publication": "none"
+            }
+          ],
+          "calls": [
+            {
+              "seed": 0,
+              "limit": 0,
+              "steps": 4,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 1,
+              "steps": 6,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 0,
+              "limit": 2,
+              "steps": 10,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 0,
+              "limit": 3,
+              "steps": 10,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 7,
+              "limit": 0,
+              "steps": 11,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "caller",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 1,
+              "steps": 13,
+              "outcome": "resource calls",
+              "effect": "",
+              "source": "input-b",
+              "realm": "A",
+              "column": 1
+            },
+            {
+              "seed": 7,
+              "limit": 2,
+              "steps": 17,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            },
+            {
+              "seed": 7,
+              "limit": 3,
+              "steps": 17,
+              "outcome": "guest throw",
+              "effect": "",
+              "source": "getter",
+              "realm": "H",
+              "column": 14
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

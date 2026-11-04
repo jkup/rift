@@ -722,3 +722,30 @@ no representable positive fixture. Public map, custom species construction,
 Array constructor, C globals, grammar, observer and admission remain outside
 this change. See [H6-M evidence](validation/ts-034h6-m/README.md). Actual and
 independent second review remain required; no publication is implied.
+
+## Bounded String/Object formatting globals (TS-034H6-C candidate)
+
+Script Realms now install String and Object after the Error globals. String call
+has the primitive-Symbol descriptive exception; construction converts first,
+then resolves its prototype and charges one tick before creating a genuine box.
+Symbol wrappers and hooks returning Symbol still throw a genuine TypeError.
+Object call/new preserve exact object identity without effects; nullish inputs
+allocate once and other primitives box once in the defining Realm. Legacy
+bootstrap and existing methods, guarded dispatch and context APIs are unchanged.
+
+The exact accepted CP2 migration changes three historical test files through
+seven replacements, preserving genuine absent-constructor and undefined-shadow
+map controls. Frozen literal schedules, F01-F12, both runtime inputs/hosts,
+UTF-16/descriptors, actual Object-link species controls, resource/abrupt order,
+finally restoration and BOTH original-session reuse are covered by the new
+harness-formatting driver. See [H6-C evidence](validation/ts-034h6-c/README.md)
+for validation records and the immutable-prototype observation limit.
+
+No static methods, Symbol factory, JSON, public map, Array constructor, grammar,
+observer, compiler/pin or admission expansion. All 60 variants remain blocked.
+Actual and independent second review are required; no publication is implied.
+
+H6-C candidate validation passes 212 exact records per host and 58 static-only/
+separatezero-dynamic gates (C 4181), all inherited checks, runner20/probes10/
+host73/observations22. See the candidate completion record; independent actual
+and second review remain pending.

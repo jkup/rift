@@ -46,13 +46,22 @@ function inventory(a: Realm): void {
     keys(num,[...names,"isNaN","isFinite"]); for(let i=0;i<names.length;i++) desc(num,names[i],n(values[i]),false,false,false);
     method(a,num,"isNaN","isNaN",1); method(a,num,"isFinite","isFinite",1);
     const prototypes=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype];
-    const lists: PropertyKey[][]=[["valueOf","toString"],["name","length","caller","arguments","call","toString",wellKnownHasInstance],["length","join","toString"],["toString","valueOf"],["toString","valueOf"],["length","toString","valueOf"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
+    const lists: PropertyKey[][]=[["valueOf","toString","constructor"],["name","length","caller","arguments","call","toString",wellKnownHasInstance],["length","join","toString"],["toString","valueOf"],["toString","valueOf"],["length","toString","valueOf","constructor"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
     for(let i=0;i<prototypes.length;i++) {
         const p=prototypes[i]; keys(p,lists[i]); check(p.getPrototypeOf()===(i===0?null:a.objectPrototype),"prototype chain");
         for(const k of lists[i]) if(typeof k==="string" && k!=="name" && k!=="length") {
             if (i===1 && (k==="caller" || k==="arguments")) {
                 const d=p.getOwnProperty(k), other=p.getOwnProperty("caller");
                 check(d!==undefined && d.kind==="accessor" && !d.enumerable && d.configurable && d.get.kind==="object" && d.set===d.get && other!==undefined && other.kind==="accessor" && d.get===other.get,"restricted descriptors");
+            } else if (k==="constructor") {
+                check(i===0 || i===5,"only formatting prototype constructors");
+                const name=i===0?"Object":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
+                desc(p,k,v,true,false,true); desc(a.globalObject,name,v,true,false,true);
+                keys(f,["name","length","prototype"]);
+                desc(f,"name",{kind:"string",value:name},false,false,true); desc(f,"length",n(1),false,false,true);
+                desc(f,"prototype",obj(p),false,false,false);
+                check(f.getPrototypeOf()===a.functionPrototype && callable!==null && callable.kind==="builtin" && callable.realm===a && slot!==null && slot.kind==="builtin-constructor" && slot.realm===a && slot.callable===callable,"formatting constructor graph and matching slots");
+                check(f.getOwnProperty("caller")===undefined && f.getOwnProperty("arguments")===undefined,"constructor inherited restrictions");
             } else method(a,p,k,k,k==="call"||k==="join"||(i===4&&k==="toString")?1:0);
         }
     }
@@ -77,7 +86,7 @@ function row(id: string,name: string,initial: number): void {
     const x=new Realm((line:string)=>{output+=line; outputCalls++;}), y=new Realm((line:string)=>{output+=line; outputCalls++;},"legacy");
     const e=new Evaluator(x), context=stub(a), first=n(initial), next=n(initial===7?11:7);
     const legacyGlobals=["undefined","NaN","Infinity","console","Number"];
-    const globals=[...legacyGlobals,"Error","TypeError","ReferenceError","RangeError","SyntaxError"];
+    const globals=[...legacyGlobals,"Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Object"];
     switch(id) {
     case "B01": {
         for(const l of [x,y]) check(l.functionPrototype.getOwnProperty(wellKnownHasInstance)===undefined,"legacy hasInstance absent");

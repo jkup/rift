@@ -4,6 +4,30 @@ import { GuestError, normal, type Value } from "../runtime.js";
 import { GuestArray } from "../array-object.js";
 import { GuestBoolean, GuestNumber, GuestStringObject } from "../primitive-objects.js";
 import { wellKnownToStringTag } from "../symbols.js";
+import type { OperationContext, ValueCompletion } from "../runtime.js";
+import type { Location } from "../syntax.js";
+
+function objectArgument(args: Value[], context: OperationContext, loc: Location): ValueCompletion {
+    const value = args.length === 0 ? undefined : args[0];
+    // Equal-newTarget construction and call both preserve an existing object.
+    if (value !== undefined && value.kind === "object") return normal(value);
+    const allocation = context.tick(loc);
+    if (allocation.type === "throw") return allocation;
+    if (value === undefined || value.kind === "undefined" || value.kind === "null")
+        return normal({ kind: "object", object: context.realm.createObject() });
+    const boxed = toObject(value, context, loc);
+    if (boxed.type === "throw") return boxed;
+    return normal({ kind: "object", object: boxed.value });
+}
+
+export function registerObject(realm: Realm): void {
+    const constructor = realm.createBuiltinConstructor("Object", 1,
+        (_receiver, args, context, loc) => objectArgument(args, context, loc),
+        (_callee, args, context, loc) => objectArgument(args, context, loc));
+    constructor.bootstrapDefine("prototype", { value: { kind: "object", object: realm.objectPrototype }, writable: false, enumerable: false, configurable: false });
+    realm.objectPrototype.bootstrapDefine("constructor", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
+    realm.defineScriptGlobal("Object", { value: { kind: "object", object: constructor }, writable: true, enumerable: false, configurable: true });
+}
 
 export function registerObjectValueOf(realm: Realm): void {
     realm.registerBuiltin(realm.objectPrototype, "valueOf", 0, (receiver, _args, context, loc) => {

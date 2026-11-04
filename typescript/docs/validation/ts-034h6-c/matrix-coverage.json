@@ -1,0 +1,98 @@
+[
+  {
+    "id": "F01",
+    "requirement": "| F01 | `String();String(undefined);String(null);String(-0);` | \"\", \"undefined\", \"null\", \"0\". |",
+    "controls": "fixed primitive call table plus missing/undefined construction",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  },
+  {
+    "id": "F02",
+    "requirement": "| F02 | Seed Symbol s with description x; `String(s);new String(s);` | \"Symbol(x)\"; genuine String-Realm TypeError. No Symbol factory introduced. |",
+    "controls": "C03/C04 and fixed descriptive UTF16 Symbol controls",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  },
+  {
+    "id": "F03",
+    "requirement": "| F03 | Symbol wrapper and object with @@toPrimitive returning Symbol | String call and construction both TypeError; special direct-Symbol call path not applied. |",
+    "controls": "C05-C08 protocol-returned Symbol and wrapper call/new schedules",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  },
+  {
+    "id": "F04",
+    "requirement": "| F04 | `new String('ab');` | Genuine StringData ab, own keys [0,1,length], index values a,b Wfalse/Etrue/Cfalse; length2 Wfalse/Efalse/Cfalse; exact String.prototype. |",
+    "controls": "fixed ab and UTF16 string index/length descriptors",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  },
+  {
+    "id": "F05",
+    "requirement": "| F05 | `String(msg);new String(msg);` with message conversion trace/throw | String hint once; exact q throw; no allocation/prototype lookup after throw. |",
+    "controls": "T13/T14, protocol string-hint controls and exhaustive M abrupt prefixes",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  },
+  {
+    "id": "F06",
+    "requirement": "| F06 | `Object();Object(null);new Object(undefined);` | Distinct fresh ordinary objects, correct builtin Realm Object.prototype, no own keys. |",
+    "controls": "T17/T18 and six pairwise-distinct nullish/missing call/new results",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  },
+  {
+    "id": "F07",
+    "requirement": "| F07 | `Object(q);new Object(q);` object q | Exact q each, no coercion/Get/prototype lookup, no allocation tick. |",
+    "controls": "T15/T16 and poison internalGet exact Value identity/no allocation ticks",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  },
+  {
+    "id": "F08",
+    "requirement": "| F08 | `Object(7);Object(false);Object('a');Object(s);` and new forms | Existing genuine slot wrappers in builtin Realm; no new primitive constructor globals. |",
+    "controls": "C09/C10 plus fixed7 Boolean/String/Symbol genuine slots and Realm prototypes",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  },
+  {
+    "id": "F09",
+    "requirement": "| F09 | Cross-Realm String/Object transferred from A into B | A boxes/fresh objects; existing object q retains its identity and original prototype. |",
+    "controls": "same/cross dimensions on every schedule and fixed row",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  },
+  {
+    "id": "F10",
+    "requirement": "| F10 | Constructor and prototype metadata, key order, descriptors | Exact main-contract graph; added constructor keys appended; legacy graphs unchanged. Methods/nonconstructible namespace Number unchanged. |",
+    "controls": "exact globals/prototype keys/flags/guard graph/initial source names/legacy/different Realm identity",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  },
+  {
+    "id": "F11",
+    "requirement": "| F11 | `Object.prototype.toString.call({});` and `String({toString:function(){throw 7;}});` | \"[object Object]\"; exact7. The former is the needed harness fallback. |",
+    "controls": "parsed Object.prototype.toString.call({}) and exact thrown guest7",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  },
+  {
+    "id": "F12",
+    "requirement": "| F12 | Runtime files `String(7);` versus `String(11);`; repeat `new String(7);`/eleven and Object(o) alias controls | \"7\" vs \"11\"; boxes differ by data. Fixed rows run for both; fresh/seven-seeded prefixes and cleanup as contract. |",
+    "controls": "two distinct runtime files, new String literals and Object identity aliases",
+    "driver": "test/harness-formatting.ts",
+    "evidence": "formatting-results.json",
+    "dimensions": "both inputs, both hosts; same/cross Realm"
+  }
+]

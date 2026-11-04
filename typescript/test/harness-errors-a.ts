@@ -113,7 +113,16 @@ console.log("PASS A02");
         const global = r.globalObject.getOwnProperty(name);
         check(global !== undefined && global.kind === "data" && global.value.kind === "object" && global.value.object === ctor && global.writable && !global.enumerable && global.configurable, "Error global identity/flags");
     }
-    check(keysEqual(r.globalObject, ["undefined", "NaN", "Infinity", "console", "Number", "Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError"]), "exact B globals");
+    check(keysEqual(r.globalObject, ["undefined", "NaN", "Infinity", "console", "Number", "Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "String", "Object"]), "exact C globals");
+    for (const name of ["String", "Object"]) {
+        const global = r.globalObject.getOwnProperty(name), p = name === "String" ? r.stringPrototype : r.objectPrototype;
+        check(global !== undefined && global.kind === "data" && global.value.kind === "object" && global.writable && !global.enumerable && global.configurable, "formatting global flags");
+        if (global === undefined || global.kind !== "data" || global.value.kind !== "object") throw new Error("formatting global");
+        const ctor = global.value.object, link = p.getOwnProperty("constructor"), target = ctor.getOwnProperty("prototype"), callable = ctor.callable, slot = ctor.constructorSlot;
+        check(link !== undefined && link.kind === "data" && sameValue(link.value, global.value) && link.writable && !link.enumerable && link.configurable, "formatting constructor identity/flags");
+        check(target !== undefined && target.kind === "data" && target.value.kind === "object" && target.value.object === p && !target.writable && !target.enumerable && !target.configurable, "formatting prototype identity/flags");
+        check(ctor.getPrototypeOf() === r.functionPrototype && callable !== null && callable.kind === "builtin" && callable.realm === r && slot !== null && slot.kind === "builtin-constructor" && slot.realm === r && slot.callable === callable, "formatting guarded constructor graph");
+    }
 }
 console.log("PASS A03");
 function formatter(r: Realm): void {

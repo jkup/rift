@@ -6,10 +6,10 @@ import { Environment, GuestObject, GuestError, UNDEFINED, display, normal, type 
 import { registerNumber, registerNumberConversions } from "./builtins/number.js";
 import { registerFunction, nativeFunctionString } from "./builtins/function.js";
 import { registerRestrictedFunctionProperties } from "./builtins/restricted-function.js";
-import { registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
+import { registerObject, registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
 import { registerSymbolConversions } from "./builtins/symbol.js";
 import { registerBooleanConversions } from "./builtins/boolean.js";
-import { registerStringConversions } from "./builtins/string.js";
+import { registerString, registerStringConversions } from "./builtins/string.js";
 import { registerArrayConversions } from "./builtins/array.js";
 import { GlobalEnvironment } from "./global-environment.js";
 import type { Stmt, FunctionSource, Location } from "./syntax.js";
@@ -91,6 +91,8 @@ export class Realm {
             const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError"];
             for (const name of names) this.errorConstructors.set(name, createErrorConstructor(this, name));
             registerErrors(this);
+            registerString(this);
+            registerObject(this);
         }
     }
     get global(): Environment {
