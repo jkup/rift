@@ -684,6 +684,7 @@ class ExecutionEngine {
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
+            case "for": throw new Error("Script for AST requires Script execution");
             case "var": throw new Error("Script var AST requires Script execution");
             case "switch": throw new Error("Script switch AST requires Script execution");
             case "try-catch": throw new Error("Script try-catch AST requires Script execution");
@@ -794,6 +795,21 @@ class ExecutionEngine {
                 const value = this.#eval(expr.value, env, receiver, false, inferred);
                 if (value.type !== "normal") return value;
                 return this.#put(ref.reference, value.value, expr.loc);
+            }
+            case "postfix-increment": {
+                if (env !== null) throw new Error("Script postfix increment AST requires Script execution");
+                const ref = this.#reference(expr.target, null, receiver);
+                if (ref.type === "abrupt") return ref.completion;
+                const oldValue = this.#get(ref.reference, expr.loc);
+                if (oldValue.type === "throw") return oldValue;
+                const primitive = toPrimitive(oldValue.value, "number", this.context, expr.loc);
+                if (primitive.type === "throw") return primitive;
+                const numeric = toNumber(primitive.value, expr.loc);
+                if (numeric.type === "throw") return numeric;
+                // The Reference caches the converted key, never a descriptor or setter.
+                const written = this.#put(ref.reference, { kind: "number", value: numeric.value + 1 }, expr.loc);
+                if (written.type === "throw") return written;
+                return normal({ kind: "number", value: numeric.value });
             }
             case "compound": {
                 const ref = this.#reference(expr.target, env, receiver);
@@ -1247,6 +1263,33 @@ class ExecutionEngine {
                 const branch = truthy(test.value) ? stmt.consequent : stmt.alternate;
                 const result: ScriptStatementCompletion = branch === null ? { type: "normal", payload: { kind: "empty" } } : this.#statement(branch);
                 return updateScriptEmpty(result, { kind: "value", value: UNDEFINED });
+            }
+            case "for": {
+                if (stmt.initializer !== null) {
+                    if (stmt.initializer.kind === "var") {
+                        const initialized = this.#statement(stmt.initializer);
+                        if (initialized.type !== "normal") return initialized;
+                    } else {
+                        const initialized = this.#value(stmt.initializer);
+                        if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
+                    }
+                }
+                let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
+                while (true) {
+                    if (stmt.test !== null) {
+                        const test = this.#value(stmt.test);
+                        if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
+                        if (!truthy(test.value)) return { type: "normal", payload: value };
+                    }
+                    const result = this.#statement(stmt.body);
+                    if (result.type === "break") return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
+                    if (result.type !== "normal" && result.type !== "continue") return updateScriptEmpty(result, value);
+                    if (result.payload.kind !== "empty") value = result.payload;
+                    if (stmt.update !== null) {
+                        const updated = this.#value(stmt.update);
+                        if (updated.type === "throw") { const abrupt: ThrowCompletion = updated; return abrupt; }
+                    }
+                }
             }
             case "while": {
                 let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };

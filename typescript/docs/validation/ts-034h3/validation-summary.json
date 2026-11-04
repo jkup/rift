@@ -1,0 +1,70 @@
+{
+  "status": "PASS",
+  "suites": [
+    {
+      "name": "typecheck",
+      "status": 0
+    },
+    {
+      "name": "test:runner",
+      "status": 0
+    },
+    {
+      "name": "test:test262",
+      "status": 0
+    },
+    {
+      "name": "test:observations",
+      "status": 0
+    },
+    {
+      "name": "test:probes",
+      "status": 0
+    },
+    {
+      "name": "test:guest:node",
+      "status": 0
+    }
+  ],
+  "inherited": [
+    {
+      "name": "guest-native",
+      "status": 0
+    },
+    {
+      "name": "switch",
+      "status": 0
+    },
+    {
+      "name": "catch",
+      "status": 0
+    },
+    {
+      "name": "E4",
+      "status": 0
+    },
+    {
+      "name": "Node reflection",
+      "status": 0
+    }
+  ],
+  "inheritedReplayRetry": {
+    "artifact": "replays/replays-results.json",
+    "groups": 17,
+    "status": "PASS",
+    "initialFailure": "initial-inherited-checks.json"
+  },
+  "h3": {
+    "artifact": "for-update-results.json",
+    "runtimeInputs": 2,
+    "lanes": [
+      "node",
+      "native"
+    ],
+    "prefixesPerRun": 190
+  },
+  "recordsPerLane": 212,
+  "staticGates": 52,
+  "dynamic": 0,
+  "blockedVariants": 60
+}

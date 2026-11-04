@@ -9,7 +9,7 @@ function letter(c: string): boolean {
 function lineTerminator(c: string): boolean {
     return c === "\r" || c === "\n" || c === "\u2028" || c === "\u2029";
 }
-export function lex(source: string): LexResult {
+export function lex(source: string, allowIncrement = false): LexResult {
     const tokens: Token[] = [];
     let i = 0;
     let line = 1;
@@ -104,6 +104,10 @@ export function lex(source: string): LexResult {
             advance();
             advance();
             tokens.push({ kind: "punct", text: three, loc, start, end: i });
+        } else if (allowIncrement && two === "++") {
+            advance();
+            advance();
+            tokens.push({ kind: "punct", text: two, loc, start, end: i });
         } else if (["++", "--", "=>", "**", "<<", ">>", "?."].includes(two)) {
             fail({ kind: "unsupported-syntax", capabilityCode: "lex.operator" }, "unsupported operator: " + two, loc);
         } else if (two === "==" || two === "!=" || two === "<=" || two === ">=" || two === "&&" || two === "||" || two === "+=" || two === "-=" || two === "*=" || two === "/=" || two === "%=") {

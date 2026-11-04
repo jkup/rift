@@ -68,6 +68,8 @@ function own(r: Realm, name: string): Value | null {
     return descriptor === undefined ? null : descriptor.kind === "data" ? descriptor.value : null;
 }
 const cases: { id: string; source: string; expected: number | string | undefined }[] = [
+    { id: "H3-empty", source: '"use strict";for(;;)break;', expected: undefined },
+    { id: "H3-postfix", source: '"use strict";let x=7;x++;', expected: 7 },
     { id: "H2-empty", source: '"use strict";switch(1){}', expected: undefined },
     { id: "H1-empty", source: '"use strict";try{}catch(e){}', expected: undefined },
     { id: "P03", source: '"use strict";', expected: "use strict" },
@@ -849,14 +851,14 @@ console.log("PASS reachable accessor coercion body host faults and depth257 clea
 for(const source of [
     '', 'function f(){return this;}', '"use strict";if(false){const x=1;}', '"use strict";function f(){return arguments;}',
     '"use strict";function f(){eval("1");}', '"use strict";let x;var x;', '"use strict";let x;let x;const tail=0;',
-    '"use strict";for(;;){}','"use strict";do{}while(false);','"use strict";label: while(true){break label;}',
+    '"use strict";for(let i=0;;){}','"use strict";do{}while(false);','"use strict";label: while(true){break label;}',
     '"use strict";switch(1){default:const x=0;}','"use strict";try{}catch(e){}finally{}','"use strict";new f();','"use strict";class C{}',
     '"use strict";async function f(){}','"use strict";function* f(){}','"use strict";await 1;',
     '"use strict";import x from "x";','"use strict";with(x){}','"use strict";let f=()=>1;',
     '"use strict";let f=function named(){};','"use strict";function f(...x){}','"use strict";function f(x=1){}',
     '"use strict";function f(a,a){}','"use strict";let {x}=o;','"use strict";let o={m(){}};',
     '"use strict";let o={get x(){}};','"use strict";let o={[x]:1};','"use strict";let o={...x};',
-    '"use strict";let o={__proto__:null};','"use strict";x++;','"use strict";1,2;'
+    '"use strict";let o={__proto__:null};','"use strict";++x;','"use strict";1,2;'
 ]) {
     const r=fresh(),s=createScriptSession();const prepared=prepareStrictScript({id:"negative",text:source},r);
     check(prepared.kind!=="ready","whole-source rejection "+source);check(s.inspect().steps===0,"no preparation execution");

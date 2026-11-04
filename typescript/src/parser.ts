@@ -2,7 +2,7 @@ import { collectDeclarationPlan, type DeclarationNodes, type DeclarationPlanResu
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
-import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource, SwitchClause } from "./syntax.js";
+import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt } from "./syntax.js";
 
 const RESERVED = " let function if else while return throw break continue this true false null const var for do new class extends super async await yield import export switch case default try catch finally delete typeof void in instanceof with debugger enum implements interface package private protected public static null eval arguments ";
 export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
@@ -58,7 +58,7 @@ export function auditScriptReturns(source: string): ReturnCoverage {
 // The public planner supplies no retention object.
 export function parseDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null = null): DeclarationPlanResult {
     const source = { id: unit.id, text: unit.text };
-    const lexical = lex(source.text);
+    const lexical = lex(source.text, true);
     if (lexical.error !== null) {
         if (lexical.rejection === null) throw new Error("missing lexer rejection");
         return { kind: "blocked", goal: "Script", unit: source, rejection: lexical.rejection, diagnostic: lexical.error };
@@ -210,12 +210,10 @@ class Parser {
             if (this.purpose === "declaration-plan") this.bindings.set(start, [binding]);
             return { kind: "let", loc, name: binding.site.name, init: binding.init };
         }
-        if (this.purpose === "declaration-plan" && this.eat("var")) {
-            const bindings: ParsedBinding[] = [];
-            do { bindings.push(this.binding(1)); } while (this.error === null && this.eat(","));
+        if (this.purpose === "declaration-plan" && this.at("var")) {
+            const declaration = this.varDeclaration(true);
             this.expect(";");
-            this.bindings.set(start, bindings);
-            return { kind: "var", loc, declarations: bindings.map(binding => ({ name: binding.site.name, init: binding.init })) };
+            return declaration;
         }
         if (this.eat("function")) {
             const token = this.current();
@@ -231,6 +229,21 @@ class Parser {
             const consequent = this.branch();
             const alternate = this.eat("else") ? this.branch() : null;
             return { kind: "if", loc, test, consequent, alternate };
+        }
+        if (this.purpose === "declaration-plan" && this.eat("for")) {
+            this.expect("(");
+            let initializer: VarStmt | Expr | null = null;
+            if (this.at("var")) initializer = this.varDeclaration(false);
+            else if (!this.at(";")) initializer = this.expression(0, false);
+            this.expect(";");
+            const test = this.at(";") ? null : this.expression(0);
+            this.expect(";");
+            const update = this.at(")") ? null : this.expression(0);
+            this.expect(")");
+            this.loops++;
+            const body = this.branch();
+            this.loops--;
+            return { kind: "for", loc, initializer, test, update, body };
         }
         if (this.eat("while")) {
             this.expect("(");
@@ -268,14 +281,21 @@ class Parser {
         this.expect(";");
         return { kind: "expression", loc, expression };
     }
-    binding(min: number): ParsedBinding {
+    varDeclaration(allowIn: boolean): VarStmt {
+        const token = this.take();
+        const bindings: ParsedBinding[] = [];
+        do { bindings.push(this.binding(1, allowIn)); } while (this.error === null && this.eat(","));
+        this.bindings.set(token.start, bindings);
+        return { kind: "var", loc: token.loc, declarations: bindings.map(binding => ({ name: binding.site.name, init: binding.init })) };
+    }
+    binding(min: number, allowIn = true): ParsedBinding {
         const token = this.current();
         const name = this.name();
         let init: Expr | null = null;
         let initializer: { start: number; end: number } | null = null;
         if (this.eat("=")) {
             const start = this.current().start;
-            init = this.expression(min);
+            init = this.expression(min, allowIn);
             initializer = { start, end: this.tokens[this.index - 1].end };
         }
         return { site: { name, start: token.start, end: token.end, loc: token.loc }, init, initializer };
@@ -314,28 +334,32 @@ class Parser {
         if (op === "*" || op === "/" || op === "%") return 8;
         return 0;
     }
-    expression(min: number): Expr {
+    expression(min: number, allowIn = true): Expr {
         const loc = this.current().loc;
         if (++this.depth > 128) {
             this.fail({ kind: "resource-limit", guardCode: "parse-depth", count: this.depth, limit: 128 }, "syntax nesting limit exceeded", loc);
             this.depth--;
             return { kind: "literal", loc, value: null };
         }
-        let left = this.primary();
+        let left = this.primary(allowIn);
+        // A unary operand may already have consumed the postfix token. Its
+        // enclosing expression must not reopen the member/call suffix chain.
+        const lastPrimaryToken = this.tokens[this.index - 1];
+        let updated = lastPrimaryToken.kind === "punct" && lastPrimaryToken.text === "++";
         while (this.error === null) {
-            if (this.eat(".")) {
+            if (!updated && this.eat(".")) {
                 const key = this.take();
                 if (key.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
                 left = { kind: "member", loc, base: left, key: { kind: "literal", loc: key.loc, value: key.text } };
                 continue;
             }
-            if (this.eat("[")) {
+            if (!updated && this.eat("[")) {
                 const key = this.expression(0);
                 this.expect("]");
                 left = { kind: "member", loc, base: left, key };
                 continue;
             }
-            if (this.eat("(")) {
+            if (!updated && this.eat("(")) {
                 const args: Expr[] = [];
                 if (!this.at(")")) {
                     do {
@@ -346,7 +370,17 @@ class Parser {
                 left = { kind: "call", loc, callee: left, args };
                 continue;
             }
+            if (!updated && this.purpose === "declaration-plan" && this.at("++")) {
+                const previous = this.tokens[this.index - 1];
+                const increment = this.take();
+                if (increment.loc.line !== previous.loc.line) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.line-terminator" }, "newline before postfix increment is unsupported", increment.loc);
+                if (left.kind !== "identifier" && left.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid increment target", left.loc);
+                left = { kind: "postfix-increment", loc: left.loc, target: left };
+                updated = true;
+                continue;
+            }
             const op = this.current().text;
+            if (!allowIn && op === "in") break;
             const operator = this.current().kind === "punct" || (this.current().kind === "word" && op === "in");
             const precedence = operator ? this.precedence(op) : 0;
             if (precedence === 0 || precedence < min) break;
@@ -356,11 +390,11 @@ class Parser {
                 // precedence also makes nested conditionals associate to the right.
                 const consequent = this.expression(1);
                 this.expect(":");
-                const alternate = this.expression(1);
+                const alternate = this.expression(1, allowIn);
                 left = { kind: "conditional", loc, test: left, consequent, alternate };
                 continue;
             }
-            const right = this.expression(precedence === 1 ? precedence : precedence + 1);
+            const right = this.expression(precedence === 1 ? precedence : precedence + 1, allowIn);
             if (precedence === 1) {
                 if (left.kind !== "identifier" && left.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid assignment target", loc);
                 if (op === "=") {
@@ -381,7 +415,7 @@ class Parser {
         this.depth--;
         return left;
     }
-    primary(): Expr {
+    primary(allowIn: boolean): Expr {
         const t = this.take();
         const loc = t.loc;
         if (t.kind === "number") return { kind: "literal", loc, value: Number(t.text) };
@@ -400,7 +434,7 @@ class Parser {
             return expr;
         }
         if (t.text === "!" || t.text === "-" || t.text === "+" || t.text === "delete" || t.text === "typeof" || t.text === "void") {
-            const operand = this.expression(9);
+            const operand = this.expression(9, allowIn);
             // Parentheses preserve identifiers. Strict-delete is unconditional
             // in this profile, independently of inert directive strings.
             if (t.text === "delete" && operand.kind === "identifier") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" }, "delete of an identifier is not allowed", loc);

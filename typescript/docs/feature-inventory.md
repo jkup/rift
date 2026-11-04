@@ -577,3 +577,28 @@ Legacy parsing/return audit, public CLI and corpus admission remain unchanged.
 Labels, sloppy block functions, additional grammar and genuine Error objects
 remain excluded. All 60 selected corpus variants remain blocked. This candidate
 requires actual and independent second review before integration.
+
+### Internal classic for and postfix increment (TS-034H3 candidate)
+
+The internal strict Script path admits classic `for` with optional expression or
+`var` initialization, optional test/update, and existing branch statements.
+Header vars use their original parser nodes and declaration spans; no new loop
+scope is introduced. Actual body blocks retain fresh iteration activations.
+The initializer follows NoIn grammar, including normal nested +In expressions.
+Postfix `++` accepts identifier/member targets without an intervening line
+terminator. Legacy parsing and return auditing retain their old lexer rejection.
+
+Increment resolves one Reference, gets once, applies ToPrimitive(number) and
+ToNumber, writes through that same Reference, and returns the old numeric value.
+Converted property keys are cached while writes consult current descriptors and
+preserve the original receiver. Only the existing Number domain is supported.
+Continue executes the update; break skips it. Loop completion preserves the
+existing UpdateEmpty and exact abrupt/provenance behavior and session budgets.
+
+The candidate passes Node/native semantic controls and all 190 budget prefixes,
+with 3,804 static statements and zero dynamic coverage in its new driver.
+It awaits actual and independent second review. See
+[H3 evidence](validation/ts-034h3/README.md).
+Lexical loop headers, for-in/of, prefix increment, decrement, BigInt and public
+Script admission remain outside this implementation. All 60 corpus variants
+remain blocked; this does not claim unchanged harness execution.

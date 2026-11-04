@@ -1,0 +1,10 @@
+{
+  "base": "4e7b356",
+  "files": {
+    "frozen-contract.md": "9fc9afc544ec8425d3b517814d836dc8b40e63d43971f20da62535daad08e76a",
+    "input-eleven.js": "53e337abc3a969ba1add955ea3a6b2281f3ee4b3b5ccbcac1a4941ed4d400743",
+    "input-seven.js": "85b2d563fc985c4f837d152e621f1af6df650cd9dfe74a8fd01d8fbefcc5b3bc",
+    "prefixes.json": "63c455655930bc2da67a4bef79ed0a81366e31aa42346d0505c0192b8f078a79",
+    "proposed-migrations.json": "d7c9942afc2f2eee58372ca45fadd611f34fff12cdbf2e819a277268cd4a5c11"
+  }
+}

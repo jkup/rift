@@ -353,7 +353,7 @@ const rejects = [
   },
   {
     "id": "N08",
-    "source": "switch(1){case 1:x++;}"
+    "source": "switch(1){case 1:++x;}"
   },
   {
     "id": "N09",

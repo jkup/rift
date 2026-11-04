@@ -17,14 +17,18 @@ export type Expr =
     | { kind: "unary"; loc: Location; op: string; operand: Expr }
     | { kind: "binary"; loc: Location; op: string; left: Expr; right: Expr }
     | { kind: "assign"; loc: Location; target: Expr; value: Expr }
+    | { kind: "postfix-increment"; loc: Location; target: Expr }
     | { kind: "compound"; loc: Location; target: Expr; value: Expr; op: "+" | "-" | "*" | "/" | "%" }
     | { kind: "conditional"; loc: Location; test: Expr; consequent: Expr; alternate: Expr }
     | { kind: "member"; loc: Location; base: Expr; key: Expr }
     | { kind: "call"; loc: Location; callee: Expr; args: Expr[] }
     | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
     | { kind: "object"; loc: Location; keys: string[]; values: Expr[] };
+export type VarStmt = { kind: "var"; loc: Location; declarations: { name: string; init: Expr | null }[] };
+export type ForStmt = { kind: "for"; loc: Location; initializer: VarStmt | Expr | null; test: Expr | null; update: Expr | null; body: Stmt };
 export type Stmt =
-    | { kind: "var"; loc: Location; declarations: { name: string; init: Expr | null }[] }
+    | VarStmt
+    | ForStmt
     | { kind: "empty"; loc: Location }
     | { kind: "expression"; loc: Location; expression: Expr }
     | { kind: "let"; loc: Location; name: string; init: Expr | null }

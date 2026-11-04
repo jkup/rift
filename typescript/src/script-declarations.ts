@@ -210,6 +210,15 @@ class DeclarationCollector {
                 if (node.alternate !== null) this.statement(node.alternate, scope, variableScope);
                 this.statement(node.consequent, scope, variableScope);
                 this.expression(node.test, scope, variableScope); break;
+            case "for":
+                this.statement(node.body, scope, variableScope);
+                if (node.update !== null) this.expression(node.update, scope, variableScope);
+                if (node.test !== null) this.expression(node.test, scope, variableScope);
+                if (node.initializer !== null) {
+                    if (node.initializer.kind === "var") this.statement(node.initializer, scope, variableScope);
+                    else this.expression(node.initializer, scope, variableScope);
+                }
+                break;
             case "while": this.statement(node.body, scope, variableScope); this.expression(node.test, scope, variableScope); break;
             case "empty": case "break": case "continue": break;
         }
@@ -224,6 +233,7 @@ class DeclarationCollector {
                 }
                 break;
             case "object": for (let i = node.values.length - 1; i >= 0; i--) this.expression(node.values[i], scope, variableScope); break;
+            case "postfix-increment": this.expression(node.target, scope, variableScope); break;
             case "unary": this.expression(node.operand, scope, variableScope); break;
             case "binary": this.expression(node.right, scope, variableScope); this.expression(node.left, scope, variableScope); break;
             case "assign": case "compound": this.expression(node.value, scope, variableScope); this.expression(node.target, scope, variableScope); break;

@@ -1,0 +1,13 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\docs\validation\ts-034h3\callback-reduction.ts
+
+  statements analyzed   3286
+  compile statically    3286  (100%)
+    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)
+
+  fully static — all analyzed statements compile to native code.
+
+  dynamic tier   (tier assignment, report-only; --tier=auto)
+    1 function already operates on dynamic values (1 statement)
+      %fn.adapt.5c54c3471d4c.impl  C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h3/callback-reduction.ts:5:60: dyn.this at C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h3/callback-reduction.ts:5:60
+
+    0 demotion requests (refusals and fences the dynamic tier would replace)
