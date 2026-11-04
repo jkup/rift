@@ -532,19 +532,66 @@ console.log("PASS G01 G02 G03 G04 G05 G06 G07 G09");
  const ordinary=r.createBuiltin("ordinary",0,(_r,_a,_c,_l)=>normal());check(ordinary.constructorSlot===null,"ordinary builtin nonconstructible");
 }
 console.log("PASS G08 cross-tag legitimate nested call");
+type RetainedCall = { invoke: Builtin; receiver: Value; args: Value[]; context: OperationContext; loc: Location };
+function rejectRetained(call: RetainedCall | null): void {
+ if(call===null)throw new Error("missing retained callback");
+ hostFault(()=>{call.invoke(call.receiver,call.args,call.context,call.loc);},"Script execution unavailable");
+}
 for(const constructing of [false,true])for(const mode of [0,1,2]){
- const a=fresh(),b=fresh(),outer=createScriptSession(),inner=createScriptSession(),sentinel=new Error("inner host"),q=num(7);let effects="";
+ const a=fresh(),b=fresh(),outer=createScriptSession(),inner=createScriptSession(),sentinel=new Error("inner host"),q=num(7);let effects="",restorations=0;let retainedOuter:RetainedCall|null=null;
  define(b,"q",q);alias(b,"h",(_r,_a,_c,_l):ValueCompletion=>{throw sentinel;});const m=a.createObject(),o=a.createObject();
- data(m,wellKnownToPrimitive,obj(a.createBuiltin("M",0,(_r,_args,c,_l):ValueCompletion=>{
-  effects+="M";const before=outer.inspect();check(before.steps===(constructing?7:6)&&before.active?.realm===a,"outer hook checkpoint");
-  const result=run(mode===0?"0;":mode===1?"throw q;":"h();",b,inner,"inner");
-  const after=outer.inspect();check(after.active?.record===before.active?.record&&after.active?.realm===a&&after.calls===before.calls&&after.depth===before.depth&&after.steps===before.steps&&c.realm===a,"nested restoration");
-  if(result.type==="throw")return result;return normal(str(payload));
- })));
+ const messageHook=a.createBuiltin("M",0,(receiver,args,c,l):ValueCompletion=>{
+  retainedOuter={invoke:callSlot(messageHook),receiver,args,context:c,loc:l};
+  effects+="M";const before=outer.inspect();
+  check(before.steps===(constructing?7:6)&&before.active?.realm===a&&before.calls===2&&before.depth===2,"outer hook checkpoint");
+  try {
+   const result=run(mode===0?"0;":mode===1?"throw q;":"h();",b,inner,"inner");
+   if(result.type==="throw")return result;return normal(str(payload));
+  } finally {
+   // Inspect the still-active outer hook even while a host sentinel unwinds.
+   const after=outer.inspect(),prior=before.active,current=after.active;
+   if(prior===null||current===null)throw new Error("missing restored outer frame");
+   check(current.record===prior.record&&current.realm===a&&current.scopeId===prior.scopeId&&
+    current.lexical===prior.lexical&&current.variable===prior.variable&&current.function===prior.function&&
+    current.strict===prior.strict&&sameValue(current.thisValue,prior.thisValue)&&
+    current.privateEnvironment===prior.privateEnvironment&&current.phase===prior.phase,"nested frame restoration");
+   check(after.calls===2&&after.depth===2&&after.steps===before.steps&&c.realm===a,"nested state restoration");
+   check(inner.inspect().steps===2,"inner exit literal ticks");idle(inner);
+   rejectRetained(retainedOuter);
+   check(outer.inspect().steps===before.steps&&outer.inspect().calls===2&&outer.inspect().depth===2,"raw denial during unwind has no effects");
+   restorations++;
+  }
+ });
+ data(m,wellKnownToPrimitive,obj(messageHook));
  o.bootstrapDefine("cause",{get:obj(a.createBuiltin("C",0,(_r,_args,_c,_l)=>{effects+="C";return normal(num(7));})),enumerable:false,configurable:true});define(a,"E",obj(a.getErrorConstructor("Error")));define(a,"m",obj(m));define(a,"o",obj(o));
  const source=constructing?"new E(m,o);":"E(m,o);";
  if(mode===2)exactHost(()=>{run(source,a,outer,inputId);},sentinel);else {const result=run(source,a,outer,inputId);if(mode===1)check(sameValue(thrown(result).value,q),"nested language throw");else instance(result,a,"Error",payload);}
  check(inner.inspect().steps===2&&effects===(mode===0?"MC":"M"),"inner ticks and outer continuation");check(outer.inspect().steps===(constructing?(mode===0?9:7):(mode===0?8:6)),"outer cutoff");idle(inner);idle(outer);check(sameValue(value(run("7;",a)),num(7)),"session works after exit");
+ check(restorations===1,"finally checked every exit mode");
+ const outerSteps=outer.inspect().steps,innerSteps=inner.inspect().steps;
+ rejectRetained(retainedOuter);check(outer.inspect().steps===outerSteps&&inner.inspect().steps===innerSteps,"stale outer callback idle denial");
+ // Reenter both original owners; a newly allocated session cannot prove recovery.
+ for(const owner of [{realm:a,session:outer,id:"reuse-outer"},{realm:b,session:inner,id:"reuse-inner"}]){
+  const start=owner.session.inspect().steps;let calls=0;let retained:RetainedCall|null=null;
+  const record=prepare("resume(7);",owner.realm,owner.id);
+  const resume=alias(owner.realm,"resume",(receiver,args,c,l):ValueCompletion=>{
+   calls++;retained={invoke:callSlot(resume),receiver,args,context:c,loc:l};
+   const active=owner.session.inspect();
+   check(c.realm===owner.realm&&active.active?.realm===owner.realm&&active.active?.record===record&&
+    active.calls===1&&active.depth===2&&active.steps===start+3,"same-owner guarded reuse literal state");
+   check(args.length===1&&sameValue(args[0],num(7)),"reuse argument");
+   rejectRetained(retainedOuter);rejectRetained(retained);
+   const denied=owner.session.inspect();
+   check(calls===1&&denied.steps===start+3&&denied.calls===1&&denied.depth===2&&denied.active?.record===record,"live stale denial has no effects");
+   return normal(num(7));
+  });
+  const result=evaluateScript(owner.session,record);
+  check(result.phase==="body"&&sameValue(value(result.completion),num(7))&&calls===1,"original owner reuse result");
+  check(owner.session.inspect().steps===start+3,"original owner cumulative delta three");idle(owner.session);
+  rejectRetained(retained);rejectRetained(retainedOuter);
+  check(calls===1&&owner.session.inspect().steps===start+3,"idle retained callback denial has no effects");idle(owner.session);
+ }
+ check(outer.inspect().steps===outerSteps+3&&inner.inspect().steps===innerSteps+3,"both original sessions reused");idle(outer);idle(inner);
 }
 console.log("PASS G10 nested normal language host");
 console.log("PASS runtime "+inputId+" "+numeric+" "+payload);

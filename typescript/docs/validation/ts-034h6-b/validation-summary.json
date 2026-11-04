@@ -3,7 +3,7 @@
   "base": "0b93310",
   "recordsPerLane": 212,
   "staticGates": 56,
-  "BStatic": 4320,
+  "BStatic": 4367,
   "dynamic": 0,
   "runtimeInputs": 2,
   "rows": "E01-E36/G01-G10",

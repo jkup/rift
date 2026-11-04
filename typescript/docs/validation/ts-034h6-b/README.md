@@ -95,3 +95,30 @@ test-only return annotations. No production source changed after that sweep.
 `preservation.json`, `error-results.json`, `feature-checks.json`,
 `replays/replays-results.json`, `matrix-execution.json` and suite records retain
 the evidence. Review and acceptance remain pending.
+
+## G10 review correction (after unaccepted `0ca3b5a`)
+
+Second review found that the nested-session restoration check skipped host unwind
+and the final `run('7;', a)` created a new session. Only the new B driver's G10
+block and a local retained-call helper change. All original controls remain.
+Production and old tests are unchanged.
+
+The message hook now checks the full outer frame, Realm, steps, calls and depth
+in `finally`, including while the exact inner host sentinel unwinds. It checks
+inner idle cleanup and rejects the retained raw outer callback there. After every
+normal/language/host outcome in call/new forms, BOTH original sessions execute
+`resume(7);` through a guarded builtin. Each adds exactly three steps, runs once
+in its original Realm and record with calls1/depth2, and finishes idle. Raw
+retained calls reject during live reuse and afterward without effects. The
+original fresh-session control remains.
+
+Only B was rebuilt: **4,367 static statements, zero dynamic**, superseding the
+original candidate's 4,320 above. Both inputs/all B controls pass on Node/native;
+typecheck and frozen-oracle/source-boundary/preservation audits pass. Unchanged
+55 gates and212records are inherited from the coordinator's completed full sweep;
+no unchanged full suite or replay was rerun for this correction.
+
+`g10-correction/verification.json` records exact scope and inherited-gate
+comparisons; `before-*` preserves prior B evidence. Current gate/results,
+preservation and `suites-typecheck.json` describe the correction. Actual and
+independent second re-review remain pending.

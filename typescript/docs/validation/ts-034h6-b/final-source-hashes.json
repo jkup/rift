@@ -89,7 +89,7 @@
   },
   {
     "path": "typescript/test/harness-errors-b.ts",
-    "sha256": "e7d9e9c099183a141e29797fdeedd220c0061711aecdaedb2e67deec4e0ea656"
+    "sha256": "e09d0e493304fa87b7f9408ba33d08ac9589d2e2b8b819eab733f0b4f2cf9e48"
   },
   {
     "path": "typescript/tools/build-native.mjs",
