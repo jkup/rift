@@ -1,4 +1,6 @@
 import type { GuestSymbol } from "./symbols.js";
+import { registerErrors, createErrorConstructor } from "./builtins/error.js";
+import type { ConstructBuiltin, Callable } from "./runtime.js";
 import { GuestArray } from "./array-object.js";
 import { Environment, GuestObject, GuestError, UNDEFINED, display, normal, type ErrorName, type Builtin, type Value, validatePropertyDescriptorUpdate, type PropertyDescriptorUpdate, type ValueCompletion } from "./runtime.js";
 import { registerNumber, registerNumberConversions } from "./builtins/number.js";
@@ -18,7 +20,7 @@ import type { ExecutableScript } from "./script-record.js";
 // Keep the factory's module reachable without exporting its private classes;
 // Callable still imports ScriptGuestCallable as a type only. No setup runs here.
 // Reduced before/after evidence: docs/validation/ts-033e3a/reachability-*.ts.
-import { consumeScriptBuiltinPermit } from "./script-execution-internal.js";
+import { consumeScriptBuiltinPermit, consumeScriptConstructorPermit } from "./script-execution-internal.js";
 import type { ScriptEnvironment } from "./script-environment.js";
 import type { OperationContext } from "./runtime.js";
 
@@ -28,6 +30,7 @@ export class Realm {
     private legacyGlobal: Environment | null = null;
     private scriptGlobal: GlobalEnvironment | null = null;
     private errorPrototypes: Map<ErrorName, GuestObject> = new Map();
+    private errorConstructors: Map<ErrorName, GuestObject> = new Map();
     readonly objectPrototype: GuestObject;
     readonly functionPrototype: GuestObject;
     readonly arrayPrototype: GuestArray;
@@ -84,6 +87,11 @@ export class Realm {
         });
         this.installGlobal("console", { kind: "object", object: consoleObject }, true);
         registerNumber(this);
+        if (profile === "script") {
+            const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError"];
+            for (const name of names) this.errorConstructors.set(name, createErrorConstructor(this, name));
+            registerErrors(this);
+        }
     }
     get global(): Environment {
         if (this.legacyGlobal === null) throw new Error("legacy Realm required");
@@ -124,6 +132,11 @@ export class Realm {
         return guarded;
     }
     createObject(): GuestObject { return new GuestObject(this.objectPrototype); }
+    getErrorConstructor(name: ErrorName): GuestObject {
+        const constructor = this.errorConstructors.get(name);
+        if (this.profile !== "script" || constructor === undefined) throw new Error("Script Error constructor required");
+        return constructor;
+    }
     getErrorPrototype(name: ErrorName): GuestObject {
         const proto = this.errorPrototypes.get(name);
         if (this.profile !== "script" || proto === undefined) throw new Error("Script Error prototype required");
@@ -156,6 +169,22 @@ export class Realm {
     createBuiltin(name: string, length: number, invoke: Builtin): GuestObject {
         nativeFunctionString(name);
         const object = new GuestObject(this.functionPrototype, false, { kind: "builtin", initialName: name, realm: this, invoke: this.guardBuiltin(invoke) });
+        setBuiltinMetadata(object, name, length);
+        return object;
+    }
+    createBuiltinConstructor(name: string, length: number, call: Builtin, construct: ConstructBuiltin): GuestObject {
+        if (this.profile !== "script") throw new Error("Script Realm required");
+        nativeFunctionString(name);
+        const callable: Callable = { kind: "builtin", initialName: name, realm: this, invoke: this.guardBuiltin(call) };
+        const guarded: ConstructBuiltin = (callee, args, context, loc) => {
+            if (context.realm.profile !== this.profile) throw new Error("cross-profile callable invocation");
+            if (callee !== object) throw new Error("invalid builtin constructor metadata");
+            if (!consumeScriptConstructorPermit(context, this, guarded, callee, args, loc))
+                throw new Error("Script execution unavailable");
+            return construct(callee, args, context, loc);
+        };
+        const object = new GuestObject(this.functionPrototype, false, callable,
+            { kind: "builtin-constructor", realm: this, callable, invoke: guarded });
         setBuiltinMetadata(object, name, length);
         return object;
     }

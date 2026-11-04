@@ -1,5 +1,6 @@
+import type { Realm } from "./realm.js";
 import {
-    GuestObject, UNDEFINED, failure, normal,
+    GuestObject, UNDEFINED, languageFailure, normal,
     type Value, type ValueCompletion, type InternalBooleanCompletion,
     type OperationContext, type ThrowCompletion, type DataDescriptorUpdate,
 } from "./runtime.js";
@@ -16,8 +17,8 @@ export class GlobalEnvironment {
         if (this.lexicals.has(name)) return { type: "normal", value: true };
         return this.globalObject.internalHasProperty(name, loc);
     }
-    createMutableBinding(name: string, loc: Location): ValueCompletion {
-        if (this.lexicals.has(name)) return failure("TypeError", "binding already exists: " + name, loc);
+    createMutableBinding(name: string, loc: Location, realm: Realm | null): ValueCompletion {
+        if (this.lexicals.has(name)) return languageFailure(realm, "TypeError", "binding already exists: " + name, loc);
         this.lexicals.set(name, { initialized: false, value: UNDEFINED });
         return normal();
     }
@@ -34,18 +35,18 @@ export class GlobalEnvironment {
     getBindingValue(name: string, context: OperationContext, loc: Location, strict = true): ValueCompletion {
         const binding = this.lexicals.get(name);
         if (binding !== undefined) {
-            if (!binding.initialized) return failure("ReferenceError", name + " is not initialized", loc);
+            if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", name + " is not initialized", loc);
             return normal(binding.value);
         }
         const present = this.globalObject.internalHasProperty(name, loc);
         if (present.type === "throw") return present;
-        if (!present.value) return strict ? failure("ReferenceError", name + " is not defined", loc) : normal();
+        if (!present.value) return strict ? languageFailure(context.realm, "ReferenceError", name + " is not defined", loc) : normal();
         return this.globalObject.internalGet(name, { kind: "object", object: this.globalObject }, context, loc);
     }
     setMutableBinding(name: string, value: Value, context: OperationContext, loc: Location, strict = true): ValueCompletion {
         const binding = this.lexicals.get(name);
         if (binding !== undefined) {
-            if (!binding.initialized) return failure("ReferenceError", name + " is not initialized", loc);
+            if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", name + " is not initialized", loc);
             binding.value = value;
             return normal();
         }
@@ -54,13 +55,13 @@ export class GlobalEnvironment {
     private setObjectBinding(name: string, value: Value, strict: boolean, context: OperationContext, loc: Location): ValueCompletion {
         const present = this.globalObject.internalHasProperty(name, loc);
         if (present.type === "throw") return present;
-        if (!present.value && strict) return failure("ReferenceError", name + " is not defined", loc);
+        if (!present.value && strict) return languageFailure(context.realm, "ReferenceError", name + " is not defined", loc);
         return this.setObjectProperty(name, value, strict, context, loc);
     }
     private setObjectProperty(name: string, value: Value, strict: boolean, context: OperationContext, loc: Location): ValueCompletion {
         const result = this.globalObject.internalSet(name, value, { kind: "object", object: this.globalObject }, context, loc);
         if (result.type === "throw") return result;
-        if (!result.value && strict) return failure("TypeError", "property is not writable: " + name, loc);
+        if (!result.value && strict) return languageFailure(context.realm, "TypeError", "property is not writable: " + name, loc);
         return normal();
     }
     deleteBinding(name: string, _context: OperationContext, _loc: Location): InternalBooleanCompletion {
@@ -106,7 +107,7 @@ export class GlobalEnvironment {
     private defineObjectProperty(name: string, desc: DataDescriptorUpdate, context: OperationContext, loc: Location): ValueCompletion {
         const result = this.globalObject.defineOwnProperty(name, desc, context, loc);
         if (result.type === "throw") return result;
-        if (!result.value) return failure("TypeError", "cannot define global property: " + name, loc);
+        if (!result.value) return languageFailure(context.realm, "TypeError", "cannot define global property: " + name, loc);
         return normal();
     }
 }
@@ -125,10 +126,10 @@ export function resolveStrictGlobalBinding(environment: GlobalEnvironment, name:
     return { type: "normal", reference: { environment: present.value ? environment : null, name, loc: { line: loc.line, column: loc.column } } };
 }
 export function getStrictGlobalBinding(reference: StrictGlobalReference, context: OperationContext): ValueCompletion {
-    if (reference.environment === null) return failure("ReferenceError", reference.name + " is not defined", reference.loc);
+    if (reference.environment === null) return languageFailure(context.realm, "ReferenceError", reference.name + " is not defined", reference.loc);
     return reference.environment.getBindingValue(reference.name, context, reference.loc);
 }
 export function putStrictGlobalBinding(reference: StrictGlobalReference, value: Value, context: OperationContext): ValueCompletion {
-    if (reference.environment === null) return failure("ReferenceError", reference.name + " is not defined", reference.loc);
+    if (reference.environment === null) return languageFailure(context.realm, "ReferenceError", reference.name + " is not defined", reference.loc);
     return reference.environment.setMutableBinding(reference.name, value, context, reference.loc);
 }

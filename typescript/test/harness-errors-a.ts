@@ -74,6 +74,7 @@ console.log("PASS A01");
     for (const name of names) {
         const p = a.getErrorPrototype(name), q = b.getErrorPrototype(name);
         check(p !== q && !protos.includes(p) && !(p instanceof GuestError) && !(q instanceof GuestError), "distinct ordinary prototypes"); protos.push(p);
+        check(a.getErrorConstructor(name) !== b.getErrorConstructor(name), "distinct Realm constructors");
         for (const r of [a, b]) {
             const expected = name === "Error" ? r.objectPrototype : r.getErrorPrototype("Error");
             check(r.getErrorPrototype(name).getPrototypeOf() === expected && r.objectPrototype.getPrototypeOf() === null, "graph");
@@ -87,15 +88,32 @@ console.log("PASS A02");
     const r = fresh();
     for (const name of names) {
         const p = r.getErrorPrototype(name), e = r.createError(name, "x");
-        check(keysEqual(p, ["name", "message"]), "prototype keys");
+        check(keysEqual(p, name === "Error" ? ["name", "message", "constructor", "toString"] : ["name", "message", "constructor"]), "complete prototype keys");
         descriptor(p, "name", name); descriptor(p, "message", "");
         check(keysEqual(e, ["message"]), "private brand has no guest key"); descriptor(e, "message", "x");
         for (const key of ["name", "constructor", "diagnostic", "stack", "location", "toString", "cause"])
             check(e.getOwnProperty(key) === undefined, "absent instance " + key);
-        check(p.getOwnProperty("constructor") === undefined && p.getOwnProperty("toString") === undefined, "A graph incomplete internally");
-        check(r.globalObject.getOwnProperty(name) === undefined, "no Error globals");
+        const ctor = r.getErrorConstructor(name), link = p.getOwnProperty("constructor");
+        check(link !== undefined && link.kind === "data" && link.value.kind === "object" && link.value.object === ctor && link.writable && !link.enumerable && link.configurable, "prototype constructor identity/flags");
+        check(keysEqual(ctor, ["name", "length", "prototype"]), "constructor keys");
+        const cp = ctor.getOwnProperty("prototype"), cn = ctor.getOwnProperty("name"), cl = ctor.getOwnProperty("length");
+        check(cp !== undefined && cp.kind === "data" && cp.value.kind === "object" && cp.value.object === p && !cp.writable && !cp.enumerable && !cp.configurable, "constructor prototype identity/flags");
+        check(cn !== undefined && cn.kind === "data" && sameValue(cn.value, string(name)) && !cn.writable && !cn.enumerable && cn.configurable, "constructor name");
+        check(cl !== undefined && cl.kind === "data" && sameValue(cl.value, { kind: "number", value: 1 }) && !cl.writable && !cl.enumerable && cl.configurable, "constructor length");
+        check(ctor.getPrototypeOf() === (name === "Error" ? r.functionPrototype : r.getErrorConstructor("Error")) && ctor.callable !== null && ctor.callable.realm === r && ctor.constructorSlot !== null, "constructor graph/call/construct");
+        const format = p.getOwnProperty("toString");
+        if (name === "Error") {
+            check(format !== undefined && format.kind === "data" && format.value.kind === "object" && format.writable && !format.enumerable && format.configurable, "Error toString descriptor");
+            if (format === undefined || format.kind !== "data" || format.value.kind !== "object") throw new Error("format object");
+            const method = format.value.object, mn = method.getOwnProperty("name"), ml = method.getOwnProperty("length");
+            check(keysEqual(method, ["name", "length"]) && method.getPrototypeOf() === r.functionPrototype && method.callable !== null && method.callable.realm === r && method.constructorSlot === null, "format metadata/owner/nonconstructor");
+            check(mn !== undefined && mn.kind === "data" && sameValue(mn.value, string("toString")) && !mn.writable && !mn.enumerable && mn.configurable, "format name");
+            check(ml !== undefined && ml.kind === "data" && sameValue(ml.value, { kind: "number", value: 0 }) && !ml.writable && !ml.enumerable && ml.configurable, "format length");
+        } else check(format === undefined, "NativeError inherits formatting");
+        const global = r.globalObject.getOwnProperty(name);
+        check(global !== undefined && global.kind === "data" && global.value.kind === "object" && global.value.object === ctor && global.writable && !global.enumerable && global.configurable, "Error global identity/flags");
     }
-    check(keysEqual(r.globalObject, ["undefined", "NaN", "Infinity", "console", "Number"]), "original globals");
+    check(keysEqual(r.globalObject, ["undefined", "NaN", "Infinity", "console", "Number", "Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError"]), "exact B globals");
 }
 console.log("PASS A03");
 function formatter(r: Realm): void {
@@ -203,6 +221,16 @@ console.log("PASS A08");
     }
     const r = fresh(); hostFault(() => { r.getErrorPrototype("Missing" as ErrorName); }, "Script Error prototype required");
     hostFault(() => { r.createError("Missing" as ErrorName, "x"); }, "Script Error prototype required");
-    const c = run("missing;", r); check(c.type === "throw" && c.value.kind === "string" && c.diagnostic.name === "ReferenceError", "no failure migration");
+    const session = createScriptSession(), c = run("missing;", r, session, "A09-B");
+    if (c.type !== "throw" || c.value.kind !== "object") throw new Error("genuine missing ReferenceError");
+    const e = c.value.object, abrupt = session.inspect().lastAbrupt;
+    check(e instanceof GuestError && e.getPrototypeOf() === r.getErrorPrototype("ReferenceError") && keysEqual(e, ["message"]), "originating error brand/prototype/keys");
+    descriptor(e, "message", "missing is not defined");
+    check(c.diagnostic.name === "ReferenceError" && c.diagnostic.message === "missing is not defined" && c.diagnostic.loc.line === 1 && c.diagnostic.loc.column === 1 && c.origin.kind === "engine-diagnostic", "unchanged diagnostic/location/origin");
+    check(session.inspect().steps === 2 && abrupt !== null && abrupt.realm === r && abrupt.unitId === "A09-B" && abrupt.loc.line === 1 && abrupt.loc.column === 1, "zero allocation ticks/provenance");
+    const next = run("missing;", r);
+    check(next.type === "throw" && next.value.kind === "object" && next.value.object !== e && next.value.object instanceof GuestError && next.value.object.getPrototypeOf() === r.getErrorPrototype("ReferenceError"), "fresh engine failures");
+    const synthetic = failure("ReferenceError", "missing is not defined", loc);
+    check(synthetic.value.kind === "string" && synthetic.value.value === "ReferenceError: missing is not defined", "synthetic diagnostic compatibility");
 }
 console.log("PASS A09");

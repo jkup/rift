@@ -1,0 +1,1040 @@
+[
+  {
+    "id": "E01",
+    "sourceOrSetup": "`Error();` and `new Error();`, all five families",
+    "literalExpected": "Fresh object each time, own message absent, inherited message=\"\", exact constructor identity, correct prototype chain.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E01",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T01",
+      "T02"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E02",
+    "sourceOrSetup": "`new TypeError('x');` and `TypeError('x');`",
+    "literalExpected": "Own message x Wtrue/Efalse/Ctrue, own keys [message]; inherited constructor===TypeError; instance of TypeError and Error, not ReferenceError.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E02",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E03",
+    "sourceOrSetup": "`Error(undefined);Error(null);Error(7);`",
+    "literalExpected": "Respectively no message, message \"null\", message \"7\"; no receiver dependence.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E03",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T01",
+      "T02"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E04",
+    "sourceOrSetup": "`Error('x',{cause:q});` with q exact host object",
+    "literalExpected": "Own keys [message,cause], cause===q Wtrue/Efalse/Ctrue.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E04",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T03",
+      "T06"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E05",
+    "sourceOrSetup": "`Error(undefined,options);` with inherited cause getter returning undefined",
+    "literalExpected": "Own keys [cause], present undefined cause; HasProperty then Get exactly once; no own message. Primitive/nullish options do no lookup.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E05",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T03",
+      "T04",
+      "T06"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E06",
+    "sourceOrSetup": "Error message hook records M, options cause getter records C",
+    "literalExpected": "Order M,C. Message hook runs once; cause never touched if message throws. A cause throw propagates exact q after M,C; no result published.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E06",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T05",
+      "T06",
+      "T07",
+      "T10",
+      "T11"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E07",
+    "sourceOrSetup": "Message object @@toPrimitive returns Symbol; direct Symbol input; object ordinary methods both return object",
+    "literalExpected": "Fresh TypeError in active Error builtin Realm for each generated failure; no subsequent cause read. A hook throwing q instead returns exact q.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E07",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T05",
+      "T07",
+      "T11",
+      "T12",
+      "T20"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E08",
+    "sourceOrSetup": "`Error.prototype.toString.call({});`",
+    "literalExpected": "\"Error\". Generic receiver does not need ErrorData.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E08",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T08"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E09",
+    "sourceOrSetup": "Generic receivers name/message: [undefined,undefined], [\"\",\"x\"], [\"X\",\"\"], [\"X\",\"y\"]",
+    "literalExpected": "\"Error\", \"x\", \"X\", \"X: y\". Nonobject receiver null/undefined/7/Symbol gives genuine method-Realm TypeError.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E09",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T08",
+      "T21"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E10",
+    "sourceOrSetup": "Get(name) records N; name conversion records n and rewrites message; Get(message) records M; message conversion records m",
+    "literalExpected": "Exact N,n,M,m, rewritten message used. Throw at each stage stops later stages and propagates exact q. Symbol name stops before message Get.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E10",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T08",
+      "T09",
+      "T21"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E11",
+    "sourceOrSetup": "Read/modify constructor.name, prototype.name, instance.message, instance.constructor",
+    "literalExpected": "Ordinary property semantics; name changes formatting, never brand/intrinsic allocation. Mutated global TypeError must not affect an engine-created TypeError. Native Function.toString retains initial name.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E11",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E12",
+    "sourceOrSetup": "Cross-Realm A constructor called/new in B",
+    "literalExpected": "A instance/prototype/constructor identity, different from B constructor even if names identical. NewTarget remains actual callee.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E12",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T01",
+      "T02",
+      "T10",
+      "T11"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E13",
+    "sourceOrSetup": "Object.prototype.toString on Error instance after prototype relink, Error.prototype, fake {name:'Error'}",
+    "literalExpected": "`[object Error]`, `[object Object]`, `[object Object]`; @@toStringTag still overrides using existing order.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E13",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E14",
+    "sourceOrSetup": "Descriptor matrix on all five constructors/prototypes, Error toString and inherited restrictions",
+    "literalExpected": "Exact W/E/C and lengths/names from contract; NativeError constructor prototype is Error constructor. None of constructor/prototype identities are shared across Realms.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E14",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E15",
+    "sourceOrSetup": "`try{missing;}catch(e){out(typeof e);out(e.constructor===ReferenceError);}`",
+    "literalExpected": "object,true. `try{throw 'ReferenceError: fake';}catch(e){out(typeof e);}` →string.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E15",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T19"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E16",
+    "sourceOrSetup": "`try{x;let x;}catch(e){out(e.constructor===ReferenceError);}`",
+    "literalExpected": "true; caught fresh object. Run equivalent global, block and function TDZ get/set host fixtures; context Realm, not environment owner, determines error.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E16",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E17",
+    "sourceOrSetup": "`try{null.x;}catch(e){out(e.constructor===TypeError);}` and `try{7();}catch(e){out(e.constructor===TypeError);}`",
+    "literalExpected": "true for each; no replacement at catch. Strict write to frozen property, immutable binding host fixture and nonconfigurable delete give TypeError; sloppy writes/delete keep existing false/silent behavior.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E17",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E18",
+    "sourceOrSetup": "`try{new 7();}catch(e){out(e.constructor===TypeError);}`; bad `in` RHS; bad instanceof target/hook/prototype",
+    "literalExpected": "Fresh correct-Realm TypeError at each producer, preserve operand/argument/hook order. Existing H5 negatives still fail semantically.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E18",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E19",
+    "sourceOrSetup": "`try{let a=[];a.length=1.5;}catch(e){out(e.constructor===RangeError);}`",
+    "literalExpected": "true; two conversions where object length supplied, no array mutation on conversion/range failure. Foreign array B accessed in A produces A RangeError unless a B hook itself throws.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E19",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E20",
+    "sourceOrSetup": "Host alias Number.prototype.toString, radix1/37, wrong receiver",
+    "literalExpected": "RangeError / RangeError / TypeError in method's defining Realm. Receiver error precedes radix effects. Equivalent String/Boolean/Symbol receiver errors are all objects with that method Realm's TypeError prototype.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E20",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E21",
+    "sourceOrSetup": "Restricted caller/arguments getter and setter from A reached by B",
+    "literalExpected": "A TypeError; object, not diagnostic string; exact existing step count and source attribution. Raw endpoint invoke remains host rejected.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E21",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E22",
+    "sourceOrSetup": "Global declaration conflicts on a second unit, restricted global property, failed global function/var declarations",
+    "literalExpected": "SyntaxError for lexical/restricted conflicts, TypeError for nondeclarable function/var; phase instantiation; source/loc is second unit's declaration site; no body effects.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E22",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E23",
+    "sourceOrSetup": "Trusted duplicate GlobalEnvironment.createMutableBinding with explicit A, then null compatibility mode",
+    "literalExpected": "A TypeError then historical diagnostic-string TypeError. Missing/initialized invariant violations still host Error, never catchable.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E23",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E24",
+    "sourceOrSetup": "Primitive Symbol conversions to Number/String and toPropertyKey(Symbol)",
+    "literalExpected": "TypeError/TypeError in running Realm; property key exact Symbol identity with normal completion. Direct object-toNumber/toString remain unsupported-operation, not language errors.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E24",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T20"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E25",
+    "sourceOrSetup": "Existing map helper bad callback/oversized length through active Script builtin",
+    "literalExpected": "TypeError/RangeError objects respectively; species remains unsupported-operation, no callbacks on oversized failure; no new map global/method.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E25",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E26",
+    "sourceOrSetup": "`try{throw q;}catch(e){out(e===q);throw e;}` q any object, number, string, undefined or Error",
+    "literalExpected": "true then exact q thrown with guest origin; last source is rethrow, diagnostic remains independent of q's mutable properties.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E26",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E27",
+    "sourceOrSetup": "Same engine completion returned by a trusted builtin, caught once then returned again in another unit",
+    "literalExpected": "Exact completion survives; H1 consumed-propagation reset captures second source; no new object or repeated conversion.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E27",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E28",
+    "sourceOrSetup": "A function H: `function f(){missing;}` transferred into B, source T:`f();`",
+    "literalExpected": "A ReferenceError, lastAbrupt realm A/unit H/identifier loc; caller cleanup B. Repeat caught/rethrown in T: same object but rethrow unit T/Realm B.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E28",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E29",
+    "sourceOrSetup": "A message hook called by Error constructor B: hook returns object vs hook throws A Error",
+    "literalExpected": "Return-object failure allocated B; thrown A Error propagated unchanged; first source belongs to originating hook only for actual hook throw.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E29",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T05",
+      "T06",
+      "T07",
+      "T10",
+      "T11",
+      "T12",
+      "T20"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E30",
+    "sourceOrSetup": "Fresh/seeded engine `missing;` and public `E(7);`, `new E(7);` plus eleven variants",
+    "literalExpected": "Literal prefix tables in contract; no error-allocation charge for missing, public allocation charged. Record counts, phase, source, Realm and cleanup.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E30",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T08",
+      "T19"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E31",
+    "sourceOrSetup": "`try{while(true){}}catch(e){out(9);}` and recursive function/new constructor",
+    "literalExpected": "Resource origin, no9; string resource payload remains unchanged, cannot satisfy runtime-negative. Evaluation-depth resource also bypasses catch.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E31",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E32",
+    "sourceOrSetup": "Reachable message/cause/name/prototype callback throws host sentinel",
+    "literalExpected": "Same host identity escapes, no guest catch, active null, calls/depth0; next session works. Separate from language throw tests.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E32",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T05",
+      "T06",
+      "T07",
+      "T09",
+      "T10"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E33",
+    "sourceOrSetup": "Reachable callback returns unsupported-operation completion",
+    "literalExpected": "Same completion, no catch; no new Error, subsequent effects absent.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E33",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T05",
+      "T06",
+      "T07",
+      "T09",
+      "T10"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E34",
+    "sourceOrSetup": "Invalid source with an otherwise usable Error expression before unsupported tail",
+    "literalExpected": "Whole-unit blocked, no effects; existing parser capability/rule and source limits unchanged.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E34",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E35",
+    "sourceOrSetup": "projectThrow on new engine Error, q string, resource and unsupported",
+    "literalExpected": "object/constructor unsupported; string/constructor absent; original resource; unsupported-syntax capability. Null constructor name/Realm/secondary throughout; no getter invoked.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E35",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "E36",
+    "sourceOrSetup": "Change guest Error.name/message/constructor into poison getters then observe/CLI-render trusted completion",
+    "literalExpected": "Diagnostic output unchanged; no getter effects. display(object) remains `[object Object]`; Error.toString only through semantic call.",
+    "slice": "B proposed",
+    "driver": "future test/harness-errors-b.ts",
+    "case": "E36",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F01",
+    "sourceOrSetup": "`String();String(undefined);String(null);String(-0);`",
+    "literalExpected": "\"\", \"undefined\", \"null\", \"0\".",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F01",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F02",
+    "sourceOrSetup": "Seed Symbol s with description x; `String(s);new String(s);`",
+    "literalExpected": "\"Symbol(x)\"; genuine String-Realm TypeError. No Symbol factory introduced.",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F02",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F03",
+    "sourceOrSetup": "Symbol wrapper and object with @@toPrimitive returning Symbol",
+    "literalExpected": "String call and construction both TypeError; special direct-Symbol call path not applied.",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F03",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T13",
+      "T14"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F04",
+    "sourceOrSetup": "`new String('ab');`",
+    "literalExpected": "Genuine StringData ab, own keys [0,1,length], index values a,b Wfalse/Etrue/Cfalse; length2 Wfalse/Efalse/Cfalse; exact String.prototype.",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F04",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T14"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F05",
+    "sourceOrSetup": "`String(msg);new String(msg);` with message conversion trace/throw",
+    "literalExpected": "String hint once; exact q throw; no allocation/prototype lookup after throw.",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F05",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T13",
+      "T14"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F06",
+    "sourceOrSetup": "`Object();Object(null);new Object(undefined);`",
+    "literalExpected": "Distinct fresh ordinary objects, correct builtin Realm Object.prototype, no own keys.",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F06",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T17",
+      "T18"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F07",
+    "sourceOrSetup": "`Object(q);new Object(q);` object q",
+    "literalExpected": "Exact q each, no coercion/Get/prototype lookup, no allocation tick.",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F07",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T15",
+      "T16"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F08",
+    "sourceOrSetup": "`Object(7);Object(false);Object('a');Object(s);` and new forms",
+    "literalExpected": "Existing genuine slot wrappers in builtin Realm; no new primitive constructor globals.",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F08",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F09",
+    "sourceOrSetup": "Cross-Realm String/Object transferred from A into B",
+    "literalExpected": "A boxes/fresh objects; existing object q retains its identity and original prototype.",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F09",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T14",
+      "T15",
+      "T16"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F10",
+    "sourceOrSetup": "Constructor and prototype metadata, key order, descriptors",
+    "literalExpected": "Exact main-contract graph; added constructor keys appended; legacy graphs unchanged. Methods/nonconstructible namespace Number unchanged.",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F10",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F11",
+    "sourceOrSetup": "`Object.prototype.toString.call({});` and `String({toString:function(){throw 7;}});`",
+    "literalExpected": "\"[object Object]\"; exact7. The former is the needed harness fallback.",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F11",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "F12",
+    "sourceOrSetup": "Runtime files `String(7);` versus `String(11);`; repeat `new String(7);`/eleven and Object(o) alias controls",
+    "literalExpected": "\"7\" vs \"11\"; boxes differ by data. Fixed rows run for both; fresh/seven-seeded prefixes and cleanup as contract.",
+    "slice": "C deferred",
+    "driver": "future test/harness-errors-c.ts",
+    "case": "F12",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "traces": [
+      "T13",
+      "T14",
+      "T15",
+      "T16",
+      "T17",
+      "T18"
+    ],
+    "status": "UNEXECUTED; retain every clause of source matrix row"
+  },
+  {
+    "id": "G01",
+    "setup": "raw construct callback",
+    "beforeEffects": [
+      "verify owner session active",
+      "verify profile/record/captured callee",
+      "check/reserve call depth",
+      "switch Realm/frame",
+      "issue tagged permit",
+      "consume exact tuple once"
+    ],
+    "expected": "host rejection; no unauthorized prototype Get/callback/tick",
+    "controls": [
+      "direct tuple with fresh context",
+      "same attempt inside authorized make callback",
+      "unchanged counters/poison prototype/callback count",
+      "ordinary H5 shell positive",
+      "ordinary createBuiltin negative"
+    ],
+    "caveat": "",
+    "status": "UNEXECUTED",
+    "driver": "future test/harness-errors-b.ts",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ]
+  },
+  {
+    "id": "G02",
+    "setup": "fabricated context",
+    "beforeEffects": [
+      "verify owner session active",
+      "verify profile/record/captured callee",
+      "check/reserve call depth",
+      "switch Realm/frame",
+      "issue tagged permit",
+      "consume exact tuple once"
+    ],
+    "expected": "host rejection; no unauthorized prototype Get/callback/tick",
+    "controls": [
+      "direct tuple with fresh context",
+      "same attempt inside authorized make callback",
+      "unchanged counters/poison prototype/callback count",
+      "ordinary H5 shell positive",
+      "ordinary createBuiltin negative"
+    ],
+    "caveat": "",
+    "status": "UNEXECUTED",
+    "driver": "future test/harness-errors-b.ts",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ]
+  },
+  {
+    "id": "G03",
+    "setup": "wrong Realm/profile",
+    "beforeEffects": [
+      "verify owner session active",
+      "verify profile/record/captured callee",
+      "check/reserve call depth",
+      "switch Realm/frame",
+      "issue tagged permit",
+      "consume exact tuple once"
+    ],
+    "expected": "host rejection; no unauthorized prototype Get/callback/tick",
+    "controls": [
+      "direct tuple with fresh context",
+      "same attempt inside authorized make callback",
+      "unchanged counters/poison prototype/callback count",
+      "ordinary H5 shell positive",
+      "ordinary createBuiltin negative"
+    ],
+    "caveat": "",
+    "status": "UNEXECUTED",
+    "driver": "future test/harness-errors-b.ts",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ]
+  },
+  {
+    "id": "G04",
+    "setup": "copied builtin slot",
+    "beforeEffects": [
+      "verify owner session active",
+      "verify profile/record/captured callee",
+      "check/reserve call depth",
+      "switch Realm/frame",
+      "issue tagged permit",
+      "consume exact tuple once"
+    ],
+    "expected": "host rejection; no unauthorized prototype Get/callback/tick",
+    "controls": [
+      "direct tuple with fresh context",
+      "same attempt inside authorized make callback",
+      "unchanged counters/poison prototype/callback count",
+      "ordinary H5 shell positive",
+      "ordinary createBuiltin negative"
+    ],
+    "caveat": "",
+    "status": "UNEXECUTED",
+    "driver": "future test/harness-errors-b.ts",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ]
+  },
+  {
+    "id": "G05",
+    "setup": "mismatched callable/constructor records",
+    "beforeEffects": [
+      "verify owner session active",
+      "verify profile/record/captured callee",
+      "check/reserve call depth",
+      "switch Realm/frame",
+      "issue tagged permit",
+      "consume exact tuple once"
+    ],
+    "expected": "host rejection; no unauthorized prototype Get/callback/tick",
+    "controls": [
+      "direct tuple with fresh context",
+      "same attempt inside authorized make callback",
+      "unchanged counters/poison prototype/callback count",
+      "ordinary H5 shell positive",
+      "ordinary createBuiltin negative"
+    ],
+    "caveat": "",
+    "status": "UNEXECUTED",
+    "driver": "future test/harness-errors-b.ts",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ]
+  },
+  {
+    "id": "G06",
+    "setup": "altered args-array identity",
+    "beforeEffects": [
+      "verify owner session active",
+      "verify profile/record/captured callee",
+      "check/reserve call depth",
+      "switch Realm/frame",
+      "issue tagged permit",
+      "consume exact tuple once"
+    ],
+    "expected": "host rejection; no unauthorized prototype Get/callback/tick",
+    "controls": [
+      "direct tuple with fresh context",
+      "same attempt inside authorized make callback",
+      "unchanged counters/poison prototype/callback count",
+      "ordinary H5 shell positive",
+      "ordinary createBuiltin negative"
+    ],
+    "caveat": "See REVIEW.md: no public path exposes an unused valid constructor permit; negative tuple checks alone cannot isolate field sensitivity.",
+    "status": "UNEXECUTED",
+    "driver": "future test/harness-errors-b.ts",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ]
+  },
+  {
+    "id": "G07",
+    "setup": "altered loc identity",
+    "beforeEffects": [
+      "verify owner session active",
+      "verify profile/record/captured callee",
+      "check/reserve call depth",
+      "switch Realm/frame",
+      "issue tagged permit",
+      "consume exact tuple once"
+    ],
+    "expected": "host rejection; no unauthorized prototype Get/callback/tick",
+    "controls": [
+      "direct tuple with fresh context",
+      "same attempt inside authorized make callback",
+      "unchanged counters/poison prototype/callback count",
+      "ordinary H5 shell positive",
+      "ordinary createBuiltin negative"
+    ],
+    "caveat": "See REVIEW.md: no public path exposes an unused valid constructor permit; negative tuple checks alone cannot isolate field sensitivity.",
+    "status": "UNEXECUTED",
+    "driver": "future test/harness-errors-b.ts",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ]
+  },
+  {
+    "id": "G08",
+    "setup": "reused permit",
+    "beforeEffects": [
+      "verify owner session active",
+      "verify profile/record/captured callee",
+      "check/reserve call depth",
+      "switch Realm/frame",
+      "issue tagged permit",
+      "consume exact tuple once"
+    ],
+    "expected": "host rejection; no unauthorized prototype Get/callback/tick",
+    "controls": [
+      "direct tuple with fresh context",
+      "same attempt inside authorized make callback",
+      "unchanged counters/poison prototype/callback count",
+      "ordinary H5 shell positive",
+      "ordinary createBuiltin negative"
+    ],
+    "caveat": "",
+    "status": "UNEXECUTED",
+    "driver": "future test/harness-errors-b.ts",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ]
+  },
+  {
+    "id": "G09",
+    "setup": "retained owner context during another live session",
+    "beforeEffects": [
+      "verify owner session active",
+      "verify profile/record/captured callee",
+      "check/reserve call depth",
+      "switch Realm/frame",
+      "issue tagged permit",
+      "consume exact tuple once"
+    ],
+    "expected": "host rejection; no unauthorized prototype Get/callback/tick",
+    "controls": [
+      "direct tuple with fresh context",
+      "same attempt inside authorized make callback",
+      "unchanged counters/poison prototype/callback count",
+      "ordinary H5 shell positive",
+      "ordinary createBuiltin negative"
+    ],
+    "caveat": "",
+    "status": "UNEXECUTED",
+    "driver": "future test/harness-errors-b.ts",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ]
+  },
+  {
+    "id": "G10",
+    "setup": "nested sessions success/language/host",
+    "beforeEffects": [
+      "verify owner session active",
+      "verify profile/record/captured callee",
+      "check/reserve call depth",
+      "switch Realm/frame",
+      "issue tagged permit",
+      "consume exact tuple once"
+    ],
+    "expected": "nested session restores outer consumed permit; return, exact guest throw, exact host sentinel each restore finally",
+    "controls": [
+      "outer Error message hook starts inner session",
+      "inner normal",
+      "inner language q",
+      "inner host sentinel",
+      "outer context resumed",
+      "next session succeeds"
+    ],
+    "caveat": "",
+    "status": "UNEXECUTED",
+    "driver": "future test/harness-errors-b.ts",
+    "inputs": [
+      "input-a",
+      "input-b"
+    ]
+  }
+]

@@ -588,7 +588,7 @@ console.log("PASS X05 guards and private completed body environment");
 // adding a lexical name during RHS does not redirect that reference.
 for(const strict of [false,true])for(const lexical of [false,true]){
  const r=fresh(),s=createScriptSession(),q=sentinel();let setters=0;
- define(r,"seed",builtin(r,"seed",(_t,_a,c,_l): ValueCompletion=>{if(lexical){check(r.globalEnvironment.createMutableBinding("ghost",loc).type==="normal","late lexical create");check(r.globalEnvironment.initializeBinding("ghost",number(1),c,loc).type==="normal","late lexical initialize");}else property(r,r.globalObject,"ghost",{set:builtin(r,"set",(_t,_a,_c,_l): ValueCompletion=>{setters++;return q;}),configurable:true});return normal(number(7));}));
+ define(r,"seed",builtin(r,"seed",(_t,_a,c,_l): ValueCompletion=>{if(lexical){check(r.globalEnvironment.createMutableBinding("ghost",loc, c.realm).type==="normal","late lexical create");check(r.globalEnvironment.initializeBinding("ghost",number(1),c,loc).type==="normal","late lexical initialize");}else property(r,r.globalObject,"ghost",{set:builtin(r,"set",(_t,_a,_c,_l): ValueCompletion=>{setters++;return q;}),configurable:true});return normal(number(7));}));
  const result=run((strict?'"use strict";':'')+'ghost=seed();',r,s);if(strict){throws(result,"ReferenceError");check(setters===0,"strict unresolved ignores late setter");}else if(lexical){expect(result,number(7),"late lexical bypass");expect(r.globalEnvironment.getBindingValue("ghost",context(r),loc),number(1),"late lexical untouched");check(scalar(own(r,"ghost"))==="7","late object created");}else check(result===q && setters===1,"late setter exact abrupt");
 }
 // FDI failure never publishes a lexical body environment and cannot be retried.

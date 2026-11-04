@@ -235,7 +235,7 @@ const zeroCalls = new Evaluator(a, 3, 0);
 error(toPrimitive(value(bare), "number", zeroCalls.context, loc), "TypeError", "cannot convert object to primitive", loc);
 check(zeroCalls.steps === 3 && bare.get("valueOf", zeroCalls.context, loc).kind === "undefined", "null root protocol lookup plus two missing ordinary methods");
 for (const v of [value(new NoReads()), value(a.createBooleanObject(false)), value(a.createNumberObject(0)), value(a.createStringObject("ab"))]) {
-    for (const conversion of [toNumber(v, loc), toString(v, loc), toUint32(v, loc), toIntegerOrInfinity(v, loc), toLength(v, loc)]) {
+    for (const conversion of [toNumber(v, loc, null), toString(v, loc, null), toUint32(v, loc, null), toIntegerOrInfinity(v, loc, null), toLength(v, loc, null)]) {
         if (conversion.type !== "throw") throw new Error("direct converter accepted object");
         error(conversion, "TypeError", "object-to-primitive conversion unsupported", loc);
     }
@@ -290,7 +290,7 @@ const direct = toObject(symbolValue, transported.context, loc);
 check(direct.type === "normal" && direct.value instanceof GuestSymbolObject && direct.value.symbolData === symbol && direct.value.getPrototypeOf() === c.symbolPrototype, "A2/A16 independent evaluator transport");
 for (const box of [symbolBox, anotherBox]) {
     const before = symbolEvaluator.steps;
-    for (const conversion of [toNumber(value(box), loc), toString(value(box), loc)]) {
+    for (const conversion of [toNumber(value(box), loc, null), toString(value(box), loc, null)]) {
         check(conversion.type === "throw", "A19 direct box rejection");
         if (conversion.type === "throw") error(conversion, "TypeError", "object-to-primitive conversion unsupported", loc);
     }

@@ -1,0 +1,38 @@
+[
+  {
+    "lane": "node",
+    "id": "literal",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "H01 PASS\nH02 PASS\nH03 PASS\nH04 PASS\nH05 PASS\nH06 PASS\nH07 PASS\nH08 PASS\nH09 PASS\nH10 PASS\nH11 PASS\nH12 PASS\nH13 PASS\nH14 PASS\nH15 PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "renamed",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "H01 PASS\nH02 PASS\nH03 PASS\nH04 PASS\nH05 PASS\nH06 PASS\nH07 PASS\nH08 PASS\nH09 PASS\nH10 PASS\nH11 PASS\nH12 PASS\nH13 PASS\nH14 PASS\nH15 PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "literal",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "H01 PASS\nH02 PASS\nH03 PASS\nH04 PASS\nH05 PASS\nH06 PASS\nH07 PASS\nH08 PASS\nH09 PASS\nH10 PASS\nH11 PASS\nH12 PASS\nH13 PASS\nH14 PASS\nH15 PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "renamed",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "H01 PASS\nH02 PASS\nH03 PASS\nH04 PASS\nH05 PASS\nH06 PASS\nH07 PASS\nH08 PASS\nH09 PASS\nH10 PASS\nH11 PASS\nH12 PASS\nH13 PASS\nH14 PASS\nH15 PASS\n",
+    "stderr": ""
+  }
+]

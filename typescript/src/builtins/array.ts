@@ -10,7 +10,7 @@ import type { Location } from "../syntax.js";
 function toElementString(value: Value, context: OperationContext, loc: Location): StringCompletion {
     const primitive = toPrimitive(value, "string", context, loc);
     if (primitive.type === "throw") return primitive;
-    return toString(primitive.value, loc);
+    return toString(primitive.value, loc, context.realm);
 }
 
 export function registerArrayConversions(realm: Realm, objectToString: Value): void {

@@ -784,7 +784,7 @@ for (const name of ["W17 ReadBeforeNumericFailure", "W18 ReadBeforeRHSFailure"])
     const ref: Reference = { kind: "property", base: b(true), key: o(key), loc: refLoc };
     const read = getValue(ref, e.context, opLoc);
     expect(read, sym(identity), name + " read");
-    const next = name === "W17 ReadBeforeNumericFailure" ? toNumber(read.value, opLoc) : Q;
+    const next = name === "W17 ReadBeforeNumericFailure" ? toNumber(read.value, opLoc, null) : Q;
     if (name === "W17 ReadBeforeNumericFailure") {
         check(next.type === "throw" && next.diagnostic.message === "cannot convert symbol to number" && next.diagnostic.loc === opLoc, name);
     } else {

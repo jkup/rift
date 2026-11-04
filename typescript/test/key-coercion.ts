@@ -207,7 +207,7 @@ check(run(first, "target[key]; target[key];").type === "normal" && payload(bindi
 const steps = first.steps;
 check(run(first, "target[key];").type === "normal" && first.steps > steps && payload(binding(first, "trace")) === "CCC", "retained monotonic context");
 const boundary = binding(second, "key");
-check(toString(boundary, loc).type === "throw" && toNumber(boundary, loc).type === "throw" && payload(binding(second, "trace")) === "", "direct converters stay primitive-only");
+check(toString(boundary, loc, null).type === "throw" && toNumber(boundary, loc, null).type === "throw" && payload(binding(second, "trace")) === "", "direct converters stay primitive-only");
 // A fresh fallback lookup observes mutation by the first method.
 const mutation = setup();
 check(run(mutation, "key.toString = function() { key.valueOf = function() { return 'x'; }; return {}; }; let changed = target[key];").type === "normal" && payload(binding(mutation, "changed")) === 7, "fresh fallback after mutation");

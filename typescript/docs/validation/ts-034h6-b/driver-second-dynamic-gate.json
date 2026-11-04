@@ -1,0 +1,18 @@
+{
+  "entry": "test/harness-errors-b.ts",
+  "build": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\harness-errors-b.exe\n",
+    "stderr": ""
+  },
+  "coverage": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\harness-errors-b.ts\n\n  statements analyzed   4320\n  compile statically    4320  (100%)\n    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n",
+    "stderr": ""
+  },
+  "verdict": "DYNAMIC"
+}

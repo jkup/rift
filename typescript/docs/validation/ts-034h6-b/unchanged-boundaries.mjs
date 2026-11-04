@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';import {execFileSync} from 'node:child_process';
+const before=p=>execFileSync('git',['show','0b93310:typescript/src/'+p],{encoding:'utf8'}).replaceAll('\r\n','\n');const after=p=>readFileSync('src/'+p,'utf8').replaceAll('\r\n','\n');
+const section=(s,a,b)=>s.slice(s.indexOf(a),s.indexOf(b,s.indexOf(a)));
+const old=before('script-execution-internal.ts'),now=after('script-execution-internal.ts');
+let ordinary=section(now,'    #construct(callee:','    #constructBuiltin(').replace('languageFailure(this.context.realm, "TypeError", "value is not a constructor", loc)','failure("TypeError", "value is not a constructor", loc)').replace('        if (fn.kind === "builtin-constructor") return this.#constructBuiltin(callee.object, fn, args, loc);\n','');
+assert.equal(ordinary,section(old,'    #construct(callee:','    #executeScriptFunction('));
+assert.equal(section(now,'    #callScript(callee:','\n}\n').replace('pendingBuiltin = { kind: "call",','pendingBuiltin = {'),section(old,'    #callScript(callee:','\n}\n'));
+assert.equal(section(after('runtime.ts'),'export type OperationContext =','export type Builtin ='),section(before('runtime.ts'),'export type OperationContext =','export type Builtin ='));
+for(const [start,end]of [['export function failure(','// Allocate where'],['export function resourceFailure(','export type OperationContext']]){const previousEnd=start.includes('resource')?end:'export function resourceFailure(';assert.equal(section(after('runtime.ts'),start,end),section(before('runtime.ts'),start,previousEnd));}
+writeFileSync('docs/validation/ts-034h6-b/unchanged-boundaries.json',JSON.stringify({ordinaryConstruction:'byte-identical after sole languageFailure replacement and builtin branch dispatch',callDispatch:'byte-identical except tagged call permit',OperationContext:'byte-identical',failureResourceUnsupported:'byte-identical'},null,2)+'\n');console.log('PASS exact unchanged ordinary construction/call/OperationContext/synthetic APIs');

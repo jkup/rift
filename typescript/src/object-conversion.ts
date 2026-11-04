@@ -1,4 +1,4 @@
-import { failure, type GuestObject, type OperationContext, type ThrowCompletion, type Value } from "./runtime.js";
+import { languageFailure, type GuestObject, type OperationContext, type ThrowCompletion, type Value } from "./runtime.js";
 import type { Location } from "./syntax.js";
 
 export type ObjectCompletion = { type: "normal"; value: GuestObject } | ThrowCompletion;
@@ -11,6 +11,6 @@ export function toObject(input: Value, context: OperationContext, loc: Location)
         case "number": return { type: "normal", value: context.realm.createNumberObject(input.value) };
         case "symbol": return { type: "normal", value: context.realm.createSymbolObject(input.value) };
         case "string": return { type: "normal", value: context.realm.createStringObject(input.value) };
-        case "null": case "undefined": return failure("TypeError", "cannot convert null or undefined to object", loc);
+        case "null": case "undefined": return languageFailure(context.realm, "TypeError", "cannot convert null or undefined to object", loc);
     }
 }

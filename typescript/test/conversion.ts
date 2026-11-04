@@ -20,8 +20,8 @@ function completion(actual: NumberCompletion, expected: number, label: string): 
     if (actual.type === "normal") numeric(actual.value, expected, label);
 }
 function primitive(value: Value, expected: number, uint: number, label: string): void {
-    completion(toNumber(value, loc), expected, label);
-    completion(toUint32(value, loc), uint, label + " uint32");
+    completion(toNumber(value, loc, null), expected, label);
+    completion(toUint32(value, loc, null), uint, label + " uint32");
 }
 primitive(UNDEFINED, NaN, 0, "undefined");
 primitive({ kind: "null" }, 0, 0, "null");
@@ -31,7 +31,7 @@ for (const n of [0, -0, NaN, Infinity, -Infinity]) primitive({ kind: "number", v
 
 function string(value: string, expected: number): void {
     numeric(stringToNumber(value), expected, "string " + JSON.stringify(value));
-    completion(toNumber({ kind: "string", value }, loc), expected, "string wrapper " + JSON.stringify(value));
+    completion(toNumber({ kind: "string", value }, loc, null), expected, "string wrapper " + JSON.stringify(value));
 }
 const tokens = ["", "-0", "+0", "-0.0e+9", "Infinity", "+Infinity", "-Infinity", "01", ".5", "5.", "1e+3", "0x1f", "0X1F", "0O17", "0o17", "0B101", "0b101", "+.5", "-.5", "5.e2", "0008", "1E-2"];
 const expected = [0, -0, 0, -0, Infinity, Infinity, -Infinity, 1, .5, 5, 1000, 31, 31, 15, 15, 5, 5, .5, -.5, 500, 8, .01];
@@ -111,7 +111,7 @@ const fixtureRealm = new Realm((_line) => {});
 const hook = new GuestObject(null, false, { kind: "builtin", initialName: null, realm: fixtureRealm, invoke: (_receiver, _args, _context, _loc): Completion => { throw new Error("must not call conversion hook"); } });
 object.bootstrapDefine("valueOf", { value: { kind: "object", object: hook }, writable: true, enumerable: true, configurable: true });
 object.bootstrapDefine("toString", { value: { kind: "object", object: hook }, writable: true, enumerable: true, configurable: true });
-for (const result of [toNumber({ kind: "object", object }, loc), toUint32({ kind: "object", object }, loc)]) {
+for (const result of [toNumber({ kind: "object", object }, loc, null), toUint32({ kind: "object", object }, loc, null)]) {
     check(result.type === "throw", "unsupported object throws");
     if (result.type === "throw") {
         check(result.diagnostic.phase === "runtime" && result.diagnostic.name === "TypeError", "object diagnostic");
@@ -123,11 +123,11 @@ check(object.ownPropertyKeys().length === 2, "object remains unchanged");
 
 const symbolValue: Value = { kind: "symbol", value: new GuestSymbol("x") };
 check(truthy(symbolValue) && display(symbolValue) === "Symbol(x)", "A14/A15/A20 diagnostic versus conversion");
-for (const converted of [toNumber(symbolValue, loc), toUint32(symbolValue, loc), toIntegerOrInfinity(symbolValue, loc), toLength(symbolValue, loc)]) {
+for (const converted of [toNumber(symbolValue, loc, null), toUint32(symbolValue, loc, null), toIntegerOrInfinity(symbolValue, loc, null), toLength(symbolValue, loc, null)]) {
     check(converted.type === "throw" && converted.diagnostic.phase === "runtime" && converted.diagnostic.name === "TypeError"
         && converted.diagnostic.message === "cannot convert symbol to number" && converted.diagnostic.loc === loc, "A14 exact numeric error");
 }
-const symbolString = toString(symbolValue, loc);
+const symbolString = toString(symbolValue, loc, null);
 check(symbolString.type === "throw" && symbolString.diagnostic.name === "TypeError" && symbolString.diagnostic.message === "cannot convert symbol to string" && symbolString.diagnostic.loc === loc, "A14 exact string error");
 
 console.log("primitive conversion passed");

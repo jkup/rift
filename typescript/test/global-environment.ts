@@ -96,7 +96,7 @@ for (const line of lines) {
     switch (id) {
         case "H01": {
             bool(env.hasBinding(name, loc), false);
-            unused(env.createMutableBinding(name, loc));
+            unused(env.createMutableBinding(name, loc, null));
             bool(env.hasBinding(name, loc), true);
             check(env.hasLexicalDeclaration(name), "lexical presence");
             const ref = capture(env, name, loc);
@@ -135,7 +135,7 @@ for (const line of lines) {
             break;
         }
         case "H04": {
-            unused(env.createMutableBinding(name, loc));
+            unused(env.createMutableBinding(name, loc, null));
             unused(env.initializeBinding(name, input, context, loc));
             check(env.hasLexicalDeclaration(name) && !env.hasLexicalDeclaration(name + "other"), "prior lexical conflict inspection");
             // CanDeclare queries the object only; the future caller must check
@@ -163,7 +163,7 @@ for (const line of lines) {
         case "H06": {
             define(object, name, input);
             bool(env.hasRestrictedGlobalProperty(name), false);
-            unused(env.createMutableBinding(name, loc));
+            unused(env.createMutableBinding(name, loc, null));
             error(env.getBindingValue(name, context, loc), "ReferenceError", loc);
             unused(env.initializeBinding(name, number(2), context, loc));
             value(env.getBindingValue(name, context, loc), number(2));
@@ -243,7 +243,7 @@ for (const line of lines) {
             error(getStrictGlobalBinding(ref, context), "ReferenceError", loc);
             descriptor(object, name, number(7), true, true, true);
             const lexical = capture(env, "laterLexical", loc);
-            unused(env.createMutableBinding("laterLexical", loc));
+            unused(env.createMutableBinding("laterLexical", loc, null));
             unused(env.initializeBinding("laterLexical", input, context, loc));
             error(putStrictGlobalBinding(lexical, number(8), context), "ReferenceError", loc);
             value(env.getBindingValue("laterLexical", context, loc), number(7));
@@ -261,7 +261,7 @@ for (const line of lines) {
             error(putStrictGlobalBinding(ref, number(8), context), "ReferenceError", loc);
             define(object, name, number(9));
             value(getStrictGlobalBinding(ref, context), number(9));
-            unused(env.createMutableBinding(name, loc));
+            unused(env.createMutableBinding(name, loc, null));
             error(getStrictGlobalBinding(ref, context), "ReferenceError", loc);
             unused(env.initializeBinding(name, number(2), context, loc));
             unused(putStrictGlobalBinding(ref, number(3), context));
@@ -276,7 +276,7 @@ for (const line of lines) {
             value(normal(env.getThisBinding()), { kind: "object", object });
             value(normal(envB.getThisBinding()), { kind: "object", object: alternateThis });
             check(env.withBaseObject() === UNDEFINED && envB.withBaseObject() === UNDEFINED, "identifier receiver");
-            unused(env.createMutableBinding(name, loc));
+            unused(env.createMutableBinding(name, loc, null));
             unused(env.initializeBinding(name, input, context, loc));
             bool(envB.hasBinding(name, loc), false);
             unused(envB.createGlobalVarBinding(name, contextB, loc));
@@ -326,7 +326,7 @@ for (const line of lines) {
             error(e.createGlobalFunctionBinding(name, input, context, loc), "TypeError", loc);
             check(obj.trace === "D", "failed definition stops Set");
             obj.mode = "H"; obj.trace = "";
-            unused(e.createMutableBinding(name, loc));
+            unused(e.createMutableBinding(name, loc, null));
             error(e.getBindingValue(name, context, loc), "ReferenceError", loc);
             error(e.setMutableBinding(name, input, context, loc), "ReferenceError", loc);
             bool(e.hasBinding(name, loc), true);
@@ -351,8 +351,8 @@ for (const line of lines) {
             break;
         }
         case "H15": {
-            unused(env.createMutableBinding(name, loc));
-            error(env.createMutableBinding(name, loc), "TypeError", loc);
+            unused(env.createMutableBinding(name, loc, null));
+            error(env.createMutableBinding(name, loc, null), "TypeError", loc);
             error(env.getBindingValue(name, context, loc), "ReferenceError", loc);
             unused(env.initializeBinding(name, input, context, loc));
             let caught = false;

@@ -1,5 +1,6 @@
+import type { Realm } from "./realm.js";
 import { toPrimitive } from "./primitive-conversion.js";
-import { failure, unsupportedFailure } from "./runtime.js";
+import { languageFailure, unsupportedFailure } from "./runtime.js";
 import type { Value, ThrowCompletion, PropertyKey, OperationContext } from "./runtime.js";
 import type { Location } from "./syntax.js";
 import type { GuestString } from "./strings.js";
@@ -69,20 +70,20 @@ export function stringToNumber(value: GuestString): number {
 }
 
 // Partial ToNumber: object-to-primitive guest calls are a separate prerequisite.
-export function toNumber(value: Value, loc: Location): NumberCompletion {
+export function toNumber(value: Value, loc: Location, realm: Realm | null): NumberCompletion {
     switch (value.kind) {
         case "undefined": return { type: "normal", value: NaN };
         case "null": return { type: "normal", value: 0 };
         case "boolean": return { type: "normal", value: value.value ? 1 : 0 };
         case "number": return { type: "normal", value: value.value };
         case "string": return { type: "normal", value: stringToNumber(value.value) };
-        case "symbol": return failure("TypeError", "cannot convert symbol to number", loc);
+        case "symbol": return languageFailure(realm, "TypeError", "cannot convert symbol to number", loc);
         case "object": return unsupportedFailure("runtime.object-to-number", "TypeError", "object-to-primitive conversion unsupported", loc);
     }
 }
 
-export function toUint32(value: Value, loc: Location): NumberCompletion {
-    const converted = toNumber(value, loc);
+export function toUint32(value: Value, loc: Location, realm: Realm | null): NumberCompletion {
+    const converted = toNumber(value, loc, realm);
     if (converted.type === "throw") return converted;
     const number = converted.value;
     if (!Number.isFinite(number) || number === 0) return { type: "normal", value: 0 };
@@ -91,8 +92,8 @@ export function toUint32(value: Value, loc: Location): NumberCompletion {
     return { type: "normal", value: remainder === 0 ? 0 : remainder < 0 ? remainder + 4294967296 : remainder };
 }
 
-export function toIntegerOrInfinity(value: Value, loc: Location): NumberCompletion {
-    const converted = toNumber(value, loc);
+export function toIntegerOrInfinity(value: Value, loc: Location, realm: Realm | null): NumberCompletion {
+    const converted = toNumber(value, loc, realm);
     if (converted.type === "throw") return converted;
     const number = converted.value;
     if (Number.isNaN(number) || number === 0) return { type: "normal", value: 0 };
@@ -102,8 +103,8 @@ export function toIntegerOrInfinity(value: Value, loc: Location): NumberCompleti
     return { type: "normal", value: integer === 0 ? 0 : integer };
 }
 
-export function toLength(value: Value, loc: Location): NumberCompletion {
-    const integer = toIntegerOrInfinity(value, loc);
+export function toLength(value: Value, loc: Location, realm: Realm | null): NumberCompletion {
+    const integer = toIntegerOrInfinity(value, loc, realm);
     if (integer.type === "throw") return integer;
     return { type: "normal", value: Math.min(Math.max(integer.value, 0), 9007199254740991) };
 }
@@ -115,14 +116,14 @@ export type PropertyKeyCompletion = { type: "normal"; value: PropertyKey } | Thr
 export function numberToString(value: number): GuestString { return String(value); }
 
 // Partial ToString: object coercion requires guest calls and is not supported.
-export function toString(value: Value, loc: Location): StringCompletion {
+export function toString(value: Value, loc: Location, realm: Realm | null): StringCompletion {
     switch (value.kind) {
         case "undefined": return { type: "normal", value: "undefined" };
         case "null": return { type: "normal", value: "null" };
         case "boolean": return { type: "normal", value: value.value ? "true" : "false" };
         case "string": return { type: "normal", value: value.value };
         case "number": return { type: "normal", value: numberToString(value.value) };
-        case "symbol": return failure("TypeError", "cannot convert symbol to string", loc);
+        case "symbol": return languageFailure(realm, "TypeError", "cannot convert symbol to string", loc);
         case "object": return unsupportedFailure("runtime.object-to-string", "TypeError", "object-to-primitive conversion unsupported", loc);
     }
 }
@@ -132,5 +133,5 @@ export function toPropertyKey(value: Value, context: OperationContext, loc: Loca
     const primitive = toPrimitive(value, "string", context, loc);
     if (primitive.type === "throw") return primitive;
     if (primitive.value.kind === "symbol") return { type: "normal", value: primitive.value.value };
-    return toString(primitive.value, loc);
+    return toString(primitive.value, loc, context.realm);
 }

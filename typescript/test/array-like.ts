@@ -118,8 +118,8 @@ const rows: { input: Value; integer: number; length: number }[] = [
 const ordinary = new GuestObject();
 numeric(lengthOfArrayLike(ordinary, active.context, loc), 0);
 for (const row of rows) {
-    numeric(toIntegerOrInfinity(row.input, loc), row.integer);
-    numeric(toLength(row.input, loc), row.length);
+    numeric(toIntegerOrInfinity(row.input, loc, null), row.integer);
+    numeric(toLength(row.input, loc, null), row.length);
     ordinary.bootstrapDefine("length", { value: row.input, writable: true, enumerable: true, configurable: true });
     numeric(lengthOfArrayLike(ordinary, active.context, loc), row.length);
 }
@@ -131,8 +131,8 @@ inherited.bootstrapDefine("length", { value: UNDEFINED, writable: true, enumerab
 numeric(lengthOfArrayLike(inherited, active.context, loc), 0);
 boolean(inherited.internalDelete("length"), true);
 numeric(lengthOfArrayLike(inherited, active.context, loc), 8);
-unsupported(toIntegerOrInfinity(o(parent), loc));
-unsupported(toLength(o(parent), loc));
+unsupported(toIntegerOrInfinity(o(parent), loc, null));
+unsupported(toLength(o(parent), loc, null));
 ordinary.bootstrapDefine("length", { value: o(parent), writable: true, enumerable: true, configurable: true });
 const missing = lengthOfArrayLike(ordinary, active.context, loc);
 check(missing.type === "throw" && missing.diagnostic.message === "cannot convert object to primitive" && missing.diagnostic.loc === loc, "no-method length failure");

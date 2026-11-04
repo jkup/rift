@@ -1,4 +1,4 @@
-import { failure, normal, type OperationContext, type Value, type ValueCompletion } from "./runtime.js";
+import { languageFailure, normal, type OperationContext, type Value, type ValueCompletion } from "./runtime.js";
 import type { Location } from "./syntax.js";
 import { wellKnownToPrimitive } from "./symbols.js";
 
@@ -23,7 +23,7 @@ export function ordinaryToPrimitive(
         if (result.type === "throw") return result;
         if (result.value.kind !== "object") return result;
     }
-    return failure("TypeError", "cannot convert object to primitive", loc);
+    return languageFailure(context.realm, "TypeError", "cannot convert object to primitive", loc);
 }
 
 // Primitive Values pass through without lookup or budget charges.
@@ -40,12 +40,12 @@ export function toPrimitive(
     // noncallable values stop conversion rather than being skipped.
     if (method.value.kind !== "undefined" && method.value.kind !== "null") {
         if (method.value.kind !== "object" || method.value.object.callable === null) {
-            return failure("TypeError", "symbol toPrimitive method is not callable", loc);
+            return languageFailure(context.realm, "TypeError", "symbol toPrimitive method is not callable", loc);
         }
         const result = context.call(method.value, input, [{ kind: "string", value: hint }], loc);
         if (result.type === "throw") return result;
         if (result.value.kind !== "object") return result;
-        return failure("TypeError", "cannot convert object to primitive", loc);
+        return languageFailure(context.realm, "TypeError", "cannot convert object to primitive", loc);
     }
     return ordinaryToPrimitive(input, hint === "default" ? "number" : hint, context, loc);
 }

@@ -1,5 +1,5 @@
 import { GlobalEnvironment } from "./global-environment.js";
-import { UNDEFINED, failure, normal, type Value, type ValueCompletion,
+import { UNDEFINED, languageFailure, normal, type Value, type ValueCompletion,
     type InternalBooleanCompletion, type OperationContext, type ThrowCompletion } from "./runtime.js";
 import type { Location } from "./syntax.js";
 import type { ScriptGuestCallable } from "./script-record.js";
@@ -20,7 +20,7 @@ class ScriptLocalBindings {
         this.bindings.set(name, { initialized: false, value: UNDEFINED });
         return normal();
     }
-    initializeBinding(name: string, value: Value, _context: OperationContext, _loc: Location): ValueCompletion {
+    initializeBinding(name: string, value: Value, context: OperationContext, _loc: Location): ValueCompletion {
         const binding = this.bindings.get(name);
         if (binding === undefined) throw new Error("missing binding: " + name);
         if (binding.initialized) throw new Error("binding already initialized: " + name);
@@ -28,16 +28,16 @@ class ScriptLocalBindings {
         binding.initialized = true;
         return normal();
     }
-    getBindingValue(name: string, _context: OperationContext, loc: Location, _strict = true): ValueCompletion {
+    getBindingValue(name: string, context: OperationContext, loc: Location, _strict = true): ValueCompletion {
         const binding = this.bindings.get(name);
         if (binding === undefined) throw new Error("missing binding: " + name);
-        if (!binding.initialized) return failure("ReferenceError", name + " is not initialized", loc);
+        if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", name + " is not initialized", loc);
         return normal(binding.value);
     }
-    setMutableBinding(name: string, value: Value, _context: OperationContext, loc: Location): ValueCompletion {
+    setMutableBinding(name: string, value: Value, context: OperationContext, loc: Location): ValueCompletion {
         const binding = this.bindings.get(name);
         if (binding === undefined) throw new Error("missing binding: " + name);
-        if (!binding.initialized) return failure("ReferenceError", name + " is not initialized", loc);
+        if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", name + " is not initialized", loc);
         binding.value = value;
         return normal();
     }
@@ -69,13 +69,13 @@ export function resolveScriptBinding(environment: ScriptEnvironment, name: strin
 }
 export function getScriptBinding(reference: ScriptBindingReference, context: OperationContext): ValueCompletion {
     const base = reference.base;
-    if (base === null) return failure("ReferenceError", reference.name + " is not defined", reference.loc);
+    if (base === null) return languageFailure(context.realm, "ReferenceError", reference.name + " is not defined", reference.loc);
     return base.kind === "global" ? base.record.getBindingValue(reference.name, context, reference.loc, reference.strict)
         : base.getBindingValue(reference.name, context, reference.loc);
 }
 export function putScriptBinding(reference: ScriptBindingReference, value: Value, context: OperationContext): ValueCompletion {
     const base = reference.base;
-    if (base === null) return reference.strict ? failure("ReferenceError", reference.name + " is not defined", reference.loc)
+    if (base === null) return reference.strict ? languageFailure(context.realm, "ReferenceError", reference.name + " is not defined", reference.loc)
         : context.realm.globalEnvironment.setUnresolvableBinding(reference.name, value, context, reference.loc);
     return base.kind === "global" ? base.record.setMutableBinding(reference.name, value, context, reference.loc, reference.strict)
         : base.setMutableBinding(reference.name, value, context, reference.loc);

@@ -1,0 +1,1044 @@
+{
+  "status": "audited current source; proposed APIs unimplemented",
+  "paths": [
+    "builtins/error.ts",
+    "builtins/object.ts",
+    "runtime.ts",
+    "realm.ts",
+    "conversion.ts",
+    "primitive-conversion.ts",
+    "object-conversion.ts",
+    "delete-reference.ts",
+    "global-environment.ts",
+    "script-environment.ts",
+    "script-global-declarations.ts",
+    "script-execution-internal.ts",
+    "array-object.ts",
+    "array-like.ts",
+    "array-map.ts",
+    "builtins/array.ts",
+    "builtins/boolean.ts",
+    "builtins/number.ts",
+    "builtins/string.ts",
+    "builtins/symbol.ts",
+    "builtins/function.ts",
+    "builtins/restricted-function.ts"
+  ],
+  "sites": [
+    {
+      "path": "typescript/src/array-like.ts",
+      "line": 13,
+      "name": "toLength",
+      "text": "return toLength(primitive.value, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/array-map.ts",
+      "line": 10,
+      "name": "failure",
+      "text": "if (callback.kind !== \"object\" || callback.object.callable === null) return failure(\"TypeError\", \"map callback is not callable\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/array-map.ts",
+      "line": 17,
+      "name": "failure",
+      "text": "if (length.value > 4294967295) return failure(\"RangeError\", \"map result length exceeds array limit\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/array-object.ts",
+      "line": 61,
+      "name": "toUint32",
+      "text": "const uint32 = toUint32(first.value, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/array-object.ts",
+      "line": 65,
+      "name": "toNumber",
+      "text": "const number = toNumber(second.value, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/array-object.ts",
+      "line": 67,
+      "name": "failure",
+      "text": "if (uint32.value !== number.value) return failure(\"RangeError\", \"invalid array length\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/array-object.ts",
+      "line": 80,
+      "name": "toUint32",
+      "text": "const uint32 = toUint32(desc.value, loc);",
+      "action": "append Realm at call",
+      "realm": "null (trusted bootstrap only)"
+    },
+    {
+      "path": "typescript/src/array-object.ts",
+      "line": 82,
+      "name": "toNumber",
+      "text": "const number = toNumber(desc.value, loc);",
+      "action": "append Realm at call",
+      "realm": "null (trusted bootstrap only)"
+    },
+    {
+      "path": "typescript/src/array-object.ts",
+      "line": 85,
+      "name": "failure",
+      "text": "if (uint32.value !== number.value) return failure(\"RangeError\", \"invalid array length\", loc);",
+      "action": "UNCHANGED bootstrap RangeError before host misuse",
+      "realm": "none"
+    },
+    {
+      "path": "typescript/src/builtins/array.ts",
+      "line": 13,
+      "name": "toString",
+      "text": "return toString(primitive.value, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/boolean.ts",
+      "line": 8,
+      "name": "thisBooleanValue",
+      "text": "export function thisBooleanValue(input: Value, loc: Location): BooleanCompletion {",
+      "action": "append mandatory realm: Realm | null; no default",
+      "realm": "explicit argument"
+    },
+    {
+      "path": "typescript/src/builtins/boolean.ts",
+      "line": 14,
+      "name": "failure",
+      "text": "return failure(\"TypeError\", \"receiver is not a boolean\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "realm (mandatory argument)"
+    },
+    {
+      "path": "typescript/src/builtins/boolean.ts",
+      "line": 19,
+      "name": "thisBooleanValue",
+      "text": "const result = thisBooleanValue(receiver, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/boolean.ts",
+      "line": 24,
+      "name": "thisBooleanValue",
+      "text": "const result = thisBooleanValue(receiver, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/function.ts",
+      "line": 35,
+      "name": "failure",
+      "text": "if (prototype.value.kind !== \"object\") return failure(\"TypeError\", \"constructor prototype is not an object\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/function.ts",
+      "line": 47,
+      "name": "failure",
+      "text": "if (target.kind !== \"object\") return failure(\"TypeError\", \"instanceof target is not an object\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/function.ts",
+      "line": 53,
+      "name": "failure",
+      "text": "if (method.value.kind !== \"object\" || method.value.object.callable === null) return failure(\"TypeError\", \"hasInstance method is not callable\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/function.ts",
+      "line": 58,
+      "name": "failure",
+      "text": "if (target.object.callable === null) return failure(\"TypeError\", \"instanceof target is not callable\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/function.ts",
+      "line": 71,
+      "name": "failure",
+      "text": "return failure(\"TypeError\", \"Function.prototype.call receiver is not callable\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/function.ts",
+      "line": 82,
+      "name": "failure",
+      "text": "return failure(\"TypeError\", \"Function.prototype.toString receiver is not callable\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/number.ts",
+      "line": 36,
+      "name": "thisNumberValue",
+      "text": "export function thisNumberValue(input: Value, loc: Location): NumberCompletion {",
+      "action": "append mandatory realm: Realm | null; no default",
+      "realm": "explicit argument"
+    },
+    {
+      "path": "typescript/src/builtins/number.ts",
+      "line": 41,
+      "name": "failure",
+      "text": "return failure(\"TypeError\", \"receiver is not a number\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "realm (mandatory argument)"
+    },
+    {
+      "path": "typescript/src/builtins/number.ts",
+      "line": 46,
+      "name": "thisNumberValue",
+      "text": "const extracted = thisNumberValue(receiver, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/number.ts",
+      "line": 52,
+      "name": "toIntegerOrInfinity",
+      "text": "const integer = toIntegerOrInfinity(primitive.value, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/number.ts",
+      "line": 57,
+      "name": "failure",
+      "text": "if (radix < 2 || radix > 36) return failure(\"RangeError\", \"radix must be between 2 and 36\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/number.ts",
+      "line": 67,
+      "name": "thisNumberValue",
+      "text": "const result = thisNumberValue(receiver, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/restricted-function.ts",
+      "line": 8,
+      "name": "failure",
+      "text": "failure(\"TypeError\", \"restricted function property\", loc));",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/string.ts",
+      "line": 9,
+      "name": "thisStringValue",
+      "text": "export function thisStringValue(input: Value, loc: Location): StringCompletion {",
+      "action": "append mandatory realm: Realm | null; no default",
+      "realm": "explicit argument"
+    },
+    {
+      "path": "typescript/src/builtins/string.ts",
+      "line": 15,
+      "name": "failure",
+      "text": "return failure(\"TypeError\", \"receiver is not a string\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "realm (mandatory argument)"
+    },
+    {
+      "path": "typescript/src/builtins/string.ts",
+      "line": 20,
+      "name": "thisStringValue",
+      "text": "const result = thisStringValue(receiver, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/string.ts",
+      "line": 25,
+      "name": "thisStringValue",
+      "text": "const result = thisStringValue(receiver, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/symbol.ts",
+      "line": 9,
+      "name": "thisSymbolValue",
+      "text": "export function thisSymbolValue(input: Value, loc: Location): SymbolCompletion {",
+      "action": "append mandatory realm: Realm | null; no default",
+      "realm": "explicit argument"
+    },
+    {
+      "path": "typescript/src/builtins/symbol.ts",
+      "line": 15,
+      "name": "failure",
+      "text": "return failure(\"TypeError\", \"receiver is not a symbol\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "realm (mandatory argument)"
+    },
+    {
+      "path": "typescript/src/builtins/symbol.ts",
+      "line": 20,
+      "name": "thisSymbolValue",
+      "text": "const result = thisSymbolValue(receiver, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/symbol.ts",
+      "line": 25,
+      "name": "thisSymbolValue",
+      "text": "const result = thisSymbolValue(receiver, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/builtins/symbol.ts",
+      "line": 30,
+      "name": "thisSymbolValue",
+      "text": "const result = thisSymbolValue(receiver, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/conversion.ts",
+      "line": 72,
+      "name": "toNumber",
+      "text": "export function toNumber(value: Value, loc: Location): NumberCompletion {",
+      "action": "append mandatory realm: Realm | null; no default",
+      "realm": "explicit argument"
+    },
+    {
+      "path": "typescript/src/conversion.ts",
+      "line": 79,
+      "name": "failure",
+      "text": "case \"symbol\": return failure(\"TypeError\", \"cannot convert symbol to number\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "realm (mandatory argument)"
+    },
+    {
+      "path": "typescript/src/conversion.ts",
+      "line": 84,
+      "name": "toUint32",
+      "text": "export function toUint32(value: Value, loc: Location): NumberCompletion {",
+      "action": "append mandatory realm: Realm | null; no default",
+      "realm": "explicit argument"
+    },
+    {
+      "path": "typescript/src/conversion.ts",
+      "line": 85,
+      "name": "toNumber",
+      "text": "const converted = toNumber(value, loc);",
+      "action": "append Realm at call",
+      "realm": "realm (numeric wrapper argument)"
+    },
+    {
+      "path": "typescript/src/conversion.ts",
+      "line": 94,
+      "name": "toIntegerOrInfinity",
+      "text": "export function toIntegerOrInfinity(value: Value, loc: Location): NumberCompletion {",
+      "action": "append mandatory realm: Realm | null; no default",
+      "realm": "explicit argument"
+    },
+    {
+      "path": "typescript/src/conversion.ts",
+      "line": 95,
+      "name": "toNumber",
+      "text": "const converted = toNumber(value, loc);",
+      "action": "append Realm at call",
+      "realm": "realm (numeric wrapper argument)"
+    },
+    {
+      "path": "typescript/src/conversion.ts",
+      "line": 105,
+      "name": "toLength",
+      "text": "export function toLength(value: Value, loc: Location): NumberCompletion {",
+      "action": "append mandatory realm: Realm | null; no default",
+      "realm": "explicit argument"
+    },
+    {
+      "path": "typescript/src/conversion.ts",
+      "line": 106,
+      "name": "toIntegerOrInfinity",
+      "text": "const integer = toIntegerOrInfinity(value, loc);",
+      "action": "append Realm at call",
+      "realm": "realm (numeric wrapper argument)"
+    },
+    {
+      "path": "typescript/src/conversion.ts",
+      "line": 118,
+      "name": "toString",
+      "text": "export function toString(value: Value, loc: Location): StringCompletion {",
+      "action": "append mandatory realm: Realm | null; no default",
+      "realm": "explicit argument"
+    },
+    {
+      "path": "typescript/src/conversion.ts",
+      "line": 125,
+      "name": "failure",
+      "text": "case \"symbol\": return failure(\"TypeError\", \"cannot convert symbol to string\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "realm (mandatory argument)"
+    },
+    {
+      "path": "typescript/src/conversion.ts",
+      "line": 135,
+      "name": "toString",
+      "text": "return toString(primitive.value, loc);",
+      "action": "append Realm at call",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/delete-reference.ts",
+      "line": 18,
+      "name": "failure",
+      "text": "if (!deleted.value && strict) return failure(\"TypeError\", \"property is not configurable: \" + formatPropertyKey(key.value), loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/global-environment.ts",
+      "line": 19,
+      "name": "createMutableBinding",
+      "text": "createMutableBinding(name: string, loc: Location): ValueCompletion {",
+      "action": "append mandatory realm: Realm | null",
+      "realm": "explicit argument"
+    },
+    {
+      "path": "typescript/src/global-environment.ts",
+      "line": 20,
+      "name": "failure",
+      "text": "if (this.lexicals.has(name)) return failure(\"TypeError\", \"binding already exists: \" + name, loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "realm (mandatory argument)"
+    },
+    {
+      "path": "typescript/src/global-environment.ts",
+      "line": 37,
+      "name": "failure",
+      "text": "if (!binding.initialized) return failure(\"ReferenceError\", name + \" is not initialized\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/global-environment.ts",
+      "line": 42,
+      "name": "failure",
+      "text": "if (!present.value) return strict ? failure(\"ReferenceError\", name + \" is not defined\", loc) : normal();",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/global-environment.ts",
+      "line": 48,
+      "name": "failure",
+      "text": "if (!binding.initialized) return failure(\"ReferenceError\", name + \" is not initialized\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/global-environment.ts",
+      "line": 57,
+      "name": "failure",
+      "text": "if (!present.value && strict) return failure(\"ReferenceError\", name + \" is not defined\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/global-environment.ts",
+      "line": 63,
+      "name": "failure",
+      "text": "if (!result.value && strict) return failure(\"TypeError\", \"property is not writable: \" + name, loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/global-environment.ts",
+      "line": 109,
+      "name": "failure",
+      "text": "if (!result.value) return failure(\"TypeError\", \"cannot define global property: \" + name, loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/global-environment.ts",
+      "line": 128,
+      "name": "failure",
+      "text": "if (reference.environment === null) return failure(\"ReferenceError\", reference.name + \" is not defined\", reference.loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/global-environment.ts",
+      "line": 132,
+      "name": "failure",
+      "text": "if (reference.environment === null) return failure(\"ReferenceError\", reference.name + \" is not defined\", reference.loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/object-conversion.ts",
+      "line": 14,
+      "name": "failure",
+      "text": "case \"null\": case \"undefined\": return failure(\"TypeError\", \"cannot convert null or undefined to object\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/primitive-conversion.ts",
+      "line": 26,
+      "name": "failure",
+      "text": "return failure(\"TypeError\", \"cannot convert object to primitive\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/primitive-conversion.ts",
+      "line": 43,
+      "name": "failure",
+      "text": "return failure(\"TypeError\", \"symbol toPrimitive method is not callable\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/primitive-conversion.ts",
+      "line": 48,
+      "name": "failure",
+      "text": "return failure(\"TypeError\", \"cannot convert object to primitive\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/runtime.ts",
+      "line": 84,
+      "name": "failure",
+      "text": "export function failure(name: string, message: string, loc: Location): ThrowCompletion {",
+      "action": "UNCHANGED synthetic failure API",
+      "realm": "none"
+    },
+    {
+      "path": "typescript/src/runtime.ts",
+      "line": 88,
+      "name": "failure",
+      "text": "const result = failure(\"RangeError\", message, loc);",
+      "action": "UNCHANGED resource/unsupported wrapper",
+      "realm": "none"
+    },
+    {
+      "path": "typescript/src/runtime.ts",
+      "line": 92,
+      "name": "failure",
+      "text": "const result = failure(name, message, loc);",
+      "action": "UNCHANGED resource/unsupported wrapper",
+      "realm": "none"
+    },
+    {
+      "path": "typescript/src/runtime.ts",
+      "line": 245,
+      "name": "failure",
+      "text": "if (!result.value) return failure(\"TypeError\", \"property is not writable: \" + formatPropertyKey(key), loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/runtime.ts",
+      "line": 292,
+      "name": "failure",
+      "text": "if (binding === undefined) return failure(\"ReferenceError\", ref.name + \" is not defined\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/runtime.ts",
+      "line": 293,
+      "name": "failure",
+      "text": "if (!binding.initialized) return failure(\"ReferenceError\", ref.name + \" is not initialized\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/runtime.ts",
+      "line": 309,
+      "name": "failure",
+      "text": "if (!result.value && strict) return failure(\"TypeError\", \"property is not writable: \" + formatPropertyKey(key.value), loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/runtime.ts",
+      "line": 313,
+      "name": "failure",
+      "text": "if (binding === undefined) return failure(\"ReferenceError\", ref.name + \" is not defined\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/runtime.ts",
+      "line": 314,
+      "name": "failure",
+      "text": "if (!binding.initialized) return failure(\"ReferenceError\", ref.name + \" is not initialized\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/runtime.ts",
+      "line": 315,
+      "name": "failure",
+      "text": "if (!binding.mutable) return failure(\"TypeError\", \"binding is not mutable: \" + ref.name, loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/script-environment.ts",
+      "line": 18,
+      "name": "createMutableBinding",
+      "text": "createMutableBinding(name: string, _loc: Location): ValueCompletion {",
+      "action": "UNCHANGED local binding signature/call; host invariant on duplicate",
+      "realm": "not applicable"
+    },
+    {
+      "path": "typescript/src/script-environment.ts",
+      "line": 34,
+      "name": "failure",
+      "text": "if (!binding.initialized) return failure(\"ReferenceError\", name + \" is not initialized\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/script-environment.ts",
+      "line": 40,
+      "name": "failure",
+      "text": "if (!binding.initialized) return failure(\"ReferenceError\", name + \" is not initialized\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/script-environment.ts",
+      "line": 72,
+      "name": "failure",
+      "text": "if (base === null) return failure(\"ReferenceError\", reference.name + \" is not defined\", reference.loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/script-environment.ts",
+      "line": 78,
+      "name": "failure",
+      "text": "if (base === null) return reference.strict ? failure(\"ReferenceError\", reference.name + \" is not defined\", reference.loc)",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 271,
+      "name": "createMutableBinding",
+      "text": "const created = activation.createMutableBinding(node.parameter.name, node.parameter.loc);",
+      "action": "UNCHANGED local binding signature/call; host invariant on duplicate",
+      "realm": "not applicable"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 396,
+      "name": "createMutableBinding",
+      "text": "const created = environment.createMutableBinding(formal.name, formal.loc);",
+      "action": "UNCHANGED local binding signature/call; host invariant on duplicate",
+      "realm": "not applicable"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 415,
+      "name": "createMutableBinding",
+      "text": "const created = environment.createMutableBinding(site.name, site.loc);",
+      "action": "UNCHANGED local binding signature/call; host invariant on duplicate",
+      "realm": "not applicable"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 434,
+      "name": "createMutableBinding",
+      "text": "const created = lexicalEnvironment.createMutableBinding(site.name, site.loc);",
+      "action": "UNCHANGED local binding signature/call; host invariant on duplicate",
+      "realm": "not applicable"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 490,
+      "name": "createMutableBinding",
+      "text": "const created = environment.createMutableBinding(declaration.site.name, declaration.site.loc);",
+      "action": "UNCHANGED local binding signature/call; host invariant on duplicate",
+      "realm": "not applicable"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 698,
+      "name": "failure",
+      "text": "if (env.bindings.has(stmt.name)) return failure(\"SyntaxError\", \"duplicate binding: \" + stmt.name, stmt.loc);",
+      "action": "UNCHANGED legacy-only duplicate binding",
+      "realm": "legacy only"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 849,
+      "name": "toNumber",
+      "text": "const numeric = toNumber(primitive.value, expr.loc);",
+      "action": "append Realm at call",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 960,
+      "name": "toNumber",
+      "text": "const number = toNumber(primitive.value, expr.loc);",
+      "action": "append Realm at call",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 987,
+      "name": "failure",
+      "text": "if (callee.kind !== \"object\" || callee.object.callable === null) return failure(\"TypeError\", \"value is not callable\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 1026,
+      "name": "failure",
+      "text": "return failure(\"TypeError\", \"right operand of in must be an object\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 1047,
+      "name": "toString",
+      "text": "const a = toString(left, loc);",
+      "action": "append Realm at call",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 1049,
+      "name": "toString",
+      "text": "const b = toString(right, loc);",
+      "action": "append Realm at call",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 1053,
+      "name": "toNumber",
+      "text": "const a = toNumber(left, loc);",
+      "action": "append Realm at call",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 1055,
+      "name": "toNumber",
+      "text": "const b = toNumber(right, loc);",
+      "action": "append Realm at call",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 1064,
+      "name": "toNumber",
+      "text": "const a = toNumber(leftPrimitive.value, loc);",
+      "action": "append Realm at call",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 1068,
+      "name": "toNumber",
+      "text": "const b = toNumber(rightPrimitive.value, loc);",
+      "action": "append Realm at call",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 1098,
+      "name": "toNumber",
+      "text": "const a = toNumber(left, loc);",
+      "action": "append Realm at call",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 1100,
+      "name": "toNumber",
+      "text": "const b = toNumber(right, loc);",
+      "action": "append Realm at call",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "line": 1382,
+      "name": "failure",
+      "text": "if (callee.kind !== \"object\" || callee.object.constructorSlot === null) return failure(\"TypeError\", \"value is not a constructor\", loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "this.context.realm"
+    },
+    {
+      "path": "typescript/src/script-global-declarations.ts",
+      "line": 73,
+      "name": "failure",
+      "text": "if (environment.hasLexicalDeclaration(site.name)) return failure(\"SyntaxError\", \"lexical declaration already exists: \" + site.name, site.loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/script-global-declarations.ts",
+      "line": 76,
+      "name": "failure",
+      "text": "if (restricted.value) return failure(\"SyntaxError\", \"restricted global property: \" + site.name, site.loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/script-global-declarations.ts",
+      "line": 82,
+      "name": "failure",
+      "text": "if (environment.hasLexicalDeclaration(site.name)) return failure(\"SyntaxError\", \"lexical declaration already exists: \" + site.name, site.loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/script-global-declarations.ts",
+      "line": 93,
+      "name": "failure",
+      "text": "if (!allowed.value) return failure(\"TypeError\", \"cannot declare global function: \" + d.site.name, d.site.loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/script-global-declarations.ts",
+      "line": 107,
+      "name": "failure",
+      "text": "if (!allowed.value) return failure(\"TypeError\", \"cannot declare global var: \" + d.site.name, d.site.loc);",
+      "action": "languageFailure at originating site; diagnostic/origin unchanged",
+      "realm": "context.realm"
+    },
+    {
+      "path": "typescript/src/script-global-declarations.ts",
+      "line": 114,
+      "name": "createMutableBinding",
+      "text": "const created = environment.createMutableBinding(site.name, site.loc);",
+      "action": "append context.realm",
+      "realm": "context.realm"
+    }
+  ],
+  "testGlobals": [
+    {
+      "path": "typescript/test/global-environment.ts",
+      "line": 99,
+      "name": "createMutableBinding",
+      "text": "unused(env.createMutableBinding(name, loc));",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/global-environment.ts",
+      "line": 138,
+      "name": "createMutableBinding",
+      "text": "unused(env.createMutableBinding(name, loc));",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/global-environment.ts",
+      "line": 166,
+      "name": "createMutableBinding",
+      "text": "unused(env.createMutableBinding(name, loc));",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/global-environment.ts",
+      "line": 246,
+      "name": "createMutableBinding",
+      "text": "unused(env.createMutableBinding(\"laterLexical\", loc));",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/global-environment.ts",
+      "line": 264,
+      "name": "createMutableBinding",
+      "text": "unused(env.createMutableBinding(name, loc));",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/global-environment.ts",
+      "line": 279,
+      "name": "createMutableBinding",
+      "text": "unused(env.createMutableBinding(name, loc));",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/global-environment.ts",
+      "line": 329,
+      "name": "createMutableBinding",
+      "text": "unused(e.createMutableBinding(name, loc));",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/global-environment.ts",
+      "line": 354,
+      "name": "createMutableBinding",
+      "text": "unused(env.createMutableBinding(name, loc));",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/global-environment.ts",
+      "line": 355,
+      "name": "createMutableBinding",
+      "text": "error(env.createMutableBinding(name, loc), \"TypeError\", loc);",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "line": 591,
+      "name": "createMutableBinding",
+      "text": "define(r,\"seed\",builtin(r,\"seed\",(_t,_a,c,_l): ValueCompletion=>{if(lexical){check(r.globalEnvironment.createMutableBinding(\"ghost\",loc).type===\"normal\",\"late lexical create\");check(r.globalEnvironment.initializeBinding(\"ghost\",number(1),c,loc).type===\"normal\",\"late lexical initialize\");}else property(r,r.globalObject,\"ghost\",{set:builtin(r,\"set\",(_t,_a,_c,_l): ValueCompletion=>{setters++;return q;}),configurable:true});return normal(number(7));}));",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/property-accessors.ts",
+      "line": 297,
+      "name": "createMutableBinding",
+      "text": "const local = new ScriptDeclarativeEnvironment({ kind: \"global\", record: global }); local.createMutableBinding(\"x\", loc);",
+      "action": "UNCHANGED local binding"
+    },
+    {
+      "path": "typescript/test/script-environment.ts",
+      "line": 29,
+      "name": "createMutableBinding",
+      "text": "value(local.createMutableBinding(\"x\", loc), UNDEFINED);",
+      "action": "UNCHANGED local binding"
+    },
+    {
+      "path": "typescript/test/script-environment.ts",
+      "line": 35,
+      "name": "createMutableBinding",
+      "text": "invariant(() => { local.createMutableBinding(\"x\", loc); }, \"binding already exists: x\");",
+      "action": "UNCHANGED local binding"
+    },
+    {
+      "path": "typescript/test/script-environment.ts",
+      "line": 44,
+      "name": "createMutableBinding",
+      "text": "child.createMutableBinding(\"x\", loc); error(getScriptBinding(capture(child, \"x\"), context), \"ReferenceError\");",
+      "action": "UNCHANGED local binding"
+    },
+    {
+      "path": "typescript/test/script-environment.ts",
+      "line": 73,
+      "name": "createMutableBinding",
+      "text": "define(\"late\", num(7)); child.createMutableBinding(\"late\", loc); child.initializeBinding(\"late\", num(0), context, loc);",
+      "action": "UNCHANGED local binding"
+    },
+    {
+      "path": "typescript/test/script-environment.ts",
+      "line": 81,
+      "name": "createMutableBinding",
+      "text": "define(\"live\", num(7)); globalRecord.createMutableBinding(\"live\", loc); error(getScriptBinding(live, context), \"ReferenceError\");",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/script-environment.ts",
+      "line": 115,
+      "name": "createMutableBinding",
+      "text": "faultLocal.createMutableBinding(\"own\", loc); faultLocal.initializeBinding(\"own\", num(7), context, loc);",
+      "action": "UNCHANGED local binding"
+    },
+    {
+      "path": "typescript/test/script-environment.ts",
+      "line": 144,
+      "name": "createMutableBinding",
+      "text": "const runtime = new ScriptDeclarativeEnvironment(global); runtime.createMutableBinding(input[0], loc); runtime.initializeBinding(input[0], num(0), context, loc);",
+      "action": "UNCHANGED local binding"
+    },
+    {
+      "path": "typescript/test/script-function-setup.ts",
+      "line": 201,
+      "name": "createMutableBinding",
+      "text": "s1.createMutableBinding(\"captured\",loc); s1.initializeBinding(\"captured\",input,b.context,loc);",
+      "action": "UNCHANGED local binding"
+    },
+    {
+      "path": "typescript/test/script-function-setup.ts",
+      "line": 231,
+      "name": "createMutableBinding",
+      "text": "originalOuter.createMutableBinding(\"captured\",loc); originalOuter.initializeBinding(\"captured\",input,b.context,loc);",
+      "action": "UNCHANGED local binding"
+    },
+    {
+      "path": "typescript/test/script-function-setup.ts",
+      "line": 232,
+      "name": "createMutableBinding",
+      "text": "replacementOuter.createMutableBinding(\"captured\",loc); replacementOuter.initializeBinding(\"captured\",second,b.context,loc);",
+      "action": "UNCHANGED local binding"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 51,
+      "name": "createMutableBinding",
+      "text": "override createMutableBinding(n: string, loc: Location): ValueCompletion { return this.visit(\"L+:\" + n) ? this.abrupt : super.createMutableBinding(n, loc); }",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 51,
+      "name": "createMutableBinding",
+      "text": "override createMutableBinding(n: string, loc: Location): ValueCompletion { return this.visit(\"L+:\" + n) ? this.abrupt : super.createMutableBinding(n, loc); }",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 176,
+      "name": "createMutableBinding",
+      "text": "const h = new Harness(); unused(h.env.createMutableBinding(\"x\",{line:1,column:1})); error(h.run(p),\"SyntaxError\",30); absent(h.env,\"fresh\"); absent(h.env,\"f\"); check(h.markers.length === 0,\"prechecks no callbacks\");",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/script-global-declarations.ts",
+      "line": 258,
+      "name": "createMutableBinding",
+      "text": "unused(h.env.createMutableBinding(\"x\",{line:1,column:1})); error(h.run(p),\"SyntaxError\",19);",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 112,
+      "name": "createMutableBinding",
+      "text": "case \"B08\": { seed(a,name,first); const r=resolveStrictGlobalBinding(a.globalEnvironment,name,loc); if(r.type===\"throw\") throw new Error(\"resolve\"); value(a.globalEnvironment.createMutableBinding(name,loc),UNDEFINED); guestError(getStrictGlobalBinding(r.reference, context),\"ReferenceError\"); seed(a,name,first); guestError(a.readScriptGlobal(name, context,loc),\"ReferenceError\"); value(a.globalEnvironment.initializeBinding(name,next,context,loc),UNDEFINED); value(getStrictGlobalBinding(r.reference, context),next); desc(a.globalObject,name,first,true,true,true); guestError(b.readScriptGlobal(name, context,loc),\"ReferenceError\"); break; }",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 166,
+      "name": "createMutableBinding",
+      "text": "value(g.createMutableBinding(name,loc),UNDEFINED); guestError(g.getBindingValue(name, context,loc),\"ReferenceError\"); guestError(g.createMutableBinding(name,loc),\"TypeError\"); value(g.initializeBinding(name,first,context,loc),UNDEFINED); error(()=>{g.initializeBinding(name,next,context,loc);},\"binding already initialized: \"+name); value(g.setMutableBinding(name,next,context,loc),UNDEFINED); value(g.getBindingValue(name, context,loc),next);",
+      "action": "EXACT rendered global signature/call migration"
+    },
+    {
+      "path": "typescript/test/script-realm-bootstrap.ts",
+      "line": 166,
+      "name": "createMutableBinding",
+      "text": "value(g.createMutableBinding(name,loc),UNDEFINED); guestError(g.getBindingValue(name, context,loc),\"ReferenceError\"); guestError(g.createMutableBinding(name,loc),\"TypeError\"); value(g.initializeBinding(name,first,context,loc),UNDEFINED); error(()=>{g.initializeBinding(name,next,context,loc);},\"binding already initialized: \"+name); value(g.setMutableBinding(name,next,context,loc),UNDEFINED); value(g.getBindingValue(name, context,loc),next);",
+      "action": "EXACT rendered global signature/call migration"
+    }
+  ],
+  "languageProducers": 50
+}

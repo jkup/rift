@@ -1,4 +1,4 @@
-import { failure, normal, type Reference, type OperationContext, type ValueCompletion } from "./runtime.js";
+import { languageFailure, normal, type Reference, type OperationContext, type ValueCompletion } from "./runtime.js";
 import { toObject } from "./object-conversion.js";
 import { toPropertyKey } from "./conversion.js";
 import { formatPropertyKey } from "./symbols.js";
@@ -15,6 +15,6 @@ export function deleteReference(ref: Reference, context: OperationContext, loc: 
     if (key.type === "throw") return key;
     const deleted = object.internalDelete(key.value);
     if (deleted.type === "throw") return deleted;
-    if (!deleted.value && strict) return failure("TypeError", "property is not configurable: " + formatPropertyKey(key.value), loc);
+    if (!deleted.value && strict) return languageFailure(context.realm, "TypeError", "property is not configurable: " + formatPropertyKey(key.value), loc);
     return normal({ kind: "boolean", value: deleted.value });
 }

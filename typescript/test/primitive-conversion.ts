@@ -282,7 +282,7 @@ const boundary = observed();
 boundary.requireLocation = false;
 define(boundary, "valueOf", returns(num(6)));
 define(boundary, "toString", returns({ kind: "string", value: "x" }));
-for (const result of [toNumber(boundary.expected, loc), toString(boundary.expected, loc)]) {
+for (const result of [toNumber(boundary.expected, loc, null), toString(boundary.expected, loc, null)]) {
     check(result.type === "throw" && result.diagnostic.name === "TypeError", "primitive-only converter");
 }
 check(boundary.trace === "", "excluded converters perform no hook reads/calls");

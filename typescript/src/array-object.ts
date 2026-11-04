@@ -1,4 +1,4 @@
-import { GuestObject, failure, validatePropertyDescriptorUpdate } from "./runtime.js";
+import { GuestObject, languageFailure, failure, validatePropertyDescriptorUpdate } from "./runtime.js";
 import type { PropertyDescriptorUpdate, InternalBooleanCompletion, OperationContext, PropertyKey } from "./runtime.js";
 import type { Location } from "./syntax.js";
 import { arrayIndex } from "./property-keys.js";
@@ -58,13 +58,13 @@ export class GuestArray extends GuestObject {
         // may change those methods, the caller's descriptor, or the array itself.
         const first = toPrimitive(savedValue, "number", context, loc);
         if (first.type === "throw") return first;
-        const uint32 = toUint32(first.value, loc);
+        const uint32 = toUint32(first.value, loc, context.realm);
         if (uint32.type === "throw") return uint32;
         const second = toPrimitive(savedValue, "number", context, loc);
         if (second.type === "throw") return second;
-        const number = toNumber(second.value, loc);
+        const number = toNumber(second.value, loc, context.realm);
         if (number.type === "throw") return number;
-        if (uint32.value !== number.value) return failure("RangeError", "invalid array length", loc);
+        if (uint32.value !== number.value) return languageFailure(context.realm, "RangeError", "invalid array length", loc);
         updated.value = { kind: "number", value: uint32.value };
         // Read old length only in the shared storage phase, after both calls.
         return this.applyLengthDescriptor(updated, loc);
@@ -77,9 +77,9 @@ export class GuestArray extends GuestObject {
             enumerable: desc.enumerable, configurable: desc.configurable,
         };
         // Bootstrap conversions remain primitive-only and never invoke hooks.
-        const uint32 = toUint32(desc.value, loc);
+        const uint32 = toUint32(desc.value, loc, null);
         if (uint32.type === "throw") return uint32;
-        const number = toNumber(desc.value, loc);
+        const number = toNumber(desc.value, loc, null);
         if (number.type === "throw") return number;
         // uint32 is finite and nonnegative; numeric equality is SameValueZero here.
         if (uint32.value !== number.value) return failure("RangeError", "invalid array length", loc);

@@ -1,10 +1,11 @@
 import { instanceofOperator } from "./builtins/function.js";
+import type { ConstructBuiltin, BuiltinConstructor } from "./runtime.js";
 import { parseDeclarationPlan, parseBoundedScriptDeclarationPlan } from "./parser.js";
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
 import type { Expr, Stmt, FunctionSource, Location, TryCatchStmt } from "./syntax.js";
-import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, failure, resourceFailure, getValue, putValue, truthy } from "./runtime.js";
+import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, getValue, putValue, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, type ScriptBindingReference } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
 import { instantiateBoundedGlobalDeclarations, type DeclarationMaterializer } from "./script-global-declarations.js";
@@ -608,7 +609,9 @@ export type ScriptFrameSnapshot = { readonly realm: Realm; readonly record: Exec
     readonly privateEnvironment: null; readonly phase: "instantiation" | "body" };
 export type ScriptSessionSnapshot = { steps: number; calls: number; depth: number;
     active: ScriptFrameSnapshot | null; lastAbrupt: ScriptSourceSnapshot | null };
-type BuiltinPermit = { context: OperationContext; realm: Realm; invoke: Builtin; receiver: Value;
+type BuiltinPermit = { kind: "call"; context: OperationContext; realm: Realm; invoke: Builtin; receiver: Value;
+    args: Value[]; loc: Location; used: boolean } |
+    { kind: "construct"; context: OperationContext; realm: Realm; invoke: ConstructBuiltin; callee: GuestObject;
     args: Value[]; loc: Location; used: boolean };
 let pendingBuiltin: BuiltinPermit | null = null;
 // Consume-only: possessing a context never creates dispatcher authority. This
@@ -616,8 +619,16 @@ let pendingBuiltin: BuiltinPermit | null = null;
 export function consumeScriptBuiltinPermit(context: OperationContext, realm: Realm, invoke: Builtin,
     receiver: Value, args: Value[], loc: Location): boolean {
     const permit = pendingBuiltin;
-    if (permit === null || permit.used || permit.context !== context || permit.realm !== realm ||
+    if (permit === null || permit.kind !== "call" || permit.used || permit.context !== context || permit.realm !== realm ||
         permit.invoke !== invoke || permit.receiver !== receiver || permit.args !== args || permit.loc !== loc) return false;
+    permit.used = true;
+    return true;
+}
+export function consumeScriptConstructorPermit(context: OperationContext, realm: Realm, invoke: ConstructBuiltin,
+    callee: GuestObject, args: Value[], loc: Location): boolean {
+    const permit = pendingBuiltin;
+    if (permit === null || permit.kind !== "construct" || permit.used || permit.context !== context || permit.realm !== realm ||
+        permit.invoke !== invoke || permit.callee !== callee || permit.args !== args || permit.loc !== loc) return false;
     permit.used = true;
     return true;
 }
@@ -846,7 +857,7 @@ class ExecutionEngine {
                 if (oldValue.type === "throw") return oldValue;
                 const primitive = toPrimitive(oldValue.value, "number", this.context, expr.loc);
                 if (primitive.type === "throw") return primitive;
-                const numeric = toNumber(primitive.value, expr.loc);
+                const numeric = toNumber(primitive.value, expr.loc, this.context.realm);
                 if (numeric.type === "throw") return numeric;
                 // The Reference caches the converted key, never a descriptor or setter.
                 const written = this.#put(ref.reference, { kind: "number", value: numeric.value + 1 }, expr.loc);
@@ -957,7 +968,7 @@ class ExecutionEngine {
                 if (expr.op === "!") return normal({ kind: "boolean", value: !truthy(result.value) });
                 const primitive = toPrimitive(result.value, "number", this.context, expr.loc);
                 if (primitive.type === "throw") return primitive;
-                const number = toNumber(primitive.value, expr.loc);
+                const number = toNumber(primitive.value, expr.loc, this.context.realm);
                 if (number.type === "throw") return number;
                 return normal({ kind: "number", value: expr.op === "-" ? -number.value : number.value });
             }
@@ -984,7 +995,7 @@ class ExecutionEngine {
     }
     call(callee: Value, receiver: Value, args: Value[], loc: Location): ValueCompletion {
         if (this.#script) this.#active();
-        if (callee.kind !== "object" || callee.object.callable === null) return failure("TypeError", "value is not callable", loc);
+        if (callee.kind !== "object" || callee.object.callable === null) return languageFailure(this.context.realm, "TypeError", "value is not callable", loc);
         const fn = callee.object.callable;
         if (fn.realm.profile !== this.context.realm.profile) throw new Error("cross-profile callable invocation");
         if (this.#script) return this.#callScript(callee, receiver, args, loc);
@@ -1023,7 +1034,7 @@ class ExecutionEngine {
         if (op === "in") {
             // Both operands are captured; reject a primitive RHS before key hooks.
             if (right.kind !== "object") {
-                return failure("TypeError", "right operand of in must be an object", loc);
+                return languageFailure(this.context.realm, "TypeError", "right operand of in must be an object", loc);
             }
             const key = toPropertyKey(left, this.context, loc);
             if (key.type === "throw") {
@@ -1044,15 +1055,15 @@ class ExecutionEngine {
             left = leftPrimitive.value;
             right = rightPrimitive.value;
             if (left.kind === "string" || right.kind === "string") {
-                const a = toString(left, loc);
+                const a = toString(left, loc, this.context.realm);
                 if (a.type === "throw") return a;
-                const b = toString(right, loc);
+                const b = toString(right, loc, this.context.realm);
                 if (b.type === "throw") return b;
                 return normal({ kind: "string", value: stringConcat(a.value, b.value) });
             }
-            const a = toNumber(left, loc);
+            const a = toNumber(left, loc, this.context.realm);
             if (a.type === "throw") return a;
-            const b = toNumber(right, loc);
+            const b = toNumber(right, loc, this.context.realm);
             if (b.type === "throw") return b;
             return normal({ kind: "number", value: a.value + b.value });
         }
@@ -1061,11 +1072,11 @@ class ExecutionEngine {
             // left-to-right, so an abrupt RHS evaluation precedes either conversion.
             const leftPrimitive = toPrimitive(left, "number", this.context, loc);
             if (leftPrimitive.type === "throw") return leftPrimitive;
-            const a = toNumber(leftPrimitive.value, loc);
+            const a = toNumber(leftPrimitive.value, loc, this.context.realm);
             if (a.type === "throw") return a;
             const rightPrimitive = toPrimitive(right, "number", this.context, loc);
             if (rightPrimitive.type === "throw") return rightPrimitive;
-            const b = toNumber(rightPrimitive.value, loc);
+            const b = toNumber(rightPrimitive.value, loc, this.context.realm);
             if (b.type === "throw") return b;
             switch (op) {
                 case "-": return normal({ kind: "number", value: a.value - b.value });
@@ -1095,9 +1106,9 @@ class ExecutionEngine {
             if (left.kind === "string" && right.kind === "string") {
                 order = stringCompare(left.value, right.value);
             } else {
-                const a = toNumber(left, loc);
+                const a = toNumber(left, loc, this.context.realm);
                 if (a.type === "throw") return a;
-                const b = toNumber(right, loc);
+                const b = toNumber(right, loc, this.context.realm);
                 if (b.type === "throw") return b;
                 if (Number.isNaN(a.value) || Number.isNaN(b.value)) order = null;
                 else if (a.value < b.value) order = -1;
@@ -1379,8 +1390,9 @@ class ExecutionEngine {
     }
     #construct(callee: Value, args: Value[], loc: Location): ValueCompletion {
         const saved = this.#active();
-        if (callee.kind !== "object" || callee.object.constructorSlot === null) return failure("TypeError", "value is not a constructor", loc);
+        if (callee.kind !== "object" || callee.object.constructorSlot === null) return languageFailure(this.context.realm, "TypeError", "value is not a constructor", loc);
         const fn = callee.object.constructorSlot;
+        if (fn.kind === "builtin-constructor") return this.#constructBuiltin(callee.object, fn, args, loc);
         if (fn.kind !== "script-guest" || fn !== callee.object.callable || fn.realm.profile !== saved.realm.profile)
             throw new Error("invalid Script constructor metadata");
         ExecutableScript.readFunction(fn.record, fn, executionKey);
@@ -1405,6 +1417,34 @@ class ExecutionEngine {
             if (result.type === "throw") return result;
             return result.value.kind === "object" ? result : normal(receiver);
         } finally {
+            this.#frame = saved;
+            this.activeContext.realm = savedRealm;
+            this.calls = savedCalls;
+        }
+    }
+    #constructBuiltin(callee: GuestObject, fn: BuiltinConstructor, args: Value[], loc: Location): ValueCompletion {
+        const saved = this.#active();
+        if (fn.realm.profile !== saved.realm.profile) throw new Error("cross-profile callable invocation");
+        const callable = callee.callable;
+        if (callable === null || callable.kind !== "builtin" || callable !== fn.callable || callable.realm !== fn.realm)
+            throw new Error("invalid builtin constructor metadata");
+        if (this.calls >= this.maxCalls) {
+            const result = resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
+            this.#capture(result);
+            return result;
+        }
+        const savedRealm = this.activeContext.realm, savedCalls = this.calls, previous = pendingBuiltin;
+        this.calls++;
+        this.activeContext.realm = fn.realm;
+        this.#frame = { ...saved, realm: fn.realm };
+        pendingBuiltin = { kind: "construct", context: this.context, realm: fn.realm, invoke: fn.invoke, callee, args, loc, used: false };
+        try {
+            const result = fn.invoke(callee, args, this.context, loc);
+            if (result.type === "throw") { this.#capture(result); return result; }
+            if (result.type !== "normal" || result.value.kind !== "object") throw new Error("invalid builtin constructor completion");
+            return result;
+        } finally {
+            pendingBuiltin = previous;
             this.#frame = saved;
             this.activeContext.realm = savedRealm;
             this.calls = savedCalls;
@@ -1446,7 +1486,7 @@ class ExecutionEngine {
         try {
             if (fn.kind === "builtin") {
                 const previous = pendingBuiltin;
-                pendingBuiltin = { context: this.context, realm: fn.realm, invoke: fn.invoke, receiver, args, loc, used: false };
+                pendingBuiltin = { kind: "call", context: this.context, realm: fn.realm, invoke: fn.invoke, receiver, args, loc, used: false };
                 try {
                     const result = fn.invoke(receiver, args, this.context, loc);
                     if (result.type === "throw") this.#capture(result);

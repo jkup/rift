@@ -311,11 +311,11 @@ check(budget.steps === 4 && budget.calls === 0, "protocol and ordinary lookup ti
 // Direct converters remain zero-hook boundaries; semantic storage converts twice.
 const excluded = setup();
 const value = binding(excluded, "lengthValue");
-error(toNumber(value, loc), "TypeError");
-const stringResult = toString(value, loc);
+error(toNumber(value, loc, null), "TypeError");
+const stringResult = toString(value, loc, null);
 check(stringResult.type === "throw", "direct string boundary");
-error(toIntegerOrInfinity(value, loc), "TypeError");
-error(toLength(value, loc), "TypeError");
+error(toIntegerOrInfinity(value, loc, null), "TypeError");
+error(toLength(value, loc, null), "TypeError");
 check(sameValue(binding(excluded, "hits"), num(0)), "direct converters invoke no hooks");
 const storage = new GuestArray();
 error(storage.set("length", value, excluded.context, loc), "RangeError");
@@ -336,10 +336,10 @@ class ForbiddenHooks extends GuestObject {
 }
 const forbidden = new ForbiddenHooks();
 const forbiddenValue = obj(forbidden);
-error(toNumber(forbiddenValue, loc), "TypeError");
-check(toString(forbiddenValue, loc).type === "throw", "string zero-read boundary");
-error(toIntegerOrInfinity(forbiddenValue, loc), "TypeError");
-error(toLength(forbiddenValue, loc), "TypeError");
+error(toNumber(forbiddenValue, loc, null), "TypeError");
+check(toString(forbiddenValue, loc, null).type === "throw", "string zero-read boundary");
+error(toIntegerOrInfinity(forbiddenValue, loc, null), "TypeError");
+error(toLength(forbiddenValue, loc, null), "TypeError");
 check(forbidden.reads === 0, "direct converters perform zero reads");
 check(storage.set("length", forbiddenValue, excluded.context, loc) === sentinel, "Set exact Get sentinel");
 check(forbidden.reads === 1, "Set one lookup");

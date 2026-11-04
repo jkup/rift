@@ -356,7 +356,7 @@ for (const wrapper of [boxA.createBooleanObject(false), boxA.createNumberObject(
     wrapper.bootstrapDefine("valueOf", { value: { kind: "object", object: hook } });
     wrapper.bootstrapDefine("toString", { value: { kind: "object", object: hook } });
     const before = boxEvaluator.steps;
-    for (const converted of [toNumber(value, at), toUint32(value, at), toIntegerOrInfinity(value, at), toLength(value, at), toString(value, at)]) {
+    for (const converted of [toNumber(value, at, null), toUint32(value, at, null), toIntegerOrInfinity(value, at, null), toLength(value, at, null), toString(value, at, null)]) {
         checkGraph(converted.type === "throw" && converted.diagnostic.message === "object-to-primitive conversion unsupported" && converted.diagnostic.loc === at, "W17 direct converter rejects wrapper");
     }
     checkGraph(boxEvaluator.steps === before && boxEvaluator.calls === 0, "W17 direct conversion zero hooks");

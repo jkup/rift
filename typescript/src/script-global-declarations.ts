@@ -1,7 +1,7 @@
 import type { Declaration, PlannedFunction, ScriptDeclarationPlan } from "./script-declarations.js";
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { GlobalEnvironment } from "./global-environment.js";
-import { failure, normal, type OperationContext, type ValueCompletion } from "./runtime.js";
+import { languageFailure, normal, type OperationContext, type ValueCompletion } from "./runtime.js";
 
 export type DeclarationMaterializer = (
     declaration: Declaration, fn: PlannedFunction,
@@ -70,16 +70,16 @@ function instantiateDeclarations(
         const site = plan.declarations[id].site;
         const tick = context.tick(site.loc);
         if (tick.type !== "normal") return tick;
-        if (environment.hasLexicalDeclaration(site.name)) return failure("SyntaxError", "lexical declaration already exists: " + site.name, site.loc);
+        if (environment.hasLexicalDeclaration(site.name)) return languageFailure(context.realm, "SyntaxError", "lexical declaration already exists: " + site.name, site.loc);
         const restricted = environment.hasRestrictedGlobalProperty(site.name);
         if (restricted.type !== "normal") return restricted;
-        if (restricted.value) return failure("SyntaxError", "restricted global property: " + site.name, site.loc);
+        if (restricted.value) return languageFailure(context.realm, "SyntaxError", "restricted global property: " + site.name, site.loc);
     }
     for (const id of root.varDeclarations) {
         const site = plan.declarations[id].site;
         const tick = context.tick(site.loc);
         if (tick.type !== "normal") return tick;
-        if (environment.hasLexicalDeclaration(site.name)) return failure("SyntaxError", "lexical declaration already exists: " + site.name, site.loc);
+        if (environment.hasLexicalDeclaration(site.name)) return languageFailure(context.realm, "SyntaxError", "lexical declaration already exists: " + site.name, site.loc);
     }
     const selected = new Map<string, boolean>();
     const winners: Declaration[] = [];
@@ -90,7 +90,7 @@ function instantiateDeclarations(
         if (d.kind !== "function" || selected.has(d.site.name)) continue;
         const allowed = environment.canDeclareGlobalFunction(d.site.name);
         if (allowed.type !== "normal") return allowed;
-        if (!allowed.value) return failure("TypeError", "cannot declare global function: " + d.site.name, d.site.loc);
+        if (!allowed.value) return languageFailure(context.realm, "TypeError", "cannot declare global function: " + d.site.name, d.site.loc);
         selected.set(d.site.name, true);
         winners.push(d);
     }
@@ -104,14 +104,14 @@ function instantiateDeclarations(
         if (d.kind !== "var" || selected.has(d.site.name)) continue;
         const allowed = environment.canDeclareGlobalVar(d.site.name);
         if (allowed.type !== "normal") return allowed;
-        if (!allowed.value) return failure("TypeError", "cannot declare global var: " + d.site.name, d.site.loc);
+        if (!allowed.value) return languageFailure(context.realm, "TypeError", "cannot declare global var: " + d.site.name, d.site.loc);
         if (!varNames.has(d.site.name)) { varNames.set(d.site.name, true); vars.push(d); }
     }
     for (const id of root.lexicalDeclarations) {
         const site = plan.declarations[id].site;
         const tick = context.tick(site.loc);
         if (tick.type !== "normal") return tick;
-        const created = environment.createMutableBinding(site.name, site.loc);
+        const created = environment.createMutableBinding(site.name, site.loc, context.realm);
         if (created.type !== "normal") return created;
     }
     for (const d of winners) {

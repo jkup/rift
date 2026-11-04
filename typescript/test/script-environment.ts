@@ -78,7 +78,7 @@ console.log("T01 PASS");
 define("live", num(7)); const live = capture(child, "live"); define("live", num(11)); value(getScriptBinding(live, context), num(11));
 define("live", num(11), false); error(putScriptBinding(live, num(0), context), "TypeError");
 object.internalDelete("live"); error(getScriptBinding(live, context), "ReferenceError"); error(putScriptBinding(live, num(0), context), "ReferenceError");
-define("live", num(7)); globalRecord.createMutableBinding("live", loc); error(getScriptBinding(live, context), "ReferenceError");
+define("live", num(7)); globalRecord.createMutableBinding("live", loc, context.realm); error(getScriptBinding(live, context), "ReferenceError");
 globalRecord.initializeBinding("live", num(0), context, loc); value(getScriptBinding(live, context), num(0));
 console.log("T02 PASS");
 class FaultObject extends GuestObject {

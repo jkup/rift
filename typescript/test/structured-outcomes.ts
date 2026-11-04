@@ -224,7 +224,7 @@ class NoReadObject extends GuestObject {
 }
 {
     const object = new NoReadObject(); const input: Value = { kind: "object", object };
-    const number = toNumber(input, loc); const string = toString(input, loc);
+    const number = toNumber(input, loc, null); const string = toString(input, loc, null);
     for (const r of [number, string]) {
         check(r.type === "throw", "R29/R30 throw");
         if (r.type === "throw") {

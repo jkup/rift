@@ -672,3 +672,29 @@ typecheck/runner20/probes10/host73/observations22. All138 old test files and
 60 blocked variants remain unchanged; zero old-test migrations. See
 [H6-A evidence](validation/ts-034h6-a/README.md). Awaiting actual and independent
 second acceptance; no public admission or successor work.
+
+## Genuine Script errors and guarded builtin construction (TS-034H6-B candidate)
+
+All fifty language-error producers now return fresh Realm-local GuestError objects
+in the private Script profile, retaining the original diagnostic/source/origin.
+Legacy, synthetic, resource and unsupported failures retain their exact behavior.
+Nine conversion/extraction helpers and global binding creation require explicit
+Realm forwarding. The existing H6-A prototypes gain five intrinsic constructors,
+public call/new, ordered message/cause handling and generic Error.toString.
+
+Builtin construction uses a separate guarded callback and tagged one-use permit
+with captured callee and exact context/Realm/invoke/args/location identity.
+OperationContext and ordinary Script construction/call semantics are preserved.
+Private intrinsic references are populated before mutable globals are published.
+
+The candidate has 212 exact guest records per lane and56 static-only/separate
+zero-dynamic gates (B driver4320). E01–E36/G01–G10 execute on Node/native for both
+runtime inputs, with504 fresh/seven-seeded prefixes and2,528 callback-abrupt
+prefix controls per input/lane. The94 approved replacements across22old tests
+match their complete reviewed proposals. All60 corpus variants remain blocked.
+G06/G07 do not independently prove args/location field sensitivity; mandatory
+source comparisons and actual/second review supplement reachable controls.
+
+See [H6-B evidence](validation/ts-034h6-b/README.md). This is a review candidate,
+not public admission. C formatting globals, String/Object/Symbol/JSON/map surface,
+observer/CLI changes and successor work remain outside this slice.

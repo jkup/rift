@@ -652,6 +652,6 @@ expect(toPrimitive(obj(controls.createNumberObject(2)), "default", controlEvalua
 expect(toPrimitive(obj(controls.createNumberObject(2)), "string", controlEvaluator.context, loc), str("2"), "C8 Number string");
 for (const object of [new GuestObject(), ordinary]) error(toPrimitive(obj(object), "string", controlEvaluator.context, loc), "cannot convert object to primitive");
 for (const object of [controls.createArray(), controls.createObject(), controls.createNumberObject(2)]) {
-    check(toString(obj(object), loc).type === "throw" && toNumber(obj(object), loc).type === "throw", "C9 primitive-only converters");
+    check(toString(obj(object), loc, null).type === "throw" && toNumber(obj(object), loc, null).type === "throw", "C9 primitive-only converters");
 }
 console.log("array-string-conversion ok");

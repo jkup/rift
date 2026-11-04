@@ -467,7 +467,7 @@ put(elementArray, "0", f);
 expect(active.call(a.arrayPrototype.get("join", explicitTag.context, loc), obj(elementArray), [], loc), str("function() {}"), "C5 saved join");
 // C7-C13: mutation is observed by ordinary conversion, not saved stringification.
 put(object(f), wellKnownToPrimitive, throwing);
-for (const completion of [toNumber(f, loc), toString(f, loc), toLength(f, loc)]) {
+for (const completion of [toNumber(f, loc, null), toString(f, loc, null), toLength(f, loc, null)]) {
     check(completion.type === "throw" && completion.diagnostic.name === "TypeError"
         && completion.diagnostic.message === "object-to-primitive conversion unsupported", "C7 primitive-only boundary");
 }

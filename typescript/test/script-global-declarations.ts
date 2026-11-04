@@ -48,7 +48,7 @@ class TracedEnvironment extends GlobalEnvironment {
     override hasRestrictedGlobalProperty(n: string): InternalBooleanCompletion { return this.visit("R:" + n) ? this.abrupt : super.hasRestrictedGlobalProperty(n); }
     override canDeclareGlobalFunction(n: string): InternalBooleanCompletion { return this.visit("F?:" + n) ? this.abrupt : super.canDeclareGlobalFunction(n); }
     override canDeclareGlobalVar(n: string): InternalBooleanCompletion { return this.visit("V?:" + n) ? this.abrupt : super.canDeclareGlobalVar(n); }
-    override createMutableBinding(n: string, loc: Location): ValueCompletion { return this.visit("L+:" + n) ? this.abrupt : super.createMutableBinding(n, loc); }
+    override createMutableBinding(n: string, loc: Location, realm: Realm | null): ValueCompletion { return this.visit("L+:" + n) ? this.abrupt : super.createMutableBinding(n, loc, realm); }
     override createGlobalFunctionBinding(n: string, v: Value, c: OperationContext, loc: Location): ValueCompletion { return this.visit("F+:" + n) ? this.abrupt : super.createGlobalFunctionBinding(n, v, c, loc); }
     override createGlobalVarBinding(n: string, c: OperationContext, loc: Location): ValueCompletion { return this.visit("V+:" + n) ? this.abrupt : super.createGlobalVarBinding(n, c, loc); }
 }
@@ -173,7 +173,7 @@ console.log("G09 PASS");
 console.log("G10 PASS");
 {
     const p = plan("let fresh; var x; function f(){}");
-    const h = new Harness(); unused(h.env.createMutableBinding("x",{line:1,column:1})); error(h.run(p),"SyntaxError",30); absent(h.env,"fresh"); absent(h.env,"f"); check(h.markers.length === 0,"prechecks no callbacks");
+    const h = new Harness(); unused(h.env.createMutableBinding("x",{line:1,column:1}, h.context.realm)); error(h.run(p),"SyntaxError",30); absent(h.env,"fresh"); absent(h.env,"f"); check(h.markers.length === 0,"prechecks no callbacks");
     const ok = new Harness(); unused(ok.run(p)); tdz(ok.env,"fresh",ok.context);
     const restricted = new Harness(); seed(restricted.env.globalObject,"fresh",true,true,false); error(restricted.run(p),"SyntaxError",19); check(restricted.ticks.join(",") === "19","restricted earlier");
 }
@@ -255,7 +255,7 @@ console.log("FAULTS PASS");
 // Reusing a valid plan never reuses a precheck result across host mutations.
 {
     const h = new Harness(), p = plan("var x;"); unused(h.run(p));
-    unused(h.env.createMutableBinding("x",{line:1,column:1})); error(h.run(p),"SyntaxError",19);
+    unused(h.env.createMutableBinding("x",{line:1,column:1}, h.context.realm)); error(h.run(p),"SyntaxError",19);
     const f = new Harness(), fp = plan("function x(){}"); unused(f.run(fp)); unused(f.run(fp)); check(f.markers.length === 2,"fresh function each invocation"); desc(f.env.globalObject,"x",f.markers[1]);
     const v = new Harness(), vp = plan("var x;"); seed(v.env.globalObject,"x"); unused(v.run(vp)); desc(v.env.globalObject,"x",num(7),true,true,true);
     const closed = new Harness(), cp = plan("var x;"); closed.env.globalObject.preventExtensions(); error(closed.run(cp),"TypeError",19);

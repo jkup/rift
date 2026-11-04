@@ -95,7 +95,7 @@ const cases: { label: string; input: number; expected: string }[] = [
 
 for (const row of cases) {
     check(numberToString(row.input) === row.expected, row.label + " backend");
-    const string = toString(num(row.input), loc);
+    const string = toString(num(row.input), loc, null);
     const key = toPropertyKey(num(row.input), keyContext, loc);
     check(string.type === "normal" && string.value === row.expected && key.type === "normal" && key.value === row.expected, row.label + " conversion");
     const target = obj(new GuestObject());
@@ -112,7 +112,7 @@ const primitives: { value: Value; expected: string }[] = [
     { value: str(""), expected: "" }, { value: str("a\0\ud800\udfff"), expected: "a\0\ud800\udfff" },
 ];
 for (const row of primitives) {
-    const string = toString(row.value, loc);
+    const string = toString(row.value, loc, null);
     const key = toPropertyKey(row.value, keyContext, loc);
     check(string.type === "normal" && string.value === row.expected && key.type === "normal" && key.value === row.expected, "primitive exact UTF-16");
     for (const target of [new GuestObject(), new GuestArray()]) {
@@ -296,7 +296,7 @@ for (const object of [new GuestObject(), new GuestArray(), callableKey]) {
         return normal(str("1"));
     }), writable: true, enumerable: true, configurable: true });
     object.bootstrapDefine("valueOf", { value: builtin(keyEvaluator.context.realm, (_r, _a, _c, _l): Completion => { throw new Error("wrong hint"); }), writable: true, enumerable: true, configurable: true });
-    const directString = toString(keyValue, loc);
+    const directString = toString(keyValue, loc, null);
     check(directString.type === "throw" && directString.diagnostic.message === "object-to-primitive conversion unsupported" && directString.diagnostic.loc === loc && calls === 0, "direct ToString stays primitive-only");
     const directKey = toPropertyKey(keyValue, keyContext, loc);
     check(directKey.type === "normal" && directKey.value === "1" && calls === 1, "direct object key");

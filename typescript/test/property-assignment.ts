@@ -1053,7 +1053,7 @@ for (const symbolFailure of [false, true]) {
     let result: Completion = read;
     if (read.type === "normal") {
         if (symbolFailure) {
-            const numeric = toNumber(read.value, opLoc);
+            const numeric = toNumber(read.value, opLoc, null);
             result = numeric.type === "throw" ? numeric : normal(n(numeric.value));
         } else result = Q;
         if (result.type === "normal") { puts++; result = c.put(); }

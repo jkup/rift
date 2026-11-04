@@ -1,0 +1,6 @@
+{
+  "BTraces": 15,
+  "deferredCTraces": 6,
+  "prefixesPerInputPerLane": 504,
+  "permit": "exact tagged context/Realm/invoke/callee/args/loc/used comparisons and captured callee; executable field sensitivity not claimed"
+}

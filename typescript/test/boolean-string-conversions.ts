@@ -108,7 +108,7 @@ export function testBooleanStringConversions(): void {
         if (family.label === "boolean") invalid.push(str("false"), obj(a.createStringObject("")), obj(a.stringPrototype));
         else invalid.push({ kind: "boolean", value: false }, obj(a.createBooleanObject(false)), obj(a.booleanPrototype));
         for (const receiver of invalid) {
-            const extracted = family.label === "boolean" ? thisBooleanValue(receiver, loc) : thisStringValue(receiver, loc);
+            const extracted = family.label === "boolean" ? thisBooleanValue(receiver, loc, null) : thisStringValue(receiver, loc, null);
             if (extracted.type !== "throw") throw new Error("M helper accepted invalid receiver");
             error(extracted, "receiver is not a " + family.label);
             for (const method of methods) error(evaluator.call(method, receiver, [ignored], loc), "receiver is not a " + family.label);
@@ -165,7 +165,7 @@ export function testBooleanStringConversions(): void {
         put(foreign, "booleanData", { kind: "boolean", value: !payload });
         const receivers: Value[] = [{ kind: "boolean", value: payload }, obj(a.createBooleanObject(payload)), obj(foreign), obj(observed)];
         for (const receiver of receivers) {
-            const extracted = thisBooleanValue(receiver, loc);
+            const extracted = thisBooleanValue(receiver, loc, null);
             check(extracted.type === "normal" && extracted.value === payload, "M2 Boolean helper");
             expect(evaluator.call(b.booleanPrototype.get("valueOf", evaluator.context, loc), receiver, [ignored], loc), { kind: "boolean", value: payload }, "M2 Boolean payload");
             expect(evaluator.call(b.booleanPrototype.get("toString", evaluator.context, loc), receiver, [ignored], loc), str(payload ? "true" : "false"), "M2 Boolean text");
@@ -178,7 +178,7 @@ export function testBooleanStringConversions(): void {
         foreign.setPrototypeOf(null);
         put(foreign, "stringData", str("fake"));
         for (const receiver of [str(payload), obj(a.createStringObject(payload)), obj(foreign), obj(observed)]) {
-            const extracted = thisStringValue(receiver, loc);
+            const extracted = thisStringValue(receiver, loc, null);
             check(extracted.type === "normal" && extracted.value === payload, "M2 String helper");
             for (const name of ["toString", "valueOf"]) expect(evaluator.call(b.stringPrototype.get(name, evaluator.context, loc), receiver, [ignored], loc), str(payload), "M2 UTF-16 payload");
         }
@@ -226,7 +226,7 @@ function testLookupAndBoundaries(): void {
         keys(box.reads, [wellKnownToPrimitive, "valueOf", wellKnownToPrimitive, "valueOf"]);
         check(evaluator.steps === beforeLength + 4, "M6 two uncached conversions");
         box.reads = [];
-        for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {
+        for (const converted of [toNumber(boxed, loc, null), toString(boxed, loc, null), toUint32(boxed, loc, null), toIntegerOrInfinity(boxed, loc, null), toLength(boxed, loc, null)]) {
             if (converted.type !== "throw") throw new Error("M direct converter accepted box");
             error(converted, "object-to-primitive conversion unsupported");
         }

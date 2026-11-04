@@ -10,5 +10,5 @@ export function lengthOfArrayLike(object: GuestObject, context: OperationContext
     // Save the fetched Value: hooks may replace the source length property.
     const primitive = toPrimitive(length.value, "number", context, loc);
     if (primitive.type === "throw") return primitive;
-    return toLength(primitive.value, loc);
+    return toLength(primitive.value, loc, context.realm);
 }

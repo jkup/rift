@@ -1,7 +1,7 @@
 import { wellKnownHasInstance } from "../symbols.js";
 import type { Location } from "../syntax.js";
 import type { Realm } from "../realm.js";
-import { UNDEFINED, failure, normal, type Value, type Callable, type OperationContext, type ValueCompletion, truthy } from "../runtime.js";
+import { UNDEFINED, languageFailure, normal, type Value, type Callable, type OperationContext, type ValueCompletion, truthy } from "../runtime.js";
 import { stringSlice, type GuestString } from "../strings.js";
 
 export function nativeFunctionString(initialName: string | null): GuestString {
@@ -32,7 +32,7 @@ export function ordinaryHasInstance(callee: Value, value: Value, context: Operat
     if (value.kind !== "object") return normal({ kind: "boolean", value: false });
     const prototype = callee.object.internalGet("prototype", callee, context, loc);
     if (prototype.type === "throw") return prototype;
-    if (prototype.value.kind !== "object") return failure("TypeError", "constructor prototype is not an object", loc);
+    if (prototype.value.kind !== "object") return languageFailure(context.realm, "TypeError", "constructor prototype is not an object", loc);
     let object = value.object;
     while (true) {
         const budget = context.tick(loc);
@@ -44,18 +44,18 @@ export function ordinaryHasInstance(callee: Value, value: Value, context: Operat
     }
 }
 export function instanceofOperator(value: Value, target: Value, context: OperationContext, loc: Location): ValueCompletion {
-    if (target.kind !== "object") return failure("TypeError", "instanceof target is not an object", loc);
+    if (target.kind !== "object") return languageFailure(context.realm, "TypeError", "instanceof target is not an object", loc);
     if (target.object.callable !== null && target.object.callable.realm.profile !== context.realm.profile)
         throw new Error("cross-profile callable invocation");
     const method = target.object.internalGet(wellKnownHasInstance, target, context, loc);
     if (method.type === "throw") return method;
     if (method.value.kind !== "undefined" && method.value.kind !== "null") {
-        if (method.value.kind !== "object" || method.value.object.callable === null) return failure("TypeError", "hasInstance method is not callable", loc);
+        if (method.value.kind !== "object" || method.value.object.callable === null) return languageFailure(context.realm, "TypeError", "hasInstance method is not callable", loc);
         const result = context.call(method.value, target, [value], loc);
         if (result.type === "throw") return result;
         return normal({ kind: "boolean", value: truthy(result.value) });
     }
-    if (target.object.callable === null) return failure("TypeError", "instanceof target is not callable", loc);
+    if (target.object.callable === null) return languageFailure(context.realm, "TypeError", "instanceof target is not callable", loc);
     return ordinaryHasInstance(target, value, context, loc);
 }
 export function registerFunction(realm: Realm): void {
@@ -68,7 +68,7 @@ export function registerFunction(realm: Realm): void {
     }
     realm.registerBuiltin(realm.functionPrototype, "call", 1, (receiver, args, context, loc) => {
         if (receiver.kind !== "object" || receiver.object.callable === null) {
-            return failure("TypeError", "Function.prototype.call receiver is not callable", loc);
+            return languageFailure(context.realm, "TypeError", "Function.prototype.call receiver is not callable", loc);
         }
         const thisArg = args.length === 0 ? UNDEFINED : args[0];
         const rest: Value[] = [];
@@ -77,9 +77,9 @@ export function registerFunction(realm: Realm): void {
         // not supported: this builtin remains active while its target runs.
         return context.call(receiver, thisArg, rest, loc);
     });
-    realm.registerBuiltin(realm.functionPrototype, "toString", 0, (receiver, _args, _context, loc) => {
+    realm.registerBuiltin(realm.functionPrototype, "toString", 0, (receiver, _args, context, loc) => {
         if (receiver.kind !== "object" || receiver.object.callable === null) {
-            return failure("TypeError", "Function.prototype.toString receiver is not callable", loc);
+            return languageFailure(context.realm, "TypeError", "Function.prototype.toString receiver is not callable", loc);
         }
         return normal({ kind: "string", value: functionSourceString(receiver.object.callable) });
     });

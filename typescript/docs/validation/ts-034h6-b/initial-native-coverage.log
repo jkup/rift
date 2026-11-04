@@ -1,0 +1,6 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\harness-errors-a.ts
+
+  statements analyzed   3892
+  compile statically    3892  (100%)
+
+  fully static — all analyzed statements compile to native code.

@@ -84,6 +84,13 @@ export function normal(value: Value = UNDEFINED): ValueCompletion { return { typ
 export function failure(name: string, message: string, loc: Location): ThrowCompletion {
     return { type: "throw", origin: { kind: "engine-diagnostic" }, value: { kind: "string", value: name + ": " + message }, diagnostic: { phase: "runtime", name, message, loc } };
 }
+// Allocate where the language error originates, without guest calls or ticks.
+export function languageFailure(realm: Realm | null, name: ErrorName, message: string, loc: Location): ThrowCompletion {
+    const result = failure(name, message, loc);
+    if (realm === null || realm.profile === "legacy") return result;
+    return { type: "throw", origin: result.origin, diagnostic: result.diagnostic,
+        value: { kind: "object", object: realm.createError(name, message) } };
+}
 export function resourceFailure(guardCode: Guard, count: number, limit: number, message: string, loc: Location): ThrowCompletion {
     const result = failure("RangeError", message, loc);
     return { type: "throw", value: result.value, diagnostic: result.diagnostic, origin: { kind: "resource-limit", guardCode, count, limit } };
@@ -98,6 +105,9 @@ export type OperationContext = {
     tick: (loc: Location) => ValueCompletion;
 };
 export type Builtin = (receiver: Value, args: Value[], context: OperationContext, loc: Location) => Completion;
+export type ConstructBuiltin = (callee: GuestObject, args: Value[], context: OperationContext, loc: Location) => ValueCompletion;
+export type BuiltinConstructor = { readonly kind: "builtin-constructor"; readonly realm: Realm;
+    readonly callable: Callable; readonly invoke: ConstructBuiltin };
 export type Callable =
     | ScriptGuestCallable
     | { readonly kind: "guest"; readonly realm: Realm; readonly params: string[]; readonly body: Stmt[]; readonly environment: Environment; readonly source: FunctionSource | null }
@@ -107,7 +117,7 @@ export class GuestObject {
     private extensible = true;
     private prototypeSlot: GuestObject | null;
     private readonly immutablePrototypeSlot: boolean;
-    constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false, readonly callable: Callable | null = null, readonly constructorSlot: ScriptGuestCallable | null = null) {
+    constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false, readonly callable: Callable | null = null, readonly constructorSlot: ScriptGuestCallable | BuiltinConstructor | null = null) {
         this.prototypeSlot = proto;
         this.immutablePrototypeSlot = immutablePrototype;
     }
@@ -242,7 +252,7 @@ export class GuestObject {
     set(key: PropertyKey, value: Value, context: OperationContext, loc: Location): Completion {
         const result = this.internalSet(key, value, { kind: "object", object: this }, context, loc);
         if (result.type === "throw") return result;
-        if (!result.value) return failure("TypeError", "property is not writable: " + formatPropertyKey(key), loc);
+        if (!result.value) return languageFailure(context.realm, "TypeError", "property is not writable: " + formatPropertyKey(key), loc);
         return normal(value);
     }
     // Trusted setup uses separate validated dispatch, with no execution context.
@@ -289,8 +299,8 @@ export function getValue(ref: Reference, context: OperationContext, loc: Locatio
         return object.value.internalGet(key.value, ref.base, context, loc);
     }
     const binding = ref.environment === null ? undefined : ref.environment.bindings.get(ref.name);
-    if (binding === undefined) return failure("ReferenceError", ref.name + " is not defined", loc);
-    if (!binding.initialized) return failure("ReferenceError", ref.name + " is not initialized", loc);
+    if (binding === undefined) return languageFailure(context.realm, "ReferenceError", ref.name + " is not defined", loc);
+    if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", ref.name + " is not initialized", loc);
     return normal(binding.value);
 }
 export function putValue(ref: Reference, value: Value, context: OperationContext, loc: Location, strict = true): Completion {
@@ -306,13 +316,13 @@ export function putValue(ref: Reference, value: Value, context: OperationContext
             : { kind: "symbol", value: key.value };
         const result = object.value.internalSet(key.value, value, ref.base, context, loc);
         if (result.type === "throw") return result;
-        if (!result.value && strict) return failure("TypeError", "property is not writable: " + formatPropertyKey(key.value), loc);
+        if (!result.value && strict) return languageFailure(context.realm, "TypeError", "property is not writable: " + formatPropertyKey(key.value), loc);
         return normal(value);
     }
     const binding = ref.environment === null ? undefined : ref.environment.bindings.get(ref.name);
-    if (binding === undefined) return failure("ReferenceError", ref.name + " is not defined", loc);
-    if (!binding.initialized) return failure("ReferenceError", ref.name + " is not initialized", loc);
-    if (!binding.mutable) return failure("TypeError", "binding is not mutable: " + ref.name, loc);
+    if (binding === undefined) return languageFailure(context.realm, "ReferenceError", ref.name + " is not defined", loc);
+    if (!binding.initialized) return languageFailure(context.realm, "ReferenceError", ref.name + " is not initialized", loc);
+    if (!binding.mutable) return languageFailure(context.realm, "TypeError", "binding is not mutable: " + ref.name, loc);
     binding.value = value;
     return normal(value);
 }

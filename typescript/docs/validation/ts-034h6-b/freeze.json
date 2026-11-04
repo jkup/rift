@@ -1,0 +1,13 @@
+{
+  "status": "Frozen before production edits; E01-E36/G01-G10 and B traces required; F01-F12/T13-T18 C deferred",
+  "files": {
+    "closure.json": "3f058f703b993e247159d6b9332619d518fa30316dad539f33f4872ae825ad6d",
+    "closure.md": "7df386ceec738f2a24b04ab6206fca71e246729e397dafacfae785cc2fd7bc6d",
+    "frozen-traces.json": "3a82d300f75e38e609f88dd2aebeee15690fb4262d7579926d739d925dcc1860",
+    "input-a.js": "bf5168d61053f61f9f201a3fe5116abbafeee3782af30a5f14ea58b172111f1b",
+    "input-b.js": "f7c8bbe12f9b91c7f999dbb8700c44dbb415bce3d81cf5c4a7d92c9c6d8d8441",
+    "matrix-map.json": "1c4d376031c2f5719db4eb15c18275589f40a9d3f5f233a49024b3543a7a3d45",
+    "matrix.md": "ae9847a32501e6757f0d472f2dda4e7cd8b01182ded05a7ece84689860f21b9c",
+    "REVIEW.md": "5ba2832747ec773280b4cb735ba7bf836e05484767bcc1321d108fbd58087c4b"
+  }
+}

@@ -1,20 +1,20 @@
 import { GuestArray } from "./array-object.js";
 import { lengthOfArrayLike } from "./array-like.js";
-import { failure, unsupportedFailure, normal, type GuestObject, type OperationContext, type Value, type ValueCompletion } from "./runtime.js";
+import { languageFailure, unsupportedFailure, normal, type GuestObject, type OperationContext, type Value, type ValueCompletion } from "./runtime.js";
 import type { Location } from "./syntax.js";
 
 // Internal object-only operation. Boxing and non-default species are deferred.
 export function mapObjectDefaultArray(object: GuestObject, callback: Value, thisArg: Value, context: OperationContext, loc: Location): ValueCompletion {
     const length = lengthOfArrayLike(object, context, loc);
     if (length.type === "throw") return length;
-    if (callback.kind !== "object" || callback.object.callable === null) return failure("TypeError", "map callback is not callable", loc);
+    if (callback.kind !== "object" || callback.object.callable === null) return languageFailure(context.realm, "TypeError", "map callback is not callable", loc);
     const input: Value = { kind: "object", object };
     if (object instanceof GuestArray) {
         const constructor = object.internalGet("constructor", input, context, loc);
         if (constructor.type === "throw") return constructor;
         if (constructor.value.kind !== "undefined") return unsupportedFailure("runtime.map-species", "TypeError", "unsupported map constructor/species", loc);
     }
-    if (length.value > 4294967295) return failure("RangeError", "map result length exceeds array limit", loc);
+    if (length.value > 4294967295) return languageFailure(context.realm, "RangeError", "map result length exceeds array limit", loc);
     const result = context.realm.createArray();
     const initialized = result.defineOwnProperty("length", { value: { kind: "number", value: length.value } }, context, loc);
     if (initialized.type === "throw" || !initialized.value) throw new Error("fresh map array length invariant");

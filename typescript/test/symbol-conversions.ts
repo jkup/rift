@@ -107,7 +107,7 @@ export function testSymbolConversions(): void {
         const observed = new ObservedSymbol(identity, a.symbolPrototype);
         const receivers = [sym(identity), obj(a.createSymbolObject(identity)), obj(foreign), obj(observed)];
         for (const receiver of receivers) {
-            const extracted = thisSymbolValue(receiver, loc);
+            const extracted = thisSymbolValue(receiver, loc, null);
             check(extracted.type === "normal" && extracted.value === identity, "helper exact payload");
             for (let i = 0; i < methods.length; i++) {
                 const before = evaluator.steps;
@@ -125,7 +125,7 @@ export function testSymbolConversions(): void {
         obj(b.symbolPrototype), obj(lookalike), obj(a.createObject()), obj(a.createArray()),
         obj(a.functionPrototype), obj(a.createBooleanObject(false)), obj(a.createNumberObject(1)), obj(a.createStringObject("x"))];
     for (const receiver of invalid) {
-        const extracted = thisSymbolValue(receiver, loc);
+        const extracted = thisSymbolValue(receiver, loc, null);
         check(extracted.type === "throw", "helper rejects non-slot");
         for (const method of methods) error(evaluator.call(method, receiver, [ignored], loc), "receiver is not a symbol");
     }
@@ -188,7 +188,7 @@ export function testSymbolConversions(): void {
     check(key.type === "normal" && key.value === identity, "boxed key identity");
     const beforeDirect = evaluator.steps;
     box.reads = [];
-    for (const converted of [toNumber(boxed, loc), toString(boxed, loc)]) {
+    for (const converted of [toNumber(boxed, loc, null), toString(boxed, loc, null)]) {
         if (converted.type !== "throw") throw new Error("B2 direct converter accepted object");
         error(converted, "object-to-primitive conversion unsupported");
     }

@@ -103,7 +103,7 @@ export function testNumberConversions(): void {
         put(observed, "valueOf", ignored);
         const receivers: Value[] = [num(payload), obj(a.createNumberObject(payload)), obj(foreign), obj(observed)];
         for (const receiver of receivers) {
-            const extracted = thisNumberValue(receiver, loc);
+            const extracted = thisNumberValue(receiver, loc, null);
             check(extracted.type === "normal" && sameValue(num(extracted.value), num(payload)), "N1-N4/N8 helper payload");
             expect(evaluator.call(method, receiver, [ignored, ignored], loc), num(payload), "N1-N4/N8 exact payload");
             const expected = payload === 0 ? "0" : Number.isNaN(payload) ? "NaN" : payload === Infinity ? "Infinity" : payload === -Infinity ? "-Infinity" : payload === 10.5 ? "10.5" : "-255";
@@ -128,7 +128,7 @@ export function testNumberConversions(): void {
         obj(a.createBooleanObject(true)), obj(a.createStringObject("2")), obj(a.createSymbolObject(new GuestSymbol("n"))),
         obj(lookalike), ignored];
     for (const receiver of invalid) {
-        const extracted = thisNumberValue(receiver, loc);
+        const extracted = thisNumberValue(receiver, loc, null);
         if (extracted.type !== "throw") throw new Error("N invalid helper accepted");
         check(extracted.diagnostic.loc === loc, "helper location identity");
         error(extracted, "receiver is not a number");
@@ -210,7 +210,7 @@ function testLookupAndLengths(): void {
         check(calls === 1 && evaluator.steps === before + 2, "exact hint work");
     }
     box.reads = [];
-    for (const converted of [toNumber(boxed, loc), toString(boxed, loc), toUint32(boxed, loc), toIntegerOrInfinity(boxed, loc), toLength(boxed, loc)]) {
+    for (const converted of [toNumber(boxed, loc, null), toString(boxed, loc, null), toUint32(boxed, loc, null), toIntegerOrInfinity(boxed, loc, null), toLength(boxed, loc, null)]) {
         if (converted.type !== "throw") throw new Error("N direct converter accepted box");
         error(converted, "object-to-primitive conversion unsupported");
     }
