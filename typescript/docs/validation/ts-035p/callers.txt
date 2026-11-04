@@ -1,0 +1,154 @@
+typescript/test\harness-bundle.ts:222: function classify(v:ValueCompletion):string {
+typescript/test\harness-bundle.ts:233:  if(pre.type==="throw"){const a=preSession.inspect().lastAbrupt;source=a===null?"":a.unitId;return {stage,harnessValidated:validated,status:classify(pre),source,host};}
+typescript/test\harness-bundle.ts:237:  return {stage,harnessValidated:validated,status:classify(result),source,host};
+typescript/test\harness-errors-b.ts:11:import { projectThrow } from "../src/observation.js";
+typescript/test\harness-errors-b.ts:117: const synthetic=failure("TypeError","synthetic",loc),resource=resourceFailure("steps",1,0,"step limit exceeded",loc),unsupported=unsupportedFailure("runtime.object-to-string","TypeError","unsupported",loc),t=thrown(run("missing;",r));for(const result of [t,synthetic]){const observation=projectThrow(result);check(observation.kind==="throw"&&observation.constructor.name===null&&observation.constructor.realmId===null&&observation.constructor.secondary===null&&observation.constructor.outcome===(result===t?"unsupported":"absent"),"projection");}check(projectThrow(resource).kind==="resource-limit"&&projectThrow(unsupported).kind==="unsupported-syntax","origin projection");
+typescript/test\harness-errors-b.ts:118: const e=object(t.value);for(const key of ["name","message","constructor"]){e.bootstrapDefine(key,{get:obj(r.createBuiltin("poison",0,(_r,_a,_c,_l):ValueCompletion=>{effects++;throw new Error("poison");})),enumerable:false,configurable:true});}const before=t.diagnostic.message;check(display(t.value)==="[object Object]"&&projectThrow(t).kind==="throw"&&t.diagnostic.message===before&&effects===0,"diagnostic rendering never coerces");
+typescript/src\observation.ts:30:export function projectThrow(result: ThrowCompletion): Observation {
+typescript/src\observation.ts:45:export function observe(source: string, realm: Realm, mode: ObservationMode, unit: string,
+typescript/src\observation.ts:65:            diagnostic: result.diagnostic, observation: projectThrow(result) };
+typescript/src\observation-driver.ts:4:import { observationJSONRecord } from "./observation-json.js";
+typescript/src\observation-driver.ts:26:    const result = observe(source, realm, mode, args[2], { steps, calls });
+typescript/src\observation-driver.ts:27:    writeFileSync(args[3], observationJSONRecord(result, args[4]), "utf8");
+typescript/src\observation-json.ts:25:export function observationJSONRecord(value: ObservationResult, nonce: string): string {
+typescript/test\object-tostring.ts:52:    internalGet(key: PropertyKey, receiver: Value, context: OperationContext, at: Location): ValueCompletion { return this.observe(key, receiver, context, at); }
+typescript/test\observation-serialization.ts:2:import { observationJSONRecord } from "../src/observation-json.js";
+typescript/test\observation-serialization.ts:20:const result = observe("console.log('body'); throw poison;", realm, "body-observation", "test/synthetic.js");
+typescript/test\observation-serialization.ts:22:console.log(observationJSONRecord(result, "T32"));
+typescript/test\observation-serialization.ts:27:console.log(observationJSONRecord(diagnostic, "T23"));
+typescript/test\operation-context.ts:42:check(run("function make() { let n=0; return function(x) { n=n+1; host.observe(n); return this; }; } let saved=make(); let receiver={}; let argument={}; let result=host.callback(saved,receiver,argument);", realm).phase === "runtime", "setup run");
+typescript/test\return-audit.ts:23:        const observed = observe(source, realm, mode, "test/return-certification.js", { steps: 0, calls: 0 });
+typescript/test\script-realm-bootstrap.ts:124:    case "B10": for(const source of ["let "+name+"="+initial+";","return 1;",""]) { error(()=>{observe(source,a,"body-observation","unit");},legacyError); const p=observe(source,a,"parser-observation","unit"),q=observe(source,x,"parser-observation","unit"); check(JSON.stringify(p)===JSON.stringify(q) && !p.bodyEvaluated,"neutral parser"); check(p.observation.kind===(source==="return 1;"?"syntax-error":"normal"),"literal parser result"); } for(const mode of ["parser-observation","body-observation"] as const) error(()=>{observe("return 1;",a,mode,"unit",{steps:-1,calls:0});},"observation limits must be nonnegative safe integers"); break;
+typescript/test\structured-outcomes.ts:13:import { observe, projectThrow, type ObservationResult } from "../src/observation.js";
+typescript/test\structured-outcomes.ts:35:    const projected = projectThrow(t);
+typescript/test\structured-outcomes.ts:60:    const result = observe(sources[i], realm, i === 41 ? "body-observation" : "parser-observation", unit);
+typescript/test\structured-outcomes.ts:80:    const result = observe(sourceLimits[i], fresh(), "parser-observation", unit);
+typescript/test\structured-outcomes.ts:88:    const result = observe("(".repeat(pairs) + "1" + ")".repeat(pairs) + ";", fresh(), "parser-observation", unit);
+typescript/test\structured-outcomes.ts:92:const statements = observe("{".repeat(128) + ";" + "}".repeat(128), fresh(), "parser-observation", unit);
+typescript/test\structured-outcomes.ts:127:    const r = observe("while(true){}", fresh(), "body-observation", unit); observedResource(r, "steps", 100001, 100000, "R17 observation"); check(r.bodyEvaluated, "R17 body");
+typescript/test\structured-outcomes.ts:168:    const r = observe(source, fresh(), "body-observation", unit); const o = r.observation;
+typescript/test\structured-outcomes.ts:175:    const r = observe("let x;", realm, "body-observation", unit);
+typescript/test\structured-outcomes.ts:191:    const result = observe("let x;", realm, "body-observation", unit);
+typescript/test\structured-outcomes.ts:233:            check(projectThrow(r).kind === "unsupported-syntax", "R29/R30 projection");
+typescript/test\structured-outcomes.ts:237:    check(projectThrow(marker).kind === "throw" && object.reads === 0, "R25 no constructor read");
+typescript/test\structured-outcomes.ts:261:    const realm = fresh(); const r = observe("let x=1; x=2; throw 'stop';", realm, "body-observation", unit); const x = realm.global.bindings.get("x");
+typescript/test\structured-outcomes.ts:268:    try { observe("let x=1; x=2; console.log('stop');", realm, "body-observation", unit); }
+typescript/test\structured-outcomes.ts:274:    check(observe("let x={};", first, "body-observation", unit).observation.kind === "normal", "R38 first");
+typescript/test\structured-outcomes.ts:275:    check(observe("let x={};", second, "body-observation", unit).observation.kind === "normal", "R38 second");
+typescript/test\structured-outcomes.ts:283:        try { observe("let x;", realm, "body-observation", unit, { steps: slot === "steps" ? bad : 100000, calls: slot === "calls" ? bad : 64 }); }
+typescript/test\structured-outcomes.ts:288:observedResource(observe("1;", fresh(), "body-observation", unit, { steps: 0, calls: 64 }), "steps", 1, 0, "observe zero steps");
+typescript/test\structured-outcomes.ts:289:observedResource(observe("console.log();", fresh(), "body-observation", unit, { steps: 100000, calls: 0 }), "calls", 0, 0, "observe zero calls");
+typescript/tools\test262\boundary.test.mjs:4:import { inspectEnvelope, classify, validateRecord } from './result.mjs';
+typescript/tools\test262\boundary.test.mjs:5:import { newLedger, appendAttempt, report } from './ledger.mjs';
+typescript/tools\test262\boundary.test.mjs:10:  assert.deepEqual(inspectEnvelope(JSON.stringify(incoming), contextFor(parent), transport), protocol);
+typescript/tools\test262\boundary.test.mjs:12:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', incoming), /context|protocol|profile-not-admitted/);
+typescript/tools\test262\boundary.test.mjs:38:  appendAttempt(ledger, 'synthetic-0', parent);
+typescript/tools\test262\boundary.test.mjs:40:  assert.deepEqual(inspectEnvelope(JSON.stringify(parent), contextFor(parent), transport), parent);
+typescript/tools\test262\boundary.test.mjs:48:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', r), /context/);
+typescript/tools\test262\boundary.test.mjs:52:    assert.throws(() => appendAttempt(newLedger(selection), 'synthetic-0', r), /context/);
+typescript/tools\test262\boundary.test.mjs:55:  assert.deepEqual(inspectEnvelope(JSON.stringify(r), r.identity, transport), protocol);
+typescript/tools\test262\boundary.test.mjs:72:    validateRecord(incoming); // Self-consistency alone is deliberately insufficient.
+typescript/tools\test262\boundary.test.mjs:92:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', positive), /profile-not-admitted/);
+typescript/tools\test262\boundary.test.mjs:96:test('R2 exported classify enforces every cross-record invariant even without Classification', () => {
+typescript/tools\test262\boundary.test.mjs:119:    assert.throws(() => validateRecord(value), /protocol/);
+typescript/tools\test262\boundary.test.mjs:120:    assert.throws(() => classify(value, expectedNegative, blockers), /protocol/);
+typescript/tools\test262\boundary.test.mjs:122:    assert.throws(() => classify(core, expectedNegative, blockers), /protocol/);
+typescript/tools\test262\boundary.test.mjs:126:test('R2 exported classify rejects forged classification, unknown fields and observation modes', () => {
+typescript/tools\test262\boundary.test.mjs:129:    const r = synthetic(); mutate(r); assert.throws(() => classify(r), /protocol/);
+typescript/tools\test262\boundary.test.mjs:131:  for (const mode of ['parser-observation', 'body-observation']) assert.throws(() => classify(synthetic({ mode })), /protocol/);
+typescript/tools\test262\boundary.test.mjs:132:  assert.equal(classify(synthetic()).status, 'pass');
+typescript/tools\test262\boundary.test.mjs:142:    assert.equal(classify(r, neg('runtime', 'RangeError')).status, 'resource-limit');
+typescript/tools\test262\boundary.test.mjs:143:    assert.deepEqual(inspectEnvelope(JSON.stringify(r), contextFor(r), transport), r);
+typescript/tools\test262\driver-result.mjs:2:import { terminalRecord, assertContext, inspectEnvelope } from './result.mjs';
+typescript/tools\test262\driver-result.mjs:48:export function parseDriverResult(bytes, binding) {
+typescript/tools\test262\driver-result.mjs:67:export function composeObservation(context, binding, bytes, facts) {
+typescript/tools\test262\driver-result.mjs:74:    try { child = parseDriverResult(bytes, binding); observation = child.observation; }
+typescript/tools\test262\driver-result.mjs:81:  try { value = terminalRecord(context.identity, context.inputs, evidence, observation); }
+typescript/tools\test262\driver-result.mjs:83:    value = terminalRecord(context.identity, context.inputs, { ...evidence, stage: 'driver', bodyEvaluated: false, location: null },
+typescript/tools\test262\driver-result.mjs:90:    const checked = inspectEnvelope(JSON.stringify(value), context, { process, outputBytes, outputLimit });
+typescript/tools\test262\corpus.integration.mjs:10:import { newLedger, appendAttempt, report, persist } from './ledger.mjs';
+typescript/tools\test262\corpus.integration.mjs:73:    for(const {id,record} of await preflightRecords(selection)) appendAttempt(ledger,id,record);
+typescript/tools\test262\driver-result.test.mjs:4:import { validateRecord, assertContext } from './result.mjs';
+typescript/tools\test262\driver-result.test.mjs:5:import { appendAttempt, newLedger, report } from './ledger.mjs';
+typescript/tools\test262\driver-result.test.mjs:6:import { composeObservation, parseDriverResult } from './driver-result.mjs';
+typescript/tools\test262\driver-result.test.mjs:20:const compose = (payload = bytes(child), changes = {}) => composeObservation(context, binding, payload, { ...facts, ...changes });
+typescript/tools\test262\driver-result.test.mjs:62:    assert.throws(() => parseDriverResult(bytes(candidate), b), /protocol/, JSON.stringify(candidate));
+typescript/tools\test262\driver-result.test.mjs:64:    const result = composeObservation(c, b, bytes(candidate), facts);
+typescript/tools\test262\driver-result.test.mjs:71:    assert.deepEqual(parseDriverResult(bytes(candidate), b), candidate);
+typescript/tools\test262\driver-result.test.mjs:73:    assert.deepEqual(composeObservation(c, b, bytes(candidate), facts).observation, candidate.observation);
+typescript/tools\test262\driver-result.test.mjs:83:    const accepted = composeObservation(c, b, bytes(good), facts);
+typescript/tools\test262\driver-result.test.mjs:84:    assert.deepEqual(parseDriverResult(bytes(good), b), good);
+typescript/tools\test262\driver-result.test.mjs:99:      assert.throws(() => parseDriverResult(bytes(candidate), b), /protocol/);
+typescript/tools\test262\driver-result.test.mjs:100:      assert.deepEqual(composeObservation(c, b, bytes(candidate), facts).observation, { kind: 'host-fault', faultCode: 'protocol' });
+typescript/tools\test262\driver-result.test.mjs:118:  assert.deepEqual(parseDriverResult(bytes(child), binding), child);
+typescript/tools\test262\driver-result.test.mjs:163:  assert.deepEqual(validateRecord(r), r);
+typescript/tools\test262\driver-result.test.mjs:166:    const bad = structuredClone(r); mutate(bad); assert.throws(() => validateRecord(bad), /protocol/);
+typescript/tools\test262\driver-result.test.mjs:169:  assert.throws(() => validateRecord(conformance), /protocol/);
+typescript/tools\test262\driver-result.test.mjs:172:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', r), /identity/);
+typescript/tools\test262\fixtures.mjs:2:import { terminalRecord } from './result.mjs';
+typescript/tools\test262\fixtures.mjs:13:  return terminalRecord({ schemaVersion: 1, runId: 'synthetic-only', mode,
+typescript/tools\test262\ledger.mjs:3:import { STATUSES, validateRecord, assertContext, validateContext } from './result.mjs';
+typescript/tools\test262\ledger.mjs:11:export function appendAttempt(ledger, id, record, retryReason = null) {
+typescript/tools\test262\ledger.mjs:12:  validateRecord(record);
+typescript/tools\test262\ledger.test.mjs:6:import { newLedger, appendAttempt, report, persist } from './ledger.mjs';
+typescript/tools\test262\ledger.test.mjs:13:  records.forEach((record,i) => appendAttempt(ledger,`synthetic-${i}`,record));
+typescript/tools\test262\ledger.test.mjs:42:  appendAttempt(ledger,'synthetic-0',a); appendAttempt(ledger,'synthetic-1',b);
+typescript/tools\test262\ledger.test.mjs:71:      appendAttempt(ledger,id,record);
+typescript/tools\test262\ledger.test.mjs:106:    appendAttempt(ledger,'synthetic-0',records[0]);
+typescript/tools\test262\ledger.test.mjs:116:  assert.throws(()=>appendAttempt(ledger,'synthetic-0',synthetic()),/retry-policy/);
+typescript/tools\test262\ledger.test.mjs:117:  appendAttempt(ledger,'synthetic-0',synthetic(),'explicit synthetic rerun control');
+typescript/tools\test262\ledger.test.mjs:136:  assert.throws(()=>appendAttempt(ledger,'synthetic-0',synthetic({mode:'body-observation'})),/identity/);
+typescript/tools\test262\ledger.test.mjs:149:  assert.throws(()=>appendAttempt(newLedger(selection),'synthetic-0',success),/profile-not-admitted/);
+typescript/tools\test262\ledger.test.mjs:151:  assert.throws(()=>appendAttempt(newLedger(selection),'synthetic-0',changed),/identity/);
+typescript/tools\test262\ledger.test.mjs:153:  assert.throws(()=>appendAttempt(newLedger(ordinary),'synthetic-0',success),/identity/);
+typescript/tools\test262\observe.mjs:10:import { composeObservation } from './driver-result.mjs';
+typescript/tools\test262\observe.mjs:62:export async function prepareObservation({ selection, variantId, sourceBytes, mode, archiveRoot, limits = {} }) {
+typescript/tools\test262\observe.mjs:168:  const record = composeObservation(context, binding, bytes, facts);
+typescript/tools\test262\observe.mjs:179:  const plan = await prepareObservation({ selection, variantId: v.id, sourceBytes: await localBytes(corpusRoot, path),
+typescript/tools\test262\observation.integration.mjs:10:import { prepareObservation, launchObservation, validateLaunch } from './observe.mjs';
+typescript/tools\test262\observation.integration.mjs:42:  const plan = await prepareObservation(options(lane, source, mode, variant, limits));
+typescript/tools\test262\observation.integration.mjs:92:  const plan = await prepareObservation(options(lane, "console.log('started'); while(true){}", 'body-observation', 'non-strict',
+typescript/tools\test262\observation.integration.mjs:137:    const pending = prepareObservation(input);
+typescript/tools\test262\observation.integration.mjs:231:    const timeoutPlan = await prepareObservation(options(lane, 'while(true){}', 'body-observation', 'non-strict',
+typescript/tools\test262\observation.integration.mjs:237:    const capPlan = await prepareObservation(options(lane, "while(true){console.log('1234567890');}", 'body-observation', 'non-strict',
+typescript/tools\test262\observation.integration.mjs:251:    const plan = await prepareObservation(options(lane, "console.log('started'); while(true){}", 'body-observation'));
+typescript/tools\test262\observation.integration.mjs:259:    const plan = await prepareObservation(options(lane, "console.log('started'); while(true){}", 'body-observation'));
+typescript/tools\test262\observation.integration.mjs:273:  for (const key of ['sourceUnits','parseDepth','evaluationDepth']) await assert.rejects(prepareObservation(options('node','1;',undefined,undefined,{ [key]: 1 })), /limits/);
+typescript/tools\test262\observation.integration.mjs:276:  const plan = await prepareObservation(options('node','1;'));
+typescript/tools\test262\observation.integration.mjs:299:  const plan = await prepareObservation(options('node','1;'));
+typescript/tools\test262\observation.integration.mjs:304:    const aliasPlan = await prepareObservation(options('node','1;'));
+typescript/tools\test262\observation.integration.mjs:314:  await assert.rejects(prepareObservation({ ...options('node','1;'), archiveRoot: alias }), /path-alias/);
+typescript/tools\test262\plan.mjs:6:import { terminalRecord } from './result.mjs';
+typescript/tools\test262\plan.mjs:7:import { newLedger, appendAttempt, persist, report } from './ledger.mjs';
+typescript/tools\test262\plan.mjs:31:    record: terminalRecord(v.resultContext.identity, v.resultContext.inputs,
+typescript/tools\test262\plan.mjs:54:  for (const { id, record } of await preflightRecords(selection)) appendAttempt(ledger, id, record);
+typescript/tools\test262\result.mjs:113:export function validateRecord(value) {
+typescript/tools\test262\result.mjs:116:    classify(value, value.classification.expectedNegative, value.classification.blockers);
+typescript/tools\test262\result.mjs:135:export function classify(value, expectedNegative = null, blockers = []) {
+typescript/tools\test262\result.mjs:138:  const computed = classifyValidated(value, expectedNegative, blockers);
+typescript/tools\test262\result.mjs:143:function classifyValidated(value, expectedNegative, blockers) {
+typescript/tools\test262\result.mjs:181:  validateRecord(value);
+typescript/tools\test262\result.mjs:189:export function parseEnvelope(json) {
+typescript/tools\test262\result.mjs:195:  return validateRecord(value);
+typescript/tools\test262\result.mjs:200:export function inspectEnvelope(json, expectedContext, transport) {
+typescript/tools\test262\result.mjs:207:    const value = assertContext(parseEnvelope(json), expectedContext);
+typescript/tools\test262\result.mjs:213:export function terminalRecord(identityValue, inputsValue, evidenceValue, observationValue, expectedNegative = null, blockers = []) {
+typescript/tools\test262\result.mjs:215:  if (identityValue.mode === 'conformance') value.classification = classify(value, expectedNegative, blockers);
+typescript/tools\test262\result.mjs:216:  return validateRecord(value);
+typescript/tools\test262\result.test.mjs:4:import { classify, validateRecord, parseEnvelope, inspectEnvelope } from './result.mjs';
+typescript/tools\test262\result.test.mjs:13:  assert.deepEqual(parseEnvelope(JSON.stringify(record)), record);
+typescript/tools\test262\result.test.mjs:49:  assert.throws(() => validateRecord(missing), /protocol/);
+typescript/tools\test262\result.test.mjs:81:  assert.deepEqual(inspectEnvelope(JSON.stringify(r), contextFor(r), transport({ exitCode: null, signal: null, deadlineExpired: true })), { status: 'timeout', reasonCode: 'deadline' });
+typescript/tools\test262\result.test.mjs:87:      assert.deepEqual(inspectEnvelope(json,contextFor(r),transport(process)), { status:'host-fault',reasonCode:'crash' });
+typescript/tools\test262\result.test.mjs:93:  assert.deepEqual(inspectEnvelope('', contextFor(r), transport()), { status: 'host-fault', reasonCode: 'protocol' });
+typescript/tools\test262\result.test.mjs:94:  assert.deepEqual(inspectEnvelope('{"status":"pass"}', contextFor(r), transport()), { status: 'host-fault', reasonCode: 'protocol' });
+typescript/tools\test262\result.test.mjs:95:  assert.equal(inspectEnvelope(JSON.stringify(r), contextFor(r), transport()).classification.reasonCode, 'uncaught-throw');
+typescript/tools\test262\result.test.mjs:104:    assert.deepEqual(inspectEnvelope(invalid,contextFor(r),transport()), { status:'host-fault',reasonCode:'protocol' });
+typescript/tools\test262\result.test.mjs:109:  assert.deepEqual(inspectEnvelope(JSON.stringify(r),contextFor(r),transport(undefined,1025)), { status:'resource-limit',reasonCode:'output' });
+typescript/tools\test262\result.test.mjs:118:    assert.deepEqual(parseEnvelope(JSON.stringify(r)),r);
+typescript/tools\test262\result.test.mjs:120:    assert.throws(() => validateRecord(r),/protocol/);
+typescript/tools\test262\result.test.mjs:130:      assert.throws(() => validateRecord(r),/protocol/);
+typescript/tools\test262\result.test.mjs:141:  ]) { const r = synthetic(); mutate(r); assert.throws(() => validateRecord(r),/protocol/); }
+typescript/tools\test262\result.test.mjs:143:  assert.throws(() => classify(r), /protocol/);
+typescript/tools\test262\result.test.mjs:144:  assert.throws(() => validateRecord(r),/protocol/);
+typescript/tools\test262\result.test.mjs:156:  assert.throws(()=>validateRecord(r),/protocol/);

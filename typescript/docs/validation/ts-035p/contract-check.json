@@ -1,0 +1,37 @@
+{
+  "kind": "document-contract-lint",
+  "scope": "Text/shape checks only; no v2 implementation, runtime or native evidence",
+  "documentSha256": "f5e05b168f795b7e3c7f608da8b68d5df2e68583bef6db98f20eb7c10494dc38",
+  "results": [
+    {
+      "id": "runtime-arm",
+      "documentConsistent": true,
+      "mutatedDocumentRejected": true
+    },
+    {
+      "id": "binding-limits",
+      "documentConsistent": true,
+      "mutatedDocumentRejected": true
+    },
+    {
+      "id": "binding-sources",
+      "documentConsistent": true,
+      "mutatedDocumentRejected": true
+    },
+    {
+      "id": "registered-other",
+      "documentConsistent": true,
+      "mutatedDocumentRejected": true
+    },
+    {
+      "id": "normal-control",
+      "documentConsistent": true,
+      "mutatedDocumentRejected": true
+    },
+    {
+      "id": "diagnostic-rule",
+      "documentConsistent": true,
+      "mutatedDocumentRejected": true
+    }
+  ]
+}
