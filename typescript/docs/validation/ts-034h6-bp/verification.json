@@ -11,5 +11,23 @@
   "tracePrefixesPerInput": 328,
   "inputs": 2,
   "blocked": 60,
-  "mutationChecks": "altered baseline, unlisted proposed byte, omitted replacement rejected for all proposed files"
+  "mutationChecks": "altered baseline, unlisted proposed byte, omitted replacement rejected for all proposed files",
+  "oracleCorrection": {
+    "literalInputPairs": 10,
+    "unchangedSchedules": 21,
+    "sourceEventCounts": "verified from leading event sequence; T19=2",
+    "rejectedMutations": [
+      "input-b source repeats input-a",
+      "payload swapped",
+      "shared fixed terminal returns",
+      "input-b terminal repeats input-a",
+      "shared fixed call-limit outcome returns",
+      "call-limit input-b repeats input-a",
+      "sufficient input-b repeats input-a",
+      "prefix input-b repeats input-a",
+      "hook oracle slash ambiguity returns",
+      "T19 heuristic count returns"
+    ],
+    "unchangedReplacements": 94
+  }
 }

@@ -44,7 +44,6 @@
           "effect": ""
         }
       ],
-      "expected": "Error message \"7\"; no cause",
       "rows": [
         "E01",
         "E03",
@@ -120,7 +119,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "Error message \"7\"; no cause",
+            "input-b": "Error message \"11\"; no cause"
+          }
         },
         {
           "seed": 0,
@@ -133,7 +136,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "Error message \"7\"; no cause",
+            "input-b": "Error message \"11\"; no cause"
+          }
         },
         {
           "seed": 7,
@@ -198,7 +205,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "Error message \"7\"; no cause",
+            "input-b": "Error message \"11\"; no cause"
+          }
         },
         {
           "seed": 7,
@@ -211,13 +222,21 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "Error message \"7\"; no cause",
+            "input-b": "Error message \"11\"; no cause"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "E(7);\n",
         "input-b": "E(11);\n"
+      },
+      "expectedByInput": {
+        "input-a": "Error message \"7\"; no cause",
+        "input-b": "Error message \"11\"; no cause"
       },
       "calls": {
         "maxCalls0": {
@@ -231,10 +250,24 @@
           "origin": "resource calls count0 limit0"
         },
         "maxCalls1": {
-          "outcome": "Error message \"7\"; no cause"
+          "outcomeByInput": {
+            "input-a": "Error message \"7\"; no cause",
+            "input-b": "Error message \"11\"; no cause"
+          }
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "Error message \"7\"; no cause",
+            "steps": 4,
+            "effects": ""
+          },
+          "input-b": {
+            "outcome": "Error message \"11\"; no cause",
+            "steps": 4,
+            "effects": ""
+          }
+        }
       }
     },
     {
@@ -267,7 +300,6 @@
           "effect": ""
         }
       ],
-      "expected": "Error message \"7\"; no cause",
       "rows": [
         "E01",
         "E03",
@@ -356,7 +388,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "Error message \"7\"; no cause",
+            "input-b": "Error message \"11\"; no cause"
+          }
         },
         {
           "seed": 0,
@@ -369,7 +405,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "Error message \"7\"; no cause",
+            "input-b": "Error message \"11\"; no cause"
+          }
         },
         {
           "seed": 7,
@@ -447,7 +487,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "Error message \"7\"; no cause",
+            "input-b": "Error message \"11\"; no cause"
+          }
         },
         {
           "seed": 7,
@@ -460,13 +504,21 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "Error message \"7\"; no cause",
+            "input-b": "Error message \"11\"; no cause"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "new E(7);\n",
         "input-b": "new E(11);\n"
+      },
+      "expectedByInput": {
+        "input-a": "Error message \"7\"; no cause",
+        "input-b": "Error message \"11\"; no cause"
       },
       "calls": {
         "maxCalls0": {
@@ -480,10 +532,24 @@
           "origin": "resource calls count0 limit0"
         },
         "maxCalls1": {
-          "outcome": "Error message \"7\"; no cause"
+          "outcomeByInput": {
+            "input-a": "Error message \"7\"; no cause",
+            "input-b": "Error message \"11\"; no cause"
+          }
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "Error message \"7\"; no cause",
+            "steps": 5,
+            "effects": ""
+          },
+          "input-b": {
+            "outcome": "Error message \"11\"; no cause",
+            "steps": 5,
+            "effects": ""
+          }
+        }
       }
     },
     {
@@ -526,7 +592,6 @@
           "effect": ""
         }
       ],
-      "expected": "message x,cause7; own data cause",
       "rows": [
         "E04",
         "E05",
@@ -640,7 +705,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message x,cause7; own data cause",
+            "input-b": "message x,cause7; own data cause"
+          }
         },
         {
           "seed": 0,
@@ -653,7 +722,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message x,cause7; own data cause",
+            "input-b": "message x,cause7; own data cause"
+          }
         },
         {
           "seed": 7,
@@ -757,7 +830,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message x,cause7; own data cause",
+            "input-b": "message x,cause7; own data cause"
+          }
         },
         {
           "seed": 7,
@@ -770,13 +847,21 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message x,cause7; own data cause",
+            "input-b": "message x,cause7; own data cause"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "E(\"x\",o);\n",
         "input-b": "E(\"x\",o);\n"
+      },
+      "expectedByInput": {
+        "input-a": "message x,cause7; own data cause",
+        "input-b": "message x,cause7; own data cause"
       },
       "calls": {
         "maxCalls0": {
@@ -790,10 +875,24 @@
           "origin": "resource calls count0 limit0"
         },
         "maxCalls1": {
-          "outcome": "message x,cause7; own data cause"
+          "outcomeByInput": {
+            "input-a": "message x,cause7; own data cause",
+            "input-b": "message x,cause7; own data cause"
+          }
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "message x,cause7; own data cause",
+            "steps": 7,
+            "effects": ""
+          },
+          "input-b": {
+            "outcome": "message x,cause7; own data cause",
+            "steps": 7,
+            "effects": ""
+          }
+        }
       }
     },
     {
@@ -831,7 +930,6 @@
           "effect": ""
         }
       ],
-      "expected": "message x; absent cause; no Get",
       "rows": [
         "E05",
         "E30"
@@ -931,7 +1029,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message x; absent cause; no Get",
+            "input-b": "message x; absent cause; no Get"
+          }
         },
         {
           "seed": 0,
@@ -944,7 +1046,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message x; absent cause; no Get",
+            "input-b": "message x; absent cause; no Get"
+          }
         },
         {
           "seed": 7,
@@ -1035,7 +1141,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message x; absent cause; no Get",
+            "input-b": "message x; absent cause; no Get"
+          }
         },
         {
           "seed": 7,
@@ -1048,13 +1158,21 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message x; absent cause; no Get",
+            "input-b": "message x; absent cause; no Get"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "E(\"x\",o);\n",
         "input-b": "E(\"x\",o);\n"
+      },
+      "expectedByInput": {
+        "input-a": "message x; absent cause; no Get",
+        "input-b": "message x; absent cause; no Get"
       },
       "calls": {
         "maxCalls0": {
@@ -1068,10 +1186,24 @@
           "origin": "resource calls count0 limit0"
         },
         "maxCalls1": {
-          "outcome": "message x; absent cause; no Get"
+          "outcomeByInput": {
+            "input-a": "message x; absent cause; no Get",
+            "input-b": "message x; absent cause; no Get"
+          }
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "message x; absent cause; no Get",
+            "steps": 6,
+            "effects": ""
+          },
+          "input-b": {
+            "outcome": "message x; absent cause; no Get",
+            "steps": 6,
+            "effects": ""
+          }
+        }
       }
     },
     {
@@ -1109,7 +1241,6 @@
           "effect": "M"
         }
       ],
-      "expected": "message seven/eleven",
       "rows": [
         "E06",
         "E07",
@@ -1212,7 +1343,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven",
+            "input-b": "message eleven"
+          }
         },
         {
           "seed": 0,
@@ -1225,7 +1360,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven",
+            "input-b": "message eleven"
+          }
         },
         {
           "seed": 7,
@@ -1316,7 +1455,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven",
+            "input-b": "message eleven"
+          }
         },
         {
           "seed": 7,
@@ -1329,7 +1472,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven",
+            "input-b": "message eleven"
+          }
         }
       ],
       "abruptVariants": [
@@ -1353,6 +1500,10 @@
         "input-a": "E(m);\n",
         "input-b": "E(m);\n"
       },
+      "expectedByInput": {
+        "input-a": "message seven",
+        "input-b": "message eleven"
+      },
       "calls": {
         "maxCalls0": {
           "steps": 3,
@@ -1375,7 +1526,18 @@
           "origin": "resource calls count1 limit1 before first hook"
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "message seven",
+            "steps": 6,
+            "effects": "M"
+          },
+          "input-b": {
+            "outcome": "message eleven",
+            "steps": 6,
+            "effects": "M"
+          }
+        }
       }
     },
     {
@@ -1428,7 +1590,6 @@
           "effect": "C"
         }
       ],
-      "expected": "message seven/eleven,cause7; inherited getter",
       "rows": [
         "E04",
         "E05",
@@ -1571,7 +1732,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7; inherited getter",
+            "input-b": "message eleven,cause7; inherited getter"
+          }
         },
         {
           "seed": 0,
@@ -1584,7 +1749,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7; inherited getter",
+            "input-b": "message eleven,cause7; inherited getter"
+          }
         },
         {
           "seed": 7,
@@ -1714,7 +1883,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7; inherited getter",
+            "input-b": "message eleven,cause7; inherited getter"
+          }
         },
         {
           "seed": 7,
@@ -1727,7 +1900,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7; inherited getter",
+            "input-b": "message eleven,cause7; inherited getter"
+          }
         }
       ],
       "abruptVariants": [
@@ -1766,6 +1943,10 @@
         "input-a": "E(m,o);\n",
         "input-b": "E(m,o);\n"
       },
+      "expectedByInput": {
+        "input-a": "message seven,cause7; inherited getter",
+        "input-b": "message eleven,cause7; inherited getter"
+      },
       "calls": {
         "maxCalls0": {
           "steps": 4,
@@ -1788,7 +1969,18 @@
           "origin": "resource calls count1 limit1 before first hook"
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "message seven,cause7; inherited getter",
+            "steps": 9,
+            "effects": "MC"
+          },
+          "input-b": {
+            "outcome": "message eleven,cause7; inherited getter",
+            "steps": 9,
+            "effects": "MC"
+          }
+        }
       }
     },
     {
@@ -1836,7 +2028,6 @@
           "effect": "C"
         }
       ],
-      "expected": "message seven/eleven,cause7",
       "rows": [
         "E06",
         "E07",
@@ -1965,7 +2156,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         },
         {
           "seed": 0,
@@ -1978,7 +2173,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         },
         {
           "seed": 7,
@@ -2095,7 +2294,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         },
         {
           "seed": 7,
@@ -2108,7 +2311,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         }
       ],
       "abruptVariants": [
@@ -2147,6 +2354,10 @@
         "input-a": "E(m,o);\n",
         "input-b": "E(m,o);\n"
       },
+      "expectedByInput": {
+        "input-a": "message seven,cause7",
+        "input-b": "message eleven,cause7"
+      },
       "calls": {
         "maxCalls0": {
           "steps": 4,
@@ -2169,7 +2380,18 @@
           "origin": "resource calls count1 limit1 before first hook"
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "message seven,cause7",
+            "steps": 8,
+            "effects": "MC"
+          },
+          "input-b": {
+            "outcome": "message eleven,cause7",
+            "steps": 8,
+            "effects": "MC"
+          }
+        }
       }
     },
     {
@@ -2202,7 +2424,6 @@
           "effect": ""
         }
       ],
-      "expected": "X: y",
       "rows": [
         "E08",
         "E09",
@@ -2291,7 +2512,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "X: y",
+            "input-b": "X: y"
+          }
         },
         {
           "seed": 0,
@@ -2304,7 +2529,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "X: y",
+            "input-b": "X: y"
+          }
         },
         {
           "seed": 7,
@@ -2382,7 +2611,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "X: y",
+            "input-b": "X: y"
+          }
         },
         {
           "seed": 7,
@@ -2395,13 +2628,21 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "X: y",
+            "input-b": "X: y"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "fmt(o);\n",
         "input-b": "fmt(o);\n"
+      },
+      "expectedByInput": {
+        "input-a": "X: y",
+        "input-b": "X: y"
       },
       "calls": {
         "maxCalls0": {
@@ -2425,7 +2666,18 @@
           "origin": "resource calls count1 limit1 before method"
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "X: y",
+            "steps": 5,
+            "effects": ""
+          },
+          "input-b": {
+            "outcome": "X: y",
+            "steps": 5,
+            "effects": ""
+          }
+        }
       }
     },
     {
@@ -2478,7 +2730,6 @@
           "effect": "m"
         }
       ],
-      "expected": "X: seven/eleven; n replaces message getter before M",
       "rows": [
         "E10",
         "E32",
@@ -2618,7 +2869,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "X: seven; n replaces message getter before M",
+            "input-b": "X: eleven; n replaces message getter before M"
+          }
         },
         {
           "seed": 0,
@@ -2631,7 +2886,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "X: seven; n replaces message getter before M",
+            "input-b": "X: eleven; n replaces message getter before M"
+          }
         },
         {
           "seed": 7,
@@ -2761,7 +3020,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "X: seven; n replaces message getter before M",
+            "input-b": "X: eleven; n replaces message getter before M"
+          }
         },
         {
           "seed": 7,
@@ -2774,7 +3037,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "X: seven; n replaces message getter before M",
+            "input-b": "X: eleven; n replaces message getter before M"
+          }
         }
       ],
       "abruptVariants": [
@@ -2843,6 +3110,10 @@
         "input-a": "fmt(o);\n",
         "input-b": "fmt(o);\n"
       },
+      "expectedByInput": {
+        "input-a": "X: seven; n replaces message getter before M",
+        "input-b": "X: eleven; n replaces message getter before M"
+      },
       "calls": {
         "maxCalls0": {
           "steps": 3,
@@ -2865,7 +3136,18 @@
           "origin": "resource calls count1 limit1 before method"
         },
         "sufficient": 3,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "X: seven; n replaces message getter before M",
+            "steps": 9,
+            "effects": "NnMm"
+          },
+          "input-b": {
+            "outcome": "X: eleven; n replaces message getter before M",
+            "steps": 9,
+            "effects": "NnMm"
+          }
+        }
       }
     },
     {
@@ -2923,7 +3205,6 @@
           "effect": "C"
         }
       ],
-      "expected": "message seven/eleven,cause7",
       "rows": [
         "E06",
         "E12",
@@ -3078,7 +3359,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         },
         {
           "seed": 0,
@@ -3091,7 +3376,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         },
         {
           "seed": 7,
@@ -3234,7 +3523,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         },
         {
           "seed": 7,
@@ -3247,7 +3540,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         }
       ],
       "abruptVariants": [
@@ -3286,6 +3583,10 @@
         "input-a": "new E(m,o);\n",
         "input-b": "new E(m,o);\n"
       },
+      "expectedByInput": {
+        "input-a": "message seven,cause7",
+        "input-b": "message eleven,cause7"
+      },
       "calls": {
         "maxCalls0": {
           "steps": 5,
@@ -3308,7 +3609,18 @@
           "origin": "resource calls count1 limit1 before first hook"
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "message seven,cause7",
+            "steps": 10,
+            "effects": "MC"
+          },
+          "input-b": {
+            "outcome": "message eleven,cause7",
+            "steps": 10,
+            "effects": "MC"
+          }
+        }
       }
     },
     {
@@ -3361,7 +3673,6 @@
           "effect": "C"
         }
       ],
-      "expected": "message seven/eleven,cause7",
       "rows": [
         "E06",
         "E07",
@@ -3502,7 +3813,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         },
         {
           "seed": 0,
@@ -3515,7 +3830,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         },
         {
           "seed": 7,
@@ -3645,7 +3964,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         },
         {
           "seed": 7,
@@ -3658,7 +3981,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "message seven,cause7",
+            "input-b": "message eleven,cause7"
+          }
         }
       ],
       "abruptVariants": [
@@ -3697,6 +4024,10 @@
         "input-a": "new E(m,o);\n",
         "input-b": "new E(m,o);\n"
       },
+      "expectedByInput": {
+        "input-a": "message seven,cause7",
+        "input-b": "message eleven,cause7"
+      },
       "calls": {
         "maxCalls0": {
           "steps": 5,
@@ -3719,7 +4050,18 @@
           "origin": "resource calls count1 limit1 before first hook"
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "message seven,cause7",
+            "steps": 9,
+            "effects": "MC"
+          },
+          "input-b": {
+            "outcome": "message eleven,cause7",
+            "steps": 9,
+            "effects": "MC"
+          }
+        }
       }
     },
     {
@@ -3762,7 +4104,6 @@
           "effect": "V"
         }
       ],
-      "expected": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result",
       "rows": [
         "E07",
         "E29"
@@ -3875,7 +4216,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result",
+            "input-b": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result"
+          }
         },
         {
           "seed": 0,
@@ -3888,7 +4233,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result",
+            "input-b": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result"
+          }
         },
         {
           "seed": 7,
@@ -3992,7 +4341,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result",
+            "input-b": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result"
+          }
         },
         {
           "seed": 7,
@@ -4005,7 +4358,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result",
+            "input-b": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result"
+          }
         }
       ],
       "abruptVariants": [
@@ -4044,6 +4401,10 @@
         "input-a": "E(m);\n",
         "input-b": "E(m);\n"
       },
+      "expectedByInput": {
+        "input-a": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result",
+        "input-b": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result"
+      },
       "calls": {
         "maxCalls0": {
           "steps": 3,
@@ -4066,7 +4427,18 @@
           "origin": "resource calls count1 limit1 before first hook"
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result",
+            "steps": 7,
+            "effects": "MV"
+          },
+          "input-b": {
+            "outcome": "both ordinary methods return object: TypeError in E Realm at tick7; no public Error result",
+            "steps": 7,
+            "effects": "MV"
+          }
+        }
       }
     },
     {
@@ -4099,7 +4471,6 @@
           "effect": "M"
         }
       ],
-      "expected": "seven/eleven; C ONLY",
       "rows": [
         "F03",
         "F05",
@@ -4187,7 +4558,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "seven; C ONLY",
+            "input-b": "eleven; C ONLY"
+          }
         },
         {
           "seed": 0,
@@ -4200,7 +4575,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "seven; C ONLY",
+            "input-b": "eleven; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -4278,7 +4657,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "seven; C ONLY",
+            "input-b": "eleven; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -4291,7 +4674,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "seven; C ONLY",
+            "input-b": "eleven; C ONLY"
+          }
         }
       ],
       "abruptVariants": [
@@ -4315,6 +4702,10 @@
         "input-a": "String(m);\n",
         "input-b": "String(m);\n"
       },
+      "expectedByInput": {
+        "input-a": "seven; C ONLY",
+        "input-b": "eleven; C ONLY"
+      },
       "calls": {
         "maxCalls0": {
           "steps": 3,
@@ -4337,7 +4728,18 @@
           "origin": "resource calls count1 limit1 before first hook"
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "seven; C ONLY",
+            "steps": 5,
+            "effects": "M"
+          },
+          "input-b": {
+            "outcome": "eleven; C ONLY",
+            "steps": 5,
+            "effects": "M"
+          }
+        }
       }
     },
     {
@@ -4380,7 +4782,6 @@
           "effect": ""
         }
       ],
-      "expected": "StringData seven/eleven; C ONLY",
       "rows": [
         "F03",
         "F04",
@@ -4496,7 +4897,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "StringData seven; C ONLY",
+            "input-b": "StringData eleven; C ONLY"
+          }
         },
         {
           "seed": 0,
@@ -4509,7 +4914,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "StringData seven; C ONLY",
+            "input-b": "StringData eleven; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -4613,7 +5022,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "StringData seven; C ONLY",
+            "input-b": "StringData eleven; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -4626,7 +5039,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "StringData seven; C ONLY",
+            "input-b": "StringData eleven; C ONLY"
+          }
         }
       ],
       "abruptVariants": [
@@ -4650,6 +5067,10 @@
         "input-a": "new String(m);\n",
         "input-b": "new String(m);\n"
       },
+      "expectedByInput": {
+        "input-a": "StringData seven; C ONLY",
+        "input-b": "StringData eleven; C ONLY"
+      },
       "calls": {
         "maxCalls0": {
           "steps": 4,
@@ -4672,7 +5093,18 @@
           "origin": "resource calls count1 limit1 before first hook"
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "StringData seven; C ONLY",
+            "steps": 7,
+            "effects": "M"
+          },
+          "input-b": {
+            "outcome": "StringData eleven; C ONLY",
+            "steps": 7,
+            "effects": "M"
+          }
+        }
       }
     },
     {
@@ -4695,7 +5127,6 @@
           "effect": ""
         }
       ],
-      "expected": "exact o, no Get/coercion/allocation; C ONLY",
       "rows": [
         "F07",
         "F09",
@@ -4757,7 +5188,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+            "input-b": "exact o, no Get/coercion/allocation; C ONLY"
+          }
         },
         {
           "seed": 0,
@@ -4770,7 +5205,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+            "input-b": "exact o, no Get/coercion/allocation; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -4822,7 +5261,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+            "input-b": "exact o, no Get/coercion/allocation; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -4835,13 +5278,21 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+            "input-b": "exact o, no Get/coercion/allocation; C ONLY"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "Object(o);\n",
         "input-b": "Object(o);\n"
+      },
+      "expectedByInput": {
+        "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+        "input-b": "exact o, no Get/coercion/allocation; C ONLY"
       },
       "calls": {
         "maxCalls0": {
@@ -4855,10 +5306,24 @@
           "origin": "resource calls count0 limit0"
         },
         "maxCalls1": {
-          "outcome": "exact o, no Get/coercion/allocation; C ONLY"
+          "outcomeByInput": {
+            "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+            "input-b": "exact o, no Get/coercion/allocation; C ONLY"
+          }
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "exact o, no Get/coercion/allocation; C ONLY",
+            "steps": 3,
+            "effects": ""
+          },
+          "input-b": {
+            "outcome": "exact o, no Get/coercion/allocation; C ONLY",
+            "steps": 3,
+            "effects": ""
+          }
+        }
       }
     },
     {
@@ -4886,7 +5351,6 @@
           "effect": ""
         }
       ],
-      "expected": "exact o, no Get/coercion/allocation; C ONLY",
       "rows": [
         "F07",
         "F09",
@@ -4961,7 +5425,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+            "input-b": "exact o, no Get/coercion/allocation; C ONLY"
+          }
         },
         {
           "seed": 0,
@@ -4974,7 +5442,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+            "input-b": "exact o, no Get/coercion/allocation; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -5039,7 +5511,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+            "input-b": "exact o, no Get/coercion/allocation; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -5052,13 +5528,21 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+            "input-b": "exact o, no Get/coercion/allocation; C ONLY"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "new Object(o);\n",
         "input-b": "new Object(o);\n"
+      },
+      "expectedByInput": {
+        "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+        "input-b": "exact o, no Get/coercion/allocation; C ONLY"
       },
       "calls": {
         "maxCalls0": {
@@ -5072,10 +5556,24 @@
           "origin": "resource calls count0 limit0"
         },
         "maxCalls1": {
-          "outcome": "exact o, no Get/coercion/allocation; C ONLY"
+          "outcomeByInput": {
+            "input-a": "exact o, no Get/coercion/allocation; C ONLY",
+            "input-b": "exact o, no Get/coercion/allocation; C ONLY"
+          }
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "exact o, no Get/coercion/allocation; C ONLY",
+            "steps": 4,
+            "effects": ""
+          },
+          "input-b": {
+            "outcome": "exact o, no Get/coercion/allocation; C ONLY",
+            "steps": 4,
+            "effects": ""
+          }
+        }
       }
     },
     {
@@ -5098,7 +5596,6 @@
           "effect": ""
         }
       ],
-      "expected": "fresh empty object; C ONLY",
       "rows": [
         "F06",
         "F12"
@@ -5159,7 +5656,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "fresh empty object; C ONLY",
+            "input-b": "fresh empty object; C ONLY"
+          }
         },
         {
           "seed": 0,
@@ -5172,7 +5673,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "fresh empty object; C ONLY",
+            "input-b": "fresh empty object; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -5224,7 +5729,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "fresh empty object; C ONLY",
+            "input-b": "fresh empty object; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -5237,13 +5746,21 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "fresh empty object; C ONLY",
+            "input-b": "fresh empty object; C ONLY"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "Object();\n",
         "input-b": "Object();\n"
+      },
+      "expectedByInput": {
+        "input-a": "fresh empty object; C ONLY",
+        "input-b": "fresh empty object; C ONLY"
       },
       "calls": {
         "maxCalls0": {
@@ -5257,10 +5774,24 @@
           "origin": "resource calls count0 limit0"
         },
         "maxCalls1": {
-          "outcome": "fresh empty object; C ONLY"
+          "outcomeByInput": {
+            "input-a": "fresh empty object; C ONLY",
+            "input-b": "fresh empty object; C ONLY"
+          }
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "fresh empty object; C ONLY",
+            "steps": 3,
+            "effects": ""
+          },
+          "input-b": {
+            "outcome": "fresh empty object; C ONLY",
+            "steps": 3,
+            "effects": ""
+          }
+        }
       }
     },
     {
@@ -5288,7 +5819,6 @@
           "effect": ""
         }
       ],
-      "expected": "fresh empty object; C ONLY",
       "rows": [
         "F06",
         "F12"
@@ -5362,7 +5892,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "fresh empty object; C ONLY",
+            "input-b": "fresh empty object; C ONLY"
+          }
         },
         {
           "seed": 0,
@@ -5375,7 +5909,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "fresh empty object; C ONLY",
+            "input-b": "fresh empty object; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -5440,7 +5978,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "fresh empty object; C ONLY",
+            "input-b": "fresh empty object; C ONLY"
+          }
         },
         {
           "seed": 7,
@@ -5453,13 +5995,21 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": true
+          "published": true,
+          "expectedByInput": {
+            "input-a": "fresh empty object; C ONLY",
+            "input-b": "fresh empty object; C ONLY"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "new Object();\n",
         "input-b": "new Object();\n"
+      },
+      "expectedByInput": {
+        "input-a": "fresh empty object; C ONLY",
+        "input-b": "fresh empty object; C ONLY"
       },
       "calls": {
         "maxCalls0": {
@@ -5473,10 +6023,24 @@
           "origin": "resource calls count0 limit0"
         },
         "maxCalls1": {
-          "outcome": "fresh empty object; C ONLY"
+          "outcomeByInput": {
+            "input-a": "fresh empty object; C ONLY",
+            "input-b": "fresh empty object; C ONLY"
+          }
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "fresh empty object; C ONLY",
+            "steps": 4,
+            "effects": ""
+          },
+          "input-b": {
+            "outcome": "fresh empty object; C ONLY",
+            "steps": 4,
+            "effects": ""
+          }
+        }
       }
     },
     {
@@ -5494,12 +6058,11 @@
           "effect": ""
         }
       ],
-      "expected": "fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick",
       "rows": [
         "E15",
         "E30"
       ],
-      "sourceTicks": 3,
+      "sourceTicks": 2,
       "contexts": [
         "same-Realm",
         "constructor/method A transferred into caller B"
@@ -5542,7 +6105,11 @@
           "realm": "caller",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick",
+            "input-b": "fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick"
+          }
         },
         {
           "seed": 0,
@@ -5555,7 +6122,11 @@
           "realm": "caller",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick",
+            "input-b": "fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick"
+          }
         },
         {
           "seed": 7,
@@ -5594,7 +6165,11 @@
           "realm": "caller",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick",
+            "input-b": "fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick"
+          }
         },
         {
           "seed": 7,
@@ -5607,13 +6182,21 @@
           "realm": "caller",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick",
+            "input-b": "fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "missing;\n",
         "input-b": "missing;\n"
+      },
+      "expectedByInput": {
+        "input-a": "fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick",
+        "input-b": "fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick"
       },
       "calls": {
         "note": "no call dispatch; maxCalls0 still engine ReferenceError at2"
@@ -5649,7 +6232,6 @@
           "effect": ""
         }
       ],
-      "expected": "primitive Symbol message -> TypeError; no options Has/Get",
       "rows": [
         "E07",
         "E24",
@@ -5737,7 +6319,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "primitive Symbol message -> TypeError; no options Has/Get",
+            "input-b": "primitive Symbol message -> TypeError; no options Has/Get"
+          }
         },
         {
           "seed": 0,
@@ -5750,7 +6336,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "primitive Symbol message -> TypeError; no options Has/Get",
+            "input-b": "primitive Symbol message -> TypeError; no options Has/Get"
+          }
         },
         {
           "seed": 7,
@@ -5828,7 +6418,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "primitive Symbol message -> TypeError; no options Has/Get",
+            "input-b": "primitive Symbol message -> TypeError; no options Has/Get"
+          }
         },
         {
           "seed": 7,
@@ -5841,13 +6435,21 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "primitive Symbol message -> TypeError; no options Has/Get",
+            "input-b": "primitive Symbol message -> TypeError; no options Has/Get"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "E(s,o);\n",
         "input-b": "E(s,o);\n"
+      },
+      "expectedByInput": {
+        "input-a": "primitive Symbol message -> TypeError; no options Has/Get",
+        "input-b": "primitive Symbol message -> TypeError; no options Has/Get"
       },
       "calls": {
         "maxCalls0": {
@@ -5861,10 +6463,24 @@
           "origin": "resource calls count0 limit0"
         },
         "maxCalls1": {
-          "outcome": "primitive Symbol message -> TypeError; no options Has/Get"
+          "outcomeByInput": {
+            "input-a": "primitive Symbol message -> TypeError; no options Has/Get",
+            "input-b": "primitive Symbol message -> TypeError; no options Has/Get"
+          }
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "primitive Symbol message -> TypeError; no options Has/Get",
+            "steps": 5,
+            "effects": ""
+          },
+          "input-b": {
+            "outcome": "primitive Symbol message -> TypeError; no options Has/Get",
+            "steps": 5,
+            "effects": ""
+          }
+        }
       }
     },
     {
@@ -5892,7 +6508,6 @@
           "effect": ""
         }
       ],
-      "expected": "Symbol name -> TypeError; no Get message",
       "rows": [
         "E09",
         "E10"
@@ -5966,7 +6581,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "Symbol name -> TypeError; no Get message",
+            "input-b": "Symbol name -> TypeError; no Get message"
+          }
         },
         {
           "seed": 0,
@@ -5979,7 +6598,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "Symbol name -> TypeError; no Get message",
+            "input-b": "Symbol name -> TypeError; no Get message"
+          }
         },
         {
           "seed": 7,
@@ -6044,7 +6667,11 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "Symbol name -> TypeError; no Get message",
+            "input-b": "Symbol name -> TypeError; no Get message"
+          }
         },
         {
           "seed": 7,
@@ -6057,13 +6684,21 @@
           "realm": "builtin",
           "phase": "body",
           "source": "input-a/input-b",
-          "published": false
+          "published": false,
+          "expectedByInput": {
+            "input-a": "Symbol name -> TypeError; no Get message",
+            "input-b": "Symbol name -> TypeError; no Get message"
+          }
         }
       ],
       "abruptVariants": [],
       "sourcesByInput": {
         "input-a": "fmt(o);\n",
         "input-b": "fmt(o);\n"
+      },
+      "expectedByInput": {
+        "input-a": "Symbol name -> TypeError; no Get message",
+        "input-b": "Symbol name -> TypeError; no Get message"
       },
       "calls": {
         "maxCalls0": {
@@ -6087,7 +6722,18 @@
           "origin": "resource calls count1 limit1 before method"
         },
         "sufficient": 2,
-        "sufficientExpectation": "same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks"
+        "sufficientExpectationByInput": {
+          "input-a": {
+            "outcome": "Symbol name -> TypeError; no Get message",
+            "steps": 4,
+            "effects": ""
+          },
+          "input-b": {
+            "outcome": "Symbol name -> TypeError; no Get message",
+            "steps": 4,
+            "effects": ""
+          }
+        }
       }
     }
   ],

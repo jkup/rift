@@ -8,6 +8,10 @@ actual and independent second review, exact proposed strengthening, and the
 private-permit testability limitation. closure.md and closure.json audit complete
 B ownership/signature/callsite closure. No additional production path is requested.
 
+ORACLE-CORRECTION.md records the second-review correction to per-input terminal
+expectations and T19's source-event count. The original proposal is not accepted;
+the corrected evidence awaits actual and independent second re-review.
+
 * proposed/test/ contains 22 complete proposed files, including the new inherited
   A driver. proposed.patch is the exact unified patch. replacement-manifest.json
   provides 94 replacements with byte offsets, old/new text, justification and

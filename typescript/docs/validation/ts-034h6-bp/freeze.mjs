@@ -3,9 +3,11 @@ import {createHash} from 'node:crypto';
 import {join} from 'node:path';
 const here=import.meta.dirname, put=(p,v)=>writeFileSync(join(here,p),typeof v==='string'?v:JSON.stringify(v,null,2)+'\n');
 const traces=[];
+// Explicit counts from each listed source event sequence, including no-dispatch T19.
+const sourceEventCounts={T01:3,T02:4,T03:4,T04:4,T05:3,T06:4,T07:4,T08:3,T09:3,T10:5,T11:5,T12:3,T13:3,T14:4,T15:3,T16:4,T17:2,T18:3,T19:2,T20:4,T21:3};
 function add(id,source,events,expected,rows){
  const parsed=events.map(([column,event,effect=''])=>({column,event,effect}));
- const sourceTicks=source.startsWith('new ')?(source.includes(',')?5:4):(source.includes(',')?4:3);
+ const sourceTicks=sourceEventCounts[id];
  traces.push({id,source,events:parsed,expected,rows,sourceTicks,contexts:['same-Realm','constructor/method A transferred into caller B'],
   prefixes:[0,7].flatMap(seed=>Array.from({length:parsed.length+2},(_,k)=>({seed,limit:seed+k,
    outcome:k<parsed.length?'resource steps':'normal',steps:seed+Math.min(k+1,parsed.length),
@@ -37,25 +39,28 @@ add('T14','new String(m);',ev([1,1,5,12,1,1,1],['statement','new expression','id
 add('T15','Object(o);',ev([1,1,8],['statement','call expression','o identifier']),'exact o, no Get/coercion/allocation; C ONLY',['F07','F09','F12']);
 add('T16','new Object(o);',ev([1,1,5,12],['statement','new expression','identifier Object','o identifier']),'exact o, no Get/coercion/allocation; C ONLY',['F07','F09','F12']);
 add('T17','Object();',ev([1,1,1],['statement','call expression','allocation']),'fresh empty object; C ONLY',['F06','F12']);
-traces.at(-1).sourceTicks=2; for(const p of traces.at(-1).prefixes) p.realm=p.limit-p.seed<2?'caller':'builtin';
 add('T18','new Object();',ev([1,1,5,1],['statement','new expression','identifier Object','allocation']),'fresh empty object; C ONLY',['F06','F12']);
-traces.at(-1).sourceTicks=3; for(const p of traces.at(-1).prefixes) p.realm=p.limit-p.seed<3?'caller':'builtin';
 add('T19','missing;',ev([1,1],['statement','unresolved identifier']),'fresh ReferenceError, message missing is not defined; engine-diagnostic, no allocation tick',['E15','E30']);
 for(const p of traces.at(-1).prefixes){p.realm='caller';if(p.outcome==='normal'){p.outcome='engine ReferenceError';p.published=false;}}
 add('T20','E(s,o);',ev([1,1,3,5,1],['statement','call expression','symbol identifier','options identifier','allocation']),'primitive Symbol message -> TypeError; no options Has/Get',['E07','E24','E29']);
 for(const p of traces.at(-1).prefixes)if(p.outcome==='normal'){p.outcome='engine TypeError';p.published=false;}
 add('T21','fmt(o);',ev([1,1,5,1],['statement','call expression','o identifier','Get name']),'Symbol name -> TypeError; no Get message',['E09','E10']);
 for(const p of traces.at(-1).prefixes)if(p.outcome==='normal'){p.outcome='engine TypeError';p.published=false;}
+const inputs=[{id:'input-a',payload:'seven',number:7,source:'E(7);\n'},{id:'input-b',payload:'eleven',number:11,source:'E(11);\n'}];
 for(const t of traces){
  t.sourcesByInput={'input-a':t.source+'\n','input-b':(t.id==='T01'||t.id==='T02'?t.source.replace('(7)','(11)'):t.source)+'\n'};
+ // These are algorithm-derived literals for each input, never execution output.
+ t.expectedByInput=Object.fromEntries(inputs.map(input=>[input.id,
+  t.id==='T01'||t.id==='T02'?`Error message "${input.number}"; no cause`:t.expected.replaceAll('seven/eleven',input.payload)]));
+ delete t.expected; // A shared terminal oracle must not accidentally select input-a.
+ for(const p of t.prefixes)if(p.outcome!=='resource steps')p.expectedByInput={...t.expectedByInput};
  t.calls=t.id==='T19'?{note:'no call dispatch; maxCalls0 still engine ReferenceError at2'}:{
   maxCalls0:{steps:t.sourceTicks,loc:{line:1,column:1},realm:'caller',effects:'',origin:'resource calls count0 limit0'},
   maxCalls1:t.source.startsWith('fmt')?{steps:3,loc:{line:1,column:1},realm:'formatter alias',effects:'',origin:'resource calls count1 limit1 before method'}:
-   t.events.some(e=>e.effect)?{steps:t.events.findIndex(e=>e.effect)+1,loc:{line:1,column:1},realm:'builtin',effects:'',origin:'resource calls count1 limit1 before first hook'}:{outcome:t.expected},
+   t.events.some(e=>e.effect)?{steps:t.events.findIndex(e=>e.effect)+1,loc:{line:1,column:1},realm:'builtin',effects:'',origin:'resource calls count1 limit1 before first hook'}:{outcomeByInput:{...t.expectedByInput}},
   sufficient:t.source.startsWith('fmt')?(t.events.some(e=>e.effect)?3:2):2,
-  sufficientExpectation:'same exact terminal value/abrupt and steps as unlimited; no additional call/dispatch ticks'};
+  sufficientExpectationByInput:Object.fromEntries(inputs.map(input=>[input.id,{outcome:t.expectedByInput[input.id],steps:t.events.length,effects:t.events.map(e=>e.effect).join('')}]))};
 }
-const inputs=[{id:'input-a',payload:'seven',number:7,source:'E(7);\n'},{id:'input-b',payload:'eleven',number:11,source:'E(11);\n'}];
 for(const input of inputs){const name=input.id+'.js';put(name,input.source);input.file=name;input.sha256=createHash('sha256').update(input.source).digest('hex');}
 const guards=['raw construct callback','fabricated context','wrong Realm/profile','copied builtin slot','mismatched callable/constructor records','altered args-array identity','altered loc identity','reused permit','retained owner context during another live session','nested sessions success/language/host'];
 const guardRows=guards.map((setup,i)=>({id:'G'+String(i+1).padStart(2,'0'),setup,
