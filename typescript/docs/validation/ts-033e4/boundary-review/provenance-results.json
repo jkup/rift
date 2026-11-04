@@ -1,0 +1,76 @@
+{
+  "name": "provenance",
+  "typecheck": {
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "node_modules/typescript/bin/tsc",
+      "--ignoreConfig",
+      "--strict",
+      "--target",
+      "ES2024",
+      "--module",
+      "nodenext",
+      "--types",
+      "node",
+      "--rootDir",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\",
+      "--outDir",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-boundary-review\\provenance-node",
+      "docs/validation/ts-033e4/boundary-review/provenance.ts"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": ""
+  },
+  "node": {
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-boundary-review\\provenance-node\\docs\\validation\\ts-033e4\\boundary-review\\provenance.js"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS facade private-record identity equal-id wrong-record rejected\n",
+    "stderr": ""
+  },
+  "build": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+    "args": [
+      "build",
+      "docs/validation/ts-033e4/boundary-review/provenance.ts",
+      "--tier",
+      "static-only",
+      "-o",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-boundary-review\\provenance.exe"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-boundary-review\\provenance.exe\n",
+    "stderr": ""
+  },
+  "coverage": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\node_modules\\scriptc\\bin\\scriptc.exe",
+    "args": [
+      "coverage",
+      "docs/validation/ts-033e4/boundary-review/provenance.ts",
+      "--explain-dynamic"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e4\\boundary-review\\provenance.ts\n\n  statements analyzed   46\n  compile statically    46  (100%)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+    "stderr": ""
+  },
+  "native": {
+    "command": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e4-boundary-review\\provenance.exe",
+    "args": [],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS facade private-record identity equal-id wrong-record rejected\n",
+    "stderr": ""
+  }
+}
