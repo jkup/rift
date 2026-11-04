@@ -1,5 +1,10 @@
 # TS-034H1 implementation handoff
 
+Second-review follow-up: see [legacy diagnostic correction](legacy-diagnostic/README.md)
+for the restored exact legacy var error, added literal Node/native controls and
+corrected source hashes. Its validation command supersedes the original focused
+driver command below; the original candidate's evidence remains retained.
+
 2026-11-04, base `3925efa`, unchanged branch `codex/test262-classification`.
 Implementation and validation are complete under the precise coordinator-approved
 existing-test amendment below. Awaiting root and independent second review.

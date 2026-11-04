@@ -650,7 +650,8 @@ class ExecutionEngine {
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
-            case "try-catch": case "var": throw new Error("Script AST requires Script execution");
+            case "var": throw new Error("Script var AST requires Script execution");
+            case "try-catch": throw new Error("Script try-catch AST requires Script execution");
             case "empty": case "function": return normal();
             case "expression": return this.evaluate(stmt.expression, env, receiver);
             case "let": {

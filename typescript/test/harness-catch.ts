@@ -2,9 +2,10 @@ import { readFileSync } from "node:fs";
 import { Realm } from "../src/realm.js";
 import { prepareStrictScript, type ExecutableScript } from "../src/script-record.js";
 import { createScriptSession, evaluateScript, type ScriptSession } from "../src/script-execution.js";
-import { GuestObject, normal, type Value, type ValueCompletion, type ThrowCompletion } from "../src/runtime.js";
+import { GuestObject, Environment, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion } from "../src/runtime.js";
+import { Evaluator } from "../src/evaluator.js";
 import { parse } from "../src/parser.js";
-import type { Location } from "../src/syntax.js";
+import type { Location, Stmt } from "../src/syntax.js";
 
 function check(ok: boolean, message: string): void { if (!ok) throw new Error(message); }
 function fresh(): Realm { return new Realm((_line: string) => {}, "script"); }
@@ -227,3 +228,23 @@ for (const cross of [false, true]) {
     check(called.type === "normal" && called.value === v, "C13 cross-unit closure exact value");
 }
 console.log("PASS explicit empty and C01 C04 C13 cross-unit cross-Realm controls");
+
+// Trusted-host AST calls cannot select Script semantics through the legacy API.
+// Preserve the pre-H1 var diagnostic verbatim, independently of the new arm.
+{
+    const evaluator = new Evaluator(new Realm((_line: string) => {}));
+    const environment = new Environment(null), loc: Location = { line: 1, column: 1 };
+    const rows: { node: Stmt; expected: string }[] = [
+        { node: { kind: "var", loc, declarations: [] }, expected: "Script var AST requires Script execution" },
+        { node: { kind: "try-catch", loc, block: { kind: "block", loc, body: [] },
+            parameter: { name: "e", start: 12, end: 13, loc }, catchLoc: loc, catchStart: 5, catchEnd: 16,
+            handler: { kind: "block", loc, body: [] } }, expected: "Script try-catch AST requires Script execution" }
+    ];
+    for (const row of rows) {
+        let rejected = false;
+        try { evaluator.statementInner(row.node, environment, UNDEFINED); }
+        catch (error) { if (!(error instanceof Error)) throw error; check(error.message === row.expected, "literal legacy AST diagnostic"); rejected = true; }
+        check(rejected && evaluator.steps === 0 && evaluator.calls === 0 && evaluator.depth === 0 && environment.bindings.size === 0, "legacy AST rejection before effects");
+    }
+}
+console.log("PASS exact legacy var and distinct try-catch AST diagnostics");
