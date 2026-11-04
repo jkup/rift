@@ -1,0 +1,36 @@
+{
+  "base": "a978442",
+  "status": "PROPOSAL ONLY; exact coordinator review required before old-test edits",
+  "proposals": [
+    {
+      "path": "typescript/test/script-execution.ts",
+      "edits": [
+        {
+          "old": "const cases: { id: string; source: string; expected: number | string | undefined }[] = [",
+          "new": "const cases: { id: string; source: string; expected: number | string | undefined }[] = [\n    { id: \"H3-empty\", source: '\"use strict\";for(;;)break;', expected: undefined },\n    { id: \"H3-postfix\", source: '\"use strict\";let x=7;x++;', expected: 7 },"
+        },
+        {
+          "old": "'\"use strict\";for(;;){}'",
+          "new": "'\"use strict\";for(let i=0;;){}'"
+        },
+        {
+          "old": "'\"use strict\";x++;'",
+          "new": "'\"use strict\";++x;'"
+        }
+      ],
+      "baseSha256LF": "8ad9be4b359d7b722e31ddc0dcebad7f68a281174143932140f0aee7c6eac5d9",
+      "proposedSha256LF": "bb120ab2cd41634789374e8da30fd7714e40228f681aba30273b8afb204980a6"
+    },
+    {
+      "path": "typescript/test/harness-switch.ts",
+      "edits": [
+        {
+          "old": "\"source\": \"switch(1){case 1:x++;}\"",
+          "new": "\"source\": \"switch(1){case 1:++x;}\""
+        }
+      ],
+      "baseSha256LF": "bb1cc34bd958f5b14a21e91ab9955e2513e032ad09872c56a0a90120e22c5570",
+      "proposedSha256LF": "2d513d9e557b2cf8b2cd52efcf894eaeca750cfbd894ef38116b707c804f65e6"
+    }
+  ]
+}
