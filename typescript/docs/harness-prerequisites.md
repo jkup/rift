@@ -149,7 +149,14 @@ edition16 review before its function factory is considered complete.
 
 ## H1 interface and literal acceptance
 
-Represent the new node as `{kind:'try-catch', loc, block, parameter, handler}`;
+The [H1 review correction](validation/ts-034p/h1-correction.md) is normative for
+the exact original-node associations, catch activation/phase/tick sequence,
+consumed-propagation reset, C14 same-completion regression, frozen14/14/5/15 tick
+prefixes and declaration/nesting controls D01–D10. It supersedes the original
+de90653 deferral of tick placement to implementation. No H1 assignment is ready
+until this correction passes independent review.
+
+Represent the new node as `{kind:'try-catch', loc, block, parameter, catchLoc, catchStart, catchEnd, handler}`;
 both blocks retain original nodes/source spans. Record a catch lexical scope
 with one mutable initialized binding and a nested handler Block scope. Plan var
 declarations in both arms into the enclosing variable scope, stopping at nested
@@ -174,9 +181,10 @@ engine-diagnostic string values remain visibly provisional until H6. Resource
 limits and unsupported-operation completions bypass guest catch; host exceptions
 escape unchanged. Create/initialize catch binding with the identical thrown Value,
 evaluate handler, apply TryStatement UpdateEmpty to undefined. Restore lexical
-environment/frame in host finally for every exit. Do not overwrite last-abrupt
-provenance merely because an exception was caught; a later throw captures its
-actual source. Freeze this via new caught-then-rethrow/caught-then-new-throw tests.
+environment/frame in host finally for every exit. Consume the private active
+propagation identity before the first catch setup tick, retaining lastAbrupt
+history; a later throw, including the same completion object, captures its actual
+source. The correction's C14 distinguishes source record from diagnostic Location.
 
 All following controls are future literal expected results, not measurements.
 Prefix H1 sources with literal `"use strict";`; `out` records Values via trusted
@@ -199,10 +207,10 @@ completion, source location, counters and effects, not stdout agreement alone.
 | C12 | `let n=0; while(n<2){n+=1;try{continue;}catch(e){out(9);}out(8);}out(n);` | only2; continue propagates |
 | C13 | `function f(){try{throw 7;}catch(e){return function(){return e;};}} out(f()());` | 7 after catch environment exits; closure retains binding |
 
-For C01/C04/C13 and cross-unit/cross-Realm variants, enumerate every actual new
-catch setup/body resource prefix with zero and seven-step seeds after tick
-placement review; no invented totals. Exhaustion before binding publication
-must not publish it. Retain source cap100000, parse depth128, step default100000,
+The correction freezes catch setup/body tick placement and all fresh/seven-seeded
+prefixes for normal, rethrow, untaken catch and closure creation. Retain
+C01/C04/C13 and their cross-unit/cross-Realm semantic controls. Exhaustion before
+binding publication must not publish it. Retain source cap100000, parse depth128, step default100000,
 call depth64/evaluation depth256. Also test empty completion normalization
 `1; try {} catch(e) {}` yields undefined, and `try { 2; } catch(e) {}` yields2.
 Host fault injection belongs only at reachable callbacks, separately labeled

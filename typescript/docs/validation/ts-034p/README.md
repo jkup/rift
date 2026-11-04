@@ -16,6 +16,8 @@ npm run build:node
 node docs/validation/ts-034p/audit.mjs
 node --check docs/validation/ts-034p/audit.mjs
 node --check docs/validation/ts-034p/research.mjs
+node docs/validation/ts-034p/correction-audit.mjs
+node --check docs/validation/ts-034p/correction-audit.mjs
 git diff --check
 ```
 
@@ -75,3 +77,23 @@ internal sloppy behavior; H5 construction and H6 actual errors require explicit
 interface/migration checkpoints. H7 validates the unchanged bundle; P6 transport,
 rule certification and file admission remain separately blocked. No successor,
 branch switch, main merge or publication by this writer.
+
+## Independent-review correction
+
+`de90653` was not accepted. Root replay passed the original preservation audit;
+second review identified H1 gaps. [h1-correction.md](h1-correction.md) now freezes
+consumed-propagation marker clearing while retaining lastAbrupt history; C14
+returns one identical host-held language completion at source A:1:27 and B:1:29,
+while diagnostic Location remains the identical900:9 object. Final source must
+be B. It also freezes original try/catch node associations and exact preparation
+validation, catch allocation/create/initialize/install/handler order, body phase,
+four literal14/14/5/15 tick traces with every fresh/seven-seeded prefix, and
+declaration/nesting/strict-parameter neighbors. No transient state exposure or
+host fault injection into engine ticks is claimed.
+
+`correction-audit.mjs` verifies all29 original C/B matrix rows remain unchanged,
+literal source coordinates and frozen prefix arrays; `correction-audit.json`
+expands every expected prefix and binds the correction text by hash. These are
+static checks of future requirements, **not** new runtime/Node/native results.
+Production hashes and inherited evidence remain governed by audit.mjs. H1 stays
+unassigned pending corrected design review.
