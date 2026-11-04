@@ -1,0 +1,42 @@
+[
+  {
+    "lane": "node",
+    "id": "literal",
+    "input": "B01|seed|7\r\nB02|seed|7\r\nB03|seed|7\r\nB04|seed|7\r\nB05|seed|7\r\nB06|seed|7\r\nB07|seed|7\r\nB08|seed|7\r\nB09|seed|7\r\nB10|seed|7\r\nB11|seed|7\r\nB12|seed|7\r\nB13|seed|7\r\nB14|seed|7\r\nB15|seed|7\r\nB16|seed|7\r\nB17|seed|7\r\nB18|seed|7\r\n",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "B01 PASS\nB02 PASS\nB03 PASS\nB04 PASS\nB05 PASS\nB06 PASS\nB07 PASS\nB08 PASS\nB09 PASS\nB10 PASS\nB11 PASS\nB12 PASS\nB13 PASS\nB14 PASS\nB15 PASS\nB16 PASS\nB17 PASS\nB18 PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "node",
+    "id": "other",
+    "input": "B01|other|11\r\nB02|other|11\r\nB03|other|11\r\nB04|other|11\r\nB05|other|11\r\nB06|other|11\r\nB07|other|11\r\nB08|other|11\r\nB09|other|11\r\nB10|other|11\r\nB11|other|11\r\nB12|other|11\r\nB13|other|11\r\nB14|other|11\r\nB15|other|11\r\nB16|other|11\r\nB17|other|11\r\nB18|other|11\r\n",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "B01 PASS\nB02 PASS\nB03 PASS\nB04 PASS\nB05 PASS\nB06 PASS\nB07 PASS\nB08 PASS\nB09 PASS\nB10 PASS\nB11 PASS\nB12 PASS\nB13 PASS\nB14 PASS\nB15 PASS\nB16 PASS\nB17 PASS\nB18 PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "literal",
+    "input": "B01|seed|7\r\nB02|seed|7\r\nB03|seed|7\r\nB04|seed|7\r\nB05|seed|7\r\nB06|seed|7\r\nB07|seed|7\r\nB08|seed|7\r\nB09|seed|7\r\nB10|seed|7\r\nB11|seed|7\r\nB12|seed|7\r\nB13|seed|7\r\nB14|seed|7\r\nB15|seed|7\r\nB16|seed|7\r\nB17|seed|7\r\nB18|seed|7\r\n",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "B01 PASS\nB02 PASS\nB03 PASS\nB04 PASS\nB05 PASS\nB06 PASS\nB07 PASS\nB08 PASS\nB09 PASS\nB10 PASS\nB11 PASS\nB12 PASS\nB13 PASS\nB14 PASS\nB15 PASS\nB16 PASS\nB17 PASS\nB18 PASS\n",
+    "stderr": ""
+  },
+  {
+    "lane": "native",
+    "id": "other",
+    "input": "B01|other|11\r\nB02|other|11\r\nB03|other|11\r\nB04|other|11\r\nB05|other|11\r\nB06|other|11\r\nB07|other|11\r\nB08|other|11\r\nB09|other|11\r\nB10|other|11\r\nB11|other|11\r\nB12|other|11\r\nB13|other|11\r\nB14|other|11\r\nB15|other|11\r\nB16|other|11\r\nB17|other|11\r\nB18|other|11\r\n",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "B01 PASS\nB02 PASS\nB03 PASS\nB04 PASS\nB05 PASS\nB06 PASS\nB07 PASS\nB08 PASS\nB09 PASS\nB10 PASS\nB11 PASS\nB12 PASS\nB13 PASS\nB14 PASS\nB15 PASS\nB16 PASS\nB17 PASS\nB18 PASS\n",
+    "stderr": ""
+  }
+]

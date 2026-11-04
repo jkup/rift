@@ -1,0 +1,36 @@
+[
+  {
+    "input": "seed",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS runtime function seed\nPASS semantic matrix basic globals locals references completions budgets\nPASS thirteen restricted traces every resource prefix seeded and fresh\nPASS literal root function block global prefix counts\nPASS N01-N04 original-node naming and source\nPASS captured owner two active sessions escaping B sentinel restored A exact frames\nPASS cross Realm original records allocation restricted provenance\nPASS exact guest completion location one-use direct replay denial\nPASS FDI every eighteen-tick setup prefix with shared source-unit budget\nPASS strict this and configurable restricted endpoint mutation neighbors\nPASS reachable accessor coercion body host faults and depth257 cleanup\nPASS mixed cross Realm call permit tuple neighbors grammar and retained effects\nPASS nested step call restoration closure persistence nonextensible existing global\nPASS shared expressions arrays builtin callbacks conversions cached property references\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS runtime function seed\nPASS semantic matrix basic globals locals references completions budgets\nPASS thirteen restricted traces every resource prefix seeded and fresh\nPASS literal root function block global prefix counts\nPASS N01-N04 original-node naming and source\nPASS captured owner two active sessions escaping B sentinel restored A exact frames\nPASS cross Realm original records allocation restricted provenance\nPASS exact guest completion location one-use direct replay denial\nPASS FDI every eighteen-tick setup prefix with shared source-unit budget\nPASS strict this and configurable restricted endpoint mutation neighbors\nPASS reachable accessor coercion body host faults and depth257 cleanup\nPASS mixed cross Realm call permit tuple neighbors grammar and retained effects\nPASS nested step call restoration closure persistence nonextensible existing global\nPASS shared expressions arrays builtin callbacks conversions cached property references\n",
+      "stderr": ""
+    }
+  },
+  {
+    "input": "other",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS runtime function other\nPASS semantic matrix basic globals locals references completions budgets\nPASS thirteen restricted traces every resource prefix seeded and fresh\nPASS literal root function block global prefix counts\nPASS N01-N04 original-node naming and source\nPASS captured owner two active sessions escaping B sentinel restored A exact frames\nPASS cross Realm original records allocation restricted provenance\nPASS exact guest completion location one-use direct replay denial\nPASS FDI every eighteen-tick setup prefix with shared source-unit budget\nPASS strict this and configurable restricted endpoint mutation neighbors\nPASS reachable accessor coercion body host faults and depth257 cleanup\nPASS mixed cross Realm call permit tuple neighbors grammar and retained effects\nPASS nested step call restoration closure persistence nonextensible existing global\nPASS shared expressions arrays builtin callbacks conversions cached property references\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS runtime function other\nPASS semantic matrix basic globals locals references completions budgets\nPASS thirteen restricted traces every resource prefix seeded and fresh\nPASS literal root function block global prefix counts\nPASS N01-N04 original-node naming and source\nPASS captured owner two active sessions escaping B sentinel restored A exact frames\nPASS cross Realm original records allocation restricted provenance\nPASS exact guest completion location one-use direct replay denial\nPASS FDI every eighteen-tick setup prefix with shared source-unit budget\nPASS strict this and configurable restricted endpoint mutation neighbors\nPASS reachable accessor coercion body host faults and depth257 cleanup\nPASS mixed cross Realm call permit tuple neighbors grammar and retained effects\nPASS nested step call restoration closure persistence nonextensible existing global\nPASS shared expressions arrays builtin callbacks conversions cached property references\n",
+      "stderr": ""
+    }
+  }
+]

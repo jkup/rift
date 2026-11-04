@@ -1,6 +1,6 @@
 import type { GuestSymbol } from "./symbols.js";
 import { GuestArray } from "./array-object.js";
-import { Environment, GuestObject, UNDEFINED, display, normal, type Builtin, type Value, validatePropertyDescriptorUpdate, type PropertyDescriptorUpdate, type ValueCompletion } from "./runtime.js";
+import { Environment, GuestObject, GuestError, UNDEFINED, display, normal, type ErrorName, type Builtin, type Value, validatePropertyDescriptorUpdate, type PropertyDescriptorUpdate, type ValueCompletion } from "./runtime.js";
 import { registerNumber, registerNumberConversions } from "./builtins/number.js";
 import { registerFunction, nativeFunctionString } from "./builtins/function.js";
 import { registerRestrictedFunctionProperties } from "./builtins/restricted-function.js";
@@ -27,6 +27,7 @@ export type RealmProfile = "legacy" | "script";
 export class Realm {
     private legacyGlobal: Environment | null = null;
     private scriptGlobal: GlobalEnvironment | null = null;
+    private errorPrototypes: Map<ErrorName, GuestObject> = new Map();
     readonly objectPrototype: GuestObject;
     readonly functionPrototype: GuestObject;
     readonly arrayPrototype: GuestArray;
@@ -38,6 +39,16 @@ export class Realm {
         if (profile !== "legacy" && profile !== "script") throw new Error("invalid Realm profile");
         // Bootstrap dependencies directly, before factories or global installation.
         this.objectPrototype = new GuestObject(null, true);
+        if (profile === "script") {
+            const errorPrototype = new GuestObject(this.objectPrototype);
+            const names: ErrorName[] = ["Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError"];
+            for (const name of names) {
+                const proto = name === "Error" ? errorPrototype : new GuestObject(errorPrototype);
+                proto.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: true, enumerable: false, configurable: true });
+                proto.bootstrapDefine("message", { value: { kind: "string", value: "" }, writable: true, enumerable: false, configurable: true });
+                this.errorPrototypes.set(name, proto);
+            }
+        }
         this.functionPrototype = new GuestObject(this.objectPrototype, false, {
             kind: "builtin", initialName: "", realm: this, invoke: this.guardBuiltin((_receiver, _args, _context, _loc) => normal(UNDEFINED)),
         });
@@ -113,6 +124,17 @@ export class Realm {
         return guarded;
     }
     createObject(): GuestObject { return new GuestObject(this.objectPrototype); }
+    getErrorPrototype(name: ErrorName): GuestObject {
+        const proto = this.errorPrototypes.get(name);
+        if (this.profile !== "script" || proto === undefined) throw new Error("Script Error prototype required");
+        return proto;
+    }
+    // Trusted allocation does not call guest code or consume execution budget.
+    createError(name: ErrorName, message: string): GuestError {
+        const error = new GuestError(this.getErrorPrototype(name));
+        error.bootstrapDefine("message", { value: { kind: "string", value: message }, writable: true, enumerable: false, configurable: true });
+        return error;
+    }
     createScriptFunction(record: ExecutableScript, scopeId: number, environment: ScriptEnvironment,
         inferredName: string | null, context: OperationContext): ValueCompletion {
         if (this.profile !== "script" || context.realm !== this || !record.belongsTo(this))

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "forged-record",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "false\n",
+      "stderr": ""
+    },
+    "build": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e3a/forged-record.ts:9:27 - error SC2002: record shapes must match exactly or width-coerce: expected 'Branded', got '{ kind: string; value: number }'\n\n   8 | const fake = { kind: \"branded\", value: Number(process.argv[2] ?? \"7\") };\n   9 | console.log(Branded.check(fake as unknown as Branded));\n     |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~\n  10 | \n\n  hint: width subtyping compiles as a copy (each expected field copied off the source; extra fields drop) — this pair is outside the copy's rules; build a literal with exactly the expected fields instead\n\n1 error.\n"
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e3a\\forged-record.ts\n\n  statements analyzed   6\n  compile statically    5  (83%)\n\n  blockers:\n      ×1  SC2002  record shapes must match exactly or width-coerce: expected 'Branded', got '{ kind: string; value: number }'\n          at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e3a/forged-record.ts:9:27\n          hint: width subtyping compiles as a copy (each expected field copied off the source; extra fields drop) — this pair is outside the copy's rules; build a literal with exactly the expected fields instead\n",
+      "stderr": ""
+    }
+  },
+  {
+    "name": "forged-class",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "false\n",
+      "stderr": ""
+    },
+    "build": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e3a/forged-class.ts:13:27 - error SC1090: asserting a 'Structural' instance as the unrelated class 'Branded' (neither class extends the other, and class identity is nominal in compiled code) is not supported yet\n\n  12 | const fake = new Structural();\n  13 | console.log(Branded.check(fake as unknown as Branded));\n     |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~\n  14 | \n\n  hint: narrow with `instanceof Branded` where the value can really be one, or declare a shared base class and assert through it\n\n1 error.\n"
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e3a\\forged-class.ts\n\n  statements analyzed   8\n  compile statically    7  (87%)\n\n  blockers:\n      ×1  SC1090  asserting a 'Structural' instance as the unrelated class 'Branded' (neither class extends the other, and class identity is nominal in compiled code)\n          at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e3a/forged-class.ts:13:27\n          hint: narrow with `instanceof Branded` where the value can really be one, or declare a shared base class and assert through it\n",
+      "stderr": ""
+    }
+  },
+  {
+    "name": "foreign-union",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "false\n",
+      "stderr": ""
+    },
+    "build": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e3a/foreign-union.ts:6:19 - error SC2003: union conversion has no unambiguous layout mapping: expected 'Local | { kind: string; name: string }', got 'Legacy' (each source arm needs an identical destination arm, a unique compatible record/array layout, or a shared literal discriminant selecting compatible layouts)\n\n  5 | const legacy = new Legacy(process.argv[2] ?? \"seed\");\n  6 | console.log(valid(legacy as unknown as Chain));\n    |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~\n  7 | \n\n  hint: narrow the value to a SINGLE arm first (a discriminant check, or '!== undefined'/'!== null' for unit arms); a plain arm value widens into any union that contains it, and a whole union widens into any union whose arms include the source's\n\n1 error.\n"
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e3a\\foreign-union.ts\n\n  statements analyzed   6\n  compile statically    5  (83%)\n\n  blockers:\n      ×1  SC2003  union conversion has no unambiguous layout mapping: expected 'Local | { kind: string; name: string }', got 'Legacy' (each source arm needs an identical destination arm, a unique compatible record/arr…\n          at C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e3a/foreign-union.ts:6:19\n          hint: narrow the value to a SINGLE arm first (a discriminant check, or '!== undefined'/'!== null' for unit arms); a plain arm value widens into any union that contains it, and a whole union widens into any union whose arms include the source's\n",
+      "stderr": ""
+    }
+  }
+]

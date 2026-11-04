@@ -1,0 +1,22 @@
+{
+  "path": "typescript/test/harness-errors-a.ts",
+  "newHelper": "function keysEqual(object: GuestObject, expected: string[]): boolean {\n    const actual = object.ownPropertyKeys();\n    if (actual.length !== expected.length) return false;\n    for (let i = 0; i < actual.length; i++) if (actual[i] !== expected[i]) return false;\n    return true;\n}\n",
+  "changes": [
+    [
+      "o.ownPropertyKeys().join(\",\") === \"message\"",
+      "keysEqual(o, [\"message\"])"
+    ],
+    [
+      "p.ownPropertyKeys().join(\",\") === \"name,message\"",
+      "keysEqual(p, [\"name\", \"message\"])"
+    ],
+    [
+      "e.ownPropertyKeys().join(\",\") === \"message\"",
+      "keysEqual(e, [\"message\"])"
+    ],
+    [
+      "r.globalObject.ownPropertyKeys().join(\",\") === \"undefined,NaN,Infinity,console,Number\"",
+      "keysEqual(r.globalObject, [\"undefined\", \"NaN\", \"Infinity\", \"console\", \"Number\"])"
+    ]
+  ]
+}

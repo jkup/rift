@@ -1,6 +1,6 @@
 import type { Realm } from "../realm.js";
 import { toObject } from "../object-conversion.js";
-import { normal, type Value } from "../runtime.js";
+import { GuestError, normal, type Value } from "../runtime.js";
 import { GuestArray } from "../array-object.js";
 import { GuestBoolean, GuestNumber, GuestStringObject } from "../primitive-objects.js";
 import { wellKnownToStringTag } from "../symbols.js";
@@ -25,6 +25,7 @@ export function registerObjectToString(realm: Realm): Value {
         let tag = "Object";
         if (object instanceof GuestArray) tag = "Array";
         else if (object.callable !== null) tag = "Function";
+        else if (object instanceof GuestError) tag = "Error";
         else if (object instanceof GuestBoolean) tag = "Boolean";
         else if (object instanceof GuestNumber) tag = "Number";
         else if (object instanceof GuestStringObject) tag = "String";

@@ -1,0 +1,24 @@
+{
+  "typecheck": {
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "docs/validation/ts-034h6-a/compiler-investigation/driver-proposed.ts(1,30): error TS2591: Cannot find name 'node:fs'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.\ndocs/validation/ts-034h6-a/compiler-investigation/driver-proposed.ts(51,28): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.\n",
+    "stderr": ""
+  },
+  "build": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\h6a-driver-proposed.exe\n",
+    "stderr": ""
+  },
+  "coverage": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h6-a\\compiler-investigation\\driver-proposed.ts\n\n  statements analyzed   3728\n  compile statically    3728  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+    "stderr": ""
+  },
+  "inputs": []
+}

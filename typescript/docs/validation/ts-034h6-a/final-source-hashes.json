@@ -1,0 +1,22 @@
+[
+  {
+    "path": "typescript/src/runtime.ts",
+    "sha256": "73186d724561ce5abb85f1f3f5d89434668ed00cf17f4b3e558cf6a5175871e8"
+  },
+  {
+    "path": "typescript/src/realm.ts",
+    "sha256": "2d30d102be4a68c880fcd515a6d83ebc6f4b7e77984bb930e42259c88d74c73e"
+  },
+  {
+    "path": "typescript/src/builtins/object.ts",
+    "sha256": "8cc7dba0e80d774efa06bac8a6b7a78a251701987e8dcaa786aa148d44de57b9"
+  },
+  {
+    "path": "typescript/test/harness-errors-a.ts",
+    "sha256": "f226b1ad6440c5433f139c4b8107913f8ad1a9ece6a4c08bd3445c1362075c46"
+  },
+  {
+    "path": "typescript/tools/build-native.mjs",
+    "sha256": "e0f7db69c0cab62baf72e95a12821408d0e1cd0663202621b34041204bb0a909"
+  }
+]

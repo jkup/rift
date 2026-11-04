@@ -654,3 +654,21 @@ probes10,host73,observations22. Three exact old-test migrations were independent
 approved;3606 protected files and60 blocked variants are preserved.
 See [H5 evidence](validation/ts-034h5/README.md). Implementation awaits actual and
 independent second acceptance; this is not publication or a conformance claim.
+
+## Internal Error allocation kernel (TS-034H6-A candidate)
+
+Script Realms now own five unexposed ordinary Error family prototypes and a
+trusted noncalling, zero-tick factory returning a fresh GuestError with private
+ErrorData and an own message descriptor. The brand survives guest prototype
+relinking; Object.prototype.toString uses Error before the existing toStringTag
+lookup, while ordinary prototype borrowers remain Object. Legacy factory misuse
+is a host rejection. No public Error names/constructors, Error toString algorithm,
+semantic failure migration, construction dispatch or conversion API changes.
+
+Candidate evidence passes A01-A09 for both runtime inputs on both hosts,
+212 unchanged records per host,55 static-only/separate zero-dynamic gates
+(kernel3728), H1-H5/E4/all17 inherited replays/both Node boundaries/slots,
+typecheck/runner20/probes10/host73/observations22. All138 old test files and
+60 blocked variants remain unchanged; zero old-test migrations. See
+[H6-A evidence](validation/ts-034h6-a/README.md). Awaiting actual and independent
+second acceptance; no public admission or successor work.

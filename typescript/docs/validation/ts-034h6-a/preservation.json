@@ -1,0 +1,283 @@
+{
+  "base": "fdac41d0754a838197fe828a5f11c819314f9a01",
+  "records": 212,
+  "oldGates": 54,
+  "newGates": 1,
+  "coverage": [
+    {
+      "entry": "src/cli.ts",
+      "static": 3528,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/realms.ts",
+      "static": 3890,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-descriptors.ts",
+      "static": 3662,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-prototypes.ts",
+      "static": 3640,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-keys.ts",
+      "static": 3668,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/conversion.ts",
+      "static": 3587,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/definition-dispatch.ts",
+      "static": 3668,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-storage.ts",
+      "static": 3814,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-like.ts",
+      "static": 3616,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/operation-context.ts",
+      "static": 3848,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-map.ts",
+      "static": 3990,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-literals.ts",
+      "static": 3582,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/property-key-conversion.ts",
+      "static": 3853,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/numeric-operators.ts",
+      "static": 3608,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/addition.ts",
+      "static": 3622,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/relational.ts",
+      "static": 3653,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/primitive-conversion.ts",
+      "static": 4018,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/operator-coercion.ts",
+      "static": 3655,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/key-coercion.ts",
+      "static": 3683,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/length-coercion.ts",
+      "static": 3798,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-length-coercion.ts",
+      "static": 4015,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/function-call.ts",
+      "static": 3694,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/object-valueof.ts",
+      "static": 5073,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/array-string-conversion.ts",
+      "static": 4021,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/function-string-conversion.ts",
+      "static": 3837,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/abstract-equality.ts",
+      "static": 3926,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/delete-operator.ts",
+      "static": 4302,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/typeof-void.ts",
+      "static": 4054,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/in-operator.ts",
+      "static": 4217,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/primitive-reads.ts",
+      "static": 4291,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/property-assignment.ts",
+      "static": 4595,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/compound-assignment.ts",
+      "static": 4721,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/structured-outcomes.ts",
+      "static": 3875,
+      "dynamic": 0
+    },
+    {
+      "entry": "src/observation-driver.ts",
+      "static": 3570,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/observation-serialization.ts",
+      "static": 3557,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/return-audit.ts",
+      "static": 3553,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/number-radix.ts",
+      "static": 220,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/script-metadata.ts",
+      "static": 914,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/global-environment.ts",
+      "static": 3816,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/script-realm-bootstrap.ts",
+      "static": 3946,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/script-declarations.ts",
+      "static": 926,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/script-global-declarations.ts",
+      "static": 3912,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/script-record.ts",
+      "static": 3622,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/script-environment.ts",
+      "static": 3677,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/script-function-materialization.ts",
+      "static": 3757,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/script-function-setup.ts",
+      "static": 3843,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/property-accessors.ts",
+      "static": 4099,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/script-restricted-properties.ts",
+      "static": 3642,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/script-execution.ts",
+      "static": 4057,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/harness-catch.ts",
+      "static": 3716,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/harness-switch.ts",
+      "static": 3793,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/harness-for-update.ts",
+      "static": 4006,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/harness-nonstrict.ts",
+      "static": 4213,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/harness-construct.ts",
+      "static": 4294,
+      "dynamic": 0
+    },
+    {
+      "entry": "test/harness-errors-a.ts",
+      "static": 3728,
+      "dynamic": 0
+    }
+  ]
+}
