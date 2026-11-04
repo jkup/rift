@@ -1,0 +1,61 @@
+{
+  "typecheck": 2,
+  "build": 0,
+  "coverage": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h5\\migration-investigation\\bootstrap-proposal.ts\n\n  statements analyzed   3926\n  compile statically    3926  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+  "original": [
+    {
+      "lane": "node",
+      "variant": "literal",
+      "status": 1,
+      "stderr": "Error: key count\r"
+    },
+    {
+      "lane": "native",
+      "variant": "literal",
+      "status": 1,
+      "stderr": "Uncaught Error: key count"
+    },
+    {
+      "lane": "node",
+      "variant": "other",
+      "status": 1,
+      "stderr": "Error: key count\r"
+    },
+    {
+      "lane": "native",
+      "variant": "other",
+      "status": 1,
+      "stderr": "Uncaught Error: key count"
+    }
+  ],
+  "proposal": [
+    {
+      "lane": "node",
+      "variant": "literal",
+      "status": 0,
+      "stdout": "B01 PASS\nB02 PASS\nB03 PASS\nB04 PASS\nB05 PASS\nB06 PASS\nB07 PASS\nB08 PASS\nB09 PASS\nB10 PASS\nB11 PASS\nB12 PASS\nB13 PASS\nB14 PASS\nB15 PASS\nB16 PASS\nB17 PASS\nB18 PASS\n",
+      "stderr": ""
+    },
+    {
+      "lane": "native",
+      "variant": "literal",
+      "status": 0,
+      "stdout": "B01 PASS\nB02 PASS\nB03 PASS\nB04 PASS\nB05 PASS\nB06 PASS\nB07 PASS\nB08 PASS\nB09 PASS\nB10 PASS\nB11 PASS\nB12 PASS\nB13 PASS\nB14 PASS\nB15 PASS\nB16 PASS\nB17 PASS\nB18 PASS\n",
+      "stderr": ""
+    },
+    {
+      "lane": "node",
+      "variant": "other",
+      "status": 0,
+      "stdout": "B01 PASS\nB02 PASS\nB03 PASS\nB04 PASS\nB05 PASS\nB06 PASS\nB07 PASS\nB08 PASS\nB09 PASS\nB10 PASS\nB11 PASS\nB12 PASS\nB13 PASS\nB14 PASS\nB15 PASS\nB16 PASS\nB17 PASS\nB18 PASS\n",
+      "stderr": ""
+    },
+    {
+      "lane": "native",
+      "variant": "other",
+      "status": 0,
+      "stdout": "B01 PASS\nB02 PASS\nB03 PASS\nB04 PASS\nB05 PASS\nB06 PASS\nB07 PASS\nB08 PASS\nB09 PASS\nB10 PASS\nB11 PASS\nB12 PASS\nB13 PASS\nB14 PASS\nB15 PASS\nB16 PASS\nB17 PASS\nB18 PASS\n",
+      "stderr": ""
+    }
+  ]
+}

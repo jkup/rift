@@ -1,0 +1,372 @@
+[
+  {
+    "id": "C01",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C02",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C03",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C04",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C05",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C06",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C07",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C08",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C09",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C10",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C11",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C12",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C13",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C14",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C15",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C16",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C17",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "C18",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: constructor rows and strict twins, complete order, publication/source controls"
+  },
+  {
+    "id": "I01",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "I02",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "I03",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "I04",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "I05",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "I06",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "I07",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "I08",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "I09",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "I10",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "I11",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "I12",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: I01-I12 and ordinary/custom-hook controls"
+  },
+  {
+    "id": "D01",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: D01-D05 and supplemental descriptor checks"
+  },
+  {
+    "id": "D02",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: D01-D05 and supplemental descriptor checks"
+  },
+  {
+    "id": "D03",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: D01-D05 and supplemental descriptor checks"
+  },
+  {
+    "id": "D04",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: D01-D05 and supplemental descriptor checks"
+  },
+  {
+    "id": "D05",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: D01-D05 and supplemental descriptor checks"
+  },
+  {
+    "id": "N01",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N02",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N03",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N04",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N05",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N06",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N07",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N08",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N09",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N10",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N11",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N12",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N13",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N14",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N15",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "N16",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: both strict/sloppy whole-source neighbors, original-source migrations"
+  },
+  {
+    "id": "A01",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: exact G/H/catch callback rows, cross-Realm guest getters, resource rows and prefix matrix"
+  },
+  {
+    "id": "A02",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: exact G/H/catch callback rows, cross-Realm guest getters, resource rows and prefix matrix"
+  },
+  {
+    "id": "A03",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: exact G/H/catch callback rows, cross-Realm guest getters, resource rows and prefix matrix"
+  },
+  {
+    "id": "A04",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: exact G/H/catch callback rows, cross-Realm guest getters, resource rows and prefix matrix"
+  },
+  {
+    "id": "A05",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: exact G/H/catch callback rows, cross-Realm guest getters, resource rows and prefix matrix"
+  },
+  {
+    "id": "A06",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: exact G/H/catch callback rows, cross-Realm guest getters, resource rows and prefix matrix"
+  },
+  {
+    "id": "A07",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: exact G/H/catch callback rows, cross-Realm guest getters, resource rows and prefix matrix"
+  },
+  {
+    "id": "A08",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: exact G/H/catch callback rows, cross-Realm guest getters, resource rows and prefix matrix"
+  },
+  {
+    "id": "A09",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: exact G/H/catch callback rows, cross-Realm guest getters, resource rows and prefix matrix"
+  },
+  {
+    "id": "A10",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: exact G/H/catch callback rows, cross-Realm guest getters, resource rows and prefix matrix"
+  },
+  {
+    "id": "A11",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: exact G/H/catch callback rows, cross-Realm guest getters, resource rows and prefix matrix"
+  },
+  {
+    "id": "X01",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  },
+  {
+    "id": "X02",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  },
+  {
+    "id": "X03",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  },
+  {
+    "id": "X04",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  },
+  {
+    "id": "X05",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  },
+  {
+    "id": "X06",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  },
+  {
+    "id": "X07",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  },
+  {
+    "id": "X08",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  },
+  {
+    "id": "X09",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  },
+  {
+    "id": "X10",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  },
+  {
+    "id": "X11",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  },
+  {
+    "id": "X12",
+    "contract": "frozen-contract.md",
+    "evidence": "construct-results.json: session/permit/resource/source controls; forged-slot-results.json adds Node-only malformed/forged cases"
+  }
+]

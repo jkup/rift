@@ -5,7 +5,7 @@ import { run } from "../src/interpreter.js";
 import { observe } from "../src/observation.js";
 import { resolveStrictGlobalBinding, getStrictGlobalBinding, putStrictGlobalBinding } from "../src/global-environment.js";
 import { Environment, GuestObject, UNDEFINED, normal, failure, sameValue, type Value, type Completion, type ValueCompletion, type OperationContext, type PropertyKey } from "../src/runtime.js";
-import { wellKnownToPrimitive, wellKnownToStringTag } from "../src/symbols.js";
+import { wellKnownToPrimitive, wellKnownToStringTag, wellKnownHasInstance } from "../src/symbols.js";
 import { toPrimitive } from "../src/primitive-conversion.js";
 import { mapObjectDefaultArray } from "../src/array-map.js";
 const loc = { line: 1, column: 1 };
@@ -46,7 +46,7 @@ function inventory(a: Realm): void {
     keys(num,[...names,"isNaN","isFinite"]); for(let i=0;i<names.length;i++) desc(num,names[i],n(values[i]),false,false,false);
     method(a,num,"isNaN","isNaN",1); method(a,num,"isFinite","isFinite",1);
     const prototypes=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype];
-    const lists: PropertyKey[][]=[["valueOf","toString"],["name","length","caller","arguments","call","toString"],["length","join","toString"],["toString","valueOf"],["toString","valueOf"],["length","toString","valueOf"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
+    const lists: PropertyKey[][]=[["valueOf","toString"],["name","length","caller","arguments","call","toString",wellKnownHasInstance],["length","join","toString"],["toString","valueOf"],["toString","valueOf"],["length","toString","valueOf"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
     for(let i=0;i<prototypes.length;i++) {
         const p=prototypes[i]; keys(p,lists[i]); check(p.getPrototypeOf()===(i===0?null:a.objectPrototype),"prototype chain");
         for(const k of lists[i]) if(typeof k==="string" && k!=="name" && k!=="length") {
@@ -58,6 +58,12 @@ function inventory(a: Realm): void {
     }
     desc(a.functionPrototype,"name",{kind:"string",value:""},false,false,true); desc(a.functionPrototype,"length",n(0),false,false,true);
     check(a.functionPrototype.callable!==null && a.functionPrototype.callable.realm===a,"inline owner");
+    const hasInstance=own(a.functionPrototype,wellKnownHasInstance), hasInstanceFunction=object(hasInstance);
+    desc(a.functionPrototype,wellKnownHasInstance,hasInstance,false,false,false);
+    check(hasInstanceFunction.getPrototypeOf()===a.functionPrototype && hasInstanceFunction.callable!==null && hasInstanceFunction.callable.realm===a && hasInstanceFunction.constructorSlot===null && hasInstanceFunction.getOwnProperty("prototype")===undefined,"hasInstance owner and slots");
+    keys(hasInstanceFunction,["name","length"]);
+    desc(hasInstanceFunction,"name",{kind:"string",value:"[Symbol.hasInstance]"},false,false,true);
+    desc(hasInstanceFunction,"length",n(1),false,false,true);
     desc(a.arrayPrototype,"length",n(0),true,false,false); desc(a.stringPrototype,"length",n(0),false,false,false);
     method(a,a.symbolPrototype,wellKnownToPrimitive,"[Symbol.toPrimitive]",1,false); desc(a.symbolPrototype,wellKnownToStringTag,{kind:"string",value:"Symbol"},false,false,true);
     check(!a.objectPrototype.setPrototypeOf(a.createObject()).value,"immutable object root");
@@ -73,6 +79,7 @@ function row(id: string,name: string,initial: number): void {
     const globals=["undefined","NaN","Infinity","console","Number"];
     switch(id) {
     case "B01": {
+        for(const l of [x,y]) check(l.functionPrototype.getOwnProperty(wellKnownHasInstance)===undefined,"legacy hasInstance absent");
         for(const l of [x,y]) { let i=0; for(const [key,binding] of l.global.bindings) { check(key===globals[i] && binding.initialized && binding.mutable===(i>=3),"legacy bindings"); if(i===0) check(binding.value.kind==="undefined","undefined"); if(i===1) check(sameValue(binding.value,n(NaN)),"NaN"); if(i===2) check(sameValue(binding.value,n(Infinity)),"Infinity"); i++; } check(i===5,"five legacy globals"); }
         const env=new Environment(null); x.global=env; check(x.global===env,"replace global");
         const r=run("let "+name+"="+initial+";",x); check(r.phase==="runtime" && r.completion.type==="normal","legacy run"); check(sameValue(x.global.bindings.get(name)!.value,first),"legacy binding");

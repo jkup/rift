@@ -336,7 +336,7 @@ class Parser {
         if (op === "||") return 3;
         if (op === "&&") return 4;
         if (op === "===" || op === "!==" || op === "==" || op === "!=") return 5;
-        if (op === "<" || op === ">" || op === "<=" || op === ">=" || op === "in") return 6;
+        if (op === "<" || op === ">" || op === "<=" || op === ">=" || op === "in" || op === "instanceof") return 6;
         if (op === "+" || op === "-") return 7;
         if (op === "*" || op === "/" || op === "%") return 8;
         return 0;
@@ -388,7 +388,7 @@ class Parser {
             }
             const op = this.current().text;
             if (!allowIn && op === "in") break;
-            const operator = this.current().kind === "punct" || (this.current().kind === "word" && op === "in");
+            const operator = this.current().kind === "punct" || (this.current().kind === "word" && (op === "in" || (this.structuralPlan() && op === "instanceof")));
             const precedence = operator ? this.precedence(op) : 0;
             if (precedence === 0 || precedence < min) break;
             this.take();
@@ -425,6 +425,34 @@ class Parser {
     primary(allowIn: boolean): Expr {
         const t = this.take();
         const loc = t.loc;
+        if (t.kind === "word" && t.text === "new" && this.structuralPlan()) {
+            const first = this.current();
+            // Only primary/member syntax here; parentheses can contain calls.
+            if ((first.kind === "word" || first.kind === "punct") && ["new", "-", "+", "!", "delete", "typeof", "void"].includes(first.text)) {
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.unexpected" }, "unsupported constructor operand", first.loc);
+                return { kind: "literal", loc, value: null };
+            }
+            let callee = this.primary(allowIn);
+            while (this.error === null) {
+                if (this.eat(".")) {
+                    const key = this.take();
+                    if (key.kind !== "word") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.property-name" }, "expected property name", key.loc);
+                    callee = { kind: "member", loc: first.loc, base: callee, key: { kind: "literal", loc: key.loc, value: key.text } };
+                } else if (this.eat("[")) {
+                    const key = this.expression(0);
+                    this.expect("]");
+                    callee = { kind: "member", loc: first.loc, base: callee, key };
+                } else break;
+            }
+            const args: Expr[] = [];
+            if (this.eat("(")) {
+                if (!this.at(")")) {
+                    do { args.push(this.expression(0)); } while (this.error === null && this.eat(","));
+                }
+                this.expect(")");
+            }
+            return { kind: "new", loc, callee, args };
+        }
         if (t.kind === "number") return { kind: "literal", loc, value: Number(t.text) };
         if (t.kind === "string") return { kind: "literal", loc, value: t.text };
         if (t.text === "true" || t.text === "false") return { kind: "literal", loc, value: t.text === "true" };

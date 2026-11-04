@@ -852,7 +852,7 @@ for(const source of [
     '', 'function f(){return this;}', '"use strict";if(false){const x=1;}', '"use strict";function f(){return arguments;}',
     '"use strict";function f(){eval("1");}', '"use strict";let x;var x;', '"use strict";let x;let x;const tail=0;',
     '"use strict";for(let i=0;;){}','"use strict";do{}while(false);','"use strict";label: while(true){break label;}',
-    '"use strict";switch(1){default:const x=0;}','"use strict";try{}catch(e){}finally{}','"use strict";new f();','"use strict";class C{}',
+    '"use strict";switch(1){default:const x=0;}','"use strict";try{}catch(e){}finally{}','"use strict";new f(...xs);','"use strict";class C{}',
     '"use strict";async function f(){}','"use strict";function* f(){}','"use strict";await 1;',
     '"use strict";import x from "x";','"use strict";with(x){}','"use strict";let f=()=>1;',
     '"use strict";let f=function named(){};','"use strict";function f(...x){}','"use strict";function f(x=1){}',

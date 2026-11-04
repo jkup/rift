@@ -1,0 +1,1094 @@
+{
+  "base": "7f80383",
+  "changes": [
+    "typescript/COORDINATION.md",
+    "typescript/TASKS.md",
+    "typescript/docs/feature-inventory.md",
+    "typescript/docs/validation/ts-034h5/AMENDMENTS.md",
+    "typescript/docs/validation/ts-034h5/README.md",
+    "typescript/docs/validation/ts-034h5/bootstrap-final-build-results.json",
+    "typescript/docs/validation/ts-034h5/bootstrap-final-build.log",
+    "typescript/docs/validation/ts-034h5/bootstrap-final-replay.log",
+    "typescript/docs/validation/ts-034h5/boundary-sources.json",
+    "typescript/docs/validation/ts-034h5/catch-results.json",
+    "typescript/docs/validation/ts-034h5/checkpoint-node-eleven.log",
+    "typescript/docs/validation/ts-034h5/checkpoint-node-seven.log",
+    "typescript/docs/validation/ts-034h5/checkpoint-typecheck.log",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/PROPOSAL.md",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/callback-after.log",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/callback-before.log",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/callback-before.ts.txt",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/initial-cli-build.log",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/initial-cli-coverage.log",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/initial-reduction-results.json",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/original-driver-build.log",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/original-driver-coverage.log",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/original-driver.ts.txt",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/partial-import-results.json",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/partial-import-union-original.ts",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/partial-import-union-proposal.ts",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/property-narrowing-proposal.ts",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/property-narrowing-results.json",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/reduce.mjs",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/results.json",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/sandbox-results.json",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/synthetic-union-original.ts",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/synthetic-union-proposal.ts",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/union-original.ts",
+    "typescript/docs/validation/ts-034h5/compiler-investigation/union-proposal.ts",
+    "typescript/docs/validation/ts-034h5/construct-final.log",
+    "typescript/docs/validation/ts-034h5/construct-results.json",
+    "typescript/docs/validation/ts-034h5/feature-checks.json",
+    "typescript/docs/validation/ts-034h5/feature-checks.log",
+    "typescript/docs/validation/ts-034h5/feature-checks.mjs",
+    "typescript/docs/validation/ts-034h5/final-checks.json",
+    "typescript/docs/validation/ts-034h5/final-checks.log",
+    "typescript/docs/validation/ts-034h5/final-checks.mjs",
+    "typescript/docs/validation/ts-034h5/final-driver-build-results.json",
+    "typescript/docs/validation/ts-034h5/final-driver-build.log",
+    "typescript/docs/validation/ts-034h5/final-source-hashes.json",
+    "typescript/docs/validation/ts-034h5/for-update-results.json",
+    "typescript/docs/validation/ts-034h5/forged-slot-results.json",
+    "typescript/docs/validation/ts-034h5/freeze.json",
+    "typescript/docs/validation/ts-034h5/frozen-contract.md",
+    "typescript/docs/validation/ts-034h5/guest-native-results.json",
+    "typescript/docs/validation/ts-034h5/guest-node-results.json",
+    "typescript/docs/validation/ts-034h5/guest-node.log",
+    "typescript/docs/validation/ts-034h5/historical-preserver-report.json",
+    "typescript/docs/validation/ts-034h5/host-approved.log",
+    "typescript/docs/validation/ts-034h5/host-sandbox-results.json",
+    "typescript/docs/validation/ts-034h5/host-suites.log",
+    "typescript/docs/validation/ts-034h5/inherited-approved.json",
+    "typescript/docs/validation/ts-034h5/inherited-final-summary.json",
+    "typescript/docs/validation/ts-034h5/inherited-missing-zig.json",
+    "typescript/docs/validation/ts-034h5/initial-final-checks.json",
+    "typescript/docs/validation/ts-034h5/initial-full-build-results.json",
+    "typescript/docs/validation/ts-034h5/input-eleven.js",
+    "typescript/docs/validation/ts-034h5/input-seven.js",
+    "typescript/docs/validation/ts-034h5/matrix-map.json",
+    "typescript/docs/validation/ts-034h5/migration-investigation/PROPOSAL.md",
+    "typescript/docs/validation/ts-034h5/migration-investigation/bootstrap-original.ts.txt",
+    "typescript/docs/validation/ts-034h5/migration-investigation/bootstrap-proposal.ts",
+    "typescript/docs/validation/ts-034h5/migration-investigation/bootstrap-proposed.ts.txt",
+    "typescript/docs/validation/ts-034h5/migration-investigation/check.log",
+    "typescript/docs/validation/ts-034h5/migration-investigation/check.mjs",
+    "typescript/docs/validation/ts-034h5/migration-investigation/initial-check-results.json",
+    "typescript/docs/validation/ts-034h5/migration-investigation/proposed-migration.json",
+    "typescript/docs/validation/ts-034h5/migration-investigation/results.json",
+    "typescript/docs/validation/ts-034h5/native-build-results.json",
+    "typescript/docs/validation/ts-034h5/native-build.log",
+    "typescript/docs/validation/ts-034h5/node-slots.mjs",
+    "typescript/docs/validation/ts-034h5/nonstrict-results.json",
+    "typescript/docs/validation/ts-034h5/observations-approved.log",
+    "typescript/docs/validation/ts-034h5/observations-sandbox-results.json",
+    "typescript/docs/validation/ts-034h5/observations.log",
+    "typescript/docs/validation/ts-034h5/parser-correction-build-results.json",
+    "typescript/docs/validation/ts-034h5/parser-correction-build.log",
+    "typescript/docs/validation/ts-034h5/prefixes.json",
+    "typescript/docs/validation/ts-034h5/preservation.json",
+    "typescript/docs/validation/ts-034h5/preservation.log",
+    "typescript/docs/validation/ts-034h5/preserve.mjs",
+    "typescript/docs/validation/ts-034h5/probe-results.json",
+    "typescript/docs/validation/ts-034h5/probes.log",
+    "typescript/docs/validation/ts-034h5/rebuild-bootstrap.mjs",
+    "typescript/docs/validation/ts-034h5/rebuild-corrected-parser.mjs",
+    "typescript/docs/validation/ts-034h5/rebuild-driver.mjs",
+    "typescript/docs/validation/ts-034h5/replay-catch.mjs",
+    "typescript/docs/validation/ts-034h5/replay-for-update.mjs",
+    "typescript/docs/validation/ts-034h5/replay-nonstrict.mjs",
+    "typescript/docs/validation/ts-034h5/replay-source-map.json",
+    "typescript/docs/validation/ts-034h5/replay-switch.mjs",
+    "typescript/docs/validation/ts-034h5/replays/base-comparison.json",
+    "typescript/docs/validation/ts-034h5/replays/base-records.json",
+    "typescript/docs/validation/ts-034h5/replays/bootstrap-rows.json",
+    "typescript/docs/validation/ts-034h5/replays/bounded-boundary-results.json",
+    "typescript/docs/validation/ts-034h5/replays/bounded-boundary.mjs",
+    "typescript/docs/validation/ts-034h5/replays/d2-host-results.json",
+    "typescript/docs/validation/ts-034h5/replays/e1-host-results.json",
+    "typescript/docs/validation/ts-034h5/replays/e2-host-results.json",
+    "typescript/docs/validation/ts-034h5/replays/e3a-host-results.json",
+    "typescript/docs/validation/ts-034h5/replays/e3a-reachability-results.json",
+    "typescript/docs/validation/ts-034h5/replays/e3a-reachability-typecheck.json",
+    "typescript/docs/validation/ts-034h5/replays/e3a-reduction-results.json",
+    "typescript/docs/validation/ts-034h5/replays/e3b-host-results.json",
+    "typescript/docs/validation/ts-034h5/replays/erb-reduction-results.json",
+    "typescript/docs/validation/ts-034h5/replays/execution-results.json",
+    "typescript/docs/validation/ts-034h5/replays/host-results.json",
+    "typescript/docs/validation/ts-034h5/replays/host-rows.json",
+    "typescript/docs/validation/ts-034h5/replays/metadata-complete/matrix-summary.json",
+    "typescript/docs/validation/ts-034h5/replays/metadata-complete/metadata-native.json",
+    "typescript/docs/validation/ts-034h5/replays/metadata-complete/metadata-node.json",
+    "typescript/docs/validation/ts-034h5/replays/node-boundary-results.json",
+    "typescript/docs/validation/ts-034h5/replays/node-boundary.mjs",
+    "typescript/docs/validation/ts-034h5/replays/node-host-negative-results.json",
+    "typescript/docs/validation/ts-034h5/replays/node-host-negatives.mjs",
+    "typescript/docs/validation/ts-034h5/replays/plans-results.json",
+    "typescript/docs/validation/ts-034h5/replays/replay-accessors.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-baseline.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-bootstrap.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-d2.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-e1.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-e2.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-e3a-reachability.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-e3a-reduce.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-e3a.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-e3b.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-erb-reduce.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-global.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-metadata.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-plans.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-restricted.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replay-stress.mjs",
+    "typescript/docs/validation/ts-034h5/replays/replays-results.json",
+    "typescript/docs/validation/ts-034h5/replays/replays.mjs",
+    "typescript/docs/validation/ts-034h5/replays/restricted-results.json",
+    "typescript/docs/validation/ts-034h5/replays/stress-final-results.json",
+    "typescript/docs/validation/ts-034h5/replays/suite-test-observations.json",
+    "typescript/docs/validation/ts-034h5/replays/suite-test-probes.json",
+    "typescript/docs/validation/ts-034h5/replays/suite-test-test262.json",
+    "typescript/docs/validation/ts-034h5/replays/suite-typecheck.json",
+    "typescript/docs/validation/ts-034h5/replays/suites.mjs",
+    "typescript/docs/validation/ts-034h5/replays/validate.mjs",
+    "typescript/docs/validation/ts-034h5/source-preservation.json",
+    "typescript/docs/validation/ts-034h5/summarize.mjs",
+    "typescript/docs/validation/ts-034h5/switch-results.json",
+    "typescript/docs/validation/ts-034h5/switch-runtime-input-hashes.json",
+    "typescript/docs/validation/ts-034h5/typecheck-final.log",
+    "typescript/docs/validation/ts-034h5/validate.mjs",
+    "typescript/docs/validation/ts-034h5/validation-summary.json",
+    "typescript/fixtures/harness-construct/input-eleven.js",
+    "typescript/fixtures/harness-construct/input-seven.js",
+    "typescript/src/builtins/function.ts",
+    "typescript/src/parser.ts",
+    "typescript/src/runtime.ts",
+    "typescript/src/script-declarations.ts",
+    "typescript/src/script-execution-internal.ts",
+    "typescript/src/symbols.ts",
+    "typescript/src/syntax.ts",
+    "typescript/test/harness-construct.ts",
+    "typescript/test/harness-nonstrict.ts",
+    "typescript/test/script-execution.ts",
+    "typescript/test/script-realm-bootstrap.ts",
+    "typescript/tools/build-native.mjs"
+  ],
+  "protectedFiles": 3606,
+  "oldTestMigrations": 3,
+  "variants": [
+    {
+      "id": "S01",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "error-objects"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S01",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "error-objects"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S02",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "error-objects"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S02",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "error-objects"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S03",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S03",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S04",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S04",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S05",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S05",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S06",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S06",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S07",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S07",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S08",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S08",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S09",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S09",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S10",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S10",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S11",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S11",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S12",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S12",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S13",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S13",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S14",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S14",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S15",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S15",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S16",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S16",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S17",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S17",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S18",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S18",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S19",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S19",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S20",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S20",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S21",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "S22",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U01",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "asi"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U01",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "asi"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U02",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "async-functions"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U02",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "async-functions"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U03",
+      "variant": "raw",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "asi"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "directive-script"
+        }
+      ]
+    },
+    {
+      "id": "U04",
+      "variant": "module",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "module"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "module-profile"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U05",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U05",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U06",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U07",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "error-objects"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "global-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U08",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "async"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U08",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "async"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U09",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "RegExp"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U09",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "RegExp"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U10",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "asi"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U10",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "asi"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U11",
+      "variant": "non-strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "return-asi"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "sloppy-script"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    },
+    {
+      "id": "U11",
+      "variant": "strict",
+      "blockers": [
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "return-asi"
+        },
+        {
+          "status": "unsupported-profile",
+          "reasonCode": "strict-script-contract"
+        },
+        {
+          "status": "unsupported-feature",
+          "reasonCode": "harness-capabilities"
+        }
+      ]
+    }
+  ]
+}

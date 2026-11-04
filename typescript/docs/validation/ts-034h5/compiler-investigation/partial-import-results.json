@@ -1,0 +1,64 @@
+[
+  {
+    "name": "union-original",
+    "typecheck": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    },
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "false\n",
+      "stderr": ""
+    },
+    "build": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h5/compiler-investigation/union-original.ts:3:12 - error SC1090: reading 'callable' from a value of type 'GuestObject' is not supported yet\n\n  2 | function matches(o: GuestObject): boolean {\n  3 |     return o.callable !== null && o.constructorSlot === o.callable;\n    |            ^~~~~~~~~~\n  4 | }\n\nC:/Users/jonku/code/rift/typescript/docs/validation/ts-034h5/compiler-investigation/union-original.ts:5:21 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet\n\n  4 | }\n  5 | console.log(matches(new GuestObject()));\n    |                     ^~~~~~~~~~~~~~~~~\n  6 | \n\nC:/Users/jonku/code/rift/typescript/src/runtime.ts:109:97 - error SC2009: values of type 'Callable | null' cannot be compiled: the union shape is supported, but its arm 'ScriptGuestCallable' does not compile\n\n  108 |     private readonly immutablePrototypeSlot: boolean;\n  109 |     constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false, readonly callable: Callable | null = null, readonly constructorSlot: ScriptGuestCallable | null = null) {\n      |                                                                                                 ^~~~~~~~\n  110 |         this.prototypeSlot = proto;\n\n  hint: the outer shape is supported — the named component is the blocker; restate it inside the compilable set (number, string, boolean, arrays, Maps, Sets, RegExp, functions, classes, records, unions of those, and 'unknown')\n\n3 errors.\n"
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h5\\compiler-investigation\\union-original.ts\n\n  statements analyzed   412\n  compile statically    407  (98%)\n    dynamic slots       1  (declared types with no static lowering, held as checked-dynamic values; SC6104)\n      field 'callable' (declared 'Callable | null') (dynamic pieces)  C:/Users/jonku/code/rift/typescript/src/runtime.ts:109:97\n\n  blockers:\n      ×1  SC1090  comparisons of union-typed values (narrow first: check a discriminant field, or compare with '!== undefined'/'!== null' for unit arms)\n          at C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h5/compiler-investigation/union-original.ts:3:35\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n\n  in unreached code   (never lowered — cannot fail a build)\n      ×1  SC1090  method calls like 'context.realm.createBooleanObject'\n          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:10:57\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n      ×1  SC1090  method calls like 'context.realm.createNumberObject'\n          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:11:56\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n      ×1  SC1090  method calls like 'context.realm.createSymbolObject'\n          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:12:56\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n      ×1  SC1090  method calls like 'context.realm.createStringObject'\n          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:13:56\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n",
+      "stderr": ""
+    }
+  },
+  {
+    "name": "union-proposal",
+    "typecheck": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    },
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "false\n",
+      "stderr": ""
+    },
+    "build": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h5/compiler-investigation/union-proposal.ts:3:12 - error SC1090: reading 'callable' from a value of type 'GuestObject' is not supported yet\n\n  2 | function matches(o: GuestObject): boolean {\n  3 |     return o.callable !== null && o.callable.kind === \"script-guest\" && o.constructorSlot === o.callable;\n    |            ^~~~~~~~~~\n  4 | }\n\nC:/Users/jonku/code/rift/typescript/docs/validation/ts-034h5/compiler-investigation/union-proposal.ts:5:21 - error SC1090: constructing through a class value whose class has no lowering (the class declaration itself was rejected — see its own diagnostic) is not supported yet\n\n  4 | }\n  5 | console.log(matches(new GuestObject()));\n    |                     ^~~~~~~~~~~~~~~~~\n  6 | \n\nC:/Users/jonku/code/rift/typescript/src/runtime.ts:109:97 - error SC2009: values of type 'Callable | null' cannot be compiled: the union shape is supported, but its arm 'ScriptGuestCallable' does not compile\n\n  108 |     private readonly immutablePrototypeSlot: boolean;\n  109 |     constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false, readonly callable: Callable | null = null, readonly constructorSlot: ScriptGuestCallable | null = null) {\n      |                                                                                                 ^~~~~~~~\n  110 |         this.prototypeSlot = proto;\n\n  hint: the outer shape is supported — the named component is the blocker; restate it inside the compilable set (number, string, boolean, arrays, Maps, Sets, RegExp, functions, classes, records, unions of those, and 'unknown')\n\n3 errors.\n"
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h5\\compiler-investigation\\union-proposal.ts\n\n  statements analyzed   412\n  compile statically    407  (98%)\n    dynamic slots       1  (declared types with no static lowering, held as checked-dynamic values; SC6104)\n      field 'callable' (declared 'Callable | null') (dynamic pieces)  C:/Users/jonku/code/rift/typescript/src/runtime.ts:109:97\n\n  blockers:\n      ×1  SC1090  comparisons of union-typed values (narrow first: check a discriminant field, or compare with '!== undefined'/'!== null' for unit arms)\n          at C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h5/compiler-investigation/union-proposal.ts:3:73\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n\n  in unreached code   (never lowered — cannot fail a build)\n      ×1  SC1090  method calls like 'context.realm.createBooleanObject'\n          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:10:57\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n      ×1  SC1090  method calls like 'context.realm.createNumberObject'\n          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:11:56\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n      ×1  SC1090  method calls like 'context.realm.createSymbolObject'\n          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:12:56\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n      ×1  SC1090  method calls like 'context.realm.createStringObject'\n          at C:/Users/jonku/code/rift/typescript/src/object-conversion.ts:13:56\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n",
+      "stderr": ""
+    }
+  }
+]

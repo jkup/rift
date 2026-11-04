@@ -106,7 +106,7 @@ export class GuestObject {
     private extensible = true;
     private prototypeSlot: GuestObject | null;
     private readonly immutablePrototypeSlot: boolean;
-    constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false, readonly callable: Callable | null = null) {
+    constructor(proto: GuestObject | null = null, immutablePrototype: boolean = false, readonly callable: Callable | null = null, readonly constructorSlot: ScriptGuestCallable | null = null) {
         this.prototypeSlot = proto;
         this.immutablePrototypeSlot = immutablePrototype;
     }

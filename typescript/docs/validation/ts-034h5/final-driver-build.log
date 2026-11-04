@@ -1,0 +1,8 @@
+PASS test/harness-construct.ts
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\harness-construct.ts
+
+  statements analyzed   4274
+  compile statically    4274  (100%)
+
+  fully static — all analyzed statements compile to native code.
+

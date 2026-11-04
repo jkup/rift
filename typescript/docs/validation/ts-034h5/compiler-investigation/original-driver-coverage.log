@@ -1,0 +1,9 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\harness-construct.ts
+
+  statements analyzed   3730
+  compile statically    3729  (99%)
+
+  blockers:
+      ×1  SC1090  comparisons of union-typed values (narrow first: check a discriminant field, or compare with '!== undefined'/'!== null' for unit arms)
+          at C:/Users/jonku/code/rift/typescript/test/harness-construct.ts:86:112
+          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)

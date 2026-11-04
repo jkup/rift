@@ -21,6 +21,7 @@ export type Expr =
     | { kind: "compound"; loc: Location; target: Expr; value: Expr; op: "+" | "-" | "*" | "/" | "%" }
     | { kind: "conditional"; loc: Location; test: Expr; consequent: Expr; alternate: Expr }
     | { kind: "member"; loc: Location; base: Expr; key: Expr }
+    | { kind: "new"; loc: Location; callee: Expr; args: Expr[] }
     | { kind: "call"; loc: Location; callee: Expr; args: Expr[] }
     | { kind: "function"; loc: Location; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
     | { kind: "object"; loc: Location; keys: string[]; values: Expr[] };

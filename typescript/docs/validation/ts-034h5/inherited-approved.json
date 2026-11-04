@@ -1,0 +1,8 @@
+{
+  "name": "inherited",
+  "status": 1,
+  "signal": null,
+  "error": null,
+  "stdout": "replay-erb-reduce: 0\nreplay-restricted: 0\nreplay-accessors: 0\nreplay-e3b: 0\nreplay-e3a: 0\nnode-host-negatives: 0\nreplay-e3a-reduce: 0\nreplay-e3a-reachability: 0\nreplay-e2: 0\nreplay-e1: 0\nreplay-plans: 0\nreplay-baseline: 0\nreplay-metadata: 0\nreplay-stress: 0\nreplay-global: 0\nreplay-bootstrap: 1\n",
+  "stderr": " node:internal/modules/run_main:111\r\n    triggerUncaughtException(\r\n    ^\r\n\r\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\r\n\r\n1 !== 0\r\n\r\n    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h5/replays/replay-bootstrap.mjs:17:10\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\r\n    at async node:internal/modules/esm/loader:650:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5) {\r\n  generatedMessage: true,\r\n  code: 'ERR_ASSERTION',\r\n  actual: 1,\r\n  expected: 0,\r\n  operator: 'strictEqual',\r\n  diff: 'simple'\r\n}\r\n\r\nNode.js v26.13.0\r\n\n"
+}

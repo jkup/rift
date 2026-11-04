@@ -629,3 +629,28 @@ separate zero-dynamic gates (new driver4,076 statements),both runtime inputs and
 approved private reference wrapper preserves the original shared Reference
 shape;one inner reference retains its key cache. Actual and independent second
 acceptance are still pending.
+
+## TS-034H5 — ordinary base Script construction and instanceof
+
+The internal Script evaluator now supports the bounded `new` grammar for
+ordinary base Script functions and `instanceof` with canonical @@hasInstance
+hook dispatch plus ordinary prototype-chain fallback. Constructibility is a
+separate branded slot. Calls and construction share activation/body evaluation;
+prototype access/allocation retain caller provenance, fallback uses the callee
+Realm, and object return values replace the fresh receiver. Strict/sloppy
+constructor receivers, abrupt/source identity, one-use builtin permits and
+resource cleanup are preserved.
+
+Script Function.prototype receives a Realm-owned, nonconstructible
+`[Symbol.hasInstance]` method at the shared canonical symbol key. No Symbol
+global/factory is installed. Legacy/public execution admission remains unchanged;
+classes, derived/new.target, bound constructors, Reflect/Proxy, genuine Error
+objects and Number construction remain outside this slice.
+
+Candidate validation passes212 exact records per host,54 static-only/separate
+zero-dynamic gates (H5driver4274),172 fresh/seven-seeded prefixes and both runtime
+inputs,H1–H4/E4/all17 inherited groups,both Node boundaries,typecheck,runner20,
+probes10,host73,observations22. Three exact old-test migrations were independently
+approved;3606 protected files and60 blocked variants are preserved.
+See [H5 evidence](validation/ts-034h5/README.md). Implementation awaits actual and
+independent second acceptance; this is not publication or a conformance claim.

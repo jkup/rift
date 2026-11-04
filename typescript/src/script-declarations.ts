@@ -242,7 +242,7 @@ class DeclarationCollector {
             case "assign": case "compound": this.expression(node.value, scope, variableScope); this.expression(node.target, scope, variableScope); break;
             case "conditional": this.expression(node.alternate, scope, variableScope); this.expression(node.consequent, scope, variableScope); this.expression(node.test, scope, variableScope); break;
             case "member": this.expression(node.key, scope, variableScope); this.expression(node.base, scope, variableScope); break;
-            case "call":
+            case "new": case "call":
                 for (let i = node.args.length - 1; i >= 0; i--) this.expression(node.args[i], scope, variableScope);
                 this.expression(node.callee, scope, variableScope); break;
             case "literal": case "identifier": case "this": break;

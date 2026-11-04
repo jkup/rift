@@ -1,0 +1,23 @@
+{
+  "base": "7f80383",
+  "path": "typescript/test/script-realm-bootstrap.ts",
+  "baselineSha256": "95a1aa8dd825cfd5d8fdf6764e99697f92d58d233d6c3a192f102dd4d205fe51",
+  "changes": [
+    [
+      "wellKnownToPrimitive, wellKnownToStringTag",
+      "wellKnownToPrimitive, wellKnownToStringTag, wellKnownHasInstance"
+    ],
+    [
+      "[\"name\",\"length\",\"caller\",\"arguments\",\"call\",\"toString\"]",
+      "[\"name\",\"length\",\"caller\",\"arguments\",\"call\",\"toString\",wellKnownHasInstance]"
+    ],
+    [
+      "    check(a.functionPrototype.callable!==null && a.functionPrototype.callable.realm===a,\"inline owner\");",
+      "    check(a.functionPrototype.callable!==null && a.functionPrototype.callable.realm===a,\"inline owner\");\n    const hasInstance=own(a.functionPrototype,wellKnownHasInstance), hasInstanceFunction=object(hasInstance);\n    desc(a.functionPrototype,wellKnownHasInstance,hasInstance,false,false,false);\n    check(hasInstanceFunction.getPrototypeOf()===a.functionPrototype && hasInstanceFunction.callable!==null && hasInstanceFunction.callable.realm===a && hasInstanceFunction.constructorSlot===null && hasInstanceFunction.getOwnProperty(\"prototype\")===undefined,\"hasInstance owner and slots\");\n    keys(hasInstanceFunction,[\"name\",\"length\"]);\n    desc(hasInstanceFunction,\"name\",{kind:\"string\",value:\"[Symbol.hasInstance]\"},false,false,true);\n    desc(hasInstanceFunction,\"length\",n(1),false,false,true);"
+    ],
+    [
+      "    case \"B01\": {",
+      "    case \"B01\": {\n        for(const l of [x,y]) check(l.functionPrototype.getOwnProperty(wellKnownHasInstance)===undefined,\"legacy hasInstance absent\");"
+    ]
+  ]
+}

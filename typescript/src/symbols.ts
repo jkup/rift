@@ -6,6 +6,7 @@ export class GuestSymbol {
 }
 
 // Shared semantic identity across every Realm in this runtime module instance.
+export const wellKnownHasInstance = new GuestSymbol("Symbol.hasInstance");
 export const wellKnownToPrimitive = new GuestSymbol("Symbol.toPrimitive");
 export const wellKnownToStringTag = new GuestSymbol("Symbol.toStringTag");
 

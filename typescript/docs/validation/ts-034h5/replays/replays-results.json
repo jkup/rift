@@ -1,0 +1,130 @@
+[
+  {
+    "name": "replay-erb-reduce",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "key join reduction PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-restricted",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node caller|7|left: accessor controls PASS\nnode arguments|11|right: accessor controls PASS\nnative caller|7|left: accessor controls PASS\nnative arguments|11|right: accessor controls PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-accessors",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node seed|7: accessor controls PASS\nnode other|11: accessor controls PASS\nnative seed|7: accessor controls PASS\nnative other|11: accessor controls PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-e3b",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node seed 7: E3B setup controls PASS\nnode other 11: E3B setup controls PASS\nnative seed 7: E3B setup controls PASS\nnative other 11: E3B setup controls PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-e3a",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node seed 7: E3A runtime controls PASS (host-only casts excluded explicitly)\nnode other 11: E3A runtime controls PASS (host-only casts excluded explicitly)\nnative seed 7: E3A runtime controls PASS (host-only casts excluded explicitly)\nnative other 11: E3A runtime controls PASS (host-only casts excluded explicitly)\n",
+    "stderr": ""
+  },
+  {
+    "name": "node-host-negatives",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "Node-only hostile host negatives: 2 PASS; native compile-rejection controls are separate.\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-e3a-reduce",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "forged-record: Node rejects fake; pinned static build/coverage reject cast SC2002\nforged-class: Node rejects fake; pinned static build/coverage reject cast SC1090\nforeign-union: Node rejects fake; pinned static build/coverage reject cast SC2003\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-e3a-reachability",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "Opaque-class reachability: type-only entry rejected; module import builds with zero dynamic tier.\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-e2",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node seed: L/T/C literal controls PASS\nnode other: L/T/C literal controls PASS\nnative seed: L/T/C literal controls PASS\nnative other: L/T/C literal controls PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-e1",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node seed: P01-P05/U01 and nested/resource/boundary/input controls PASS\nnode other: P01-P05/U01 and nested/resource/boundary/input controls PASS\nnative seed: P01-P05/U01 and nested/resource/boundary/input controls PASS\nnative other: P01-P05/U01 and nested/resource/boundary/input controls PASS\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-plans",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node: 71 literal rows; R05 two units; 39 visitor/ordering/grammar/flat-list controls; 23 resource/flat/deep controls passed\nnative: 71 literal rows; R05 two units; 39 visitor/ordering/grammar/flat-list controls; 23 resource/flat/deep controls passed\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-baseline",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node: 136 inherited plus 71 new exact legacy parse/audit/metadata records match c755a6a\nnative: 136 inherited plus 71 new exact legacy parse/audit/metadata records match c755a6a\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-metadata",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node: 136 exact legacy parse/audit records; 42 literal metadata cases passed\nnative: 136 exact legacy parse/audit records; 42 literal metadata cases passed\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-stress",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node: 8 deep-chain runtime-source controls pass; no source effects or truncation\nnative: 8 deep-chain runtime-source controls pass; no source effects or truncation\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-global",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "node: 15 named host rows pass for literal and renamed runtime inputs\nnative: 15 named host rows pass for literal and renamed runtime inputs\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-bootstrap",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "node:internal/modules/run_main:111\r\n    triggerUncaughtException(\r\n    ^\r\n\r\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\r\n\r\n1 !== 0\r\n\r\n    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h5/replays/replay-bootstrap.mjs:17:10\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\r\n    at async node:internal/modules/esm/loader:650:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5) {\r\n  generatedMessage: true,\r\n  code: 'ERR_ASSERTION',\r\n  actual: 1,\r\n  expected: 0,\r\n  operator: 'strictEqual',\r\n  diff: 'simple'\r\n}\r\n\r\nNode.js v26.13.0\r\n"
+  }
+]

@@ -1,0 +1,8 @@
+C:/Users/jonku/code/rift/typescript/test/harness-construct.ts:86:112 - error SC1090: comparisons of union-typed values (narrow first: check a discriminant field, or compare with '!== undefined'/'!== null' for unit arms) are not supported yet
+
+  85 |  const a=fresh(),b=fresh(),ca=constructor(a),cb=constructor(b);define(b,"A",ca);define(b,"a",(run('new C();',a) as {type:"normal";value:Value}).value);logCase("I11 grammar",'function C(){}out(new C instanceof C);',"true");const out:Value[]=[];recorder(b,out);run('out(a instanceof A);out(a instanceof C);C.prototype=A.prototype;out(a instanceof C);',b);check(out.map(scalar).join(",")==="true,false,t…
+  86 |  for(const r of [a,b]){const c=own(r,"C"),o=object(c),d=o.getOwnProperty("prototype");check(o.callable!==null&&o.constructorSlot===o.callable&&d?.kind==="data"&&d.writable&&!d.enumerable&&!d.configurable,"D01 D05");const m=r.functionPrototype.getOwnProperty(wellKnownHasInstance);check(m?.kind==="data"&&!m.writable&&!m.enumerable&&!m.configurable,"D02 flags");if(m?.kind!=="data")throw new Error("me…
+     |                                                                                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  87 |  const ma=a.functionPrototype.getOwnProperty(wellKnownHasInstance),mb=b.functionPrototype.getOwnProperty(wellKnownHasInstance);check(ma?.kind==="data"&&mb?.kind==="data"&&!sameValue(ma.value,mb.value),"different Realm methods");const legacy=new Realm((_s:string)=>{});check(legacy.functionPrototype.getOwnProperty(wellKnownHasInstance)===undefined,"legacy unchanged");
+
+1 error.

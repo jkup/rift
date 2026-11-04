@@ -1,0 +1,2 @@
+PASS 3606 protected files, three exact whole-file migrations, frozen controls,60 blocked variants
+PASS 212 exact records/lane,53+1 static gates

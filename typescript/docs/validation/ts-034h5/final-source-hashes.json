@@ -1,0 +1,50 @@
+[
+  {
+    "path": "typescript/src/runtime.ts",
+    "sha256": "9e5bc49bab6717497a60f0cfa2c9a65cfb95c98d99880fca939e85b23cbdcde0"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "sha256": "2f00e45d02e719ab4ce9272132ed86022a1f857729f1cadc0ec8ca6f96c051eb"
+  },
+  {
+    "path": "typescript/src/syntax.ts",
+    "sha256": "9df324c84b784431874d8c840416f1d0cbf7729733a2d14923a1dcd784f331d4"
+  },
+  {
+    "path": "typescript/src/parser.ts",
+    "sha256": "d9e46d8a88ce9fe683625a09d439df2da50fc0fceaf2720adf7d6d1d953e1b73"
+  },
+  {
+    "path": "typescript/src/script-declarations.ts",
+    "sha256": "5d1a98b20717ed7f9bb4e072b09f833c12e485f7cd1b3e972af514d7f753c5aa"
+  },
+  {
+    "path": "typescript/src/builtins/function.ts",
+    "sha256": "cf6474a064cbc43f7f8439fa4f4f899b09fca02bdcebb63deb59dfa7c5d41046"
+  },
+  {
+    "path": "typescript/src/symbols.ts",
+    "sha256": "977a99b9f5b83be7ec896d00abd99fb14bc2490343cc24b1c006076aec55cd55"
+  },
+  {
+    "path": "typescript/test/script-execution.ts",
+    "sha256": "114218b7ff25e5d9e7f8ff76032ab7fb02d3102c01cb1f9c8541ab56574aca0b"
+  },
+  {
+    "path": "typescript/test/harness-nonstrict.ts",
+    "sha256": "66518873f555f75bb92363c5003ae668b0dd61dbf7ceb31b4dfb3fb041ce6757"
+  },
+  {
+    "path": "typescript/test/harness-construct.ts",
+    "sha256": "4c08c12b0168898f8c956bb53b1e3c0b70ce3958174b8cd09695f4ec95410d53"
+  },
+  {
+    "path": "typescript/test/script-realm-bootstrap.ts",
+    "sha256": "54f3f073b0d1bc90d15374cba969cf9a9b6b824f82c9fd1303aa237161d6bea4"
+  },
+  {
+    "path": "typescript/tools/build-native.mjs",
+    "sha256": "8a11c26e1f8cac62c9da9158af38c31814d617a38a9e5c0f17b0712f3b7c6dc2"
+  }
+]

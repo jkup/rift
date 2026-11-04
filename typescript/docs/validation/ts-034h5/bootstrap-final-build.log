@@ -1,0 +1,8 @@
+PASS test/script-realm-bootstrap.ts
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\script-realm-bootstrap.ts
+
+  statements analyzed   3926
+  compile statically    3926  (100%)
+
+  fully static — all analyzed statements compile to native code.
+

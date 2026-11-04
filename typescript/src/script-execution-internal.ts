@@ -1,3 +1,4 @@
+import { instanceofOperator } from "./builtins/function.js";
 import { parseDeclarationPlan, parseBoundedScriptDeclarationPlan } from "./parser.js";
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
@@ -332,7 +333,7 @@ class ExecutableScript {
         const callable = ScriptGuestCallable.create({ key: this.#activationKey, record: this, realm: state.realm,
             scopeId, environment, strict: entry.scope.strict, unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
             text: entry.source.source.text.slice(entry.source.start, entry.source.end), formals: entry.node.params.slice() });
-        const object = new GuestObject(state.realm.functionPrototype, false, callable);
+        const object = new GuestObject(state.realm.functionPrototype, false, callable, callable);
         const prototypeObject = new GuestObject(state.realm.objectPrototype);
         const value: Value = { kind: "object", object };
         prototypeObject.bootstrapDefine("constructor", { value, writable: true, enumerable: false, configurable: true });
@@ -903,6 +904,18 @@ class ExecutionEngine {
                 }
                 return normal({ kind: "object", object });
             }
+            case "new": {
+                if (!this.#script) throw new Error("Script construction unavailable");
+                const callee = this.#eval(expr.callee, env, receiver);
+                if (callee.type !== "normal") return callee;
+                const args: Value[] = [];
+                for (const arg of expr.args) {
+                    const value = this.#eval(arg, env, receiver);
+                    if (value.type !== "normal") return value;
+                    args.push(value.value);
+                }
+                return this.#construct(callee.value, args, expr.loc);
+            }
             case "call": {
                 let thisValue = UNDEFINED;
                 let callee: Completion;
@@ -956,6 +969,7 @@ class ExecutionEngine {
                 return this.#eval(expr.alternate, env, receiver);
             }
             case "binary": {
+                if (expr.op === "instanceof" && !this.#script) throw new Error("Script instanceof unavailable");
                 const left = this.#eval(expr.left, env, receiver);
                 if (left.type !== "normal") return left;
                 if (expr.op === "&&" && !truthy(left.value)) return left;
@@ -963,6 +977,7 @@ class ExecutionEngine {
                 const right = this.#eval(expr.right, env, receiver);
                 if (right.type !== "normal") return right;
                 if (expr.op === "&&" || expr.op === "||") return right;
+                if (expr.op === "instanceof") return instanceofOperator(left.value, right.value, this.context, expr.loc);
                 return this.binary(expr.op, left.value, right.value, expr.loc);
             }
         }
@@ -1362,6 +1377,58 @@ class ExecutionEngine {
             case "break": case "continue": return { type: stmt.kind, payload: { kind: "empty" } };
         }
     }
+    #construct(callee: Value, args: Value[], loc: Location): ValueCompletion {
+        const saved = this.#active();
+        if (callee.kind !== "object" || callee.object.constructorSlot === null) return failure("TypeError", "value is not a constructor", loc);
+        const fn = callee.object.constructorSlot;
+        if (fn.kind !== "script-guest" || fn !== callee.object.callable || fn.realm.profile !== saved.realm.profile)
+            throw new Error("invalid Script constructor metadata");
+        ExecutableScript.readFunction(fn.record, fn, executionKey);
+        if (this.calls >= this.maxCalls) {
+            const result = resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
+            this.#capture(result);
+            return result;
+        }
+        const savedRealm = this.activeContext.realm, savedCalls = this.calls;
+        this.calls++;
+        try {
+            // Reserve constructor depth before getters; prototype/allocation
+            // failures still belong to the caller frame and Realm.
+            const prototype = callee.object.internalGet("prototype", callee, this.context, loc);
+            if (prototype.type === "throw") { this.#capture(prototype); return prototype; }
+            const proto = prototype.value.kind === "object" ? prototype.value.object : fn.realm.objectPrototype;
+            const budget = this.tick(loc);
+            if (budget.type === "throw") { this.#capture(budget); return budget; }
+            const receiver: Value = { kind: "object", object: new GuestObject(proto) };
+            this.activeContext.realm = fn.realm;
+            const result = this.#executeScriptFunction(fn, receiver, args);
+            if (result.type === "throw") return result;
+            return result.value.kind === "object" ? result : normal(receiver);
+        } finally {
+            this.#frame = saved;
+            this.activeContext.realm = savedRealm;
+            this.calls = savedCalls;
+        }
+    }
+    #executeScriptFunction(fn: ScriptGuestCallable, receiver: Value, args: Value[]): ValueCompletion {
+        const record = fn.record;
+        const source = ExecutableScript.readFunction(record, fn, executionKey);
+        // Allocation failures already belong to the callee code/Realm.
+        this.#frame = { realm: fn.realm, record, scopeId: source.scopeId, lexical: fn.environment,
+            variable: fn.environment, strict: fn.strict, thisValue: receiver, function: fn,
+            privateEnvironment: null, phase: "instantiation" };
+        const created = record.createFunctionEnvironment(fn, receiver, this.context);
+        if (created.type === "throw") { this.#capture(created); return created; }
+        this.#frame = { ...this.#active(), lexical: created.environment, variable: created.environment, thisValue: created.environment.thisValue };
+        const setup = record.instantiateFunction(created.environment, args, this.context);
+        if (setup.type === "throw") { this.#capture(setup); return setup; }
+        this.#frame = { ...this.#active(), lexical: record.functionBodyEnvironment(created.environment), phase: "body" };
+        const result = this.#list(source.body);
+        if (result.type === "throw") { this.#capture(result); return result; }
+        if (result.type === "return") return normal(result.value);
+        if (result.type === "normal") return normal();
+        throw new Error("invalid Script function completion");
+    }
     #callScript(callee: Value, receiver: Value, args: Value[], loc: Location): ValueCompletion {
         const saved = this.#active();
         if (callee.kind !== "object" || callee.object.callable === null) throw new Error("invalid private dispatch");
@@ -1388,23 +1455,7 @@ class ExecutionEngine {
                     throw new Error("invalid completion escaped call boundary: " + result.type);
                 } finally { pendingBuiltin = previous; }
             }
-            const record = fn.record;
-            const source = ExecutableScript.readFunction(record, fn, executionKey);
-            // Allocation failures already belong to the callee code/Realm.
-            this.#frame = { realm: fn.realm, record, scopeId: source.scopeId, lexical: fn.environment,
-                variable: fn.environment, strict: fn.strict, thisValue: receiver, function: fn,
-                privateEnvironment: null, phase: "instantiation" };
-            const created = record.createFunctionEnvironment(fn, receiver, this.context);
-            if (created.type === "throw") { this.#capture(created); return created; }
-            this.#frame = { ...this.#active(), lexical: created.environment, variable: created.environment, thisValue: created.environment.thisValue };
-            const setup = record.instantiateFunction(created.environment, args, this.context);
-            if (setup.type === "throw") { this.#capture(setup); return setup; }
-            this.#frame = { ...this.#active(), lexical: record.functionBodyEnvironment(created.environment), phase: "body" };
-            const result = this.#list(source.body);
-            if (result.type === "throw") { this.#capture(result); return result; }
-            if (result.type === "return") return normal(result.value);
-            if (result.type === "normal") return normal();
-            throw new Error("invalid Script function completion");
+            return this.#executeScriptFunction(fn, receiver, args);
         } finally {
             this.#frame = saved;
             this.activeContext.realm = savedRealm;

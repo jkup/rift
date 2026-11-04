@@ -1,0 +1,106 @@
+[
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/bounded-boundary.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/bounded-boundary.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/node-boundary.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/node-boundary.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/node-host-negatives.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/node-host-negatives.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-accessors.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-accessors.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-baseline.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-baseline.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-bootstrap.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-bootstrap.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-d2.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-d2.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-e1.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-e1.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-e2.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-e2.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-e3a-reachability.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-e3a-reachability.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-e3a-reduce.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-e3a-reduce.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-e3a.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-e3a.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-e3b.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-e3b.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-erb-reduce.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-erb-reduce.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-global.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-global.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-metadata.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-metadata.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-plans.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-plans.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-restricted.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-restricted.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replay-stress.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replay-stress.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/replays.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/replays.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/suites.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/suites.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replays/validate.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replays/validate.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replay-for-update.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replay-for-update.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replay-switch.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replay-switch.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/replay-catch.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replay-catch.mjs"
+  },
+  {
+    "source": "typescript/docs/validation/ts-034h4/validate.mjs",
+    "target": "typescript/docs/validation/ts-034h5/replay-nonstrict.mjs"
+  }
+]
