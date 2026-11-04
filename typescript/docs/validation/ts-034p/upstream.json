@@ -1,0 +1,4636 @@
+[
+  {
+    "url": "https://262.ecma-international.org/16.0/",
+    "bytes": 8169822,
+    "sha256": "6a28f9423133ed7b7c59a40baf620c2740f12f0bc9c251042f2a85b9cc5ed713",
+    "excerpts": [
+      {
+        "id": "sec-ordinarycallbindthis",
+        "text": "10.2.1.2 OrdinaryCallBindThis ( F , calleeContext , thisArgument ) The abstract operation OrdinaryCallBindThis takes arguments F (an ECMAScript function object ), calleeContext (an execution context ), and thisArgument (an ECMAScript language value ) and returns unused . It performs the following steps when called: 1. Let thisMode be F . [[ThisMode]] . 2. If thisMode is lexical , return unused . 3. Let calleeRealm be F . [[Realm]] . 4. Let localEnv be the LexicalEnvironment of calleeContext . 5. If thisMode is strict , then a. Let thisValue be thisArgument . 6. Else, a. If thisArgument is either undefined or null , then i. Let globalEnv be calleeRealm . [[GlobalEnv]] . ii. Assert : globalEnv is a Global Environment Record . iii. Let thisValue be globalEnv . [[GlobalThisValue]] . b. Else, i. Let thisValue be !&nbsp; ToObject ( thisArgument ). ii. NOTE: ToObject produces wrapper objects using calleeRealm . 7. Assert : localEnv is a Function Environment Record . 8. Assert : The next step never returns an abrupt completion because localEnv . [[ThisBindingStatus]] is not initialized . 9. Perform !&nbsp; BindThisValue ( localEnv , thisValue ). 10. Return unused ."
+      },
+      {
+        "id": "sec-ecmascript-function-objects-construct-argumentslist-newtarget",
+        "text": "10.2.2 [[Construct]] ( argumentsList , newTarget ) The [[Construct]] internal method of an ECMAScript function object F takes arguments argumentsList (a List of ECMAScript language values ) and newTarget (a constructor ) and returns either a normal completion containing an Object or a throw completion . It performs the following steps when called: 1. Let callerContext be the running execution context . 2. Let kind be F . [[ConstructorKind]] . 3. If kind is base , then a. Let thisArgument be ?&nbsp; OrdinaryCreateFromConstructor ( newTarget , \"%Object.prototype%\" ). 4. Let calleeContext be PrepareForOrdinaryCall ( F , newTarget ). 5. Assert : calleeContext is now the running execution context . 6. If kind is base , then a. Perform OrdinaryCallBindThis ( F , calleeContext , thisArgument ). b. Let initializeResult be Completion ( InitializeInstanceElements ( thisArgument , F )). c. If initializeResult is an abrupt completion , then i. Remove calleeContext from the execution context stack and restore callerContext as the running execution context . ii. Return ?&nbsp; initializeResult . 7. Let constructorEnv be the LexicalEnvironment of calleeContext . 8. Let result be Completion ( OrdinaryCallEvaluateBody ( F , argumentsList )). 9. Remove calleeContext from the execution context stack and restore callerContext as the running execution context . 10. If result is a throw completion , then a. Return ?&nbsp; result . 11. Assert : result is a return completion . 12. If result . [[Value]] is an Object , return result . [[Value]] . 13. If kind is base , return thisArgument . 14. If result . [[Value]] is not undefined , throw a TypeError exception. 15. Let thisBinding be ?&nbsp; constructorEnv .GetThisBinding(). 16. Assert : thisBinding is an Object . 17. Return thisBinding ."
+      },
+      {
+        "id": "sec-ordinaryhasinstance",
+        "text": "7.3.21 OrdinaryHasInstance ( C , O ) The abstract operation OrdinaryHasInstance takes arguments C (an ECMAScript language value ) and O (an ECMAScript language value ) and returns either a normal completion containing a Boolean or a throw completion . It implements the default algorithm for determining if O inherits from the instance object inheritance path provided by C . It performs the following steps when called: 1. If IsCallable ( C ) is false , return false . 2. If C has a [[BoundTargetFunction]] internal slot, then a. Let BC be C . [[BoundTargetFunction]] . b. Return ?&nbsp; InstanceofOperator ( O , BC ). 3. If O is not an Object , return false . 4. Let P be ?&nbsp; Get ( C , \"prototype\" ). 5. If P is not an Object , throw a TypeError exception. 6. Repeat, a. Set O to ?&nbsp; O . [[GetPrototypeOf]] (). b. If O is null , return false . c. If SameValue ( P , O ) is true , return true ."
+      },
+      {
+        "id": "sec-instanceofoperator",
+        "text": "13.10.2 InstanceofOperator ( V , target ) The abstract operation InstanceofOperator takes arguments V (an ECMAScript language value ) and target (an ECMAScript language value ) and returns either a normal completion containing a Boolean or a throw completion . It implements the generic algorithm for determining if V is an instance of target either by consulting target 's %Symbol.hasInstance% method or, if absent, determining whether the value of target 's \"prototype\" property is present in V 's prototype chain. It performs the following steps when called: 1. If target is not an Object , throw a TypeError exception. 2. Let instOfHandler be ?&nbsp; GetMethod ( target , %Symbol.hasInstance% ). 3. If instOfHandler is not undefined , then a. Return ToBoolean (? Call ( instOfHandler , target , « V &nbsp;»)). 4. If IsCallable ( target ) is false , throw a TypeError exception. 5. Return ?&nbsp; OrdinaryHasInstance ( target , V ). Note Steps 4 and 5 provide compatibility with previous editions of ECMAScript that did not use a %Symbol.hasInstance% method to define the instanceof operator semantics. If an object does not define or inherit %Symbol.hasInstance% it uses the default instanceof semantics."
+      },
+      {
+        "id": "sec-try-statement-runtime-semantics-evaluation",
+        "text": "14.15.3 Runtime Semantics: Evaluation TryStatement : try Block Catch 1. Let B be Completion ( Evaluation of Block ). 2. If B is a throw completion , let C be Completion ( CatchClauseEvaluation of Catch with argument B . [[Value]] ). 3. Else, let C be B . 4. Return ?&nbsp; UpdateEmpty ( C , undefined ). TryStatement : try Block Finally 1. Let B be Completion ( Evaluation of Block ). 2. Let F be Completion ( Evaluation of Finally ). 3. If F is a normal completion , set F to B . 4. Return ?&nbsp; UpdateEmpty ( F , undefined ). TryStatement : try Block Catch Finally 1. Let B be Completion ( Evaluation of Block ). 2. If B is a throw completion , let C be Completion ( CatchClauseEvaluation of Catch with argument B . [[Value]] ). 3. Else, let C be B . 4. Let F be Completion ( Evaluation of Finally ). 5. If F is a normal completion , set F to C . 6. Return ?&nbsp; UpdateEmpty ( F , undefined )."
+      },
+      {
+        "id": "sec-runtime-semantics-catchclauseevaluation",
+        "text": "14.15.2 Runtime Semantics: CatchClauseEvaluation The syntax-directed operation CatchClauseEvaluation takes argument thrownValue (an ECMAScript language value ) and returns either a normal completion containing either an ECMAScript language value or empty , or an abrupt completion . It is defined piecewise over the following productions: Catch : catch ( CatchParameter ) Block 1. Let oldEnv be the running execution context 's LexicalEnvironment. 2. Let catchEnv be NewDeclarativeEnvironment ( oldEnv ). 3. For each element argName of the BoundNames of CatchParameter , do a. Perform !&nbsp; catchEnv .CreateMutableBinding( argName , false ). 4. Set the running execution context 's LexicalEnvironment to catchEnv . 5. Let status be Completion ( BindingInitialization of CatchParameter with arguments thrownValue and catchEnv ). 6. If status is an abrupt completion , then a. Set the running execution context 's LexicalEnvironment to oldEnv . b. Return ?&nbsp; status . 7. Let B be Completion ( Evaluation of Block ). 8. Set the running execution context 's LexicalEnvironment to oldEnv . 9. Return ?&nbsp; B . Catch : catch Block 1. Return ?&nbsp; Evaluation of Block . Note No matter how control leaves the Block the LexicalEnvironment is always restored to its former state."
+      },
+      {
+        "id": "sec-error-constructor",
+        "text": "20.5.1 The Error Constructor The Error constructor : is %Error% . is the initial value of the \"Error\" property of the global object . creates and initializes a new Error object when called as a function rather than as a constructor . Thus the function call Error(…) is equivalent to the object creation expression new Error(…) with the same arguments. may be used as the value of an extends clause of a class definition. Subclass constructors that intend to inherit the specified Error behaviour must include a super call to the Error constructor to create and initialize subclass instances with an [[ErrorData]] internal slot. 20.5.1.1 Error ( message [ , options ] ) This function performs the following steps when called: 1. If NewTarget is undefined , let newTarget be the active function object ; else let newTarget be NewTarget. 2. Let O be ?&nbsp; OrdinaryCreateFromConstructor ( newTarget , \"%Error.prototype%\" , « [[ErrorData]] &nbsp;»). 3. If message is not undefined , then a. Let msg be ?&nbsp; ToString ( message ). b. Perform CreateNonEnumerableDataPropertyOrThrow ( O , \"message\" , msg ). 4. Perform ?&nbsp; InstallErrorCause ( O , options ). 5. Return O ."
+      },
+      {
+        "id": "sec-nativeerror-object-structure",
+        "text": "20.5.6 NativeError Object Structure Each of these objects has the structure described below, differing only in the name used as the constructor name and in the \"name\" property of the prototype object. For each error object, references to NativeError in the definition should be replaced with the appropriate error object name from 20.5.5 . 20.5.6.1 The NativeError Constructors Each NativeError constructor : creates and initializes a new NativeError object when called as a function rather than as a constructor . A call of the object as a function is equivalent to calling it as a constructor with the same arguments. Thus the function call NativeError (…) is equivalent to the object creation expression new NativeError (…) with the same arguments. may be used as the value of an extends clause of a class definition. Subclass constructors that intend to inherit the specified NativeError behaviour must include a super call to the NativeError constructor to create and initialize subclass instances with an [[ErrorData]] internal slot. 20.5.6.1.1 NativeError ( message [ , options ] ) Each NativeError function performs the following steps when called: 1. If NewTarget is undefined , let newTarget be the active function object ; else let newTarget be NewTarget. 2. Let O be ?&nbsp; OrdinaryCreateFromConstructor ( newTarget , \"% NativeError .prototype%\" , « [[ErrorData]] &nbsp;»). 3. If message is not undefined , then a. Let msg be ?&nbsp; ToString ( message ). b. Perform CreateNonEnumerableDataPropertyOrThrow ( O , \"message\" , msg ). 4. Perform ?&nbsp; InstallErrorCause ( O , options ). 5. Return O . The actual value of the string passed in step 2 is either \"%EvalError.prototype%\" , \"%RangeError.prototype%\" , \"%ReferenceError.prototype%\" , \"%SyntaxError.prototype%\" , \"%TypeError.prototype%\" , or \"%URIError.prototype%\" corresponding to which NativeError constructor is being defined. 20.5.6.2 Properties of the NativeError Constructors Each NativeError constructor : has a [[Prototype]] internal slot whose value is %Error% . has a \"name\" property whose value is the String value \" NativeError \" . has the following properties: 20.5.6.2.1 NativeError .prototype The initial value of NativeError .prototype is a NativeError prototype object ( 20.5.6.3 ). Each NativeError constructor has a distinct prototype object. This property has the attributes { [[Writable]] : false , [[Enumerable]] : false , [[Configurable]] : false }. 20.5.6.3 Properties of the NativeError Prototype Objects Each NativeError prototype object : is an ordinary object . is not an Error instance and does not have an [[ErrorData]] internal slot. has a [[Prototype]] internal slot whose value is %Error.prototype% . 20.5.6.3.1 NativeError .prototype.constructor The initial value of the \"constructor\" property of the prototype for a given NativeError constructor is the constructor itself. 20.5.6.3.2 NativeError .prototype.message The initial value of the \"message\" property of the prototype for a given NativeError constructor is the empty String. 20.5.6.3.3 NativeError .prototype.name The initial value of the \"name\" property of the prototype for a given NativeError constructor is the String value consisting of the name of the constructor (the name used instead of NativeError ). 20.5.6.4 Properties of NativeError Instances NativeError instances are ordinary objects that inherit properties from their NativeError prototype object and have an [[ErrorData]] internal slot whose value is undefined . The only specified use of [[ErrorData]] is by Object.prototype.toString ( 20.1.3.6 ) to identify Error, AggregateError, or NativeError instances."
+      },
+      {
+        "id": "sec-runtime-semantics-caseblockevaluation",
+        "text": "14.12.2 Runtime Semantics: CaseBlockEvaluation The syntax-directed operation CaseBlockEvaluation takes argument input (an ECMAScript language value ) and returns either a normal completion containing an ECMAScript language value or an abrupt completion . It is defined piecewise over the following productions: CaseBlock : { } 1. Return undefined . CaseBlock : { CaseClauses } 1. Let V be undefined . 2. Let A be the List of CaseClause items in CaseClauses , in source text order. 3. Let found be false . 4. For each CaseClause C of A , do a. If found is false , then i. Set found to ?&nbsp; CaseClauseIsSelected ( C , input ). b. If found is true , then i. Let R be Completion ( Evaluation of C ). ii. If R . [[Value]] is not empty , set V to R . [[Value]] . iii. If R is an abrupt completion , return ?&nbsp; UpdateEmpty ( R , V ). 5. Return V . CaseBlock : { CaseClauses opt DefaultClause CaseClauses opt } 1. Let V be undefined . 2. If the first CaseClauses is present, then a. Let A be the List of CaseClause items in the first CaseClauses , in source text order. 3. Else, a. Let A be a new empty List . 4. Let found be false . 5. For each CaseClause C of A , do a. If found is false , then i. Set found to ?&nbsp; CaseClauseIsSelected ( C , input ). b. If found is true , then i. Let R be Completion ( Evaluation of C ). ii. If R . [[Value]] is not empty , set V to R . [[Value]] . iii. If R is an abrupt completion , return ?&nbsp; UpdateEmpty ( R , V ). 6. Let foundInB be false . 7. If the second CaseClauses is present, then a. Let B be the List of CaseClause items in the second CaseClauses , in source text order. 8. Else, a. Let B be a new empty List . 9. If found is false , then a. For each CaseClause C of B , do i. If foundInB is false , then 1. Set foundInB to ?&nbsp; CaseClauseIsSelected ( C , input ). ii. If foundInB is true , then 1. Let R be Completion ( Evaluation of CaseClause C ). 2. If R . [[Value]] is not empty , set V to R . [[Value]] . 3. If R is an abrupt completion , return ?&nbsp; UpdateEmpty ( R , V ). 10. If foundInB is true , return V . 11. Let defaultR be Completion ( Evaluation of DefaultClause ). 12. If defaultR . [[Value]] is not empty , set V to defaultR . [[Value]] . 13. If defaultR is an abrupt completion , return ?&nbsp; UpdateEmpty ( defaultR , V ). 14. NOTE: The following is another complete iteration of the second CaseClauses . 15. For each CaseClause C of B , do a. Let R be Completion ( Evaluation of CaseClause C ). b. If R . [[Value]] is not empty , set V to R . [[Value]] . c. If R is an abrupt completion , return ?&nbsp; UpdateEmpty ( R , V ). 16. Return V ."
+      },
+      {
+        "id": "sec-postfix-increment-operator",
+        "text": "13.4.2 Postfix Increment Operator 13.4.2.1 Runtime Semantics: Evaluation UpdateExpression : LeftHandSideExpression ++ 1. Let lhs be ?&nbsp; Evaluation of LeftHandSideExpression . 2. Let oldValue be ?&nbsp; ToNumeric (? GetValue ( lhs )). 3. If oldValue is a Number , then a. Let newValue be Number::add ( oldValue , 1 𝔽 ). 4. Else, a. Assert : oldValue is a BigInt . b. Let newValue be BigInt::add ( oldValue , 1 ℤ ). 5. Perform ?&nbsp; PutValue ( lhs , newValue ). 6. Return oldValue ."
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/abstract-ops/function-operations.mts",
+    "bytes": 33041,
+    "sha256": "a6c521c9f81bb94d75a015ab5d351448135c8f996c0e9eeb40e3d67726b176be",
+    "lines": [
+      {
+        "line": 1,
+        "text": "import { ExecutionContext } from '../execution-context/ExecutionContext.mts';"
+      },
+      {
+        "line": 2,
+        "text": "import {"
+      },
+      {
+        "line": 3,
+        "text": "  Descriptor,"
+      },
+      {
+        "line": 4,
+        "text": "  SymbolValue,"
+      },
+      {
+        "line": 5,
+        "text": "  ObjectValue,"
+      },
+      {
+        "line": 6,
+        "text": "  UndefinedValue,"
+      },
+      {
+        "line": 7,
+        "text": "  Value,"
+      },
+      {
+        "line": 8,
+        "text": "  PrivateName,"
+      },
+      {
+        "line": 9,
+        "text": "  type Arguments,"
+      },
+      {
+        "line": 10,
+        "text": "  type PropertyKeyValue, NullValue, JSStringValue,"
+      },
+      {
+        "line": 11,
+        "text": "  type NativeSteps,"
+      },
+      {
+        "line": 12,
+        "text": "  NumberValue,"
+      },
+      {
+        "line": 13,
+        "text": "} from '../value.mts';"
+      },
+      {
+        "line": 14,
+        "text": "import {"
+      },
+      {
+        "line": 15,
+        "text": "  EnsureCompletion,"
+      },
+      {
+        "line": 16,
+        "text": "  NormalCompletion,"
+      },
+      {
+        "line": 17,
+        "text": "  AbruptCompletion,"
+      },
+      {
+        "line": 18,
+        "text": "  Completion,"
+      },
+      {
+        "line": 19,
+        "text": "  Q, X,"
+      },
+      {
+        "line": 20,
+        "text": "  type PlainCompletion,"
+      },
+      {
+        "line": 21,
+        "text": "  ReturnCompletion,"
+      },
+      {
+        "line": 22,
+        "text": "  ThrowCompletion,"
+      },
+      {
+        "line": 23,
+        "text": "} from '../completion.mts';"
+      },
+      {
+        "line": 24,
+        "text": "import { ExpectedArgumentCount } from '../static-semantics/all.mts';"
+      },
+      {
+        "line": 25,
+        "text": "import {"
+      },
+      {
+        "line": 26,
+        "text": "  ClassFieldDefinitionRecord, EvaluateBody, PrivateElementRecord,"
+      },
+      {
+        "line": 27,
+        "text": "} from '../runtime-semantics/all.mts';"
+      },
+      {
+        "line": 28,
+        "text": "import { type Mutable } from '../utils/language.mts';"
+      },
+      {
+        "line": 29,
+        "text": "import type { ParseNode } from '../parser/ParseNode.mts';"
+      },
+      {
+        "line": 30,
+        "text": "import type { PlainEvaluator, ValueEvaluator } from '../evaluator.mts';"
+      },
+      {
+        "line": 31,
+        "text": "import { FunctionProto_toString, type BoundFunctionObject } from '../intrinsics/FunctionPrototype.mts';"
+      },
+      {
+        "line": 32,
+        "text": "import {"
+      },
+      {
+        "line": 33,
+        "text": "  Assert,"
+      },
+      {
+        "line": 34,
+        "text": "  Call,"
+      },
+      {
+        "line": 35,
+        "text": "  CreateDataPropertyOrThrow,"
+      },
+      {
+        "line": 36,
+        "text": "  DefinePropertyOrThrow,"
+      },
+      {
+        "line": 37,
+        "text": "  HasOwnProperty,"
+      },
+      {
+        "line": 38,
+        "text": "  IsConstructor,"
+      },
+      {
+        "line": 39,
+        "text": "  IsExtensible,"
+      },
+      {
+        "line": 40,
+        "text": "  MakeBasicObject,"
+      },
+      {
+        "line": 41,
+        "text": "  OrdinaryObjectCreate,"
+      },
+      {
+        "line": 42,
+        "text": "  OrdinaryCreateFromConstructor,"
+      },
+      {
+        "line": 43,
+        "text": "  ToObject,"
+      },
+      {
+        "line": 44,
+        "text": "  PrivateMethodOrAccessorAdd,"
+      },
+      {
+        "line": 45,
+        "text": "  PrivateFieldAdd,"
+      },
+      {
+        "line": 46,
+        "text": "  IsPropertyKey,"
+      },
+      {
+        "line": 47,
+        "text": "  isNonNegativeInteger,"
+      },
+      {
+        "line": 48,
+        "text": "  isStrictModeCode,"
+      },
+      {
+        "line": 49,
+        "text": "  F as toNumberValue,"
+      },
+      {
+        "line": 50,
+        "text": "  type OrdinaryObject,"
+      },
+      {
+        "line": 51,
+        "text": "  NewPromiseCapability,"
+      },
+      {
+        "line": 52,
+        "text": "  AsyncFunctionStart,"
+      },
+      {
+        "line": 53,
+        "text": "  Get,"
+      },
+      {
+        "line": 54,
+        "text": "  ToIntegerOrInfinity,"
+      },
+      {
+        "line": 55,
+        "text": "  InitializePrivateMethods,"
+      },
+      {
+        "line": 56,
+        "text": "  getActiveScriptId,"
+      },
+      {
+        "line": 57,
+        "text": "} from './all.mts';"
+      },
+      {
+        "line": 58,
+        "text": "import {"
+      },
+      {
+        "line": 59,
+        "text": "  GetActiveScriptOrModule,"
+      },
+      {
+        "line": 60,
+        "text": "  Realm,"
+      },
+      {
+        "line": 61,
+        "text": "  EnvironmentRecord,"
+      },
+      {
+        "line": 62,
+        "text": "  FunctionEnvironmentRecord,"
+      },
+      {
+        "line": 63,
+        "text": "  GlobalEnvironmentRecord,"
+      },
+      {
+        "line": 64,
+        "text": "  ClassElementDefinitionRecord,"
+      },
+      {
+        "line": 65,
+        "text": "  type AbstractModuleRecord, type CanBeNativeSteps, type DefaultConstructorBuiltinFunction, type FunctionCallContext, type ModuleRecord, type PrivateEnvironmentRecord, type ScriptRecord,"
+      },
+      {
+        "line": 66,
+        "text": "  Throw,"
+      },
+      {
+        "line": 67,
+        "text": "  isEvaluator,"
+      },
+      {
+        "line": 68,
+        "text": "  surroundingAgent,"
+      },
+      {
+        "line": 69,
+        "text": "  type AccessorDescriptorInit,"
+      },
+      {
+        "line": 70,
+        "text": "  type DataDescriptorInit,"
+      },
+      {
+        "line": 71,
+        "text": "} from '#self';"
+      },
+      {
+        "line": 72,
+        "text": ""
+      },
+      {
+        "line": 73,
+        "text": "export interface BaseFunctionObject extends OrdinaryObject {"
+      },
+      {
+        "line": 74,
+        "text": "  readonly Realm: Realm;"
+      },
+      {
+        "line": 75,
+        "text": "  InitialName: string | null;"
+      },
+      {
+        "line": 76,
+        "text": "  readonly Async: boolean;"
+      },
+      {
+        "line": 77,
+        "text": "  // https://github.com/tc39/ecma262/pull/3212/"
+      },
+      {
+        "line": 78,
+        "text": "  readonly IsClassConstructor: boolean;"
+      },
+      {
+        "line": 79,
+        "text": "  Call(thisValue: Value, args: Arguments): ValueEvaluator;"
+      },
+      {
+        "line": 80,
+        "text": "  Construct(args: Arguments, newTarget: FunctionObject | UndefinedValue): ValueEvaluator<ObjectValue>;"
+      },
+      {
+        "line": 81,
+        "text": "}"
+      },
+      {
+        "line": 82,
+        "text": "export type Body = ParseNode.AsyncGeneratorBody | ParseNode.GeneratorBody | ParseNode.AsyncBody | ParseNode.FunctionBody | ParseNode.AsyncConciseBodyLike | ParseNode.ConciseBodyLike | ParseNode.ClassStaticBlockBody | ParseNode.AssignmentExpressionOrHigher;"
+      },
+      {
+        "line": 83,
+        "text": "export interface ECMAScriptFunctionObject extends BaseFunctionObject {"
+      },
+      {
+        "line": 84,
+        "text": "  readonly Environment: EnvironmentRecord;"
+      },
+      {
+        "line": 85,
+        "text": "  readonly PrivateEnvironment: PrivateEnvironmentRecord | null;"
+      },
+      {
+        "line": 86,
+        "text": "  readonly FormalParameters: ParseNode.FormalParameters;"
+      },
+      {
+        "line": 87,
+        "text": "  readonly ECMAScriptCode: Body | null;"
+      },
+      {
+        "line": 88,
+        "text": "  readonly ConstructorKind: 'base' | 'derived';"
+      },
+      {
+        "line": 89,
+        "text": "  readonly ScriptOrModule: ScriptRecord | AbstractModuleRecord;"
+      },
+      {
+        "line": 90,
+        "text": "  readonly scriptId?: string;"
+      },
+      {
+        "line": 91,
+        "text": "  readonly ThisMode: 'lexical' | 'strict' | 'global';"
+      },
+      {
+        "line": 92,
+        "text": "  readonly Strict: boolean;"
+      },
+      {
+        "line": 93,
+        "text": "  readonly HomeObject: ObjectValue | UndefinedValue;"
+      },
+      {
+        "line": 94,
+        "text": "  readonly SourceText: string;"
+      },
+      {
+        "line": 95,
+        "text": "  // -decorator"
+      },
+      {
+        "line": 96,
+        "text": "  readonly Fields: readonly ClassFieldDefinitionRecord[];"
+      },
+      {
+        "line": 97,
+        "text": "  readonly PrivateMethods: readonly PrivateElementRecord[];"
+      },
+      {
+        "line": 98,
+        "text": "  // +decorator (Fields => Elements, PrivateMethods => Initializers)"
+      },
+      {
+        "line": 99,
+        "text": "  readonly Elements: readonly ClassElementDefinitionRecord[];"
+      },
+      {
+        "line": 100,
+        "text": "  readonly Initializers: readonly FunctionObject[];"
+      },
+      {
+        "line": 101,
+        "text": "  readonly ClassFieldInitializerName: undefined | PropertyKeyValue | PrivateName;"
+      },
+      {
+        "line": 102,
+        "text": "  /**"
+      },
+      {
+        "line": 103,
+        "text": "   * Note: this is different than InitialName, which is used and observable in Function.prototype.toString."
+      },
+      {
+        "line": 104,
+        "text": "   * This is only used in the inspector."
+      },
+      {
+        "line": 105,
+        "text": "   */"
+      },
+      {
+        "line": 106,
+        "text": "  HostInitialName: PropertyKeyValue | PrivateName;"
+      },
+      {
+        "line": 107,
+        "text": "}"
+      },
+      {
+        "line": 108,
+        "text": "export interface BuiltinFunctionObject extends BaseFunctionObject {"
+      },
+      {
+        "line": 109,
+        "text": "  readonly nativeFunction: NativeSteps;"
+      },
+      {
+        "line": 110,
+        "text": "  // NON-SPEC"
+      },
+      {
+        "line": 111,
+        "text": "  HostCapturedValues?: readonly Value[];"
+      },
+      {
+        "line": 112,
+        "text": "}"
+      },
+      {
+        "line": 113,
+        "text": "export type FunctionObject = ECMAScriptFunctionObject | BuiltinFunctionObject | BoundFunctionObject;"
+      },
+      {
+        "line": 114,
+        "text": "// This file covers abstract operations defined in"
+      },
+      {
+        "line": 115,
+        "text": "/** https://tc39.es/ecma262/#sec-ecmascript-function-objects */"
+      },
+      {
+        "line": 116,
+        "text": "/** https://tc39.es/ecma262/#sec-built-in-function-objects */"
+      },
+      {
+        "line": 117,
+        "text": "// and"
+      },
+      {
+        "line": 118,
+        "text": "/** https://tc39.es/ecma262/#sec-tail-position-calls */"
+      },
+      {
+        "line": 119,
+        "text": ""
+      },
+      {
+        "line": 120,
+        "text": "export function hasSourceTextInternalSlot(O: undefined | null | Value): O is FunctionObject & { readonly SourceText:string } {"
+      },
+      {
+        "line": 121,
+        "text": "  return !!O && 'SourceText' in O && typeof O.SourceText === 'string';"
+      },
+      {
+        "line": 122,
+        "text": "}"
+      },
+      {
+        "line": 123,
+        "text": ""
+      },
+      {
+        "line": 124,
+        "text": "export function isECMAScriptFunctionObject(O: undefined | null | Value): O is ECMAScriptFunctionObject {"
+      },
+      {
+        "line": 125,
+        "text": "  return !!O && 'ECMAScriptCode' in O;"
+      },
+      {
+        "line": 126,
+        "text": "}"
+      },
+      {
+        "line": 127,
+        "text": ""
+      },
+      {
+        "line": 128,
+        "text": "export function isBuiltinFunctionObject(O: undefined | null | Value): O is BuiltinFunctionObject {"
+      },
+      {
+        "line": 129,
+        "text": "  return !!O && 'nativeFunction' in O;"
+      },
+      {
+        "line": 130,
+        "text": "}"
+      },
+      {
+        "line": 131,
+        "text": ""
+      },
+      {
+        "line": 132,
+        "text": "export function isFunctionObject(O: Value): O is FunctionObject {"
+      },
+      {
+        "line": 133,
+        "text": "  return 'Call' in O;"
+      },
+      {
+        "line": 134,
+        "text": "}"
+      },
+      {
+        "line": 135,
+        "text": ""
+      },
+      {
+        "line": 136,
+        "text": "/** https://tc39.es/ecma262/#sec-prepareforordinarycall */"
+      },
+      {
+        "line": 137,
+        "text": "export function PrepareForOrdinaryCall(F: ECMAScriptFunctionObject, newTarget: ObjectValue | UndefinedValue) {"
+      },
+      {
+        "line": 138,
+        "text": "  // 1. Assert: Type(newTarget) is Undefined or Object."
+      },
+      {
+        "line": 139,
+        "text": "  Assert(newTarget instanceof UndefinedValue || newTarget instanceof ObjectValue);"
+      },
+      {
+        "line": 140,
+        "text": "  // 2. Let callerContext be the running execution context."
+      },
+      {
+        "line": 141,
+        "text": "  // const callerContext = surroundingAgent.runningExecutionContext;"
+      },
+      {
+        "line": 142,
+        "text": "  // 3. Let calleeContext be a new ECMAScript code execution context."
+      },
+      {
+        "line": 143,
+        "text": "  const calleeContext = new ExecutionContext();"
+      },
+      {
+        "line": 144,
+        "text": "  // 4. Set the Function of calleeContext to F."
+      },
+      {
+        "line": 145,
+        "text": "  calleeContext.Function = F;"
+      },
+      {
+        "line": 146,
+        "text": "  // 5. Let calleeRealm be F.[[Realm]]."
+      },
+      {
+        "line": 147,
+        "text": "  const calleeRealm = F.Realm;"
+      },
+      {
+        "line": 148,
+        "text": "  // 6. Set the Realm of calleeContext to calleeRealm."
+      },
+      {
+        "line": 149,
+        "text": "  calleeContext.Realm = calleeRealm;"
+      },
+      {
+        "line": 150,
+        "text": "  // 7. Set the ScriptOrModule of calleeContext to F.[[ScriptOrModule]]."
+      },
+      {
+        "line": 151,
+        "text": "  calleeContext.ScriptOrModule = F.ScriptOrModule;"
+      },
+      {
+        "line": 152,
+        "text": "  calleeContext.HostDefined ??= {};"
+      },
+      {
+        "line": 153,
+        "text": "  calleeContext.HostDefined.scriptId = F.scriptId;"
+      },
+      {
+        "line": 154,
+        "text": "  // 8. Let localEnv be NewFunctionEnvironment(F, newTarget)."
+      },
+      {
+        "line": 155,
+        "text": "  const localEnv = new FunctionEnvironmentRecord(F, newTarget);"
+      },
+      {
+        "line": 156,
+        "text": "  // 9. Set the LexicalEnvironment of calleeContext to localEnv."
+      },
+      {
+        "line": 157,
+        "text": "  calleeContext.LexicalEnvironment = localEnv;"
+      },
+      {
+        "line": 158,
+        "text": "  // 10. Set the VariableEnvironment of calleeContext to localEnv."
+      },
+      {
+        "line": 159,
+        "text": "  calleeContext.VariableEnvironment = localEnv;"
+      },
+      {
+        "line": 160,
+        "text": "  // 11. Set the PrivateEnvironment of calleeContext to F.[[PrivateEnvironment]]."
+      },
+      {
+        "line": 161,
+        "text": "  calleeContext.PrivateEnvironment = F.PrivateEnvironment;"
+      },
+      {
+        "line": 162,
+        "text": "  // 12. Push calleeContext onto the execution context stack; calleeContext is now the running execution context."
+      },
+      {
+        "line": 163,
+        "text": "  surroundingAgent.executionContextStack.push(calleeContext);"
+      },
+      {
+        "line": 164,
+        "text": "  // 13. NOTE: Any exception objects produced after this point are associated with calleeRealm."
+      },
+      {
+        "line": 165,
+        "text": "  // 14. Return calleeContext."
+      },
+      {
+        "line": 166,
+        "text": "  return calleeContext;"
+      },
+      {
+        "line": 167,
+        "text": "}"
+      },
+      {
+        "line": 168,
+        "text": ""
+      },
+      {
+        "line": 169,
+        "text": "/** https://tc39.es/ecma262/#sec-ordinarycallbindthis */"
+      },
+      {
+        "line": 170,
+        "text": "export function OrdinaryCallBindThis(F: ECMAScriptFunctionObject, calleeContext: ExecutionContext, thisArgument: Value): PlainCompletion<void> {"
+      },
+      {
+        "line": 171,
+        "text": "  // 1. Let thisMode be F.[[ThisMode]]."
+      },
+      {
+        "line": 172,
+        "text": "  const thisMode = F.ThisMode;"
+      },
+      {
+        "line": 173,
+        "text": "  // 2. If thisMode is lexical, return NormalCompletion(undefined)."
+      },
+      {
+        "line": 174,
+        "text": "  if (thisMode === 'lexical') {"
+      },
+      {
+        "line": 175,
+        "text": "    return NormalCompletion(undefined);"
+      },
+      {
+        "line": 176,
+        "text": "  }"
+      },
+      {
+        "line": 177,
+        "text": "  // 3. Let calleeRealm be F.[[Realm]]."
+      },
+      {
+        "line": 178,
+        "text": "  const calleeRealm = F.Realm;"
+      },
+      {
+        "line": 179,
+        "text": "  // 4. Let localEnv be the LexicalEnvironment of calleeContext."
+      },
+      {
+        "line": 180,
+        "text": "  const localEnv = calleeContext.LexicalEnvironment;"
+      },
+      {
+        "line": 181,
+        "text": "  let thisValue;"
+      },
+      {
+        "line": 182,
+        "text": "  // 5. If thisMode is strict, let thisValue be thisArgument."
+      },
+      {
+        "line": 183,
+        "text": "  if (thisMode === 'strict') {"
+      },
+      {
+        "line": 184,
+        "text": "    thisValue = thisArgument;"
+      },
+      {
+        "line": 185,
+        "text": "  } else { // 6. Else,"
+      },
+      {
+        "line": 186,
+        "text": "    // a. If thisArgument is undefined or null, then"
+      },
+      {
+        "line": 187,
+        "text": "    if (thisArgument === Value.undefined || thisArgument === Value.null) {"
+      },
+      {
+        "line": 188,
+        "text": "      // i. Let globalEnv be calleeRealm.[[GlobalEnv]]."
+      },
+      {
+        "line": 189,
+        "text": "      const globalEnv = calleeRealm.GlobalEnv;"
+      },
+      {
+        "line": 190,
+        "text": "      // ii. Assert: globalEnv is a global Environment Record."
+      },
+      {
+        "line": 191,
+        "text": "      Assert(globalEnv instanceof GlobalEnvironmentRecord);"
+      },
+      {
+        "line": 192,
+        "text": "      // iii. Let thisValue be globalEnv.[[GlobalThisValue]]."
+      },
+      {
+        "line": 193,
+        "text": "      thisValue = globalEnv.GlobalThisValue;"
+      },
+      {
+        "line": 194,
+        "text": "    } else { // b. Else,"
+      },
+      {
+        "line": 195,
+        "text": "      // i. Let thisValue be ! ToObject(thisArgument)."
+      },
+      {
+        "line": 196,
+        "text": "      thisValue = X(ToObject(thisArgument));"
+      },
+      {
+        "line": 197,
+        "text": "      // ii. NOTE: ToObject produces wrapper objects using calleeRealm."
+      },
+      {
+        "line": 198,
+        "text": "    }"
+      },
+      {
+        "line": 199,
+        "text": "  }"
+      },
+      {
+        "line": 200,
+        "text": "  // 7. Assert: localEnv is a function Environment Record."
+      },
+      {
+        "line": 201,
+        "text": "  Assert(localEnv instanceof FunctionEnvironmentRecord);"
+      },
+      {
+        "line": 202,
+        "text": "  // 8. Assert: The next step never returns an abrupt completion because localEnv.[[ThisBindingStatus]] is not initialized."
+      },
+      {
+        "line": 203,
+        "text": "  Assert(localEnv.ThisBindingStatus !== 'initialized');"
+      },
+      {
+        "line": 204,
+        "text": "  // 10. Return localEnv.BindThisValue(thisValue)."
+      },
+      {
+        "line": 205,
+        "text": "  Q(localEnv.BindThisValue(thisValue));"
+      },
+      {
+        "line": 206,
+        "text": "}"
+      },
+      {
+        "line": 207,
+        "text": ""
+      },
+      {
+        "line": 208,
+        "text": "/** https://tc39.es/ecma262/#sec-ordinarycallevaluatebody */"
+      },
+      {
+        "line": 209,
+        "text": "export function* OrdinaryCallEvaluateBody(F: ECMAScriptFunctionObject, argumentsList: Arguments) {"
+      },
+      {
+        "line": 210,
+        "text": "  // 1. Return the result of EvaluateBody of the parsed code that is F.[[ECMAScriptCode]] passing F and argumentsList as the arguments."
+      },
+      {
+        "line": 211,
+        "text": "  return EnsureCompletion(yield* (EvaluateBody(F.ECMAScriptCode!, F, argumentsList)));"
+      },
+      {
+        "line": 212,
+        "text": "}"
+      },
+      {
+        "line": 213,
+        "text": ""
+      },
+      {
+        "line": 214,
+        "text": "// -decorator (removed in the decorator proposal)"
+      },
+      {
+        "line": 215,
+        "text": "/** https://tc39.es/ecma262/#sec-definefield */"
+      },
+      {
+        "line": 216,
+        "text": "export function* DefineField(receiver: ObjectValue, fieldRecord: ClassFieldDefinitionRecord): PlainEvaluator {"
+      },
+      {
+        "line": 217,
+        "text": "  // 1. Let fieldName be fieldRecord.[[Name]]."
+      },
+      {
+        "line": 218,
+        "text": "  const fieldName = fieldRecord.Name;"
+      },
+      {
+        "line": 219,
+        "text": "  // 2. Let initializer be fieldRecord.[[Initializer]]."
+      },
+      {
+        "line": 220,
+        "text": "  const initializer = fieldRecord.Initializer;"
+      },
+      {
+        "line": 221,
+        "text": "  // 3. If initializer is not empty, then"
+      },
+      {
+        "line": 222,
+        "text": "  let initValue;"
+      },
+      {
+        "line": 223,
+        "text": "  if (initializer !== undefined) {"
+      },
+      {
+        "line": 224,
+        "text": "    // a. Let initValue be ? Call(initializer, receiver)."
+      },
+      {
+        "line": 225,
+        "text": "    initValue = Q(yield* Call(initializer, receiver));"
+      },
+      {
+        "line": 226,
+        "text": "  } else { // 4. Else, let initValue be undefined."
+      },
+      {
+        "line": 227,
+        "text": "    initValue = Value.undefined;"
+      },
+      {
+        "line": 228,
+        "text": "  }"
+      },
+      {
+        "line": 229,
+        "text": "  // 5. If fieldName is a Private Name, then"
+      },
+      {
+        "line": 230,
+        "text": "  if (fieldName instanceof PrivateName) {"
+      },
+      {
+        "line": 231,
+        "text": "    // a. Perform ? PrivateFieldAdd(fieldName, receiver, initValue)."
+      },
+      {
+        "line": 232,
+        "text": "    Q(yield* PrivateFieldAdd(receiver, fieldName, initValue));"
+      },
+      {
+        "line": 233,
+        "text": "  } else { // 6. Else,"
+      },
+      {
+        "line": 234,
+        "text": "    // a. Assert: ! IsPropertyKey(fieldName) is true."
+      },
+      {
+        "line": 235,
+        "text": "    Assert(X(IsPropertyKey(fieldName)));"
+      },
+      {
+        "line": 236,
+        "text": "    // b. Perform ? CreateDataPropertyOrThrow(receiver, fieldName, initValue)."
+      },
+      {
+        "line": 237,
+        "text": "    Q(yield* CreateDataPropertyOrThrow(receiver, fieldName, initValue));"
+      },
+      {
+        "line": 238,
+        "text": "  }"
+      },
+      {
+        "line": 239,
+        "text": "}"
+      },
+      {
+        "line": 240,
+        "text": ""
+      },
+      {
+        "line": 241,
+        "text": "/** https://tc39.es/ecma262/#sec-initializeinstanceelements */"
+      },
+      {
+        "line": 242,
+        "text": "/** https://arai-a.github.io/ecma262-compare/snapshot.html?pr=2417#sec-initializeinstanceelements */"
+      },
+      {
+        "line": 243,
+        "text": "export function* InitializeInstanceElements(O: ObjectValue, constructor: ECMAScriptFunctionObject | DefaultConstructorBuiltinFunction): PlainEvaluator {"
+      },
+      {
+        "line": 244,
+        "text": "  if (surroundingAgent.feature('decorators')) {"
+      },
+      {
+        "line": 245,
+        "text": "    const elements = constructor.Elements;"
+      },
+      {
+        "line": 246,
+        "text": "    Q(yield* InitializePrivateMethods(O, elements));"
+      },
+      {
+        "line": 247,
+        "text": "    for (const initializer of constructor.Initializers) {"
+      },
+      {
+        "line": 248,
+        "text": "      Q(yield* Call(initializer, O));"
+      },
+      {
+        "line": 249,
+        "text": "    }"
+      },
+      {
+        "line": 250,
+        "text": "    for (const e of elements) {"
+      },
+      {
+        "line": 251,
+        "text": "      if (e instanceof ClassElementDefinitionRecord && (e.Kind === 'field' || e.Kind === 'accessor')) {"
+      },
+      {
+        "line": 252,
+        "text": "        Q(yield* InitializeFieldOrAccessor(O, e));"
+      },
+      {
+        "line": 253,
+        "text": "      }"
+      },
+      {
+        "line": 254,
+        "text": "    }"
+      },
+      {
+        "line": 255,
+        "text": "  } else {"
+      },
+      {
+        "line": 256,
+        "text": "    // 1. Let methods be the value of constructor.[[PrivateMethods]]."
+      },
+      {
+        "line": 257,
+        "text": "    const methods = constructor.PrivateMethods;"
+      },
+      {
+        "line": 258,
+        "text": "    // 2. For each PrivateElement method of methods, do"
+      },
+      {
+        "line": 259,
+        "text": "    for (const method of methods) {"
+      },
+      {
+        "line": 260,
+        "text": "      // a. Perform ? PrivateMethodOrAccessorAdd(method, O)."
+      },
+      {
+        "line": 261,
+        "text": "      Q(yield* PrivateMethodOrAccessorAdd(O, method));"
+      },
+      {
+        "line": 262,
+        "text": "    }"
+      },
+      {
+        "line": 263,
+        "text": "    // 3. Let fields be the value of constructor.[[Fields]]."
+      },
+      {
+        "line": 264,
+        "text": "    const fields = constructor.Fields;"
+      },
+      {
+        "line": 265,
+        "text": "    // 4. For each element fieldRecord of fields, do"
+      },
+      {
+        "line": 266,
+        "text": "    for (const fieldRecord of fields) {"
+      },
+      {
+        "line": 267,
+        "text": "      // a. Perform ? DefineField(O, fieldRecord)."
+      },
+      {
+        "line": 268,
+        "text": "      Q(yield* DefineField(O, fieldRecord));"
+      },
+      {
+        "line": 269,
+        "text": "    }"
+      },
+      {
+        "line": 270,
+        "text": "  }"
+      },
+      {
+        "line": 271,
+        "text": "  // https://tc39.es/proposal-pattern-matching/#sec-initializeinstance"
+      },
+      {
+        "line": 272,
+        "text": "  // 5. Append constructor to O.[[ConstructedBy]]."
+      },
+      {
+        "line": 273,
+        "text": "  O.ConstructedBy.push(constructor);"
+      },
+      {
+        "line": 274,
+        "text": "}"
+      },
+      {
+        "line": 275,
+        "text": ""
+      },
+      {
+        "line": 276,
+        "text": "/** https://arai-a.github.io/ecma262-compare/snapshot.html?pr=2417#sec-initializefieldoraccessor */"
+      },
+      {
+        "line": 277,
+        "text": "export function* InitializeFieldOrAccessor(receiver: ObjectValue, elementRecord: ClassElementDefinitionRecord): PlainEvaluator<void> {"
+      },
+      {
+        "line": 278,
+        "text": "  Assert(elementRecord.Kind === 'field' || elementRecord.Kind === 'accessor');"
+      },
+      {
+        "line": 279,
+        "text": "  const fieldName = elementRecord.Kind === 'accessor' ? elementRecord.BackingStorageKey : elementRecord.Key;"
+      },
+      {
+        "line": 280,
+        "text": "  let initValue: Value;"
+      },
+      {
+        "line": 281,
+        "text": "  // TODO(decorator): spec bug. ApplyDecoratorsToElementDefinition unshift decorator initializers into this array, but read it in order, so the spec order is wrong (be like [decorator2, decorator1, syntaxInit], but the correct order should be [syntaxInit, decorator2, decorator1])"
+      },
+      {
+        "line": 282,
+        "text": "  if (!surroundingAgent.feature('decorators.no-bugfix.1') && elementRecord.Initializers[-1]) {"
+      },
+      {
+        "line": 283,
+        "text": "    initValue = Q(yield* Call(elementRecord.Initializers[-1], receiver));"
+      },
+      {
+        "line": 284,
+        "text": "  } else {"
+      },
+      {
+        "line": 285,
+        "text": "    initValue = Value.undefined;"
+      },
+      {
+        "line": 286,
+        "text": "  }"
+      },
+      {
+        "line": 287,
+        "text": ""
+      },
+      {
+        "line": 288,
+        "text": "  for (const initializer of elementRecord.Initializers) {"
+      },
+      {
+        "line": 289,
+        "text": "    initValue = Q(yield* Call(initializer, receiver, [initValue]));"
+      },
+      {
+        "line": 290,
+        "text": "  }"
+      },
+      {
+        "line": 291,
+        "text": "  if (fieldName instanceof PrivateName) {"
+      },
+      {
+        "line": 292,
+        "text": "    Q(yield* PrivateFieldAdd(receiver, fieldName, initValue));"
+      },
+      {
+        "line": 293,
+        "text": "  } else {"
+      },
+      {
+        "line": 294,
+        "text": "    Assert(IsPropertyKey(fieldName));"
+      },
+      {
+        "line": 295,
+        "text": "    Q(yield* CreateDataPropertyOrThrow(receiver, fieldName, initValue));"
+      },
+      {
+        "line": 296,
+        "text": "  }"
+      },
+      {
+        "line": 297,
+        "text": "  for (const initializer of elementRecord.ExtraInitializers) {"
+      },
+      {
+        "line": 298,
+        "text": "    Q(yield* Call(initializer, receiver));"
+      },
+      {
+        "line": 299,
+        "text": "  }"
+      },
+      {
+        "line": 300,
+        "text": "}"
+      },
+      {
+        "line": 301,
+        "text": ""
+      },
+      {
+        "line": 302,
+        "text": "/** https://tc39.es/ecma262/#sec-ecmascript-function-objects-call-thisargument-argumentslist */"
+      },
+      {
+        "line": 303,
+        "text": "function* FunctionCallSlot(this: FunctionObject, thisArgument: Value, argumentsList: Arguments): ValueEvaluator {"
+      },
+      {
+        "line": 304,
+        "text": "  const F = this;"
+      },
+      {
+        "line": 305,
+        "text": ""
+      },
+      {
+        "line": 306,
+        "text": "  // 1. Assert: F is an ECMAScript function object."
+      },
+      {
+        "line": 307,
+        "text": "  Assert(isECMAScriptFunctionObject(F));"
+      },
+      {
+        "line": 308,
+        "text": "  // 2. Let callerContext be the running execution context."
+      },
+      {
+        "line": 309,
+        "text": "  // 3. Let calleeContext be PrepareForOrdinaryCall(F, undefined)."
+      },
+      {
+        "line": 310,
+        "text": "  const calleeContext = PrepareForOrdinaryCall(F, Value.undefined);"
+      },
+      {
+        "line": 311,
+        "text": "  // 4. Assert: calleeContext is now the running execution context."
+      },
+      {
+        "line": 312,
+        "text": "  Assert(surroundingAgent.runningExecutionContext === calleeContext);"
+      },
+      {
+        "line": 313,
+        "text": "  // 5. If F.[[IsClassConstructor]] is true, then"
+      },
+      {
+        "line": 314,
+        "text": "  if (F.IsClassConstructor) {"
+      },
+      {
+        "line": 315,
+        "text": "    // a. Let error be a newly created TypeError object."
+      },
+      {
+        "line": 316,
+        "text": "    const error = Throw.TypeError('$1 cannot be invoked without new', F);"
+      },
+      {
+        "line": 317,
+        "text": "    // b. NOTE: _error_ is created in _calleeContext_ with _F_'s associated Realm Record."
+      },
+      {
+        "line": 318,
+        "text": "    // c. Remove _calleeContext_ from the execution context stack and restore _callerContext_ as the running execution context."
+      },
+      {
+        "line": 319,
+        "text": "    surroundingAgent.executionContextStack.pop(calleeContext);"
+      },
+      {
+        "line": 320,
+        "text": "    // d. Return ThrowCompletion(_error_)."
+      },
+      {
+        "line": 321,
+        "text": "    return error;"
+      },
+      {
+        "line": 322,
+        "text": "  }"
+      },
+      {
+        "line": 323,
+        "text": "  // 6. Perform OrdinaryCallBindThis(F, calleeContext, thisArgument)."
+      },
+      {
+        "line": 324,
+        "text": "  OrdinaryCallBindThis(F, calleeContext, thisArgument);"
+      },
+      {
+        "line": 325,
+        "text": "  // 7. Let result be OrdinaryCallEvaluateBody(F, argumentsList)."
+      },
+      {
+        "line": 326,
+        "text": "  const result = yield* OrdinaryCallEvaluateBody(F, argumentsList);"
+      },
+      {
+        "line": 327,
+        "text": "  // 8. Remove calleeContext from the execution context stack and restore callerContext as the running execution context."
+      },
+      {
+        "line": 328,
+        "text": "  surroundingAgent.executionContextStack.pop(calleeContext);"
+      },
+      {
+        "line": 329,
+        "text": "  if (result instanceof ThrowCompletion) {"
+      },
+      {
+        "line": 330,
+        "text": "    return Q(result);"
+      },
+      {
+        "line": 331,
+        "text": "  }"
+      },
+      {
+        "line": 332,
+        "text": "  Assert(result instanceof ReturnCompletion);"
+      },
+      {
+        "line": 333,
+        "text": "  return result.Value;"
+      },
+      {
+        "line": 334,
+        "text": "}"
+      },
+      {
+        "line": 335,
+        "text": ""
+      },
+      {
+        "line": 336,
+        "text": "/** https://tc39.es/ecma262/#sec-ecmascript-function-objects-construct-argumentslist-newtarget */"
+      },
+      {
+        "line": 337,
+        "text": "function* FunctionConstructSlot(this: FunctionObject, argumentsList: Arguments, newTarget: FunctionObject): ValueEvaluator<ObjectValue> {"
+      },
+      {
+        "line": 338,
+        "text": "  const F = this;"
+      },
+      {
+        "line": 339,
+        "text": ""
+      },
+      {
+        "line": 340,
+        "text": "  // 1. Assert: F is an ECMAScript function object."
+      },
+      {
+        "line": 341,
+        "text": "  Assert(isECMAScriptFunctionObject(F));"
+      },
+      {
+        "line": 342,
+        "text": "  // 2. Assert: Type(newTarget) is Object."
+      },
+      {
+        "line": 343,
+        "text": "  Assert(newTarget instanceof ObjectValue);"
+      },
+      {
+        "line": 344,
+        "text": "  // 3. Let callerContext be the running execution context."
+      },
+      {
+        "line": 345,
+        "text": "  // 4. Let kind be F.[[ConstructorKind]]."
+      },
+      {
+        "line": 346,
+        "text": "  const kind = F.ConstructorKind;"
+      },
+      {
+        "line": 347,
+        "text": "  let thisArg;"
+      },
+      {
+        "line": 348,
+        "text": "  // 5. If kind is base, then"
+      },
+      {
+        "line": 349,
+        "text": "  if (kind === 'base') {"
+      },
+      {
+        "line": 350,
+        "text": "    // a. Let thisArgument be ? OrdinaryCreateFromConstructor(newTarget, \"%Object.prototype%\")."
+      },
+      {
+        "line": 351,
+        "text": "    thisArg = Q(yield* OrdinaryCreateFromConstructor(newTarget, '%Object.prototype%'));"
+      },
+      {
+        "line": 352,
+        "text": "  }"
+      },
+      {
+        "line": 353,
+        "text": "  // 6. Let calleeContext be PrepareForOrdinaryCall(F, newTarget)."
+      },
+      {
+        "line": 354,
+        "text": "  const calleeContext = PrepareForOrdinaryCall(F, newTarget);"
+      },
+      {
+        "line": 355,
+        "text": "  // 7. Assert: calleeContext is now the running execution context."
+      },
+      {
+        "line": 356,
+        "text": "  Assert(surroundingAgent.runningExecutionContext === calleeContext);"
+      },
+      {
+        "line": 357,
+        "text": "  surroundingAgent.runningExecutionContext.callSite.constructCall = true;"
+      },
+      {
+        "line": 358,
+        "text": "  // 8. If kind is base, then"
+      },
+      {
+        "line": 359,
+        "text": "  if (kind === 'base') {"
+      },
+      {
+        "line": 360,
+        "text": "    // a. Perform OrdinaryCallBindThis(F, calleeContext, thisArgument)."
+      },
+      {
+        "line": 361,
+        "text": "    OrdinaryCallBindThis(F, calleeContext, thisArg!);"
+      },
+      {
+        "line": 362,
+        "text": "    // b. Let initializeResult be InitializeInstanceElements(thisArgument, F)."
+      },
+      {
+        "line": 363,
+        "text": "    const initializeResult = yield* InitializeInstanceElements(thisArg!, F);"
+      },
+      {
+        "line": 364,
+        "text": "    // c. If initializeResult is an abrupt completion, then"
+      },
+      {
+        "line": 365,
+        "text": "    if (initializeResult instanceof AbruptCompletion) {"
+      },
+      {
+        "line": 366,
+        "text": "      // i. Remove calleeContext from the execution context stack and restore callerContext as the running execution context."
+      },
+      {
+        "line": 367,
+        "text": "      surroundingAgent.executionContextStack.pop(calleeContext);"
+      },
+      {
+        "line": 368,
+        "text": "      // ii. Return Completion(initializeResult)."
+      },
+      {
+        "line": 369,
+        "text": "      return Completion(initializeResult);"
+      },
+      {
+        "line": 370,
+        "text": "    }"
+      },
+      {
+        "line": 371,
+        "text": "  }"
+      },
+      {
+        "line": 372,
+        "text": "  // 9. Let constructorEnv be the LexicalEnvironment of calleeContext."
+      },
+      {
+        "line": 373,
+        "text": "  const ctorEnv = calleeContext.LexicalEnvironment;"
+      },
+      {
+        "line": 374,
+        "text": "  // 10. Let result be OrdinaryCallEvaluateBody(F, argumentsList)."
+      },
+      {
+        "line": 375,
+        "text": "  const result = yield* OrdinaryCallEvaluateBody(F, argumentsList);"
+      },
+      {
+        "line": 376,
+        "text": "  // 11. Remove calleeContext from the execution context stack and restore callerContext as the running execution context."
+      },
+      {
+        "line": 377,
+        "text": "  surroundingAgent.executionContextStack.pop(calleeContext);"
+      },
+      {
+        "line": 378,
+        "text": "  if (result instanceof ThrowCompletion) {"
+      },
+      {
+        "line": 379,
+        "text": "    return Q(result);"
+      },
+      {
+        "line": 380,
+        "text": "  }"
+      },
+      {
+        "line": 381,
+        "text": "  Assert(result instanceof ReturnCompletion);"
+      },
+      {
+        "line": 382,
+        "text": "  if (result.Value instanceof ObjectValue) return result.Value;"
+      },
+      {
+        "line": 383,
+        "text": "  if (kind === 'base') return thisArg!;"
+      },
+      {
+        "line": 384,
+        "text": "  if (result.Value !== Value.undefined) {"
+      },
+      {
+        "line": 385,
+        "text": "    return Throw.TypeError('Return value $1 of a derived constructor is not an object or undefined', result.Value);"
+      },
+      {
+        "line": 386,
+        "text": "  }"
+      },
+      {
+        "line": 387,
+        "text": "  const thisBinding = Q((ctorEnv as FunctionEnvironmentRecord).GetThisBinding());"
+      },
+      {
+        "line": 388,
+        "text": "  Assert(thisBinding instanceof ObjectValue);"
+      },
+      {
+        "line": 389,
+        "text": "  return thisBinding;"
+      },
+      {
+        "line": 390,
+        "text": "}"
+      },
+      {
+        "line": 391,
+        "text": ""
+      },
+      {
+        "line": 392,
+        "text": "/** https://tc39.es/ecma262/#sec-functionallocate */"
+      },
+      {
+        "line": 393,
+        "text": "export function OrdinaryFunctionCreate(functionPrototype: ObjectValue, sourceText: string, ParameterList: ParseNode.FormalParameters, Body: Body, thisMode: 'lexical-this' | 'non-lexical-this', Scope: EnvironmentRecord, PrivateEnv: PrivateEnvironmentRecord | null) {"
+      },
+      {
+        "line": 394,
+        "text": "  // 1. Assert: Type(functionPrototype) is Object."
+      },
+      {
+        "line": 395,
+        "text": "  Assert(functionPrototype instanceof ObjectValue);"
+      },
+      {
+        "line": 396,
+        "text": "  // 2. Let internalSlotsList be the internal slots listed in Table 33."
+      },
+      {
+        "line": 397,
+        "text": "  const internalSlotsList = ["
+      },
+      {
+        "line": 398,
+        "text": "    'Environment',"
+      },
+      {
+        "line": 399,
+        "text": "    'PrivateEnvironment',"
+      },
+      {
+        "line": 400,
+        "text": "    'FormalParameters',"
+      },
+      {
+        "line": 401,
+        "text": "    'ECMAScriptCode',"
+      },
+      {
+        "line": 402,
+        "text": "    'ConstructorKind',"
+      },
+      {
+        "line": 403,
+        "text": "    'Realm',"
+      },
+      {
+        "line": 404,
+        "text": "    'ScriptOrModule',"
+      },
+      {
+        "line": 405,
+        "text": "    'ThisMode',"
+      },
+      {
+        "line": 406,
+        "text": "    'Strict',"
+      },
+      {
+        "line": 407,
+        "text": "    'HomeObject',"
+      },
+      {
+        "line": 408,
+        "text": "    'SourceText',"
+      },
+      {
+        "line": 409,
+        "text": "    surroundingAgent.feature('decorators') ? 'Elements' : 'Fields',"
+      },
+      {
+        "line": 410,
+        "text": "    surroundingAgent.feature('decorators') ? 'Initializers' : 'PrivateMethods',"
+      },
+      {
+        "line": 411,
+        "text": "    'ClassFieldInitializerName',"
+      },
+      {
+        "line": 412,
+        "text": "    'IsClassConstructor',"
+      },
+      {
+        "line": 413,
+        "text": "    'HostInitialName',"
+      },
+      {
+        "line": 414,
+        "text": "  ];"
+      },
+      {
+        "line": 415,
+        "text": "  // 3. Let F be ! OrdinaryObjectCreate(functionPrototype, internalSlotsList)."
+      },
+      {
+        "line": 416,
+        "text": "  const F = X(OrdinaryObjectCreate(functionPrototype, internalSlotsList)) as Mutable<ECMAScriptFunctionObject>;"
+      },
+      {
+        "line": 417,
+        "text": "  // 4. Set F.[[Call]] to the definition specified in 10.2.1."
+      },
+      {
+        "line": 418,
+        "text": "  F.Call = FunctionCallSlot;"
+      },
+      {
+        "line": 419,
+        "text": "  // 5. Set F.[[SourceText]] to sourceText."
+      },
+      {
+        "line": 420,
+        "text": "  F.SourceText = sourceText;"
+      },
+      {
+        "line": 421,
+        "text": "  // 6. Set F.[[FormalParameters]] to ParameterList."
+      },
+      {
+        "line": 422,
+        "text": "  F.FormalParameters = ParameterList;"
+      },
+      {
+        "line": 423,
+        "text": "  // 7. Set F.[[ECMAScriptCode]] to Body."
+      },
+      {
+        "line": 424,
+        "text": "  F.ECMAScriptCode = Body;"
+      },
+      {
+        "line": 425,
+        "text": "  // 8. If the source text matching Body is strict mode code, let Strict be true; else let Strict be false."
+      },
+      {
+        "line": 426,
+        "text": "  const Strict = isStrictModeCode(Body);"
+      },
+      {
+        "line": 427,
+        "text": "  // 9. Set F.[[Strict]] to Strict."
+      },
+      {
+        "line": 428,
+        "text": "  F.Strict = Strict;"
+      },
+      {
+        "line": 429,
+        "text": "  // 10. If thisMode is lexical-this, set F.[[ThisMode]] to lexical."
+      },
+      {
+        "line": 430,
+        "text": "  if (thisMode === 'lexical-this') {"
+      },
+      {
+        "line": 431,
+        "text": "    F.ThisMode = 'lexical';"
+      },
+      {
+        "line": 432,
+        "text": "  } else if (Strict) { // 11. Else if Strict is true, set F.[[ThisMode]] to strict."
+      },
+      {
+        "line": 433,
+        "text": "    F.ThisMode = 'strict';"
+      },
+      {
+        "line": 434,
+        "text": "  } else { // 12. Else, set F.[[ThisMode]] to global."
+      },
+      {
+        "line": 435,
+        "text": "    F.ThisMode = 'global';"
+      },
+      {
+        "line": 436,
+        "text": "  }"
+      },
+      {
+        "line": 437,
+        "text": "  // 13. Set F.[[IsClassConstructor]] to false."
+      },
+      {
+        "line": 438,
+        "text": "  F.IsClassConstructor = false;"
+      },
+      {
+        "line": 439,
+        "text": "  // 14. Set F.[[Environment]] to Scope."
+      },
+      {
+        "line": 440,
+        "text": "  F.Environment = Scope;"
+      },
+      {
+        "line": 441,
+        "text": "  // 15. Set F.[[PrivateEnvironment]] to PrivateScope."
+      },
+      {
+        "line": 442,
+        "text": "  F.PrivateEnvironment = PrivateEnv;"
+      },
+      {
+        "line": 443,
+        "text": "  // 16. Set F.[[ScriptOrModule]] to GetActiveScriptOrModule()."
+      },
+      {
+        "line": 444,
+        "text": "  F.ScriptOrModule = GetActiveScriptOrModule() as ScriptRecord | ModuleRecord;"
+      },
+      {
+        "line": 445,
+        "text": "  F.scriptId = getActiveScriptId();"
+      },
+      {
+        "line": 446,
+        "text": "  // 17. Set F.[[Realm]] to the current Realm Record."
+      },
+      {
+        "line": 447,
+        "text": "  F.Realm = surroundingAgent.currentRealmRecord;"
+      },
+      {
+        "line": 448,
+        "text": "  // 18. Set F.[[HomeObject]] to undefined."
+      },
+      {
+        "line": 449,
+        "text": "  F.HomeObject = Value.undefined;"
+      },
+      {
+        "line": 450,
+        "text": "  // 19. Set F.[[ClassFieldInitializerName]] to empty."
+      },
+      {
+        "line": 451,
+        "text": "  F.ClassFieldInitializerName = undefined;"
+      },
+      {
+        "line": 452,
+        "text": "  if (surroundingAgent.feature('decorators')) {"
+      },
+      {
+        "line": 453,
+        "text": "    F.Initializers = [];"
+      },
+      {
+        "line": 454,
+        "text": "    F.Elements = [];"
+      },
+      {
+        "line": 455,
+        "text": "  } else {"
+      },
+      {
+        "line": 456,
+        "text": "    F.PrivateMethods = [];"
+      },
+      {
+        "line": 457,
+        "text": "    F.Fields = [];"
+      },
+      {
+        "line": 458,
+        "text": "  }"
+      },
+      {
+        "line": 459,
+        "text": "  // 20. Let len be the ExpectedArgumentCount of ParameterList."
+      },
+      {
+        "line": 460,
+        "text": "  const len = ExpectedArgumentCount(ParameterList);"
+      },
+      {
+        "line": 461,
+        "text": "  // 21. Perform ! SetFunctionLength(F, len)."
+      },
+      {
+        "line": 462,
+        "text": "  X(SetFunctionLength(F, len));"
+      },
+      {
+        "line": 463,
+        "text": "  // 22. Return F."
+      },
+      {
+        "line": 464,
+        "text": "  return F;"
+      },
+      {
+        "line": 465,
+        "text": "}"
+      },
+      {
+        "line": 466,
+        "text": ""
+      },
+      {
+        "line": 467,
+        "text": "/** https://tc39.es/ecma262/#sec-makeconstructor */"
+      },
+      {
+        "line": 468,
+        "text": "export function MakeConstructor(F: Mutable<ECMAScriptFunctionObject> | BuiltinFunctionObject, writablePrototype?: boolean, prototype?: ObjectValue): void {"
+      },
+      {
+        "line": 469,
+        "text": "  Assert(isECMAScriptFunctionObject(F) || F.Call === BuiltinFunctionCall);"
+      },
+      {
+        "line": 470,
+        "text": "  if (isECMAScriptFunctionObject(F)) {"
+      },
+      {
+        "line": 471,
+        "text": "    // Assert(!IsConstructor(F)); but not applying type assertion"
+      },
+      {
+        "line": 472,
+        "text": "    Assert(![IsConstructor(F)][0]);"
+      },
+      {
+        "line": 473,
+        "text": "    Assert(X(IsExtensible(F)) && !X(HasOwnProperty(F, 'prototype')));"
+      },
+      {
+        "line": 474,
+        "text": "    F.Construct = FunctionConstructSlot;"
+      },
+      {
+        "line": 475,
+        "text": "  }"
+      },
+      {
+        "line": 476,
+        "text": "  (F as Mutable<ECMAScriptFunctionObject>).ConstructorKind = 'base';"
+      },
+      {
+        "line": 477,
+        "text": "  if (writablePrototype === undefined) {"
+      },
+      {
+        "line": 478,
+        "text": "    writablePrototype = true;"
+      },
+      {
+        "line": 479,
+        "text": "  }"
+      },
+      {
+        "line": 480,
+        "text": "  if (prototype === undefined) {"
+      },
+      {
+        "line": 481,
+        "text": "    prototype = OrdinaryObjectCreate(surroundingAgent.intrinsic('%Object.prototype%'));"
+      },
+      {
+        "line": 482,
+        "text": "    X(DefinePropertyOrThrow(prototype, 'constructor', Descriptor({"
+      },
+      {
+        "line": 483,
+        "text": "      Value: F,"
+      },
+      {
+        "line": 484,
+        "text": "      Writable: writablePrototype,"
+      },
+      {
+        "line": 485,
+        "text": "      Enumerable: false,"
+      },
+      {
+        "line": 486,
+        "text": "      Configurable: true,"
+      },
+      {
+        "line": 487,
+        "text": "    })));"
+      },
+      {
+        "line": 488,
+        "text": "  }"
+      },
+      {
+        "line": 489,
+        "text": "  X(DefinePropertyOrThrow(F, 'prototype', Descriptor({"
+      },
+      {
+        "line": 490,
+        "text": "    Value: prototype,"
+      },
+      {
+        "line": 491,
+        "text": "    Writable: writablePrototype,"
+      },
+      {
+        "line": 492,
+        "text": "    Enumerable: false,"
+      },
+      {
+        "line": 493,
+        "text": "    Configurable: false,"
+      },
+      {
+        "line": 494,
+        "text": "  })));"
+      },
+      {
+        "line": 495,
+        "text": "}"
+      },
+      {
+        "line": 496,
+        "text": ""
+      },
+      {
+        "line": 497,
+        "text": "/** https://tc39.es/ecma262/#sec-makeclassconstructor */"
+      },
+      {
+        "line": 498,
+        "text": "export function MakeClassConstructor(F: Mutable<FunctionObject>): void {"
+      },
+      {
+        "line": 499,
+        "text": "  Assert(!F.IsClassConstructor);"
+      },
+      {
+        "line": 500,
+        "text": "  F.IsClassConstructor = true;"
+      },
+      {
+        "line": 501,
+        "text": "}"
+      },
+      {
+        "line": 502,
+        "text": ""
+      },
+      {
+        "line": 503,
+        "text": "/** https://tc39.es/ecma262/#sec-makemethod */"
+      },
+      {
+        "line": 504,
+        "text": "export function MakeMethod(F: Mutable<ECMAScriptFunctionObject>, homeObject: ObjectValue): void {"
+      },
+      {
+        "line": 505,
+        "text": "  Assert(isECMAScriptFunctionObject(F));"
+      },
+      {
+        "line": 506,
+        "text": "  Assert(homeObject instanceof ObjectValue);"
+      },
+      {
+        "line": 507,
+        "text": "  F.HomeObject = homeObject;"
+      },
+      {
+        "line": 508,
+        "text": "}"
+      },
+      {
+        "line": 509,
+        "text": ""
+      },
+      {
+        "line": 510,
+        "text": "/** https://arai-a.github.io/ecma262-compare/snapshot.html?pr=2417#sec-definemethodproperty */"
+      },
+      {
+        "line": 511,
+        "text": "export function* DefineMethodProperty(homeObject: ObjectValue, methodDefinition: ClassElementDefinitionRecord, enumerable: boolean): PlainEvaluator<void> {"
+      },
+      {
+        "line": 512,
+        "text": "  // TODO(decorator): spec bug or our bug?"
+      },
+      {
+        "line": 513,
+        "text": "  // Assert(isOrdinaryObject(homeObject) && homeObject.Extensible === Value.true && [...homeObject.properties.values()].every((desc) => desc.Configurable === Value.true));"
+      },
+      {
+        "line": 514,
+        "text": "  Assert(methodDefinition.Kind === 'method' || methodDefinition.Kind === 'getter' || methodDefinition.Kind === 'setter' || methodDefinition.Kind === 'accessor');"
+      },
+      {
+        "line": 515,
+        "text": "  const key = methodDefinition.Key;"
+      },
+      {
+        "line": 516,
+        "text": "  if (!(key instanceof PrivateName)) {"
+      },
+      {
+        "line": 517,
+        "text": "    let desc: AccessorDescriptorInit | DataDescriptorInit;"
+      },
+      {
+        "line": 518,
+        "text": "    if (methodDefinition.Kind === 'accessor') {"
+      },
+      {
+        "line": 519,
+        "text": "      desc = { Enumerable: enumerable, Configurable: true, Get: methodDefinition.Get, Set: methodDefinition.Set };"
+      },
+      {
+        "line": 520,
+        "text": "    } else if (methodDefinition.Kind === 'getter') {"
+      },
+      {
+        "line": 521,
+        "text": "      desc = { Enumerable: enumerable, Configurable: true, Get: methodDefinition.Get };"
+      },
+      {
+        "line": 522,
+        "text": "    } else if (methodDefinition.Kind === 'setter') {"
+      },
+      {
+        "line": 523,
+        "text": "      desc = { Enumerable: enumerable, Configurable: true, Set: methodDefinition.Set };"
+      },
+      {
+        "line": 524,
+        "text": "    }"
+      },
+      {
+        "line": 525,
+        "text": "    if (methodDefinition.Kind === 'method') {"
+      },
+      {
+        "line": 526,
+        "text": "      desc = { Enumerable: enumerable, Configurable: true, Writable: true, Value: methodDefinition.Value };"
+      },
+      {
+        "line": 527,
+        "text": "    }"
+      },
+      {
+        "line": 528,
+        "text": "    Assert(desc! !== undefined);"
+      },
+      {
+        "line": 529,
+        "text": "    Q(yield* DefinePropertyOrThrow(homeObject, key, Descriptor(desc)));"
+      },
+      {
+        "line": 530,
+        "text": "  }"
+      },
+      {
+        "line": 531,
+        "text": "}"
+      },
+      {
+        "line": 532,
+        "text": ""
+      },
+      {
+        "line": 533,
+        "text": "/** https://tc39.es/ecma262/#sec-setfunctionname */"
+      },
+      {
+        "line": 534,
+        "text": "export function SetFunctionName(func: FunctionObject, name: string | PropertyKeyValue | PrivateName, prefix?: string): void {"
+      },
+      {
+        "line": 535,
+        "text": "  Assert(X(IsExtensible(func)) && !X(HasOwnProperty(func, 'name')));"
+      },
+      {
+        "line": 536,
+        "text": "  if (name instanceof SymbolValue) {"
+      },
+      {
+        "line": 537,
+        "text": "    const description = name.Description;"
+      },
+      {
+        "line": 538,
+        "text": "    if (description === undefined) {"
+      },
+      {
+        "line": 539,
+        "text": "      name = '';"
+      },
+      {
+        "line": 540,
+        "text": "    } else {"
+      },
+      {
+        "line": 541,
+        "text": "      name = `[${description}]`;"
+      },
+      {
+        "line": 542,
+        "text": "    }"
+      },
+      {
+        "line": 543,
+        "text": "  } else if (name instanceof PrivateName) {"
+      },
+      {
+        "line": 544,
+        "text": "    name = Value(name.Description) as JSStringValue;"
+      },
+      {
+        "line": 545,
+        "text": "  }"
+      },
+      {
+        "line": 546,
+        "text": "  let initialName = name instanceof JSStringValue ? name.stringValue() : null;"
+      },
+      {
+        "line": 547,
+        "text": "  if (name instanceof JSStringValue) name = name.stringValue();"
+      },
+      {
+        "line": 548,
+        "text": "  // non-spec"
+      },
+      {
+        "line": 549,
+        "text": "  if ('HostInitialName' in func) {"
+      },
+      {
+        "line": 550,
+        "text": "    func.HostInitialName = Value(name);"
+      },
+      {
+        "line": 551,
+        "text": "  }"
+      },
+      {
+        "line": 552,
+        "text": ""
+      },
+      {
+        "line": 553,
+        "text": "  if (prefix !== undefined) {"
+      },
+      {
+        "line": 554,
+        "text": "    // a. Set name to the string-concatenation of prefix, the code unit 0x0020 (SPACE), and name."
+      },
+      {
+        "line": 555,
+        "text": "    const prefixedName = `${prefix} ${name}`;"
+      },
+      {
+        "line": 556,
+        "text": "    initialName = prefixedName;"
+      },
+      {
+        "line": 557,
+        "text": "    name = prefixedName;"
+      },
+      {
+        "line": 558,
+        "text": "  }"
+      },
+      {
+        "line": 559,
+        "text": "  if ('InitialName' in func) {"
+      },
+      {
+        "line": 560,
+        "text": "    func.InitialName = initialName;"
+      },
+      {
+        "line": 561,
+        "text": "  }"
+      },
+      {
+        "line": 562,
+        "text": "  X(DefinePropertyOrThrow(func, 'name', Descriptor({"
+      },
+      {
+        "line": 563,
+        "text": "    Value: Value(name),"
+      },
+      {
+        "line": 564,
+        "text": "    Writable: false,"
+      },
+      {
+        "line": 565,
+        "text": "    Enumerable: false,"
+      },
+      {
+        "line": 566,
+        "text": "    Configurable: true,"
+      },
+      {
+        "line": 567,
+        "text": "  })));"
+      },
+      {
+        "line": 568,
+        "text": "}"
+      },
+      {
+        "line": 569,
+        "text": ""
+      },
+      {
+        "line": 570,
+        "text": "/** https://tc39.es/ecma262/#sec-setfunctionlength */"
+      },
+      {
+        "line": 571,
+        "text": "export function SetFunctionLength(F: FunctionObject, length: number): void {"
+      },
+      {
+        "line": 572,
+        "text": "  Assert(isNonNegativeInteger(length) || length === Infinity);"
+      },
+      {
+        "line": 573,
+        "text": "  // 1. Assert: F is an extensible object that does not have a \"length\" own property."
+      },
+      {
+        "line": 574,
+        "text": "  Assert(X(IsExtensible(F)) && !X(HasOwnProperty(F, 'length')));"
+      },
+      {
+        "line": 575,
+        "text": "  // 2. Return ! DefinePropertyOrThrow(F, \"length\", PropertyDescriptor { [[Value]]: 𝔽(length), [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true })."
+      },
+      {
+        "line": 576,
+        "text": "  X(DefinePropertyOrThrow(F, 'length', Descriptor({"
+      },
+      {
+        "line": 577,
+        "text": "    Value: toNumberValue(length),"
+      },
+      {
+        "line": 578,
+        "text": "    Writable: false,"
+      },
+      {
+        "line": 579,
+        "text": "    Enumerable: false,"
+      },
+      {
+        "line": 580,
+        "text": "    Configurable: true,"
+      },
+      {
+        "line": 581,
+        "text": "  })));"
+      },
+      {
+        "line": 582,
+        "text": "}"
+      },
+      {
+        "line": 583,
+        "text": ""
+      },
+      {
+        "line": 584,
+        "text": "function BuiltinFunctionCall(this: BuiltinFunctionObject, thisArgument: Value, argumentsList: Arguments): ValueEvaluator {"
+      },
+      {
+        "line": 585,
+        "text": "  return BuiltinCallOrConstruct(this, thisArgument, argumentsList, Value.undefined);"
+      },
+      {
+        "line": 586,
+        "text": "}"
+      },
+      {
+        "line": 587,
+        "text": ""
+      },
+      {
+        "line": 588,
+        "text": "function BuiltinFunctionConstruct(this: BuiltinFunctionObject, argumentsList: Arguments, newTarget: FunctionObject): ValueEvaluator<ObjectValue> {"
+      },
+      {
+        "line": 589,
+        "text": "  // Assert in the BuiltinCallOrConstruct"
+      },
+      {
+        "line": 590,
+        "text": "  return BuiltinCallOrConstruct(this, 'uninitialized', argumentsList, newTarget) as ValueEvaluator<ObjectValue>;"
+      },
+      {
+        "line": 591,
+        "text": "}"
+      },
+      {
+        "line": 592,
+        "text": ""
+      },
+      {
+        "line": 593,
+        "text": "const { apply } = Reflect;"
+      },
+      {
+        "line": 594,
+        "text": "/** https://tc39.es/ecma262/#sec-builtincallorconstruct */"
+      },
+      {
+        "line": 595,
+        "text": "function* BuiltinCallOrConstruct(F: BuiltinFunctionObject, thisArgument: Value | 'uninitialized', argumentsList: Arguments, newTarget: FunctionObject | UndefinedValue): ValueEvaluator {"
+      },
+      {
+        "line": 596,
+        "text": "  const calleeContext = new ExecutionContext();"
+      },
+      {
+        "line": 597,
+        "text": "  calleeContext.Function = F;"
+      },
+      {
+        "line": 598,
+        "text": "  const calleeRealm = F.Realm;"
+      },
+      {
+        "line": 599,
+        "text": "  calleeContext.Realm = calleeRealm;"
+      },
+      {
+        "line": 600,
+        "text": "  calleeContext.ScriptOrModule = null;"
+      },
+      {
+        "line": 601,
+        "text": "  surroundingAgent.executionContextStack.push(calleeContext);"
+      },
+      {
+        "line": 602,
+        "text": ""
+      },
+      {
+        "line": 603,
+        "text": "  const isNew = thisArgument === 'uninitialized';"
+      },
+      {
+        "line": 604,
+        "text": "  const thisValue = thisArgument === 'uninitialized' ? Value.undefined : thisArgument;"
+      },
+      {
+        "line": 605,
+        "text": "  // Perform any necessary implementation-defined initialization of calleeContext."
+      },
+      {
+        "line": 606,
+        "text": "  surroundingAgent.runningExecutionContext.callSite.constructCall = isNew;"
+      },
+      {
+        "line": 607,
+        "text": "  const functionCallContext: FunctionCallContext = {"
+      },
+      {
+        "line": 608,
+        "text": "    thisValue,"
+      },
+      {
+        "line": 609,
+        "text": "    NewTarget: newTarget,"
+      },
+      {
+        "line": 610,
+        "text": "  };"
+      },
+      {
+        "line": 611,
+        "text": "  if (F.Async) {"
+      },
+      {
+        "line": 612,
+        "text": "    const promiseCapability = X(NewPromiseCapability(surroundingAgent.intrinsic('%Promise%')));"
+      },
+      {
+        "line": 613,
+        "text": "    const resultClosure = function* asyncFunctionPrologue() {"
+      },
+      {
+        "line": 614,
+        "text": "      let result = apply(F.nativeFunction, F, [argumentsList, functionCallContext]);"
+      },
+      {
+        "line": 615,
+        "text": "      if (isEvaluator(result)) {"
+      },
+      {
+        "line": 616,
+        "text": "        result = yield* result;"
+      },
+      {
+        "line": 617,
+        "text": "      }"
+      },
+      {
+        "line": 618,
+        "text": "      return ReturnCompletion(Q(result) || Value.undefined);"
+      },
+      {
+        "line": 619,
+        "text": "    };"
+      },
+      {
+        "line": 620,
+        "text": "    yield* AsyncFunctionStart(promiseCapability, resultClosure);"
+      },
+      {
+        "line": 621,
+        "text": "    surroundingAgent.executionContextStack.pop(calleeContext);"
+      },
+      {
+        "line": 622,
+        "text": "    return NormalCompletion(promiseCapability.Promise);"
+      },
+      {
+        "line": 623,
+        "text": "  } else {"
+      },
+      {
+        "line": 624,
+        "text": "    let result = apply(F.nativeFunction, F, [argumentsList, functionCallContext]);"
+      },
+      {
+        "line": 625,
+        "text": "    if (isEvaluator(result)) {"
+      },
+      {
+        "line": 626,
+        "text": "      result = yield* result;"
+      },
+      {
+        "line": 627,
+        "text": "    }"
+      },
+      {
+        "line": 628,
+        "text": "    if (result instanceof Completion) {"
+      },
+      {
+        "line": 629,
+        "text": "      Assert(result instanceof NormalCompletion || result instanceof ThrowCompletion);"
+      },
+      {
+        "line": 630,
+        "text": "    }"
+      },
+      {
+        "line": 631,
+        "text": ""
+      },
+      {
+        "line": 632,
+        "text": "    surroundingAgent.executionContextStack.pop(calleeContext);"
+      },
+      {
+        "line": 633,
+        "text": "    const value = Q(result);"
+      },
+      {
+        "line": 634,
+        "text": "    if (isNew && !(result instanceof ThrowCompletion)) {"
+      },
+      {
+        "line": 635,
+        "text": "      Assert(result instanceof ObjectValue);"
+      },
+      {
+        "line": 636,
+        "text": "    }"
+      },
+      {
+        "line": 637,
+        "text": "    return NormalCompletion(value || Value.undefined);"
+      },
+      {
+        "line": 638,
+        "text": "  }"
+      },
+      {
+        "line": 639,
+        "text": "}"
+      },
+      {
+        "line": 640,
+        "text": ""
+      },
+      {
+        "line": 641,
+        "text": "/** https://tc39.es/ecma262/#sec-createbuiltinfunction */"
+      },
+      {
+        "line": 642,
+        "text": "export function CreateBuiltinFunction(behaviour: NativeSteps, length: number, name: string | PropertyKeyValue | PrivateName, additionalInternalSlotsList: readonly string[], realm?: Realm, prototype?: ObjectValue | NullValue, prefix?: string, async = false): BuiltinFunctionObject {"
+      },
+      {
+        "line": 643,
+        "text": "  if (typeof name === 'string') {"
+      },
+      {
+        "line": 644,
+        "text": "    name = Value(name);"
+      },
+      {
+        "line": 645,
+        "text": "  }"
+      },
+      {
+        "line": 646,
+        "text": "  // 1. Assert: steps is either a set of algorithm steps or other definition of a function's behaviour provided in this specification."
+      },
+      {
+        "line": 647,
+        "text": "  Assert(typeof behaviour === 'function');"
+      },
+      {
+        "line": 648,
+        "text": "  // 2. If realm is not present, set realm to the current Realm Record."
+      },
+      {
+        "line": 649,
+        "text": "  if (realm === undefined) {"
+      },
+      {
+        "line": 650,
+        "text": "    realm = surroundingAgent.currentRealmRecord;"
+      },
+      {
+        "line": 651,
+        "text": "  }"
+      },
+      {
+        "line": 652,
+        "text": "  // 3. Assert: realm is a Realm Record."
+      },
+      {
+        "line": 653,
+        "text": "  Assert(realm instanceof Realm);"
+      },
+      {
+        "line": 654,
+        "text": "  // 4. If prototype is not present, set prototype to realm.[[Intrinsics]].[[%Function.prototype%]]."
+      },
+      {
+        "line": 655,
+        "text": "  if (prototype === undefined) {"
+      },
+      {
+        "line": 656,
+        "text": "    prototype = realm.Intrinsics['%Function.prototype%'];"
+      },
+      {
+        "line": 657,
+        "text": "  }"
+      },
+      {
+        "line": 658,
+        "text": "  // 5. Let func be a new built-in function object that when called performs the action described by steps. The new function object has internal slots whose names are the elements of internalSlotsList."
+      },
+      {
+        "line": 659,
+        "text": "  const func = X(MakeBasicObject(['Prototype', 'Extensible', 'Realm', 'ScriptOrModule', 'InitialName', 'IsClassConstructor'].concat(additionalInternalSlotsList))) as Mutable<BuiltinFunctionObject>;"
+      },
+      {
+        "line": 660,
+        "text": "  func.Call = BuiltinFunctionCall;"
+      },
+      {
+        "line": 661,
+        "text": "  if (behaviour.isConstructor) {"
+      },
+      {
+        "line": 662,
+        "text": "    func.Construct = BuiltinFunctionConstruct;"
+      },
+      {
+        "line": 663,
+        "text": "  }"
+      },
+      {
+        "line": 664,
+        "text": "  func.nativeFunction = behaviour;"
+      },
+      {
+        "line": 665,
+        "text": "  func.Async = async;"
+      },
+      {
+        "line": 666,
+        "text": "  // 6. Set func.[[Realm]] to realm."
+      },
+      {
+        "line": 667,
+        "text": "  func.Realm = realm;"
+      },
+      {
+        "line": 668,
+        "text": "  // 7. Set func.[[Prototype]] to prototype."
+      },
+      {
+        "line": 669,
+        "text": "  func.Prototype = prototype;"
+      },
+      {
+        "line": 670,
+        "text": "  // 8. Set func.[[Extensible]] to true."
+      },
+      {
+        "line": 671,
+        "text": "  func.Extensible = true;"
+      },
+      {
+        "line": 672,
+        "text": "  // 10. Set func.[[InitialName]] to null."
+      },
+      {
+        "line": 673,
+        "text": "  func.InitialName = null;"
+      },
+      {
+        "line": 674,
+        "text": "  // https://github.com/tc39/ecma262/pull/3212/"
+      },
+      {
+        "line": 675,
+        "text": "  func.IsClassConstructor = false;"
+      },
+      {
+        "line": 676,
+        "text": "  // 11. Perform ! SetFunctionLength(func, length)."
+      },
+      {
+        "line": 677,
+        "text": "  X(SetFunctionLength(func, length));"
+      },
+      {
+        "line": 678,
+        "text": "  // 12. If prefix is not present, then"
+      },
+      {
+        "line": 679,
+        "text": "  if (prefix === undefined) {"
+      },
+      {
+        "line": 680,
+        "text": "    // a. Perform ! SetFunctionName(func, name)."
+      },
+      {
+        "line": 681,
+        "text": "    X(SetFunctionName(func, name));"
+      },
+      {
+        "line": 682,
+        "text": "  } else { // 13. Else"
+      },
+      {
+        "line": 683,
+        "text": "    // a. Perform ! SetFunctionName(func, name, prefix)."
+      },
+      {
+        "line": 684,
+        "text": "    X(SetFunctionName(func, name, prefix));"
+      },
+      {
+        "line": 685,
+        "text": "  }"
+      },
+      {
+        "line": 686,
+        "text": "  // 13. Return func."
+      },
+      {
+        "line": 687,
+        "text": "  return func;"
+      },
+      {
+        "line": 688,
+        "text": "}"
+      },
+      {
+        "line": 689,
+        "text": ""
+      },
+      {
+        "line": 690,
+        "text": "/** This is a helper function to define non-spec host functions. */"
+      },
+      {
+        "line": 691,
+        "text": "CreateBuiltinFunction.from = (steps: CanBeNativeSteps, name = steps.name, async = false) => CreateBuiltinFunction(Reflect.apply.bind(null, steps, null), steps.length, name, [], surroundingAgent.currentRealmRecord, undefined, undefined, async);"
+      },
+      {
+        "line": 692,
+        "text": ""
+      },
+      {
+        "line": 693,
+        "text": "export function markBuiltinFunctionAsConstructor(steps: NativeSteps) {"
+      },
+      {
+        "line": 694,
+        "text": "  steps.isConstructor = true;"
+      },
+      {
+        "line": 695,
+        "text": "  return steps;"
+      },
+      {
+        "line": 696,
+        "text": "}"
+      },
+      {
+        "line": 697,
+        "text": ""
+      },
+      {
+        "line": 698,
+        "text": "/** https://tc39.es/ecma262/#sec-preparefortailcall */"
+      },
+      {
+        "line": 699,
+        "text": "export function PrepareForTailCall() {"
+      },
+      {
+        "line": 700,
+        "text": "  // 1. Let leafContext be the running execution context."
+      },
+      {
+        "line": 701,
+        "text": "  const leafContext = surroundingAgent.runningExecutionContext;"
+      },
+      {
+        "line": 702,
+        "text": "  // 2. Suspend leafContext."
+      },
+      {
+        "line": 703,
+        "text": "  // 3. Pop leafContext from the execution context stack. The execution context now on the top of the stack becomes the running execution context."
+      },
+      {
+        "line": 704,
+        "text": "  surroundingAgent.executionContextStack.pop(leafContext);"
+      },
+      {
+        "line": 705,
+        "text": "  // 4. Assert: leafContext has no further use. It will never be activated as the running execution context."
+      },
+      {
+        "line": 706,
+        "text": "  leafContext.poppedForTailCall = true;"
+      },
+      {
+        "line": 707,
+        "text": "}"
+      },
+      {
+        "line": 708,
+        "text": ""
+      },
+      {
+        "line": 709,
+        "text": "/** https://tc39.es/proposal-shadowrealm/#sec-copynameandlength */"
+      },
+      {
+        "line": 710,
+        "text": "export function* CopyNameAndLength(F: FunctionObject, Target: FunctionObject, prefix?: string, argCount = 0): PlainEvaluator {"
+      },
+      {
+        "line": 711,
+        "text": "  let length = 0;"
+      },
+      {
+        "line": 712,
+        "text": "  const targetHasLength = Q(yield* HasOwnProperty(Target, 'length'));"
+      },
+      {
+        "line": 713,
+        "text": "  if (targetHasLength) {"
+      },
+      {
+        "line": 714,
+        "text": "    const targetLength = Q(yield* Get(Target, 'length'));"
+      },
+      {
+        "line": 715,
+        "text": "    if (targetLength instanceof NumberValue) {"
+      },
+      {
+        "line": 716,
+        "text": "      const targetLengthAsInt = X(ToIntegerOrInfinity(targetLength));"
+      },
+      {
+        "line": 717,
+        "text": "      if (targetLengthAsInt === Infinity) {"
+      },
+      {
+        "line": 718,
+        "text": "        length = Infinity;"
+      },
+      {
+        "line": 719,
+        "text": "      } else if (targetLengthAsInt === -Infinity) {"
+      },
+      {
+        "line": 720,
+        "text": "        length = 0;"
+      },
+      {
+        "line": 721,
+        "text": "      } else {"
+      },
+      {
+        "line": 722,
+        "text": "        length = Math.max(targetLengthAsInt - argCount, 0);"
+      },
+      {
+        "line": 723,
+        "text": "      }"
+      },
+      {
+        "line": 724,
+        "text": "    }"
+      },
+      {
+        "line": 725,
+        "text": "  }"
+      },
+      {
+        "line": 726,
+        "text": "  SetFunctionLength(F, length);"
+      },
+      {
+        "line": 727,
+        "text": "  let targetName = Q(yield* Get(Target, 'name'));"
+      },
+      {
+        "line": 728,
+        "text": "  if (!(targetName instanceof JSStringValue)) {"
+      },
+      {
+        "line": 729,
+        "text": "    targetName = Value('');"
+      },
+      {
+        "line": 730,
+        "text": "  }"
+      },
+      {
+        "line": 731,
+        "text": "  if (prefix !== undefined) {"
+      },
+      {
+        "line": 732,
+        "text": "    SetFunctionName(F, targetName, prefix);"
+      },
+      {
+        "line": 733,
+        "text": "  } else {"
+      },
+      {
+        "line": 734,
+        "text": "    SetFunctionName(F, targetName);"
+      },
+      {
+        "line": 735,
+        "text": "  }"
+      },
+      {
+        "line": 736,
+        "text": "}"
+      },
+      {
+        "line": 737,
+        "text": ""
+      },
+      {
+        "line": 738,
+        "text": "/** NON-SPEC */"
+      },
+      {
+        "line": 739,
+        "text": "export function IntrinsicsFunctionToString(F: FunctionObject) {"
+      },
+      {
+        "line": 740,
+        "text": "  return X(FunctionProto_toString([], { thisValue: F, NewTarget: Value.undefined })).stringValue();"
+      },
+      {
+        "line": 741,
+        "text": "}"
+      },
+      {
+        "line": 742,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/runtime-semantics/TryStatement.mts",
+    "bytes": 5367,
+    "sha256": "81d5e574d9ad823341905903e4bca50079cfac51b7057144873dc47ebf05974b",
+    "lines": [
+      {
+        "line": 1,
+        "text": "import { Value } from '../value.mts';"
+      },
+      {
+        "line": 2,
+        "text": "import { Evaluate, type StatementEvaluator } from '../evaluator.mts';"
+      },
+      {
+        "line": 3,
+        "text": "import {"
+      },
+      {
+        "line": 4,
+        "text": "  Completion,"
+      },
+      {
+        "line": 5,
+        "text": "  AbruptCompletion,"
+      },
+      {
+        "line": 6,
+        "text": "  UpdateEmpty,"
+      },
+      {
+        "line": 7,
+        "text": "  EnsureCompletion,"
+      },
+      {
+        "line": 8,
+        "text": "  X,"
+      },
+      {
+        "line": 9,
+        "text": "} from '../completion.mts';"
+      },
+      {
+        "line": 10,
+        "text": "import { BoundNames } from '../static-semantics/all.mts';"
+      },
+      {
+        "line": 11,
+        "text": "import { OutOfRange } from '../utils/language.mts';"
+      },
+      {
+        "line": 12,
+        "text": "import type { ParseNode } from '../parser/ParseNode.mts';"
+      },
+      {
+        "line": 13,
+        "text": "import { BindingInitialization } from './all.mts';"
+      },
+      {
+        "line": 14,
+        "text": "import { surroundingAgent, DeclarativeEnvironmentRecord } from '#self';"
+      },
+      {
+        "line": 15,
+        "text": ""
+      },
+      {
+        "line": 16,
+        "text": "/** https://tc39.es/ecma262/#sec-try-statement-runtime-semantics-evaluation */"
+      },
+      {
+        "line": 17,
+        "text": "//   TryStatement :"
+      },
+      {
+        "line": 18,
+        "text": "//     `try` Block Catch"
+      },
+      {
+        "line": 19,
+        "text": "//     `try` Block Finally"
+      },
+      {
+        "line": 20,
+        "text": "//     `try` Block Catch Finally"
+      },
+      {
+        "line": 21,
+        "text": "export function Evaluate_TryStatement(TryStatement: ParseNode.TryStatement) {"
+      },
+      {
+        "line": 22,
+        "text": "  switch (true) {"
+      },
+      {
+        "line": 23,
+        "text": "    case !!TryStatement.Catch && !TryStatement.Finally:"
+      },
+      {
+        "line": 24,
+        "text": "      return Evaluate_TryStatement_BlockCatch(TryStatement);"
+      },
+      {
+        "line": 25,
+        "text": "    case !TryStatement.Catch && !!TryStatement.Finally:"
+      },
+      {
+        "line": 26,
+        "text": "      return Evaluate_TryStatement_BlockFinally(TryStatement);"
+      },
+      {
+        "line": 27,
+        "text": "    case !!TryStatement.Catch && !!TryStatement.Finally:"
+      },
+      {
+        "line": 28,
+        "text": "      return Evaluate_TryStatement_BlockCatchFinally(TryStatement);"
+      },
+      {
+        "line": 29,
+        "text": "    default:"
+      },
+      {
+        "line": 30,
+        "text": "      throw OutOfRange.nonExhaustive(TryStatement);"
+      },
+      {
+        "line": 31,
+        "text": "  }"
+      },
+      {
+        "line": 32,
+        "text": "}"
+      },
+      {
+        "line": 33,
+        "text": ""
+      },
+      {
+        "line": 34,
+        "text": "// TryStatement : `try` Block Catch"
+      },
+      {
+        "line": 35,
+        "text": "function* Evaluate_TryStatement_BlockCatch({ Block, Catch }: ParseNode.TryStatement) {"
+      },
+      {
+        "line": 36,
+        "text": "  // 1. Let B be the result of evaluating Block."
+      },
+      {
+        "line": 37,
+        "text": "  const blockResult = EnsureCompletion(yield* Evaluate(Block));"
+      },
+      {
+        "line": 38,
+        "text": "  // 2. If B.[[Type]] is throw, let C be CatchClauseEvaluation of Catch with argument B.[[Value]]."
+      },
+      {
+        "line": 39,
+        "text": "  let catchResult;"
+      },
+      {
+        "line": 40,
+        "text": "  if (blockResult.Type === 'throw') {"
+      },
+      {
+        "line": 41,
+        "text": "    catchResult = EnsureCompletion(yield* CatchClauseEvaluation(Catch!, blockResult.Value));"
+      },
+      {
+        "line": 42,
+        "text": "  } else { // 3. Else, let C be B."
+      },
+      {
+        "line": 43,
+        "text": "    catchResult = blockResult;"
+      },
+      {
+        "line": 44,
+        "text": "  }"
+      },
+      {
+        "line": 45,
+        "text": "  // 3. Return Completion(UpdateEmpty(C, undefined))."
+      },
+      {
+        "line": 46,
+        "text": "  return Completion(UpdateEmpty(catchResult, Value.undefined));"
+      },
+      {
+        "line": 47,
+        "text": "}"
+      },
+      {
+        "line": 48,
+        "text": ""
+      },
+      {
+        "line": 49,
+        "text": "// TryStatement : `try` Block Finally"
+      },
+      {
+        "line": 50,
+        "text": "function* Evaluate_TryStatement_BlockFinally({ Block, Finally }: ParseNode.TryStatement) {"
+      },
+      {
+        "line": 51,
+        "text": "  // 1. Let B be the result of evaluating Block."
+      },
+      {
+        "line": 52,
+        "text": "  const blockResult = EnsureCompletion(yield* Evaluate(Block));"
+      },
+      {
+        "line": 53,
+        "text": "  // 1. Let F be the result of evaluating Finally."
+      },
+      {
+        "line": 54,
+        "text": "  let finallyResult = EnsureCompletion(yield* Evaluate(Finally!));"
+      },
+      {
+        "line": 55,
+        "text": "  // 1. If F.[[Type]] is normal, set F to B."
+      },
+      {
+        "line": 56,
+        "text": "  if (finallyResult.Type === 'normal') {"
+      },
+      {
+        "line": 57,
+        "text": "    finallyResult = blockResult;"
+      },
+      {
+        "line": 58,
+        "text": "  }"
+      },
+      {
+        "line": 59,
+        "text": "  // 1. Return Completion(UpdateEmpty(F, undefined))."
+      },
+      {
+        "line": 60,
+        "text": "  return Completion(UpdateEmpty(finallyResult, Value.undefined));"
+      },
+      {
+        "line": 61,
+        "text": "}"
+      },
+      {
+        "line": 62,
+        "text": ""
+      },
+      {
+        "line": 63,
+        "text": "// TryStatement : `try` Block Catch Finally"
+      },
+      {
+        "line": 64,
+        "text": "function* Evaluate_TryStatement_BlockCatchFinally({ Block, Catch, Finally }: ParseNode.TryStatement) {"
+      },
+      {
+        "line": 65,
+        "text": "  // 1. Let B be the result of evaluating Block."
+      },
+      {
+        "line": 66,
+        "text": "  const blockResult = EnsureCompletion(yield* Evaluate(Block));"
+      },
+      {
+        "line": 67,
+        "text": "  // 2. If B.[[Type]] is throw, let C be CatchClauseEvaluation of Catch with argument B.[[Value]]."
+      },
+      {
+        "line": 68,
+        "text": "  let catchResult: Completion<Value | void>;"
+      },
+      {
+        "line": 69,
+        "text": "  if (blockResult.Type === 'throw') {"
+      },
+      {
+        "line": 70,
+        "text": "    catchResult = EnsureCompletion(yield* CatchClauseEvaluation(Catch!, blockResult.Value));"
+      },
+      {
+        "line": 71,
+        "text": "  } else { // 3. Else, let C be B."
+      },
+      {
+        "line": 72,
+        "text": "    catchResult = blockResult;"
+      },
+      {
+        "line": 73,
+        "text": "  }"
+      },
+      {
+        "line": 74,
+        "text": "  // 4. Let F be the result of evaluating Finally."
+      },
+      {
+        "line": 75,
+        "text": "  let finallyResult = EnsureCompletion(yield* Evaluate(Finally!));"
+      },
+      {
+        "line": 76,
+        "text": "  // 5. If F.[[Type]] is normal, set F to C."
+      },
+      {
+        "line": 77,
+        "text": "  if (finallyResult.Type === 'normal') {"
+      },
+      {
+        "line": 78,
+        "text": "    finallyResult = catchResult;"
+      },
+      {
+        "line": 79,
+        "text": "  }"
+      },
+      {
+        "line": 80,
+        "text": "  // 6. Return Completion(UpdateEmpty(F, undefined))."
+      },
+      {
+        "line": 81,
+        "text": "  return Completion(UpdateEmpty(finallyResult, Value.undefined));"
+      },
+      {
+        "line": 82,
+        "text": "}"
+      },
+      {
+        "line": 83,
+        "text": ""
+      },
+      {
+        "line": 84,
+        "text": "/** https://tc39.es/ecma262/#sec-runtime-semantics-catchclauseevaluation */"
+      },
+      {
+        "line": 85,
+        "text": "//  Catch :"
+      },
+      {
+        "line": 86,
+        "text": "//    `catch` Block"
+      },
+      {
+        "line": 87,
+        "text": "//    `catch` `(` CatchParameter `)` Block"
+      },
+      {
+        "line": 88,
+        "text": "function* CatchClauseEvaluation({ CatchParameter, Block }: ParseNode.Catch, thrownValue: Value): StatementEvaluator {"
+      },
+      {
+        "line": 89,
+        "text": "  if (!CatchParameter) {"
+      },
+      {
+        "line": 90,
+        "text": "    // 1. Return the result of evaluating Block."
+      },
+      {
+        "line": 91,
+        "text": "    return yield* Evaluate(Block);"
+      },
+      {
+        "line": 92,
+        "text": "  }"
+      },
+      {
+        "line": 93,
+        "text": "  // 1. Let oldEnv be the running execution context's LexicalEnvironment."
+      },
+      {
+        "line": 94,
+        "text": "  const oldEnv = surroundingAgent.runningExecutionContext.LexicalEnvironment;"
+      },
+      {
+        "line": 95,
+        "text": "  // 2. Let catchEnv be NewDeclarativeEnvironment(oldEnv)."
+      },
+      {
+        "line": 96,
+        "text": "  const catchEnv = new DeclarativeEnvironmentRecord(oldEnv);"
+      },
+      {
+        "line": 97,
+        "text": "  // 3. For each element argName of the BoundNames of CatchParameter, do"
+      },
+      {
+        "line": 98,
+        "text": "  for (const argName of BoundNames(CatchParameter)) {"
+      },
+      {
+        "line": 99,
+        "text": "    // a. Perform ! catchEnv.CreateMutableBinding(argName, false)."
+      },
+      {
+        "line": 100,
+        "text": "    X(catchEnv.CreateMutableBinding(argName, false));"
+      },
+      {
+        "line": 101,
+        "text": "  }"
+      },
+      {
+        "line": 102,
+        "text": "  // 4. Set the running execution context's LexicalEnvironment to catchEnv."
+      },
+      {
+        "line": 103,
+        "text": "  surroundingAgent.runningExecutionContext.LexicalEnvironment = catchEnv;"
+      },
+      {
+        "line": 104,
+        "text": "  // 5. Let status be BindingInitialization of CatchParameter with arguments thrownValue and catchEnv."
+      },
+      {
+        "line": 105,
+        "text": "  const status = yield* BindingInitialization(CatchParameter, thrownValue, catchEnv);"
+      },
+      {
+        "line": 106,
+        "text": "  // 6. If status is an abrupt completion, then"
+      },
+      {
+        "line": 107,
+        "text": "  if (status instanceof AbruptCompletion) {"
+      },
+      {
+        "line": 108,
+        "text": "    // a. Set the running execution context's LexicalEnvironment to oldEnv."
+      },
+      {
+        "line": 109,
+        "text": "    surroundingAgent.runningExecutionContext.LexicalEnvironment = oldEnv;"
+      },
+      {
+        "line": 110,
+        "text": "    // b. Return Completion(status)."
+      },
+      {
+        "line": 111,
+        "text": "    return Completion(status);"
+      },
+      {
+        "line": 112,
+        "text": "  }"
+      },
+      {
+        "line": 113,
+        "text": "  // 7. Let B be the result of evaluating Block."
+      },
+      {
+        "line": 114,
+        "text": "  const blockCompletion = EnsureCompletion(yield* Evaluate(Block));"
+      },
+      {
+        "line": 115,
+        "text": "  // 8. Set the running execution context's LexicalEnvironment to oldEnv."
+      },
+      {
+        "line": 116,
+        "text": "  surroundingAgent.runningExecutionContext.LexicalEnvironment = oldEnv;"
+      },
+      {
+        "line": 117,
+        "text": "  // 9. Return Completion(B)."
+      },
+      {
+        "line": 118,
+        "text": "  return Completion(blockCompletion);"
+      },
+      {
+        "line": 119,
+        "text": "}"
+      },
+      {
+        "line": 120,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/runtime-semantics/RelationalExpression.mts",
+    "bytes": 6114,
+    "sha256": "b6b16724ec776a70aadc9b457687e61ec901a6111a670d450f34847bcbae1b26",
+    "lines": [
+      {
+        "line": 1,
+        "text": "import { StringValue } from '../static-semantics/all.mts';"
+      },
+      {
+        "line": 2,
+        "text": "import {"
+      },
+      {
+        "line": 3,
+        "text": "  ObjectValue,"
+      },
+      {
+        "line": 4,
+        "text": "  Value,"
+      },
+      {
+        "line": 5,
+        "text": "  wellKnownSymbols,"
+      },
+      {
+        "line": 6,
+        "text": "} from '../value.mts';"
+      },
+      {
+        "line": 7,
+        "text": "import { Q, X } from '../completion.mts';"
+      },
+      {
+        "line": 8,
+        "text": "import { Evaluate } from '../evaluator.mts';"
+      },
+      {
+        "line": 9,
+        "text": "import { OutOfRange } from '../utils/language.mts';"
+      },
+      {
+        "line": 10,
+        "text": "import type { ParseNode } from '../parser/ParseNode.mts';"
+      },
+      {
+        "line": 11,
+        "text": "import {"
+      },
+      {
+        "line": 12,
+        "text": "  IsLessThan,"
+      },
+      {
+        "line": 13,
+        "text": "  Call,"
+      },
+      {
+        "line": 14,
+        "text": "  GetMethod,"
+      },
+      {
+        "line": 15,
+        "text": "  GetValue,"
+      },
+      {
+        "line": 16,
+        "text": "  HasProperty,"
+      },
+      {
+        "line": 17,
+        "text": "  IsCallable,"
+      },
+      {
+        "line": 18,
+        "text": "  OrdinaryHasInstance,"
+      },
+      {
+        "line": 19,
+        "text": "  ToBoolean,"
+      },
+      {
+        "line": 20,
+        "text": "  ToPropertyKey,"
+      },
+      {
+        "line": 21,
+        "text": "  PrivateElementFind,"
+      },
+      {
+        "line": 22,
+        "text": "  Throw,"
+      },
+      {
+        "line": 23,
+        "text": "  surroundingAgent,"
+      },
+      {
+        "line": 24,
+        "text": "  type ValueEvaluator,"
+      },
+      {
+        "line": 25,
+        "text": "  BooleanValue,"
+      },
+      {
+        "line": 26,
+        "text": "  UndefinedValue,"
+      },
+      {
+        "line": 27,
+        "text": "} from '#self';"
+      },
+      {
+        "line": 28,
+        "text": "import { ResolvePrivateIdentifier, type PrivateEnvironmentRecord } from '#self';"
+      },
+      {
+        "line": 29,
+        "text": ""
+      },
+      {
+        "line": 30,
+        "text": "/** https://tc39.es/ecma262/#sec-instanceofoperator */"
+      },
+      {
+        "line": 31,
+        "text": "export function* InstanceofOperator(V: Value, target: Value) {"
+      },
+      {
+        "line": 32,
+        "text": "  // 1. If Type(target) is not Object, throw a TypeError exception."
+      },
+      {
+        "line": 33,
+        "text": "  if (!(target instanceof ObjectValue)) {"
+      },
+      {
+        "line": 34,
+        "text": "    return Throw.TypeError('Right-hand side of \"instanceof\" ($1) is not an object', target);"
+      },
+      {
+        "line": 35,
+        "text": "  }"
+      },
+      {
+        "line": 36,
+        "text": "  // 2. Let instOfHandler be ? GetMethod(target, @@hasInstance)."
+      },
+      {
+        "line": 37,
+        "text": "  const instOfHandler = Q(yield* GetMethod(target, wellKnownSymbols.hasInstance));"
+      },
+      {
+        "line": 38,
+        "text": "  // 3. If instOfHandler is not undefined, then"
+      },
+      {
+        "line": 39,
+        "text": "  if (instOfHandler !== Value.undefined) {"
+      },
+      {
+        "line": 40,
+        "text": "    // a. Return ! ToBoolean(? Call(instOfHandler, target, « V »))."
+      },
+      {
+        "line": 41,
+        "text": "    return X(ToBoolean(Q(yield* Call(instOfHandler, target, [V]))));"
+      },
+      {
+        "line": 42,
+        "text": "  }"
+      },
+      {
+        "line": 43,
+        "text": "  // 4. If IsCallable(target) is false, throw a TypeError exception."
+      },
+      {
+        "line": 44,
+        "text": "  if (!IsCallable(target)) {"
+      },
+      {
+        "line": 45,
+        "text": "    return Throw.TypeError('Right-hand side of \"instanceof\" ($1) is not a function', target);"
+      },
+      {
+        "line": 46,
+        "text": "  }"
+      },
+      {
+        "line": 47,
+        "text": "  // 5. Return ? OrdinaryHasInstance(target, V)."
+      },
+      {
+        "line": 48,
+        "text": "  return Q(yield* OrdinaryHasInstance(target, V));"
+      },
+      {
+        "line": 49,
+        "text": "}"
+      },
+      {
+        "line": 50,
+        "text": ""
+      },
+      {
+        "line": 51,
+        "text": "// RelationalExpression : PrivateIdentifier `in` ShiftExpression"
+      },
+      {
+        "line": 52,
+        "text": "export function* Evaluate_RelationalExpression_PrivateIdentifier({ PrivateIdentifier, ShiftExpression }: ParseNode.RelationalExpression) {"
+      },
+      {
+        "line": 53,
+        "text": "  // 1. Let privateIdentifier be the StringValue of PrivateIdentifier."
+      },
+      {
+        "line": 54,
+        "text": "  const privateIdentifier = StringValue(PrivateIdentifier!);"
+      },
+      {
+        "line": 55,
+        "text": "  // 2. Let rref be the result of evaluating ShiftExpression."
+      },
+      {
+        "line": 56,
+        "text": "  const rref = Q(yield* Evaluate(ShiftExpression));"
+      },
+      {
+        "line": 57,
+        "text": "  // 3. Let rval be ? GetValue(rref)."
+      },
+      {
+        "line": 58,
+        "text": "  const rval = Q(yield* GetValue(rref));"
+      },
+      {
+        "line": 59,
+        "text": "  // 4. If Type(rval) is not Object, throw a TypeError exception."
+      },
+      {
+        "line": 60,
+        "text": "  if (!(rval instanceof ObjectValue)) {"
+      },
+      {
+        "line": 61,
+        "text": "    return Throw.TypeError('Right-hand side of \"in\" ($1) is not an object', rval);"
+      },
+      {
+        "line": 62,
+        "text": "  }"
+      },
+      {
+        "line": 63,
+        "text": "  // 5. Let privateEnv be the running execution context's PrivateEnvironment."
+      },
+      {
+        "line": 64,
+        "text": "  const privateEnv = surroundingAgent.runningExecutionContext.PrivateEnvironment as PrivateEnvironmentRecord;"
+      },
+      {
+        "line": 65,
+        "text": "  // 6. Let privateName be ! ResolvePrivateIdentifier(privateEnv, privateIdentifier)."
+      },
+      {
+        "line": 66,
+        "text": "  const privateName = X(ResolvePrivateIdentifier(privateEnv, privateIdentifier));"
+      },
+      {
+        "line": 67,
+        "text": "  // 7. If ! PrivateElementFind(privateName, rval) is not empty, return true."
+      },
+      {
+        "line": 68,
+        "text": "  if (X(PrivateElementFind(privateName, rval)) !== undefined) {"
+      },
+      {
+        "line": 69,
+        "text": "    return Value.true;"
+      },
+      {
+        "line": 70,
+        "text": "  }"
+      },
+      {
+        "line": 71,
+        "text": "  // 8. Return false."
+      },
+      {
+        "line": 72,
+        "text": "  return Value.false;"
+      },
+      {
+        "line": 73,
+        "text": "}"
+      },
+      {
+        "line": 74,
+        "text": ""
+      },
+      {
+        "line": 75,
+        "text": "/** https://tc39.es/ecma262/#sec-relational-operators-runtime-semantics-evaluation */"
+      },
+      {
+        "line": 76,
+        "text": "//   RelationalExpression :"
+      },
+      {
+        "line": 77,
+        "text": "//     RelationalExpression `<` ShiftExpression"
+      },
+      {
+        "line": 78,
+        "text": "//     RelationalExpression `>` ShiftExpression"
+      },
+      {
+        "line": 79,
+        "text": "//     RelationalExpression `<=` ShiftExpression"
+      },
+      {
+        "line": 80,
+        "text": "//     RelationalExpression `>=` ShiftExpression"
+      },
+      {
+        "line": 81,
+        "text": "//     RelationalExpression `instanceof` ShiftExpression"
+      },
+      {
+        "line": 82,
+        "text": "//     RelationalExpression `in` ShiftExpression"
+      },
+      {
+        "line": 83,
+        "text": "//     PrivateIdentifier `in` ShiftExpression"
+      },
+      {
+        "line": 84,
+        "text": "export function* Evaluate_RelationalExpression(expr: ParseNode.RelationalExpression): ValueEvaluator<BooleanValue | UndefinedValue> {"
+      },
+      {
+        "line": 85,
+        "text": "  if (expr.PrivateIdentifier) {"
+      },
+      {
+        "line": 86,
+        "text": "    return yield* Evaluate_RelationalExpression_PrivateIdentifier(expr);"
+      },
+      {
+        "line": 87,
+        "text": "  }"
+      },
+      {
+        "line": 88,
+        "text": ""
+      },
+      {
+        "line": 89,
+        "text": "  const { RelationalExpression, operator, ShiftExpression } = expr;"
+      },
+      {
+        "line": 90,
+        "text": ""
+      },
+      {
+        "line": 91,
+        "text": "  // 1. Let lref be the result of evaluating RelationalExpression."
+      },
+      {
+        "line": 92,
+        "text": "  const lref = Q(yield* Evaluate(RelationalExpression!));"
+      },
+      {
+        "line": 93,
+        "text": "  // 2. Let lval be ? GetValue(lref)."
+      },
+      {
+        "line": 94,
+        "text": "  const lval = Q(yield* GetValue(lref));"
+      },
+      {
+        "line": 95,
+        "text": "  // 3. Let rref be the result of evaluating ShiftExpression."
+      },
+      {
+        "line": 96,
+        "text": "  const rref = Q(yield* Evaluate(ShiftExpression));"
+      },
+      {
+        "line": 97,
+        "text": "  // 4. Let rval be ? GetValue(rref)."
+      },
+      {
+        "line": 98,
+        "text": "  const rval = Q(yield* GetValue(rref));"
+      },
+      {
+        "line": 99,
+        "text": "  switch (operator) {"
+      },
+      {
+        "line": 100,
+        "text": "    case '<': {"
+      },
+      {
+        "line": 101,
+        "text": "      // 5. Let r be the result of performing Abstract Relational Comparison lval < rval."
+      },
+      {
+        "line": 102,
+        "text": "      const r = Q(yield* IsLessThan(lval, rval));"
+      },
+      {
+        "line": 103,
+        "text": "      // 7. If r is undefined, return false. Otherwise, return r."
+      },
+      {
+        "line": 104,
+        "text": "      if (r === undefined) {"
+      },
+      {
+        "line": 105,
+        "text": "        return Value.false;"
+      },
+      {
+        "line": 106,
+        "text": "      }"
+      },
+      {
+        "line": 107,
+        "text": "      return Value(r);"
+      },
+      {
+        "line": 108,
+        "text": "    }"
+      },
+      {
+        "line": 109,
+        "text": "    case '>': {"
+      },
+      {
+        "line": 110,
+        "text": "      // 5. Let r be the result of performing Abstract Relational Comparison rval < lval with LeftFirst equal to false."
+      },
+      {
+        "line": 111,
+        "text": "      const r = Q(yield* IsLessThan(rval, lval, false));"
+      },
+      {
+        "line": 112,
+        "text": "      // 7. If r is undefined, return false. Otherwise, return r."
+      },
+      {
+        "line": 113,
+        "text": "      if (r === undefined) {"
+      },
+      {
+        "line": 114,
+        "text": "        return Value.false;"
+      },
+      {
+        "line": 115,
+        "text": "      }"
+      },
+      {
+        "line": 116,
+        "text": "      return Value(r);"
+      },
+      {
+        "line": 117,
+        "text": "    }"
+      },
+      {
+        "line": 118,
+        "text": "    case '<=': {"
+      },
+      {
+        "line": 119,
+        "text": "      // 5. Let r be the result of performing Abstract Relational Comparison rval < lval with LeftFirst equal to false."
+      },
+      {
+        "line": 120,
+        "text": "      const r = Q(yield* IsLessThan(rval, lval, false));"
+      },
+      {
+        "line": 121,
+        "text": "      // 7. If r is true or undefined, return false. Otherwise, return true."
+      },
+      {
+        "line": 122,
+        "text": "      if (r === true || r === undefined) {"
+      },
+      {
+        "line": 123,
+        "text": "        return Value.false;"
+      },
+      {
+        "line": 124,
+        "text": "      }"
+      },
+      {
+        "line": 125,
+        "text": "      return Value.true;"
+      },
+      {
+        "line": 126,
+        "text": "    }"
+      },
+      {
+        "line": 127,
+        "text": "    case '>=': {"
+      },
+      {
+        "line": 128,
+        "text": "      // 5. Let r be the result of performing Abstract Relational Comparison lval < rval."
+      },
+      {
+        "line": 129,
+        "text": "      const r = Q(yield* IsLessThan(lval, rval));"
+      },
+      {
+        "line": 130,
+        "text": "      // 7. If r is true or undefined, return false. Otherwise, return true."
+      },
+      {
+        "line": 131,
+        "text": "      if (r === true || r === undefined) {"
+      },
+      {
+        "line": 132,
+        "text": "        return Value.false;"
+      },
+      {
+        "line": 133,
+        "text": "      }"
+      },
+      {
+        "line": 134,
+        "text": "      return Value.true;"
+      },
+      {
+        "line": 135,
+        "text": "    }"
+      },
+      {
+        "line": 136,
+        "text": "    case 'instanceof':"
+      },
+      {
+        "line": 137,
+        "text": "      // 5. Return ? InstanceofOperator(lval, rval)."
+      },
+      {
+        "line": 138,
+        "text": "      return Value(Q(yield* InstanceofOperator(lval, rval)));"
+      },
+      {
+        "line": 139,
+        "text": "    case 'in':"
+      },
+      {
+        "line": 140,
+        "text": "      // 5. Return ? InstanceofOperator(lval, rval)."
+      },
+      {
+        "line": 141,
+        "text": "      if (!(rval instanceof ObjectValue)) {"
+      },
+      {
+        "line": 142,
+        "text": "        return Throw.TypeError('Right-hand side of \"in\" ($1) is not an object', rval);"
+      },
+      {
+        "line": 143,
+        "text": "      }"
+      },
+      {
+        "line": 144,
+        "text": "      // 6. Return ? HasProperty(rval, ? ToPropertyKey(lval))."
+      },
+      {
+        "line": 145,
+        "text": "      return Value(Q(yield* HasProperty(rval, Q(yield* ToPropertyKey(lval)))));"
+      },
+      {
+        "line": 146,
+        "text": "    default:"
+      },
+      {
+        "line": 147,
+        "text": "      throw OutOfRange.exhaustive(operator);"
+      },
+      {
+        "line": 148,
+        "text": "  }"
+      },
+      {
+        "line": 149,
+        "text": "}"
+      },
+      {
+        "line": 150,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/src/intrinsics/Error.mts",
+    "bytes": 3767,
+    "sha256": "0a4ec06afdef91114000c22cf6362dae8682fd1bc270643aea42f23695c58ae0",
+    "lines": [
+      {
+        "line": 1,
+        "text": "import {"
+      },
+      {
+        "line": 2,
+        "text": "  Descriptor,"
+      },
+      {
+        "line": 3,
+        "text": "  Value,"
+      },
+      {
+        "line": 4,
+        "text": "  type Arguments,"
+      },
+      {
+        "line": 5,
+        "text": "  type FunctionCallContext,"
+      },
+      {
+        "line": 6,
+        "text": "  type ObjectValue,"
+      },
+      {
+        "line": 7,
+        "text": "} from '../value.mts';"
+      },
+      {
+        "line": 8,
+        "text": "import { Q, X, type ValueEvaluator } from '../completion.mts';"
+      },
+      {
+        "line": 9,
+        "text": "import {"
+      },
+      {
+        "line": 10,
+        "text": "  captureStack,"
+      },
+      {
+        "line": 11,
+        "text": "  callSiteToErrorStack,"
+      },
+      {
+        "line": 12,
+        "text": "} from '../utils/stack.mts';"
+      },
+      {
+        "line": 13,
+        "text": "import { type CallSite, CallFrame } from '../utils/stack.mts';"
+      },
+      {
+        "line": 14,
+        "text": "import { bootstrapConstructor } from './bootstrap.mts';"
+      },
+      {
+        "line": 15,
+        "text": "import { surroundingAgent } from '#self';"
+      },
+      {
+        "line": 16,
+        "text": "import {"
+      },
+      {
+        "line": 17,
+        "text": "  DefinePropertyOrThrow,"
+      },
+      {
+        "line": 18,
+        "text": "  OrdinaryCreateFromConstructor,"
+      },
+      {
+        "line": 19,
+        "text": "  InstallErrorCause,"
+      },
+      {
+        "line": 20,
+        "text": "  ToString,"
+      },
+      {
+        "line": 21,
+        "text": "  type FunctionObject,"
+      },
+      {
+        "line": 22,
+        "text": "  IsError,"
+      },
+      {
+        "line": 23,
+        "text": "  Realm,"
+      },
+      {
+        "line": 24,
+        "text": "  Call,"
+      },
+      {
+        "line": 25,
+        "text": "  JSStringValue,"
+      },
+      {
+        "line": 26,
+        "text": "  type PlainEvaluator,"
+      },
+      {
+        "line": 27,
+        "text": "} from '#self';"
+      },
+      {
+        "line": 28,
+        "text": ""
+      },
+      {
+        "line": 29,
+        "text": "export interface ErrorObject extends ObjectValue {"
+      },
+      {
+        "line": 30,
+        "text": "  ErrorData: never;"
+      },
+      {
+        "line": 31,
+        "text": "  /** Show a clickable stack in the devtools */"
+      },
+      {
+        "line": 32,
+        "text": "  HostDefinedStack: readonly (CallSite | CallFrame)[] | undefined;"
+      },
+      {
+        "line": 33,
+        "text": "  /** Show an error message that allows ECMAScript values to be interleaved with host error messages in the devtools */"
+      },
+      {
+        "line": 34,
+        "text": "  HostDefinedMessage: readonly (string | Value)[] | undefined;"
+      },
+      {
+        "line": 35,
+        "text": "  HostDefinedFormattedStack: string | undefined;"
+      },
+      {
+        "line": 36,
+        "text": "  HostDefinedMessageString: string | undefined;"
+      },
+      {
+        "line": 37,
+        "text": "}"
+      },
+      {
+        "line": 38,
+        "text": ""
+      },
+      {
+        "line": 39,
+        "text": "export const ErrorHostInternalSlots = Object.freeze(["
+      },
+      {
+        "line": 40,
+        "text": "  'HostDefinedStack',"
+      },
+      {
+        "line": 41,
+        "text": "  'HostDefinedMessage',"
+      },
+      {
+        "line": 42,
+        "text": "  'HostDefinedFormattedStack',"
+      },
+      {
+        "line": 43,
+        "text": "  'HostDefinedMessageString',"
+      },
+      {
+        "line": 44,
+        "text": "] as const);"
+      },
+      {
+        "line": 45,
+        "text": ""
+      },
+      {
+        "line": 46,
+        "text": "export function* setErrorHostInternalSlot(O: ErrorObject, { nativeStack, stack }: ReturnType<typeof captureStack>, errorStringPredefined?: string): PlainEvaluator {"
+      },
+      {
+        "line": 47,
+        "text": "  const errorString = errorStringPredefined ?? (Q(yield* Call(surroundingAgent.intrinsic('%Error.prototype.toString%'), O)) as JSStringValue).stringValue();"
+      },
+      {
+        "line": 48,
+        "text": "  const errorStack = callSiteToErrorStack(stack, nativeStack);"
+      },
+      {
+        "line": 49,
+        "text": "  O.HostDefinedStack = stack;"
+      },
+      {
+        "line": 50,
+        "text": "  O.HostDefinedFormattedStack = errorStack;"
+      },
+      {
+        "line": 51,
+        "text": "  O.HostDefinedMessageString = errorString;"
+      },
+      {
+        "line": 52,
+        "text": "}"
+      },
+      {
+        "line": 53,
+        "text": ""
+      },
+      {
+        "line": 54,
+        "text": "export { IsError as isErrorObject } from '../abstract-ops/error-objects.mts';"
+      },
+      {
+        "line": 55,
+        "text": ""
+      },
+      {
+        "line": 56,
+        "text": "/** https://tc39.es/ecma262/#sec-error-constructor */"
+      },
+      {
+        "line": 57,
+        "text": "function* ErrorConstructor([message = Value.undefined, options = Value.undefined]: Arguments, { NewTarget }: FunctionCallContext): ValueEvaluator {"
+      },
+      {
+        "line": 58,
+        "text": "  // 1. If NewTarget is undefined, let newTarget be the active function object; else let newTarget be NewTarget."
+      },
+      {
+        "line": 59,
+        "text": "  let newTarget;"
+      },
+      {
+        "line": 60,
+        "text": "  if (NewTarget === Value.undefined) {"
+      },
+      {
+        "line": 61,
+        "text": "    newTarget = surroundingAgent.activeFunctionObject;"
+      },
+      {
+        "line": 62,
+        "text": "  } else {"
+      },
+      {
+        "line": 63,
+        "text": "    newTarget = NewTarget;"
+      },
+      {
+        "line": 64,
+        "text": "  }"
+      },
+      {
+        "line": 65,
+        "text": "  // 2. Let O be ? OrdinaryCreateFromConstructor(newTarget, \"%Error.prototype%\", « [[ErrorData]] »)."
+      },
+      {
+        "line": 66,
+        "text": "  const O = Q(yield* OrdinaryCreateFromConstructor(newTarget as FunctionObject, '%Error.prototype%', ["
+      },
+      {
+        "line": 67,
+        "text": "    'ErrorData',"
+      },
+      {
+        "line": 68,
+        "text": "    ...ErrorHostInternalSlots,"
+      },
+      {
+        "line": 69,
+        "text": "  ])) as ErrorObject;"
+      },
+      {
+        "line": 70,
+        "text": "  // 3. If message is not undefined, then"
+      },
+      {
+        "line": 71,
+        "text": "  if (message !== Value.undefined) {"
+      },
+      {
+        "line": 72,
+        "text": "    // a. Let msg be ? ToString(message)."
+      },
+      {
+        "line": 73,
+        "text": "    const msg = Q(yield* ToString(message));"
+      },
+      {
+        "line": 74,
+        "text": "    // b. Let msgDesc be the PropertyDescriptor { [[Value]]: msg, [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: true }."
+      },
+      {
+        "line": 75,
+        "text": "    const msgDesc = Descriptor({"
+      },
+      {
+        "line": 76,
+        "text": "      Value: Value(msg),"
+      },
+      {
+        "line": 77,
+        "text": "      Writable: true,"
+      },
+      {
+        "line": 78,
+        "text": "      Enumerable: false,"
+      },
+      {
+        "line": 79,
+        "text": "      Configurable: true,"
+      },
+      {
+        "line": 80,
+        "text": "    });"
+      },
+      {
+        "line": 81,
+        "text": "    // c. Perform ! DefinePropertyOrThrow(O, \"message\", msgDesc)."
+      },
+      {
+        "line": 82,
+        "text": "    X(DefinePropertyOrThrow(O, 'message', msgDesc));"
+      },
+      {
+        "line": 83,
+        "text": "  }"
+      },
+      {
+        "line": 84,
+        "text": ""
+      },
+      {
+        "line": 85,
+        "text": "  // 4. Perform ? InstallErrorCause(O, options)."
+      },
+      {
+        "line": 86,
+        "text": "  Q(yield* InstallErrorCause(O, options));"
+      },
+      {
+        "line": 87,
+        "text": ""
+      },
+      {
+        "line": 88,
+        "text": "  Q(yield* setErrorHostInternalSlot(O, captureStack()));"
+      },
+      {
+        "line": 89,
+        "text": ""
+      },
+      {
+        "line": 90,
+        "text": "  // 5. Return O."
+      },
+      {
+        "line": 91,
+        "text": "  return O;"
+      },
+      {
+        "line": 92,
+        "text": "}"
+      },
+      {
+        "line": 93,
+        "text": ""
+      },
+      {
+        "line": 94,
+        "text": "/** https://tc39.es/proposal-is-error/#sec-error.iserror */"
+      },
+      {
+        "line": 95,
+        "text": "function Error_isError([value = Value.undefined]: Arguments) {"
+      },
+      {
+        "line": 96,
+        "text": "  return Value(IsError(value));"
+      },
+      {
+        "line": 97,
+        "text": "}"
+      },
+      {
+        "line": 98,
+        "text": ""
+      },
+      {
+        "line": 99,
+        "text": "export function bootstrapError(realmRec: Realm) {"
+      },
+      {
+        "line": 100,
+        "text": "  const error = bootstrapConstructor(realmRec, ErrorConstructor, 'Error', 1, realmRec.Intrinsics['%Error.prototype%'], ["
+      },
+      {
+        "line": 101,
+        "text": "    ['isError', Error_isError, 1],"
+      },
+      {
+        "line": 102,
+        "text": "  ]);"
+      },
+      {
+        "line": 103,
+        "text": ""
+      },
+      {
+        "line": 104,
+        "text": "  realmRec.Intrinsics['%Error%'] = error;"
+      },
+      {
+        "line": 105,
+        "text": "}"
+      },
+      {
+        "line": 106,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/engine262/engine262/d553e7b52501fbc47eae981c8d0fa7a5c26d0171/LICENSE",
+    "bytes": 1066,
+    "sha256": "171d63abdb8a993e2c2985ac14a509617d0f18dfb1d97108d5641af2bf82e387",
+    "lines": [
+      {
+        "line": 1,
+        "text": "Copyright (c) 2018 engine262 Contributors"
+      },
+      {
+        "line": 2,
+        "text": ""
+      },
+      {
+        "line": 3,
+        "text": "Permission is hereby granted, free of charge, to any person obtaining a copy"
+      },
+      {
+        "line": 4,
+        "text": "of this software and associated documentation files (the \"Software\"), to"
+      },
+      {
+        "line": 5,
+        "text": "deal in the Software without restriction, including without limitation the"
+      },
+      {
+        "line": 6,
+        "text": "rights to use, copy, modify, merge, publish, distribute, sublicense, and/or"
+      },
+      {
+        "line": 7,
+        "text": "sell copies of the Software, and to permit persons to whom the Software is"
+      },
+      {
+        "line": 8,
+        "text": "furnished to do so, subject to the following conditions:"
+      },
+      {
+        "line": 9,
+        "text": ""
+      },
+      {
+        "line": 10,
+        "text": "The above copyright notice and this permission notice shall be included in"
+      },
+      {
+        "line": 11,
+        "text": "all copies or substantial portions of the Software."
+      },
+      {
+        "line": 12,
+        "text": ""
+      },
+      {
+        "line": 13,
+        "text": "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR"
+      },
+      {
+        "line": 14,
+        "text": "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,"
+      },
+      {
+        "line": 15,
+        "text": "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE"
+      },
+      {
+        "line": 16,
+        "text": "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER"
+      },
+      {
+        "line": 17,
+        "text": "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING"
+      },
+      {
+        "line": 18,
+        "text": "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS"
+      },
+      {
+        "line": 19,
+        "text": "IN THE SOFTWARE."
+      },
+      {
+        "line": 20,
+        "text": ""
+      }
+    ]
+  }
+]
