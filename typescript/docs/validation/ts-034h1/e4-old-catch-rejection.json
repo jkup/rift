@@ -1,0 +1,19 @@
+[
+  {
+    "input": "seed",
+    "node": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS runtime function seed\nPASS semantic matrix basic globals locals references completions budgets\nPASS thirteen restricted traces every resource prefix seeded and fresh\nPASS literal root function block global prefix counts\nPASS N01-N04 original-node naming and source\nPASS captured owner two active sessions escaping B sentinel restored A exact frames\nPASS cross Realm original records allocation restricted provenance\nPASS exact guest completion location one-use direct replay denial\nPASS FDI every eighteen-tick setup prefix with shared source-unit budget\nPASS strict this and configurable restricted endpoint mutation neighbors\nPASS reachable accessor coercion body host faults and depth257 cleanup\n",
+      "stderr": "file:///C:/Users/jonku/code/rift/typescript/build/node/test/script-execution.js:7\r\n    throw new Error(message); }\r\n          ^\r\n\r\nError: whole-source rejection \"use strict\";try{}catch(e){}\r\n    at check (file:///C:/Users/jonku/code/rift/typescript/build/node/test/script-execution.js:7:11)\r\n    at file:///C:/Users/jonku/code/rift/typescript/build/node/test/script-execution.js:994:5\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\r\n    at async node:internal/modules/esm/loader:650:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)\r\n\r\nNode.js v26.13.0\r\n"
+    },
+    "native": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS runtime function seed\nPASS semantic matrix basic globals locals references completions budgets\nPASS thirteen restricted traces every resource prefix seeded and fresh\nPASS literal root function block global prefix counts\nPASS N01-N04 original-node naming and source\nPASS captured owner two active sessions escaping B sentinel restored A exact frames\nPASS cross Realm original records allocation restricted provenance\nPASS exact guest completion location one-use direct replay denial\nPASS FDI every eighteen-tick setup prefix with shared source-unit budget\nPASS strict this and configurable restricted endpoint mutation neighbors\nPASS reachable accessor coercion body host faults and depth257 cleanup\n",
+      "stderr": "Uncaught Error: whole-source rejection \"use strict\";try{}catch(e){}\n"
+    }
+  }
+]

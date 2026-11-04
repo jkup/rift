@@ -1,15 +1,11 @@
 import { parseDeclarationPlan } from "./parser.js";
 import { scriptPrologue } from "./script-prologue.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Diagnostic, Location, Expr, Stmt, SourceText, FunctionSource } from "./syntax.js";
+import type { Diagnostic, Location, Expr, Stmt, SourceText, FunctionSource, DeclarationSite, TryCatchStmt } from "./syntax.js";
 import type { Token } from "./lexer.js";
 import type { Rejection } from "./outcomes.js";
 
-export type DeclarationSite = {
-  readonly name: string;
-  readonly start: number; readonly end: number; // identifier, UTF16 half-open
-  readonly loc: Readonly<Location>;
-};
+export type { DeclarationSite } from "./syntax.js";
 export type Declaration = {
   readonly id: number; // unit-local preorder, starting at 0
   readonly kind: "let" | "var" | "function";
@@ -20,7 +16,8 @@ export type Declaration = {
   readonly initializer: { readonly start: number; readonly end: number } | null;
 };
 export type DeclarationScope = {
-  readonly id: number; readonly kind: "script" | "function" | "block";
+  readonly id: number; readonly kind: "script" | "function" | "block" | "catch";
+  readonly catchParameter: DeclarationSite | null;
   readonly parent: number | null;
   readonly start: number; readonly end: number;
   readonly strict: boolean;
@@ -72,12 +69,14 @@ export type ParsedBinding = {
     initializer: { start: number; end: number } | null;
 };
 type MutableScope = {
-    id: number; kind: "script" | "function" | "block"; parent: number | null;
+    id: number; kind: "script" | "function" | "block" | "catch"; parent: number | null;
+    catchParameter: DeclarationSite | null;
     start: number; end: number; strict: boolean; formals: DeclarationSite[];
     lexicalDeclarations: number[]; varDeclarations: number[];
     lexicalNames: string[]; varNames: string[];
 };
 type Work =
+    | { kind: "catch"; node: TryCatchStmt; scope: number; variableScope: number }
     | { kind: "block-end"; scope: number }
     | { kind: "statement"; node: Stmt; scope: number; variableScope: number }
     | { kind: "expression"; node: Expr; scope: number; variableScope: number }
@@ -113,9 +112,9 @@ class DeclarationCollector {
         this.strictness = scriptPrologue(unit.text, tokens, 0, false);
         this.scope("script", null, 0, unit.text.length, this.strictness.strict, []);
     }
-    scope(kind: "script" | "function" | "block", parent: number | null, start: number, end: number, strict: boolean, formals: DeclarationSite[]): number {
+    scope(kind: "script" | "function" | "block" | "catch", parent: number | null, start: number, end: number, strict: boolean, formals: DeclarationSite[]): number {
         const id = this.scopes.length;
-        this.scopes.push({ id, kind, parent, start, end, strict, formals,
+        this.scopes.push({ id, kind, parent, start, end, strict, formals, catchParameter: null,
             lexicalDeclarations: [], varDeclarations: [], lexicalNames: [], varNames: [] });
         return id;
     }
@@ -171,6 +170,10 @@ class DeclarationCollector {
     }
     visitStatement(node: Stmt, scope: number, variableScope: number): void {
         switch (node.kind) {
+            case "try-catch":
+                this.work.push({ kind: "catch", node, scope, variableScope });
+                this.statement(node.block, scope, variableScope);
+                break;
             case "let": case "var": {
                 const bindings = this.bindings.get(this.tokens[this.tokenIndex(node.loc)].start);
                 if (bindings === undefined) throw new Error("missing binding spans");
@@ -242,11 +245,24 @@ class DeclarationCollector {
                 // escape. Repeated propagation is bounded by parser depth128.
                 const scope = this.scopes[item.scope];
                 if (scope.parent === null) throw new Error("block missing parent");
-                const parent = this.scopes[scope.parent];
+                let parent = this.scopes[scope.parent];
+                // Catch owns only its parameter; handler vars hoist through it.
+                if (parent.kind === "catch") {
+                    if (parent.parent === null) throw new Error("catch missing parent");
+                    parent = this.scopes[parent.parent];
+                }
                 for (const id of scope.varDeclarations) {
                     parent.varDeclarations.push(id);
                     parent.varNames.push(this.declarations[id].site.name);
                 }
+            }
+            else if (item.kind === "catch") {
+                const node = item.node;
+                const id = this.scope("catch", item.scope, node.catchStart, node.catchEnd, this.scopes[item.scope].strict, []);
+                this.scopes[id].catchParameter = node.parameter;
+                this.scopes[id].lexicalNames.push(node.parameter.name);
+                if (this.nodes !== null) this.nodes.scopes.set(id, { node, body: node.handler.body });
+                this.statement(node.handler, id, item.variableScope);
             }
             else if (item.kind === "statement") this.visitStatement(item.node, item.scope, item.variableScope);
             else if (item.kind === "expression") this.visitExpression(item.node, item.scope, item.variableScope);
@@ -262,6 +278,15 @@ class DeclarationCollector {
             rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
             diagnostic: { phase: "parse", name: "SyntaxError", message: "non-strict block function planning is unsupported", loc: this.unsupportedBlock } };
         for (const scope of this.scopes) {
+            if (scope.kind === "catch") {
+                const parameter = scope.catchParameter;
+                const handler = this.scopes[scope.id + 1];
+                if (parameter === null || handler.parent !== scope.id) throw new Error("invalid catch scope");
+                if (!scope.strict || handler.lexicalNames.includes(parameter.name) || handler.varNames.includes(parameter.name))
+                    return { kind: "blocked", goal: "Script", unit: this.unit,
+                        rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
+                        diagnostic: { phase: "parse", name: "SyntaxError", message: "unsupported catch binding conflict or non-strict catch", loc: parameter.loc } };
+            }
             const conflict = declarationConflict(scope, this.declarations);
             if (conflict !== null) {
                 const later = conflict.first.start > conflict.second.start ? conflict.first : conflict.second;

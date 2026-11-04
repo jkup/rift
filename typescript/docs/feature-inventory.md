@@ -535,3 +535,21 @@ for the exact validation boundary and inherited host-helper replays.
 This passed independent execution and regression review; it is not public Script admission or a conformance
 claim. No arguments object/binding, Error objects, new grammar, observation/schema
 change, harness loading, async/generator support or default-profile change is added.
+
+### Internal strict simple catch (TS-034H1 candidate)
+
+Strict Script preparation admits `try { ... } catch (identifier) { ... }`.
+The original protected block, catch owner and handler block retain distinct
+scope identities. Both arms contribute var declarations to their enclosing
+Script/function; the catch parameter has its own mutable declarative binding.
+Handler closures retain that binding. Language throws enter catch; resource
+limits, unsupported operations and host faults bypass it. Consuming a throw
+clears its propagation identity while retaining diagnostic history, so reusing
+the exact completion at a later source site records the new source correctly.
+Try completion applies UpdateEmpty(undefined), with frame and nesting cleanup
+on every exit and monotonic shared steps. See [H1 evidence](validation/ts-034h1/README.md).
+
+Legacy grammar and public entry remain unchanged. Finally, optional/destructured
+catch, sloppy catch, catch-var collisions/Annex B and genuine Error objects remain
+outside this slice. The unchanged pinned harness and all 60 selected corpus
+variants remain blocked; this candidate awaits independent review.

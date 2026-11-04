@@ -1,0 +1,1 @@
+"use strict"; try{throw 11;}catch(e){out(e);}

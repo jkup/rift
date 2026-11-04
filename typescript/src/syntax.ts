@@ -1,6 +1,10 @@
 export type SourceText = { readonly text: string };
 export type FunctionSource = { readonly source: SourceText; readonly start: number; readonly end: number };
 export type Location = { line: number; column: number };
+export type DeclarationSite = { readonly name: string; readonly start: number; readonly end: number; readonly loc: Readonly<Location> };
+export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[] };
+export type TryCatchStmt = { kind: "try-catch"; loc: Location; block: BlockStmt; parameter: DeclarationSite;
+    catchLoc: Location; catchStart: number; catchEnd: number; handler: BlockStmt };
 export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: string; loc: Location };
 export type Expr =
     | { kind: "array"; loc: Location; elements: (Expr | null)[] }
@@ -22,7 +26,8 @@ export type Stmt =
     | { kind: "expression"; loc: Location; expression: Expr }
     | { kind: "let"; loc: Location; name: string; init: Expr | null }
     | { kind: "function"; loc: Location; name: string; params: string[]; body: Stmt[]; readonly source: FunctionSource | null }
-    | { kind: "block"; loc: Location; body: Stmt[] }
+    | BlockStmt
+    | TryCatchStmt
     | { kind: "if"; loc: Location; test: Expr; consequent: Stmt; alternate: Stmt | null }
     | { kind: "while"; loc: Location; test: Expr; body: Stmt }
     | { kind: "return" | "throw"; loc: Location; value: Expr | null }

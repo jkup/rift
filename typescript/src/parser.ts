@@ -154,6 +154,23 @@ class Parser {
         const loc = this.current().loc;
         if (this.eat(";")) return { kind: "empty", loc };
         if (this.eat("{")) return { kind: "block", loc, body: this.list(true, []) };
+        if (this.purpose === "declaration-plan" && this.eat("try")) {
+            const block = this.statement();
+            const catchToken = this.current();
+            this.expect("catch");
+            this.expect("(");
+            const token = this.current();
+            const name = this.name();
+            this.expect(")");
+            const handler = this.statement();
+            if (block.kind !== "block" || handler.kind !== "block") {
+                this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.expected-token" }, "try/catch requires blocks", loc);
+                return { kind: "empty", loc };
+            }
+            return { kind: "try-catch", loc, block, handler,
+                parameter: { name, start: token.start, end: token.end, loc: token.loc },
+                catchLoc: catchToken.loc, catchStart: catchToken.start, catchEnd: this.tokens[this.index - 1].end };
+        }
         if (this.eat("let")) {
             const binding = this.binding(0);
             this.expect(";");

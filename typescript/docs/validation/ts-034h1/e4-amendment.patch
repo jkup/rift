@@ -1,0 +1,9 @@
+diff --git a/typescript/test/script-execution.ts b/typescript/test/script-execution.ts
+--- a/typescript/test/script-execution.ts
++++ b/typescript/test/script-execution.ts
+@@
+ const cases: { id: string; source: string; expected: number | string | undefined }[] = [
++    { id: "H1-empty", source: '"use strict";try{}catch(e){}', expected: undefined },
+@@
+-    '"use strict";switch(1){}','"use strict";try{}catch(e){}','"use strict";new f();','"use strict";class C{}',
++    '"use strict";switch(1){}','"use strict";try{}catch(e){}finally{}','"use strict";new f();','"use strict";class C{}',

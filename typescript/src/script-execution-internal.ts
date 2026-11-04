@@ -2,7 +2,7 @@ import { parseDeclarationPlan } from "./parser.js";
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
-import type { Expr, Stmt, FunctionSource, Location } from "./syntax.js";
+import type { Expr, Stmt, FunctionSource, Location, TryCatchStmt } from "./syntax.js";
 import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, failure, resourceFailure, getValue, putValue, truthy } from "./runtime.js";
 import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, type ScriptBindingReference } from "./script-environment.js";
 import type { GlobalEnvironment } from "./global-environment.js";
@@ -84,6 +84,26 @@ class BlockActivation extends ScriptDeclarativeEnvironment {
     }
 }
 export type ScriptBlockEnvironmentCompletion = { type: "normal"; environment: ScriptDeclarativeEnvironment } | ThrowCompletion;
+// A distinct private activation prevents ordinary block setup from consuming it.
+class CatchActivation extends ScriptDeclarativeEnvironment {
+    #key: ActivationKey;
+    #scope: number;
+    #outer: ScriptEnvironment;
+    #phase: "fresh" | "started" | "complete" = "fresh";
+    constructor(key: ActivationKey, scope: number, outer: ScriptEnvironment) {
+        super(outer); this.#key = key; this.#scope = scope; this.#outer = outer;
+    }
+    begin(key: ActivationKey, scope: number): void {
+        if (key !== this.#key || scope !== this.#scope || this.outer !== this.#outer || this.#phase !== "fresh")
+            throw new Error("invalid fresh catch activation");
+        this.#phase = "started";
+    }
+    complete(key: ActivationKey, scope: number): void {
+        if (key !== this.#key || scope !== this.#scope || this.outer !== this.#outer || this.#phase !== "started")
+            throw new Error("invalid started catch activation");
+        this.#phase = "complete";
+    }
+}
 
 export type ScriptPreparation =
     | { readonly kind: "ready"; readonly record: ExecutableScript }
@@ -137,11 +157,38 @@ class ExecutableScript {
             if (entry === undefined) throw new Error("missing Script scope association");
             if (scope.id === 0) {
                 if (scope.kind !== "script" || entry.node !== null || entry.body !== nodes.body) throw new Error("invalid Script root");
+            } else if (scope.kind === "catch") {
+                if (entry.node === null || entry.node.kind !== "try-catch" || entry.body !== entry.node.handler.body || scopes.has(entry.node))
+                    throw new Error("invalid catch node identity");
+                const node = entry.node;
+                const parameter = scope.catchParameter;
+                if (parameter !== node.parameter || scope.start !== node.catchStart || scope.end !== node.catchEnd ||
+                    scope.parent === null || scope.strict !== plan.scopes[scope.parent].strict ||
+                    scope.formals.length !== 0 || scope.lexicalDeclarations.length !== 0 || scope.varDeclarations.length !== 0 ||
+                    scope.varNames.length !== 0 || scope.lexicalNames.length !== 1 || scope.lexicalNames[0] !== parameter.name)
+                    throw new Error("invalid catch metadata");
+                scopes.set(node, scope.id);
             } else {
-                if (entry.node === null || entry.node.kind !== scope.kind || entry.body !== entry.node.body || scopes.has(entry.node))
+                if (entry.node === null || (entry.node.kind !== "block" && entry.node.kind !== "function") || entry.node.kind !== scope.kind || entry.body !== entry.node.body || scopes.has(entry.node))
                     throw new Error("invalid Script scope identity");
                 scopes.set(entry.node, scope.id);
             }
+            if (scope.kind !== "catch" && scope.catchParameter !== null) throw new Error("foreign catch parameter");
+        }
+        for (const scope of plan.scopes) {
+            if (scope.kind !== "catch") continue;
+            const entry = nodes.scopes.get(scope.id);
+            if (entry === undefined || entry.node === null || entry.node.kind !== "try-catch") throw new Error("missing catch association");
+            const node = entry.node;
+            const tryId = scopes.get(node.block), handlerId = scopes.get(node.handler);
+            if (tryId === undefined || handlerId === undefined || tryId >= scope.id || handlerId !== scope.id + 1 ||
+                node.block === node.handler || node.block.body === node.handler.body)
+                throw new Error("invalid catch children");
+            const protectedScope = plan.scopes[tryId], handlerScope = plan.scopes[handlerId];
+            if (protectedScope.kind !== "block" || handlerScope.kind !== "block" || protectedScope.parent !== scope.parent ||
+                handlerScope.parent !== scope.id || protectedScope.end > scope.start || handlerScope.start < scope.start ||
+                handlerScope.end !== scope.end || handlerScope.strict !== scope.strict || protectedScope.strict !== scope.strict)
+                throw new Error("invalid catch child scope");
         }
         record.#state = { realm, plan, nodes, scopes };
         return { kind: "ready", record };
@@ -168,6 +215,29 @@ class ExecutableScript {
     }
     static assignmentMayName(record: ExecutableScript, node: Expr, key: ExecutionKey): boolean {
         return ExecutableScript.state(record, key).nodes.assignmentNameEligible.get(node) === true;
+    }
+    static activateCatch(record: ExecutableScript, node: TryCatchStmt, outer: ScriptEnvironment, value: Value,
+        context: OperationContext, key: ExecutionKey): ScriptBlockEnvironmentCompletion {
+        const state = ExecutableScript.state(record, key);
+        const scopeId = ExecutableScript.scopeOfNode(record, node, key);
+        const scope = state.plan.scopes[scopeId], entry = state.nodes.scopes.get(scopeId);
+        if (scope.kind !== "catch" || entry === undefined || entry.node !== node || entry.body !== node.handler.body || scope.catchParameter !== node.parameter)
+            throw new Error("invalid catch activation association");
+        record.#validateEnvironment(outer, context);
+        const allocation = context.tick(node.catchLoc);
+        if (allocation.type === "throw") { const abrupt: ThrowCompletion = allocation; return abrupt; }
+        const activation = new CatchActivation(record.#activationKey, scopeId, outer);
+        activation.begin(record.#activationKey, scopeId);
+        const creation = context.tick(node.parameter.loc);
+        if (creation.type === "throw") { const abrupt: ThrowCompletion = creation; return abrupt; }
+        const created = activation.createMutableBinding(node.parameter.name, node.parameter.loc);
+        if (created.type === "throw") { const abrupt: ThrowCompletion = created; return abrupt; }
+        const initialization = context.tick(node.parameter.loc);
+        if (initialization.type === "throw") { const abrupt: ThrowCompletion = initialization; return abrupt; }
+        const initialized = activation.initializeBinding(node.parameter.name, value, context, node.parameter.loc);
+        if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
+        activation.complete(record.#activationKey, scopeId);
+        return { type: "normal", environment: activation };
     }
     #readState(): ScriptState {
         if (this.#state === null) throw new Error("unprepared Script record");
@@ -393,6 +463,7 @@ class ExecutableScript {
         return { kind: "complete", goal: "Script", unit: { id: plan.unit.id, text: plan.unit.text },
             consumedUnits: plan.consumedUnits, strictness: copyStrictness(plan.strictness),
             scopes: plan.scopes.map(scope => ({ id: scope.id, kind: scope.kind, parent: scope.parent,
+                catchParameter: scope.catchParameter === null ? null : copySite(scope.catchParameter),
                 start: scope.start, end: scope.end, strict: scope.strict, formals: scope.formals.map(copySite),
                 lexicalDeclarations: scope.lexicalDeclarations.slice(), varDeclarations: scope.varDeclarations.slice(),
                 lexicalNames: scope.lexicalNames.slice(), varNames: scope.varNames.slice() })),
@@ -579,7 +650,7 @@ class ExecutionEngine {
     }
     statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
         switch (stmt.kind) {
-            case "var": throw new Error("Script var AST requires Script execution");
+            case "try-catch": case "var": throw new Error("Script AST requires Script execution");
             case "empty": case "function": return normal();
             case "expression": return this.evaluate(stmt.expression, env, receiver);
             case "let": {
@@ -1051,6 +1122,21 @@ class ExecutionEngine {
     }
     #scriptStatement(stmt: Stmt): ScriptStatementCompletion {
         switch (stmt.kind) {
+            case "try-catch": {
+                const result = this.#statement(stmt.block);
+                if (result.type !== "throw" || (result.origin.kind !== "guest" && result.origin.kind !== "engine-diagnostic"))
+                    return updateScriptEmpty(result, { kind: "value", value: UNDEFINED });
+                // Consumption ends propagation identity, but diagnostic history survives.
+                this.#abrupt = null;
+                const saved = this.#active();
+                try {
+                    const created = ExecutableScript.activateCatch(saved.record, stmt, saved.lexical, result.value, this.context, executionKey);
+                    if (created.type === "throw") { this.#capture(created); return created; }
+                    const scopeId = ExecutableScript.scopeOfNode(saved.record, stmt, executionKey);
+                    this.#frame = { ...saved, scopeId, lexical: created.environment };
+                    return updateScriptEmpty(this.#statement(stmt.handler), { kind: "value", value: UNDEFINED });
+                } finally { this.#frame = saved; }
+            }
             case "empty": case "function": return { type: "normal", payload: { kind: "empty" } };
             case "expression": return scriptExpressionCompletion(this.#value(stmt.expression));
             case "let": {
