@@ -2,6 +2,12 @@
   "base": "522413d",
   "results": [
     {
+      "name": "diagnostics",
+      "statements": 2314,
+      "dynamicStatements": 0,
+      "literalBothHosts": true
+    },
+    {
       "name": "capability",
       "statements": 144,
       "dynamicStatements": 0,
@@ -34,12 +40,17 @@
   },
   "protectedTrackedPathsUnchanged": true,
   "hashes": {
-    "PROPOSAL.md": "e5d81fa4ed305a77ed133b64df74c0478c20a46ec770d9ada3e8c0cd636102d9",
-    "README.md": "a0b3b1bde2d8d1a983b3fddc12f24736f1c7db2a51711717af40e895551a6e41",
+    "DIAGNOSTICS.md": "9c5982e0e60b5b6b099c5133f5a0f9b84a96e7cf30cd04a050f2a57290650da1",
+    "PROPOSAL.md": "2330ac9722349ff936c27e159fe55867d23c12e9686bd211902a02fc70144391",
+    "README.md": "25c5f1f50a7f06da99821c3f906127d018aaeccc7f2b82a0a1a977f61e1fb142",
     "capability-first-results.json": "594049be08760d96ec5f696c7056cd64748467f126901386220a1ffd5aefea0a",
     "capability-first.ts": "b94de6c837dff05f9af39c2110df4e0212eea1bbc6dc74f16b77c3bed81efc81",
     "capability-results.json": "b626d113ff0c7ccddcf09a0770f8868190d6dbd75d8d9923c9c12368e92bc1b1",
     "capability.ts": "922a4a060b4a2305f274c17c3d1f4f267869272d7f82828f51fa655dbdc6a533",
+    "diagnostic-guard.ts": "462d24cbd0f9b9bccaff3a26037e6072356dd8d341893adbf6fc2159e32dfb93",
+    "diagnostic-state.ts": "a9b618fc8fc4978b56df419ec893a989104e0de78e5ded3c01ea45e483709df6",
+    "diagnostics-results.json": "2ddbb2f7e35fcc7de2b06c2a657b7839b83b2317a65e9bd0d16645e35497affa",
+    "diagnostics.ts": "d58c6f6d74a5e32623a93400043b2c50325d984270d975bf794d2872d09d60e1",
     "host-shapes.mjs": "c56ae22e9a13aafbc759f912f5174ebf02696df05d2783e000608b5c487a367f",
     "nominal-results.json": "798cbce25628b18037cd21a2037450d771ee0892bd3a967baea872e0b35ee068",
     "nominal.ts": "8d9281d6f1b49402b6f14fa9e78190288454f775ae5974b58759c8f82f918200",
@@ -50,7 +61,7 @@
     "provenance.ts": "f12c12054e25bb9ab56e4e1b598308d570891a8e209e02f5e957cb188a68f1e9",
     "record-facade.ts": "29a78897d3e9dc4945f6785845b63a684288e99bd36eb0575e47f034b277b11f",
     "run-first.mjs": "7ad0c5fe2d4afe0781285c95f29061eba40ce7647cb07862e4685b787812df9b",
-    "run.mjs": "d0fcff1df5f87f7af44f98932cc121fbff5441793ff218a775ad77df29964100",
+    "run.mjs": "50cc54a1d8fe5fb33ff3e2767627d19895bfe60e0bcf0ae4f7f7e09a10b34311",
     "session-facade.ts": "ff97063d79faa9b3de7be911ac1e265bf86f3ba90b938c25c3e064fd17c81f51",
     "tuple-first-results.json": "6d66fce285985fb4c08c4568aee8ba553d368130830dbd2b971269b2976b9c46",
     "tuple-first.ts": "daf76433c53e9e131784b4f627228a908186027986bc10edaa436c365cb03075",
@@ -58,6 +69,6 @@
     "tuple-results.json": "8c5004b0da67c8abf13ef19a0dea07e1f6bd5e100443cb95f761c94d2afb25b4",
     "tuple-state.ts": "e30910ac45edcc18de86041c5280dbd5feaf2ba0c837e1930639836140131a5b",
     "tuple.ts": "77bd607e844f6afacc334f83bcd40558c98cc2216bad7a5e832d9302b34e0123",
-    "verify.mjs": "a06e3ec3aa387891b92327cab359b20ec21705f43fdc296bf59d6e2b8be24ba9"
+    "verify.mjs": "6496a182f53966112b23ce3fdb2f4a12ca1dc66fdeb243896f3896f91e406ddf"
   }
 }

@@ -7,7 +7,9 @@ import {probeVerdict} from '../../../../tools/probe-verdict.mjs';
 const root=fileURLToPath(new URL('../../../../../',import.meta.url));
 const base='522413d';
 const prefix='typescript/docs/validation/ts-033e4/boundary-review/';
-const expected={capability:[144,'PASS ownership copied-detached activeA-activeB idleA-activeB\nPASS nested realm guest-identity host-identity permits\nPASS root-throw call-limit monotonic-steps independent-owner\n'],nominal:[65,'PASS nominal authentic cross-owner idle reentry nested root-throw\n'],provenance:[46,'PASS facade private-record identity equal-id wrong-record rejected\n'],tuple:[2265,'PASS real-types permit tuple negatives identity replay cleanup\n']};
+const retained=['capability.ts','capability-results.json','nominal.ts','nominal-results.json','provenance.ts','provenance-internal.ts','record-facade.ts','session-facade.ts','provenance-results.json','tuple.ts','tuple-state.ts','tuple-guard.ts','tuple-results.json','tuple-first.ts','tuple-first-results.json'];
+assert.equal(execFileSync('git',['diff','--name-only','751e40e','--',...retained.map(p=>prefix+p)],{cwd:root,encoding:'utf8'}).trim(),'','prior probe history changed');
+const expected={diagnostics:[2314,'PASS existing guard cross-profile callable invocation / Script execution unavailable / legacy direct\nPASS proposed exact diagnostics invalid tuple leaves permit unused / authentic consumes once\nPASS proposed host identity cleanup / no validation ticks or dispatch\n'],capability:[144,'PASS ownership copied-detached activeA-activeB idleA-activeB\nPASS nested realm guest-identity host-identity permits\nPASS root-throw call-limit monotonic-steps independent-owner\n'],nominal:[65,'PASS nominal authentic cross-owner idle reentry nested root-throw\n'],provenance:[46,'PASS facade private-record identity equal-id wrong-record rejected\n'],tuple:[2265,'PASS real-types permit tuple negatives identity replay cleanup\n']};
 const results=[];
 for(const [name,[count,stdout]] of Object.entries(expected)){
  const r=JSON.parse(readFileSync(new URL(name+'-results.json',import.meta.url),'utf8'));
@@ -29,4 +31,4 @@ for(const path of untracked)assert.ok(path.startsWith(prefix),path);
 const hashes={};
 for(const name of readdirSync(new URL('.',import.meta.url)).filter(n=>n!=='verification.json').sort())hashes[name]=createHash('sha256').update(readFileSync(new URL(name,import.meta.url))).digest('hex');
 writeFileSync(new URL('verification.json',import.meta.url),JSON.stringify({base,results,initialTupleDynamicRetained:true,hostOnly:{status:host.status,stdout:host.stdout,stderr:host.stderr},protectedTrackedPathsUnchanged:true,hashes},null,2)+'\n');
-console.log('PASS four literal Node/native probes; unchanged coverage gate; Node-only malformed-shape controls; protected tracked paths');
+console.log('PASS five literal Node/native probes; unchanged coverage gate; Node-only malformed-shape controls; protected tracked paths');

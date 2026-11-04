@@ -2,12 +2,12 @@
 
 Read [PROPOSAL.md](PROPOSAL.md) for the proposed threat model, comparison of nominal versus function capabilities, exact A08 changes, migration, authority argument and acceptance plan. **No contract has been adopted and no production code changed.**
 
-Final probes: capability144, nominal65, provenance46, actual-runtime-type permit tuple2265 static statements, each with zero dynamic statements according to the existing `tools/probe-verdict.mjs` gate. Full transcripts include generated zero-statement helper diagnostics. Literal expectations are fixed in run.mjs and checked again by verify.mjs; unknown reports and nonzero dynamic counts fail. Node-only malformed/reflected host-value checks are separately labeled.
+Final probes: capability144, nominal65, provenance46, actual-runtime-type permit tuple2265, diagnostic compatibility2314 static statements, each with zero dynamic statements according to the existing `tools/probe-verdict.mjs` gate. Full transcripts include generated zero-statement helper diagnostics. Literal expectations are fixed in run.mjs and checked again by verify.mjs; unknown reports and nonzero dynamic counts fail. Node-only malformed/reflected host-value checks are separately labeled. [DIAGNOSTICS.md](DIAGNOSTICS.md) corrects the proposed guard ordering/messages while retaining the original tuple model as historical representation evidence.
 
 From the Rift root, with the existing Zig directory on PATH:
 
 ```powershell
-node typescript/docs/validation/ts-033e4/boundary-review/run.mjs capability nominal provenance tuple
+node typescript/docs/validation/ts-033e4/boundary-review/run.mjs capability nominal provenance tuple diagnostics
 node typescript/docs/validation/ts-033e4/boundary-review/verify.mjs
 ```
 

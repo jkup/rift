@@ -52,7 +52,22 @@ Keep private record storage and shared dispatch co-located as in the accepted ac
 
 Retain the exact one-use permit, but store the current permit in a module-private **synchronous invocation stack** (a saved previous pointer suffices), rather than relying on a nominal context brand to locate its engine. Each permit contains the canonical context, target guarded wrapper, callee Realm, receiver, args array and location identities, and consumed state. No public registry, context lookup service, permit getter, or mint function is exported.
 
-The private dispatcher validates target/profile/call limit, installs callee state, pushes the exact permit, and immediately invokes the guarded wrapper. The Script wrapper calls the exported **consume-only** validator before reading fields of a possibly forged context or entering raw host code. Validator compares exact supplied identities with the pending permit and consumes it once. The canonical context alone, a clone, or a copied callback supplied to direct `.invoke` is insufficient. A copied genuine dispatch function can create a fresh permit through its owner, which is an intentional capability use.
+The private dispatcher validates target/profile/call limit, installs callee state, pushes the exact permit, and immediately invokes the guarded wrapper. The wrapper first reads `context.realm.profile`, preserving the existing profile check and diagnostic precedence. If it differs from the wrapper Realm's profile, throw exactly `cross-profile callable invocation` without consulting or consuming a permit. A same-profile legacy wrapper directly invokes its raw callback without a Script permit. A same-profile Script wrapper calls the exported **consume-only** validator; false throws exactly `Script execution unavailable`, true permits raw invocation. The validator returns boolean, compares all supplied identities with the pending permit without reading context fields, and consumes only a complete match. Missing, used, or mismatched permits return false with no mutation. Do not catch arbitrary validator exceptions and relabel them.
+
+This supersedes the earlier proposal's incorrect guarantee of validation before *any* context field read. The guard guarantees no engine tick, dispatch, raw callback, or permit consumption on an ordinary rejected invocation; it does not guarantee zero property reads. Reading fields on a trusted plain context is safe under the declared host contract. Malformed host values or hostile getters/proxies may throw or run host code during the profile read, and are not promised a particular message or side-effect isolation. That limitation must not be disguised as guest effects or successful hostile-host authentication. The canonical context alone, a clone, or a copied callback supplied to direct `.invoke` is insufficient. A copied genuine dispatch function can create a fresh permit through its owner, which is an intentional capability use.
+
+Exact proposed wrapper order (model in diagnostic-guard.ts, not a production edit):
+
+```ts
+if (context.realm.profile !== wrapperRealm.profile)
+    throw new Error("cross-profile callable invocation");
+if (wrapperRealm.profile !== "legacy" &&
+    !consumeScriptBuiltinPermit(context, wrapperRealm, wrapped, receiver, args, loc))
+    throw new Error("Script execution unavailable");
+return raw(receiver, args, context, loc);
+```
+
+Thus even a pending permit cannot override a profile mismatch; failed profile/tuple checks leave an otherwise matching pending permit available for the authentic neighbor. Consumed and stale permits retain the same unavailable diagnostic. See [diagnostic compatibility review](DIAGNOSTICS.md) for the inherited-test inventory and literal evidence. The original tuple probe's generic `permit` error is retained as historical representation evidence, not the proposed production error contract.
 
 Consume before raw code runs, so callbacks cannot reuse the parent permit or invoke another builtin directly. Nested dispatch in the same or a different session saves/restores the previous pointer; on return that parent is already consumed. `finally` restores it even for host exceptions. This relies on synchronous execution with no await/yield between push and consume. Async/generator execution remains out of scope and would require revisiting this stack's ownership. No added semantic tick comes from permits or validation. Preserve the legacy Realm guard path, including cross-profile rejection.
 
@@ -63,7 +78,7 @@ Consume before raw code runs, so callbacks cannot reuse the parent permit or inv
 | new script-execution-internal.ts | Existing planned record/shared-engine co-location; replace frozen getter view/unbound receiver callbacks with captured functions and private writable projection; module-private synchronous permits |
 | script-record.ts, evaluator.ts | Existing planned compatibility facades; legacy public signatures and behavior remain intact; legacy wrapper cannot construct Script engine |
 | new script-execution.ts | Existing opaque factory/evaluate facade only; no context export |
-| realm.ts guardBuiltin | Script branch consumes exact pending permit before raw invocation; no context-class cast or registry; legacy profile checks retained |
+| realm.ts guardBuiltin | Preserve profile check first and exact cross-profile error; same-profile Script branch consumes matching permit or throws exact unavailable error; same-profile legacy raw invocation unchanged; no context-class cast or registry |
 | runtime.ts, all semantic helpers and builtins | **No API/type/call-site change proposed**: use canonical `context.call(...)`, `context.tick(...)`, `context.realm`; no host receiver authentication dependency |
 | new E4 driver and gate | Replace only explicitly superseded A08 capability-shape expectations; retain semantic matrices, resource prefixes, builtin guard tests and all inherited tests |
 | docs/task assignment | Coordinator must approve supersession and exact ownership before implementation; historical contract remains preserved |
@@ -108,6 +123,7 @@ All final TypeScript probes pass strict compilation, literal Node/native expecte
 | nominal.ts | 65 | Direct nominal calls/realm access, owner identity, two active owners, idle/reentry rejection, nested and root host-throw cleanup |
 | provenance.ts with two facades | 46 | Private key-gated payload, genuine record/callable identity, equal IDs, wrong-record rejection before steps, detached inspection mutation cannot change record |
 | tuple.ts with separate state/guard modules and actual Rift runtime types | 2265 | Exact canonical context, Realm, wrapper-function, receiver, args-array and location tuple; equal-content distinct arrays/locations reject; consumed/replayed/direct invocation rejects; exact result and host sentinel identities; cleanup and authentic neighbors |
+| diagnostics.ts with revised guard/state modules | See DIAGNOSTICS.md | Exact inherited profile/unavailable diagnostics against actual production guards and the proposed model; rejected checks leave permit unused; legacy cross-Realm direct result, Script authorized result and host sentinel identities; no validation ticks/dispatch |
 
 The coverage output may list generated helper functions with **zero statements** in the dynamic tier. We retain this output verbatim and use the established gate, which rejects positive dynamic statement counts. This is not a claim that no generated dynamic helper symbol exists. No exemptions or coverage parser changes were made.
 
