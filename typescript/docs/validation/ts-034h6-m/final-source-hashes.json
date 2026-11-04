@@ -1,0 +1,22 @@
+[
+  {
+    "path": "src/array-map.ts",
+    "sha256": "215118f00949a4d51ce8b331972385fa43ec9a1753e1841ae5349c9d5d1be2fc"
+  },
+  {
+    "path": "src/symbols.ts",
+    "sha256": "6150c63cdac32307226438b3fcdb178ca5cd79ee377745f32ff172e0ff351e85"
+  },
+  {
+    "path": "test/harness-errors-b.ts",
+    "sha256": "1984f3ed4e6d93ca9493d049dff3b2ecfc695bd968aea15c8419e42ec29dfac6"
+  },
+  {
+    "path": "test/harness-map-default.ts",
+    "sha256": "baf2708c282c30a01179c15c3d2358e7d9e25d9908c1e134622d0f42835f3299"
+  },
+  {
+    "path": "tools/build-native.mjs",
+    "sha256": "531d0814b48c250a04c7f928c95bbd0b64c30969b8237069f33447c512f3c707"
+  }
+]

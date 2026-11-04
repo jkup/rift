@@ -1,0 +1,399 @@
+{
+  "base": "18011eee8954b35723f53262e9a5cc2555a3c940",
+  "status": "UNEXECUTED",
+  "dimensions": {
+    "selection": [
+      "empty",
+      "one-element"
+    ],
+    "realms": [
+      "same",
+      "crossed"
+    ],
+    "inputs": [
+      "input-a",
+      "input-b"
+    ],
+    "note": "Apply dimensions where meaningful; X06 is unrepresentable, not a pass/skip. L and M rows have their specified lengths."
+  },
+  "rows": [
+    {
+      "id": "S01",
+      "setup": "array constructor absent",
+      "outcome": "default",
+      "effects": "LK",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S02",
+      "setup": "array own constructor undefined",
+      "outcome": "default",
+      "effects": "LK",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S03",
+      "setup": "array inherited constructor undefined",
+      "outcome": "default",
+      "effects": "LK",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S04",
+      "setup": "constructor object, species absent",
+      "outcome": "default",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S05",
+      "setup": "constructor object, own species undefined",
+      "outcome": "default",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S06",
+      "setup": "constructor object, own species null",
+      "outcome": "default",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S07",
+      "setup": "constructor object, inherited species undefined/null",
+      "outcome": "default",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S08",
+      "setup": "initial constructor null",
+      "outcome": "language TypeError",
+      "effects": "LK",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S09",
+      "setup": "initial constructor 0/7/NaN/false/true/string/symbol",
+      "outcome": "language TypeError",
+      "effects": "LK",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S10",
+      "setup": "species 0/7/NaN/false/true/string/symbol",
+      "outcome": "language TypeError",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S11",
+      "setup": "species ordinary object with poison own species",
+      "outcome": "language TypeError",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S12",
+      "setup": "species callable builtin without constructorSlot",
+      "outcome": "language TypeError",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S13",
+      "setup": "species actual Script function constructor",
+      "outcome": "unsupported map-species",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S14",
+      "setup": "species actual builtin Error constructor",
+      "outcome": "unsupported map-species",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S15",
+      "setup": "constructor callable nonconstructor, missing species",
+      "outcome": "default",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S16",
+      "setup": "constructor builtin Error constructor, missing species",
+      "outcome": "default",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S17",
+      "setup": "constructor named Object/Array with arbitrary prototype, missing species",
+      "outcome": "default",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S18",
+      "setup": "constructor named Object/Array with poison species",
+      "outcome": "exact abrupt",
+      "effects": "LKSQ",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S19",
+      "setup": "actual CP Object-link simulation before and after, no global installation",
+      "outcome": "default",
+      "effects": "LKS after; LK before",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S20",
+      "setup": "actual CP Object-link with species null/undefined/invalid/custom",
+      "outcome": "by selected species",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S21",
+      "setup": "ordinary object with poison constructor and species",
+      "outcome": "default",
+      "effects": "L",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S22",
+      "setup": "invalid callback and poison constructor/species",
+      "outcome": "callback TypeError",
+      "effects": "L",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S23",
+      "setup": "throwing length getter and invalid callback",
+      "outcome": "exact abrupt",
+      "effects": "L",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S24",
+      "setup": "throwing constructor getter",
+      "outcome": "exact abrupt",
+      "effects": "LKG",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S25",
+      "setup": "constructor getter returns object; throwing species getter",
+      "outcome": "exact abrupt",
+      "effects": "LKG SQ",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S26",
+      "setup": "string Symbol.species and new same-description symbol poison; canonical absent",
+      "outcome": "default",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S27",
+      "setup": "canonical species accessor on prototype; exact C receiver",
+      "outcome": "default",
+      "effects": "LKSQ",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S28",
+      "setup": "constructor getter on prototype; exact array receiver",
+      "outcome": "default",
+      "effects": "LKGS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S29",
+      "setup": "species getter changes constructor; captured constructor not reread",
+      "outcome": "default",
+      "effects": "LKSQ",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "S30",
+      "setup": "constructor getter changes species before lookup",
+      "outcome": "by newly selected species",
+      "effects": "LKGS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "L01",
+      "setup": "ordinary length4294967296 with poison constructor",
+      "outcome": "language RangeError",
+      "effects": "L",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "L02",
+      "setup": "synthetic array length4294967296/default species",
+      "outcome": "language RangeError",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "L03",
+      "setup": "synthetic array length4294967296/invalid species",
+      "outcome": "language TypeError",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "L04",
+      "setup": "synthetic array length4294967296/custom species",
+      "outcome": "unsupported map-species",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "L05",
+      "setup": "length4294967295 default/sparse under tight budget",
+      "outcome": "resource steps after allocation",
+      "effects": "LKSA",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "L06",
+      "setup": "length coercion mutates constructor; converted length saved",
+      "outcome": "by mutated constructor",
+      "effects": "length conversion then K",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "M01",
+      "setup": "species shrinks input length or deletes index0",
+      "outcome": "saved result length; hole",
+      "effects": "LKSQAH",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "M02",
+      "setup": "species grows input length/adds beyond saved limit",
+      "outcome": "ignore new beyond-limit elements",
+      "effects": "LKSQAHECD",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "M03",
+      "setup": "species fills index0 hole or changes inherited element",
+      "outcome": "new exact payload",
+      "effects": "LKSQAHECD",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "M04",
+      "setup": "callback fills future hole/deletes future index/grows input",
+      "outcome": "saved limit, live presence",
+      "effects": "per-index H then conditional ECD",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "X01",
+      "setup": "crossed B caller/input/constructor, A bridge, C getter/callback",
+      "outcome": "default/error belongs A; hooks C; restore B",
+      "effects": "same selected trace",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "X02",
+      "setup": "same/cross-Realm foreign Script/Error constructor missing species",
+      "outcome": "default; do not exempt foreign values",
+      "effects": "LKS",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "X03",
+      "setup": "legacy operation, constructor undefined/nonundefined",
+      "outcome": "unchanged default/unsupported; zero S",
+      "effects": "LK",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "X04",
+      "setup": "Script operation on legacy-origin data array",
+      "outcome": "Script selection",
+      "effects": "LK(S)",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "X05",
+      "setup": "legacy operation on Script-origin data array",
+      "outcome": "legacy selection",
+      "effects": "LK",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "X06",
+      "setup": "real foreign intrinsic Array",
+      "outcome": "unrepresentable; explicitly not executed",
+      "effects": "no fabricated fixture",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "A01",
+      "setup": "each constructor/species/element/callback hook returns guest/engine/resource/unsupported completion",
+      "outcome": "same record/value/origin/diagnostic identity",
+      "effects": "no later effects",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "A02",
+      "setup": "each hook throws host sentinel",
+      "outcome": "exact host identity; finally restoration",
+      "effects": "no later effects",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "A03",
+      "setup": "parsed guest constructor/species getter throws payload from original source",
+      "outcome": "exact Value; getter source provenance",
+      "effects": "no later effects",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "A04",
+      "setup": "getter evaluates inner Script session normal/throw/host exit",
+      "outcome": "outer frame restoration in finally; BOTH original sessions reusable",
+      "effects": "separate inner counters",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "A05",
+      "setup": "same-context nested map inside species getter",
+      "outcome": "shared steps/calls; outer result allocated after inner",
+      "effects": "frozen N01/N02",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "A06",
+      "setup": "retained guarded raw callbacks live/finally/idle",
+      "outcome": "denied; zero body effects",
+      "effects": "guard unchanged",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "D01",
+      "setup": "result length/elements/holes/prototype/fresh identity",
+      "outcome": "exact descriptors, running Realm, no constructor execution",
+      "effects": "allocation and definition counters",
+      "status": "UNEXECUTED"
+    },
+    {
+      "id": "D02",
+      "setup": "guest global/prototype key inventories",
+      "outcome": "unchanged; no installed species property",
+      "effects": "zero metadata additions",
+      "status": "UNEXECUTED"
+    }
+  ]
+}

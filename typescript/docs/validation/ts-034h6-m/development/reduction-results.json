@@ -1,0 +1,72 @@
+[
+  {
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "node_modules/typescript/bin/tsc",
+      "--ignoreConfig",
+      "--target",
+      "es2024",
+      "--module",
+      "nodenext",
+      "--strict",
+      "--types",
+      "node",
+      "--outDir",
+      "build/h6-m-reduction",
+      "docs/validation/ts-034h6-m/development/parsed-getter-reduction.ts"
+    ],
+    "status": 0,
+    "signal": null,
+    "stdout": "",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "build/h6-m-reduction/docs/validation/ts-034h6-m/development/parsed-getter-reduction.js"
+    ],
+    "status": 0,
+    "signal": null,
+    "stdout": "limit=3 steps=4 result=throw source=getter:1\nlimit=4 steps=5 result=throw source=getter:1\nlimit=5 steps=6 result=throw source=getter:14\nlimit=6 steps=7 result=throw source=getter:21\nlimit=7 steps=7 result=normal source=none\nlimit=8 steps=7 result=normal source=none\n",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "node_modules/scriptc/bin/scriptc.exe",
+    "args": [
+      "build",
+      "docs/validation/ts-034h6-m/development/parsed-getter-reduction.ts",
+      "--tier",
+      "static-only",
+      "-o",
+      "build/native/h6-m-getter-reduction.exe"
+    ],
+    "status": 0,
+    "signal": null,
+    "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\native\\h6-m-getter-reduction.exe\n",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "node_modules/scriptc/bin/scriptc.exe",
+    "args": [
+      "coverage",
+      "docs/validation/ts-034h6-m/development/parsed-getter-reduction.ts"
+    ],
+    "status": 0,
+    "signal": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h6-m\\development\\parsed-getter-reduction.ts\n\n  statements analyzed   3644\n  compile statically    3644  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "build/native/h6-m-getter-reduction.exe",
+    "args": [],
+    "status": 0,
+    "signal": null,
+    "stdout": "limit=3 steps=4 result=throw source=getter:1\nlimit=4 steps=5 result=throw source=getter:1\nlimit=5 steps=6 result=throw source=getter:14\nlimit=6 steps=7 result=throw source=getter:21\nlimit=7 steps=7 result=normal source=none\nlimit=8 steps=7 result=normal source=none\n",
+    "stderr": "",
+    "error": null
+  }
+]

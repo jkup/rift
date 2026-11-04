@@ -698,3 +698,27 @@ source comparisons and actual/second review supplement reachable controls.
 See [H6-B evidence](validation/ts-034h6-b/README.md). This is a review candidate,
 not public admission. C formatting globals, String/Object/Symbol/JSON/map surface,
 observer/CLI changes and successor work remain outside this slice.
+
+## Bounded Script map default selection (TS-034H6-M candidate)
+
+The internal object-only map helper now reads canonical Symbol.species for an
+object-valued array constructor in Script operations. Missing/undefined or null
+species selects a fresh array in the running Realm. Invalid selected values
+produce a genuine language TypeError; valid custom constructors remain explicitly
+unsupported without invocation. Ordinary inputs skip selection. Legacy behavior,
+length/callback order, saved-length/live-element iteration and authority are
+unchanged. The symbol is internal and is not installed on guest objects.
+
+Candidate validation passes 212 exact records per host and 57 static-only builds
+with separate zero-dynamic coverage (new driver 4504 statements), both runtime
+inputs, all frozen traces and resource prefixes, amended parsed getters, nested
+maps, separate-session reentry/restoration and reuse, exact abrupt propagation,
+CP bootstrap replay, H1–H6-B/E4/all17 inherited replays/both Node boundaries/slots,
+typecheck/runner20/probes10/host73/observations22. One exact approved historical
+test replacement is verified; all60 corpus variants remain blocked.
+
+No intrinsic Array constructor exists, so the foreign intrinsic exception has
+no representable positive fixture. Public map, custom species construction,
+Array constructor, C globals, grammar, observer and admission remain outside
+this change. See [H6-M evidence](validation/ts-034h6-m/README.md). Actual and
+independent second review remain required; no publication is implied.
