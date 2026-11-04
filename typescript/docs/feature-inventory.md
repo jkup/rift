@@ -506,7 +506,7 @@ identity. Actual invocation still fails the existing Script or cross-profile hos
 guards. This is not execution of ThrowTypeError or Script source: E4/R36 and actual
 diagnostic TypeError execution remain blocked. See [ER-B validation](validation/ts-033er-b/IMPLEMENTATION.md).
 
-### Internal strict Script execution (TS-033E4 candidate)
+### Internal strict Script execution (TS-033E4 accepted e67c927)
 
 `script-execution.ts` exposes only `createScriptSession`, `evaluateScript` and
 opaque/result/snapshot types. Preparation still requires complete supported
@@ -532,6 +532,6 @@ nested active sessions and exact guest/host abrupt identity. Reflective malforme
 host shapes are explicitly Node-only controls. See [execution evidence](validation/ts-033e4/execution/README.md)
 for the exact validation boundary and inherited host-helper replays.
 
-This is pending independent review, not public Script admission or a conformance
+This passed independent execution and regression review; it is not public Script admission or a conformance
 claim. No arguments object/binding, Error objects, new grammar, observation/schema
 change, harness loading, async/generator support or default-profile change is added.
