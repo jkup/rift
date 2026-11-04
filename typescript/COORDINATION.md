@@ -1024,3 +1024,22 @@ Accepted H1b8baf44 published main/feature after fetch/ancestry check and remote 
 ## H2-P accepted — 2026-11-04 08:40 review
 
 Accepted4bc2d32 actual design/source/prefix and independent second review, no findings. Root audit3246protected/19switchinventory/208prefixes/212records50gates/60blocked passes;build/ts034h2p-root-audit.log,producer artifacts restored. Ten literal traces checked against shared statement/expression/setup ticks. Exact two-site E4 migration approved,old H1 verifiers preserved. Design only,no runtime claim. Designer idle cursore32181ec-4016-4e76-b9c7-e40475434e76:4. Next H2 implementation solely under frozen contract;no useful companion duplication.
+Accepted switch design4e01d44 published main/feature after fetched ancestry and remote verification;local main updated. Sole H2 writer01a1a5b9-a3bf-78c3-9f34-8e4612914dce,host local,base4e01d44;explicit wait active,cursora35dbdae-563e-44fc-bb69-37c9b18b4aac:1. Exact TASKS ownership/frozen design only,no successor before implementation acceptance.
+
+## H2 compiler checkpoint resolved — 2026-11-04 08:55 heartbeat
+
+Writer stopped uncommitted for SC2003 at three new switch throw returns; original reduction and production errors retained in ts-034h2. Root inspected actual diff/proposal and independently reproduced original SC2003; isolated explicit Throw local correction preserves exact sentinel identity in Node/native with8static/zero dynamic. Root logs build/ts034h2-root-original.log and fixed-build/coverage,source build/h2-root-fixed.ts. Approved only discriminant/setup/selector explicit ThrowCompletion locals, preserving setup capture order; existing accepted E2 pattern,no API/ownership/pin change. Writer instructed resume H2 full controls/validation then coherent handoff. Candidate incomplete,main4e01d44 unchanged. Saved idle cursora35dbdae-563e-44fc-bb69-37c9b18b4aac:2; await resumed cursor.
+H2 resumption explicitly active,cursora35dbdae-563e-44fc-bb69-37c9b18b4aac:3. No duplicate root builds while writer implements.
+
+## H2 test callback checkpoint resolved — 2026-11-04 09:10 heartbeat
+
+Writer stopped for inferred-never test hostContext.call dynamic adapter. Root reproduced original8static+1dynamic and corrected explicit Completion annotation8static/zero dynamic;same literal error Node/native. Root evidence build/ts034h2-root-callback-original/build/coverage.log and fixed.ts. Approved exact annotation/import preserving params/Error; documented TS026A pattern,no production/API/pin scope change. Known equivalent typed callback/throw-arm local patterns now approved within assignment,avoid repeated routine stops. New substantive failures still retain/reduce/review. H2 remains incomplete,main4e01d44 unchanged; idle cursora35dbdae-563e-44fc-bb69-37c9b18b4aac:4 before resumption.
+H2 resumed active,cursora35dbdae-563e-44fc-bb69-37c9b18b4aac:5. Await coherent tested handoff,no duplicate builds.
+
+## H2 independent validation running — 2026-11-04 09:25 heartbeat
+
+Candidateb1ec155 actual four-file source/migration review and independent second review complete,no actionable defect. ValueCompletion test annotation matches actual OperationContext API;exact documented pattern/no API change. Root Node212/212 no skips passes,build/ts034h2-root-node.log. Full native51gates+212 suite RUNNING exec session96563;poll first,no duplicate. Log build/ts034h2-root-native.log. Writer idle cursora35dbdae-563e-44fc-bb69-37c9b18b4aac:6. After native success independently validate.mjs,replay-catch.mjs,replays/validate.mjs,replays/replays.mjs,node-boundary then suites typecheck/runner20/host73/observations22/probes10 and preserve.mjs under ts-034h2. Backup/restore producer ts-034h2 recursively around replay;retain root logs. Expected switch3491static zero-dynamic/208prefixes,two sources,H1 unchanged104prefixes. No acceptance/publication yet;main4e01d44 unchanged.
+
+## H2 accepted — 2026-11-04 09:40 review
+
+Acceptedb1ec155 after actual/second source review and independent212/212 Node/native,51static gates/switch3491zero-dynamic,two sources208prefixes,H1 104prefixes/C14,E4twoinputs,17inherited replays,Node boundary,typecheck/runner20/host73/observations22/probes10,3249protected/60blocked. Root logs build/ts034h2-root-*.log;producer evidence recursively restored,git confirms only coordinator edits. Sessions96563/80949 complete. Internal strict switch only;public admission closed. Next bounded H3-P freezes classic for/postfix update semantics and exact ownership/migrations before implementation. No useful companion duplication.
