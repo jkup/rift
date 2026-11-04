@@ -1,0 +1,23 @@
+{
+  "frozenSha256": "b7cb648db2b3c5e4bde5247f4466967f6cad6f19952ed2f7cee7b6f8d8843725",
+  "claims": "Only actual-type trusted-bootstrap map simulation; no C implementation or acceptance",
+  "runs": [
+    {
+      "id": "input-a",
+      "node": {
+        "status": 1,
+        "signal": null,
+        "error": null,
+        "stdout": "input-a script before empty | array [] | effects=LK callbacks=0 allocations=1 constructors=0 steps=2\ninput-a script before nonempty | array [7] | effects=LKEC callbacks=1 allocations=1 constructors=0 steps=3\n",
+        "stderr": "file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h6-cp/map-regression/build/node/src/builtins/function.js:11\r\n                throw new Error(\"invalid builtin initial name\");\r\n                      ^\r\n\r\nError: invalid builtin initial name\r\n    at nativeFunctionString (file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h6-cp/map-regression/build/node/src/builtins/function.js:11:23)\r\n    at CountRealm.createBuiltin (file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h6-cp/map-regression/build/node/src/realm.js:180:9)\r\n    at row (file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h6-cp/map-regression/build/node/docs/validation/ts-034h6-cp/map-regression/probe.js:83:26)\r\n    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h6-cp/map-regression/build/node/docs/validation/ts-034h6-cp/map-regression/probe.js:154:9\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\r\n    at async node:internal/modules/esm/loader:650:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)\r\n\r\nNode.js v26.13.0\r\n"
+      }
+    }
+  ],
+  "typecheck": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": ""
+  }
+}

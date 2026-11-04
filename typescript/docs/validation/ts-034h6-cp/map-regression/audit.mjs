@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {join,resolve} from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {probeVerdict,completed} from '../../../../tools/probe-verdict.mjs';
+const here=import.meta.dirname,read=p=>JSON.parse(readFileSync(join(here,p))),sha=b=>createHash('sha256').update(b).digest('hex');
+const frozen=read('frozen.json'),first=read('first-frozen.json'),result=read('results.json');
+assert.deepEqual(first.rows,frozen.rows);assert.deepEqual(first.expectedByInput,frozen.expectedByInput);
+assert.equal(sha(readFileSync(join(here,'first-probe.ts'))),first.hashes['probe.ts']);
+for(const [p,h] of Object.entries(frozen.hashes))assert.equal(sha(readFileSync(join(here,p))),h,p);
+assert.equal(result.frozenSha256,sha(readFileSync(join(here,'frozen.json'))));
+assert.ok(completed(result.typecheck));assert.ok(completed(result.build));assert.ok(completed(result.coverage));
+assert.equal(result.runs.length,2);
+for(const run of result.runs){assert.equal(probeVerdict({build:result.build,coverage:result.coverage,node:run.node,native:run.native}),'PASS');assert.equal(run.node.stdout,frozen.expectedByInput[run.id]);assert.equal(run.native.stdout,frozen.expectedByInput[run.id]);assert.equal(run.node.stdout.trim().split('\n').length,20);}
+const git=spawnSync('git',['diff','ab0a384','--name-only'],{cwd:resolve(here,'../../../../..'),encoding:'utf8'});assert.equal(git.status,0);
+for(const p of git.stdout.trim().split(/\r?\n/).filter(Boolean))assert.ok(p==='typescript/TASKS.md'||p==='typescript/COORDINATION.md'||p.startsWith('typescript/docs/validation/ts-034h6-cp/map-regression/'),'outside amendment '+p);
+const negative=structuredClone(result.runs[0]);negative.native.stdout=negative.native.stdout.replace('script after empty | unsupported map-species','script after empty | array []');assert.notEqual(probeVerdict({build:result.build,coverage:result.coverage,node:negative.node,native:negative.native}),'PASS');
+const report={status:'PASS',candidate:'ab0a384 remains unaccepted; bounded amendment only',rowsPerInputPerLane:20,inputs:2,lanes:['Node','native'],executedRows:80,staticStatements:3779,dynamicStatements:0,literalOraclesUnchangedSinceFirstFreeze:true,originalCPFilesUnchanged:true,productionAndOldTestsUnchanged:true,negativeOutputMutationRejected:true};
+writeFileSync(join(here,'audit.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));

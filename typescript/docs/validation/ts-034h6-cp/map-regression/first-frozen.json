@@ -1,0 +1,219 @@
+{
+  "status": "literal oracle frozen before execution; this is not a result",
+  "rows": [
+    [
+      "script",
+      "before",
+      "empty",
+      "array []",
+      "LK",
+      0,
+      1,
+      2
+    ],
+    [
+      "script",
+      "before",
+      "nonempty",
+      "element",
+      "LKEC",
+      1,
+      1,
+      3
+    ],
+    [
+      "script",
+      "before",
+      "ordinary",
+      "element",
+      "LEC",
+      1,
+      1,
+      3
+    ],
+    [
+      "script",
+      "before",
+      "undefined",
+      "element",
+      "LKEC",
+      1,
+      1,
+      3
+    ],
+    [
+      "script",
+      "before",
+      "nondefault",
+      "unsupported map-species",
+      "LK",
+      0,
+      0,
+      2
+    ],
+    [
+      "script",
+      "before",
+      "getthrow",
+      "exact abrupt",
+      "LKG",
+      0,
+      0,
+      2
+    ],
+    [
+      "script",
+      "before",
+      "getnormal",
+      "element",
+      "LKGEC",
+      1,
+      1,
+      3
+    ],
+    [
+      "script",
+      "before",
+      "badcallback",
+      "TypeError callback",
+      "L",
+      0,
+      0,
+      2
+    ],
+    [
+      "legacy",
+      "before",
+      "empty",
+      "array []",
+      "LK",
+      0,
+      1,
+      0
+    ],
+    [
+      "legacy",
+      "before",
+      "nonempty",
+      "element",
+      "LKEC",
+      1,
+      1,
+      1
+    ],
+    [
+      "script",
+      "after",
+      "empty",
+      "unsupported map-species",
+      "LK",
+      0,
+      0,
+      2
+    ],
+    [
+      "script",
+      "after",
+      "nonempty",
+      "unsupported map-species",
+      "LK",
+      0,
+      0,
+      2
+    ],
+    [
+      "script",
+      "after",
+      "ordinary",
+      "element",
+      "LEC",
+      1,
+      1,
+      3
+    ],
+    [
+      "script",
+      "after",
+      "undefined",
+      "element",
+      "LKEC",
+      1,
+      1,
+      3
+    ],
+    [
+      "script",
+      "after",
+      "nondefault",
+      "unsupported map-species",
+      "LK",
+      0,
+      0,
+      2
+    ],
+    [
+      "script",
+      "after",
+      "getthrow",
+      "exact abrupt",
+      "LKG",
+      0,
+      0,
+      2
+    ],
+    [
+      "script",
+      "after",
+      "getnormal",
+      "element",
+      "LKGEC",
+      1,
+      1,
+      3
+    ],
+    [
+      "script",
+      "after",
+      "badcallback",
+      "TypeError callback",
+      "L",
+      0,
+      0,
+      2
+    ],
+    [
+      "legacy",
+      "after",
+      "empty",
+      "array []",
+      "LK",
+      0,
+      1,
+      0
+    ],
+    [
+      "legacy",
+      "after",
+      "nonempty",
+      "element",
+      "LKEC",
+      1,
+      1,
+      1
+    ]
+  ],
+  "expectedByInput": {
+    "input-a": "input-a script before empty | array [] | effects=LK callbacks=0 allocations=1 constructors=0 steps=2\ninput-a script before nonempty | array [7] | effects=LKEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-a script before ordinary | array [7] | effects=LEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-a script before undefined | array [7] | effects=LKEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-a script before nondefault | unsupported map-species | effects=LK callbacks=0 allocations=0 constructors=0 steps=2\ninput-a script before getthrow | exact abrupt | effects=LKG callbacks=0 allocations=0 constructors=0 steps=2\ninput-a script before getnormal | array [7] | effects=LKGEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-a script before badcallback | TypeError callback | effects=L callbacks=0 allocations=0 constructors=0 steps=2\ninput-a legacy before empty | array [] | effects=LK callbacks=0 allocations=1 constructors=0 steps=0\ninput-a legacy before nonempty | array [7] | effects=LKEC callbacks=1 allocations=1 constructors=0 steps=1\ninput-a script after empty | unsupported map-species | effects=LK callbacks=0 allocations=0 constructors=0 steps=2\ninput-a script after nonempty | unsupported map-species | effects=LK callbacks=0 allocations=0 constructors=0 steps=2\ninput-a script after ordinary | array [7] | effects=LEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-a script after undefined | array [7] | effects=LKEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-a script after nondefault | unsupported map-species | effects=LK callbacks=0 allocations=0 constructors=0 steps=2\ninput-a script after getthrow | exact abrupt | effects=LKG callbacks=0 allocations=0 constructors=0 steps=2\ninput-a script after getnormal | array [7] | effects=LKGEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-a script after badcallback | TypeError callback | effects=L callbacks=0 allocations=0 constructors=0 steps=2\ninput-a legacy after empty | array [] | effects=LK callbacks=0 allocations=1 constructors=0 steps=0\ninput-a legacy after nonempty | array [7] | effects=LKEC callbacks=1 allocations=1 constructors=0 steps=1\n",
+    "input-b": "input-b script before empty | array [] | effects=LK callbacks=0 allocations=1 constructors=0 steps=2\ninput-b script before nonempty | array [11] | effects=LKEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-b script before ordinary | array [11] | effects=LEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-b script before undefined | array [11] | effects=LKEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-b script before nondefault | unsupported map-species | effects=LK callbacks=0 allocations=0 constructors=0 steps=2\ninput-b script before getthrow | exact abrupt | effects=LKG callbacks=0 allocations=0 constructors=0 steps=2\ninput-b script before getnormal | array [11] | effects=LKGEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-b script before badcallback | TypeError callback | effects=L callbacks=0 allocations=0 constructors=0 steps=2\ninput-b legacy before empty | array [] | effects=LK callbacks=0 allocations=1 constructors=0 steps=0\ninput-b legacy before nonempty | array [11] | effects=LKEC callbacks=1 allocations=1 constructors=0 steps=1\ninput-b script after empty | unsupported map-species | effects=LK callbacks=0 allocations=0 constructors=0 steps=2\ninput-b script after nonempty | unsupported map-species | effects=LK callbacks=0 allocations=0 constructors=0 steps=2\ninput-b script after ordinary | array [11] | effects=LEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-b script after undefined | array [11] | effects=LKEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-b script after nondefault | unsupported map-species | effects=LK callbacks=0 allocations=0 constructors=0 steps=2\ninput-b script after getthrow | exact abrupt | effects=LKG callbacks=0 allocations=0 constructors=0 steps=2\ninput-b script after getnormal | array [11] | effects=LKGEC callbacks=1 allocations=1 constructors=0 steps=3\ninput-b script after badcallback | TypeError callback | effects=L callbacks=0 allocations=0 constructors=0 steps=2\ninput-b legacy after empty | array [] | effects=LK callbacks=0 allocations=1 constructors=0 steps=0\ninput-b legacy after nonempty | array [11] | effects=LKEC callbacks=1 allocations=1 constructors=0 steps=1\n"
+  },
+  "hashes": {
+    "probe.ts": "c8f09c7e9c123cc1c04bf015e277cf41b7695f7db9eba4dafd1628c2ee99e2a9",
+    "freeze.mjs": "b03477fb08098b66b390a9d28fabd19acd5a8c25fa30516171ebfbab8ee247ce",
+    "../../../../src/array-map.ts": "2409c5abf29d237b51fb27032e8851b2f36df25aa3a112ae7d49d62aa2f69152",
+    "../../../../src/realm.ts": "27f88d39e0c924a4ab79e7e8caa3d30ecdf5e39c52acfae60d08f21ab8b0f027",
+    "../../../../src/runtime.ts": "82a7b0686859f196a5c50faac9e6b7171135858983c3f6b160c058c62022dcdf",
+    "../../../../src/script-execution-internal.ts": "533ee0da93c5a5a4439775e2cc098aa010a2d825721af89e2354cbef8f978d7f",
+    "../input-a.js": "bf72b4de90339897af9cc53ec213e8e305cd0ba686c623c53fafa9fd71bcdc28",
+    "../input-b.js": "a5fcd19dd0634cd304876814c05d4e0694ce8178d089fd37e96b28b8c85e5768"
+  }
+}
