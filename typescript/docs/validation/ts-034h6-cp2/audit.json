@@ -1,0 +1,37 @@
+{
+  "status": "PASS source/preservation audit only; C unexecuted",
+  "base": "89d3796869742acc01b1876311efa39f953dd62d",
+  "productionOwnership": [
+    "src/realm.ts",
+    "src/builtins/string.ts",
+    "src/builtins/object.ts"
+  ],
+  "additionalProductionConsumers": [],
+  "additionalOldTest": "test/harness-map-default.ts",
+  "newTestReplacements": 2,
+  "changedProfileCases": 1,
+  "preservedOriginalProfileCombinations": 8,
+  "addedUndefinedShadowControls": 2,
+  "addedAbsentConstructorControls": 4,
+  "inheritedReplayRows": 80,
+  "replayedNow": false,
+  "sourceHashes": {
+    "src/realm.ts": "27f88d39e0c924a4ab79e7e8caa3d30ecdf5e39c52acfae60d08f21ab8b0f027",
+    "src/builtins/string.ts": "da594393af00a0b451e17e4edcf2a94922395772b0ef46e6561eee91e4c59065",
+    "src/builtins/object.ts": "8cc7dba0e80d774efa06bac8a6b7a78a251701987e8dcaa786aa148d44de57b9",
+    "src/builtins/error.ts": "63cc8748ad82ad834d42d69fe6a476e699ba8325fb06530fec4b6092edd2b71d",
+    "src/runtime.ts": "82a7b0686859f196a5c50faac9e6b7171135858983c3f6b160c058c62022dcdf",
+    "src/script-execution-internal.ts": "533ee0da93c5a5a4439775e2cc098aa010a2d825721af89e2354cbef8f978d7f",
+    "src/object-conversion.ts": "7af59477a64131120d0b1ffdb4d21703ed510b7b57c4539d330dd6cab4c5569f",
+    "src/primitive-conversion.ts": "b3a856d1e767dabf9617ab621ddc0621b1dc5a9cab9b32c150efb2df19b2981d",
+    "src/conversion.ts": "e1d5a4679d52ff8c83b9665aacb6092f25e25c626a7e6b8fe76bfc4d3899cb67",
+    "src/primitive-objects.ts": "db95099e1613dbafd48e66e8512d777a4d917e9e654861657948ccaf590119c3",
+    "src/array-map.ts": "215118f00949a4d51ce8b331972385fa43ec9a1753e1841ae5349c9d5d1be2fc",
+    "src/symbols.ts": "6150c63cdac32307226438b3fcdb178ca5cd79ee377745f32ff172e0ff351e85",
+    "test/harness-map-default.ts": "baf2708c282c30a01179c15c3d2358e7d9e25d9908c1e134622d0f42835f3299",
+    "test/harness-errors-b.ts": "1984f3ed4e6d93ca9493d049dff3b2ecfc695bd968aea15c8419e42ec29dfac6",
+    "docs/validation/ts-034h6-m/cp-replay/results.json": "f2a89def1eda539731477a5348db84f7c1bf0f6242bf907e28b3a2fc3f2d6392",
+    "docs/validation/ts-034h6-m/completion.json": "f96c0e507c8494bdbe713dab85b9904e7910f1eceafa5a49a8d30cb6a4d33521",
+    "docs/validation/ts-034h6-m/ORACLE-AMENDMENT.md": "e70e9a9f63c02c94b0af5bfc45c2b64b1c12687ab10768004c7a0dd046b45bec"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "status": "PASS offline only; C semantics UNEXECUTED",
+  "base": "89d3796869742acc01b1876311efa39f953dd62d",
+  "protectedFiles": 4221,
+  "oldTestFiles": 143,
+  "proposedFiles": 3,
+  "replacements": 7,
+  "wholeFileReconstruction": true,
+  "patchCheck": true,
+  "traceCount": 16,
+  "prefixesPerInput": 200,
+  "inputs": 2,
+  "matrixRows": 12,
+  "oracleMutationNegatives": 13,
+  "manifestMutationNegatives": 1
+}

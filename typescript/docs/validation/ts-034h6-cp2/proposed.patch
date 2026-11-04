@@ -1,0 +1,93 @@
+--- a/typescript/test/script-realm-bootstrap.ts
++++ b/typescript/test/script-realm-bootstrap.ts
+@@ -46,13 +46,22 @@
+     keys(num,[...names,"isNaN","isFinite"]); for(let i=0;i<names.length;i++) desc(num,names[i],n(values[i]),false,false,false);
+     method(a,num,"isNaN","isNaN",1); method(a,num,"isFinite","isFinite",1);
+     const prototypes=[a.objectPrototype,a.functionPrototype,a.arrayPrototype,a.booleanPrototype,a.numberPrototype,a.stringPrototype,a.symbolPrototype];
+-    const lists: PropertyKey[][]=[["valueOf","toString"],["name","length","caller","arguments","call","toString",wellKnownHasInstance],["length","join","toString"],["toString","valueOf"],["toString","valueOf"],["length","toString","valueOf"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
++    const lists: PropertyKey[][]=[["valueOf","toString","constructor"],["name","length","caller","arguments","call","toString",wellKnownHasInstance],["length","join","toString"],["toString","valueOf"],["toString","valueOf"],["length","toString","valueOf","constructor"],["toString","valueOf",wellKnownToPrimitive,wellKnownToStringTag]];
+     for(let i=0;i<prototypes.length;i++) {
+         const p=prototypes[i]; keys(p,lists[i]); check(p.getPrototypeOf()===(i===0?null:a.objectPrototype),"prototype chain");
+         for(const k of lists[i]) if(typeof k==="string" && k!=="name" && k!=="length") {
+             if (i===1 && (k==="caller" || k==="arguments")) {
+                 const d=p.getOwnProperty(k), other=p.getOwnProperty("caller");
+                 check(d!==undefined && d.kind==="accessor" && !d.enumerable && d.configurable && d.get.kind==="object" && d.set===d.get && other!==undefined && other.kind==="accessor" && d.get===other.get,"restricted descriptors");
++            } else if (k==="constructor") {
++                check(i===0 || i===5,"only formatting prototype constructors");
++                const name=i===0?"Object":"String", v=own(p,k), f=object(v), callable=f.callable, slot=f.constructorSlot;
++                desc(p,k,v,true,false,true); desc(a.globalObject,name,v,true,false,true);
++                keys(f,["name","length","prototype"]);
++                desc(f,"name",{kind:"string",value:name},false,false,true); desc(f,"length",n(1),false,false,true);
++                desc(f,"prototype",obj(p),false,false,false);
++                check(f.getPrototypeOf()===a.functionPrototype && callable!==null && callable.kind==="builtin" && callable.realm===a && slot!==null && slot.kind==="builtin-constructor" && slot.realm===a && slot.callable===callable,"formatting constructor graph and matching slots");
++                check(f.getOwnProperty("caller")===undefined && f.getOwnProperty("arguments")===undefined,"constructor inherited restrictions");
+             } else method(a,p,k,k,k==="call"||k==="join"||(i===4&&k==="toString")?1:0);
+         }
+     }
+@@ -77,7 +86,7 @@
+     const x=new Realm((line:string)=>{output+=line; outputCalls++;}), y=new Realm((line:string)=>{output+=line; outputCalls++;},"legacy");
+     const e=new Evaluator(x), context=stub(a), first=n(initial), next=n(initial===7?11:7);
+     const legacyGlobals=["undefined","NaN","Infinity","console","Number"];
+-    const globals=[...legacyGlobals,"Error","TypeError","ReferenceError","RangeError","SyntaxError"];
++    const globals=[...legacyGlobals,"Error","TypeError","ReferenceError","RangeError","SyntaxError","String","Object"];
+     switch(id) {
+     case "B01": {
+         for(const l of [x,y]) check(l.functionPrototype.getOwnProperty(wellKnownHasInstance)===undefined,"legacy hasInstance absent");
+--- a/typescript/test/harness-errors-a.ts
++++ b/typescript/test/harness-errors-a.ts
+@@ -113,7 +113,16 @@
+         const global = r.globalObject.getOwnProperty(name);
+         check(global !== undefined && global.kind === "data" && global.value.kind === "object" && global.value.object === ctor && global.writable && !global.enumerable && global.configurable, "Error global identity/flags");
+     }
+-    check(keysEqual(r.globalObject, ["undefined", "NaN", "Infinity", "console", "Number", "Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError"]), "exact B globals");
++    check(keysEqual(r.globalObject, ["undefined", "NaN", "Infinity", "console", "Number", "Error", "TypeError", "ReferenceError", "RangeError", "SyntaxError", "String", "Object"]), "exact C globals");
++    for (const name of ["String", "Object"]) {
++        const global = r.globalObject.getOwnProperty(name), p = name === "String" ? r.stringPrototype : r.objectPrototype;
++        check(global !== undefined && global.kind === "data" && global.value.kind === "object" && global.writable && !global.enumerable && global.configurable, "formatting global flags");
++        if (global === undefined || global.kind !== "data" || global.value.kind !== "object") throw new Error("formatting global");
++        const ctor = global.value.object, link = p.getOwnProperty("constructor"), target = ctor.getOwnProperty("prototype"), callable = ctor.callable, slot = ctor.constructorSlot;
++        check(link !== undefined && link.kind === "data" && sameValue(link.value, global.value) && link.writable && !link.enumerable && link.configurable, "formatting constructor identity/flags");
++        check(target !== undefined && target.kind === "data" && target.value.kind === "object" && target.value.object === p && !target.writable && !target.enumerable && !target.configurable, "formatting prototype identity/flags");
++        check(ctor.getPrototypeOf() === r.functionPrototype && callable !== null && callable.kind === "builtin" && callable.realm === r && slot !== null && slot.kind === "builtin-constructor" && slot.realm === r && slot.callable === callable, "formatting guarded constructor graph");
++    }
+ }
+ console.log("PASS A03");
+ function formatter(r: Realm): void {
+--- a/typescript/test/harness-map-default.ts
++++ b/typescript/test/harness-map-default.ts
+@@ -154,7 +154,16 @@
+     const bad=badValues[(semantic/2|0)%badValues.length];
+     const poison=c.createBuiltin("poison",0,(_r,_args,_ctx,_l):ValueCompletion=>{getters++;return f.abrupt;});
+     const ctorProto=f.b.createObject(),speciesProto=f.b.createObject();
+-    if(row===1){a.internalDelete("constructor");selection="LK";}
++    if(row===1){
++        a.internalDelete("constructor");selection="LK";
++        check(a.getOwnProperty("constructor")===undefined && sameValue(own(f.b.objectPrototype,"constructor"),own(f.b.globalObject,"Object")),"C default array inherits exact Object");
++        // Keep the original genuinely absent-constructor case as a separate control.
++        const missing=fixture(traces[empty?0:1],cross);
++        missing.array.internalDelete("constructor");missing.array.setPrototypeOf(null);
++        const missingSession=createScriptSession();
++        result(run(input,missing.b,missingSession,inputId),missing.a,missing.array,empty?0:1,false);
++        check(missing.effects.text===(empty?"LKA":"LKAHECD") && missing.effects.arrays===1 && missing.effects.callbacks===(empty?0:1),"absent constructor preserved under C");
++    }
+     if(row===2||row===3){a.internalDelete("constructor");if(row===2)data(a,"constructor",UNDEFINED);else{data(ctorProto,"constructor",UNDEFINED);a.setPrototypeOf(ctorProto);}selection="LK";}
+     if(row===5)data(h,wellKnownSpecies,UNDEFINED);
+     if(row===6)data(h,wellKnownSpecies,nullValue);
+@@ -338,7 +347,16 @@
+     const getter=r.createBuiltin("species",0,(_r,_args,_ctx,_l)=>{species++;return normal();});holder.bootstrapDefine(wellKnownSpecies,{get:obj(getter),configurable:true});if(defined)data(a,"constructor",obj(holder));
+     const cb=r.createBuiltin("cb",0,(_r,_args,_ctx,_l)=>normal());const probe=r.createBuiltin("probe",1,(_r,_args,ctx,l)=>mapObjectDefaultArray(a,obj(cb),UNDEFINED,ctx,l));
+     let v:ValueCompletion=normal();if(scriptOperation){define(r,"probe",obj(probe));v=run(input,r,createScriptSession(),inputId);}else{const evaluator=new Evaluator(r);v=evaluator.call(obj(probe),UNDEFINED,[num(payload)],loc);check(evaluator.calls===0&&evaluator.depth===0,"legacy cleanup");}
+-    if(!scriptOperation&&defined)check(v.type==="throw"&&v.origin.kind==="unsupported-operation"&&species===0,"legacy unchanged");else{result(v,r,a,0,false);check(species===(scriptOperation&&defined?1:0),"running profile policy");}
++    if(!scriptOperation&&(defined||scriptObject))check(v.type==="throw"&&v.origin.kind==="unsupported-operation"&&v.origin.capabilityCode==="runtime.map-species"&&v.value.kind==="string"&&species===0,"legacy unchanged with own or inherited constructor");else{result(v,r,a,0,false);check(species===(scriptOperation&&defined?1:0),"running profile policy");}
++    if(scriptObject&&!defined) {
++        check(sameValue(own(origin.objectPrototype,"constructor"),own(origin.globalObject,"Object")),"Script origin inherits exact Object");
++        // An explicit undefined own property retains the previous default-success case.
++        data(a,"constructor",UNDEFINED);
++        let shadow:ValueCompletion=normal();
++        if(scriptOperation)shadow=run(input,r,createScriptSession(),inputId);
++        else{const evaluator=new Evaluator(r);shadow=evaluator.call(obj(probe),UNDEFINED,[num(payload)],loc);check(evaluator.calls===0&&evaluator.depth===0,"legacy shadow cleanup");}
++        result(shadow,r,a,0,false);check(species===0,"undefined constructor shadow skips species");
++    }
+ }
+ {
+     const f=fixture(traces[1],true);check(wellKnownSpecies.description==="Symbol.species","canonical description");
