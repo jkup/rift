@@ -766,3 +766,17 @@ unknown includes/helpers remain unsupported or unvalidated. Existing internal
 map evidence does not certify harness compareArray. No arbitrary helper is
 assumed supported because its source parses. All 60 corpus variants remain
 blocked; no public admission, observation transport, CLI or profile change.
+
+### Script v2 synthetic codecs (TS-035A candidate)
+
+Parallel v2 data types and ASCII encoder, closed child/full-envelope decoders,
+binding/source/Realm/prefix validation and synthetic classification checks are
+implemented separately from v1. The approved variant amendment binds raw versus
+non-raw preflight rules into the request hash. Serializer controls use two
+runtime-read inputs with literal expected bytes on Node and native; evidence
+and validation status are in `validation/ts-035a/README.md`.
+
+This is synthetic transport validation only. No guest throw inspection,
+production Script observation driver, launcher, registry, ledger admission,
+rule certification or CLI activation is added. All 60 corpus variants remain
+blocked. Actual and second independent review are required before acceptance.

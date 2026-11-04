@@ -470,3 +470,7 @@ decoders and ledger-context validation. No guest eval in host Node.
 
 These are required controls, not measured results. Admission remains blocked if
 any exact decoder, inspection, source provenance or native control is missing.
+
+## A binding amendment — 2026-11-04
+
+Actual information-flow witness in validation/ts-035a/binding-review.mjs and independent second review show raw/non-strict may have identical bytes while requiring opposite preflight decisions. This amendment supersedes the earlier exact request/binding field lists only as follows: required `variant: "strict" | "non-strict" | "raw"` immediately after `mode` in ScriptDecoderBinding and in the fixed ordered hashed request. Request order is requestVersion,nonce,mode,variant,units,realms,limits,preflightId,action. Binding variant must equal context.identity.variant; unknown/module variants reject. No variant is added to ChildV2: requestSha256 binds it. Both layers reject raw with any harness Unit/completedUnits,nonnull preflightId or harnessValidated=true. Non-raw conformance retains required preflight checks. Test paired raw/non-strict same source with corrected distinct request hashes,missing/unknown variant,stale hash,changed context variant,raw harness/preflight/validation and nonraw absent preflight mutations. Original indistinguishable-input witness remains unchanged. No admission or launcher implementation authorized.
