@@ -1,0 +1,46 @@
+[
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "sha256": "0515a9f73eff64ea23e552b405398101cf3b1b57920f6a9ecec2dda14531562b"
+  },
+  {
+    "path": "typescript/src/script-record.ts",
+    "sha256": "cd96a00aea9d0c82938902bbcffd9c197f69cc8a5e4b0acf4c578823f709571e"
+  },
+  {
+    "path": "typescript/src/parser.ts",
+    "sha256": "8bef7cfdf272888a9ea9cce7eb2d775e85ba990ea6481bbb560f5e445de913d0"
+  },
+  {
+    "path": "typescript/src/script-declarations.ts",
+    "sha256": "27851cb920f01fc7aa88541c1a6d6708de41e90278aebc4a3c574191c98ec0c1"
+  },
+  {
+    "path": "typescript/src/script-environment.ts",
+    "sha256": "cf14abb840fd11facefca626e3796e8a041ad57de4d19d99eb47d9ba018998e5"
+  },
+  {
+    "path": "typescript/src/global-environment.ts",
+    "sha256": "054fe40ecef9e0d5e8fb16de4ad09d8bac9fcc85ae5333c0f2367106701af8cc"
+  },
+  {
+    "path": "typescript/src/runtime.ts",
+    "sha256": "3cb5b8e03f01d0b33c41b764fa915777e484fddf7859a434e8be43b0942d7575"
+  },
+  {
+    "path": "typescript/src/delete-reference.ts",
+    "sha256": "fe02346b812acdd8177fd370f18644fc751dd72c67c80e06b86dfd66aa50a2ad"
+  },
+  {
+    "path": "typescript/src/script-global-declarations.ts",
+    "sha256": "7ce92d88fde5d971ff3fb3e8e96ddaff07cb8543c938eb056d7105a810645b95"
+  },
+  {
+    "path": "typescript/test/harness-nonstrict.ts",
+    "sha256": "c45ed73a81cc1cfe232063843fd97d5ee5a82fe9d5dc4a84b53601bc2d1d2cf6"
+  },
+  {
+    "path": "typescript/tools/build-native.mjs",
+    "sha256": "c2e3a35fa24c346a52afc1416ada4a0da1da40c8d88476a43e74fb4d07a50349"
+  }
+]

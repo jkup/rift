@@ -31,7 +31,7 @@ export class GlobalEnvironment {
         }
         return this.setObjectBinding(name, value, false, context, loc);
     }
-    getBindingValue(name: string, context: OperationContext, loc: Location): ValueCompletion {
+    getBindingValue(name: string, context: OperationContext, loc: Location, strict = true): ValueCompletion {
         const binding = this.lexicals.get(name);
         if (binding !== undefined) {
             if (!binding.initialized) return failure("ReferenceError", name + " is not initialized", loc);
@@ -39,17 +39,17 @@ export class GlobalEnvironment {
         }
         const present = this.globalObject.internalHasProperty(name, loc);
         if (present.type === "throw") return present;
-        if (!present.value) return failure("ReferenceError", name + " is not defined", loc);
+        if (!present.value) return strict ? failure("ReferenceError", name + " is not defined", loc) : normal();
         return this.globalObject.internalGet(name, { kind: "object", object: this.globalObject }, context, loc);
     }
-    setMutableBinding(name: string, value: Value, context: OperationContext, loc: Location): ValueCompletion {
+    setMutableBinding(name: string, value: Value, context: OperationContext, loc: Location, strict = true): ValueCompletion {
         const binding = this.lexicals.get(name);
         if (binding !== undefined) {
             if (!binding.initialized) return failure("ReferenceError", name + " is not initialized", loc);
             binding.value = value;
             return normal();
         }
-        return this.setObjectBinding(name, value, true, context, loc);
+        return this.setObjectBinding(name, value, strict, context, loc);
     }
     private setObjectBinding(name: string, value: Value, strict: boolean, context: OperationContext, loc: Location): ValueCompletion {
         const present = this.globalObject.internalHasProperty(name, loc);
@@ -62,6 +62,13 @@ export class GlobalEnvironment {
         if (result.type === "throw") return result;
         if (!result.value && strict) return failure("TypeError", "property is not writable: " + name, loc);
         return normal();
+    }
+    deleteBinding(name: string, _context: OperationContext, _loc: Location): InternalBooleanCompletion {
+        if (this.lexicals.has(name)) return { type: "normal", value: false };
+        return this.globalObject.internalDelete(name);
+    }
+    setUnresolvableBinding(name: string, value: Value, context: OperationContext, loc: Location): ValueCompletion {
+        return this.setObjectProperty(name, value, false, context, loc);
     }
     getThisBinding(): Value { return { kind: "object", object: this.globalThis }; }
     withBaseObject(): Value { return UNDEFINED; }

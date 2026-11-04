@@ -51,6 +51,19 @@ export function instantiateGlobalDeclarations(
 ): ValueCompletion {
     if (context.realm.profile !== "script") throw new Error("Script Realm required");
     if (!plan.strictness.strict) throw new Error("strict declaration plan required");
+    return instantiateBoundedGlobalDeclarations(plan, environment, context, materialize);
+}
+export function instantiateBoundedGlobalDeclarations(
+    plan: ScriptDeclarationPlan, environment: GlobalEnvironment,
+    context: OperationContext, materialize: DeclarationMaterializer
+): ValueCompletion {
+    if (context.realm.profile !== "script") throw new Error("Script Realm required");
+    return instantiateDeclarations(plan, environment, context, materialize);
+}
+function instantiateDeclarations(
+    plan: ScriptDeclarationPlan, environment: GlobalEnvironment,
+    context: OperationContext, materialize: DeclarationMaterializer
+): ValueCompletion {
     const functions = validatePlan(plan);
     const root = plan.scopes[0];
     for (const id of root.lexicalDeclarations) {

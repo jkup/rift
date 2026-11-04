@@ -83,8 +83,8 @@ type Work =
     | { kind: "expression"; node: Expr; scope: number; variableScope: number }
     | { kind: "binding"; binding: ParsedBinding; node: Stmt; declarationKind: "let" | "var"; scope: number; variableScope: number };
 
-export function collectDeclarationPlan(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes | null = null): DeclarationPlanResult {
-    return new DeclarationCollector(unit, tokens, bindings, nodes).collect(body);
+export function collectDeclarationPlan(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes | null = null, bounded = false): DeclarationPlanResult {
+    return new DeclarationCollector(unit, tokens, bindings, nodes, bounded).collect(body);
 }
 
 class DeclarationCollector {
@@ -96,8 +96,9 @@ class DeclarationCollector {
     readonly closingBraces = new Map<number, number>();
     readonly strictness: StrictnessMetadata;
     unsupportedBlock: Location | null = null;
+    readonly identifierDeletes: { scope: number; loc: Location }[] = [];
 
-    constructor(readonly unit: ScriptSourceUnit, readonly tokens: Token[], readonly bindings: Map<number, ParsedBinding[]>, readonly nodes: DeclarationNodes | null) {
+    constructor(readonly unit: ScriptSourceUnit, readonly tokens: Token[], readonly bindings: Map<number, ParsedBinding[]>, readonly nodes: DeclarationNodes | null, readonly bounded: boolean) {
         const braces: number[] = [];
         for (let i = 0; i < tokens.length; i++) {
             const token = tokens[i];
@@ -234,7 +235,9 @@ class DeclarationCollector {
                 break;
             case "object": for (let i = node.values.length - 1; i >= 0; i--) this.expression(node.values[i], scope, variableScope); break;
             case "postfix-increment": this.expression(node.target, scope, variableScope); break;
-            case "unary": this.expression(node.operand, scope, variableScope); break;
+            case "unary":
+                if (node.op === "delete" && node.operand.kind === "identifier") this.identifierDeletes.push({ scope, loc: node.loc });
+                this.expression(node.operand, scope, variableScope); break;
             case "binary": this.expression(node.right, scope, variableScope); this.expression(node.left, scope, variableScope); break;
             case "assign": case "compound": this.expression(node.value, scope, variableScope); this.expression(node.target, scope, variableScope); break;
             case "conditional": this.expression(node.alternate, scope, variableScope); this.expression(node.consequent, scope, variableScope); this.expression(node.test, scope, variableScope); break;
@@ -300,6 +303,11 @@ class DeclarationCollector {
         }
         // No conflicts are reported until all grammar/resource checks and every
         // function-context restriction have passed for the complete source.
+        for (const site of this.identifierDeletes) {
+            if (this.scopes[site.scope].strict) return { kind: "blocked", goal: "Script", unit: this.unit,
+                rejection: { kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" },
+                diagnostic: { phase: "parse", name: "SyntaxError", message: "delete of an identifier is not allowed", loc: site.loc } };
+        }
         if (this.unsupportedBlock !== null) return { kind: "blocked", goal: "Script", unit: this.unit,
             rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
             diagnostic: { phase: "parse", name: "SyntaxError", message: "non-strict block function planning is unsupported", loc: this.unsupportedBlock } };
@@ -308,7 +316,7 @@ class DeclarationCollector {
                 const parameter = scope.catchParameter;
                 const handler = this.scopes[scope.id + 1];
                 if (parameter === null || handler.parent !== scope.id) throw new Error("invalid catch scope");
-                if (!scope.strict || handler.lexicalNames.includes(parameter.name) || handler.varNames.includes(parameter.name))
+                if ((!this.bounded && !scope.strict) || handler.lexicalNames.includes(parameter.name) || handler.varNames.includes(parameter.name))
                     return { kind: "blocked", goal: "Script", unit: this.unit,
                         rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
                         diagnostic: { phase: "parse", name: "SyntaxError", message: "unsupported catch binding conflict or non-strict catch", loc: parameter.loc } };

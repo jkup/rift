@@ -1,0 +1,23 @@
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\script-function-setup.ts
+
+  statements analyzed   3697
+  compile statically    3697  (100%)
+    in dynamic tier     2  (operate on values typed only at runtime; --explain-dynamic lists them)
+
+  fully static — all analyzed statements compile to native code.
+
+  dynamic tier   (tier assignment, report-only; --tier=auto)
+    11 functions already operate on dynamic values (2 statements)
+      value  C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:61:1: dynCall at C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20
+      state  C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:64:1: dynCall at C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:67:20
+      %dyn.class.bagHas  C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20: dyn.hasKey at C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20
+      %dyn.class.properties  C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:1:1: %dyn.class.normalize at C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:1:1
+      %dyn.class.property.0  C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20: %dyn.class.normalize at C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20
+      %dyn.class.readProperties  C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:1:1: %dyn.class.normalize at C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:1:1
+      %dyn.class.readPropertiesOrEmpty  C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20: %dyn.class.normalize at C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20
+      %method.receiver:%m1736794293.ScriptLocalBindings  C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20: %dyn.class.cast:%m1736794293.ScriptLocalBindings at C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20
+      %method.receiver:%m2198338889.GlobalEnvironment  C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20: %dyn.class.cast:%m2198338889.GlobalEnvironment at C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20
+      %method.value:%%m1736794293.ScriptLocalBindings.getBindingValue  C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20: dyn.this at C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20
+      %method.value:%%m2198338889.GlobalEnvironment.getBindingValue  C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20: dyn.this at C:/Users/jonku/code/rift/typescript/test/script-function-setup.ts:62:20
+
+    0 demotion requests (refusals and fences the dynamic tier would replace)

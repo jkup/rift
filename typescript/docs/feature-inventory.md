@@ -602,3 +602,30 @@ It awaits actual and independent second review. See
 Lexical loop headers, for-in/of, prefix increment, decrement, BigInt and public
 Script admission remain outside this implementation. All 60 corpus variants
 remain blocked; this does not claim unchanged harness execution.
+
+## Bounded non-strict internal Scripts (TS-034H4 candidate)
+
+The internal `prepareBoundedScript` entry derives strictness from source and
+inherited function directives. The existing strict entry and legacy defaults
+remain unchanged. Sloppy guest calls bind `this` in the defining Realm, with
+fresh primitive boxes and a distinct body lexical environment above the
+parameter/var activation. Hoisted functions capture that body environment;
+only completed FDI publishes it to execution.
+
+References capture the executing code's mode. Failed ordinary writes and
+deletes use that mode without suppressing accessor/coercion throws. Unresolved
+sloppy writes target the current code Realm's global object without resolving
+again after RHS effects. Restricted function descriptors and capability guards
+remain shared with the strict path.
+
+The candidate is internal only. Duplicate formals, arguments/eval/with,
+Annex B, construction, genuine errors and public harness admission remain
+excluded. Existing tests and historical evidence are unchanged. See
+[H4 evidence](validation/ts-034h4/README.md) for validation and review status.
+
+H4 candidate validation passes212 exact records per host,53 static-only and
+separate zero-dynamic gates (new driver4,076 statements),both runtime inputs and
+190 prefixes,all H1/H2/H3/E4 and17 inherited replay groups. The independently
+approved private reference wrapper preserves the original shared Reference
+shape;one inner reference retains its key cache. Actual and independent second
+acceptance are still pending.

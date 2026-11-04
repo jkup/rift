@@ -286,7 +286,7 @@ export function getValue(ref: Reference, context: OperationContext, loc: Locatio
     if (!binding.initialized) return failure("ReferenceError", ref.name + " is not initialized", loc);
     return normal(binding.value);
 }
-export function putValue(ref: Reference, value: Value, context: OperationContext, loc: Location): Completion {
+export function putValue(ref: Reference, value: Value, context: OperationContext, loc: Location, strict = true): Completion {
     if (ref.kind === "property") {
         const object = toObject(ref.base, context, ref.loc);
         if (object.type === "throw") return object;
@@ -299,7 +299,7 @@ export function putValue(ref: Reference, value: Value, context: OperationContext
             : { kind: "symbol", value: key.value };
         const result = object.value.internalSet(key.value, value, ref.base, context, loc);
         if (result.type === "throw") return result;
-        if (!result.value) return failure("TypeError", "property is not writable: " + formatPropertyKey(key.value), loc);
+        if (!result.value && strict) return failure("TypeError", "property is not writable: " + formatPropertyKey(key.value), loc);
         return normal(value);
     }
     const binding = ref.environment === null ? undefined : ref.environment.bindings.get(ref.name);

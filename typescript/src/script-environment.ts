@@ -28,7 +28,7 @@ class ScriptLocalBindings {
         binding.initialized = true;
         return normal();
     }
-    getBindingValue(name: string, _context: OperationContext, loc: Location): ValueCompletion {
+    getBindingValue(name: string, _context: OperationContext, loc: Location, _strict = true): ValueCompletion {
         const binding = this.bindings.get(name);
         if (binding === undefined) throw new Error("missing binding: " + name);
         if (!binding.initialized) return failure("ReferenceError", name + " is not initialized", loc);
@@ -53,11 +53,11 @@ export class ScriptFunctionEnvironment extends ScriptLocalBindings {
 export type ScriptBindingReference = {
     readonly base: ScriptEnvironment | null;
     readonly name: string;
-    readonly strict: true;
+    readonly strict: boolean;
     readonly loc: Location;
 };
 export type ScriptReferenceCompletion = { type: "normal"; reference: ScriptBindingReference } | ThrowCompletion;
-export function resolveScriptBinding(environment: ScriptEnvironment, name: string, loc: Location): ScriptReferenceCompletion {
+export function resolveScriptBinding(environment: ScriptEnvironment, name: string, loc: Location, strict = true): ScriptReferenceCompletion {
     let current: ScriptEnvironment | null = environment;
     while (current !== null) {
         const present = current.kind === "global" ? current.record.hasBinding(name, loc) : current.hasBinding(name, loc);
@@ -65,18 +65,29 @@ export function resolveScriptBinding(environment: ScriptEnvironment, name: strin
         if (present.value) break;
         current = current.kind === "global" ? null : current.outer;
     }
-    return { type: "normal", reference: { base: current, name, strict: true, loc: { line: loc.line, column: loc.column } } };
+    return { type: "normal", reference: { base: current, name, strict, loc: { line: loc.line, column: loc.column } } };
 }
 export function getScriptBinding(reference: ScriptBindingReference, context: OperationContext): ValueCompletion {
     const base = reference.base;
     if (base === null) return failure("ReferenceError", reference.name + " is not defined", reference.loc);
-    return base.kind === "global" ? base.record.getBindingValue(reference.name, context, reference.loc)
+    return base.kind === "global" ? base.record.getBindingValue(reference.name, context, reference.loc, reference.strict)
         : base.getBindingValue(reference.name, context, reference.loc);
 }
 export function putScriptBinding(reference: ScriptBindingReference, value: Value, context: OperationContext): ValueCompletion {
     const base = reference.base;
-    if (base === null) return failure("ReferenceError", reference.name + " is not defined", reference.loc);
-    return base.kind === "global" ? base.record.setMutableBinding(reference.name, value, context, reference.loc)
+    if (base === null) return reference.strict ? failure("ReferenceError", reference.name + " is not defined", reference.loc)
+        : context.realm.globalEnvironment.setUnresolvableBinding(reference.name, value, context, reference.loc);
+    return base.kind === "global" ? base.record.setMutableBinding(reference.name, value, context, reference.loc, reference.strict)
         : base.setMutableBinding(reference.name, value, context, reference.loc);
 }
 export function scriptIdentifierReceiver(_reference: ScriptBindingReference): Value { return UNDEFINED; }
+
+export function deleteScriptBinding(reference: ScriptBindingReference, context: OperationContext): ValueCompletion {
+    if (reference.strict) throw new Error("strict identifier deletion");
+    const base = reference.base;
+    if (base === null) return normal({ kind: "boolean", value: true });
+    if (base.kind !== "global") return normal({ kind: "boolean", value: false });
+    const result = base.record.deleteBinding(reference.name, context, reference.loc);
+    if (result.type === "throw") return result;
+    return normal({ kind: "boolean", value: result.value });
+}

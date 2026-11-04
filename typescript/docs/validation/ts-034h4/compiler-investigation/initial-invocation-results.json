@@ -1,0 +1,78 @@
+[
+  {
+    "mode": "original",
+    "typecheck": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "error TS5112: tsconfig.json is present but will not be loaded if files are specified on commandline. Use '--ignoreConfig' to skip this error.\n",
+      "stderr": ""
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\h4-reduction\\original.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h4\\compiler-investigation\\union-default-original.ts\n\n  statements analyzed   4\n  compile statically    4  (100%)\n    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    7 functions already operate on dynamic values (1 statement)\n      read  C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:11:1: dynCall at C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:12:12\n      %dyn.class.bagHas  C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:12:12: dyn.hasKey at C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:12:12\n      %dyn.class.properties  C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:1:1: dynObjLit at C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:1:1\n      %dyn.class.property.0  C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:12:12: %dyn.class.bagHas at C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:12:12\n      %dyn.class.readPropertiesOrEmpty  C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:12:12: dynObjLit at C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:12:12\n      %method.receiver:GlobalBindings  C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:12:12: %dyn.class.cast:GlobalBindings at C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:12:12\n      %method.receiver:LocalBindings  C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:12:12: %dyn.class.cast:LocalBindings at C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h4/compiler-investigation/union-default-original.ts:12:12\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+      "stderr": ""
+    },
+    "node": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "node:internal/modules/cjs/loader:1607\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\Users\\jonku\\code\\rift\\typescript\\build\\h4-reduction\\union-default-original.js'\r\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1603:15)\r\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1145:27)\r\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1169:10)\r\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1196:12)\r\n    at Module._load (node:internal/modules/cjs/loader:1370:5)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\r\n    at node:internal/main/run_main_module:33:47 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v26.13.0\r\n"
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "6 7\n",
+      "stderr": ""
+    }
+  },
+  {
+    "mode": "proposal",
+    "typecheck": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "error TS5112: tsconfig.json is present but will not be loaded if files are specified on commandline. Use '--ignoreConfig' to skip this error.\n",
+      "stderr": ""
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\h4-reduction\\proposal.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h4\\compiler-investigation\\union-default-proposal.ts\n\n  statements analyzed   4\n  compile statically    4  (100%)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+      "stderr": ""
+    },
+    "node": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "node:internal/modules/cjs/loader:1607\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\Users\\jonku\\code\\rift\\typescript\\build\\h4-reduction\\union-default-proposal.js'\r\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1603:15)\r\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1145:27)\r\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1169:10)\r\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1196:12)\r\n    at Module._load (node:internal/modules/cjs/loader:1370:5)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)\r\n    at node:internal/main/run_main_module:33:47 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v26.13.0\r\n"
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "6 7\n",
+      "stderr": ""
+    }
+  }
+]

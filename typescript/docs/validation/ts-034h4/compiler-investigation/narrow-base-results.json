@@ -1,0 +1,25 @@
+{
+  "source": "class Box {}\ntype Value = { kind: \"string\"; value: string } | { kind: \"object\"; object: Box };\ntype Reference = { kind: \"binding\"; name: string } | { kind: \"property\"; base: Value; key: Value };\nconst payload: Value = { kind: \"object\", object: new Box() };\nfunction cache(ref: Reference): void { if (ref.kind === \"property\") ref.key = {kind:\"string\",value:\"saved\"}; }\nconst inferred = { kind: \"property\" as const, base: payload, key: {kind:\"object\",object:new Box()} as Value };\ncache(inferred);\nconsole.log(inferred.key.kind);\r\n",
+  "buildLog": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\h4-reduction\\narrow-base-baseline.exe\r\n",
+  "coverage": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h4\\compiler-investigation\\narrow-base-baseline.ts\n\n  statements analyzed   6\n  compile statically    6  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+    "stderr": ""
+  },
+  "node": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "string\n",
+    "stderr": ""
+  },
+  "native": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "object\n",
+    "stderr": ""
+  }
+}

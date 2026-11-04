@@ -1,0 +1,101 @@
+[
+  {
+    "variant": "original",
+    "source": "class Box {}\ntype Value = { kind: \"string\"; value: string } | { kind: \"object\"; object: Box };\ntype Reference = { kind: \"binding\"; name: string } | { kind: \"property\"; key: Value; readonly strict?: boolean };\nfunction object(): Value { return { kind: \"object\", object: new Box() }; }\nfunction cache(ref: Reference): void { if (ref.kind === \"property\") ref.key = { kind: \"string\", value: \"saved\" }; }\nconst ref = { kind: \"property\" as const, key: object() };\ncache(ref);\nconsole.log(ref.key.kind);\r\n",
+    "typecheck": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    },
+    "buildLog": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\h4-reduction\\reference-original.exe\r\n",
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h4\\compiler-investigation\\reference-original.ts\n\n  statements analyzed   6\n  compile statically    6  (100%)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+      "stderr": ""
+    },
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "string\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "object\n",
+      "stderr": ""
+    }
+  },
+  {
+    "variant": "baseline",
+    "source": "class Box {}\ntype Value = { kind: \"string\"; value: string } | { kind: \"object\"; object: Box };\ntype Reference = { kind: \"binding\"; name: string } | { kind: \"property\"; key: Value };\nfunction object(): Value { return { kind: \"object\", object: new Box() }; }\nfunction cache(ref: Reference): void { if (ref.kind === \"property\") ref.key = { kind: \"string\", value: \"saved\" }; }\nconst ref = { kind: \"property\" as const, key: object() };\ncache(ref);\nconsole.log(ref.key.kind);\r\n",
+    "typecheck": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    },
+    "buildLog": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\h4-reduction\\reference-baseline.exe\r\n",
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h4\\compiler-investigation\\reference-baseline.ts\n\n  statements analyzed   6\n  compile statically    6  (100%)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+      "stderr": ""
+    },
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "string\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "string\n",
+      "stderr": ""
+    }
+  },
+  {
+    "variant": "annotated",
+    "source": "class Box {}\ntype Value = { kind: \"string\"; value: string } | { kind: \"object\"; object: Box };\ntype Reference = { kind: \"binding\"; name: string } | { kind: \"property\"; key: Value; readonly strict?: boolean };\nfunction object(): Value { return { kind: \"object\", object: new Box() }; }\nfunction cache(ref: Reference): void { if (ref.kind === \"property\") ref.key = { kind: \"string\", value: \"saved\" }; }\nconst ref: Reference = { kind: \"property\" as const, key: object() };\ncache(ref);\nconsole.log(ref.key.kind);\r\n",
+    "typecheck": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    },
+    "buildLog": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\h4-reduction\\reference-annotated.exe\r\n",
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h4\\compiler-investigation\\reference-annotated.ts\n\n  statements analyzed   6\n  compile statically    6  (100%)\n\n  fully static — all analyzed statements compile to native code.\n\n  dynamic tier   (tier assignment, report-only; --tier=auto)\n    0 functions already operate on dynamic values (0 statements)\n\n    0 demotion requests (refusals and fences the dynamic tier would replace)\n",
+      "stderr": ""
+    },
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "string\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "string\n",
+      "stderr": ""
+    }
+  }
+]

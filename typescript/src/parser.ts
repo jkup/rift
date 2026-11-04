@@ -57,6 +57,12 @@ export function auditScriptReturns(source: string): ReturnCoverage {
 // Internal handoff: only a fresh parse can populate retained nodes.
 // The public planner supplies no retention object.
 export function parseDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null = null): DeclarationPlanResult {
+    return parseStructuralPlan(unit, nodes, false);
+}
+export function parseBoundedScriptDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null = null): DeclarationPlanResult {
+    return parseStructuralPlan(unit, nodes, true);
+}
+function parseStructuralPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean): DeclarationPlanResult {
     const source = { id: unit.id, text: unit.text };
     const lexical = lex(source.text, true);
     if (lexical.error !== null) {
@@ -65,7 +71,7 @@ export function parseDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationN
     }
     const parserSource: SourceText = { text: source.text };
     if (nodes !== null) nodes.source = parserSource;
-    const parser = new Parser(lexical.tokens, parserSource, "declaration-plan");
+    const parser = new Parser(lexical.tokens, parserSource, bounded ? "bounded-plan" : "declaration-plan");
     const parsed = parser.program();
     if (parsed.error !== null) {
         if (parsed.rejection === null) throw new Error("missing parser rejection");
@@ -73,7 +79,7 @@ export function parseDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationN
     }
     if (parser.current().kind !== "eof" || parser.current().end !== source.text.length) throw new Error("declaration plan did not reach EOF");
     if (nodes !== null) nodes.assignmentNameEligible = parser.assignmentNameEligible;
-    return collectDeclarationPlan(source, parsed.body, lexical.tokens, parser.bindings, nodes);
+    return collectDeclarationPlan(source, parsed.body, lexical.tokens, parser.bindings, nodes, bounded);
 }
 class Parser {
     readonly assignmentNameEligible = new Map<Expr, boolean>();
@@ -87,7 +93,8 @@ class Parser {
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
     readonly returnCandidates: ReturnCandidate[] = [];
-    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" = "legacy") {}
+    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" = "legacy") {}
+    private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan"; }
     current(): Token { return this.tokens[this.index]; }
     at(text: string): boolean {
         const t = this.current();
@@ -126,7 +133,7 @@ class Parser {
         const names = parameters.slice();
         while (this.error === null && this.current().kind !== "eof" && !(braced && this.at("}"))) {
             const stmt = this.statement();
-            if (this.purpose !== "declaration-plan" && (stmt.kind === "let" || stmt.kind === "function")) {
+            if (!this.structuralPlan() && (stmt.kind === "let" || stmt.kind === "function")) {
                 if (names.includes(stmt.name)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-binding" }, "duplicate binding: " + stmt.name, stmt.loc);
                 names.push(stmt.name);
             }
@@ -155,7 +162,7 @@ class Parser {
         const loc = this.current().loc;
         if (this.eat(";")) return { kind: "empty", loc };
         if (this.eat("{")) return { kind: "block", loc, body: this.list(true, []) };
-        if (this.purpose === "declaration-plan" && this.eat("switch")) {
+        if (this.structuralPlan() && this.eat("switch")) {
             this.expect("(");
             const discriminant = this.expression(0);
             this.expect(")");
@@ -187,7 +194,7 @@ class Parser {
             return { kind: "switch", loc, discriminant, caseBlock: { loc: brace.loc, start: brace.start,
                 end: this.tokens[this.index - 1].end, clauses, body } };
         }
-        if (this.purpose === "declaration-plan" && this.eat("try")) {
+        if (this.structuralPlan() && this.eat("try")) {
             const block = this.statement();
             const catchToken = this.current();
             this.expect("catch");
@@ -207,10 +214,10 @@ class Parser {
         if (this.eat("let")) {
             const binding = this.binding(0);
             this.expect(";");
-            if (this.purpose === "declaration-plan") this.bindings.set(start, [binding]);
+            if (this.structuralPlan()) this.bindings.set(start, [binding]);
             return { kind: "let", loc, name: binding.site.name, init: binding.init };
         }
-        if (this.purpose === "declaration-plan" && this.at("var")) {
+        if (this.structuralPlan() && this.at("var")) {
             const declaration = this.varDeclaration(true);
             this.expect(";");
             return declaration;
@@ -218,7 +225,7 @@ class Parser {
         if (this.eat("function")) {
             const token = this.current();
             const name = this.name();
-            if (this.purpose === "declaration-plan") this.bindings.set(start, [{ site: { name, start: token.start, end: token.end, loc: token.loc }, init: null, initializer: null }]);
+            if (this.structuralPlan()) this.bindings.set(start, [{ site: { name, start: token.start, end: token.end, loc: token.loc }, init: null, initializer: null }]);
             const fn = this.functionTail(loc, start);
             return { kind: "function", loc, name, params: fn.params, body: fn.body, source: fn.source };
         }
@@ -230,7 +237,7 @@ class Parser {
             const alternate = this.eat("else") ? this.branch() : null;
             return { kind: "if", loc, test, consequent, alternate };
         }
-        if (this.purpose === "declaration-plan" && this.eat("for")) {
+        if (this.structuralPlan() && this.eat("for")) {
             this.expect("(");
             let initializer: VarStmt | Expr | null = null;
             if (this.at("var")) initializer = this.varDeclaration(false);
@@ -370,7 +377,7 @@ class Parser {
                 left = { kind: "call", loc, callee: left, args };
                 continue;
             }
-            if (!updated && this.purpose === "declaration-plan" && this.at("++")) {
+            if (!updated && this.structuralPlan() && this.at("++")) {
                 const previous = this.tokens[this.index - 1];
                 const increment = this.take();
                 if (increment.loc.line !== previous.loc.line) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.line-terminator" }, "newline before postfix increment is unsupported", increment.loc);
@@ -400,7 +407,7 @@ class Parser {
                 if (op === "=") {
                     const eligible = left.kind === "identifier" && !this.parenthesized.has(left);
                     left = { kind: "assign", loc, target: left, value: right };
-                    if (this.purpose === "declaration-plan") this.assignmentNameEligible.set(left, eligible);
+                    if (this.structuralPlan()) this.assignmentNameEligible.set(left, eligible);
                 }
                 else {
                     let binaryOp: "+" | "-" | "*" | "/" | "%" = "+";
@@ -430,14 +437,14 @@ class Parser {
         if (t.text === "(") {
             const expr = this.expression(0);
             this.expect(")");
-            if (this.purpose === "declaration-plan") this.parenthesized.set(expr, true);
+            if (this.structuralPlan()) this.parenthesized.set(expr, true);
             return expr;
         }
         if (t.text === "!" || t.text === "-" || t.text === "+" || t.text === "delete" || t.text === "typeof" || t.text === "void") {
             const operand = this.expression(9, allowIn);
-            // Parentheses preserve identifiers. Strict-delete is unconditional
-            // in this profile, independently of inert directive strings.
-            if (t.text === "delete" && operand.kind === "identifier") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" }, "delete of an identifier is not allowed", loc);
+            // Parentheses preserve identifiers. The bounded collector validates
+            // their inherited mode after whole-source grammar coverage.
+            if (t.text === "delete" && operand.kind === "identifier" && this.purpose !== "bounded-plan") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" }, "delete of an identifier is not allowed", loc);
             return { kind: "unary", loc, op: t.text, operand };
         }
         if (t.text === "[") {
