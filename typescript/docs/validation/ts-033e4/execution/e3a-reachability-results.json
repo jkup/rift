@@ -1,0 +1,57 @@
+[
+  {
+    "variant": "before",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "11\n",
+      "stderr": ""
+    },
+    "build": {
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e3a/reachability-before.ts:3:15 - error SC2009: values of type 'Callable' cannot be compiled: the union shape is supported, but its arm 'Opaque' does not compile\n\n  2 | type Callable = Opaque | { kind: \"builtin\"; value: number };\n  3 | function read(callable: Callable): number {\n    |               ^~~~~~~~\n  4 |     return callable.kind === \"builtin\" ? callable.value : callable.read();\n\n  hint: the outer shape is supported — the named component is the blocker; restate it inside the compilable set (number, string, boolean, arrays, Maps, Sets, RegExp, functions, classes, records, unions of those, and 'unknown')\n\nC:/Users/jonku/code/rift/typescript/docs/validation/ts-033e3a/reachability-before.ts:6:13 - error SC2004: uses of 'read' inherit the blocker on its declaration\n\n  5 | }\n  6 | console.log(read({ kind: \"builtin\", value: Number(process.argv[2] ?? \"11\") }));\n    |             ^~~~\n  7 | \n\n  hint: the declaration of 'read' did not compile — fix the diagnostic reported there and these sites clear with it\n\n2 errors.\n"
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e3a\\reachability-before.ts\n\n  statements analyzed   2\n  compile statically    2  (100%)\n    in dynamic tier     1  (operate on values typed only at runtime; --explain-dynamic lists them)\n    dynamic slots       1  (declared types with no static lowering, held as checked-dynamic values; SC6104)\n      parameter 'callable' (declared 'Callable')  C:/Users/jonku/code/rift/typescript/docs/validation/ts-033e3a/reachability-before.ts:3:15, 3 dynamic operations\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    }
+  },
+  {
+    "variant": "after",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "11\n",
+      "stderr": ""
+    },
+    "build": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts-033e3a\\reachability-after.exe\n",
+      "stderr": ""
+    },
+    "coverage": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033e3a\\reachability-after.ts\n\n  statements analyzed   5\n  compile statically    5  (100%)\n\n  fully static — all analyzed statements compile to native code.\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "11\n",
+      "stderr": ""
+    }
+  }
+]

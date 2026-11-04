@@ -1,0 +1,30 @@
+[
+  {
+    "path": "typescript/src/realm.ts",
+    "sha256": "d5f3556a22ba6771685b9f335a054f3c3f5e6a6ada477af94d15411146391dee"
+  },
+  {
+    "path": "typescript/src/script-record.ts",
+    "sha256": "f39d3dcce6773b6fa4313a909e0b3eb332796750edeed7839441fabf8602ed5a"
+  },
+  {
+    "path": "typescript/src/evaluator.ts",
+    "sha256": "8f0070acae33c0477267142eb09eab294dbc6e1fb93e19677729505ae3500d3a"
+  },
+  {
+    "path": "typescript/src/script-execution.ts",
+    "sha256": "4fbc047c7284ccf5bf512278a3d48aa38c38bf9b9018dd34459c60bf0872e10b"
+  },
+  {
+    "path": "typescript/src/script-execution-internal.ts",
+    "sha256": "23c48e855c1daf05bba02d777f6910aa95a6e0e59dfe44a907cf86c5c84dd965"
+  },
+  {
+    "path": "typescript/test/script-execution.ts",
+    "sha256": "96e124915d486906ff9ecc1feff2b37a98abef70b6936a9837a9ed9a01868c4e"
+  },
+  {
+    "path": "typescript/tools/build-native.mjs",
+    "sha256": "02fdf0f0d7047b32dbb2594f5ad4dc82d0fd6a6844dc5d7666cd7c2da54aa899"
+  }
+]

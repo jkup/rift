@@ -18,7 +18,7 @@ import type { ExecutableScript } from "./script-record.js";
 // Keep the factory's module reachable without exporting its private classes;
 // Callable still imports ScriptGuestCallable as a type only. No setup runs here.
 // Reduced before/after evidence: docs/validation/ts-033e3a/reachability-*.ts.
-import "./script-record.js";
+import { consumeScriptBuiltinPermit } from "./script-execution-internal.js";
 import type { ScriptEnvironment } from "./script-environment.js";
 import type { OperationContext } from "./runtime.js";
 
@@ -104,11 +104,13 @@ export class Realm {
     }
     readScriptGlobal(name: string, context: OperationContext, loc: Location): ValueCompletion { return this.globalEnvironment.getBindingValue(name, context, loc); }
     private guardBuiltin(invoke: Builtin): Builtin {
-        return (receiver, args, context, loc) => {
+        const guarded: Builtin = (receiver, args, context, loc) => {
             if (context.realm.profile !== this.profile) throw new Error("cross-profile callable invocation");
-            if (this.profile !== "legacy") throw new Error("Script execution unavailable");
+            if (this.profile === "script" && !consumeScriptBuiltinPermit(context, this, guarded, receiver, args, loc))
+                throw new Error("Script execution unavailable");
             return invoke(receiver, args, context, loc);
         };
+        return guarded;
     }
     createObject(): GuestObject { return new GuestObject(this.objectPrototype); }
     createScriptFunction(record: ExecutableScript, scopeId: number, environment: ScriptEnvironment,

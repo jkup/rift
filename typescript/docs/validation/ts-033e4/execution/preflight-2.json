@@ -1,0 +1,15 @@
+{
+  "typecheck": {
+    "command": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "node_modules/typescript/bin/tsc",
+      "-p",
+      "tsconfig.json"
+    ],
+    "status": 2,
+    "signal": null,
+    "error": null,
+    "stdout": "src/script-execution-internal.ts(1046,19): error TS2322: Type 'ScriptStatementCompletion' is not assignable to type 'ThrowCompletion'.\n  Type '{ readonly type: \"break\" | \"continue\" | \"normal\"; readonly payload: ScriptStatementPayload; }' is missing the following properties from type 'ThrowCompletion': value, diagnostic, origin\n",
+    "stderr": ""
+  }
+}

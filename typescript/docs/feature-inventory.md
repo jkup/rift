@@ -3,8 +3,11 @@
 This inventory is a scope statement, not an ECMAScript conformance score.
 TS-033ER-A adds host-defined ordinary accessors and contextful semantic reads.
 Its section below supersedes earlier milestone references to data-only Get/Set
-and deferred internal accessors. Guest accessor syntax/reflection, restricted
-Script bootstrap (ER-B), and Script execution (E4) remain unavailable.
+and deferred internal accessors. ER-B supplies restricted Script bootstrap. The
+E4 candidate below adds internal opaque-session execution; CLI, interpreter.run,
+observations and corpus admission remain legacy-only. Guest accessor syntax and
+reflection remain unavailable. Historical milestone sections describe their
+original acceptance boundaries; the E4 section supersedes their closed-body claims.
 TS-033A adds a separate non-executing `inspectScript({ id, text })` API in
 `src/script-metadata.ts`: complete supported-grammar results expose raw directive
 spans, Script strictness and syntactically inherited function strictness. Blocked
@@ -502,3 +505,33 @@ Host recording contexts prove receiver/argument/endpoint dispatch and abrupt-rec
 identity. Actual invocation still fails the existing Script or cross-profile host
 guards. This is not execution of ThrowTypeError or Script source: E4/R36 and actual
 diagnostic TypeError execution remain blocked. See [ER-B validation](validation/ts-033er-b/IMPLEMENTATION.md).
+
+### Internal strict Script execution (TS-033E4 candidate)
+
+`script-execution.ts` exposes only `createScriptSession`, `evaluateScript` and
+opaque/result/snapshot types. Preparation still requires complete supported
+strict source and an owning Script Realm. One shared engine now handles the
+existing expression algorithms, strict Script references, declaration setup,
+block/function environments, completion values, named evaluation, calls and
+cross-Realm source provenance. Legacy Evaluator APIs and subclass hooks retain
+their original behavior through a compatibility facade. Executable ASTs and
+node maps stay with the engine in a private module; inspection never returns them.
+
+Each Script engine owns one context whose call/tick functions capture that engine.
+Copied functions carry its authority while it is active; they reject while idle.
+Hosts are trusted extensions and must not mutate the context. Realm's profile-first
+guard requires a synchronous, exact, one-use private permit for Script builtins.
+Direct host invocation remains rejected. Calls restore frames and Realm projection
+on guest/resource/host failures; steps remain shared and monotonic across units.
+
+The candidate executes real restricted caller/arguments accessors and ordinary
+deletion, redefinition and own shadows. Its new driver covers frozen restricted
+resource prefixes, FDI/block/GDI prefixes, strict receivers, captured references,
+empty statement completions, persistent closures, naming, source identity,
+nested active sessions and exact guest/host abrupt identity. Reflective malformed
+host shapes are explicitly Node-only controls. See [execution evidence](validation/ts-033e4/execution/README.md)
+for the exact validation boundary and inherited host-helper replays.
+
+This is pending independent review, not public Script admission or a conformance
+claim. No arguments object/binding, Error objects, new grammar, observation/schema
+change, harness loading, async/generator support or default-profile change is added.

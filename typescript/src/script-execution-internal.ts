@@ -1,0 +1,1178 @@
+import { parseDeclarationPlan } from "./parser.js";
+import type { Realm } from "./realm.js";
+import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
+import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
+import type { Expr, Stmt, FunctionSource, Location } from "./syntax.js";
+import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, failure, resourceFailure, getValue, putValue, truthy } from "./runtime.js";
+import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, type ScriptBindingReference } from "./script-environment.js";
+import type { GlobalEnvironment } from "./global-environment.js";
+import { instantiateGlobalDeclarations, type DeclarationMaterializer } from "./script-global-declarations.js";
+
+class ActivationKey {}
+type CallableState = { key: ActivationKey; record: ExecutableScript; realm: Realm; scopeId: number;
+    environment: ScriptEnvironment; unit: ScriptSourceUnit; start: number; end: number; text: string; formals: string[] };
+export type { ScriptGuestCallable };
+class ScriptGuestCallable {
+    #state: CallableState;
+    private constructor(state: CallableState) { this.#state = state; }
+    static create(state: CallableState): ScriptGuestCallable { return new ScriptGuestCallable(state); }
+    static check(callable: ScriptGuestCallable, key: ActivationKey, record: ExecutableScript): CallableState {
+        if (!(callable instanceof ScriptGuestCallable) || callable.#state.key !== key || callable.#state.record !== record)
+            throw new Error("invalid Script callable brand");
+        return callable.#state;
+    }
+    get kind(): "script-guest" { return "script-guest"; }
+    get realm(): Realm { return this.#state.realm; }
+    get record(): ExecutableScript { return this.#state.record; }
+    get scopeId(): number { return this.#state.scopeId; }
+    get environment(): ScriptEnvironment { return this.#state.environment; }
+    get strict(): true { return true; }
+    get thisMode(): "strict" { return "strict"; }
+    get privateEnvironment(): null { return null; }
+    sourceText(): string { return this.#state.text; }
+    inspectFormals(): string[] { return this.#state.formals.slice(); }
+}
+// The record owns only a key. Each transient activation owns its phase and key;
+// no registry on the record keeps completed or abandoned activations alive.
+class FunctionActivation extends ScriptFunctionEnvironment {
+    #ownerKey: ActivationKey;
+    #scopeId: number;
+    #phase: "fresh" | "started" | "complete" = "fresh";
+    constructor(key: ActivationKey, scopeId: number, outer: ScriptEnvironment, callable: ScriptGuestCallable, receiver: Value) {
+        super(outer, receiver, callable);
+        this.#ownerKey = key;
+        this.#scopeId = scopeId;
+    }
+    checkFresh(key: ActivationKey, scopeId: number): void {
+        if (key !== this.#ownerKey || scopeId !== this.#scopeId || this.#phase !== "fresh")
+            throw new Error("invalid fresh Script activation");
+    }
+    begin(key: ActivationKey, scopeId: number): void {
+        this.checkFresh(key, scopeId);
+        this.#phase = "started";
+    }
+    complete(key: ActivationKey, scopeId: number): void {
+        if (key !== this.#ownerKey || scopeId !== this.#scopeId || this.#phase !== "started")
+            throw new Error("invalid started Script activation");
+        this.#phase = "complete";
+    }
+}
+export type ScriptFunctionEnvironmentCompletion = { type: "normal"; environment: ScriptFunctionEnvironment } | ThrowCompletion;
+class BlockActivation extends ScriptDeclarativeEnvironment {
+    #ownerKey: ActivationKey;
+    #scopeId: number;
+    #originalOuter: ScriptEnvironment;
+    #phase: "fresh" | "started" | "complete" = "fresh";
+    constructor(key: ActivationKey, scopeId: number, outer: ScriptEnvironment) {
+        super(outer);
+        this.#ownerKey = key;
+        this.#scopeId = scopeId;
+        this.#originalOuter = outer;
+    }
+    checkFresh(key: ActivationKey, scopeId: number): void {
+        if (key !== this.#ownerKey || scopeId !== this.#scopeId || this.outer !== this.#originalOuter || this.#phase !== "fresh")
+            throw new Error("invalid fresh Script block activation");
+    }
+    begin(key: ActivationKey, scopeId: number): void {
+        this.checkFresh(key, scopeId);
+        this.#phase = "started";
+    }
+    complete(key: ActivationKey, scopeId: number): void {
+        if (key !== this.#ownerKey || scopeId !== this.#scopeId || this.#phase !== "started")
+            throw new Error("invalid started Script block activation");
+        this.#phase = "complete";
+    }
+}
+export type ScriptBlockEnvironmentCompletion = { type: "normal"; environment: ScriptDeclarativeEnvironment } | ThrowCompletion;
+
+export type ScriptPreparation =
+    | { readonly kind: "ready"; readonly record: ExecutableScript }
+    | { readonly kind: "profile-rejected"; readonly reason: "realm" | "strict" }
+    | Exclude<DeclarationPlanResult, ScriptDeclarationPlan>;
+export type ScriptNodeInspection = {
+    scopes: { id: number; kind: string; loc: Location | null; bodyLength: number;
+        parameters: string[]; start: number | null; end: number | null; text: string | null }[];
+    declarations: { id: number; kind: string; loc: Location; initializerKind: string | null }[];
+};
+type ScriptState = { realm: Realm; plan: ScriptDeclarationPlan; nodes: DeclarationNodes; scopes: Map<Expr | Stmt, number> };
+
+// No exported path accepts an AST or plan. Even a JavaScript caller bypassing
+// TypeScript's private constructor can only create an unusable empty shell.
+export type { ExecutableScript };
+class ExecutableScript {
+    #state: ScriptState | null = null;
+    #activationKey = new ActivationKey();
+    #completedMaterializations = 0;
+    private constructor() {}
+    static prepare(unit: ScriptSourceUnit, realm: Realm): ScriptPreparation {
+        if (realm.profile !== "script") return { kind: "profile-rejected", reason: "realm" };
+        const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map() };
+        const plan = parseDeclarationPlan(unit, nodes);
+        if (plan.kind !== "complete") return plan;
+        if (!plan.strictness.strict) return { kind: "profile-rejected", reason: "strict" };
+        // Associations were assigned in the collector's original iterative walk.
+        // Verify all identities before retaining any executable state.
+        if (nodes.scopes.size !== plan.scopes.length || nodes.declarations.size !== plan.declarations.length)
+            throw new Error("Script node association mismatch");
+        const root = nodes.scopes.get(0);
+        if (root === undefined || root.node !== null || root.body !== nodes.body)
+            throw new Error("Script root body mismatch");
+        for (const fn of plan.functions) {
+            const entry = nodes.scopes.get(fn.scope);
+            if (entry === undefined || entry.node === null || entry.node.kind !== "function")
+                throw new Error("Script function node mismatch");
+            const source = entry.node.source;
+            if (source === null || source.source !== nodes.source || source.source.text !== plan.unit.text || source.start !== fn.start || source.end !== fn.end || entry.body !== entry.node.body)
+                throw new Error("Script function source mismatch");
+            if (fn.declaration !== null) {
+                const declaration = nodes.declarations.get(fn.declaration);
+                if (declaration === undefined || declaration.node.kind !== "function" || declaration.node !== entry.node)
+                    throw new Error("Script function declaration mismatch");
+            }
+        }
+        const record = new ExecutableScript();
+        const scopes = new Map<Expr | Stmt, number>();
+        for (const scope of plan.scopes) {
+            const entry = nodes.scopes.get(scope.id);
+            if (entry === undefined) throw new Error("missing Script scope association");
+            if (scope.id === 0) {
+                if (scope.kind !== "script" || entry.node !== null || entry.body !== nodes.body) throw new Error("invalid Script root");
+            } else {
+                if (entry.node === null || entry.node.kind !== scope.kind || entry.body !== entry.node.body || scopes.has(entry.node))
+                    throw new Error("invalid Script scope identity");
+                scopes.set(entry.node, scope.id);
+            }
+        }
+        record.#state = { realm, plan, nodes, scopes };
+        return { kind: "ready", record };
+    }
+    // These seams require the unexported execution key and never return bodies
+    // to a host callback, context, facade or inspection result.
+    static state(record: ExecutableScript, key: ExecutionKey): ScriptState {
+        if (key !== executionKey || !(record instanceof ExecutableScript)) throw new Error("invalid Script record");
+        return record.#readState();
+    }
+    static readRoot(record: ExecutableScript, key: ExecutionKey): Stmt[] {
+        return ExecutableScript.state(record, key).nodes.body;
+    }
+    static readFunction(record: ExecutableScript, callable: ScriptGuestCallable, key: ExecutionKey): { scopeId: number; body: Stmt[] } {
+        ExecutableScript.state(record, key);
+        const metadata = ScriptGuestCallable.check(callable, record.#activationKey, record);
+        const entry = record.#function(metadata.scopeId);
+        return { scopeId: metadata.scopeId, body: entry.node.body };
+    }
+    static scopeOfNode(record: ExecutableScript, node: Expr | Stmt, key: ExecutionKey): number {
+        const scope = ExecutableScript.state(record, key).scopes.get(node);
+        if (scope === undefined) throw new Error("foreign Script node");
+        return scope;
+    }
+    static assignmentMayName(record: ExecutableScript, node: Expr, key: ExecutionKey): boolean {
+        return ExecutableScript.state(record, key).nodes.assignmentNameEligible.get(node) === true;
+    }
+    #readState(): ScriptState {
+        if (this.#state === null) throw new Error("unprepared Script record");
+        return this.#state;
+    }
+    belongsTo(realm: Realm): boolean { return this.#readState().realm === realm; }
+    #validateEnvironment(environment: ScriptEnvironment, context: OperationContext): void {
+        const state = this.#readState();
+        if (state.realm.profile !== "script" || context.realm !== state.realm) throw new Error("invalid Script context Realm");
+        const seen = new Map<ScriptEnvironment, boolean>();
+        let current = environment;
+        while (true) {
+            if (current === null || typeof current !== "object" || seen.has(current)) throw new Error("invalid Script environment chain");
+            seen.set(current, true);
+            if (current.kind === "global") {
+                if (current.record !== state.realm.globalEnvironment) throw new Error("foreign Script environment terminal");
+                return;
+            }
+            if ((current.kind !== "declarative" || !(current instanceof ScriptDeclarativeEnvironment)) &&
+                (current.kind !== "function" || !(current instanceof ScriptFunctionEnvironment)))
+                throw new Error("invalid Script environment tag");
+            current = current.outer;
+        }
+    }
+    #function(scopeId: number) {
+        const state = this.#readState();
+        if (!Number.isInteger(scopeId) || scopeId < 0 || scopeId >= state.plan.scopes.length)
+            throw new Error("invalid Script function scope");
+        const scope = state.plan.scopes[scopeId];
+        const entry = state.nodes.scopes.get(scopeId);
+        const fn = state.plan.functions.find(candidate => candidate.scope === scopeId);
+        if (scope.kind !== "function" || !scope.strict || fn === undefined || !fn.strictness.strict ||
+            entry === undefined || entry.node === null || entry.node.kind !== "function")
+            throw new Error("invalid Script function association");
+        const node = entry.node;
+        const source = node.source;
+        if (source === null || source.source !== state.nodes.source || source.source.text !== state.plan.unit.text ||
+            source.start !== fn.start || source.end !== fn.end || entry.body !== node.body)
+            throw new Error("invalid Script function provenance");
+        return { scope, fn, node, source };
+    }
+    materializeFunction(scopeId: number, environment: ScriptEnvironment, inferredName: string | null, context: OperationContext): ValueCompletion {
+        this.#validateEnvironment(environment, context);
+        const state = this.#readState();
+        const entry = this.#function(scopeId);
+        if ((entry.fn.declaration !== null && inferredName !== null) || (inferredName !== null && typeof inferredName !== "string"))
+            throw new Error("invalid Script inferred name");
+        const name = entry.fn.declaration === null ? (inferredName === null ? "" : inferredName)
+            : state.plan.declarations[entry.fn.declaration].site.name;
+        const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
+        if (budget.type === "throw") return budget;
+        const callable = ScriptGuestCallable.create({ key: this.#activationKey, record: this, realm: state.realm,
+            scopeId, environment, unit: state.plan.unit, start: entry.source.start, end: entry.source.end,
+            text: entry.source.source.text.slice(entry.source.start, entry.source.end), formals: entry.node.params.slice() });
+        const object = new GuestObject(state.realm.functionPrototype, false, callable);
+        const prototypeObject = new GuestObject(state.realm.objectPrototype);
+        const value: Value = { kind: "object", object };
+        prototypeObject.bootstrapDefine("constructor", { value, writable: true, enumerable: false, configurable: true });
+        object.bootstrapDefine("length", { value: { kind: "number", value: entry.node.params.length }, writable: false, enumerable: false, configurable: true });
+        object.bootstrapDefine("name", { value: { kind: "string", value: name }, writable: false, enumerable: false, configurable: true });
+        object.bootstrapDefine("prototype", { value: { kind: "object", object: prototypeObject }, writable: true, enumerable: false, configurable: false });
+        this.#completedMaterializations++;
+        return normal(value);
+    }
+    createFunctionEnvironment(callable: ScriptGuestCallable, receiver: Value, context: OperationContext): ScriptFunctionEnvironmentCompletion {
+        const metadata = ScriptGuestCallable.check(callable, this.#activationKey, this);
+        this.#validateEnvironment(metadata.environment, context);
+        const state = this.#readState();
+        const entry = this.#function(metadata.scopeId);
+        if (metadata.unit !== state.plan.unit || metadata.start !== entry.source.start || metadata.end !== entry.source.end ||
+            callable.record !== this || callable.realm !== state.realm || callable.scopeId !== metadata.scopeId || callable.environment !== metadata.environment ||
+            callable.kind !== "script-guest" || !callable.strict || callable.thisMode !== "strict" || callable.privateEnvironment !== null)
+            throw new Error("invalid Script callable metadata");
+        const budget = context.tick({ line: entry.node.loc.line, column: entry.node.loc.column });
+        if (budget.type === "throw") { const abrupt: ThrowCompletion = budget; return abrupt; }
+        return { type: "normal", environment: new FunctionActivation(this.#activationKey, metadata.scopeId, metadata.environment, callable, receiver) };
+    }
+    instantiateFunction(environment: ScriptFunctionEnvironment, args: Value[], context: OperationContext): ValueCompletion {
+        if (!(environment instanceof FunctionActivation)) throw new Error("invalid Script function activation");
+        const metadata = ScriptGuestCallable.check(environment.callable, this.#activationKey, this);
+        this.#validateEnvironment(environment, context);
+        const state = this.#readState();
+        const entry = this.#function(metadata.scopeId);
+        if (environment.outer !== metadata.environment || metadata.realm !== state.realm || metadata.unit !== state.plan.unit ||
+            metadata.start !== entry.source.start || metadata.end !== entry.source.end)
+            throw new Error("invalid Script function activation metadata");
+        environment.checkFresh(this.#activationKey, metadata.scopeId);
+        const argumentsList = args.slice();
+        environment.begin(this.#activationKey, metadata.scopeId);
+        const selected = new Map<string, boolean>();
+        const winners: Declaration[] = [];
+        for (let i = entry.scope.varDeclarations.length - 1; i >= 0; i--) {
+            const declaration = state.plan.declarations[entry.scope.varDeclarations[i]];
+            const tick = this.#setupTick(context, declaration.site.loc);
+            if (tick.type === "throw") return tick;
+            if (declaration.kind === "function" && !selected.has(declaration.site.name)) {
+                selected.set(declaration.site.name, true);
+                winners.push(declaration);
+            }
+        }
+        winners.reverse();
+        for (const formal of entry.scope.formals) {
+            const tick = this.#setupTick(context, formal.loc);
+            if (tick.type === "throw") return tick;
+            const created = environment.createMutableBinding(formal.name, formal.loc);
+            if (created.type === "throw") return created;
+        }
+        for (let i = 0; i < entry.scope.formals.length; i++) {
+            const formal = entry.scope.formals[i];
+            const tick = this.#setupTick(context, formal.loc);
+            if (tick.type === "throw") return tick;
+            const initialized = environment.initializeBinding(formal.name, i < argumentsList.length ? argumentsList[i] : UNDEFINED, context, formal.loc);
+            if (initialized.type === "throw") return initialized;
+        }
+        for (const id of entry.scope.varDeclarations) {
+            const site = state.plan.declarations[id].site;
+            const tick = this.#setupTick(context, site.loc);
+            if (tick.type === "throw") return tick;
+            const present = environment.hasBinding(site.name, site.loc);
+            if (present.type === "throw") return present;
+            if (present.value) continue;
+            const createTick = this.#setupTick(context, site.loc);
+            if (createTick.type === "throw") return createTick;
+            const created = environment.createMutableBinding(site.name, site.loc);
+            if (created.type === "throw") return created;
+            const initializeTick = this.#setupTick(context, site.loc);
+            if (initializeTick.type === "throw") return initializeTick;
+            const initialized = environment.initializeBinding(site.name, UNDEFINED, context, site.loc);
+            if (initialized.type === "throw") return initialized;
+        }
+        for (const id of entry.scope.lexicalDeclarations) {
+            const site = state.plan.declarations[id].site;
+            const tick = this.#setupTick(context, site.loc);
+            if (tick.type === "throw") return tick;
+            const created = environment.createMutableBinding(site.name, site.loc);
+            if (created.type === "throw") return created;
+        }
+        for (const declaration of winners) {
+            if (declaration.functionScope === null) throw new Error("missing Script function scope");
+            const value = this.materializeFunction(declaration.functionScope, environment, null, context);
+            if (value.type === "throw") return value;
+            const tick = this.#setupTick(context, declaration.site.loc);
+            if (tick.type === "throw") return tick;
+            const written = environment.setMutableBinding(declaration.site.name, value.value, context, declaration.site.loc);
+            if (written.type === "throw") return written;
+        }
+        environment.complete(this.#activationKey, metadata.scopeId);
+        return normal();
+    }
+    #setupTick(context: OperationContext, loc: Location): ValueCompletion {
+        return context.tick({ line: loc.line, column: loc.column });
+    }
+    #block(scopeId: number) {
+        const state = this.#readState();
+        if (!Number.isInteger(scopeId) || scopeId < 0 || scopeId >= state.plan.scopes.length)
+            throw new Error("invalid Script block scope");
+        const scope = state.plan.scopes[scopeId];
+        const entry = state.nodes.scopes.get(scopeId);
+        if (scope.kind !== "block" || !scope.strict || entry === undefined || entry.node === null || entry.node.kind !== "block" || entry.body !== entry.node.body)
+            throw new Error("invalid Script block association");
+        return { scope, node: entry.node };
+    }
+    createBlockEnvironment(scopeId: number, outer: ScriptEnvironment, context: OperationContext): ScriptBlockEnvironmentCompletion {
+        this.#validateEnvironment(outer, context);
+        const entry = this.#block(scopeId);
+        const tick = this.#setupTick(context, entry.node.loc);
+        if (tick.type === "throw") { const abrupt: ThrowCompletion = tick; return abrupt; }
+        return { type: "normal", environment: new BlockActivation(this.#activationKey, scopeId, outer) };
+    }
+    instantiateBlock(scopeId: number, environment: ScriptDeclarativeEnvironment, context: OperationContext): ValueCompletion {
+        if (!(environment instanceof BlockActivation)) throw new Error("invalid Script block activation");
+        this.#validateEnvironment(environment, context);
+        const entry = this.#block(scopeId);
+        const state = this.#readState();
+        environment.checkFresh(this.#activationKey, scopeId);
+        environment.begin(this.#activationKey, scopeId);
+        for (const id of entry.scope.lexicalDeclarations) {
+            const declaration = state.plan.declarations[id];
+            const tick = this.#setupTick(context, declaration.site.loc);
+            if (tick.type === "throw") return tick;
+            const created = environment.createMutableBinding(declaration.site.name, declaration.site.loc);
+            if (created.type === "throw") return created;
+            if (declaration.kind === "function") {
+                if (declaration.functionScope === null) throw new Error("missing Script block function scope");
+                const value = this.materializeFunction(declaration.functionScope, environment, null, context);
+                if (value.type === "throw") return value;
+                const initializeTick = this.#setupTick(context, declaration.site.loc);
+                if (initializeTick.type === "throw") return initializeTick;
+                const initialized = environment.initializeBinding(declaration.site.name, value.value, context, declaration.site.loc);
+                if (initialized.type === "throw") return initialized;
+            }
+        }
+        environment.complete(this.#activationKey, scopeId);
+        return normal();
+    }
+    createGlobalMaterializer(environment: GlobalEnvironment, context: OperationContext): DeclarationMaterializer {
+        this.#validateEnvironment({ kind: "global", record: environment }, context);
+        const state = this.#readState();
+        return (declaration, fn, suppliedEnvironment, unit, suppliedContext): ValueCompletion => {
+            if (suppliedEnvironment !== environment || suppliedContext !== context || unit !== state.plan.unit ||
+                declaration !== state.plan.declarations[declaration.id] ||
+                fn !== state.plan.functions.find(candidate => candidate.declaration === declaration.id) ||
+                declaration.functionScope !== fn.scope)
+                throw new Error("invalid Script global materializer identity");
+            this.#validateEnvironment({ kind: "global", record: environment }, context);
+            return this.materializeFunction(fn.scope, { kind: "global", record: environment }, null, context);
+        };
+    }
+    instantiateGlobals(environment: GlobalEnvironment, context: OperationContext): ValueCompletion {
+        const materialize = this.createGlobalMaterializer(environment, context);
+        return instantiateGlobalDeclarations(this.#readState().plan, environment, context, materialize);
+    }
+    inspectMaterializations(): { completed: number } { return { completed: this.#completedMaterializations }; }
+    inspectNamingSites(): { loc: Location; eligible: boolean }[] {
+        const result: { loc: Location; eligible: boolean }[] = [];
+        for (const [expr, eligible] of this.#readState().nodes.assignmentNameEligible)
+            result.push({ loc: { line: expr.loc.line, column: expr.loc.column }, eligible });
+        result.sort((a, b) => a.loc.line - b.loc.line || a.loc.column - b.loc.column);
+        return result;
+    }
+    inspect(): ScriptDeclarationPlan {
+        const plan = this.#readState().plan;
+        return { kind: "complete", goal: "Script", unit: { id: plan.unit.id, text: plan.unit.text },
+            consumedUnits: plan.consumedUnits, strictness: copyStrictness(plan.strictness),
+            scopes: plan.scopes.map(scope => ({ id: scope.id, kind: scope.kind, parent: scope.parent,
+                start: scope.start, end: scope.end, strict: scope.strict, formals: scope.formals.map(copySite),
+                lexicalDeclarations: scope.lexicalDeclarations.slice(), varDeclarations: scope.varDeclarations.slice(),
+                lexicalNames: scope.lexicalNames.slice(), varNames: scope.varNames.slice() })),
+            declarations: plan.declarations.map(declaration => ({ id: declaration.id, kind: declaration.kind,
+                site: copySite(declaration.site), scope: declaration.scope, variableScope: declaration.variableScope,
+                functionScope: declaration.functionScope, initializer: declaration.initializer === null ? null :
+                    { start: declaration.initializer.start, end: declaration.initializer.end } })),
+            functions: plan.functions.map(fn => ({ scope: fn.scope, declaration: fn.declaration,
+                start: fn.start, end: fn.end, strictness: copyStrictness(fn.strictness) })) };
+    }
+    inspectNodes(): ScriptNodeInspection {
+        const state = this.#readState();
+        const result: ScriptNodeInspection = { scopes: [], declarations: [] };
+        for (const scope of state.plan.scopes) {
+            const entry = state.nodes.scopes.get(scope.id);
+            if (entry === undefined) throw new Error("missing Script scope");
+            const node = entry.node;
+            const source = node !== null && node.kind === "function" ? node.source : null;
+            result.scopes.push({ id: scope.id, kind: node === null ? "script" : node.kind,
+                loc: node === null ? null : { line: node.loc.line, column: node.loc.column },
+                bodyLength: entry.body.length, parameters: node !== null && node.kind === "function" ? node.params.slice() : [],
+                start: source === null ? null : source.start, end: source === null ? null : source.end,
+                text: source === null ? null : source.source.text.slice(source.start, source.end) });
+        }
+        for (const declaration of state.plan.declarations) {
+            const entry = state.nodes.declarations.get(declaration.id);
+            if (entry === undefined) throw new Error("missing Script declaration");
+            result.declarations.push({ id: declaration.id, kind: entry.node.kind,
+                loc: { line: entry.node.loc.line, column: entry.node.loc.column },
+                initializerKind: entry.initializer === null ? null : entry.initializer.kind });
+        }
+        return result;
+    }
+}
+export function prepareStrictScript(unit: ScriptSourceUnit, realm: Realm): ScriptPreparation {
+    return ExecutableScript.prepare(unit, realm);
+}
+function copySite(site: DeclarationSite): DeclarationSite {
+    return { name: site.name, start: site.start, end: site.end, loc: { line: site.loc.line, column: site.loc.column } };
+}
+function copyStrictness(strictness: StrictnessMetadata): StrictnessMetadata {
+    return { ownStrict: strictness.ownStrict, inheritedStrict: strictness.inheritedStrict, strict: strictness.strict,
+        directives: strictness.directives.map(d => ({ start: d.start, end: d.end, statementEnd: d.statementEnd,
+            loc: { line: d.loc.line, column: d.loc.column }, raw: d.raw, useStrict: d.useStrict })) };
+}
+
+import { stringConcat, stringCompare } from "./strings.js";
+import { GuestArray } from "./array-object.js";
+import { isLooselyEqual } from "./abstract-equality.js";
+import { deleteReference } from "./delete-reference.js";
+import { typeOfValue } from "./typeof.js";
+import { toPrimitive } from "./primitive-conversion.js";
+import { toNumber, toString, toPropertyKey } from "./conversion.js";
+
+import { updateScriptEmpty, scriptExpressionCompletion, type ScriptStatementCompletion, type ScriptStatementPayload } from "./script-completion.js";
+class ExecutionKey {}
+const executionKey = new ExecutionKey();
+type EngineReference = Reference | { kind: "script"; binding: ScriptBindingReference };
+type EngineReferenceResult = { type: "reference"; reference: EngineReference } | { type: "abrupt"; completion: Completion };
+export type ScriptLimits = { readonly maxSteps: number; readonly maxCalls: number };
+export type ScriptEvaluation = { phase: "body"; completion: ValueCompletion } | { phase: "instantiation"; completion: ThrowCompletion };
+export type ScriptSourceSnapshot = { readonly realm: Realm; readonly record: ExecutableScript; readonly unitId: string; readonly loc: Location };
+export type ScriptFrameSnapshot = { readonly realm: Realm; readonly record: ExecutableScript;
+    readonly scopeId: number; readonly lexical: ScriptEnvironment; readonly variable: ScriptEnvironment;
+    readonly strict: true; readonly thisValue: Value; readonly function: ScriptGuestCallable | null;
+    readonly privateEnvironment: null; readonly phase: "instantiation" | "body" };
+export type ScriptSessionSnapshot = { steps: number; calls: number; depth: number;
+    active: ScriptFrameSnapshot | null; lastAbrupt: ScriptSourceSnapshot | null };
+type BuiltinPermit = { context: OperationContext; realm: Realm; invoke: Builtin; receiver: Value;
+    args: Value[]; loc: Location; used: boolean };
+let pendingBuiltin: BuiltinPermit | null = null;
+// Consume-only: possessing a context never creates dispatcher authority. This
+// check intentionally reads no context fields; Realm performs profile checks first.
+export function consumeScriptBuiltinPermit(context: OperationContext, realm: Realm, invoke: Builtin,
+    receiver: Value, args: Value[], loc: Location): boolean {
+    const permit = pendingBuiltin;
+    if (permit === null || permit.used || permit.context !== context || permit.realm !== realm ||
+        permit.invoke !== invoke || permit.receiver !== receiver || permit.args !== args || permit.loc !== loc) return false;
+    permit.used = true;
+    return true;
+}
+export type { ScriptSession };
+class ScriptSession {
+    #engine: ExecutionEngine | null = null;
+    #limits: ScriptLimits;
+    constructor(key: ExecutionKey, limits: ScriptLimits) {
+        if (key !== executionKey) throw new Error("invalid Script session constructor");
+        this.#limits = { maxSteps: limits.maxSteps, maxCalls: limits.maxCalls };
+    }
+    static evaluate(session: ScriptSession, record: ExecutableScript): ScriptEvaluation {
+        if (!(session instanceof ScriptSession) || !(#engine in session)) throw new Error("invalid Script session");
+        const state = ExecutableScript.state(record, executionKey);
+        if (state.realm.profile !== "script") throw new Error("Script Realm required");
+        if (session.#engine === null) session.#engine = new ExecutionEngine(state.realm, session.#limits.maxSteps, session.#limits.maxCalls, executionKey);
+        return session.#engine.runScript(record, executionKey);
+    }
+    inspect(): ScriptSessionSnapshot {
+        if (!(#engine in this)) throw new Error("invalid Script session");
+        return this.#engine === null ? { steps: 0, calls: 0, depth: 0, active: null, lastAbrupt: null } : this.#engine.inspectScript(executionKey);
+    }
+}
+export function createScriptSession(limits: ScriptLimits = { maxSteps: 100000, maxCalls: 64 }): ScriptSession {
+    if (!Number.isFinite(limits.maxSteps) || !Number.isInteger(limits.maxSteps) || limits.maxSteps < 0 ||
+        !Number.isFinite(limits.maxCalls) || !Number.isInteger(limits.maxCalls) || limits.maxCalls < 0)
+        throw new Error("invalid Script limits");
+    return new ScriptSession(executionKey, limits);
+}
+export function evaluateScript(session: ScriptSession, record: ExecutableScript): ScriptEvaluation {
+    return ScriptSession.evaluate(session, record);
+}
+
+// OperationContext is readonly to helpers, but this canonical projection is
+// engine-writable. Script callbacks capture their owner; hosts must not mutate it.
+type ActiveOperationContext = {
+    realm: Realm;
+    call: (callee: Value, receiver: Value, args: Value[], loc: Location) => ValueCompletion;
+    tick: (loc: Location) => ValueCompletion;
+};
+
+class ExecutionEngine {
+    #frame: ScriptFrameSnapshot | null = null;
+    #abrupt: ThrowCompletion | null = null;
+    #lastAbrupt: ScriptSourceSnapshot | null = null;
+    #script: boolean;
+    steps = 0;
+    calls = 0;
+    depth = 0;
+    private readonly activeContext: ActiveOperationContext;
+    readonly context: OperationContext;
+    constructor(realm: Realm, public maxSteps: number, public maxCalls: number, key: ExecutionKey | null) {
+        if (realm.profile !== "legacy" && key !== executionKey) throw new Error("legacy Realm required");
+        this.#script = key === executionKey;
+        this.activeContext = {
+            realm,
+            call: (callee, receiver, args, loc) => this.call(callee, receiver, args, loc),
+            tick: (loc) => this.tick(loc),
+        };
+        this.context = this.activeContext;
+    }
+    tick(loc: Location): ValueCompletion {
+        if (this.#script) this.#active();
+        if (++this.steps > this.maxSteps) return resourceFailure("steps", this.steps, this.maxSteps, "execution step limit exceeded", loc);
+        return normal();
+    }
+    closure(params: string[], body: Stmt[], environment: Environment, source: FunctionSource | null): Value {
+        if (this.context.realm.profile !== "legacy") throw new Error("legacy Realm required");
+        const object = this.context.realm.createGuestFunction(params, body, environment, source);
+        return { kind: "object", object };
+    }
+    block(body: Stmt[], env: Environment, receiver: Value): Completion {
+        if (this.context.realm.profile !== "legacy") throw new Error("legacy Realm required");
+        // Instantiate before execution: let bindings start in the TDZ; functions
+        // capture this same environment and are callable before their declaration.
+        for (const stmt of body) {
+            if (stmt.kind === "let" || stmt.kind === "function") {
+                if (env.bindings.has(stmt.name)) return failure("SyntaxError", "duplicate binding: " + stmt.name, stmt.loc);
+            }
+        }
+        for (const stmt of body) {
+            if (stmt.kind === "let" || stmt.kind === "function") {
+                env.bindings.set(stmt.name, { initialized: stmt.kind === "function", mutable: true,
+                    value: stmt.kind === "function" ? this.closure(stmt.params, stmt.body, env, stmt.source) : UNDEFINED });
+            }
+        }
+        for (const stmt of body) {
+            const result = this.statement(stmt, env, receiver);
+            if (result.type !== "normal") return result;
+        }
+        return normal();
+    }
+    statement(stmt: Stmt, env: Environment, receiver: Value): Completion {
+        const budget = this.tick(stmt.loc);
+        if (budget.type !== "normal") return budget;
+        if (++this.depth > 256) {
+            const result = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", stmt.loc);
+            this.depth--;
+            return result;
+        }
+        try {
+            return this.statementInner(stmt, env, receiver);
+        } finally {
+            this.depth--;
+        }
+    }
+    statementInner(stmt: Stmt, env: Environment, receiver: Value): Completion {
+        switch (stmt.kind) {
+            case "var": throw new Error("Script var AST requires Script execution");
+            case "empty": case "function": return normal();
+            case "expression": return this.evaluate(stmt.expression, env, receiver);
+            case "let": {
+                const result = stmt.init === null ? normal() : this.evaluate(stmt.init, env, receiver);
+                if (result.type !== "normal") return result;
+                const binding = env.bindings.get(stmt.name);
+                if (binding === undefined) throw new Error("uninstantiated lexical declaration");
+                binding.value = result.value;
+                binding.initialized = true;
+                return normal();
+            }
+            case "block": return this.block(stmt.body, new Environment(env), receiver);
+            case "if": {
+                const test = this.evaluate(stmt.test, env, receiver);
+                if (test.type !== "normal") return test;
+                if (truthy(test.value)) return this.statement(stmt.consequent, env, receiver);
+                return stmt.alternate === null ? normal() : this.statement(stmt.alternate, env, receiver);
+            }
+            case "while": {
+                while (true) {
+                    const test = this.evaluate(stmt.test, env, receiver);
+                    if (test.type !== "normal") return test;
+                    if (!truthy(test.value)) return normal();
+                    const result = this.statement(stmt.body, env, receiver);
+                    if (result.type === "break") return normal();
+                    if (result.type !== "normal" && result.type !== "continue") return result;
+                }
+            }
+            case "return": case "throw": {
+                const result = stmt.value === null ? normal() : this.evaluate(stmt.value, env, receiver);
+                if (result.type !== "normal") return result;
+                if (stmt.kind === "return") return { type: "return", value: result.value };
+                return { type: "throw", origin: { kind: "guest" }, value: result.value, diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: stmt.loc } };
+            }
+            case "break": case "continue": return { type: stmt.kind, value: UNDEFINED };
+        }
+    }
+    reference(expr: Expr, env: Environment, receiver: Value): ReferenceResult {
+        if (expr.kind === "identifier") return { type: "reference", reference: { kind: "binding", environment: env.resolve(expr.name), name: expr.name } };
+        if (expr.kind === "member") {
+            const base = this.evaluate(expr.base, env, receiver);
+            if (base.type !== "normal") return { type: "abrupt", completion: base };
+            const key = this.evaluate(expr.key, env, receiver);
+            if (key.type !== "normal") return { type: "abrupt", completion: key };
+            return { type: "reference", reference: { kind: "property", base: base.value, key: key.value, loc: expr.loc } };
+        }
+        throw new Error("parser admitted a non-reference target");
+    }
+    evaluate(expr: Expr, env: Environment, receiver: Value, allowUnresolvable = false): Completion {
+        return this.#evaluate(expr, env, receiver, allowUnresolvable, null);
+    }
+    expression(expr: Expr, env: Environment, receiver: Value): Completion {
+        return this.#expression(expr, env, receiver, null);
+    }
+    #eval(expr: Expr, env: Environment | null, receiver: Value, allowUnresolvable = false, name: string | null = null): Completion {
+        return env === null ? this.#evaluate(expr, null, receiver, allowUnresolvable, name) : this.evaluate(expr, env, receiver, allowUnresolvable);
+    }
+    #evaluate(expr: Expr, env: Environment | null, receiver: Value, allowUnresolvable: boolean, name: string | null): Completion {
+        const budget = this.tick(expr.loc);
+        if (budget.type !== "normal") return budget;
+        if (++this.depth > 256) {
+            const result = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", expr.loc);
+            this.depth--;
+            return result;
+        }
+        try {
+            // Only the direct typeof identifier may bypass GetValue, and only
+            // when resolution found no binding. TDZ and resource guards remain.
+            if (allowUnresolvable && expr.kind === "identifier") {
+                const ref = this.#reference(expr, env, receiver);
+                if (ref.type === "abrupt") {
+                    return ref.completion;
+                }
+                if ((ref.reference.kind === "binding" && ref.reference.environment === null) || (ref.reference.kind === "script" && ref.reference.binding.base === null)) {
+                    return normal();
+                }
+                return this.#get(ref.reference, expr.loc);
+            }
+            const result = env === null ? this.#expression(expr, null, receiver, name) : this.expression(expr, env, receiver);
+            if (result.type === "throw") this.#capture(result);
+            return result;
+        } finally {
+            this.depth--;
+        }
+    }
+    #expression(expr: Expr, env: Environment | null, receiver: Value, name: string | null): Completion {
+        switch (expr.kind) {
+            case "literal": {
+                const value = expr.value;
+                if (value === null) return normal({ kind: "null" });
+                if (typeof value === "number") return normal({ kind: "number", value });
+                if (typeof value === "boolean") return normal({ kind: "boolean", value });
+                return normal({ kind: "string", value });
+            }
+            case "this": return normal(receiver);
+            case "identifier": case "member": {
+                const ref = this.#reference(expr, env, receiver);
+                return ref.type === "abrupt" ? ref.completion : this.#get(ref.reference, expr.loc);
+            }
+            case "assign": {
+                const ref = this.#reference(expr.target, env, receiver);
+                if (ref.type === "abrupt") return ref.completion;
+                const inferred = env === null && expr.target.kind === "identifier" &&
+                    ExecutableScript.assignmentMayName(this.#active().record, expr, executionKey) ? expr.target.name : null;
+                const value = this.#eval(expr.value, env, receiver, false, inferred);
+                if (value.type !== "normal") return value;
+                return this.#put(ref.reference, value.value, expr.loc);
+            }
+            case "compound": {
+                const ref = this.#reference(expr.target, env, receiver);
+                if (ref.type === "abrupt") return ref.completion;
+                const oldValue = this.#get(ref.reference, expr.loc);
+                if (oldValue.type !== "normal") return oldValue;
+                const right = this.#eval(expr.value, env, receiver);
+                if (right.type !== "normal") return right;
+                const result = this.binary(expr.op, oldValue.value, right.value, expr.loc);
+                if (result.type !== "normal") return result;
+                return this.#put(ref.reference, result.value, expr.loc);
+            }
+            case "function": {
+                if (env !== null) return normal(this.closure(expr.params, expr.body, env, expr.source));
+                const frame = this.#active();
+                return frame.record.materializeFunction(ExecutableScript.scopeOfNode(frame.record, expr, executionKey), frame.lexical, name, this.context);
+            }
+            case "array": {
+                const object = this.context.realm.createArray();
+                for (let i = 0; i < expr.elements.length; i++) {
+                    // Holes cost a slot tick too; nested elements share this budget.
+                    const budget = this.tick(expr.loc);
+                    if (budget.type !== "normal") return budget;
+                    const element = expr.elements[i];
+                    if (element === null) continue;
+                    const value = this.#eval(element, env, receiver);
+                    if (value.type !== "normal") return value;
+                    const defined = object.defineOwnProperty(String(i), {
+                        value: value.value, writable: true, enumerable: true, configurable: true,
+                    }, this.context, expr.loc);
+                    if (defined.type === "throw") return defined;
+                    if (!defined.value) throw new Error("fresh array literal element invariant");
+                }
+                // Index definitions grow length, but trailing holes do not define keys.
+                const length = object.defineOwnProperty("length", {
+                    value: { kind: "number", value: expr.elements.length },
+                }, this.context, expr.loc);
+                if (length.type === "throw") return length;
+                if (!length.value) throw new Error("fresh array literal length invariant");
+                return normal({ kind: "object", object });
+            }
+            case "object": {
+                const object = this.context.realm.createObject();
+                for (let i = 0; i < expr.keys.length; i++) {
+                    const value = this.#eval(expr.values[i], env, receiver, false, expr.keys[i]);
+                    if (value.type !== "normal") return value;
+                    const defined = object.defineOwnProperty(expr.keys[i], { value: value.value, writable: true, enumerable: true, configurable: true }, this.context, expr.loc);
+                    if (defined.type === "throw") return defined;
+                    if (!defined.value) throw new Error("fresh object property definition failed");
+                }
+                return normal({ kind: "object", object });
+            }
+            case "call": {
+                let thisValue = UNDEFINED;
+                let callee: Completion;
+                if (expr.callee.kind === "identifier" || expr.callee.kind === "member") {
+                    const ref = this.#reference(expr.callee, env, receiver);
+                    if (ref.type === "abrupt") return ref.completion;
+                    callee = this.#get(ref.reference, expr.loc);
+                    if (ref.reference.kind === "property") thisValue = ref.reference.base;
+                } else callee = this.#eval(expr.callee, env, receiver);
+                if (callee.type !== "normal") return callee;
+                const args: Value[] = [];
+                for (const arg of expr.args) {
+                    const value = this.#eval(arg, env, receiver);
+                    if (value.type !== "normal") return value;
+                    args.push(value.value);
+                }
+                return this.call(callee.value, thisValue, args, expr.loc);
+            }
+            case "unary": {
+                if (expr.op === "delete") {
+                    if (expr.operand.kind === "identifier") throw new Error("delete requires a property reference");
+                    if (expr.operand.kind === "member") {
+                        // Capture once, without reading the final property.
+                        const ref = this.#reference(expr.operand, env, receiver);
+                        return ref.type === "abrupt" ? ref.completion : this.#delete(ref.reference, expr.loc);
+                    }
+                    const value = this.#eval(expr.operand, env, receiver);
+                    return value.type === "normal" ? normal({ kind: "boolean", value: true }) : value;
+                }
+                const result = this.#eval(expr.operand, env, receiver, expr.op === "typeof");
+                if (result.type !== "normal") return result;
+                if (expr.op === "typeof") {
+                    return normal({ kind: "string", value: typeOfValue(result.value) });
+                }
+                if (expr.op === "void") {
+                    return normal();
+                }
+                if (expr.op === "!") return normal({ kind: "boolean", value: !truthy(result.value) });
+                const primitive = toPrimitive(result.value, "number", this.context, expr.loc);
+                if (primitive.type === "throw") return primitive;
+                const number = toNumber(primitive.value, expr.loc);
+                if (number.type === "throw") return number;
+                return normal({ kind: "number", value: expr.op === "-" ? -number.value : number.value });
+            }
+            case "conditional": {
+                const test = this.#eval(expr.test, env, receiver);
+                if (test.type !== "normal") return test;
+                // Return the chosen arm's value or abrupt completion unchanged.
+                if (truthy(test.value)) return this.#eval(expr.consequent, env, receiver);
+                return this.#eval(expr.alternate, env, receiver);
+            }
+            case "binary": {
+                const left = this.#eval(expr.left, env, receiver);
+                if (left.type !== "normal") return left;
+                if (expr.op === "&&" && !truthy(left.value)) return left;
+                if (expr.op === "||" && truthy(left.value)) return left;
+                const right = this.#eval(expr.right, env, receiver);
+                if (right.type !== "normal") return right;
+                if (expr.op === "&&" || expr.op === "||") return right;
+                return this.binary(expr.op, left.value, right.value, expr.loc);
+            }
+        }
+    }
+    call(callee: Value, receiver: Value, args: Value[], loc: Location): ValueCompletion {
+        if (this.#script) this.#active();
+        if (callee.kind !== "object" || callee.object.callable === null) return failure("TypeError", "value is not callable", loc);
+        const fn = callee.object.callable;
+        if (fn.realm.profile !== this.context.realm.profile) throw new Error("cross-profile callable invocation");
+        if (this.#script) return this.#callScript(callee, receiver, args, loc);
+        if (this.context.realm.profile !== "legacy") throw new Error("Script execution unavailable");
+        if (fn.kind === "script-guest") throw new Error("Script execution unavailable");
+        if (this.calls >= this.maxCalls) return resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
+        const callerRealm = this.activeContext.realm;
+        this.calls++;
+        try {
+            this.activeContext.realm = fn.realm;
+            let result: Completion;
+            if (fn.kind === "builtin") result = fn.invoke(receiver, args, this.context, loc);
+            else if (fn.kind === "guest") {
+                const env = new Environment(fn.environment);
+                for (let i = 0; i < fn.params.length; i++) {
+                    env.bindings.set(fn.params[i], {
+                        initialized: true,
+                        mutable: true,
+                        value: i < args.length ? args[i] : UNDEFINED,
+                    });
+                }
+                result = this.block(fn.body, env, receiver);
+                if (result.type === "return") return normal(result.value);
+                if (result.type === "normal") return normal();
+            } else { const unreachable: never = fn; throw new Error("invalid callable"); }
+            if (result.type === "throw") return result;
+            if (result.type === "normal") return normal(result.value);
+            throw new Error("invalid completion escaped call boundary: " + result.type);
+        } finally {
+            // Restore the caller even when a host fault escapes.
+            this.activeContext.realm = callerRealm;
+            this.calls--;
+        }
+    }
+    binary(op: string, left: Value, right: Value, loc: Location): Completion {
+        if (op === "in") {
+            // Both operands are captured; reject a primitive RHS before key hooks.
+            if (right.kind !== "object") {
+                return failure("TypeError", "right operand of in must be an object", loc);
+            }
+            const key = toPropertyKey(left, this.context, loc);
+            if (key.type === "throw") {
+                return key;
+            }
+            const present = right.object.internalHasProperty(key.value, loc);
+            if (present.type === "throw") {
+                return present;
+            }
+            return normal({ kind: "boolean", value: present.value });
+        }
+        if (op === "+") {
+            // Convert both captured Values before selecting concatenation.
+            const leftPrimitive = toPrimitive(left, "default", this.context, loc);
+            if (leftPrimitive.type === "throw") return leftPrimitive;
+            const rightPrimitive = toPrimitive(right, "default", this.context, loc);
+            if (rightPrimitive.type === "throw") return rightPrimitive;
+            left = leftPrimitive.value;
+            right = rightPrimitive.value;
+            if (left.kind === "string" || right.kind === "string") {
+                const a = toString(left, loc);
+                if (a.type === "throw") return a;
+                const b = toString(right, loc);
+                if (b.type === "throw") return b;
+                return normal({ kind: "string", value: stringConcat(a.value, b.value) });
+            }
+            const a = toNumber(left, loc);
+            if (a.type === "throw") return a;
+            const b = toNumber(right, loc);
+            if (b.type === "throw") return b;
+            return normal({ kind: "number", value: a.value + b.value });
+        }
+        if (op === "-" || op === "*" || op === "/" || op === "%") {
+            // Both operand evaluations/GetValue have finished. Conversion is
+            // left-to-right, so an abrupt RHS evaluation precedes either conversion.
+            const leftPrimitive = toPrimitive(left, "number", this.context, loc);
+            if (leftPrimitive.type === "throw") return leftPrimitive;
+            const a = toNumber(leftPrimitive.value, loc);
+            if (a.type === "throw") return a;
+            const rightPrimitive = toPrimitive(right, "number", this.context, loc);
+            if (rightPrimitive.type === "throw") return rightPrimitive;
+            const b = toNumber(rightPrimitive.value, loc);
+            if (b.type === "throw") return b;
+            switch (op) {
+                case "-": return normal({ kind: "number", value: a.value - b.value });
+                case "*": return normal({ kind: "number", value: a.value * b.value });
+                case "/": return normal({ kind: "number", value: a.value / b.value });
+                case "%": return normal({ kind: "number", value: a.value % b.value });
+            }
+        }
+        if (op === "==" || op === "!=") {
+            // Values were captured in source order; fixed 2025 13.11.1 reverses
+            // helper arguments, without reevaluating either operand.
+            const result = isLooselyEqual(right, left, this.context, loc);
+            if (result.type === "throw") return result;
+            return normal({ kind: "boolean", value: op === "!=" ? !result.value : result.value });
+        }
+        if (op === "===" || op === "!==") return normal({ kind: "boolean", value: op === "===" ? equal(left, right) : !equal(left, right) });
+        if (op === "<" || op === ">" || op === "<=" || op === ">=") {
+            const leftPrimitive = toPrimitive(left, "number", this.context, loc);
+            if (leftPrimitive.type === "throw") return leftPrimitive;
+            const rightPrimitive = toPrimitive(right, "number", this.context, loc);
+            if (rightPrimitive.type === "throw") return rightPrimitive;
+            left = leftPrimitive.value;
+            right = rightPrimitive.value;
+            // Keep source order even for > and <=. Once both values are primitive,
+            // numeric conversion has no guest effects; reverse only the relation.
+            let order: number | null;
+            if (left.kind === "string" && right.kind === "string") {
+                order = stringCompare(left.value, right.value);
+            } else {
+                const a = toNumber(left, loc);
+                if (a.type === "throw") return a;
+                const b = toNumber(right, loc);
+                if (b.type === "throw") return b;
+                if (Number.isNaN(a.value) || Number.isNaN(b.value)) order = null;
+                else if (a.value < b.value) order = -1;
+                else if (a.value > b.value) order = 1;
+                else order = 0;
+            }
+            // Unordered is distinct from equal: every NaN comparison is false.
+            if (order === null) return normal({ kind: "boolean", value: false });
+            switch (op) {
+                case "<": return normal({ kind: "boolean", value: order < 0 });
+                case ">": return normal({ kind: "boolean", value: order > 0 });
+                case "<=": return normal({ kind: "boolean", value: order <= 0 });
+                case ">=": return normal({ kind: "boolean", value: order >= 0 });
+            }
+        }
+        throw new Error("unknown binary operator: " + op);
+    }
+    #active(): ScriptFrameSnapshot {
+        if (!this.#script || this.#frame === null) throw new Error("inactive Script session");
+        return this.#frame;
+    }
+    #capture(completion: ThrowCompletion): void {
+        if (!this.#script || this.#frame === null || completion === this.#abrupt) return;
+        this.#abrupt = completion;
+        const frame = this.#frame;
+        const loc = completion.diagnostic.loc;
+        this.#lastAbrupt = { realm: frame.realm, record: frame.record,
+            unitId: ExecutableScript.state(frame.record, executionKey).plan.unit.id,
+            loc: { line: loc.line, column: loc.column } };
+    }
+    inspectScript(key: ExecutionKey): ScriptSessionSnapshot {
+        if (key !== executionKey || !this.#script) throw new Error("invalid Script inspection");
+        const f = this.#frame;
+        const a = this.#lastAbrupt;
+        return { steps: this.steps, calls: this.calls, depth: this.depth,
+            active: f === null ? null : { realm: f.realm, record: f.record, scopeId: f.scopeId,
+                lexical: f.lexical, variable: f.variable, strict: true, thisValue: f.thisValue,
+                function: f.function, privateEnvironment: null, phase: f.phase },
+            lastAbrupt: a === null ? null : { realm: a.realm, record: a.record, unitId: a.unitId,
+                loc: { line: a.loc.line, column: a.loc.column } } };
+    }
+    runScript(record: ExecutableScript, key: ExecutionKey): ScriptEvaluation {
+        if (key !== executionKey || !this.#script) throw new Error("invalid Script entry");
+        if (this.#frame !== null) throw new Error("Script session already active");
+        const state = ExecutableScript.state(record, key);
+        const realm = state.realm;
+        const savedRealm = this.activeContext.realm;
+        const savedCalls = this.calls, savedDepth = this.depth;
+        const global: ScriptEnvironment = { kind: "global", record: realm.globalEnvironment };
+        this.#abrupt = null;
+        this.#lastAbrupt = null;
+        this.#frame = { realm, record, scopeId: 0, lexical: global, variable: global,
+            strict: true, thisValue: realm.globalThisValue, function: null, privateEnvironment: null, phase: "instantiation" };
+        this.activeContext.realm = realm;
+        try {
+            const setup = record.instantiateGlobals(realm.globalEnvironment, this.context);
+            if (setup.type === "throw") { this.#capture(setup); return { phase: "instantiation", completion: setup }; }
+            const f = this.#active();
+            this.#frame = { ...f, phase: "body" };
+            const result = this.#list(ExecutableScript.readRoot(record, key));
+            if (result.type === "throw") { this.#capture(result); return { phase: "body", completion: result }; }
+            if (result.type !== "normal") throw new Error("invalid Script root completion");
+            return { phase: "body", completion: normal(result.payload.kind === "empty" ? UNDEFINED : result.payload.value) };
+        } finally {
+            this.#frame = null;
+            this.activeContext.realm = savedRealm;
+            this.calls = savedCalls;
+            this.depth = savedDepth;
+        }
+    }
+    #reference(expr: Expr, env: Environment | null, receiver: Value): EngineReferenceResult {
+        if (env !== null) return this.reference(expr, env, receiver);
+        if (expr.kind === "identifier") {
+            const result = resolveScriptBinding(this.#active().lexical, expr.name, expr.loc);
+            if (result.type === "throw") return { type: "abrupt", completion: result };
+            return { type: "reference", reference: { kind: "script", binding: result.reference } };
+        }
+        if (expr.kind === "member") {
+            const base = this.#eval(expr.base, null, receiver);
+            if (base.type !== "normal") return { type: "abrupt", completion: base };
+            const key = this.#eval(expr.key, null, receiver);
+            if (key.type !== "normal") return { type: "abrupt", completion: key };
+            return { type: "reference", reference: { kind: "property", base: base.value, key: key.value, loc: expr.loc } };
+        }
+        throw new Error("parser admitted a non-reference target");
+    }
+    #get(ref: EngineReference, loc: Location): Completion {
+        return ref.kind === "script" ? getScriptBinding(ref.binding, this.context) : getValue(ref, this.context, loc);
+    }
+    #put(ref: EngineReference, value: Value, loc: Location): Completion {
+        if (ref.kind !== "script") return putValue(ref, value, this.context, loc);
+        const result = putScriptBinding(ref.binding, value, this.context);
+        return result.type === "throw" ? result : normal(value);
+    }
+    #delete(ref: EngineReference, loc: Location): Completion {
+        if (ref.kind === "script") throw new Error("delete requires a property reference");
+        return deleteReference(ref, this.context, loc);
+    }
+    #value(expr: Expr, name: string | null = null): ValueCompletion {
+        const result = this.#eval(expr, null, this.#active().thisValue, false, name);
+        if (result.type === "throw") return result;
+        if (result.type === "normal") return normal(result.value);
+        throw new Error("invalid Script expression completion");
+    }
+    #list(body: Stmt[]): ScriptStatementCompletion {
+        let previous: ScriptStatementPayload = { kind: "empty" };
+        for (const statement of body) {
+            const result = updateScriptEmpty(this.#statement(statement), previous);
+            if (result.type !== "normal") return result;
+            previous = result.payload;
+        }
+        return { type: "normal", payload: previous };
+    }
+    #statement(stmt: Stmt): ScriptStatementCompletion {
+        // Explicit throw-arm locals retain identity and the accepted E2 static
+        // union lowering (see script-completion.ts); they do not wrap failures.
+        const budget = this.tick(stmt.loc);
+        if (budget.type === "throw") { this.#capture(budget); const abrupt: ThrowCompletion = budget; return abrupt; }
+        const savedDepth = this.depth;
+        this.depth++;
+        try {
+            if (this.depth > 256) {
+                const result = resourceFailure("evaluation-depth", this.depth, 256, "evaluation nesting limit exceeded", stmt.loc);
+                this.#capture(result);
+                const abrupt: ThrowCompletion = result; return abrupt;
+            }
+            const result = this.#scriptStatement(stmt);
+            if (result.type === "throw") this.#capture(result);
+            return result;
+        } finally { this.depth = savedDepth; }
+    }
+    #scriptStatement(stmt: Stmt): ScriptStatementCompletion {
+        switch (stmt.kind) {
+            case "empty": case "function": return { type: "normal", payload: { kind: "empty" } };
+            case "expression": return scriptExpressionCompletion(this.#value(stmt.expression));
+            case "let": {
+                const result = stmt.init === null ? normal() : this.#value(stmt.init, stmt.name);
+                if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
+                const env = this.#active().lexical;
+                const initialized = env.kind === "global" ? env.record.initializeBinding(stmt.name, result.value, this.context, stmt.loc)
+                    : env.initializeBinding(stmt.name, result.value, this.context, stmt.loc);
+                if (initialized.type === "throw") { const abrupt: ThrowCompletion = initialized; return abrupt; }
+                return { type: "normal", payload: { kind: "empty" } };
+            }
+            case "var": {
+                for (const declaration of stmt.declarations) {
+                    if (declaration.init === null) continue;
+                    const ref = resolveScriptBinding(this.#active().lexical, declaration.name, stmt.loc);
+                    if (ref.type === "throw") return ref;
+                    const value = this.#value(declaration.init, declaration.name);
+                    if (value.type === "throw") { const abrupt: ThrowCompletion = value; return abrupt; }
+                    const written = putScriptBinding(ref.reference, value.value, this.context);
+                    if (written.type === "throw") { const abrupt: ThrowCompletion = written; return abrupt; }
+                }
+                return { type: "normal", payload: { kind: "empty" } };
+            }
+            case "block": {
+                const saved = this.#active();
+                const scopeId = ExecutableScript.scopeOfNode(saved.record, stmt, executionKey);
+                const created = saved.record.createBlockEnvironment(scopeId, saved.lexical, this.context);
+                if (created.type === "throw") return created;
+                this.#frame = { ...saved, scopeId, lexical: created.environment };
+                try {
+                    const setup = saved.record.instantiateBlock(scopeId, created.environment, this.context);
+                    if (setup.type === "throw") { this.#capture(setup); const abrupt: ThrowCompletion = setup; return abrupt; }
+                    return this.#list(stmt.body);
+                } finally { this.#frame = saved; }
+            }
+            case "if": {
+                const test = this.#value(stmt.test);
+                if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
+                const branch = truthy(test.value) ? stmt.consequent : stmt.alternate;
+                const result: ScriptStatementCompletion = branch === null ? { type: "normal", payload: { kind: "empty" } } : this.#statement(branch);
+                return updateScriptEmpty(result, { kind: "value", value: UNDEFINED });
+            }
+            case "while": {
+                let value: ScriptStatementPayload = { kind: "value", value: UNDEFINED };
+                while (true) {
+                    const test = this.#value(stmt.test);
+                    if (test.type === "throw") { const abrupt: ThrowCompletion = test; return abrupt; }
+                    if (!truthy(test.value)) return { type: "normal", payload: value };
+                    const result = this.#statement(stmt.body);
+                    if (result.type === "break") {
+                        return { type: "normal", payload: result.payload.kind === "empty" ? value : result.payload };
+                    }
+                    if (result.type !== "normal" && result.type !== "continue") return updateScriptEmpty(result, value);
+                    if (result.payload.kind !== "empty") value = result.payload;
+                }
+            }
+            case "return": case "throw": {
+                const result = stmt.value === null ? normal() : this.#value(stmt.value);
+                if (result.type === "throw") { const abrupt: ThrowCompletion = result; return abrupt; }
+                if (stmt.kind === "return") return { type: "return", value: result.value };
+                return { type: "throw", origin: { kind: "guest" }, value: result.value,
+                    diagnostic: { phase: "runtime", name: "Uncaught", message: "guest throw", loc: stmt.loc } };
+            }
+            case "break": case "continue": return { type: stmt.kind, payload: { kind: "empty" } };
+        }
+    }
+    #callScript(callee: Value, receiver: Value, args: Value[], loc: Location): ValueCompletion {
+        const saved = this.#active();
+        if (callee.kind !== "object" || callee.object.callable === null) throw new Error("invalid private dispatch");
+        const fn = callee.object.callable;
+        if (fn.kind === "guest") throw new Error("cross-profile callable invocation");
+        if (this.calls >= this.maxCalls) {
+            const result = resourceFailure("calls", this.calls, this.maxCalls, "call depth limit exceeded", loc);
+            this.#capture(result);
+            return result;
+        }
+        const savedRealm = this.activeContext.realm, savedCalls = this.calls;
+        this.calls++;
+        this.activeContext.realm = fn.realm;
+        this.#frame = { ...saved, realm: fn.realm };
+        try {
+            if (fn.kind === "builtin") {
+                const previous = pendingBuiltin;
+                pendingBuiltin = { context: this.context, realm: fn.realm, invoke: fn.invoke, receiver, args, loc, used: false };
+                try {
+                    const result = fn.invoke(receiver, args, this.context, loc);
+                    if (result.type === "throw") this.#capture(result);
+                    if (result.type === "throw") return result;
+                    if (result.type === "normal") return normal(result.value);
+                    throw new Error("invalid completion escaped call boundary: " + result.type);
+                } finally { pendingBuiltin = previous; }
+            }
+            const record = fn.record;
+            const source = ExecutableScript.readFunction(record, fn, executionKey);
+            // Allocation failures already belong to the callee code/Realm.
+            this.#frame = { realm: fn.realm, record, scopeId: source.scopeId, lexical: fn.environment,
+                variable: fn.environment, strict: true, thisValue: receiver, function: fn,
+                privateEnvironment: null, phase: "instantiation" };
+            const created = record.createFunctionEnvironment(fn, receiver, this.context);
+            if (created.type === "throw") { this.#capture(created); return created; }
+            this.#frame = { ...this.#active(), lexical: created.environment, variable: created.environment };
+            const setup = record.instantiateFunction(created.environment, args, this.context);
+            if (setup.type === "throw") { this.#capture(setup); return setup; }
+            this.#frame = { ...this.#active(), phase: "body" };
+            const result = this.#list(source.body);
+            if (result.type === "throw") { this.#capture(result); return result; }
+            if (result.type === "return") return normal(result.value);
+            if (result.type === "normal") return normal();
+            throw new Error("invalid Script function completion");
+        } finally {
+            this.#frame = saved;
+            this.activeContext.realm = savedRealm;
+            this.calls = savedCalls;
+        }
+    }
+
+}
+
+// The public legacy surface cannot select Script mode, even via constructor recovery.
+export class Evaluator extends ExecutionEngine {
+    constructor(realm: Realm, maxSteps = 100000, maxCalls = 64) {
+        if (realm.profile !== "legacy") throw new Error("legacy Realm required");
+        super(realm, maxSteps, maxCalls, null);
+    }
+}
