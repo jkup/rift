@@ -1,0 +1,4259 @@
+{
+  "cases": [
+    {
+      "id": "corpus/S01/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "runtime",
+              "type": "ReferenceError"
+            }
+          },
+          "non-strict",
+          "S01"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:error-objects",
+            "status": "unsupported-feature",
+            "reasonCode": "error-objects",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S01/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "runtime",
+              "type": "ReferenceError"
+            }
+          },
+          "strict",
+          "S01"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:error-objects",
+            "status": "unsupported-feature",
+            "reasonCode": "error-objects",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S02/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "runtime",
+              "type": "ReferenceError"
+            }
+          },
+          "non-strict",
+          "S02"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:error-objects",
+            "status": "unsupported-feature",
+            "reasonCode": "error-objects",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S02/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "runtime",
+              "type": "ReferenceError"
+            }
+          },
+          "strict",
+          "S02"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:error-objects",
+            "status": "unsupported-feature",
+            "reasonCode": "error-objects",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S03/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S03"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S03/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S03"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S04/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S04"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S04/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S04"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S05/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S05"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S05/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S05"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S06/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S06"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S06/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S06"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S07/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S07"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S07/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S07"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S08/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S08"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S08/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S08"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S09/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S09"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S09/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S09"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S10/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S10"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S10/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S10"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S11/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S11"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S11/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S11"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S12/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S12"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S12/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S12"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S13/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S13"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S13/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S13"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S14/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S14"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S14/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S14"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S15/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [
+              "Symbol"
+            ],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S15"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S15/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [
+              "Symbol"
+            ],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S15"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S16/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S16"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S16/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S16"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S17/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "S17"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S17/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "S17"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S18/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "non-strict",
+          "S18"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S18/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "strict",
+          "S18"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S19/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "non-strict",
+          "S19"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S19/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "strict",
+          "S19"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S20/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "non-strict",
+          "S20"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S20/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "strict",
+          "S20"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S21/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "onlyStrict"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "strict",
+          "S21"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/S22/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "generated",
+              "onlyStrict"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "strict",
+          "S22"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U01/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "generated"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "non-strict",
+          "U01"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:asi",
+            "status": "unsupported-feature",
+            "reasonCode": "asi",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U01/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "generated"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "strict",
+          "U01"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:asi",
+            "status": "unsupported-feature",
+            "reasonCode": "asi",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U02/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [
+              "async-functions"
+            ],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "non-strict",
+          "U02"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:async-functions",
+            "status": "unsupported-feature",
+            "reasonCode": "async-functions",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U02/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [
+              "async-functions"
+            ],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "strict",
+          "U02"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:async-functions",
+            "status": "unsupported-feature",
+            "reasonCode": "async-functions",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U03/raw",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "raw"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError"
+            }
+          },
+          "raw",
+          "U03"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:asi",
+            "status": "unsupported-feature",
+            "reasonCode": "asi",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:directive-script",
+            "status": "unsupported-profile",
+            "reasonCode": "directive-script",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U04/module",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "module"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "module",
+          "U04"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:module",
+            "status": "unsupported-feature",
+            "reasonCode": "module",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:module-profile",
+            "status": "unsupported-profile",
+            "reasonCode": "module-profile",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U05/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "U05"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U05/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "U05"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U06/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "noStrict"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "U06"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U07/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "onlyStrict"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "runtime",
+              "type": "ReferenceError"
+            }
+          },
+          "strict",
+          "U07"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:error-objects",
+            "status": "unsupported-feature",
+            "reasonCode": "error-objects",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:2:global-script",
+            "status": "unsupported-profile",
+            "reasonCode": "global-script",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:3:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U08/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "async"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "U08"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:async",
+            "status": "unsupported-feature",
+            "reasonCode": "async",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U08/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "async"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "U08"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:async",
+            "status": "unsupported-feature",
+            "reasonCode": "async",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U09/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "U09"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:RegExp",
+            "status": "unsupported-feature",
+            "reasonCode": "RegExp",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U09/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "U09"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:RegExp",
+            "status": "unsupported-feature",
+            "reasonCode": "RegExp",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U10/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "U10"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:asi",
+            "status": "unsupported-feature",
+            "reasonCode": "asi",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U10/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "U10"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:asi",
+            "status": "unsupported-feature",
+            "reasonCode": "asi",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U11/non-strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          "U11"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:return-asi",
+            "status": "unsupported-feature",
+            "reasonCode": "return-asi",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:sloppy-script",
+            "status": "unsupported-profile",
+            "reasonCode": "sloppy-script",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "corpus/U11/strict",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "U11"
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:return-asi",
+            "status": "unsupported-feature",
+            "reasonCode": "return-asi",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:2:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "raw-null",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "raw"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "raw",
+          null
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:directive-script",
+            "status": "unsupported-profile",
+            "reasonCode": "directive-script",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "duplicates",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "raw"
+            ],
+            "features": [
+              "future",
+              "future"
+            ],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "raw",
+          null
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:unrecognized-feature",
+            "status": "unsupported-feature",
+            "reasonCode": "unrecognized-feature",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:1:unrecognized-feature",
+            "status": "unsupported-feature",
+            "reasonCode": "unrecognized-feature",
+            "authority": "never"
+          },
+          {
+            "id": "legacy:2:directive-script",
+            "status": "unsupported-profile",
+            "reasonCode": "directive-script",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "missing/flags",
+      "input": {
+        "args": [
+          {
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "missing/features",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "missing/includes",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "missing/locale",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "missing/negative",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": []
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "extra/description",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null,
+            "description": "extra"
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "extra/blockers",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null,
+            "blockers": "extra"
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "extra/id",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null,
+            "id": "extra"
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/flags/null",
+      "input": {
+        "args": [
+          {
+            "flags": null,
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/flags/\"x\"",
+      "input": {
+        "args": [
+          {
+            "flags": "x",
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/flags/[1]",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              1
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/flags/[\"\"]",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              ""
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/features/null",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": null,
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/features/\"x\"",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": "x",
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/features/[1]",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [
+              1
+            ],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/features/[\"\"]",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [
+              ""
+            ],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/includes/null",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": null,
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/includes/\"x\"",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": "x",
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/includes/[1]",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [
+              1
+            ],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/includes/[\"\"]",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [
+              ""
+            ],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/locale/null",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": null,
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/locale/\"x\"",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": "x",
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/locale/[1]",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [
+              1
+            ],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "type/locale/[\"\"]",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [
+              ""
+            ],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "metadata/null",
+      "input": {
+        "args": [
+          null,
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "metadata/[]",
+      "input": {
+        "args": [
+          [],
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "metadata/7",
+      "input": {
+        "args": [
+          7,
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "metadata/\"text\"",
+      "input": {
+        "args": [
+          "text",
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "flags/unknown",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "unknown"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "flags/onlyStrict,noStrict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "onlyStrict",
+              "noStrict"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "flags/raw,onlyStrict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "raw",
+              "onlyStrict"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "flags/raw,module",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "raw",
+              "module"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "flags/module,noStrict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "module",
+              "noStrict"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "flags/module,onlyStrict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "module",
+              "onlyStrict"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "flags/raw,async",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "raw",
+              "async"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "flags/CanBlockIsTrue,CanBlockIsFalse",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "CanBlockIsTrue",
+              "CanBlockIsFalse"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "include/../x.js",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [
+              "../x.js"
+            ],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "include//x.js",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [
+              "/x.js"
+            ],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "include/x\\y.js",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [
+              "x\\y.js"
+            ],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "include/x:y.js",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [
+              "x:y.js"
+            ],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "include/x\u0000.js",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [
+              "x\u0000.js"
+            ],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "include/x.txt",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [
+              "x.txt"
+            ],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "include/a//b.js",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [
+              "a//b.js"
+            ],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "negative/{}",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {}
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "negative/[]",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": []
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "negative/{\"phase\":\"runtime\",\"type\":\"\"}",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "runtime",
+              "type": ""
+            }
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "negative/{\"phase\":\"runtime\",\"type\":1}",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "runtime",
+              "type": 1
+            }
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "negative/{\"phase\":\"parse\",\"type\":\"SyntaxError\",\"extra\":true}",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "parse",
+              "type": "SyntaxError",
+              "extra": true
+            }
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "negative/{\"phase\":\"resolution\",\"type\":\"SyntaxError\"}",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "resolution",
+              "type": "SyntaxError"
+            }
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "negative/{\"phase\":\"other\",\"type\":\"Error\"}",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": {
+              "phase": "other",
+              "type": "Error"
+            }
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "variant/raw",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "raw",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/variant"
+      }
+    },
+    {
+      "id": "variant/module",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "module",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/variant"
+      }
+    },
+    {
+      "id": "variant/unknown",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "unknown",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/variant"
+      }
+    },
+    {
+      "id": "variant/null",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          null,
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/variant"
+      }
+    },
+    {
+      "id": "variant/1",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          1,
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/variant"
+      }
+    },
+    {
+      "id": "raw-not-nonstrict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "raw"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/variant"
+      }
+    },
+    {
+      "id": "onlystrict-not-nonstrict",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "onlyStrict"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "non-strict",
+          null
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/variant"
+      }
+    },
+    {
+      "id": "id/\"\"",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          ""
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/manifest-id"
+      }
+    },
+    {
+      "id": "id/\"unknown\"",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          "unknown"
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/manifest-id"
+      }
+    },
+    {
+      "id": "id/1",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          1
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/manifest-id"
+      }
+    },
+    {
+      "id": "id/{}",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          {}
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/manifest-id"
+      }
+    },
+    {
+      "id": "id/[]",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          []
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/manifest-id"
+      }
+    },
+    {
+      "id": "known-id-wrong-metadata",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "raw"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "raw",
+          "S01"
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/manifest-metadata"
+      }
+    },
+    {
+      "id": "missing-id",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict"
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/arguments"
+      }
+    },
+    {
+      "id": "extra-arg",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null,
+          {}
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/arguments"
+      }
+    },
+    {
+      "id": "precedence",
+      "input": {
+        "args": [
+          {},
+          "unknown",
+          "unknown"
+        ]
+      },
+      "expected": {
+        "error": "script-capabilities/metadata"
+      }
+    },
+    {
+      "id": "null-id-no-special-debt",
+      "input": {
+        "args": [
+          {
+            "flags": [],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "strict",
+          null
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:strict-script-contract",
+            "status": "unsupported-profile",
+            "reasonCode": "strict-script-contract",
+            "authority": "runtime"
+          },
+          {
+            "id": "legacy:1:harness-capabilities",
+            "status": "unsupported-feature",
+            "reasonCode": "harness-capabilities",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    },
+    {
+      "id": "duplicate-flags-preserved",
+      "input": {
+        "args": [
+          {
+            "flags": [
+              "raw",
+              "raw"
+            ],
+            "features": [],
+            "includes": [],
+            "locale": [],
+            "negative": null
+          },
+          "raw",
+          null
+        ]
+      },
+      "expected": {
+        "debts": [
+          {
+            "id": "legacy:0:directive-script",
+            "status": "unsupported-profile",
+            "reasonCode": "directive-script",
+            "authority": "runtime"
+          },
+          {
+            "id": "runtime:coverage",
+            "status": "unsupported-feature",
+            "reasonCode": "runtime-capabilities",
+            "authority": "runtime"
+          }
+        ]
+      }
+    }
+  ],
+  "registry": [
+    {
+      "id": "canonical",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0K",
+      "ioError": null,
+      "expected": {
+        "value": {
+          "registryVersion": 1,
+          "kind": "script-runtime-capabilities",
+          "entries": []
+        }
+      }
+    },
+    {
+      "id": "no-newline",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0=",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "crlf",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0NCg==",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "pretty",
+      "args": [],
+      "bytesBase64": "ewogICJyZWdpc3RyeVZlcnNpb24iOiAxLAogICJraW5kIjogInNjcmlwdC1ydW50aW1lLWNhcGFiaWxpdGllcyIsCiAgImVudHJpZXMiOiBbXQp9Cg==",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "reorder",
+      "args": [],
+      "bytesBase64": "eyJraW5kIjoic2NyaXB0LXJ1bnRpbWUtY2FwYWJpbGl0aWVzIiwicmVnaXN0cnlWZXJzaW9uIjoxLCJlbnRyaWVzIjpbXX0K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "trailing-space",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0KIA==",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "trailing-record",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0KeyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "truncated",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpb",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "bom",
+      "args": [],
+      "bytesBase64": "77u/eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "version",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjIsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "extra",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXSwiZXh0cmEiOjB9Cg==",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "nonempty",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbe31dfQo=",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "duplicate",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsInJlZ2lzdHJ5VmVyc2lvbiI6MSwia2luZCI6InNjcmlwdC1ydW50aW1lLWNhcGFiaWxpdGllcyIsImVudHJpZXMiOltdfQo=",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "escaped-duplicate",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsIlx1MDA3MmVnaXN0cnlWZXJzaW9uIjoxLCJraW5kIjoic2NyaXB0LXJ1bnRpbWUtY2FwYWJpbGl0aWVzIiwiZW50cmllcyI6W119Cg==",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "escaped-key",
+      "args": [],
+      "bytesBase64": "eyJcdTAwNzJlZ2lzdHJ5VmVyc2lvbiI6MSwia2luZCI6InNjcmlwdC1ydW50aW1lLWNhcGFiaWxpdGllcyIsImVudHJpZXMiOltdfQo=",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "null",
+      "args": [],
+      "bytesBase64": "bnVsbAo=",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "array",
+      "args": [],
+      "bytesBase64": "W10K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "invalid-utf8",
+      "args": [],
+      "bytesBase64": "wK8=",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "empty",
+      "args": [],
+      "bytesBase64": "",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "oversized",
+      "args": [],
+      "bytesBase64": "ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "argument/[\"elsewhere.json\"]",
+      "args": [
+        "elsewhere.json"
+      ],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/arguments"
+      }
+    },
+    {
+      "id": "argument/[null]",
+      "args": [
+        null
+      ],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/arguments"
+      }
+    },
+    {
+      "id": "argument/[{}]",
+      "args": [
+        {}
+      ],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/arguments"
+      }
+    },
+    {
+      "id": "argument/[{\"path\":\"elsewhere.json\"}]",
+      "args": [
+        {
+          "path": "elsewhere.json"
+        }
+      ],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/arguments"
+      }
+    },
+    {
+      "id": "argument/[{\"registry\":{\"registryVersion\":1,\"kind\":\"script-runtime-capabilities\",\"entries\":[]}}]",
+      "args": [
+        {
+          "registry": {
+            "registryVersion": 1,
+            "kind": "script-runtime-capabilities",
+            "entries": []
+          }
+        }
+      ],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/arguments"
+      }
+    },
+    {
+      "id": "argument/[{\"verify\":true}]",
+      "args": [
+        {
+          "verify": true
+        }
+      ],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpbXX0K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/arguments"
+      }
+    },
+    {
+      "id": "missing-file",
+      "args": [],
+      "bytesBase64": "",
+      "ioError": "ENOENT",
+      "expected": {
+        "error": "script-capabilities/read"
+      }
+    },
+    {
+      "id": "permission",
+      "args": [],
+      "bytesBase64": "",
+      "ioError": "EACCES",
+      "expected": {
+        "error": "script-capabilities/read"
+      }
+    },
+    {
+      "id": "missing-key",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMifQo=",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "wrong-kind",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJvdGhlciIsImVudHJpZXMiOltdfQo=",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "version-type",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOiIxIiwia2luZCI6InNjcmlwdC1ydW50aW1lLWNhcGFiaWxpdGllcyIsImVudHJpZXMiOltdfQo=",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "entries-null",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjpudWxsfQo=",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    },
+    {
+      "id": "entries-object",
+      "args": [],
+      "bytesBase64": "eyJyZWdpc3RyeVZlcnNpb24iOjEsImtpbmQiOiJzY3JpcHQtcnVudGltZS1jYXBhYmlsaXRpZXMiLCJlbnRyaWVzIjp7fX0K",
+      "ioError": null,
+      "expected": {
+        "error": "script-capabilities/registry-bytes"
+      }
+    }
+  ]
+}

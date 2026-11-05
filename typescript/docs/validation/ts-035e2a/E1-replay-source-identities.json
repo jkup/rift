@@ -1,0 +1,29 @@
+{
+  "replay": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2a\\e1-replay-bd5FAn",
+  "copied": [
+    {
+      "path": "tools/test262/script-capabilities.test.mjs",
+      "sha256": "1d868d3c69bbcc2e2259953c27a7edad2cc28d9b90a9775b41ebc90eb65498e3"
+    },
+    {
+      "path": "tools/test262/script-capabilities.mjs",
+      "sha256": "aaee5e8af10cbc6f198e8315418bd47e2466070bd909313fff9fe4b133c52280"
+    },
+    {
+      "path": "tools/test262/script-capabilities.json",
+      "sha256": "2e375a6833861d322a268481b0bd1d3d3f5435173e583fa6b4ea04240610120b"
+    },
+    {
+      "path": "tools/test262/input.mjs",
+      "sha256": "f3d3378947571a407e7cbe5c9da8921798b547020e371dc6547d9210f3118a6c"
+    },
+    {
+      "path": "fixtures/assistance/test262-starter-corpus/manifest.json",
+      "sha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89"
+    },
+    {
+      "path": "docs/validation/ts-035e-p/e1-literals.json",
+      "sha256": "125f519a028cb0d5d573925a796e39e935229fe6a625cee755616d70a18b4a6d"
+    }
+  ]
+}

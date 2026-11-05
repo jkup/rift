@@ -1,0 +1,6 @@
+{
+  "historicalFiles": 4977,
+  "changed": [],
+  "allBytesUnchanged": true,
+  "E1": "byte-identical isolated replay; no historical writes; prior backup/restoration records retained"
+}
