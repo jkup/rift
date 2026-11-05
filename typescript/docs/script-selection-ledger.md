@@ -109,9 +109,11 @@ network, cache, environment override, injected IO/registry/selection/build or
 optional verifier is accepted. Path membership and pin failures retain unchanged
 planCorpus semantics; do not silently sort, trim or deduplicate.
 
-Preparation order: validate arguments -> read fixed E1 authority -> hash policy
-closure -> call unchanged planCorpus with copied arguments -> project and
-reconstruct debts -> rehash closure and reread fixed authority -> publish token.
+Preparation order: validate arguments -> first fixed E1 authority read -> first
+policy closure hash -> unchanged planCorpus with copied arguments -> project and
+reconstruct debts -> second fixed E1 authority read -> compare authority ->
+second policy closure hash -> compare closure -> publish token. Each operation
+is awaited and checked before the next; the second reads are not parallel.
 A mismatch rejects, never returns partial trusted state. Manifest ID comes
 from the returned verified file and pinned manifest, never metadata matching.
 Every variant's metadata is copied as E1's exact five fields; all debts are
@@ -126,19 +128,50 @@ Successful inspection is read authority only; there is no launch token hidden
 in the JSON. The planner never mutates/freezes caller objects.
 
 Errors are native Error without fields, message `script-plan/<code>`.
-Precedence: arguments (arity/object descriptors), options (field types, dense
-paths, duplicates/empty), authority (fixed reader failure), closure (IO/hash),
-selection (planCorpus throws rather than returned InputError), debts (projection
-or E1 failure), drift (second closure/authority mismatch). Unknown token/arity
+Precedence follows the sequential operations above: arguments (arity/object
+descriptors), options (field types, dense paths, duplicates/empty), authority
+(first reader failure), closure (first IO/hash failure), selection (planCorpus
+throws rather than returned InputError), debts (projection or E1 failure), then
+the second-check table below. Unknown token/arity
 for inspection yields `script-plan/token`/`script-plan/arguments`. Returned
 per-file errors retain exact input reason codes; they are not thrown exceptions.
 Wrong but nonempty revision therefore yields per-file revision-mismatch, as now.
 
+| Second-check operation | Exact failure | Later operations |
+|---|---|---|
+| Fixed authority reader rejects (unreadable or invalid/noncanonical bytes) | `script-plan/authority` | No authority comparison, closure read or token publication |
+| Reader succeeds but detached authority differs from first snapshot | `script-plan/drift` | No closure read or token publication |
+| Authority agrees; closure hashing rejects (unreadable file, alias, enumeration/hash failure) | `script-plan/closure` | No closure comparison or token publication |
+| Closure hashing succeeds but ordered file list/hashes or aggregate digest differ | `script-plan/drift` | No token publication |
+| Both second checks succeed and agree | Success | Publish fresh token only now |
+
+Compare complete authority records and complete closure records, not object
+identity or only their claimed digest. The authority reader enforces canonical
+empty E1 bytes on both calls; a successful differing authority is unreachable
+with accepted E1. Its explicit drift guard is defensive, and literal model
+controls for it do not authorize alternate registry bytes or an injected reader.
+If authority and closure would both fail, the second authority failure wins and
+closure is not attempted. If authority differs and closure would be unreadable,
+drift wins and closure is not attempted. Unreadable closure produces closure,
+not drift: no successful comparison exists. A change after the second authority
+read that is observed by closure hashing produces drift. There is no retry,
+fallback or partial token on any failure; a locally assembled inspection stays
+private until both checks pass. The initial-stage errors likewise stop before
+all subsequent operations. The process assumes no hostile concurrent host/file
+writer; these checks do not claim an atomic filesystem snapshot.
+
 All JSON records below have **exactly** the listed keys; no optional fields.
 All arrays are dense, all integers safe/nonnegative unless noted, all hashes
-lowercase hex (40 for Git blobs/revisions/commit, otherwise 64), all strings
+lowercase hex (40 for Git blobs/pinned revisions/commit, otherwise 64), all strings
 nonempty unless explicitly allowed. Inspection data contains no undefined,
 NaN, Infinity, symbols, classes, getters or source-text executable callbacks.
+**Exception: Selection.revision is the exact arbitrary nonempty requested
+string, not a hash-validated pinned revision.** Preserve `"wrong"`, whitespace
+and all other nonempty strings unchanged; a mismatch to REVISION gives every
+selected file null slots and input/revision-mismatch. Do not replace it with
+the pinned revision or reject it under the general hash rule. Only selections
+whose requested revision equals REVISION can acquire known slots; their IDs
+still use the fixed pinned REVISION. The fixed corpus pin remains Hash40.
 
 ```text
 Selection = {
@@ -312,9 +345,12 @@ without hard-link support rejects storage as unavailable; no rename fallback.
 Multiple writers/external filesystem mutation remain outside the trust model;
 destination collisions reject, never overwrite. The bounded local link probe
 returned EPERM before publication. The original failure is retained in
-`link-probe-failure.txt`; sandbox versus filesystem cause is unresolved. **E2c
-publication feasibility remains unvalidated and requires separate review.**
-Do not claim collision/power-loss acceptance or add a rename fallback. E2a
+`link-probe-failure.txt`. The coordinator's later elevated isolated probe
+succeeded for complete bytes, EEXIST/no-overwrite and unlinking the temp;
+its exact reported output is retained in `root-link-probe-review.txt`. This
+narrows the local feasibility concern without erasing the sandbox failure.
+**The E2c checkpoint API and power-loss durability remain unvalidated and
+require separate review.** Do not infer storage acceptance or add a rename fallback. E2a
 has no persistence and is unaffected. Storage-unavailable is an explicit error,
 not successful checkpoint creation.
 

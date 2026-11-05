@@ -11,9 +11,10 @@ From `typescript`:
 ```powershell
 node docs/validation/ts-035e2-p/verify.mjs
 node docs/validation/ts-035e2-p/model.mjs
+node docs/validation/ts-035e2-p/e2a-corrections.mjs
 ```
 
-Both are bounded offline host scripts. They do not run a guest, full build,
+These are bounded offline host scripts. They do not run a guest, full build,
 native compiler, launcher, existing test or old evidence-writing orchestrator.
 `verify.mjs` writes only this new directory, and checks preserved whole-file
 hashes before and after. Its disposable scratch directory is resolved/checked
@@ -84,6 +85,28 @@ accept E2a as the only first implementable slice; accept the explicit E2b/c
 separation and process-local-only writable reopen model. No scope expansion is
 requested. An authenticated restart journal or E3 bridge needs a separate
 design, exact proposals and acceptance. Historical v1 and C remain unchanged.
+
+Correction after review of `5e9492b`: `initial-candidate/` retains that design,
+README and result summaries. `wrong-revision-literals.json` freezes complete
+two-lane actual planCorpus results and outer selection projections for the
+literal revision `wrong`: all 33 selected files remain, each null slots with
+input/revision-mismatch. Surrounding UUID/policy fields are explicitly synthetic
+fixture data, not a production closure or minted token. The requested revision
+is exempt from the Hash40 rule; actual slot IDs still use pinned REVISION.
+`second-check-literals.json` freezes twelve combinations of second authority
+read/invalid/mismatch and closure read/mismatch, exact error/trace and publication
+flags. Authority is awaited/compared before closure; earlier failure wins.
+The successful-different-authority row is defensive and unreachable under E1's
+fixed canonical reader, not an added registry format or injection capability.
+`e2a-corrections.mjs` passes 35 checks including actual wrong-revision planning,
+complete projection equality, unknown-denominator retention and compound-error
+precedence/no-publication. Normal replay never regenerates these literals.
+
+The coordinator's elevated isolated link probe subsequently succeeded for bytes,
+EEXIST/no-overwrite and retained destination after temp unlink. Its reported
+output is copied in `root-link-probe-review.txt`; the producer EPERM and original
+conclusions remain in initial-candidate and link-probe-failure. This does not
+accept E2c or establish power-loss durability. E2b/c and E3 stay deferred.
 
 Verification artifacts: `verify-results.json`, `model-results.json`,
 `actual-plans.json`, `input-witnesses.json`, `boundary-witnesses.json`,
