@@ -1,0 +1,9 @@
+{
+  "command": "node tools/build-native.mjs > docs/validation/ts-035d1/full-native.log",
+  "environment": "Pinned installed Zig directory prepended to PATH; default workspace sandbox",
+  "observedFailure": "SC3004: zig cc failed: unable to find zig installation directory from executable path; FileNotFound",
+  "observedAffectedEntries": ["src/cli.ts", "test/realms.ts", "test/object-descriptors.ts"],
+  "termination": "Interrupted with Ctrl-C after repeated installation-access errors; session exit 1",
+  "captureLimitation": "The interrupted redirected stdout file is empty. This is a summary of the retained tool transcript, not a complete subprocess transcript. Tool stderr included linker command lines and the installation-access error.",
+  "resolution": "Unchanged pinned tools and code rebuilt with approved access to installed Zig libraries; all 64 gates passed."
+}

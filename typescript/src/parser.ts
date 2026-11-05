@@ -1,4 +1,5 @@
-import { collectDeclarationPlan, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
+import { collectDeclarationPlan, collectBlockFunctionAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
+export type { BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
@@ -64,6 +65,22 @@ export function parseBoundedScriptDeclarationPlan(unit: ScriptSourceUnit, nodes:
 }
 function parseStructuralPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean): DeclarationPlanResult {
     const source = { id: unit.id, text: unit.text };
+    const parsed = parseStructuralSource(source, nodes, bounded);
+    if (parsed.kind === "blocked") return parsed;
+    return collectDeclarationPlan(source, parsed.body, parsed.tokens, parsed.bindings, nodes, bounded);
+}
+export function auditBoundedScriptBlockFunctions(source: string): BlockFunctionAudit {
+    const unit = { id: "", text: source };
+    const parsed = parseStructuralSource(unit, null, true);
+    if (parsed.kind === "blocked") return { kind: "blocked", reason: "grammar-or-resource",
+        diagnostic: parsed.diagnostic, rejection: parsed.rejection };
+    return collectBlockFunctionAudit(unit, parsed.body, parsed.tokens, parsed.bindings);
+}
+type StructuralSource =
+    | { kind: "parsed"; body: Stmt[]; tokens: Token[]; bindings: Map<number, ParsedBinding[]> }
+    | { kind: "blocked"; goal: "Script"; unit: ScriptSourceUnit; rejection: Rejection; diagnostic: Diagnostic };
+// One lexical/parser path for both public plans and non-emitting audit evidence.
+function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean): StructuralSource {
     const lexical = lex(source.text, true);
     if (lexical.error !== null) {
         if (lexical.rejection === null) throw new Error("missing lexer rejection");
@@ -77,9 +94,9 @@ function parseStructuralPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | n
         if (parsed.rejection === null) throw new Error("missing parser rejection");
         return { kind: "blocked", goal: "Script", unit: source, rejection: parsed.rejection, diagnostic: parsed.error };
     }
-    if (parser.current().kind !== "eof" || parser.current().end !== source.text.length) throw new Error("declaration plan did not reach EOF");
+    if (parser.current().kind !== "eof" || parser.current().start !== source.text.length || parser.current().end !== source.text.length) throw new Error("declaration plan did not reach EOF");
     if (nodes !== null) nodes.assignmentNameEligible = parser.assignmentNameEligible;
-    return collectDeclarationPlan(source, parsed.body, lexical.tokens, parser.bindings, nodes, bounded);
+    return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings };
 }
 class Parser {
     readonly assignmentNameEligible = new Map<Expr, boolean>();

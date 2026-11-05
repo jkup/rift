@@ -1,0 +1,26 @@
+[
+  {
+    "name": "guest-native",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "matrix",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "extra",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "required",
+    "status": 1,
+    "signal": null,
+    "error": null
+  }
+]

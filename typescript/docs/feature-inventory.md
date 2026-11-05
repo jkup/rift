@@ -825,3 +825,15 @@ not add conformance admission, new rule certification, capability registries,
 ledger entries, language semantics or a public CLI mode. All 60 corpus variants
 remain blocked. See `validation/ts-035c/README.md` for candidate validation and
 retained failures; actual and second independent review are still required.
+
+## TS-035D1: non-emitting strict block-function audit (candidate)
+
+`auditBoundedScriptBlockFunctions(source)` shares the bounded whole-source
+parser and collector, requires complete EOF, and returns detached, sorted
+function/function duplicate sites only for strict ordinary blocks. Every catch
+restriction and non-target conflict vetoes eligibility, including later scopes
+and mixed conflicts in a candidate's own scope. Ordinary plan first failures and
+retained node associations remain unchanged. No preparation, observation,
+syntax-error emission or admission consumes this evidence. Parameters and switch
+duplicates remain unsupported; D2's return-fallback design remains unresolved.
+See `validation/ts-035d1/README.md` for frozen both-host controls and validation.

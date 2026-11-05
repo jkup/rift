@@ -84,7 +84,33 @@ type Work =
     | { kind: "binding"; binding: ParsedBinding; node: Stmt; declarationKind: "let" | "var"; scope: number; variableScope: number };
 
 export function collectDeclarationPlan(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes | null = null, bounded = false): DeclarationPlanResult {
-    return new DeclarationCollector(unit, tokens, bindings, nodes, bounded).collect(body);
+    const analysis = new DeclarationCollector(unit, tokens, bindings, nodes, bounded);
+    analysis.collect(body);
+    return analysis.project();
+}
+
+export type BlockFunctionCandidate = {
+    readonly ruleCode: "duplicate-block-lexical-function";
+    readonly scopeStart: number; readonly scopeEnd: number;
+    readonly first: DeclarationSite; readonly second: DeclarationSite;
+};
+export type BlockFunctionAudit =
+    | { readonly kind: "eligible"; readonly sourceUnits: number; readonly consumedUnits: number;
+        readonly candidates: readonly BlockFunctionCandidate[] }
+    | { readonly kind: "none"; readonly sourceUnits: number; readonly consumedUnits: number }
+    | { readonly kind: "blocked"; readonly reason: "grammar-or-resource" | "scope-restriction" | "other-conflict";
+        readonly diagnostic: Diagnostic; readonly rejection: Rejection | null };
+
+// Internal source-parser bridge, never consumed by preparation or execution.
+export function collectBlockFunctionAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>): BlockFunctionAudit {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true);
+    analysis.collect(body);
+    return analysis.audit();
+}
+
+function copySite(site: DeclarationSite): DeclarationSite {
+    return { name: site.name, start: site.start, end: site.end,
+        loc: { line: site.loc.line, column: site.loc.column } };
 }
 
 class DeclarationCollector {
@@ -248,7 +274,7 @@ class DeclarationCollector {
             case "literal": case "identifier": case "this": break;
         }
     }
-    collect(body: Stmt[]): DeclarationPlanResult {
+    collect(body: Stmt[]): void {
         if (this.nodes !== null) {
             this.nodes.body = body;
             this.nodes.scopes.set(0, { node: null, body });
@@ -301,6 +327,10 @@ class DeclarationCollector {
                 if (item.binding.init !== null) this.expression(item.binding.init, item.scope, item.variableScope);
             }
         }
+    }
+    project(): DeclarationPlanResult {
+        // Preserve the ordinary first-failure projection, including interleaved
+        // catch/conflict checks. The audit below has a separate global veto.
         // No conflicts are reported until all grammar/resource checks and every
         // function-context restriction have passed for the complete source.
         for (const site of this.identifierDeletes) {
@@ -332,6 +362,58 @@ class DeclarationCollector {
         return { kind: "complete", goal: "Script", unit: this.unit, consumedUnits: this.unit.text.length,
             strictness: this.strictness, scopes: this.scopes, declarations: this.declarations, functions: this.functions };
     }
+    audit(): BlockFunctionAudit {
+        const ordinary = this.project();
+        if (ordinary.kind === "blocked") return { kind: "blocked", reason: "scope-restriction",
+            diagnostic: ordinary.diagnostic, rejection: ordinary.rejection };
+        // An earlier ordinary conflict must not hide a later catch restriction.
+        for (const scope of this.scopes) {
+            if (scope.kind !== "catch") continue;
+            const parameter = scope.catchParameter;
+            const handler = this.scopes[scope.id + 1];
+            if (parameter === null || handler.parent !== scope.id) throw new Error("invalid catch scope");
+            if (handler.lexicalNames.includes(parameter.name) || handler.varNames.includes(parameter.name)) {
+                return { kind: "blocked", reason: "scope-restriction",
+                    rejection: { kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" },
+                    diagnostic: { phase: "parse", name: "SyntaxError", message: "unsupported catch binding conflict or non-strict catch", loc: parameter.loc } };
+            }
+        }
+        const candidates: BlockFunctionCandidate[] = [];
+        for (const scope of this.scopes) {
+            const lexicals = new Map<string, Declaration>();
+            for (const id of scope.lexicalDeclarations) {
+                const declaration = this.declarations[id];
+                const first = lexicals.get(declaration.site.name);
+                if (first === undefined) lexicals.set(declaration.site.name, declaration);
+                else if (scope.strict && scope.kind === "block" && first.kind === "function" && declaration.kind === "function") {
+                    candidates.push({ ruleCode: "duplicate-block-lexical-function", scopeStart: scope.start, scopeEnd: scope.end,
+                        first: copySite(first.site), second: copySite(declaration.site) });
+                } else return otherConflict("duplicate-lexical", first.site, declaration.site);
+            }
+            // Check every intersection even when the same scope already supplied
+            // a function/function pair (including function/function/let triples).
+            for (const id of scope.varDeclarations) {
+                const site = this.declarations[id].site;
+                const first = lexicals.get(site.name);
+                if (first !== undefined) return otherConflict("lexical-var", first.site, site);
+            }
+            for (const first of scope.formals) {
+                const second = lexicals.get(first.name);
+                if (second !== undefined) return otherConflict("formal-lexical", first, second.site);
+            }
+        }
+        candidates.sort((a, b) => a.second.start - b.second.start || a.first.start - b.first.start);
+        const sourceUnits = this.unit.text.length;
+        if (candidates.length === 0) return { kind: "none", sourceUnits, consumedUnits: sourceUnits };
+        return { kind: "eligible", sourceUnits, consumedUnits: sourceUnits, candidates };
+    }
+}
+
+function otherConflict(kind: string, first: DeclarationSite, second: DeclarationSite): BlockFunctionAudit {
+    const later = first.start > second.start ? first : second;
+    return { kind: "blocked", reason: "other-conflict", rejection: null,
+        diagnostic: { phase: "parse", name: "SyntaxError", message: kind + ": " + second.name,
+            loc: { line: later.loc.line, column: later.loc.column } } };
 }
 
 function declarationConflict(scope: DeclarationScope, declarations: readonly Declaration[]): DeclarationConflict | null {
