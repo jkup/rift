@@ -1,0 +1,3 @@
+inputs/*.js -text whitespace=cr-at-eol
+proposed/** -text whitespace=cr-at-eol
+production-proposal/** -text whitespace=cr-at-eol

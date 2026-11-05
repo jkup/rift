@@ -1,0 +1,1934 @@
+{
+  "base": "dbee9bd895a9d73fc4f588eaa1bceb863417117a",
+  "pattern": "lexical-declaration-statement|lexical-rule|parse\\.declaration-statement|parseBoundedScriptPreparation|futurePreparation|row\\.current|r\\.current|ruleCode:one|statement-rule|assignment-rule",
+  "consumers": [
+    {
+      "path": "typescript/docs/validation/ts-031c-a/cases.mjs",
+      "blob": "7b89ac65b1f9b04e83f6b6c157427b4193da7872",
+      "sha256": "79786a488ba79d49a0e714eb61fceb5421fd057da0147fccdff34574f2784d57",
+      "lines": [
+        {
+          "line": 17,
+          "text": " ['F15','return 1; while(false) let x;','parse.declaration-statement',[1,24]],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-031c-a/draft-cases.mjs",
+      "blob": "fc8e2f715b824f00c1adfc4c462c363d00e7d0d3",
+      "sha256": "01314ce66fa9bdb690405158ada61202137a43fe3577845361a5585398ca9554",
+      "lines": [
+        {
+          "line": 17,
+          "text": " ['F15','return 1; while(false) let x;','parse.declaration-statement',[1,24]],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-031c-a/run.mjs",
+      "blob": "e790f181cf023df25964b9386c8d67de9c1255dd",
+      "sha256": "5c5decc75e109e2de5971d870d9940d5e9c88796c5c2bee79e36358c2c091a25",
+      "lines": [
+        {
+          "line": 41,
+          "text": "  assert.equal(expected,{S18:'parse.assignment-target',S19:'parse.declaration-statement',S20:'parse.return-context',S21:'parse.duplicate-parameter',S22:'parse.duplicate-binding'}[entry.id]);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-031c-b/run.mjs",
+      "blob": "58d2762b6770d10b6005862b1d162ff70f5c0aca",
+      "sha256": "dbfb0ae61182b49c1d9a392a7726e66fb4bbef38b62cc68fe288e43b4a3c9a20",
+      "lines": [
+        {
+          "line": 41,
+          "text": "  assert.equal(expected,{S18:'parse.assignment-target',S19:'parse.declaration-statement',S20:'parse.return-context',S21:'parse.duplicate-parameter',S22:'parse.duplicate-binding'}[entry.id]);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-031c-p/cases.mjs",
+      "blob": "6df6a6af4ed9dd9e42dbda7e341aa8af8c23ab29",
+      "sha256": "eba2620b3baaf323df2203e7cc7c225ec994c2d27fc04b65c81998f3977f6e2b",
+      "lines": [
+        {
+          "line": 14,
+          "text": " ['D01','while(false) let x;','parse.declaration-statement','SyntaxError'],"
+        },
+        {
+          "line": 16,
+          "text": " ['D03','if(false) function f() {}','parse.declaration-statement','accepted'],"
+        },
+        {
+          "line": 17,
+          "text": " ['D04','\"use strict\"; if(false) function f() {}','parse.declaration-statement','SyntaxError'],"
+        },
+        {
+          "line": 18,
+          "text": " ['D05','while(false) function f() {}','parse.declaration-statement','SyntaxError'],"
+        },
+        {
+          "line": 19,
+          "text": " ['D06','while(false) let = 1;','parse.declaration-statement','accepted'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-031c-p/run.mjs",
+      "blob": "01ccbb52464bd3e1b089c493a741fe3124b99a7e",
+      "sha256": "bcb58542117b182a3342ba9a2ce0f4cac631433dcc1d6c606a7a231a1a2be8ce",
+      "lines": [
+        {
+          "line": 28,
+          "text": "   capability:{S18:'parse.assignment-target',S19:'parse.declaration-statement',S20:'parse.return-context',S21:'parse.duplicate-parameter',S22:'parse.duplicate-binding'}[entry.id],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-033d1/cases.mjs",
+      "blob": "07a8773038ac9f6be974ea72e8d15781ef26d7ac",
+      "sha256": "28385d89757bef05d436fac9945b89fb27844980eae63b794bf32b4b26a6bfdc",
+      "lines": [
+        {
+          "line": 43,
+          "text": "bad('L10','{function f(){}}','blocked','parse.declaration-statement',false);"
+        },
+        {
+          "line": 51,
+          "text": "for(const [id,body] of [['let-branch','if(true)let x;'],['function-branch','if(true)function f(){}'],['reserved','var arguments;'],['delete','var x=delete y;']])bad(id,body,'blocked',id==='reserved'?'parse.binding-identifier':id==='delete'?'parse.delete-identifier':'parse.declaration-statement');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-033d1/validate.mjs",
+      "blob": "b59e1c36072b3e0e94941b5dcc8a485a9dd410b1",
+      "sha256": "ee42d5d6bc6a98778c491596984601028f68ae9e260cf95dd1eb66cc16091327",
+      "lines": [
+        {
+          "line": 94,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 110,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-033d2/replay-plans.mjs",
+      "blob": "b59e1c36072b3e0e94941b5dcc8a485a9dd410b1",
+      "sha256": "ee42d5d6bc6a98778c491596984601028f68ae9e260cf95dd1eb66cc16091327",
+      "lines": [
+        {
+          "line": 94,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 110,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-033e1/replay-plans.mjs",
+      "blob": "b59e1c36072b3e0e94941b5dcc8a485a9dd410b1",
+      "sha256": "ee42d5d6bc6a98778c491596984601028f68ae9e260cf95dd1eb66cc16091327",
+      "lines": [
+        {
+          "line": 94,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 110,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-033e2/replay-plans.mjs",
+      "blob": "b59e1c36072b3e0e94941b5dcc8a485a9dd410b1",
+      "sha256": "ee42d5d6bc6a98778c491596984601028f68ae9e260cf95dd1eb66cc16091327",
+      "lines": [
+        {
+          "line": 94,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 110,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-033e3a/replay-plans.mjs",
+      "blob": "b59e1c36072b3e0e94941b5dcc8a485a9dd410b1",
+      "sha256": "ee42d5d6bc6a98778c491596984601028f68ae9e260cf95dd1eb66cc16091327",
+      "lines": [
+        {
+          "line": 94,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 110,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-033e3b/replay-plans.mjs",
+      "blob": "b59e1c36072b3e0e94941b5dcc8a485a9dd410b1",
+      "sha256": "ee42d5d6bc6a98778c491596984601028f68ae9e260cf95dd1eb66cc16091327",
+      "lines": [
+        {
+          "line": 94,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 110,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-033e4/execution/replay-plans.mjs",
+      "blob": "81c3c3155da28d7dbe74f78505b68f31bbecee37",
+      "sha256": "cb5d6eacd7bb0f5a17760f43776b468936543734a4ed29a5aa8e0377b33fee1c",
+      "lines": [
+        {
+          "line": 94,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 110,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-033er-a/replay-plans.mjs",
+      "blob": "b59e1c36072b3e0e94941b5dcc8a485a9dd410b1",
+      "sha256": "ee42d5d6bc6a98778c491596984601028f68ae9e260cf95dd1eb66cc16091327",
+      "lines": [
+        {
+          "line": 94,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 110,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-033er-b/replay-plans.mjs",
+      "blob": "b59e1c36072b3e0e94941b5dcc8a485a9dd410b1",
+      "sha256": "ee42d5d6bc6a98778c491596984601028f68ae9e260cf95dd1eb66cc16091327",
+      "lines": [
+        {
+          "line": 94,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 110,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h1/replays/replay-plans.mjs",
+      "blob": "fbfb438f762e02d9380b320900d49b5d3535c414",
+      "sha256": "f914fa40e808bf786b7af8070e1349906a689efd16c5487efd050fde0ad23b2b",
+      "lines": [
+        {
+          "line": 99,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 115,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h2/replays/replay-plans.mjs",
+      "blob": "fbfb438f762e02d9380b320900d49b5d3535c414",
+      "sha256": "f914fa40e808bf786b7af8070e1349906a689efd16c5487efd050fde0ad23b2b",
+      "lines": [
+        {
+          "line": 99,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 115,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h3/replays/replay-plans.mjs",
+      "blob": "fbfb438f762e02d9380b320900d49b5d3535c414",
+      "sha256": "f914fa40e808bf786b7af8070e1349906a689efd16c5487efd050fde0ad23b2b",
+      "lines": [
+        {
+          "line": 99,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 115,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h4/replays/replay-plans.mjs",
+      "blob": "fbfb438f762e02d9380b320900d49b5d3535c414",
+      "sha256": "f914fa40e808bf786b7af8070e1349906a689efd16c5487efd050fde0ad23b2b",
+      "lines": [
+        {
+          "line": 99,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 115,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h5/replays/replay-plans.mjs",
+      "blob": "fbfb438f762e02d9380b320900d49b5d3535c414",
+      "sha256": "f914fa40e808bf786b7af8070e1349906a689efd16c5487efd050fde0ad23b2b",
+      "lines": [
+        {
+          "line": 99,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 115,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-a/replays/replay-plans.mjs",
+      "blob": "fbfb438f762e02d9380b320900d49b5d3535c414",
+      "sha256": "f914fa40e808bf786b7af8070e1349906a689efd16c5487efd050fde0ad23b2b",
+      "lines": [
+        {
+          "line": 99,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 115,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-b/replays/replay-plans.mjs",
+      "blob": "fbfb438f762e02d9380b320900d49b5d3535c414",
+      "sha256": "f914fa40e808bf786b7af8070e1349906a689efd16c5487efd050fde0ad23b2b",
+      "lines": [
+        {
+          "line": 99,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 115,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-bp/proposed/test/structured-outcomes.ts",
+      "blob": "d83d7f81918b254a609b8bfb3185b3635fdceae4",
+      "sha256": "e697ce3baef4875746a9bb46ab9276d23549da4d709179e99e1b6e9c32ba8f8a",
+      "lines": [
+        {
+          "line": 54,
+          "text": "    \"\", \"\", \"parse.assignment-target\", \"parse.declaration-statement\", \"\", \"parse.return-context\", \"\", \"parse.duplicate-parameter\", \"parse.duplicate-parameter\", \"parse.duplicate-binding\", \"parse.duplicate-binding\", \"parse.duplicate-binding\", \"parse.expected-token\", \"parse.binding-identifier\", \"parse.property-name\", \"parse.object-key\", \"parse.unexpected\", \"parse.line-terminator\", \"parse.line-terminator\", \"parse.throw-expression\", \"parse.loop-context\", \"parse.loop-context\", \"parse.delete-identifier\", \"parse.array-spread\", \"parse.prototype-literal\", \"lex.indeterminate-comment\", \"lex.indeterminate-string-newline\", \"lex.indeterminate-string-end\", \"lex.leading-zero\", \"lex.numeric-literal\", \"lex.string-escape\", \"lex.operator\", \"lex.character\", \"lex.operator\", \"parse.assignment-target\", \"lex.indeterminate-string-end\", \"parse.return-context\", \"parse.return-context\", \"\", \"lex.character\", \"lex.character\", \"parse.unexpected\","
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-c/replays/replay-plans.mjs",
+      "blob": "fbfb438f762e02d9380b320900d49b5d3535c414",
+      "sha256": "f914fa40e808bf786b7af8070e1349906a689efd16c5487efd050fde0ad23b2b",
+      "lines": [
+        {
+          "line": 99,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 115,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-m/replays/replay-plans.mjs",
+      "blob": "fbfb438f762e02d9380b320900d49b5d3535c414",
+      "sha256": "f914fa40e808bf786b7af8070e1349906a689efd16c5487efd050fde0ad23b2b",
+      "lines": [
+        {
+          "line": 99,
+          "text": " ]){const p=run(lane,id,text).plan;assert.equal(p.kind,kind);if(kind==='complete')assert.equal(p.strictness.strict,strict);else assert.equal(p.rejection.capabilityCode,'parse.declaration-statement');}"
+        },
+        {
+          "line": 115,
+          "text": "  ['non-strict-veto','let x;let x;{function f(){}}','parse.declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d-p/audit.mjs",
+      "blob": "4dacd035d4a1a4aef338ac645c349e62124f97ea",
+      "sha256": "4429fb719fb08acf16b9f1383a48974dfe903ea08dc9bab8718dfe78b62e4e70",
+      "lines": [
+        {
+          "line": 35,
+          "text": "assert.equal(by('B14').rejection.capabilityCode,'parse.declaration-statement');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d1/validate.mjs",
+      "blob": "254a42bb8f657f17cdc98f5e6e427593115dd593",
+      "sha256": "175019a323aaf5df2405a113fc4ddc67430aa39b01c5bb7058718269fc67ed58",
+      "lines": [
+        {
+          "line": 33,
+          "text": "   assert.deepEqual(audit.rejection,{kind:'unsupported-syntax',capabilityCode:'parse.declaration-statement'});"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2-p/freeze.mjs",
+      "blob": "85e53f6bbe846d2a8991d04862778d18884e7e4d",
+      "sha256": "1076958454dbe007f2d8f5f8da3594b6f077e068292e97508147efffadeb80c1",
+      "lines": [
+        {
+          "line": 64,
+          "text": " let futurePreparation=copy(bounded);"
+        },
+        {
+          "line": 67,
+          "text": "  futurePreparation={kind:'blocked',goal:'Script',unit,rejection:{kind:'syntax-error',ruleCode:'duplicate-block-lexical-function'},diagnostic:{phase:'parse',name:'SyntaxError',message:'duplicate block lexical function: '+c.second.name,loc:copy(c.second.loc)}};"
+        },
+        {
+          "line": 77,
+          "text": "  if(futurePreparation.kind==='complete'){"
+        },
+        {
+          "line": 80,
+          "text": "  }else if(futurePreparation.kind==='conflict'){"
+        },
+        {
+          "line": 81,
+          "text": "   result={kind:'unsupported-syntax',capabilityCode:'script.uncertified-conflict'};location=copy(futurePreparation.diagnostic.loc);"
+        },
+        {
+          "line": 83,
+          "text": "   result=copy(futurePreparation.rejection);location=copy(futurePreparation.diagnostic.loc);"
+        },
+        {
+          "line": 97,
+          "text": " rows.push({id,text,sourceUnits:text.length,sha256:hash(text),ordinary,audit,futurePreparation,contexts});"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2-p/verify-future-wire.mjs",
+      "blob": "7e0242d79f0248d8e2218e4c64b8797a46eebcf8",
+      "sha256": "9885d06a2c27f37f614ec7b3526ae3ab094967be5a0872f9de89a699469d794d",
+      "lines": [
+        {
+          "line": 35,
+          "text": "  if(m.id==='parameter-rule'||m.id==='assignment-rule')assert.deepEqual(parseChild(c),c,r.id+'/'+m.id+' reviewed D4 code');"
+        },
+        {
+          "line": 38,
+          "text": "   if(m.id==='parameter-rule'||m.id==='assignment-rule')assert.deepEqual(parseFull(e),e,r.id+'/'+m.id+' reviewed D4 code');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2-p/verify.mjs",
+      "blob": "dd6f3fb6e60751477cf49849ea39ac5d6a5a71c6",
+      "sha256": "49a83ec8a86068f6d85a1ac905fb7e8b433645929b3f49de08e5fe775b0b20c9",
+      "lines": [
+        {
+          "line": 41,
+          "text": " assert.equal(row.futurePreparation.diagnostic.loc.column,col);"
+        },
+        {
+          "line": 47,
+          "text": "  assert.equal(r.futurePreparation.rejection.ruleCode,'duplicate-block-lexical-function');"
+        },
+        {
+          "line": 49,
+          "text": " }else assert.deepEqual(r.futurePreparation,r.ordinary.bounded,r.id+' no semantic relaxation');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2-p/wire-freeze.mjs",
+      "blob": "a9534906d10342805c10836ee2f0e91346fdd439",
+      "sha256": "a3fb57b4f127d739dfee173a0032b71709fa1ff07adf46862627c30460795173",
+      "lines": [
+        {
+          "line": 55,
+          "text": " ['assignment-rule',['result','ruleCode'],'assignment-target'],"
+        },
+        {
+          "line": 56,
+          "text": " ['statement-rule',['result','ruleCode'],'lexical-declaration-statement'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2/check-proposal.mjs",
+      "blob": "14611a7b2199e7868f5713308f20b6fc8b43d430",
+      "sha256": "21c8559ed11701480a0d6c62751fb99a01b79e1fe88c175a433d1936a729df56",
+      "lines": [
+        {
+          "line": 10,
+          "text": "const ruleFrom=\"ruleCode:one(['return-outside-function'])\",ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2/proposed-script-observe-codec.test.mjs",
+      "blob": "ff34ddb06d9e7b6196490e0fe57ddfaa2a6b93f1",
+      "sha256": "e8e8a78a388a2a4069b2991de2974f5718218b92b97006ea334a074933eee49a",
+      "lines": [
+        {
+          "line": 24,
+          "text": " const ruleFrom=\"ruleCode:one(['return-outside-function'])\";"
+        },
+        {
+          "line": 25,
+          "text": " const ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2/validate.mjs",
+      "blob": "c90b5c89e96a2e58bba4a61a11863f2f4920e100",
+      "sha256": "3a8c7c2609c5d413a4f60ce5eaaf3d28c956726565af376d37fabd8d10b60281",
+      "lines": [
+        {
+          "line": 16,
+          "text": " assert.deepEqual(actual.preparation,migration?migration.preparation:row.futurePreparation,row.id+' preparation');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d3-p/audit.mjs",
+      "blob": "768e8f211238a6b93f3829a56802b8a4e48da884",
+      "sha256": "8ec1ecfed4eaf4bf5d0a0cb7c82af740d42a548e93170377a625c137e0b600c4",
+      "lines": [
+        {
+          "line": 7,
+          "text": "import {parse,parseDeclarationPlan,parseBoundedScriptDeclarationPlan,auditScriptReturns,auditBoundedScriptBlockFunctions,parseBoundedScriptPreparation} from '../../../build/node/src/parser.js';"
+        },
+        {
+          "line": 26,
+          "text": " return {id,text,sourceUnits:text.length,sha256:sha(text),futureKind,current:{legacy:parse(text),returns:auditScriptReturns(text),declaration:parseDeclarationPlan(unit),bounded:parseBoundedScriptDeclarationPlan(unit),D1:auditBoundedScriptBlockFunctions(text),D2:parseBoundedScriptPreparation(unit,nodes)}};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d3-p/freeze.mjs",
+      "blob": "8cac1c17a1e8bf98c7dd7d78783b62b251a221c1",
+      "sha256": "c37d301458968f4af708e154d921cc9c07c2673a21ab14cf14215643d772ae3b",
+      "lines": [
+        {
+          "line": 16,
+          "text": "const grammar={P09:'lex.string-escape',P10:'parse.expected-token',P11:'parse.binding-identifier',P12:'parse.unexpected',P13:'parse.expected-token',E01:'parse.unexpected',E02:'parse.unexpected',E03:'parse.return-context',E04:'parse.assignment-target',E05:'parse.declaration-statement',E06:'lex.indeterminate-string-end',E07:'parse.unexpected',E08:'parse.binding-identifier',E09:'parse.binding-identifier',E10:'parse.expected-token',E11:'parse.unexpected',E22:'parse.expected-token',E37:'parse.expected-token',E38:'parse.binding-identifier',E39:'lex.operator',E40:'parse.expected-token',E48:'parse.binding-identifier'};"
+        },
+        {
+          "line": 25,
+          "text": "  if(scope.has(id))expected.rejection={kind:'unsupported-syntax',capabilityCode:id==='E25'?'parse.delete-identifier':['E27','E33','E51'].includes(id)?'parse.declaration-statement':'parse.duplicate-parameter'};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d3-p/verify.mjs",
+      "blob": "5cee90ecce7409b49298c685624ad3cab1d2832b",
+      "sha256": "896aa6a3f319df557c890d2de1d0afe0a896d6f30bac6f77641a06ff728a6f20",
+      "lines": [
+        {
+          "line": 8,
+          "text": "import {parse,parseDeclarationPlan,parseBoundedScriptDeclarationPlan,auditScriptReturns,auditBoundedScriptBlockFunctions,parseBoundedScriptPreparation} from '../../../build/node/src/parser.js';"
+        },
+        {
+          "line": 27,
+          "text": " const actual={legacy:parse(text),returns:auditScriptReturns(text),declaration:parseDeclarationPlan(unit),bounded:parseBoundedScriptDeclarationPlan(unit),D1:auditBoundedScriptBlockFunctions(text),D2:parseBoundedScriptPreparation(unit,nodes)};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d3/freeze.mjs",
+      "blob": "8a5c00f8d658179acd2de326f4d0cb39db1b4b96",
+      "sha256": "88045eb021b92da66904a2edf5cb89c8d438c2d17f9d4333a1d63f22b73a3e01",
+      "lines": [
+        {
+          "line": 5,
+          "text": "import {parseDeclarationPlan,parseBoundedScriptDeclarationPlan,parseBoundedScriptPreparation} from '../../../build/node/src/parser.js';"
+        },
+        {
+          "line": 13,
+          "text": " row.nodes=[parseDeclarationPlan,parseBoundedScriptDeclarationPlan,parseBoundedScriptPreparation].map(f=>{const n=nodes();f({id:row.id,text:row.text},n);return snap(n)});"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/check.mjs",
+      "blob": "22f2be95bda33a709eea217702ff36db4e0e64fd",
+      "sha256": "44889edd1e11f2d94500986a6ca483815c3a0c8bcd160f6d6563611aa8a30e2f",
+      "lines": [
+        {
+          "line": 10,
+          "text": " for(const [k,v] of Object.entries(old.expected))assert.deepEqual(row.current.D3[k],v,old.id+'/'+k);"
+        },
+        {
+          "line": 11,
+          "text": " for(const [k,v] of Object.entries(old.ordinary))assert.deepEqual(row.current[k],v,old.id+' ordinary '+k);"
+        },
+        {
+          "line": 14,
+          "text": "for(const old of d2){const row=rows.find(r=>r.id==='D2/'+old.id);assert.deepEqual(row.current.D2,old.futurePreparation,old.id);assert.deepEqual(row.current.D1,old.audit,old.id);}"
+        },
+        {
+          "line": 23,
+          "text": " const first=\"ruleCode:one(['return-outside-function'])\",second=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function'])\",third=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/freeze.mjs",
+      "blob": "0e3d700ff02d6443a48c908ab7607e67d17a859d",
+      "sha256": "f7480d3fa38cadc06056de56a1eae0b5ab528e511068c9497b2bae65b959f7ab",
+      "lines": [
+        {
+          "line": 55,
+          "text": " const current={legacy:parser.parse(text),returns:parser.auditScriptReturns(text),declaration:parser.parseDeclarationPlan(unit),bounded:parser.parseBoundedScriptDeclarationPlan(unit),D1:parser.auditBoundedScriptBlockFunctions(text),D2:parser.parseBoundedScriptPreparation(unit,nodes()),D3:parser.auditBoundedScriptStrictParameters(text)};"
+        },
+        {
+          "line": 65,
+          "text": " let futurePreparation=copy(current.D2);"
+        },
+        {
+          "line": 71,
+          "text": "  futurePreparation={kind:'blocked',goal:'Script',unit,rejection:{kind:'syntax-error',ruleCode:selected.ruleCode},diagnostic:{phase:'parse',name:'SyntaxError',message:(selected.ruleCode==='duplicate-strict-parameter'?'duplicate strict parameter: ':'duplicate block lexical function: ')+selected.name,loc:copy(selected.location)}};"
+        },
+        {
+          "line": 80,
+          "text": "  const p=futurePreparation,unitId=role==='test'?'u0':'u1';"
+        },
+        {
+          "line": 89,
+          "text": " rows.push({id,text,sha256:hash(text),sourceUnits:text.length,current,currentParseOnly,selected,futurePreparation,contexts});"
+        },
+        {
+          "line": 98,
+          "text": "for(const row of rows.filter(r=>r.selected&&r.id.includes('/'))){const [suite,id]=row.id.split('/');inherited[suite][id]={text:row.text,preparation:row.futurePreparation,contexts:row.contexts};}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/proposals.mjs",
+      "blob": "5cc953f594ace9593a5227313d4e472089b808b8",
+      "sha256": "e89904623cc19db7b93c0ffed42ec91d56c1c6d27699edc26a08a997e05d2a81",
+      "lines": [
+        {
+          "line": 12,
+          "text": "edit(c,\"const ruleTo=\\\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function'])\\\";\",\"const ruleTo=\\\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\\\";\");"
+        },
+        {
+          "line": 15,
+          "text": "edit(d2,\"assert.deepEqual(actual.preparation,row.futurePreparation,row.id+' preparation');\",\"const migration=d4[row.id]; if(migration)assert.equal(row.text,migration.text,row.id+' exact D4 source');\\r\\n assert.deepEqual(actual.preparation,migration?migration.preparation:row.futurePreparation,row.id+' preparation');\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/proposed/typescript/docs/validation/ts-035d2/validate.mjs",
+      "blob": "58429995278600875bf6b998b0299c1472b7ff13",
+      "sha256": "3a8c7c2609c5d413a4f60ce5eaaf3d28c956726565af376d37fabd8d10b60281",
+      "lines": [
+        {
+          "line": 16,
+          "text": " assert.deepEqual(actual.preparation,migration?migration.preparation:row.futurePreparation,row.id+' preparation');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/proposed/typescript/tools/test262/script-observe-codec.test.mjs",
+      "blob": "8b2f8641b71623d12f0fb03111c6bc492f0dab9f",
+      "sha256": "06e55abf2c9ad9ffd3fcf9eb09c700324e229b648af38d8101dba6ffa4d330bd",
+      "lines": [
+        {
+          "line": 24,
+          "text": " const ruleFrom=\"ruleCode:one(['return-outside-function'])\";"
+        },
+        {
+          "line": 25,
+          "text": " const ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/verify.mjs",
+      "blob": "1a07e42ffa042b559201758b042d5bae80e6396f",
+      "sha256": "1192ace4324c17486f7093bb5bb69d77b9a1aa6c56894b2f10511de3df3b204f",
+      "lines": [
+        {
+          "line": 34,
+          "text": " if(r.selected){assert.equal(r.text.slice(r.selected.start,r.selected.start+r.selected.name.length),r.selected.name);assert.equal(r.futurePreparation.rejection.ruleCode,r.selected.ruleCode);assert.equal(r.current.D2.rejection.capabilityCode,'parse.duplicate-parameter');}"
+        },
+        {
+          "line": 35,
+          "text": " else assert.deepEqual(r.futurePreparation,r.current.D2);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/wire.mjs",
+      "blob": "385e14f0a251eeac894b077c6c80fbfe8b83ce6a",
+      "sha256": "9af2b5c2759b4b403d8fe535df8ed7049026eb3a36f019ec7a992a0bbe9a9c3d",
+      "lines": [
+        {
+          "line": 42,
+          "text": " for(const m of mutations){const c=copy(child);set(c,m.childPath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeChild(c),c,r.id+'/'+m.id);else assert.throws(()=>decodeChild(c),r.id+'/'+m.id);rejections++;"
+        },
+        {
+          "line": 43,
+          "text": "  if(m.envelopePath){const e=copy(envelope);set(e,m.envelopePath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+'/'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);rejections++;}}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4/validate.mjs",
+      "blob": "c464e6cf4670a36a9182c3048b65e35d6224ff3f",
+      "sha256": "889896ab5d7c007eabbc5881125c2b6ce9ea9b73b93c3127f6b56094ef4abb61",
+      "lines": [
+        {
+          "line": 9,
+          "text": " const id=row.futurePreparation.unit.id,args=[path,id,...order.map(n=>'fixtures/script-strict-parameter-dispatch/'+n+'.js')];"
+        },
+        {
+          "line": 14,
+          "text": " const actual=JSON.parse(r.stdout),{D2,...ordinary}=row.current;"
+        },
+        {
+          "line": 15,
+          "text": " assert.deepEqual(actual.preparation,row.futurePreparation,row.id+' preparation');assert.deepEqual(actual.ordinary,ordinary,row.id+' ordinary');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/cases.mjs",
+      "blob": "a01213740375ba01cc2efbf1f153c8634925ca99",
+      "sha256": "0d64e99a3c80cde2efa7e7372d37f372127fdf7d0251cc4845f6083ce0f0d352",
+      "lines": [
+        {
+          "line": 24,
+          "text": "for(const [i,text,code] of [[0,'1e2=7;','lex.numeric-literal'],[1,'0x2=7;','lex.numeric-literal'],[2,'01=7;','lex.leading-zero'],[3,'.5=7;','parse.unexpected'],[4,'42**=7;','lex.operator'],[5,'42&&=7;','parse.unexpected'],[6,'42=7;`late`;','lex.character'],[7,'42=7;\"unterminated','lex.indeterminate-string-end'],[8,'42=7;class C{}','parse.unexpected'],[9,'42=7;let x=;','parse.unexpected'],[10,'42=7;function f(){class C{}}','parse.unexpected'],[11,'42=7;while(true) let x;','parse.declaration-statement'],[12,'42=(7;','parse.expected-token'],[13,'42=;','parse.unexpected'],[14,'42=7;}','parse.unexpected'],[15,'(42,43)=7;','parse.expected-token']])blocked('G'+i,text,code);"
+        },
+        {
+          "line": 29,
+          "text": " [3,'try{}catch(e){let e;}','scope-restriction','parse.declaration-statement'],"
+        },
+        {
+          "line": 38,
+          "text": "blocked('SL2','42=7;{function single(){}}','parse.declaration-statement','scope-restriction');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/check.mjs",
+      "blob": "6af684e58de2e6fb7b0dc46049dcd5250fc78c98",
+      "sha256": "57102f309359e5adeb0fba3bc8ba71ff6b9007502380adbd85f2a7e0a1d77552",
+      "lines": [
+        {
+          "line": 12,
+          "text": " const current=read('typescript/tools/test262/'+file),from=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\",to=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/freeze.mjs",
+      "blob": "9af8122fe3554c163483bd7c44eb682e6d8bedec",
+      "sha256": "d4295284357e544dd734ee68a4973a9740f2f5381a2a2c9e5360ad4f3d820b83",
+      "lines": [
+        {
+          "line": 28,
+          "text": " const n=nodes();r.current={legacy:parser.parse(text),returns:parser.auditScriptReturns(text),declaration:parser.parseDeclarationPlan(unit),bounded:parser.parseBoundedScriptDeclarationPlan(unit),D1:parser.auditBoundedScriptBlockFunctions(text),D3:parser.auditBoundedScriptStrictParameters(text),preparation:parser.parseBoundedScriptPreparation(unit,n)};"
+        },
+        {
+          "line": 30,
+          "text": " r.currentC=observeScripts({nonce:'design',requestSha256:'a'.repeat(64),action:'parse-only',preflightId:null,steps:10000,calls:64,units:[{id:'u0',role:'test',text}]});"
+        },
+        {
+          "line": 32,
+          "text": " r.futurePreparation=structuredClone(r.current.preparation);"
+        },
+        {
+          "line": 34,
+          "text": "  assert.equal(r.current.preparation.rejection.capabilityCode,'parse.assignment-target',id);"
+        },
+        {
+          "line": 35,
+          "text": "  r.futurePreparation={kind:'blocked',goal:'Script',unit,rejection:{kind:'syntax-error',ruleCode:'assignment-target'},diagnostic:{phase:'parse',name:'SyntaxError',message:'invalid numeric assignment target',loc:r.expected.candidates[0].target.loc}};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/make-wire.mjs",
+      "blob": "c550ad2e433bdade5c20c014116488f283dcdb40",
+      "sha256": "0c8947b6f965988e400a54d38266bbe8981cf4227bb4bbb51c083b3e4b285fe1",
+      "lines": [
+        {
+          "line": 9,
+          "text": "s=s.replace(\"m.id!=='parameter-rule'\",\"m.id!=='assignment-rule'\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/original-blocked-oracle/cases.mjs",
+      "blob": "6c3a411441bc06dd2afd9ce2e173dda6a0bbbdfa",
+      "sha256": "84c27b9218ca3406bd4750e5f8d993d844e7f93be95f05a5504224399ee12b34",
+      "lines": [
+        {
+          "line": 23,
+          "text": "for(const [i,text,code] of [[0,'1e2=7;','lex.numeric-literal'],[1,'0x2=7;','lex.numeric-literal'],[2,'01=7;','lex.leading-zero'],[3,'.5=7;','parse.unexpected'],[4,'42**=7;','lex.operator'],[5,'42&&=7;','parse.unexpected'],[6,'42=7;`late`;','lex.character'],[7,'42=7;\"unterminated','lex.indeterminate-string-end'],[8,'42=7;class C{}','parse.unexpected'],[9,'42=7;let x=;','parse.unexpected'],[10,'42=7;function f(){class C{}}','parse.unexpected'],[11,'42=7;while(true) let x;','parse.declaration-statement'],[12,'42=(7;','parse.expected-token'],[13,'42=;','parse.unexpected'],[14,'42=7;}','parse.unexpected'],[15,'(42,43)=7;','parse.expected-token']])blocked('G'+i,text,code);"
+        },
+        {
+          "line": 28,
+          "text": " [3,'try{}catch(e){let e;}','scope-restriction','parse.declaration-statement'],"
+        },
+        {
+          "line": 37,
+          "text": "blocked('SL2','42=7;{function single(){}}','parse.declaration-statement','scope-restriction');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/original-blocked-oracle/freeze.mjs",
+      "blob": "9af8122fe3554c163483bd7c44eb682e6d8bedec",
+      "sha256": "d4295284357e544dd734ee68a4973a9740f2f5381a2a2c9e5360ad4f3d820b83",
+      "lines": [
+        {
+          "line": 28,
+          "text": " const n=nodes();r.current={legacy:parser.parse(text),returns:parser.auditScriptReturns(text),declaration:parser.parseDeclarationPlan(unit),bounded:parser.parseBoundedScriptDeclarationPlan(unit),D1:parser.auditBoundedScriptBlockFunctions(text),D3:parser.auditBoundedScriptStrictParameters(text),preparation:parser.parseBoundedScriptPreparation(unit,n)};"
+        },
+        {
+          "line": 30,
+          "text": " r.currentC=observeScripts({nonce:'design',requestSha256:'a'.repeat(64),action:'parse-only',preflightId:null,steps:10000,calls:64,units:[{id:'u0',role:'test',text}]});"
+        },
+        {
+          "line": 32,
+          "text": " r.futurePreparation=structuredClone(r.current.preparation);"
+        },
+        {
+          "line": 34,
+          "text": "  assert.equal(r.current.preparation.rejection.capabilityCode,'parse.assignment-target',id);"
+        },
+        {
+          "line": 35,
+          "text": "  r.futurePreparation={kind:'blocked',goal:'Script',unit,rejection:{kind:'syntax-error',ruleCode:'assignment-target'},diagnostic:{phase:'parse',name:'SyntaxError',message:'invalid numeric assignment target',loc:r.expected.candidates[0].target.loc}};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/original-blocked-oracle/probe.mjs",
+      "blob": "558074d9aa5229679dd8528dcc57fafe1053679b",
+      "sha256": "9d7292a3f7b6b4191c053e7f5688cd63793c9cb5ec88053a18e7100c907cde3e",
+      "lines": [
+        {
+          "line": 19,
+          "text": "for(const r of old)assert.deepEqual(parser.parseBoundedScriptPreparation(r.futurePreparation.unit,nodes()),r.futurePreparation,r.id);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/probe.mjs",
+      "blob": "7039fcb92fc79ff15f77af736d325156bc4850f0",
+      "sha256": "dec53c10baa6f53ea20be19798280965b4d0c8d0f2897cc64fea559c58886a60",
+      "lines": [
+        {
+          "line": 22,
+          "text": "for(const r of old)assert.deepEqual(parser.parseBoundedScriptPreparation(r.futurePreparation.unit,nodes()),r.futurePreparation,r.id);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/proposals.mjs",
+      "blob": "2b4258f42841392e11787b97c045863a578ce765",
+      "sha256": "ed7cd8333b8b814a10bd3284e2216fc178ecfc6304a9c669b21ab7e133ee51ac",
+      "lines": [
+        {
+          "line": 11,
+          "text": "edit(c,\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\",\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])\");"
+        },
+        {
+          "line": 13,
+          "text": "edit(d2,\"if(m.id==='parameter-rule')\",\"if(m.id==='parameter-rule'||m.id==='assignment-rule')\",2);"
+        },
+        {
+          "line": 15,
+          "text": "edit(d4,'set(c,m.childPath,m.value);assert.throws(()=>decodeChild(c),r.id+\\'/\\'+m.id);','set(c,m.childPath,m.value);if(m.id===\\'assignment-rule\\'&&future)assert.deepEqual(decodeChild(c),c,r.id+\\'/\\'+m.id);else assert.throws(()=>decodeChild(c),r.id+\\'/\\'+m.id);');"
+        },
+        {
+          "line": 16,
+          "text": "edit(d4,'set(e,m.envelopePath,m.value);assert.throws(()=>decodeEnvelope(e),r.id+\\'/\\'+m.id);','set(e,m.envelopePath,m.value);if(m.id===\\'assignment-rule\\'&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+\\'/\\'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+\\'/\\'+m.id);');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/proposed-emission/typescript/docs/validation/ts-035d2-p/verify-future-wire.mjs",
+      "blob": "0a1486ee8abec121df545d5e247437c00d75f042",
+      "sha256": "9885d06a2c27f37f614ec7b3526ae3ab094967be5a0872f9de89a699469d794d",
+      "lines": [
+        {
+          "line": 35,
+          "text": "  if(m.id==='parameter-rule'||m.id==='assignment-rule')assert.deepEqual(parseChild(c),c,r.id+'/'+m.id+' reviewed D4 code');"
+        },
+        {
+          "line": 38,
+          "text": "   if(m.id==='parameter-rule'||m.id==='assignment-rule')assert.deepEqual(parseFull(e),e,r.id+'/'+m.id+' reviewed D4 code');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/proposed-emission/typescript/docs/validation/ts-035d4-p/wire.mjs",
+      "blob": "385e14f0a251eeac894b077c6c80fbfe8b83ce6a",
+      "sha256": "9af2b5c2759b4b403d8fe535df8ed7049026eb3a36f019ec7a992a0bbe9a9c3d",
+      "lines": [
+        {
+          "line": 42,
+          "text": " for(const m of mutations){const c=copy(child);set(c,m.childPath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeChild(c),c,r.id+'/'+m.id);else assert.throws(()=>decodeChild(c),r.id+'/'+m.id);rejections++;"
+        },
+        {
+          "line": 43,
+          "text": "  if(m.envelopePath){const e=copy(envelope);set(e,m.envelopePath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+'/'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);rejections++;}}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/proposed-emission/typescript/tools/test262/script-observe-codec.test.mjs",
+      "blob": "2160eac603add5201b32c0633856647299cd1492",
+      "sha256": "500a43a2b7e2936df79fdd46203f5e16c0bc5d98fddc44e430f19c27db97eb1b",
+      "lines": [
+        {
+          "line": 24,
+          "text": " const ruleFrom=\"ruleCode:one(['return-outside-function'])\";"
+        },
+        {
+          "line": 25,
+          "text": " const ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/wire.mjs",
+      "blob": "8361c079abdd01d9a5eabc049896983710957e0b",
+      "sha256": "7fbc035c8b3e3700d25f7c66eb37e9a96577a19266c400e7ef159900e16e3e2c",
+      "lines": [
+        {
+          "line": 27,
+          "text": "const mutations=old.mutations.filter(m=>m.id!=='assignment-rule');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5/freeze.mjs",
+      "blob": "1aaced3564e1c2c431775dcc50d38fa87cba53e6",
+      "sha256": "cfc5e7b43b3285e97efef572f71e765272f6999f3a7e7c3274ee62b63cd80b7a",
+      "lines": [
+        {
+          "line": 4,
+          "text": "for(const r of m.rows){const n=nodes(),unit={id:r.id,text:r.text};assert.deepEqual({legacy:p.parse(r.text),returns:p.auditScriptReturns(r.text),declaration:p.parseDeclarationPlan(unit),bounded:p.parseBoundedScriptDeclarationPlan(unit),D1:p.auditBoundedScriptBlockFunctions(r.text),D3:p.auditBoundedScriptStrictParameters(r.text),preparation:p.parseBoundedScriptPreparation(unit,n)},r.current,r.id);assert.deepEqual(JSON.parse(JSON.stringify({source:n.source,body:n.body,scopes:[...n.scopes],declarations:[...n.declarations],assignmentNameEligible:[...n.assignmentNameEligible]})),r.retention,r.id);}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5/validate.mjs",
+      "blob": "ce95f729ccf8d29d0051c17d50c83817b9aba13e",
+      "sha256": "387fa4ebc3793eb104144e75594c2155da41a5d386b8a7dd86cb48c17b113a3e",
+      "lines": [
+        {
+          "line": 7,
+          "text": " const actual=JSON.parse(run.stdout);assert.deepEqual(actual.audit,row.expected,row.id+' complete audit');const expectedOrdinary={...row.current,preparation:row.futurePreparation};assert.deepEqual(actual.ordinary,expectedOrdinary,row.id+' six ordinary outputs plus reviewed rejection-only preparation');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/controls.mjs",
+      "blob": "78ca7a026a8a872a43b2639390296d0f22fd64d0",
+      "sha256": "39da5445cc5c6f2252fb97e7aedab37b119824adf4356a76a0d13fb894a1833c",
+      "lines": [
+        {
+          "line": 7,
+          "text": "import {auditBoundedScriptNumericAssignments,parseBoundedScriptPreparation} from '../../../build/node/src/parser.js';"
+        },
+        {
+          "line": 14,
+          "text": "obligation.invariants={...obligation.invariants,D5ordinaryAndPreparation:'Six ordinary results and retained nodes unchanged; preparation equals frozen futurePreparation, exact fourth migration',oldStaticGates:68};"
+        },
+        {
+          "line": 43,
+          "text": " const unit={id:'same',text},original=parseBoundedScriptPreparation(unit,nodes()),audit=auditBoundedScriptNumericAssignments(text),expected=copy(original);"
+        },
+        {
+          "line": 53,
+          "text": "const limits={sourceUnits:{fixed:100000,rows:matrix.rows.filter(r=>r.text.length>=100000).map(r=>({id:r.id,text:r.text,expected:r.futurePreparation}))},parseDepth:{fixed:128,rows:matrix.rows.filter(r=>/depth/i.test(r.id)).map(r=>({id:r.id,text:r.text,expected:r.futurePreparation}))},steps:{values:[0,1,10000],expectation:'numeric rejection before execution, no step consumption'},calls:{values:[0,1,64],expectation:'numeric rejection before execution, no calls'},evaluationDepth:{fixed:256,expectation:'no evaluator entry'},wallMs:{values:[0,1000],expectation:'parent deadline wins child bytes'},outputBytes:{values:[0,65536,65537],expectation:'parent output cap wins child bytes; fixed codec max 65536'}};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/freeze.mjs",
+      "blob": "c90a78d60090a54b82023e79626df6be51224a00",
+      "sha256": "0b1b8c8ef29adbb914be95e6ed558c23ceb98ba68e5c5090d7564d930f622cdb",
+      "lines": [
+        {
+          "line": 21,
+          "text": " const current={legacy:parser.parse(r.text),returns:parser.auditScriptReturns(r.text),declaration:parser.parseDeclarationPlan(unit),bounded:parser.parseBoundedScriptDeclarationPlan(unit),D1:parser.auditBoundedScriptBlockFunctions(r.text),D3:parser.auditBoundedScriptStrictParameters(r.text),preparation:parser.parseBoundedScriptPreparation(unit,n)};"
+        },
+        {
+          "line": 22,
+          "text": " assert.deepEqual(current,r.current,r.id+' accepted D5 ordinary');ordinaryChecks++;"
+        },
+        {
+          "line": 25,
+          "text": " const futurePreparation=structuredClone(r.futurePreparation);"
+        },
+        {
+          "line": 41,
+          "text": " rows.push({...r,current,audit,retention,futurePreparation,contexts});"
+        },
+        {
+          "line": 49,
+          "text": "  const original=parser.parseBoundedScriptPreparation({id:r.futurePreparation?.unit.id??r.id,text:r.text},nodes());"
+        },
+        {
+          "line": 56,
+          "text": "const consumerPattern=/parseBoundedScriptPreparation|auditBoundedScriptNumericAssignments|prepareBoundedScript|assignment-target|assignment-rule|futurePreparation|row\\.current|r\\.current|ruleCode:one/;"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/occurrence-probe.mjs",
+      "blob": "f40bf940f5f2b80efbe1304d4493e42e024d8615",
+      "sha256": "88296abf41a8b975aae25dbfe5276764d7b7881834948b493cc69a72db4aa85a",
+      "lines": [
+        {
+          "line": 21,
+          "text": " const actual=observeScripts(copy(request)),expected=holder.current??holder.expected;"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/original-history-contract/controls.mjs",
+      "blob": "854420282c3aced395e439620a17769fdd4bdda5",
+      "sha256": "734fff92999631864b6b2605caa18e799ffb43ee3f9aa4982e3cd34792f32ab8",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import {auditBoundedScriptNumericAssignments,parseBoundedScriptPreparation} from '../../../build/node/src/parser.js';"
+        },
+        {
+          "line": 11,
+          "text": "obligation.invariants={...obligation.invariants,D5ordinaryAndPreparation:'Six ordinary results and retained nodes unchanged; preparation equals frozen futurePreparation, exact fourth migration',oldStaticGates:68};"
+        },
+        {
+          "line": 34,
+          "text": " const unit={id:'same',text},original=parseBoundedScriptPreparation(unit,nodes()),audit=auditBoundedScriptNumericAssignments(text),expected=copy(original);"
+        },
+        {
+          "line": 44,
+          "text": "const limits={sourceUnits:{fixed:100000,rows:matrix.rows.filter(r=>r.text.length>=100000).map(r=>({id:r.id,text:r.text,expected:r.futurePreparation}))},parseDepth:{fixed:128,rows:matrix.rows.filter(r=>/depth/i.test(r.id)).map(r=>({id:r.id,text:r.text,expected:r.futurePreparation}))},steps:{values:[0,1,10000],expectation:'numeric rejection before execution, no step consumption'},calls:{values:[0,1,64],expectation:'numeric rejection before execution, no calls'},evaluationDepth:{fixed:256,expectation:'no evaluator entry'},wallMs:{values:[0,1000],expectation:'parent deadline wins child bytes'},outputBytes:{values:[0,65536,65537],expectation:'parent output cap wins child bytes; fixed codec max 65536'}};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/original-occurrence-contract/controls.mjs",
+      "blob": "a7cadc935e305371d2616f19dfa3895d3ad998d9",
+      "sha256": "56a2f4eba0cc5ecbb619b3becaf06b242f7089d2418c9df190e19c96618d244a",
+      "lines": [
+        {
+          "line": 7,
+          "text": "import {auditBoundedScriptNumericAssignments,parseBoundedScriptPreparation} from '../../../build/node/src/parser.js';"
+        },
+        {
+          "line": 12,
+          "text": "obligation.invariants={...obligation.invariants,D5ordinaryAndPreparation:'Six ordinary results and retained nodes unchanged; preparation equals frozen futurePreparation, exact fourth migration',oldStaticGates:68};"
+        },
+        {
+          "line": 37,
+          "text": " const unit={id:'same',text},original=parseBoundedScriptPreparation(unit,nodes()),audit=auditBoundedScriptNumericAssignments(text),expected=copy(original);"
+        },
+        {
+          "line": 47,
+          "text": "const limits={sourceUnits:{fixed:100000,rows:matrix.rows.filter(r=>r.text.length>=100000).map(r=>({id:r.id,text:r.text,expected:r.futurePreparation}))},parseDepth:{fixed:128,rows:matrix.rows.filter(r=>/depth/i.test(r.id)).map(r=>({id:r.id,text:r.text,expected:r.futurePreparation}))},steps:{values:[0,1,10000],expectation:'numeric rejection before execution, no step consumption'},calls:{values:[0,1,64],expectation:'numeric rejection before execution, no calls'},evaluationDepth:{fixed:256,expectation:'no evaluator entry'},wallMs:{values:[0,1000],expectation:'parent deadline wins child bytes'},outputBytes:{values:[0,65536,65537],expectation:'parent output cap wins child bytes; fixed codec max 65536'}};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/probe.mjs",
+      "blob": "d978587120ec3ea3066c855e9c1a07ff2c0361d3",
+      "sha256": "4e6a8506f81168e0c2fe16f4992a95239d02ef8fe90586fd2b31aa13857f6a30",
+      "lines": [
+        {
+          "line": 5,
+          "text": "import {auditBoundedScriptNumericAssignments,parseBoundedScriptPreparation} from '../../../build/node/src/parser.js';"
+        },
+        {
+          "line": 15,
+          "text": " const actual=JSON.parse(run.stdout);assert.deepEqual(actual.audit,row.audit);assert.deepEqual(actual.ordinary,row.current);"
+        },
+        {
+          "line": 23,
+          "text": "  const expected=scope==='D4'?r.futurePreparation:scope==='D2'?(d4.D2[r.id]?.preparation??r.futurePreparation):(d4.D3[r.id]?.preparation??r.ordinary.D2);"
+        },
+        {
+          "line": 25,
+          "text": "  assert.deepEqual(parseBoundedScriptPreparation(expected.unit,nodes),expected,scope+'/'+r.id);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/production-proposal.mjs",
+      "blob": "c414dd1969176c5aeeac9e36e2853969365675a9",
+      "sha256": "bcec59a1c7e95b829980532567cc5e0382099a5546da6a846e4a934d56bcf2fd",
+      "lines": [
+        {
+          "line": 9,
+          "text": " if(path==='src/parser.ts')replace('export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {',`export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {"
+        },
+        {
+          "line": 10,
+          "text": "    const original = parseBoundedScriptPreparationBeforeNumericAudit(unit, nodes);"
+        },
+        {
+          "line": 23,
+          "text": "function parseBoundedScriptPreparationBeforeNumericAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {`);"
+        },
+        {
+          "line": 26,
+          "text": " else replace(\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\",\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/production-proposal/src/parser.ts",
+      "blob": "34432f120fae58bf05edef3dca466af65a36d7be",
+      "sha256": "706fc94f15aa9f11dc68a4ab63b0e452f1a074532a12eced02aca78f48c5968d",
+      "lines": [
+        {
+          "line": 50,
+          "text": "    const end = parser.current();"
+        },
+        {
+          "line": 67,
+          "text": "export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {"
+        },
+        {
+          "line": 68,
+          "text": "    const original = parseBoundedScriptPreparationBeforeNumericAudit(unit, nodes);"
+        },
+        {
+          "line": 81,
+          "text": "function parseBoundedScriptPreparationBeforeNumericAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {"
+        },
+        {
+          "line": 145,
+          "text": "    if (parser.current().kind !== \"eof\" || parser.current().start !== source.text.length || parser.current().end !== source.text.length) throw new Error(\"declaration plan did not reach EOF\");"
+        },
+        {
+          "line": 225,
+          "text": "        if (this.at(\"let\") || this.at(\"function\")) this.fail({ kind: \"unsupported-syntax\", capabilityCode: \"parse.declaration-statement\" }, \"declarations require a block\", this.current().loc);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/production-proposal/tools/test262/script-driver-result.mjs",
+      "blob": "053f9e1f0a023d7c9e5a92a8181d65333ae8a8f5",
+      "sha256": "b604ca5cd56104371f0b7f981ddb49e8cdaa99cc7a2aec59f379ab9d4b959311",
+      "lines": [
+        {
+          "line": 30,
+          "text": "  'parse.expected-token','parse.binding-identifier','parse.duplicate-binding','parse.declaration-statement',"
+        },
+        {
+          "line": 73,
+          "text": "    'syntax-error':{phase:one(['parse']),constructorName:one(['SyntaxError']),ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])},"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/production-proposal/tools/test262/script-result.mjs",
+      "blob": "b3a4ebca9fc3b47c2ccb508c53569103f0777e78",
+      "sha256": "6ab34360528b169d2ac8ffde173f18784e5cc6dc364882e40d052dc4356bb7c8",
+      "lines": [
+        {
+          "line": 30,
+          "text": "  'parse.expected-token','parse.binding-identifier','parse.duplicate-binding','parse.declaration-statement',"
+        },
+        {
+          "line": 73,
+          "text": "    'syntax-error':{phase:one(['parse']),constructorName:one(['SyntaxError']),ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])},"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/proposals.mjs",
+      "blob": "1733bf485348c10da84a5ce69d7b9f44e9780031",
+      "sha256": "13ce57697963becec400a2e618efaa2be55e18a39e6033a25160206b9fa8e60a",
+      "lines": [
+        {
+          "line": 10,
+          "text": "edit('typescript/tools/test262/script-observe-codec.test.mjs',\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\",\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])\");"
+        },
+        {
+          "line": 11,
+          "text": "edit('typescript/docs/validation/ts-035d2-p/verify-future-wire.mjs',\"if(m.id==='parameter-rule')\",\"if(m.id==='parameter-rule'||m.id==='assignment-rule')\",2);"
+        },
+        {
+          "line": 13,
+          "text": "edit(d4,\"set(c,m.childPath,m.value);assert.throws(()=>decodeChild(c),r.id+'/'+m.id);\",\"set(c,m.childPath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeChild(c),c,r.id+'/'+m.id);else assert.throws(()=>decodeChild(c),r.id+'/'+m.id);\");"
+        },
+        {
+          "line": 14,
+          "text": "edit(d4,\"set(e,m.envelopePath,m.value);assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);\",\"set(e,m.envelopePath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+'/'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);\");"
+        },
+        {
+          "line": 15,
+          "text": "edit('typescript/docs/validation/ts-035d5/validate.mjs',\"assert.deepEqual(actual.ordinary,row.current,row.id+' seven ordinary outputs');\",\"const expectedOrdinary={...row.current,preparation:row.futurePreparation};assert.deepEqual(actual.ordinary,expectedOrdinary,row.id+' six ordinary outputs plus reviewed rejection-only preparation');\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/proposed/typescript/docs/validation/ts-035d2-p/verify-future-wire.mjs",
+      "blob": "0a1486ee8abec121df545d5e247437c00d75f042",
+      "sha256": "9885d06a2c27f37f614ec7b3526ae3ab094967be5a0872f9de89a699469d794d",
+      "lines": [
+        {
+          "line": 35,
+          "text": "  if(m.id==='parameter-rule'||m.id==='assignment-rule')assert.deepEqual(parseChild(c),c,r.id+'/'+m.id+' reviewed D4 code');"
+        },
+        {
+          "line": 38,
+          "text": "   if(m.id==='parameter-rule'||m.id==='assignment-rule')assert.deepEqual(parseFull(e),e,r.id+'/'+m.id+' reviewed D4 code');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/proposed/typescript/docs/validation/ts-035d4-p/wire.mjs",
+      "blob": "385e14f0a251eeac894b077c6c80fbfe8b83ce6a",
+      "sha256": "9af2b5c2759b4b403d8fe535df8ed7049026eb3a36f019ec7a992a0bbe9a9c3d",
+      "lines": [
+        {
+          "line": 42,
+          "text": " for(const m of mutations){const c=copy(child);set(c,m.childPath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeChild(c),c,r.id+'/'+m.id);else assert.throws(()=>decodeChild(c),r.id+'/'+m.id);rejections++;"
+        },
+        {
+          "line": 43,
+          "text": "  if(m.envelopePath){const e=copy(envelope);set(e,m.envelopePath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+'/'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);rejections++;}}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/proposed/typescript/docs/validation/ts-035d5/validate.mjs",
+      "blob": "c2eefe13df9fe4105a681c024f97d3394afa1139",
+      "sha256": "387fa4ebc3793eb104144e75594c2155da41a5d386b8a7dd86cb48c17b113a3e",
+      "lines": [
+        {
+          "line": 7,
+          "text": " const actual=JSON.parse(run.stdout);assert.deepEqual(actual.audit,row.expected,row.id+' complete audit');const expectedOrdinary={...row.current,preparation:row.futurePreparation};assert.deepEqual(actual.ordinary,expectedOrdinary,row.id+' six ordinary outputs plus reviewed rejection-only preparation');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/proposed/typescript/tools/test262/script-observe-codec.test.mjs",
+      "blob": "2160eac603add5201b32c0633856647299cd1492",
+      "sha256": "500a43a2b7e2936df79fdd46203f5e16c0bc5d98fddc44e430f19c27db97eb1b",
+      "lines": [
+        {
+          "line": 24,
+          "text": " const ruleFrom=\"ruleCode:one(['return-outside-function'])\";"
+        },
+        {
+          "line": 25,
+          "text": " const ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/verify.mjs",
+      "blob": "6770da8b05242dda63dcf8afe1470a5b1a559549",
+      "sha256": "0d24f9a3457c6470f4c2367cd4fba887091b1522dbb9ae15eefd8b30b637a78a",
+      "lines": [
+        {
+          "line": 29,
+          "text": "for(const r of json('semantic-matrix.json').rows){assert.equal(hash(r.text),r.sha256);assert.equal(r.text.length,r.sourceUnits);assert.deepEqual(r.audit,r.expected);if(r.audit.kind!=='eligible')assert.deepEqual(r.futurePreparation,r.current.preparation);for(const c of r.contexts)assert.deepEqual(JSON.parse(c.ascii),c.expected);}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6-p/wire.mjs",
+      "blob": "68434c4e86a78942beee5f520836a0cd4da66e36",
+      "sha256": "0ea6a362559514523ec605f20b672154c20c79474ec8d4c9fc8b81e5fe9614a7",
+      "lines": [
+        {
+          "line": 37,
+          "text": "const mutations=old.mutations.filter(m=>m.id!=='assignment-rule');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d6/validate.mjs",
+      "blob": "790e3005c9d76501bc56a67cb03e3c3445e378ff",
+      "sha256": "108455b7f2e475b1edc5c5679a6cc6ac4de530f85c41a2f55531f5ad7fb8c445",
+      "lines": [
+        {
+          "line": 12,
+          "text": " for(const row of matrix.rows){assert.deepEqual(prepare(lane,row.futurePreparation.unit),row.futurePreparation,row.id);for(const c of row.contexts){const bytes=observe(lane,c.request);assert.deepEqual(JSON.parse(bytes),c.expected,row.id);assert.equal(bytes,c.ascii,row.id+' ASCII');actualChildren.set(JSON.stringify(c.expected),JSON.parse(bytes));}}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/controls.mjs",
+      "blob": "32ea1cef0056995795ad2033159e1bf7e5d14157",
+      "sha256": "32869933e6c7940a78b128f0b60fba72ac3fdbd761b982a3ba87cdd5144dc6c4",
+      "lines": [
+        {
+          "line": 8,
+          "text": "const get=id=>matrix.rows.find(r=>r.id===id),future=(row,current)=>{const v=copy(current);v.rejection={kind:'syntax-error',ruleCode:'lexical-declaration-statement'};v.diagnostic=copy(row.futurePreparation.diagnostic);return v;};"
+        },
+        {
+          "line": 16,
+          "text": "  const current=observeScripts(request),expected=copy(current);expected.result={kind:'syntax-error',phase:'parse',constructorName:'SyntaxError',ruleCode:'lexical-declaration-statement'};expected.source.location=copy(row.expected.candidates[0].keyword.loc);"
+        },
+        {
+          "line": 46,
+          "text": " const row=get(id),unit={id:'same',text:row.text},realm=new Realm(()=>{},'script'),current=prepareBoundedScript(unit,realm);metadataRows.push({variant,negative,unit:copy(unit),current:current.kind==='ready'?row.current.preparation:current,expected:row.expected.kind==='eligible'?future(row,current):current.kind==='ready'?row.current.preparation:current});"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/freeze.mjs",
+      "blob": "a16090f96d96e270fa3702ece9aa1ee56c6748bf",
+      "sha256": "93fb1660bc3263f43fd97e638236bcf87118cede4f9c175f24407920d8a14b1e",
+      "lines": [
+        {
+          "line": 19,
+          "text": "function ordinary(text,id){const unit={id,text},n=nodes();const result={legacy:p.parse(text),returns:p.auditScriptReturns(text),declaration:p.parseDeclarationPlan(unit),bounded:p.parseBoundedScriptDeclarationPlan(unit),D1:p.auditBoundedScriptBlockFunctions(text),D3:p.auditBoundedScriptStrictParameters(text),D5:p.auditBoundedScriptNumericAssignments(text),preparation:p.parseBoundedScriptPreparation(unit,n)};return {result,retention:{source:n.source,body:n.body,scopes:[...n.scopes],declarations:[...n.declarations],assignments:[...n.assignmentNameEligible]}};}"
+        },
+        {
+          "line": 35,
+          "text": "   const candidates=c.sites.map(s=>{assert.equal(c.text.slice(s.start,s.start+3),'let',c.id);return {ruleCode:'lexical-declaration-statement',context:s.context,keyword:{text:'let',start:s.start,end:s.start+3,loc:location(c.text,s.start)}};}).sort((a,b)=>a.keyword.start-b.keyword.start);"
+        },
+        {
+          "line": 41,
+          "text": " const futurePreparation=structuredClone(current.preparation);"
+        },
+        {
+          "line": 42,
+          "text": " if(expected.kind==='eligible') {assert.equal(current.preparation.kind,'blocked');assert.equal(current.preparation.rejection.capabilityCode,'parse.declaration-statement',c.id);futurePreparation.rejection={kind:'syntax-error',ruleCode:'lexical-declaration-statement'};futurePreparation.diagnostic={phase:'parse',name:'SyntaxError',message:'lexical declaration is not allowed in Statement position',loc:expected.candidates[0].keyword.loc};}"
+        },
+        {
+          "line": 48,
+          "text": "  if(expected.kind==='eligible'){future.result={kind:'syntax-error',phase:'parse',constructorName:'SyntaxError',ruleCode:'lexical-declaration-statement'};future.source.location=structuredClone(expected.candidates[0].keyword.loc);}"
+        },
+        {
+          "line": 51,
+          "text": " rows.push({...c,sourceUnits:c.text.length,sha256:hash(c.text),current,retention,referenceText,reference,expected,futurePreparation,contexts});"
+        },
+        {
+          "line": 63,
+          "text": "const own=f=>['typescript/TASKS.md','typescript/COORDINATION.md','typescript/docs/script-lexical-statement-rule.md'].includes(f)||f.startsWith('typescript/docs/validation/ts-035d7-p/');"
+        },
+        {
+          "line": 65,
+          "text": "const pattern=/lexical-declaration-statement|lexical-rule|parse\\.declaration-statement|parseBoundedScriptPreparation|futurePreparation|row\\.current|r\\.current|ruleCode:one|assignment-rule/;"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/make-wire.mjs",
+      "blob": "bc58c2476fbf0de8d4893025d5aaa511bed9b7ce",
+      "sha256": "2206fb861d551ac9a89839e368b2881814f348824fe358846d57ddc18ca111c2",
+      "lines": [
+        {
+          "line": 8,
+          "text": "s=s.replaceAll(\"c.result.ruleCode='assignment-target'\",\"c.result.ruleCode='lexical-declaration-statement'\");"
+        },
+        {
+          "line": 10,
+          "text": "s=s.replace(\"r.id.replace('duplicate-block-lexical-function','assignment-target')\",\"r.id.replace('assignment-target','lexical-declaration-statement')\");"
+        },
+        {
+          "line": 12,
+          "text": "s=s.replace(\"m.id!=='assignment-rule'\",\"m.id!=='statement-rule'\");"
+        },
+        {
+          "line": 13,
+          "text": "s=s.replace(\"const parameter=r.child.result.ruleCode==='assignment-target'\",\"const parameter=r.child.result.ruleCode==='lexical-declaration-statement'\");"
+        },
+        {
+          "line": 14,
+          "text": "s=s.replace(\"...(future?['assignment-target']:[])\",\"'assignment-target',...(future?['lexical-declaration-statement']:[])\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/original-oracle/freeze.mjs",
+      "blob": "77f3254b574992038806c307b9babca484f17401",
+      "sha256": "897ec799fbcc1890cf0d39d379d4baec2f9f490a50d82b0392508fa5102e1811",
+      "lines": [
+        {
+          "line": 18,
+          "text": "function ordinary(text,id){const unit={id,text},n=nodes();const result={legacy:p.parse(text),returns:p.auditScriptReturns(text),declaration:p.parseDeclarationPlan(unit),bounded:p.parseBoundedScriptDeclarationPlan(unit),D1:p.auditBoundedScriptBlockFunctions(text),D3:p.auditBoundedScriptStrictParameters(text),D5:p.auditBoundedScriptNumericAssignments(text),preparation:p.parseBoundedScriptPreparation(unit,n)};return {result,retention:{source:n.source,body:n.body,scopes:[...n.scopes],declarations:[...n.declarations],assignments:[...n.assignmentNameEligible]}};}"
+        },
+        {
+          "line": 35,
+          "text": "   const candidates=c.sites.map(s=>{assert.equal(c.text.slice(s.start,s.start+3),'let',c.id);return {ruleCode:'lexical-declaration-statement',context:s.context,keyword:{text:'let',start:s.start,end:s.start+3,loc:location(c.text,s.start)}};}).sort((a,b)=>a.keyword.start-b.keyword.start);"
+        },
+        {
+          "line": 41,
+          "text": " const futurePreparation=structuredClone(current.preparation);"
+        },
+        {
+          "line": 42,
+          "text": " if(expected.kind==='eligible') {assert.equal(current.preparation.kind,'blocked');assert.equal(current.preparation.rejection.capabilityCode,'parse.declaration-statement',c.id);futurePreparation.rejection={kind:'syntax-error',ruleCode:'lexical-declaration-statement'};futurePreparation.diagnostic={phase:'parse',name:'SyntaxError',message:'lexical declaration is not allowed in Statement position',loc:expected.candidates[0].keyword.loc};}"
+        },
+        {
+          "line": 48,
+          "text": "  if(expected.kind==='eligible'){future.result={kind:'syntax-error',phase:'parse',constructorName:'SyntaxError',ruleCode:'lexical-declaration-statement'};future.source.location=structuredClone(expected.candidates[0].keyword.loc);}"
+        },
+        {
+          "line": 51,
+          "text": " rows.push({...c,sourceUnits:c.text.length,sha256:hash(c.text),current,retention,referenceText,reference,expected,futurePreparation,contexts});"
+        },
+        {
+          "line": 61,
+          "text": "const own=f=>['typescript/TASKS.md','typescript/COORDINATION.md','typescript/docs/script-lexical-statement-rule.md'].includes(f)||f.startsWith('typescript/docs/validation/ts-035d7-p/');"
+        },
+        {
+          "line": 63,
+          "text": "const pattern=/lexical-declaration-statement|lexical-rule|parse\\.declaration-statement|parseBoundedScriptPreparation|futurePreparation|row\\.current|r\\.current|ruleCode:one|assignment-rule/;"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/probe.mjs",
+      "blob": "76e453fbae7e16b4040a3162458d921fdcbfe4b2",
+      "sha256": "f528e705e12ab45a992affd6d96b87be7387e73480fb2ec911d74ed88eebb408",
+      "lines": [
+        {
+          "line": 9,
+          "text": "function ordinary(text,id){const n={source:{text:''},body:[],scopes:new Map(),declarations:new Map(),assignmentNameEligible:new Map()},unit={id,text};const result={legacy:p.parse(text),returns:p.auditScriptReturns(text),declaration:p.parseDeclarationPlan(unit),bounded:p.parseBoundedScriptDeclarationPlan(unit),D1:p.auditBoundedScriptBlockFunctions(text),D3:p.auditBoundedScriptStrictParameters(text),D5:p.auditBoundedScriptNumericAssignments(text),preparation:p.parseBoundedScriptPreparation(unit,n)};return {result,retention:{source:n.source,body:n.body,scopes:[...n.scopes],declarations:[...n.declarations],assignments:[...n.assignmentNameEligible]}};}"
+        },
+        {
+          "line": 14,
+          "text": " for(const row of matrix.rows){assert.deepEqual(ordinary(row.text,row.id),{result:row.current,retention:row.retention},row.id);for(const c of row.contexts){assert.deepEqual(observeScripts(c.request),c.current);contexts++;}"
+        },
+        {
+          "line": 21,
+          "text": " const runtime=[];for(const order of [['alpha','beta'],['beta','alpha']]){const args=[fileURLToPath(import.meta.url),'--runtime',...order.map(n=>fileURLToPath(new URL('inputs/'+n+'.js',here)))];const r=spawnSync(process.execPath,args,{encoding:'utf8',timeout:30000,maxBuffer:4*1024*1024});runtime.push({order,status:r.status,signal:r.signal,error:r.error?.message??null,stdout:r.stdout,stderr:r.stderr});assert.equal(r.status,0);assert.equal(r.signal,null);assert.equal(r.error,undefined);for(const output of JSON.parse(r.stdout)){const row=matrix.rows.find(r=>r.text===output.text);assert(row);assert.deepEqual(output.current,{result:row.current,retention:row.retention});}}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/proposals.mjs",
+      "blob": "5bb3746a18d61b0f028130a94e5326535b208a3d",
+      "sha256": "edc695d5460da37d45fd4ea99be1fce7cb1fcfcaa3390a6699db5ce98d30bdce",
+      "lines": [
+        {
+          "line": 9,
+          "text": "edit('typescript/tools/test262/script-observe-codec.test.mjs',\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])\",\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target','lexical-declaration-statement'])\");"
+        },
+        {
+          "line": 10,
+          "text": "edit('typescript/docs/validation/ts-035d2-p/verify-future-wire.mjs',\"m.id==='parameter-rule'||m.id==='assignment-rule'\",\"m.id==='parameter-rule'||m.id==='assignment-rule'||m.id==='statement-rule'\",2);"
+        },
+        {
+          "line": 12,
+          "text": "edit(d4,\"m.id==='assignment-rule'&&future\",\"(m.id==='assignment-rule'||m.id==='statement-rule')&&future\",2);"
+        },
+        {
+          "line": 15,
+          "text": " edit(f,\"set(c,m.childPath,m.value);assert.throws(()=>decodeChild(c),r.id+'/'+m.id);\",\"set(c,m.childPath,m.value);if(m.id==='statement-rule'&&future)assert.deepEqual(decodeChild(c),c,r.id+'/'+m.id);else assert.throws(()=>decodeChild(c),r.id+'/'+m.id);\");"
+        },
+        {
+          "line": 16,
+          "text": " edit(f,\"set(e,m.envelopePath,m.value);assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);\",\"set(e,m.envelopePath,m.value);if(m.id==='statement-rule'&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+'/'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/proposed/typescript/docs/validation/ts-035d2-p/verify-future-wire.mjs",
+      "blob": "4365d0bc7718eeeca84ce5c5ff87a470f0e974dd",
+      "sha256": "d16fd967b95dff4d107047845e017d647f29dce90818d8c57095c129ef1712a2",
+      "lines": [
+        {
+          "line": 35,
+          "text": "  if(m.id==='parameter-rule'||m.id==='assignment-rule'||m.id==='statement-rule')assert.deepEqual(parseChild(c),c,r.id+'/'+m.id+' reviewed D4 code');"
+        },
+        {
+          "line": 38,
+          "text": "   if(m.id==='parameter-rule'||m.id==='assignment-rule'||m.id==='statement-rule')assert.deepEqual(parseFull(e),e,r.id+'/'+m.id+' reviewed D4 code');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/proposed/typescript/docs/validation/ts-035d4-p/wire.mjs",
+      "blob": "d8d0e8cbe7dcb54be866f7f3f20cc5e2febfa670",
+      "sha256": "1cb30d374f5a017b5be2217d4818fc2033e332c9fef1afb9b9617b1a085a158e",
+      "lines": [
+        {
+          "line": 42,
+          "text": " for(const m of mutations){const c=copy(child);set(c,m.childPath,m.value);if((m.id==='assignment-rule'||m.id==='statement-rule')&&future)assert.deepEqual(decodeChild(c),c,r.id+'/'+m.id);else assert.throws(()=>decodeChild(c),r.id+'/'+m.id);rejections++;"
+        },
+        {
+          "line": 43,
+          "text": "  if(m.envelopePath){const e=copy(envelope);set(e,m.envelopePath,m.value);if((m.id==='assignment-rule'||m.id==='statement-rule')&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+'/'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);rejections++;}}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/proposed/typescript/docs/validation/ts-035d5-p/wire.mjs",
+      "blob": "50ab0461c44c31fde0bae22644bf26e7148b37c4",
+      "sha256": "aeaee4267e1370e140c2fb593577ec688f87f57519aeb31d0a6e4c98dd3dac31",
+      "lines": [
+        {
+          "line": 27,
+          "text": "const mutations=old.mutations.filter(m=>m.id!=='assignment-rule');"
+        },
+        {
+          "line": 42,
+          "text": " for(const m of mutations){const c=copy(child);set(c,m.childPath,m.value);if(m.id==='statement-rule'&&future)assert.deepEqual(decodeChild(c),c,r.id+'/'+m.id);else assert.throws(()=>decodeChild(c),r.id+'/'+m.id);rejections++;"
+        },
+        {
+          "line": 43,
+          "text": "  if(m.envelopePath){const e=copy(envelope);set(e,m.envelopePath,m.value);if(m.id==='statement-rule'&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+'/'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);rejections++;}}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/proposed/typescript/docs/validation/ts-035d6-p/wire.mjs",
+      "blob": "744b74a8280b9d68397b9365acf2ef734a79f5e5",
+      "sha256": "bda225e307e0ee97f411649453494cf4d26fc399b91a7d5b2815a256803667e6",
+      "lines": [
+        {
+          "line": 37,
+          "text": "const mutations=old.mutations.filter(m=>m.id!=='assignment-rule');"
+        },
+        {
+          "line": 52,
+          "text": " for(const m of mutations){const c=copy(child);set(c,m.childPath,m.value);if(m.id==='statement-rule'&&future)assert.deepEqual(decodeChild(c),c,r.id+'/'+m.id);else assert.throws(()=>decodeChild(c),r.id+'/'+m.id);rejections++;"
+        },
+        {
+          "line": 53,
+          "text": "  if(m.envelopePath){const e=copy(envelope);set(e,m.envelopePath,m.value);if(m.id==='statement-rule'&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+'/'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);rejections++;}}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/proposed/typescript/tools/test262/script-observe-codec.test.mjs",
+      "blob": "c8c7f75367624469f4b9f9d24d5f3c6c8762d322",
+      "sha256": "d6b173b594d28a8d54d2e3185d5c60cab2916e64953d467a5ed971e3895fb377",
+      "lines": [
+        {
+          "line": 24,
+          "text": " const ruleFrom=\"ruleCode:one(['return-outside-function'])\";"
+        },
+        {
+          "line": 25,
+          "text": " const ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target','lexical-declaration-statement'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/verify.mjs",
+      "blob": "7c907e6c1684720827ece807b7c6bad451b82ef3",
+      "sha256": "6eb1ac01c7530e6904b8de9b6963cb8c720c85e0888bcbf5308279db96052c71",
+      "lines": [
+        {
+          "line": 19,
+          "text": " const own=f=>['typescript/TASKS.md','typescript/COORDINATION.md','typescript/docs/script-lexical-statement-rule.md'].includes(f)||f.startsWith('typescript/docs/validation/ts-035d7-p/');for(const listing of [git('diff',m.base,'--name-only'),git('ls-files','--others','--exclude-standard')])assert.deepEqual(listing.split('\\n').filter(Boolean).filter(f=>!own(f)),[]);"
+        },
+        {
+          "line": 23,
+          "text": "for(const r of json('semantic-matrix.json').rows){assert.equal(hash(r.text),r.sha256);assert.equal(r.text.length,r.sourceUnits);if(r.expected.kind!=='eligible')assert.deepEqual(r.futurePreparation,r.current.preparation);for(const c of r.contexts)assert.deepEqual(JSON.parse(c.ascii),c.expected);}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7-p/wire.mjs",
+      "blob": "c7e357fde157839187049c9aff188bf8350bf145",
+      "sha256": "e4c16fcd60326385f96be9146c74c0c82d8bea88af3822309d52bc6c3c663e96",
+      "lines": [
+        {
+          "line": 21,
+          "text": " c.requestSha256=b.requestSha256;c.result.ruleCode='lexical-declaration-statement';c.source.location=copy(source.expected.candidates[0].keyword.loc);"
+        },
+        {
+          "line": 24,
+          "text": " r.id=r.id.replace('assignment-target','lexical-declaration-statement');r.productionEmission=true;rows.push(r);"
+        },
+        {
+          "line": 28,
+          "text": "const mutations=old.mutations.filter(m=>m.id!=='statement-rule');"
+        },
+        {
+          "line": 37,
+          "text": " const parameter=r.child.result.ruleCode==='lexical-declaration-statement';"
+        },
+        {
+          "line": 50,
+          "text": " for(const code of ['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target',...(future?['lexical-declaration-statement']:[])]){const c=copy(child),e=copy(envelope);c.result.ruleCode=code;e.observation.ruleCode=code;assert.deepEqual(decodeChild(c),c);assert.deepEqual(decodeEnvelope(e),e);}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d7/validate.mjs",
+      "blob": "ac360db056658bb4039cea26ed28e7268f0cafbf",
+      "sha256": "da650c6279ae47083f9d75c33d8c4de7eafe489a7cc90f154b08e42509360f70",
+      "lines": [
+        {
+          "line": 21,
+          "text": " assert.deepEqual(actual.ordinary,i<140?row.current:row.expected.result,row.id+' eight ordinary');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/src/outcomes.ts",
+      "blob": "61aa93edc0bf5274cba1ca9e8949b770b14aecad",
+      "sha256": "ac0e100ac4de91ee224e101b0c104d94b961759e8fd1d411b41218c83dc68582",
+      "lines": [
+        {
+          "line": 15,
+          "text": "    | \"parse.declaration-statement\""
+        },
+        {
+          "line": 29,
+          "text": "export type SyntaxRule = \"assignment-target\" | \"lexical-declaration-statement\" | \"return-outside-function\" | \"duplicate-strict-parameter\" | \"duplicate-block-lexical-function\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/src/parser.ts",
+      "blob": "341733713407a68d5e56b9c24c36eaeea9d930db",
+      "sha256": "659ba22a9625e30ca2ad823af0d496fe03cbdd0650f74960689c9673f7a31e89",
+      "lines": [
+        {
+          "line": 50,
+          "text": "    const end = parser.current();"
+        },
+        {
+          "line": 67,
+          "text": "export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {"
+        },
+        {
+          "line": 68,
+          "text": "    const original = parseBoundedScriptPreparationBeforeNumericAudit(unit, nodes);"
+        },
+        {
+          "line": 81,
+          "text": "function parseBoundedScriptPreparationBeforeNumericAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {"
+        },
+        {
+          "line": 154,
+          "text": "    if (parser.current().kind !== \"eof\" || parser.current().start !== source.text.length || parser.current().end !== source.text.length) throw new Error(\"declaration plan did not reach EOF\");"
+        },
+        {
+          "line": 237,
+          "text": "        if ((this.at(\"let\") && !auditLet) || this.at(\"function\")) this.fail({ kind: \"unsupported-syntax\", capabilityCode: \"parse.declaration-statement\" }, \"declarations require a block\", keyword.loc);"
+        },
+        {
+          "line": 241,
+          "text": "            this.lexicalCandidates.push({ ruleCode: \"lexical-declaration-statement\", context,"
+        }
+      ]
+    },
+    {
+      "path": "typescript/src/script-declarations.ts",
+      "blob": "c7e0cfde2a8ceba9ccdf149096d5836d61c0be64",
+      "sha256": "9327c100723323a9af0b7f98b81daf2b0eb8679034a948439549b6f974ed1f77",
+      "lines": [
+        {
+          "line": 129,
+          "text": "    readonly ruleCode: \"lexical-declaration-statement\";"
+        },
+        {
+          "line": 162,
+          "text": "        result.push({ ruleCode: \"lexical-declaration-statement\", context: candidate.context,"
+        },
+        {
+          "line": 486,
+          "text": "            rejection: { kind: \"unsupported-syntax\", capabilityCode: \"parse.declaration-statement\" },"
+        },
+        {
+          "line": 495,
+          "text": "                        rejection: { kind: \"unsupported-syntax\", capabilityCode: \"parse.declaration-statement\" },"
+        },
+        {
+          "line": 589,
+          "text": "                    rejection: { kind: \"unsupported-syntax\", capabilityCode: \"parse.declaration-statement\" },"
+        }
+      ]
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "blob": "06b811ae0ec3976cc8ffc7dc954bc83809270085",
+      "sha256": "e855c74cba73ef87c5d8d6ef49a0337f947d94c8247ca5c9e47e901af692f4fc",
+      "lines": [
+        {
+          "line": 3,
+          "text": "import { parseDeclarationPlan, parseBoundedScriptPreparation } from \"./parser.js\";"
+        },
+        {
+          "line": 139,
+          "text": "        const plan = bounded ? parseBoundedScriptPreparation(unit, nodes) : parseDeclarationPlan(unit, nodes);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-assignment-target-audit.ts",
+      "blob": "29a9fb10358df10f0a417a794384cdcee71d3a57",
+      "sha256": "f839f058228dad8b49ca10736fde7ea852f8ca90cc1d6425d7203245fe009a18",
+      "lines": [
+        {
+          "line": 2,
+          "text": "import { auditBoundedScriptNumericAssignments, auditBoundedScriptStrictParameters, auditBoundedScriptBlockFunctions, parse, parseDeclarationPlan, parseBoundedScriptDeclarationPlan, parseBoundedScriptPreparation, auditScriptReturns } from \"../src/parser.js\";"
+        },
+        {
+          "line": 22,
+          "text": "    bounded: parseBoundedScriptDeclarationPlan(unit, boundedNodes), D1: auditBoundedScriptBlockFunctions(text), D3: auditBoundedScriptStrictParameters(text), preparation: parseBoundedScriptPreparation(unit, prepNodes) };"
+        },
+        {
+          "line": 29,
+          "text": "parseBoundedScriptPreparation({ id: \"runtime\", text: left }, leftNodes);"
+        },
+        {
+          "line": 30,
+          "text": "parseBoundedScriptPreparation({ id: \"runtime\", text: right }, rightNodes);"
+        },
+        {
+          "line": 53,
+          "text": "const identity = parseBoundedScriptPreparation({ id: \"identity\", text: \"var x; x=function(){}; (x)=function(){};\" }, identityNodes);"
+        },
+        {
+          "line": 64,
+          "text": "parseBoundedScriptPreparation({ id: \"identity\", text: \"var x; x=function(){}; (x)=function(){};\" }, otherNodes);"
+        },
+        {
+          "line": 68,
+          "text": "    bounded: parseBoundedScriptDeclarationPlan(unit), D1: auditBoundedScriptBlockFunctions(text), D3: auditBoundedScriptStrictParameters(text), preparation: parseBoundedScriptPreparation(unit, newNodes()) };"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-assignment-target-dispatch.ts",
+      "blob": "cb3b922d769128b542804cb7691424c0c4622b5f",
+      "sha256": "e9f35a280c5a200a48f4e215e646c66ccaf55ecedf5cfdc0d1fc16ccc6b2ef73",
+      "lines": [
+        {
+          "line": 5,
+          "text": "import { parseBoundedScriptPreparation } from \"../src/parser.js\";"
+        },
+        {
+          "line": 140,
+          "text": "        console.log(JSON.stringify(parseBoundedScriptPreparation({id, text}, {source:{text:\"\"},body:[],scopes:new Map(),declarations:new Map(),assignmentNameEligible:new Map()})));"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-lexical-statement-audit.ts",
+      "blob": "fc9f749a0c84cb3f19efd09ec07bd73d8ed5182f",
+      "sha256": "99e9742a49247b7b549ab289e0814f938401e18d527e5ff2fad292f27ba1434d",
+      "lines": [
+        {
+          "line": 2,
+          "text": "import { auditBoundedScriptLexicalStatements, auditBoundedScriptNumericAssignments, auditBoundedScriptStrictParameters, auditBoundedScriptBlockFunctions, parse, parseDeclarationPlan, parseBoundedScriptDeclarationPlan, parseBoundedScriptPreparation, auditScriptReturns } from \"../src/parser.js\";"
+        },
+        {
+          "line": 22,
+          "text": "    bounded: parseBoundedScriptDeclarationPlan(unit, boundedNodes), D1: auditBoundedScriptBlockFunctions(text), D3: auditBoundedScriptStrictParameters(text), D5: auditBoundedScriptNumericAssignments(text), preparation: parseBoundedScriptPreparation(unit, prepNodes) };"
+        },
+        {
+          "line": 30,
+          "text": "parseBoundedScriptPreparation({ id: \"runtime\", text: left }, leftNodes);"
+        },
+        {
+          "line": 31,
+          "text": "parseBoundedScriptPreparation({ id: \"runtime\", text: right }, rightNodes);"
+        },
+        {
+          "line": 54,
+          "text": "const identity = parseBoundedScriptPreparation({ id: \"identity\", text: \"var x; x=function(){}; (x)=function(){};\" }, identityNodes);"
+        },
+        {
+          "line": 65,
+          "text": "parseBoundedScriptPreparation({ id: \"identity\", text: \"var x; x=function(){}; (x)=function(){};\" }, otherNodes);"
+        },
+        {
+          "line": 69,
+          "text": "    bounded: parseBoundedScriptDeclarationPlan(unit), D1: auditBoundedScriptBlockFunctions(text), D3: auditBoundedScriptStrictParameters(text), D5: auditBoundedScriptNumericAssignments(text), preparation: parseBoundedScriptPreparation(unit, newNodes()) };"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-strict-parameter-audit.ts",
+      "blob": "0e13e57ffe86c90e8733bb882e2d8475cf44f463",
+      "sha256": "88aadcb358b20aa7a6855849a2606dc7854f3d01b80312fc1c60a4913b1d3540",
+      "lines": [
+        {
+          "line": 2,
+          "text": "import { auditBoundedScriptStrictParameters, auditBoundedScriptBlockFunctions, parse, parseDeclarationPlan, parseBoundedScriptDeclarationPlan, parseBoundedScriptPreparation, auditScriptReturns } from \"../src/parser.js\";"
+        },
+        {
+          "line": 22,
+          "text": "    bounded: parseBoundedScriptDeclarationPlan(unit, boundedNodes), D1: auditBoundedScriptBlockFunctions(text), D2: parseBoundedScriptPreparation(unit, prepNodes) };"
+        },
+        {
+          "line": 47,
+          "text": "    bounded: parseBoundedScriptDeclarationPlan(unit), D1: auditBoundedScriptBlockFunctions(text), D2: parseBoundedScriptPreparation(unit, newNodes()) };"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-strict-parameter-dispatch.ts",
+      "blob": "4df6a5273d2c5c84b121047b4818200ad8b7d846",
+      "sha256": "9a1ccd80b8793a06573afbd883e7c83f83fb0c5586c1f312262c608f5c8ea34e",
+      "lines": [
+        {
+          "line": 13,
+          "text": "import { parse, auditScriptReturns, parseDeclarationPlan, parseBoundedScriptDeclarationPlan, parseBoundedScriptPreparation, auditBoundedScriptBlockFunctions, auditBoundedScriptStrictParameters } from \"../src/parser.js\";"
+        },
+        {
+          "line": 140,
+          "text": "    const preparation = parseBoundedScriptPreparation(unit, nodes);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-strict-rule-dispatch.ts",
+      "blob": "c36e954c3da2ba812b951a6c36003be817992144",
+      "sha256": "e392b2688ac6018123bddbd53e405bedf0f9e8e8cd2522470793c5a3ddf1a407",
+      "lines": [
+        {
+          "line": 3,
+          "text": "import { parse, auditScriptReturns, parseDeclarationPlan, parseBoundedScriptDeclarationPlan, parseBoundedScriptPreparation, auditBoundedScriptBlockFunctions } from \"../src/parser.js\";"
+        },
+        {
+          "line": 44,
+          "text": "    const preparation = parseBoundedScriptPreparation(unit, nodes);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/structured-outcomes.ts",
+      "blob": "d83d7f81918b254a609b8bfb3185b3635fdceae4",
+      "sha256": "e697ce3baef4875746a9bb46ab9276d23549da4d709179e99e1b6e9c32ba8f8a",
+      "lines": [
+        {
+          "line": 54,
+          "text": "    \"\", \"\", \"parse.assignment-target\", \"parse.declaration-statement\", \"\", \"parse.return-context\", \"\", \"parse.duplicate-parameter\", \"parse.duplicate-parameter\", \"parse.duplicate-binding\", \"parse.duplicate-binding\", \"parse.duplicate-binding\", \"parse.expected-token\", \"parse.binding-identifier\", \"parse.property-name\", \"parse.object-key\", \"parse.unexpected\", \"parse.line-terminator\", \"parse.line-terminator\", \"parse.throw-expression\", \"parse.loop-context\", \"parse.loop-context\", \"parse.delete-identifier\", \"parse.array-spread\", \"parse.prototype-literal\", \"lex.indeterminate-comment\", \"lex.indeterminate-string-newline\", \"lex.indeterminate-string-end\", \"lex.leading-zero\", \"lex.numeric-literal\", \"lex.string-escape\", \"lex.operator\", \"lex.character\", \"lex.operator\", \"parse.assignment-target\", \"lex.indeterminate-string-end\", \"parse.return-context\", \"parse.return-context\", \"\", \"lex.character\", \"lex.character\", \"parse.unexpected\","
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/driver-result.mjs",
+      "blob": "137bb2973a7c5a32da867759aa3e281ac2c63cf3",
+      "sha256": "9595a6d38e8d3fdbad9e23b71ba4eb0a480cfe7fbc6caf2a6b7522cf3d3071c1",
+      "lines": [
+        {
+          "line": 10,
+          "text": "  'parse.expected-token','parse.binding-identifier','parse.duplicate-binding','parse.declaration-statement',"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/driver-result.test.mjs",
+      "blob": "e2fee8df528e2dce7f020506c2fdd6db9dbe235f",
+      "sha256": "ad1546bb9f930d08ef7e1a763b5713737c80147f28cd905bd247cb4bd16a3dce",
+      "lines": [
+        {
+          "line": 92,
+          "text": "    for (const ruleCode of ['assignment-target','lexical-declaration-statement','duplicate-strict-parameter','duplicate-block-lexical-function','unknown','',null]) bad.push({ ...good, observation: { ...certified, ruleCode } });"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/result.mjs",
+      "blob": "0e406281720e6ea08fc9633cc10a434424dd0990",
+      "sha256": "5b8ff78e1f25ae723c0a6ad4992c4973923b19a1e4c0c9fab5644c5ccbe145e4",
+      "lines": [
+        {
+          "line": 6,
+          "text": "const RULES = ['assignment-target', 'lexical-declaration-statement', 'return-outside-function',"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/script-driver-result.mjs",
+      "blob": "5f296b6dc0c332e62b25d31dc8cc6823f88d8d3c",
+      "sha256": "b604ca5cd56104371f0b7f981ddb49e8cdaa99cc7a2aec59f379ab9d4b959311",
+      "lines": [
+        {
+          "line": 30,
+          "text": "  'parse.expected-token','parse.binding-identifier','parse.duplicate-binding','parse.declaration-statement',"
+        },
+        {
+          "line": 73,
+          "text": "    'syntax-error':{phase:one(['parse']),constructorName:one(['SyntaxError']),ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])},"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/script-observe-codec.test.mjs",
+      "blob": "252c97f9f44fdeb1d6db10c8b24b644ba3015212",
+      "sha256": "500a43a2b7e2936df79fdd46203f5e16c0bc5d98fddc44e430f19c27db97eb1b",
+      "lines": [
+        {
+          "line": 24,
+          "text": " const ruleFrom=\"ruleCode:one(['return-outside-function'])\";"
+        },
+        {
+          "line": 25,
+          "text": " const ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/script-result.mjs",
+      "blob": "5be0e8fe489f13497554ac7a81efe73267082831",
+      "sha256": "6ab34360528b169d2ac8ffde173f18784e5cc6dc364882e40d052dc4356bb7c8",
+      "lines": [
+        {
+          "line": 30,
+          "text": "  'parse.expected-token','parse.binding-identifier','parse.duplicate-binding','parse.declaration-statement',"
+        },
+        {
+          "line": 73,
+          "text": "    'syntax-error':{phase:one(['parse']),constructorName:one(['SyntaxError']),ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])},"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/script-result.test.mjs",
+      "blob": "11606ceb83a0547d9b4312390a990eed476298cf",
+      "sha256": "7346cf22ad9ff83860fa4fc394a7c78ed0023dcb4d09545d99f6d00c90b7df3e",
+      "lines": [
+        {
+          "line": 136,
+          "text": "  'parse.declaration-statement','parse.return-context','parse.line-terminator','parse.throw-expression','parse.loop-context','parse.duplicate-parameter',"
+        }
+      ]
+    }
+  ]
+}
