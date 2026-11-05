@@ -1,0 +1,46 @@
+{
+  "corpusFullArrays": 60,
+  "debtCases": 130,
+  "readerByteCases": 33,
+  "counts": {
+    "unsupported-feature": 19,
+    "unsupported-profile": 41
+  },
+  "unknownDuplicatePolicy": [
+    {
+      "id": "legacy:0:future-debt",
+      "status": "unsupported-feature",
+      "reasonCode": "future-debt",
+      "authority": "never"
+    },
+    {
+      "id": "legacy:1:future-debt",
+      "status": "unsupported-feature",
+      "reasonCode": "future-debt",
+      "authority": "never"
+    },
+    {
+      "id": "runtime:coverage",
+      "status": "unsupported-feature",
+      "reasonCode": "runtime-capabilities",
+      "authority": "runtime"
+    }
+  ],
+  "detachmentAndFreeze": "PASS",
+  "nonJsonObjectControls": 4,
+  "explicitUndefinedAndArgumentPriority": "PASS",
+  "frozenInput": "PASS",
+  "environmentWitness": {
+    "input": {
+      "SCRIPT_CAPABILITIES_PATH": "elsewhere.json",
+      "SCRIPT_CAPABILITIES_REGISTRY": "{\"entries\":[{}]}"
+    },
+    "expected": {
+      "registryVersion": 1,
+      "kind": "script-runtime-capabilities",
+      "entries": []
+    },
+    "meaning": "No environment lookup; source-contract witness only"
+  },
+  "production": false
+}

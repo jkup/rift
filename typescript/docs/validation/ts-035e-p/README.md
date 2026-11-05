@@ -7,6 +7,7 @@ Run from typescript:
 ```
 node docs/validation/ts-035e-p/audit.mjs
 node docs/validation/ts-035e-p/model.mjs
+node docs/validation/ts-035e-p/e1-controls.mjs
 ```
 
 The audit checks 5,227 unchanged existing whole files, replays 154 frozen A
@@ -30,3 +31,19 @@ Initial probe error is retained in initial-failure.txt.
 
 No registry file or production/old-test/history/compiler/profile/manifest/CLI
 change; no build, launcher activation, publication or successor dispatch.
+
+## E1 review correction
+
+Candidate 9562032 was not accepted. Its design/README are retained under
+initial-candidate/; all original executable/literal evidence is unchanged.
+The corrected contract defines the exact five-field metadata projection,
+known/null/unknown manifest ID handling, variant membership, failure precedence,
+fresh frozen outputs, and exact-canonical-byte reader acceptance. E2 remains
+deferred; no extra E2 implementation or schema work is claimed.
+
+e1-literals.json contains 130 debt cases (including FULL four-field arrays for
+all 60 variants) and 33 byte/argument/IO reader cases. e1-controls.mjs replays
+those frozen expectations, never rewriting them in ordinary mode. It also tests
+non-JSON argument controls, unknown repeated legacy reason mapping, detachment
+and deep freeze. e1-results.json retains totals and exact extra witnesses.
+The IO/evidence models are not production APIs. Do not run --freeze in review.

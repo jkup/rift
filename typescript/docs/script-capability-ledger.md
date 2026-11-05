@@ -24,28 +24,121 @@ E1 owns exactly these new files, with no existing-file migration:
 
 `EmptyRuntimeRegistry` has exactly registryVersion:1,
 kind:"script-runtime-capabilities", entries:[]; no optional keys. The reader
-uses a module-relative fixed path, fatal UTF-8, duplicate/escaped-equivalent
-key rejection and exact shape. It accepts **no** caller path, registry object,
-environment override, injected verifier, or nonempty entries. Canonical bytes
-are fixed as above; unknown versions, extra keys and any entries fail closed.
-It returns a deeply frozen detached object. This is deliberately smaller than
-an unreviewed general certificate loader.
+accepts **only the exact bytes above**, including one final LF: no BOM, CRLF,
+alternate whitespace/property order/key escape, or trailing bytes. Equality to
+that ASCII byte sequence already rejects malformed UTF-8, duplicate keys
+(including escaped-equivalent keys), versions, extras and nonempty entries;
+there is no shape-valid alternate JSON acceptance path or need to parse
+untrusted JSON first. It returns a fresh object and fresh empty array each
+call, both frozen. Equality does not grant a capability: entries is always [].
+
+The only read target is `new URL('./script-capabilities.json', import.meta.url)`.
+`readScriptCapabilities` accepts zero arguments; **any** supplied argument,
+including explicit undefined/null, a path, registry, options or verifier,
+rejects before file IO. It reads no environment variables and therefore an
+environment variable purporting to override the path has no effect (it is not
+a supported option and does not itself cause rejection). Read failures reject
+with a native `Error` whose exact message is `script-capabilities/read`;
+noncanonical bytes reject with `script-capabilities/registry-bytes`;
+argument rejection is `script-capabilities/arguments`. No custom class,
+reasonCode property, fallback, cache, or partial result. Because the API is
+async these are promise rejections. A failure never returns an empty-success
+registry. This is smaller than a general certificate loader.
+
+### Exact metadata projection and failure contract (E1 correction)
+
+The first argument of `reconstructScriptDebts` is **not** the full metadata
+object returned by `metadata(source)`. It is exactly the five-field projection
+`{flags,features,includes,locale,negative}`. All five keys are required; no other
+own keys, including description, blockers, manifestId or symbols, are allowed.
+Callers explicitly pick these fields from validated metadata and copy arrays
+and the negative record. No defaults, coercion, YAML parsing or full-metadata
+compatibility are performed here. `metadata(source)` remains the full source
+YAML validator requiring description; it is not an object validator that E1
+can reuse. E1 adds a private validator for this deliberately smaller contract.
+Passing its projection validator never proves original source/manifest validity.
+
+Inputs are ordinary non-Proxy data objects with Object.prototype, own data
+properties (no accessors), and ordinary dense Array.prototype arrays. Frozen
+data objects are accepted. Reject null-prototype/class instances, accessors,
+sparse arrays, symbols and extra array properties. Proxies are outside the
+trusted host-data API contract; no claim of avoiding Proxy traps. Do not read
+accessor field values while checking a rejected ordinary object.
+
+* flags/features/includes/locale are dense arrays of nonempty strings. Preserve
+  order and duplicates; no trimming or deduplication. Features and locale strings
+  are otherwise unrestricted, exactly as the normalized input contract permits.
+* Allowed flags are onlyStrict, noStrict, raw, module, async, generated,
+  CanBlockIsTrue, CanBlockIsFalse, non-deterministic. Reject any combination
+  containing both members of: onlyStrict/noStrict, raw/onlyStrict, raw/module,
+  module/noStrict, module/onlyStrict, raw/async, CanBlockIsTrue/CanBlockIsFalse.
+  Do not add a new raw/noStrict prohibition absent from input.mjs.
+* For each include, `harness/` + include must end in `.js`, contain no backslash,
+  colon or NUL, and no empty, `.` or `..` path component. No filesystem read
+  occurs here; actual pin/include verification remains planCorpus's duty.
+* negative is null or an ordinary exact `{phase,type}` data object. phase is
+  parse/runtime/resolution, type is a string with nonempty trim() result; retain
+  its original string. resolution requires the module flag. No extra key.
+* variant must be a string member of unchanged `input.mjs:variants(projection)`:
+  module -> [module], else raw -> [raw], else onlyStrict -> [strict], else
+  noStrict -> [non-strict], otherwise [non-strict,strict]. Module is accepted
+  only as a blocked debt input, never as a v2 Script wire variant.
+* manifestId is explicitly null for synthetic/non-manifest debt reconstruction,
+  suppressing only the existing ID-specific legacy additions. Undefined,
+  nonstring/non-null, empty and unknown strings reject. A known ID is exactly
+  an entry ID in the pinned frozenManifest().entries; its five-field projection
+  must deeply equal the input, including array order/duplicates and negative.
+  Thus U-specific debts cannot be requested using unrelated metadata. This
+  equality is still not proof of path/blob/source: the future planner must pass
+  the verified file's own ID. Do not infer an ID by matching metadata.
+
+The module obtains the known-ID table once at initialization using unchanged
+`frozenManifest()` (its fixed manifest path and canonical pin check), copies only
+IDs and five fields, and freezes the private table. Defaults for absent manifest
+fields are [] for the four arrays and null for negative; these defaults apply
+only while projecting the manifest, never to a caller argument. Import rejects
+with `Error('script-capabilities/manifest')` if this load/verification fails.
+No new export, caller-provided table or path override is introduced. This makes
+the synchronous debt API possible without changing input.mjs.
+
+`reconstructScriptDebts` requires exactly three arguments; it throws a native
+Error, with no extra fields, in this precedence: argument count ->
+`script-capabilities/arguments`; projection shape/types/flag/include/negative
+checks -> `script-capabilities/metadata`; invalid or nonmember variant ->
+`script-capabilities/variant`; malformed/unknown ID ->
+`script-capabilities/manifest-id`; known-ID projection mismatch ->
+`script-capabilities/manifest-metadata`. No partial result on failure. A missing
+third argument differs from an explicitly supplied undefined ID: arguments
+versus manifest-id. The function never mutates or freezes caller objects.
 
 `Debt` is exactly `{id,status,reasonCode,authority}`; status is
 unsupported-feature or unsupported-profile; authority is `runtime` or `never`.
-E1 validates required normalized metadata fields and variant against the
-existing input contract, calls unchanged `input.mjs:blockers`, and maps every
+E1 validates the exact projection contract above, calls unchanged
+`input.mjs:blockers(projection,variant,manifestId)`, and maps every
 ordered occurrence to `id="legacy:"+ordinal+":"+reasonCode`, without sorting,
 deduplicating, or removing anything. Then append
 `{id:"runtime:coverage",status:"unsupported-feature",reasonCode:"runtime-capabilities",authority:"runtime"}`.
 The appended debt is mandatory even for parse negatives. Existing debt
 precedence, hence actual 19/41 first-status counts, stays unchanged.
-`module`, `module-profile`, `async`, `async-functions`, `unrecognized-feature`,
-`environment`, `nondeterministic-policy`, and `sloppy-script` have authority
-`never` in E1; other legacy debts have authority `runtime` but are still never
-discharged by E1. This mapping is an eligibility restriction, not proof of
-support. Unknown new reason codes become `never`. No rule-authority arm can
-remove a runtime debt. Metadata is descriptive input, never certification.
+The exhaustive runtime reason allowlist is asi, RegExp, return-asi,
+error-objects, strict-script-contract, directive-script, global-script,
+harness-capabilities. Every other reason has authority never, including module,
+module-profile, async, async-functions, unrecognized-feature, environment,
+nondeterministic-policy, sloppy-script, and any future unknown reason. Compare
+case-sensitively. No prefix or default-runtime rule. Do not filter unknown
+reasons or deduplicate identical reasons: each keeps its status, reason and
+distinct original ordinal ID. A frozen unknown-reason internal mapping witness
+tests this policy without making production blockers injectable. An unchanged
+blockers result is an internal precondition (its status/reason shape is already
+fixed); new unsupported internal shapes require review, never capability grants.
+
+Return a freshly allocated array of freshly allocated exact Debt objects,
+deep-frozen before return, with no references to caller or prior-result objects.
+Mutating the caller later cannot alter a result; attempted writes to result
+array or records fail in strict-mode tests. All arrays, including an otherwise
+empty legacy list, end with the mandatory runtime:coverage object exactly once.
+E1 never discharges any debt. This mapping is eligibility policy, not proof of
+support; no rule-authority arm can remove runtime debt.
 
 The production caller of debt reconstruction must eventually obtain metadata
 from verified bytes via `planCorpus`, not accept a claimed blocker array. E1's
@@ -220,6 +313,31 @@ runtime inspection remains allowed by C's amendment.
 
 ## Literal evidence and required next tests
 
+E1 correction after review of candidate `9562032`: `e1-literals.json` freezes
+130 full debt-call input/output or error cases, including all 60 corpus arrays
+with all four Debt fields, final runtime:coverage, duplicate reasons and ordinal
+IDs. The file is checked in; replay never rewrites it. `e1-controls.mjs` compares
+the frozen arrays to unchanged actual blockers plus the exact E1 mapping, and
+checks malformed projection/variant/ID cases against literal errors. Additional
+in-code non-JSON controls cover accessor rejection without invocation, symbols,
+null prototypes, sparse arrays, explicit undefined, frozen caller data and
+argument-priority rejection. Unknown repeated future reasons have two distinct
+never-authority records plus runtime:coverage, frozen literally in the control
+and results. Fresh frozen arrays/records and later caller mutations are checked.
+
+The same literal file freezes 33 registry-byte/argument/read-failure cases with
+base64 exact bytes. Only canonical LF-terminated bytes succeed; shape-valid
+alternate formatting/order/escapes, BOM/CRLF, trailing/duplicate records,
+escaped-equivalent duplicates, invalid UTF-8, malformed keys/types/version,
+nonempty entries and overrides reject. Read errors and argument precedence have
+separate exact error expectations. Registry output and its entries array are
+fresh and frozen each call. The reader evidence is an IO model confined to the
+evidence directory, not a public injectable production loader. The environment
+witness records the no-lookup contract, not a newly executed production reader.
+The original design and README are retained in initial-candidate/; original
+audit/model/literal evidence remains unchanged. These E1 cases supplement, not
+replace, the initial candidate's E2 proposal controls below.
+
 `admission-literals.json` has 38 full synthetic input/expected rows: empty,
 exact private authority, every current synthetic key field mutation, each of
 seven limits, forged/missing/stale/duplicate authority, partial debt removal,
@@ -268,9 +386,11 @@ of widening codec, production ownership or authority to force completion.
 ## Reproduction and limits
 
 From typescript: `node docs/validation/ts-035e-p/audit.mjs` and
-`node docs/validation/ts-035e-p/model.mjs`. First command checks every preserved
+`node docs/validation/ts-035e-p/model.mjs`, plus
+`node docs/validation/ts-035e-p/e1-controls.mjs`. First command checks every preserved
 whole file, 154 actual decoder literals, 1,232 context/classification negatives,
 manifest debt totals and retained 212-per-lane/71-gate evidence. Second checks
-38 admission and 13 ledger design cases. No full builds, native reruns,
+38 admission and 13 ledger design cases. Third checks 130 debt cases, 33 reader
+cases and non-JSON/freeze/detachment controls. No full builds, native reruns,
 external retrieval, production/old-test/history edits or capability grants.
 Initial probe failure and correction are retained in initial-failure.txt.
