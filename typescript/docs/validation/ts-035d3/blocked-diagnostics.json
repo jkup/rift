@@ -1,0 +1,209 @@
+{
+  "P04": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: a",
+    "loc": {
+      "line": 1,
+      "column": 14
+    }
+  },
+  "P06": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: a",
+    "loc": {
+      "line": 1,
+      "column": 14
+    }
+  },
+  "P07": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: a",
+    "loc": {
+      "line": 1,
+      "column": 14
+    }
+  },
+  "P15": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: a",
+    "loc": {
+      "line": 1,
+      "column": 14
+    }
+  },
+  "E13": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: a",
+    "loc": {
+      "line": 1,
+      "column": 18
+    }
+  },
+  "E15": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: a",
+    "loc": {
+      "line": 1,
+      "column": 31
+    }
+  },
+  "E21": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: a",
+    "loc": {
+      "line": 1,
+      "column": 14
+    }
+  },
+  "E23": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: a",
+    "loc": {
+      "line": 1,
+      "column": 14
+    }
+  },
+  "E50": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: a",
+    "loc": {
+      "line": 1,
+      "column": 14
+    }
+  },
+  "E12": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: b",
+    "loc": {
+      "line": 1,
+      "column": 45
+    }
+  },
+  "E14": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: b",
+    "loc": {
+      "line": 1,
+      "column": 49
+    }
+  },
+  "S21-raw": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate parameter: param",
+    "loc": {
+      "line": 22,
+      "column": 29
+    }
+  },
+  "E25": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "delete of an identifier is not allowed",
+    "loc": {
+      "line": 1,
+      "column": 31
+    }
+  },
+  "E27": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "non-strict block function planning is unsupported",
+    "loc": {
+      "line": 1,
+      "column": 33
+    }
+  },
+  "E28": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate-lexical: g",
+    "loc": {
+      "line": 1,
+      "column": 58
+    }
+  },
+  "E29": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate-lexical: g",
+    "loc": {
+      "line": 1,
+      "column": 40
+    }
+  },
+  "E49": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate-lexical: g",
+    "loc": {
+      "line": 1,
+      "column": 58
+    }
+  },
+  "E30": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate-lexical: x",
+    "loc": {
+      "line": 1,
+      "column": 44
+    }
+  },
+  "E31": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "lexical-var: x",
+    "loc": {
+      "line": 1,
+      "column": 44
+    }
+  },
+  "E32": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "formal-lexical: a",
+    "loc": {
+      "line": 1,
+      "column": 35
+    }
+  },
+  "E34": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "duplicate-lexical: x",
+    "loc": {
+      "line": 1,
+      "column": 68
+    }
+  },
+  "E33": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "unsupported catch binding conflict or non-strict catch",
+    "loc": {
+      "line": 1,
+      "column": 43
+    }
+  },
+  "E51": {
+    "phase": "parse",
+    "name": "SyntaxError",
+    "message": "unsupported catch binding conflict or non-strict catch",
+    "loc": {
+      "line": 1,
+      "column": 43
+    }
+  }
+}

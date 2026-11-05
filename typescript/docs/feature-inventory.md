@@ -857,3 +857,26 @@ source-closure test migration, retaining both behavioral tests and the whole-fil
 assertion while admitting only D2's reviewed rule literals. The other 814 old
 files remain byte-identical; historical D2-P proposals and verifier are unchanged.
 Final implementation acceptance remains subject to independent review.
+
+## TS-035D3 non-emitting strict parameter audit
+
+`auditBoundedScriptStrictParameters(source)` parses the complete bounded Script
+before returning detached duplicate-formal evidence. Only this private audit
+purpose continues past a duplicate simple formal; existing parse, planning,
+preparation and D1/D2 behavior remains unchanged. Own and inherited strictness
+come from the existing collector. D1 scope/conflict vetoes, block-function pairs,
+and any sloppy duplicate anywhere block the audit. Eligible pairs retain the
+first occurrence, complete function bounds and UTF-16 source locations.
+
+This API does not produce an executable plan or a syntax-error rejection and has
+no preparation or observation consumer. Parameter execution, emission, expanded
+grammar, corpus admission and D4 remain outside this task. Candidate validation
+and the independent-review boundary are recorded in `validation/ts-035d3/README.md`.
+
+D3 candidate validation: 77 frozen rows in both hosts, 30 literal pairs, all
+49 blocked diagnostics, unchanged six ordinary outputs and retained-node
+associations. Both guest suites retain 212 cases; 66 native gates have actual
+static-only build evidence and zero-dynamic coverage (one separate retained
+linker retry), with the new driver at 960/960. All 31 required regression stages
+and preservation checks pass. Actual and independent second acceptance remain
+pending; this adds no execution or emission authority.

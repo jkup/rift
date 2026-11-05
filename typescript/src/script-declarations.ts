@@ -124,6 +124,25 @@ export function collectBlockFunctionAudit(unit: ScriptSourceUnit, body: Stmt[], 
     return analysis.audit();
 }
 
+export type StrictParameterCandidate = {
+    readonly ruleCode: "duplicate-strict-parameter";
+    readonly functionStart: number; readonly functionEnd: number;
+    readonly first: DeclarationSite; readonly second: DeclarationSite;
+};
+export type StrictParameterAudit =
+    | { readonly kind: "eligible"; readonly sourceUnits: number; readonly consumedUnits: number;
+        readonly candidates: readonly StrictParameterCandidate[] }
+    | { readonly kind: "none"; readonly sourceUnits: number; readonly consumedUnits: number }
+    | { readonly kind: "blocked"; readonly reason: "grammar-or-resource" | "scope-restriction" | "other-conflict";
+        readonly diagnostic: Diagnostic; readonly rejection: Rejection | null };
+
+// Internal source-only audit bridge; never returns retained execution nodes.
+export function collectStrictParameterAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>): StrictParameterAudit {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true);
+    analysis.collect(body);
+    return analysis.auditStrictParameters();
+}
+
 function copySite(site: DeclarationSite): DeclarationSite {
     return { name: site.name, start: site.start, end: site.end,
         loc: { line: site.loc.line, column: site.loc.column } };
@@ -377,6 +396,41 @@ class DeclarationCollector {
         }
         return { kind: "complete", goal: "Script", unit: this.unit, consumedUnits: this.unit.text.length,
             strictness: this.strictness, scopes: this.scopes, declarations: this.declarations, functions: this.functions };
+    }
+    auditStrictParameters(): StrictParameterAudit {
+        const blocks = this.audit();
+        if (blocks.kind === "blocked") return { kind: "blocked", reason: blocks.reason,
+            diagnostic: blocks.diagnostic, rejection: blocks.rejection };
+        if (blocks.kind === "eligible") {
+            const site = blocks.candidates[0].second;
+            return { kind: "blocked", reason: "other-conflict", rejection: null,
+                diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate-lexical: " + site.name,
+                    loc: { line: site.loc.line, column: site.loc.column } } };
+        }
+        const candidates: StrictParameterCandidate[] = [];
+        let sloppy: StrictParameterCandidate | null = null;
+        for (const fn of this.functions) {
+            const scope = this.scopes[fn.scope];
+            const firsts = new Map<string, DeclarationSite>();
+            for (const second of scope.formals) {
+                const first = firsts.get(second.name);
+                if (first === undefined) { firsts.set(second.name, second); continue; }
+                const pair: StrictParameterCandidate = { ruleCode: "duplicate-strict-parameter",
+                    functionStart: fn.start, functionEnd: fn.end, first: copySite(first), second: copySite(second) };
+                if (scope.strict) candidates.push(pair);
+                else if (sloppy === null || second.start < sloppy.second.start ||
+                    (second.start === sloppy.second.start && first.start < sloppy.first.start)) sloppy = pair;
+            }
+        }
+        // A sloppy duplicate anywhere vetoes all strict candidates, even earlier ones.
+        if (sloppy !== null) return { kind: "blocked", reason: "scope-restriction",
+            rejection: { kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" },
+            diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate parameter: " + sloppy.second.name,
+                loc: sloppy.second.loc } };
+        candidates.sort((a, b) => a.second.start - b.second.start || a.first.start - b.first.start);
+        const sourceUnits = this.unit.text.length;
+        if (candidates.length === 0) return { kind: "none", sourceUnits, consumedUnits: sourceUnits };
+        return { kind: "eligible", sourceUnits, consumedUnits: sourceUnits, candidates };
     }
     audit(): BlockFunctionAudit {
         const ordinary = this.project();

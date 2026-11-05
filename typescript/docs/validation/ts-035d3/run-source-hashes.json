@@ -1,0 +1,18 @@
+[
+  {
+    "path": "src/parser.ts",
+    "sha256": "fe5ea3a2e40296b9927db6fb5d365beb23469437d904dea0381ef3169015393c"
+  },
+  {
+    "path": "src/script-declarations.ts",
+    "sha256": "3de6ca231dcbbd78b67c6db69a5b7e61c5358c8e1118724637e6000a4b91f0f8"
+  },
+  {
+    "path": "test/script-strict-parameter-audit.ts",
+    "sha256": "88aadcb358b20aa7a6855849a2606dc7854f3d01b80312fc1c60a4913b1d3540"
+  },
+  {
+    "path": "tools/build-native.mjs",
+    "sha256": "7d68d62f137b98c4820c3d4c50a2d5770922653edf170a9a043bcb8a01da7d53"
+  }
+]

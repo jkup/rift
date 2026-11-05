@@ -1,0 +1,20 @@
+[
+  {
+    "name": "node-build",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "guest-node",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "full-native",
+    "status": 1,
+    "signal": null,
+    "error": null
+  }
+]

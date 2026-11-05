@@ -1,5 +1,5 @@
-import { collectDeclarationPlan, collectBoundedScriptPreparation, collectBlockFunctionAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
-export type { BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
+import { collectDeclarationPlan, collectBoundedScriptPreparation, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
+export type { StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
@@ -84,11 +84,19 @@ export function auditBoundedScriptBlockFunctions(source: string): BlockFunctionA
         diagnostic: parsed.diagnostic, rejection: parsed.rejection };
     return collectBlockFunctionAudit(unit, parsed.body, parsed.tokens, parsed.bindings);
 }
+export function auditBoundedScriptStrictParameters(source: string): StrictParameterAudit {
+    const unit = { id: "", text: source };
+    const parsed = parseStructuralSource(unit, null, true, true);
+    if (parsed.kind === "blocked") return { kind: "blocked", reason: "grammar-or-resource",
+        diagnostic: parsed.diagnostic, rejection: parsed.rejection };
+    return collectStrictParameterAudit(unit, parsed.body, parsed.tokens, parsed.bindings);
+}
 type StructuralSource =
     | { kind: "parsed"; body: Stmt[]; tokens: Token[]; bindings: Map<number, ParsedBinding[]> }
     | { kind: "blocked"; goal: "Script"; unit: ScriptSourceUnit; rejection: Rejection; diagnostic: Diagnostic };
 // One lexical/parser path for both public plans and non-emitting audit evidence.
-function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean): StructuralSource {
+function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, parameterAudit = false): StructuralSource {
+    if (parameterAudit && (!bounded || nodes !== null)) throw new Error("invalid parameter audit purpose");
     const lexical = lex(source.text, true);
     if (lexical.error !== null) {
         if (lexical.rejection === null) throw new Error("missing lexer rejection");
@@ -96,7 +104,7 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     }
     const parserSource: SourceText = { text: source.text };
     if (nodes !== null) nodes.source = parserSource;
-    const parser = new Parser(lexical.tokens, parserSource, bounded ? "bounded-plan" : "declaration-plan");
+    const parser = new Parser(lexical.tokens, parserSource, parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan");
     const parsed = parser.program();
     if (parsed.error !== null) {
         if (parsed.rejection === null) throw new Error("missing parser rejection");
@@ -118,8 +126,9 @@ class Parser {
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
     readonly returnCandidates: ReturnCandidate[] = [];
-    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" = "legacy") {}
-    private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan"; }
+    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" = "legacy") {}
+    private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit"; }
+    private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit"; }
     current(): Token { return this.tokens[this.index]; }
     at(text: string): boolean {
         const t = this.current();
@@ -338,7 +347,7 @@ class Parser {
         if (!this.at(")")) {
             do {
                 const name = this.name();
-                if (params.includes(name)) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate parameter: " + name, loc);
+                if (params.includes(name) && this.purpose !== "bounded-parameter-audit") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" }, "duplicate parameter: " + name, loc);
                 params.push(name);
             } while (this.error === null && this.eat(","));
         }
@@ -497,7 +506,7 @@ class Parser {
             const operand = this.expression(9, allowIn);
             // Parentheses preserve identifiers. The bounded collector validates
             // their inherited mode after whole-source grammar coverage.
-            if (t.text === "delete" && operand.kind === "identifier" && this.purpose !== "bounded-plan") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" }, "delete of an identifier is not allowed", loc);
+            if (t.text === "delete" && operand.kind === "identifier" && !this.boundedPlan()) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.delete-identifier" }, "delete of an identifier is not allowed", loc);
             return { kind: "unary", loc, op: t.text, operand };
         }
         if (t.text === "[") {

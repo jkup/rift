@@ -1,0 +1,79 @@
+PASS src/cli.ts
+PASS test/realms.ts
+PASS test/object-descriptors.ts
+PASS test/object-prototypes.ts
+PASS test/object-keys.ts
+PASS test/conversion.ts
+PASS test/definition-dispatch.ts
+PASS test/array-storage.ts
+PASS test/array-like.ts
+PASS test/operation-context.ts
+PASS test/array-map.ts
+PASS test/array-literals.ts
+PASS test/property-key-conversion.ts
+PASS test/numeric-operators.ts
+PASS test/addition.ts
+PASS test/relational.ts
+PASS test/primitive-conversion.ts
+PASS test/operator-coercion.ts
+PASS test/key-coercion.ts
+PASS test/length-coercion.ts
+PASS test/array-length-coercion.ts
+PASS test/function-call.ts
+PASS test/object-valueof.ts
+PASS test/array-string-conversion.ts
+PASS test/function-string-conversion.ts
+PASS test/abstract-equality.ts
+PASS test/delete-operator.ts
+PASS test/typeof-void.ts
+PASS test/in-operator.ts
+PASS test/primitive-reads.ts
+PASS test/property-assignment.ts
+PASS test/compound-assignment.ts
+PASS test/structured-outcomes.ts
+PASS src/observation-driver.ts
+PASS test/observation-serialization.ts
+PASS test/return-audit.ts
+PASS test/number-radix.ts
+PASS test/script-metadata.ts
+PASS test/global-environment.ts
+PASS test/script-realm-bootstrap.ts
+PASS test/script-declarations.ts
+BUILD-FAIL test/script-global-declarations.ts
+PASS test/script-record.ts
+PASS test/script-environment.ts
+PASS test/script-function-materialization.ts
+PASS test/script-function-setup.ts
+PASS test/property-accessors.ts
+PASS test/script-restricted-properties.ts
+PASS test/script-execution.ts
+PASS test/harness-catch.ts
+PASS test/harness-switch.ts
+PASS test/harness-for-update.ts
+PASS test/harness-nonstrict.ts
+PASS test/harness-construct.ts
+PASS test/harness-errors-a.ts
+PASS test/harness-errors-b.ts
+PASS test/harness-map-default.ts
+PASS test/harness-formatting.ts
+PASS test/harness-bundle.ts
+PASS test/script-observation-serialization.ts
+PASS test/script-throw-inspection.ts
+PASS src/script-observation-driver.ts
+PASS test/script-observation.ts
+PASS test/script-strict-rule-audit.ts
+PASS test/script-strict-rule-dispatch.ts
+PASS test/script-strict-parameter-audit.ts
+C:\Users\jonku\code\rift\typescript\test\script-global-declarations.ts:1:1 - error SC3004: Command failed: zig cc -target x86_64-windows-gnu -Wl,--gc-sections C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_context.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_shared.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_number.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_bigint.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_string.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_grapheme.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_array.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_bytes.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_bytes_io.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_fs_cp.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_map.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_closure.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_ffi.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_object.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_union.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_exception.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_unwind.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_error.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_console.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_lib.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_hash.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_path.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_os.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_url.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_url_params.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_json.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_node_builtin.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_async.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_crypto_async.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_child.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_cycle.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_publish.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_region.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_arena.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_itable.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_slots.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_alloc.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_cipher_info.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_ieee754.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_glibc_math.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\runtime\artifacts\release\runtime\default\scr_win.o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\input\program.obj C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\input\program.part1.obj C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\input\program.part2.obj C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\input\program.part3.obj C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\input\program.part4.obj C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\input\program.part5.obj C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\input\program.part6.obj C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\input\program.part7.obj -ladvapi32 -liphlpapi -lws2_32 -o C:\Users\jonku\code\rift\typescript\build\native\.scriptc-native-dsf1n6\script-global-declarations.exe
+error: ntdll.lib cache check failed: file_open FileNotFound C:\Users\jonku\AppData\Local\Microsoft\WinGet\Packages\zig.zig_Microsoft.Winget.Source_8wekyb3d8bbwe\zig-x86_64-windows-0.17.0\lib\libc\mingw\lib64\ntdll.def
+
+
+1 error.
+
+scriptc coverage C:\Users\jonku\code\rift\typescript\test\script-global-declarations.ts
+
+  statements analyzed   4259
+  compile statically    4259  (100%)
+
+  fully static — all analyzed statements compile to native code.
+ 

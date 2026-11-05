@@ -1,0 +1,42 @@
+[
+  {
+    "name": "codec",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "✔ approved closure: parse-only harness secondary steps/calls/unsupported retain original (12.7035ms)\n✔ approved closure: every forbidden neighbor remains rejected in both boundaries (9.532ms)\n✔ approved closure: exactly the reviewed C predicates and D2 closed rule additions changed from accepted base (52.3371ms)\nℹ tests 3\nℹ suites 0\nℹ pass 3\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 183.3335\n",
+    "stderr": ""
+  },
+  {
+    "name": "live-codec",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "✔ node actual child/full-envelope bytes and closed mutation neighbors (632.9415ms)\n✔ native actual child/full-envelope bytes and closed mutation neighbors (563.8325ms)\nℹ tests 2\nℹ suites 0\nℹ pass 2\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1295.8197\n",
+    "stderr": ""
+  },
+  {
+    "name": "launch",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "✔ node real process transport priorities and authenticated cap archive (6698.3508ms)\n✔ native real process transport priorities and authenticated cap archive (4980.6324ms)\n✔ node immutable single-use plans and deterministic cancellation lifecycle (2445.1825ms)\n✔ native immutable single-use plans and deterministic cancellation lifecycle (1858.6624ms)\n✔ source artifacts, nested closure, build and adapter drift reject before spawn (2752.0269ms)\n✔ all seven limits, mode, variant and frozen control source policy are enforced (2.7913ms)\nℹ tests 6\nℹ suites 0\nℹ pass 6\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 18840.3809\n",
+    "stderr": ""
+  },
+  {
+    "name": "preflight",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "✔ node failed positive/negative preflight cannot mint ID (6741.6003ms)\n✔ native failed positive/negative preflight cannot mint ID (5189.0755ms)\n✔ no preflight cache and immutable reload occurrence hashes/order (6658.6889ms)\n✔ stale compiled control-set digest cannot authorize preflight (409.7385ms)\nℹ tests 4\nℹ suites 0\nℹ pass 4\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 19100.5429\n",
+    "stderr": ""
+  },
+  {
+    "name": "input",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "✔ node actual pinned S01/S02 original metadata, strict bytes and uncached preflight (6294.2238ms)\nD3 retained Windows evidence-write retry: C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035c\\pinned-results.json\n✔ native actual pinned S01/S02 original metadata, strict bytes and uncached preflight (3772.6516ms)\n✔ pinned selection, corrupted source/metadata/UTF8 and parse-negative execute reject before test launch (20.935ms)\n✔ all 33 original files and 60 variants remain blocked in each lane (129.8967ms)\n✔ node pinned positive harness assertions run after complete discard and reload (6230.981ms)\n✔ native pinned positive harness assertions run after complete discard and reload (3674.1477ms)\nℹ tests 6\nℹ suites 0\nℹ pass 6\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 20230.817\n",
+    "stderr": ""
+  }
+]
