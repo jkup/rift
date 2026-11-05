@@ -1,0 +1,1556 @@
+[
+  {
+    "id": "S01",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:error-objects",
+        "status": "unsupported-feature",
+        "reasonCode": "error-objects",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S01",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:error-objects",
+        "status": "unsupported-feature",
+        "reasonCode": "error-objects",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S02",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:error-objects",
+        "status": "unsupported-feature",
+        "reasonCode": "error-objects",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S02",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:error-objects",
+        "status": "unsupported-feature",
+        "reasonCode": "error-objects",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S03",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S03",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S04",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S04",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S05",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S05",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S06",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S06",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S07",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S07",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S08",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S08",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S09",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S09",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S10",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S10",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S11",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S11",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S12",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S12",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S13",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S13",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S14",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S14",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S15",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S15",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S16",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S16",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S17",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S17",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S18",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S18",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S19",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S19",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S20",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S20",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S21",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "S22",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U01",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:asi",
+        "status": "unsupported-feature",
+        "reasonCode": "asi",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U01",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:asi",
+        "status": "unsupported-feature",
+        "reasonCode": "asi",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U02",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:async-functions",
+        "status": "unsupported-feature",
+        "reasonCode": "async-functions",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U02",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:async-functions",
+        "status": "unsupported-feature",
+        "reasonCode": "async-functions",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U03",
+    "variant": "raw",
+    "debts": [
+      {
+        "id": "legacy:0:asi",
+        "status": "unsupported-feature",
+        "reasonCode": "asi",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:directive-script",
+        "status": "unsupported-profile",
+        "reasonCode": "directive-script",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U04",
+    "variant": "module",
+    "debts": [
+      {
+        "id": "legacy:0:module",
+        "status": "unsupported-feature",
+        "reasonCode": "module",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:module-profile",
+        "status": "unsupported-profile",
+        "reasonCode": "module-profile",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U05",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U05",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U06",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U07",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:error-objects",
+        "status": "unsupported-feature",
+        "reasonCode": "error-objects",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:2:global-script",
+        "status": "unsupported-profile",
+        "reasonCode": "global-script",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:3:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U08",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:async",
+        "status": "unsupported-feature",
+        "reasonCode": "async",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U08",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:async",
+        "status": "unsupported-feature",
+        "reasonCode": "async",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:1:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U09",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:RegExp",
+        "status": "unsupported-feature",
+        "reasonCode": "RegExp",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U09",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:RegExp",
+        "status": "unsupported-feature",
+        "reasonCode": "RegExp",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U10",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:asi",
+        "status": "unsupported-feature",
+        "reasonCode": "asi",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U10",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:asi",
+        "status": "unsupported-feature",
+        "reasonCode": "asi",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U11",
+    "variant": "non-strict",
+    "debts": [
+      {
+        "id": "legacy:0:return-asi",
+        "status": "unsupported-feature",
+        "reasonCode": "return-asi",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:sloppy-script",
+        "status": "unsupported-profile",
+        "reasonCode": "sloppy-script",
+        "authority": "never"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  },
+  {
+    "id": "U11",
+    "variant": "strict",
+    "debts": [
+      {
+        "id": "legacy:0:return-asi",
+        "status": "unsupported-feature",
+        "reasonCode": "return-asi",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:1:strict-script-contract",
+        "status": "unsupported-profile",
+        "reasonCode": "strict-script-contract",
+        "authority": "runtime"
+      },
+      {
+        "id": "legacy:2:harness-capabilities",
+        "status": "unsupported-feature",
+        "reasonCode": "harness-capabilities",
+        "authority": "runtime"
+      },
+      {
+        "id": "runtime:coverage",
+        "status": "unsupported-feature",
+        "reasonCode": "runtime-capabilities",
+        "authority": "runtime"
+      }
+    ]
+  }
+]

@@ -1,0 +1,29 @@
+✔ T01 both runtime inputs/lane bytes match literal ASCII and all valid closed arms (103.1315ms)
+✔ T02 every required nested key and unknown field fails closed, both lanes (1552.275ms)
+✔ T02 UTF8, size, duplicate-equivalent keys, versions, missing/concatenated JSON (3.1291ms)
+✔ B01 binding exact shape, sources, canonical hashes, variant and limits (4.0215ms)
+✔ T03 operation/phase/source/Realm/preflight/entry and constructor mutations (650.001ms)
+✔ U01/U02 wrong capability arm, phase, inspection and constructor; resource bounds (99.8403ms)
+✔ D01 diagnostic allowed only nonempty at nonnormal Result, all arms both lanes (226.0663ms)
+✔ B01 ordered repeated harness occurrences, failing/current prefix, raw restrictions (5.1289ms)
+✔ T04 exact both-lane child -> composed envelope -> parse/assert/inspect roundtrip (461.4674ms)
+✔ T02/D01 every required nested envelope key/unknown key is rejected (11479.9361ms)
+✔ T02 both envelope text and byte transports reject duplicate, UTF8, size and versions (7.7954ms)
+✔ T03/B01 full boundary independently rejects binding and context drift (58.9592ms)
+✔ all child semantic mutations are revalidated by the envelope boundary (1341.3637ms)
+✔ D01 all parent-only alternatives retain optional diagnostics and reject malformed arms (1066.3626ms)
+✔ T04 trusted transport priority and cap-kill authenticated roundtrip (7.6174ms)
+✔ nonraw reload and observation mode, body provenance and context remain separate (13.943ms)
+✔ retained source text is actually UTF8-decodable; exact line extents in both layers (10.894ms)
+✔ syntax allowlist and runtime domain remain disjoint at both boundaries (53.398ms)
+✔ result byte limit is inclusive at exactly 65536 in both decoder paths (4.4141ms)
+✔ approved amendment: same-source raw/non-strict contexts bind distinct request identities (9.0758ms)
+✔ unlaunched input rejection roundtrips with null binding and unavailable provenance (3.5592ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14742.8534
