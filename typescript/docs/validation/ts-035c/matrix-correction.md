@@ -1,0 +1,3 @@
+# Initial matrix correction
+
+The pre-implementation S03-tail row correctly expected unsupported-syntax, but its initial capability annotation said parse.unexpected. The bounded structural parser stops first at the top-level return and retains parse.return-context. The separate whole-source legacy audit sees the later class tail and cannot certify return-outside-function. The production adapter preserves the actual bounded rejection; it does not reclassify by message or use the legacy audit rejection as a substitute. frozen-initial.json preserves the initial bytes. This correction is to a new draft fixture only, not an old test, accepted requirement, or pass claim.

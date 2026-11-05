@@ -1,0 +1,792 @@
+{
+  "version": 1,
+  "inputs": [
+    "alpha",
+    "beta"
+  ],
+  "lanes": [
+    "node",
+    "native"
+  ],
+  "rows": [
+    {
+      "id": "X01",
+      "sources": [
+        "\"use strict\"; missing;",
+        "\"use strict\"; otherMissing;"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "available",
+        "name": "ReferenceError",
+        "realm": "test"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "X02",
+      "sources": [
+        "\"use strict\"; throw 'ReferenceError';",
+        "\"use strict\"; throw 7;"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "absent"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "S01",
+      "sources": [
+        "\"use strict\"; let a=1; observe(a);",
+        "\"use strict\"; let a=2; observe(a);"
+      ],
+      "driver": "S01",
+      "expected": {
+        "kind": "normal",
+        "phase": "body",
+        "values": [
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ]
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "S02",
+      "sources": [
+        "\"use strict\"; let reserved=1;",
+        "\"use strict\"; let reserved=2;"
+      ],
+      "driver": "S02",
+      "expected": {
+        "kind": "throw",
+        "phase": "instantiation",
+        "constructor": "available",
+        "name": "SyntaxError"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "S03",
+      "sources": [
+        "return 1;",
+        "return 2;"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "syntax-error",
+        "phase": "parse",
+        "rule": "return-outside-function"
+      },
+      "variant": "raw",
+      "action": "parse-only",
+      "repeated": false
+    },
+    {
+      "id": "S03-valid",
+      "sources": [
+        "\"use strict\"; missing;",
+        "\"use strict\"; otherMissing;"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "normal",
+        "phase": "parse"
+      },
+      "variant": "raw",
+      "action": "parse-only",
+      "repeated": false
+    },
+    {
+      "id": "S03-tail",
+      "sources": [
+        "return 1; class C {}",
+        "return 2; class D {}"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "unsupported-syntax",
+        "phase": "parse",
+        "capability": "parse.return-context"
+      },
+      "variant": "raw",
+      "action": "parse-only",
+      "repeated": false
+    },
+    {
+      "id": "X03",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "X03",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "available",
+        "name": "ReferenceError",
+        "realm": "test",
+        "effects": "CN"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "null",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "null",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "absent",
+        "name": null,
+        "realm": null,
+        "effects": "C"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "noncallable",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "noncallable",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "non-callable",
+        "name": null,
+        "realm": null,
+        "effects": "C"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "nonstring",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "nonstring",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "non-string-name",
+        "name": null,
+        "realm": "test",
+        "effects": "CN"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "empty",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "empty",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "available",
+        "name": "",
+        "realm": "test",
+        "effects": "CN"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "registered-other",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "registered-other",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "available",
+        "name": "ReferenceError",
+        "realm": "other",
+        "effects": "CN"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "foreign",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "foreign",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "foreign-profile",
+        "name": null,
+        "realm": null,
+        "effects": "C"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "unregistered",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "unregistered",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "unregistered-realm",
+        "name": null,
+        "realm": null,
+        "effects": "CN"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "constructor-throw",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "constructor-throw",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "abrupt",
+        "effects": "C"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "constructor-resource",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "constructor-resource",
+      "expected": {
+        "kind": "resource-limit",
+        "phase": "body",
+        "effects": "C"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "constructor-host",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "constructor-host",
+      "expected": {
+        "kind": "host-fault",
+        "phase": "body",
+        "effects": "C"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "constructor-unsupported",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "constructor-unsupported",
+      "expected": {
+        "kind": "unsupported-operation",
+        "phase": "body",
+        "capability": "runtime.map-species",
+        "effects": "C"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "name-throw",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "name-throw",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "abrupt",
+        "effects": "CN"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "name-resource",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "name-resource",
+      "expected": {
+        "kind": "resource-limit",
+        "phase": "body",
+        "effects": "CN"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "name-host",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "name-host",
+      "expected": {
+        "kind": "host-fault",
+        "phase": "body",
+        "effects": "CN"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "name-unsupported",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "name-unsupported",
+      "expected": {
+        "kind": "unsupported-operation",
+        "phase": "body",
+        "capability": "runtime.map-species",
+        "effects": "CN"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "U01",
+      "sources": [
+        "unsupported();",
+        ";unsupported();"
+      ],
+      "driver": "U01",
+      "expected": {
+        "kind": "unsupported-operation",
+        "phase": "body",
+        "capability": "runtime.map-species"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "H01",
+      "sources": [
+        "assert(false);",
+        "assert(false,\"beta\");"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "available",
+        "name": "Test262Error"
+      },
+      "variant": "strict",
+      "action": "execute",
+      "repeated": true
+    },
+    {
+      "id": "H-parse",
+      "sources": [
+        "missing;",
+        "otherMissing;"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "normal",
+        "phase": "parse"
+      },
+      "variant": "strict",
+      "action": "parse-only",
+      "repeated": false
+    },
+    {
+      "id": "loop",
+      "sources": [
+        "while(true){entered();}",
+        ";while(true){entered();}"
+      ],
+      "driver": "loop",
+      "expected": {
+        "kind": "timeout",
+        "marker": "SCRIPT_LOOP_ENTERED"
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "loop-preentry",
+      "sources": [
+        "missing;while(true){entered();}",
+        "otherMissing;while(true){entered();}"
+      ],
+      "driver": "loop",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "available",
+        "name": "ReferenceError",
+        "marker": null
+      },
+      "variant": "raw",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "H-steps",
+      "sources": [
+        "missing;",
+        "otherMissing;"
+      ],
+      "driver": "constructor-resource",
+      "expected": {
+        "kind": "resource-limit",
+        "phase": "body",
+        "stage": "harness",
+        "guard": "steps",
+        "capability": null
+      },
+      "variant": "strict",
+      "action": "parse-only",
+      "repeated": false,
+      "faultHarness": true
+    },
+    {
+      "id": "H-calls",
+      "sources": [
+        "missing;",
+        "otherMissing;"
+      ],
+      "driver": "constructor-calls",
+      "expected": {
+        "kind": "resource-limit",
+        "phase": "body",
+        "stage": "harness",
+        "guard": "calls",
+        "capability": null
+      },
+      "variant": "strict",
+      "action": "parse-only",
+      "repeated": false,
+      "faultHarness": true
+    },
+    {
+      "id": "H-unsupported",
+      "sources": [
+        "missing;",
+        "otherMissing;"
+      ],
+      "driver": "constructor-unsupported",
+      "expected": {
+        "kind": "unsupported-operation",
+        "phase": "body",
+        "stage": "harness",
+        "guard": null,
+        "capability": "runtime.map-species"
+      },
+      "variant": "strict",
+      "action": "parse-only",
+      "repeated": false,
+      "faultHarness": true
+    },
+    {
+      "id": "H-host",
+      "sources": [
+        "missing;",
+        "otherMissing;"
+      ],
+      "driver": "constructor-host",
+      "expected": {
+        "kind": "host-fault",
+        "phase": "body",
+        "stage": "harness",
+        "guard": null,
+        "capability": null
+      },
+      "variant": "strict",
+      "action": "parse-only",
+      "repeated": false,
+      "faultHarness": true
+    },
+    {
+      "id": "H-repeat",
+      "sources": [
+        "Test262Error.thrower(\"control\");",
+        "Test262Error.thrower(\"beta\");"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "available",
+        "name": "Test262Error",
+        "sourceUnit": "u2"
+      },
+      "variant": "strict",
+      "action": "execute",
+      "repeated": true
+    },
+    {
+      "id": "preflight-parse",
+      "sources": [
+        "missing;",
+        "otherMissing;"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "unsupported-syntax",
+        "phase": "parse",
+        "stage": "harness"
+      },
+      "expectedState": "preflight-failed",
+      "variant": "strict",
+      "action": "execute",
+      "repeated": false,
+      "harnessSource": [
+        "class C {}",
+        "class C {}"
+      ]
+    },
+    {
+      "id": "preflight-instantiation",
+      "sources": [
+        "missing;",
+        "otherMissing;"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "throw",
+        "phase": "instantiation",
+        "stage": "harness"
+      },
+      "expectedState": "preflight-failed",
+      "variant": "strict",
+      "action": "execute",
+      "repeated": false,
+      "harnessSource": [
+        "let assert;",
+        "let assert;"
+      ]
+    },
+    {
+      "id": "preflight-body",
+      "sources": [
+        "missing;",
+        "otherMissing;"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "stage": "harness"
+      },
+      "expectedState": "preflight-failed",
+      "variant": "strict",
+      "action": "execute",
+      "repeated": false,
+      "harnessSource": [
+        "throw 7;",
+        "throw 7;"
+      ]
+    },
+    {
+      "id": "guest-constructor",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "guest-constructor",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "abrupt",
+        "secondaryUnit": "u2",
+        "secondaryRealm": "test"
+      },
+      "variant": "strict",
+      "action": "execute",
+      "repeated": false,
+      "harnessSource": [
+        "var seen=0; function getter(){seen=seen+1;throw sentinel;}",
+        "var seen=0; function getter(){seen=seen+1;throw sentinel;}"
+      ]
+    },
+    {
+      "id": "guest-name",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "guest-name",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "abrupt",
+        "secondaryUnit": "u2",
+        "secondaryRealm": "test"
+      },
+      "variant": "strict",
+      "action": "execute",
+      "repeated": false,
+      "harnessSource": [
+        "var seen=0; function getter(){seen=seen+1;throw sentinel;}",
+        "var seen=0; function getter(){seen=seen+1;throw sentinel;}"
+      ]
+    },
+    {
+      "id": "guest-other",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "guest-other",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "abrupt",
+        "secondaryUnit": "u2",
+        "secondaryRealm": "other"
+      },
+      "variant": "strict",
+      "action": "execute",
+      "repeated": false,
+      "harnessSource": [
+        "var seen=0; function getter(){seen=seen+1;throw sentinel;}",
+        "var seen=0; function getter(){seen=seen+1;throw sentinel;}"
+      ]
+    },
+    {
+      "id": "guest-other-name",
+      "sources": [
+        "throw target;",
+        ";throw target;"
+      ],
+      "driver": "guest-other-name",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "abrupt",
+        "secondaryUnit": "u2",
+        "secondaryRealm": "other"
+      },
+      "variant": "strict",
+      "action": "execute",
+      "repeated": false,
+      "harnessSource": [
+        "var seen=0; function getter(){seen=seen+1;throw sentinel;}",
+        "var seen=0; function getter(){seen=seen+1;throw sentinel;}"
+      ]
+    },
+    {
+      "id": "message-identity",
+      "sources": [
+        "var message={toString:function(){throw 7;}};assert(false,message);",
+        "var message={toString:function(){throw 11;}};assert(false,message);"
+      ],
+      "driver": "message-identity",
+      "expected": {
+        "kind": "throw",
+        "phase": "body",
+        "constructor": "available",
+        "name": "Test262Error"
+      },
+      "variant": "strict",
+      "action": "execute",
+      "repeated": false
+    },
+    {
+      "id": "S02-parse",
+      "sources": [
+        "\"use strict\"; let reserved=1;",
+        "\"use strict\"; let reserved=2;"
+      ],
+      "driver": "S02",
+      "expected": {
+        "kind": "normal",
+        "phase": "parse"
+      },
+      "variant": "raw",
+      "action": "parse-only",
+      "repeated": false
+    },
+    {
+      "id": "S-conflict",
+      "sources": [
+        "\"use strict\";let x;let x;",
+        "\"use strict\";let y;let y;"
+      ],
+      "driver": null,
+      "expected": {
+        "kind": "unsupported-syntax",
+        "phase": "parse",
+        "capability": "script.uncertified-conflict"
+      },
+      "variant": "raw",
+      "action": "parse-only",
+      "repeated": false
+    }
+  ]
+}

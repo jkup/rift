@@ -124,7 +124,7 @@ function checkOperation(v,b,s) {
     need(['source-units','parse-depth'].includes(o.guardCode)===(op.phase==='parse'));
   }
   if (v.inspection!==null) {
-    need(b.action==='execute' && op.phase!=='parse' && ['resource-limit','unsupported-operation'].includes(o.kind));
+    need((b.action==='execute' || op.stage==='harness') && op.phase!=='parse' && ['resource-limit','unsupported-operation'].includes(o.kind));
     need(v.inspection.original.valueKind==='object' && equal(v.inspection.operation,op));
     site(v.inspection.original.site);
   }

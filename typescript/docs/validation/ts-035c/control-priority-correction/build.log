@@ -1,0 +1,2 @@
+PASS src/script-observation-driver.ts
+PASS test/script-observation.ts

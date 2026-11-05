@@ -795,3 +795,33 @@ This is a tested candidate awaiting actual/second acceptance. No adapter,
 registry, driver, admission or codec changes are included. All 60 variants remain
 blocked. See `validation/ts-035b/README.md` for the preserved checkpoint and exact
 new-versus-reused validation evidence.
+
+### Parallel Script observation transport (TS-035C candidate)
+
+The separate Script observation entry prepares and evaluates ordered source
+occurrences in a private Script Realm/session, retaining actual record and Realm
+identity in v2 projection. The parent verifies pinned original bytes and metadata,
+applies the exact strict test prefix, binds all seven limits and transformed
+sources, and owns immutable single-use plans, archives, deadline/output facts,
+and recursive source/build/adapter digests. Existing v1 observation and CLI stay
+on their original entry points.
+
+Non-raw observation requires a fresh complete H7 preflight: B01–B16, both
+notSameValue controls and a runtime-read numeric control. Each has its own
+process/Realm/session; original assert.js/sta.js and repeated includes remain
+separate unchanged units. Positive and deliberate negative outcomes, exact
+messages and actual constructor identities must verify before a preflight ID
+exists. Reload uses a fresh process/session and rechecks bound bytes. Parse-only
+constrains the test; harness execution and its secondary resource/unsupported
+inspection remain observable under the coordinator-approved two-predicate codec
+amendment. Resource/unsupported outcomes bypass control expectations.
+
+Fixed host controls cover constructor outcomes, original/secondary sources
+including another registered Realm, guarded loop entry, transport priorities,
+cancellation and drift. Their setup accepts no callback, context, AST or Realm
+registry authority from callers. S01 captures actual numeric guest arguments in
+host-owned evidence; normal wire results carry no guest value. This work does
+not add conformance admission, new rule certification, capability registries,
+ledger entries, language semantics or a public CLI mode. All 60 corpus variants
+remain blocked. See `validation/ts-035c/README.md` for candidate validation and
+retained failures; actual and second independent review are still required.
