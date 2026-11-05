@@ -1,5 +1,5 @@
 {
-  "claim": "Offline syntax/preservation/complete fixture verification; no future producer/native execution",
+  "claim": "Offline syntax/preservation/complete fixture verification and actual current occurrence controls; harmless prefixes/ready source only, no numeric body, future producer or native execution",
   "results": [
     {
       "args": [
@@ -10,6 +10,16 @@
       "error": null,
       "stdout": "{\"wholeFiles\":898,\"migrations\":4,\"protected\":5123,\"applied\":false,\"all60Blocked\":true}\n",
       "stderr": "warning: in the working copy of 'typescript/COORDINATION.md', CRLF will be replaced by LF the next time Git touches it\nwarning: in the working copy of 'typescript/TASKS.md', CRLF will be replaced by LF the next time Git touches it\n"
+    },
+    {
+      "args": [
+        "typescript/docs/validation/ts-035d6-p/occurrence-probe.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"controlRequests\":98,\"semanticRequests\":366,\"positiveRequests\":464,\"negativeControls\":2088,\"originalFailures\":24}\n",
+      "stderr": ""
     },
     {
       "args": [
@@ -48,6 +58,17 @@
       "args": [
         "--check",
         "typescript/docs/validation/ts-035d6-p/make-wire.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--check",
+        "typescript/docs/validation/ts-035d6-p/occurrence-probe.mjs"
       ],
       "status": 0,
       "signal": null,
@@ -189,6 +210,13 @@
   },
   "budgets": 72,
   "ready": 2,
+  "occurrences": {
+    "controlRequests": 98,
+    "semanticRequests": 366,
+    "positiveRequests": 464,
+    "negativeControls": 2088,
+    "retainedOriginalFailures": 24
+  },
   "history": [
     {
       "path": "controls.mjs",

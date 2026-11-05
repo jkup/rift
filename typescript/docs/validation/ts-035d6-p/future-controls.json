@@ -1,6 +1,6 @@
 {
   "obligation": {
-    "claim": "Future both-host driver requirements; complete literals below. Only profile preparations are current offline probes.",
+    "claim": "Future both-host requirements; occurrence-probe.mjs checks actual current Node requests. Numeric sources remain rejected; only harmless prefixes and the ready reference control execute.",
     "hosts": [
       "node",
       "native"
@@ -39,41 +39,51 @@
       {
         "units": [
           {
-            "id": "h0",
+            "id": "u0",
             "path": "harness/repeated.js",
             "text": "0;"
           }
         ],
         "completed": [
-          "h0"
+          "u0"
         ]
       },
       {
         "units": [
           {
-            "id": "h0",
+            "id": "u0",
             "path": "harness/repeated.js",
             "text": "0;"
           },
           {
-            "id": "h1",
+            "id": "u1",
             "path": "harness/repeated.js",
             "text": "1;"
           }
         ],
         "completed": [
-          "h0",
-          "h1"
+          "u0",
+          "u1"
         ]
       }
     ],
     "failedOccurrence": {
-      "id": "bad",
+      "idByPrefixLength": [
+        "u0",
+        "u1",
+        "u2"
+      ],
       "path": "harness/repeated.js",
       "text": "42=7;",
       "joinsPrefix": false,
       "laterTest": "throw 19;",
-      "laterTestEvaluated": false
+      "laterTestEvaluated": false,
+      "laterTestIdByPrefixLength": [
+        "u1",
+        "u2",
+        "u3"
+      ],
+      "idPolicy": "failed occurrence uN where N=prefix.length; if harness, append final test u(N+1)"
     },
     "profileControls": [
       {
@@ -488,12 +498,56 @@
       "role": "test",
       "units": [
         {
-          "id": "bad",
+          "id": "u0",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "/*😀*/\r\n((42))=7;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "test",
+            "text": "/*😀*/\r\n((42))=7;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u0",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u0",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -502,11 +556,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -532,18 +586,69 @@
       "role": "test",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u1",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "/*😀*/\r\n((42))=7;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "test",
+            "text": "/*😀*/\r\n((42))=7;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u1",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u1",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -552,11 +657,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -567,7 +672,7 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0"
+          "u0"
         ],
         "inspection": null,
         "result": {
@@ -584,24 +689,81 @@
       "role": "test",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "h1",
+          "id": "u1",
           "path": "harness/repeated.js",
           "text": "1;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u2",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "/*😀*/\r\n((42))=7;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "1;"
+          },
+          {
+            "id": "u2",
+            "role": "test",
+            "text": "/*😀*/\r\n((42))=7;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -610,11 +772,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -625,8 +787,8 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0",
-          "h1"
+          "u0",
+          "u1"
         ],
         "inspection": null,
         "result": {
@@ -643,18 +805,67 @@
       "role": "harness",
       "units": [
         {
-          "id": "bad",
+          "id": "u0",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "/*😀*/\r\n((42))=7;"
         },
         {
-          "id": "later",
+          "id": "u1",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "/*😀*/\r\n((42))=7;"
+          },
+          {
+            "id": "u1",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u0",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u0",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -663,11 +874,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -693,24 +904,80 @@
       "role": "harness",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u1",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "/*😀*/\r\n((42))=7;"
         },
         {
-          "id": "later",
+          "id": "u2",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "/*😀*/\r\n((42))=7;"
+          },
+          {
+            "id": "u2",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u1",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u1",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -719,11 +986,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -734,7 +1001,7 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0"
+          "u0"
         ],
         "inspection": null,
         "result": {
@@ -751,30 +1018,92 @@
       "role": "harness",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "h1",
+          "id": "u1",
           "path": "harness/repeated.js",
           "text": "1;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u2",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "/*😀*/\r\n((42))=7;"
         },
         {
-          "id": "later",
+          "id": "u3",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "1;"
+          },
+          {
+            "id": "u2",
+            "role": "harness",
+            "text": "/*😀*/\r\n((42))=7;"
+          },
+          {
+            "id": "u3",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -783,11 +1112,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -798,8 +1127,8 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0",
-          "h1"
+          "u0",
+          "u1"
         ],
         "inspection": null,
         "result": {
@@ -816,12 +1145,56 @@
       "role": "test",
       "units": [
         {
-          "id": "bad",
+          "id": "u0",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "/*😀*/\r\n((42))=7;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "test",
+            "text": "/*😀*/\r\n((42))=7;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u0",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u0",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -830,11 +1203,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -860,18 +1233,69 @@
       "role": "test",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u1",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "/*😀*/\r\n((42))=7;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "test",
+            "text": "/*😀*/\r\n((42))=7;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u1",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u1",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -880,11 +1304,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -895,7 +1319,7 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0"
+          "u0"
         ],
         "inspection": null,
         "result": {
@@ -912,24 +1336,81 @@
       "role": "test",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "h1",
+          "id": "u1",
           "path": "harness/repeated.js",
           "text": "1;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u2",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "/*😀*/\r\n((42))=7;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "1;"
+          },
+          {
+            "id": "u2",
+            "role": "test",
+            "text": "/*😀*/\r\n((42))=7;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -938,11 +1419,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -953,8 +1434,8 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0",
-          "h1"
+          "u0",
+          "u1"
         ],
         "inspection": null,
         "result": {
@@ -971,18 +1452,67 @@
       "role": "harness",
       "units": [
         {
-          "id": "bad",
+          "id": "u0",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "/*😀*/\r\n((42))=7;"
         },
         {
-          "id": "later",
+          "id": "u1",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "/*😀*/\r\n((42))=7;"
+          },
+          {
+            "id": "u1",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u0",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u0",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -991,11 +1521,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1021,24 +1551,80 @@
       "role": "harness",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u1",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "/*😀*/\r\n((42))=7;"
         },
         {
-          "id": "later",
+          "id": "u2",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "/*😀*/\r\n((42))=7;"
+          },
+          {
+            "id": "u2",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u1",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u1",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1047,11 +1633,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1062,7 +1648,7 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0"
+          "u0"
         ],
         "inspection": null,
         "result": {
@@ -1079,30 +1665,92 @@
       "role": "harness",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "h1",
+          "id": "u1",
           "path": "harness/repeated.js",
           "text": "1;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u2",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "/*😀*/\r\n((42))=7;"
         },
         {
-          "id": "later",
+          "id": "u3",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "1;"
+          },
+          {
+            "id": "u2",
+            "role": "harness",
+            "text": "/*😀*/\r\n((42))=7;"
+          },
+          {
+            "id": "u3",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1111,11 +1759,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1126,8 +1774,8 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0",
-          "h1"
+          "u0",
+          "u1"
         ],
         "inspection": null,
         "result": {
@@ -1144,12 +1792,56 @@
       "role": "test",
       "units": [
         {
-          "id": "bad",
+          "id": "u0",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "test",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u0",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u0",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1158,11 +1850,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1188,18 +1880,69 @@
       "role": "test",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u1",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "test",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u1",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u1",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1208,11 +1951,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1223,7 +1966,7 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0"
+          "u0"
         ],
         "inspection": null,
         "result": {
@@ -1240,24 +1983,81 @@
       "role": "test",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "h1",
+          "id": "u1",
           "path": "harness/repeated.js",
           "text": "1;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u2",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "1;"
+          },
+          {
+            "id": "u2",
+            "role": "test",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1266,11 +2066,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1281,8 +2081,8 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0",
-          "h1"
+          "u0",
+          "u1"
         ],
         "inspection": null,
         "result": {
@@ -1299,18 +2099,67 @@
       "role": "harness",
       "units": [
         {
-          "id": "bad",
+          "id": "u0",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         },
         {
-          "id": "later",
+          "id": "u1",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          },
+          {
+            "id": "u1",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u0",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u0",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1319,11 +2168,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1349,24 +2198,80 @@
       "role": "harness",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u1",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         },
         {
-          "id": "later",
+          "id": "u2",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          },
+          {
+            "id": "u2",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u1",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u1",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1375,11 +2280,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1390,7 +2295,7 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0"
+          "u0"
         ],
         "inspection": null,
         "result": {
@@ -1407,30 +2312,92 @@
       "role": "harness",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "h1",
+          "id": "u1",
           "path": "harness/repeated.js",
           "text": "1;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u2",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         },
         {
-          "id": "later",
+          "id": "u3",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "parse-only",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "1;"
+          },
+          {
+            "id": "u2",
+            "role": "harness",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          },
+          {
+            "id": "u3",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1439,11 +2406,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1454,8 +2421,8 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0",
-          "h1"
+          "u0",
+          "u1"
         ],
         "inspection": null,
         "result": {
@@ -1472,12 +2439,56 @@
       "role": "test",
       "units": [
         {
-          "id": "bad",
+          "id": "u0",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "test",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u0",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u0",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1486,11 +2497,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1516,18 +2527,69 @@
       "role": "test",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u1",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "test",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u1",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u1",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1536,11 +2598,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1551,7 +2613,7 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0"
+          "u0"
         ],
         "inspection": null,
         "result": {
@@ -1568,24 +2630,81 @@
       "role": "test",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "h1",
+          "id": "u1",
           "path": "harness/repeated.js",
           "text": "1;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u2",
           "path": "harness/repeated.js",
           "role": "test",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "1;"
+          },
+          {
+            "id": "u2",
+            "role": "test",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "test",
+          "phase": "parse",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1594,11 +2713,11 @@
         "operation": {
           "stage": "test",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1609,8 +2728,8 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0",
-          "h1"
+          "u0",
+          "u1"
         ],
         "inspection": null,
         "result": {
@@ -1627,18 +2746,67 @@
       "role": "harness",
       "units": [
         {
-          "id": "bad",
+          "id": "u0",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         },
         {
-          "id": "later",
+          "id": "u1",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          },
+          {
+            "id": "u1",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u0",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u0",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1647,11 +2815,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u0",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1677,24 +2845,80 @@
       "role": "harness",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u1",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         },
         {
-          "id": "later",
+          "id": "u2",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          },
+          {
+            "id": "u2",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u1",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u1",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1703,11 +2927,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u1",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1718,7 +2942,7 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0"
+          "u0"
         ],
         "inspection": null,
         "result": {
@@ -1735,30 +2959,92 @@
       "role": "harness",
       "units": [
         {
-          "id": "h0",
+          "id": "u0",
           "path": "harness/repeated.js",
           "text": "0;",
           "role": "harness"
         },
         {
-          "id": "h1",
+          "id": "u1",
           "path": "harness/repeated.js",
           "text": "1;",
           "role": "harness"
         },
         {
-          "id": "bad",
+          "id": "u2",
           "path": "harness/repeated.js",
           "role": "harness",
           "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
         },
         {
-          "id": "later",
+          "id": "u3",
           "path": "test/later.js",
           "role": "test",
           "text": "throw 19;"
         }
       ],
+      "request": {
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action": "execute",
+        "preflightId": "preflight",
+        "steps": 10000,
+        "calls": 64,
+        "units": [
+          {
+            "id": "u0",
+            "role": "harness",
+            "text": "0;"
+          },
+          {
+            "id": "u1",
+            "role": "harness",
+            "text": "1;"
+          },
+          {
+            "id": "u2",
+            "role": "harness",
+            "text": "\"use strict\";\r\nfunction f(){ /*😀*/ (53.5) += 8; }"
+          },
+          {
+            "id": "u3",
+            "role": "test",
+            "text": "throw 19;"
+          }
+        ]
+      },
+      "current": {
+        "driverVersion": 2,
+        "nonce": "D6-prefix",
+        "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mode": "script-observation",
+        "operation": {
+          "stage": "harness",
+          "phase": "parse",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 2,
+            "column": 22
+          }
+        },
+        "testBodyEvaluated": false,
+        "harnessValidated": true,
+        "preflightId": "preflight",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "result": {
+          "kind": "unsupported-syntax",
+          "capabilityCode": "parse.assignment-target"
+        }
+      },
       "expected": {
         "driverVersion": 2,
         "nonce": "D6-prefix",
@@ -1767,11 +3053,11 @@
         "operation": {
           "stage": "harness",
           "phase": "parse",
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test"
         },
         "source": {
-          "unitId": "bad",
+          "unitId": "u2",
           "realmId": "test",
           "location": {
             "line": 2,
@@ -1782,8 +3068,8 @@
         "harnessValidated": true,
         "preflightId": "preflight",
         "completedUnits": [
-          "h0",
-          "h1"
+          "u0",
+          "u1"
         ],
         "inspection": null,
         "result": {

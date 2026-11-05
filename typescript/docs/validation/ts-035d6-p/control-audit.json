@@ -1,5 +1,5 @@
 {
-  "claim": "Only current offline preparation probes and literal fixture construction; no guest or native execution",
+  "claim": "Current rejected-source/profile probes and literal construction; occurrence-probe separately validates harmless prefixes/ready control. No invalid numeric guest body or native execution.",
   "profiles": 8,
   "prefixLiterals": 24,
   "noEffectsLiterals": 12,

@@ -185,7 +185,26 @@ prefix children, 12 no-effects/history cases and 36 metadata/source-mutation
 preparations. Test both real Script Realms, fresh and seeded history, and empty,
 one-element and repeated-path prefixes. Occurrence IDs are distinct even when
 paths repeat; failed occurrence never joins completedUnits, later test never
-runs. Prefix execution is allowed in the future driver; snapshots are taken
+runs. `observeScripts` requires exactly `u0,u1,...` and harness roles for every
+nonfinal unit, with a test role for the final unit. For prefix length N, the
+rejected occurrence is `uN`; a rejected harness is followed by final test
+`u(N+1)`. Every operation/source/completedUnits ID uses that same request order.
+Paths remain repeated metadata and never substitute for occurrence IDs.
+
+Second review found that the original 24 prefix literals used h0/h1/bad/later
+and could not reach preparation through this guard. Their complete generator,
+fixtures and design are retained with hashes in `original-occurrence-contract/`.
+The corrected literals contain full requests. `occurrence-probe.mjs` recursively
+checks every request in future-controls (98) and semantic-matrix (366), invokes
+the actual current D5 `observeScripts`, and compares the complete current child.
+It also rejects 2088 wrong-ID/order/role/duplicate controls with the exact guard
+error and reproduces all 24 original failures. Current replay executes only
+harmless `0;`/`1;` prefixes and the valid ready reference source; every numeric
+source is rejected before its body, and no later test runs. Preparation-only
+unit IDs such as `same`, `profile` and `history` belong to other APIs and are not
+producer occurrence IDs. No production guard or API was changed.
+
+Prefix execution is allowed in the future driver; snapshots are taken
 after the successful prefix and before preparing the rejected occurrence.
 
 Rejected preparation must preserve global keys/descriptors and lexical binding

@@ -4,7 +4,7 @@ Base: `335663fcddf5bfc595369c6a8f68b584a9165e0f`, accepted D5.
 See [dispatch design](../../script-assignment-target-dispatch.md).
 
 This directory contains proposals and bounded current Node probes only. No
-production/real old-test change, full build, guest execution, native run,
+production/real old-test change, full build, invalid numeric guest-body execution, native run,
 admission or publication is claimed. Native labels describe future obligations.
 Inherited counts remain 212 guest records per host, 68 gates and 60 blocked.
 
@@ -23,7 +23,12 @@ editorial production files without loading them. `controls.mjs` creates literal
 future state/metadata controls and current profile-only preparation probes.
 `make-wire.mjs` renders the independent both-mode fixture runner; `wire.mjs`
 uses the actual current Node serializer and both current decoders. Future code
-is never loaded. `check.mjs` records results under this directory only.
+is never loaded. `occurrence-probe.mjs` validates all 98 future-control requests
+and 366 semantic requests through actual current `observeScripts`; only harmless
+prefixes and the valid ready reference control execute. It checks 2088 malformed
+occurrence neighbors and reproduces the 24 original bad-prefix failures retained
+under `original-occurrence-contract/`. `check.mjs` records results under this
+directory only.
 
 Key evidence:
 

@@ -6,6 +6,7 @@ import {parse} from '../../../build/node/src/parser.js';
 const root=new URL('../../../../',import.meta.url),here=new URL('./',import.meta.url),json=p=>JSON.parse(readFileSync(new URL(p,here))),hash=b=>createHash('sha256').update(b).digest('hex'),results=[];
 function run(args){const r=spawnSync(process.execPath,args,{cwd:root,encoding:'utf8',timeout:60000,maxBuffer:4*1024*1024});const record={args,status:r.status,signal:r.signal,error:r.error?.message??null,stdout:r.stdout,stderr:r.stderr};results.push(record);if(r.status!==0||r.signal||r.error){let i=1;while(existsSync(new URL('failed-check-'+i+'.json',here)))i++;writeFileSync(new URL('failed-check-'+i+'.json',here),JSON.stringify(record,null,2)+'\n');}assert.equal(r.status,0,JSON.stringify(record));assert.equal(r.signal,null);assert.equal(r.error,undefined);}
 run(['typescript/docs/validation/ts-035d6-p/verify.mjs']);
+run(['typescript/docs/validation/ts-035d6-p/occurrence-probe.mjs']);
 for(const name of readdirSync(here).filter(n=>n.endsWith('.mjs')))run(['--check','typescript/docs/validation/ts-035d6-p/'+name]);
 for(const e of json('proposal-manifest.json').entries.filter(e=>e.originalSha256!==e.resultSha256)){
  run(['--check','typescript/docs/validation/ts-035d6-p/proposed/'+e.path]);
@@ -21,6 +22,7 @@ const observer=readFileSync(new URL('typescript/src/script-observation.ts',root)
 const legacy=s=>s.slice(s.indexOf('        // Preserve independent legacy return certification'),s.indexOf('        return this.envelope(operation, site, rejection);'));
 assert.equal(legacy(observer),legacy(proposal));
 const matrix=json('semantic-matrix.json'),wire=json('wire-audit.json'),probe=json('probe-results.json'),controls=json('future-controls.json');
+const occurrences=json('occurrence-results.json');assert.equal(occurrences.controlRequests,98);assert.equal(occurrences.semanticRequests,366);assert.equal(occurrences.positiveRequests,464);assert.equal(occurrences.negativeCount,2088);assert.equal(occurrences.originalFailures.length,24);
 assert.equal(matrix.rows.length,102);assert.equal(matrix.rows.filter(r=>r.audit.kind==='blocked').length,56);assert.equal(matrix.rows.flatMap(r=>r.contexts).length,366);
 assert.equal(probe.runtimeRuns,204);assert.equal(probe.inheritedChecks,360);assert(probe.results.every(r=>r.status===0&&!r.signal&&!r.error));
 assert.equal(wire.accepted,192);assert.equal(wire.unimplemented,64);assert.equal(wire.rejections,77184);
@@ -31,5 +33,5 @@ for(const [name,id] of [['alpha','R0'],['beta','R1']])assert.equal(readFileSync(
 const history=readdirSync(new URL('original-history-contract/',here)).filter(n=>n!=='manifest.json').map(path=>({path,sha256:hash(readFileSync(new URL('original-history-contract/'+path,here)))}));
 const manifestPath=new URL('original-history-contract/manifest.json',here);
 if(existsSync(manifestPath))assert.deepEqual(JSON.parse(readFileSync(manifestPath)),history);else writeFileSync(manifestPath,JSON.stringify(history,null,2)+'\n');
-writeFileSync(new URL('checks.json',here),JSON.stringify({claim:'Offline syntax/preservation/complete fixture verification; no future producer/native execution',results,legacyFallbackSha256:hash(legacy(observer)),rows:102,runtimeRuns:204,inheritedPreparations:360,wire,budgets:72,ready:2,history},null,2)+'\n');
+writeFileSync(new URL('checks.json',here),JSON.stringify({claim:'Offline syntax/preservation/complete fixture verification and actual current occurrence controls; harmless prefixes/ready source only, no numeric body, future producer or native execution',results,legacyFallbackSha256:hash(legacy(observer)),rows:102,runtimeRuns:204,inheritedPreparations:360,wire,budgets:72,ready:2,occurrences:{controlRequests:98,semanticRequests:366,positiveRequests:464,negativeControls:2088,retainedOriginalFailures:24},history},null,2)+'\n');
 console.log('PASS '+results.length+' offline checks; all literals, proposals and original history preserved');

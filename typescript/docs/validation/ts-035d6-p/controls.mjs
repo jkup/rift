@@ -8,7 +8,9 @@ import {auditBoundedScriptNumericAssignments,parseBoundedScriptPreparation} from
 const here=new URL('./',import.meta.url),copy=structuredClone,hash=b=>createHash('sha256').update(b).digest('hex');
 const old=JSON.parse(readFileSync(new URL('../ts-035d5-p/future-controls.json',here))),matrix=JSON.parse(readFileSync(new URL('semantic-matrix.json',here)));
 const nodes=()=>({source:{text:''},body:[],scopes:new Map(),declarations:new Map(),assignmentNameEligible:new Map()});
-const obligation={...copy(old),claim:'Future both-host driver requirements; complete literals below. Only profile preparations are current offline probes.',modes:['script-observation','conformance']};
+const obligation={...copy(old),claim:'Future both-host requirements; occurrence-probe.mjs checks actual current Node requests. Numeric sources remain rejected; only harmless prefixes and the ready reference control execute.',modes:['script-observation','conformance']};
+obligation.prefixes=old.prefixes.map(p=>({units:p.units.map((u,i)=>({...u,id:'u'+i})),completed:p.units.map((_u,i)=>'u'+i)}));
+obligation.failedOccurrence={idByPrefixLength:['u0','u1','u2'],path:'harness/repeated.js',text:'42=7;',joinsPrefix:false,laterTest:'throw 19;',laterTestEvaluated:false,laterTestIdByPrefixLength:['u1','u2','u3'],idPolicy:'failed occurrence uN where N=prefix.length; if harness, append final test u(N+1)'};
 obligation.invariants={...obligation.invariants,D5ordinaryAndPreparation:'Six ordinary results and retained nodes unchanged; preparation equals frozen futurePreparation, exact fourth migration',oldStaticGates:68};
 obligation.rejectedEffects.lastAbrupt='same record and Realm identities, same unitId/loc values; inspect allocates a detached snapshot';
 obligation.historySeeds=[null,{id:'history',text:'let sentinel = 41; throw 3;',preserve:['saved seed completion/value separately','history record identity','history Realm identity','unitId and location values']}];
@@ -21,10 +23,14 @@ for(const profile of ['legacy','script'])for(const realmId of ['A','B'])for(cons
  profileRows.push({profile,realmId,text,current,expected});
 }
 const prefixRows=[];
-for(const input of ['R0','R1'])for(const action of old.actions)for(const role of old.roles)for(const prefix of old.prefixes){
- const row=matrix.rows.find(r=>r.id===input),units=prefix.units.map(u=>({...u,role:'harness'}));
- units.push({id:'bad',path:'harness/repeated.js',role,text:row.text});if(role==='harness')units.push({id:'later',path:'test/later.js',role:'test',text:'throw 19;'});
- prefixRows.push({input,action,role,units,expected:{driverVersion:2,nonce:'D6-prefix',requestSha256:'a'.repeat(64),mode:'script-observation',operation:{stage:role,phase:'parse',unitId:'bad',realmId:'test'},source:{unitId:'bad',realmId:'test',location:copy(row.audit.candidates[0].target.loc)},testBodyEvaluated:false,harnessValidated:true,preflightId:'preflight',completedUnits:copy(prefix.completed),inspection:null,result:{kind:'syntax-error',phase:'parse',constructorName:'SyntaxError',ruleCode:'assignment-target'}}});
+for(const input of ['R0','R1'])for(const action of old.actions)for(const role of old.roles)for(const prefix of obligation.prefixes){
+ const row=matrix.rows.find(r=>r.id===input),units=prefix.units.map(u=>({...u,role:'harness'})),failedId='u'+units.length;
+ units.push({id:failedId,path:'harness/repeated.js',role,text:row.text});if(role==='harness')units.push({id:'u'+units.length,path:'test/later.js',role:'test',text:'throw 19;'});
+ const request={nonce:'D6-prefix',requestSha256:'a'.repeat(64),action,preflightId:'preflight',steps:10000,calls:64,units:units.map(({id,role,text})=>({id,role,text}))};
+ const expected={driverVersion:2,nonce:'D6-prefix',requestSha256:'a'.repeat(64),mode:'script-observation',operation:{stage:role,phase:'parse',unitId:failedId,realmId:'test'},source:{unitId:failedId,realmId:'test',location:copy(row.audit.candidates[0].target.loc)},testBodyEvaluated:false,harnessValidated:true,preflightId:'preflight',completedUnits:copy(prefix.completed),inspection:null,result:{kind:'syntax-error',phase:'parse',constructorName:'SyntaxError',ruleCode:'assignment-target'}};
+ const current=copy(row.contexts.find(c=>c.action===action&&c.role===role).current);
+ current.nonce=request.nonce;current.preflightId=request.preflightId;current.harnessValidated=true;current.operation.unitId=failedId;current.source.unitId=failedId;current.completedUnits=copy(prefix.completed);
+ prefixRows.push({input,action,role,units,request,current,expected});
 }
 const noEffects=[];
 for(const source of [matrix.rows.find(r=>r.id==='R0').text,matrix.rows.find(r=>r.id==='R1').text,'var touched=0; function touch(){ touched+=1; print(9); return 7; } 42=touch();'])for(const realm of ['A','B'])for(const history of ['empty','seeded']){
@@ -51,5 +57,5 @@ for(const input of ['R0','R1'])for(const action of old.actions)for(const role of
 }
 const readyRows=old.actions.map(action=>({request:{nonce:'ready',requestSha256:'a'.repeat(64),action,preflightId:null,steps:10000,calls:64,units:[{id:'u0',role:'test',text:'let x; x=7; x;'}]},expected:{driverVersion:2,nonce:'ready',requestSha256:'a'.repeat(64),mode:'script-observation',operation:{stage:'test',phase:action==='execute'?'body':'parse',unitId:'u0',realmId:'test'},source:null,testBodyEvaluated:action==='execute',harnessValidated:false,preflightId:null,completedUnits:[],inspection:null,result:{kind:'normal'}},hostCompletion:action==='execute'?{phase:'body',completion:{type:'normal',value:{kind:'number',value:7}}}:null}));
 writeFileSync(new URL('future-controls.json',here),JSON.stringify({obligation,profileRows,prefixRows,noEffects,metadataRows,limits,budgetRows,readyRows,oracleMutations},null,2)+'\n');
-writeFileSync(new URL('control-audit.json',here),JSON.stringify({claim:'Only current offline preparation probes and literal fixture construction; no guest or native execution',profiles:profileRows.length,prefixLiterals:prefixRows.length,noEffectsLiterals:noEffects.length,metadataLiterals:metadataRows.length,producerOracleMutations:oracleMutations.length,sourceInputs:['alpha','beta'].map(n=>({file:'inputs/'+n+'.js',sha256:hash(readFileSync(new URL('inputs/'+n+'.js',here)))}))},null,2)+'\n');
+writeFileSync(new URL('control-audit.json',here),JSON.stringify({claim:'Current rejected-source/profile probes and literal construction; occurrence-probe separately validates harmless prefixes/ready control. No invalid numeric guest body or native execution.',profiles:profileRows.length,prefixLiterals:prefixRows.length,noEffectsLiterals:noEffects.length,metadataLiterals:metadataRows.length,producerOracleMutations:oracleMutations.length,sourceInputs:['alpha','beta'].map(n=>({file:'inputs/'+n+'.js',sha256:hash(readFileSync(new URL('inputs/'+n+'.js',here)))}))},null,2)+'\n');
 console.log(JSON.stringify({profiles:profileRows.length,prefixes:prefixRows.length,noEffects:noEffects.length,metadata:metadataRows.length,oracle:oracleMutations.length,depthRows:limits.parseDepth.rows.length}));
