@@ -1,0 +1,184 @@
+tools/test262\input.mjs:164:export async function planCorpus({ root, revision, lane, paths }) {
+tools/test262\driver-result.test.mjs:5:import { appendAttempt, newLedger, report } from './ledger.mjs';
+tools/test262\driver-result.test.mjs:170:  const ledger = newLedger(selectionFor([baseline]));
+tools/test262\driver-result.test.mjs:172:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', r), /identity/);
+tools/test262\corpus.integration.mjs:8:import { frozenManifest, planCorpus, localBytes, verifyBytes, metadata, compareMetadata, REVISION } from './input.mjs';
+tools/test262\corpus.integration.mjs:10:import { newLedger, appendAttempt, report, persist } from './ledger.mjs';
+tools/test262\corpus.integration.mjs:45:    let selection=await planCorpus({root:temp,revision:REVISION,lane:'node',paths:[s.path]});
+tools/test262\corpus.integration.mjs:59:    selection=await planCorpus({root:temp,revision:REVISION,lane:'node',paths:[s.path]});
+tools/test262\corpus.integration.mjs:67:    const selection=await planCorpus({root,revision:REVISION,lane,paths:manifest.entries.map(e=>e.path)});
+tools/test262\corpus.integration.mjs:71:    const ledger=newLedger(selection);
+tools/test262\corpus.integration.mjs:73:    for(const {id,record} of await preflightRecords(selection)) appendAttempt(ledger,id,record);
+tools/test262\boundary.test.mjs:5:import { newLedger, appendAttempt, report } from './ledger.mjs';
+tools/test262\boundary.test.mjs:11:  const ledger = newLedger(selectionFor([parent]));
+tools/test262\boundary.test.mjs:12:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', incoming), /context|protocol|profile-not-admitted/);
+tools/test262\boundary.test.mjs:37:  const ledger = newLedger(selectionFor([parent]));
+tools/test262\boundary.test.mjs:38:  appendAttempt(ledger, 'synthetic-0', parent);
+tools/test262\boundary.test.mjs:47:  const ledger = newLedger(s);
+tools/test262\boundary.test.mjs:48:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', r), /context/);
+tools/test262\boundary.test.mjs:52:    assert.throws(() => appendAttempt(newLedger(selection), 'synthetic-0', r), /context/);
+tools/test262\boundary.test.mjs:91:  const ledger = newLedger(selection);
+tools/test262\boundary.test.mjs:92:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', positive), /profile-not-admitted/);
+tools/test262\input.test.mjs:7:  blockers, safePath, localBytes, planCorpus, frozenManifest, REVISION, harnessPaths } from './input.mjs';
+tools/test262\input.test.mjs:17:  await assert.rejects(planCorpus({ root: '.', revision: REVISION, lane: 'node', paths: ['test/synthetic.js'] }), error('selection-mismatch'));
+tools/test262\input.test.mjs:23:    const p = await planCorpus({ root: 'nonexistent-corpus', revision, lane: 'node', paths });
+tools/test262\ledger.mjs:6:export function newLedger(selection) {
+tools/test262\ledger.mjs:11:export function appendAttempt(ledger, id, record, retryReason = null) {
+tools/test262\plan.mjs:5:import { planCorpus, sha256, REVISION } from './input.mjs';
+tools/test262\plan.mjs:7:import { newLedger, appendAttempt, persist, report } from './ledger.mjs';
+tools/test262\plan.mjs:49:  const selection = await planCorpus({ root, revision, lane, paths });
+tools/test262\plan.mjs:51:  const ledger = newLedger(selection);
+tools/test262\plan.mjs:54:  for (const { id, record } of await preflightRecords(selection)) appendAttempt(ledger, id, record);
+tools/test262\ledger.test.mjs:6:import { newLedger, appendAttempt, report, persist } from './ledger.mjs';
+tools/test262\ledger.test.mjs:7:import { frozenManifest, variants, blockers, fixtureSelection, planCorpus, REVISION } from './input.mjs';
+tools/test262\ledger.test.mjs:12:  const ledger = newLedger(selectionFor(records));
+tools/test262\ledger.test.mjs:13:  records.forEach((record,i) => appendAttempt(ledger,`synthetic-${i}`,record));
+tools/test262\ledger.test.mjs:41:  const ledger = newLedger(selection);
+tools/test262\ledger.test.mjs:42:  appendAttempt(ledger,'synthetic-0',a); appendAttempt(ledger,'synthetic-1',b);
+tools/test262\ledger.test.mjs:67:    const ledger = newLedger(selection);
+tools/test262\ledger.test.mjs:71:      appendAttempt(ledger,id,record);
+tools/test262\ledger.test.mjs:96:  await assert.rejects(planCorpus({root:'.',revision:REVISION,lane:'node',paths:['test/dep_FIXTURE.js']}),/selection-mismatch/);
+tools/test262\ledger.test.mjs:100:  const ledger=newLedger(selectionFor(records));
+tools/test262\ledger.test.mjs:106:    appendAttempt(ledger,'synthetic-0',records[0]);
+tools/test262\ledger.test.mjs:116:  assert.throws(()=>appendAttempt(ledger,'synthetic-0',synthetic()),/retry-policy/);
+tools/test262\ledger.test.mjs:117:  appendAttempt(ledger,'synthetic-0',synthetic(),'explicit synthetic rerun control');
+tools/test262\ledger.test.mjs:131:  const selection=await planCorpus({root:'.',revision:REVISION,lane:'node',paths:[manifest.entries[0].path]});
+tools/test262\ledger.test.mjs:135:  const ledger=newLedger(selectionFor([synthetic()]));
+tools/test262\ledger.test.mjs:136:  assert.throws(()=>appendAttempt(ledger,'synthetic-0',synthetic({mode:'body-observation'})),/identity/);
+tools/test262\ledger.test.mjs:142:  assert.equal(report(newLedger(selectionFor([synthetic()]))).exitCode,2);
+tools/test262\ledger.test.mjs:149:  assert.throws(()=>appendAttempt(newLedger(selection),'synthetic-0',success),/profile-not-admitted/);
+tools/test262\ledger.test.mjs:151:  assert.throws(()=>appendAttempt(newLedger(selection),'synthetic-0',changed),/identity/);
+tools/test262\ledger.test.mjs:153:  assert.throws(()=>appendAttempt(newLedger(ordinary),'synthetic-0',success),/identity/);
+tools/test262\script-capabilities.test.mjs:6:import { readScriptCapabilities, reconstructScriptDebts } from './script-capabilities.mjs';
+tools/test262\script-capabilities.test.mjs:17:  if (row.expected.error) assert.throws(() => reconstructScriptDebts(...args), exactError(row.expected.error));
+tools/test262\script-capabilities.test.mjs:19:    const result = reconstructScriptDebts(...args);
+tools/test262\script-capabilities.test.mjs:32:    rejects(() => reconstructScriptDebts(meta, 'strict', null), 'metadata');
+tools/test262\script-capabilities.test.mjs:37:      rejects(() => reconstructScriptDebts({ ...normal(), [field]: array }, 'strict', null), 'metadata');
+tools/test262\script-capabilities.test.mjs:40:      rejects(() => reconstructScriptDebts({ ...normal(), [field]: array }, 'strict', null), 'metadata');
+tools/test262\script-capabilities.test.mjs:45:    rejects(() => reconstructScriptDebts({ ...normal(), negative }, 'strict', null), 'metadata');
+tools/test262\script-capabilities.test.mjs:49:    rejects(() => reconstructScriptDebts(meta, 'strict', null), 'metadata');
+tools/test262\script-capabilities.test.mjs:51:  rejects(() => reconstructScriptDebts({}, 'unknown'), 'arguments');
+tools/test262\script-capabilities.test.mjs:52:  rejects(() => reconstructScriptDebts({}, 'unknown', undefined), 'metadata');
+tools/test262\script-capabilities.test.mjs:53:  rejects(() => reconstructScriptDebts(normal(), 'unknown', undefined), 'variant');
+tools/test262\script-capabilities.test.mjs:54:  rejects(() => reconstructScriptDebts(normal(), 'strict', undefined), 'manifest-id');
+tools/test262\script-capabilities.test.mjs:56:  const first = reconstructScriptDebts(meta, 'strict', null), second = reconstructScriptDebts(meta, 'strict', null);
+tools/test262\script-capabilities.test.mjs:62:  assert.doesNotThrow(() => reconstructScriptDebts(frozen, 'strict', null));
+tools/test262\script-capabilities.test.mjs:66:  const first = await readScriptCapabilities(), second = await readScriptCapabilities();
+tools/test262\script-capabilities.test.mjs:71:  await assert.rejects(readScriptCapabilities(undefined), exactError('script-capabilities/arguments'));
+tools/test262\script-capabilities.test.mjs:86:  await writeFile(runner, `import { readScriptCapabilities as read } from './script-capabilities.mjs';
+tools/test262\script-capabilities.test.mjs:106:import {readScriptCapabilities as read} from './script-capabilities.mjs';
+tools/test262\script-capabilities.mjs:34:export async function readScriptCapabilities() {
+tools/test262\script-capabilities.mjs:89:export function reconstructScriptDebts(metadata, variant, manifestId) {
+tools/test262\script-assignment-target-dispatch.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+tools/test262\script-assignment-target-dispatch.test.mjs:6:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+tools/test262\script-assignment-target-dispatch.test.mjs:12: assert.equal(bytes,row.ascii,row.id);assert.deepEqual(JSON.parse(bytes),row.child,row.id);assert.deepEqual(parseScriptDriverResult(Buffer.from(bytes),b),row.child);
+tools/test262\script-assignment-target-dispatch.test.mjs:14: assert.deepEqual(parseScriptEnvelope(JSON.stringify(envelope),b),row.envelope);assert.deepEqual(assertScriptContext(envelope,row.context,b),row.envelope);
+tools/test262\script-driver-result.mjs:144:export function parseScriptDriverResult(bytes,binding) {
+tools/test262\script-driver-result.test.mjs:3:import { parseScriptDriverResult as parse } from './script-driver-result.mjs';
+tools/test262\script-lexical-statement-dispatch.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+tools/test262\script-lexical-statement-dispatch.test.mjs:6:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+tools/test262\script-lexical-statement-dispatch.test.mjs:12: assert.equal(bytes,row.ascii,row.id);assert.deepEqual(JSON.parse(bytes),row.child,row.id);assert.deepEqual(parseScriptDriverResult(Buffer.from(bytes),b),row.child);
+tools/test262\script-lexical-statement-dispatch.test.mjs:14: assert.deepEqual(parseScriptEnvelope(JSON.stringify(envelope),b),row.envelope);assert.deepEqual(assertScriptContext(envelope,row.context,b),row.envelope);
+tools/test262\script-observation.integration.mjs:7:import {prepareScriptObservation,launchScriptObservation} from './script-observe.mjs';
+tools/test262\script-observation.integration.mjs:8:import {inspectScriptEnvelope,parseScriptEnvelope} from './script-result.mjs';
+tools/test262\script-observation.integration.mjs:16:  const plan=await prepareScriptObservation({mode:'script-observation',control:row.id,input,lane,variant:row.variant,action:row.action,archiveRoot,limits});
+tools/test262\script-observation.integration.mjs:17:  const result=await launchScriptObservation(plan);results.push({lane,input,id:row.id,directory:result.directory,state:result.state,record:result.record??null});
+tools/test262\script-observation.integration.mjs:42:  assert.deepEqual(parseScriptEnvelope(JSON.stringify(r),plan.binding),r,label);assert.deepEqual(inspectScriptEnvelope(JSON.stringify(r),plan.context,t,plan.binding),r,label);
+tools/test262\observe.mjs:7:import { sha256, verifyBytes, transform, safePath, planCorpus, localBytes } from './input.mjs';
+tools/test262\observe.mjs:176:  const selection = await planCorpus({ root: corpusRoot, revision, lane, paths: [path] });
+tools/test262\script-observe-codec.test.mjs:6:import {parseScriptDriverResult} from './script-driver-result.mjs';
+tools/test262\script-observe-codec.test.mjs:7:import {parseScriptEnvelope} from './script-result.mjs';
+tools/test262\script-observe-codec.test.mjs:12:function accept(r){sync(r);assert.deepEqual(parseScriptDriverResult(Buffer.from(JSON.stringify(r.child)),r.binding),r.child);assert.deepEqual(parseScriptEnvelope(JSON.stringify(r.envelope),r.binding),r.envelope);}
+tools/test262\script-observe-codec.test.mjs:13:function reject(r){sync(r);assert.throws(()=>parseScriptDriverResult(Buffer.from(JSON.stringify(r.child)),r.binding));assert.throws(()=>parseScriptEnvelope(JSON.stringify(r.envelope),r.binding));}
+tools/test262\script-observe-input.test.mjs:7:import {prepareScriptObservation,launchScriptObservation} from './script-observe.mjs';
+tools/test262\script-observe-input.test.mjs:8:import {REVISION,frozenManifest,planCorpus,transform,sha256,verifyBytes} from './input.mjs';
+tools/test262\script-observe-input.test.mjs:18:  const p=await prepareScriptObservation({mode:'script-observation',corpusRoot,revision:REVISION,path:entry.path,variant:'strict',lane,action:'execute',archiveRoot});
+tools/test262\script-observe-input.test.mjs:24:  const r=await launchScriptObservation(p);assert.equal(r.state,'complete');assert.equal(r.record.observation.kind,'throw');assert.equal(r.record.observation.constructor.name,'ReferenceError');assert.equal(r.record.evidence.stage,'test');assert.equal(r.record.evidence.harnessValidated,true);assert.deepEqual(r.record.evidence.completedUnits,['u0','u1']);assert.ok(!Object.hasOwn(r.record,'classification'));
+tools/test262\script-observe-input.test.mjs:33: for(const changed of [Buffer.concat([bytes,Buffer.from(';')]),Buffer.from(bytes.toString().replace('description:','descriptioX:')),Buffer.from([0xc0,0xaf])]){await writeFile(join(root,s1.path),changed);await assert.rejects(()=>prepareScriptObservation(o),/selection/);}
+tools/test262\script-observe-input.test.mjs:34: await writeFile(join(root,s1.path),bytes);await assert.rejects(()=>prepareScriptObservation({...o,revision:'0'.repeat(40)}),/selection/);
+tools/test262\script-observe-input.test.mjs:35: await assert.rejects(()=>prepareScriptObservation({...o,variant:'raw'}),/selection/);
+tools/test262\script-observe-input.test.mjs:36: await assert.rejects(()=>prepareScriptObservation({...o,corpusRoot,path:u1.path}),/parse-negative-action/);
+tools/test262\script-observe-input.test.mjs:39: const rows=[];for(const lane of ['node','native']){const s=await planCorpus({root:corpusRoot,revision:REVISION,lane,paths:manifest.entries.map(e=>e.path)});assert.equal(s.files.length,33);assert.ok(s.files.every(f=>f.inputError===null));const variants=s.files.flatMap(f=>f.variants);assert.equal(variants.length,60);assert.ok(variants.every(v=>v.blockers.length>0));rows.push({lane,files:33,variants:60,blocked:60});}await writeFile('docs/validation/ts-035c/blocked-results.json',JSON.stringify(rows,null,2)+'\n');
+tools/test262\script-observe-input.test.mjs:45:  const p=await prepareScriptObservation({mode:'script-observation',corpusRoot,revision:REVISION,path:entry.path,variant:'strict',lane,action:'execute',archiveRoot});
+tools/test262\script-observe-input.test.mjs:46:  const r=await launchScriptObservation(p);assert.equal(r.state,'complete');assert.deepEqual(r.record.observation,{kind:'normal'});assert.equal(r.record.evidence.testBodyEvaluated,true);assert.equal(r.record.evidence.harnessValidated,true);assert.deepEqual(r.record.evidence.completedUnits,['u0','u1']);assert.ok(p.context.blockers.length>0);assert.ok(!Object.hasOwn(r.record,'classification'));
+tools/test262\README.md:60:before `newLedger` snapshots the selection and before any result is constructed.
+tools/test262\README.md:61:`appendAttempt` requires that context and checks its expectation/blockers against
+tools/test262\README.md:68:or `appendAttempt` to bind the result to its parent-owned plan.
+tools/test262\script-observe-launch.test.mjs:9:import {prepareScriptObservation,validateScriptLaunch,launchScriptObservation} from './script-observe.mjs';
+tools/test262\script-observe-launch.test.mjs:10:import {inspectScriptEnvelope} from './script-result.mjs';
+tools/test262\script-observe-launch.test.mjs:18:  const p=await prepareScriptObservation(options(lane,{limits:{outputBytes:['cap','crashcap'].includes(mode)?20000:1048576}}));
+tools/test262\script-observe-launch.test.mjs:19:  const r=await hook((spawn,exe,args,opts)=>{const child=spawn(process.execPath,[resolve('docs/validation/ts-035c/transport-process.mjs'),'fixture',mode,exe,...args],opts);if(mode==='crashcap'){child.stdout.pause();child.once('exit',()=>setImmediate(()=>child.stdout.resume()));}return child;},()=>launchScriptObservation(p));
+tools/test262\script-observe-launch.test.mjs:26:  assert.deepEqual(inspectScriptEnvelope(JSON.stringify(r.record),p.context,t,p.binding),r.record);
+tools/test262\script-observe-launch.test.mjs:27:  assert.deepEqual(inspectScriptEnvelope('{}',p.context,{...t,process:{...t.process,deadlineExpired:true}},p.binding),{status:'timeout',reasonCode:'deadline'});
+tools/test262\script-observe-launch.test.mjs:28:  if(mode==='cap'){assert.deepEqual(inspectScriptEnvelope(JSON.stringify(r.record),p.context,{...t,capKilled:false,crashBeforeCap:true},p.binding),{status:'host-fault',reasonCode:'crash'});}
+tools/test262\script-observe-launch.test.mjs:32: let p=await prepareScriptObservation(options(lane));assert.ok(Object.isFrozen(p)&&Object.isFrozen(p.binding.sources[0])&&Object.isFrozen(p.binding.limits));assert.throws(()=>{p.binding.action='execute';},TypeError);await assert.rejects(()=>validateScriptLaunch(structuredClone(p)),/context/);
+tools/test262\script-observe-launch.test.mjs:33: const before=new AbortController();before.abort();let r=await launchScriptObservation(p,{signal:before.signal});await record(lane+'/prelaunch-cancel',p,r);assert.equal(r.state,'unfinished');await assert.rejects(()=>launchScriptObservation(p),/context/);await assert.rejects(()=>lstat(p.paths.result),{code:'ENOENT'});
+tools/test262\script-observe-launch.test.mjs:34: p=await prepareScriptObservation(options(lane));const after=new AbortController();let actualSpawn=false;
+tools/test262\script-observe-launch.test.mjs:35: r=await hook((spawn,exe,args,opts)=>{const child=spawn(exe,args,opts);child.once('spawn',()=>{actualSpawn=true;after.abort();});return child;},()=>launchScriptObservation(p,{signal:after.signal}));
+tools/test262\script-observe-launch.test.mjs:36: await record(lane+'/afterspawn-cancel',p,r);assert.equal(actualSpawn,true);assert.equal(r.state,'unfinished');assert.equal(JSON.parse(await readFile(join(p.directory,'transport.json'))).cancelled,true);await assert.rejects(()=>launchScriptObservation(p),/context/);await assert.rejects(()=>lstat(join(p.directory,'record.json')),{code:'ENOENT'});
+tools/test262\script-observe-launch.test.mjs:39: const p=await prepareScriptObservation(options());
+tools/test262\script-observe-launch.test.mjs:46: const c=new AbortController();c.abort();await launchScriptObservation(p,{signal:c.signal});
+tools/test262\script-observe-launch.test.mjs:49: for(const limits of [{sourceUnits:99999},{parseDepth:1},{evaluationDepth:1},{steps:-1},{calls:0.5},{wallMs:2147483648},{outputBytes:NaN},{unknown:1}])await assert.rejects(()=>prepareScriptObservation(options('node',{limits})),/limit/);
+tools/test262\script-observe-launch.test.mjs:50: await assert.rejects(()=>prepareScriptObservation(options('node',{mode:'conformance'})),/mode/);
+tools/test262\script-observe-launch.test.mjs:51: await assert.rejects(()=>prepareScriptObservation(options('node',{variant:'strict'})),/control-policy/);
+tools/test262\script-observe-launch.test.mjs:52: await assert.rejects(()=>prepareScriptObservation(options('node',{control:'unregistered-case'})),/registered-control/);
+tools/test262\script-observe-live-codec.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+tools/test262\script-observe-live-codec.test.mjs:6:import {parseScriptEnvelope,assertScriptContext,inspectScriptEnvelope} from './script-result.mjs';
+tools/test262\script-observe-live-codec.test.mjs:10: for(const row of rows){const p=JSON.parse(await readFile(join(row.directory,'plan.json'))),bytes=await readFile(p.paths.result),child=parseScriptDriverResult(bytes,p.binding),record=row.record;
+tools/test262\script-observe-live-codec.test.mjs:11:  assert.deepEqual(parseScriptEnvelope(JSON.stringify(record),p.binding),record);assert.deepEqual(assertScriptContext(record,p.context,p.binding),record);
+tools/test262\script-observe-live-codec.test.mjs:12:  const f=JSON.parse(await readFile(join(row.directory,'transport.json'))),t={process:f.process,outputBytes:f.outputBytes,outputLimit:f.outputLimit,capCount:f.capCount,capKilled:f.capKilled,crashBeforeCap:f.crashBeforeCap};assert.deepEqual(inspectScriptEnvelope(JSON.stringify(record),p.context,t,p.binding),record);
+tools/test262\script-observe-live-codec.test.mjs:13:  for(const edit of [c=>c.nonce='stale',c=>c.requestSha256='a'.repeat(64),c=>c.operation.unitId='u999',c=>c.operation.realmId='unknown',c=>c.completedUnits=['u0','u0'],c=>c.preflightId='forged',c=>c.testBodyEvaluated=!c.testBodyEvaluated,c=>c.classification={status:'pass'}]){const c=structuredClone(child);edit(c);assert.throws(()=>parseScriptDriverResult(Buffer.from(JSON.stringify(c)),p.binding));}
+tools/test262\script-observe-live-codec.test.mjs:14:  for(const edit of [v=>v.evidence.operation.unitId='u999',v=>v.evidence.preflightId='forged',v=>v.evidence.completedUnits=['u0','u0'],v=>v.evidence.testBodyEvaluated=!v.evidence.testBodyEvaluated,v=>v.classification={status:'pass'}]){const v=structuredClone(record);edit(v);assert.throws(()=>parseScriptEnvelope(JSON.stringify(v),p.binding));}
+tools/test262\script-observe-live-codec.test.mjs:15:  for(const edit of [b=>delete b.limits.steps,b=>b.limits.calls++,b=>b.variant='non-strict',b=>b.sources[0].transformedText+=';',b=>b.sources.reverse(),b=>b.sources.push(b.sources[0])]){const b=structuredClone(p.binding);edit(b);if(JSON.stringify(b)===JSON.stringify(p.binding))continue;assert.throws(()=>parseScriptDriverResult(bytes,b));assert.throws(()=>parseScriptEnvelope(JSON.stringify(record),b));}
+tools/test262\script-observe-live-codec.test.mjs:17:  else{const c=structuredClone(child);c.result.diagnostic='ReferenceError: forged text';const accepted=parseScriptDriverResult(Buffer.from(JSON.stringify(c)),p.binding);assert.deepEqual({...accepted.result,diagnostic:undefined},{...child.result,diagnostic:undefined});}
+tools/test262\script-observe-preflight.test.mjs:10:import {prepareScriptObservation,launchScriptObservation,validateScriptLaunch} from './script-observe.mjs';
+tools/test262\script-observe-preflight.test.mjs:18:  const p=await intercept(mode,()=>prepareScriptObservation(options(lane)));const r=await launchScriptObservation(p);await save(lane+'/'+mode,p,r);
+tools/test262\script-observe-preflight.test.mjs:23:  const p=await prepareScriptObservation(options(lane,limits)),r=await launchScriptObservation(p);await save(lane+'/'+name,p,r);assert.equal(r.state,'preflight-failed');assert.equal(r.failure.record.observation.kind,kind);assert.equal(r.failure.record.evidence.stage,'harness');assert.equal(r.failure.record.evidence.harnessValidated,false);assert.equal(p.binding.preflightId,null);
+tools/test262\script-observe-preflight.test.mjs:27: const a=await prepareScriptObservation(options('node')),b=await prepareScriptObservation(options('node'));assert.notEqual(a.binding.preflightId,b.binding.preflightId);assert.deepEqual(a.binding.units,b.binding.units);const pre=JSON.parse(await readFile(join(a.directory,'preflight.json')));for(const row of pre.rows){assert.equal(row.binding.sources.at(-1).transformedText,'"use strict";\n');assert.ok(row.binding.units.filter(u=>u.role==='harness').every(u=>u.sourceSha256===u.transformedSha256));}assert.equal(a.binding.units[1].path,a.binding.units[2].path);assert.notEqual(a.binding.units[1].id,a.binding.units[2].id);
+tools/test262\script-observe-preflight.test.mjs:29: const cancel=new AbortController();cancel.abort();await launchScriptObservation(a,{signal:cancel.signal});await launchScriptObservation(b,{signal:cancel.signal});
+tools/test262\script-observe-preflight.test.mjs:32: const path='test/fixtures/script-observation/frozen.json',bytes=await readFile(path);try{const f=JSON.parse(bytes);f.h7=f.h7.slice(0,-1);await writeFile(path,JSON.stringify(f));await assert.rejects(()=>prepareScriptObservation(options('node')),/preflight-controls-drift/);}finally{await writeFile(path,bytes);}
+tools/test262\script-observe.mjs:8:import {sha256,blobHash,verifyBytes,transform,planCorpus,localBytes,frozenManifest,REVISION} from './input.mjs';
+tools/test262\script-observe.mjs:9:import {parseScriptDriverResult} from './script-driver-result.mjs';
+tools/test262\script-observe.mjs:10:import {assertScriptContext,inspectScriptEnvelope} from './script-result.mjs';
+tools/test262\script-observe.mjs:57: else {try{need(p.exitCode===0,'process');child=parseScriptDriverResult(bytes,binding);}catch{observation={kind:'host-fault',faultCode:'protocol'};}}
+tools/test262\script-observe.mjs:61: need(equal(inspectScriptEnvelope(JSON.stringify(record),context,transportOnly(facts),binding),record),'transport-roundtrip');
+tools/test262\script-observe.mjs:130:export async function prepareScriptObservation(options){
+tools/test262\script-observe.mjs:150:  selection=await planCorpus({root:o.corpusRoot,revision:o.revision,lane:o.lane,paths:[o.path]});
+tools/test262\script-observe.mjs:180:export async function launchScriptObservation(plan,{signal}={}){
+tools/test262\script-result.mjs:203:  // is authenticated only by inspectScriptEnvelope's separate parent facts.
+tools/test262\script-result.mjs:230:export function parseScriptEnvelope(json,binding) {
+tools/test262\script-result.mjs:240:export function inspectScriptEnvelope(json,context,transport,binding) {
+tools/test262\script-result.mjs:248:      const v=assertScriptContext(parseScriptEnvelope(json,binding),context,binding);
+tools/test262\script-result.mjs:259:      const v=assertScriptContext(parseScriptEnvelope(json,binding),context,binding);
+tools/test262\script-result.mjs:266:    const v=assertScriptContext(parseScriptEnvelope(json,binding),context,binding);
+tools/test262\script-strict-rule-dispatch.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+tools/test262\script-strict-rule-dispatch.test.mjs:6:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+tools/test262\script-strict-rule-dispatch.test.mjs:20:  assert.deepEqual(parseScriptDriverResult(Buffer.from(bytes),row.binding),row.child,row.id+' child decoder');
+tools/test262\script-strict-rule-dispatch.test.mjs:25:  assert.deepEqual(parseScriptEnvelope(JSON.stringify(envelope),row.binding),row.envelope,row.id+' envelope decoder');
+tools/test262\script-result.test.mjs:3:import { parseScriptDriverResult as childParse } from './script-driver-result.mjs';
+tools/test262\script-result.test.mjs:4:import { validateScriptRecord,parseScriptEnvelope,assertScriptContext,inspectScriptEnvelope } from './script-result.mjs';
+tools/test262\script-result.test.mjs:8:const parse=(v,b)=>parseScriptEnvelope(JSON.stringify(v),b);
+tools/test262\script-result.test.mjs:15:  assert.deepEqual(inspectScriptEnvelope(JSON.stringify(v),r.context,transport(r),r.binding),v);
+tools/test262\script-result.test.mjs:27:   assert.throws(()=>parseScriptEnvelope(x,r.binding));
+tools/test262\script-result.test.mjs:28:   assert.deepEqual(inspectScriptEnvelope(x,r.context,transport(r),r.binding),{status:'host-fault',reasonCode:'protocol'});
+tools/test262\script-result.test.mjs:84:   assert.deepEqual(inspectScriptEnvelope(JSON.stringify(v),r.context,facts,r.binding),v);
+tools/test262\script-result.test.mjs:95:  assert.deepEqual(inspectScriptEnvelope(json,base.context,{...t,process:{exitCode:70,signal:null,deadlineExpired:false}},base.binding),{status:'host-fault',reasonCode:'crash'});
+tools/test262\script-result.test.mjs:96:  assert.deepEqual(inspectScriptEnvelope('',base.context,{...t,process:{exitCode:70,signal:null,deadlineExpired:true},outputBytes:2000,capCount:1500},base.binding),{status:'timeout',reasonCode:'deadline'});
+tools/test262\script-result.test.mjs:97:  assert.deepEqual(inspectScriptEnvelope('',base.context,{...t,process:{exitCode:70,signal:null,deadlineExpired:false},outputBytes:2000,capCount:1500,capKilled:true,crashBeforeCap:true},base.binding),{status:'host-fault',reasonCode:'crash'});
+tools/test262\script-result.test.mjs:100:  assert.deepEqual(inspectScriptEnvelope(JSON.stringify(r.envelope),r.context,cap,r.binding),r.envelope);
+tools/test262\script-result.test.mjs:101:  assert.deepEqual(inspectScriptEnvelope('',r.context,cap,r.binding),{status:'resource-limit',reasonCode:'output'});
+tools/test262\script-result.test.mjs:102:  assert.deepEqual(inspectScriptEnvelope(JSON.stringify(r.envelope),r.context,{...cap,capKilled:false},r.binding),{status:'host-fault',reasonCode:'crash'});
+tools/test262\script-result.test.mjs:103:  assert.deepEqual(inspectScriptEnvelope(JSON.stringify(r.envelope),r.context,t,r.binding),{status:'host-fault',reasonCode:'protocol'});
+tools/test262\script-result.test.mjs:104:  for(const patch of [{capCount:1024},{capCount:2001},{capCount:null,capKilled:true},{capCount:-1}]) assert.throws(()=>inspectScriptEnvelope(json,base.context,{...cap,...patch},base.binding));
+tools/test262\script-result.test.mjs:105:  const absent=copy(t);delete absent.capCount;assert.throws(()=>inspectScriptEnvelope(json,base.context,absent,base.binding));
+tools/test262\script-result.test.mjs:157:  assert.deepEqual(parseScriptEnvelope(full,r.binding),r.envelope);
+tools/test262\script-result.test.mjs:158:  assert.throws(()=>parseScriptEnvelope(Buffer.concat([full,Buffer.from(' ')]),r.binding));
+tools/test262\script-result.test.mjs:192:  assert.deepEqual(inspectScriptEnvelope(JSON.stringify(v),r.context,{process:v.evidence.process,outputBytes:0,outputLimit:1024,capCount:null,capKilled:false,crashBeforeCap:false},null),v);
+tools/test262\script-strict-parameter-dispatch.test.mjs:6:import {parseScriptDriverResult} from './script-driver-result.mjs';
+tools/test262\script-strict-parameter-dispatch.test.mjs:7:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+tools/test262\script-strict-parameter-dispatch.test.mjs:22:  assert.deepEqual(parseScriptDriverResult(Buffer.from(bytes),row.binding),row.child,row.id+' child decoder');
+tools/test262\script-strict-parameter-dispatch.test.mjs:27:  assert.deepEqual(parseScriptEnvelope(JSON.stringify(envelope),row.binding),row.envelope,row.id+' envelope decoder');
+tools/test262\script-strict-parameter-dispatch.test.mjs:60:    assert.throws(()=>parseScriptDriverResult(Buffer.from(r.stdout.trim()),binding));
+tools/test262\script-strict-parameter-dispatch.test.mjs:61:    assert.throws(()=>parseScriptEnvelope(JSON.stringify(envelope),binding));
+tools/test262\script-strict-parameter-dispatch.test.mjs:63:    assert.deepEqual(parseScriptDriverResult(Buffer.from(r.stdout.trim()),binding),child);
+tools/test262\script-strict-parameter-dispatch.test.mjs:64:    assert.deepEqual(parseScriptEnvelope(JSON.stringify(envelope),binding),envelope);

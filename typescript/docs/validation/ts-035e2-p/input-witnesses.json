@@ -1,0 +1,407 @@
+[
+  {
+    "paths": [],
+    "expected": "selection-mismatch"
+  },
+  {
+    "paths": [
+      "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+      "test/language/statements/let/global-use-before-initialization-in-prior-statement.js"
+    ],
+    "expected": "selection-mismatch"
+  },
+  {
+    "paths": [
+      ""
+    ],
+    "expected": "selection-mismatch"
+  },
+  {
+    "paths": [
+      "test/unknown.js"
+    ],
+    "expected": "selection-mismatch"
+  },
+  {
+    "paths": [
+      "test/a_FIXTURE.js"
+    ],
+    "expected": "selection-mismatch"
+  },
+  {
+    "id": "revision-mismatch",
+    "result": {
+      "schemaVersion": 1,
+      "kind": "host-only-selection",
+      "revision": "wrong",
+      "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+      "lane": "node",
+      "cache": false,
+      "files": [
+        {
+          "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+          "id": "S01",
+          "variants": null,
+          "inputError": {
+            "status": "harness-error",
+            "stage": "input",
+            "reasonCode": "revision-mismatch"
+          }
+        }
+      ],
+      "excludedFixtures": []
+    }
+  },
+  {
+    "id": "retrieval",
+    "result": {
+      "schemaVersion": 1,
+      "kind": "host-only-selection",
+      "revision": "91c70759363c46557b694792bf34a2551a7af5ba",
+      "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+      "lane": "node",
+      "cache": false,
+      "files": [
+        {
+          "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+          "id": "S01",
+          "variants": null,
+          "inputError": {
+            "status": "harness-error",
+            "stage": "input",
+            "reasonCode": "retrieval"
+          }
+        }
+      ],
+      "excludedFixtures": []
+    }
+  },
+  {
+    "id": "actual-metadata-reject",
+    "source": "1;",
+    "expected": "metadata"
+  },
+  {
+    "id": "actual-metadata-reject",
+    "source": "/*---\nflags: []\n---*/",
+    "expected": "metadata"
+  },
+  {
+    "id": "actual-metadata-reject",
+    "source": "/*---\ndescription: x\nnegative: {type: Error}\n---*/",
+    "expected": "metadata"
+  },
+  {
+    "id": "no-includes",
+    "result": {
+      "schemaVersion": 1,
+      "kind": "host-only-selection",
+      "revision": "91c70759363c46557b694792bf34a2551a7af5ba",
+      "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+      "lane": "node",
+      "cache": false,
+      "files": [
+        {
+          "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+          "id": "S01",
+          "variants": [
+            {
+              "id": "91c70759363c46557b694792bf34a2551a7af5ba:test/language/statements/let/global-use-before-initialization-in-prior-statement.js:non-strict:node",
+              "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+              "variant": "non-strict",
+              "lane": "node",
+              "goal": "Script",
+              "blob": "74c1e27da8023494448f616d1796c3aaadcef17e",
+              "sourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+              "byteLength": 329,
+              "transformedSourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+              "metadata": {
+                "es6id": 13.1,
+                "description": "let: global use before initialization in prior statement. (TDZ, Temporal Dead Zone)\n",
+                "negative": {
+                  "phase": "runtime",
+                  "type": "ReferenceError"
+                },
+                "flags": [],
+                "features": [],
+                "includes": [],
+                "locale": []
+              },
+              "harness": [],
+              "blockers": [
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "error-objects"
+                },
+                {
+                  "status": "unsupported-profile",
+                  "reasonCode": "sloppy-script"
+                },
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "harness-capabilities"
+                }
+              ]
+            },
+            {
+              "id": "91c70759363c46557b694792bf34a2551a7af5ba:test/language/statements/let/global-use-before-initialization-in-prior-statement.js:strict:node",
+              "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+              "variant": "strict",
+              "lane": "node",
+              "goal": "Script",
+              "blob": "74c1e27da8023494448f616d1796c3aaadcef17e",
+              "sourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+              "byteLength": 329,
+              "transformedSourceSha256": "fd04745f8ff665db35d6f2f10e25c9c5d9c5d6f78b81e4c51c7c529e6cd19498",
+              "metadata": {
+                "es6id": 13.1,
+                "description": "let: global use before initialization in prior statement. (TDZ, Temporal Dead Zone)\n",
+                "negative": {
+                  "phase": "runtime",
+                  "type": "ReferenceError"
+                },
+                "flags": [],
+                "features": [],
+                "includes": [],
+                "locale": []
+              },
+              "harness": [],
+              "blockers": [
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "error-objects"
+                },
+                {
+                  "status": "unsupported-profile",
+                  "reasonCode": "strict-script-contract"
+                },
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "harness-capabilities"
+                }
+              ]
+            }
+          ],
+          "inputError": {
+            "status": "harness-error",
+            "stage": "input",
+            "reasonCode": "include-missing"
+          }
+        }
+      ],
+      "excludedFixtures": []
+    }
+  },
+  {
+    "id": "verified-first-include",
+    "result": {
+      "schemaVersion": 1,
+      "kind": "host-only-selection",
+      "revision": "91c70759363c46557b694792bf34a2551a7af5ba",
+      "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+      "lane": "node",
+      "cache": false,
+      "files": [
+        {
+          "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+          "id": "S01",
+          "variants": [
+            {
+              "id": "91c70759363c46557b694792bf34a2551a7af5ba:test/language/statements/let/global-use-before-initialization-in-prior-statement.js:non-strict:node",
+              "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+              "variant": "non-strict",
+              "lane": "node",
+              "goal": "Script",
+              "blob": "74c1e27da8023494448f616d1796c3aaadcef17e",
+              "sourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+              "byteLength": 329,
+              "transformedSourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+              "metadata": {
+                "es6id": 13.1,
+                "description": "let: global use before initialization in prior statement. (TDZ, Temporal Dead Zone)\n",
+                "negative": {
+                  "phase": "runtime",
+                  "type": "ReferenceError"
+                },
+                "flags": [],
+                "features": [],
+                "includes": [],
+                "locale": []
+              },
+              "harness": [],
+              "blockers": [
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "error-objects"
+                },
+                {
+                  "status": "unsupported-profile",
+                  "reasonCode": "sloppy-script"
+                },
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "harness-capabilities"
+                }
+              ]
+            },
+            {
+              "id": "91c70759363c46557b694792bf34a2551a7af5ba:test/language/statements/let/global-use-before-initialization-in-prior-statement.js:strict:node",
+              "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+              "variant": "strict",
+              "lane": "node",
+              "goal": "Script",
+              "blob": "74c1e27da8023494448f616d1796c3aaadcef17e",
+              "sourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+              "byteLength": 329,
+              "transformedSourceSha256": "fd04745f8ff665db35d6f2f10e25c9c5d9c5d6f78b81e4c51c7c529e6cd19498",
+              "metadata": {
+                "es6id": 13.1,
+                "description": "let: global use before initialization in prior statement. (TDZ, Temporal Dead Zone)\n",
+                "negative": {
+                  "phase": "runtime",
+                  "type": "ReferenceError"
+                },
+                "flags": [],
+                "features": [],
+                "includes": [],
+                "locale": []
+              },
+              "harness": [],
+              "blockers": [
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "error-objects"
+                },
+                {
+                  "status": "unsupported-profile",
+                  "reasonCode": "strict-script-contract"
+                },
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "harness-capabilities"
+                }
+              ]
+            }
+          ],
+          "inputError": {
+            "status": "harness-error",
+            "stage": "input",
+            "reasonCode": "include-missing"
+          }
+        }
+      ],
+      "excludedFixtures": []
+    }
+  },
+  {
+    "id": "corrupt-second-include",
+    "result": {
+      "schemaVersion": 1,
+      "kind": "host-only-selection",
+      "revision": "91c70759363c46557b694792bf34a2551a7af5ba",
+      "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+      "lane": "node",
+      "cache": false,
+      "files": [
+        {
+          "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+          "id": "S01",
+          "variants": [
+            {
+              "id": "91c70759363c46557b694792bf34a2551a7af5ba:test/language/statements/let/global-use-before-initialization-in-prior-statement.js:non-strict:node",
+              "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+              "variant": "non-strict",
+              "lane": "node",
+              "goal": "Script",
+              "blob": "74c1e27da8023494448f616d1796c3aaadcef17e",
+              "sourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+              "byteLength": 329,
+              "transformedSourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+              "metadata": {
+                "es6id": 13.1,
+                "description": "let: global use before initialization in prior statement. (TDZ, Temporal Dead Zone)\n",
+                "negative": {
+                  "phase": "runtime",
+                  "type": "ReferenceError"
+                },
+                "flags": [],
+                "features": [],
+                "includes": [],
+                "locale": []
+              },
+              "harness": [],
+              "blockers": [
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "error-objects"
+                },
+                {
+                  "status": "unsupported-profile",
+                  "reasonCode": "sloppy-script"
+                },
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "harness-capabilities"
+                }
+              ]
+            },
+            {
+              "id": "91c70759363c46557b694792bf34a2551a7af5ba:test/language/statements/let/global-use-before-initialization-in-prior-statement.js:strict:node",
+              "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+              "variant": "strict",
+              "lane": "node",
+              "goal": "Script",
+              "blob": "74c1e27da8023494448f616d1796c3aaadcef17e",
+              "sourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+              "byteLength": 329,
+              "transformedSourceSha256": "fd04745f8ff665db35d6f2f10e25c9c5d9c5d6f78b81e4c51c7c529e6cd19498",
+              "metadata": {
+                "es6id": 13.1,
+                "description": "let: global use before initialization in prior statement. (TDZ, Temporal Dead Zone)\n",
+                "negative": {
+                  "phase": "runtime",
+                  "type": "ReferenceError"
+                },
+                "flags": [],
+                "features": [],
+                "includes": [],
+                "locale": []
+              },
+              "harness": [],
+              "blockers": [
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "error-objects"
+                },
+                {
+                  "status": "unsupported-profile",
+                  "reasonCode": "strict-script-contract"
+                },
+                {
+                  "status": "unsupported-feature",
+                  "reasonCode": "harness-capabilities"
+                }
+              ]
+            }
+          ],
+          "inputError": {
+            "status": "harness-error",
+            "stage": "input",
+            "reasonCode": "blob-mismatch"
+          }
+        }
+      ],
+      "excludedFixtures": []
+    }
+  },
+  {
+    "id": "actual-v1-persist",
+    "expected": "new snapshot replaced old; no v2 reopen claim"
+  },
+  {
+    "id": "actual-exclusive-checkpoint-link",
+    "outcome": "storage-unavailable",
+    "code": "EPERM",
+    "accepted": false
+  }
+]

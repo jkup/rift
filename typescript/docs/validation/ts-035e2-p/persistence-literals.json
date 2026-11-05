@@ -1,0 +1,92 @@
+[
+  {
+    "phase": "open",
+    "expected": {
+      "durable": "old",
+      "dirty": true,
+      "state": "ready",
+      "receiptSpent": true
+    },
+    "recovery": "retain"
+  },
+  {
+    "phase": "write",
+    "expected": {
+      "durable": "old",
+      "dirty": true,
+      "state": "ready",
+      "receiptSpent": true
+    },
+    "recovery": "retain"
+  },
+  {
+    "phase": "sync",
+    "expected": {
+      "durable": "old",
+      "dirty": true,
+      "state": "ready",
+      "receiptSpent": true
+    },
+    "recovery": "retain"
+  },
+  {
+    "phase": "close",
+    "expected": {
+      "durable": "old",
+      "dirty": true,
+      "state": "ready",
+      "receiptSpent": true
+    },
+    "recovery": "retain"
+  },
+  {
+    "phase": "link",
+    "expected": {
+      "durable": "old",
+      "dirty": true,
+      "state": "ready",
+      "receiptSpent": true
+    },
+    "recovery": "retain"
+  },
+  {
+    "phase": "cleanup",
+    "expected": {
+      "durable": "old",
+      "dirty": true,
+      "state": "ready",
+      "receiptSpent": true
+    },
+    "recovery": "retain"
+  },
+  {
+    "phase": "link-visible-unacknowledged",
+    "expected": {
+      "durable": "new",
+      "dirty": true,
+      "state": "indeterminate",
+      "receiptSpent": true
+    },
+    "recovery": "acknowledge"
+  },
+  {
+    "phase": "conflicting-visible",
+    "expected": {
+      "durable": "foreign",
+      "dirty": true,
+      "state": "indeterminate",
+      "receiptSpent": true
+    },
+    "recovery": "reject-conflict"
+  },
+  {
+    "phase": "committed",
+    "expected": {
+      "durable": "new",
+      "dirty": false,
+      "state": "ready",
+      "receiptSpent": true
+    },
+    "recovery": "retain"
+  }
+]

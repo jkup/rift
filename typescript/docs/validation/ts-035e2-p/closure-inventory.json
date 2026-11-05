@@ -1,0 +1,630 @@
+[
+  {
+    "path": "tools/test262/input.mjs",
+    "sha256": "f3d3378947571a407e7cbe5c9da8921798b547020e371dc6547d9210f3118a6c",
+    "declarations": [
+      {
+        "line": 1,
+        "text": "import { createHash } from 'node:crypto';"
+      },
+      {
+        "line": 2,
+        "text": "import { readFile, realpath, stat } from 'node:fs/promises';"
+      },
+      {
+        "line": 3,
+        "text": "import { resolve, relative, isAbsolute, sep } from 'node:path';"
+      },
+      {
+        "line": 4,
+        "text": "import { parseDocument, visit } from 'yaml';"
+      },
+      {
+        "line": 6,
+        "text": "export const REVISION = '91c70759363c46557b694792bf34a2551a7af5ba';"
+      },
+      {
+        "line": 8,
+        "text": "export const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');"
+      },
+      {
+        "line": 9,
+        "text": "export const blobHash = bytes => createHash('sha1').update(`blob ${bytes.length}\\0`).update(bytes).digest('hex');"
+      },
+      {
+        "line": 10,
+        "text": "export class InputError extends Error {"
+      },
+      {
+        "line": 15,
+        "text": "export async function frozenManifest() {"
+      },
+      {
+        "line": 24,
+        "text": "export function safePath(path, prefix) {"
+      },
+      {
+        "line": 31,
+        "text": "export async function localBytes(root, path, prefix = 'test/') {"
+      },
+      {
+        "line": 51,
+        "text": "export function verifyBytes(bytes, expectedBlob) {"
+      },
+      {
+        "line": 63,
+        "text": "export function metadata(source) {"
+      },
+      {
+        "line": 109,
+        "text": "export function compareMetadata(meta, entry) {"
+      },
+      {
+        "line": 119,
+        "text": "export function variants(meta) {"
+      },
+      {
+        "line": 126,
+        "text": "export function transform(bytes, variant) {"
+      },
+      {
+        "line": 129,
+        "text": "export function harnessPaths(meta) {"
+      },
+      {
+        "line": 136,
+        "text": "export function blockers(meta, variant, id = null) {"
+      },
+      {
+        "line": 157,
+        "text": "export function fixtureSelection(paths) {"
+      },
+      {
+        "line": 164,
+        "text": "export async function planCorpus({ root, revision, lane, paths }) {"
+      }
+    ]
+  },
+  {
+    "path": "tools/test262/plan.mjs",
+    "sha256": "c9d99a1cfd2c56f00507f15175bafb8bf738a328dcf855c2de432063dab5b561",
+    "declarations": [
+      {
+        "line": 1,
+        "text": "import { readFile, mkdir } from 'node:fs/promises';"
+      },
+      {
+        "line": 2,
+        "text": "import { resolve } from 'node:path';"
+      },
+      {
+        "line": 3,
+        "text": "import { pathToFileURL } from 'node:url';"
+      },
+      {
+        "line": 4,
+        "text": "import { randomUUID } from 'node:crypto';"
+      },
+      {
+        "line": 5,
+        "text": "import { planCorpus, sha256, REVISION } from './input.mjs';"
+      },
+      {
+        "line": 6,
+        "text": "import { terminalRecord } from './result.mjs';"
+      },
+      {
+        "line": 7,
+        "text": "import { newLedger, appendAttempt, persist, report } from './ledger.mjs';"
+      },
+      {
+        "line": 9,
+        "text": "export async function prepareSelection(selection) {"
+      },
+      {
+        "line": 29,
+        "text": "export function preflightRecords(selection) {"
+      },
+      {
+        "line": 40,
+        "text": "export async function main(args) {"
+      }
+    ]
+  },
+  {
+    "path": "tools/test262/ledger.mjs",
+    "sha256": "cce9faef47eb74242020364ccb7839ed0ffe7d177228d6197beb5c60b056d62c",
+    "declarations": [
+      {
+        "line": 1,
+        "text": "import { randomUUID } from 'node:crypto';"
+      },
+      {
+        "line": 2,
+        "text": "import { open, rename, unlink } from 'node:fs/promises';"
+      },
+      {
+        "line": 3,
+        "text": "import { STATUSES, validateRecord, assertContext, validateContext } from './result.mjs';"
+      },
+      {
+        "line": 4,
+        "text": "import { isDeepStrictEqual } from 'node:util';"
+      },
+      {
+        "line": 6,
+        "text": "export function newLedger(selection) {"
+      },
+      {
+        "line": 11,
+        "text": "export function appendAttempt(ledger, id, record, retryReason = null) {"
+      },
+      {
+        "line": 42,
+        "text": "export function report(ledger) {"
+      },
+      {
+        "line": 82,
+        "text": "export async function persist(path, value) {"
+      }
+    ]
+  },
+  {
+    "path": "tools/test262/script-capabilities.mjs",
+    "sha256": "aaee5e8af10cbc6f198e8315418bd47e2466070bd909313fff9fe4b133c52280",
+    "declarations": [
+      {
+        "line": 1,
+        "text": "import { readFile } from 'node:fs/promises';"
+      },
+      {
+        "line": 2,
+        "text": "import { isDeepStrictEqual } from 'node:util';"
+      },
+      {
+        "line": 3,
+        "text": "import { frozenManifest, variants, blockers } from './input.mjs';"
+      },
+      {
+        "line": 17,
+        "text": "function freeze(value) {"
+      },
+      {
+        "line": 34,
+        "text": "export async function readScriptCapabilities() {"
+      },
+      {
+        "line": 43,
+        "text": "function dataObject(value, keys) {"
+      },
+      {
+        "line": 51,
+        "text": "function stringArray(value) {"
+      },
+      {
+        "line": 65,
+        "text": "function validMetadata(meta) {"
+      },
+      {
+        "line": 81,
+        "text": "function mapDebts(legacy) {"
+      },
+      {
+        "line": 89,
+        "text": "export function reconstructScriptDebts(metadata, variant, manifestId) {"
+      }
+    ]
+  },
+  {
+    "path": "tools/test262/script-observe.mjs",
+    "sha256": "9625452ddbfb8e11f4d86b931a500618e77d12dce9670c047a23eeed3711e182",
+    "declarations": [
+      {
+        "line": 1,
+        "text": "import {spawn,execFileSync} from 'node:child_process';"
+      },
+      {
+        "line": 2,
+        "text": "import {randomUUID,createHash} from 'node:crypto';"
+      },
+      {
+        "line": 3,
+        "text": "import {readFile,writeFile,mkdir,readdir,lstat,realpath} from 'node:fs/promises';"
+      },
+      {
+        "line": 4,
+        "text": "import {resolve,join,dirname} from 'node:path';"
+      },
+      {
+        "line": 5,
+        "text": "import {fileURLToPath} from 'node:url';"
+      },
+      {
+        "line": 6,
+        "text": "import {isDeepStrictEqual as equal} from 'node:util';"
+      },
+      {
+        "line": 7,
+        "text": "import {parseDocument} from 'yaml';"
+      },
+      {
+        "line": 8,
+        "text": "import {sha256,blobHash,verifyBytes,transform,planCorpus,localBytes,frozenManifest,REVISION} from './input.mjs';"
+      },
+      {
+        "line": 9,
+        "text": "import {parseScriptDriverResult} from './script-driver-result.mjs';"
+      },
+      {
+        "line": 10,
+        "text": "import {assertScriptContext,inspectScriptEnvelope} from './script-result.mjs';"
+      },
+      {
+        "line": 12,
+        "text": "const plans=new WeakMap();"
+      },
+      {
+        "line": 18,
+        "text": "function freeze(x){if(x&&typeof x==='object'){for(const v of Object.values(x))freeze(v);Object.freeze(x);}return x;}"
+      },
+      {
+        "line": 19,
+        "text": "async function save(path,value){await writeFile(path,JSON.stringify(value,null,2)+'\\n',{flag:'wx'});}"
+      },
+      {
+        "line": 20,
+        "text": "async function noAlias(path){let p=resolve(path);while(true){need(!(await lstat(p)).isSymbolicLink(),'path-alias');const next=dirname(p);if(next===p)break;p=next;}need((await realpath(path)).toLowerCase()===resolve(path).toLowerCase(),'path-alias');}"
+      },
+      {
+        "line": 21,
+        "text": "async function absent(path){try{await lstat(path);}catch(e){if(e.code==='ENOENT')return;throw e;}throw Error('preexisting-result');}"
+      },
+      {
+        "line": 22,
+        "text": "async function walk(dir,accept=()=>true){const out=[];for(const entry of await readdir(dir,{withFileTypes:true})){const path=join(dir,entry.name);need(!entry.isSymbolicLink(),'path-alias');if(entry.isDirectory())out.push(...await walk(path,accept));else if(entry.isFile()&&accept(path))out.push(path);}return out.sort();}"
+      },
+      {
+        "line": 23,
+        "text": "async function digestFiles(files){const parts=[];for(const path of [...new Set(files)].sort()){await noAlias(path);parts.push([path,sha256(await readFile(path))]);}return {sha256:sha256(JSON.stringify(parts)),files:parts};}"
+      },
+      {
+        "line": 24,
+        "text": "async function closure(lane){"
+      },
+      {
+        "line": 32,
+        "text": "function limitsOf(limits){need(limits&&typeof limits==='object'&&!Array.isArray(limits),'limits');need(Object.keys(limits).every(k=>Object.hasOwn(fixed,k)),'limits');const r={...fixed,...limits};need(Object.values(r).every(n=>Number.isSafeInteger(n)&&n>=0)&&r.wallMs<=2147483647,'limits');for(const k of ['sourceUnits','parseDepth','evaluationDepth'])need(r[k]===fixed[k],'fixed-engine-limit');return r;}"
+      },
+      {
+        "line": 33,
+        "text": "function unit(bytes,path,role,n,variant='raw',expectedBlob=blobHash(bytes)){"
+      },
+      {
+        "line": 37,
+        "text": "function bind(units,texts,limits,variant,action,preflightId,other=false){"
+      },
+      {
+        "line": 41,
+        "text": "function contextFor(binding,identity,build,policySha256,metadata=null,blockers=[]){"
+      },
+      {
+        "line": 45,
+        "text": "async function artifacts(directory,binding){"
+      },
+      {
+        "line": 49,
+        "text": "function transportOnly(f){return {process:f.process,outputBytes:f.outputBytes,outputLimit:f.outputLimit,capCount:f.capCount,capKilled:f.capKilled,crashBeforeCap:f.crashBeforeCap};}"
+      },
+      {
+        "line": 50,
+        "text": "function compose(context,binding,bytes,facts,stage='driver',fault=null){"
+      },
+      {
+        "line": 64,
+        "text": "async function processAttempt(saved,{signal}={}){"
+      },
+      {
+        "line": 105,
+        "text": "async function preflight(base,harness,identity,build,limits,directory,input){"
+      },
+      {
+        "line": 130,
+        "text": "export async function prepareScriptObservation(options){"
+      },
+      {
+        "line": 174,
+        "text": "export async function validateScriptLaunch(plan){"
+      },
+      {
+        "line": 180,
+        "text": "export async function launchScriptObservation(plan,{signal}={}){"
+      }
+    ]
+  },
+  {
+    "path": "tools/test262/script-result.mjs",
+    "sha256": "23361e55406a758a12722275b377be19a51f302d76e349bcf2abcc821d493d28",
+    "declarations": [
+      {
+        "line": 1,
+        "text": "import { createHash } from 'node:crypto';"
+      },
+      {
+        "line": 2,
+        "text": "import { isDeepStrictEqual as equal } from 'node:util';"
+      },
+      {
+        "line": 3,
+        "text": "import { parseDocument } from 'yaml';"
+      },
+      {
+        "line": 18,
+        "text": "function record(x, fields) {"
+      },
+      {
+        "line": 43,
+        "text": "function bindingState(b) {"
+      },
+      {
+        "line": 63,
+        "text": "function constructorShape(c) {"
+      },
+      {
+        "line": 70,
+        "text": "function resultShape(x,parent=false) {"
+      },
+      {
+        "line": 86,
+        "text": "function checkOperation(v,b,s) {"
+      },
+      {
+        "line": 132,
+        "text": "function decode(json) {"
+      },
+      {
+        "line": 145,
+        "text": "const identityShape = x=>record(x,{schemaVersion:one([2]),runId:str,mode:modes,corpusRevision:nullable(hash(40)),manifestSha256:nullable(sha),"
+      },
+      {
+        "line": 151,
+        "text": "const negativeShape = nullable(x=>record(x,{phase:one(['parse','runtime']),type:str}));"
+      },
+      {
+        "line": 156,
+        "text": "const classificationShape = x=>record(x,{status:one(['pass','fail','unsupported-feature','unsupported-profile','harness-error','resource-limit','timeout','host-fault']),"
+      },
+      {
+        "line": 160,
+        "text": "function checkCore(v,b) {"
+      },
+      {
+        "line": 189,
+        "text": "function complete(v) {"
+      },
+      {
+        "line": 195,
+        "text": "function classification(v) {"
+      },
+      {
+        "line": 225,
+        "text": "export function validateScriptRecord(value,binding) {"
+      },
+      {
+        "line": 230,
+        "text": "export function parseScriptEnvelope(json,binding) {"
+      },
+      {
+        "line": 233,
+        "text": "export function assertScriptContext(value,context,binding) {"
+      },
+      {
+        "line": 240,
+        "text": "export function inspectScriptEnvelope(json,context,transport,binding) {"
+      }
+    ]
+  },
+  {
+    "path": "tools/test262/script-driver-result.mjs",
+    "sha256": "6d89f1f7d9b2bfdec19f930ae8019775f0cc7625bbd8787903d1df29417ac5f6",
+    "declarations": [
+      {
+        "line": 1,
+        "text": "import { createHash } from 'node:crypto';"
+      },
+      {
+        "line": 2,
+        "text": "import { isDeepStrictEqual as equal } from 'node:util';"
+      },
+      {
+        "line": 3,
+        "text": "import { parseDocument } from 'yaml';"
+      },
+      {
+        "line": 18,
+        "text": "function record(x, fields) {"
+      },
+      {
+        "line": 43,
+        "text": "function bindingState(b) {"
+      },
+      {
+        "line": 63,
+        "text": "function constructorShape(c) {"
+      },
+      {
+        "line": 70,
+        "text": "function resultShape(x,parent=false) {"
+      },
+      {
+        "line": 86,
+        "text": "function checkOperation(v,b,s) {"
+      },
+      {
+        "line": 132,
+        "text": "function decode(json) {"
+      },
+      {
+        "line": 144,
+        "text": "export function parseScriptDriverResult(bytes,binding) {"
+      }
+    ]
+  },
+  {
+    "path": "src/script-observation.ts",
+    "sha256": "8efa3781452ca03a4a612b46be98428b62edbb1db41ee8c48e9d861d3d4d5f6d",
+    "declarations": [
+      {
+        "line": 1,
+        "text": "import { Realm } from \"./realm.js\";"
+      },
+      {
+        "line": 2,
+        "text": "import { prepareBoundedScript, type ExecutableScript, type ScriptPreparation } from \"./script-record.js\";"
+      },
+      {
+        "line": 3,
+        "text": "import { createScriptSession, type ScriptSourceSnapshot, type ScriptSession } from \"./script-execution.js\";"
+      },
+      {
+        "line": 4,
+        "text": "import { evaluateScriptObserved, type ObservedScriptEvaluation } from \"./script-throw-inspection.js\";"
+      },
+      {
+        "line": 5,
+        "text": "import { parse } from \"./parser.js\";"
+      },
+      {
+        "line": 6,
+        "text": "import { GuestObject, normal, sameValue, UNDEFINED, type Value, type ValueCompletion, type Builtin, type ThrowCompletion } from \"./runtime.js\";"
+      },
+      {
+        "line": 7,
+        "text": "import { GuestArray } from \"./array-object.js\";"
+      },
+      {
+        "line": 8,
+        "text": "import { wellKnownSpecies } from \"./symbols.js\";"
+      },
+      {
+        "line": 9,
+        "text": "import { mapObjectDefaultArray } from \"./array-map.js\";"
+      },
+      {
+        "line": 10,
+        "text": "import type { ChildV2, ScriptConstructor, ScriptOperation, ScriptOriginalThrow, ScriptResult, ScriptSite } from \"./script-observation-types.js\";"
+      },
+      {
+        "line": 12,
+        "text": "export type ObservationUnit = { id: string; role: \"harness\" | \"test\"; text: string };"
+      },
+      {
+        "line": 13,
+        "text": "export type ScriptObservationRequest = {"
+      },
+      {
+        "line": 17,
+        "text": "export type ScriptControlReport = { version: 1; nonce: string; control: string; input: string; passed: boolean; observed: number[]; effects: string };"
+      },
+      {
+        "line": 18,
+        "text": "function check(ok: boolean, label: string): void { if (!ok) throw new Error(label); }"
+      },
+      {
+        "line": 19,
+        "text": "function object(value: Value): GuestObject { if (value.kind !== \"object\") throw new Error(\"object required\"); return value.object; }"
+      },
+      {
+        "line": 20,
+        "text": "function own(target: GuestObject, key: string): Value {"
+      },
+      {
+        "line": 25,
+        "text": "function obj(value: GuestObject): Value { return { kind: \"object\", object: value }; }"
+      },
+      {
+        "line": 294,
+        "text": "export function observeScripts(request: ScriptObservationRequest): ChildV2 {"
+      },
+      {
+        "line": 304,
+        "text": "export function observeScriptControl(request: ScriptObservationRequest, control: string, input: string): { child: ChildV2; report: ScriptControlReport } {"
+      }
+    ]
+  },
+  {
+    "path": "src/script-observation-types.ts",
+    "sha256": "c6e06c4df1d0ba5ac970347a134e615fe6a9690a4b65e295f76a03de57b076d1",
+    "declarations": [
+      {
+        "line": 1,
+        "text": "import type { Guard, RuntimeCapability, SyntaxCapability } from \"./outcomes.js\";"
+      },
+      {
+        "line": 5,
+        "text": "export type ScriptSite = { unitId: string; realmId: string; location: { line: number; column: number } };"
+      },
+      {
+        "line": 6,
+        "text": "export type ScriptOperation = { stage: \"harness\" | \"test\"; phase: \"parse\" | \"instantiation\" | \"body\"; unitId: string; realmId: string };"
+      },
+      {
+        "line": 7,
+        "text": "export type ScriptOriginalThrow = { valueKind: \"undefined\" | \"null\" | \"boolean\" | \"number\" | \"string\" | \"symbol\" | \"object\"; origin: \"guest\" | \"engine-diagnostic\"; site: ScriptSite };"
+      },
+      {
+        "line": 8,
+        "text": "export type ScriptConstructor ="
+      },
+      {
+        "line": 13,
+        "text": "export type ScriptResult ="
+      },
+      {
+        "line": 21,
+        "text": "export type ChildV2 = {"
+      }
+    ]
+  },
+  {
+    "path": "src/script-observation-json.ts",
+    "sha256": "2f2718bc39dabab0ee430244ca59f7332173d4b2bc5318a07056a85c46ed8212",
+    "declarations": [
+      {
+        "line": 1,
+        "text": "import { jsonString } from \"./observation-json.js\";"
+      },
+      {
+        "line": 2,
+        "text": "import type { ChildV2, ScriptConstructor, ScriptOperation, ScriptOriginalThrow, ScriptResult, ScriptSite } from \"./script-observation-types.js\";"
+      },
+      {
+        "line": 4,
+        "text": "function textOrNull(value: string | null): string { return value === null ? \"null\" : jsonString(value); }"
+      },
+      {
+        "line": 5,
+        "text": "function siteJSON(value: ScriptSite): string {"
+      },
+      {
+        "line": 9,
+        "text": "function operationJSON(value: ScriptOperation): string {"
+      },
+      {
+        "line": 13,
+        "text": "function originalJSON(value: ScriptOriginalThrow): string {"
+      },
+      {
+        "line": 16,
+        "text": "function constructorJSON(value: ScriptConstructor): string {"
+      },
+      {
+        "line": 22,
+        "text": "function resultJSON(value: ScriptResult): string {"
+      },
+      {
+        "line": 36,
+        "text": "export function scriptObservationJSONRecord(value: ChildV2): string {"
+      }
+    ]
+  }
+]
