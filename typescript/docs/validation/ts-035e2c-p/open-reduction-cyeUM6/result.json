@@ -1,0 +1,23 @@
+[
+  {
+    "op": "read-retained",
+    "nlink": 1,
+    "size": 217684,
+    "bytes": 217684
+  },
+  {
+    "op": "fresh-exclusive-write-read",
+    "i": 0,
+    "bytes": 13
+  },
+  {
+    "op": "fresh-exclusive-write-read",
+    "i": 1,
+    "bytes": 13
+  },
+  {
+    "op": "fresh-exclusive-write-read",
+    "i": 2,
+    "bytes": 13
+  }
+]

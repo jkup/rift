@@ -1,0 +1,198 @@
+[
+  {
+    "id": "node-initial",
+    "path": "literal-00.json",
+    "sha256": "d3c206ae53fd8ed30b6af4e17cbda213c930d543a750a33dfc211e48a02edc30",
+    "byteLength": 216229,
+    "sourceSelection": "node"
+  },
+  {
+    "id": "node-partial-retry",
+    "path": "literal-01.json",
+    "sha256": "30b0e40630a2ccc8d6378dbb634006737beb9ee832419dddadea274a5d294424",
+    "byteLength": 217703,
+    "sourceSelection": "node"
+  },
+  {
+    "id": "node-final-retry",
+    "path": "literal-02.json",
+    "sha256": "10f5eb627be404d0fac97b0363a4920a4b538fac6f9e765e99deca7e6bd1a9f7",
+    "byteLength": 245939,
+    "sourceSelection": "node"
+  },
+  {
+    "id": "node-final",
+    "path": "literal-03.json",
+    "sha256": "78590e0276ceee580b9d601fb83ab4853d73d0deaca7d8768dadc10f4b84f784",
+    "byteLength": 245453,
+    "sourceSelection": "node"
+  },
+  {
+    "id": "native-initial",
+    "path": "literal-04.json",
+    "sha256": "5f7a60a804e4d0d30545c4ce418234f902c7948158dbebfb94ae01edb10d9b86",
+    "byteLength": 216593,
+    "sourceSelection": "native"
+  },
+  {
+    "id": "native-partial-retry",
+    "path": "literal-05.json",
+    "sha256": "daa25ae50990030e8037591e2559a4218699dd64578956932813d028d193c54b",
+    "byteLength": 218073,
+    "sourceSelection": "native"
+  },
+  {
+    "id": "native-final-retry",
+    "path": "literal-06.json",
+    "sha256": "43c866135495340f9696a93272b122c741433f61f1fe26176343b09fd24fb744",
+    "byteLength": 246425,
+    "sourceSelection": "native"
+  },
+  {
+    "id": "native-final",
+    "path": "literal-07.json",
+    "sha256": "7b229f95c8b2b2f847ec1d4f1431396424f60cc3610a51d0c4eb4047de82c8e6",
+    "byteLength": 245937,
+    "sourceSelection": "native"
+  },
+  {
+    "id": "input-0-initial",
+    "path": "literal-08.json",
+    "sha256": "6d01178121dbd1fd9b39b0437450b5611e7862a2ec5cedaae289d6c40b245952",
+    "byteLength": 44049,
+    "sourceSelection": "input-0"
+  },
+  {
+    "id": "input-0-final",
+    "path": "literal-09.json",
+    "sha256": "6d01178121dbd1fd9b39b0437450b5611e7862a2ec5cedaae289d6c40b245952",
+    "byteLength": 44049,
+    "sourceSelection": "input-0"
+  },
+  {
+    "id": "input-1-initial",
+    "path": "literal-10.json",
+    "sha256": "38f921f69b430f80646fc5763c7b38884fc3cbe65ef7bcdc43151e4a51d3ca52",
+    "byteLength": 48947,
+    "sourceSelection": "input-1"
+  },
+  {
+    "id": "input-1-partial-retry",
+    "path": "literal-11.json",
+    "sha256": "af5c6041e6a595e95297f9fcb1e4ab92b36ec79a7947ec188cf7de3607d09ef8",
+    "byteLength": 50502,
+    "sourceSelection": "input-1"
+  },
+  {
+    "id": "input-1-final-retry",
+    "path": "literal-12.json",
+    "sha256": "af5c6041e6a595e95297f9fcb1e4ab92b36ec79a7947ec188cf7de3607d09ef8",
+    "byteLength": 50502,
+    "sourceSelection": "input-1"
+  },
+  {
+    "id": "input-1-final",
+    "path": "literal-13.json",
+    "sha256": "6b95623504211967cf01c89b920f49ed3bcf12bd8e9fdee33f49a975433bf525",
+    "byteLength": 49990,
+    "sourceSelection": "input-1"
+  },
+  {
+    "id": "input-2-initial",
+    "path": "literal-14.json",
+    "sha256": "38f921f69b430f80646fc5763c7b38884fc3cbe65ef7bcdc43151e4a51d3ca52",
+    "byteLength": 48947,
+    "sourceSelection": "input-2"
+  },
+  {
+    "id": "input-2-partial-retry",
+    "path": "literal-15.json",
+    "sha256": "af5c6041e6a595e95297f9fcb1e4ab92b36ec79a7947ec188cf7de3607d09ef8",
+    "byteLength": 50502,
+    "sourceSelection": "input-2"
+  },
+  {
+    "id": "input-2-final-retry",
+    "path": "literal-16.json",
+    "sha256": "af5c6041e6a595e95297f9fcb1e4ab92b36ec79a7947ec188cf7de3607d09ef8",
+    "byteLength": 50502,
+    "sourceSelection": "input-2"
+  },
+  {
+    "id": "input-2-final",
+    "path": "literal-17.json",
+    "sha256": "6b95623504211967cf01c89b920f49ed3bcf12bd8e9fdee33f49a975433bf525",
+    "byteLength": 49990,
+    "sourceSelection": "input-2"
+  },
+  {
+    "id": "input-3-initial",
+    "path": "literal-18.json",
+    "sha256": "19f9febaeeec96e0e38851ad60cc7b9ade7e022a46c6b12334dc15f8969c2bc8",
+    "byteLength": 48943,
+    "sourceSelection": "input-3"
+  },
+  {
+    "id": "input-3-partial-retry",
+    "path": "literal-19.json",
+    "sha256": "50cc6486ae903e99f6ddb507e58befc8c91043e11faff8572ec1f0f575836f53",
+    "byteLength": 50492,
+    "sourceSelection": "input-3"
+  },
+  {
+    "id": "input-3-final-retry",
+    "path": "literal-20.json",
+    "sha256": "50cc6486ae903e99f6ddb507e58befc8c91043e11faff8572ec1f0f575836f53",
+    "byteLength": 50492,
+    "sourceSelection": "input-3"
+  },
+  {
+    "id": "input-3-final",
+    "path": "literal-21.json",
+    "sha256": "3be835388e0e9b386d5154b5541b083d15b83d5caa7ea088796cba34211ae069",
+    "byteLength": 49982,
+    "sourceSelection": "input-3"
+  },
+  {
+    "id": "input-4-initial",
+    "path": "literal-22.json",
+    "sha256": "c1d053a7f5ee711e14eecb272c61a2a302f504500aa89d5d1e9ca76ad010b88c",
+    "byteLength": 44057,
+    "sourceSelection": "input-4"
+  },
+  {
+    "id": "input-4-final",
+    "path": "literal-23.json",
+    "sha256": "c1d053a7f5ee711e14eecb272c61a2a302f504500aa89d5d1e9ca76ad010b88c",
+    "byteLength": 44057,
+    "sourceSelection": "input-4"
+  },
+  {
+    "id": "node-module-input-final",
+    "path": "literal-24.json",
+    "sha256": "5217ee228480b284fac37db6adf91749bc03cdc83a1c94b5e1c82379d0b6ce9b",
+    "byteLength": 46703,
+    "sourceSelection": "node-module-input"
+  },
+  {
+    "id": "node-mixed-null-module-partial",
+    "path": "literal-25.json",
+    "sha256": "6da63a3ff576a2c3bcc1922da235eefd7ccc241e8d717c33021f174e1f36ff6c",
+    "byteLength": 47340,
+    "sourceSelection": "node-mixed-null-module"
+  },
+  {
+    "id": "native-module-input-final",
+    "path": "literal-26.json",
+    "sha256": "b1b0d602e36cea799ea8beb6b511d7d2a13d15e3a18bf9cd50a783a78bc3e6aa",
+    "byteLength": 46715,
+    "sourceSelection": "native-module-input"
+  },
+  {
+    "id": "native-mixed-null-module-partial",
+    "path": "literal-27.json",
+    "sha256": "056697625a07efbc9a6f80e21c1348f83e1f7468dd15141f6a86a2ab8b423284",
+    "byteLength": 47352,
+    "sourceSelection": "native-mixed-null-module"
+  }
+]

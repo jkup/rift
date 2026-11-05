@@ -1,0 +1,89 @@
+[
+  {
+    "id": "public-node",
+    "slots": 60,
+    "counts": {
+      "pass": 0,
+      "fail": 0,
+      "unsupported-feature": 19,
+      "unsupported-profile": 41,
+      "harness-error": 0,
+      "resource-limit": 0,
+      "timeout": 0,
+      "host-fault": 0
+    },
+    "generations": 3,
+    "checks": [
+      "create-lock",
+      "checkpoint-lock",
+      "no-op",
+      "dirty",
+      "stale",
+      "revoke",
+      "one-use",
+      "rotated-no-op",
+      "exact-chain",
+      "tamper",
+      "retry-original",
+      "report-consistency"
+    ]
+  },
+  {
+    "id": "inherited-full-literal-node",
+    "reports": 4
+  },
+  {
+    "id": "public-native",
+    "slots": 60,
+    "counts": {
+      "pass": 0,
+      "fail": 0,
+      "unsupported-feature": 19,
+      "unsupported-profile": 41,
+      "harness-error": 0,
+      "resource-limit": 0,
+      "timeout": 0,
+      "host-fault": 0
+    },
+    "generations": 3,
+    "checks": [
+      "create-lock",
+      "checkpoint-lock",
+      "no-op",
+      "dirty",
+      "stale",
+      "revoke",
+      "one-use",
+      "rotated-no-op",
+      "exact-chain",
+      "tamper",
+      "retry-original",
+      "report-consistency"
+    ]
+  },
+  {
+    "id": "inherited-full-literal-native",
+    "reports": 4
+  },
+  {
+    "id": "complete-literals",
+    "count": 28,
+    "authority": false
+  },
+  {
+    "id": "filesystem-link",
+    "complete": true,
+    "collision": "EEXIST",
+    "unchanged": true,
+    "cleanup": true,
+    "powerLoss": false
+  },
+  {
+    "id": "alias-junction",
+    "rejected": true
+  },
+  {
+    "id": "alias-dir",
+    "unavailable": "EPERM"
+  }
+]
