@@ -1,0 +1,14 @@
+{
+  "ledgerSha256": "fae6321287e971662257621a06336dd1a52fda29b4becb0513749160010f3440",
+  "extendedSha256": "5e96fd3d212c9cb67aa53887be79120aa432b462fbe473d2468c2299145a8682",
+  "failures": [
+    {
+      "id": "exports",
+      "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'appendScriptPolicy',\n+   'checkpointScriptLedger',\n+   'createScriptLedgerStore',\n    'inspectScriptLedger',\n    'newScriptLedger',\n+   'reopenScriptLedger',\n    'reportScriptLedger',\n+   'resolveScriptLedgerCheckpoint'\n  ]\n"
+    },
+    {
+      "id": "whole-file-sync",
+      "message": "The expression evaluated to a falsy value:\n\n  assert(!source.includes('node:fs'))\n"
+    }
+  ]
+}

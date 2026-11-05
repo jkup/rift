@@ -1,0 +1,416 @@
+{
+  "reviewControls": [
+    {
+      "name": "wrong-revision-with-slots",
+      "error": "script-ledger/selection",
+      "failedCreationUnconsumed": true,
+      "recovered": true
+    },
+    {
+      "name": "empty-host",
+      "error": "script-ledger/selection",
+      "failedCreationUnconsumed": true,
+      "recovered": true
+    },
+    {
+      "name": "empty-platform",
+      "error": "script-ledger/selection",
+      "failedCreationUnconsumed": true,
+      "recovered": true
+    }
+  ],
+  "wrongRevision": "wrong",
+  "allNullPositive": true,
+  "report": {
+    "lane": "node",
+    "selectedFiles": 33,
+    "plannedVariants": 0,
+    "executedVariants": 0,
+    "testBodyEvaluatedVariants": 0,
+    "unplannedInputErrors": 33,
+    "completed": 0,
+    "missing": 0,
+    "attempts": 0,
+    "counts": {
+      "pass": 0,
+      "fail": 0,
+      "unsupported-feature": 0,
+      "unsupported-profile": 0,
+      "harness-error": 0,
+      "resource-limit": 0,
+      "timeout": 0,
+      "host-fault": 0
+    },
+    "passedFiles": 0,
+    "files": [
+      {
+        "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+        "manifestId": "S01",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/statements/let/global-use-before-initialization-in-declaration-statement.js",
+        "manifestId": "S02",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/statements/let/block-local-closure-get-before-initialization.js",
+        "manifestId": "S03",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/statements/let/function-local-closure-set-before-initialization.js",
+        "manifestId": "S04",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/block-scope/return-from/block-let.js",
+        "manifestId": "S05",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/function-code/10.4.3-1-62-s.js",
+        "manifestId": "S06",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/function-code/10.4.3-1-71-s.js",
+        "manifestId": "S07",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/unary-minus/11.4.7-4-1.js",
+        "manifestId": "S08",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/unary-plus/11.4.6-2-1.js",
+        "manifestId": "S09",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/strict-equals/S11.9.4_A3.js",
+        "manifestId": "S10",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/logical-and/S11.11.1_A3_T4.js",
+        "manifestId": "S11",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/conditional/S11.12_A3_T4.js",
+        "manifestId": "S12",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/addition/S11.6.1_A4_T3.js",
+        "manifestId": "S13",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/typeof/undefined.js",
+        "manifestId": "S14",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/subtraction/order-of-evaluation.js",
+        "manifestId": "S15",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/object/property-name-yield.js",
+        "manifestId": "S16",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/object/prop-dup-data-data.js",
+        "manifestId": "S17",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/assignment/target-number.js",
+        "manifestId": "S18",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/statements/while/decl-let.js",
+        "manifestId": "S19",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/statements/return/S12.9_A1_T4.js",
+        "manifestId": "S20",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/statements/function/param-duplicated-strict-1.js",
+        "manifestId": "S21",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/block-scope/syntax/redeclaration/function-name-redeclaration-attempt-with-function.js",
+        "manifestId": "S22",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/block-scope/syntax/redeclaration/let-name-redeclaration-attempt-with-let.js",
+        "manifestId": "U01",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/statements/while/decl-async-fun.js",
+        "manifestId": "U02",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/directive-prologue/10.1.1-2gs.js",
+        "manifestId": "U03",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/module-code/eval-this.js",
+        "manifestId": "U04",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/function-code/10.4.3-1-62gs.js",
+        "manifestId": "U05",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/function-code/10.4.3-1-1-s.js",
+        "manifestId": "U06",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/identifier-resolution/assign-to-global-undefined.js",
+        "manifestId": "U07",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/statements/async-function/evaluation-body-that-returns.js",
+        "manifestId": "U08",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/expressions/typeof/null.js",
+        "manifestId": "U09",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/statements/function/S13.2.1_A1_T1.js",
+        "manifestId": "U10",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      },
+      {
+        "path": "test/language/statements/return/line-terminators.js",
+        "manifestId": "U11",
+        "statuses": null,
+        "inputError": {
+          "status": "harness-error",
+          "stage": "input",
+          "reasonCode": "revision-mismatch"
+        },
+        "passed": false
+      }
+    ],
+    "excludedFixtures": [],
+    "complete": false,
+    "passOverPlanned": null,
+    "conditionalPass": null,
+    "exitCode": 2
+  }
+}

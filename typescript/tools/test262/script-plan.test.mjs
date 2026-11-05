@@ -27,12 +27,12 @@ async function ledgerPolicyLiteral(selection) {
   assert.equal(policy.files.find(f=>f.path==='tools/test262/script-plan.mjs').sha256,'d1d8bd3a0eecb2336ccafea70fe5b08432932898a0f3763b2567d38a7feb9a62');
   assert(!policy.files.some(f=>f.path==='tools/test262/script-ledger.mjs'));
   const planHash=sha256(await readFile('tools/test262/script-plan.mjs'));
-  assert.equal(planHash,'c61ae04ef432aba0e5ab548cadb4fff3ed9848b771870da74f77f94791da52b8');
+  assert.equal(planHash,'ab20c1f78b31377ebb18f13741e1077a3f9a4bd772790f13bd0b20facae8210f');
   policy.files.find(f=>f.path==='tools/test262/script-plan.mjs').sha256=planHash;
   policy.files.push({path:'tools/test262/script-ledger.mjs',sha256:sha256(await readFile('tools/test262/script-ledger.mjs'))});
   policy.files.sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
   assert.equal(policy.files.length,242);
-  policy.id='rift-script-blocked-v3';
+  policy.id='rift-script-blocked-v4';
   policy.closureSha256=sha256(JSON.stringify(policy.files));
   return value;
 }
@@ -43,7 +43,7 @@ async function cleanup(root) {
 }
 
 test('exact exports, argument descriptors and field validation invoke no accessors', async () => {
-  assert.deepEqual(Object.keys(api).sort(), ['inspectScriptSelection','prepareScriptSelection']);
+  assert.deepEqual(Object.keys(api).sort(), ['assertScriptSelectionCurrent','inspectScriptSelection','prepareScriptSelection']);
   for (const args of [[], [options(), {}], [null], [[]], [Object.create(null)], [new Date()], [{...options(), extra:1}]]) {
     await assert.rejects(prepare(...args), error('arguments'));
   }

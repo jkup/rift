@@ -1,0 +1,1 @@
+{"run":"C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\faults-qVFR5G","scenarios":3,"repeatedCleanupFailures":4,"recoveries":3}

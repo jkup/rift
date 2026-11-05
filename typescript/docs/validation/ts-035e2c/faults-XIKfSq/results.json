@@ -1,0 +1,270 @@
+[
+  {
+    "id": "prepublish-open",
+    "trace": [
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "context",
+      "mkdir",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "context",
+      "open"
+    ],
+    "unchanged": true,
+    "retryAfterDefiniteFailure": true
+  },
+  {
+    "id": "prepublish-write",
+    "trace": [
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "context",
+      "mkdir",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "context",
+      "open",
+      "write",
+      "close",
+      "unlink"
+    ],
+    "unchanged": true,
+    "retryAfterDefiniteFailure": true
+  },
+  {
+    "id": "prepublish-sync",
+    "trace": [
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "context",
+      "mkdir",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "context",
+      "open",
+      "write",
+      "sync",
+      "close",
+      "unlink"
+    ],
+    "unchanged": true,
+    "retryAfterDefiniteFailure": true
+  },
+  {
+    "id": "prepublish-close",
+    "trace": [
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "context",
+      "mkdir",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "lstat",
+      "realpath",
+      "context",
+      "open",
+      "write",
+      "sync",
+      "close",
+      "close",
+      "unlink"
+    ],
+    "unchanged": true,
+    "retryAfterDefiniteFailure": true
+  },
+  {
+    "id": "partial-write",
+    "noDestination": true,
+    "cleanup": true
+  },
+  {
+    "id": "link-before",
+    "resolution": "absent-unlocked-no-retry",
+    "noDuplicate": true
+  },
+  {
+    "id": "link-after",
+    "resolution": "acknowledged",
+    "noDuplicate": true
+  },
+  {
+    "id": "unlink-before",
+    "resolution": "acknowledged",
+    "noDuplicate": true
+  },
+  {
+    "id": "unlink-after",
+    "resolution": "acknowledged",
+    "noDuplicate": true
+  },
+  {
+    "id": "ack-before",
+    "resolution": "acknowledged",
+    "noDuplicate": true
+  },
+  {
+    "id": "collision",
+    "retained": "occupied",
+    "locked": true
+  },
+  {
+    "id": "reopen-lstat",
+    "oldOwnerRetainedOnFailure": true,
+    "tokenNotConsumed": true
+  },
+  {
+    "id": "reopen-realpath",
+    "oldOwnerRetainedOnFailure": true,
+    "tokenNotConsumed": true
+  },
+  {
+    "id": "reopen-read",
+    "oldOwnerRetainedOnFailure": true,
+    "tokenNotConsumed": true
+  },
+  {
+    "id": "reopen-context",
+    "oldOwnerRetainedOnFailure": true,
+    "tokenNotConsumed": true
+  },
+  {
+    "id": "create-lstat",
+    "reservationReleased": true
+  },
+  {
+    "id": "create-realpath",
+    "reservationReleased": true
+  },
+  {
+    "id": "create-mkdir",
+    "reservationReleased": true
+  },
+  {
+    "id": "create-context",
+    "reservationReleased": true
+  },
+  {
+    "id": "counter-overflow",
+    "noPublication": true
+  },
+  {
+    "id": "private-history",
+    "defensiveOnly": true
+  },
+  {
+    "id": "busy-error-order",
+    "argumentsBeforeOwner": true,
+    "ownerBeforeSlot": true
+  }
+]

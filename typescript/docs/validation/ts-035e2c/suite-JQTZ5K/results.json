@@ -1,0 +1,50 @@
+[
+  {
+    "name": "preservation",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "public",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "boundaries",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "migrations",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "literal-api",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "faults",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "resolve-faults",
+    "status": 0,
+    "signal": null,
+    "error": null
+  },
+  {
+    "name": "preservation",
+    "status": 0,
+    "signal": null,
+    "error": null
+  }
+]

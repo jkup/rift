@@ -1,0 +1,21 @@
+RUN preservation-before
+preservation-before: 0
+RUN E2b149-28
+E2b149-28: 0
+RUN E2a8-24-11
+E2a8-24-11: 0
+RUN E1-133
+E1-133: 0
+RUN host73
+host73: 0
+RUN decoders21
+decoders21: 0
+RUN observations22
+observations22: 0
+RUN runner20
+runner20: 0
+RUN typecheck
+typecheck: 0
+RUN preservation-after
+preservation-after: 0
+{"output":"C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd","stages":10,"extendedPending":true}

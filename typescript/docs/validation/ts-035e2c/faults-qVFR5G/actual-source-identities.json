@@ -1,0 +1,10 @@
+[
+  {
+    "path": "tools/test262/script-plan.mjs",
+    "sha256": "ab20c1f78b31377ebb18f13741e1077a3f9a4bd772790f13bd0b20facae8210f"
+  },
+  {
+    "path": "tools/test262/script-ledger.mjs",
+    "sha256": "fae6321287e971662257621a06336dd1a52fda29b4becb0513749160010f3440"
+  }
+]

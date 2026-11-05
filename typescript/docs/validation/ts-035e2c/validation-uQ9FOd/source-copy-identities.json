@@ -1,0 +1,127 @@
+[
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "tools/test262/input.mjs",
+    "sha256": "f3d3378947571a407e7cbe5c9da8921798b547020e371dc6547d9210f3118a6c"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "tools/test262/script-capabilities.mjs",
+    "sha256": "aaee5e8af10cbc6f198e8315418bd47e2466070bd909313fff9fe4b133c52280"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "tools/test262/script-capabilities.json",
+    "sha256": "2e375a6833861d322a268481b0bd1d3d3f5435173e583fa6b4ea04240610120b"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "tools/test262/script-plan.mjs",
+    "sha256": "ab20c1f78b31377ebb18f13741e1077a3f9a4bd772790f13bd0b20facae8210f"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "tools/test262/script-plan.test.mjs",
+    "sha256": "d8da436d7606666527b0eca41fa024ceff9368e05ca900e1aeb0b62987f3b496"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "tools/test262/script-ledger.mjs",
+    "sha256": "fae6321287e971662257621a06336dd1a52fda29b4becb0513749160010f3440"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "tools/test262/script-ledger.test.mjs",
+    "sha256": "07916e3109b4cb104a88eb2f8ffc8c190d97d4ab9bb6efb8f9dad0eb96179524"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "fixtures/assistance/test262-starter-corpus/manifest.json",
+    "sha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "package.json",
+    "sha256": "3e42e66c76cf561b584e435f723d0489a30fca37c69f47b74e7cb1ca47174f9f"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "package-lock.json",
+    "sha256": "3fb5f2eeb2b11e7a121f42f70983a0d8c265e0c3f418ed1d8aafff6e5ff86c9d"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "docs/validation/ts-035e2a/support.mjs",
+    "sha256": "8649af9e7f6f0c20d9e15a0e537ab84ba169b6e454a564607a92addb6216f987"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "docs/validation/ts-035e2a/selection-literals.json",
+    "sha256": "ca6432c4aa5b58d0fbdb300cd686dd66e37957431706e2d7e2ccf69f4a4d3f89"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "docs/validation/ts-035e2a/input-literals.json",
+    "sha256": "0a8963f696d38fcbc40d8b44c3a1ac031c66d9d3c32a7870fd798274ff718fd2"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "docs/validation/ts-035e2-p/second-check-literals.json",
+    "sha256": "8924702f29bfe4131847ef3743df38dd7f3ac16d1e1aecc6ae91438732af7aad"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "docs/validation/ts-035e2b/support.mjs",
+    "sha256": "eac51c999513fe6e3f240db17e07d5c43d0192920ae853a7a1697782aa30a15c"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "docs/validation/ts-035e2b/extended.mjs",
+    "sha256": "5e96fd3d212c9cb67aa53887be79120aa432b462fbe473d2468c2299145a8682"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "docs/validation/ts-035e2b-p/design-selections.json",
+    "sha256": "3ceb8eaf5c4bd35955047a077d67e685c776258da1a42e065fd023e478c14a60"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "docs/validation/ts-035e2b-p/supplemental-literals.json",
+    "sha256": "27ad40d44a2d13f0fb83c0156d2e9972db11b90dd6c5df08a452f47f1d7dc817"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\replay",
+    "path": "docs/validation/ts-035e2b-p/report-literals.json",
+    "sha256": "36c148066f1c69c867d22182424db9d1f8c9108dc8a2da710c34029600c05ce6"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\e1",
+    "path": "tools/test262/script-capabilities.test.mjs",
+    "sha256": "1d868d3c69bbcc2e2259953c27a7edad2cc28d9b90a9775b41ebc90eb65498e3"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\e1",
+    "path": "tools/test262/script-capabilities.mjs",
+    "sha256": "aaee5e8af10cbc6f198e8315418bd47e2466070bd909313fff9fe4b133c52280"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\e1",
+    "path": "tools/test262/script-capabilities.json",
+    "sha256": "2e375a6833861d322a268481b0bd1d3d3f5435173e583fa6b4ea04240610120b"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\e1",
+    "path": "tools/test262/input.mjs",
+    "sha256": "f3d3378947571a407e7cbe5c9da8921798b547020e371dc6547d9210f3118a6c"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\e1",
+    "path": "fixtures/assistance/test262-starter-corpus/manifest.json",
+    "sha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89"
+  },
+  {
+    "root": "C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\validation-uQ9FOd\\e1",
+    "path": "docs/validation/ts-035e-p/e1-literals.json",
+    "sha256": "125f519a028cb0d5d573925a796e39e935229fe6a625cee755616d70a18b4a6d"
+  }
+]

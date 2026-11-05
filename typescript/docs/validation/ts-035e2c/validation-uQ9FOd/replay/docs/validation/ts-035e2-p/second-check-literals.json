@@ -1,0 +1,194 @@
+[
+  {
+    "id": "same/same",
+    "input": {
+      "authority": "same",
+      "closure": "same"
+    },
+    "expected": {
+      "error": null,
+      "published": true,
+      "trace": [
+        "authority-read",
+        "authority-compare",
+        "closure-read",
+        "closure-compare",
+        "publish"
+      ]
+    },
+    "reachable": "current E1 IO contract"
+  },
+  {
+    "id": "same/read-error",
+    "input": {
+      "authority": "same",
+      "closure": "read-error"
+    },
+    "expected": {
+      "error": "script-plan/closure",
+      "published": false,
+      "trace": [
+        "authority-read",
+        "authority-compare",
+        "closure-read"
+      ]
+    },
+    "reachable": "current E1 IO contract"
+  },
+  {
+    "id": "same/different",
+    "input": {
+      "authority": "same",
+      "closure": "different"
+    },
+    "expected": {
+      "error": "script-plan/drift",
+      "published": false,
+      "trace": [
+        "authority-read",
+        "authority-compare",
+        "closure-read",
+        "closure-compare"
+      ]
+    },
+    "reachable": "current E1 IO contract"
+  },
+  {
+    "id": "read-error/same",
+    "input": {
+      "authority": "read-error",
+      "closure": "same"
+    },
+    "expected": {
+      "error": "script-plan/authority",
+      "published": false,
+      "trace": [
+        "authority-read"
+      ]
+    },
+    "reachable": "current E1 IO contract"
+  },
+  {
+    "id": "read-error/read-error",
+    "input": {
+      "authority": "read-error",
+      "closure": "read-error"
+    },
+    "expected": {
+      "error": "script-plan/authority",
+      "published": false,
+      "trace": [
+        "authority-read"
+      ]
+    },
+    "reachable": "current E1 IO contract"
+  },
+  {
+    "id": "read-error/different",
+    "input": {
+      "authority": "read-error",
+      "closure": "different"
+    },
+    "expected": {
+      "error": "script-plan/authority",
+      "published": false,
+      "trace": [
+        "authority-read"
+      ]
+    },
+    "reachable": "current E1 IO contract"
+  },
+  {
+    "id": "invalid-bytes/same",
+    "input": {
+      "authority": "invalid-bytes",
+      "closure": "same"
+    },
+    "expected": {
+      "error": "script-plan/authority",
+      "published": false,
+      "trace": [
+        "authority-read"
+      ]
+    },
+    "reachable": "current E1 IO contract"
+  },
+  {
+    "id": "invalid-bytes/read-error",
+    "input": {
+      "authority": "invalid-bytes",
+      "closure": "read-error"
+    },
+    "expected": {
+      "error": "script-plan/authority",
+      "published": false,
+      "trace": [
+        "authority-read"
+      ]
+    },
+    "reachable": "current E1 IO contract"
+  },
+  {
+    "id": "invalid-bytes/different",
+    "input": {
+      "authority": "invalid-bytes",
+      "closure": "different"
+    },
+    "expected": {
+      "error": "script-plan/authority",
+      "published": false,
+      "trace": [
+        "authority-read"
+      ]
+    },
+    "reachable": "current E1 IO contract"
+  },
+  {
+    "id": "different/same",
+    "input": {
+      "authority": "different",
+      "closure": "same"
+    },
+    "expected": {
+      "error": "script-plan/drift",
+      "published": false,
+      "trace": [
+        "authority-read",
+        "authority-compare"
+      ]
+    },
+    "reachable": "defensive only; impossible successful E1 read"
+  },
+  {
+    "id": "different/read-error",
+    "input": {
+      "authority": "different",
+      "closure": "read-error"
+    },
+    "expected": {
+      "error": "script-plan/drift",
+      "published": false,
+      "trace": [
+        "authority-read",
+        "authority-compare"
+      ]
+    },
+    "reachable": "defensive only; impossible successful E1 read"
+  },
+  {
+    "id": "different/different",
+    "input": {
+      "authority": "different",
+      "closure": "different"
+    },
+    "expected": {
+      "error": "script-plan/drift",
+      "published": false,
+      "trace": [
+        "authority-read",
+        "authority-compare"
+      ]
+    },
+    "reachable": "defensive only; impossible successful E1 read"
+  }
+]

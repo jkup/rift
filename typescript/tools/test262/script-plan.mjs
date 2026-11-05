@@ -111,7 +111,7 @@ async function closure() {
   }
   await walk(yaml);
   files.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
-  return { id: 'rift-script-blocked-v3', closureSha256: sha256(JSON.stringify(files)),
+  return { id: 'rift-script-blocked-v4', closureSha256: sha256(JSON.stringify(files)),
     files, host: process.version, platform: process.platform + '/' + process.arch };
 }
 
@@ -159,4 +159,17 @@ export function inspectScriptSelection(token) {
   if (arguments.length !== 1) fail('arguments');
   if (!selections.has(token)) fail('token');
   return freeze(structuredClone(selections.get(token)));
+}
+
+// Read-only context assertion. This cannot create, load or mutate a selection.
+export async function assertScriptSelectionCurrent(token) {
+  if (arguments.length !== 1) fail('arguments');
+  if (!selections.has(token)) fail('token');
+  const selection = selections.get(token);
+  const authority = await stage('authority', readScriptCapabilities);
+  const projected = {registryVersion:authority.registryVersion,
+    registrySha256:sha256(JSON.stringify(authority)+'\n'),entries:authority.entries};
+  if (!isDeepStrictEqual(selection.authority, projected)) fail('drift');
+  const policy = await stage('closure', closure);
+  if (!isDeepStrictEqual(selection.policy, policy)) fail('drift');
 }

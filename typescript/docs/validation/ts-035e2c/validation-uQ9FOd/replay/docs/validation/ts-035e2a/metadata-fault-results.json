@@ -1,0 +1,28 @@
+[
+  [
+    {
+      "ordinal": 0,
+      "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+      "manifestId": "S01",
+      "inputError": {
+        "status": "harness-error",
+        "stage": "input",
+        "reasonCode": "metadata"
+      },
+      "slots": null
+    }
+  ],
+  [
+    {
+      "ordinal": 0,
+      "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+      "manifestId": "S01",
+      "inputError": {
+        "status": "harness-error",
+        "stage": "input",
+        "reasonCode": "manifest-metadata-mismatch"
+      },
+      "slots": null
+    }
+  ]
+]

@@ -1,0 +1,10 @@
+file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e2c/run-Imygmy/isolated/tools/test262/script-ledger.mjs:263
+const storeFail = code => { throw new Error(`script-ledger-store/${code}`); };
+                                  ^
+
+Error: script-ledger-store/indeterminate
+    at storeFail (file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e2c/run-Imygmy/isolated/tools/test262/script-ledger.mjs:263:35)
+    at Module.checkpointScriptLedger (file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e2c/run-Imygmy/isolated/tools/test262/script-ledger.mjs:376:9)
+    at async file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e2c/public.mjs:46:17
+
+Node.js v26.13.0

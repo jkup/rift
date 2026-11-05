@@ -1,0 +1,8 @@
+<anonymous_script>:0
+
+
+[Error: A FileHandle object was closed during garbage collection. This used to be allowed with a deprecation warning but is now considered an error. Please close FileHandle objects explicitly. File descriptor: 3 (\\?\C:\Users\jonku\code\rift\typescript\docs\validation\ts-035e2c\faults-YrgesM\store-0\.pending-d3c1fca2-0ab2-449e-b8fc-26aa76e9fe5b.tmp)] {
+  code: 'ERR_INVALID_STATE'
+}
+
+Node.js v26.13.0

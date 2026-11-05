@@ -1,0 +1,1 @@
+{"run":"C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-035e2c\\literal-api-BEHPj9","completeCheckpointLiterals":28,"rewrittenChains":12,"noncanonicalRejected":true}

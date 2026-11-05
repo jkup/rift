@@ -13,7 +13,7 @@ for (const lane of ['node','native']) {
     const selection=plannerApi.inspectScriptSelection(selectionToken);
     const token=api.newScriptLedger(selectionToken);
     assert.equal(selection.policy.files.length,242);
-    assert.equal(selection.policy.id,'rift-script-blocked-v3');
+    assert.equal(selection.policy.id,'rift-script-blocked-v4');
     for(const attempt of row.attempts) api.appendScriptPolicy(token,attempt.slotId,attempt.retryReason);
     assert.deepEqual(api.inspectScriptLedger(token),{ledgerVersion:2,kind:'script-policy-ledger',selection,attempts:row.attempts});
     const report=api.reportScriptLedger(token);assert.deepEqual(report,row.expected);checkFrozen(report);
