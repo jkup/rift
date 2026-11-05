@@ -1,0 +1,10 @@
+{
+  "actualLanes": 2,
+  "slotsPerLane": 60,
+  "feature": 19,
+  "profile": 41,
+  "closureProbe": 242,
+  "fullMigratedLiterals": 11,
+  "migrationNegatives": 4,
+  "productionLedger": false
+}

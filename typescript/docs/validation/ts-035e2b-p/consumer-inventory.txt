@@ -1,0 +1,23 @@
+docs/validation/ts-035e2a\validate.mjs:75:for(const row of json(join(own,'selection-literals.json')).filter(r=>r.revision.length===40)) {
+docs/validation/ts-035e2a\freeze.mjs:3:import { prepareScriptSelection, inspectScriptSelection } from '../../../tools/test262/script-plan.mjs';
+docs/validation/ts-035e2a\freeze.mjs:21:await save('selection-literals.json',rows);
+docs/validation/ts-035e2a\freeze-input-literals.mjs:5:const base=(await json(resolve(evidence,'selection-literals.json')))[0].selection;
+docs/validation/ts-035e2a\freeze-input-literals.mjs:15:await save('input-literals.json',rows);
+docs/validation/ts-035e2a\support.mjs:24:    'tools/test262/script-capabilities.json', 'tools/test262/script-plan.mjs',
+docs/validation/ts-035e2a\support.mjs:92:  let source = await readFile(resolve(modules, 'script-plan.mjs'), 'utf8');
+docs/validation/ts-035e2a\support.mjs:100:  await writeFile(resolve(modules, 'script-plan.mjs'), source);
+docs/validation/ts-035e2a\support.mjs:102:  const api = await import(pathToFileURL(resolve(modules, 'script-plan.mjs')));
+tools/test262\plan.mjs:7:import { newLedger, appendAttempt, persist, report } from './ledger.mjs';
+tools/test262\plan.mjs:10:  const adapterSha256 = sha256(Buffer.concat(await Promise.all(['input.mjs', 'result.mjs', 'ledger.mjs', 'plan.mjs']
+docs/validation/ts-035e2a\run-new-tests.mjs:4:const args=['--test','tools/test262/script-plan.test.mjs'];
+tools/test262\driver-result.test.mjs:5:import { appendAttempt, newLedger, report } from './ledger.mjs';
+tools/test262\observe.mjs:9:import { persist } from './ledger.mjs';
+tools/test262\observe.mjs:84:  const adapterSha256 = sha256(Buffer.concat(await Promise.all(['observe.mjs','driver-result.mjs','input.mjs','result.mjs','ledger.mjs']
+tools/test262\script-plan.mjs:80:    'tools/test262/script-capabilities.json', 'tools/test262/script-plan.mjs',
+tools/test262\boundary.test.mjs:5:import { newLedger, appendAttempt, report } from './ledger.mjs';
+tools/test262\script-plan.test.mjs:6:import * as api from './script-plan.mjs';
+tools/test262\script-plan.test.mjs:50:  const literals = await json(resolve(evidence,'selection-literals.json'));
+tools/test262\script-plan.test.mjs:85:  const foreign=await import(pathToFileURL(resolve('tools/test262/script-plan.mjs')).href+'?foreign');
+tools/test262\script-plan.test.mjs:115:    const expected=await json(resolve(evidence,'input-literals.json'));
+tools/test262\corpus.integration.mjs:10:import { newLedger, appendAttempt, report, persist } from './ledger.mjs';
+tools/test262\ledger.test.mjs:6:import { newLedger, appendAttempt, report, persist } from './ledger.mjs';

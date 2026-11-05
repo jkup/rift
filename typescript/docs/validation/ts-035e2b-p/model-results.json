@@ -1,0 +1,780 @@
+{
+  "designModel": true,
+  "productionAuthority": false,
+  "genericSchemaValidator": false,
+  "checks": 149,
+  "rows": [
+    {
+      "id": "node-initial",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "node-partial-retry",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "node-final-retry",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "node-final",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "native-initial",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "native-partial-retry",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "native-final-retry",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "native-final",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-0-initial",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-0-final",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-1-initial",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-1-partial-retry",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-1-final-retry",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-1-final",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-2-initial",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-2-partial-retry",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-2-final-retry",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-2-final",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-3-initial",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-3-partial-retry",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-3-final-retry",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-3-final",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-4-initial",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "input-4-final",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "node-module-input-final",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "node-mixed-null-module-partial",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "native-module-input-final",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "native-mixed-null-module-partial",
+      "fullLedger": true,
+      "fullReport": true,
+      "freshFrozen": true
+    },
+    {
+      "id": "new-zero",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "new-extra",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "append-zero",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "append-one",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "append-extra",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "inspect-zero",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "inspect-extra",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "report-zero",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "report-extra",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "slot-type-object",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "slot-type-undefined",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "slot-type-number",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "slot-type-bigint",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "slot-type-symbol",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "slot-type-string",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "slot-type-object",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "slot-type-object",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "slot-type-object",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "slot-type-object",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "reason-type-number",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "reason-type-bigint",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "reason-type-symbol",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "reason-type-object",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "reason-type-object",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "reason-type-object",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "reason-type-object",
+      "error": "script-ledger/arguments",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-inspectScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-reportScriptLedger",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-append",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-selection",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-selection",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-selection",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-selection",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "forged-selection",
+      "error": "script-ledger/token",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-replay",
+      "error": "script-ledger/already-used-selection",
+      "noStateChange": true
+    },
+    {
+      "id": "first-reason",
+      "error": "script-ledger/retry-policy",
+      "noStateChange": true
+    },
+    {
+      "id": "first-reason",
+      "error": "script-ledger/retry-policy",
+      "noStateChange": true
+    },
+    {
+      "id": "first-reason",
+      "error": "script-ledger/retry-policy",
+      "noStateChange": true
+    },
+    {
+      "id": "unknown-before-retry",
+      "error": "script-ledger/slot",
+      "noStateChange": true
+    },
+    {
+      "id": "duplicate-first-or-blank-retry",
+      "error": "script-ledger/retry-policy",
+      "noStateChange": true
+    },
+    {
+      "id": "duplicate-first-or-blank-retry",
+      "error": "script-ledger/retry-policy",
+      "noStateChange": true
+    },
+    {
+      "id": "duplicate-first-or-blank-retry",
+      "error": "script-ledger/retry-policy",
+      "noStateChange": true
+    },
+    {
+      "id": "duplicate-first-or-blank-retry",
+      "error": "script-ledger/retry-policy",
+      "noStateChange": true
+    },
+    {
+      "id": "cancel-is-no-call",
+      "unchanged": true
+    },
+    {
+      "id": "candidate-validation-failure",
+      "error": "script-ledger/history",
+      "noStateChange": true
+    },
+    {
+      "id": "failed-creation",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "successful-creation-consumed",
+      "error": "script-ledger/already-used-selection",
+      "noStateChange": true
+    },
+    {
+      "id": "used-before-selection",
+      "error": "script-ledger/already-used-selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-version",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-kind",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-policy",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-closure",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-extra",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-lane",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-zero-files",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-duplicate-file",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-null-without-input",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-file-gap",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-slot-gap",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-id",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-slot-lane",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-goal",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-empty-debt",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-admitted",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-execution",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-registry",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-slot-duplicate",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "selection-null-error",
+      "error": "script-ledger/selection",
+      "noStateChange": true
+    },
+    {
+      "id": "history-gap",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-slot-gap",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-reorder",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-duplicate",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-unknown",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-first-reason",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-retry-blank",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-extra",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-executed",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-body",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-stage",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-reason",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-receipt",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-status-pass",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-status-fail",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-status-unsupported-profile",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-status-harness-error",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-status-resource-limit",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-status-timeout",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    },
+    {
+      "id": "history-status-host-fault",
+      "error": "script-ledger/history",
+      "defensiveOracleOnly": true
+    }
+  ]
+}
