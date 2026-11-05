@@ -1342,3 +1342,10 @@ Accepted D2-P milestone2e95ea7 published main/feature after ancestry/remote veri
 
 ## TS035D2 accepted - 2026-11-05 07:11
 Accepted56837a1 actual/final second review and root212both65static gates4247zero-dynamic/360pairedsource64wire14extra/all28requiredstages D1/A-B-C/H1-H7/M/E4/inherited/A21/C172+21host/typecheck/runner20host73obs22probes10/preservation4638protected814unchanged+1exactmigration60blocked. Session78606 allsix stages0,producer allbytes restored,git status only coordinator. Root snapshots every D2 output/logs build/ts035d2-root-*. Original migration failure retained. Next bounded D3-P parameter continuation design/evidence,non-emitting next slice;no admission. No useful companion duplication.
+
+Accepted D2 milestonef3672ee published main/feature after ancestry/remote verification;local main updated. Sole D3-P design writer01a1aa8d-5e6d-7f53-b79a-06a47dbadadc local basef3672ee active,cursord3464f94-f361-4af1-8dd7-bbc19350a39e:1. Exact parameter continuation design/evidence only;no emission or production work. Task scope in TASKS,no repeat builds.
+
+2026-11-05 07:26 D3-P8c7bd5e NOT accepted yet. Writer idle,cursord3464f94-f361-4af1-8dd7-bbc19350a39e:2. Root full design/actual functionTail-purpose/delete/collector formal+strictness/veto review no concrete finding. Independently regenerated bounded audit77rows4resource4739protected33files60blocked and sixentrypoint77rows26grammarcontrols16inherited verify pass;producer bytes restored,status onlycoordination. Logs/evidence build/ts035d3p-root-audit/verify. No future API/native claim. Independent second review_script_integration pending;consume before acceptance/implementation. Proposal exact2production/newprivatepurpose/fullEOF/global sloppy+blockconflict veto/ordinary preservation. Mainf3672ee unchanged,no repeat fullbuilds.
+
+## TS035D3-P accepted - 2026-11-05 07:41
+Accepted8c7bd5e actual/final second design review,root77rows6entrypoints26grammar4resource4739protected60blocked audit. No actionable findings;no native/newAPI claim. Exact two-production-file non-emitting D3 is ready;D4 emission separate. No repeated builds or useful companion duplication.
