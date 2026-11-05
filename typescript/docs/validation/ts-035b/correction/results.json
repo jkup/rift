@@ -1,0 +1,66 @@
+[
+  {
+    "name": "typecheck",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "name": "B-both-inputs-both-hosts",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS both runtime inputs, both hosts, literal X/U controls\n",
+    "stderr": ""
+  },
+  {
+    "name": "observed-boundary",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS observed facade authority and detached-result boundary\n",
+    "stderr": ""
+  },
+  {
+    "name": "replays/validate",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS both runtime inputs Node/native with literal expectations and separate zero-dynamic gate\n",
+    "stderr": ""
+  },
+  {
+    "name": "replays/node-boundary",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS Node-only reflective boundary and capability forwarding controls\n",
+    "stderr": ""
+  },
+  {
+    "name": "replays/bounded-boundary",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS Node-only reflective boundary and capability forwarding controls\n",
+    "stderr": ""
+  },
+  {
+    "name": "node-slots",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS four forged/malformed/profile slot controls (Node-only)\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-erb-reduce",
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "node:internal/modules/run_main:111\r\n    triggerUncaughtException(\r\n    ^\r\n\r\nAssertionError [ERR_ASSERTION]: C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-033er-b\\key-join-after.ts:1:1 - error SC3004: spawnSync zig ENOENT\r\n\r\n1 error.\r\n\r\n\r\n1 !== 0\r\n\r\n    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-034h6-c/replays/replay-erb-reduce.mjs:18:15\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\r\n    at async node:internal/modules/esm/loader:650:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5) {\r\n  generatedMessage: false,\r\n  code: 'ERR_ASSERTION',\r\n  actual: 1,\r\n  expected: 0,\r\n  operator: 'strictEqual',\r\n  diff: 'simple'\r\n}\r\n\r\nNode.js v26.13.0\r\n"
+  }
+]

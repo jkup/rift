@@ -780,3 +780,18 @@ This is synthetic transport validation only. No guest throw inspection,
 production Script observation driver, launcher, registry, ledger admission,
 rule certification or CLI activation is added. All 60 corpus variants remain
 blocked. Actual and second independent review are required before acceptance.
+
+### Observed Script throw inspection (TS-035B corrected candidate)
+
+The new fixed observed entry performs actual constructor/name Gets inside the
+existing Script session, retaining original/secondary completions and actual
+callable Realm references. The ordinary entry does not inspect properties.
+The reviewed synthetic-source amendment anchors post-evaluation Gets to the
+original record/unit/location while preserving the active execution Realm.
+Actual Script getters, including setup and same-entry-record code, retain their
+own source. Original/secondary identities, monotonic budgets and all-exit
+cleanup pass both hosts with two inputs and fresh/seven-seeded controls.
+This is a tested candidate awaiting actual/second acceptance. No adapter,
+registry, driver, admission or codec changes are included. All 60 variants remain
+blocked. See `validation/ts-035b/README.md` for the preserved checkpoint and exact
+new-versus-reused validation evidence.

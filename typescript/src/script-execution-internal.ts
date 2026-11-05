@@ -603,6 +603,14 @@ type EngineReferenceResult = { type: "reference"; reference: EngineReference } |
 export type ScriptLimits = { readonly maxSteps: number; readonly maxCalls: number };
 export type ScriptEvaluation = { phase: "body"; completion: ValueCompletion } | { phase: "instantiation"; completion: ThrowCompletion };
 export type ScriptSourceSnapshot = { readonly realm: Realm; readonly record: ExecutableScript; readonly unitId: string; readonly loc: Location };
+export type ScriptThrowInspection =
+    | { readonly kind: "available"; readonly name: string; readonly realm: Realm }
+    | { readonly kind: "absent" | "non-callable" | "foreign-profile" }
+    | { readonly kind: "non-string-name"; readonly realm: Realm }
+    | { readonly kind: "abrupt" | "resource-limit" | "unsupported-operation";
+        readonly completion: ThrowCompletion; readonly source: ScriptSourceSnapshot };
+export type ObservedScriptEvaluation = { readonly evaluation: ScriptEvaluation;
+    readonly source: ScriptSourceSnapshot | null; readonly inspection: ScriptThrowInspection | null };
 export type ScriptFrameSnapshot = { readonly realm: Realm; readonly record: ExecutableScript;
     readonly scopeId: number; readonly lexical: ScriptEnvironment; readonly variable: ScriptEnvironment;
     readonly strict: boolean; readonly thisValue: Value; readonly function: ScriptGuestCallable | null;
@@ -645,7 +653,14 @@ class ScriptSession {
         const state = ExecutableScript.state(record, executionKey);
         if (state.realm.profile !== "script") throw new Error("Script Realm required");
         if (session.#engine === null) session.#engine = new ExecutionEngine(state.realm, session.#limits.maxSteps, session.#limits.maxCalls, executionKey);
-        return session.#engine.runScript(record, executionKey);
+        return session.#engine.runScript(record, executionKey, false).evaluation;
+    }
+    static evaluateObserved(session: ScriptSession, record: ExecutableScript): ObservedScriptEvaluation {
+        if (!(session instanceof ScriptSession) || !(#engine in session)) throw new Error("invalid Script session");
+        const state = ExecutableScript.state(record, executionKey);
+        if (state.realm.profile !== "script") throw new Error("Script Realm required");
+        if (session.#engine === null) session.#engine = new ExecutionEngine(state.realm, session.#limits.maxSteps, session.#limits.maxCalls, executionKey);
+        return session.#engine.runScript(record, executionKey, true);
     }
     inspect(): ScriptSessionSnapshot {
         if (!(#engine in this)) throw new Error("invalid Script session");
@@ -661,6 +676,9 @@ export function createScriptSession(limits: ScriptLimits = { maxSteps: 100000, m
 export function evaluateScript(session: ScriptSession, record: ExecutableScript): ScriptEvaluation {
     return ScriptSession.evaluate(session, record);
 }
+export function evaluateScriptObserved(session: ScriptSession, record: ExecutableScript): ObservedScriptEvaluation {
+    return ScriptSession.evaluateObserved(session, record);
+}
 
 // OperationContext is readonly to helpers, but this canonical projection is
 // engine-writable. Script callbacks capture their owner; hosts must not mutate it.
@@ -674,6 +692,9 @@ class ExecutionEngine {
     #frame: ScriptFrameSnapshot | null = null;
     #abrupt: ThrowCompletion | null = null;
     #lastAbrupt: ScriptSourceSnapshot | null = null;
+    // Synthetic inspection Gets have an original source anchor, but execute in
+    // the entry/builtin Realm. Actual Script code temporarily suspends it.
+    #inspectionSource: { record: ExecutableScript; unitId: string; loc: Location } | null = null;
     #script: boolean;
     steps = 0;
     calls = 0;
@@ -1134,9 +1155,11 @@ class ExecutionEngine {
         if (!this.#script || this.#frame === null || completion === this.#abrupt) return;
         this.#abrupt = completion;
         const frame = this.#frame;
-        const loc = completion.diagnostic.loc;
-        this.#lastAbrupt = { realm: frame.realm, record: frame.record,
-            unitId: ExecutableScript.state(frame.record, executionKey).plan.unit.id,
+        const anchor = this.#inspectionSource;
+        const loc = anchor === null ? completion.diagnostic.loc : anchor.loc;
+        const record = anchor === null ? frame.record : anchor.record;
+        this.#lastAbrupt = { realm: frame.realm, record,
+            unitId: anchor === null ? ExecutableScript.state(record, executionKey).plan.unit.id : anchor.unitId,
             loc: { line: loc.line, column: loc.column } };
     }
     inspectScript(key: ExecutionKey): ScriptSessionSnapshot {
@@ -1150,7 +1173,59 @@ class ExecutionEngine {
             lastAbrupt: a === null ? null : { realm: a.realm, record: a.record, unitId: a.unitId,
                 loc: { line: a.loc.line, column: a.loc.column } } };
     }
-    runScript(record: ExecutableScript, key: ExecutionKey): ScriptEvaluation {
+    #sourceSnapshot(): ScriptSourceSnapshot | null {
+        const source = this.#lastAbrupt;
+        return source === null ? null : { realm: source.realm, record: source.record, unitId: source.unitId,
+            loc: { line: source.loc.line, column: source.loc.column } };
+    }
+    #inspectionAbrupt(completion: ThrowCompletion): ScriptThrowInspection {
+        this.#capture(completion);
+        const source = this.#sourceSnapshot();
+        if (source === null) throw new Error("missing inspection source");
+        const origin = completion.origin.kind;
+        return { kind: origin === "resource-limit" ? "resource-limit" : origin === "unsupported-operation" ? "unsupported-operation" : "abrupt",
+            completion, source };
+    }
+    #inspectConstructor(completion: ThrowCompletion): ScriptThrowInspection {
+        const value = completion.value;
+        if (value.kind !== "object") return { kind: "absent" };
+        const loc = completion.diagnostic.loc;
+        const constructor = value.object.internalGet("constructor", value, this.context, loc);
+        if (constructor.type === "throw") return this.#inspectionAbrupt(constructor);
+        const callee = constructor.value;
+        if (callee.kind === "null" || callee.kind === "undefined") return { kind: "absent" };
+        if (callee.kind !== "object" || callee.object.callable === null) return { kind: "non-callable" };
+        const realm = callee.object.callable.realm;
+        if (realm.profile !== "script") return { kind: "foreign-profile" };
+        const name = callee.object.internalGet("name", callee, this.context, loc);
+        if (name.type === "throw") return this.#inspectionAbrupt(name);
+        return name.value.kind === "string" ? { kind: "available", name: name.value.value, realm }
+            : { kind: "non-string-name", realm };
+    }
+    #observeEvaluation(evaluation: ScriptEvaluation, observed: boolean): ObservedScriptEvaluation {
+        const completion = evaluation.completion;
+        const source = completion.type === "throw" ? this.#sourceSnapshot() : null;
+        if (!observed || completion.type !== "throw" ||
+            (completion.origin.kind !== "guest" && completion.origin.kind !== "engine-diagnostic"))
+            return { evaluation, source, inspection: null };
+        // Inspection is a separate propagation. Even a getter throwing the exact
+        // original completion must capture its own source, then restore history.
+        if (source === null) throw new Error("missing original throw source");
+        const savedAbrupt = this.#abrupt, savedSource = this.#lastAbrupt;
+        const savedInspectionSource = this.#inspectionSource;
+        this.#abrupt = null;
+        this.#lastAbrupt = null;
+        this.#inspectionSource = { record: source.record, unitId: source.unitId,
+            loc: { line: source.loc.line, column: source.loc.column } };
+        try {
+            return { evaluation, source, inspection: this.#inspectConstructor(completion) };
+        } finally {
+            this.#abrupt = savedAbrupt;
+            this.#lastAbrupt = savedSource;
+            this.#inspectionSource = savedInspectionSource;
+        }
+    }
+    runScript(record: ExecutableScript, key: ExecutionKey, observed: boolean): ObservedScriptEvaluation {
         if (key !== executionKey || !this.#script) throw new Error("invalid Script entry");
         if (this.#frame !== null) throw new Error("Script session already active");
         const state = ExecutableScript.state(record, key);
@@ -1165,13 +1240,13 @@ class ExecutionEngine {
         this.activeContext.realm = realm;
         try {
             const setup = record.instantiateGlobals(realm.globalEnvironment, this.context);
-            if (setup.type === "throw") { this.#capture(setup); return { phase: "instantiation", completion: setup }; }
+            if (setup.type === "throw") { this.#capture(setup); return this.#observeEvaluation({ phase: "instantiation", completion: setup }, observed); }
             const f = this.#active();
             this.#frame = { ...f, phase: "body" };
             const result = this.#list(ExecutableScript.readRoot(record, key));
-            if (result.type === "throw") { this.#capture(result); return { phase: "body", completion: result }; }
+            if (result.type === "throw") { this.#capture(result); return this.#observeEvaluation({ phase: "body", completion: result }, observed); }
             if (result.type !== "normal") throw new Error("invalid Script root completion");
-            return { phase: "body", completion: normal(result.payload.kind === "empty" ? UNDEFINED : result.payload.value) };
+            return this.#observeEvaluation({ phase: "body", completion: normal(result.payload.kind === "empty" ? UNDEFINED : result.payload.value) }, observed);
         } finally {
             this.#frame = null;
             this.activeContext.realm = savedRealm;
@@ -1451,23 +1526,29 @@ class ExecutionEngine {
         }
     }
     #executeScriptFunction(fn: ScriptGuestCallable, receiver: Value, args: Value[]): ValueCompletion {
-        const record = fn.record;
-        const source = ExecutableScript.readFunction(record, fn, executionKey);
-        // Allocation failures already belong to the callee code/Realm.
-        this.#frame = { realm: fn.realm, record, scopeId: source.scopeId, lexical: fn.environment,
-            variable: fn.environment, strict: fn.strict, thisValue: receiver, function: fn,
-            privateEnvironment: null, phase: "instantiation" };
-        const created = record.createFunctionEnvironment(fn, receiver, this.context);
-        if (created.type === "throw") { this.#capture(created); return created; }
-        this.#frame = { ...this.#active(), lexical: created.environment, variable: created.environment, thisValue: created.environment.thisValue };
-        const setup = record.instantiateFunction(created.environment, args, this.context);
-        if (setup.type === "throw") { this.#capture(setup); return setup; }
-        this.#frame = { ...this.#active(), lexical: record.functionBodyEnvironment(created.environment), phase: "body" };
-        const result = this.#list(source.body);
-        if (result.type === "throw") { this.#capture(result); return result; }
-        if (result.type === "return") return normal(result.value);
-        if (result.type === "normal") return normal();
-        throw new Error("invalid Script function completion");
+        const savedInspectionSource = this.#inspectionSource;
+        this.#inspectionSource = null;
+        try {
+            const record = fn.record;
+            const source = ExecutableScript.readFunction(record, fn, executionKey);
+            // Allocation failures already belong to the callee code/Realm.
+            this.#frame = { realm: fn.realm, record, scopeId: source.scopeId, lexical: fn.environment,
+                variable: fn.environment, strict: fn.strict, thisValue: receiver, function: fn,
+                privateEnvironment: null, phase: "instantiation" };
+            const created = record.createFunctionEnvironment(fn, receiver, this.context);
+            if (created.type === "throw") { this.#capture(created); return created; }
+            this.#frame = { ...this.#active(), lexical: created.environment, variable: created.environment, thisValue: created.environment.thisValue };
+            const setup = record.instantiateFunction(created.environment, args, this.context);
+            if (setup.type === "throw") { this.#capture(setup); return setup; }
+            this.#frame = { ...this.#active(), lexical: record.functionBodyEnvironment(created.environment), phase: "body" };
+            const result = this.#list(source.body);
+            if (result.type === "throw") { this.#capture(result); return result; }
+            if (result.type === "return") return normal(result.value);
+            if (result.type === "normal") return normal();
+            throw new Error("invalid Script function completion");
+        } finally {
+            this.#inspectionSource = savedInspectionSource;
+        }
     }
     #callScript(callee: Value, receiver: Value, args: Value[], loc: Location): ValueCompletion {
         const saved = this.#active();

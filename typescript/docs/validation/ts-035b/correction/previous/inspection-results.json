@@ -1,0 +1,36 @@
+[
+  {
+    "input": "alpha",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS X01-X06 U01-U02 input=7 prefixes=10 calls=6 guest=3 faults=10\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS X01-X06 U01-U02 input=7 prefixes=10 calls=6 guest=3 faults=10\n",
+      "stderr": ""
+    }
+  },
+  {
+    "input": "beta",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS X01-X06 U01-U02 input=11 prefixes=10 calls=6 guest=3 faults=10\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS X01-X06 U01-U02 input=11 prefixes=10 calls=6 guest=3 faults=10\n",
+      "stderr": ""
+    }
+  }
+]
