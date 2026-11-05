@@ -1,0 +1,1907 @@
+{
+  "base": "335663fcddf5bfc595369c6a8f68b584a9165e0f",
+  "pattern": "parseBoundedScriptPreparation|auditBoundedScriptNumericAssignments|prepareBoundedScript|assignment-target|assignment-rule|futurePreparation|row\\.current|r\\.current|ruleCode:one",
+  "scope": "Every tracked TypeScript .ts/.mjs including ignored tools and historical proposals",
+  "consumers": [
+    {
+      "path": "typescript/docs/validation/ts-031c-a/cases.mjs",
+      "blob": "7b89ac65b1f9b04e83f6b6c157427b4193da7872",
+      "sha256": "79786a488ba79d49a0e714eb61fceb5421fd057da0147fccdff34574f2784d57",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 15,
+          "text": " ['F13','return 1; [a]=b;','parse.assignment-target',[1,11]],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-031c-a/draft-cases.mjs",
+      "blob": "fc8e2f715b824f00c1adfc4c462c363d00e7d0d3",
+      "sha256": "01314ce66fa9bdb690405158ada61202137a43fe3577845361a5585398ca9554",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 15,
+          "text": " ['F13','return 1; [a]=b;','parse.assignment-target',[1,11]],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-031c-a/run.mjs",
+      "blob": "e790f181cf023df25964b9386c8d67de9c1255dd",
+      "sha256": "5c5decc75e109e2de5971d870d9940d5e9c88796c5c2bee79e36358c2c091a25",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 41,
+          "text": "  assert.equal(expected,{S18:'parse.assignment-target',S19:'parse.declaration-statement',S20:'parse.return-context',S21:'parse.duplicate-parameter',S22:'parse.duplicate-binding'}[entry.id]);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-031c-b/run.mjs",
+      "blob": "58d2762b6770d10b6005862b1d162ff70f5c0aca",
+      "sha256": "dbfb0ae61182b49c1d9a392a7726e66fb4bbef38b62cc68fe288e43b4a3c9a20",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 41,
+          "text": "  assert.equal(expected,{S18:'parse.assignment-target',S19:'parse.declaration-statement',S20:'parse.return-context',S21:'parse.duplicate-parameter',S22:'parse.duplicate-binding'}[entry.id]);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-031c-p/cases.mjs",
+      "blob": "6df6a6af4ed9dd9e42dbda7e341aa8af8c23ab29",
+      "sha256": "eba2620b3baaf323df2203e7cc7c225ec994c2d27fc04b65c81998f3977f6e2b",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 4,
+          "text": " ['A01','42 = 1;','parse.assignment-target','SyntaxError'],"
+        },
+        {
+          "line": 6,
+          "text": " ['A03','[a]=b;','parse.assignment-target','accepted'],"
+        },
+        {
+          "line": 7,
+          "text": " ['A04','({a:1}=b);','parse.assignment-target','SyntaxError'],"
+        },
+        {
+          "line": 8,
+          "text": " ['A05','({a:x}=b);','parse.assignment-target','accepted'],"
+        },
+        {
+          "line": 9,
+          "text": " ['A06','f()=1;','parse.assignment-target','accepted'],"
+        },
+        {
+          "line": 10,
+          "text": " ['A07','\"use strict\"; f()=1;','parse.assignment-target','accepted'],"
+        },
+        {
+          "line": 12,
+          "text": " ['A09','(a+b)=1;','parse.assignment-target','SyntaxError'],"
+        },
+        {
+          "line": 13,
+          "text": " ['A10','[a]+=b;','parse.assignment-target','SyntaxError'],"
+        },
+        {
+          "line": 42,
+          "text": " ['T03','42=1; class C {}','parse.assignment-target','SyntaxError'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-031c-p/run.mjs",
+      "blob": "01ccbb52464bd3e1b089c493a741fe3124b99a7e",
+      "sha256": "bcb58542117b182a3342ba9a2ce0f4cac631433dcc1d6c606a7a231a1a2be8ce",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 28,
+          "text": "   capability:{S18:'parse.assignment-target',S19:'parse.declaration-statement',S20:'parse.return-context',S21:'parse.duplicate-parameter',S22:'parse.duplicate-binding'}[entry.id],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h4/replays/bounded-boundary.mjs",
+      "blob": "5e4c19205e07a2cdbc4a52fb943879de0187e1e0",
+      "sha256": "380d00a192120016550502273b13e320ed4fd4fa500702ccc09e067249c2eded",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import { prepareBoundedScript } from '../../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 10,
+          "text": "const session = createScriptSession(), record = prepareBoundedScript({id:'boundary',text:'probe();'},r).record;"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h5/compiler-investigation/property-narrowing-proposal.ts",
+      "blob": "c0152072f3547fe42ed63b502dc4c3f1608233f4",
+      "sha256": "3b3aa977308456f4735e4eeff0778f7e06636c3457b3aa4efe77ea10e1e9d642",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 3,
+          "text": "import { prepareBoundedScript } from \"../../../../src/script-record.js\";"
+        },
+        {
+          "line": 9,
+          "text": "const p = prepareBoundedScript({id:\"H\",text:\"function C(){}\"},realm);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h5/compiler-investigation/union-original.ts",
+      "blob": "7a755d2bb50469edd446c7a4e7719e8196a9ff0e",
+      "sha256": "427283a5efcfb50aa5858ed992672c1bb048ef1a369d6ca05d88d3907cab5848",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 3,
+          "text": "import { prepareBoundedScript } from \"../../../../src/script-record.js\";"
+        },
+        {
+          "line": 9,
+          "text": "const p = prepareBoundedScript({id:\"H\",text:\"function C(){}\"},realm);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h5/compiler-investigation/union-proposal.ts",
+      "blob": "5527aed726467e1f7aab888b3b8ffcae59b403b2",
+      "sha256": "d33f8b41bf060848d9ec7e521d7628fd5f24c4ed85ffd3cd251da27c6c754008",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 3,
+          "text": "import { prepareBoundedScript } from \"../../../../src/script-record.js\";"
+        },
+        {
+          "line": 12,
+          "text": "const p = prepareBoundedScript({id:\"H\",text:\"function C(){}\"},realm);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h5/node-slots.mjs",
+      "blob": "aa15111af8341edadd952c51d41f1e0f73f13de2",
+      "sha256": "a0c72edb3a342e305aacec972420d555641512ef32eda3c12ad0ed83be50ea86",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import {prepareBoundedScript} from '../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 9,
+          "text": "const prepare=(text)=>{const p=prepareBoundedScript({id:'T',text},r);assert.equal(p.kind,'ready');return p.record;};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h5/replays/bounded-boundary.mjs",
+      "blob": "5e4c19205e07a2cdbc4a52fb943879de0187e1e0",
+      "sha256": "380d00a192120016550502273b13e320ed4fd4fa500702ccc09e067249c2eded",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import { prepareBoundedScript } from '../../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 10,
+          "text": "const session = createScriptSession(), record = prepareBoundedScript({id:'boundary',text:'probe();'},r).record;"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-a/compiler-investigation/driver-proposed.ts",
+      "blob": "1d6f0f5b25f35685ba9263ae6f7bb996e95361f3",
+      "sha256": "0c437108f17de5a3e0596a16927b34248985ac440aef1bcd581131fc553e11a3",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 4,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../../../../src/script-record.js\";"
+        },
+        {
+          "line": 14,
+          "text": "    const p = prepareBoundedScript({ id, text }, realm);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-a/node-slots.mjs",
+      "blob": "aa15111af8341edadd952c51d41f1e0f73f13de2",
+      "sha256": "a0c72edb3a342e305aacec972420d555641512ef32eda3c12ad0ed83be50ea86",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import {prepareBoundedScript} from '../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 9,
+          "text": "const prepare=(text)=>{const p=prepareBoundedScript({id:'T',text},r);assert.equal(p.kind,'ready');return p.record;};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-a/replays/bounded-boundary.mjs",
+      "blob": "5e4c19205e07a2cdbc4a52fb943879de0187e1e0",
+      "sha256": "380d00a192120016550502273b13e320ed4fd4fa500702ccc09e067249c2eded",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import { prepareBoundedScript } from '../../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 10,
+          "text": "const session = createScriptSession(), record = prepareBoundedScript({id:'boundary',text:'probe();'},r).record;"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-b/node-slots.mjs",
+      "blob": "aa15111af8341edadd952c51d41f1e0f73f13de2",
+      "sha256": "a0c72edb3a342e305aacec972420d555641512ef32eda3c12ad0ed83be50ea86",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import {prepareBoundedScript} from '../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 9,
+          "text": "const prepare=(text)=>{const p=prepareBoundedScript({id:'T',text},r);assert.equal(p.kind,'ready');return p.record;};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-b/replays/bounded-boundary.mjs",
+      "blob": "5e4c19205e07a2cdbc4a52fb943879de0187e1e0",
+      "sha256": "380d00a192120016550502273b13e320ed4fd4fa500702ccc09e067249c2eded",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import { prepareBoundedScript } from '../../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 10,
+          "text": "const session = createScriptSession(), record = prepareBoundedScript({id:'boundary',text:'probe();'},r).record;"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-bp/proposed/test/harness-errors-a.ts",
+      "blob": "be8bf7e3f084bc03e674ba7d9942cdc93a71db26",
+      "sha256": "1bf598b42321042a6581213b681de7e67902a50fc762362bb83c4764047e8a76",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 4,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 14,
+          "text": "    const p = prepareBoundedScript({ id, text }, realm);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-bp/proposed/test/harness-nonstrict.ts",
+      "blob": "8da00d826ada89c447d0c3ddbf63331fa7ca3206",
+      "sha256": "143fa9336a5234522a1f8b9b8aed1ee9a43b3bdb05efcbec3568e35d6679eb87",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 3,
+          "text": "import { prepareBoundedScript, prepareStrictScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 13,
+          "text": " const p = prepareBoundedScript({ id, text }, realm);"
+        },
+        {
+          "line": 98,
+          "text": "{const r=fresh(),unit={id:\"original\",text:\"function f(){/*keep*/return this;}\"};const p=prepareBoundedScript(unit,r);check(p.kind===\"ready\",\"D05 prepare\");if(p.kind===\"ready\"){unit.id=\"forged\";unit.text=\"forged\";evaluateScript(createScriptSession(),p.record);expect(run(\"f.toString();\",r),{kind:\"string\",value:\"function f(){/*keep*/return this;}\"},\"D05 original source\");}}"
+        },
+        {
+          "line": 101,
+          "text": "for(const source of negatives){const r=fresh(),out: Value[]=[];recorder(r,out);const p=prepareBoundedScript({id:\"N\",text:source},r);check(p.kind!==\"ready\" && out.length===0 && r.globalObject.getOwnProperty(\"f\")===undefined,\"negative \"+source);}"
+        },
+        {
+          "line": 102,
+          "text": "for(const text of [\" \".repeat(100001),\"(\".repeat(129)+\"1\"+\")\".repeat(129)+\";\"]){const p=prepareBoundedScript({id:\"N16\",text},fresh());check(p.kind===\"blocked\" && p.rejection.kind===\"resource-limit\",\"N16 resource\");}"
+        },
+        {
+          "line": 107,
+          "text": "for(const source of ['(\"use strict\");',';\"use strict\";','\"use\\\\x20strict\";']){const r=fresh();const p=prepareBoundedScript({id:\"directive\",text:source+'function f(){return this;}f();'},r);if(p.kind===\"ready\")expect(evaluateScript(createScriptSession(),p.record).completion,r.globalThisValue,\"non-directive\");}"
+        },
+        {
+          "line": 579,
+          "text": " run(\"guard();\",r,s);if(retained===null)throw new Error(\"retained\");const c:OperationContext=retained;hostFault(()=>{c.call(leaf,UNDEFINED,[],loc);},\"inactive Script session\");check(effects===0,\"idle no effects\");check(prepareBoundedScript({id:\"legacy\",text:\"\"},legacy).kind===\"profile-rejected\",\"profile admission\");"
+        },
+        {
+          "line": 600,
+          "text": " const r=fresh();const p=prepareBoundedScript({id:\"precedence\",text:'\"use strict\";delete x;const tail=0;'},r),old=prepareStrictScript({id:\"precedence\",text:'\"use strict\";delete x;const tail=0;'},r);check(p.kind===\"blocked\" && p.rejection.kind===\"unsupported-syntax\" && p.rejection.capabilityCode!==\"parse.delete-identifier\",\"bounded whole-source tail\");check(old.kind===\"blocked\" && old.rejection.kind===\"unsupported-syntax\" && old.rejection.capabilityCode===\"parse.delete-identifier\",\"old precedence\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-bp/proposed/test/structured-outcomes.ts",
+      "blob": "d83d7f81918b254a609b8bfb3185b3635fdceae4",
+      "sha256": "e697ce3baef4875746a9bb46ab9276d23549da4d709179e99e1b6e9c32ba8f8a",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 54,
+          "text": "    \"\", \"\", \"parse.assignment-target\", \"parse.declaration-statement\", \"\", \"parse.return-context\", \"\", \"parse.duplicate-parameter\", \"parse.duplicate-parameter\", \"parse.duplicate-binding\", \"parse.duplicate-binding\", \"parse.duplicate-binding\", \"parse.expected-token\", \"parse.binding-identifier\", \"parse.property-name\", \"parse.object-key\", \"parse.unexpected\", \"parse.line-terminator\", \"parse.line-terminator\", \"parse.throw-expression\", \"parse.loop-context\", \"parse.loop-context\", \"parse.delete-identifier\", \"parse.array-spread\", \"parse.prototype-literal\", \"lex.indeterminate-comment\", \"lex.indeterminate-string-newline\", \"lex.indeterminate-string-end\", \"lex.leading-zero\", \"lex.numeric-literal\", \"lex.string-escape\", \"lex.operator\", \"lex.character\", \"lex.operator\", \"parse.assignment-target\", \"lex.indeterminate-string-end\", \"parse.return-context\", \"parse.return-context\", \"\", \"lex.character\", \"lex.character\", \"parse.unexpected\","
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-c/node-slots.mjs",
+      "blob": "aa15111af8341edadd952c51d41f1e0f73f13de2",
+      "sha256": "a0c72edb3a342e305aacec972420d555641512ef32eda3c12ad0ed83be50ea86",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import {prepareBoundedScript} from '../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 9,
+          "text": "const prepare=(text)=>{const p=prepareBoundedScript({id:'T',text},r);assert.equal(p.kind,'ready');return p.record;};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-c/replays/bounded-boundary.mjs",
+      "blob": "5e4c19205e07a2cdbc4a52fb943879de0187e1e0",
+      "sha256": "380d00a192120016550502273b13e320ed4fd4fa500702ccc09e067249c2eded",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import { prepareBoundedScript } from '../../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 10,
+          "text": "const session = createScriptSession(), record = prepareBoundedScript({id:'boundary',text:'probe();'},r).record;"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-cp/map-regression/first-probe.ts",
+      "blob": "ce979c8c9ac51c256fd4b00eeb285e9bf48f51c8",
+      "sha256": "c8f09c7e9c123cc1c04bf015e277cf41b7695f7db9eba4dafd1628c2ee99e2a9",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 7,
+          "text": "import { prepareBoundedScript } from \"../../../../src/script-record.js\";"
+        },
+        {
+          "line": 79,
+          "text": "        const prepared = prepareBoundedScript({ id: inputId, text: \"probe();\" }, r);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-cp/map-regression/probe.ts",
+      "blob": "a8fdd2a1d73e5e45e3fc5aabfd98f053c461c6ed",
+      "sha256": "bf4142de540d0b4c95ecdb6b021145db707add9993c2222b699790c2df012c62",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 7,
+          "text": "import { prepareBoundedScript } from \"../../../../src/script-record.js\";"
+        },
+        {
+          "line": 79,
+          "text": "        const prepared = prepareBoundedScript({ id: inputId, text: \"probe();\" }, r);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-cp/proposed/test/harness-errors-a.ts",
+      "blob": "28cda13a98dcab045fc886f92101f0ca8761b937",
+      "sha256": "fb5a0a65a2caf8d9e7397ebeab1a1d728f3b0ae8d0e7309daebfdf1ccbfdb2e8",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 4,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 14,
+          "text": "    const p = prepareBoundedScript({ id, text }, realm);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-cp2/proposed/test/harness-errors-a.ts",
+      "blob": "28cda13a98dcab045fc886f92101f0ca8761b937",
+      "sha256": "fb5a0a65a2caf8d9e7397ebeab1a1d728f3b0ae8d0e7309daebfdf1ccbfdb2e8",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 4,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 14,
+          "text": "    const p = prepareBoundedScript({ id, text }, realm);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-cp2/proposed/test/harness-map-default.ts",
+      "blob": "47ca1e0132deb9d2d37a4403b0b904d6664385bb",
+      "sha256": "7801bb30d6f9dc31a3edaa48a39733f559b1517ab39e488ef1a80da0a7e932f0",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 9,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 19,
+          "text": "function prepare(text: string,r: Realm,id: string): ExecutableScript { const p=prepareBoundedScript({id,text},r); if(p.kind!==\"ready\")throw new Error(\"prepare \"+text);return p.record; }"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-m/cp-replay/probe.ts",
+      "blob": "74a921295862c74c558e11493a826af769f7692d",
+      "sha256": "066e6825826f823f61872147f57be744c7bdb668c68747d6b1362481f508c7af",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 7,
+          "text": "import { prepareBoundedScript } from \"../../../../src/script-record.js\";"
+        },
+        {
+          "line": 79,
+          "text": "        const prepared = prepareBoundedScript({ id: inputId, text: \"probe();\" }, r);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-m/development/parsed-getter-reduction.ts",
+      "blob": "1cf8c77cd4d507e0d24c65f09a6b24e1ca6e140d",
+      "sha256": "3b39deddc042d158907bb0b2872a2aabae70de83128c06121ada215dd06cfce4",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 2,
+          "text": "import { prepareBoundedScript } from \"../../../../src/script-record.js\";"
+        },
+        {
+          "line": 10,
+          "text": "    const setup=prepareBoundedScript({id:\"getter\",text:\"function g(){return undefined;}\"},r);"
+        },
+        {
+          "line": 19,
+          "text": "    const prepared=prepareBoundedScript({id:\"outer\",text:\"probe(7);\\n\"},r);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-m/node-slots.mjs",
+      "blob": "aa15111af8341edadd952c51d41f1e0f73f13de2",
+      "sha256": "a0c72edb3a342e305aacec972420d555641512ef32eda3c12ad0ed83be50ea86",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import {prepareBoundedScript} from '../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 9,
+          "text": "const prepare=(text)=>{const p=prepareBoundedScript({id:'T',text},r);assert.equal(p.kind,'ready');return p.record;};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-m/replays/bounded-boundary.mjs",
+      "blob": "5e4c19205e07a2cdbc4a52fb943879de0187e1e0",
+      "sha256": "380d00a192120016550502273b13e320ed4fd4fa500702ccc09e067249c2eded",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import { prepareBoundedScript } from '../../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 10,
+          "text": "const session = createScriptSession(), record = prepareBoundedScript({id:'boundary',text:'probe();'},r).record;"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-mp/baseline/test/harness-errors-b.ts",
+      "blob": "9ec2c7e2963b294caf31618d3e6d35be975f965e",
+      "sha256": "1c63cce318477546bf6993c9c49aafba6ea292d7a546d2da4d32fca7b1fb865c",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 4,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 19,
+          "text": "function prepare(text: string, realm: Realm, id: string): ExecutableScript { const p = prepareBoundedScript({ id, text }, realm); if (p.kind !== \"ready\") throw new Error(\"preparation \" + p.kind + \": \" + text); return p.record; }"
+        },
+        {
+          "line": 116,
+          "text": " const r=fresh();let effects=0;alias(r,\"out\",(_r,_a,_c,_l)=>{effects++;return normal();});for(const source of [\"try{while(true){}}catch(e){out(9);}\",\"function f(){f();}try{f();}catch(e){out(9);}\",\"function K(){new K();}try{new K();}catch(e){out(9);}\"]){const t=thrown(run(source,r,createScriptSession({maxSteps:50,maxCalls:3})));check(t.origin.kind===\"resource-limit\"&&t.value.kind===\"string\",\"resource bypass\");}check(effects===0,\"catch not run\");const blocked=prepareBoundedScript({id:\"blocked\",text:\"Error('x');for(let x of []){}\"},r);check(blocked.kind!==\"ready\",\"whole unit rejection\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-034h6-mp/proposed/test/harness-errors-b.ts",
+      "blob": "f45334729ad52f0749ecad0db18c2c0591dbb8be",
+      "sha256": "1984f3ed4e6d93ca9493d049dff3b2ecfc695bd968aea15c8419e42ec29dfac6",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 4,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 19,
+          "text": "function prepare(text: string, realm: Realm, id: string): ExecutableScript { const p = prepareBoundedScript({ id, text }, realm); if (p.kind !== \"ready\") throw new Error(\"preparation \" + p.kind + \": \" + text); return p.record; }"
+        },
+        {
+          "line": 116,
+          "text": " const r=fresh();let effects=0;alias(r,\"out\",(_r,_a,_c,_l)=>{effects++;return normal();});for(const source of [\"try{while(true){}}catch(e){out(9);}\",\"function f(){f();}try{f();}catch(e){out(9);}\",\"function K(){new K();}try{new K();}catch(e){out(9);}\"]){const t=thrown(run(source,r,createScriptSession({maxSteps:50,maxCalls:3})));check(t.origin.kind===\"resource-limit\"&&t.value.kind===\"string\",\"resource bypass\");}check(effects===0,\"catch not run\");const blocked=prepareBoundedScript({id:\"blocked\",text:\"Error('x');for(let x of []){}\"},r);check(blocked.kind!==\"ready\",\"whole unit rejection\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035b/boundary.mjs",
+      "blob": "ec67d42ab6cca88448bcfa0002f840079d5ed092",
+      "sha256": "fc51b29f84c82d4dd4c8ad0e2468ce20688b96ba1581e78b43f8f627428d11fe",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import {prepareBoundedScript} from '../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 11,
+          "text": "const prepare=(text,id)=>{const p=prepareBoundedScript({text,id},realm);assert.equal(p.kind,'ready');return p.record;};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035b/correction/previous/boundary.mjs",
+      "blob": "ec67d42ab6cca88448bcfa0002f840079d5ed092",
+      "sha256": "fc51b29f84c82d4dd4c8ad0e2468ce20688b96ba1581e78b43f8f627428d11fe",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import {prepareBoundedScript} from '../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 11,
+          "text": "const prepare=(text,id)=>{const p=prepareBoundedScript({text,id},realm);assert.equal(p.kind,'ready');return p.record;};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035b/correction/previous/source-review.mjs",
+      "blob": "ce02765f82de49bdfb0ce2cafd0745fe6d63ef1a",
+      "sha256": "40ddfacc3a09320d387e8ac2debfe88c58b145181f2f591b5f93cead7e4dd728",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 5,
+          "text": "import {prepareBoundedScript} from '../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 10,
+          "text": "const prepare=(realm,id,text)=>{const p=prepareBoundedScript({id,text},realm);assert.equal(p.kind,'ready');return p.record;};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035b/source-review.mjs",
+      "blob": "ce02765f82de49bdfb0ce2cafd0745fe6d63ef1a",
+      "sha256": "40ddfacc3a09320d387e8ac2debfe88c58b145181f2f591b5f93cead7e4dd728",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 5,
+          "text": "import {prepareBoundedScript} from '../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 10,
+          "text": "const prepare=(realm,id,text)=>{const p=prepareBoundedScript({id,text},realm);assert.equal(p.kind,'ready');return p.record;};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035c/parse-only-review.mjs",
+      "blob": "48c0c09fe1363f481eb3bc2af865de3c54274412",
+      "sha256": "b26ec7ba5c747b90d78645aff0ad903d10b67c9dc45f6827451c747cadcdaaf5",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import {prepareBoundedScript} from '../../../build/node/src/script-record.js';"
+        },
+        {
+          "line": 19,
+          "text": "function prepare(n){const p=prepareBoundedScript({id:'u'+n,text:texts[n]},realm);assert.equal(p.kind,'ready');return p.record;}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2-p/freeze.mjs",
+      "blob": "85e53f6bbe846d2a8991d04862778d18884e7e4d",
+      "sha256": "1076958454dbe007f2d8f5f8da3594b6f077e068292e97508147efffadeb80c1",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 64,
+          "text": " let futurePreparation=copy(bounded);"
+        },
+        {
+          "line": 67,
+          "text": "  futurePreparation={kind:'blocked',goal:'Script',unit,rejection:{kind:'syntax-error',ruleCode:'duplicate-block-lexical-function'},diagnostic:{phase:'parse',name:'SyntaxError',message:'duplicate block lexical function: '+c.second.name,loc:copy(c.second.loc)}};"
+        },
+        {
+          "line": 77,
+          "text": "  if(futurePreparation.kind==='complete'){"
+        },
+        {
+          "line": 80,
+          "text": "  }else if(futurePreparation.kind==='conflict'){"
+        },
+        {
+          "line": 81,
+          "text": "   result={kind:'unsupported-syntax',capabilityCode:'script.uncertified-conflict'};location=copy(futurePreparation.diagnostic.loc);"
+        },
+        {
+          "line": 83,
+          "text": "   result=copy(futurePreparation.rejection);location=copy(futurePreparation.diagnostic.loc);"
+        },
+        {
+          "line": 97,
+          "text": " rows.push({id,text,sourceUnits:text.length,sha256:hash(text),ordinary,audit,futurePreparation,contexts});"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2-p/verify.mjs",
+      "blob": "dd6f3fb6e60751477cf49849ea39ac5d6a5a71c6",
+      "sha256": "49a83ec8a86068f6d85a1ac905fb7e8b433645929b3f49de08e5fe775b0b20c9",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 41,
+          "text": " assert.equal(row.futurePreparation.diagnostic.loc.column,col);"
+        },
+        {
+          "line": 47,
+          "text": "  assert.equal(r.futurePreparation.rejection.ruleCode,'duplicate-block-lexical-function');"
+        },
+        {
+          "line": 49,
+          "text": " }else assert.deepEqual(r.futurePreparation,r.ordinary.bounded,r.id+' no semantic relaxation');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2-p/wire-freeze.mjs",
+      "blob": "a9534906d10342805c10836ee2f0e91346fdd439",
+      "sha256": "a3fb57b4f127d739dfee173a0032b71709fa1ff07adf46862627c30460795173",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 55,
+          "text": " ['assignment-rule',['result','ruleCode'],'assignment-target'],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2/check-proposal.mjs",
+      "blob": "14611a7b2199e7868f5713308f20b6fc8b43d430",
+      "sha256": "21c8559ed11701480a0d6c62751fb99a01b79e1fe88c175a433d1936a729df56",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 10,
+          "text": "const ruleFrom=\"ruleCode:one(['return-outside-function'])\",ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2/proposed-script-observe-codec.test.mjs",
+      "blob": "ff34ddb06d9e7b6196490e0fe57ddfaa2a6b93f1",
+      "sha256": "e8e8a78a388a2a4069b2991de2974f5718218b92b97006ea334a074933eee49a",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 24,
+          "text": " const ruleFrom=\"ruleCode:one(['return-outside-function'])\";"
+        },
+        {
+          "line": 25,
+          "text": " const ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d2/validate.mjs",
+      "blob": "c90b5c89e96a2e58bba4a61a11863f2f4920e100",
+      "sha256": "3a8c7c2609c5d413a4f60ce5eaaf3d28c956726565af376d37fabd8d10b60281",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 16,
+          "text": " assert.deepEqual(actual.preparation,migration?migration.preparation:row.futurePreparation,row.id+' preparation');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d3-p/audit.mjs",
+      "blob": "768e8f211238a6b93f3829a56802b8a4e48da884",
+      "sha256": "8ec1ecfed4eaf4bf5d0a0cb7c82af740d42a548e93170377a625c137e0b600c4",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 7,
+          "text": "import {parse,parseDeclarationPlan,parseBoundedScriptDeclarationPlan,auditScriptReturns,auditBoundedScriptBlockFunctions,parseBoundedScriptPreparation} from '../../../build/node/src/parser.js';"
+        },
+        {
+          "line": 26,
+          "text": " return {id,text,sourceUnits:text.length,sha256:sha(text),futureKind,current:{legacy:parse(text),returns:auditScriptReturns(text),declaration:parseDeclarationPlan(unit),bounded:parseBoundedScriptDeclarationPlan(unit),D1:auditBoundedScriptBlockFunctions(text),D2:parseBoundedScriptPreparation(unit,nodes)}};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d3-p/freeze.mjs",
+      "blob": "8cac1c17a1e8bf98c7dd7d78783b62b251a221c1",
+      "sha256": "c37d301458968f4af708e154d921cc9c07c2673a21ab14cf14215643d772ae3b",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 16,
+          "text": "const grammar={P09:'lex.string-escape',P10:'parse.expected-token',P11:'parse.binding-identifier',P12:'parse.unexpected',P13:'parse.expected-token',E01:'parse.unexpected',E02:'parse.unexpected',E03:'parse.return-context',E04:'parse.assignment-target',E05:'parse.declaration-statement',E06:'lex.indeterminate-string-end',E07:'parse.unexpected',E08:'parse.binding-identifier',E09:'parse.binding-identifier',E10:'parse.expected-token',E11:'parse.unexpected',E22:'parse.expected-token',E37:'parse.expected-token',E38:'parse.binding-identifier',E39:'lex.operator',E40:'parse.expected-token',E48:'parse.binding-identifier'};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d3-p/verify.mjs",
+      "blob": "5cee90ecce7409b49298c685624ad3cab1d2832b",
+      "sha256": "896aa6a3f319df557c890d2de1d0afe0a896d6f30bac6f77641a06ff728a6f20",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 8,
+          "text": "import {parse,parseDeclarationPlan,parseBoundedScriptDeclarationPlan,auditScriptReturns,auditBoundedScriptBlockFunctions,parseBoundedScriptPreparation} from '../../../build/node/src/parser.js';"
+        },
+        {
+          "line": 27,
+          "text": " const actual={legacy:parse(text),returns:auditScriptReturns(text),declaration:parseDeclarationPlan(unit),bounded:parseBoundedScriptDeclarationPlan(unit),D1:auditBoundedScriptBlockFunctions(text),D2:parseBoundedScriptPreparation(unit,nodes)};"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d3/freeze.mjs",
+      "blob": "8a5c00f8d658179acd2de326f4d0cb39db1b4b96",
+      "sha256": "88045eb021b92da66904a2edf5cb89c8d438c2d17f9d4333a1d63f22b73a3e01",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 5,
+          "text": "import {parseDeclarationPlan,parseBoundedScriptDeclarationPlan,parseBoundedScriptPreparation} from '../../../build/node/src/parser.js';"
+        },
+        {
+          "line": 13,
+          "text": " row.nodes=[parseDeclarationPlan,parseBoundedScriptDeclarationPlan,parseBoundedScriptPreparation].map(f=>{const n=nodes();f({id:row.id,text:row.text},n);return snap(n)});"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/check.mjs",
+      "blob": "22f2be95bda33a709eea217702ff36db4e0e64fd",
+      "sha256": "44889edd1e11f2d94500986a6ca483815c3a0c8bcd160f6d6563611aa8a30e2f",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 10,
+          "text": " for(const [k,v] of Object.entries(old.expected))assert.deepEqual(row.current.D3[k],v,old.id+'/'+k);"
+        },
+        {
+          "line": 11,
+          "text": " for(const [k,v] of Object.entries(old.ordinary))assert.deepEqual(row.current[k],v,old.id+' ordinary '+k);"
+        },
+        {
+          "line": 14,
+          "text": "for(const old of d2){const row=rows.find(r=>r.id==='D2/'+old.id);assert.deepEqual(row.current.D2,old.futurePreparation,old.id);assert.deepEqual(row.current.D1,old.audit,old.id);}"
+        },
+        {
+          "line": 23,
+          "text": " const first=\"ruleCode:one(['return-outside-function'])\",second=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function'])\",third=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/freeze.mjs",
+      "blob": "0e3d700ff02d6443a48c908ab7607e67d17a859d",
+      "sha256": "f7480d3fa38cadc06056de56a1eae0b5ab528e511068c9497b2bae65b959f7ab",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 55,
+          "text": " const current={legacy:parser.parse(text),returns:parser.auditScriptReturns(text),declaration:parser.parseDeclarationPlan(unit),bounded:parser.parseBoundedScriptDeclarationPlan(unit),D1:parser.auditBoundedScriptBlockFunctions(text),D2:parser.parseBoundedScriptPreparation(unit,nodes()),D3:parser.auditBoundedScriptStrictParameters(text)};"
+        },
+        {
+          "line": 65,
+          "text": " let futurePreparation=copy(current.D2);"
+        },
+        {
+          "line": 71,
+          "text": "  futurePreparation={kind:'blocked',goal:'Script',unit,rejection:{kind:'syntax-error',ruleCode:selected.ruleCode},diagnostic:{phase:'parse',name:'SyntaxError',message:(selected.ruleCode==='duplicate-strict-parameter'?'duplicate strict parameter: ':'duplicate block lexical function: ')+selected.name,loc:copy(selected.location)}};"
+        },
+        {
+          "line": 80,
+          "text": "  const p=futurePreparation,unitId=role==='test'?'u0':'u1';"
+        },
+        {
+          "line": 89,
+          "text": " rows.push({id,text,sha256:hash(text),sourceUnits:text.length,current,currentParseOnly,selected,futurePreparation,contexts});"
+        },
+        {
+          "line": 98,
+          "text": "for(const row of rows.filter(r=>r.selected&&r.id.includes('/'))){const [suite,id]=row.id.split('/');inherited[suite][id]={text:row.text,preparation:row.futurePreparation,contexts:row.contexts};}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/proposals.mjs",
+      "blob": "5cc953f594ace9593a5227313d4e472089b808b8",
+      "sha256": "e89904623cc19db7b93c0ffed42ec91d56c1c6d27699edc26a08a997e05d2a81",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 12,
+          "text": "edit(c,\"const ruleTo=\\\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function'])\\\";\",\"const ruleTo=\\\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\\\";\");"
+        },
+        {
+          "line": 15,
+          "text": "edit(d2,\"assert.deepEqual(actual.preparation,row.futurePreparation,row.id+' preparation');\",\"const migration=d4[row.id]; if(migration)assert.equal(row.text,migration.text,row.id+' exact D4 source');\\r\\n assert.deepEqual(actual.preparation,migration?migration.preparation:row.futurePreparation,row.id+' preparation');\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/proposed/typescript/docs/validation/ts-035d2/validate.mjs",
+      "blob": "58429995278600875bf6b998b0299c1472b7ff13",
+      "sha256": "3a8c7c2609c5d413a4f60ce5eaaf3d28c956726565af376d37fabd8d10b60281",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 16,
+          "text": " assert.deepEqual(actual.preparation,migration?migration.preparation:row.futurePreparation,row.id+' preparation');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/proposed/typescript/tools/test262/script-observe-codec.test.mjs",
+      "blob": "8b2f8641b71623d12f0fb03111c6bc492f0dab9f",
+      "sha256": "06e55abf2c9ad9ffd3fcf9eb09c700324e229b648af38d8101dba6ffa4d330bd",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 24,
+          "text": " const ruleFrom=\"ruleCode:one(['return-outside-function'])\";"
+        },
+        {
+          "line": 25,
+          "text": " const ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4-p/verify.mjs",
+      "blob": "1a07e42ffa042b559201758b042d5bae80e6396f",
+      "sha256": "1192ace4324c17486f7093bb5bb69d77b9a1aa6c56894b2f10511de3df3b204f",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 34,
+          "text": " if(r.selected){assert.equal(r.text.slice(r.selected.start,r.selected.start+r.selected.name.length),r.selected.name);assert.equal(r.futurePreparation.rejection.ruleCode,r.selected.ruleCode);assert.equal(r.current.D2.rejection.capabilityCode,'parse.duplicate-parameter');}"
+        },
+        {
+          "line": 35,
+          "text": " else assert.deepEqual(r.futurePreparation,r.current.D2);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d4/validate.mjs",
+      "blob": "c464e6cf4670a36a9182c3048b65e35d6224ff3f",
+      "sha256": "889896ab5d7c007eabbc5881125c2b6ce9ea9b73b93c3127f6b56094ef4abb61",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 9,
+          "text": " const id=row.futurePreparation.unit.id,args=[path,id,...order.map(n=>'fixtures/script-strict-parameter-dispatch/'+n+'.js')];"
+        },
+        {
+          "line": 14,
+          "text": " const actual=JSON.parse(r.stdout),{D2,...ordinary}=row.current;"
+        },
+        {
+          "line": 15,
+          "text": " assert.deepEqual(actual.preparation,row.futurePreparation,row.id+' preparation');assert.deepEqual(actual.ordinary,ordinary,row.id+' ordinary');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/cases.mjs",
+      "blob": "a01213740375ba01cc2efbf1f153c8634925ca99",
+      "sha256": "0d64e99a3c80cde2efa7e7372d37f372127fdf7d0251cc4845f6083ce0f0d352",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 23,
+          "text": "for(const [i,text] of ['-42=7;','+42=7;','(1+2)=7;','true=7;','null=7;','\"42\"=7;','this=7;','f()=7;','[a]=b;','({a:b})=c;','(a?b:c)=7;','(a=1)=7;','42++;','42\\n++;','++42;','42=7;f()=8;','42=7;true=8;'].entries())blocked('U'+i,text,i===13?'parse.line-terminator':i===14?'parse.unexpected':'parse.assignment-target');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/check.mjs",
+      "blob": "6af684e58de2e6fb7b0dc46049dcd5250fc78c98",
+      "sha256": "57102f309359e5adeb0fba3bc8ba71ff6b9007502380adbd85f2a7e0a1d77552",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 12,
+          "text": " const current=read('typescript/tools/test262/'+file),from=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\",to=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/freeze.mjs",
+      "blob": "9af8122fe3554c163483bd7c44eb682e6d8bedec",
+      "sha256": "d4295284357e544dd734ee68a4973a9740f2f5381a2a2c9e5360ad4f3d820b83",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 25,
+          "text": "   return {ruleCode:'assignment-target',target:{text:t.text,start:t.start,end:t.end,loc:loc(text,t.start)},operator:{text:op.text,start:op.start,end:op.end,loc:loc(text,op.start)}};"
+        },
+        {
+          "line": 28,
+          "text": " const n=nodes();r.current={legacy:parser.parse(text),returns:parser.auditScriptReturns(text),declaration:parser.parseDeclarationPlan(unit),bounded:parser.parseBoundedScriptDeclarationPlan(unit),D1:parser.auditBoundedScriptBlockFunctions(text),D3:parser.auditBoundedScriptStrictParameters(text),preparation:parser.parseBoundedScriptPreparation(unit,n)};"
+        },
+        {
+          "line": 30,
+          "text": " r.currentC=observeScripts({nonce:'design',requestSha256:'a'.repeat(64),action:'parse-only',preflightId:null,steps:10000,calls:64,units:[{id:'u0',role:'test',text}]});"
+        },
+        {
+          "line": 32,
+          "text": " r.futurePreparation=structuredClone(r.current.preparation);"
+        },
+        {
+          "line": 34,
+          "text": "  assert.equal(r.current.preparation.rejection.capabilityCode,'parse.assignment-target',id);"
+        },
+        {
+          "line": 35,
+          "text": "  r.futurePreparation={kind:'blocked',goal:'Script',unit,rejection:{kind:'syntax-error',ruleCode:'assignment-target'},diagnostic:{phase:'parse',name:'SyntaxError',message:'invalid numeric assignment target',loc:r.expected.candidates[0].target.loc}};"
+        },
+        {
+          "line": 41,
+          "text": "const owned=p=>['typescript/TASKS.md','typescript/COORDINATION.md','typescript/docs/script-assignment-target-rule.md'].includes(p)||p.startsWith('typescript/docs/validation/ts-035d5-p/');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/make-wire.mjs",
+      "blob": "c550ad2e433bdade5c20c014116488f283dcdb40",
+      "sha256": "0c8947b6f965988e400a54d38266bbe8981cf4227bb4bbb51c083b3e4b285fe1",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 7,
+          "text": "s=s.replaceAll(\"'duplicate-strict-parameter'\",\"'assignment-target'\");"
+        },
+        {
+          "line": 9,
+          "text": "s=s.replace(\"m.id!=='parameter-rule'\",\"m.id!=='assignment-rule'\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/oracle-controls.mjs",
+      "blob": "0dd47c5fded832946202231b6efe270288f68050",
+      "sha256": "285ee181a175c022266834f90f885df1cc8758e813d2db50f81aa7c008468757",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 13,
+          "text": "  if(JSON.stringify(value)===JSON.stringify(r.expected))value.rejection.capabilityCode='parse.assignment-target';"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/original-blocked-oracle/cases.mjs",
+      "blob": "6c3a411441bc06dd2afd9ce2e173dda6a0bbbdfa",
+      "sha256": "84c27b9218ca3406bd4750e5f8d993d844e7f93be95f05a5504224399ee12b34",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 22,
+          "text": "for(const [i,text] of ['-42=7;','+42=7;','(1+2)=7;','true=7;','null=7;','\"42\"=7;','this=7;','f()=7;','[a]=b;','({a:b})=c;','(a?b:c)=7;','(a=1)=7;','42++;','42\\n++;','++42;','42=7;f()=8;','42=7;true=8;'].entries())blocked('U'+i,text,i===13?'parse.line-terminator':i===14?'parse.unexpected':'parse.assignment-target');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/original-blocked-oracle/freeze.mjs",
+      "blob": "9af8122fe3554c163483bd7c44eb682e6d8bedec",
+      "sha256": "d4295284357e544dd734ee68a4973a9740f2f5381a2a2c9e5360ad4f3d820b83",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 25,
+          "text": "   return {ruleCode:'assignment-target',target:{text:t.text,start:t.start,end:t.end,loc:loc(text,t.start)},operator:{text:op.text,start:op.start,end:op.end,loc:loc(text,op.start)}};"
+        },
+        {
+          "line": 28,
+          "text": " const n=nodes();r.current={legacy:parser.parse(text),returns:parser.auditScriptReturns(text),declaration:parser.parseDeclarationPlan(unit),bounded:parser.parseBoundedScriptDeclarationPlan(unit),D1:parser.auditBoundedScriptBlockFunctions(text),D3:parser.auditBoundedScriptStrictParameters(text),preparation:parser.parseBoundedScriptPreparation(unit,n)};"
+        },
+        {
+          "line": 30,
+          "text": " r.currentC=observeScripts({nonce:'design',requestSha256:'a'.repeat(64),action:'parse-only',preflightId:null,steps:10000,calls:64,units:[{id:'u0',role:'test',text}]});"
+        },
+        {
+          "line": 32,
+          "text": " r.futurePreparation=structuredClone(r.current.preparation);"
+        },
+        {
+          "line": 34,
+          "text": "  assert.equal(r.current.preparation.rejection.capabilityCode,'parse.assignment-target',id);"
+        },
+        {
+          "line": 35,
+          "text": "  r.futurePreparation={kind:'blocked',goal:'Script',unit,rejection:{kind:'syntax-error',ruleCode:'assignment-target'},diagnostic:{phase:'parse',name:'SyntaxError',message:'invalid numeric assignment target',loc:r.expected.candidates[0].target.loc}};"
+        },
+        {
+          "line": 41,
+          "text": "const owned=p=>['typescript/TASKS.md','typescript/COORDINATION.md','typescript/docs/script-assignment-target-rule.md'].includes(p)||p.startsWith('typescript/docs/validation/ts-035d5-p/');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/original-blocked-oracle/probe.mjs",
+      "blob": "558074d9aa5229679dd8528dcc57fafe1053679b",
+      "sha256": "9d7292a3f7b6b4191c053e7f5688cd63793c9cb5ec88053a18e7100c907cde3e",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 19,
+          "text": "for(const r of old)assert.deepEqual(parser.parseBoundedScriptPreparation(r.futurePreparation.unit,nodes()),r.futurePreparation,r.id);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/probe.mjs",
+      "blob": "7039fcb92fc79ff15f77af736d325156bc4850f0",
+      "sha256": "dec53c10baa6f53ea20be19798280965b4d0c8d0f2897cc64fea559c58886a60",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 22,
+          "text": "for(const r of old)assert.deepEqual(parser.parseBoundedScriptPreparation(r.futurePreparation.unit,nodes()),r.futurePreparation,r.id);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/proposals.mjs",
+      "blob": "2b4258f42841392e11787b97c045863a578ce765",
+      "sha256": "ed7cd8333b8b814a10bd3284e2216fc178ecfc6304a9c669b21ab7e133ee51ac",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 11,
+          "text": "edit(c,\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\",\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])\");"
+        },
+        {
+          "line": 13,
+          "text": "edit(d2,\"if(m.id==='parameter-rule')\",\"if(m.id==='parameter-rule'||m.id==='assignment-rule')\",2);"
+        },
+        {
+          "line": 15,
+          "text": "edit(d4,'set(c,m.childPath,m.value);assert.throws(()=>decodeChild(c),r.id+\\'/\\'+m.id);','set(c,m.childPath,m.value);if(m.id===\\'assignment-rule\\'&&future)assert.deepEqual(decodeChild(c),c,r.id+\\'/\\'+m.id);else assert.throws(()=>decodeChild(c),r.id+\\'/\\'+m.id);');"
+        },
+        {
+          "line": 16,
+          "text": "edit(d4,'set(e,m.envelopePath,m.value);assert.throws(()=>decodeEnvelope(e),r.id+\\'/\\'+m.id);','set(e,m.envelopePath,m.value);if(m.id===\\'assignment-rule\\'&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+\\'/\\'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+\\'/\\'+m.id);');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/proposed-emission/typescript/docs/validation/ts-035d2-p/verify-future-wire.mjs",
+      "blob": "0a1486ee8abec121df545d5e247437c00d75f042",
+      "sha256": "9885d06a2c27f37f614ec7b3526ae3ab094967be5a0872f9de89a699469d794d",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 35,
+          "text": "  if(m.id==='parameter-rule'||m.id==='assignment-rule')assert.deepEqual(parseChild(c),c,r.id+'/'+m.id+' reviewed D4 code');"
+        },
+        {
+          "line": 38,
+          "text": "   if(m.id==='parameter-rule'||m.id==='assignment-rule')assert.deepEqual(parseFull(e),e,r.id+'/'+m.id+' reviewed D4 code');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/proposed-emission/typescript/docs/validation/ts-035d4-p/wire.mjs",
+      "blob": "385e14f0a251eeac894b077c6c80fbfe8b83ce6a",
+      "sha256": "9af2b5c2759b4b403d8fe535df8ed7049026eb3a36f019ec7a992a0bbe9a9c3d",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 42,
+          "text": " for(const m of mutations){const c=copy(child);set(c,m.childPath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeChild(c),c,r.id+'/'+m.id);else assert.throws(()=>decodeChild(c),r.id+'/'+m.id);rejections++;"
+        },
+        {
+          "line": 43,
+          "text": "  if(m.envelopePath){const e=copy(envelope);set(e,m.envelopePath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+'/'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);rejections++;}}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/proposed-emission/typescript/tools/test262/script-observe-codec.test.mjs",
+      "blob": "2160eac603add5201b32c0633856647299cd1492",
+      "sha256": "500a43a2b7e2936df79fdd46203f5e16c0bc5d98fddc44e430f19c27db97eb1b",
+      "category": "archived proposal",
+      "lines": [
+        {
+          "line": 24,
+          "text": " const ruleFrom=\"ruleCode:one(['return-outside-function'])\";"
+        },
+        {
+          "line": 25,
+          "text": " const ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/verify.mjs",
+      "blob": "d4b8a3bde21787854882624a5b85718cc17eddb0",
+      "sha256": "5a97a1caaebb08dfeca379710df575dfa92d5cf8d129f5ef243d54649e8cef47",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 23,
+          "text": " const owned=p=>['typescript/TASKS.md','typescript/COORDINATION.md','typescript/docs/script-assignment-target-rule.md'].includes(p)||p.startsWith('typescript/docs/validation/ts-035d5-p/');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5-p/wire.mjs",
+      "blob": "8361c079abdd01d9a5eabc049896983710957e0b",
+      "sha256": "7fbc035c8b3e3700d25f7c66eb37e9a96577a19266c400e7ef159900e16e3e2c",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 21,
+          "text": " c.requestSha256=b.requestSha256;c.result.ruleCode='assignment-target';c.source.location=copy(source.expected.candidates[0].target.loc);"
+        },
+        {
+          "line": 24,
+          "text": " r.id=r.id.replace('duplicate-block-lexical-function','assignment-target');r.productionEmission=true;rows.push(r);"
+        },
+        {
+          "line": 27,
+          "text": "const mutations=old.mutations.filter(m=>m.id!=='assignment-rule');"
+        },
+        {
+          "line": 36,
+          "text": " const parameter=r.child.result.ruleCode==='assignment-target';"
+        },
+        {
+          "line": 49,
+          "text": " for(const code of ['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter',...(future?['assignment-target']:[])]){const c=copy(child),e=copy(envelope);c.result.ruleCode=code;e.observation.ruleCode=code;assert.deepEqual(decodeChild(c),c);assert.deepEqual(decodeEnvelope(e),e);}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5/freeze.mjs",
+      "blob": "1aaced3564e1c2c431775dcc50d38fa87cba53e6",
+      "sha256": "cfc5e7b43b3285e97efef572f71e765272f6999f3a7e7c3274ee62b63cd80b7a",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 4,
+          "text": "for(const r of m.rows){const n=nodes(),unit={id:r.id,text:r.text};assert.deepEqual({legacy:p.parse(r.text),returns:p.auditScriptReturns(r.text),declaration:p.parseDeclarationPlan(unit),bounded:p.parseBoundedScriptDeclarationPlan(unit),D1:p.auditBoundedScriptBlockFunctions(r.text),D3:p.auditBoundedScriptStrictParameters(r.text),preparation:p.parseBoundedScriptPreparation(unit,n)},r.current,r.id);assert.deepEqual(JSON.parse(JSON.stringify({source:n.source,body:n.body,scopes:[...n.scopes],declarations:[...n.declarations],assignmentNameEligible:[...n.assignmentNameEligible]})),r.retention,r.id);}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5/preserve.mjs",
+      "blob": "c70e3a7eb2b82f746a1a03f3d430577829220ea0",
+      "sha256": "4df0d340368916de750d981bee2a7ea50f5cf791848d3d432f368cc398cf959b",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 3,
+          "text": "const allowed=new Set(['COORDINATION.md','TASKS.md','src/parser.ts','src/script-declarations.ts','tools/build-native.mjs','docs/feature-inventory.md']);const owned=p=>allowed.has(p)||p.startsWith('docs/validation/ts-035d5/')||p==='test/script-assignment-target-audit.ts'||p.startsWith('test/fixtures/script-assignment-target-audit/');"
+        },
+        {
+          "line": 9,
+          "text": "assert.equal(normal(readFileSync('tools/build-native.mjs','utf8')),normal(oldBuild.replace('[\"test/script-strict-parameter-dispatch.ts\", \"script-strict-parameter-dispatch\"]])','[\"test/script-strict-parameter-dispatch.ts\", \"script-strict-parameter-dispatch\"], [\"test/script-assignment-target-audit.ts\", \"script-assignment-target-audit\"]])')));"
+        },
+        {
+          "line": 14,
+          "text": "const gates=json(here+'/native-build-results.json');assert.equal(gates.length,68);assert.deepEqual(gates.slice(0,67).map(g=>g.entry),baseline.gates.map(g=>g.entry));assert.equal(gates[67].entry,'test/script-assignment-target-audit.ts');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/docs/validation/ts-035d5/validate.mjs",
+      "blob": "6fbd1c16cf52a4009a4acc20eadb96daa5bf76b7",
+      "sha256": "ee13d01d3556fe5ad2224733263776aba7868b8c3c1fcf2005123218e125a526",
+      "category": "validation producer/validator or milestone proof",
+      "lines": [
+        {
+          "line": 4,
+          "text": " const path='build/ts035d5-inputs/'+row.id.replaceAll('/','-')+'.js';writeFileSync(path,row.text);const args=[path,row.id,...order.map(n=>'test/fixtures/script-assignment-target-audit/'+n+'.js')];"
+        },
+        {
+          "line": 5,
+          "text": " const run=spawnSync(lane==='node'?process.execPath:'build/native/script-assignment-target-audit.exe',lane==='node'?['build/node/test/script-assignment-target-audit.js',...args]:args,{encoding:'utf8',timeout:60000,maxBuffer:32*1024*1024});const result={lane,order,id:row.id,status:run.status,signal:run.signal,error:run.error?.message??null,stdout:run.stdout,stderr:run.stderr};results.push(result);"
+        },
+        {
+          "line": 7,
+          "text": " const actual=JSON.parse(run.stdout);assert.deepEqual(actual.audit,row.expected,row.id+' complete audit');assert.deepEqual(actual.ordinary,row.current,row.id+' seven ordinary outputs');"
+        }
+      ]
+    },
+    {
+      "path": "typescript/src/outcomes.ts",
+      "blob": "61aa93edc0bf5274cba1ca9e8949b770b14aecad",
+      "sha256": "ac0e100ac4de91ee224e101b0c104d94b961759e8fd1d411b41218c83dc68582",
+      "category": "production",
+      "lines": [
+        {
+          "line": 22,
+          "text": "    | \"parse.assignment-target\""
+        },
+        {
+          "line": 29,
+          "text": "export type SyntaxRule = \"assignment-target\" | \"lexical-declaration-statement\" | \"return-outside-function\" | \"duplicate-strict-parameter\" | \"duplicate-block-lexical-function\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/src/parser.ts",
+      "blob": "4661051234e178c19c1edc7c96ae661120e41b76",
+      "sha256": "b85ec657c3717c0d2018fde637a097b2a79750551b1fb30b32d97e878991c883",
+      "category": "production",
+      "lines": [
+        {
+          "line": 50,
+          "text": "    const end = parser.current();"
+        },
+        {
+          "line": 67,
+          "text": "export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {"
+        },
+        {
+          "line": 103,
+          "text": "export function auditBoundedScriptNumericAssignments(source: string): NumericAssignmentAudit {"
+        },
+        {
+          "line": 131,
+          "text": "    if (parser.current().kind !== \"eof\" || parser.current().start !== source.text.length || parser.current().end !== source.text.length) throw new Error(\"declaration plan did not reach EOF\");"
+        },
+        {
+          "line": 438,
+          "text": "                if (left.kind !== \"identifier\" && left.kind !== \"member\") this.fail({ kind: \"unsupported-syntax\", capabilityCode: \"parse.assignment-target\" }, \"invalid increment target\", left.loc);"
+        },
+        {
+          "line": 466,
+          "text": "                        this.numericCandidates.push({ ruleCode: \"assignment-target\","
+        },
+        {
+          "line": 471,
+          "text": "                    } else this.fail({ kind: \"unsupported-syntax\", capabilityCode: \"parse.assignment-target\" }, \"invalid assignment target\", loc);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/src/script-declarations.ts",
+      "blob": "1dda1efe1574bc4cfb0189708b93bf8a5d0d59af",
+      "sha256": "e07a4b854a6d517d47f1a8882d6013d2e7db913bea096bdcf5ba572a40e3a21b",
+      "category": "production",
+      "lines": [
+        {
+          "line": 132,
+          "text": "    readonly ruleCode: \"assignment-target\";"
+        },
+        {
+          "line": 170,
+          "text": "        result.push({ ruleCode: \"assignment-target\","
+        }
+      ]
+    },
+    {
+      "path": "typescript/src/script-execution-internal.ts",
+      "blob": "06b811ae0ec3976cc8ffc7dc954bc83809270085",
+      "sha256": "e855c74cba73ef87c5d8d6ef49a0337f947d94c8247ca5c9e47e901af692f4fc",
+      "category": "production",
+      "lines": [
+        {
+          "line": 3,
+          "text": "import { parseDeclarationPlan, parseBoundedScriptPreparation } from \"./parser.js\";"
+        },
+        {
+          "line": 139,
+          "text": "        const plan = bounded ? parseBoundedScriptPreparation(unit, nodes) : parseDeclarationPlan(unit, nodes);"
+        },
+        {
+          "line": 577,
+          "text": "export function prepareBoundedScript(unit: ScriptSourceUnit, realm: Realm): ScriptPreparation {"
+        }
+      ]
+    },
+    {
+      "path": "typescript/src/script-observation.ts",
+      "blob": "f0e2e52a155efd1bce6a2e0a87b97db94e5a4ccd",
+      "sha256": "947640a060373027256a6c03ee719425dbd7059116f4dd5e4c39af7bc96982bc",
+      "category": "production",
+      "lines": [
+        {
+          "line": 2,
+          "text": "import { prepareBoundedScript, type ExecutableScript, type ScriptPreparation } from \"./script-record.js\";"
+        },
+        {
+          "line": 133,
+          "text": "            const prepared = prepareBoundedScript({ id: unit.id, text: unit.text }, this.realmFor(unit));"
+        }
+      ]
+    },
+    {
+      "path": "typescript/src/script-record.ts",
+      "blob": "cc96d06fc887b379f5d0c61dfd00711737514a22",
+      "sha256": "cd96a00aea9d0c82938902bbcffd9c197f69cc8a5e4b0acf4c578823f709571e",
+      "category": "production",
+      "lines": [
+        {
+          "line": 2,
+          "text": "export { prepareStrictScript, prepareBoundedScript } from \"./script-execution-internal.js\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/harness-bundle.ts",
+      "blob": "48274e81b6624a9a03b12ad6ec40a81cda2dc01f",
+      "sha256": "035f789877509f6822c1ff1ad0fb447b57abd5201b08a908bdb6c6b7c2d3e1f1",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 4,
+          "text": "import {prepareBoundedScript, type ExecutableScript} from \"../src/script-record.js\";"
+        },
+        {
+          "line": 11,
+          "text": "function prepare(text:string,r:Realm,id:string):ExecutableScript {const p=prepareBoundedScript({id,text},r);if(p.kind!==\"ready\")throw new Error(\"prepare \"+id);return p.record;}"
+        },
+        {
+          "line": 273,
+          "text": " const prepared=prepareBoundedScript({id:\"timeout/test\",text:negative?source+\"\\nclass Unsupported {}\":source},r);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/harness-construct.ts",
+      "blob": "a8ced8b5cfb39f530f0a2ea0301bf432da20ca74",
+      "sha256": "4c08c12b0168898f8c956bb53b1e3c0b70ce3958174b8cd09695f4ec95410d53",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 7,
+          "text": "import { prepareBoundedScript, prepareStrictScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 17,
+          "text": " const p = prepareBoundedScript({ id, text }, realm);"
+        },
+        {
+          "line": 101,
+          "text": "for(const source of negatives)for(const strict of [false,true]){const r=fresh(),out:Value[]=[];recorder(r,out);const s=createScriptSession(),p=prepareBoundedScript({id:\"N\",text:(strict?'\"use strict\";':'')+'out(9);'+source},r);check(p.kind!==\"ready\"&&out.length===0&&s.inspect().steps===0,\"negative \"+source);}"
+        },
+        {
+          "line": 584,
+          "text": "for(const count of [126,128]){const source='('.repeat(count)+'new C()'+')'.repeat(count)+';',r=fresh(),p=prepareBoundedScript({id:\"depth\",text:source},r);if(count===126)check(p.kind===\"ready\",\"parse supported depth\");else check(p.kind===\"blocked\"&&p.rejection.kind===\"resource-limit\"&&p.rejection.guardCode===\"parse-depth\",\"parse depth128\");}"
+        },
+        {
+          "line": 585,
+          "text": "for(const count of [100000,100001]){const source='new C();'+' '.repeat(count-8),p=prepareBoundedScript({id:\"length\",text:source},fresh());if(count===100000)check(p.kind===\"ready\",\"source boundary\");else check(p.kind===\"blocked\"&&p.rejection.kind===\"resource-limit\",\"source over boundary\");}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/harness-errors-a.ts",
+      "blob": "28cda13a98dcab045fc886f92101f0ca8761b937",
+      "sha256": "fb5a0a65a2caf8d9e7397ebeab1a1d728f3b0ae8d0e7309daebfdf1ccbfdb2e8",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 4,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 14,
+          "text": "    const p = prepareBoundedScript({ id, text }, realm);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/harness-errors-b.ts",
+      "blob": "f45334729ad52f0749ecad0db18c2c0591dbb8be",
+      "sha256": "1984f3ed4e6d93ca9493d049dff3b2ecfc695bd968aea15c8419e42ec29dfac6",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 4,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 19,
+          "text": "function prepare(text: string, realm: Realm, id: string): ExecutableScript { const p = prepareBoundedScript({ id, text }, realm); if (p.kind !== \"ready\") throw new Error(\"preparation \" + p.kind + \": \" + text); return p.record; }"
+        },
+        {
+          "line": 116,
+          "text": " const r=fresh();let effects=0;alias(r,\"out\",(_r,_a,_c,_l)=>{effects++;return normal();});for(const source of [\"try{while(true){}}catch(e){out(9);}\",\"function f(){f();}try{f();}catch(e){out(9);}\",\"function K(){new K();}try{new K();}catch(e){out(9);}\"]){const t=thrown(run(source,r,createScriptSession({maxSteps:50,maxCalls:3})));check(t.origin.kind===\"resource-limit\"&&t.value.kind===\"string\",\"resource bypass\");}check(effects===0,\"catch not run\");const blocked=prepareBoundedScript({id:\"blocked\",text:\"Error('x');for(let x of []){}\"},r);check(blocked.kind!==\"ready\",\"whole unit rejection\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/harness-formatting.ts",
+      "blob": "f0f55cb297721217bf8cfa6bc0f87d3312b47a3d",
+      "sha256": "ad5c2b5a3ea0d782e0dbffae43d56d71aff21f41685232c8862bd33418de7898",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 6,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 21,
+          "text": "function prepare(text:string,r:Realm,id:string):ExecutableScript{const p=prepareBoundedScript({id,text},r);if(p.kind!==\"ready\")throw new Error(\"prepare \"+text);return p.record;}"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/harness-map-default.ts",
+      "blob": "47ca1e0132deb9d2d37a4403b0b904d6664385bb",
+      "sha256": "7801bb30d6f9dc31a3edaa48a39733f559b1517ab39e488ef1a80da0a7e932f0",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 9,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 19,
+          "text": "function prepare(text: string,r: Realm,id: string): ExecutableScript { const p=prepareBoundedScript({id,text},r); if(p.kind!==\"ready\")throw new Error(\"prepare \"+text);return p.record; }"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/harness-nonstrict.ts",
+      "blob": "8ffb8c1bfc62baaed161074148df05ff04c27fe9",
+      "sha256": "143fa9336a5234522a1f8b9b8aed1ee9a43b3bdb05efcbec3568e35d6679eb87",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 3,
+          "text": "import { prepareBoundedScript, prepareStrictScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 13,
+          "text": " const p = prepareBoundedScript({ id, text }, realm);"
+        },
+        {
+          "line": 98,
+          "text": "{const r=fresh(),unit={id:\"original\",text:\"function f(){/*keep*/return this;}\"};const p=prepareBoundedScript(unit,r);check(p.kind===\"ready\",\"D05 prepare\");if(p.kind===\"ready\"){unit.id=\"forged\";unit.text=\"forged\";evaluateScript(createScriptSession(),p.record);expect(run(\"f.toString();\",r),{kind:\"string\",value:\"function f(){/*keep*/return this;}\"},\"D05 original source\");}}"
+        },
+        {
+          "line": 101,
+          "text": "for(const source of negatives){const r=fresh(),out: Value[]=[];recorder(r,out);const p=prepareBoundedScript({id:\"N\",text:source},r);check(p.kind!==\"ready\" && out.length===0 && r.globalObject.getOwnProperty(\"f\")===undefined,\"negative \"+source);}"
+        },
+        {
+          "line": 102,
+          "text": "for(const text of [\" \".repeat(100001),\"(\".repeat(129)+\"1\"+\")\".repeat(129)+\";\"]){const p=prepareBoundedScript({id:\"N16\",text},fresh());check(p.kind===\"blocked\" && p.rejection.kind===\"resource-limit\",\"N16 resource\");}"
+        },
+        {
+          "line": 107,
+          "text": "for(const source of ['(\"use strict\");',';\"use strict\";','\"use\\\\x20strict\";']){const r=fresh();const p=prepareBoundedScript({id:\"directive\",text:source+'function f(){return this;}f();'},r);if(p.kind===\"ready\")expect(evaluateScript(createScriptSession(),p.record).completion,r.globalThisValue,\"non-directive\");}"
+        },
+        {
+          "line": 579,
+          "text": " run(\"guard();\",r,s);if(retained===null)throw new Error(\"retained\");const c:OperationContext=retained;hostFault(()=>{c.call(leaf,UNDEFINED,[],loc);},\"inactive Script session\");check(effects===0,\"idle no effects\");check(prepareBoundedScript({id:\"legacy\",text:\"\"},legacy).kind===\"profile-rejected\",\"profile admission\");"
+        },
+        {
+          "line": 600,
+          "text": " const r=fresh();const p=prepareBoundedScript({id:\"precedence\",text:'\"use strict\";delete x;const tail=0;'},r),old=prepareStrictScript({id:\"precedence\",text:'\"use strict\";delete x;const tail=0;'},r);check(p.kind===\"blocked\" && p.rejection.kind===\"unsupported-syntax\" && p.rejection.capabilityCode!==\"parse.delete-identifier\",\"bounded whole-source tail\");check(old.kind===\"blocked\" && old.rejection.kind===\"unsupported-syntax\" && old.rejection.capabilityCode===\"parse.delete-identifier\",\"old precedence\");"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-assignment-target-audit.ts",
+      "blob": "29a9fb10358df10f0a417a794384cdcee71d3a57",
+      "sha256": "f839f058228dad8b49ca10736fde7ea852f8ca90cc1d6425d7203245fe009a18",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 2,
+          "text": "import { auditBoundedScriptNumericAssignments, auditBoundedScriptStrictParameters, auditBoundedScriptBlockFunctions, parse, parseDeclarationPlan, parseBoundedScriptDeclarationPlan, parseBoundedScriptPreparation, auditScriptReturns } from \"../src/parser.js\";"
+        },
+        {
+          "line": 22,
+          "text": "    bounded: parseBoundedScriptDeclarationPlan(unit, boundedNodes), D1: auditBoundedScriptBlockFunctions(text), D3: auditBoundedScriptStrictParameters(text), preparation: parseBoundedScriptPreparation(unit, prepNodes) };"
+        },
+        {
+          "line": 24,
+          "text": "const audit = auditBoundedScriptNumericAssignments(text);"
+        },
+        {
+          "line": 29,
+          "text": "parseBoundedScriptPreparation({ id: \"runtime\", text: left }, leftNodes);"
+        },
+        {
+          "line": 30,
+          "text": "parseBoundedScriptPreparation({ id: \"runtime\", text: right }, rightNodes);"
+        },
+        {
+          "line": 32,
+          "text": "const leftBefore = JSON.stringify(auditBoundedScriptNumericAssignments(left));"
+        },
+        {
+          "line": 33,
+          "text": "const rightBefore = JSON.stringify(auditBoundedScriptNumericAssignments(right));"
+        },
+        {
+          "line": 34,
+          "text": "if (JSON.stringify(auditBoundedScriptNumericAssignments(right)) !== rightBefore ||"
+        },
+        {
+          "line": 35,
+          "text": "    JSON.stringify(auditBoundedScriptNumericAssignments(left)) !== leftBefore) throw new Error(\"runtime reverse order\");"
+        },
+        {
+          "line": 36,
+          "text": "if (JSON.stringify(auditBoundedScriptNumericAssignments(left)) !== leftBefore ||"
+        },
+        {
+          "line": 37,
+          "text": "    JSON.stringify(auditBoundedScriptNumericAssignments(right)) !== rightBefore) throw new Error(\"runtime forward order\");"
+        },
+        {
+          "line": 39,
+          "text": "const detached = auditBoundedScriptNumericAssignments(chain);"
+        },
+        {
+          "line": 47,
+          "text": "const fresh = auditBoundedScriptNumericAssignments(chain);"
+        },
+        {
+          "line": 49,
+          "text": "if (JSON.stringify(auditBoundedScriptNumericAssignments(text)) !== JSON.stringify(audit)) throw new Error(\"source call order\");"
+        },
+        {
+          "line": 53,
+          "text": "const identity = parseBoundedScriptPreparation({ id: \"identity\", text: \"var x; x=function(){}; (x)=function(){};\" }, identityNodes);"
+        },
+        {
+          "line": 64,
+          "text": "parseBoundedScriptPreparation({ id: \"identity\", text: \"var x; x=function(){}; (x)=function(){};\" }, otherNodes);"
+        },
+        {
+          "line": 68,
+          "text": "    bounded: parseBoundedScriptDeclarationPlan(unit), D1: auditBoundedScriptBlockFunctions(text), D3: auditBoundedScriptStrictParameters(text), preparation: parseBoundedScriptPreparation(unit, newNodes()) };"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-strict-parameter-audit.ts",
+      "blob": "0e13e57ffe86c90e8733bb882e2d8475cf44f463",
+      "sha256": "88aadcb358b20aa7a6855849a2606dc7854f3d01b80312fc1c60a4913b1d3540",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 2,
+          "text": "import { auditBoundedScriptStrictParameters, auditBoundedScriptBlockFunctions, parse, parseDeclarationPlan, parseBoundedScriptDeclarationPlan, parseBoundedScriptPreparation, auditScriptReturns } from \"../src/parser.js\";"
+        },
+        {
+          "line": 22,
+          "text": "    bounded: parseBoundedScriptDeclarationPlan(unit, boundedNodes), D1: auditBoundedScriptBlockFunctions(text), D2: parseBoundedScriptPreparation(unit, prepNodes) };"
+        },
+        {
+          "line": 47,
+          "text": "    bounded: parseBoundedScriptDeclarationPlan(unit), D1: auditBoundedScriptBlockFunctions(text), D2: parseBoundedScriptPreparation(unit, newNodes()) };"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-strict-parameter-dispatch.ts",
+      "blob": "4df6a5273d2c5c84b121047b4818200ad8b7d846",
+      "sha256": "9a1ccd80b8793a06573afbd883e7c83f83fb0c5586c1f312262c608f5c8ea34e",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 13,
+          "text": "import { parse, auditScriptReturns, parseDeclarationPlan, parseBoundedScriptDeclarationPlan, parseBoundedScriptPreparation, auditBoundedScriptBlockFunctions, auditBoundedScriptStrictParameters } from \"../src/parser.js\";"
+        },
+        {
+          "line": 15,
+          "text": "import { prepareBoundedScript, prepareStrictScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 37,
+          "text": "            const seed = prepareBoundedScript({ id: \"history\", text: \"let sentinel = 41; throw 3;\" }, realm);"
+        },
+        {
+          "line": 47,
+          "text": "            const rejected = prepareBoundedScript(unit, realm);"
+        },
+        {
+          "line": 87,
+          "text": "        const result = prepareBoundedScript({ id: \"profile\", text: source }, new Realm((_line: string) => {}, \"legacy\"));"
+        },
+        {
+          "line": 93,
+          "text": "        const unit = { id: \"same\", text: sameTexts[index] }, result = prepareBoundedScript(unit, realm);"
+        },
+        {
+          "line": 130,
+          "text": "        const fixture = prepareBoundedScript({ id: \"runtime-fixture\", text: fixtureText }, fixtureRealm);"
+        },
+        {
+          "line": 140,
+          "text": "    const preparation = parseBoundedScriptPreparation(unit, nodes);"
+        },
+        {
+          "line": 148,
+          "text": "    const seed = prepareBoundedScript({ id: \"history\", text: \"throw 3;\" }, a);"
+        },
+        {
+          "line": 152,
+          "text": "    const prepared = prepareBoundedScript(unit, a), foreign = prepareBoundedScript(unit, b);"
+        },
+        {
+          "line": 173,
+          "text": "    const wrong = prepareBoundedScript({ id, text }, new Realm((_line: string) => {}, \"legacy\"));"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-strict-rule-dispatch.ts",
+      "blob": "c36e954c3da2ba812b951a6c36003be817992144",
+      "sha256": "e392b2688ac6018123bddbd53e405bedf0f9e8e8cd2522470793c5a3ddf1a407",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 3,
+          "text": "import { parse, auditScriptReturns, parseDeclarationPlan, parseBoundedScriptDeclarationPlan, parseBoundedScriptPreparation, auditBoundedScriptBlockFunctions } from \"../src/parser.js\";"
+        },
+        {
+          "line": 5,
+          "text": "import { prepareBoundedScript, prepareStrictScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 36,
+          "text": "        const fixture = prepareBoundedScript({ id: \"runtime-fixture\", text: fixtureText }, fixtureRealm);"
+        },
+        {
+          "line": 44,
+          "text": "    const preparation = parseBoundedScriptPreparation(unit, nodes);"
+        },
+        {
+          "line": 48,
+          "text": "    const seed = prepareBoundedScript({ id: \"history\", text: \"throw 3;\" }, a);"
+        },
+        {
+          "line": 52,
+          "text": "    const prepared = prepareBoundedScript(unit, a), foreign = prepareBoundedScript(unit, b);"
+        },
+        {
+          "line": 73,
+          "text": "    const wrong = prepareBoundedScript({ id, text }, new Realm((_line: string) => {}, \"legacy\"));"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/script-throw-inspection.ts",
+      "blob": "41c875e2e1162addc5ecce1e098915ab1e1ccc84",
+      "sha256": "bde8ed1c68e794ce684386e8d165e9b18987028111b84eab47a74294660da848",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 7,
+          "text": "import { prepareBoundedScript, type ExecutableScript } from \"../src/script-record.js\";"
+        },
+        {
+          "line": 25,
+          "text": "    const prepared = prepareBoundedScript({ id, text }, realm);"
+        }
+      ]
+    },
+    {
+      "path": "typescript/test/structured-outcomes.ts",
+      "blob": "d83d7f81918b254a609b8bfb3185b3635fdceae4",
+      "sha256": "e697ce3baef4875746a9bb46ab9276d23549da4d709179e99e1b6e9c32ba8f8a",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 54,
+          "text": "    \"\", \"\", \"parse.assignment-target\", \"parse.declaration-statement\", \"\", \"parse.return-context\", \"\", \"parse.duplicate-parameter\", \"parse.duplicate-parameter\", \"parse.duplicate-binding\", \"parse.duplicate-binding\", \"parse.duplicate-binding\", \"parse.expected-token\", \"parse.binding-identifier\", \"parse.property-name\", \"parse.object-key\", \"parse.unexpected\", \"parse.line-terminator\", \"parse.line-terminator\", \"parse.throw-expression\", \"parse.loop-context\", \"parse.loop-context\", \"parse.delete-identifier\", \"parse.array-spread\", \"parse.prototype-literal\", \"lex.indeterminate-comment\", \"lex.indeterminate-string-newline\", \"lex.indeterminate-string-end\", \"lex.leading-zero\", \"lex.numeric-literal\", \"lex.string-escape\", \"lex.operator\", \"lex.character\", \"lex.operator\", \"parse.assignment-target\", \"lex.indeterminate-string-end\", \"parse.return-context\", \"parse.return-context\", \"\", \"lex.character\", \"lex.character\", \"parse.unexpected\","
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/build-native.mjs",
+      "blob": "610fbcfb4ab8c95379266277fd6ae30de53c3713",
+      "sha256": "bcb0e3dd22aeb204b640a1111a2b24aad7a6d08a429c172c923db57592c45365",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 15,
+          "text": "for (const [entry, name] of [[\"src/cli.ts\", \"rift\"], [\"test/realms.ts\", \"realms\"], [\"test/object-descriptors.ts\", \"object-descriptors\"], [\"test/object-prototypes.ts\", \"object-prototypes\"], [\"test/object-keys.ts\", \"object-keys\"], [\"test/conversion.ts\", \"conversion\"], [\"test/definition-dispatch.ts\", \"definition-dispatch\"], [\"test/array-storage.ts\", \"array-storage\"], [\"test/array-like.ts\", \"array-like\"], [\"test/operation-context.ts\", \"operation-context\"], [\"test/array-map.ts\", \"array-map\"], [\"test/array-literals.ts\", \"array-literals\"], [\"test/property-key-conversion.ts\", \"property-key-conversion\"], [\"test/numeric-operators.ts\", \"numeric-operators\"], [\"test/addition.ts\", \"addition\"], [\"test/relational.ts\", \"relational\"], [\"test/primitive-conversion.ts\", \"primitive-conversion\"], [\"test/operator-coercion.ts\", \"operator-coercion\"], [\"test/key-coercion.ts\", \"key-coercion\"], [\"test/length-coercion.ts\", \"length-coercion\"], [\"test/array-length-coercion.ts\", \"array-length-coercion\"], [\"test/function-call.ts\", \"function-call\"], [\"test/object-valueof.ts\", \"object-valueof\"], [\"test/array-string-conversion.ts\", \"array-string-conversion\"], [\"test/function-string-conversion.ts\", \"function-string-conversion\"], [\"test/abstract-equality.ts\", \"abstract-equality\"], [\"test/delete-operator.ts\", \"delete-operator\"], [\"test/typeof-void.ts\", \"typeof-void\"], [\"test/in-operator.ts\", \"in-operator\"], [\"test/primitive-reads.ts\", \"primitive-reads\"], [\"test/property-assignment.ts\", \"property-assignment\"], [\"test/compound-assignment.ts\", \"compound-assignment\"], [\"test/structured-outcomes.ts\", \"structured-outcomes\"], [\"src/observation-driver.ts\", \"observation-driver\"], [\"test/observation-serialization.ts\", \"observation-serialization\"], [\"test/return-audit.ts\", \"return-audit\"], [\"test/number-radix.ts\", \"number-radix\"], [\"test/script-metadata.ts\", \"script-metadata\"], [\"test/global-environment.ts\", \"global-environment\"], [\"test/script-realm-bootstrap.ts\", \"script-realm-bootstrap\"], [\"test/script-declarations.ts\", \"script-declarations\"], [\"test/script-global-declarations.ts\", \"script-global-declarations\"], [\"test/script-record.ts\", \"script-record\"], [\"test/script-environment.ts\", \"script-environment\"], [\"test/script-function-materialization.ts\", \"script-function-materialization\"], [\"test/script-function-setup.ts\", \"script-function-setup\"], [\"test/property-accessors.ts\", \"property-accessors\"], [\"test/script-restricted-properties.ts\", \"script-restricted-properties\"], [\"test/script-execution.ts\", \"script-execution\"], [\"test/harness-catch.ts\", \"harness-catch\"], [\"test/harness-switch.ts\", \"harness-switch\"], [\"test/harness-for-update.ts\", \"harness-for-update\"], [\"test/harness-nonstrict.ts\", \"harness-nonstrict\"], [\"test/harness-construct.ts\", \"harness-construct\"], [\"test/harness-errors-a.ts\", \"harness-errors-a\"], [\"test/harness-errors-b.ts\", \"harness-errors-b\"], [\"test/harness-map-default.ts\", \"harness-map-default\"], [\"test/harness-formatting.ts\", \"harness-formatting\"], [\"test/harness-bundle.ts\", \"harness-bundle\"], [\"test/script-observation-serialization.ts\", \"script-observation-serialization\"], [\"test/script-throw-inspection.ts\", \"script-throw-inspection\"], [\"src/script-observation-driver.ts\", \"script-observation-driver\"], [\"test/script-observation.ts\", \"script-observation\"], [\"test/script-strict-rule-audit.ts\", \"script-strict-rule-audit\"], [\"test/script-strict-rule-dispatch.ts\", \"script-strict-rule-dispatch\"], [\"test/script-strict-parameter-audit.ts\", \"script-strict-parameter-audit\"], [\"test/script-strict-parameter-dispatch.ts\", \"script-strict-parameter-dispatch\"], [\"test/script-assignment-target-audit.ts\", \"script-assignment-target-audit\"]]) {"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/run-guests.mjs",
+      "blob": "058376a919e3387707685885831c02c37bde1889",
+      "sha256": "b630601afba35991f281a3383005c192beae9e6dee584f3a74dd1bff53f6bf87",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 59,
+          "text": "    [\"assignment-target\", \"1 = 2;\", 2, \"parse SyntaxError: invalid assignment target\"],"
+        },
+        {
+          "line": 147,
+          "text": "    [\"assignment-target\", \"(true ? a : b) = 1;\", { status: 2, error: \"1:1: parse SyntaxError: invalid assignment target\" }],"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/driver-result.mjs",
+      "blob": "137bb2973a7c5a32da867759aa3e281ac2c63cf3",
+      "sha256": "9595a6d38e8d3fdbad9e23b71ba4eb0a480cfe7fbc6caf2a6b7522cf3d3071c1",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 12,
+          "text": "  'parse.property-name','parse.assignment-target','parse.delete-identifier','parse.array-spread','parse.object-key',"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/driver-result.test.mjs",
+      "blob": "e2fee8df528e2dce7f020506c2fdd6db9dbe235f",
+      "sha256": "ad1546bb9f930d08ef7e1a763b5713737c80147f28cd905bd247cb4bd16a3dce",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 92,
+          "text": "    for (const ruleCode of ['assignment-target','lexical-declaration-statement','duplicate-strict-parameter','duplicate-block-lexical-function','unknown','',null]) bad.push({ ...good, observation: { ...certified, ruleCode } });"
+        },
+        {
+          "line": 113,
+          "text": "  for (const observation of [{ kind: 'timeout', wallMs: 1 }, { kind: 'syntax-error', phase: 'parse', constructorName: 'SyntaxError', ruleCode: 'assignment-target' },"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/fixtures.mjs",
+      "blob": "81ed3407a7f62e086574100cab4687e2badd3c71",
+      "sha256": "e38d75d66cae85f18f429a5dd0560234a153c1fc2d46e685ebb7d5e3fca7f18c",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 30,
+          "text": "export const syntax = { kind: 'syntax-error', phase: 'parse', constructorName: 'SyntaxError', ruleCode: 'assignment-target' };"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/result.mjs",
+      "blob": "0e406281720e6ea08fc9633cc10a434424dd0990",
+      "sha256": "5b8ff78e1f25ae723c0a6ad4992c4973923b19a1e4c0c9fab5644c5ccbe145e4",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 6,
+          "text": "const RULES = ['assignment-target', 'lexical-declaration-statement', 'return-outside-function',"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/script-driver-result.mjs",
+      "blob": "2c0f8157c5cdb5d9af1878e7ea39eca78381101e",
+      "sha256": "d851895448503001987852f6e1a1aea347f8bdb84d8b3e0024327d18b53a972e",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 32,
+          "text": "  'parse.property-name','parse.assignment-target','parse.delete-identifier','parse.array-spread','parse.object-key',"
+        },
+        {
+          "line": 73,
+          "text": "    'syntax-error':{phase:one(['parse']),constructorName:one(['SyntaxError']),ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])},"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/script-observe-codec.test.mjs",
+      "blob": "5ae7aa3ef5afceaa2e4ab2ae40efcd3fd3225472",
+      "sha256": "06e55abf2c9ad9ffd3fcf9eb09c700324e229b648af38d8101dba6ffa4d330bd",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 24,
+          "text": " const ruleFrom=\"ruleCode:one(['return-outside-function'])\";"
+        },
+        {
+          "line": 25,
+          "text": " const ruleTo=\"ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])\";"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/script-result.mjs",
+      "blob": "3a6a514db0874d39564e24765b79589535142693",
+      "sha256": "e9f02429a743c8ece4f9d6a26b41d6441764d08ee6b71bd1f781129d44c6c909",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 32,
+          "text": "  'parse.property-name','parse.assignment-target','parse.delete-identifier','parse.array-spread','parse.object-key',"
+        },
+        {
+          "line": 73,
+          "text": "    'syntax-error':{phase:one(['parse']),constructorName:one(['SyntaxError']),ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter'])},"
+        }
+      ]
+    },
+    {
+      "path": "typescript/tools/test262/script-result.test.mjs",
+      "blob": "11606ceb83a0547d9b4312390a990eed476298cf",
+      "sha256": "7346cf22ad9ff83860fa4fc394a7c78ed0023dcb4d09545d99f6d00c90b7df3e",
+      "category": "test/adapter",
+      "lines": [
+        {
+          "line": 137,
+          "text": "  'parse.property-name','parse.assignment-target','parse.delete-identifier','parse.array-spread','parse.object-key','parse.prototype-literal','parse.unexpected','script.uncertified-conflict'];"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "path": "controls.mjs",
+    "sha256": "734fff92999631864b6b2605caa18e799ffb43ee3f9aa4982e3cd34792f32ab8"
+  },
+  {
+    "path": "design.md",
+    "sha256": "e9276953206d1215db98ca79c3b23029acbcb57f6d59abde9cdf82b08ad17397"
+  },
+  {
+    "path": "future-controls.json",
+    "sha256": "29c3d6a1fec10f5759ea4d2b0b5789eaeb58d211e492311b6e9e71b1f15c3cd4"
+  }
+]
