@@ -1,0 +1,97 @@
+[
+  {
+    "suite": "E2a",
+    "path": "tools/test262/input.mjs",
+    "sha256": "f3d3378947571a407e7cbe5c9da8921798b547020e371dc6547d9210f3118a6c"
+  },
+  {
+    "suite": "E2a",
+    "path": "tools/test262/script-capabilities.mjs",
+    "sha256": "aaee5e8af10cbc6f198e8315418bd47e2466070bd909313fff9fe4b133c52280"
+  },
+  {
+    "suite": "E2a",
+    "path": "tools/test262/script-capabilities.json",
+    "sha256": "2e375a6833861d322a268481b0bd1d3d3f5435173e583fa6b4ea04240610120b"
+  },
+  {
+    "suite": "E2a",
+    "path": "tools/test262/script-plan.mjs",
+    "sha256": "c61ae04ef432aba0e5ab548cadb4fff3ed9848b771870da74f77f94791da52b8"
+  },
+  {
+    "suite": "E2a",
+    "path": "tools/test262/script-plan.test.mjs",
+    "sha256": "67da20f0ababb7b99de3eb8e203cd2b4d6bcad0f1825358a850f64bb00206ea7"
+  },
+  {
+    "suite": "E2a",
+    "path": "tools/test262/script-ledger.mjs",
+    "sha256": "5f7e37e14785cc9a17fa280af6f20c6d52257cb2819dbfa678f10c23c88686d4"
+  },
+  {
+    "suite": "E2a",
+    "path": "fixtures/assistance/test262-starter-corpus/manifest.json",
+    "sha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89"
+  },
+  {
+    "suite": "E2a",
+    "path": "package.json",
+    "sha256": "3e42e66c76cf561b584e435f723d0489a30fca37c69f47b74e7cb1ca47174f9f"
+  },
+  {
+    "suite": "E2a",
+    "path": "package-lock.json",
+    "sha256": "3fb5f2eeb2b11e7a121f42f70983a0d8c265e0c3f418ed1d8aafff6e5ff86c9d"
+  },
+  {
+    "suite": "E2a",
+    "path": "docs/validation/ts-035e2a/support.mjs",
+    "sha256": "8649af9e7f6f0c20d9e15a0e537ab84ba169b6e454a564607a92addb6216f987"
+  },
+  {
+    "suite": "E2a",
+    "path": "docs/validation/ts-035e2a/selection-literals.json",
+    "sha256": "ca6432c4aa5b58d0fbdb300cd686dd66e37957431706e2d7e2ccf69f4a4d3f89"
+  },
+  {
+    "suite": "E2a",
+    "path": "docs/validation/ts-035e2a/input-literals.json",
+    "sha256": "0a8963f696d38fcbc40d8b44c3a1ac031c66d9d3c32a7870fd798274ff718fd2"
+  },
+  {
+    "suite": "E2a",
+    "path": "docs/validation/ts-035e2-p/second-check-literals.json",
+    "sha256": "8924702f29bfe4131847ef3743df38dd7f3ac16d1e1aecc6ae91438732af7aad"
+  },
+  {
+    "suite": "E1",
+    "path": "tools/test262/script-capabilities.test.mjs",
+    "sha256": "1d868d3c69bbcc2e2259953c27a7edad2cc28d9b90a9775b41ebc90eb65498e3"
+  },
+  {
+    "suite": "E1",
+    "path": "tools/test262/script-capabilities.mjs",
+    "sha256": "aaee5e8af10cbc6f198e8315418bd47e2466070bd909313fff9fe4b133c52280"
+  },
+  {
+    "suite": "E1",
+    "path": "tools/test262/script-capabilities.json",
+    "sha256": "2e375a6833861d322a268481b0bd1d3d3f5435173e583fa6b4ea04240610120b"
+  },
+  {
+    "suite": "E1",
+    "path": "tools/test262/input.mjs",
+    "sha256": "f3d3378947571a407e7cbe5c9da8921798b547020e371dc6547d9210f3118a6c"
+  },
+  {
+    "suite": "E1",
+    "path": "fixtures/assistance/test262-starter-corpus/manifest.json",
+    "sha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89"
+  },
+  {
+    "suite": "E1",
+    "path": "docs/validation/ts-035e-p/e1-literals.json",
+    "sha256": "125f519a028cb0d5d573925a796e39e935229fe6a625cee755616d70a18b4a6d"
+  }
+]

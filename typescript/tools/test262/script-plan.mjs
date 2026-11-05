@@ -78,6 +78,7 @@ async function closure() {
   }
   for (const path of ['tools/test262/input.mjs', 'tools/test262/script-capabilities.mjs',
     'tools/test262/script-capabilities.json', 'tools/test262/script-plan.mjs',
+    'tools/test262/script-ledger.mjs',
     'fixtures/assistance/test262-starter-corpus/manifest.json', 'package.json', 'package-lock.json']) {
     await add(resolve(base, path), path);
   }
@@ -110,7 +111,7 @@ async function closure() {
   }
   await walk(yaml);
   files.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
-  return { id: 'rift-script-blocked-v2', closureSha256: sha256(JSON.stringify(files)),
+  return { id: 'rift-script-blocked-v3', closureSha256: sha256(JSON.stringify(files)),
     files, host: process.version, platform: process.platform + '/' + process.arch };
 }
 

@@ -16,6 +16,27 @@ const error = code => e => {
   assert.deepEqual(Object.keys(e), []);
   return true;
 };
+
+// E2b: preserve historical expectations; transform only the exact closure delta.
+async function ledgerPolicyLiteral(selection) {
+  const value=structuredClone(selection), policy=value.policy;
+  assert.equal(policy.id,'rift-script-blocked-v2');
+  assert.equal(policy.files.length,241);
+  assert.equal(policy.closureSha256,sha256(JSON.stringify(policy.files)));
+  assert.equal(policy.files.filter(f=>f.path==='tools/test262/script-plan.mjs').length,1);
+  assert.equal(policy.files.find(f=>f.path==='tools/test262/script-plan.mjs').sha256,'d1d8bd3a0eecb2336ccafea70fe5b08432932898a0f3763b2567d38a7feb9a62');
+  assert(!policy.files.some(f=>f.path==='tools/test262/script-ledger.mjs'));
+  const planHash=sha256(await readFile('tools/test262/script-plan.mjs'));
+  assert.equal(planHash,'c61ae04ef432aba0e5ab548cadb4fff3ed9848b771870da74f77f94791da52b8');
+  policy.files.find(f=>f.path==='tools/test262/script-plan.mjs').sha256=planHash;
+  policy.files.push({path:'tools/test262/script-ledger.mjs',sha256:sha256(await readFile('tools/test262/script-ledger.mjs'))});
+  policy.files.sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
+  assert.equal(policy.files.length,242);
+  policy.id='rift-script-blocked-v3';
+  policy.closureSha256=sha256(JSON.stringify(policy.files));
+  return value;
+}
+
 async function cleanup(root) {
   assert(resolve(root).startsWith(evidence + sep + 'scratch-'));
   await rm(root, { recursive:true, force:true });
@@ -47,7 +68,7 @@ test('exact exports, argument descriptors and field validation invoke no accesso
 });
 
 test('complete literal both-lane projections, revision preservation and independent byte closure', async () => {
-  const literals = await json(resolve(evidence,'selection-literals.json'));
+  const literals = await Promise.all((await json(resolve(evidence,'selection-literals.json'))).map(async row=>({...row,selection:await ledgerPolicyLiteral(row.selection)})));
   const observed=[];
   for (const row of literals) {
     const actual=inspect(await prepare({root:corpusRoot,revision:row.revision,lane:row.lane,paths}));
@@ -112,7 +133,7 @@ test('selected path order, unknown and fixture rejection, retrieval and partial 
     await writeFile(file,'bad metadata bytes');
     selected=inspect(await prepare({...options(),root}));
     assert.equal(selected.files[0].slots,null);assert.equal(selected.files[0].inputError.reasonCode,'blob-mismatch');rows.push(selected);
-    const expected=await json(resolve(evidence,'input-literals.json'));
+    const expected=await Promise.all((await json(resolve(evidence,'input-literals.json'))).map(ledgerPolicyLiteral));
     assert.deepEqual(rows.map((row,i)=>({...row,runId:expected[i].runId})),expected);
     await save('input-fault-results.json',rows);
   } finally {await cleanup(box.root);}

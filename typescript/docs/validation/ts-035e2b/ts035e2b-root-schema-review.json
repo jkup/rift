@@ -1,0 +1,18 @@
+[
+  {
+    "name": "baseline",
+    "accepted": true
+  },
+  {
+    "name": "wrong-revision-with-slots",
+    "accepted": true
+  },
+  {
+    "name": "empty-host",
+    "accepted": true
+  },
+  {
+    "name": "empty-platform",
+    "accepted": true
+  }
+]

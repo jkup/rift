@@ -1,0 +1,50 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
+-   'newScriptLedger',
+    'appendScriptPolicy',
+    'inspectScriptLedger',
++   'newScriptLedger',
+    'reportScriptLedger'
+  ]
+
+    at file:///C:/Users/jonku/code/rift/typescript/tools/test262/script-ledger.test.mjs:13:8 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'appendScriptPolicy',
+    'inspectScriptLedger',
+    'newScriptLedger',
+    'reportScriptLedger'
+  ],
+  expected: [
+    'newScriptLedger',
+    'appendScriptPolicy',
+    'inspectScriptLedger',
+    'reportScriptLedger'
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.13.0
+✖ tools\test262\script-ledger.test.mjs (83201.4533ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83206.383
+
+✖ failing tests:
+
+test at tools\test262\script-ledger.test.mjs:1:1
+✖ tools\test262\script-ledger.test.mjs (83201.4533ms)
+  'test failed'

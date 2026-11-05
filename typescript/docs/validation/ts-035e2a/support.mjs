@@ -22,6 +22,7 @@ export async function sandbox(setup = null) {
   await mkdir(modules, { recursive: true });
   for (const path of ['tools/test262/input.mjs', 'tools/test262/script-capabilities.mjs',
     'tools/test262/script-capabilities.json', 'tools/test262/script-plan.mjs',
+    'tools/test262/script-ledger.mjs',
     'fixtures/assistance/test262-starter-corpus/manifest.json', 'package.json', 'package-lock.json']) {
     await mkdir(dirname(resolve(root, path)), { recursive: true });
     await cp(path, resolve(root, path));
