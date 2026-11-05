@@ -1,5 +1,5 @@
-import { collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
-export type { StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
+import { collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
+export type { NumericAssignmentAudit, NumericAssignmentCandidate, NumericAssignmentSite, StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
@@ -100,12 +100,21 @@ export function auditBoundedScriptStrictParameters(source: string): StrictParame
         diagnostic: parsed.diagnostic, rejection: parsed.rejection };
     return collectStrictParameterAudit(unit, parsed.body, parsed.tokens, parsed.bindings);
 }
+export function auditBoundedScriptNumericAssignments(source: string): NumericAssignmentAudit {
+    const unit = { id: "", text: source };
+    const parsed = parseStructuralSource(unit, null, true, false, true);
+    if (parsed.kind === "blocked") return { kind: "blocked", reason: "grammar-or-resource",
+        diagnostic: parsed.diagnostic, rejection: parsed.rejection };
+    return collectNumericAssignmentAudit(unit, parsed.body, parsed.tokens, parsed.bindings, parsed.numericCandidates);
+}
+
 type StructuralSource =
-    | { kind: "parsed"; body: Stmt[]; tokens: Token[]; bindings: Map<number, ParsedBinding[]> }
+    | { kind: "parsed"; body: Stmt[]; tokens: Token[]; bindings: Map<number, ParsedBinding[]>; numericCandidates: readonly NumericAssignmentCandidate[] }
     | { kind: "blocked"; goal: "Script"; unit: ScriptSourceUnit; rejection: Rejection; diagnostic: Diagnostic };
 // One lexical/parser path for both public plans and non-emitting audit evidence.
-function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, parameterAudit = false): StructuralSource {
+function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, parameterAudit = false, numericAudit = false): StructuralSource {
     if (parameterAudit && (!bounded || nodes !== null)) throw new Error("invalid parameter audit purpose");
+    if (numericAudit && (!bounded || nodes !== null || parameterAudit)) throw new Error("invalid numeric audit purpose");
     const lexical = lex(source.text, true);
     if (lexical.error !== null) {
         if (lexical.rejection === null) throw new Error("missing lexer rejection");
@@ -113,7 +122,7 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     }
     const parserSource: SourceText = { text: source.text };
     if (nodes !== null) nodes.source = parserSource;
-    const parser = new Parser(lexical.tokens, parserSource, parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan");
+    const parser = new Parser(lexical.tokens, parserSource, numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan");
     const parsed = parser.program();
     if (parsed.error !== null) {
         if (parsed.rejection === null) throw new Error("missing parser rejection");
@@ -121,9 +130,11 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     }
     if (parser.current().kind !== "eof" || parser.current().start !== source.text.length || parser.current().end !== source.text.length) throw new Error("declaration plan did not reach EOF");
     if (nodes !== null) nodes.assignmentNameEligible = parser.assignmentNameEligible;
-    return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings };
+    return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings, numericCandidates: parser.numericCandidates };
 }
 class Parser {
+    readonly numericCandidates: NumericAssignmentCandidate[] = [];
+    private readonly numericTokens = new Map<Expr, Token>();
     readonly assignmentNameEligible = new Map<Expr, boolean>();
     private readonly parenthesized = new Map<Expr, boolean>();
     readonly bindings = new Map<number, ParsedBinding[]>();
@@ -135,9 +146,9 @@ class Parser {
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
     readonly returnCandidates: ReturnCandidate[] = [];
-    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" = "legacy") {}
-    private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit"; }
-    private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit"; }
+    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" | "bounded-numeric-assignment-audit" = "legacy") {}
+    private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit"; }
+    private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit"; }
     current(): Token { return this.tokens[this.index]; }
     at(text: string): boolean {
         const t = this.current();
@@ -434,7 +445,7 @@ class Parser {
             const operator = this.current().kind === "punct" || (this.current().kind === "word" && (op === "in" || (this.structuralPlan() && op === "instanceof")));
             const precedence = operator ? this.precedence(op) : 0;
             if (precedence === 0 || precedence < min) break;
-            this.take();
+            const operatorToken = this.take();
             if (op === "?") {
                 // Both arms are AssignmentExpressions. Parsing them at assignment
                 // precedence also makes nested conditionals associate to the right.
@@ -446,7 +457,19 @@ class Parser {
             }
             const right = this.expression(precedence === 1 ? precedence : precedence + 1, allowIn);
             if (precedence === 1) {
-                if (left.kind !== "identifier" && left.kind !== "member") this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid assignment target", loc);
+                if (left.kind !== "identifier" && left.kind !== "member") {
+                    const numeric = this.numericTokens.get(left);
+                    // Defer only this token-backed failure after the RHS succeeds.
+                    // These continued trees have no retained or executable authority.
+                    if (this.error === null && this.purpose === "bounded-numeric-assignment-audit" && numeric !== undefined &&
+                        (op === "=" || op === "+=" || op === "-=" || op === "*=" || op === "/=" || op === "%=")) {
+                        this.numericCandidates.push({ ruleCode: "assignment-target",
+                            target: { text: numeric.text, start: numeric.start, end: numeric.end,
+                                loc: { line: numeric.loc.line, column: numeric.loc.column } },
+                            operator: { text: op, start: operatorToken.start, end: operatorToken.end,
+                                loc: { line: operatorToken.loc.line, column: operatorToken.loc.column } } });
+                    } else this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.assignment-target" }, "invalid assignment target", loc);
+                }
                 if (op === "=") {
                     const eligible = left.kind === "identifier" && !this.parenthesized.has(left);
                     left = { kind: "assign", loc, target: left, value: right };
@@ -496,7 +519,11 @@ class Parser {
             }
             return { kind: "new", loc, callee, args };
         }
-        if (t.kind === "number") return { kind: "literal", loc, value: Number(t.text) };
+        if (t.kind === "number") {
+            const literal: Expr = { kind: "literal", loc, value: Number(t.text) };
+            if (this.purpose === "bounded-numeric-assignment-audit") this.numericTokens.set(literal, t);
+            return literal;
+        }
         if (t.kind === "string") return { kind: "literal", loc, value: t.text };
         if (t.text === "true" || t.text === "false") return { kind: "literal", loc, value: t.text === "true" };
         if (t.text === "null") return { kind: "literal", loc, value: null };

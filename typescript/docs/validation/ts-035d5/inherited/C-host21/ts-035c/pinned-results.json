@@ -1,0 +1,1026 @@
+[
+  {
+    "lane": "node",
+    "id": "S01",
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\script-observations-pinned\\63eabde3-31ea-4bf2-a0e9-58beb98e8469",
+    "record": {
+      "identity": {
+        "schemaVersion": 2,
+        "runId": "531eb2a8-2bbb-4ae5-898e-be5f8b9d66f8",
+        "mode": "script-observation",
+        "corpusRevision": "91c70759363c46557b694792bf34a2551a7af5ba",
+        "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+        "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+        "blob": "74c1e27da8023494448f616d1796c3aaadcef17e",
+        "sourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+        "variant": "strict",
+        "goal": "Script",
+        "lane": "node",
+        "engineCommit": "e708881e0e9d4984cee3652d455d0d5156c5d04e",
+        "engineBuildSha256": "cf89141557b4984a085c361615bc9235791bec19624dfa9d8baa54986f8c0693",
+        "adapterSha256": "957a9fcc91091c8d359b57b0f749dde848140fea6a5be13fb17d97bdddbc7add",
+        "policySha256": "be9d5856f6bc702984152a053cbc50ce22ef2b1aa3309ea4e0e497b00de0aa18",
+        "dirtySourceSha256": "b56186b15352c1290cac44345a59e65602178cf2f7ae1dac3b04c8ec520555d8"
+      },
+      "inputs": {
+        "units": [
+          {
+            "id": "u0",
+            "ordinal": 0,
+            "role": "harness",
+            "path": "harness/assert.js",
+            "blob": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+            "sourceSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "transformedSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "byteLength": 4881,
+            "sourceUnits": 4873
+          },
+          {
+            "id": "u1",
+            "ordinal": 1,
+            "role": "harness",
+            "path": "harness/sta.js",
+            "blob": "d291a94f46234908009a7ee909cf9d66034c73fe",
+            "sourceSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "transformedSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "byteLength": 792,
+            "sourceUnits": 792
+          },
+          {
+            "id": "u2",
+            "ordinal": 2,
+            "role": "test",
+            "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+            "blob": "74c1e27da8023494448f616d1796c3aaadcef17e",
+            "sourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+            "transformedSha256": "fd04745f8ff665db35d6f2f10e25c9c5d9c5d6f78b81e4c51c7c529e6cd19498",
+            "byteLength": 329,
+            "sourceUnits": 343
+          }
+        ],
+        "transformedSourceSha256": "fd04745f8ff665db35d6f2f10e25c9c5d9c5d6f78b81e4c51c7c529e6cd19498",
+        "profileId": "rift-script-observation-v2",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "steps": 100000,
+          "calls": 64,
+          "evaluationDepth": 256,
+          "wallMs": 10000,
+          "outputBytes": 1048576
+        },
+        "requestSha256": "5a883be6a3d11b725a5eb550eeb4c497a07f433b7a9ba38ae9fc6f092902e7f5",
+        "preflightId": "a5b3bb50d1c31b772d2df37ca77f587b8c8bb76cffe1abe61a525b2269a15c76",
+        "realms": [
+          {
+            "id": "test",
+            "profile": "script"
+          }
+        ],
+        "ruleRegistrySha256": null
+      },
+      "evidence": {
+        "stage": "test",
+        "operation": {
+          "stage": "test",
+          "phase": "body",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 13,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": true,
+        "harnessValidated": true,
+        "preflightId": "a5b3bb50d1c31b772d2df37ca77f587b8c8bb76cffe1abe61a525b2269a15c76",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "process": {
+          "exitCode": 0,
+          "signal": null,
+          "deadlineExpired": false
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 77.55200000000013
+      },
+      "observation": {
+        "kind": "throw",
+        "phase": "runtime",
+        "original": {
+          "valueKind": "object",
+          "origin": "engine-diagnostic",
+          "site": {
+            "unitId": "u2",
+            "realmId": "test",
+            "location": {
+              "line": 13,
+              "column": 1
+            }
+          }
+        },
+        "constructor": {
+          "outcome": "available",
+          "name": "ReferenceError",
+          "realmId": "test",
+          "secondary": null
+        }
+      }
+    }
+  },
+  {
+    "lane": "node",
+    "id": "S02",
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\script-observations-pinned\\4be07929-e4a0-4378-8c39-92c0707841e8",
+    "record": {
+      "identity": {
+        "schemaVersion": 2,
+        "runId": "dcd371a1-ac49-46db-9ab2-2b7db008b7d9",
+        "mode": "script-observation",
+        "corpusRevision": "91c70759363c46557b694792bf34a2551a7af5ba",
+        "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+        "path": "test/language/statements/let/global-use-before-initialization-in-declaration-statement.js",
+        "blob": "af50dce75a5e35256493704d93caf84900590121",
+        "sourceSha256": "841de5082a955cbaf965ecf81c9b52e46ee5ff8d82a598938b2cb8e98846d703",
+        "variant": "strict",
+        "goal": "Script",
+        "lane": "node",
+        "engineCommit": "e708881e0e9d4984cee3652d455d0d5156c5d04e",
+        "engineBuildSha256": "cf89141557b4984a085c361615bc9235791bec19624dfa9d8baa54986f8c0693",
+        "adapterSha256": "957a9fcc91091c8d359b57b0f749dde848140fea6a5be13fb17d97bdddbc7add",
+        "policySha256": "be9d5856f6bc702984152a053cbc50ce22ef2b1aa3309ea4e0e497b00de0aa18",
+        "dirtySourceSha256": "b56186b15352c1290cac44345a59e65602178cf2f7ae1dac3b04c8ec520555d8"
+      },
+      "inputs": {
+        "units": [
+          {
+            "id": "u0",
+            "ordinal": 0,
+            "role": "harness",
+            "path": "harness/assert.js",
+            "blob": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+            "sourceSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "transformedSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "byteLength": 4881,
+            "sourceUnits": 4873
+          },
+          {
+            "id": "u1",
+            "ordinal": 1,
+            "role": "harness",
+            "path": "harness/sta.js",
+            "blob": "d291a94f46234908009a7ee909cf9d66034c73fe",
+            "sourceSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "transformedSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "byteLength": 792,
+            "sourceUnits": 792
+          },
+          {
+            "id": "u2",
+            "ordinal": 2,
+            "role": "test",
+            "path": "test/language/statements/let/global-use-before-initialization-in-declaration-statement.js",
+            "blob": "af50dce75a5e35256493704d93caf84900590121",
+            "sourceSha256": "841de5082a955cbaf965ecf81c9b52e46ee5ff8d82a598938b2cb8e98846d703",
+            "transformedSha256": "af2cf2169e45d4474b35dd6746322b77e9e387248a7e9729631be4aa78661cc0",
+            "byteLength": 340,
+            "sourceUnits": 354
+          }
+        ],
+        "transformedSourceSha256": "af2cf2169e45d4474b35dd6746322b77e9e387248a7e9729631be4aa78661cc0",
+        "profileId": "rift-script-observation-v2",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "steps": 100000,
+          "calls": 64,
+          "evaluationDepth": 256,
+          "wallMs": 10000,
+          "outputBytes": 1048576
+        },
+        "requestSha256": "d9a53b37f4dc0e6befca208b677aaec2af8f5319109bc26f57b4ffc5e8b1c9b2",
+        "preflightId": "29744e8a250d911e1b9f90b4253c94af1cae68919e51a17eede175de9e96f6d8",
+        "realms": [
+          {
+            "id": "test",
+            "profile": "script"
+          }
+        ],
+        "ruleRegistrySha256": null
+      },
+      "evidence": {
+        "stage": "test",
+        "operation": {
+          "stage": "test",
+          "phase": "body",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 13,
+            "column": 9
+          }
+        },
+        "testBodyEvaluated": true,
+        "harnessValidated": true,
+        "preflightId": "29744e8a250d911e1b9f90b4253c94af1cae68919e51a17eede175de9e96f6d8",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "process": {
+          "exitCode": 0,
+          "signal": null,
+          "deadlineExpired": false
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 81.89020000000073
+      },
+      "observation": {
+        "kind": "throw",
+        "phase": "runtime",
+        "original": {
+          "valueKind": "object",
+          "origin": "engine-diagnostic",
+          "site": {
+            "unitId": "u2",
+            "realmId": "test",
+            "location": {
+              "line": 13,
+              "column": 9
+            }
+          }
+        },
+        "constructor": {
+          "outcome": "available",
+          "name": "ReferenceError",
+          "realmId": "test",
+          "secondary": null
+        }
+      }
+    }
+  },
+  {
+    "lane": "native",
+    "id": "S01",
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\script-observations-pinned\\8e9048e1-c61b-4f91-b350-191f5316d518",
+    "record": {
+      "identity": {
+        "schemaVersion": 2,
+        "runId": "544dbb2d-28d5-4345-9e4b-70305102ef09",
+        "mode": "script-observation",
+        "corpusRevision": "91c70759363c46557b694792bf34a2551a7af5ba",
+        "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+        "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+        "blob": "74c1e27da8023494448f616d1796c3aaadcef17e",
+        "sourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+        "variant": "strict",
+        "goal": "Script",
+        "lane": "native",
+        "engineCommit": "e708881e0e9d4984cee3652d455d0d5156c5d04e",
+        "engineBuildSha256": "a8278a2031effbaa6877d100d3127d848848c876a9bf1c2c912cd48064c9e402",
+        "adapterSha256": "957a9fcc91091c8d359b57b0f749dde848140fea6a5be13fb17d97bdddbc7add",
+        "policySha256": "be9d5856f6bc702984152a053cbc50ce22ef2b1aa3309ea4e0e497b00de0aa18",
+        "dirtySourceSha256": "b56186b15352c1290cac44345a59e65602178cf2f7ae1dac3b04c8ec520555d8"
+      },
+      "inputs": {
+        "units": [
+          {
+            "id": "u0",
+            "ordinal": 0,
+            "role": "harness",
+            "path": "harness/assert.js",
+            "blob": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+            "sourceSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "transformedSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "byteLength": 4881,
+            "sourceUnits": 4873
+          },
+          {
+            "id": "u1",
+            "ordinal": 1,
+            "role": "harness",
+            "path": "harness/sta.js",
+            "blob": "d291a94f46234908009a7ee909cf9d66034c73fe",
+            "sourceSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "transformedSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "byteLength": 792,
+            "sourceUnits": 792
+          },
+          {
+            "id": "u2",
+            "ordinal": 2,
+            "role": "test",
+            "path": "test/language/statements/let/global-use-before-initialization-in-prior-statement.js",
+            "blob": "74c1e27da8023494448f616d1796c3aaadcef17e",
+            "sourceSha256": "528ca7f5a56663c102c4489c7fa6285d85ad77333994401c48497f174870b94d",
+            "transformedSha256": "fd04745f8ff665db35d6f2f10e25c9c5d9c5d6f78b81e4c51c7c529e6cd19498",
+            "byteLength": 329,
+            "sourceUnits": 343
+          }
+        ],
+        "transformedSourceSha256": "fd04745f8ff665db35d6f2f10e25c9c5d9c5d6f78b81e4c51c7c529e6cd19498",
+        "profileId": "rift-script-observation-v2",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "steps": 100000,
+          "calls": 64,
+          "evaluationDepth": 256,
+          "wallMs": 10000,
+          "outputBytes": 1048576
+        },
+        "requestSha256": "3bf2889a9b0c2cb1e7870a495767ce893e58a4330c906e84b7106f93ea02af79",
+        "preflightId": "34d8882dab8bfbd49620587c72d622fbd823b4d80e891525f48e09b57d085322",
+        "realms": [
+          {
+            "id": "test",
+            "profile": "script"
+          }
+        ],
+        "ruleRegistrySha256": null
+      },
+      "evidence": {
+        "stage": "test",
+        "operation": {
+          "stage": "test",
+          "phase": "body",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 13,
+            "column": 1
+          }
+        },
+        "testBodyEvaluated": true,
+        "harnessValidated": true,
+        "preflightId": "34d8882dab8bfbd49620587c72d622fbd823b4d80e891525f48e09b57d085322",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "process": {
+          "exitCode": 0,
+          "signal": null,
+          "deadlineExpired": false
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 51.55709999999999
+      },
+      "observation": {
+        "kind": "throw",
+        "phase": "runtime",
+        "original": {
+          "valueKind": "object",
+          "origin": "engine-diagnostic",
+          "site": {
+            "unitId": "u2",
+            "realmId": "test",
+            "location": {
+              "line": 13,
+              "column": 1
+            }
+          }
+        },
+        "constructor": {
+          "outcome": "available",
+          "name": "ReferenceError",
+          "realmId": "test",
+          "secondary": null
+        }
+      }
+    }
+  },
+  {
+    "lane": "native",
+    "id": "S02",
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\script-observations-pinned\\3460ec16-7e12-44a6-885a-dc2a87c89516",
+    "record": {
+      "identity": {
+        "schemaVersion": 2,
+        "runId": "afc1c9d9-e42e-4f27-ab7a-75f2ca96e91e",
+        "mode": "script-observation",
+        "corpusRevision": "91c70759363c46557b694792bf34a2551a7af5ba",
+        "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+        "path": "test/language/statements/let/global-use-before-initialization-in-declaration-statement.js",
+        "blob": "af50dce75a5e35256493704d93caf84900590121",
+        "sourceSha256": "841de5082a955cbaf965ecf81c9b52e46ee5ff8d82a598938b2cb8e98846d703",
+        "variant": "strict",
+        "goal": "Script",
+        "lane": "native",
+        "engineCommit": "e708881e0e9d4984cee3652d455d0d5156c5d04e",
+        "engineBuildSha256": "a8278a2031effbaa6877d100d3127d848848c876a9bf1c2c912cd48064c9e402",
+        "adapterSha256": "957a9fcc91091c8d359b57b0f749dde848140fea6a5be13fb17d97bdddbc7add",
+        "policySha256": "be9d5856f6bc702984152a053cbc50ce22ef2b1aa3309ea4e0e497b00de0aa18",
+        "dirtySourceSha256": "b56186b15352c1290cac44345a59e65602178cf2f7ae1dac3b04c8ec520555d8"
+      },
+      "inputs": {
+        "units": [
+          {
+            "id": "u0",
+            "ordinal": 0,
+            "role": "harness",
+            "path": "harness/assert.js",
+            "blob": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+            "sourceSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "transformedSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "byteLength": 4881,
+            "sourceUnits": 4873
+          },
+          {
+            "id": "u1",
+            "ordinal": 1,
+            "role": "harness",
+            "path": "harness/sta.js",
+            "blob": "d291a94f46234908009a7ee909cf9d66034c73fe",
+            "sourceSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "transformedSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "byteLength": 792,
+            "sourceUnits": 792
+          },
+          {
+            "id": "u2",
+            "ordinal": 2,
+            "role": "test",
+            "path": "test/language/statements/let/global-use-before-initialization-in-declaration-statement.js",
+            "blob": "af50dce75a5e35256493704d93caf84900590121",
+            "sourceSha256": "841de5082a955cbaf965ecf81c9b52e46ee5ff8d82a598938b2cb8e98846d703",
+            "transformedSha256": "af2cf2169e45d4474b35dd6746322b77e9e387248a7e9729631be4aa78661cc0",
+            "byteLength": 340,
+            "sourceUnits": 354
+          }
+        ],
+        "transformedSourceSha256": "af2cf2169e45d4474b35dd6746322b77e9e387248a7e9729631be4aa78661cc0",
+        "profileId": "rift-script-observation-v2",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "steps": 100000,
+          "calls": 64,
+          "evaluationDepth": 256,
+          "wallMs": 10000,
+          "outputBytes": 1048576
+        },
+        "requestSha256": "0ee174fca0baf8f0433e4efdda738b9c7cee4eeac10b475d8cfc1565cf6266c2",
+        "preflightId": "8122a3c5179d20268abecffce6cfdfe9fd985f95735514b4f31c8c55cc77b34b",
+        "realms": [
+          {
+            "id": "test",
+            "profile": "script"
+          }
+        ],
+        "ruleRegistrySha256": null
+      },
+      "evidence": {
+        "stage": "test",
+        "operation": {
+          "stage": "test",
+          "phase": "body",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": {
+          "unitId": "u2",
+          "realmId": "test",
+          "location": {
+            "line": 13,
+            "column": 9
+          }
+        },
+        "testBodyEvaluated": true,
+        "harnessValidated": true,
+        "preflightId": "8122a3c5179d20268abecffce6cfdfe9fd985f95735514b4f31c8c55cc77b34b",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "process": {
+          "exitCode": 0,
+          "signal": null,
+          "deadlineExpired": false
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 31.152799999999843
+      },
+      "observation": {
+        "kind": "throw",
+        "phase": "runtime",
+        "original": {
+          "valueKind": "object",
+          "origin": "engine-diagnostic",
+          "site": {
+            "unitId": "u2",
+            "realmId": "test",
+            "location": {
+              "line": 13,
+              "column": 9
+            }
+          }
+        },
+        "constructor": {
+          "outcome": "available",
+          "name": "ReferenceError",
+          "realmId": "test",
+          "secondary": null
+        }
+      }
+    }
+  },
+  {
+    "lane": "node",
+    "id": "S05",
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\script-observations-pinned\\3ee5038e-428a-4189-8b52-ab0004002a2b",
+    "record": {
+      "identity": {
+        "schemaVersion": 2,
+        "runId": "c35f5ae6-3595-475e-8140-4f953c411c5f",
+        "mode": "script-observation",
+        "corpusRevision": "91c70759363c46557b694792bf34a2551a7af5ba",
+        "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+        "path": "test/language/block-scope/return-from/block-let.js",
+        "blob": "2eac0ae58411d91a7646b3cab088f3856c4489fc",
+        "sourceSha256": "94c4cfdca0c03e248fec343d7a06738fbb6bf7a879051d74c240a17af46a9c13",
+        "variant": "strict",
+        "goal": "Script",
+        "lane": "node",
+        "engineCommit": "e708881e0e9d4984cee3652d455d0d5156c5d04e",
+        "engineBuildSha256": "cf89141557b4984a085c361615bc9235791bec19624dfa9d8baa54986f8c0693",
+        "adapterSha256": "957a9fcc91091c8d359b57b0f749dde848140fea6a5be13fb17d97bdddbc7add",
+        "policySha256": "be9d5856f6bc702984152a053cbc50ce22ef2b1aa3309ea4e0e497b00de0aa18",
+        "dirtySourceSha256": "b56186b15352c1290cac44345a59e65602178cf2f7ae1dac3b04c8ec520555d8"
+      },
+      "inputs": {
+        "units": [
+          {
+            "id": "u0",
+            "ordinal": 0,
+            "role": "harness",
+            "path": "harness/assert.js",
+            "blob": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+            "sourceSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "transformedSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "byteLength": 4881,
+            "sourceUnits": 4873
+          },
+          {
+            "id": "u1",
+            "ordinal": 1,
+            "role": "harness",
+            "path": "harness/sta.js",
+            "blob": "d291a94f46234908009a7ee909cf9d66034c73fe",
+            "sourceSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "transformedSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "byteLength": 792,
+            "sourceUnits": 792
+          },
+          {
+            "id": "u2",
+            "ordinal": 2,
+            "role": "test",
+            "path": "test/language/block-scope/return-from/block-let.js",
+            "blob": "2eac0ae58411d91a7646b3cab088f3856c4489fc",
+            "sourceSha256": "94c4cfdca0c03e248fec343d7a06738fbb6bf7a879051d74c240a17af46a9c13",
+            "transformedSha256": "5805173824ef65c4021e19f7957d63143662a2bd03427f342830cac13264bb93",
+            "byteLength": 299,
+            "sourceUnits": 313
+          }
+        ],
+        "transformedSourceSha256": "5805173824ef65c4021e19f7957d63143662a2bd03427f342830cac13264bb93",
+        "profileId": "rift-script-observation-v2",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "steps": 100000,
+          "calls": 64,
+          "evaluationDepth": 256,
+          "wallMs": 10000,
+          "outputBytes": 1048576
+        },
+        "requestSha256": "28ea61345fdeaf1bcd342a969e11bdfa65aed6aa0fe68c763cdb7aca2ad2ebb9",
+        "preflightId": "9e9ba563e860c06dd8f9949233a24ec3dac3059975f3383b65dc6229b4df32c9",
+        "realms": [
+          {
+            "id": "test",
+            "profile": "script"
+          }
+        ],
+        "ruleRegistrySha256": null
+      },
+      "evidence": {
+        "stage": "test",
+        "operation": {
+          "stage": "test",
+          "phase": "body",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": null,
+        "testBodyEvaluated": true,
+        "harnessValidated": true,
+        "preflightId": "9e9ba563e860c06dd8f9949233a24ec3dac3059975f3383b65dc6229b4df32c9",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "process": {
+          "exitCode": 0,
+          "signal": null,
+          "deadlineExpired": false
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 198.11409999999887
+      },
+      "observation": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "lane": "node",
+    "id": "S08",
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\script-observations-pinned\\a570b5e4-9391-48bd-b3e3-03ff66628b45",
+    "record": {
+      "identity": {
+        "schemaVersion": 2,
+        "runId": "0145c15c-4216-4dec-acaa-60668d4e3d7b",
+        "mode": "script-observation",
+        "corpusRevision": "91c70759363c46557b694792bf34a2551a7af5ba",
+        "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+        "path": "test/language/expressions/unary-minus/11.4.7-4-1.js",
+        "blob": "3c4f84373f0341e7add1f8de2a39e408e73b9196",
+        "sourceSha256": "4da9c15edd61d6d90a55301c5fad93ee5ef5fc690c04a38383d2998938e9b44e",
+        "variant": "strict",
+        "goal": "Script",
+        "lane": "node",
+        "engineCommit": "e708881e0e9d4984cee3652d455d0d5156c5d04e",
+        "engineBuildSha256": "cf89141557b4984a085c361615bc9235791bec19624dfa9d8baa54986f8c0693",
+        "adapterSha256": "957a9fcc91091c8d359b57b0f749dde848140fea6a5be13fb17d97bdddbc7add",
+        "policySha256": "be9d5856f6bc702984152a053cbc50ce22ef2b1aa3309ea4e0e497b00de0aa18",
+        "dirtySourceSha256": "b56186b15352c1290cac44345a59e65602178cf2f7ae1dac3b04c8ec520555d8"
+      },
+      "inputs": {
+        "units": [
+          {
+            "id": "u0",
+            "ordinal": 0,
+            "role": "harness",
+            "path": "harness/assert.js",
+            "blob": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+            "sourceSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "transformedSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "byteLength": 4881,
+            "sourceUnits": 4873
+          },
+          {
+            "id": "u1",
+            "ordinal": 1,
+            "role": "harness",
+            "path": "harness/sta.js",
+            "blob": "d291a94f46234908009a7ee909cf9d66034c73fe",
+            "sourceSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "transformedSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "byteLength": 792,
+            "sourceUnits": 792
+          },
+          {
+            "id": "u2",
+            "ordinal": 2,
+            "role": "test",
+            "path": "test/language/expressions/unary-minus/11.4.7-4-1.js",
+            "blob": "3c4f84373f0341e7add1f8de2a39e408e73b9196",
+            "sourceSha256": "4da9c15edd61d6d90a55301c5fad93ee5ef5fc690c04a38383d2998938e9b44e",
+            "transformedSha256": "2ae56c6d79281b73e114219c774e34261362ea7cfc4f65f6d16dd5e23a241ad2",
+            "byteLength": 233,
+            "sourceUnits": 247
+          }
+        ],
+        "transformedSourceSha256": "2ae56c6d79281b73e114219c774e34261362ea7cfc4f65f6d16dd5e23a241ad2",
+        "profileId": "rift-script-observation-v2",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "steps": 100000,
+          "calls": 64,
+          "evaluationDepth": 256,
+          "wallMs": 10000,
+          "outputBytes": 1048576
+        },
+        "requestSha256": "a62934e1e38eab80fa69ecd32d0fd927ade4f91bfd140aa42bc7a3268a8ed063",
+        "preflightId": "4073f8455f0479f8a22ed2bf4751f4aba4f05b57fe5b8339115d509b3c391612",
+        "realms": [
+          {
+            "id": "test",
+            "profile": "script"
+          }
+        ],
+        "ruleRegistrySha256": null
+      },
+      "evidence": {
+        "stage": "test",
+        "operation": {
+          "stage": "test",
+          "phase": "body",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": null,
+        "testBodyEvaluated": true,
+        "harnessValidated": true,
+        "preflightId": "4073f8455f0479f8a22ed2bf4751f4aba4f05b57fe5b8339115d509b3c391612",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "process": {
+          "exitCode": 0,
+          "signal": null,
+          "deadlineExpired": false
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 71.66660000000047
+      },
+      "observation": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "lane": "native",
+    "id": "S05",
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\script-observations-pinned\\a9512ca4-0675-40de-824a-516c3a1bea3e",
+    "record": {
+      "identity": {
+        "schemaVersion": 2,
+        "runId": "38986437-b0b1-4ba1-b14f-fc209c8cdc6e",
+        "mode": "script-observation",
+        "corpusRevision": "91c70759363c46557b694792bf34a2551a7af5ba",
+        "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+        "path": "test/language/block-scope/return-from/block-let.js",
+        "blob": "2eac0ae58411d91a7646b3cab088f3856c4489fc",
+        "sourceSha256": "94c4cfdca0c03e248fec343d7a06738fbb6bf7a879051d74c240a17af46a9c13",
+        "variant": "strict",
+        "goal": "Script",
+        "lane": "native",
+        "engineCommit": "e708881e0e9d4984cee3652d455d0d5156c5d04e",
+        "engineBuildSha256": "a8278a2031effbaa6877d100d3127d848848c876a9bf1c2c912cd48064c9e402",
+        "adapterSha256": "957a9fcc91091c8d359b57b0f749dde848140fea6a5be13fb17d97bdddbc7add",
+        "policySha256": "be9d5856f6bc702984152a053cbc50ce22ef2b1aa3309ea4e0e497b00de0aa18",
+        "dirtySourceSha256": "b56186b15352c1290cac44345a59e65602178cf2f7ae1dac3b04c8ec520555d8"
+      },
+      "inputs": {
+        "units": [
+          {
+            "id": "u0",
+            "ordinal": 0,
+            "role": "harness",
+            "path": "harness/assert.js",
+            "blob": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+            "sourceSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "transformedSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "byteLength": 4881,
+            "sourceUnits": 4873
+          },
+          {
+            "id": "u1",
+            "ordinal": 1,
+            "role": "harness",
+            "path": "harness/sta.js",
+            "blob": "d291a94f46234908009a7ee909cf9d66034c73fe",
+            "sourceSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "transformedSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "byteLength": 792,
+            "sourceUnits": 792
+          },
+          {
+            "id": "u2",
+            "ordinal": 2,
+            "role": "test",
+            "path": "test/language/block-scope/return-from/block-let.js",
+            "blob": "2eac0ae58411d91a7646b3cab088f3856c4489fc",
+            "sourceSha256": "94c4cfdca0c03e248fec343d7a06738fbb6bf7a879051d74c240a17af46a9c13",
+            "transformedSha256": "5805173824ef65c4021e19f7957d63143662a2bd03427f342830cac13264bb93",
+            "byteLength": 299,
+            "sourceUnits": 313
+          }
+        ],
+        "transformedSourceSha256": "5805173824ef65c4021e19f7957d63143662a2bd03427f342830cac13264bb93",
+        "profileId": "rift-script-observation-v2",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "steps": 100000,
+          "calls": 64,
+          "evaluationDepth": 256,
+          "wallMs": 10000,
+          "outputBytes": 1048576
+        },
+        "requestSha256": "8335cec9d561f64229397436e6fe3c4fe7e76e350c2ee7e4c723b11211225ef4",
+        "preflightId": "c6c44cc2f31e033108177c36261b55a075d1a2faf9e8492f272b3287826b88c3",
+        "realms": [
+          {
+            "id": "test",
+            "profile": "script"
+          }
+        ],
+        "ruleRegistrySha256": null
+      },
+      "evidence": {
+        "stage": "test",
+        "operation": {
+          "stage": "test",
+          "phase": "body",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": null,
+        "testBodyEvaluated": true,
+        "harnessValidated": true,
+        "preflightId": "c6c44cc2f31e033108177c36261b55a075d1a2faf9e8492f272b3287826b88c3",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "process": {
+          "exitCode": 0,
+          "signal": null,
+          "deadlineExpired": false
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 29.41700000000128
+      },
+      "observation": {
+        "kind": "normal"
+      }
+    }
+  },
+  {
+    "lane": "native",
+    "id": "S08",
+    "directory": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\script-observations-pinned\\dcb02a1c-306b-4000-93b1-ae3df7912b2b",
+    "record": {
+      "identity": {
+        "schemaVersion": 2,
+        "runId": "dc256bf7-f4be-4de1-9b15-6f625592ebd6",
+        "mode": "script-observation",
+        "corpusRevision": "91c70759363c46557b694792bf34a2551a7af5ba",
+        "manifestSha256": "8ec8076e0db1668f77c36cf787caddc2afebd6958b5630c24bd01279cfd73d89",
+        "path": "test/language/expressions/unary-minus/11.4.7-4-1.js",
+        "blob": "3c4f84373f0341e7add1f8de2a39e408e73b9196",
+        "sourceSha256": "4da9c15edd61d6d90a55301c5fad93ee5ef5fc690c04a38383d2998938e9b44e",
+        "variant": "strict",
+        "goal": "Script",
+        "lane": "native",
+        "engineCommit": "e708881e0e9d4984cee3652d455d0d5156c5d04e",
+        "engineBuildSha256": "a8278a2031effbaa6877d100d3127d848848c876a9bf1c2c912cd48064c9e402",
+        "adapterSha256": "957a9fcc91091c8d359b57b0f749dde848140fea6a5be13fb17d97bdddbc7add",
+        "policySha256": "be9d5856f6bc702984152a053cbc50ce22ef2b1aa3309ea4e0e497b00de0aa18",
+        "dirtySourceSha256": "b56186b15352c1290cac44345a59e65602178cf2f7ae1dac3b04c8ec520555d8"
+      },
+      "inputs": {
+        "units": [
+          {
+            "id": "u0",
+            "ordinal": 0,
+            "role": "harness",
+            "path": "harness/assert.js",
+            "blob": "55a0e2a32f2e6259a1b445a9d924f61261e2ca5f",
+            "sourceSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "transformedSha256": "206e274ca325eb8a652e3911c3fbd090e2480d11ed7579dc17a5d17a2360ed48",
+            "byteLength": 4881,
+            "sourceUnits": 4873
+          },
+          {
+            "id": "u1",
+            "ordinal": 1,
+            "role": "harness",
+            "path": "harness/sta.js",
+            "blob": "d291a94f46234908009a7ee909cf9d66034c73fe",
+            "sourceSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "transformedSha256": "1930c54af79455c484799f43e9a28e2b2f15c40d0917c9941ca54e26db243f35",
+            "byteLength": 792,
+            "sourceUnits": 792
+          },
+          {
+            "id": "u2",
+            "ordinal": 2,
+            "role": "test",
+            "path": "test/language/expressions/unary-minus/11.4.7-4-1.js",
+            "blob": "3c4f84373f0341e7add1f8de2a39e408e73b9196",
+            "sourceSha256": "4da9c15edd61d6d90a55301c5fad93ee5ef5fc690c04a38383d2998938e9b44e",
+            "transformedSha256": "2ae56c6d79281b73e114219c774e34261362ea7cfc4f65f6d16dd5e23a241ad2",
+            "byteLength": 233,
+            "sourceUnits": 247
+          }
+        ],
+        "transformedSourceSha256": "2ae56c6d79281b73e114219c774e34261362ea7cfc4f65f6d16dd5e23a241ad2",
+        "profileId": "rift-script-observation-v2",
+        "capabilityLedgerSha256": null,
+        "host": "v26.13.0",
+        "platform": "win32/x64",
+        "toolchain": "scriptc-0.4.7/typescript-7.0.2",
+        "limits": {
+          "sourceUnits": 100000,
+          "parseDepth": 128,
+          "steps": 100000,
+          "calls": 64,
+          "evaluationDepth": 256,
+          "wallMs": 10000,
+          "outputBytes": 1048576
+        },
+        "requestSha256": "c9e9ef9d9c378b6f82a33cb9fe2ca02e79009b722388234b8a4a3d4e26867115",
+        "preflightId": "bc5465c0d0bff7b389c3223073a8c8e50ecc9fb223f09b19c9565450301f97ed",
+        "realms": [
+          {
+            "id": "test",
+            "profile": "script"
+          }
+        ],
+        "ruleRegistrySha256": null
+      },
+      "evidence": {
+        "stage": "test",
+        "operation": {
+          "stage": "test",
+          "phase": "body",
+          "unitId": "u2",
+          "realmId": "test"
+        },
+        "source": null,
+        "testBodyEvaluated": true,
+        "harnessValidated": true,
+        "preflightId": "bc5465c0d0bff7b389c3223073a8c8e50ecc9fb223f09b19c9565450301f97ed",
+        "completedUnits": [
+          "u0",
+          "u1"
+        ],
+        "inspection": null,
+        "process": {
+          "exitCode": 0,
+          "signal": null,
+          "deadlineExpired": false
+        },
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 29.458300000002055
+      },
+      "observation": {
+        "kind": "normal"
+      }
+    }
+  }
+]

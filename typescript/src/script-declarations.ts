@@ -124,6 +124,58 @@ export function collectBlockFunctionAudit(unit: ScriptSourceUnit, body: Stmt[], 
     return analysis.audit();
 }
 
+export type NumericAssignmentSite = {
+    readonly text: string; readonly start: number; readonly end: number;
+    readonly loc: Location;
+};
+export type NumericAssignmentCandidate = {
+    readonly ruleCode: "assignment-target";
+    readonly target: NumericAssignmentSite;
+    readonly operator: {
+        readonly text: "=" | "+=" | "-=" | "*=" | "/=" | "%=";
+        readonly start: number; readonly end: number; readonly loc: Location;
+    };
+};
+export type NumericAssignmentAudit =
+    | { readonly kind: "eligible"; readonly sourceUnits: number; readonly consumedUnits: number;
+        readonly candidates: readonly NumericAssignmentCandidate[] }
+    | { readonly kind: "none"; readonly sourceUnits: number; readonly consumedUnits: number }
+    | { readonly kind: "blocked"; readonly reason: "grammar-or-resource" | "scope-restriction" | "other-conflict";
+        readonly diagnostic: Diagnostic; readonly rejection: Rejection | null };
+
+// Internal full-parser handoff, never an execution or preparation authority.
+export function collectNumericAssignmentAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, candidates: readonly NumericAssignmentCandidate[]): NumericAssignmentAudit {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true);
+    analysis.collect(body);
+    const veto = analysis.audit();
+    if (veto.kind === "blocked") return veto;
+    if (veto.kind === "eligible") {
+        const second = veto.candidates[0].second;
+        return { kind: "blocked", reason: "other-conflict", rejection: null,
+            diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate-lexical: " + second.name,
+                loc: { line: second.loc.line, column: second.loc.column } } };
+    }
+    const result: NumericAssignmentCandidate[] = [];
+    const byStart = new Map<number, Token>();
+    for (const token of tokens) byStart.set(token.start, token);
+    for (const candidate of candidates) {
+        const target = candidate.target, operator = candidate.operator;
+        const targetToken = byStart.get(target.start), operatorToken = byStart.get(operator.start);
+        if (targetToken === undefined || targetToken.kind !== "number" || operatorToken === undefined || operatorToken.kind !== "punct" ||
+            targetToken.text !== target.text || targetToken.end !== target.end || operatorToken.text !== operator.text || operatorToken.end !== operator.end ||
+            targetToken.loc.line !== target.loc.line || targetToken.loc.column !== target.loc.column ||
+            operatorToken.loc.line !== operator.loc.line || operatorToken.loc.column !== operator.loc.column ||
+            unit.text.slice(target.start, target.end) !== target.text || unit.text.slice(operator.start, operator.end) !== operator.text)
+            throw new Error("invalid numeric assignment token evidence");
+        result.push({ ruleCode: "assignment-target",
+            target: { text: target.text, start: target.start, end: target.end, loc: { line: target.loc.line, column: target.loc.column } },
+            operator: { text: operator.text, start: operator.start, end: operator.end, loc: { line: operator.loc.line, column: operator.loc.column } } });
+    }
+    result.sort((a, b) => a.operator.start - b.operator.start || a.target.start - b.target.start);
+    if (result.length === 0) return { kind: "none", sourceUnits: unit.text.length, consumedUnits: unit.text.length };
+    return { kind: "eligible", sourceUnits: unit.text.length, consumedUnits: unit.text.length, candidates: result };
+}
+
 export type StrictParameterCandidate = {
     readonly ruleCode: "duplicate-strict-parameter";
     readonly functionStart: number; readonly functionEnd: number;

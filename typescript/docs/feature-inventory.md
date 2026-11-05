@@ -900,3 +900,17 @@ history controls. Four exact reviewed old-test migrations preserve the other
 851 complete files. No grammar, parameter execution, registry, corpus admission,
 CLI/profile/manifest, compiler/pin or C++ expansion. Actual and independent second
 acceptance remain required; this entry does not mark the candidate accepted.
+
+## TS-035D5 non-emitting numeric assignment audit
+
+`auditBoundedScriptNumericAssignments(source)` uses the same bounded full-source
+parser with a private, null-retention purpose. It recognizes only number-token
+literal Expr identities (including grouping) and the six assignment operators,
+preserves RHS-first diagnostics, and applies the existing collector's global
+restrictions/conflicts before returning detached, sorted target/operator sites.
+Block pairs, duplicate formals, return, unsupported targets, late grammar/resource
+failures and scope conflicts veto certification. No continued AST is executable;
+ordinary planning, D1-D4, preparation, legacy return behavior and emission remain
+unchanged. This evidence API adds no supported execution grammar or wire code.
+See [D5 evidence](validation/ts-035d5/README.md) for the frozen source matrix,
+retention/identity controls and both-host validation. Awaiting independent review.

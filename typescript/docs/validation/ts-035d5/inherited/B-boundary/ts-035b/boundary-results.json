@@ -1,0 +1,10 @@
+{
+  "facadeExports": true,
+  "forgedSessions": 3,
+  "forgedRecords": 3,
+  "noPublicSlots": true,
+  "detachedShells": true,
+  "secondaryIdentity": true,
+  "retainedContextAndPermitDenied": true,
+  "sameSessionReused": true
+}
