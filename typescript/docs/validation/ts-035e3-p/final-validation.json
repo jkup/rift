@@ -1,0 +1,19 @@
+{
+  "kind": "summary of observed tool runs, not raw stdout",
+  "base": "3cbb301",
+  "constructorTest": {
+    "command": "node --test docs/validation/ts-035e3-p/proposals/script-compose.test.mjs",
+    "exitCode": 0,
+    "groups": 4,
+    "pass": 4,
+    "fail": 0,
+    "skip": 0
+  },
+  "finalExtended": "extended-nllRUL/results.json",
+  "actualBlockedAndPrivateModel": "run-hg5gHL/results.json",
+  "correctedProposalReduction": "size-Qtd5NQ/witness.json",
+  "preservation": {"files": 6703, "exactOldFileProposals": 2, "pass": true},
+  "freshEngineRuns": 0,
+  "receiptAuthorityGranted": false,
+  "independentReview": "pending"
+}

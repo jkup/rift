@@ -1,0 +1,1824 @@
+{
+  "warning": "Synthetic lexical model only; not live admitted reachability or filesystem evidence",
+  "controls": [
+    {
+      "id": "forged",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "clone",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "JSON",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "wrong-owner",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "foreign-receipt",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "runId",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "slotId",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "attempt",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "selectionSha256",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "partial/context",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "partial/binding",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "partial/transport",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "partial/artifactHashes",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "partial/envelope",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "busy",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "revoked",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "first-retry-reason",
+      "expected": "reject; unchanged history and spent state",
+      "history": []
+    },
+    {
+      "id": "commit",
+      "expected": "one history append and spent receipt",
+      "history": [
+        {
+          "sequence": 1,
+          "slotId": "s0",
+          "attempt": 1,
+          "retryReason": null,
+          "terminal": {
+            "kind": "transport",
+            "status": "pass",
+            "processStarted": true,
+            "testBodyEvaluated": true,
+            "payload": {
+              "receiptId": "r1",
+              "runId": "run",
+              "slotId": "s0",
+              "attempt": 1,
+              "selectionSha256": "7e6ef46ab144e0c9f93a7875d15d8913ff1db3d08cebaec79cf321abb4e2c280",
+              "context": {
+                "identity": {
+                  "schemaVersion": 2,
+                  "runId": "synthetic-only",
+                  "mode": "conformance",
+                  "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "variant": "raw",
+                  "goal": "Script",
+                  "lane": "node",
+                  "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "dirtySourceSha256": null
+                },
+                "inputs": {
+                  "units": [
+                    {
+                      "id": "u0",
+                      "ordinal": 0,
+                      "role": "test",
+                      "path": "test/synthetic.js",
+                      "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                      "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "byteLength": 17,
+                      "sourceUnits": 15
+                    }
+                  ],
+                  "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "profileId": "synthetic-only",
+                  "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "host": "synthetic",
+                  "platform": "synthetic",
+                  "toolchain": "synthetic",
+                  "limits": {
+                    "sourceUnits": 100000,
+                    "parseDepth": 128,
+                    "steps": 100,
+                    "calls": 64,
+                    "evaluationDepth": 256,
+                    "wallMs": 1000,
+                    "outputBytes": 1024
+                  },
+                  "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                  "preflightId": null,
+                  "realms": [
+                    {
+                      "id": "test",
+                      "profile": "script"
+                    },
+                    {
+                      "id": "other",
+                      "profile": "script"
+                    }
+                  ],
+                  "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "expectedNegative": null,
+                "blockers": []
+              },
+              "binding": {
+                "nonce": "alpha",
+                "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                "mode": "conformance",
+                "variant": "raw",
+                "units": [
+                  {
+                    "id": "u0",
+                    "ordinal": 0,
+                    "role": "test",
+                    "path": "test/synthetic.js",
+                    "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                    "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                    "byteLength": 17,
+                    "sourceUnits": 15
+                  }
+                ],
+                "realms": [
+                  {
+                    "id": "test",
+                    "profile": "script"
+                  },
+                  {
+                    "id": "other",
+                    "profile": "script"
+                  }
+                ],
+                "preflightId": null,
+                "action": "execute",
+                "limits": {
+                  "sourceUnits": 100000,
+                  "parseDepth": 128,
+                  "steps": 100,
+                  "calls": 64,
+                  "evaluationDepth": 256,
+                  "wallMs": 1000,
+                  "outputBytes": 1024
+                },
+                "sources": [
+                  {
+                    "unitId": "u0",
+                    "transformedText": "1;\r\nsecond last"
+                  }
+                ]
+              },
+              "transport": {
+                "process": {
+                  "exitCode": 0,
+                  "signal": null,
+                  "deadlineExpired": false
+                },
+                "outputBytes": 0,
+                "outputLimit": 1024,
+                "capCount": null,
+                "capKilled": false,
+                "crashBeforeCap": false
+              },
+              "artifactHashes": {
+                "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "childSha256": "e8cca2bd95a0fb4f609037cee688980af60df090c1aee44d7dec0faf6b4b965f"
+              },
+              "envelope": {
+                "identity": {
+                  "schemaVersion": 2,
+                  "runId": "synthetic-only",
+                  "mode": "conformance",
+                  "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "variant": "raw",
+                  "goal": "Script",
+                  "lane": "node",
+                  "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "dirtySourceSha256": null
+                },
+                "inputs": {
+                  "units": [
+                    {
+                      "id": "u0",
+                      "ordinal": 0,
+                      "role": "test",
+                      "path": "test/synthetic.js",
+                      "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                      "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "byteLength": 17,
+                      "sourceUnits": 15
+                    }
+                  ],
+                  "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "profileId": "synthetic-only",
+                  "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "host": "synthetic",
+                  "platform": "synthetic",
+                  "toolchain": "synthetic",
+                  "limits": {
+                    "sourceUnits": 100000,
+                    "parseDepth": 128,
+                    "steps": 100,
+                    "calls": 64,
+                    "evaluationDepth": 256,
+                    "wallMs": 1000,
+                    "outputBytes": 1024
+                  },
+                  "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                  "preflightId": null,
+                  "realms": [
+                    {
+                      "id": "test",
+                      "profile": "script"
+                    },
+                    {
+                      "id": "other",
+                      "profile": "script"
+                    }
+                  ],
+                  "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "evidence": {
+                  "stage": "test",
+                  "operation": {
+                    "stage": "test",
+                    "phase": "body",
+                    "unitId": "u0",
+                    "realmId": "test"
+                  },
+                  "source": null,
+                  "testBodyEvaluated": true,
+                  "harnessValidated": false,
+                  "preflightId": null,
+                  "completedUnits": [],
+                  "inspection": null,
+                  "process": {
+                    "exitCode": 0,
+                    "signal": null,
+                    "deadlineExpired": false
+                  },
+                  "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "elapsedMs": 1
+                },
+                "observation": {
+                  "kind": "normal"
+                },
+                "classification": {
+                  "status": "pass",
+                  "reasonCode": "normal",
+                  "blockers": [],
+                  "expectedNegative": null,
+                  "observedPhase": null,
+                  "observedConstructorName": null
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "replay",
+      "expected": "reject; unchanged history and spent state",
+      "history": [
+        {
+          "sequence": 1,
+          "slotId": "s0",
+          "attempt": 1,
+          "retryReason": null,
+          "terminal": {
+            "kind": "transport",
+            "status": "pass",
+            "processStarted": true,
+            "testBodyEvaluated": true,
+            "payload": {
+              "receiptId": "r1",
+              "runId": "run",
+              "slotId": "s0",
+              "attempt": 1,
+              "selectionSha256": "7e6ef46ab144e0c9f93a7875d15d8913ff1db3d08cebaec79cf321abb4e2c280",
+              "context": {
+                "identity": {
+                  "schemaVersion": 2,
+                  "runId": "synthetic-only",
+                  "mode": "conformance",
+                  "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "variant": "raw",
+                  "goal": "Script",
+                  "lane": "node",
+                  "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "dirtySourceSha256": null
+                },
+                "inputs": {
+                  "units": [
+                    {
+                      "id": "u0",
+                      "ordinal": 0,
+                      "role": "test",
+                      "path": "test/synthetic.js",
+                      "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                      "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "byteLength": 17,
+                      "sourceUnits": 15
+                    }
+                  ],
+                  "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "profileId": "synthetic-only",
+                  "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "host": "synthetic",
+                  "platform": "synthetic",
+                  "toolchain": "synthetic",
+                  "limits": {
+                    "sourceUnits": 100000,
+                    "parseDepth": 128,
+                    "steps": 100,
+                    "calls": 64,
+                    "evaluationDepth": 256,
+                    "wallMs": 1000,
+                    "outputBytes": 1024
+                  },
+                  "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                  "preflightId": null,
+                  "realms": [
+                    {
+                      "id": "test",
+                      "profile": "script"
+                    },
+                    {
+                      "id": "other",
+                      "profile": "script"
+                    }
+                  ],
+                  "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "expectedNegative": null,
+                "blockers": []
+              },
+              "binding": {
+                "nonce": "alpha",
+                "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                "mode": "conformance",
+                "variant": "raw",
+                "units": [
+                  {
+                    "id": "u0",
+                    "ordinal": 0,
+                    "role": "test",
+                    "path": "test/synthetic.js",
+                    "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                    "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                    "byteLength": 17,
+                    "sourceUnits": 15
+                  }
+                ],
+                "realms": [
+                  {
+                    "id": "test",
+                    "profile": "script"
+                  },
+                  {
+                    "id": "other",
+                    "profile": "script"
+                  }
+                ],
+                "preflightId": null,
+                "action": "execute",
+                "limits": {
+                  "sourceUnits": 100000,
+                  "parseDepth": 128,
+                  "steps": 100,
+                  "calls": 64,
+                  "evaluationDepth": 256,
+                  "wallMs": 1000,
+                  "outputBytes": 1024
+                },
+                "sources": [
+                  {
+                    "unitId": "u0",
+                    "transformedText": "1;\r\nsecond last"
+                  }
+                ]
+              },
+              "transport": {
+                "process": {
+                  "exitCode": 0,
+                  "signal": null,
+                  "deadlineExpired": false
+                },
+                "outputBytes": 0,
+                "outputLimit": 1024,
+                "capCount": null,
+                "capKilled": false,
+                "crashBeforeCap": false
+              },
+              "artifactHashes": {
+                "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "childSha256": "e8cca2bd95a0fb4f609037cee688980af60df090c1aee44d7dec0faf6b4b965f"
+              },
+              "envelope": {
+                "identity": {
+                  "schemaVersion": 2,
+                  "runId": "synthetic-only",
+                  "mode": "conformance",
+                  "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "variant": "raw",
+                  "goal": "Script",
+                  "lane": "node",
+                  "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "dirtySourceSha256": null
+                },
+                "inputs": {
+                  "units": [
+                    {
+                      "id": "u0",
+                      "ordinal": 0,
+                      "role": "test",
+                      "path": "test/synthetic.js",
+                      "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                      "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "byteLength": 17,
+                      "sourceUnits": 15
+                    }
+                  ],
+                  "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "profileId": "synthetic-only",
+                  "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "host": "synthetic",
+                  "platform": "synthetic",
+                  "toolchain": "synthetic",
+                  "limits": {
+                    "sourceUnits": 100000,
+                    "parseDepth": 128,
+                    "steps": 100,
+                    "calls": 64,
+                    "evaluationDepth": 256,
+                    "wallMs": 1000,
+                    "outputBytes": 1024
+                  },
+                  "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                  "preflightId": null,
+                  "realms": [
+                    {
+                      "id": "test",
+                      "profile": "script"
+                    },
+                    {
+                      "id": "other",
+                      "profile": "script"
+                    }
+                  ],
+                  "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "evidence": {
+                  "stage": "test",
+                  "operation": {
+                    "stage": "test",
+                    "phase": "body",
+                    "unitId": "u0",
+                    "realmId": "test"
+                  },
+                  "source": null,
+                  "testBodyEvaluated": true,
+                  "harnessValidated": false,
+                  "preflightId": null,
+                  "completedUnits": [],
+                  "inspection": null,
+                  "process": {
+                    "exitCode": 0,
+                    "signal": null,
+                    "deadlineExpired": false
+                  },
+                  "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "elapsedMs": 1
+                },
+                "observation": {
+                  "kind": "normal"
+                },
+                "classification": {
+                  "status": "pass",
+                  "reasonCode": "normal",
+                  "blockers": [],
+                  "expectedNegative": null,
+                  "observedPhase": null,
+                  "observedConstructorName": null
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "retry-missing-reason",
+      "expected": "reject; unchanged history and spent state",
+      "history": [
+        {
+          "sequence": 1,
+          "slotId": "s0",
+          "attempt": 1,
+          "retryReason": null,
+          "terminal": {
+            "kind": "transport",
+            "status": "pass",
+            "processStarted": true,
+            "testBodyEvaluated": true,
+            "payload": {
+              "receiptId": "r1",
+              "runId": "run",
+              "slotId": "s0",
+              "attempt": 1,
+              "selectionSha256": "7e6ef46ab144e0c9f93a7875d15d8913ff1db3d08cebaec79cf321abb4e2c280",
+              "context": {
+                "identity": {
+                  "schemaVersion": 2,
+                  "runId": "synthetic-only",
+                  "mode": "conformance",
+                  "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "variant": "raw",
+                  "goal": "Script",
+                  "lane": "node",
+                  "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "dirtySourceSha256": null
+                },
+                "inputs": {
+                  "units": [
+                    {
+                      "id": "u0",
+                      "ordinal": 0,
+                      "role": "test",
+                      "path": "test/synthetic.js",
+                      "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                      "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "byteLength": 17,
+                      "sourceUnits": 15
+                    }
+                  ],
+                  "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "profileId": "synthetic-only",
+                  "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "host": "synthetic",
+                  "platform": "synthetic",
+                  "toolchain": "synthetic",
+                  "limits": {
+                    "sourceUnits": 100000,
+                    "parseDepth": 128,
+                    "steps": 100,
+                    "calls": 64,
+                    "evaluationDepth": 256,
+                    "wallMs": 1000,
+                    "outputBytes": 1024
+                  },
+                  "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                  "preflightId": null,
+                  "realms": [
+                    {
+                      "id": "test",
+                      "profile": "script"
+                    },
+                    {
+                      "id": "other",
+                      "profile": "script"
+                    }
+                  ],
+                  "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "expectedNegative": null,
+                "blockers": []
+              },
+              "binding": {
+                "nonce": "alpha",
+                "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                "mode": "conformance",
+                "variant": "raw",
+                "units": [
+                  {
+                    "id": "u0",
+                    "ordinal": 0,
+                    "role": "test",
+                    "path": "test/synthetic.js",
+                    "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                    "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                    "byteLength": 17,
+                    "sourceUnits": 15
+                  }
+                ],
+                "realms": [
+                  {
+                    "id": "test",
+                    "profile": "script"
+                  },
+                  {
+                    "id": "other",
+                    "profile": "script"
+                  }
+                ],
+                "preflightId": null,
+                "action": "execute",
+                "limits": {
+                  "sourceUnits": 100000,
+                  "parseDepth": 128,
+                  "steps": 100,
+                  "calls": 64,
+                  "evaluationDepth": 256,
+                  "wallMs": 1000,
+                  "outputBytes": 1024
+                },
+                "sources": [
+                  {
+                    "unitId": "u0",
+                    "transformedText": "1;\r\nsecond last"
+                  }
+                ]
+              },
+              "transport": {
+                "process": {
+                  "exitCode": 0,
+                  "signal": null,
+                  "deadlineExpired": false
+                },
+                "outputBytes": 0,
+                "outputLimit": 1024,
+                "capCount": null,
+                "capKilled": false,
+                "crashBeforeCap": false
+              },
+              "artifactHashes": {
+                "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "childSha256": "e8cca2bd95a0fb4f609037cee688980af60df090c1aee44d7dec0faf6b4b965f"
+              },
+              "envelope": {
+                "identity": {
+                  "schemaVersion": 2,
+                  "runId": "synthetic-only",
+                  "mode": "conformance",
+                  "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "variant": "raw",
+                  "goal": "Script",
+                  "lane": "node",
+                  "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "dirtySourceSha256": null
+                },
+                "inputs": {
+                  "units": [
+                    {
+                      "id": "u0",
+                      "ordinal": 0,
+                      "role": "test",
+                      "path": "test/synthetic.js",
+                      "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                      "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "byteLength": 17,
+                      "sourceUnits": 15
+                    }
+                  ],
+                  "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "profileId": "synthetic-only",
+                  "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "host": "synthetic",
+                  "platform": "synthetic",
+                  "toolchain": "synthetic",
+                  "limits": {
+                    "sourceUnits": 100000,
+                    "parseDepth": 128,
+                    "steps": 100,
+                    "calls": 64,
+                    "evaluationDepth": 256,
+                    "wallMs": 1000,
+                    "outputBytes": 1024
+                  },
+                  "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                  "preflightId": null,
+                  "realms": [
+                    {
+                      "id": "test",
+                      "profile": "script"
+                    },
+                    {
+                      "id": "other",
+                      "profile": "script"
+                    }
+                  ],
+                  "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "evidence": {
+                  "stage": "test",
+                  "operation": {
+                    "stage": "test",
+                    "phase": "body",
+                    "unitId": "u0",
+                    "realmId": "test"
+                  },
+                  "source": null,
+                  "testBodyEvaluated": true,
+                  "harnessValidated": false,
+                  "preflightId": null,
+                  "completedUnits": [],
+                  "inspection": null,
+                  "process": {
+                    "exitCode": 0,
+                    "signal": null,
+                    "deadlineExpired": false
+                  },
+                  "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "elapsedMs": 1
+                },
+                "observation": {
+                  "kind": "normal"
+                },
+                "classification": {
+                  "status": "pass",
+                  "reasonCode": "normal",
+                  "blockers": [],
+                  "expectedNegative": null,
+                  "observedPhase": null,
+                  "observedConstructorName": null
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "persist-failure-no-revival",
+      "expected": "reject; unchanged history and spent state",
+      "history": [
+        {
+          "sequence": 1,
+          "slotId": "s0",
+          "attempt": 1,
+          "retryReason": null,
+          "terminal": {
+            "kind": "transport",
+            "status": "pass",
+            "processStarted": true,
+            "testBodyEvaluated": true,
+            "payload": {
+              "receiptId": "r1",
+              "runId": "run",
+              "slotId": "s0",
+              "attempt": 1,
+              "selectionSha256": "7e6ef46ab144e0c9f93a7875d15d8913ff1db3d08cebaec79cf321abb4e2c280",
+              "context": {
+                "identity": {
+                  "schemaVersion": 2,
+                  "runId": "synthetic-only",
+                  "mode": "conformance",
+                  "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "variant": "raw",
+                  "goal": "Script",
+                  "lane": "node",
+                  "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "dirtySourceSha256": null
+                },
+                "inputs": {
+                  "units": [
+                    {
+                      "id": "u0",
+                      "ordinal": 0,
+                      "role": "test",
+                      "path": "test/synthetic.js",
+                      "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                      "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "byteLength": 17,
+                      "sourceUnits": 15
+                    }
+                  ],
+                  "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "profileId": "synthetic-only",
+                  "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "host": "synthetic",
+                  "platform": "synthetic",
+                  "toolchain": "synthetic",
+                  "limits": {
+                    "sourceUnits": 100000,
+                    "parseDepth": 128,
+                    "steps": 100,
+                    "calls": 64,
+                    "evaluationDepth": 256,
+                    "wallMs": 1000,
+                    "outputBytes": 1024
+                  },
+                  "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                  "preflightId": null,
+                  "realms": [
+                    {
+                      "id": "test",
+                      "profile": "script"
+                    },
+                    {
+                      "id": "other",
+                      "profile": "script"
+                    }
+                  ],
+                  "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "expectedNegative": null,
+                "blockers": []
+              },
+              "binding": {
+                "nonce": "alpha",
+                "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                "mode": "conformance",
+                "variant": "raw",
+                "units": [
+                  {
+                    "id": "u0",
+                    "ordinal": 0,
+                    "role": "test",
+                    "path": "test/synthetic.js",
+                    "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                    "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                    "byteLength": 17,
+                    "sourceUnits": 15
+                  }
+                ],
+                "realms": [
+                  {
+                    "id": "test",
+                    "profile": "script"
+                  },
+                  {
+                    "id": "other",
+                    "profile": "script"
+                  }
+                ],
+                "preflightId": null,
+                "action": "execute",
+                "limits": {
+                  "sourceUnits": 100000,
+                  "parseDepth": 128,
+                  "steps": 100,
+                  "calls": 64,
+                  "evaluationDepth": 256,
+                  "wallMs": 1000,
+                  "outputBytes": 1024
+                },
+                "sources": [
+                  {
+                    "unitId": "u0",
+                    "transformedText": "1;\r\nsecond last"
+                  }
+                ]
+              },
+              "transport": {
+                "process": {
+                  "exitCode": 0,
+                  "signal": null,
+                  "deadlineExpired": false
+                },
+                "outputBytes": 0,
+                "outputLimit": 1024,
+                "capCount": null,
+                "capKilled": false,
+                "crashBeforeCap": false
+              },
+              "artifactHashes": {
+                "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "childSha256": "e8cca2bd95a0fb4f609037cee688980af60df090c1aee44d7dec0faf6b4b965f"
+              },
+              "envelope": {
+                "identity": {
+                  "schemaVersion": 2,
+                  "runId": "synthetic-only",
+                  "mode": "conformance",
+                  "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "variant": "raw",
+                  "goal": "Script",
+                  "lane": "node",
+                  "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "dirtySourceSha256": null
+                },
+                "inputs": {
+                  "units": [
+                    {
+                      "id": "u0",
+                      "ordinal": 0,
+                      "role": "test",
+                      "path": "test/synthetic.js",
+                      "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                      "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "byteLength": 17,
+                      "sourceUnits": 15
+                    }
+                  ],
+                  "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "profileId": "synthetic-only",
+                  "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "host": "synthetic",
+                  "platform": "synthetic",
+                  "toolchain": "synthetic",
+                  "limits": {
+                    "sourceUnits": 100000,
+                    "parseDepth": 128,
+                    "steps": 100,
+                    "calls": 64,
+                    "evaluationDepth": 256,
+                    "wallMs": 1000,
+                    "outputBytes": 1024
+                  },
+                  "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                  "preflightId": null,
+                  "realms": [
+                    {
+                      "id": "test",
+                      "profile": "script"
+                    },
+                    {
+                      "id": "other",
+                      "profile": "script"
+                    }
+                  ],
+                  "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "evidence": {
+                  "stage": "test",
+                  "operation": {
+                    "stage": "test",
+                    "phase": "body",
+                    "unitId": "u0",
+                    "realmId": "test"
+                  },
+                  "source": null,
+                  "testBodyEvaluated": true,
+                  "harnessValidated": false,
+                  "preflightId": null,
+                  "completedUnits": [],
+                  "inspection": null,
+                  "process": {
+                    "exitCode": 0,
+                    "signal": null,
+                    "deadlineExpired": false
+                  },
+                  "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "elapsedMs": 1
+                },
+                "observation": {
+                  "kind": "normal"
+                },
+                "classification": {
+                  "status": "pass",
+                  "reasonCode": "normal",
+                  "blockers": [],
+                  "expectedNegative": null,
+                  "observedPhase": null,
+                  "observedConstructorName": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "sequence": 2,
+          "slotId": "s0",
+          "attempt": 2,
+          "retryReason": "investigate",
+          "terminal": {
+            "kind": "transport",
+            "status": "pass",
+            "processStarted": true,
+            "testBodyEvaluated": true,
+            "payload": {
+              "receiptId": "r2",
+              "runId": "run",
+              "slotId": "s0",
+              "attempt": 2,
+              "selectionSha256": "7e6ef46ab144e0c9f93a7875d15d8913ff1db3d08cebaec79cf321abb4e2c280",
+              "context": {
+                "identity": {
+                  "schemaVersion": 2,
+                  "runId": "synthetic-only",
+                  "mode": "conformance",
+                  "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "variant": "raw",
+                  "goal": "Script",
+                  "lane": "node",
+                  "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "dirtySourceSha256": null
+                },
+                "inputs": {
+                  "units": [
+                    {
+                      "id": "u0",
+                      "ordinal": 0,
+                      "role": "test",
+                      "path": "test/synthetic.js",
+                      "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                      "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "byteLength": 17,
+                      "sourceUnits": 15
+                    }
+                  ],
+                  "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "profileId": "synthetic-only",
+                  "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "host": "synthetic",
+                  "platform": "synthetic",
+                  "toolchain": "synthetic",
+                  "limits": {
+                    "sourceUnits": 100000,
+                    "parseDepth": 128,
+                    "steps": 100,
+                    "calls": 64,
+                    "evaluationDepth": 256,
+                    "wallMs": 1000,
+                    "outputBytes": 1024
+                  },
+                  "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                  "preflightId": null,
+                  "realms": [
+                    {
+                      "id": "test",
+                      "profile": "script"
+                    },
+                    {
+                      "id": "other",
+                      "profile": "script"
+                    }
+                  ],
+                  "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "expectedNegative": null,
+                "blockers": []
+              },
+              "binding": {
+                "nonce": "alpha",
+                "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                "mode": "conformance",
+                "variant": "raw",
+                "units": [
+                  {
+                    "id": "u0",
+                    "ordinal": 0,
+                    "role": "test",
+                    "path": "test/synthetic.js",
+                    "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                    "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                    "byteLength": 17,
+                    "sourceUnits": 15
+                  }
+                ],
+                "realms": [
+                  {
+                    "id": "test",
+                    "profile": "script"
+                  },
+                  {
+                    "id": "other",
+                    "profile": "script"
+                  }
+                ],
+                "preflightId": null,
+                "action": "execute",
+                "limits": {
+                  "sourceUnits": 100000,
+                  "parseDepth": 128,
+                  "steps": 100,
+                  "calls": 64,
+                  "evaluationDepth": 256,
+                  "wallMs": 1000,
+                  "outputBytes": 1024
+                },
+                "sources": [
+                  {
+                    "unitId": "u0",
+                    "transformedText": "1;\r\nsecond last"
+                  }
+                ]
+              },
+              "transport": {
+                "process": {
+                  "exitCode": 0,
+                  "signal": null,
+                  "deadlineExpired": false
+                },
+                "outputBytes": 0,
+                "outputLimit": 1024,
+                "capCount": null,
+                "capKilled": false,
+                "crashBeforeCap": false
+              },
+              "artifactHashes": {
+                "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "childSha256": "e8cca2bd95a0fb4f609037cee688980af60df090c1aee44d7dec0faf6b4b965f"
+              },
+              "envelope": {
+                "identity": {
+                  "schemaVersion": 2,
+                  "runId": "synthetic-only",
+                  "mode": "conformance",
+                  "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "variant": "raw",
+                  "goal": "Script",
+                  "lane": "node",
+                  "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "dirtySourceSha256": null
+                },
+                "inputs": {
+                  "units": [
+                    {
+                      "id": "u0",
+                      "ordinal": 0,
+                      "role": "test",
+                      "path": "test/synthetic.js",
+                      "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                      "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                      "byteLength": 17,
+                      "sourceUnits": 15
+                    }
+                  ],
+                  "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "profileId": "synthetic-only",
+                  "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "host": "synthetic",
+                  "platform": "synthetic",
+                  "toolchain": "synthetic",
+                  "limits": {
+                    "sourceUnits": 100000,
+                    "parseDepth": 128,
+                    "steps": 100,
+                    "calls": 64,
+                    "evaluationDepth": 256,
+                    "wallMs": 1000,
+                    "outputBytes": 1024
+                  },
+                  "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+                  "preflightId": null,
+                  "realms": [
+                    {
+                      "id": "test",
+                      "profile": "script"
+                    },
+                    {
+                      "id": "other",
+                      "profile": "script"
+                    }
+                  ],
+                  "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "evidence": {
+                  "stage": "test",
+                  "operation": {
+                    "stage": "test",
+                    "phase": "body",
+                    "unitId": "u0",
+                    "realmId": "test"
+                  },
+                  "source": null,
+                  "testBodyEvaluated": true,
+                  "harnessValidated": false,
+                  "preflightId": null,
+                  "completedUnits": [],
+                  "inspection": null,
+                  "process": {
+                    "exitCode": 0,
+                    "signal": null,
+                    "deadlineExpired": false
+                  },
+                  "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "elapsedMs": 1
+                },
+                "observation": {
+                  "kind": "normal"
+                },
+                "classification": {
+                  "status": "pass",
+                  "reasonCode": "normal",
+                  "blockers": [],
+                  "expectedNegative": null,
+                  "observedPhase": null,
+                  "observedConstructorName": null
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "final": [
+    {
+      "sequence": 1,
+      "slotId": "s0",
+      "attempt": 1,
+      "retryReason": null,
+      "terminal": {
+        "kind": "transport",
+        "status": "pass",
+        "processStarted": true,
+        "testBodyEvaluated": true,
+        "payload": {
+          "receiptId": "r1",
+          "runId": "run",
+          "slotId": "s0",
+          "attempt": 1,
+          "selectionSha256": "7e6ef46ab144e0c9f93a7875d15d8913ff1db3d08cebaec79cf321abb4e2c280",
+          "context": {
+            "identity": {
+              "schemaVersion": 2,
+              "runId": "synthetic-only",
+              "mode": "conformance",
+              "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "path": "test/synthetic.js",
+              "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+              "variant": "raw",
+              "goal": "Script",
+              "lane": "node",
+              "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "dirtySourceSha256": null
+            },
+            "inputs": {
+              "units": [
+                {
+                  "id": "u0",
+                  "ordinal": 0,
+                  "role": "test",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "byteLength": 17,
+                  "sourceUnits": 15
+                }
+              ],
+              "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+              "profileId": "synthetic-only",
+              "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "host": "synthetic",
+              "platform": "synthetic",
+              "toolchain": "synthetic",
+              "limits": {
+                "sourceUnits": 100000,
+                "parseDepth": 128,
+                "steps": 100,
+                "calls": 64,
+                "evaluationDepth": 256,
+                "wallMs": 1000,
+                "outputBytes": 1024
+              },
+              "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+              "preflightId": null,
+              "realms": [
+                {
+                  "id": "test",
+                  "profile": "script"
+                },
+                {
+                  "id": "other",
+                  "profile": "script"
+                }
+              ],
+              "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "expectedNegative": null,
+            "blockers": []
+          },
+          "binding": {
+            "nonce": "alpha",
+            "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+            "mode": "conformance",
+            "variant": "raw",
+            "units": [
+              {
+                "id": "u0",
+                "ordinal": 0,
+                "role": "test",
+                "path": "test/synthetic.js",
+                "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                "byteLength": 17,
+                "sourceUnits": 15
+              }
+            ],
+            "realms": [
+              {
+                "id": "test",
+                "profile": "script"
+              },
+              {
+                "id": "other",
+                "profile": "script"
+              }
+            ],
+            "preflightId": null,
+            "action": "execute",
+            "limits": {
+              "sourceUnits": 100000,
+              "parseDepth": 128,
+              "steps": 100,
+              "calls": 64,
+              "evaluationDepth": 256,
+              "wallMs": 1000,
+              "outputBytes": 1024
+            },
+            "sources": [
+              {
+                "unitId": "u0",
+                "transformedText": "1;\r\nsecond last"
+              }
+            ]
+          },
+          "transport": {
+            "process": {
+              "exitCode": 0,
+              "signal": null,
+              "deadlineExpired": false
+            },
+            "outputBytes": 0,
+            "outputLimit": 1024,
+            "capCount": null,
+            "capKilled": false,
+            "crashBeforeCap": false
+          },
+          "artifactHashes": {
+            "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "childSha256": "e8cca2bd95a0fb4f609037cee688980af60df090c1aee44d7dec0faf6b4b965f"
+          },
+          "envelope": {
+            "identity": {
+              "schemaVersion": 2,
+              "runId": "synthetic-only",
+              "mode": "conformance",
+              "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "path": "test/synthetic.js",
+              "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+              "variant": "raw",
+              "goal": "Script",
+              "lane": "node",
+              "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "dirtySourceSha256": null
+            },
+            "inputs": {
+              "units": [
+                {
+                  "id": "u0",
+                  "ordinal": 0,
+                  "role": "test",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "byteLength": 17,
+                  "sourceUnits": 15
+                }
+              ],
+              "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+              "profileId": "synthetic-only",
+              "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "host": "synthetic",
+              "platform": "synthetic",
+              "toolchain": "synthetic",
+              "limits": {
+                "sourceUnits": 100000,
+                "parseDepth": 128,
+                "steps": 100,
+                "calls": 64,
+                "evaluationDepth": 256,
+                "wallMs": 1000,
+                "outputBytes": 1024
+              },
+              "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+              "preflightId": null,
+              "realms": [
+                {
+                  "id": "test",
+                  "profile": "script"
+                },
+                {
+                  "id": "other",
+                  "profile": "script"
+                }
+              ],
+              "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "evidence": {
+              "stage": "test",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u0",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [],
+              "inspection": null,
+              "process": {
+                "exitCode": 0,
+                "signal": null,
+                "deadlineExpired": false
+              },
+              "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "elapsedMs": 1
+            },
+            "observation": {
+              "kind": "normal"
+            },
+            "classification": {
+              "status": "pass",
+              "reasonCode": "normal",
+              "blockers": [],
+              "expectedNegative": null,
+              "observedPhase": null,
+              "observedConstructorName": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "slotId": "s0",
+      "attempt": 2,
+      "retryReason": "investigate",
+      "terminal": {
+        "kind": "transport",
+        "status": "pass",
+        "processStarted": true,
+        "testBodyEvaluated": true,
+        "payload": {
+          "receiptId": "r2",
+          "runId": "run",
+          "slotId": "s0",
+          "attempt": 2,
+          "selectionSha256": "7e6ef46ab144e0c9f93a7875d15d8913ff1db3d08cebaec79cf321abb4e2c280",
+          "context": {
+            "identity": {
+              "schemaVersion": 2,
+              "runId": "synthetic-only",
+              "mode": "conformance",
+              "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "path": "test/synthetic.js",
+              "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+              "variant": "raw",
+              "goal": "Script",
+              "lane": "node",
+              "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "dirtySourceSha256": null
+            },
+            "inputs": {
+              "units": [
+                {
+                  "id": "u0",
+                  "ordinal": 0,
+                  "role": "test",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "byteLength": 17,
+                  "sourceUnits": 15
+                }
+              ],
+              "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+              "profileId": "synthetic-only",
+              "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "host": "synthetic",
+              "platform": "synthetic",
+              "toolchain": "synthetic",
+              "limits": {
+                "sourceUnits": 100000,
+                "parseDepth": 128,
+                "steps": 100,
+                "calls": 64,
+                "evaluationDepth": 256,
+                "wallMs": 1000,
+                "outputBytes": 1024
+              },
+              "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+              "preflightId": null,
+              "realms": [
+                {
+                  "id": "test",
+                  "profile": "script"
+                },
+                {
+                  "id": "other",
+                  "profile": "script"
+                }
+              ],
+              "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "expectedNegative": null,
+            "blockers": []
+          },
+          "binding": {
+            "nonce": "alpha",
+            "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+            "mode": "conformance",
+            "variant": "raw",
+            "units": [
+              {
+                "id": "u0",
+                "ordinal": 0,
+                "role": "test",
+                "path": "test/synthetic.js",
+                "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                "byteLength": 17,
+                "sourceUnits": 15
+              }
+            ],
+            "realms": [
+              {
+                "id": "test",
+                "profile": "script"
+              },
+              {
+                "id": "other",
+                "profile": "script"
+              }
+            ],
+            "preflightId": null,
+            "action": "execute",
+            "limits": {
+              "sourceUnits": 100000,
+              "parseDepth": 128,
+              "steps": 100,
+              "calls": 64,
+              "evaluationDepth": 256,
+              "wallMs": 1000,
+              "outputBytes": 1024
+            },
+            "sources": [
+              {
+                "unitId": "u0",
+                "transformedText": "1;\r\nsecond last"
+              }
+            ]
+          },
+          "transport": {
+            "process": {
+              "exitCode": 0,
+              "signal": null,
+              "deadlineExpired": false
+            },
+            "outputBytes": 0,
+            "outputLimit": 1024,
+            "capCount": null,
+            "capKilled": false,
+            "crashBeforeCap": false
+          },
+          "artifactHashes": {
+            "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "childSha256": "e8cca2bd95a0fb4f609037cee688980af60df090c1aee44d7dec0faf6b4b965f"
+          },
+          "envelope": {
+            "identity": {
+              "schemaVersion": 2,
+              "runId": "synthetic-only",
+              "mode": "conformance",
+              "corpusRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "manifestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "path": "test/synthetic.js",
+              "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+              "variant": "raw",
+              "goal": "Script",
+              "lane": "node",
+              "engineCommit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "engineBuildSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "adapterSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "policySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "dirtySourceSha256": null
+            },
+            "inputs": {
+              "units": [
+                {
+                  "id": "u0",
+                  "ordinal": 0,
+                  "role": "test",
+                  "path": "test/synthetic.js",
+                  "blob": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "sourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "transformedSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+                  "byteLength": 17,
+                  "sourceUnits": 15
+                }
+              ],
+              "transformedSourceSha256": "8b96c3388e02062c804137ae5a596cb7af7fe6fa0ca6dfda65dee1e292d6cf82",
+              "profileId": "synthetic-only",
+              "capabilityLedgerSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "host": "synthetic",
+              "platform": "synthetic",
+              "toolchain": "synthetic",
+              "limits": {
+                "sourceUnits": 100000,
+                "parseDepth": 128,
+                "steps": 100,
+                "calls": 64,
+                "evaluationDepth": 256,
+                "wallMs": 1000,
+                "outputBytes": 1024
+              },
+              "requestSha256": "d7c62c3c13d2d05804594ea7f48275ade598f215c2014bd0994c3f96b488f359",
+              "preflightId": null,
+              "realms": [
+                {
+                  "id": "test",
+                  "profile": "script"
+                },
+                {
+                  "id": "other",
+                  "profile": "script"
+                }
+              ],
+              "ruleRegistrySha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "evidence": {
+              "stage": "test",
+              "operation": {
+                "stage": "test",
+                "phase": "body",
+                "unitId": "u0",
+                "realmId": "test"
+              },
+              "source": null,
+              "testBodyEvaluated": true,
+              "harnessValidated": false,
+              "preflightId": null,
+              "completedUnits": [],
+              "inspection": null,
+              "process": {
+                "exitCode": 0,
+                "signal": null,
+                "deadlineExpired": false
+              },
+              "stdoutSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "stderrSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "elapsedMs": 1
+            },
+            "observation": {
+              "kind": "normal"
+            },
+            "classification": {
+              "status": "pass",
+              "reasonCode": "normal",
+              "blockers": [],
+              "expectedNegative": null,
+              "observedPhase": null,
+              "observedConstructorName": null
+            }
+          }
+        }
+      }
+    }
+  ]
+}

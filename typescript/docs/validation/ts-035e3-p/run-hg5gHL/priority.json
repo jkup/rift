@@ -1,0 +1,127 @@
+[
+  {
+    "id": "deadline+crash+cap+malformed",
+    "patch": {
+      "process": {
+        "exitCode": 70,
+        "signal": null,
+        "deadlineExpired": true
+      },
+      "outputBytes": 2000,
+      "capCount": 1500,
+      "capKilled": true,
+      "crashBeforeCap": true
+    },
+    "expected": {
+      "status": "timeout",
+      "reasonCode": "deadline"
+    },
+    "transport": {
+      "process": {
+        "exitCode": 70,
+        "signal": null,
+        "deadlineExpired": true
+      },
+      "outputBytes": 2000,
+      "outputLimit": 1024,
+      "capCount": 1500,
+      "capKilled": true,
+      "crashBeforeCap": true
+    },
+    "actual": {
+      "status": "timeout",
+      "reasonCode": "deadline"
+    }
+  },
+  {
+    "id": "crash-before-cap+malformed",
+    "patch": {
+      "process": {
+        "exitCode": 70,
+        "signal": null,
+        "deadlineExpired": false
+      },
+      "outputBytes": 2000,
+      "capCount": 1500,
+      "capKilled": true,
+      "crashBeforeCap": true
+    },
+    "expected": {
+      "status": "host-fault",
+      "reasonCode": "crash"
+    },
+    "transport": {
+      "process": {
+        "exitCode": 70,
+        "signal": null,
+        "deadlineExpired": false
+      },
+      "outputBytes": 2000,
+      "outputLimit": 1024,
+      "capCount": 1500,
+      "capKilled": true,
+      "crashBeforeCap": true
+    },
+    "actual": {
+      "status": "host-fault",
+      "reasonCode": "crash"
+    }
+  },
+  {
+    "id": "cap+malformed",
+    "patch": {
+      "process": {
+        "exitCode": null,
+        "signal": "SIGTERM",
+        "deadlineExpired": false
+      },
+      "outputBytes": 2000,
+      "capCount": 1500,
+      "capKilled": true
+    },
+    "expected": {
+      "status": "resource-limit",
+      "reasonCode": "output"
+    },
+    "transport": {
+      "process": {
+        "exitCode": null,
+        "signal": "SIGTERM",
+        "deadlineExpired": false
+      },
+      "outputBytes": 2000,
+      "outputLimit": 1024,
+      "capCount": 1500,
+      "capKilled": true,
+      "crashBeforeCap": false
+    },
+    "actual": {
+      "status": "resource-limit",
+      "reasonCode": "output"
+    }
+  },
+  {
+    "id": "malformed-only",
+    "patch": {},
+    "expected": {
+      "status": "host-fault",
+      "reasonCode": "protocol"
+    },
+    "transport": {
+      "process": {
+        "exitCode": 0,
+        "signal": null,
+        "deadlineExpired": false
+      },
+      "outputBytes": 0,
+      "outputLimit": 1024,
+      "capCount": null,
+      "capKilled": false,
+      "crashBeforeCap": false
+    },
+    "actual": {
+      "status": "host-fault",
+      "reasonCode": "protocol"
+    }
+  }
+]
