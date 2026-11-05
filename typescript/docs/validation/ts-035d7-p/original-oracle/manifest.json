@@ -1,0 +1,18 @@
+[
+  {
+    "path": "freeze.mjs",
+    "sha256": "897ec799fbcc1890cf0d39d379d4baec2f9f490a50d82b0392508fa5102e1811"
+  },
+  {
+    "path": "future-controls.json",
+    "sha256": "48507b825ca377a551d6f3a8e5fb64ff6e370e81b7fe2089363730c658bbad8e"
+  },
+  {
+    "path": "probe-results.json",
+    "sha256": "a2a4b1c32f3314d31d962dda2ffb39f50f359b85487a2179e5930b4306a61d89"
+  },
+  {
+    "path": "semantic-matrix.json",
+    "sha256": "9e317ac48a837d3e49fa3e6fd257659975ad76ef46d6e4b60e0dea58ab94f2fa"
+  }
+]
