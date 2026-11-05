@@ -1,0 +1,2 @@
+runtime-0.js -text
+runtime-1.js -text whitespace=cr-at-eol
