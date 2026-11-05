@@ -1,0 +1,15 @@
+{
+  "protected": 6703,
+  "exactReplacements": 2,
+  "copiedOriginalsUnchanged": 1415,
+  "retained": {
+    "node": 212,
+    "native": 212
+  },
+  "retainedNativeGates": 71,
+  "blocked": 60,
+  "feature": 19,
+  "profile": 41,
+  "freshBuild": false,
+  "sandbox": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3a-validation-V4kSXL"
+}

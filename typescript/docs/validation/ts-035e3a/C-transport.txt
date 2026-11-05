@@ -1,0 +1,12 @@
+✔ actual node/alpha frozen registered controls (122099.895ms)
+✔ actual node/beta frozen registered controls (121459.1643ms)
+✔ actual native/alpha frozen registered controls (82403.6594ms)
+✔ actual native/beta frozen registered controls (82250.5076ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 408220.5767
