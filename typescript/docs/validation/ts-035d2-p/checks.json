@@ -1,0 +1,96 @@
+{
+  "base": "62a8787",
+  "claims": "Offline preservation/syntax and current synthetic return-only codec controls. No D2 emission, production mutation, full build or native execution.",
+  "results": [
+    {
+      "name": "whole-file-preservation",
+      "args": [
+        "docs/validation/ts-035d2-p/verify.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"wholeFiles\":815,\"protectedFiles\":4649,\"semanticRows\":90,\"wireRows\":64,\"blocked\":60}\n",
+      "stderr": "warning: in the working copy of 'typescript/COORDINATION.md', CRLF will be replaced by LF the next time Git touches it\nwarning: in the working copy of 'typescript/TASKS.md', CRLF will be replaced by LF the next time Git touches it\n"
+    },
+    {
+      "name": "current-return-codec-controls",
+      "args": [
+        "docs/validation/ts-035d2-p/verify-future-wire.mjs",
+        "--current-return-controls"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"rows\":32,\"mutations\":9952,\"currentReturnOnly\":true,\"claim\":\"synthetic codec checks only; actual both-host serializer/C bytes remain a separate implementation gate\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "syntax-freeze",
+      "args": [
+        "--check",
+        "docs/validation/ts-035d2-p/freeze.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "syntax-wire-freeze",
+      "args": [
+        "--check",
+        "docs/validation/ts-035d2-p/wire-freeze.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "syntax-verify",
+      "args": [
+        "--check",
+        "docs/validation/ts-035d2-p/verify.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "syntax-verify-future-wire",
+      "args": [
+        "--check",
+        "docs/validation/ts-035d2-p/verify-future-wire.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "syntax-check",
+      "args": [
+        "--check",
+        "docs/validation/ts-035d2-p/check.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "wire": {
+    "rows": 64,
+    "existingBlockRejected": 32,
+    "surrogateMutationChecks": 1792,
+    "transportChecks": 256,
+    "claims": "Future exact v2 rows, not current block emission. Existing decoders reject every block row. Structural probes substitute only accepted return rule; this is not widened decoder validation."
+  }
+}
