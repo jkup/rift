@@ -1,0 +1,48 @@
+// Additive correction. Never rewrite 36f17fd proposals, evidence or baselines.
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {dirname} from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+const previous='docs/validation/ts-035e2c-p',own=previous+'/correction';
+const hash=b=>createHash('sha256').update(b).digest('hex');
+const read=p=>readFileSync(p,'utf8');
+const save=(p,s)=>{mkdirSync(dirname(p),{recursive:true});writeFileSync(p,s);};
+const json=(p,v)=>save(p,JSON.stringify(v,null,2)+'\n');
+const replace=(s,a,b)=>{assert.equal(s.split(a).length,2,a);return s.replace(a,b);};
+const manifest=JSON.parse(read(previous+'/proposal-manifest.json'));
+const ledger=manifest.find(p=>p.path==='tools/test262/script-ledger.mjs');
+const previousLedgerHash=ledger.proposedSha256;
+const before=read(ledger.proposed);
+const old="      catch (error) { if(error.code === 'ENOENT') state.pending.cleanup = null; else storeFail('indeterminate'); }";
+const updated=`      catch (error) {
+        if (error.code === 'ENOENT') state.pending.cleanup = null;
+        else {
+          state.diagnostics.push({stage:'resolve-cleanup-unlink',code:error.code ?? null});
+          storeFail('indeterminate');
+        }
+      }`;
+const after=replace(before,old,updated),nextHash=hash(after);
+for(const p of manifest){
+ let source=read(p.proposed);
+ if(p.path==='tools/test262/script-ledger.mjs')source=after;
+ else if(p.path==='docs/validation/ts-035e2b/support.mjs')source=replace(source,previousLedgerHash,nextHash);
+ else continue;
+ const path=own+'/proposals/'+p.path+'.proposed';save(path,source);
+ p.previousProposed=p.proposed;p.previousProposedSha256=p.proposedSha256;
+ p.proposed=path;p.proposedSha256=hash(source);
+}
+json(own+'/proposal-manifest.json',manifest);
+save(own+'/checkpoint-extension.txt',replace(read(previous+'/checkpoint-extension.txt'),old,updated));
+const retained=execFileSync('git',['ls-files','-z','--',previous],{encoding:'utf8'}).split('\0').filter(Boolean).filter(p=>!p.startsWith(own+'/'));
+json(own+'/retained-candidate-identities.json',retained.map(path=>({path,sha256:hash(readFileSync(path))})));
+// Reuse only the already reviewed copied-module fault setup; do not rerun its
+// 22 unrelated groups. New controls are a separate complete evidence script.
+let faults=read(previous+'/faults.mjs').split("for(const stage of ['open','write','sync','close']){")[0];
+faults=replace(faults,"resolve('docs/validation/ts-035e2c-p')","resolve('docs/validation/ts-035e2c-p/correction')");
+faults=replace(faults," const state=stores.get(token); if(action==='counter')",` const state=stores.get(token);
+ if(action==='inspect')return {pending:state.pending,anchor:state.anchor,owner:state.owner,
+   value:ledgers.get(state.owner),diagnostics:structuredClone(state.diagnostics),busy:state.busy};
+ if(action==='counter')`);
+faults+=read(own+'/controls.txt');save(own+'/faults.mjs',faults);
+console.log(JSON.stringify({changedProposals:2,retainedCandidateFiles:retained.length,ledgerSha256:nextHash}));

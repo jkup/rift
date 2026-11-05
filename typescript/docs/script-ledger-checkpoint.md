@@ -5,6 +5,16 @@ only the deferred E2c proposal in script-selection-ledger.md. It is not permissi
 to implement, publish, admit tests, or start E3. All code under ts-035e2c-p is a
 review proposal or isolated probe. Production remains the accepted E2a/E2b code.
 
+Review correction to candidate 36f17fd: the current complete proposal manifest is
+`validation/ts-035e2c-p/correction/proposal-manifest.json`. Original candidate
+artifacts remain unchanged. Resolution cleanup now records each non-ENOENT unlink
+failure privately as `{stage:'resolve-cleanup-unlink',code:error.code ?? null}`
+before rejecting indeterminate. Repeated failures append diagnostics while keeping
+the same pending publication and owner lock. ENOENT clears the cleanup marker
+without a failure diagnostic; successful resolution retains prior diagnostics.
+See the correction README for focused repeated-failure/recovery evidence and
+exact closure-byte migrations. No public API or error schema changes.
+
 ## Smallest implementable boundary
 
 Keep store operations in `tools/test262/script-ledger.mjs`. Its private `ledgers`
@@ -41,7 +51,8 @@ Separate module instances have independent token namespaces; a ledger from
 another instance fails token authentication. JSON or structured clones fail too.
 
 Six exact complete old-file proposals, original/proposed SHA256 hashes, and
-whole-file verification are in `validation/ts-035e2c-p/proposal-manifest.json`:
+whole-file verification are in `validation/ts-035e2c-p/correction/proposal-manifest.json`
+(the original manifest remains immutable alongside it):
 
 | Existing file | Exact migration purpose |
 |---|---|

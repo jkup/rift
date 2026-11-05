@@ -1,0 +1,8 @@
+Initial additive renderer failed its exact replacement assertion before writing
+the manifest: the in-memory ledger manifest row had already been updated before
+the dependent support migration used its old hash. Assertion 1 !== 2 searching
+fae6321287e971662257621a06336dd1a52fda29b4becb0513749160010f3440.
+The follow-on verifier consequently found no correction manifest (ENOENT).
+Original 36f17fd artifacts and production were untouched. Initial renderer source
+retained in prepare-initial.mjs.txt. Correction captures previousLedgerHash before
+updating any manifest row; no semantic proposal change or broader workaround.

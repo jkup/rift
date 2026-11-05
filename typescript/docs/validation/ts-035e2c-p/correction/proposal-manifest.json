@@ -1,0 +1,48 @@
+[
+  {
+    "path": "tools/test262/script-plan.mjs",
+    "originalSha256": "c61ae04ef432aba0e5ab548cadb4fff3ed9848b771870da74f77f94791da52b8",
+    "proposedSha256": "ab20c1f78b31377ebb18f13741e1077a3f9a4bd772790f13bd0b20facae8210f",
+    "original": "docs/validation/ts-035e2c-p/proposals/tools/test262/script-plan.mjs.original",
+    "proposed": "docs/validation/ts-035e2c-p/proposals/tools/test262/script-plan.mjs.proposed"
+  },
+  {
+    "path": "tools/test262/script-ledger.mjs",
+    "originalSha256": "d065dc664eaa5e252e11393be2ba879286fe65e424fc480d183024dcd4438167",
+    "proposedSha256": "fae6321287e971662257621a06336dd1a52fda29b4becb0513749160010f3440",
+    "original": "docs/validation/ts-035e2c-p/proposals/tools/test262/script-ledger.mjs.original",
+    "proposed": "docs/validation/ts-035e2c-p/correction/proposals/tools/test262/script-ledger.mjs.proposed",
+    "previousProposed": "docs/validation/ts-035e2c-p/proposals/tools/test262/script-ledger.mjs.proposed",
+    "previousProposedSha256": "b6d1005e429debee0068920edbf3ddc2bbbe0c910c3fd96ec21ab35db51ec477"
+  },
+  {
+    "path": "tools/test262/script-plan.test.mjs",
+    "originalSha256": "67da20f0ababb7b99de3eb8e203cd2b4d6bcad0f1825358a850f64bb00206ea7",
+    "proposedSha256": "d8da436d7606666527b0eca41fa024ceff9368e05ca900e1aeb0b62987f3b496",
+    "original": "docs/validation/ts-035e2c-p/proposals/tools/test262/script-plan.test.mjs.original",
+    "proposed": "docs/validation/ts-035e2c-p/proposals/tools/test262/script-plan.test.mjs.proposed"
+  },
+  {
+    "path": "docs/validation/ts-035e2b/support.mjs",
+    "originalSha256": "1c1a389cedb72e48677bc43ad962ab12f9d1bbefb4cc802b942cd61e0332310e",
+    "proposedSha256": "eac51c999513fe6e3f240db17e07d5c43d0192920ae853a7a1697782aa30a15c",
+    "original": "docs/validation/ts-035e2c-p/proposals/docs/validation/ts-035e2b/support.mjs.original",
+    "proposed": "docs/validation/ts-035e2c-p/correction/proposals/docs/validation/ts-035e2b/support.mjs.proposed",
+    "previousProposed": "docs/validation/ts-035e2c-p/proposals/docs/validation/ts-035e2b/support.mjs.proposed",
+    "previousProposedSha256": "d156c1ac80b5624fd6798d5d4dfba77470e06a063205d68b20a4f403843f2eac"
+  },
+  {
+    "path": "tools/test262/script-ledger.test.mjs",
+    "originalSha256": "e591d100c570aff750bcb49f24eb82501a53c100dc80f452e55f932b5bec9613",
+    "proposedSha256": "07916e3109b4cb104a88eb2f8ffc8c190d97d4ab9bb6efb8f9dad0eb96179524",
+    "original": "docs/validation/ts-035e2c-p/proposals/tools/test262/script-ledger.test.mjs.original",
+    "proposed": "docs/validation/ts-035e2c-p/proposals/tools/test262/script-ledger.test.mjs.proposed"
+  },
+  {
+    "path": "docs/validation/ts-035e2b/extended.mjs",
+    "originalSha256": "f8d60658922f66ab61d48d3bafb01938f7f560dafc7ee9c31e0d3a8765367b4c",
+    "proposedSha256": "5e96fd3d212c9cb67aa53887be79120aa432b462fbe473d2468c2299145a8682",
+    "original": "docs/validation/ts-035e2c-p/proposals/docs/validation/ts-035e2b/extended.mjs.original",
+    "proposed": "docs/validation/ts-035e2c-p/proposals/docs/validation/ts-035e2b/extended.mjs.proposed"
+  }
+]
