@@ -22,6 +22,6 @@ test('approved closure: exactly the reviewed C predicates and D2/D4 closed rule 
  const from="need(b.action==='execute' && op.phase!=='parse' && ['resource-limit','unsupported-operation'].includes(o.kind));";
  const to="need((b.action==='execute' || op.stage==='harness') && op.phase!=='parse' && ['resource-limit','unsupported-operation'].includes(o.kind));";
  const ruleFrom="ruleCode:one(['return-outside-function'])";
- const ruleTo="ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target'])";
+ const ruleTo="ruleCode:one(['return-outside-function','duplicate-block-lexical-function','duplicate-strict-parameter','assignment-target','lexical-declaration-statement'])";
  for(const name of ['script-driver-result.mjs','script-result.mjs']){const old=execFileSync('git',['show','e66876d:typescript/tools/test262/'+name],{encoding:'utf8'});assert.equal(old.split(from).length,2);assert.equal(old.split(ruleFrom).length,2);assert.equal(readFileSync(new URL(name,import.meta.url),'utf8').replaceAll('\r\n','\n'),old.replace(from,to).replace(ruleFrom,ruleTo).replaceAll('\r\n','\n'));}
 });

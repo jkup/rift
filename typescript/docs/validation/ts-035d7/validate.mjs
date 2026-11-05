@@ -18,7 +18,7 @@ for(const lane of process.argv.includes('--node')?['node']:['node','native'])for
  const paths=[['reason'],['diagnostic','message'],['diagnostic','phase'],['diagnostic','name'],['diagnostic','loc','line'],['diagnostic','loc','column'],...(row.expected.rejection===null?[]:Object.keys(row.expected.rejection).map(k=>['rejection',k]))];
  for(const path of paths){const wrong=structuredClone(row.expected);let at=wrong;for(const k of path.slice(0,-1))at=at[k];const k=path.at(-1);at[k]=typeof at[k]==='number'?at[k]+1:'WRONG';assert.throws(()=>assert.deepEqual(actual.audit,wrong));mutations++;}
  }}
- assert.deepEqual(actual.ordinary,i<140?row.current:row.expected.result,row.id+' eight ordinary');
+ assert.deepEqual(actual.ordinary,i<140?{...row.current,preparation:row.futurePreparation}:row.expected.result,row.id+' eight ordinary');
  const n=JSON.parse(actual.nodes[2]);assert.deepEqual({source:n.source,body:n.body,scopes:n.scopes.map(({id,node,body})=>[id,{node,body}]),declarations:n.declarations.map(({id,node,initializer})=>[id,{node,initializer}]),assignments:n.assignments.map(({node,eligible})=>[node,eligible])},i<140?row.retention:row.expected.retention,row.id+' retention');
  for(const runtime of actual.runtime){const expected=rows.find(r=>r.text===runtime.text);assert(expected);assert.deepEqual(runtime.audit,expected.expected);}
  }catch(e){writeFileSync(here+'/matrix-failure.json',JSON.stringify({record,error:String(e)},null,2));throw e;}

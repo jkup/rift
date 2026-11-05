@@ -1,0 +1,32 @@
+✖ D8 actual both-host producer and serializer bytes match all 320 frozen wire literals (78.227ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 234.4051
+
+✖ failing tests:
+
+test at tools\test262\script-lexical-statement-dispatch.test.mjs:7:1
+✖ D8 actual both-host producer and serializer bytes match all 320 frozen wire literals (78.227ms)
+  AssertionError [ERR_ASSERTION]: node/alpha/parse-only/test/return-outside-function/plain
+  + actual - expected
+  
+  + '{"driverVersion":2,"nonce":"alpha","requestSha256":"undefined","mode":"conformance","operation":{"stage":"test","phase":"parse","unitId":"u0","realmId":"test"},"source":{"unitId":"u0","realmId":"test","location":{"line":1,"column":1}},"testBodyEvaluated":false,"harnessValidated":false,"preflightId":null,"completedUnits":[],"inspection":null,"result":{"kind":"syntax-error","phase":"parse","constructorName":"SyntaxError","ruleCode":"return-outside-function"}}'
+  - '{"driverVersion":2,"nonce":"alpha","requestSha256":"5afec55b1f366b4842d9b34ef10a628e91d227304aac8d0673177fcb91207a30","mode":"conformance","operation":{"stage":"test","phase":"parse","unitId":"u0","realmId":"test"},"source":{"unitId":"u0","realmId":"test","location":{"line":1,"column":1}},"testBodyEvaluated":false,"harnessValidated":false,"preflightId":null,"completedUnits":[],"inspection":null,"result":{"kind":"syntax-error","phase":"parse","constructorName":"SyntaxError","ruleCode":"return-outside-function"}}'
+  
+      at TestContext.<anonymous> (file:///C:/Users/jonku/code/rift/typescript/tools/test262/script-lexical-statement-dispatch.test.mjs:12:9)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '{"driverVersion":2,"nonce":"alpha","requestSha256":"undefined","mode":"conformance","operation":{"stage":"test","phase":"parse","unitId":"u0","realmId":"test"},"source":{"unitId":"u0","realmId":"test","location":{"line":1,"column":1}},"testBodyEvaluated":false,"harnessValidated":false,"preflightId":null,"completedUnits":[],"inspection":null,"result":{"kind":"syntax-error","phase":"parse","constructorName":"SyntaxError","ruleCode":"return-outside-function"}}',
+    expected: '{"driverVersion":2,"nonce":"alpha","requestSha256":"5afec55b1f366b4842d9b34ef10a628e91d227304aac8d0673177fcb91207a30","mode":"conformance","operation":{"stage":"test","phase":"parse","unitId":"u0","realmId":"test"},"source":{"unitId":"u0","realmId":"test","location":{"line":1,"column":1}},"testBodyEvaluated":false,"harnessValidated":false,"preflightId":null,"completedUnits":[],"inspection":null,"result":{"kind":"syntax-error","phase":"parse","constructorName":"SyntaxError","ruleCode":"return-outside-function"}}',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,10 @@
+{
+  "files": 4744,
+  "allBytesRestored": true,
+  "recoveredFromGitWithExactSavedHash": [
+    "docs/validation/ts-035d5/matrix-results.json",
+    "docs/validation/ts-035d7/matrix-results.json.gz",
+    "docs/validation/ts-035d8-p/production-check-results.json"
+  ],
+  "finalFiveStagesHistoryRestored": true
+}

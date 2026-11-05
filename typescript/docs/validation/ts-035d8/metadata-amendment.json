@@ -1,0 +1,1085 @@
+{
+  "approval": "Coordinator 2026-11-05; new D8 tests only; frozen D8-P bytes preserved",
+  "rows": [
+    {
+      "variant": "raw",
+      "negative": null,
+      "request": {
+        "id": "same",
+        "text": "let x; x=7; x;"
+      },
+      "original": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "valid-ready",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      },
+      "amended": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "same",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      }
+    },
+    {
+      "variant": "raw",
+      "negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "request": {
+        "id": "same",
+        "text": "let x; x=7; x;"
+      },
+      "original": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "valid-ready",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      },
+      "amended": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "same",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      }
+    },
+    {
+      "variant": "raw",
+      "negative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "request": {
+        "id": "same",
+        "text": "let x; x=7; x;"
+      },
+      "original": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "valid-ready",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      },
+      "amended": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "same",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      }
+    },
+    {
+      "variant": "strict",
+      "negative": null,
+      "request": {
+        "id": "same",
+        "text": "let x; x=7; x;"
+      },
+      "original": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "valid-ready",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      },
+      "amended": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "same",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      }
+    },
+    {
+      "variant": "strict",
+      "negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "request": {
+        "id": "same",
+        "text": "let x; x=7; x;"
+      },
+      "original": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "valid-ready",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      },
+      "amended": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "same",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      }
+    },
+    {
+      "variant": "strict",
+      "negative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "request": {
+        "id": "same",
+        "text": "let x; x=7; x;"
+      },
+      "original": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "valid-ready",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      },
+      "amended": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "same",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      }
+    },
+    {
+      "variant": "non-strict",
+      "negative": null,
+      "request": {
+        "id": "same",
+        "text": "let x; x=7; x;"
+      },
+      "original": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "valid-ready",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      },
+      "amended": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "same",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      }
+    },
+    {
+      "variant": "non-strict",
+      "negative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "request": {
+        "id": "same",
+        "text": "let x; x=7; x;"
+      },
+      "original": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "valid-ready",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      },
+      "amended": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "same",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      }
+    },
+    {
+      "variant": "non-strict",
+      "negative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "request": {
+        "id": "same",
+        "text": "let x; x=7; x;"
+      },
+      "original": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "valid-ready",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      },
+      "amended": {
+        "kind": "complete",
+        "goal": "Script",
+        "unit": {
+          "id": "same",
+          "text": "let x; x=7; x;"
+        },
+        "consumedUnits": 14,
+        "strictness": {
+          "ownStrict": false,
+          "inheritedStrict": false,
+          "strict": false,
+          "directives": []
+        },
+        "scopes": [
+          {
+            "id": 0,
+            "kind": "script",
+            "parent": null,
+            "start": 0,
+            "end": 14,
+            "strict": false,
+            "formals": [],
+            "catchParameter": null,
+            "lexicalDeclarations": [
+              0
+            ],
+            "varDeclarations": [],
+            "lexicalNames": [
+              "x"
+            ],
+            "varNames": []
+          }
+        ],
+        "declarations": [
+          {
+            "id": 0,
+            "kind": "let",
+            "site": {
+              "name": "x",
+              "start": 4,
+              "end": 5,
+              "loc": {
+                "line": 1,
+                "column": 5
+              }
+            },
+            "scope": 0,
+            "variableScope": 0,
+            "functionScope": null,
+            "initializer": null
+          }
+        ],
+        "functions": []
+      }
+    }
+  ]
+}

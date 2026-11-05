@@ -947,3 +947,20 @@ Ordinary parsing, preparation, execution and rejection/codec dispatch do not use
 this audit. Const, lexical loop heads, patterns, ASI and Annex B function branches
 remain excluded. See [D7 validation](validation/ts-035d7/README.md) for complete
 frozen literals, both-host runtime files, inherited identity and preservation checks.
+
+## TS-035D8 lexical Statement dispatch
+
+Bounded Script preparation now retries only an original declaration-in-Statement
+rejection through the unchanged full D7 audit. An eligible audit projects the
+first source-ordered `let` keyword to `lexical-declaration-statement`; every veto
+returns the original rejection and keeps retained nodes. D1–D7, mixed-rule and
+late-resource vetoes, Realm-profile priority and legacy return precedence remain.
+The fifth closed rule is accepted by both v2 decoders; serialization is unchanged.
+
+The five production files and six old-test migrations match the accepted D8-P
+whole-file proposals. A coordinator-approved correction in the new D8 validator
+changes only nine ready metadata expected unit IDs, with exact guards and
+negative old-ID controls; the frozen original fixtures and failures are retained.
+See [D8 evidence](validation/ts-035d8/README.md). This remains an implementation
+candidate pending independent acceptance, with no grammar, execution or admission
+expansion and all 60 corpus variants still blocked.
