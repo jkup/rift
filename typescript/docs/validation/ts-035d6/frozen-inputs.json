@@ -1,0 +1,36 @@
+{
+  "counts": {
+    "sources": 102,
+    "contexts": 366,
+    "wire": 256,
+    "mutations": 512,
+    "profiles": 8,
+    "prefix": 24,
+    "history": 12,
+    "metadata": 36,
+    "budgets": 72,
+    "ready": 2
+  },
+  "files": [
+    {
+      "path": "semantic-matrix.json",
+      "sha256": "5c3e5b018e51eda950ece2a3bc90271e2d970fd44642f91ebb8a5f3cbea0de69"
+    },
+    {
+      "path": "wire-matrix.json",
+      "sha256": "66f9d3e32315ff2740bd729cb8f85d5993b2e137c97e21d8484099c8ca00ac19"
+    },
+    {
+      "path": "future-controls.json",
+      "sha256": "262fdbc58f85c743dd0c755925902785706b56bd83376daa097cdc942bcebad9"
+    },
+    {
+      "path": "inputs/alpha.js",
+      "sha256": "a2b4bbab57d74d57250083e91dcb857292eeaee9c749ab8887ebf940e08a6b65"
+    },
+    {
+      "path": "inputs/beta.js",
+      "sha256": "4f2352b69af385ad7c694507ee3d6dbcdb4f9d896a94234b2df5d7ca33346ee2"
+    }
+  ]
+}

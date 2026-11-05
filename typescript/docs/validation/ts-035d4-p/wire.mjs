@@ -39,8 +39,8 @@ for(const r of rows){
  const child=copy(r.child),envelope=copy(r.envelope);
  if(parameter&&!future){child.result.ruleCode='duplicate-block-lexical-function';envelope.observation.ruleCode='duplicate-block-lexical-function';}
  assert.deepEqual(decodeChild(child),child);assert.deepEqual(decodeEnvelope(envelope),envelope);
- for(const m of mutations){const c=copy(child);set(c,m.childPath,m.value);assert.throws(()=>decodeChild(c),r.id+'/'+m.id);rejections++;
-  if(m.envelopePath){const e=copy(envelope);set(e,m.envelopePath,m.value);assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);rejections++;}}
+ for(const m of mutations){const c=copy(child);set(c,m.childPath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeChild(c),c,r.id+'/'+m.id);else assert.throws(()=>decodeChild(c),r.id+'/'+m.id);rejections++;
+  if(m.envelopePath){const e=copy(envelope);set(e,m.envelopePath,m.value);if(m.id==='assignment-rule'&&future)assert.deepEqual(decodeEnvelope(e),e,r.id+'/'+m.id);else assert.throws(()=>decodeEnvelope(e),r.id+'/'+m.id);rejections++;}}
  for(const c of structural(child)){assert.throws(()=>decodeChild(c));rejections++;}
  for(const e of structural(envelope)){assert.throws(()=>decodeEnvelope(e));rejections++;}
  for(const b of structural(r.binding)){assert.throws(()=>parseScriptDriverResult(Buffer.from(JSON.stringify(child)),b));assert.throws(()=>parseScriptEnvelope(JSON.stringify(envelope),b));rejections+=2;}

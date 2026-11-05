@@ -1,0 +1,22 @@
+[
+  {
+    "name": "malformed",
+    "prototypeGets": 0,
+    "status": "PASS"
+  },
+  {
+    "name": "forged",
+    "prototypeGets": 0,
+    "status": "PASS"
+  },
+  {
+    "name": "legacy",
+    "prototypeGets": 0,
+    "status": "PASS"
+  },
+  {
+    "name": "profile",
+    "prototypeGets": 0,
+    "status": "PASS"
+  }
+]

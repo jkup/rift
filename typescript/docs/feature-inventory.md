@@ -914,3 +914,20 @@ ordinary planning, D1-D4, preparation, legacy return behavior and emission remai
 unchanged. This evidence API adds no supported execution grammar or wire code.
 See [D5 evidence](validation/ts-035d5/README.md) for the frozen source matrix,
 retention/identity controls and both-host validation. Awaiting independent review.
+
+## TS-035D6 numeric assignment rejection dispatch
+
+The bounded Script preparation path now retries the unchanged full-source D5
+numeric assignment audit only after an original `parse.assignment-target`
+unsupported rejection. Eligible numeric targets produce the closed
+`assignment-target` syntax-error code and the frozen first-target diagnostic.
+Every veto retains the original rejection and retained nodes. No AST or execution
+support is added; D1–D5 audits, legacy return handling and mixed-rule vetoes remain.
+Both v2 decoders accept the fourth closed rule. Serialization is unchanged.
+
+The exact five production proposals and four old-test migrations are audited by
+`docs/validation/ts-035d6-p/verify.mjs --applied`. Current D6 validation, the approved
+nullable-history test correction, full both-host producer/serializer evidence and
+preservation checks are recorded in `docs/validation/ts-035d6/`. The 69 static gates, 212 guest records per host and all 45 validation stages pass.
+Acceptance is pending independent reviews; no corpus admission,
+conformance launch, new grammar, evaluator behavior or C++ change is implied.

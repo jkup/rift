@@ -1,0 +1,13 @@
+warning: in the working copy of 'typescript/COORDINATION.md', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/TASKS.md', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/docs/feature-inventory.md', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/docs/validation/ts-035d2-p/verify-future-wire.mjs', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/docs/validation/ts-035d5/validate.mjs', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/src/parser.ts', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/src/script-observation-types.ts', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/src/script-observation.ts', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/tools/test262/script-driver-result.mjs', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/tools/test262/script-observe-codec.test.mjs', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/tools/test262/script-result.mjs', CRLF will be replaced by LF the next time Git touches it
+{"wholeFiles":898,"migrations":4,"protected":5123,"applied":true,"all60Blocked":true}
+PASS exact proposal/scope/history, 212 both hosts, 68+1 gates, all inherited stages and 60 blocked variants

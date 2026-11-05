@@ -1,0 +1,13 @@
+file:///C:/Users/jonku/code/rift/typescript/build/node/test/script-assignment-target-dispatch.js:22
+    throw new Error(label); }
+          ^
+
+Error: seed record and location
+    at check (file:///C:/Users/jonku/code/rift/typescript/build/node/test/script-assignment-target-dispatch.js:22:11)
+    at controls (file:///C:/Users/jonku/code/rift/typescript/build/node/test/script-assignment-target-dispatch.js:82:29)
+    at file:///C:/Users/jonku/code/rift/typescript/build/node/test/script-assignment-target-dispatch.js:155:5
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)
+
+Node.js v26.13.0

@@ -65,6 +65,20 @@ export function parseBoundedScriptDeclarationPlan(unit: ScriptSourceUnit, nodes:
 }
 // Preparation alone may certify bounded rules after full-source parsing.
 export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {
+    const original = parseBoundedScriptPreparationBeforeNumericAudit(unit, nodes);
+    if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
+        original.rejection.capabilityCode !== "parse.assignment-target") return original;
+    const audit = auditBoundedScriptNumericAssignments(original.unit.text);
+    if (audit.kind !== "eligible") return original;
+    const first = audit.candidates[0];
+    if (first === undefined) throw new Error("eligible numeric audit requires candidate");
+    return { kind: "blocked", goal: "Script", unit: original.unit,
+        rejection: { kind: "syntax-error", ruleCode: "assignment-target" },
+        diagnostic: { phase: "parse", name: "SyntaxError", message: "invalid numeric assignment target",
+            loc: { line: first.target.loc.line, column: first.target.loc.column } } };
+}
+// Preserve D4 dispatch, its original rejection and retained nodes before retry.
+function parseBoundedScriptPreparationBeforeNumericAudit(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {
     const original = parseStructuralPlan(unit, nodes, true, true);
     if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
         original.rejection.capabilityCode !== "parse.duplicate-parameter") return original;

@@ -32,10 +32,10 @@ for(const r of rows){
  assert.throws(()=>parseEnvelope(JSON.stringify(r.envelope)));
  for(const m of matrix.mutations){
   const c=copy(r.child);set(c,m.childPath,m.value);
-  if(m.id==='parameter-rule')assert.deepEqual(parseChild(c),c,r.id+'/'+m.id+' reviewed D4 code');
+  if(m.id==='parameter-rule'||m.id==='assignment-rule')assert.deepEqual(parseChild(c),c,r.id+'/'+m.id+' reviewed D4 code');
   else assert.throws(()=>parseChild(c),r.id+'/'+m.id);mutations++;
   if(m.envelopePath){const e=copy(r.envelope);set(e,m.envelopePath,m.value);
-   if(m.id==='parameter-rule')assert.deepEqual(parseFull(e),e,r.id+'/'+m.id+' reviewed D4 code');
+   if(m.id==='parameter-rule'||m.id==='assignment-rule')assert.deepEqual(parseFull(e),e,r.id+'/'+m.id+' reviewed D4 code');
    else assert.throws(()=>parseFull(e),r.id+'/'+m.id);mutations++;}
  }
  for(const c of structural(r.child)){assert.throws(()=>parseChild(c));mutations++;}
