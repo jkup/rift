@@ -1,0 +1,10 @@
+{
+  "args": [
+    "typescript/docs/validation/ts-035d5-p/verify.mjs"
+  ],
+  "status": 1,
+  "signal": null,
+  "error": null,
+  "stdout": "",
+  "stderr": "warning: in the working copy of 'typescript/COORDINATION.md', CRLF will be replaced by LF the next time Git touches it\nnode:internal/modules/run_main:111\r\n    triggerUncaughtException(\r\n    ^\r\n\r\nAssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\r\n+ actual - expected\r\n\r\n  {\r\n+   code: 'parse.assignment-target',\r\n-   diagnostic: {\r\n-     loc: {\r\n-       column: 1,\r\n-       line: 1\r\n-     },\r\n-     message: 'invalid assignment target',\r\n-     name: 'SyntaxError',\r\n-     phase: 'parse'\r\n-   },\r\n    kind: 'blocked',\r\n    reason: 'grammar-or-resource',\r\n-   rejection: {\r\n-     capabilityCode: 'parse.assignment-target',\r\n-     kind: 'unsupported-syntax'\r\n-   }\r\n  }\r\n\r\n    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-035d5-p/verify.mjs:29:105\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\r\n    at async node:internal/modules/esm/loader:650:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5) {\r\n  generatedMessage: true,\r\n  code: 'ERR_ASSERTION',\r\n  actual: {\r\n    kind: 'blocked',\r\n    reason: 'grammar-or-resource',\r\n    code: 'parse.assignment-target'\r\n  },\r\n  expected: {\r\n    kind: 'blocked',\r\n    reason: 'grammar-or-resource',\r\n    diagnostic: {\r\n      phase: 'parse',\r\n      name: 'SyntaxError',\r\n      message: 'invalid assignment target',\r\n      loc: { line: 1, column: 1 }\r\n    },\r\n    rejection: {\r\n      kind: 'unsupported-syntax',\r\n      capabilityCode: 'parse.assignment-target'\r\n    }\r\n  },\r\n  operator: 'deepStrictEqual',\r\n  diff: 'simple'\r\n}\r\n\r\nNode.js v26.13.0\r\n"
+}

@@ -1,0 +1,26 @@
+{
+  "claim": "Literal future obligations; no implementation or native measurement",
+  "hosts": ["node", "native"],
+  "inputs": ["inputs/alpha.js", "inputs/beta.js"],
+  "orders": [["alpha", "beta"], ["beta", "alpha"]],
+  "actions": ["parse-only", "execute"],
+  "roles": ["test", "harness"],
+  "realms": ["script-A", "script-B"],
+  "prefixes": [
+    {"units": [], "completed": []},
+    {"units": [{"id": "h0", "path": "harness/repeated.js", "text": "0;"}], "completed": ["h0"]},
+    {"units": [{"id": "h0", "path": "harness/repeated.js", "text": "0;"}, {"id": "h1", "path": "harness/repeated.js", "text": "1;"}], "completed": ["h0", "h1"]}
+  ],
+  "failedOccurrence": {"id": "bad", "path": "harness/repeated.js", "text": "42=7;", "joinsPrefix": false, "laterTest": "throw 19;", "laterTestEvaluated": false},
+  "profileControls": [
+    {"profile": "legacy", "text": "42=7;", "expected": {"kind": "profile-rejected", "reason": "realm"}},
+    {"profile": "legacy", "textRecipe": {"character": "x", "count": 100001}, "expected": {"kind": "profile-rejected", "reason": "realm"}}
+  ],
+  "sameIdControls": {"id": "same", "texts": ["42=7;", "42=7;class C{}", "let x; x=7; x;"], "audit": ["eligible", "blocked", "none"], "emission": ["assignment-target", "parse.assignment-target", "ready"]},
+  "sourceAuthority": {"metadataModes": ["strict", "non-strict", "raw"], "expectedNegative": [null, {"phase": "parse", "type": "SyntaxError"}, {"phase": "runtime", "type": "TypeError"}], "ruleUnaffectedByMetadata": true, "callerUnitAfterPreparation": {"id": "changed", "text": "throw 19;"}, "readyRetainsOriginalSourceAndNodes": true},
+  "rejectedEffects": {"globalOwnKeys": "identical", "globalDescriptors": "identical", "declarativeBindings": "identical", "instantiations": 0, "bodyEntries": 0, "guestCalls": 0, "prints": 0, "stepsDelta": 0, "callsDelta": 0, "depthDelta": 0, "active": "same identity", "lastAbrupt": "same identity"},
+  "historySeeds": [null, {"id": "history", "text": "throw 3;", "preserve": ["completion", "value", "location", "record", "realm"]}],
+  "readyControls": [{"text": "let x; x=7; x;", "action": "parse-only", "bodyEntries": 0, "result": "normal"}, {"text": "let x; x=7; x;", "action": "execute", "bodyEntries": 1, "completion": {"type": "normal", "value": 7}}],
+  "limits": {"sourceUnits": [100000, 100001], "parseDepth": [128, 129], "steps": [0, 1, 10000], "calls": [0, 1, 64], "evaluationDepth": [0, 1, 256], "wallMs": [0, 1000], "outputBytes": [0, 65536, 65537]},
+  "invariants": {"D5ordinaryAndPreparation": "all seven API outputs and retained node associations unchanged", "emissionVeto": "exact original preparation", "continuationNodes": null, "continuationExecutableResult": false, "registryChanged": false, "allVariantsBlocked": 60, "oldGuestRecordsPerHost": 212, "oldStaticGates": 67}
+}
