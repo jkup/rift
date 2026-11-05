@@ -1,0 +1,9 @@
+First offline audit exited 1: input.mjs:148 TypeError reading meta.locale.length.
+Cause: the design probe supplied manifest entries directly to blockers, whereas
+production metadata() supplies default locale/includes/features/flags arrays and
+negative:null. Probe fixed by supplying those same defaults before manifest data.
+No production change, no guest execution, no failed acceptance hidden.
+
+One later invocation ran audit.mjs from repository root instead of its documented
+typescript working directory and exited 1 with ENOENT preservation.json. Rerun
+from typescript succeeded. No generated historical output was touched.

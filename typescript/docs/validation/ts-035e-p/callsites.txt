@@ -1,0 +1,160 @@
+typescript/tools/test262\boundary.test.mjs:5:import { newLedger, appendAttempt, report } from './ledger.mjs';
+typescript/tools/test262\boundary.test.mjs:12:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', incoming), /context|protocol|profile-not-admitted/);
+typescript/tools/test262\boundary.test.mjs:14:  assert.equal(report(ledger).counts.pass, 0);
+typescript/tools/test262\boundary.test.mjs:15:  assert.equal(report(ledger).missing, 1);
+typescript/tools/test262\boundary.test.mjs:38:  appendAttempt(ledger, 'synthetic-0', parent);
+typescript/tools/test262\boundary.test.mjs:39:  assert.equal(report(ledger).counts.pass, 1);
+typescript/tools/test262\boundary.test.mjs:48:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', r), /context/);
+typescript/tools/test262\boundary.test.mjs:49:  assert.equal(report(ledger).counts.pass, 0);
+typescript/tools/test262\boundary.test.mjs:52:    assert.throws(() => appendAttempt(newLedger(selection), 'synthetic-0', r), /context/);
+typescript/tools/test262\boundary.test.mjs:92:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', positive), /profile-not-admitted/);
+typescript/tools/test262\boundary.test.mjs:93:  assert.equal(report(ledger).counts.pass, 0);
+typescript/tools/test262\corpus.integration.mjs:8:import { frozenManifest, planCorpus, localBytes, verifyBytes, metadata, compareMetadata, REVISION } from './input.mjs';
+typescript/tools/test262\corpus.integration.mjs:9:import { preflightRecords, prepareSelection } from './plan.mjs';
+typescript/tools/test262\corpus.integration.mjs:10:import { newLedger, appendAttempt, report, persist } from './ledger.mjs';
+typescript/tools/test262\corpus.integration.mjs:45:    let selection=await planCorpus({root:temp,revision:REVISION,lane:'node',paths:[s.path]});
+typescript/tools/test262\corpus.integration.mjs:48:    await prepareSelection(selection);
+typescript/tools/test262\corpus.integration.mjs:59:    selection=await planCorpus({root:temp,revision:REVISION,lane:'node',paths:[s.path]});
+typescript/tools/test262\corpus.integration.mjs:67:    const selection=await planCorpus({root,revision:REVISION,lane,paths:manifest.entries.map(e=>e.path)});
+typescript/tools/test262\corpus.integration.mjs:70:    await prepareSelection(selection);
+typescript/tools/test262\corpus.integration.mjs:73:    for(const {id,record} of await preflightRecords(selection)) appendAttempt(ledger,id,record);
+typescript/tools/test262\corpus.integration.mjs:74:    const result=report(ledger);
+typescript/tools/test262\driver-result.test.mjs:5:import { appendAttempt, newLedger, report } from './ledger.mjs';
+typescript/tools/test262\driver-result.test.mjs:172:  assert.throws(() => appendAttempt(ledger, 'synthetic-0', r), /identity/);
+typescript/tools/test262\driver-result.test.mjs:174:  assert.equal(report(ledger).counts.pass, 0);
+typescript/tools/test262\driver-result.test.mjs:176:  assert.throws(() => report(injected));
+typescript/src\cli.ts:6:function report(filename: string, diagnostic: Diagnostic): void {
+typescript/src\cli.ts:23:    if (result.phase === "parse") { report(filename, result.diagnostic); process.exitCode = 2; }
+typescript/src\cli.ts:27:        report(filename, d); process.exitCode = 1;
+typescript/tools/test262\input.test.mjs:7:  blockers, safePath, localBytes, planCorpus, frozenManifest, REVISION, harnessPaths } from './input.mjs';
+typescript/tools/test262\input.test.mjs:17:  await assert.rejects(planCorpus({ root: '.', revision: REVISION, lane: 'node', paths: ['test/synthetic.js'] }), error('selection-mismatch'));
+typescript/tools/test262\input.test.mjs:23:    const p = await planCorpus({ root: 'nonexistent-corpus', revision, lane: 'node', paths });
+typescript/tools/test262\input.mjs:164:export async function planCorpus({ root, revision, lane, paths }) {
+typescript/tools/test262\ledger.test.mjs:6:import { newLedger, appendAttempt, report, persist } from './ledger.mjs';
+typescript/tools/test262\ledger.test.mjs:7:import { frozenManifest, variants, blockers, fixtureSelection, planCorpus, REVISION } from './input.mjs';
+typescript/tools/test262\ledger.test.mjs:8:import { preflightRecords, prepareSelection, main } from './plan.mjs';
+typescript/tools/test262\ledger.test.mjs:13:  records.forEach((record,i) => appendAttempt(ledger,`synthetic-${i}`,record));
+typescript/tools/test262\ledger.test.mjs:17:  const node = report(measured([synthetic()]));
+typescript/tools/test262\ledger.test.mjs:18:  const native = report(measured([synthetic({ lane:'native',observation:{kind:'timeout',wallMs:1000} })]));
+typescript/tools/test262\ledger.test.mjs:30:  const r = report(measured(records));
+typescript/tools/test262\ledger.test.mjs:42:  appendAttempt(ledger,'synthetic-0',a); appendAttempt(ledger,'synthetic-1',b);
+typescript/tools/test262\ledger.test.mjs:43:  const r = report(ledger);
+typescript/tools/test262\ledger.test.mjs:66:    await prepareSelection(selection);
+typescript/tools/test262\ledger.test.mjs:71:      appendAttempt(ledger,id,record);
+typescript/tools/test262\ledger.test.mjs:73:    const r = report(ledger);
+typescript/tools/test262\ledger.test.mjs:90:  const r=report(ledger);
+typescript/tools/test262\ledger.test.mjs:96:  await assert.rejects(planCorpus({root:'.',revision:REVISION,lane:'node',paths:['test/dep_FIXTURE.js']}),/selection-mismatch/);
+typescript/tools/test262\ledger.test.mjs:105:    assert.equal(report(JSON.parse(await readFile(path,'utf8'))).missing,3);
+typescript/tools/test262\ledger.test.mjs:106:    appendAttempt(ledger,'synthetic-0',records[0]);
+typescript/tools/test262\ledger.test.mjs:108:    const r=report(JSON.parse(await readFile(path,'utf8')));
+typescript/tools/test262\ledger.test.mjs:116:  assert.throws(()=>appendAttempt(ledger,'synthetic-0',synthetic()),/retry-policy/);
+typescript/tools/test262\ledger.test.mjs:117:  appendAttempt(ledger,'synthetic-0',synthetic(),'explicit synthetic rerun control');
+typescript/tools/test262\ledger.test.mjs:118:  const r=report(ledger);
+typescript/tools/test262\ledger.test.mjs:131:  const selection=await planCorpus({root:'.',revision:REVISION,lane:'node',paths:[manifest.entries[0].path]});
+typescript/tools/test262\ledger.test.mjs:136:  assert.throws(()=>appendAttempt(ledger,'synthetic-0',synthetic({mode:'body-observation'})),/identity/);
+typescript/tools/test262\ledger.test.mjs:137:  assert.equal(report(ledger).counts.pass,0);
+typescript/tools/test262\ledger.test.mjs:140:  assert.equal(report(measured([synthetic()])).exitCode,0);
+typescript/tools/test262\ledger.test.mjs:141:  assert.equal(report(measured([synthetic({observation:{kind:'unsupported-syntax',capabilityCode:'x'}})])).exitCode,1);
+typescript/tools/test262\ledger.test.mjs:142:  assert.equal(report(newLedger(selectionFor([synthetic()]))).exitCode,2);
+typescript/tools/test262\ledger.test.mjs:149:  assert.throws(()=>appendAttempt(newLedger(selection),'synthetic-0',success),/profile-not-admitted/);
+typescript/tools/test262\ledger.test.mjs:151:  assert.throws(()=>appendAttempt(newLedger(selection),'synthetic-0',changed),/identity/);
+typescript/tools/test262\ledger.test.mjs:153:  assert.throws(()=>appendAttempt(newLedger(ordinary),'synthetic-0',success),/identity/);
+typescript/tools/test262\ledger.mjs:11:export function appendAttempt(ledger, id, record, retryReason = null) {
+typescript/tools/test262\ledger.mjs:42:export function report(ledger) {
+typescript/tools/test262\observe.mjs:7:import { sha256, verifyBytes, transform, safePath, planCorpus, localBytes } from './input.mjs';
+typescript/tools/test262\observe.mjs:176:  const selection = await planCorpus({ root: corpusRoot, revision, lane, paths: [path] });
+typescript/docs/validation/ts-035c\binding-finalization\previous-adapter.mjs.txt:8:import {sha256,blobHash,verifyBytes,transform,planCorpus,localBytes,frozenManifest,REVISION} from './input.mjs';
+typescript/docs/validation/ts-035c\binding-finalization\previous-adapter.mjs.txt:9:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/docs/validation/ts-035c\binding-finalization\previous-adapter.mjs.txt:10:import {assertScriptContext,inspectScriptEnvelope} from './script-result.mjs';
+typescript/docs/validation/ts-035c\binding-finalization\previous-adapter.mjs.txt:57: else {try{need(p.exitCode===0,'process');child=parseScriptDriverResult(bytes,binding);}catch{observation={kind:'host-fault',faultCode:'protocol'};}}
+typescript/docs/validation/ts-035c\binding-finalization\previous-adapter.mjs.txt:60: assertScriptContext(record,context,binding);
+typescript/docs/validation/ts-035c\binding-finalization\previous-adapter.mjs.txt:150:  selection=await planCorpus({root:o.corpusRoot,revision:o.revision,lane:o.lane,paths:[o.path]});
+typescript/tools/test262\plan.mjs:5:import { planCorpus, sha256, REVISION } from './input.mjs';
+typescript/tools/test262\plan.mjs:7:import { newLedger, appendAttempt, persist, report } from './ledger.mjs';
+typescript/tools/test262\plan.mjs:9:export async function prepareSelection(selection) {
+typescript/tools/test262\plan.mjs:49:  const selection = await planCorpus({ root, revision, lane, paths });
+typescript/tools/test262\plan.mjs:50:  await prepareSelection(selection);
+typescript/tools/test262\plan.mjs:54:  for (const { id, record } of await preflightRecords(selection)) appendAttempt(ledger, id, record);
+typescript/tools/test262\plan.mjs:56:  const summary = report(ledger);
+typescript/tools/test262\script-assignment-target-dispatch.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-assignment-target-dispatch.test.mjs:6:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+typescript/tools/test262\script-assignment-target-dispatch.test.mjs:12: assert.equal(bytes,row.ascii,row.id);assert.deepEqual(JSON.parse(bytes),row.child,row.id);assert.deepEqual(parseScriptDriverResult(Buffer.from(bytes),b),row.child);
+typescript/tools/test262\script-assignment-target-dispatch.test.mjs:14: assert.deepEqual(parseScriptEnvelope(JSON.stringify(envelope),b),row.envelope);assert.deepEqual(assertScriptContext(envelope,row.context,b),row.envelope);
+typescript/tools/test262\README.md:59:`prepareSelection` attaches a parent-owned `resultContext` to each planned variant
+typescript/tools/test262\README.md:61:`appendAttempt` requires that context and checks its expectation/blockers against
+typescript/tools/test262\README.md:68:or `appendAttempt` to bind the result to its parent-owned plan.
+typescript/tools/test262\script-driver-result.test.mjs:3:import { parseScriptDriverResult as parse } from './script-driver-result.mjs';
+typescript/tools/test262\script-driver-result.mjs:144:export function parseScriptDriverResult(bytes,binding) {
+typescript/tools/test262\script-lexical-statement-dispatch.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-lexical-statement-dispatch.test.mjs:6:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+typescript/tools/test262\script-lexical-statement-dispatch.test.mjs:12: assert.equal(bytes,row.ascii,row.id);assert.deepEqual(JSON.parse(bytes),row.child,row.id);assert.deepEqual(parseScriptDriverResult(Buffer.from(bytes),b),row.child);
+typescript/tools/test262\script-lexical-statement-dispatch.test.mjs:14: assert.deepEqual(parseScriptEnvelope(JSON.stringify(envelope),b),row.envelope);assert.deepEqual(assertScriptContext(envelope,row.context,b),row.envelope);
+typescript/docs/validation/ts-035c\coordinator-admission.md.txt:28:| `input.mjs:planCorpus/variants/transform/harnessPaths/blockers` | plan, observe, corpus/input tests. Verified manifest + bytes + metadata first; exact strict prefix; ordered non-deduplicated harness; hard-coded blockers including old capability debts. No capability registry currently exists. Do not remove these blockers in this task or treat stale descriptions as authorization. |
+typescript/docs/validation/ts-035c\coordinator-admission.md.txt:29:| `plan.mjs:prepareSelection/preflightRecords` | corpus integration and planner CLI. Always v1 blocked contexts; null build/capability identities. Adapter digest covers input/result/ledger/plan only. No guest launch path. |
+typescript/docs/validation/ts-035c\coordinator-admission.md.txt:30:| `ledger.mjs:newLedger/appendAttempt/report/persist` | planner, corpus integration, ledger/boundary/driver tests. Full selection precedes attempts; append binds trusted context/metadata/harness; blockers require not-run; first attempt headlines; retries retain denominator. No v2 record may enter this v1 ledger. |
+typescript/docs/validation/ts-035c\coordinator-admission.md.txt:197:Exact APIs: `parseScriptDriverResult(bytes,binding:ScriptDecoderBinding)`;
+typescript/docs/validation/ts-035c\coordinator-admission.md.txt:199:`parseScriptEnvelope(json,binding:ScriptDecoderBinding|null)`;
+typescript/docs/validation/ts-035c\coordinator-admission.md.txt:200:`assertScriptContext(value,context,binding:ScriptDecoderBinding|null)`;
+typescript/docs/validation/ts-035c\coordinator-admission.md.txt:422:| **A first** | New four codec/schema files named above; new `test/script-observation-serialization.ts`, `tools/test262/script-result.test.mjs`, `script-driver-result.test.mjs`; one additive build-native gate and new evidence only. Export `scriptObservationJSONRecord(value:ChildV2):string`, `parseScriptDriverResult(bytes,binding)`, `validateScriptRecord`, `parseScriptEnvelope`, `assertScriptContext`, `inspectScriptEnvelope`. Use the exact ScriptDecoderBinding and API signatures above, including required limits and ordered transformed sources, in both decoder paths. Validate all cross-field invariants; synthetic literals only. New host modules do not import/alter v1 classifier or launcher. v2 test fixtures include a classification, and decoder independently verifies its literal derivation; no corpus registry or execution. Static-only+separate coverage and two-input serializer Node/native gate, malformed/roundtrip host tests. Stop for review. |
+typescript/docs/validation/ts-035c\coordinator-admission.md.txt:450:| T04 | valid complete v2 child -> parent composition -> stringify -> parseScriptEnvelope -> inspectScriptEnvelope -> appendScriptAttempt on synthetic context | exact field preservation and same status; forged classification rejected; actual blocked ledger refuses executed record. Output-cap kill remains resource-limit on roundtrip. |
+typescript/tools/test262\script-observation.integration.mjs:8:import {inspectScriptEnvelope,parseScriptEnvelope} from './script-result.mjs';
+typescript/tools/test262\script-observation.integration.mjs:42:  assert.deepEqual(parseScriptEnvelope(JSON.stringify(r),plan.binding),r,label);assert.deepEqual(inspectScriptEnvelope(JSON.stringify(r),plan.context,t,plan.binding),r,label);
+typescript/tools/test262\script-observe-codec.test.mjs:6:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-observe-codec.test.mjs:7:import {parseScriptEnvelope} from './script-result.mjs';
+typescript/tools/test262\script-observe-codec.test.mjs:12:function accept(r){sync(r);assert.deepEqual(parseScriptDriverResult(Buffer.from(JSON.stringify(r.child)),r.binding),r.child);assert.deepEqual(parseScriptEnvelope(JSON.stringify(r.envelope),r.binding),r.envelope);}
+typescript/tools/test262\script-observe-codec.test.mjs:13:function reject(r){sync(r);assert.throws(()=>parseScriptDriverResult(Buffer.from(JSON.stringify(r.child)),r.binding));assert.throws(()=>parseScriptEnvelope(JSON.stringify(r.envelope),r.binding));}
+typescript/tools/test262\script-observe-input.test.mjs:8:import {REVISION,frozenManifest,planCorpus,transform,sha256,verifyBytes} from './input.mjs';
+typescript/tools/test262\script-observe-input.test.mjs:39: const rows=[];for(const lane of ['node','native']){const s=await planCorpus({root:corpusRoot,revision:REVISION,lane,paths:manifest.entries.map(e=>e.path)});assert.equal(s.files.length,33);assert.ok(s.files.every(f=>f.inputError===null));const variants=s.files.flatMap(f=>f.variants);assert.equal(variants.length,60);assert.ok(variants.every(v=>v.blockers.length>0));rows.push({lane,files:33,variants:60,blocked:60});}await writeFile('docs/validation/ts-035c/blocked-results.json',JSON.stringify(rows,null,2)+'\n');
+typescript/tools/test262\script-observe-live-codec.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-observe-live-codec.test.mjs:6:import {parseScriptEnvelope,assertScriptContext,inspectScriptEnvelope} from './script-result.mjs';
+typescript/tools/test262\script-observe-live-codec.test.mjs:10: for(const row of rows){const p=JSON.parse(await readFile(join(row.directory,'plan.json'))),bytes=await readFile(p.paths.result),child=parseScriptDriverResult(bytes,p.binding),record=row.record;
+typescript/tools/test262\script-observe-live-codec.test.mjs:11:  assert.deepEqual(parseScriptEnvelope(JSON.stringify(record),p.binding),record);assert.deepEqual(assertScriptContext(record,p.context,p.binding),record);
+typescript/tools/test262\script-observe-live-codec.test.mjs:13:  for(const edit of [c=>c.nonce='stale',c=>c.requestSha256='a'.repeat(64),c=>c.operation.unitId='u999',c=>c.operation.realmId='unknown',c=>c.completedUnits=['u0','u0'],c=>c.preflightId='forged',c=>c.testBodyEvaluated=!c.testBodyEvaluated,c=>c.classification={status:'pass'}]){const c=structuredClone(child);edit(c);assert.throws(()=>parseScriptDriverResult(Buffer.from(JSON.stringify(c)),p.binding));}
+typescript/tools/test262\script-observe-live-codec.test.mjs:14:  for(const edit of [v=>v.evidence.operation.unitId='u999',v=>v.evidence.preflightId='forged',v=>v.evidence.completedUnits=['u0','u0'],v=>v.evidence.testBodyEvaluated=!v.evidence.testBodyEvaluated,v=>v.classification={status:'pass'}]){const v=structuredClone(record);edit(v);assert.throws(()=>parseScriptEnvelope(JSON.stringify(v),p.binding));}
+typescript/tools/test262\script-observe-live-codec.test.mjs:15:  for(const edit of [b=>delete b.limits.steps,b=>b.limits.calls++,b=>b.variant='non-strict',b=>b.sources[0].transformedText+=';',b=>b.sources.reverse(),b=>b.sources.push(b.sources[0])]){const b=structuredClone(p.binding);edit(b);if(JSON.stringify(b)===JSON.stringify(p.binding))continue;assert.throws(()=>parseScriptDriverResult(bytes,b));assert.throws(()=>parseScriptEnvelope(JSON.stringify(record),b));}
+typescript/tools/test262\script-observe-live-codec.test.mjs:17:  else{const c=structuredClone(child);c.result.diagnostic='ReferenceError: forged text';const accepted=parseScriptDriverResult(Buffer.from(JSON.stringify(c)),p.binding);assert.deepEqual({...accepted.result,diagnostic:undefined},{...child.result,diagnostic:undefined});}
+typescript/tools/test262\script-result.mjs:230:export function parseScriptEnvelope(json,binding) {
+typescript/tools/test262\script-result.mjs:233:export function assertScriptContext(value,context,binding) {
+typescript/tools/test262\script-result.mjs:248:      const v=assertScriptContext(parseScriptEnvelope(json,binding),context,binding);
+typescript/tools/test262\script-result.mjs:259:      const v=assertScriptContext(parseScriptEnvelope(json,binding),context,binding);
+typescript/tools/test262\script-result.mjs:266:    const v=assertScriptContext(parseScriptEnvelope(json,binding),context,binding);
+typescript/tools/test262\script-result.test.mjs:3:import { parseScriptDriverResult as childParse } from './script-driver-result.mjs';
+typescript/tools/test262\script-result.test.mjs:4:import { validateScriptRecord,parseScriptEnvelope,assertScriptContext,inspectScriptEnvelope } from './script-result.mjs';
+typescript/tools/test262\script-result.test.mjs:8:const parse=(v,b)=>parseScriptEnvelope(JSON.stringify(v),b);
+typescript/tools/test262\script-result.test.mjs:14:  assert.deepEqual(assertScriptContext(v,r.context,r.binding),v);
+typescript/tools/test262\script-result.test.mjs:27:   assert.throws(()=>parseScriptEnvelope(x,r.binding));
+typescript/tools/test262\script-result.test.mjs:41:   const context=copy(r.context);context[section][key]='b'.repeat(64);assert.throws(()=>assertScriptContext(r.envelope,context,r.binding));
+typescript/tools/test262\script-result.test.mjs:43:  const context=copy(r.context);context.identity.variant='non-strict';assert.throws(()=>assertScriptContext(r.envelope,context,r.binding));
+typescript/tools/test262\script-result.test.mjs:81:   assert.deepEqual(assertScriptContext(v,r.context,r.binding),v);
+typescript/tools/test262\script-result.test.mjs:157:  assert.deepEqual(parseScriptEnvelope(full,r.binding),r.envelope);
+typescript/tools/test262\script-result.test.mjs:158:  assert.throws(()=>parseScriptEnvelope(Buffer.concat([full,Buffer.from(' ')]),r.binding));
+typescript/tools/test262\script-result.test.mjs:170:  assert.doesNotThrow(()=>assertScriptContext(v,context,b));
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:6:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:7:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:22:  assert.deepEqual(parseScriptDriverResult(Buffer.from(bytes),row.binding),row.child,row.id+' child decoder');
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:27:  assert.deepEqual(parseScriptEnvelope(JSON.stringify(envelope),row.binding),row.envelope,row.id+' envelope decoder');
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:28:  assert.deepEqual(assertScriptContext(envelope,row.context,row.binding),row.envelope);
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:60:    assert.throws(()=>parseScriptDriverResult(Buffer.from(r.stdout.trim()),binding));
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:61:    assert.throws(()=>parseScriptEnvelope(JSON.stringify(envelope),binding));
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:63:    assert.deepEqual(parseScriptDriverResult(Buffer.from(r.stdout.trim()),binding),child);
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:64:    assert.deepEqual(parseScriptEnvelope(JSON.stringify(envelope),binding),envelope);
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:65:    assert.deepEqual(assertScriptContext(envelope,context,binding),envelope);
+typescript/tools/test262\script-observe.mjs:8:import {sha256,blobHash,verifyBytes,transform,planCorpus,localBytes,frozenManifest,REVISION} from './input.mjs';
+typescript/tools/test262\script-observe.mjs:9:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-observe.mjs:10:import {assertScriptContext,inspectScriptEnvelope} from './script-result.mjs';
+typescript/tools/test262\script-observe.mjs:57: else {try{need(p.exitCode===0,'process');child=parseScriptDriverResult(bytes,binding);}catch{observation={kind:'host-fault',faultCode:'protocol'};}}
+typescript/tools/test262\script-observe.mjs:60: assertScriptContext(record,context,binding);
+typescript/tools/test262\script-observe.mjs:150:  selection=await planCorpus({root:o.corpusRoot,revision:o.revision,lane:o.lane,paths:[o.path]});
+typescript/tools/test262\script-strict-rule-dispatch.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-strict-rule-dispatch.test.mjs:6:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+typescript/tools/test262\script-strict-rule-dispatch.test.mjs:20:  assert.deepEqual(parseScriptDriverResult(Buffer.from(bytes),row.binding),row.child,row.id+' child decoder');
+typescript/tools/test262\script-strict-rule-dispatch.test.mjs:25:  assert.deepEqual(parseScriptEnvelope(JSON.stringify(envelope),row.binding),row.envelope,row.id+' envelope decoder');
+typescript/tools/test262\script-strict-rule-dispatch.test.mjs:26:  assert.deepEqual(assertScriptContext(envelope,row.context,row.binding),row.envelope);
+typescript/src\script-observation.ts:291:    report(): ScriptControlReport { return { version: 1, nonce: this.request.nonce, control: this.control, input: this.input, passed: this.verified, observed: this.values.slice(), effects: this.effects }; }
+typescript/src\script-observation.ts:308:    return { child, report: attempt.report() };
+typescript/docs/validation/ts-035c\control-priority-correction\previous-source.ts.txt:283:    report(): ScriptControlReport { return { version: 1, nonce: this.request.nonce, control: this.control, input: this.input, passed: this.verified, observed: this.values.slice(), effects: this.effects }; }
+typescript/docs/validation/ts-035c\control-priority-correction\previous-source.ts.txt:300:    return { child, report: attempt.report() };
+typescript/docs/validation/ts-035c\parse-only-review.mjs:10:import {parseScriptDriverResult} from '../../../tools/test262/script-driver-result.mjs';
+typescript/docs/validation/ts-035c\parse-only-review.mjs:11:import {parseScriptEnvelope} from '../../../tools/test262/script-result.mjs';
+typescript/docs/validation/ts-035c\parse-only-review.mjs:47: try{parseScriptDriverResult(Buffer.from(scriptObservationJSONRecord(child)),binding);}catch{childAccepted=false;}
+typescript/docs/validation/ts-035c\parse-only-review.mjs:48: try{parseScriptEnvelope(JSON.stringify(envelope),binding);}catch{envelopeAccepted=false;}

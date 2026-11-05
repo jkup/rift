@@ -1,0 +1,720 @@
+typescript/tools/test262\boundary.test.mjs:1:import test from 'node:test';
+typescript/tools/test262\boundary.test.mjs:2:import assert from 'node:assert/strict';
+typescript/tools/test262\boundary.test.mjs:3:import { synthetic, thrown, syntax, neg, contextFor, selectionFor, H, B } from './fixtures.mjs';
+typescript/tools/test262\boundary.test.mjs:4:import { inspectEnvelope, classify, validateRecord } from './result.mjs';
+typescript/tools/test262\boundary.test.mjs:5:import { newLedger, appendAttempt, report } from './ledger.mjs';
+typescript/tools/test262\corpus.integration.mjs:3:import test from 'node:test';
+typescript/tools/test262\corpus.integration.mjs:4:import assert from 'node:assert/strict';
+typescript/tools/test262\corpus.integration.mjs:5:import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
+typescript/tools/test262\corpus.integration.mjs:6:import { tmpdir } from 'node:os';
+typescript/tools/test262\corpus.integration.mjs:7:import { join, dirname } from 'node:path';
+typescript/tools/test262\corpus.integration.mjs:8:import { frozenManifest, planCorpus, localBytes, verifyBytes, metadata, compareMetadata, REVISION } from './input.mjs';
+typescript/tools/test262\corpus.integration.mjs:9:import { preflightRecords, prepareSelection } from './plan.mjs';
+typescript/tools/test262\corpus.integration.mjs:10:import { newLedger, appendAttempt, report, persist } from './ledger.mjs';
+typescript/src\abstract-equality.ts:1:import { equal, type Value, type OperationContext, type InternalBooleanCompletion } from "./runtime.js";
+typescript/src\abstract-equality.ts:2:import { stringToNumber } from "./conversion.js";
+typescript/src\abstract-equality.ts:3:import { toPrimitive } from "./primitive-conversion.js";
+typescript/src\abstract-equality.ts:4:import type { Location } from "./syntax.js";
+typescript/src\abstract-equality.ts:6:export function isLooselyEqual(
+typescript/tools/test262\driver-result.mjs:1:import { parseDocument } from 'yaml';
+typescript/tools/test262\driver-result.mjs:2:import { terminalRecord, assertContext, inspectEnvelope } from './result.mjs';
+typescript/tools/test262\driver-result.mjs:4:export const RESULT_LIMIT = 65536;
+typescript/tools/test262\driver-result.mjs:48:export function parseDriverResult(bytes, binding) {
+typescript/tools/test262\driver-result.mjs:67:export function composeObservation(context, binding, bytes, facts) {
+typescript/src\array-like.ts:1:import type { GuestObject, OperationContext } from "./runtime.js";
+typescript/src\array-like.ts:2:import { toPrimitive } from "./primitive-conversion.js";
+typescript/src\array-like.ts:3:import type { Location } from "./syntax.js";
+typescript/src\array-like.ts:4:import { toLength, type NumberCompletion } from "./conversion.js";
+typescript/src\array-like.ts:7:export function lengthOfArrayLike(object: GuestObject, context: OperationContext, loc: Location): NumberCompletion {
+typescript/src\array-map.ts:1:import { GuestArray } from "./array-object.js";
+typescript/src\array-map.ts:2:import { lengthOfArrayLike } from "./array-like.js";
+typescript/src\array-map.ts:3:import { languageFailure, unsupportedFailure, normal, type GuestObject, type OperationContext, type Value, type ValueCompletion } from "./runtime.js";
+typescript/src\array-map.ts:4:import type { Location } from "./syntax.js";
+typescript/src\array-map.ts:5:import { wellKnownSpecies } from "./symbols.js";
+typescript/src\array-map.ts:8:export function mapObjectDefaultArray(object: GuestObject, callback: Value, thisArg: Value, context: OperationContext, loc: Location): ValueCompletion {
+typescript/tools/test262\driver-result.test.mjs:1:import test from 'node:test';
+typescript/tools/test262\driver-result.test.mjs:2:import assert from 'node:assert/strict';
+typescript/tools/test262\driver-result.test.mjs:3:import { synthetic, contextFor, selectionFor } from './fixtures.mjs';
+typescript/tools/test262\driver-result.test.mjs:4:import { validateRecord, assertContext } from './result.mjs';
+typescript/tools/test262\driver-result.test.mjs:5:import { appendAttempt, newLedger, report } from './ledger.mjs';
+typescript/tools/test262\driver-result.test.mjs:6:import { composeObservation, parseDriverResult } from './driver-result.mjs';
+typescript/tools/test262\driver-result.test.mjs:7:import { countOutput } from './observe.mjs';
+typescript/src\array-object.ts:1:import { GuestObject, languageFailure, failure, validatePropertyDescriptorUpdate } from "./runtime.js";
+typescript/src\array-object.ts:2:import type { PropertyDescriptorUpdate, InternalBooleanCompletion, OperationContext, PropertyKey } from "./runtime.js";
+typescript/src\array-object.ts:3:import type { Location } from "./syntax.js";
+typescript/src\array-object.ts:4:import { arrayIndex } from "./property-keys.js";
+typescript/src\array-object.ts:5:import { toNumber, toUint32 } from "./conversion.js";
+typescript/src\array-object.ts:6:import { toPrimitive } from "./primitive-conversion.js";
+typescript/src\array-object.ts:15:export class GuestArray extends GuestObject {
+typescript/tools/test262\fixtures.mjs:2:import { terminalRecord } from './result.mjs';
+typescript/tools/test262\fixtures.mjs:3:export const H = 'a'.repeat(64);
+typescript/tools/test262\fixtures.mjs:4:export const B = 'b'.repeat(40);
+typescript/tools/test262\fixtures.mjs:5:export function synthetic({ observation = { kind: 'normal' }, negative = null,
+typescript/tools/test262\fixtures.mjs:25:export const thrown = (name = null, valueKind = 'object', outcome = name === null ? 'absent' : 'available') => ({
+typescript/tools/test262\fixtures.mjs:30:export const syntax = { kind: 'syntax-error', phase: 'parse', constructorName: 'SyntaxError', ruleCode: 'assignment-target' };
+typescript/tools/test262\fixtures.mjs:31:export const neg = (phase, type) => ({ phase, type });
+typescript/tools/test262\fixtures.mjs:32:export const fm = (yaml = '', body = '1;') => `/*---\ndescription: synthetic\n${yaml}\n---*/\n${body}`;
+typescript/tools/test262\fixtures.mjs:35:export function contextFor(record) {
+typescript/tools/test262\fixtures.mjs:40:export function selectionFor(records) {
+typescript/tools/test262\input.mjs:1:import { createHash } from 'node:crypto';
+typescript/tools/test262\input.mjs:2:import { readFile, realpath, stat } from 'node:fs/promises';
+typescript/tools/test262\input.mjs:3:import { resolve, relative, isAbsolute, sep } from 'node:path';
+typescript/tools/test262\input.mjs:4:import { parseDocument, visit } from 'yaml';
+typescript/tools/test262\input.mjs:6:export const REVISION = '91c70759363c46557b694792bf34a2551a7af5ba';
+typescript/tools/test262\input.mjs:8:export const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+typescript/tools/test262\input.mjs:9:export const blobHash = bytes => createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
+typescript/tools/test262\input.mjs:10:export class InputError extends Error {
+typescript/tools/test262\input.mjs:15:export async function frozenManifest() {
+typescript/tools/test262\input.mjs:24:export function safePath(path, prefix) {
+typescript/tools/test262\input.mjs:31:export async function localBytes(root, path, prefix = 'test/') {
+typescript/tools/test262\input.mjs:51:export function verifyBytes(bytes, expectedBlob) {
+typescript/tools/test262\input.mjs:63:export function metadata(source) {
+typescript/tools/test262\input.mjs:109:export function compareMetadata(meta, entry) {
+typescript/tools/test262\input.mjs:119:export function variants(meta) {
+typescript/tools/test262\input.mjs:126:export function transform(bytes, variant) {
+typescript/tools/test262\input.mjs:129:export function harnessPaths(meta) {
+typescript/tools/test262\input.mjs:136:export function blockers(meta, variant, id = null) {
+typescript/tools/test262\input.mjs:157:export function fixtureSelection(paths) {
+typescript/tools/test262\input.mjs:164:export async function planCorpus({ root, revision, lane, paths }) {
+typescript/tools/test262\input.test.mjs:1:import test from 'node:test';
+typescript/tools/test262\input.test.mjs:2:import assert from 'node:assert/strict';
+typescript/tools/test262\input.test.mjs:3:import { mkdtemp, mkdir, writeFile, rm, symlink } from 'node:fs/promises';
+typescript/tools/test262\input.test.mjs:4:import { tmpdir } from 'node:os';
+typescript/tools/test262\input.test.mjs:5:import { join } from 'node:path';
+typescript/tools/test262\input.test.mjs:6:import { metadata, variants, transform, verifyBytes, blobHash, sha256, compareMetadata,
+typescript/tools/test262\input.test.mjs:8:import { fm } from './fixtures.mjs';
+typescript/src\cli.ts:1:import { readFileSync } from "node:fs";
+typescript/src\cli.ts:2:import { run } from "./interpreter.js";
+typescript/src\cli.ts:3:import { Realm } from "./realm.js";
+typescript/src\cli.ts:4:import { display } from "./runtime.js";
+typescript/src\cli.ts:5:import type { Diagnostic } from "./syntax.js";
+typescript/tools/test262\ledger.mjs:1:import { randomUUID } from 'node:crypto';
+typescript/tools/test262\ledger.mjs:2:import { open, rename, unlink } from 'node:fs/promises';
+typescript/tools/test262\ledger.mjs:3:import { STATUSES, validateRecord, assertContext, validateContext } from './result.mjs';
+typescript/tools/test262\ledger.mjs:4:import { isDeepStrictEqual } from 'node:util';
+typescript/tools/test262\ledger.mjs:6:export function newLedger(selection) {
+typescript/tools/test262\ledger.mjs:11:export function appendAttempt(ledger, id, record, retryReason = null) {
+typescript/tools/test262\ledger.mjs:42:export function report(ledger) {
+typescript/tools/test262\ledger.mjs:82:export async function persist(path, value) {
+typescript/src\conversion.ts:1:import type { Realm } from "./realm.js";
+typescript/src\conversion.ts:2:import { toPrimitive } from "./primitive-conversion.js";
+typescript/src\conversion.ts:3:import { languageFailure, unsupportedFailure } from "./runtime.js";
+typescript/src\conversion.ts:4:import type { Value, ThrowCompletion, PropertyKey, OperationContext } from "./runtime.js";
+typescript/src\conversion.ts:5:import type { Location } from "./syntax.js";
+typescript/src\conversion.ts:6:import type { GuestString } from "./strings.js";
+typescript/src\conversion.ts:8:export type NumberCompletion = { type: "normal"; value: number } | ThrowCompletion;
+typescript/src\conversion.ts:30:export function stringToNumber(value: GuestString): number {
+typescript/src\conversion.ts:73:export function toNumber(value: Value, loc: Location, realm: Realm | null): NumberCompletion {
+typescript/src\conversion.ts:85:export function toUint32(value: Value, loc: Location, realm: Realm | null): NumberCompletion {
+typescript/src\conversion.ts:95:export function toIntegerOrInfinity(value: Value, loc: Location, realm: Realm | null): NumberCompletion {
+typescript/src\conversion.ts:106:export function toLength(value: Value, loc: Location, realm: Realm | null): NumberCompletion {
+typescript/src\conversion.ts:112:export type StringCompletion = { type: "normal"; value: GuestString } | ThrowCompletion;
+typescript/src\conversion.ts:113:export type PropertyKeyCompletion = { type: "normal"; value: PropertyKey } | ThrowCompletion;
+typescript/src\conversion.ts:116:export function numberToString(value: number): GuestString { return String(value); }
+typescript/src\conversion.ts:119:export function toString(value: Value, loc: Location, realm: Realm | null): StringCompletion {
+typescript/src\conversion.ts:132:export function toPropertyKey(value: Value, context: OperationContext, loc: Location): PropertyKeyCompletion {
+typescript/tools/test262\ledger.test.mjs:1:import test from 'node:test';
+typescript/tools/test262\ledger.test.mjs:2:import assert from 'node:assert/strict';
+typescript/tools/test262\ledger.test.mjs:3:import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+typescript/tools/test262\ledger.test.mjs:4:import { join } from 'node:path';
+typescript/tools/test262\ledger.test.mjs:5:import { tmpdir } from 'node:os';
+typescript/tools/test262\ledger.test.mjs:6:import { newLedger, appendAttempt, report, persist } from './ledger.mjs';
+typescript/tools/test262\ledger.test.mjs:7:import { frozenManifest, variants, blockers, fixtureSelection, planCorpus, REVISION } from './input.mjs';
+typescript/tools/test262\ledger.test.mjs:8:import { preflightRecords, prepareSelection, main } from './plan.mjs';
+typescript/tools/test262\ledger.test.mjs:9:import { synthetic, thrown, selectionFor, H } from './fixtures.mjs';
+typescript/src\builtins\array.ts:1:import type { Realm } from "../realm.js";
+typescript/src\builtins\array.ts:2:import { toObject } from "../object-conversion.js";
+typescript/src\builtins\array.ts:3:import { lengthOfArrayLike } from "../array-like.js";
+typescript/src\builtins\array.ts:4:import { toPrimitive } from "../primitive-conversion.js";
+typescript/src\builtins\array.ts:5:import { toString, numberToString, type StringCompletion } from "../conversion.js";
+typescript/src\builtins\array.ts:6:import { stringConcat } from "../strings.js";
+typescript/src\builtins\array.ts:7:import { normal, UNDEFINED, type Value, type OperationContext } from "../runtime.js";
+typescript/src\builtins\array.ts:8:import type { Location } from "../syntax.js";
+typescript/src\builtins\array.ts:16:export function registerArrayConversions(realm: Realm, objectToString: Value): void {
+typescript/tools/test262\observation.integration.mjs:3:import test, { after } from 'node:test';
+typescript/tools/test262\observation.integration.mjs:4:import assert from 'node:assert/strict';
+typescript/tools/test262\observation.integration.mjs:5:import { mkdir, readFile, writeFile, mkdtemp, symlink, link, readdir, copyFile, lstat } from 'node:fs/promises';
+typescript/tools/test262\observation.integration.mjs:6:import childProcess, { spawnSync } from 'node:child_process';
+typescript/tools/test262\observation.integration.mjs:7:import { syncBuiltinESMExports } from 'node:module';
+typescript/tools/test262\observation.integration.mjs:8:import { resolve, join } from 'node:path';
+typescript/tools/test262\observation.integration.mjs:9:import { blobHash, sha256, transform } from './input.mjs';
+typescript/tools/test262\observation.integration.mjs:10:import { prepareObservation, launchObservation, validateLaunch } from './observe.mjs';
+typescript/src\builtins\boolean.ts:1:import type { Realm } from "../realm.js";
+typescript/src\builtins\boolean.ts:2:import { GuestBoolean } from "../primitive-objects.js";
+typescript/src\builtins\boolean.ts:3:import { languageFailure, normal, type ThrowCompletion, type Value } from "../runtime.js";
+typescript/src\builtins\boolean.ts:4:import type { Location } from "../syntax.js";
+typescript/src\builtins\boolean.ts:6:export type BooleanCompletion = { type: "normal"; value: boolean } | ThrowCompletion;
+typescript/src\builtins\boolean.ts:8:export function thisBooleanValue(input: Value, loc: Location, realm: Realm | null): BooleanCompletion {
+typescript/src\builtins\boolean.ts:17:export function registerBooleanConversions(realm: Realm): void {
+typescript/src\builtins\error.ts:1:import type { Realm } from "../realm.js";
+typescript/src\builtins\error.ts:2:import type { Location } from "../syntax.js";
+typescript/src\builtins\error.ts:3:import { GuestError, GuestObject, UNDEFINED, normal, languageFailure, type ErrorName,
+typescript/src\builtins\error.ts:5:import { toPrimitive } from "../primitive-conversion.js";
+typescript/src\builtins\error.ts:6:import { toString, type StringCompletion } from "../conversion.js";
+typescript/src\builtins\error.ts:46:export function createErrorConstructor(realm: Realm, name: ErrorName): GuestObject {
+typescript/src\builtins\error.ts:53:export function registerErrors(realm: Realm): void {
+typescript/tools/test262\observe.mjs:1:import { spawn, execFileSync } from 'node:child_process';
+typescript/tools/test262\observe.mjs:2:import { randomUUID } from 'node:crypto';
+typescript/tools/test262\observe.mjs:3:import { readFile, writeFile, mkdir, lstat, realpath, readdir } from 'node:fs/promises';
+typescript/tools/test262\observe.mjs:4:import { resolve, dirname, join } from 'node:path';
+typescript/tools/test262\observe.mjs:5:import { fileURLToPath, pathToFileURL } from 'node:url';
+typescript/tools/test262\observe.mjs:6:import { isDeepStrictEqual } from 'node:util';
+typescript/tools/test262\observe.mjs:7:import { sha256, verifyBytes, transform, safePath, planCorpus, localBytes } from './input.mjs';
+typescript/tools/test262\observe.mjs:8:import { validateContext } from './result.mjs';
+typescript/tools/test262\observe.mjs:9:import { persist } from './ledger.mjs';
+typescript/tools/test262\observe.mjs:10:import { composeObservation } from './driver-result.mjs';
+typescript/tools/test262\observe.mjs:14:export const DEFAULT_LIMITS = Object.freeze({ sourceUnits: 100000, parseDepth: 128, evaluationDepth: 256,
+typescript/tools/test262\observe.mjs:19:export function countOutput(facts, chunk) {
+typescript/tools/test262\observe.mjs:62:export async function prepareObservation({ selection, variantId, sourceBytes, mode, archiveRoot, limits = {} }) {
+typescript/tools/test262\observe.mjs:108:export async function validateLaunch(plan) {
+typescript/tools/test262\observe.mjs:119:export async function launchObservation(plan, { signal } = {}) {
+typescript/tools/test262\observe.mjs:173:export async function main(args) {
+typescript/src\evaluator.ts:2:export { Evaluator } from "./script-execution-internal.js";
+typescript/src\builtins\function.ts:1:import { wellKnownHasInstance } from "../symbols.js";
+typescript/src\builtins\function.ts:2:import type { Location } from "../syntax.js";
+typescript/src\builtins\function.ts:3:import type { Realm } from "../realm.js";
+typescript/src\builtins\function.ts:4:import { UNDEFINED, languageFailure, normal, type Value, type Callable, type OperationContext, type ValueCompletion, truthy } from "../runtime.js";
+typescript/src\builtins\function.ts:5:import { stringSlice, type GuestString } from "../strings.js";
+typescript/src\builtins\function.ts:7:export function nativeFunctionString(initialName: string | null): GuestString {
+typescript/src\builtins\function.ts:19:export function functionSourceString(callable: Callable): string {
+typescript/src\builtins\function.ts:29:export function ordinaryHasInstance(callee: Value, value: Value, context: OperationContext, loc: Location): ValueCompletion {
+typescript/src\builtins\function.ts:46:export function instanceofOperator(value: Value, target: Value, context: OperationContext, loc: Location): ValueCompletion {
+typescript/src\builtins\function.ts:61:export function registerFunction(realm: Realm): void {
+typescript/tools/test262\plan.mjs:1:import { readFile, mkdir } from 'node:fs/promises';
+typescript/tools/test262\plan.mjs:2:import { resolve } from 'node:path';
+typescript/tools/test262\plan.mjs:3:import { pathToFileURL } from 'node:url';
+typescript/tools/test262\plan.mjs:4:import { randomUUID } from 'node:crypto';
+typescript/tools/test262\plan.mjs:5:import { planCorpus, sha256, REVISION } from './input.mjs';
+typescript/tools/test262\plan.mjs:6:import { terminalRecord } from './result.mjs';
+typescript/tools/test262\plan.mjs:7:import { newLedger, appendAttempt, persist, report } from './ledger.mjs';
+typescript/tools/test262\plan.mjs:9:export async function prepareSelection(selection) {
+typescript/tools/test262\plan.mjs:29:export function preflightRecords(selection) {
+typescript/tools/test262\plan.mjs:40:export async function main(args) {
+typescript/src\delete-reference.ts:1:import { languageFailure, normal, type Reference, type OperationContext, type ValueCompletion } from "./runtime.js";
+typescript/src\delete-reference.ts:2:import { toObject } from "./object-conversion.js";
+typescript/src\delete-reference.ts:3:import { toPropertyKey } from "./conversion.js";
+typescript/src\delete-reference.ts:4:import { formatPropertyKey } from "./symbols.js";
+typescript/src\delete-reference.ts:5:import type { Location } from "./syntax.js";
+typescript/src\delete-reference.ts:7:export function deleteReference(ref: Reference, context: OperationContext, loc: Location, strict = true): ValueCompletion {
+typescript/src\builtins\number.ts:1:import { GuestNumber } from "../primitive-objects.js";
+typescript/src\builtins\number.ts:2:import { numberToString, toIntegerOrInfinity, type NumberCompletion } from "../conversion.js";
+typescript/src\builtins\number.ts:3:import { toPrimitive } from "../primitive-conversion.js";
+typescript/src\builtins\number.ts:4:import { numberToStringRadix } from "../number-radix.js";
+typescript/src\builtins\number.ts:5:import type { Location } from "../syntax.js";
+typescript/src\builtins\number.ts:6:import type { Realm } from "../realm.js";
+typescript/src\builtins\number.ts:7:import { GuestObject, languageFailure, normal, UNDEFINED, type Builtin, type Value } from "../runtime.js";
+typescript/src\builtins\number.ts:10:export function registerNumber(realm: Realm): void {
+typescript/src\builtins\number.ts:36:export function thisNumberValue(input: Value, loc: Location, realm: Realm | null): NumberCompletion {
+typescript/src\builtins\number.ts:44:export function registerNumberConversions(realm: Realm): void {
+typescript/src\interpreter.ts:1:import type { Rejection } from "./outcomes.js";
+typescript/src\interpreter.ts:2:import { parse } from "./parser.js";
+typescript/src\interpreter.ts:3:import { Evaluator } from "./evaluator.js";
+typescript/src\interpreter.ts:4:import { UNDEFINED, type Completion } from "./runtime.js";
+typescript/src\interpreter.ts:5:import { Realm } from "./realm.js";
+typescript/src\interpreter.ts:6:import type { Diagnostic } from "./syntax.js";
+typescript/src\interpreter.ts:7:export type RunResult = { phase: "parse"; diagnostic: Diagnostic; rejection: Rejection } | { phase: "runtime"; completion: Completion };
+typescript/src\interpreter.ts:8:export function run(source: string, realm: Realm): RunResult {
+typescript/src\builtins\object.ts:1:import type { Realm } from "../realm.js";
+typescript/src\builtins\object.ts:2:import { toObject } from "../object-conversion.js";
+typescript/src\builtins\object.ts:3:import { GuestError, normal, type Value } from "../runtime.js";
+typescript/src\builtins\object.ts:4:import { GuestArray } from "../array-object.js";
+typescript/src\builtins\object.ts:5:import { GuestBoolean, GuestNumber, GuestStringObject } from "../primitive-objects.js";
+typescript/src\builtins\object.ts:6:import { wellKnownToStringTag } from "../symbols.js";
+typescript/src\builtins\object.ts:7:import type { OperationContext, ValueCompletion } from "../runtime.js";
+typescript/src\builtins\object.ts:8:import type { Location } from "../syntax.js";
+typescript/src\builtins\object.ts:23:export function registerObject(realm: Realm): void {
+typescript/src\builtins\object.ts:32:export function registerObjectValueOf(realm: Realm): void {
+typescript/src\builtins\object.ts:40:export function registerObjectToString(realm: Realm): Value {
+typescript/src\global-environment.ts:1:import type { Realm } from "./realm.js";
+typescript/src\global-environment.ts:2:import {
+typescript/src\global-environment.ts:7:import type { Location } from "./syntax.js";
+typescript/src\global-environment.ts:11:export class GlobalEnvironment {
+typescript/src\global-environment.ts:117:export type StrictGlobalReference = {
+typescript/src\global-environment.ts:122:export type GlobalReferenceCompletion = { type: "normal"; reference: StrictGlobalReference } | ThrowCompletion;
+typescript/src\global-environment.ts:123:export function resolveStrictGlobalBinding(environment: GlobalEnvironment, name: string, loc: Location): GlobalReferenceCompletion {
+typescript/src\global-environment.ts:128:export function getStrictGlobalBinding(reference: StrictGlobalReference, context: OperationContext): ValueCompletion {
+typescript/src\global-environment.ts:132:export function putStrictGlobalBinding(reference: StrictGlobalReference, value: Value, context: OperationContext): ValueCompletion {
+typescript/tools/test262\result.mjs:1:import { parseDocument } from 'yaml';
+typescript/tools/test262\result.mjs:2:import { isDeepStrictEqual } from 'node:util';
+typescript/tools/test262\result.mjs:4:export const STATUSES = ['pass', 'fail', 'unsupported-feature', 'unsupported-profile',
+typescript/tools/test262\result.mjs:51:export const processValid = x => record(x, {
+typescript/tools/test262\result.mjs:113:export function validateRecord(value) {
+typescript/tools/test262\result.mjs:135:export function classify(value, expectedNegative = null, blockers = []) {
+typescript/tools/test262\result.mjs:173:export function validateContext(context) {
+typescript/tools/test262\result.mjs:179:export function assertContext(value, context) {
+typescript/tools/test262\result.mjs:189:export function parseEnvelope(json) {
+typescript/tools/test262\result.mjs:200:export function inspectEnvelope(json, expectedContext, transport) {
+typescript/tools/test262\result.mjs:213:export function terminalRecord(identityValue, inputsValue, evidenceValue, observationValue, expectedNegative = null, blockers = []) {
+typescript/src\builtins\restricted-function.ts:1:import type { Realm } from "../realm.js";
+typescript/src\builtins\restricted-function.ts:2:import { languageFailure, type Value } from "../runtime.js";
+typescript/src\builtins\restricted-function.ts:4:export function registerRestrictedFunctionProperties(realm: Realm): void {
+typescript/src\builtins\string.ts:1:import type { Realm } from "../realm.js";
+typescript/src\builtins\string.ts:2:import { GuestStringObject } from "../primitive-objects.js";
+typescript/src\builtins\string.ts:3:import { languageFailure, normal, type ThrowCompletion, type Value } from "../runtime.js";
+typescript/src\builtins\string.ts:4:import type { GuestString } from "../strings.js";
+typescript/src\builtins\string.ts:5:import type { Location } from "../syntax.js";
+typescript/src\builtins\string.ts:6:import { toPrimitive } from "../primitive-conversion.js";
+typescript/src\builtins\string.ts:7:import { toString } from "../conversion.js";
+typescript/src\builtins\string.ts:8:import { symbolDescriptiveString } from "../symbols.js";
+typescript/src\builtins\string.ts:9:import type { GuestObject, OperationContext, ValueCompletion } from "../runtime.js";
+typescript/src\builtins\string.ts:30:export function registerString(realm: Realm): void {
+typescript/src\builtins\string.ts:44:export type StringCompletion = { type: "normal"; value: GuestString } | ThrowCompletion;
+typescript/src\builtins\string.ts:46:export function thisStringValue(input: Value, loc: Location, realm: Realm | null): StringCompletion {
+typescript/src\builtins\string.ts:55:export function registerStringConversions(realm: Realm): void {
+typescript/tools/test262\result.test.mjs:1:import test from 'node:test';
+typescript/tools/test262\result.test.mjs:2:import assert from 'node:assert/strict';
+typescript/tools/test262\result.test.mjs:3:import { synthetic, thrown, syntax, neg, contextFor } from './fixtures.mjs';
+typescript/tools/test262\result.test.mjs:4:import { classify, validateRecord, parseEnvelope, inspectEnvelope } from './result.mjs';
+typescript/src\builtins\symbol.ts:1:import type { Realm } from "../realm.js";
+typescript/src\builtins\symbol.ts:2:import { GuestSymbolObject } from "../primitive-objects.js";
+typescript/src\builtins\symbol.ts:3:import { languageFailure, normal, type ThrowCompletion, type Value } from "../runtime.js";
+typescript/src\builtins\symbol.ts:4:import { symbolDescriptiveString, wellKnownToPrimitive, wellKnownToStringTag, type GuestSymbol } from "../symbols.js";
+typescript/src\builtins\symbol.ts:5:import type { Location } from "../syntax.js";
+typescript/src\builtins\symbol.ts:7:export type SymbolCompletion = { type: "normal"; value: GuestSymbol } | ThrowCompletion;
+typescript/src\builtins\symbol.ts:9:export function thisSymbolValue(input: Value, loc: Location, realm: Realm | null): SymbolCompletion {
+typescript/src\builtins\symbol.ts:18:export function registerSymbolConversions(realm: Realm): void {
+typescript/src\number-radix-internal.ts:8:export class RadixResources {
+typescript/src\number-radix-internal.ts:28:export class RadixInterval {
+typescript/src\number-radix-internal.ts:33:export function intervalFor(value: number, stats: RadixResources): RadixInterval {
+typescript/src\number-radix-internal.ts:86:export function contains(interval: RadixInterval, numerator: bigint, denominator: bigint,
+typescript/src\number-radix-internal.ts:94:export class RadixCandidate {
+typescript/src\number-radix-internal.ts:99:export function prefer(candidate: RadixCandidate, best: RadixCandidate, stats: RadixResources): boolean {
+typescript/src\number-radix-internal.ts:108:export function select(interval: RadixInterval, b: bigint, k: number, stats: RadixResources): RadixCandidate {
+typescript/src\number-radix-internal.ts:154:export function formatRadix(value: number, radix: number, stats: RadixResources): string {
+typescript/src\number-radix.ts:1:import type { GuestString } from "./strings.js";
+typescript/src\number-radix.ts:2:import { formatRadix, RadixResources } from "./number-radix-internal.js";
+typescript/src\number-radix.ts:5:export function numberToStringRadix(value: number, radix: number): GuestString {
+typescript/tools/test262\script-assignment-target-dispatch.test.mjs:1:import assert from 'node:assert/strict';
+typescript/tools/test262\script-assignment-target-dispatch.test.mjs:2:import test from 'node:test';
+typescript/tools/test262\script-assignment-target-dispatch.test.mjs:3:import {writeFileSync} from 'node:fs';
+typescript/tools/test262\script-assignment-target-dispatch.test.mjs:4:import {here,read,observe,results} from '../../docs/validation/ts-035d6/driver.mjs';
+typescript/tools/test262\script-assignment-target-dispatch.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-assignment-target-dispatch.test.mjs:6:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+typescript/src\lexer.ts:1:import type { Rejection } from "./outcomes.js";
+typescript/src\lexer.ts:2:import type { Diagnostic, Location } from "./syntax.js";
+typescript/src\lexer.ts:3:export type Token = { kind: string; text: string; loc: Location; readonly start: number; readonly end: number };
+typescript/src\lexer.ts:4:export type LexResult = { tokens: Token[]; error: Diagnostic | null; rejection: Rejection | null };
+typescript/src\lexer.ts:12:export function lex(source: string, allowIncrement = false): LexResult {
+typescript/src\object-conversion.ts:1:import { languageFailure, type GuestObject, type OperationContext, type ThrowCompletion, type Value } from "./runtime.js";
+typescript/src\object-conversion.ts:2:import type { Location } from "./syntax.js";
+typescript/src\object-conversion.ts:4:export type ObjectCompletion = { type: "normal"; value: GuestObject } | ThrowCompletion;
+typescript/src\object-conversion.ts:7:export function toObject(input: Value, context: OperationContext, loc: Location): ObjectCompletion {
+typescript/src\observation-driver.ts:1:import { readFileSync, writeFileSync } from "node:fs";
+typescript/src\observation-driver.ts:2:import { Realm } from "./realm.js";
+typescript/src\observation-driver.ts:3:import { observe } from "./observation.js";
+typescript/src\observation-driver.ts:4:import { observationJSONRecord } from "./observation-json.js";
+typescript/tools/test262\script-driver-result.mjs:1:import { createHash } from 'node:crypto';
+typescript/tools/test262\script-driver-result.mjs:2:import { isDeepStrictEqual as equal } from 'node:util';
+typescript/tools/test262\script-driver-result.mjs:3:import { parseDocument } from 'yaml';
+typescript/tools/test262\script-driver-result.mjs:144:export function parseScriptDriverResult(bytes,binding) {
+typescript/tools/test262\script-driver-result.test.mjs:1:import test from 'node:test';
+typescript/tools/test262\script-driver-result.test.mjs:2:import assert from 'node:assert/strict';
+typescript/tools/test262\script-driver-result.test.mjs:3:import { parseScriptDriverResult as parse } from './script-driver-result.mjs';
+typescript/tools/test262\script-driver-result.test.mjs:4:import { parseDriverResult as oldParse } from './driver-result.mjs';
+typescript/tools/test262\script-driver-result.test.mjs:5:import { serialized, copy, mutations, rebind, harnessRow } from '../../docs/validation/ts-035a/controls.mjs';
+typescript/src\observation-json.ts:1:import type { Observation, ObservationResult } from "./observation.js";
+typescript/src\observation-json.ts:5:export function jsonString(value: string): string {
+typescript/src\observation-json.ts:25:export function observationJSONRecord(value: ObservationResult, nonce: string): string {
+typescript/src\observation.ts:1:import { parse } from "./parser.js";
+typescript/src\observation.ts:2:import { Evaluator } from "./evaluator.js";
+typescript/src\observation.ts:3:import type { Realm } from "./realm.js";
+typescript/src\observation.ts:4:import { UNDEFINED, type ThrowCompletion, type Value } from "./runtime.js";
+typescript/src\observation.ts:5:import type { Diagnostic, Location } from "./syntax.js";
+typescript/src\observation.ts:6:import type { Rejection, ResourceOrigin, RuntimeCapability, SyntaxCapability } from "./outcomes.js";
+typescript/src\observation.ts:8:export type ObservationMode = "parser-observation" | "body-observation";
+typescript/src\observation.ts:9:export type Observation =
+typescript/src\observation.ts:17:export type ObservationResult = {
+typescript/src\observation.ts:26:export type ObservationLimits = { readonly steps: number; readonly calls: number };
+typescript/src\observation.ts:30:export function projectThrow(result: ThrowCompletion): Observation {
+typescript/src\observation.ts:45:export function observe(source: string, realm: Realm, mode: ObservationMode, unit: string,
+typescript/tools/test262\script-lexical-statement-dispatch.test.mjs:1:import assert from 'node:assert/strict';
+typescript/tools/test262\script-lexical-statement-dispatch.test.mjs:2:import test from 'node:test';
+typescript/tools/test262\script-lexical-statement-dispatch.test.mjs:3:import {writeFileSync} from 'node:fs';
+typescript/tools/test262\script-lexical-statement-dispatch.test.mjs:4:import {here,read,observe,results} from '../../docs/validation/ts-035d8/driver.mjs';
+typescript/tools/test262\script-lexical-statement-dispatch.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-lexical-statement-dispatch.test.mjs:6:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+typescript/src\outcomes.ts:2:export type Guard = "source-units" | "parse-depth" | "steps" | "calls" | "evaluation-depth";
+typescript/src\outcomes.ts:3:export type SyntaxCapability =
+typescript/src\outcomes.ts:28:export type RuntimeCapability = "runtime.object-to-number" | "runtime.object-to-string" | "runtime.map-species";
+typescript/src\outcomes.ts:29:export type SyntaxRule = "assignment-target" | "lexical-declaration-statement" | "return-outside-function" | "duplicate-strict-parameter" | "duplicate-block-lexical-function";
+typescript/src\outcomes.ts:30:export type ResourceOrigin = { readonly kind: "resource-limit"; readonly guardCode: Guard; readonly count: number; readonly limit: number };
+typescript/src\outcomes.ts:31:export type Rejection =
+typescript/src\outcomes.ts:35:export type ThrowOrigin =
+typescript/tools/test262\script-observation.integration.mjs:1:import test, {after} from 'node:test';
+typescript/tools/test262\script-observation.integration.mjs:2:import {acquireScriptTestLease} from '../../docs/validation/ts-035c/test-lease.mjs';
+typescript/tools/test262\script-observation.integration.mjs:4:import assert from 'node:assert/strict';
+typescript/tools/test262\script-observation.integration.mjs:5:import {readFile,writeFile,mkdir} from 'node:fs/promises';
+typescript/tools/test262\script-observation.integration.mjs:6:import {resolve,join} from 'node:path';
+typescript/tools/test262\script-observation.integration.mjs:7:import {prepareScriptObservation,launchScriptObservation} from './script-observe.mjs';
+typescript/tools/test262\script-observation.integration.mjs:8:import {inspectScriptEnvelope,parseScriptEnvelope} from './script-result.mjs';
+typescript/src\parser.ts:1:import { collectLexicalStatementAudit, type LexicalStatementAudit, type LexicalStatementCandidate, type LexicalStatementContext, collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
+typescript/src\parser.ts:2:export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatementContext, NumericAssignmentAudit, NumericAssignmentCandidate, NumericAssignmentSite, StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
+typescript/src\parser.ts:3:import type { ScriptSourceUnit } from "./script-metadata.js";
+typescript/src\parser.ts:4:import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
+typescript/src\parser.ts:5:import { lex, type Token } from "./lexer.js";
+typescript/src\parser.ts:6:import type { Diagnostic, Expr, Location, Stmt, SourceText, FunctionSource, SwitchClause, VarStmt } from "./syntax.js";
+typescript/src\parser.ts:9:export type ParseResult = { body: Stmt[]; error: Diagnostic | null; rejection: Rejection | null };
+typescript/src\parser.ts:10:export function parse(source: string): ParseResult {
+typescript/src\parser.ts:25:export type ReturnCandidate = {
+typescript/src\parser.ts:31:export type ReturnCoverage =
+typescript/src\parser.ts:44:export function auditScriptReturns(source: string): ReturnCoverage {
+typescript/src\parser.ts:60:export function parseDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null = null): DeclarationPlanResult {
+typescript/src\parser.ts:63:export function parseBoundedScriptDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null = null): DeclarationPlanResult {
+typescript/src\parser.ts:67:export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {
+typescript/src\parser.ts:117:export function auditBoundedScriptBlockFunctions(source: string): BlockFunctionAudit {
+typescript/src\parser.ts:124:export function auditBoundedScriptStrictParameters(source: string): StrictParameterAudit {
+typescript/src\parser.ts:131:export function auditBoundedScriptNumericAssignments(source: string): NumericAssignmentAudit {
+typescript/src\parser.ts:139:export function auditBoundedScriptLexicalStatements(source: string): LexicalStatementAudit {
+typescript/tools/test262\script-observe-codec.test.mjs:1:import test from 'node:test';
+typescript/tools/test262\script-observe-codec.test.mjs:2:import assert from 'node:assert/strict';
+typescript/tools/test262\script-observe-codec.test.mjs:3:import {readFileSync} from 'node:fs';
+typescript/tools/test262\script-observe-codec.test.mjs:4:import {execFileSync} from 'node:child_process';
+typescript/tools/test262\script-observe-codec.test.mjs:5:import {createHash} from 'node:crypto';
+typescript/tools/test262\script-observe-codec.test.mjs:6:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-observe-codec.test.mjs:7:import {parseScriptEnvelope} from './script-result.mjs';
+typescript/tools/test262\script-observe-input.test.mjs:1:import test, {after} from 'node:test';
+typescript/tools/test262\script-observe-input.test.mjs:2:import {acquireScriptTestLease} from '../../docs/validation/ts-035c/test-lease.mjs';
+typescript/tools/test262\script-observe-input.test.mjs:4:import assert from 'node:assert/strict';
+typescript/tools/test262\script-observe-input.test.mjs:5:import {readFile,writeFile,mkdir,copyFile,mkdtemp} from 'node:fs/promises';
+typescript/tools/test262\script-observe-input.test.mjs:6:import {resolve,join,dirname} from 'node:path';
+typescript/tools/test262\script-observe-input.test.mjs:7:import {prepareScriptObservation,launchScriptObservation} from './script-observe.mjs';
+typescript/tools/test262\script-observe-input.test.mjs:8:import {REVISION,frozenManifest,planCorpus,transform,sha256,verifyBytes} from './input.mjs';
+typescript/tools/test262\script-observe-input.test.mjs:9:import {parseEnvelope} from './result.mjs';
+typescript/tools/test262\script-observe-launch.test.mjs:1:import test, {after} from 'node:test';
+typescript/tools/test262\script-observe-launch.test.mjs:2:import {acquireScriptTestLease} from '../../docs/validation/ts-035c/test-lease.mjs';
+typescript/tools/test262\script-observe-launch.test.mjs:4:import assert from 'node:assert/strict';
+typescript/tools/test262\script-observe-launch.test.mjs:5:import childProcess from 'node:child_process';
+typescript/tools/test262\script-observe-launch.test.mjs:6:import {syncBuiltinESMExports} from 'node:module';
+typescript/tools/test262\script-observe-launch.test.mjs:7:import {readFile,writeFile,mkdir,lstat,chmod,unlink} from 'node:fs/promises';
+typescript/tools/test262\script-observe-launch.test.mjs:8:import {resolve,join} from 'node:path';
+typescript/tools/test262\script-observe-launch.test.mjs:9:import {prepareScriptObservation,validateScriptLaunch,launchScriptObservation} from './script-observe.mjs';
+typescript/tools/test262\script-observe-launch.test.mjs:10:import {inspectScriptEnvelope} from './script-result.mjs';
+typescript/src\primitive-objects.ts:1:import type { GuestSymbol } from "./symbols.js";
+typescript/src\primitive-objects.ts:2:import { GuestObject, validatePropertyDescriptor, validatePropertyDescriptorUpdate } from "./runtime.js";
+typescript/src\primitive-objects.ts:3:import type { PropertyDescriptor, PropertyDescriptorUpdate, InternalBooleanCompletion, OperationContext, PropertyKey } from "./runtime.js";
+typescript/src\primitive-objects.ts:4:import { stringIndex } from "./property-keys.js";
+typescript/src\primitive-objects.ts:5:import { stringLength, stringUnit, type GuestString } from "./strings.js";
+typescript/src\primitive-objects.ts:6:import type { Location } from "./syntax.js";
+typescript/src\primitive-objects.ts:8:export class GuestBoolean extends GuestObject {
+typescript/src\primitive-objects.ts:12:export class GuestNumber extends GuestObject {
+typescript/src\primitive-objects.ts:16:export class GuestStringObject extends GuestObject {
+typescript/src\primitive-objects.ts:78:export class GuestSymbolObject extends GuestObject {
+typescript/src\primitive-conversion.ts:1:import { languageFailure, normal, type OperationContext, type Value, type ValueCompletion } from "./runtime.js";
+typescript/src\primitive-conversion.ts:2:import type { Location } from "./syntax.js";
+typescript/src\primitive-conversion.ts:3:import { wellKnownToPrimitive } from "./symbols.js";
+typescript/src\primitive-conversion.ts:5:export type PrimitiveHint = "default" | "number" | "string";
+typescript/src\primitive-conversion.ts:6:export type OrdinaryPrimitiveHint = "number" | "string";
+typescript/src\primitive-conversion.ts:8:export function ordinaryToPrimitive(
+typescript/src\primitive-conversion.ts:30:export function toPrimitive(
+typescript/tools/test262\script-observe-live-codec.test.mjs:1:import test from 'node:test';
+typescript/tools/test262\script-observe-live-codec.test.mjs:2:import assert from 'node:assert/strict';
+typescript/tools/test262\script-observe-live-codec.test.mjs:3:import {readFile} from 'node:fs/promises';
+typescript/tools/test262\script-observe-live-codec.test.mjs:4:import {join} from 'node:path';
+typescript/tools/test262\script-observe-live-codec.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-observe-live-codec.test.mjs:6:import {parseScriptEnvelope,assertScriptContext,inspectScriptEnvelope} from './script-result.mjs';
+typescript/tools/test262\script-observe-preflight.test.mjs:1:import test, {after} from 'node:test';
+typescript/tools/test262\script-observe-preflight.test.mjs:2:import {acquireScriptTestLease} from '../../docs/validation/ts-035c/test-lease.mjs';
+typescript/tools/test262\script-observe-preflight.test.mjs:4:import assert from 'node:assert/strict';
+typescript/tools/test262\script-observe-preflight.test.mjs:5:import childProcess from 'node:child_process';
+typescript/tools/test262\script-observe-preflight.test.mjs:6:import {syncBuiltinESMExports} from 'node:module';
+typescript/tools/test262\script-observe-preflight.test.mjs:7:import {readFileSync,writeFileSync} from 'node:fs';
+typescript/tools/test262\script-observe-preflight.test.mjs:8:import {mkdir,readFile,writeFile,chmod} from 'node:fs/promises';
+typescript/tools/test262\script-observe-preflight.test.mjs:9:import {join,resolve} from 'node:path';
+typescript/tools/test262\script-observe-preflight.test.mjs:10:import {prepareScriptObservation,launchScriptObservation,validateScriptLaunch} from './script-observe.mjs';
+typescript/tools/test262\script-observe.mjs:1:import {spawn,execFileSync} from 'node:child_process';
+typescript/tools/test262\script-observe.mjs:2:import {randomUUID,createHash} from 'node:crypto';
+typescript/tools/test262\script-observe.mjs:3:import {readFile,writeFile,mkdir,readdir,lstat,realpath} from 'node:fs/promises';
+typescript/tools/test262\script-observe.mjs:4:import {resolve,join,dirname} from 'node:path';
+typescript/tools/test262\script-observe.mjs:5:import {fileURLToPath} from 'node:url';
+typescript/tools/test262\script-observe.mjs:6:import {isDeepStrictEqual as equal} from 'node:util';
+typescript/tools/test262\script-observe.mjs:7:import {parseDocument} from 'yaml';
+typescript/tools/test262\script-observe.mjs:8:import {sha256,blobHash,verifyBytes,transform,planCorpus,localBytes,frozenManifest,REVISION} from './input.mjs';
+typescript/tools/test262\script-observe.mjs:9:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-observe.mjs:10:import {assertScriptContext,inspectScriptEnvelope} from './script-result.mjs';
+typescript/tools/test262\script-observe.mjs:130:export async function prepareScriptObservation(options){
+typescript/tools/test262\script-observe.mjs:174:export async function validateScriptLaunch(plan){
+typescript/tools/test262\script-observe.mjs:180:export async function launchScriptObservation(plan,{signal}={}){
+typescript/src\runtime.ts:1:import type { Guard, RuntimeCapability, ThrowOrigin } from "./outcomes.js";
+typescript/src\runtime.ts:2:import { GuestSymbol, formatPropertyKey, symbolDescriptiveString } from "./symbols.js";
+typescript/src\runtime.ts:3:import { toObject } from "./object-conversion.js";
+typescript/src\runtime.ts:4:import { toPropertyKey } from "./conversion.js";
+typescript/src\runtime.ts:5:import type { Diagnostic, Location, Stmt, FunctionSource } from "./syntax.js";
+typescript/src\runtime.ts:6:import type { GuestString } from "./strings.js";
+typescript/src\runtime.ts:7:import type { Realm } from "./realm.js";
+typescript/src\runtime.ts:8:import type { ScriptGuestCallable } from "./script-record.js";
+typescript/src\runtime.ts:9:import { arrayIndex } from "./property-keys.js";
+typescript/src\runtime.ts:11:export type Value =
+typescript/src\runtime.ts:16:export const UNDEFINED: Value = { kind: "undefined" };
+typescript/src\runtime.ts:17:export type PropertyKey = GuestString | GuestSymbol;
+typescript/src\runtime.ts:18:export type ErrorName = "Error" | "TypeError" | "ReferenceError" | "RangeError" | "SyntaxError";
+typescript/src\runtime.ts:20:export type DataDescriptorUpdate = { value?: Value; writable?: boolean; enumerable?: boolean; configurable?: boolean };
+typescript/src\runtime.ts:21:export type BooleanCompletion = { type: "normal"; value: boolean };
+typescript/src\runtime.ts:22:export type ThrowCompletion = { type: "throw"; value: Value; diagnostic: Diagnostic; readonly origin: ThrowOrigin };
+typescript/src\runtime.ts:23:export type ValueCompletion = { type: "normal"; value: Value } | ThrowCompletion;
+typescript/src\runtime.ts:24:export type InternalBooleanCompletion = BooleanCompletion | ThrowCompletion;
+typescript/src\runtime.ts:25:export type DataDescriptor = { kind: "data"; value: Value; writable: boolean; enumerable: boolean; configurable: boolean };
+typescript/src\runtime.ts:26:export type AccessorDescriptor = { kind: "accessor"; get: Value; set: Value; enumerable: boolean; configurable: boolean };
+typescript/src\runtime.ts:27:export type PropertyDescriptor = DataDescriptor | AccessorDescriptor;
+typescript/src\runtime.ts:28:export type PropertyDescriptorUpdate = DataDescriptorUpdate & { get?: Value; set?: Value };
+typescript/src\runtime.ts:29:export type DescriptorValidation = { valid: false } | { valid: true; descriptor: PropertyDescriptor };
+typescript/src\runtime.ts:32:export function validatePropertyDescriptorUpdate(desc: PropertyDescriptorUpdate): void {
+typescript/src\runtime.ts:47:export function validatePropertyDescriptor(current: PropertyDescriptor | undefined, extensible: boolean, desc: PropertyDescriptorUpdate): DescriptorValidation {
+typescript/src\runtime.ts:79:export type Completion =
+typescript/src\runtime.ts:83:export function normal(value: Value = UNDEFINED): ValueCompletion { return { type: "normal", value }; }
+typescript/src\runtime.ts:84:export function failure(name: string, message: string, loc: Location): ThrowCompletion {
+typescript/src\runtime.ts:88:export function languageFailure(realm: Realm | null, name: ErrorName, message: string, loc: Location): ThrowCompletion {
+typescript/src\runtime.ts:94:export function resourceFailure(guardCode: Guard, count: number, limit: number, message: string, loc: Location): ThrowCompletion {
+typescript/src\runtime.ts:98:export function unsupportedFailure(capabilityCode: RuntimeCapability, name: string, message: string, loc: Location): ThrowCompletion {
+typescript/src\runtime.ts:102:export type OperationContext = {
+typescript/src\runtime.ts:107:export type Builtin = (receiver: Value, args: Value[], context: OperationContext, loc: Location) => Completion;
+typescript/src\runtime.ts:108:export type ConstructBuiltin = (callee: GuestObject, args: Value[], context: OperationContext, loc: Location) => ValueCompletion;
+typescript/src\runtime.ts:109:export type BuiltinConstructor = { readonly kind: "builtin-constructor"; readonly realm: Realm;
+typescript/src\runtime.ts:111:export type Callable =
+typescript/src\runtime.ts:115:export class GuestObject {
+typescript/src\runtime.ts:266:export class GuestError extends GuestObject {
+typescript/src\runtime.ts:271:export type Binding = { initialized: boolean; mutable: boolean; value: Value };
+typescript/src\runtime.ts:272:export class Environment {
+typescript/src\runtime.ts:284:export type Reference =
+typescript/src\runtime.ts:287:export type ReferenceResult = { type: "reference"; reference: Reference } | { type: "abrupt"; completion: Completion };
+typescript/src\runtime.ts:288:export function getValue(ref: Reference, context: OperationContext, loc: Location): Completion {
+typescript/src\runtime.ts:306:export function putValue(ref: Reference, value: Value, context: OperationContext, loc: Location, strict = true): Completion {
+typescript/src\runtime.ts:329:export function truthy(value: Value): boolean {
+typescript/src\runtime.ts:339:export function display(value: Value): string {
+typescript/src\runtime.ts:349:export function equal(left: Value, right: Value): boolean {
+typescript/src\runtime.ts:361:export function sameValue(left: Value, right: Value): boolean {
+typescript/tools/test262\script-result.mjs:1:import { createHash } from 'node:crypto';
+typescript/tools/test262\script-result.mjs:2:import { isDeepStrictEqual as equal } from 'node:util';
+typescript/tools/test262\script-result.mjs:3:import { parseDocument } from 'yaml';
+typescript/tools/test262\script-result.mjs:225:export function validateScriptRecord(value,binding) {
+typescript/tools/test262\script-result.mjs:230:export function parseScriptEnvelope(json,binding) {
+typescript/tools/test262\script-result.mjs:233:export function assertScriptContext(value,context,binding) {
+typescript/tools/test262\script-result.mjs:240:export function inspectScriptEnvelope(json,context,transport,binding) {
+typescript/src\realm.ts:1:import type { GuestSymbol } from "./symbols.js";
+typescript/src\realm.ts:2:import { registerErrors, createErrorConstructor } from "./builtins/error.js";
+typescript/src\realm.ts:3:import type { ConstructBuiltin, Callable } from "./runtime.js";
+typescript/src\realm.ts:4:import { GuestArray } from "./array-object.js";
+typescript/src\realm.ts:5:import { Environment, GuestObject, GuestError, UNDEFINED, display, normal, type ErrorName, type Builtin, type Value, validatePropertyDescriptorUpdate, type PropertyDescriptorUpdate, type ValueCompletion } from "./runtime.js";
+typescript/src\realm.ts:6:import { registerNumber, registerNumberConversions } from "./builtins/number.js";
+typescript/src\realm.ts:7:import { registerFunction, nativeFunctionString } from "./builtins/function.js";
+typescript/src\realm.ts:8:import { registerRestrictedFunctionProperties } from "./builtins/restricted-function.js";
+typescript/src\realm.ts:9:import { registerObject, registerObjectValueOf, registerObjectToString } from "./builtins/object.js";
+typescript/src\realm.ts:10:import { registerSymbolConversions } from "./builtins/symbol.js";
+typescript/src\realm.ts:11:import { registerBooleanConversions } from "./builtins/boolean.js";
+typescript/src\realm.ts:12:import { registerString, registerStringConversions } from "./builtins/string.js";
+typescript/src\realm.ts:13:import { registerArrayConversions } from "./builtins/array.js";
+typescript/src\realm.ts:14:import { GlobalEnvironment } from "./global-environment.js";
+typescript/src\realm.ts:15:import type { Stmt, FunctionSource, Location } from "./syntax.js";
+typescript/src\realm.ts:16:import { GuestBoolean, GuestNumber, GuestStringObject, GuestSymbolObject } from "./primitive-objects.js";
+typescript/src\realm.ts:17:import type { GuestString } from "./strings.js";
+typescript/src\realm.ts:18:import type { ExecutableScript } from "./script-record.js";
+typescript/src\realm.ts:23:import { consumeScriptBuiltinPermit, consumeScriptConstructorPermit } from "./script-execution-internal.js";
+typescript/src\realm.ts:24:import type { ScriptEnvironment } from "./script-environment.js";
+typescript/src\realm.ts:25:import type { OperationContext } from "./runtime.js";
+typescript/src\realm.ts:27:export type Output = (line: string) => void;
+typescript/src\realm.ts:28:export type RealmProfile = "legacy" | "script";
+typescript/src\realm.ts:29:export class Realm {
+typescript/tools/test262\script-result.test.mjs:1:import test from 'node:test';
+typescript/tools/test262\script-result.test.mjs:2:import assert from 'node:assert/strict';
+typescript/tools/test262\script-result.test.mjs:3:import { parseScriptDriverResult as childParse } from './script-driver-result.mjs';
+typescript/tools/test262\script-result.test.mjs:4:import { validateScriptRecord,parseScriptEnvelope,assertScriptContext,inspectScriptEnvelope } from './script-result.mjs';
+typescript/tools/test262\script-result.test.mjs:5:import { parseEnvelope as oldParse } from './result.mjs';
+typescript/tools/test262\script-result.test.mjs:6:import { serialized,copy,mutations,envelope,transport,harnessRow,rebind,hash } from '../../docs/validation/ts-035a/controls.mjs';
+typescript/tools/test262\script-strict-rule-dispatch.test.mjs:1:import assert from 'node:assert/strict';
+typescript/tools/test262\script-strict-rule-dispatch.test.mjs:2:import test from 'node:test';
+typescript/tools/test262\script-strict-rule-dispatch.test.mjs:3:import {readFileSync,writeFileSync} from 'node:fs';
+typescript/tools/test262\script-strict-rule-dispatch.test.mjs:4:import {spawnSync} from 'node:child_process';
+typescript/tools/test262\script-strict-rule-dispatch.test.mjs:5:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-strict-rule-dispatch.test.mjs:6:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+typescript/src\property-keys.ts:1:import type { PropertyKey } from "./runtime.js";
+typescript/src\property-keys.ts:2:import { numberToString, stringToNumber } from "./conversion.js";
+typescript/src\property-keys.ts:5:export function stringIndex(key: PropertyKey, length: number): number | undefined {
+typescript/src\property-keys.ts:15:export function arrayIndex(key: PropertyKey): number | undefined {
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:1:import {createHash} from 'node:crypto';
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:2:import assert from 'node:assert/strict';
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:3:import test from 'node:test';
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:4:import {readFileSync,writeFileSync} from 'node:fs';
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:5:import {spawnSync} from 'node:child_process';
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:6:import {parseScriptDriverResult} from './script-driver-result.mjs';
+typescript/tools/test262\script-strict-parameter-dispatch.test.mjs:7:import {parseScriptEnvelope,assertScriptContext} from './script-result.mjs';
+typescript/src\script-execution-internal.ts:1:import { instanceofOperator } from "./builtins/function.js";
+typescript/src\script-execution-internal.ts:2:import type { ConstructBuiltin, BuiltinConstructor } from "./runtime.js";
+typescript/src\script-execution-internal.ts:3:import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js";
+typescript/src\script-execution-internal.ts:4:import type { Realm } from "./realm.js";
+typescript/src\script-execution-internal.ts:5:import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
+typescript/src\script-execution-internal.ts:6:import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
+typescript/src\script-execution-internal.ts:7:import type { Expr, Stmt, FunctionSource, Location, TryCatchStmt } from "./syntax.js";
+typescript/src\script-execution-internal.ts:8:import { GuestObject, UNDEFINED, normal, type Value, type ValueCompletion, type ThrowCompletion, type OperationContext, type Builtin, type Completion, type Reference, type ReferenceResult, Environment, equal, languageFailure, failure, resourceFailure, getValue, putValue, truthy } from "./runtime.js";
+typescript/src\script-execution-internal.ts:9:import { ScriptDeclarativeEnvironment, ScriptFunctionEnvironment, type ScriptEnvironment, resolveScriptBinding, getScriptBinding, putScriptBinding, deleteScriptBinding, type ScriptBindingReference } from "./script-environment.js";
+typescript/src\script-execution-internal.ts:10:import type { GlobalEnvironment } from "./global-environment.js";
+typescript/src\script-execution-internal.ts:11:import { instantiateBoundedGlobalDeclarations, type DeclarationMaterializer } from "./script-global-declarations.js";
+typescript/src\script-execution-internal.ts:16:export type { ScriptGuestCallable };
+typescript/src\script-execution-internal.ts:69:export type ScriptFunctionEnvironmentCompletion = { type: "normal"; environment: ScriptFunctionEnvironment } | ThrowCompletion;
+typescript/src\script-execution-internal.ts:95:export type ScriptBlockEnvironmentCompletion = { type: "normal"; environment: ScriptDeclarativeEnvironment } | ThrowCompletion;
+typescript/src\script-execution-internal.ts:117:export type ScriptPreparation =
+typescript/src\script-execution-internal.ts:121:export type ScriptNodeInspection = {
+typescript/src\script-execution-internal.ts:130:export type { ExecutableScript };
+typescript/src\script-execution-internal.ts:571:export function prepareStrictScript(unit: ScriptSourceUnit, realm: Realm): ScriptPreparation {
+typescript/src\script-execution-internal.ts:577:export function prepareBoundedScript(unit: ScriptSourceUnit, realm: Realm): ScriptPreparation {
+typescript/src\script-execution-internal.ts:586:import { stringConcat, stringCompare } from "./strings.js";
+typescript/src\script-execution-internal.ts:587:import { GuestArray } from "./array-object.js";
+typescript/src\script-execution-internal.ts:588:import { isLooselyEqual } from "./abstract-equality.js";
+typescript/src\script-execution-internal.ts:589:import { toObject } from "./object-conversion.js";
+typescript/src\script-execution-internal.ts:590:import { deleteReference } from "./delete-reference.js";
+typescript/src\script-execution-internal.ts:591:import { typeOfValue } from "./typeof.js";
+typescript/src\script-execution-internal.ts:592:import { toPrimitive } from "./primitive-conversion.js";
+typescript/src\script-execution-internal.ts:593:import { toNumber, toString, toPropertyKey } from "./conversion.js";
+typescript/src\script-execution-internal.ts:595:import { updateScriptEmpty, scriptExpressionCompletion, type ScriptStatementCompletion, type ScriptStatementPayload } from "./script-completion.js";
+typescript/src\script-execution-internal.ts:603:export type ScriptLimits = { readonly maxSteps: number; readonly maxCalls: number };
+typescript/src\script-execution-internal.ts:604:export type ScriptEvaluation = { phase: "body"; completion: ValueCompletion } | { phase: "instantiation"; completion: ThrowCompletion };
+typescript/src\script-execution-internal.ts:605:export type ScriptSourceSnapshot = { readonly realm: Realm; readonly record: ExecutableScript; readonly unitId: string; readonly loc: Location };
+typescript/src\script-execution-internal.ts:606:export type ScriptThrowInspection =
+typescript/src\script-execution-internal.ts:612:export type ObservedScriptEvaluation = { readonly evaluation: ScriptEvaluation;
+typescript/src\script-execution-internal.ts:614:export type ScriptFrameSnapshot = { readonly realm: Realm; readonly record: ExecutableScript;
+typescript/src\script-execution-internal.ts:618:export type ScriptSessionSnapshot = { steps: number; calls: number; depth: number;
+typescript/src\script-execution-internal.ts:627:export function consumeScriptBuiltinPermit(context: OperationContext, realm: Realm, invoke: Builtin,
+typescript/src\script-execution-internal.ts:635:export function consumeScriptConstructorPermit(context: OperationContext, realm: Realm, invoke: ConstructBuiltin,
+typescript/src\script-execution-internal.ts:643:export type { ScriptSession };
+typescript/src\script-execution-internal.ts:670:export function createScriptSession(limits: ScriptLimits = { maxSteps: 100000, maxCalls: 64 }): ScriptSession {
+typescript/src\script-execution-internal.ts:676:export function evaluateScript(session: ScriptSession, record: ExecutableScript): ScriptEvaluation {
+typescript/src\script-execution-internal.ts:679:export function evaluateScriptObserved(session: ScriptSession, record: ExecutableScript): ObservedScriptEvaluation {
+typescript/src\script-execution-internal.ts:1590:export class Evaluator extends ExecutionEngine {
+typescript/src\script-declarations.ts:1:import { parseDeclarationPlan } from "./parser.js";
+typescript/src\script-declarations.ts:2:import { scriptPrologue } from "./script-prologue.js";
+typescript/src\script-declarations.ts:3:import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
+typescript/src\script-declarations.ts:4:import type { Diagnostic, Location, Expr, Stmt, SourceText, FunctionSource, DeclarationSite, TryCatchStmt, SwitchStmt } from "./syntax.js";
+typescript/src\script-declarations.ts:5:import type { Token } from "./lexer.js";
+typescript/src\script-declarations.ts:6:import type { Rejection } from "./outcomes.js";
+typescript/src\script-declarations.ts:8:export type { DeclarationSite } from "./syntax.js";
+typescript/src\script-declarations.ts:9:export type Declaration = {
+typescript/src\script-declarations.ts:18:export type DeclarationScope = {
+typescript/src\script-declarations.ts:30:export type PlannedFunction = {
+typescript/src\script-declarations.ts:35:export type DeclarationConflict = {
+typescript/src\script-declarations.ts:40:export type ScriptDeclarationPlan = {
+typescript/src\script-declarations.ts:48:export type DeclarationPlanResult = ScriptDeclarationPlan
+typescript/src\script-declarations.ts:55:export function planScriptDeclarations(unit: ScriptSourceUnit): DeclarationPlanResult {
+typescript/src\script-declarations.ts:60:export type DeclarationNodes = {
+typescript/src\script-declarations.ts:67:export type ParsedBinding = {
+typescript/src\script-declarations.ts:86:export function collectDeclarationPlan(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes | null = null, bounded = false): DeclarationPlanResult {
+typescript/src\script-declarations.ts:93:export function collectBoundedScriptPreparation(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes): DeclarationPlanResult {
+typescript/src\script-declarations.ts:108:export type BlockFunctionCandidate = {
+typescript/src\script-declarations.ts:113:export type BlockFunctionAudit =
+typescript/src\script-declarations.ts:121:export function collectBlockFunctionAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>): BlockFunctionAudit {
+typescript/src\script-declarations.ts:127:export type LexicalStatementContext = "if-consequent" | "if-alternate" | "while-body" | "for-body";
+typescript/src\script-declarations.ts:128:export type LexicalStatementCandidate = {
+typescript/src\script-declarations.ts:133:export type LexicalStatementAudit =
+typescript/src\script-declarations.ts:141:export function collectLexicalStatementAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, candidates: readonly LexicalStatementCandidate[]): LexicalStatementAudit {
+typescript/src\script-declarations.ts:171:export type NumericAssignmentSite = {
+typescript/src\script-declarations.ts:175:export type NumericAssignmentCandidate = {
+typescript/src\script-declarations.ts:183:export type NumericAssignmentAudit =
+typescript/src\script-declarations.ts:191:export function collectNumericAssignmentAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, candidates: readonly NumericAssignmentCandidate[]): NumericAssignmentAudit {
+typescript/src\script-declarations.ts:223:export type StrictParameterCandidate = {
+typescript/src\script-declarations.ts:228:export type StrictParameterAudit =
+typescript/src\script-declarations.ts:236:export function collectStrictParameterAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>): StrictParameterAudit {
+typescript/src\script-declarations.ts:243:export type CertifiedParameterPreparationRejection = {
+typescript/src\script-declarations.ts:249:export function collectBoundedScriptParameterRejection(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>): CertifiedParameterPreparationRejection | null {
+typescript/src\script-declarations.ts:658:export function selectFunctionDeclarations(scope: DeclarationScope, declarations: readonly Declaration[]): readonly number[] {
+typescript/src\script-environment.ts:1:import { GlobalEnvironment } from "./global-environment.js";
+typescript/src\script-environment.ts:2:import { UNDEFINED, languageFailure, normal, type Value, type ValueCompletion,
+typescript/src\script-environment.ts:4:import type { Location } from "./syntax.js";
+typescript/src\script-environment.ts:5:import type { ScriptGuestCallable } from "./script-record.js";
+typescript/src\script-environment.ts:7:export type ScriptEnvironment = ScriptDeclarativeEnvironment | ScriptFunctionEnvironment
+typescript/src\script-environment.ts:45:export class ScriptDeclarativeEnvironment extends ScriptLocalBindings {
+typescript/src\script-environment.ts:48:export class ScriptFunctionEnvironment extends ScriptLocalBindings {
+typescript/src\script-environment.ts:53:export type ScriptBindingReference = {
+typescript/src\script-environment.ts:59:export type ScriptReferenceCompletion = { type: "normal"; reference: ScriptBindingReference } | ThrowCompletion;
+typescript/src\script-environment.ts:60:export function resolveScriptBinding(environment: ScriptEnvironment, name: string, loc: Location, strict = true): ScriptReferenceCompletion {
+typescript/src\script-environment.ts:70:export function getScriptBinding(reference: ScriptBindingReference, context: OperationContext): ValueCompletion {
+typescript/src\script-environment.ts:76:export function putScriptBinding(reference: ScriptBindingReference, value: Value, context: OperationContext): ValueCompletion {
+typescript/src\script-environment.ts:83:export function scriptIdentifierReceiver(_reference: ScriptBindingReference): Value { return UNDEFINED; }
+typescript/src\script-environment.ts:85:export function deleteScriptBinding(reference: ScriptBindingReference, context: OperationContext): ValueCompletion {
+typescript/src\script-metadata.ts:1:import { scriptPrologue } from "./script-prologue.js";
+typescript/src\script-metadata.ts:2:import { lex, type Token } from "./lexer.js";
+typescript/src\script-metadata.ts:3:import { parse } from "./parser.js";
+typescript/src\script-metadata.ts:4:import type { Rejection } from "./outcomes.js";
+typescript/src\script-metadata.ts:5:import type { Expr, Stmt, FunctionSource, Location } from "./syntax.js";
+typescript/src\script-metadata.ts:9:export type ScriptSourceUnit = { readonly id: string; readonly text: string };
+typescript/src\script-metadata.ts:10:export type DirectiveMetadata = {
+typescript/src\script-metadata.ts:14:export type StrictnessMetadata = {
+typescript/src\script-metadata.ts:18:export type FunctionMetadata = {
+typescript/src\script-metadata.ts:23:export type ScriptInspection =
+typescript/src\script-metadata.ts:34:export function inspectScript(unit: ScriptSourceUnit): ScriptInspection {
+typescript/src\script-observation-driver.ts:1:import { readFileSync, writeFileSync } from "node:fs";
+typescript/src\script-observation-driver.ts:2:import { observeScripts, type ObservationUnit } from "./script-observation.js";
+typescript/src\script-observation-driver.ts:3:import { scriptObservationJSONRecord } from "./script-observation-json.js";
+typescript/src\script-execution.ts:1:export { createScriptSession, evaluateScript } from "./script-execution-internal.js";
+typescript/src\script-execution.ts:2:export type { ScriptSession, ScriptLimits, ScriptEvaluation, ScriptSourceSnapshot,
+typescript/src\script-global-declarations.ts:1:import type { Declaration, PlannedFunction, ScriptDeclarationPlan } from "./script-declarations.js";
+typescript/src\script-global-declarations.ts:2:import type { ScriptSourceUnit } from "./script-metadata.js";
+typescript/src\script-global-declarations.ts:3:import type { GlobalEnvironment } from "./global-environment.js";
+typescript/src\script-global-declarations.ts:4:import { languageFailure, normal, type OperationContext, type ValueCompletion } from "./runtime.js";
+typescript/src\script-global-declarations.ts:6:export type DeclarationMaterializer = (
+typescript/src\script-global-declarations.ts:48:export function instantiateGlobalDeclarations(
+typescript/src\script-global-declarations.ts:56:export function instantiateBoundedGlobalDeclarations(
+typescript/src\script-observation-json.ts:1:import { jsonString } from "./observation-json.js";
+typescript/src\script-observation-json.ts:2:import type { ChildV2, ScriptConstructor, ScriptOperation, ScriptOriginalThrow, ScriptResult, ScriptSite } from "./script-observation-types.js";
+typescript/src\script-observation-json.ts:36:export function scriptObservationJSONRecord(value: ChildV2): string {
+typescript/src\script-completion.ts:1:import type { Value, ValueCompletion, ThrowCompletion } from "./runtime.js";
+typescript/src\script-completion.ts:4:export type ScriptStatementPayload = { readonly kind: "empty" } | { readonly kind: "value"; readonly value: Value };
+typescript/src\script-completion.ts:5:export type ScriptStatementCompletion =
+typescript/src\script-completion.ts:12:export function updateScriptEmpty(completion: ScriptStatementCompletion, previous: ScriptStatementPayload): ScriptStatementCompletion {
+typescript/src\script-completion.ts:16:export function scriptExpressionCompletion(completion: ValueCompletion): ScriptStatementCompletion {
+typescript/src\script-observation-types.ts:1:import type { Guard, RuntimeCapability, SyntaxCapability } from "./outcomes.js";
+typescript/src\script-observation-types.ts:5:export type ScriptSite = { unitId: string; realmId: string; location: { line: number; column: number } };
+typescript/src\script-observation-types.ts:6:export type ScriptOperation = { stage: "harness" | "test"; phase: "parse" | "instantiation" | "body"; unitId: string; realmId: string };
+typescript/src\script-observation-types.ts:7:export type ScriptOriginalThrow = { valueKind: "undefined" | "null" | "boolean" | "number" | "string" | "symbol" | "object"; origin: "guest" | "engine-diagnostic"; site: ScriptSite };
+typescript/src\script-observation-types.ts:8:export type ScriptConstructor =
+typescript/src\script-observation-types.ts:13:export type ScriptResult =
+typescript/src\script-observation-types.ts:21:export type ChildV2 = {
+typescript/src\script-observation.ts:1:import { Realm } from "./realm.js";
+typescript/src\script-observation.ts:2:import { prepareBoundedScript, type ExecutableScript, type ScriptPreparation } from "./script-record.js";
+typescript/src\script-observation.ts:3:import { createScriptSession, type ScriptSourceSnapshot, type ScriptSession } from "./script-execution.js";
+typescript/src\script-observation.ts:4:import { evaluateScriptObserved, type ObservedScriptEvaluation } from "./script-throw-inspection.js";
+typescript/src\script-observation.ts:5:import { parse } from "./parser.js";
+typescript/src\script-observation.ts:6:import { GuestObject, normal, sameValue, UNDEFINED, type Value, type ValueCompletion, type Builtin, type ThrowCompletion } from "./runtime.js";
+typescript/src\script-observation.ts:7:import { GuestArray } from "./array-object.js";
+typescript/src\script-observation.ts:8:import { wellKnownSpecies } from "./symbols.js";
+typescript/src\script-observation.ts:9:import { mapObjectDefaultArray } from "./array-map.js";
+typescript/src\script-observation.ts:10:import type { ChildV2, ScriptConstructor, ScriptOperation, ScriptOriginalThrow, ScriptResult, ScriptSite } from "./script-observation-types.js";
+typescript/src\script-observation.ts:12:export type ObservationUnit = { id: string; role: "harness" | "test"; text: string };
+typescript/src\script-observation.ts:13:export type ScriptObservationRequest = {
+typescript/src\script-observation.ts:17:export type ScriptControlReport = { version: 1; nonce: string; control: string; input: string; passed: boolean; observed: number[]; effects: string };
+typescript/src\script-observation.ts:294:export function observeScripts(request: ScriptObservationRequest): ChildV2 {
+typescript/src\script-observation.ts:304:export function observeScriptControl(request: ScriptObservationRequest, control: string, input: string): { child: ChildV2; report: ScriptControlReport } {
+typescript/src\script-prologue.ts:1:import type { Token } from "./lexer.js";
+typescript/src\script-prologue.ts:2:import type { StrictnessMetadata, DirectiveMetadata } from "./script-metadata.js";
+typescript/src\script-prologue.ts:3:export function scriptPrologue(text: string, tokens: Token[], index: number, inheritedStrict: boolean): StrictnessMetadata {
+typescript/src\script-record.ts:2:export { prepareStrictScript, prepareBoundedScript } from "./script-execution-internal.js";
+typescript/src\script-record.ts:3:export type { ExecutableScript, ScriptGuestCallable, ScriptPreparation, ScriptNodeInspection,
+typescript/src\script-throw-inspection.ts:2:export { evaluateScriptObserved } from "./script-execution-internal.js";
+typescript/src\script-throw-inspection.ts:3:export type { ObservedScriptEvaluation, ScriptThrowInspection } from "./script-execution-internal.js";
+typescript/src\strings.ts:3:export type GuestString = string;
+typescript/src\strings.ts:4:export function stringLength(value: GuestString): number { return value.length; }
+typescript/src\strings.ts:5:export function stringUnit(value: GuestString, index: number): GuestString { return value.charAt(index); }
+typescript/src\strings.ts:6:export function stringConcat(left: GuestString, right: GuestString): GuestString { return left + right; }
+typescript/src\strings.ts:10:export function stringCompare(left: GuestString, right: GuestString): number {
+typescript/src\strings.ts:24:export function stringSlice(value: GuestString, start: number, end: number): GuestString {
+typescript/src\typeof.ts:1:import type { Value } from "./runtime.js";
+typescript/src\typeof.ts:2:import type { GuestString } from "./strings.js";
+typescript/src\typeof.ts:5:export function typeOfValue(value: Value): GuestString {
+typescript/src\symbols.ts:1:import type { GuestString } from "./strings.js";
+typescript/src\symbols.ts:4:export class GuestSymbol {
+typescript/src\symbols.ts:9:export const wellKnownHasInstance = new GuestSymbol("Symbol.hasInstance");
+typescript/src\symbols.ts:10:export const wellKnownSpecies = new GuestSymbol("Symbol.species");
+typescript/src\symbols.ts:11:export const wellKnownToPrimitive = new GuestSymbol("Symbol.toPrimitive");
+typescript/src\symbols.ts:12:export const wellKnownToStringTag = new GuestSymbol("Symbol.toStringTag");
+typescript/src\symbols.ts:14:export function symbolDescriptiveString(symbol: GuestSymbol): GuestString {
+typescript/src\symbols.ts:18:export function formatPropertyKey(key: GuestString | GuestSymbol): GuestString {
+typescript/src\syntax.ts:1:export type SourceText = { readonly text: string };
+typescript/src\syntax.ts:2:export type FunctionSource = { readonly source: SourceText; readonly start: number; readonly end: number };
+typescript/src\syntax.ts:3:export type Location = { line: number; column: number };
+typescript/src\syntax.ts:4:export type DeclarationSite = { readonly name: string; readonly start: number; readonly end: number; readonly loc: Readonly<Location> };
+typescript/src\syntax.ts:5:export type BlockStmt = { kind: "block"; loc: Location; body: Stmt[] };
+typescript/src\syntax.ts:6:export type SwitchClause = { loc: Location; start: number; end: number; test: Expr | null; body: Stmt[] };
+typescript/src\syntax.ts:7:export type CaseBlock = { loc: Location; start: number; end: number; clauses: SwitchClause[]; body: Stmt[] };
+typescript/src\syntax.ts:8:export type SwitchStmt = { kind: "switch"; loc: Location; discriminant: Expr; caseBlock: CaseBlock };
+typescript/src\syntax.ts:9:export type TryCatchStmt = { kind: "try-catch"; loc: Location; block: BlockStmt; parameter: DeclarationSite;
+typescript/src\syntax.ts:11:export type Diagnostic = { phase: "parse" | "runtime"; name: string; message: string; loc: Location };
+typescript/src\syntax.ts:12:export type Expr =
+typescript/src\syntax.ts:28:export type VarStmt = { kind: "var"; loc: Location; declarations: { name: string; init: Expr | null }[] };
+typescript/src\syntax.ts:29:export type ForStmt = { kind: "for"; loc: Location; initializer: VarStmt | Expr | null; test: Expr | null; update: Expr | null; body: Stmt };
+typescript/src\syntax.ts:30:export type Stmt =

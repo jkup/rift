@@ -1,0 +1,1996 @@
+[
+  {
+    "id": "alpha/normal",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "normal",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/parse-normal",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "expected-parse-error",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/syntax",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "alpha/syntax/diagnostic",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "alpha/syntax-positive",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "unexpected-parse-error",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "alpha/syntax-positive/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "unexpected-parse-error",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "alpha/syntax-mismatch",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "phase-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "SyntaxError"
+      },
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "alpha/syntax-mismatch/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "phase-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "SyntaxError"
+      },
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "alpha/unsupported-syntax",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "script.uncertified-conflict",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/unsupported-syntax/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "script.uncertified-conflict",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/profile-strict",
+    "classification": {
+      "status": "unsupported-profile",
+      "reasonCode": "strict",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/profile-strict/diagnostic",
+    "classification": {
+      "status": "unsupported-profile",
+      "reasonCode": "strict",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/profile-realm",
+    "classification": {
+      "status": "unsupported-profile",
+      "reasonCode": "realm",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/profile-realm/diagnostic",
+    "classification": {
+      "status": "unsupported-profile",
+      "reasonCode": "realm",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/available",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "alpha/available/diagnostic",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "alpha/other-realm",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "alpha/other-realm/diagnostic",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "alpha/empty-name",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": ""
+    }
+  },
+  {
+    "id": "alpha/empty-name/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": ""
+    }
+  },
+  {
+    "id": "alpha/instantiation",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "alpha/instantiation/diagnostic",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "alpha/uncaught",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "uncaught-throw",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "alpha/uncaught/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "uncaught-throw",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "alpha/expected-throw",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "expected-throw",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/absent",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/absent/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/non-callable",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/non-callable/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/non-string-name",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/non-string-name/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/foreign-profile",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "constructor.foreign-profile",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/foreign-profile/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "constructor.foreign-profile",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/unregistered-realm",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "constructor.unregistered-realm",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/unregistered-realm/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "constructor.unregistered-realm",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/abrupt",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "constructor-inspection-abrupt",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/abrupt/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "constructor-inspection-abrupt",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-undefined",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-undefined/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-null",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-null/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-boolean",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-boolean/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-number",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-number/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-string",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-string/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-symbol",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/primitive-symbol/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/runtime.object-to-number",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-number",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/runtime.object-to-number/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-number",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-runtime.object-to-number",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-number",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-runtime.object-to-number/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-number",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/runtime.object-to-string",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-string",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/runtime.object-to-string/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-string",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-runtime.object-to-string",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-string",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-runtime.object-to-string/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-string",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/runtime.map-species",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.map-species",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/runtime.map-species/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.map-species",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-runtime.map-species",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.map-species",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-runtime.map-species/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.map-species",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/source-units",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "source-units",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/source-units/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "source-units",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/parse-depth",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "parse-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/parse-depth/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "parse-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/steps",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "steps",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/steps/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "steps",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-steps",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "steps",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-steps/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "steps",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/calls",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "calls",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/calls/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "calls",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-calls",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "calls",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-calls/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "calls",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/evaluation-depth",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "evaluation-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/evaluation-depth/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "evaluation-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-evaluation-depth",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "evaluation-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "alpha/secondary-evaluation-depth/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "evaluation-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/normal",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "normal",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/parse-normal",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "expected-parse-error",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/syntax",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "beta/syntax/diagnostic",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "parse",
+        "type": "SyntaxError"
+      },
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "beta/syntax-positive",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "unexpected-parse-error",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "beta/syntax-positive/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "unexpected-parse-error",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "beta/syntax-mismatch",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "phase-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "SyntaxError"
+      },
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "beta/syntax-mismatch/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "phase-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "SyntaxError"
+      },
+      "observedPhase": "parse",
+      "observedConstructorName": "SyntaxError"
+    }
+  },
+  {
+    "id": "beta/unsupported-syntax",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "script.uncertified-conflict",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/unsupported-syntax/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "script.uncertified-conflict",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/profile-strict",
+    "classification": {
+      "status": "unsupported-profile",
+      "reasonCode": "strict",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/profile-strict/diagnostic",
+    "classification": {
+      "status": "unsupported-profile",
+      "reasonCode": "strict",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/profile-realm",
+    "classification": {
+      "status": "unsupported-profile",
+      "reasonCode": "realm",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/profile-realm/diagnostic",
+    "classification": {
+      "status": "unsupported-profile",
+      "reasonCode": "realm",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/available",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "beta/available/diagnostic",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "beta/other-realm",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "beta/other-realm/diagnostic",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "beta/empty-name",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": ""
+    }
+  },
+  {
+    "id": "beta/empty-name/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": ""
+    }
+  },
+  {
+    "id": "beta/instantiation",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "beta/instantiation/diagnostic",
+    "classification": {
+      "status": "pass",
+      "reasonCode": "negative-match",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "beta/uncaught",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "uncaught-throw",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "beta/uncaught/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "uncaught-throw",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": "runtime",
+      "observedConstructorName": "ReferenceError"
+    }
+  },
+  {
+    "id": "beta/expected-throw",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "expected-throw",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/absent",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/absent/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/non-callable",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/non-callable/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/non-string-name",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/non-string-name/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/foreign-profile",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "constructor.foreign-profile",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/foreign-profile/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "constructor.foreign-profile",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/unregistered-realm",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "constructor.unregistered-realm",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/unregistered-realm/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "constructor.unregistered-realm",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/abrupt",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "constructor-inspection-abrupt",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/abrupt/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "constructor-inspection-abrupt",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-undefined",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-undefined/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-null",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-null/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-boolean",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-boolean/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-number",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-number/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-string",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-string/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-symbol",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/primitive-symbol/diagnostic",
+    "classification": {
+      "status": "fail",
+      "reasonCode": "type-mismatch",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/runtime.object-to-number",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-number",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/runtime.object-to-number/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-number",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-runtime.object-to-number",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-number",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-runtime.object-to-number/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-number",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/runtime.object-to-string",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-string",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/runtime.object-to-string/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-string",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-runtime.object-to-string",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-string",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-runtime.object-to-string/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.object-to-string",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/runtime.map-species",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.map-species",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/runtime.map-species/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.map-species",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "TypeError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-runtime.map-species",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.map-species",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-runtime.map-species/diagnostic",
+    "classification": {
+      "status": "unsupported-feature",
+      "reasonCode": "runtime.map-species",
+      "blockers": [],
+      "expectedNegative": {
+        "phase": "runtime",
+        "type": "ReferenceError"
+      },
+      "observedPhase": "runtime",
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/source-units",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "source-units",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/source-units/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "source-units",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/parse-depth",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "parse-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/parse-depth/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "parse-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/steps",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "steps",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/steps/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "steps",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-steps",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "steps",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-steps/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "steps",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/calls",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "calls",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/calls/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "calls",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-calls",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "calls",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-calls/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "calls",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/evaluation-depth",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "evaluation-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/evaluation-depth/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "evaluation-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-evaluation-depth",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "evaluation-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  },
+  {
+    "id": "beta/secondary-evaluation-depth/diagnostic",
+    "classification": {
+      "status": "resource-limit",
+      "reasonCode": "evaluation-depth",
+      "blockers": [],
+      "expectedNegative": null,
+      "observedPhase": null,
+      "observedConstructorName": null
+    }
+  }
+]

@@ -1,0 +1,1199 @@
+[
+  {
+    "id": "partial",
+    "selection": {
+      "selectionVersion": 2,
+      "lane": "node",
+      "runId": "synthetic-run",
+      "slots": [
+        {
+          "id": "s0",
+          "status": "pass",
+          "goal": "Script"
+        },
+        {
+          "id": "s1",
+          "status": "fail",
+          "goal": "Script"
+        },
+        {
+          "id": "s2",
+          "status": "unsupported-feature",
+          "goal": "Script"
+        },
+        {
+          "id": "s3",
+          "status": "unsupported-profile",
+          "goal": "Script"
+        },
+        {
+          "id": "s4",
+          "status": "harness-error",
+          "goal": "Script"
+        },
+        {
+          "id": "s5",
+          "status": "resource-limit",
+          "goal": "Script"
+        },
+        {
+          "id": "s6",
+          "status": "timeout",
+          "goal": "Script"
+        },
+        {
+          "id": "s7",
+          "status": "host-fault",
+          "goal": "Script"
+        },
+        {
+          "id": "s8",
+          "status": null,
+          "goal": "Module"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "id": "s0",
+        "attempt": 1,
+        "status": "pass",
+        "receipt": "receipt0",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 1,
+        "status": "fail",
+        "receipt": "receipt1",
+        "retryReason": null
+      },
+      {
+        "id": "s2",
+        "attempt": 1,
+        "status": "unsupported-feature",
+        "receipt": "receipt2",
+        "retryReason": null
+      },
+      {
+        "id": "s3",
+        "attempt": 1,
+        "status": "unsupported-profile",
+        "receipt": "receipt3",
+        "retryReason": null
+      },
+      {
+        "id": "s4",
+        "attempt": 1,
+        "status": "harness-error",
+        "receipt": "receipt4",
+        "retryReason": null
+      },
+      {
+        "id": "s5",
+        "attempt": 1,
+        "status": "resource-limit",
+        "receipt": "receipt5",
+        "retryReason": null
+      },
+      {
+        "id": "s6",
+        "attempt": 1,
+        "status": "timeout",
+        "receipt": "receipt6",
+        "retryReason": null
+      },
+      {
+        "id": "s7",
+        "attempt": 1,
+        "status": "host-fault",
+        "receipt": "receipt7",
+        "retryReason": null
+      }
+    ],
+    "expected": {
+      "plannedVariants": 9,
+      "completed": 8,
+      "missing": 1,
+      "attempts": 8,
+      "counts": {
+        "pass": 1,
+        "fail": 1,
+        "unsupported-feature": 1,
+        "unsupported-profile": 1,
+        "harness-error": 1,
+        "resource-limit": 1,
+        "timeout": 1,
+        "host-fault": 1
+      },
+      "complete": false,
+      "passOverPlanned": null,
+      "conditionalPass": {
+        "numerator": 1,
+        "denominator": 2
+      },
+      "exitCode": 2
+    }
+  },
+  {
+    "id": "retry-retains-first",
+    "selection": {
+      "selectionVersion": 2,
+      "lane": "node",
+      "runId": "synthetic-run",
+      "slots": [
+        {
+          "id": "s0",
+          "status": "pass",
+          "goal": "Script"
+        },
+        {
+          "id": "s1",
+          "status": "fail",
+          "goal": "Script"
+        },
+        {
+          "id": "s2",
+          "status": "unsupported-feature",
+          "goal": "Script"
+        },
+        {
+          "id": "s3",
+          "status": "unsupported-profile",
+          "goal": "Script"
+        },
+        {
+          "id": "s4",
+          "status": "harness-error",
+          "goal": "Script"
+        },
+        {
+          "id": "s5",
+          "status": "resource-limit",
+          "goal": "Script"
+        },
+        {
+          "id": "s6",
+          "status": "timeout",
+          "goal": "Script"
+        },
+        {
+          "id": "s7",
+          "status": "host-fault",
+          "goal": "Script"
+        },
+        {
+          "id": "s8",
+          "status": null,
+          "goal": "Module"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "id": "s0",
+        "attempt": 1,
+        "status": "pass",
+        "receipt": "receipt0",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 1,
+        "status": "fail",
+        "receipt": "receipt1",
+        "retryReason": null
+      },
+      {
+        "id": "s2",
+        "attempt": 1,
+        "status": "unsupported-feature",
+        "receipt": "receipt2",
+        "retryReason": null
+      },
+      {
+        "id": "s3",
+        "attempt": 1,
+        "status": "unsupported-profile",
+        "receipt": "receipt3",
+        "retryReason": null
+      },
+      {
+        "id": "s4",
+        "attempt": 1,
+        "status": "harness-error",
+        "receipt": "receipt4",
+        "retryReason": null
+      },
+      {
+        "id": "s5",
+        "attempt": 1,
+        "status": "resource-limit",
+        "receipt": "receipt5",
+        "retryReason": null
+      },
+      {
+        "id": "s6",
+        "attempt": 1,
+        "status": "timeout",
+        "receipt": "receipt6",
+        "retryReason": null
+      },
+      {
+        "id": "s7",
+        "attempt": 1,
+        "status": "host-fault",
+        "receipt": "receipt7",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 2,
+        "status": "pass",
+        "receipt": "retry1",
+        "retryReason": "explicit investigation"
+      }
+    ],
+    "expected": {
+      "plannedVariants": 9,
+      "completed": 8,
+      "missing": 1,
+      "attempts": 9,
+      "counts": {
+        "pass": 1,
+        "fail": 1,
+        "unsupported-feature": 1,
+        "unsupported-profile": 1,
+        "harness-error": 1,
+        "resource-limit": 1,
+        "timeout": 1,
+        "host-fault": 1
+      },
+      "complete": false,
+      "passOverPlanned": null,
+      "conditionalPass": {
+        "numerator": 1,
+        "denominator": 2
+      },
+      "exitCode": 2
+    }
+  },
+  {
+    "id": "reject-append",
+    "input": [
+      "s1",
+      "pass",
+      "retry1",
+      "replay"
+    ],
+    "expectedAttempts": [
+      {
+        "id": "s0",
+        "attempt": 1,
+        "status": "pass",
+        "receipt": "receipt0",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 1,
+        "status": "fail",
+        "receipt": "receipt1",
+        "retryReason": null
+      },
+      {
+        "id": "s2",
+        "attempt": 1,
+        "status": "unsupported-feature",
+        "receipt": "receipt2",
+        "retryReason": null
+      },
+      {
+        "id": "s3",
+        "attempt": 1,
+        "status": "unsupported-profile",
+        "receipt": "receipt3",
+        "retryReason": null
+      },
+      {
+        "id": "s4",
+        "attempt": 1,
+        "status": "harness-error",
+        "receipt": "receipt4",
+        "retryReason": null
+      },
+      {
+        "id": "s5",
+        "attempt": 1,
+        "status": "resource-limit",
+        "receipt": "receipt5",
+        "retryReason": null
+      },
+      {
+        "id": "s6",
+        "attempt": 1,
+        "status": "timeout",
+        "receipt": "receipt6",
+        "retryReason": null
+      },
+      {
+        "id": "s7",
+        "attempt": 1,
+        "status": "host-fault",
+        "receipt": "receipt7",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 2,
+        "status": "pass",
+        "receipt": "retry1",
+        "retryReason": "explicit investigation"
+      }
+    ]
+  },
+  {
+    "id": "reject-append",
+    "input": [
+      "s1",
+      "pass",
+      "new",
+      null
+    ],
+    "expectedAttempts": [
+      {
+        "id": "s0",
+        "attempt": 1,
+        "status": "pass",
+        "receipt": "receipt0",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 1,
+        "status": "fail",
+        "receipt": "receipt1",
+        "retryReason": null
+      },
+      {
+        "id": "s2",
+        "attempt": 1,
+        "status": "unsupported-feature",
+        "receipt": "receipt2",
+        "retryReason": null
+      },
+      {
+        "id": "s3",
+        "attempt": 1,
+        "status": "unsupported-profile",
+        "receipt": "receipt3",
+        "retryReason": null
+      },
+      {
+        "id": "s4",
+        "attempt": 1,
+        "status": "harness-error",
+        "receipt": "receipt4",
+        "retryReason": null
+      },
+      {
+        "id": "s5",
+        "attempt": 1,
+        "status": "resource-limit",
+        "receipt": "receipt5",
+        "retryReason": null
+      },
+      {
+        "id": "s6",
+        "attempt": 1,
+        "status": "timeout",
+        "receipt": "receipt6",
+        "retryReason": null
+      },
+      {
+        "id": "s7",
+        "attempt": 1,
+        "status": "host-fault",
+        "receipt": "receipt7",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 2,
+        "status": "pass",
+        "receipt": "retry1",
+        "retryReason": "explicit investigation"
+      }
+    ]
+  },
+  {
+    "id": "reject-append",
+    "input": [
+      "unknown",
+      "pass",
+      "new",
+      null
+    ],
+    "expectedAttempts": [
+      {
+        "id": "s0",
+        "attempt": 1,
+        "status": "pass",
+        "receipt": "receipt0",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 1,
+        "status": "fail",
+        "receipt": "receipt1",
+        "retryReason": null
+      },
+      {
+        "id": "s2",
+        "attempt": 1,
+        "status": "unsupported-feature",
+        "receipt": "receipt2",
+        "retryReason": null
+      },
+      {
+        "id": "s3",
+        "attempt": 1,
+        "status": "unsupported-profile",
+        "receipt": "receipt3",
+        "retryReason": null
+      },
+      {
+        "id": "s4",
+        "attempt": 1,
+        "status": "harness-error",
+        "receipt": "receipt4",
+        "retryReason": null
+      },
+      {
+        "id": "s5",
+        "attempt": 1,
+        "status": "resource-limit",
+        "receipt": "receipt5",
+        "retryReason": null
+      },
+      {
+        "id": "s6",
+        "attempt": 1,
+        "status": "timeout",
+        "receipt": "receipt6",
+        "retryReason": null
+      },
+      {
+        "id": "s7",
+        "attempt": 1,
+        "status": "host-fault",
+        "receipt": "receipt7",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 2,
+        "status": "pass",
+        "receipt": "retry1",
+        "retryReason": "explicit investigation"
+      }
+    ]
+  },
+  {
+    "id": "reject-append",
+    "input": [
+      "s0",
+      "pass",
+      "new",
+      "   "
+    ],
+    "expectedAttempts": [
+      {
+        "id": "s0",
+        "attempt": 1,
+        "status": "pass",
+        "receipt": "receipt0",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 1,
+        "status": "fail",
+        "receipt": "receipt1",
+        "retryReason": null
+      },
+      {
+        "id": "s2",
+        "attempt": 1,
+        "status": "unsupported-feature",
+        "receipt": "receipt2",
+        "retryReason": null
+      },
+      {
+        "id": "s3",
+        "attempt": 1,
+        "status": "unsupported-profile",
+        "receipt": "receipt3",
+        "retryReason": null
+      },
+      {
+        "id": "s4",
+        "attempt": 1,
+        "status": "harness-error",
+        "receipt": "receipt4",
+        "retryReason": null
+      },
+      {
+        "id": "s5",
+        "attempt": 1,
+        "status": "resource-limit",
+        "receipt": "receipt5",
+        "retryReason": null
+      },
+      {
+        "id": "s6",
+        "attempt": 1,
+        "status": "timeout",
+        "receipt": "receipt6",
+        "retryReason": null
+      },
+      {
+        "id": "s7",
+        "attempt": 1,
+        "status": "host-fault",
+        "receipt": "receipt7",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 2,
+        "status": "pass",
+        "receipt": "retry1",
+        "retryReason": "explicit investigation"
+      }
+    ]
+  },
+  {
+    "id": "reject-append",
+    "input": [
+      "s8",
+      "pass",
+      "new",
+      "first-with-retry"
+    ],
+    "expectedAttempts": [
+      {
+        "id": "s0",
+        "attempt": 1,
+        "status": "pass",
+        "receipt": "receipt0",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 1,
+        "status": "fail",
+        "receipt": "receipt1",
+        "retryReason": null
+      },
+      {
+        "id": "s2",
+        "attempt": 1,
+        "status": "unsupported-feature",
+        "receipt": "receipt2",
+        "retryReason": null
+      },
+      {
+        "id": "s3",
+        "attempt": 1,
+        "status": "unsupported-profile",
+        "receipt": "receipt3",
+        "retryReason": null
+      },
+      {
+        "id": "s4",
+        "attempt": 1,
+        "status": "harness-error",
+        "receipt": "receipt4",
+        "retryReason": null
+      },
+      {
+        "id": "s5",
+        "attempt": 1,
+        "status": "resource-limit",
+        "receipt": "receipt5",
+        "retryReason": null
+      },
+      {
+        "id": "s6",
+        "attempt": 1,
+        "status": "timeout",
+        "receipt": "receipt6",
+        "retryReason": null
+      },
+      {
+        "id": "s7",
+        "attempt": 1,
+        "status": "host-fault",
+        "receipt": "receipt7",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 2,
+        "status": "pass",
+        "receipt": "retry1",
+        "retryReason": "explicit investigation"
+      }
+    ]
+  },
+  {
+    "id": "full-denominator",
+    "selection": {
+      "selectionVersion": 2,
+      "lane": "node",
+      "runId": "synthetic-run",
+      "slots": [
+        {
+          "id": "s0",
+          "status": "pass",
+          "goal": "Script"
+        },
+        {
+          "id": "s1",
+          "status": "fail",
+          "goal": "Script"
+        },
+        {
+          "id": "s2",
+          "status": "unsupported-feature",
+          "goal": "Script"
+        },
+        {
+          "id": "s3",
+          "status": "unsupported-profile",
+          "goal": "Script"
+        },
+        {
+          "id": "s4",
+          "status": "harness-error",
+          "goal": "Script"
+        },
+        {
+          "id": "s5",
+          "status": "resource-limit",
+          "goal": "Script"
+        },
+        {
+          "id": "s6",
+          "status": "timeout",
+          "goal": "Script"
+        },
+        {
+          "id": "s7",
+          "status": "host-fault",
+          "goal": "Script"
+        },
+        {
+          "id": "s8",
+          "status": null,
+          "goal": "Module"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "id": "s0",
+        "attempt": 1,
+        "status": "pass",
+        "receipt": "receipt0",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 1,
+        "status": "fail",
+        "receipt": "receipt1",
+        "retryReason": null
+      },
+      {
+        "id": "s2",
+        "attempt": 1,
+        "status": "unsupported-feature",
+        "receipt": "receipt2",
+        "retryReason": null
+      },
+      {
+        "id": "s3",
+        "attempt": 1,
+        "status": "unsupported-profile",
+        "receipt": "receipt3",
+        "retryReason": null
+      },
+      {
+        "id": "s4",
+        "attempt": 1,
+        "status": "harness-error",
+        "receipt": "receipt4",
+        "retryReason": null
+      },
+      {
+        "id": "s5",
+        "attempt": 1,
+        "status": "resource-limit",
+        "receipt": "receipt5",
+        "retryReason": null
+      },
+      {
+        "id": "s6",
+        "attempt": 1,
+        "status": "timeout",
+        "receipt": "receipt6",
+        "retryReason": null
+      },
+      {
+        "id": "s7",
+        "attempt": 1,
+        "status": "host-fault",
+        "receipt": "receipt7",
+        "retryReason": null
+      },
+      {
+        "id": "s1",
+        "attempt": 2,
+        "status": "pass",
+        "receipt": "retry1",
+        "retryReason": "explicit investigation"
+      },
+      {
+        "id": "s8",
+        "attempt": 1,
+        "status": "unsupported-feature",
+        "receipt": "module-policy",
+        "retryReason": null
+      }
+    ],
+    "expected": {
+      "plannedVariants": 9,
+      "completed": 9,
+      "missing": 0,
+      "attempts": 10,
+      "counts": {
+        "pass": 1,
+        "fail": 1,
+        "unsupported-feature": 2,
+        "unsupported-profile": 1,
+        "harness-error": 1,
+        "resource-limit": 1,
+        "timeout": 1,
+        "host-fault": 1
+      },
+      "complete": true,
+      "passOverPlanned": {
+        "numerator": 1,
+        "denominator": 9
+      },
+      "conditionalPass": {
+        "numerator": 1,
+        "denominator": 2
+      },
+      "exitCode": 1
+    }
+  },
+  {
+    "id": "mixed-version",
+    "input": {
+      "selectionVersion": 1,
+      "attempts": [
+        {
+          "id": "s0",
+          "attempt": 1,
+          "status": "pass",
+          "receipt": "receipt0",
+          "retryReason": null
+        },
+        {
+          "id": "s1",
+          "attempt": 1,
+          "status": "fail",
+          "receipt": "receipt1",
+          "retryReason": null
+        },
+        {
+          "id": "s2",
+          "attempt": 1,
+          "status": "unsupported-feature",
+          "receipt": "receipt2",
+          "retryReason": null
+        },
+        {
+          "id": "s3",
+          "attempt": 1,
+          "status": "unsupported-profile",
+          "receipt": "receipt3",
+          "retryReason": null
+        },
+        {
+          "id": "s4",
+          "attempt": 1,
+          "status": "harness-error",
+          "receipt": "receipt4",
+          "retryReason": null
+        },
+        {
+          "id": "s5",
+          "attempt": 1,
+          "status": "resource-limit",
+          "receipt": "receipt5",
+          "retryReason": null
+        },
+        {
+          "id": "s6",
+          "attempt": 1,
+          "status": "timeout",
+          "receipt": "receipt6",
+          "retryReason": null
+        },
+        {
+          "id": "s7",
+          "attempt": 1,
+          "status": "host-fault",
+          "receipt": "receipt7",
+          "retryReason": null
+        },
+        {
+          "id": "s1",
+          "attempt": 2,
+          "status": "pass",
+          "receipt": "retry1",
+          "retryReason": "explicit investigation"
+        },
+        {
+          "id": "s8",
+          "attempt": 1,
+          "status": "unsupported-feature",
+          "receipt": "module-policy",
+          "retryReason": null
+        }
+      ]
+    },
+    "expected": "reject-history"
+  },
+  {
+    "id": "duplicate-receipt",
+    "input": {
+      "selectionVersion": 2,
+      "attempts": [
+        {
+          "id": "s0",
+          "attempt": 1,
+          "status": "pass",
+          "receipt": "receipt0",
+          "retryReason": null
+        },
+        {
+          "id": "s1",
+          "attempt": 1,
+          "status": "fail",
+          "receipt": "receipt0",
+          "retryReason": null
+        },
+        {
+          "id": "s2",
+          "attempt": 1,
+          "status": "unsupported-feature",
+          "receipt": "receipt2",
+          "retryReason": null
+        },
+        {
+          "id": "s3",
+          "attempt": 1,
+          "status": "unsupported-profile",
+          "receipt": "receipt3",
+          "retryReason": null
+        },
+        {
+          "id": "s4",
+          "attempt": 1,
+          "status": "harness-error",
+          "receipt": "receipt4",
+          "retryReason": null
+        },
+        {
+          "id": "s5",
+          "attempt": 1,
+          "status": "resource-limit",
+          "receipt": "receipt5",
+          "retryReason": null
+        },
+        {
+          "id": "s6",
+          "attempt": 1,
+          "status": "timeout",
+          "receipt": "receipt6",
+          "retryReason": null
+        },
+        {
+          "id": "s7",
+          "attempt": 1,
+          "status": "host-fault",
+          "receipt": "receipt7",
+          "retryReason": null
+        },
+        {
+          "id": "s1",
+          "attempt": 2,
+          "status": "pass",
+          "receipt": "retry1",
+          "retryReason": "explicit investigation"
+        },
+        {
+          "id": "s8",
+          "attempt": 1,
+          "status": "unsupported-feature",
+          "receipt": "module-policy",
+          "retryReason": null
+        }
+      ]
+    },
+    "expected": "reject-history"
+  },
+  {
+    "id": "attempt-gap",
+    "input": {
+      "selectionVersion": 2,
+      "attempts": [
+        {
+          "id": "s0",
+          "attempt": 2,
+          "status": "pass",
+          "receipt": "receipt0",
+          "retryReason": null
+        },
+        {
+          "id": "s1",
+          "attempt": 1,
+          "status": "fail",
+          "receipt": "receipt1",
+          "retryReason": null
+        },
+        {
+          "id": "s2",
+          "attempt": 1,
+          "status": "unsupported-feature",
+          "receipt": "receipt2",
+          "retryReason": null
+        },
+        {
+          "id": "s3",
+          "attempt": 1,
+          "status": "unsupported-profile",
+          "receipt": "receipt3",
+          "retryReason": null
+        },
+        {
+          "id": "s4",
+          "attempt": 1,
+          "status": "harness-error",
+          "receipt": "receipt4",
+          "retryReason": null
+        },
+        {
+          "id": "s5",
+          "attempt": 1,
+          "status": "resource-limit",
+          "receipt": "receipt5",
+          "retryReason": null
+        },
+        {
+          "id": "s6",
+          "attempt": 1,
+          "status": "timeout",
+          "receipt": "receipt6",
+          "retryReason": null
+        },
+        {
+          "id": "s7",
+          "attempt": 1,
+          "status": "host-fault",
+          "receipt": "receipt7",
+          "retryReason": null
+        },
+        {
+          "id": "s1",
+          "attempt": 2,
+          "status": "pass",
+          "receipt": "retry1",
+          "retryReason": "explicit investigation"
+        },
+        {
+          "id": "s8",
+          "attempt": 1,
+          "status": "unsupported-feature",
+          "receipt": "module-policy",
+          "retryReason": null
+        }
+      ]
+    },
+    "expected": "reject-history"
+  },
+  {
+    "id": "retry-before-first",
+    "input": {
+      "selectionVersion": 2,
+      "attempts": [
+        {
+          "id": "s0",
+          "attempt": 1,
+          "status": "pass",
+          "receipt": "receipt0",
+          "retryReason": null
+        },
+        {
+          "id": "s1",
+          "attempt": 2,
+          "status": "pass",
+          "receipt": "retry1",
+          "retryReason": "explicit investigation"
+        },
+        {
+          "id": "s2",
+          "attempt": 1,
+          "status": "unsupported-feature",
+          "receipt": "receipt2",
+          "retryReason": null
+        },
+        {
+          "id": "s3",
+          "attempt": 1,
+          "status": "unsupported-profile",
+          "receipt": "receipt3",
+          "retryReason": null
+        },
+        {
+          "id": "s4",
+          "attempt": 1,
+          "status": "harness-error",
+          "receipt": "receipt4",
+          "retryReason": null
+        },
+        {
+          "id": "s5",
+          "attempt": 1,
+          "status": "resource-limit",
+          "receipt": "receipt5",
+          "retryReason": null
+        },
+        {
+          "id": "s6",
+          "attempt": 1,
+          "status": "timeout",
+          "receipt": "receipt6",
+          "retryReason": null
+        },
+        {
+          "id": "s7",
+          "attempt": 1,
+          "status": "host-fault",
+          "receipt": "receipt7",
+          "retryReason": null
+        },
+        {
+          "id": "s1",
+          "attempt": 1,
+          "status": "fail",
+          "receipt": "receipt1",
+          "retryReason": null
+        },
+        {
+          "id": "s8",
+          "attempt": 1,
+          "status": "unsupported-feature",
+          "receipt": "module-policy",
+          "retryReason": null
+        }
+      ]
+    },
+    "expected": "reject-history"
+  },
+  {
+    "id": "unknown-slot",
+    "input": {
+      "selectionVersion": 2,
+      "attempts": [
+        {
+          "id": "foreign",
+          "attempt": 1,
+          "status": "pass",
+          "receipt": "receipt0",
+          "retryReason": null
+        },
+        {
+          "id": "s1",
+          "attempt": 1,
+          "status": "fail",
+          "receipt": "receipt1",
+          "retryReason": null
+        },
+        {
+          "id": "s2",
+          "attempt": 1,
+          "status": "unsupported-feature",
+          "receipt": "receipt2",
+          "retryReason": null
+        },
+        {
+          "id": "s3",
+          "attempt": 1,
+          "status": "unsupported-profile",
+          "receipt": "receipt3",
+          "retryReason": null
+        },
+        {
+          "id": "s4",
+          "attempt": 1,
+          "status": "harness-error",
+          "receipt": "receipt4",
+          "retryReason": null
+        },
+        {
+          "id": "s5",
+          "attempt": 1,
+          "status": "resource-limit",
+          "receipt": "receipt5",
+          "retryReason": null
+        },
+        {
+          "id": "s6",
+          "attempt": 1,
+          "status": "timeout",
+          "receipt": "receipt6",
+          "retryReason": null
+        },
+        {
+          "id": "s7",
+          "attempt": 1,
+          "status": "host-fault",
+          "receipt": "receipt7",
+          "retryReason": null
+        },
+        {
+          "id": "s1",
+          "attempt": 2,
+          "status": "pass",
+          "receipt": "retry1",
+          "retryReason": "explicit investigation"
+        },
+        {
+          "id": "s8",
+          "attempt": 1,
+          "status": "unsupported-feature",
+          "receipt": "module-policy",
+          "retryReason": null
+        }
+      ]
+    },
+    "expected": "reject-history"
+  }
+]
