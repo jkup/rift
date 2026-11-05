@@ -12,7 +12,19 @@ const flags=['onlyStrict','noStrict','raw','module','async','generated','CanBloc
 const runtime=new Set(['asi','RegExp','return-asi','error-objects','strict-script-contract','directive-script','global-script','harness-capabilities']);
 const fail=code=>{throw Error(code);};
 function object(x,keys){if(!x||Object.getPrototypeOf(x)!==Object.prototype||Reflect.ownKeys(x).some(k=>typeof k!=='string')||!equal(Reflect.ownKeys(x).sort(),[...keys].sort()))return false;return keys.every(k=>Object.hasOwn(Object.getOwnPropertyDescriptor(x,k),'value'));}
-function list(x){return Array.isArray(x)&&Object.getPrototypeOf(x)===Array.prototype&&equal(Reflect.ownKeys(x),[...x.keys()].map(String).concat('length'))&&[...x.keys()].every(i=>Object.hasOwn(Object.getOwnPropertyDescriptor(x,String(i)),'value'))&&x.every(v=>typeof v==='string'&&v.length>0);}
+function list(x){
+ if(!Array.isArray(x)||Object.getPrototypeOf(x)!==Array.prototype)return false;
+ const length=Object.getOwnPropertyDescriptor(x,'length');
+ if(!length||!Object.hasOwn(length,'value')||!Number.isSafeInteger(length.value)||length.value<0)return false;
+ const count=length.value,keys=Reflect.ownKeys(x);
+ if(keys.length!==count+1||keys[count]!=='length')return false;
+ for(let i=0;i<count;i++){
+  if(keys[i]!==String(i))return false;
+  const item=Object.getOwnPropertyDescriptor(x,String(i));
+  if(!item||!Object.hasOwn(item,'value')||typeof item.value!=='string'||item.value.length===0)return false;
+ }
+ return true;
+}
 const projection=e=>Object.fromEntries(fields.map(k=>[k,copy(e[k]??(k==='negative'?null:[]))]));
 function validate(meta,variant,manifestId){
  if(!object(meta,fields)||!fields.slice(0,4).every(k=>list(meta[k])))fail('script-capabilities/metadata');
@@ -77,6 +89,14 @@ assert.throws(()=>reconstruct(normal,'strict',undefined),e=>e.message==='script-
 assert.throws(()=>reader([undefined],Buffer.from(canonical)),e=>e.message==='script-capabilities/arguments');
 assert.throws(()=>reader(['override'],Buffer.alloc(0),'ENOENT'),e=>e.message==='script-capabilities/arguments');
 const readonly=freeze(copy(normal));assert.doesNotThrow(()=>reconstruct(readonly,'strict',null));
+const accessorControls=[];
+for(const field of fields.slice(0,4))for(const [name,key] of [['keys','keys'],['every','every'],['iterator',Symbol.iterator],['index','0']]){
+ let calls=0;const array=['value'];
+ Object.defineProperty(array,key,{get(){calls++;throw Error('accessor invoked');},enumerable:true,configurable:true});
+ assert.throws(()=>reconstruct({...normal,[field]:array},'strict',null),e=>e.constructor===Error&&e.message==='script-capabilities/metadata');
+ assert.equal(calls,0,field+'/'+name);
+ accessorControls.push({field,accessor:name,expectedError:'script-capabilities/metadata',expectedCalls:0,actualCalls:calls});
+}
 // This model has no environment lookup. An extra environment value cannot alter
 // bytes, arguments or fixed-path semantics; production source review must retain
 // that absence rather than introducing an environment-variable API.
@@ -84,5 +104,5 @@ const environmentWitness={SCRIPT_CAPABILITIES_PATH:'elsewhere.json',SCRIPT_CAPAB
 assert.deepEqual(reader([],Buffer.from(canonical)),JSON.parse(canonical));
 const counts={'unsupported-feature':0,'unsupported-profile':0};for(const c of literals.cases.slice(0,60))counts[c.expected.debts[0].status]++;
 assert.deepEqual(counts,{'unsupported-feature':19,'unsupported-profile':41});
-const result={corpusFullArrays:60,debtCases:literals.cases.length,readerByteCases:literals.registry.length,counts,unknownDuplicatePolicy:unknown,detachmentAndFreeze:'PASS',nonJsonObjectControls:4,explicitUndefinedAndArgumentPriority:'PASS',frozenInput:'PASS',environmentWitness:{input:environmentWitness,expected:JSON.parse(canonical),meaning:'No environment lookup; source-contract witness only'},production:false};
+const result={corpusFullArrays:60,debtCases:literals.cases.length,readerByteCases:literals.registry.length,counts,unknownDuplicatePolicy:unknown,detachmentAndFreeze:'PASS',nonJsonObjectControls:4,accessorControls,explicitUndefinedAndArgumentPriority:'PASS',frozenInput:'PASS',environmentWitness:{input:environmentWitness,expected:JSON.parse(canonical),meaning:'No environment lookup; source-contract witness only'},production:false};
 writeFileSync(dir+'e1-results.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));

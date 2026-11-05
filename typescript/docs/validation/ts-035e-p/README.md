@@ -47,3 +47,12 @@ those frozen expectations, never rewriting them in ordinary mode. It also tests
 non-JSON argument controls, unknown repeated legacy reason mapping, detachment
 and deep freeze. e1-results.json retains totals and exact extra witnesses.
 The IO/evidence models are not production APIs. Do not run --freeze in review.
+
+Second review found that the fbf4b64 evidence model called caller array.keys()
+before rejecting extra keys. array-accessor-root-witness.json retains the root
+reproduction (getter called once instead of zero); initial-candidate retains
+that model and its results. The corrected list validator uses own length/index
+descriptors and numeric enumeration, with no caller array methods or iterator.
+Sixteen new controls cover own keys/every/Symbol.iterator/index accessors on
+each of flags/features/includes/locale and assert exact rejection with zero
+getter calls. The frozen 130 debt/33 reader literals and E1 contract are unchanged.
