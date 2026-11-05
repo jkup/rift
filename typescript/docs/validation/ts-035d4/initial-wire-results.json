@@ -1,0 +1,264 @@
+[
+  {
+    "id": "node/alpha/parse-only/test/return-outside-function/plain",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"5afec55b1f366b4842d9b34ef10a628e91d227304aac8d0673177fcb91207a30\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/parse-only/test/return-outside-function/diagnostic",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"5afec55b1f366b4842d9b34ef10a628e91d227304aac8d0673177fcb91207a30\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\",\"diagnostic\":\"TypeError: diagnostic only alpha\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/parse-only/test/duplicate-block-lexical-function/plain",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"505447d8453b84beb245782a22130b89b4e49eaadf3a207b7a4b56f533928de5\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":44}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/parse-only/test/duplicate-block-lexical-function/diagnostic",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"505447d8453b84beb245782a22130b89b4e49eaadf3a207b7a4b56f533928de5\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":44}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\",\"diagnostic\":\"TypeError: diagnostic only alpha\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/parse-only/harness/return-outside-function/plain",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"8fb5aeb82b3a40a9c6254005e49fd4006996b6321cf0aa5023441a6276206612\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/parse-only/harness/return-outside-function/diagnostic",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"8fb5aeb82b3a40a9c6254005e49fd4006996b6321cf0aa5023441a6276206612\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\",\"diagnostic\":\"TypeError: diagnostic only alpha\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/parse-only/harness/duplicate-block-lexical-function/plain",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"4dd6e2defb36d863a194bb262e346fdfab913f43e4a204c98a6ddfae72ee79ad\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":44}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/parse-only/harness/duplicate-block-lexical-function/diagnostic",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"4dd6e2defb36d863a194bb262e346fdfab913f43e4a204c98a6ddfae72ee79ad\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":44}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\",\"diagnostic\":\"TypeError: diagnostic only alpha\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/execute/test/return-outside-function/plain",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"85597024b33fb3f8cbc807ca68225326c8c88fdf2b272ce9ad7c488d8589dba1\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/execute/test/return-outside-function/diagnostic",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"85597024b33fb3f8cbc807ca68225326c8c88fdf2b272ce9ad7c488d8589dba1\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\",\"diagnostic\":\"TypeError: diagnostic only alpha\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/execute/test/duplicate-block-lexical-function/plain",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"6fe0b9c06b38fc52e0401c8369083b69cdad688daa9bf997ba0ef3a5eaf20d43\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":44}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/execute/test/duplicate-block-lexical-function/diagnostic",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"6fe0b9c06b38fc52e0401c8369083b69cdad688daa9bf997ba0ef3a5eaf20d43\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":44}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\",\"diagnostic\":\"TypeError: diagnostic only alpha\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/execute/harness/return-outside-function/plain",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"cab2e40d2fc09c1bfa563258d1ee4c25051c434db464c1c5b4105a67214cec9c\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/execute/harness/return-outside-function/diagnostic",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"cab2e40d2fc09c1bfa563258d1ee4c25051c434db464c1c5b4105a67214cec9c\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\",\"diagnostic\":\"TypeError: diagnostic only alpha\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/execute/harness/duplicate-block-lexical-function/plain",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"ebc5a247e96121d847b31f89269e70f6938037365de931cd6bb1f0e587a099fe\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":44}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/alpha/execute/harness/duplicate-block-lexical-function/diagnostic",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"ebc5a247e96121d847b31f89269e70f6938037365de931cd6bb1f0e587a099fe\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":44}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\",\"diagnostic\":\"TypeError: diagnostic only alpha\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/parse-only/test/return-outside-function/plain",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"baecbd507250ab98846235a700f5459374f17d1ff77874b1acd27dff5dbfaa8f\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/parse-only/test/return-outside-function/diagnostic",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"baecbd507250ab98846235a700f5459374f17d1ff77874b1acd27dff5dbfaa8f\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\",\"diagnostic\":\"TypeError: diagnostic only beta\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/parse-only/test/duplicate-block-lexical-function/plain",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"058a75d52e1ccafe7858e1233581392a3506089b9d279db75effa21cfe1e10ff\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":60}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/parse-only/test/duplicate-block-lexical-function/diagnostic",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"058a75d52e1ccafe7858e1233581392a3506089b9d279db75effa21cfe1e10ff\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":60}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\",\"diagnostic\":\"TypeError: diagnostic only beta\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/parse-only/harness/return-outside-function/plain",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"ee783693849db0c8ec4510d881f0d734dacccc3c6a8ecdf95e647ff4c7ed163b\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/parse-only/harness/return-outside-function/diagnostic",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"ee783693849db0c8ec4510d881f0d734dacccc3c6a8ecdf95e647ff4c7ed163b\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\",\"diagnostic\":\"TypeError: diagnostic only beta\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/parse-only/harness/duplicate-block-lexical-function/plain",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"410d9cd63c23582b4bfd2b44cc39af6b7ccab5942fd4cd5ea09f13ad9d1ee659\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":60}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/parse-only/harness/duplicate-block-lexical-function/diagnostic",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"410d9cd63c23582b4bfd2b44cc39af6b7ccab5942fd4cd5ea09f13ad9d1ee659\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":60}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\",\"diagnostic\":\"TypeError: diagnostic only beta\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/execute/test/return-outside-function/plain",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"e2f19c27a55a0dadeefb3389442b144c8e86b453d727ff8601d1c817836f213a\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/execute/test/return-outside-function/diagnostic",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"e2f19c27a55a0dadeefb3389442b144c8e86b453d727ff8601d1c817836f213a\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\",\"diagnostic\":\"TypeError: diagnostic only beta\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/execute/test/duplicate-block-lexical-function/plain",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"c14a0018ef73b69f61fea68eb6641b2da1c3dd0ce0a536ed4c9fe5998742e1b7\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":60}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/execute/test/duplicate-block-lexical-function/diagnostic",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"c14a0018ef73b69f61fea68eb6641b2da1c3dd0ce0a536ed4c9fe5998742e1b7\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":60}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\",\"diagnostic\":\"TypeError: diagnostic only beta\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/execute/harness/return-outside-function/plain",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"c6ff454d600a855bb7dc3f323da1ac1d08c32785e4a3fb568f27569fdf1612fb\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/execute/harness/return-outside-function/diagnostic",
+    "productionEmission": false,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"c6ff454d600a855bb7dc3f323da1ac1d08c32785e4a3fb568f27569fdf1612fb\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\",\"diagnostic\":\"TypeError: diagnostic only beta\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/execute/harness/duplicate-block-lexical-function/plain",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"8fa61786942c2351fe5c99d5588467db8da0300f8dc13f409dc73ed60ff17860\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":60}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "node/beta/execute/harness/duplicate-block-lexical-function/diagnostic",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"beta\",\"requestSha256\":\"8fa61786942c2351fe5c99d5588467db8da0300f8dc13f409dc73ed60ff17860\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"harness\",\"phase\":\"parse\",\"unitId\":\"u1\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u1\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":60}},\"testBodyEvaluated\":false,\"harnessValidated\":true,\"preflightId\":\"preflight\",\"completedUnits\":[\"u0\"],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-block-lexical-function\",\"diagnostic\":\"TypeError: diagnostic only beta\\u0000\\\"\\\\\\ud800\"}}\n",
+    "stderr": ""
+  },
+  {
+    "id": "native/alpha/parse-only/test/return-outside-function/plain",
+    "productionEmission": true,
+    "status": null,
+    "signal": null
+  }
+]

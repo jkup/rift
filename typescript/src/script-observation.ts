@@ -112,9 +112,9 @@ class Attempt {
         if (prepared.kind === "conflict") return this.envelope(operation, site, { kind: "unsupported-syntax", capabilityCode: "script.uncertified-conflict" });
         const rejection = prepared.rejection;
         if (rejection.kind === "syntax-error") {
-            if (rejection.ruleCode !== "duplicate-block-lexical-function") throw new Error("unreviewed Script rule");
+            if (rejection.ruleCode !== "duplicate-block-lexical-function" && rejection.ruleCode !== "duplicate-strict-parameter") throw new Error("unreviewed Script rule");
             return this.envelope(operation, site,
-                { kind: "syntax-error", phase: "parse", constructorName: "SyntaxError", ruleCode: "duplicate-block-lexical-function" });
+                { kind: "syntax-error", phase: "parse", constructorName: "SyntaxError", ruleCode: rejection.ruleCode });
         }
         // Preserve independent legacy return certification at its original boundary.
         if (this.request.action === "parse-only" && unit.role === "test") {

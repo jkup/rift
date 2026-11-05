@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 const here='docs/validation/ts-035d2', frozen=JSON.parse(readFileSync('docs/validation/ts-035d2-p/semantic-matrix.json'));
+const d4=JSON.parse(readFileSync('docs/validation/ts-035d4-p/inherited-expectations.json')).D2;
 mkdirSync('build/ts035d2-inputs',{recursive:true});
 const results=[];
 for(const lane of process.argv.includes('--node')?['node']:['node','native'])for(const input of ['alpha','beta'])for(const row of frozen.rows){
@@ -11,9 +12,10 @@ for(const lane of process.argv.includes('--node')?['node']:['node','native'])for
  writeFileSync(here+'/matrix-results'+(process.argv.includes('--node')?'-node':'')+'.json',JSON.stringify(results,null,2)+'\n');
  assert.equal(r.status,0,row.id+': '+r.stderr);assert.equal(r.signal,null);
  const actual=JSON.parse(r.stdout);
- assert.deepEqual(actual.preparation,row.futurePreparation,row.id+' preparation');
+ const migration=d4[row.id]; if(migration)assert.equal(row.text,migration.text,row.id+' exact D4 source');
+ assert.deepEqual(actual.preparation,migration?migration.preparation:row.futurePreparation,row.id+' preparation');
  assert.deepEqual(actual.ordinary,row.ordinary,row.id+' ordinary');assert.deepEqual(actual.audit,row.audit,row.id+' audit');
- for(const [i,expected] of row.contexts.entries()){
+ for(const [i,expected] of (migration?migration.contexts:row.contexts).entries()){
   const context=actual.contexts[i];for(const key of ['operation','source','testBodyEvaluated','inspection','completedUnits','result'])assert.deepEqual(context[key],expected[key],row.id+'/'+expected.action+'/'+expected.role+'/'+key);
  }
 }

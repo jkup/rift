@@ -13,7 +13,7 @@ export type ScriptConstructor =
 export type ScriptResult =
     | { kind: "normal" }
     | { kind: "throw"; phase: "runtime"; original: ScriptOriginalThrow; constructor: ScriptConstructor; diagnostic?: string }
-    | { kind: "syntax-error"; phase: "parse"; constructorName: "SyntaxError"; ruleCode: "return-outside-function" | "duplicate-block-lexical-function"; diagnostic?: string }
+    | { kind: "syntax-error"; phase: "parse"; constructorName: "SyntaxError"; ruleCode: "return-outside-function" | "duplicate-block-lexical-function" | "duplicate-strict-parameter"; diagnostic?: string }
     | { kind: "unsupported-syntax"; capabilityCode: SyntaxCapability | "script.uncertified-conflict"; diagnostic?: string }
     | { kind: "unsupported-operation"; phase: "runtime"; capabilityCode: RuntimeCapability; diagnostic?: string }
     | { kind: "unsupported-profile"; reasonCode: "strict" | "realm"; diagnostic?: string }

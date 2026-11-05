@@ -1,0 +1,27 @@
+✔ D4 real serializer bytes: both hosts, two runtime inputs, all three closed codes (3455.8869ms)
+✔ D4 frozen mutations, closed schema, v1 exclusion and independent transport priority (7799.2294ms)
+✖ D4 fixed source authority across variant and expected-negative metadata on both hosts (105.5853ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11470.8149
+
+✖ failing tests:
+
+test at tools\test262\script-strict-parameter-dispatch.test.mjs:37:1
+✖ D4 fixed source authority across variant and expected-negative metadata on both hosts (105.5853ms)
+  Error: protocol
+      at need (file:///C:/Users/jonku/code/rift/typescript/tools/test262/script-driver-result.mjs:23:51)
+      at checkOperation (file:///C:/Users/jonku/code/rift/typescript/tools/test262/script-driver-result.mjs:94:73)
+      at parseScriptDriverResult (file:///C:/Users/jonku/code/rift/typescript/tools/test262/script-driver-result.mjs:151:3)
+      at TestContext.<anonymous> (file:///C:/Users/jonku/code/rift/typescript/tools/test262/script-strict-parameter-dispatch.test.mjs:48:75)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

@@ -143,6 +143,19 @@ export function collectStrictParameterAudit(unit: ScriptSourceUnit, body: Stmt[]
     return analysis.auditStrictParameters();
 }
 
+// Rejection-only bridge: no retained nodes, complete arm, or executable authority.
+export type CertifiedParameterPreparationRejection = {
+    readonly kind: "blocked"; readonly goal: "Script"; readonly unit: ScriptSourceUnit;
+    readonly rejection: { readonly kind: "syntax-error";
+        readonly ruleCode: "duplicate-block-lexical-function" | "duplicate-strict-parameter" };
+    readonly diagnostic: Diagnostic;
+};
+export function collectBoundedScriptParameterRejection(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>): CertifiedParameterPreparationRejection | null {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true);
+    analysis.collect(body);
+    return analysis.certifyParameterPreparation();
+}
+
 function copySite(site: DeclarationSite): DeclarationSite {
     return { name: site.name, start: site.start, end: site.end,
         loc: { line: site.loc.line, column: site.loc.column } };
@@ -407,6 +420,18 @@ class DeclarationCollector {
                 diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate-lexical: " + site.name,
                     loc: { line: site.loc.line, column: site.loc.column } } };
         }
+        const { candidates, sloppy } = this.parameterPairs();
+        // A sloppy duplicate anywhere vetoes all strict candidates, even earlier ones.
+        if (sloppy !== null) return { kind: "blocked", reason: "scope-restriction",
+            rejection: { kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" },
+            diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate parameter: " + sloppy.second.name,
+                loc: sloppy.second.loc } };
+
+        const sourceUnits = this.unit.text.length;
+        if (candidates.length === 0) return { kind: "none", sourceUnits, consumedUnits: sourceUnits };
+        return { kind: "eligible", sourceUnits, consumedUnits: sourceUnits, candidates };
+    }
+    private parameterPairs(): { candidates: StrictParameterCandidate[]; sloppy: StrictParameterCandidate | null } {
         const candidates: StrictParameterCandidate[] = [];
         let sloppy: StrictParameterCandidate | null = null;
         for (const fn of this.functions) {
@@ -422,15 +447,36 @@ class DeclarationCollector {
                     (second.start === sloppy.second.start && first.start < sloppy.first.start)) sloppy = pair;
             }
         }
-        // A sloppy duplicate anywhere vetoes all strict candidates, even earlier ones.
-        if (sloppy !== null) return { kind: "blocked", reason: "scope-restriction",
-            rejection: { kind: "unsupported-syntax", capabilityCode: "parse.duplicate-parameter" },
-            diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate parameter: " + sloppy.second.name,
-                loc: sloppy.second.loc } };
         candidates.sort((a, b) => a.second.start - b.second.start || a.first.start - b.first.start);
-        const sourceUnits = this.unit.text.length;
-        if (candidates.length === 0) return { kind: "none", sourceUnits, consumedUnits: sourceUnits };
-        return { kind: "eligible", sourceUnits, consumedUnits: sourceUnits, candidates };
+        return { candidates, sloppy };
+    }
+    certifyParameterPreparation(): CertifiedParameterPreparationRejection | null {
+        const blocks = this.audit();
+        if (blocks.kind === "blocked") return null;
+        const pairs = this.parameterPairs();
+        // Every sloppy duplicate vetoes both rules, including earlier candidates.
+        if (pairs.sloppy !== null) return null;
+        if (pairs.candidates.length === 0 || blocks.sourceUnits !== this.unit.text.length ||
+            blocks.consumedUnits !== this.unit.text.length) throw new Error("invalid parameter rule certification");
+        const parameter = pairs.candidates[0];
+        let first = parameter.first;
+        let second = parameter.second;
+        let ruleCode: "duplicate-block-lexical-function" | "duplicate-strict-parameter" = "duplicate-strict-parameter";
+        if (blocks.kind === "eligible") {
+            const block = blocks.candidates[0];
+            // A tie belongs to block; the current grammar gives disjoint roles.
+            if (block.second.start < second.start ||
+                (block.second.start === second.start && block.first.start <= first.start)) {
+                first = block.first;
+                second = block.second;
+                ruleCode = "duplicate-block-lexical-function";
+            }
+        }
+        const message = ruleCode === "duplicate-strict-parameter" ? "duplicate strict parameter: " : "duplicate block lexical function: ";
+        return { kind: "blocked", goal: "Script", unit: this.unit,
+            rejection: { kind: "syntax-error", ruleCode },
+            diagnostic: { phase: "parse", name: "SyntaxError", message: message + second.name,
+                loc: { line: second.loc.line, column: second.loc.column } } };
     }
     audit(): BlockFunctionAudit {
         const ordinary = this.project();

@@ -31,8 +31,12 @@ for(const r of rows){
  assert.throws(()=>parseDriverResult(Buffer.from(r.ascii),{nonce:r.binding.nonce,mode:'body-observation',unit:'test/synthetic.js'}));
  assert.throws(()=>parseEnvelope(JSON.stringify(r.envelope)));
  for(const m of matrix.mutations){
-  const c=copy(r.child);set(c,m.childPath,m.value);assert.throws(()=>parseChild(c),r.id+'/'+m.id);mutations++;
-  if(m.envelopePath){const e=copy(r.envelope);set(e,m.envelopePath,m.value);assert.throws(()=>parseFull(e),r.id+'/'+m.id);mutations++;}
+  const c=copy(r.child);set(c,m.childPath,m.value);
+  if(m.id==='parameter-rule')assert.deepEqual(parseChild(c),c,r.id+'/'+m.id+' reviewed D4 code');
+  else assert.throws(()=>parseChild(c),r.id+'/'+m.id);mutations++;
+  if(m.envelopePath){const e=copy(r.envelope);set(e,m.envelopePath,m.value);
+   if(m.id==='parameter-rule')assert.deepEqual(parseFull(e),e,r.id+'/'+m.id+' reviewed D4 code');
+   else assert.throws(()=>parseFull(e),r.id+'/'+m.id);mutations++;}
  }
  for(const c of structural(r.child)){assert.throws(()=>parseChild(c));mutations++;}
  for(const e of structural(r.envelope)){assert.throws(()=>parseFull(e));mutations++;}

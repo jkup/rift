@@ -1,0 +1,258 @@
+[
+  {
+    "name": "D3-source",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS 154 runtime-read matrix runs, 30 literal pairs, 26 exact grammar diagnostics, six ordinary snapshots and node associations per run\n",
+    "stderr": "D4 evidence I/O retry 1: docs/validation/ts-035d3/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d3/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d3/matrix-results.json\n"
+  },
+  {
+    "name": "D2-source",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS 360 runtime-read source runs, four contexts and two Realms each\n",
+    "stderr": "D4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 2: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 2: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 2: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 3: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/matrix-results.json\nD4 evidence I/O retry 2: docs/validation/ts-035d2/matrix-results.json\n"
+  },
+  {
+    "name": "D2-wire",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "D4 evidence I/O retry 1: docs/validation/ts-035d2/wire-results.json\nD4 evidence I/O retry 1: docs/validation/ts-035d2/wire-results.json\n✔ D2 real serializer bytes: both hosts, two runtime inputs, both closed codes (3097.6078ms)\n✔ D2 frozen mutations, closed schema, v1 exclusion and independent transport priority (5196.8264ms)\nℹ tests 2\nℹ suites 0\nℹ pass 2\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 8395.5336\n",
+    "stderr": ""
+  },
+  {
+    "name": "D2-extra",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS 14 supplemental body-entry, rejected-effects, actual-source and directive controls\n",
+    "stderr": ""
+  },
+  {
+    "name": "D1-unchanged-matrix",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS 124 runtime-read matrix runs; literal candidates and frozen ordinary outputs\n",
+    "stderr": "D4 evidence I/O retry 1: docs/validation/ts-035d1/matrix-results.json\n"
+  },
+  {
+    "name": "D1-unchanged-extra",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS 24 additional full-source veto, triple and nested ordering controls\n",
+    "stderr": ""
+  },
+  {
+    "name": "C-real-transport",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "✔ actual node/alpha frozen registered controls (80928.7149ms)\n✔ actual node/beta frozen registered controls (79710.1723ms)\n✔ actual native/alpha frozen registered controls (52996.8045ms)\n✔ actual native/beta frozen registered controls (53190.1447ms)\nℹ tests 4\nℹ suites 0\nℹ pass 4\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 266832.6788\n",
+    "stderr": "D4 async evidence I/O retry 1: docs/validation/ts-035c/integration-latest.json\n"
+  },
+  {
+    "name": "C-host21",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "codec: 0\nlive-codec: 0\nlaunch: 0\npreflight: 0\ninput: 0\n",
+    "stderr": ""
+  },
+  {
+    "name": "B-XU-P01-P09",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS both runtime inputs, both hosts, literal X/U controls\n",
+    "stderr": ""
+  },
+  {
+    "name": "B-boundary",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS observed facade authority and detached-result boundary\n",
+    "stderr": ""
+  },
+  {
+    "name": "H7",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS verified original bytes/blob/license/order; two inputs both hosts; timeout precedence\n",
+    "stderr": ""
+  },
+  {
+    "name": "validate",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS formatting two inputs both hosts all literal controls\n",
+    "stderr": ""
+  },
+  {
+    "name": "validate-map",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS H6-M both literal inputs/Node/native; real foreign intrinsic Array unrepresentable\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-errors-b",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS E01-E36/G01-G10,15 B traces,504 prefixes/input/lane,two distinct runtime payloads; C deferred\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-catch",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS literal catch matrix and 104 fresh/seven-seeded prefixes in both lanes, both runtime sources\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-switch",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS switch controls and 208 prefixes on both hosts for both hashed runtime sources\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-for-update",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS H3 all controls/190 prefixes on Node and native with two frozen runtime inputs\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-nonstrict",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS H4 all controls/190 prefixes on Node and native with two frozen runtime inputs\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-construct",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS H5 controls/172 prefixes on Node/native with two frozen runtime inputs\n",
+    "stderr": ""
+  },
+  {
+    "name": "replay-errors-a",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS A01-A09 both frozen runtime sources on Node/native\n",
+    "stderr": ""
+  },
+  {
+    "name": "node-slots",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS four forged/malformed/profile slot controls (Node-only)\n",
+    "stderr": ""
+  },
+  {
+    "name": "replays/validate",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS both runtime inputs Node/native with literal expectations and separate zero-dynamic gate\n",
+    "stderr": ""
+  },
+  {
+    "name": "replays/node-boundary",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS Node-only reflective boundary and capability forwarding controls\n",
+    "stderr": ""
+  },
+  {
+    "name": "replays/bounded-boundary",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS Node-only reflective boundary and capability forwarding controls\n",
+    "stderr": ""
+  },
+  {
+    "name": "replays/replays",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "replay-erb-reduce: 0\nreplay-restricted: 0\nreplay-accessors: 0\nreplay-e3b: 0\nreplay-e3a: 0\nnode-host-negatives: 0\nreplay-e3a-reduce: 0\nreplay-e3a-reachability: 0\nreplay-e2: 0\nreplay-e1: 0\nreplay-plans: 0\nreplay-baseline: 0\nreplay-metadata: 0\nreplay-stress: 0\nreplay-global: 0\nreplay-bootstrap: 0\nreplay-d2: 0\n",
+    "stderr": "D4 evidence I/O retry 1: C:\\Users\\jonku\\code\\rift\\typescript\\docs\\validation\\ts-034h6-c\\replays/replays-results.json\n"
+  },
+  {
+    "name": "A-both-serializer-lanes",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS four runtime-input/lane streams, each checked against frozen literal ASCII\n",
+    "stderr": ""
+  },
+  {
+    "name": "A21",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "✔ T01 both runtime inputs/lane bytes match literal ASCII and all valid closed arms (109.2505ms)\n✔ T02 every required nested key and unknown field fails closed, both lanes (1616.3861ms)\n✔ T02 UTF8, size, duplicate-equivalent keys, versions, missing/concatenated JSON (3.6964ms)\n✔ B01 binding exact shape, sources, canonical hashes, variant and limits (4.1841ms)\n✔ T03 operation/phase/source/Realm/preflight/entry and constructor mutations (670.1181ms)\n✔ U01/U02 wrong capability arm, phase, inspection and constructor; resource bounds (99.3163ms)\n✔ D01 diagnostic allowed only nonempty at nonnormal Result, all arms both lanes (225.5236ms)\n✔ B01 ordered repeated harness occurrences, failing/current prefix, raw restrictions (5.4839ms)\n✔ T04 exact both-lane child -> composed envelope -> parse/assert/inspect roundtrip (482.0869ms)\n✔ T02/D01 every required nested envelope key/unknown key is rejected (11604.7157ms)\n✔ T02 both envelope text and byte transports reject duplicate, UTF8, size and versions (7.59ms)\n✔ T03/B01 full boundary independently rejects binding and context drift (61.339ms)\n✔ all child semantic mutations are revalidated by the envelope boundary (1357.1657ms)\n✔ D01 all parent-only alternatives retain optional diagnostics and reject malformed arms (1069.609ms)\n✔ T04 trusted transport priority and cap-kill authenticated roundtrip (7.7453ms)\n✔ nonraw reload and observation mode, body provenance and context remain separate (13.6342ms)\n✔ retained source text is actually UTF8-decodable; exact line extents in both layers (10.8324ms)\n✔ syntax allowlist and runtime domain remain disjoint at both boundaries (52.7147ms)\n✔ result byte limit is inclusive at exactly 65536 in both decoder paths (5.1391ms)\n✔ approved amendment: same-source raw/non-strict contexts bind distinct request identities (8.6226ms)\n✔ unlaunched input rejection roundtrips with null binding and unavailable provenance (3.5021ms)\nℹ tests 21\nℹ suites 0\nℹ pass 21\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 15035.7926\n",
+    "stderr": ""
+  },
+  {
+    "name": "typecheck",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "name": "runner20",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "✔ accepts expected successful execution and the intentional host exit (0.7146ms)\n✔ matching unexpected exits cannot pass (0.0733ms)\n✔ rejects build exit, even with matching stdout (0.0604ms)\n✔ rejects build signal, even with matching stdout (0.0431ms)\n✔ rejects build timeout, even with matching stdout (0.0533ms)\n✔ rejects build spawn, even with matching stdout (0.0424ms)\n✔ rejects coverage exit, even with matching stdout (0.0433ms)\n✔ rejects coverage signal, even with matching stdout (0.0345ms)\n✔ rejects coverage timeout, even with matching stdout (0.0425ms)\n✔ rejects coverage spawn, even with matching stdout (0.0693ms)\n✔ rejects node exit, even with matching stdout (0.0501ms)\n✔ rejects node signal, even with matching stdout (0.3917ms)\n✔ rejects node timeout, even with matching stdout (0.0359ms)\n✔ rejects node spawn, even with matching stdout (0.0225ms)\n✔ rejects native exit, even with matching stdout (0.0316ms)\n✔ rejects native signal, even with matching stdout (0.1473ms)\n✔ rejects native timeout, even with matching stdout (0.0382ms)\n✔ rejects native spawn, even with matching stdout (0.0462ms)\n✔ fails closed on missing, changed or incomplete coverage reports (0.232ms)\n✔ rejects dynamic coverage and output differences (0.0555ms)\nℹ tests 20\nℹ suites 0\nℹ pass 20\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 82.6733\n",
+    "stderr": ""
+  },
+  {
+    "name": "host73",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "✔ R1 O03 O05 O07 T06 expected phase/type/null must come from parent at both boundaries (12.2335ms)\n✔ R1 coordinator reproduction and missing parent policy cannot enter a ledger (1.0652ms)\n✔ R1 T06 T17 every Inputs field is parent-bound, including limits and ordered harness (8.8932ms)\n✔ R1 blockers cannot be removed or replaced; production-blocked invariant retained (2.1775ms)\n✔ R2 exported classify enforces every cross-record invariant even without Classification (1.3751ms)\n✔ R2 exported classify rejects forged classification, unknown fields and observation modes (0.3897ms)\n✔ R3 O14 calls guard uses active depth at boundary: 64/64 and 0/0 remain resource limits (1.6494ms)\n✔ R3 O12 O13 O14 other guards retain post-increment/size overflow semantics (0.3288ms)\n✔ T07 mode, body, stage and location must describe a possible driver operation (42.2536ms)\n✔ certified return has a closed rule and consistent operation and binding in both modes (24.6509ms)\n✔ T04 T05 T06 T07 T08 T16 T20 T29 strict child framing, identity and closed schema (10.7414ms)\n✔ T09 T10 T11 T12 T13 T14 T15 exact transport precedence and counts (0.7225ms)\n✔ T12 T13 combined pipe byte chunks preserve exactly 1048600 at first crossing (0.1409ms)\n✔ T21 all parent Identity and Inputs fields remain context-bound (1.1239ms)\n✔ T24 T25 T26 T27 observation invariant and conformance ledger remain separate (1.0311ms)\n✔ I01 I02 production pin/selection cannot be replaced by synthetic bytes (4.0373ms)\n✔ I03 I07 revision failure and retrieval preserve selected entry with unknown variants (2.6102ms)\n✔ I04 I05 I06 exact synthetic Unicode/BOM/NUL and invalid UTF-8 (0.2554ms)\n✔ I08 rejects metadata (3.1212ms)\n✔ I09 rejects metadata (0.6974ms)\n✔ I10 rejects metadata (0.4349ms)\n✔ I11 rejects metadata (0.2008ms)\n✔ I20 rejects metadata (0.2495ms)\n✔ I12 I13 metadata cardinality and missing description (0.2637ms)\n✔ I14 metadata drift including order and null negative (0.6025ms)\n✔ I15 all seven incompatible pairs (0.7899ms)\n✔ I16 paths and symlink escape never read outside (5.3828ms)\n✔ I17 missing include is an input error (0.3458ms)\n✔ I18 unknown flag and unknown execution fields fail closed (1.1878ms)\n✔ I19 unknown feature retains both variants (0.2624ms)\n✔ YAML supports folded prose, quoted strings, flow and legacy fields without execution (0.7977ms)\n✔ V01 V02 V03 V08 strict transforms and planning order (0.5491ms)\n✔ V04 V05 raw retains metadata and bytes but zero harness (0.2165ms)\n✔ V06 V07 V09 module async and strict all blocked (0.3896ms)\n✔ V10 V11 environment and nondeterminism (0.5698ms)\n✔ V12 comments do not invent feature blockers (execution deferred) (0.1548ms)\n✔ H01 ordered harness plan retains repeated includes; semantic effects deferred (0.1573ms)\n✔ T09 lane numerators remain separate (2.4295ms)\n✔ T10 all eight statuses count once with literal denominators (1.7671ms)\n✔ V01 T11 complete pairs retain both statuses and file does not pass (0.3756ms)\n✔ T12 frozen metadata plan: 33 files / 60 variants independently per lane; not byte-verification evidence (16.3681ms)\n✔ T13 malformed metadata retains unknown denominator (0.377ms)\n✔ T14 fixture paths are explicitly excluded and cannot broaden production (1.4777ms)\n✔ T15 cancellation persists full selection before any terminal records (9.3783ms)\n✔ T16 retries require explicit policy and retain initial failure (0.4492ms)\n✔ T17 no cache path; all identity/input changes remain distinct records (1.9471ms)\n✔ T18 observation success cannot enter ledger or numerator (0.2558ms)\n✔ T19 three batch exits (0.2631ms)\n✔ Blocked selection cannot accept a synthetic pass or altered input identity (0.2191ms)\n✔ CLI retains input-error ledgers and refuses to overwrite a previous run (13.8355ms)\n✔ O01 positive normal ignores diagnostic-looking stdout hash (5.4049ms)\n✔ O02 five primitive/plain throws fail positives (5.0362ms)\n✔ O03 O15 O16 O17 negative constructor names, including runtime SyntaxError (2.8992ms)\n✔ O04 diagnostic string cannot supply constructor evidence (1.5217ms)\n✔ O05 wrong phase never matches (0.7524ms)\n✔ O06 O08 normal negative fails without evaluating parse-negative body (1.3056ms)\n✔ O07 wrong runtime type (0.4504ms)\n✔ O09 audited parse negative requires valid rule, unit and location (0.7228ms)\n✔ O10 O11 O21 unsupported source is not repaired or matched (1.3413ms)\n✔ O12 O13 O14 guard provenance wins over matching error names (1.4292ms)\n✔ O18 O19 constructor extraction abrupt/host fault retained (0.9199ms)\n✔ O20 harness-defined function throwing in test remains test failure (0.527ms)\n✔ H02 H03 H20 synthetic harness outcomes cannot satisfy negatives (1.3228ms)\n✔ T01 deadline wins even over normal envelope (0.2203ms)\n✔ T02 T03 abnormal termination overrides absent or normal envelope (0.1665ms)\n✔ T04 T05 console text is not an envelope; actual throw remains failure (0.7484ms)\n✔ T06 invalid envelopes, duplicate/escaped keys and wrong identity (2.0445ms)\n✔ T07 output cap overrides normal result (0.1075ms)\n✔ T08 host diagnostic SyntaxError remains a host fault (0.5686ms)\n✔ T18 observation records omit classification altogether (0.6631ms)\n✔ Closed records reject missing/extra fields at every nesting level (0.7439ms)\n✔ Contradictory evidence, forgery, null provenance and constructor names fail closed (0.5026ms)\n✔ Unexecuted positive body cannot pass; nested observation fields remain closed (0.6461ms)\nℹ tests 73\nℹ suites 0\nℹ pass 73\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 208.86\n",
+    "stderr": ""
+  },
+  {
+    "name": "observations22",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "✔ node T21 preparation snapshots caller selection, nested metadata and source before yielding (559.2586ms)\n✔ node T01 T02 T03 T22 T24 actual parser/body/forgery/strict coordinates (1339.9588ms)\n✔ node actual default guards, throw and no constructor claim (1244.0011ms)\n✔ node T17 T18 invalid argument and every numeric input fault (794.3205ms)\n✔ node T23 T32 exact encoder roundtrip and observable getter effects excluded (54.5142ms)\n✔ node actual timeout and combined output cap terminate process and archive real counts (731.0641ms)\n✔ node T30 prelaunch cancellation with an already-aborted signal spawns nothing (248.7425ms)\n✔ node T30 prelaunch cancellation during launch validation spawns nothing (281.4224ms)\n✔ node T30 cancellation after actual child launch terminates the child (399.444ms)\n✔ native T21 preparation snapshots caller selection, nested metadata and source before yielding (147.6291ms)\n✔ native T01 T02 T03 T22 T24 actual parser/body/forgery/strict coordinates (514.8364ms)\n✔ native actual default guards, throw and no constructor claim (414.0108ms)\n✔ native T17 T18 invalid argument and every numeric input fault (262.4692ms)\n✔ native T23 T32 exact encoder roundtrip and observable getter effects excluded (71.165ms)\n✔ native actual timeout and combined output cap terminate process and archive real counts (451.1431ms)\n✔ native T30 prelaunch cancellation with an already-aborted signal spawns nothing (64.1111ms)\n✔ native T30 prelaunch cancellation during launch validation spawns nothing (66.9287ms)\n✔ native T30 cancellation after actual child launch terminates the child (145.4884ms)\n✔ T19 fixed caps are rejected before any launch (0.2756ms)\n✔ T21 every prepared Identity/Inputs mutation is rejected before launch (342.2223ms)\n✔ T30 cancellation retains unfinished archive without terminal success (338.9818ms)\n✔ T31 preexisting result and symlink attempt roots rejected, prior bytes preserved (850.6047ms)\nℹ tests 22\nℹ suites 0\nℹ pass 22\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 9328.1298\n",
+    "stderr": ""
+  },
+  {
+    "name": "probes10",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS         control  (build 2880ms)\nPASS         dispatch  (build 2878ms)\nPASS         host  (build 2793ms)\nPASS         interpreter  (build 2931ms)\nPASS         memory  (build 2791ms)\nPASS         numbers  (build 2909ms)\nPASS         objects  (build 2875ms)\nPASS         strings  (build 2905ms)\nPASS         suspension  (build 2880ms)\nPASS         values  (build 2894ms)\n",
+    "stderr": ""
+  }
+]

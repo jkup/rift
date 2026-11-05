@@ -1,4 +1,4 @@
-import { collectDeclarationPlan, collectBoundedScriptPreparation, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
+import { collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
 export type { StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
@@ -63,9 +63,18 @@ export function parseDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationN
 export function parseBoundedScriptDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null = null): DeclarationPlanResult {
     return parseStructuralPlan(unit, nodes, true);
 }
-// Preparation alone may certify the bounded block rule after full-source parsing.
+// Preparation alone may certify bounded rules after full-source parsing.
 export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {
-    return parseStructuralPlan(unit, nodes, true, true);
+    const original = parseStructuralPlan(unit, nodes, true, true);
+    if (original.kind !== "blocked" || original.rejection.kind !== "unsupported-syntax" ||
+        original.rejection.capabilityCode !== "parse.duplicate-parameter") return original;
+    // A failed duplicate-formal parse only permits a fresh rejection-only audit.
+    // Its retained nodes remain untouched; the continuation cannot produce a plan.
+    const source = { id: unit.id, text: unit.text };
+    const parsed = parseStructuralSource(source, null, true, true);
+    if (parsed.kind === "blocked") return original;
+    const rejection = collectBoundedScriptParameterRejection(source, parsed.body, parsed.tokens, parsed.bindings);
+    return rejection === null ? original : rejection;
 }
 function parseStructuralPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, certifyBlockFunctions = false): DeclarationPlanResult {
     const source = { id: unit.id, text: unit.text };

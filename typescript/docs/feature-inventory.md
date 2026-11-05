@@ -880,3 +880,23 @@ static-only build evidence and zero-dynamic coverage (one separate retained
 linker retry), with the new driver at 960/960. All 31 required regression stages
 and preservation checks pass. Actual and independent second acceptance remain
 pending; this adds no execution or emission authority.
+## TS-035D4 strict parameter rejection
+
+Bounded preparation now certifies strict duplicate simple formals after a fresh,
+full-source, null-node continuation, entered only for the original duplicate-formal
+failure. Global grammar/scope/conflict vetoes and any sloppy duplicate preserve
+that original rejection. Combined strict block/parameter candidates select the
+least second.start, then first.start, with block winning a tie. The continuation
+returns rejection or null and cannot produce an executable plan. Successful
+retained nodes, ordinary planners, D1, standalone D3 and legacy return behavior
+are preserved. C and both independent v2 decoders admit the parameter code;
+the existing serializer emits it unchanged.
+
+Candidate evidence in `validation/ts-035d4/` records fresh 212/212 guest results
+on both hosts, all 66 old plus one new static-only gates with separate zero-dynamic
+coverage (new driver 4425/4425), 772 source runs across 193 frozen rows, 96 actual
+wire rows, 29664 malformed/binding checks, 48 metadata runs and 384 prefix/Realm/
+history controls. Four exact reviewed old-test migrations preserve the other
+851 complete files. No grammar, parameter execution, registry, corpus admission,
+CLI/profile/manifest, compiler/pin or C++ expansion. Actual and independent second
+acceptance remain required; this entry does not mark the candidate accepted.

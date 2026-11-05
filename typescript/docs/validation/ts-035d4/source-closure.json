@@ -1,0 +1,50 @@
+[
+  {
+    "path": "src/parser.ts",
+    "sha256": "b3088bcd4d668652f05e35f80a7e4c01e85e3b321a07cc1312378bc6b2b0a92b"
+  },
+  {
+    "path": "src/script-declarations.ts",
+    "sha256": "ea5df4407960e4ad58a35336c18144d1d57a66074b9da2d0fcbcce887573b5f4"
+  },
+  {
+    "path": "src/script-observation.ts",
+    "sha256": "947640a060373027256a6c03ee719425dbd7059116f4dd5e4c39af7bc96982bc"
+  },
+  {
+    "path": "src/script-observation-types.ts",
+    "sha256": "8a00987b92b16a0c5cf81655a509510296a8164b8a24073f06212d7e08d28e26"
+  },
+  {
+    "path": "src/script-observation-json.ts",
+    "sha256": "2f2718bc39dabab0ee430244ca59f7332173d4b2bc5318a07056a85c46ed8212"
+  },
+  {
+    "path": "tools/test262/script-driver-result.mjs",
+    "sha256": "d851895448503001987852f6e1a1aea347f8bdb84d8b3e0024327d18b53a972e"
+  },
+  {
+    "path": "tools/test262/script-result.mjs",
+    "sha256": "e9f02429a743c8ece4f9d6a26b41d6441764d08ee6b71bd1f781129d44c6c909"
+  },
+  {
+    "path": "test/script-strict-parameter-dispatch.ts",
+    "sha256": "9a1ccd80b8793a06573afbd883e7c83f83fb0c5586c1f312262c608f5c8ea34e"
+  },
+  {
+    "path": "tools/test262/script-strict-parameter-dispatch.test.mjs",
+    "sha256": "353ea9c68b82a810a0e57aba72db27b80c8969ebe2e26795eceed9baac4daea0"
+  },
+  {
+    "path": "docs/validation/ts-035d4-p/semantic-matrix.json",
+    "sha256": "2e03b6c67898276c014b217c201e2b1d9f7a145d89d081180f3278aa717cba14"
+  },
+  {
+    "path": "docs/validation/ts-035d4-p/wire-matrix.json",
+    "sha256": "d12751e7858b9db8114411076e037e6e01be93082679923602187489695a045e"
+  },
+  {
+    "path": "docs/validation/ts-035d4-p/future-controls.json",
+    "sha256": "ed5c791f0e7d76ceb6b8c8515589b5dbab764deaeb724ac7a87d01a2f8ac92e8"
+  }
+]

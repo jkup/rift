@@ -1,0 +1,30 @@
+[
+  {
+    "name": "corrected-wire",
+    "status": 0,
+    "signal": null,
+    "evidence": "wire-corrected.log",
+    "tests": 3
+  },
+  {
+    "name": "controls",
+    "status": 0,
+    "signal": null,
+    "evidence": "controls-results.json",
+    "hosts": 2
+  },
+  {
+    "name": "required",
+    "status": 0,
+    "signal": null,
+    "evidence": "required-suite-results.json",
+    "stages": 32
+  },
+  {
+    "name": "preservation",
+    "status": 0,
+    "signal": null,
+    "evidence": "preservation.json",
+    "protected": 4838
+  }
+]

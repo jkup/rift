@@ -10,6 +10,7 @@ for(const [i,row] of rows.entries()){
  for(const [key,value] of Object.entries(accepted[i].expected))assert.deepEqual(row.expected[key],value,'accepted expected '+row.id);
  assert.deepEqual(row.ordinary,prior.find(x=>x.id===row.id).current,'accepted ordinary '+row.id);
 }
+const d4=JSON.parse(readFileSync('docs/validation/ts-035d4-p/inherited-expectations.json')).D3;
 const blockedDiagnostics=JSON.parse(readFileSync(here+'/blocked-diagnostics.json'));
 assert.equal(rows.length,77);assert.equal(rows.flatMap(r=>r.expected.candidates??[]).length,30);
 assert.equal(rows.filter(r=>r.expected.reason==='grammar-or-resource').length,26);
@@ -28,7 +29,9 @@ for(const lane of process.argv.includes('--node')?['node']:['node','native'])for
  writeFileSync(here+'/matrix-results'+(process.argv.includes('--node')?'-node':'')+'.json',JSON.stringify(results,null,2)+'\n');
  assert.equal(run.status,0,row.id+': '+run.stderr);assert.equal(run.signal,null);
  const result=JSON.parse(run.stdout),audit=result.audit;
- assert.deepEqual(result.ordinary,row.ordinary,'ordinary '+row.id);
+ const migration=d4[row.id]; if(migration)assert.equal(row.text,migration.text,row.id+' exact D4 source');
+ const expectedOrdinary=migration?{...row.ordinary,D2:migration.preparation}:row.ordinary;
+ assert.deepEqual(result.ordinary,expectedOrdinary,'ordinary '+row.id);
  assert.deepEqual(result.nodes,row.nodes,'nodes '+row.id);
  if(row.expected.kind!=='blocked')assert.deepEqual(audit,row.expected,row.id);
  else {

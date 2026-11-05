@@ -1,0 +1,11 @@
+[
+  {
+    "id": "node/alpha/parse-only/test/duplicate-strict-parameter/plain",
+    "variant": "strict",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"09c5aada2eea7866f86c20f08d4a505f887cdd06ca8025634f26bf58a07eb7fa\",\"mode\":\"conformance\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":2,\"column\":21}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"duplicate-strict-parameter\"}}\n",
+    "stderr": ""
+  }
+]
