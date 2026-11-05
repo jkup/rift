@@ -43,3 +43,12 @@ not rerunning them. All33files/60variants remain blocked. COORDINATION edits by
 the coordinator are excluded from owned diff and preservation counts. No old
 test proposals are needed for the non-emitting first slice; later emission must
 render its exact affected whole-file proposals before application.
+
+Second-review correction (2026-11-05): the deferred D2 fallback recipe is
+withdrawn. D1 only collects candidates after successful full bounded parsing;
+X06 fails grammar before collection. Absence of a retained candidate cannot
+authorize a legacy-return fallback while ensuring X06 stays blocked. Resolving
+that information-flow closure is a required later D2 design decision, with no
+new mechanism assumed in D1. D1, X06, cases.mjs and audit.json are unchanged.
+This documentation correction ran no probes or suites and changes no production
+code. Candidate remains pending actual/second review; no D2 authorization.

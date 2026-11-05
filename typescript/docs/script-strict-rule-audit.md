@@ -183,14 +183,24 @@ diagnostic at selected second binding. Preserve Realm-profile rejection before
 parse, lexer/resource precedence and public first failure for vetoed input;
 vetoed existing conflicts still project `script.uncertified-conflict`.
 
-The existing return fallback must not override a selected rule, nor convert a
-vetoed candidate using legacy evidence. Freeze this dispatch explicitly:
-selected bounded rule first; conflict remains unsupported; blocked bounded
-grammar follows existing return-only path only if no new-rule audit candidate
-was retained. Evidence stays internal; no boolean from a caller grants authority.
-Resource/grammar vetoes never become syntax-error. Multiple target conflicts use
-the source-order rule above; this is engine diagnostic policy, not a mandated
-ECMAScript choice of which early error to report.
+**Unresolved D2 prerequisite: legacy-return fallback and candidate information
+flow.** The proposed dispatch condition “use the return fallback if no new-rule
+candidate was retained” is withdrawn. D1 collects candidates only after the full
+bounded parse succeeds. X06's duplicate block followed by `return 1;` fails that
+parse before collection, so absence of a retained candidate cannot distinguish
+this veto case from an input eligible for the existing return fallback. The
+condition therefore cannot enforce X06's blocked expectation; it could permit
+return certification without the required new-rule veto information.
+
+D2 requires a separately reviewed design decision that closes this information
+flow and reconciles legacy-return behavior with the unchanged X06 veto. No D1
+mechanism supplies that decision, and no replacement parser path, candidate
+tracking before EOF, scope expansion or fallback recipe is authorized here.
+Until resolved, the D2 integration inventory above and below describes necessary
+closure work, not an implementable frozen dispatch contract. D1 and its literal
+matrix remain unchanged. Resource/grammar vetoes must not certify the new block
+rule. For eligible multiple target conflicts, source-order selection above is
+engine diagnostic policy, not a mandated ECMAScript error selection.
 
 D2 must atomically change `src/script-observation-types.ts` rule literal union,
 `src/script-observation-json.ts` to serialize the actual closed rule, and **both**
