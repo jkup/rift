@@ -1,5 +1,5 @@
-import { collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
-export type { NumericAssignmentAudit, NumericAssignmentCandidate, NumericAssignmentSite, StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
+import { collectLexicalStatementAudit, type LexicalStatementAudit, type LexicalStatementCandidate, type LexicalStatementContext, collectNumericAssignmentAudit, type NumericAssignmentAudit, type NumericAssignmentCandidate, collectDeclarationPlan, collectBoundedScriptPreparation, collectBoundedScriptParameterRejection, collectBlockFunctionAudit, collectStrictParameterAudit, type StrictParameterAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
+export type { LexicalStatementAudit, LexicalStatementCandidate, LexicalStatementContext, NumericAssignmentAudit, NumericAssignmentCandidate, NumericAssignmentSite, StrictParameterAudit, StrictParameterCandidate, BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
 import { lex, type Token } from "./lexer.js";
@@ -122,13 +122,22 @@ export function auditBoundedScriptNumericAssignments(source: string): NumericAss
     return collectNumericAssignmentAudit(unit, parsed.body, parsed.tokens, parsed.bindings, parsed.numericCandidates);
 }
 
+export function auditBoundedScriptLexicalStatements(source: string): LexicalStatementAudit {
+    const unit = { id: "", text: source };
+    const parsed = parseStructuralSource(unit, null, true, false, false, true);
+    if (parsed.kind === "blocked") return { kind: "blocked", reason: "grammar-or-resource",
+        diagnostic: parsed.diagnostic, rejection: parsed.rejection };
+    return collectLexicalStatementAudit(unit, parsed.body, parsed.tokens, parsed.bindings, parsed.lexicalCandidates);
+}
+
 type StructuralSource =
-    | { kind: "parsed"; body: Stmt[]; tokens: Token[]; bindings: Map<number, ParsedBinding[]>; numericCandidates: readonly NumericAssignmentCandidate[] }
+    | { kind: "parsed"; body: Stmt[]; tokens: Token[]; bindings: Map<number, ParsedBinding[]>; numericCandidates: readonly NumericAssignmentCandidate[]; lexicalCandidates: readonly LexicalStatementCandidate[] }
     | { kind: "blocked"; goal: "Script"; unit: ScriptSourceUnit; rejection: Rejection; diagnostic: Diagnostic };
 // One lexical/parser path for both public plans and non-emitting audit evidence.
-function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, parameterAudit = false, numericAudit = false): StructuralSource {
+function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, parameterAudit = false, numericAudit = false, lexicalAudit = false): StructuralSource {
     if (parameterAudit && (!bounded || nodes !== null)) throw new Error("invalid parameter audit purpose");
     if (numericAudit && (!bounded || nodes !== null || parameterAudit)) throw new Error("invalid numeric audit purpose");
+    if (lexicalAudit && (!bounded || nodes !== null || parameterAudit || numericAudit)) throw new Error("invalid lexical audit purpose");
     const lexical = lex(source.text, true);
     if (lexical.error !== null) {
         if (lexical.rejection === null) throw new Error("missing lexer rejection");
@@ -136,7 +145,7 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     }
     const parserSource: SourceText = { text: source.text };
     if (nodes !== null) nodes.source = parserSource;
-    const parser = new Parser(lexical.tokens, parserSource, numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan");
+    const parser = new Parser(lexical.tokens, parserSource, lexicalAudit ? "bounded-lexical-statement-audit" : numericAudit ? "bounded-numeric-assignment-audit" : parameterAudit ? "bounded-parameter-audit" : bounded ? "bounded-plan" : "declaration-plan");
     const parsed = parser.program();
     if (parsed.error !== null) {
         if (parsed.rejection === null) throw new Error("missing parser rejection");
@@ -144,9 +153,10 @@ function parseStructuralSource(source: ScriptSourceUnit, nodes: DeclarationNodes
     }
     if (parser.current().kind !== "eof" || parser.current().start !== source.text.length || parser.current().end !== source.text.length) throw new Error("declaration plan did not reach EOF");
     if (nodes !== null) nodes.assignmentNameEligible = parser.assignmentNameEligible;
-    return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings, numericCandidates: parser.numericCandidates };
+    return { kind: "parsed", body: parsed.body, tokens: lexical.tokens, bindings: parser.bindings, numericCandidates: parser.numericCandidates, lexicalCandidates: parser.lexicalCandidates };
 }
 class Parser {
+    readonly lexicalCandidates: LexicalStatementCandidate[] = [];
     readonly numericCandidates: NumericAssignmentCandidate[] = [];
     private readonly numericTokens = new Map<Expr, Token>();
     readonly assignmentNameEligible = new Map<Expr, boolean>();
@@ -160,9 +170,9 @@ class Parser {
     error: Diagnostic | null = null;
     rejection: Rejection | null = null;
     readonly returnCandidates: ReturnCandidate[] = [];
-    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" | "bounded-numeric-assignment-audit" = "legacy") {}
-    private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit"; }
-    private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit"; }
+    constructor(public tokens: Token[], readonly source: SourceText, private readonly purpose: "legacy" | "return-audit" | "declaration-plan" | "bounded-plan" | "bounded-parameter-audit" | "bounded-numeric-assignment-audit" | "bounded-lexical-statement-audit" = "legacy") {}
+    private structuralPlan(): boolean { return this.purpose === "declaration-plan" || this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit"; }
+    private boundedPlan(): boolean { return this.purpose === "bounded-plan" || this.purpose === "bounded-parameter-audit" || this.purpose === "bounded-numeric-assignment-audit" || this.purpose === "bounded-lexical-statement-audit"; }
     current(): Token { return this.tokens[this.index]; }
     at(text: string): boolean {
         const t = this.current();
@@ -221,9 +231,18 @@ class Parser {
         this.depth--;
         return result;
     }
-    branch(): Stmt {
-        if (this.at("let") || this.at("function")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", this.current().loc);
-        return this.statement();
+    branch(context: LexicalStatementContext): Stmt {
+        const keyword = this.current();
+        const auditLet = this.purpose === "bounded-lexical-statement-audit" && keyword.kind === "word" && keyword.text === "let";
+        if ((this.at("let") && !auditLet) || this.at("function")) this.fail({ kind: "unsupported-syntax", capabilityCode: "parse.declaration-statement" }, "declarations require a block", keyword.loc);
+        const result = this.statement();
+        // Only a complete supported declaration in this exact Statement slot is evidence.
+        if (auditLet && this.error === null && result.kind === "let") {
+            this.lexicalCandidates.push({ ruleCode: "lexical-declaration-statement", context,
+                keyword: { text: "let", start: keyword.start, end: keyword.end,
+                    loc: { line: keyword.loc.line, column: keyword.loc.column } } });
+        }
+        return result;
     }
     statementInner(): Stmt {
         const start = this.current().start;
@@ -301,8 +320,8 @@ class Parser {
             this.expect("(");
             const test = this.expression(0);
             this.expect(")");
-            const consequent = this.branch();
-            const alternate = this.eat("else") ? this.branch() : null;
+            const consequent = this.branch("if-consequent");
+            const alternate = this.eat("else") ? this.branch("if-alternate") : null;
             return { kind: "if", loc, test, consequent, alternate };
         }
         if (this.structuralPlan() && this.eat("for")) {
@@ -316,7 +335,7 @@ class Parser {
             const update = this.at(")") ? null : this.expression(0);
             this.expect(")");
             this.loops++;
-            const body = this.branch();
+            const body = this.branch("for-body");
             this.loops--;
             return { kind: "for", loc, initializer, test, update, body };
         }
@@ -325,7 +344,7 @@ class Parser {
             const test = this.expression(0);
             this.expect(")");
             this.loops++;
-            const body = this.branch();
+            const body = this.branch("while-body");
             this.loops--;
             return { kind: "while", loc, test, body };
         }

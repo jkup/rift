@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "lane": "Node only",
+  "raw": 14,
+  "controls": [
+    "fake sessions and records before ticks",
+    "recovered constructors denied",
+    "copied spread proxy detached rebound capabilities",
+    "profile-first exact diagnostics",
+    "idle callbacks and stale direct invocation",
+    "no context or AST properties"
+  ]
+}

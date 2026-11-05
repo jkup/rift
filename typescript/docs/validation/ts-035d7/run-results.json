@@ -1,0 +1,26 @@
+[
+  {
+    "name": "freeze-source",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "Frozen 276 source/test/tool/config files\n",
+    "stderr": ""
+  },
+  {
+    "name": "required",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "D7-matrix: 0\nguest-node: 0\nguest-native: 0\nD6-source: 0\nD6-wire: 0\nD6-wire-mutations: 0\nD5-source: 0\nD5-future-wire: 0\nD2-future-wire: 0\nC-codecs: 0\nD4-source: 0\nD4-wire: 0\nD4-controls: 0\nD5-oracle: 0\nD3-source: 0\nD2-source: 0\nD2-wire: 0\nD2-extra: 0\nD1-unchanged-matrix: 0\nD1-unchanged-extra: 0\nC-real-transport: 0\nC-host21: 0\nB-XU-P01-P09: 0\nB-boundary: 0\nH7: 0\nvalidate: 0\nvalidate-map: 0\nreplay-errors-b: 0\nreplay-catch: 0\nreplay-switch: 0\nreplay-for-update: 0\nreplay-nonstrict: 0\nreplay-construct: 0\nreplay-errors-a: 0\nnode-slots: 0\nreplays/validate: 0\nreplays/node-boundary: 0\nreplays/bounded-boundary: 0\nreplays/replays: 0\nA-both-serializer-lanes: 0\nA21: 0\ntypecheck: 0\nrunner20: 0\nhost73: 0\nobservations22: 0\nprobes10: 0\nPASS 45 inherited stages and D7; all historical evidence recursively restored\n",
+    "stderr": ""
+  },
+  {
+    "name": "preserve",
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "PASS exact scope/history, 927 identities, 212 both hosts, 69+1 gates, 45 inherited stages and 60 blocked variants\n",
+    "stderr": "warning: in the working copy of 'typescript/COORDINATION.md', CRLF will be replaced by LF the next time Git touches it\nwarning: in the working copy of 'typescript/docs/feature-inventory.md', CRLF will be replaced by LF the next time Git touches it\n"
+  }
+]

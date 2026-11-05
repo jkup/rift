@@ -124,6 +124,50 @@ export function collectBlockFunctionAudit(unit: ScriptSourceUnit, body: Stmt[], 
     return analysis.audit();
 }
 
+export type LexicalStatementContext = "if-consequent" | "if-alternate" | "while-body" | "for-body";
+export type LexicalStatementCandidate = {
+    readonly ruleCode: "lexical-declaration-statement";
+    readonly context: LexicalStatementContext;
+    readonly keyword: { readonly text: "let"; readonly start: number; readonly end: number; readonly loc: Location };
+};
+export type LexicalStatementAudit =
+    | { readonly kind: "eligible"; readonly sourceUnits: number; readonly consumedUnits: number;
+        readonly candidates: readonly LexicalStatementCandidate[] }
+    | { readonly kind: "none"; readonly sourceUnits: number; readonly consumedUnits: number }
+    | { readonly kind: "blocked"; readonly reason: "grammar-or-resource" | "scope-restriction" | "other-conflict";
+        readonly diagnostic: Diagnostic; readonly rejection: Rejection | null };
+
+// Same-parse evidence only. The disposable continuation never supplies executable nodes.
+export function collectLexicalStatementAudit(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, candidates: readonly LexicalStatementCandidate[]): LexicalStatementAudit {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, null, true);
+    analysis.collect(body);
+    const veto = analysis.audit();
+    if (veto.kind === "blocked") return veto;
+    if (veto.kind === "eligible") {
+        const second = veto.candidates[0].second;
+        return { kind: "blocked", reason: "other-conflict", rejection: null,
+            diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate-lexical: " + second.name,
+                loc: { line: second.loc.line, column: second.loc.column } } };
+    }
+    const result: LexicalStatementCandidate[] = [];
+    const byStart = new Map<number, Token>();
+    for (const token of tokens) byStart.set(token.start, token);
+    for (const candidate of candidates) {
+        const keyword = candidate.keyword, token = byStart.get(keyword.start);
+        const binding = bindings.get(keyword.start);
+        if (token === undefined || token.kind !== "word" || token.text !== "let" || keyword.text !== "let" ||
+            token.end !== keyword.end || token.loc.line !== keyword.loc.line || token.loc.column !== keyword.loc.column ||
+            unit.text.slice(keyword.start, keyword.end) !== "let" || binding === undefined || binding.length !== 1)
+            throw new Error("invalid lexical Statement token evidence");
+        result.push({ ruleCode: "lexical-declaration-statement", context: candidate.context,
+            keyword: { text: "let", start: keyword.start, end: keyword.end,
+                loc: { line: keyword.loc.line, column: keyword.loc.column } } });
+    }
+    result.sort((a, b) => a.keyword.start - b.keyword.start);
+    if (result.length === 0) return { kind: "none", sourceUnits: unit.text.length, consumedUnits: unit.text.length };
+    return { kind: "eligible", sourceUnits: unit.text.length, consumedUnits: unit.text.length, candidates: result };
+}
+
 export type NumericAssignmentSite = {
     readonly text: string; readonly start: number; readonly end: number;
     readonly loc: Location;

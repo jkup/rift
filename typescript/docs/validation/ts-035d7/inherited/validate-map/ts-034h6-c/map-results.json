@@ -1,0 +1,38 @@
+[
+  {
+    "id": "input-a",
+    "sha256": "1f81121e2d6a9726eb81f9cddfed6228c2e9ef51a43be0dff77fee75ed1785da",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS frozen prefixes=308 calls=224 input-a\nPASS semantic selection=108\nPASS abrupt prefixes=480\nPASS parsed getters=200\nPASS separate-session reentry=48\nPASS lengths mutations profiles inventories; X06 unrepresentable\nPASS exhaustive primitive controls=56 length coercion\nPASS Object-link and foreign Script constructor controls=28\nPASS all-trace abrupt prefixes=2340\nPASS length-getter and empty-array abrupt selection\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS frozen prefixes=308 calls=224 input-a\nPASS semantic selection=108\nPASS abrupt prefixes=480\nPASS parsed getters=200\nPASS separate-session reentry=48\nPASS lengths mutations profiles inventories; X06 unrepresentable\nPASS exhaustive primitive controls=56 length coercion\nPASS Object-link and foreign Script constructor controls=28\nPASS all-trace abrupt prefixes=2340\nPASS length-getter and empty-array abrupt selection\n",
+      "stderr": ""
+    }
+  },
+  {
+    "id": "input-b",
+    "sha256": "d320748d8e0c557ebb54dfa41c38f98f6bce8ea9a4d938cdfe353f6ef87cbeb9",
+    "node": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS frozen prefixes=308 calls=224 input-b\nPASS semantic selection=108\nPASS abrupt prefixes=480\nPASS parsed getters=200\nPASS separate-session reentry=48\nPASS lengths mutations profiles inventories; X06 unrepresentable\nPASS exhaustive primitive controls=56 length coercion\nPASS Object-link and foreign Script constructor controls=28\nPASS all-trace abrupt prefixes=2340\nPASS length-getter and empty-array abrupt selection\n",
+      "stderr": ""
+    },
+    "native": {
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "PASS frozen prefixes=308 calls=224 input-b\nPASS semantic selection=108\nPASS abrupt prefixes=480\nPASS parsed getters=200\nPASS separate-session reentry=48\nPASS lengths mutations profiles inventories; X06 unrepresentable\nPASS exhaustive primitive controls=56 length coercion\nPASS Object-link and foreign Script constructor controls=28\nPASS all-trace abrupt prefixes=2340\nPASS length-getter and empty-array abrupt selection\n",
+      "stderr": ""
+    }
+  }
+]

@@ -1,0 +1,3 @@
+PASS exact scope/history, 927 identities, 212 both hosts, 69+1 gates, 45 inherited stages and 60 blocked variants
+warning: in the working copy of 'typescript/COORDINATION.md', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'typescript/docs/feature-inventory.md', CRLF will be replaced by LF the next time Git touches it

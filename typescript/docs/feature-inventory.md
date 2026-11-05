@@ -931,3 +931,19 @@ nullable-history test correction, full both-host producer/serializer evidence an
 preservation checks are recorded in `docs/validation/ts-035d6/`. The 69 static gates, 212 guest records per host and all 45 validation stages pass.
 Acceptance is pending independent reviews; no corpus admission,
 conformance launch, new grammar, evaluator behavior or C++ change is implied.
+
+## TS-035D7 non-emitting lexical Statement audit
+
+The source-only `auditBoundedScriptLexicalStatements` uses the same bounded parser
+with an exclusive private continuation purpose and no retained executable nodes.
+It recognizes a fully parsed single-name `let` only in if consequent, if alternate,
+while body or classic-for body slots. Keyword evidence carries the actual token
+span/location and parser-supplied context; returned candidates are sorted and
+copied. One unchanged declaration collector vetoes scope restrictions, unrelated
+conflicts and block-function pairs before evidence can escape. Containing-scope
+conflicts are deliberately conservative for this invalid syntax.
+
+Ordinary parsing, preparation, execution and rejection/codec dispatch do not use
+this audit. Const, lexical loop heads, patterns, ASI and Annex B function branches
+remain excluded. See [D7 validation](validation/ts-035d7/README.md) for complete
+frozen literals, both-host runtime files, inherited identity and preservation checks.
