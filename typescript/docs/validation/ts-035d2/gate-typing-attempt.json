@@ -1,0 +1,18 @@
+{
+  "entry": "test/script-strict-rule-dispatch.ts",
+  "build": {
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "",
+    "stderr": "C:/Users/jonku/code/rift/typescript/test/script-strict-rule-dispatch.ts:26:77 - error SC1090: assignment to non-variables are not supported yet\n\n  25 |         child.result = { kind: \"syntax-error\", phase: \"parse\", constructorName: \"SyntaxError\", ruleCode: \"return-outside-function\" };\n  26 |     if (process.argv[8] === \"diagnostic\" && child.result.kind !== \"normal\") child.result.diagnostic = 'TypeError: diagnostic only ' + id + '\\0\"\\\\\\ud800';\n     |                                                                             ^~~~~~~~~~~~~~~~~~~~~~~\n  27 |     console.log(scriptObservationJSONRecord(child));\n\nC:/Users/jonku/code/rift/typescript/test/script-strict-rule-dispatch.ts:53:48 - error SC1090: comparisons of union-typed values (narrow first: check a discriminant field, or compare with '!== undefined'/'!== null' for unit arms) are not supported yet\n\n  52 |             check(entry !== undefined && entry.node !== null && entry.node.kind === \"function\" && entry.node.source !== null && entry.node.source.source === nodes.source && entry.body === entry.node.body, \"original function identity\");\n  53 |             if (fn.declaration !== null) check(nodes.declarations.get(fn.declaration)?.node === entry?.node, \"declaration node identity\");\n     |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n  54 |         }\n\n2 errors.\n"
+  },
+  "coverage": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "scriptc coverage C:\\Users\\jonku\\code\\rift\\typescript\\test\\script-strict-rule-dispatch.ts\n\n  statements analyzed   4233\n  compile statically    4231  (99%)\n\n  blockers:\n      ×1  SC1090  assignment to non-variables\n          at C:/Users/jonku/code/rift/typescript/test/script-strict-rule-dispatch.ts:26:77\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n      ×1  SC1090  comparisons of union-typed values (narrow first: check a discriminant field, or compare with '!== undefined'/'!== null' for unit arms)\n          at C:/Users/jonku/code/rift/typescript/test/script-strict-rule-dispatch.ts:53:48\n          hint: this form is valid TypeScript but does not compile yet — rewrite it with a supported equivalent of the construct the message names (https://scriptc.dev/limitations lists the boundary)\n",
+    "stderr": ""
+  },
+  "verdict": "BUILD-FAIL"
+}

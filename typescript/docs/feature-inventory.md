@@ -837,3 +837,23 @@ retained node associations remain unchanged. No preparation, observation,
 syntax-error emission or admission consumes this evidence. Parameters and switch
 duplicates remain unsupported; D2's return-fallback design remains unresolved.
 See `validation/ts-035d1/README.md` for frozen both-host controls and validation.
+
+## TS-035D2: preparation-only strict block rule (candidate)
+
+Fresh bounded preparation now certifies `duplicate-block-lexical-function` only
+when the shared parser reaches exact source EOF and the same collector clears
+D1's global veto. It selects the earliest second binding in a strict ordinary
+block. Public planners, the detached D1 audit and strict-only preparation retain
+their prior outputs. Observation projects this rejection before its unchanged
+legacy return fallback; return certification remains parse-only/test only.
+The v2 serializer and both independent decoders recognize exactly the return
+and block codes. No corpus admission, parameter rule or grammar expansion is
+included. The earlier D1 note about unresolved D2 dispatch is superseded by the
+accepted dispatch design. See `validation/ts-035d2/README.md` for fresh validation,
+retained failures and the pending independent review boundary.
+
+TS-035D2 review correction: the coordinator approved one exact historical codec
+source-closure test migration, retaining both behavioral tests and the whole-file
+assertion while admitting only D2's reviewed rule literals. The other 814 old
+files remain byte-identical; historical D2-P proposals and verifier are unchanged.
+Final implementation acceptance remains subject to independent review.

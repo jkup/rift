@@ -1,4 +1,4 @@
-import { collectDeclarationPlan, collectBlockFunctionAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
+import { collectDeclarationPlan, collectBoundedScriptPreparation, collectBlockFunctionAudit, type BlockFunctionAudit, type DeclarationNodes, type DeclarationPlanResult, type ParsedBinding } from "./script-declarations.js";
 export type { BlockFunctionAudit, BlockFunctionCandidate } from "./script-declarations.js";
 import type { ScriptSourceUnit } from "./script-metadata.js";
 import type { ResourceOrigin, SyntaxCapability, Rejection } from "./outcomes.js";
@@ -63,10 +63,18 @@ export function parseDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationN
 export function parseBoundedScriptDeclarationPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null = null): DeclarationPlanResult {
     return parseStructuralPlan(unit, nodes, true);
 }
-function parseStructuralPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean): DeclarationPlanResult {
+// Preparation alone may certify the bounded block rule after full-source parsing.
+export function parseBoundedScriptPreparation(unit: ScriptSourceUnit, nodes: DeclarationNodes): DeclarationPlanResult {
+    return parseStructuralPlan(unit, nodes, true, true);
+}
+function parseStructuralPlan(unit: ScriptSourceUnit, nodes: DeclarationNodes | null, bounded: boolean, certifyBlockFunctions = false): DeclarationPlanResult {
     const source = { id: unit.id, text: unit.text };
     const parsed = parseStructuralSource(source, nodes, bounded);
     if (parsed.kind === "blocked") return parsed;
+    if (certifyBlockFunctions) {
+        if (nodes === null) throw new Error("preparation requires retained nodes");
+        return collectBoundedScriptPreparation(source, parsed.body, parsed.tokens, parsed.bindings, nodes);
+    }
     return collectDeclarationPlan(source, parsed.body, parsed.tokens, parsed.bindings, nodes, bounded);
 }
 export function auditBoundedScriptBlockFunctions(source: string): BlockFunctionAudit {

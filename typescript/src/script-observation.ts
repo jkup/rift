@@ -111,15 +111,18 @@ class Attempt {
         if (prepared.kind === "profile-rejected") return this.envelope(operation, site, { kind: "unsupported-profile", reasonCode: prepared.reason });
         if (prepared.kind === "conflict") return this.envelope(operation, site, { kind: "unsupported-syntax", capabilityCode: "script.uncertified-conflict" });
         const rejection = prepared.rejection;
-        // The legacy source-only return audit is the sole certified rule. Its
-        // success cannot replace the actual bounded Script preparation result.
+        if (rejection.kind === "syntax-error") {
+            if (rejection.ruleCode !== "duplicate-block-lexical-function") throw new Error("unreviewed Script rule");
+            return this.envelope(operation, site,
+                { kind: "syntax-error", phase: "parse", constructorName: "SyntaxError", ruleCode: "duplicate-block-lexical-function" });
+        }
+        // Preserve independent legacy return certification at its original boundary.
         if (this.request.action === "parse-only" && unit.role === "test") {
             const audit = parse(unit.text);
             if (audit.rejection !== null && audit.rejection.kind === "syntax-error" && audit.rejection.ruleCode === "return-outside-function" && audit.error !== null)
                 return this.envelope(operation, { unitId: unit.id, realmId: "test", location: audit.error.loc },
                     { kind: "syntax-error", phase: "parse", constructorName: "SyntaxError", ruleCode: "return-outside-function" });
         }
-        if (rejection.kind === "syntax-error") throw new Error("unreviewed Script rule");
         return this.envelope(operation, site, rejection);
     }
     run(): ChildV2 {

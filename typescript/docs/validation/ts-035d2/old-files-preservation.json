@@ -1,0 +1,8 @@
+{
+  "base": "62a8787",
+  "total": 815,
+  "unchanged": 814,
+  "migrated": 1,
+  "exception": "typescript/tools/test262/script-observe-codec.test.mjs",
+  "approvedSha256": "e8e8a78a388a2a4069b2991de2974f5718218b92b97006ea334a074933eee49a"
+}

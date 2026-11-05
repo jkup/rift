@@ -23,7 +23,7 @@ function resultJSON(value: ScriptResult): string {
     if (value.kind === "normal") return '{"kind":"normal"}';
     let result = '{"kind":' + jsonString(value.kind);
     if (value.kind === "throw") result += ',"phase":"runtime","original":' + originalJSON(value.original) + ',"constructor":' + constructorJSON(value.constructor);
-    else if (value.kind === "syntax-error") result += ',"phase":"parse","constructorName":"SyntaxError","ruleCode":"return-outside-function"';
+    else if (value.kind === "syntax-error") result += ',"phase":"parse","constructorName":"SyntaxError","ruleCode":' + jsonString(value.ruleCode);
     else if (value.kind === "unsupported-syntax") result += ',"capabilityCode":' + jsonString(value.capabilityCode);
     else if (value.kind === "unsupported-operation") result += ',"phase":"runtime","capabilityCode":' + jsonString(value.capabilityCode);
     else if (value.kind === "unsupported-profile") result += ',"reasonCode":' + jsonString(value.reasonCode);

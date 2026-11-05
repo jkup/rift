@@ -18,8 +18,10 @@ test('approved closure: every forbidden neighbor remains rejected in both bounda
  for(const phase of ['body','instantiation']){const r=copy();r.child.operation={stage:'test',phase,unitId:'u3',realmId:'test'};r.child.inspection.operation=r.child.operation;r.child.testBodyEvaluated=phase==='body';r.child.completedUnits=['u0','u1','u2'];reject(r);}
  for(const edit of [r=>{r.child.operation.phase='parse';r.child.inspection.operation=r.child.operation;},r=>r.child.operation.stage='test',r=>r.child.inspection.operation.unitId='u1',r=>r.child.completedUnits=['u1','u0'],r=>r.child.inspection.original.valueKind='number',r=>{r.binding.variant='raw';r.envelope.identity.variant='raw';rebind(r);}]){const r=copy();edit(r);reject(r);}
 });
-test('approved closure: exactly the two reviewed decoder predicates changed from accepted base',()=>{
+test('approved closure: exactly the reviewed C predicates and D2 closed rule additions changed from accepted base',()=>{
  const from="need(b.action==='execute' && op.phase!=='parse' && ['resource-limit','unsupported-operation'].includes(o.kind));";
  const to="need((b.action==='execute' || op.stage==='harness') && op.phase!=='parse' && ['resource-limit','unsupported-operation'].includes(o.kind));";
- for(const name of ['script-driver-result.mjs','script-result.mjs']){const old=execFileSync('git',['show','e66876d:typescript/tools/test262/'+name],{encoding:'utf8'});assert.equal(old.split(from).length,2);assert.equal(readFileSync(new URL(name,import.meta.url),'utf8').replaceAll('\r\n','\n'),old.replace(from,to).replaceAll('\r\n','\n'));}
+ const ruleFrom="ruleCode:one(['return-outside-function'])";
+ const ruleTo="ruleCode:one(['return-outside-function','duplicate-block-lexical-function'])";
+ for(const name of ['script-driver-result.mjs','script-result.mjs']){const old=execFileSync('git',['show','e66876d:typescript/tools/test262/'+name],{encoding:'utf8'});assert.equal(old.split(from).length,2);assert.equal(old.split(ruleFrom).length,2);assert.equal(readFileSync(new URL(name,import.meta.url),'utf8').replaceAll('\r\n','\n'),old.replace(from,to).replace(ruleFrom,ruleTo).replaceAll('\r\n','\n'));}
 });

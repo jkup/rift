@@ -1,0 +1,10 @@
+[
+  {
+    "id": "node/alpha/parse-only/test/return-outside-function/plain",
+    "productionEmission": true,
+    "status": 0,
+    "signal": null,
+    "stdout": "{\"driverVersion\":2,\"nonce\":\"alpha\",\"requestSha256\":\"5afec55b1f366b4842d9b34ef10a628e91d227304aac8d0673177fcb91207a30\",\"mode\":\"script-observation\",\"operation\":{\"stage\":\"test\",\"phase\":\"parse\",\"unitId\":\"u0\",\"realmId\":\"test\"},\"source\":{\"unitId\":\"u0\",\"realmId\":\"test\",\"location\":{\"line\":1,\"column\":1}},\"testBodyEvaluated\":false,\"harnessValidated\":false,\"preflightId\":null,\"completedUnits\":[],\"inspection\":null,\"result\":{\"kind\":\"syntax-error\",\"phase\":\"parse\",\"constructorName\":\"SyntaxError\",\"ruleCode\":\"return-outside-function\"}}\n",
+    "stderr": ""
+  }
+]

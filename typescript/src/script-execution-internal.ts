@@ -1,6 +1,6 @@
 import { instanceofOperator } from "./builtins/function.js";
 import type { ConstructBuiltin, BuiltinConstructor } from "./runtime.js";
-import { parseDeclarationPlan, parseBoundedScriptDeclarationPlan } from "./parser.js";
+import { parseDeclarationPlan, parseBoundedScriptPreparation } from "./parser.js";
 import type { Realm } from "./realm.js";
 import type { Declaration, DeclarationNodes, DeclarationPlanResult, ScriptDeclarationPlan, DeclarationSite } from "./script-declarations.js";
 import type { ScriptSourceUnit, StrictnessMetadata } from "./script-metadata.js";
@@ -136,7 +136,7 @@ class ExecutableScript {
     static prepare(unit: ScriptSourceUnit, realm: Realm, bounded: boolean): ScriptPreparation {
         if (realm.profile !== "script") return { kind: "profile-rejected", reason: "realm" };
         const nodes: DeclarationNodes = { source: { text: "" }, body: [], scopes: new Map(), declarations: new Map(), assignmentNameEligible: new Map() };
-        const plan = bounded ? parseBoundedScriptDeclarationPlan(unit, nodes) : parseDeclarationPlan(unit, nodes);
+        const plan = bounded ? parseBoundedScriptPreparation(unit, nodes) : parseDeclarationPlan(unit, nodes);
         if (plan.kind !== "complete") return plan;
         if (!bounded && !plan.strictness.strict) return { kind: "profile-rejected", reason: "strict" };
         // Associations were assigned in the collector's original iterative walk.

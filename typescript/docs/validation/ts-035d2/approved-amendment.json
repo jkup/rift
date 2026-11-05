@@ -1,0 +1,8 @@
+{
+  "status": "applied after coordinator actual and second independent review",
+  "date": "2026-11-05",
+  "path": "typescript/tools/test262/script-observe-codec.test.mjs",
+  "originalSha256": "661453223026c2be6f0d837f5c051b4d85a0f08c32b92fbbf129425a488f7b0a",
+  "resultSha256": "e8e8a78a388a2a4069b2991de2974f5718218b92b97006ea334a074933eee49a",
+  "authorization": "Coordinator explicitly approved these exact proposedBytes; preserve both behavioral tests and whole-file closure; other 814 old files immutable."
+}

@@ -1,0 +1,9 @@
+{
+  "name": "C-host21",
+  "status": 0,
+  "signal": null,
+  "error": null,
+  "stdout": "codec: 0\nlive-codec: 0\nlaunch: 0\npreflight: 0\ninput: 0\n",
+  "stderr": "",
+  "provenance": "fresh after exact reviewed old-test migration"
+}

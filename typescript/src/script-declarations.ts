@@ -89,6 +89,22 @@ export function collectDeclarationPlan(unit: ScriptSourceUnit, body: Stmt[], tok
     return analysis.project();
 }
 
+// One traversal supplies both the unchanged ordinary result and global veto audit.
+export function collectBoundedScriptPreparation(unit: ScriptSourceUnit, body: Stmt[], tokens: Token[], bindings: Map<number, ParsedBinding[]>, nodes: DeclarationNodes): DeclarationPlanResult {
+    const analysis = new DeclarationCollector(unit, tokens, bindings, nodes, true);
+    analysis.collect(body);
+    const ordinary = analysis.project();
+    const audit = analysis.audit();
+    if (audit.kind !== "eligible") return ordinary;
+    if (audit.candidates.length === 0 || ordinary.kind !== "conflict" || audit.sourceUnits !== unit.text.length || audit.consumedUnits !== unit.text.length)
+        throw new Error("invalid block rule certification");
+    const candidate = audit.candidates[0];
+    return { kind: "blocked", goal: "Script", unit,
+        rejection: { kind: "syntax-error", ruleCode: "duplicate-block-lexical-function" },
+        diagnostic: { phase: "parse", name: "SyntaxError", message: "duplicate block lexical function: " + candidate.second.name,
+            loc: { line: candidate.second.loc.line, column: candidate.second.loc.column } } };
+}
+
 export type BlockFunctionCandidate = {
     readonly ruleCode: "duplicate-block-lexical-function";
     readonly scopeStart: number; readonly scopeEnd: number;
