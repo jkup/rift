@@ -1,0 +1,108 @@
+{
+  "added": [
+    {
+      "path": "cmd-after.json",
+      "kind": "file",
+      "bytes": 2989,
+      "sha256": "6f064254ce75f53913ac8e18abcef38dfd98fc164f040c741c4b2a19ae577bc6"
+    },
+    {
+      "path": "compiler.stderr.bin",
+      "kind": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "compiler.stdout.bin",
+      "kind": "file",
+      "bytes": 17109,
+      "sha256": "a79c14b9bb4022653d1cc93d7717e3974636309f1976ca0459007e34144d258c"
+    },
+    {
+      "path": "fresh-root-before.json",
+      "kind": "file",
+      "bytes": 888669,
+      "sha256": "5c67392c84bed914fa3fdcf2ec83d87c4eb1605fb3b7ccde59cc246483d6b7d6"
+    },
+    {
+      "path": "home/AppData/Local/Microsoft",
+      "kind": "directory",
+      "bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "home/AppData/Local/Microsoft/PowerShell",
+      "kind": "directory",
+      "bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "home/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "kind": "file",
+      "bytes": 192680,
+      "sha256": "dc9287bdab298c3d0c957f5dbf030e4184e30aab6608745eba9ca065dbf43357"
+    },
+    {
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/runtime-pack.verified.json",
+      "kind": "file",
+      "bytes": 9840,
+      "sha256": "70fcd0914b33e5af4ef6b6b867050903c40038780f41cb08bdade44129efbac8"
+    },
+    {
+      "path": "probe.obj",
+      "kind": "file",
+      "bytes": 1695,
+      "sha256": "405ef945ef36689c4fde4c1783031ed6b5038c266daca8c8dfc2c156bd37cb25"
+    },
+    {
+      "path": "project-after.json",
+      "kind": "file",
+      "bytes": 54746,
+      "sha256": "3fdb698af3eae55f7addbf61b30197854065ad8459690669900c8af7e641191a"
+    },
+    {
+      "path": "source-packages-after.json",
+      "kind": "file",
+      "bytes": 802199,
+      "sha256": "c3d9c1bc102eeb394eaf266c54bcba955330e0cf84dcdb36d59f5f497c0b1663"
+    },
+    {
+      "path": "source-packages-before-invocation.json",
+      "kind": "file",
+      "bytes": 802199,
+      "sha256": "c3d9c1bc102eeb394eaf266c54bcba955330e0cf84dcdb36d59f5f497c0b1663"
+    },
+    {
+      "path": "supervisor-status.json",
+      "kind": "file",
+      "bytes": 1153,
+      "sha256": "e15b34b848a0385600ace8fd047beef124344093e9df81bbaf7843043a74d099"
+    },
+    {
+      "path": "supervisor.stderr.bin",
+      "kind": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "supervisor.stdout.bin",
+      "kind": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tools-after.json",
+      "kind": "file",
+      "bytes": 676,
+      "sha256": "3cc48000a731cdfa88d7ec9ab0a017941cae8546c58ac7312cb3ad22e7204759"
+    },
+    {
+      "path": "zig-after.json",
+      "kind": "file",
+      "bytes": 3918954,
+      "sha256": "081e3c40ce16bc590ef45a32dc25e4de6eee1a3db665c16fa3df7e5f2d1d11aa"
+    }
+  ],
+  "removed": [],
+  "changed": []
+}

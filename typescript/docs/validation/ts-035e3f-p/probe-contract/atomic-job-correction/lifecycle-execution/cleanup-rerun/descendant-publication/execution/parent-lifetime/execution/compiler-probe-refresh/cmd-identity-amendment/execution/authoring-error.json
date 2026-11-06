@@ -1,0 +1,10 @@
+{
+  "stage": "new retention verifier syntax",
+  "error": "SyntaxError: Identifier 'inv' has already been declared",
+  "correction": "Scope new runtime verification block independently of inherited verifier bindings",
+  "compilerRetries": 0,
+  "second": {
+    "error": "New verifier incorrectly required raw parent contract bytes equal runner serialized contract",
+    "correction": "Require exact JSON.stringify(parent contract,null,2) plus newline, matching approved save()"
+  }
+}

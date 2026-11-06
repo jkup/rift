@@ -1,0 +1,10 @@
+{"baseline":9333,"priorSealedRows":[39,44,42],"archiveFiles":163,"archiveBytes":19246373,"matched":10,"failed":1,"unrun":14,"outerEmptyBeforeFallback":11,"sourceProposalsChecked":2,"lifecycleRetries":0,"passed":true}
+{"rerunFiles":205,"rerunBytes":19725266,"matched":13,"failed":1,"unrun":11,"outerEmptyBeforeFallback":13,"safetyCleanupReturnedSuccessfully":1,"sourceTransformations":11,"checkpointProposalsUnexecuted":3,"scriptcInvocations":0,"passed":true}
+{"designSourceTransformations":11,"exactRemainingCases":12,"approvedCheckpointSourcesUnchanged":3,"supervisorCleanupUnchanged":true,"lifecycleInvocations":0,"scriptcInvocations":0,"passed":true}
+{"runtimeFiles":108,"runtimeBytes":625783,"matched":7,"failed":1,"unrun":4,"outerEmptyBeforeFallback":7,"safetyCleanupReturnedSuccessfully":1,"exactHardlinkAliases":2,"scriptcInvocations":0,"passed":true}
+{"parentLifetimeSourceTransformations":12,"remainingPlanCases":5,"distinctDiagnosticCases":1,"originalDescendantBehaviorUnchanged":true,"supervisorSourcesUnchanged":3,"fixtureInvocations":0,"csharpCompilations":0,"scriptcInvocations":0,"passed":true}
+{"mainRuntimeFiles":71,"mainRuntimeBytes":168011,"matched":5,"failed":0,"outerEmptyBeforeFallback":4,"legacySurvivorBeforeFallback":18700,"safetyCleanupReturnedSuccessfully":1,"exactHardlinkPairs":4,"diagnosticInvocations":0,"scriptcInvocations":0,"passed":true}
+{"compilerRefreshFiles":5,"contractAndFullPlanUnchanged":true,"environmentKeys":21,"acceptedNoninstrumentedSupervisorUnchanged":true,"statusMutantsRejected":63,"changedStreamsRejected":2,"wrapperFaultLiterals":3,"preflightDisposition":"blocked-cmd-hardlink-no-retry","compilerInvocations":0,"csharpCompilations":0,"sourceAndPreservationChecksPassed":true}
+{"cmdAmendmentFiles":5,"genericExactUnchanged":true,"otherToolsAndInputsSingleLinkUnchanged":true,"fullIdentityRecords":2,"negativeControls":70,"wrongContractArguments":2,"compilerInvocations":0,"csharpCompilations":0,"sourceAndPreservationChecksPassed":true}
+(node:22492) ExperimentalWarning: FFI is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

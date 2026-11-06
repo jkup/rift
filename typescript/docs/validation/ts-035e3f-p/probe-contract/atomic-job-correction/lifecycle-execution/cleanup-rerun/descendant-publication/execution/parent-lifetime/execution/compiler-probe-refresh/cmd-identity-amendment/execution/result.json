@@ -1,0 +1,472 @@
+{
+  "kind": "observational-experiment-not-build-authority",
+  "stages": [
+    {
+      "name": "contract-and-tools",
+      "status": "complete"
+    },
+    {
+      "name": "ordinary-copy",
+      "status": "complete"
+    },
+    {
+      "name": "supervisor-returned",
+      "status": "complete"
+    },
+    {
+      "name": "supervisor-outcome",
+      "status": "complete"
+    },
+    {
+      "name": "metadata-evidence-only",
+      "status": "complete"
+    },
+    {
+      "name": "source-packages-after",
+      "status": "complete"
+    },
+    {
+      "name": "zig-after",
+      "status": "complete"
+    },
+    {
+      "name": "project-after",
+      "status": "complete"
+    },
+    {
+      "name": "cmd-after",
+      "status": "complete"
+    },
+    {
+      "name": "tools-after",
+      "status": "complete"
+    },
+    {
+      "name": "fresh-root-after",
+      "status": "complete"
+    }
+  ],
+  "failures": [],
+  "compilerInvocations": 1,
+  "unknownExternalEffects": "Unobserved outside enumerated original package tree, Zig tree, explicit executables, and fresh root; never inferred absent",
+  "metadata": {
+    "rawSha256": "a79c14b9bb4022653d1cc93d7717e3974636309f1976ca0459007e34144d258c",
+    "rawBytes": 17109,
+    "parsed": {
+      "schema": "scriptc.native-link-info.v1",
+      "format": 1,
+      "compiler_version": "0.4.7",
+      "object_abi": {
+        "stability": "experimental",
+        "compatibility": "exact-runtime-version"
+      },
+      "target": {
+        "name": "windows-x64-msvc",
+        "llvm_triple": "x86_64-pc-windows-msvc",
+        "architecture": "x64",
+        "object_format": "coff",
+        "minimum_os": "Windows 10",
+        "relocation_model": "pic"
+      },
+      "program": {
+        "object": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\probe.obj",
+        "entry_symbol": "main",
+        "undefined_runtime_symbol_prefix": "scr_"
+      },
+      "runtime_abi": {
+        "version": 48,
+        "marker": "scr_runtime_abi_v48"
+      },
+      "runtime_pack": {
+        "kind": "precompiled",
+        "package": "@scriptc/runtime-win32-x64-msvc",
+        "version": "0.4.7",
+        "root": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc",
+        "path_base": "runtime_pack.root",
+        "flavor": "release",
+        "objects": [
+          {
+            "path": "artifacts/release/runtime/default/scr_context.o",
+            "sha256": "0618b95567e230db9018bded4902f4fbbabdcf98caeb1e8be4130a1e92d899ca",
+            "size": 4889
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_shared.o",
+            "sha256": "1629ad7c5bf650132bfb07ed3274e1c8c3b3a10155d7f63073af56df87a607c8",
+            "size": 21407
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_number.o",
+            "sha256": "eea5c2937fc08823a8b61bf8c206efdfad5aa23fe28b254147d8a0af2f0e33af",
+            "size": 34458
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_bigint.o",
+            "sha256": "3a98fa9f43cab733ea3952ee44b18fdbd0eae914cf6493e73a119cc17d6d8009",
+            "size": 63698
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_string.o",
+            "sha256": "e0503f57898b05c4d6fcd33892c5f47ead2e853a1b0507d5e467af3d1fc2d9b7",
+            "size": 170400
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_grapheme.o",
+            "sha256": "e896712633d528b8875e200429485698a3855e4812cb390fb72f64049cc0a18d",
+            "size": 23168
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_array.o",
+            "sha256": "8902cdc88a0c858a82a8421924dbcda07b71b6b042073fd8170bf872c68071cd",
+            "size": 228540
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_bytes.o",
+            "sha256": "c48cec221d8425e3f6fb806c5e23505df610e85cb1dbee19bb244e93707c64e8",
+            "size": 195638
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_bytes_io.o",
+            "sha256": "71ca7d26ce745d361e55d29c325f6fa9c72c25043255cde1d00d64ce8cad3ff6",
+            "size": 117493
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_fs_cp.o",
+            "sha256": "f436ddb22b20e9bf0dd7e2ecaba0a17708eeb095a13df0e74dfbad0e4232ee9a",
+            "size": 9190
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_map.o",
+            "sha256": "f48ce325053400722ba2cca25232985c12619e06e5d5aa370e684d6fdee42909",
+            "size": 92306
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_closure.o",
+            "sha256": "cb58bd8611b93705a33e71c8b79ebceb340afd5ecbe471046501a375fbfa70de",
+            "size": 12837
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_ffi.o",
+            "sha256": "a7dcb1a1dc2d2e40c70ba61a7360bb27a072190e1a373e0ba67afd4111b8b6e6",
+            "size": 6098
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_object.o",
+            "sha256": "0598748200a37b4512de05d08b6dd658cf14de033c588ed694a3feacceab58dd",
+            "size": 7999
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_union.o",
+            "sha256": "380efa5473649da6ca80a797b31108dbbbba97fac1c4b0fa9727d5f183dfca3f",
+            "size": 11668
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_exception.o",
+            "sha256": "6dcbb535f900dde8a628ac58efa0d0983ff44d5678db5b7911089e72d4ca793c",
+            "size": 26791
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_unwind.o",
+            "sha256": "8fc03fa37f300ac35e608bd4ff00be43f73e34e527dbbc35bb0a4c413adf02ff",
+            "size": 616
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_error.o",
+            "sha256": "72cf42533e3a9cb3a6a9b149bc4747c3e5269dd45c92170bf2177cef8c99a5f4",
+            "size": 41117
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_console.o",
+            "sha256": "13a3854536993699a69b1cef7ef48223ff6df63394d234a35c9710429afc7a92",
+            "size": 16159
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_lib.o",
+            "sha256": "c7270bc13707e93161ea241e2624deac2fcb8516c72c24ee52b70bcfc1f14c58",
+            "size": 620397
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_hash.o",
+            "sha256": "298a4278302be4356d9a5ed223023be3c17994b332e1de87a08c5a10357381c0",
+            "size": 32321
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_path.o",
+            "sha256": "74e81eded2fd6e3c8f8f4d50450eb2379d59b7bc436e449789e6da1c70818b94",
+            "size": 39696
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_os.o",
+            "sha256": "3ff25ce6569e46b1ab92b4c684288694abd5e48b2c1d3f3cf2db97a05c6e6f69",
+            "size": 99573
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_url.o",
+            "sha256": "780bffda9960070d027d067e8f5f9e568a96a9634588ea2f566e22adcb586b98",
+            "size": 99640
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_url_params.o",
+            "sha256": "5055755996c004ff118aed828dc14e5cb11523f0e5173416c7833c61368cbd92",
+            "size": 22155
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_json.o",
+            "sha256": "cce67b78922de457ae9feb601a202f808f2610b926249e1e9eba39040f48a32e",
+            "size": 895557
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_node_builtin.o",
+            "sha256": "19e00fbd586fb88e611ed3131cb3c8eb96014d50afd2f6ce781bfa80ee7da369",
+            "size": 68657
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_async.o",
+            "sha256": "544e446ad4aa2e61ec75dd2876a0d07885f4b7803f19435e98e6d36669d3b3d8",
+            "size": 241162
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_crypto_async.o",
+            "sha256": "11a9ce67255571e4171d84338a3d7f8f9c9ac458e6e1e3bc878453295ca46d75",
+            "size": 17235
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_child.o",
+            "sha256": "b54eb184875605b992eb9ff927762cf418c588302476a5e1601924f7fcf37320",
+            "size": 149210
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_cycle.o",
+            "sha256": "633dc977af333a48156afc3a4d5bc01130cf4dbd7af4d580f134f18c791f520a",
+            "size": 48596
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_publish.o",
+            "sha256": "c48eac87b5a5cbe49f8f2b9deef946b1ffd3514beb322a2f55252b039d618ca9",
+            "size": 17354
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_region.o",
+            "sha256": "66edecef087d0ee5924bca38aae9fc9880a17be80975d9ba249ffd80bd8e4508",
+            "size": 30242
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_arena.o",
+            "sha256": "b1340f9e7395aa2d8d8f0d18e4fa8be11c8070f9a64e3d6416236fb604af33cc",
+            "size": 5551
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_itable.o",
+            "sha256": "deb60619c38b2d6b7185406d72b677763af0379148dfbfcdc5305a7780983214",
+            "size": 16580
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_slots.o",
+            "sha256": "86ca8f9c126e9f6e6ddaf682122fbde7fde4baa9c332b13a726354ec70d87964",
+            "size": 12933
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_alloc.o",
+            "sha256": "ff667d4fde02931940d6bbcb7d60b09aaf400b79d657a1905282a0b72ac73f8c",
+            "size": 4564
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_cipher_info.o",
+            "sha256": "8f57c4885e4c15b31855399816ad9a9aa680007fa1f6c91cec73797b7ef02518",
+            "size": 56993
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_ieee754.o",
+            "sha256": "8a4eb268286fa60ac3b51300f23e71b78e76b1b92027ca79388bcbad872efff1",
+            "size": 35529
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_glibc_math.o",
+            "sha256": "9a653a205d4c73a3f2ca8b9ad961f6f2b4d5d49a8e78e3d66831ea296c5cd2e7",
+            "size": 620
+          },
+          {
+            "path": "artifacts/release/runtime/default/scr_win.o",
+            "sha256": "0b13d64deb87c152e2eab714fef58b4d1123e79d80aad97b30ecc187daaa21ac",
+            "size": 6976
+          }
+        ],
+        "archives": []
+      },
+      "ffi": {
+        "format": null,
+        "symbols": [],
+        "libraries": []
+      },
+      "link": {
+        "input_order": [
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_context.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_shared.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_number.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_bigint.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_string.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_grapheme.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_array.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_bytes.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_bytes_io.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_fs_cp.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_map.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_closure.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_ffi.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_object.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_union.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_exception.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_unwind.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_error.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_console.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_lib.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_hash.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_path.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_os.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_url.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_url_params.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_json.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_node_builtin.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_async.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_crypto_async.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_child.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_cycle.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_publish.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_region.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_arena.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_itable.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_slots.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_alloc.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_cipher_info.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_ieee754.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_glibc_math.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_win.o",
+          "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\probe.obj"
+        ],
+        "driver_flags": [
+          "-target",
+          "x86_64-windows-gnu",
+          "-Wl,--gc-sections"
+        ],
+        "system_libraries": [
+          "advapi32",
+          "iphlpapi",
+          "ws2_32"
+        ],
+        "frameworks": []
+      }
+    },
+    "interpretation": "unreviewed data; no defaults or path closure inferred"
+  },
+  "cleanupObservation": {
+    "statusReported": true,
+    "supervisorClosed": true,
+    "watchdogIntervened": false,
+    "unconfirmed": false,
+    "independent": false
+  },
+  "supervisor": {
+    "exe": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+    "argv": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-File",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\supervise.ps1",
+      "-ConfigPath",
+      "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\contract.json"
+    ],
+    "cwd": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation",
+    "environment": {
+      "APPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\home\\AppData\\Roaming",
+      "COMSPEC": "C:\\WINDOWS\\system32\\cmd.exe",
+      "HOMEDRIVE": "C:",
+      "HOMEPATH": "\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\home",
+      "LOCALAPPDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\home\\AppData\\Local",
+      "NO_COLOR": "1",
+      "PATH": "C:\\Users\\jonku\\AppData\\Local\\Microsoft\\WinGet\\Packages\\zig.zig_Microsoft.Winget.Source_8wekyb3d8bbwe\\zig-x86_64-windows-0.17.0;C:\\WINDOWS\\system32;C:\\WINDOWS",
+      "PATHEXT": ".EXE",
+      "PROGRAMDATA": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\program-data",
+      "PSModulePath": "C:\\Users\\jonku\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\Modules",
+      "SCRIPTC_CACHE_DIR": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\cache\\scriptc",
+      "SCRIPTC_NO_CACHE": "1",
+      "SystemDrive": "C:",
+      "SystemRoot": "C:\\WINDOWS",
+      "TEMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\tmp",
+      "TMP": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\tmp",
+      "USERPROFILE": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\home",
+      "WINDIR": "C:\\WINDOWS",
+      "ZIG_GLOBAL_CACHE_DIR": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\cache\\zig-global",
+      "ZIG_LIB_DIR": "C:\\Users\\jonku\\AppData\\Local\\Microsoft\\WinGet\\Packages\\zig.zig_Microsoft.Winget.Source_8wekyb3d8bbwe\\zig-x86_64-windows-0.17.0\\lib",
+      "ZIG_LOCAL_CACHE_DIR": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\cache\\zig-local"
+    },
+    "spawned": true,
+    "pid": 7924,
+    "error": null,
+    "exit": 0,
+    "signal": null,
+    "watchdog": false,
+    "killRequested": false,
+    "killReturned": null,
+    "closeObserved": true,
+    "streams": {
+      "stdout": {
+        "bytes": 0,
+        "overflow": false
+      },
+      "stderr": {
+        "bytes": 0,
+        "overflow": false
+      }
+    },
+    "ioErrors": []
+  },
+  "statusBytes": {
+    "bytes": 1153,
+    "sha256": "e15b34b848a0385600ace8fd047beef124344093e9df81bbaf7843043a74d099"
+  },
+  "compiler": {
+    "Outcome": "completed-observation",
+    "StopReason": "root-exit",
+    "Errors": [],
+    "Events": [
+      "job-kill-on-close",
+      "creation-time-job-list-configured",
+      "created-suspended-in-job",
+      "membership-verified",
+      "resumed",
+      "terminate-job"
+    ],
+    "Pid": 2784,
+    "NativeExitCode": 0,
+    "Signal": null,
+    "CreatedSuspended": true,
+    "Assigned": true,
+    "Resumed": true,
+    "JobListConfigured": true,
+    "MembershipVerified": true,
+    "CleanupConfirmed": true,
+    "FinalActiveProcesses": 0,
+    "ElapsedMs": 2522,
+    "Stdout": {
+      "ObservedBytes": 17109,
+      "RetainedBytes": 17109,
+      "ObservedSha256": "a79c14b9bb4022653d1cc93d7717e3974636309f1976ca0459007e34144d258c",
+      "Error": null,
+      "Eof": true,
+      "Complete": true,
+      "Overflow": false
+    },
+    "Stderr": {
+      "ObservedBytes": 0,
+      "RetainedBytes": 0,
+      "ObservedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Error": null,
+      "Eof": true,
+      "Complete": true,
+      "Overflow": false
+    },
+    "ExternalEffects": "not monitored outside enumerated roots; cooperative installed-tool and OS trust"
+  },
+  "outcome": "observation-collected-needs-schema-review"
+}
