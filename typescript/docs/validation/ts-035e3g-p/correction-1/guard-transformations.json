@@ -1,0 +1,107 @@
+[
+  {
+    "name": "prior-guard.mjs",
+    "source": "typescript/docs/validation/ts-035e3g-p/prior-guard.mjs",
+    "sourceBytes": 52225,
+    "sourceSha256": "86f1af11f928d49d43c361ea73459372eb94e6e5a88c0e4878eeb8d0d3e6deb4",
+    "replacements": [
+      {
+        "old": "import.meta.dirname",
+        "next": "resolve(import.meta.dirname,'..')",
+        "all": true,
+        "count": 30
+      },
+      {
+        "old": "from '../ts-035e3f-p/",
+        "next": "from '../../ts-035e3f-p/",
+        "all": true,
+        "count": 2
+      },
+      {
+        "old": "newEntry=readFileSync(join(resolve(import.meta.dirname,'..'),'task-entry.txt'),'utf8')",
+        "next": "newEntry=readFileSync(join(resolve(import.meta.dirname,'..'),'task-entry.txt'),'utf8')+readFileSync(join(import.meta.dirname,'task-append.txt'),'utf8')",
+        "count": 1
+      }
+    ],
+    "tail": "",
+    "bytes": 52716,
+    "sha256": "fdb29e9cefa0845217d1b7603c6b150367c0c6cfbe33a4770c674817bde0b5c9"
+  },
+  {
+    "name": "check-design.mjs",
+    "source": "typescript/docs/validation/ts-035e3g-p/check-design.mjs",
+    "sourceBytes": 3441,
+    "sourceSha256": "d458570e6cb27bf750b6a870cfc2bf53219a80147df0479cd1597e5ddde3f56f",
+    "replacements": [
+      {
+        "old": "import {join} from 'node:path';",
+        "next": "import {join,resolve} from 'node:path';",
+        "count": 1
+      },
+      {
+        "old": "const here=import.meta.dirname,json=n=>JSON.parse(readFileSync(join(here,n)));",
+        "next": "const here=resolve(import.meta.dirname,'..'),json=n=>JSON.parse(readFileSync(join(['fixtures.json','output-schema.json'].includes(n)?import.meta.dirname:here,n)));",
+        "count": 1
+      },
+      {
+        "old": "fixtures.cases.length,80",
+        "next": "fixtures.cases.length,83",
+        "count": 1
+      },
+      {
+        "old": "positive.length,13",
+        "next": "positive.length,14",
+        "count": 1
+      },
+      {
+        "old": "futureFixtures:80,fullPositiveLiterals:13,fullRejectedLiterals:67",
+        "next": "futureFixtures:83,fullPositiveLiterals:14,fullRejectedLiterals:69",
+        "count": 1
+      },
+      {
+        "old": "closedShapeMutants:13",
+        "next": "closedShapeMutants:14",
+        "count": 1
+      },
+      {
+        "old": "Array.isArray(value)&&value.every(x=>valid(x,s.items))",
+        "next": "Array.isArray(value)&&(s.minItems===undefined||value.length>=s.minItems)&&(s.maxItems===undefined||value.length<=s.maxItems)&&value.every(x=>valid(x,s.items))",
+        "count": 1
+      }
+    ],
+    "tail": "\nconst original=json('fixtures.json');\nconst accepted=JSON.parse(readFileSync(join(here,'fixtures.json')));assert.deepEqual(original.cases.slice(0,80),accepted.cases);\nconst batch=JSON.parse(readFileSync(join(import.meta.dirname,'batch-literals.json')));assert(valid(batch.synthetic,schema));const full=Buffer.from(JSON.stringify(batch.synthetic));assert.equal(full.length,batch.fullUtf8Bytes);assert.equal(createHash('sha256').update(full).digest('hex'),batch.fullSha256);assert.deepEqual(batch.entryUtf8Bytes,batch.synthetic.entries.map(e=>Buffer.byteLength(JSON.stringify(e))));assert.equal(batch.wrapperBytes,79);assert.equal(batch.fullUtf8Bytes,25343);assert.equal(batch.fullUtf8Bytes,79+batch.entryUtf8Bytes.reduce((n,x)=>n+x,0)+41);assert.equal(batch.cap,134217728);\nfor(const v of batch.vectors){const total=79+v.priorEntryBytes.reduce((n,x)=>n+x,0)+v.nextEntryBytes+v.priorEntryBytes.length;if(v.expected.accepted){assert.equal(v.expected.totalBytes,total);assert.equal(total,batch.cap);}else{assert.equal(total,batch.cap+1);assert.deepEqual(v.expected,{kind:'binding-error',index:v.priorEntryBytes.length,code:'BATCH_LIMIT'});assert(valid(v.expected,schema));}}\nfor(const p of batch.precedence)assert(valid(p.expected,schema));\nconsole.log(JSON.stringify({preservedOriginalFixtures:80,newByteLiterals:3,batchLiteralBytes:25343,budgetVectors:6,precedenceLiterals:3,parserInvocations:0,passed:true}));\n",
+    "bytes": 5048,
+    "sha256": "610014e34c12237838ef10cdf0256cbd118b138ac2b0ce8ac466610473eaf2b3"
+  },
+  {
+    "name": "verify.mjs",
+    "source": "typescript/docs/validation/ts-035e3g-p/verify.mjs",
+    "sourceBytes": 4027,
+    "sourceSha256": "ee3ff6156c1cd82b008f2695c286487c85046d92427781f5255bffe9707dc2c9",
+    "replacements": [
+      {
+        "old": "const here=import.meta.dirname,repo=",
+        "next": "const here=resolve(import.meta.dirname,'..'),repo=",
+        "count": 1
+      },
+      {
+        "old": "assert.equal(tasks,prefix+readFileSync(join(here,'task-entry.txt'),'utf8'));",
+        "next": "assert.equal(tasks,prefix+readFileSync(join(here,'task-entry.txt'),'utf8')+readFileSync(join(import.meta.dirname,'task-append.txt'),'utf8'));",
+        "count": 1
+      },
+      {
+        "old": "seal.forEach(check);",
+        "next": "for(const r of seal){if(r.path==='typescript/docs/script-object-inventory.md'){const b=readFileSync(join(import.meta.dirname,'prior-design.md'));assert.equal(b.length,r.bytes);assert.equal(hash(b),r.sha256);assert(readFileSync(join(repo,r.path)).subarray(0,b.length).equals(b));}else check(r);}",
+        "count": 1
+      },
+      {
+        "old": "const q=join(p,n),s=lstatSync(q);",
+        "next": "const q=join(p,n);if(q===import.meta.dirname)continue;const s=lstatSync(q);",
+        "count": 1
+      }
+    ],
+    "tail": "\nconst correction=import.meta.dirname;\nfor(const t of json(join(correction,'guard-transformations.json'))){const b=readFileSync(join(repo,t.source));assert.equal(b.length,t.sourceBytes);assert.equal(hash(b),t.sourceSha256);let expected=b.toString();for(const r of t.replacements){assert.equal(expected.split(r.old).length-1,r.count);expected=r.all?expected.replaceAll(r.old,r.next):expected.replace(r.old,r.next);}expected+=t.tail;const actual=readFileSync(join(correction,t.name));assert.equal(actual.length,t.bytes);assert.equal(hash(actual),t.sha256);assert.equal(actual.toString(),expected);}\nfor(const r of json(join(correction,'source-links.json'))){const before=readFileSync(join(repo,r.source)),after=readFileSync(join(correction,r.name));assert.equal(before.length,r.sourceBytes);assert.equal(hash(before),r.sourceSha256);assert.equal(after.length,r.bytes);assert.equal(hash(after),r.sha256);}\nconst correctionSeal=json(join(correction,'manifest.json'));correctionSeal.forEach(check);const own=readdirSync(correction).filter(n=>n!=='manifest.json').map(n=>relative(repo,join(correction,n)).replaceAll('\\\\','/')).concat('typescript/docs/script-object-inventory.md');assert.deepEqual(own.sort(),correctionSeal.map(r=>r.path).sort());console.log(JSON.stringify({original19ba0251Preserved:true,versionedCorrections:2,parserImplemented:false,passed:true}));\n",
+    "bytes": 5784,
+    "sha256": "58265235e0bd937844ea79ad880f1a27d65007d0707c98a6a8d3ff597ab55e8d"
+  }
+]

@@ -1,0 +1,1 @@
+{"stage":"initial correction author invocation","error":"ReferenceError: require is not defined in ES module scope","effect":"no correction files had been created","resolution":"Ran same author text with CommonJS Node stdin","parserInvocations":0}

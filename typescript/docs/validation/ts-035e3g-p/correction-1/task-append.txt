@@ -1,0 +1,2 @@
+
+E3g-P correction1 design handoff: versioned correction preserves19ba0251/original80fixtures/contracts/seals. Bounded all-results Batch with fixed128MiB exact UTF-8 JSON accounting, failure precedence/no partial batch; full synthetic42entry literal plus six budget andthree precedence literals. BSS .drectve rawSize>0/pointer0 now rejects DIRECTIVE_NO_BYTES with INFO on/off literals; zero-size directive yields empty bytes without read. Three newfull fixtures; no parser/object interpretation/compiler/linker. Stop actual/root/second re-review.
