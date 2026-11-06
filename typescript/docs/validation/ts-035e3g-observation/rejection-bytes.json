@@ -1,0 +1,842 @@
+[
+  {
+    "binding": {
+      "index": 0,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_context.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_context.o",
+      "bytes": 4889,
+      "sha256": "0618b95567e230db9018bded4902f4fbbabdcf98caeb1e8be4130a1e92d899ca"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000008c050000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 1,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_shared.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_shared.o",
+      "bytes": 21407,
+      "sha256": "1629ad7c5bf650132bfb07ed3274e1c8c3b3a10155d7f63073af56df87a607c8"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000240e0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 2,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_number.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_number.o",
+      "bytes": 34458,
+      "sha256": "eea5c2937fc08823a8b61bf8c206efdfad5aa23fe28b254147d8a0af2f0e33af"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000440c0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 3,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_bigint.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_bigint.o",
+      "bytes": 63698,
+      "sha256": "3a98fa9f43cab733ea3952ee44b18fdbd0eae914cf6493e73a119cc17d6d8009"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000009c270000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 4,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_string.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_string.o",
+      "bytes": 170400,
+      "sha256": "e0503f57898b05c4d6fcd33892c5f47ead2e853a1b0507d5e467af3d1fc2d9b7"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000008c460000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 5,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_grapheme.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_grapheme.o",
+      "bytes": 23168,
+      "sha256": "e896712633d528b8875e200429485698a3855e4812cb390fb72f64049cc0a18d"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000009c090000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 6,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_array.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_array.o",
+      "bytes": 228540,
+      "sha256": "8902cdc88a0c858a82a8421924dbcda07b71b6b042073fd8170bf872c68071cd"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000006c5c0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 7,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_bytes.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_bytes.o",
+      "bytes": 195638,
+      "sha256": "c48cec221d8425e3f6fb806c5e23505df610e85cb1dbee19bb244e93707c64e8"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000009c810000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 8,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_bytes_io.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_bytes_io.o",
+      "bytes": 117493,
+      "sha256": "71ca7d26ce745d361e55d29c325f6fa9c72c25043255cde1d00d64ce8cad3ff6"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000ac4e0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 9,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_fs_cp.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_fs_cp.o",
+      "bytes": 9190,
+      "sha256": "f436ddb22b20e9bf0dd7e2ecaba0a17708eeb095a13df0e74dfbad0e4232ee9a"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000000c080000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 10,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_map.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_map.o",
+      "bytes": 92306,
+      "sha256": "f48ce325053400722ba2cca25232985c12619e06e5d5aa370e684d6fdee42909"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000cc380000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 11,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_closure.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_closure.o",
+      "bytes": 12837,
+      "sha256": "cb58bd8611b93705a33e71c8b79ebceb340afd5ecbe471046501a375fbfa70de"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000440c0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 12,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_ffi.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_ffi.o",
+      "bytes": 6098,
+      "sha256": "a7dcb1a1dc2d2e40c70ba61a7360bb27a072190e1a373e0ba67afd4111b8b6e6"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000b4050000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 13,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_object.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_object.o",
+      "bytes": 7999,
+      "sha256": "0598748200a37b4512de05d08b6dd658cf14de033c588ed694a3feacceab58dd"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000000c080000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 14,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_union.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_union.o",
+      "bytes": 11668,
+      "sha256": "380efa5473649da6ca80a797b31108dbbbba97fac1c4b0fa9727d5f183dfca3f"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000640a0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 15,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_exception.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_exception.o",
+      "bytes": 26791,
+      "sha256": "6dcbb535f900dde8a628ac58efa0d0983ff44d5678db5b7911089e72d4ca793c"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "0000000074180000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 16,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_unwind.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_unwind.o",
+      "bytes": 616,
+      "sha256": "8fc03fa37f300ac35e608bd4ff00be43f73e34e527dbbc35bb0a4c413adf02ff"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000dc000000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 17,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_error.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_error.o",
+      "bytes": 41117,
+      "sha256": "72cf42533e3a9cb3a6a9b149bc4747c3e5269dd45c92170bf2177cef8c99a5f4"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000005c260000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 18,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_console.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_console.o",
+      "bytes": 16159,
+      "sha256": "13a3854536993699a69b1cef7ef48223ff6df63394d234a35c9710429afc7a92"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000fc0d0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 19,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_lib.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_lib.o",
+      "bytes": 620397,
+      "sha256": "c7270bc13707e93161ea241e2624deac2fcb8516c72c24ee52b70bcfc1f14c58"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000008c860100"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 20,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_hash.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_hash.o",
+      "bytes": 32321,
+      "sha256": "298a4278302be4356d9a5ed223023be3c17994b332e1de87a08c5a10357381c0"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000540b0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 21,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_path.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_path.o",
+      "bytes": 39696,
+      "sha256": "74e81eded2fd6e3c8f8f4d50450eb2379d59b7bc436e449789e6da1c70818b94"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000002c150000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 22,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_os.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_os.o",
+      "bytes": 99573,
+      "sha256": "3ff25ce6569e46b1ab92b4c684288694abd5e48b2c1d3f3cf2db97a05c6e6f69"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000000c440000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 23,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_url.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_url.o",
+      "bytes": 99640,
+      "sha256": "780bffda9960070d027d067e8f5f9e568a96a9634588ea2f566e22adcb586b98"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000005c3a0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 24,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_url_params.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_url_params.o",
+      "bytes": 22155,
+      "sha256": "5055755996c004ff118aed828dc14e5cb11523f0e5173416c7833c61368cbd92"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000a4100000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 25,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_json.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_json.o",
+      "bytes": 895557,
+      "sha256": "cce67b78922de457ae9feb601a202f808f2610b926249e1e9eba39040f48a32e"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000e41e0200"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 26,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_node_builtin.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_node_builtin.o",
+      "bytes": 68657,
+      "sha256": "19e00fbd586fb88e611ed3131cb3c8eb96014d50afd2f6ce781bfa80ee7da369"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "0000000074400000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 27,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_async.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_async.o",
+      "bytes": 241162,
+      "sha256": "544e446ad4aa2e61ec75dd2876a0d07885f4b7803f19435e98e6d36669d3b3d8"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000003cb40000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 28,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_crypto_async.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_crypto_async.o",
+      "bytes": 17235,
+      "sha256": "11a9ce67255571e4171d84338a3d7f8f9c9ac458e6e1e3bc878453295ca46d75"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000bc0c0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 29,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_child.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_child.o",
+      "bytes": 149210,
+      "sha256": "b54eb184875605b992eb9ff927762cf418c588302476a5e1601924f7fcf37320"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000009c630000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 30,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_cycle.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_cycle.o",
+      "bytes": 48596,
+      "sha256": "633dc977af333a48156afc3a4d5bc01130cf4dbd7af4d580f134f18c791f520a"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000c4220000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 31,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_publish.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_publish.o",
+      "bytes": 17354,
+      "sha256": "c48eac87b5a5cbe49f8f2b9deef946b1ffd3514beb322a2f55252b039d618ca9"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000006c0c0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 32,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_region.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_region.o",
+      "bytes": 30242,
+      "sha256": "66edecef087d0ee5924bca38aae9fc9880a17be80975d9ba249ffd80bd8e4508"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000e40c0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 33,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_arena.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_arena.o",
+      "bytes": 5551,
+      "sha256": "b1340f9e7395aa2d8d8f0d18e4fa8be11c8070f9a64e3d6416236fb604af33cc"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "0000000064050000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 34,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_itable.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_itable.o",
+      "bytes": 16580,
+      "sha256": "deb60619c38b2d6b7185406d72b677763af0379148dfbfcdc5305a7780983214"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000040b0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 35,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_slots.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_slots.o",
+      "bytes": 12933,
+      "sha256": "86ca8f9c126e9f6e6ddaf682122fbde7fde4baa9c332b13a726354ec70d87964"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "0000000024040000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 36,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_alloc.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_alloc.o",
+      "bytes": 4564,
+      "sha256": "ff667d4fde02931940d6bbcb7d60b09aaf400b79d657a1905282a0b72ac73f8c"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "000000003c050000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 37,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_cipher_info.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_cipher_info.o",
+      "bytes": 56993,
+      "sha256": "8f57c4885e4c15b31855399816ad9a9aa680007fa1f6c91cec73797b7ef02518"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000dc320000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 38,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_ieee754.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_ieee754.o",
+      "bytes": 35529,
+      "sha256": "8a4eb268286fa60ac3b51300f23e71b78e76b1b92027ca79388bcbad872efff1"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000240e0000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 39,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_glibc_math.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_glibc_math.o",
+      "bytes": 620,
+      "sha256": "9a653a205d4c73a3f2ca8b9ad961f6f2b4d5d49a8e78e3d66831ea296c5cd2e7"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000dc000000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 40,
+      "role": "runtime",
+      "path": "node_modules/@scriptc/runtime-win32-x64-msvc/artifacts/release/runtime/default/scr_win.o",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\node_modules\\@scriptc\\runtime-win32-x64-msvc\\artifacts\\release\\runtime\\default\\scr_win.o",
+      "bytes": 6976,
+      "sha256": "0b13d64deb87c152e2eab714fef58b4d1123e79d80aad97b30ecc187daaa21ac"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 40
+    },
+    "window": {
+      "offset": 36,
+      "bytes": 8,
+      "hex": "00000000dc050000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  },
+  {
+    "binding": {
+      "index": 41,
+      "role": "program",
+      "path": "probe.obj",
+      "absolute": "C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3fp-link-info-observation\\probe.obj",
+      "bytes": 1695,
+      "sha256": "405ef945ef36689c4fde4c1783031ed6b5038c266daca8c8dfc2c156bd37cb25"
+    },
+    "error": {
+      "code": "RAW_POINTER",
+      "offset": 80
+    },
+    "window": {
+      "offset": 76,
+      "bytes": 8,
+      "hex": "000000009d030000"
+    },
+    "interpretation": "Exact retained bytes adjacent to rejected field; no second parser invocation or expanded interpretation"
+  }
+]
