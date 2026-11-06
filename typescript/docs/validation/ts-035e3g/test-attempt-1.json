@@ -1,0 +1,883 @@
+{
+  "status": "failed",
+  "observations": [
+    {
+      "name": "literal/empty-standard",
+      "status": "passed"
+    },
+    {
+      "name": "literal/symbols-aux-directive-relocation",
+      "status": "passed"
+    },
+    {
+      "name": "literal/long-section-no-symbols",
+      "status": "passed"
+    },
+    {
+      "name": "literal/nonzero-section-address",
+      "status": "passed"
+    },
+    {
+      "name": "literal/ignored-relocation-no-dereference",
+      "status": "passed"
+    },
+    {
+      "name": "literal/directive-name-without-info",
+      "status": "passed"
+    },
+    {
+      "name": "literal/string-suffix-offset",
+      "status": "passed"
+    },
+    {
+      "name": "literal/unknown-storage-class-raw",
+      "status": "passed"
+    },
+    {
+      "name": "literal/uninitialized-no-stored-bytes",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-0",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-1",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-2",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-3",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-4",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-5",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-6",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-7",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-8",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-9",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-10",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-11",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-12",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-13",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-14",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-15",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-16",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-17",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-18",
+      "status": "passed"
+    },
+    {
+      "name": "literal/header-truncated-19",
+      "status": "passed"
+    },
+    {
+      "name": "literal/archive",
+      "status": "passed"
+    },
+    {
+      "name": "literal/image-prefix",
+      "status": "passed"
+    },
+    {
+      "name": "literal/import-signature",
+      "status": "passed"
+    },
+    {
+      "name": "literal/bigobj-family-signature",
+      "status": "passed"
+    },
+    {
+      "name": "literal/machine",
+      "status": "passed"
+    },
+    {
+      "name": "literal/optional-header",
+      "status": "passed"
+    },
+    {
+      "name": "literal/section-limit",
+      "status": "passed"
+    },
+    {
+      "name": "literal/symbol-limit",
+      "status": "passed"
+    },
+    {
+      "name": "literal/missing-sections",
+      "status": "passed"
+    },
+    {
+      "name": "literal/lines-pointer",
+      "status": "passed"
+    },
+    {
+      "name": "literal/lines-count",
+      "status": "passed"
+    },
+    {
+      "name": "literal/overflow-marker-plausible",
+      "status": "passed"
+    },
+    {
+      "name": "literal/overflow-marker-malformed",
+      "status": "passed"
+    },
+    {
+      "name": "literal/raw-missing",
+      "status": "passed"
+    },
+    {
+      "name": "literal/raw-truncated",
+      "status": "passed"
+    },
+    {
+      "name": "literal/empty-raw-pointer",
+      "status": "passed"
+    },
+    {
+      "name": "literal/relocation-pointer-zero",
+      "status": "passed"
+    },
+    {
+      "name": "literal/relocation-truncated",
+      "status": "passed"
+    },
+    {
+      "name": "literal/empty-relocation-pointer",
+      "status": "passed"
+    },
+    {
+      "name": "literal/symbol-pointer-zero",
+      "status": "passed"
+    },
+    {
+      "name": "literal/symbol-table-truncated",
+      "status": "passed"
+    },
+    {
+      "name": "literal/string-size-small",
+      "status": "passed"
+    },
+    {
+      "name": "literal/string-size-truncated",
+      "status": "passed"
+    },
+    {
+      "name": "literal/string-limit",
+      "status": "passed"
+    },
+    {
+      "name": "literal/section-name-negative",
+      "status": "passed"
+    },
+    {
+      "name": "literal/section-name-leading-zero",
+      "status": "passed"
+    },
+    {
+      "name": "literal/section-name-base64",
+      "status": "passed"
+    },
+    {
+      "name": "literal/section-name-offset-small",
+      "status": "passed"
+    },
+    {
+      "name": "literal/section-name-offset-end",
+      "status": "passed"
+    },
+    {
+      "name": "literal/inline-padding",
+      "status": "passed"
+    },
+    {
+      "name": "literal/symbol-name-offset-small",
+      "status": "passed"
+    },
+    {
+      "name": "literal/symbol-name-offset-end",
+      "status": "passed"
+    },
+    {
+      "name": "literal/symbol-name-unterminated",
+      "status": "passed"
+    },
+    {
+      "name": "literal/aux-slots-overrun",
+      "status": "passed"
+    },
+    {
+      "name": "literal/section-index-outside",
+      "status": "passed"
+    },
+    {
+      "name": "literal/negative-section-index",
+      "status": "passed"
+    },
+    {
+      "name": "literal/unknown-relocation-type",
+      "status": "passed"
+    },
+    {
+      "name": "literal/relocation-aux-slot",
+      "status": "passed"
+    },
+    {
+      "name": "literal/relocation-slot-outside",
+      "status": "passed"
+    },
+    {
+      "name": "literal/relocation-address-width",
+      "status": "passed"
+    },
+    {
+      "name": "literal/relocation-width-eight",
+      "status": "passed"
+    },
+    {
+      "name": "literal/raw-overlap-header",
+      "status": "passed"
+    },
+    {
+      "name": "literal/raw-overlap-raw",
+      "status": "passed"
+    },
+    {
+      "name": "literal/string-prefix-truncated",
+      "status": "passed"
+    },
+    {
+      "name": "literal/bss-relocation",
+      "status": "passed"
+    },
+    {
+      "name": "literal/fltused-defined-and-undefined-separate-slots",
+      "status": "passed"
+    },
+    {
+      "name": "literal/auxiliary-fltused-not-primary",
+      "status": "passed"
+    },
+    {
+      "name": "literal/directive-bom-retained-not-decoded",
+      "status": "passed"
+    },
+    {
+      "name": "literal/nonutf8-symbol-name-raw",
+      "status": "passed"
+    },
+    {
+      "name": "literal/resolved-name-limit",
+      "status": "passed"
+    },
+    {
+      "name": "literal/aggregate-name-limit",
+      "status": "passed"
+    },
+    {
+      "name": "literal/bss-directive-no-bytes-false",
+      "status": "passed"
+    },
+    {
+      "name": "literal/bss-directive-no-bytes-true",
+      "status": "passed"
+    },
+    {
+      "name": "literal/zero-size-directive-no-read",
+      "status": "passed"
+    },
+    {
+      "name": "domain/0",
+      "status": "passed"
+    },
+    {
+      "name": "domain/1",
+      "status": "passed"
+    },
+    {
+      "name": "domain/2",
+      "status": "passed"
+    },
+    {
+      "name": "domain/3",
+      "status": "passed"
+    },
+    {
+      "name": "domain/4",
+      "status": "passed"
+    },
+    {
+      "name": "domain/5",
+      "status": "passed"
+    },
+    {
+      "name": "domain/6",
+      "status": "passed"
+    },
+    {
+      "name": "domain/7",
+      "status": "passed"
+    },
+    {
+      "name": "binding/positive",
+      "status": "passed"
+    },
+    {
+      "name": "binding/missing-last",
+      "status": "passed"
+    },
+    {
+      "name": "binding/extra-last",
+      "status": "passed"
+    },
+    {
+      "name": "binding/reordered-first-pair",
+      "status": "passed"
+    },
+    {
+      "name": "binding/duplicate-row",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-0",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-0",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-1",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-1",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-2",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-2",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-3",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-3",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-4",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-4",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-5",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-5",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-6",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-6",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-7",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-7",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-8",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-8",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-9",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-9",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-10",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-10",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-11",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-11",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-12",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-12",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-13",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-13",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-14",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-14",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-15",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-15",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-16",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-16",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-17",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-17",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-18",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-18",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-19",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-19",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-20",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-20",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-21",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-21",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-22",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-22",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-23",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-23",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-24",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-24",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-25",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-25",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-26",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-26",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-27",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-27",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-28",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-28",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-29",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-29",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-30",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-30",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-31",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-31",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-32",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-32",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-33",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-33",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-34",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-34",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-35",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-35",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-36",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-36",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-37",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-37",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-38",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-38",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-39",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-39",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-40",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-40",
+      "status": "passed"
+    },
+    {
+      "name": "binding/hash-41",
+      "status": "passed"
+    },
+    {
+      "name": "binding/size-41",
+      "status": "passed"
+    },
+    {
+      "name": "binding/traversal",
+      "status": "passed"
+    },
+    {
+      "name": "binding/case-alias",
+      "status": "passed"
+    },
+    {
+      "name": "binding/slash-alias",
+      "status": "passed"
+    },
+    {
+      "name": "binding/relative-path-backslash",
+      "status": "passed"
+    },
+    {
+      "name": "binding/role",
+      "status": "passed"
+    },
+    {
+      "name": "binding/extra-field",
+      "status": "passed"
+    },
+    {
+      "name": "schema/186",
+      "status": "passed"
+    },
+    {
+      "name": "schema/187",
+      "status": "passed"
+    },
+    {
+      "name": "schema/188",
+      "status": "passed"
+    },
+    {
+      "name": "schema/189",
+      "status": "passed"
+    },
+    {
+      "name": "schema/190",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/synthetic-positive",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/missing-row",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/duplicate-row",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/row-size-mismatch",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/row-hash-mismatch",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/missing-chunk",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/noncanonical-chunk-path",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/symlink-or-hardlink",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/compressed-seal-mismatch",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/gzip-malformed",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/gzip-expansion-over-8388608",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/chunk-uncompressed-hash",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/assembled-size",
+      "status": "passed"
+    },
+    {
+      "name": "adapter/assembled-hash",
+      "status": "passed"
+    },
+    {
+      "name": "budget/first-exact-cap",
+      "status": "passed"
+    },
+    {
+      "name": "budget/first-one-over",
+      "status": "passed"
+    },
+    {
+      "name": "budget/comma-exact-cap",
+      "status": "passed"
+    },
+    {
+      "name": "budget/comma-one-over",
+      "status": "passed"
+    },
+    {
+      "name": "budget/last-exact-cap",
+      "status": "passed"
+    },
+    {
+      "name": "budget/last-one-over",
+      "status": "passed"
+    },
+    {
+      "name": "budget/full-literal",
+      "status": "passed"
+    },
+    {
+      "name": "precedence/binding-before-budget",
+      "status": "passed"
+    },
+    {
+      "name": "precedence/archive-before-budget",
+      "status": "passed"
+    },
+    {
+      "name": "precedence/rejected-result-still-charged",
+      "status": "passed"
+    },
+    {
+      "name": "files/ordinary",
+      "status": "passed"
+    },
+    {
+      "name": "files/limit",
+      "status": "passed"
+    },
+    {
+      "name": "files/noncanonical",
+      "status": "passed"
+    }
+  ],
+  "error": {
+    "name": "Error",
+    "message": "EPERM: operation not permitted, link 'C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3g-files-9DyiYq\\chunk.gz' -> 'C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3g-files-9DyiYq\\alias.gz'",
+    "stack": "Error: EPERM: operation not permitted, link 'C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3g-files-9DyiYq\\chunk.gz' -> 'C:\\Users\\jonku\\code\\rift\\typescript\\build\\ts035e3g-files-9DyiYq\\alias.gz'\n    at Module.linkSync (node:fs:2406:11)\n    at run (file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3g/tests.mjs:84:5)\n    at file:///C:/Users/jonku/code/rift/typescript/docs/validation/ts-035e3g/tests.mjs:97:18\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)"
+  },
+  "realObjectsInterpreted": 0
+}
